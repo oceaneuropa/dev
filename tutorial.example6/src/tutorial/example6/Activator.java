@@ -47,6 +47,7 @@ public class Activator implements BundleActivator, ServiceListener {
 	 * @param context
 	 *            the framework context for the bundle.
 	 **/
+	@Override
 	public void start(BundleContext context) throws Exception {
 		m_context = context;
 
@@ -88,6 +89,7 @@ public class Activator implements BundleActivator, ServiceListener {
 	 * @param context
 	 *            the framework context for the bundle.
 	 **/
+	@Override
 	public void stop(BundleContext context) {
 		// NOTE: The services automatically released.
 	}
@@ -100,6 +102,7 @@ public class Activator implements BundleActivator, ServiceListener {
 	 * @param event
 	 *            the fired service event.
 	 **/
+	@Override
 	public void serviceChanged(ServiceEvent event) {
 		synchronized (m_refList) {
 			// Add the new dictionary service to the service list.

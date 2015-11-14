@@ -38,6 +38,7 @@ public class Activator implements BundleActivator {
 	 * @param context
 	 *            the framework context for the bundle.
 	 **/
+	@Override
 	public void start(BundleContext context) throws Exception {
 		m_context = context;
 
@@ -94,6 +95,7 @@ public class Activator implements BundleActivator {
 	 * @param context
 	 *            the framework context for the bundle.
 	 **/
+	@Override
 	public void stop(BundleContext context) {
 	}
 
