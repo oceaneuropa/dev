@@ -21,7 +21,7 @@ public class BundleHandler {
 	 */
 	protected void activate(ComponentContext context) {
 		this.context = context;
-		System.out.println("BundleHandler.activate()");
+		System.out.println("BundleHandler.activate() context = " + context);
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class BundleHandler {
 	}
 
 	public void setEventAdmin(EventAdmin eventAdmin) {
-		System.out.println("BundleHandler.setEventAdmin()");
+		System.out.println("BundleHandler.setEventAdmin() eventAdmin = " + eventAdmin);
 		this.eventAdminReference.set(eventAdmin);
 	}
 
