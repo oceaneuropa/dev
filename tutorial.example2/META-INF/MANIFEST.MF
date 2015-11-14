@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: English dictionary
+Bundle-SymbolicName: tutorial.example2
+Bundle-Version: 1.0.0
+Bundle-Activator: tutorial.example2.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: tutorial.example2.service;version="1.0.0"
+Bundle-Vendor: Apache Felix
