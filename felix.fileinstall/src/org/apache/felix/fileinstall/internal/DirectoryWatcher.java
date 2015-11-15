@@ -239,8 +239,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 */
 	@Override
 	public void run() {
-		// We must wait for FileInstall to complete initialisation
-		// to avoid race conditions observed in FELIX-2791
+		// We must wait for FileInstall to complete initialization to avoid race conditions observed in FELIX-2791
 		try {
 			fileInstall.lock.readLock().lockInterruptibly();
 		} catch (InterruptedException e) {
@@ -766,11 +765,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 * This method goes through all the currently installed bundles and returns information about those bundles whose location refers to a file in our
 	 * {@link #watchedDirectory}.
 	 */
-	private void initializeCurrentManagedBundles() {
+	protected void initializeCurrentManagedBundles() {
 		Bundle[] bundles = this.context.getBundles();
 		String watchedDirPath = watchedDirectory.toURI().normalize().getPath();
 
-		Map<File, Long> checksums = new HashMap<File, Long>();
+		Map<File, Long> fileChecksumsMap = new HashMap<File, Long>();
 		for (Bundle bundle : bundles) {
 			// Convert to a URI because the location of a bundle is typically a URI. At least, that's the case for autostart bundles and bundles
 			// installed by fileinstall. Normalisation is needed to ensure that we don't treat e.g. /tmp/foo and /tmp//foo differently.
@@ -823,11 +822,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 				artifact.setArtifactListener(null);
 				artifact.setPath(new File(path));
 				setArtifact(new File(path), artifact);
-				checksums.put(new File(path), artifact.getChecksum());
+				fileChecksumsMap.put(new File(path), artifact.getChecksum());
 			}
 		}
 
-		scanner.initialize(checksums);
+		scanner.initialize(fileChecksumsMap);
 	}
 
 	/**
