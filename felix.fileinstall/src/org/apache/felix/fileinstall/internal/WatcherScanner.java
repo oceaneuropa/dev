@@ -55,7 +55,7 @@ public class WatcherScanner extends Scanner {
 			this.fileMatcher = null;
 		}
 
-		this.watcher = new ScannerWatcher();
+		this.watcher = new MyWatcher();
 		this.watcher.setFileMatcher(fileMatcher);
 		this.watcher.setRootDirectory(this.directory);
 		this.watcher.init();
@@ -121,10 +121,7 @@ public class WatcherScanner extends Scanner {
 		watcher.close();
 	}
 
-	public class ScannerWatcher extends Watcher {
-
-		public ScannerWatcher() {
-		}
+	public class MyWatcher extends Watcher {
 
 		@Override
 		protected void process(Path path) {

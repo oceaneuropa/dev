@@ -18,7 +18,12 @@
  */
 package org.apache.felix.fileinstall.internal;
 
-import java.io.Closeable;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InterruptedIOException;
@@ -38,25 +43,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_DELETE;
-import static java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY;
-import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
-
 /**
  * A File watching service
  */
-public abstract class Watcher implements Closeable {
+public abstract class Watcher {
 
-	private Path root;
-	private boolean watch = true;
-	private WatchService watcher;
-	private PathMatcher dirMatcher;
-	private PathMatcher fileMatcher;
-	private final Map<WatchKey, Path> keys = new ConcurrentHashMap<WatchKey, Path>();
-	private volatile long lastModified;
-	private final Map<Path, Boolean> processedMap = new ConcurrentHashMap<Path, Boolean>();
+	protected Path root;
+	protected boolean watch = true;
+	protected WatchService watchService;
+	protected PathMatcher dirMatcher;
+	protected PathMatcher fileMatcher;
+	protected final Map<WatchKey, Path> keys = new ConcurrentHashMap<WatchKey, Path>();
+	protected volatile long lastModified;
+	protected final Map<Path, Boolean> processedMap = new ConcurrentHashMap<Path, Boolean>();
 
 	public void init() throws IOException {
 		if (root == null) {
@@ -68,19 +67,21 @@ public abstract class Watcher implements Closeable {
 				}
 			}
 		}
+
 		if (!Files.exists(root)) {
 			fail("Root path does not exist: " + root);
 		} else if (!Files.isDirectory(root)) {
 			fail("Root path is not a directory: " + root);
 		}
-		if (watcher == null) {
-			watcher = watch ? getFileSystem().newWatchService() : null;
+
+		if (watchService == null) {
+			watchService = watch ? getFileSystem().newWatchService() : null;
 		}
 	}
 
 	public void close() throws IOException {
-		if (watcher != null) {
-			watcher.close();
+		if (watchService != null) {
+			watchService.close();
 		}
 	}
 
@@ -117,11 +118,11 @@ public abstract class Watcher implements Closeable {
 	}
 
 	public WatchService getWatcher() {
-		return watcher;
+		return watchService;
 	}
 
 	public void setWatcher(WatchService watcher) {
-		this.watcher = watcher;
+		this.watchService = watcher;
 	}
 
 	public PathMatcher getDirMatcher() {
@@ -153,7 +154,7 @@ public abstract class Watcher implements Closeable {
 
 	public void processEvents() {
 		while (true) {
-			WatchKey key = watcher.poll();
+			WatchKey key = watchService.poll();
 			if (key == null) {
 				break;
 			}
@@ -181,9 +182,7 @@ public abstract class Watcher implements Closeable {
 				try {
 					if (kind == ENTRY_CREATE) {
 						if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
-
-							// if directory is created, and watching recursively, then
-							// register it and its sub-directories
+							// if directory is created, and watching recursively, then register it and its sub-directories
 							Files.walkFileTree(child, new FilteringFileVisitor());
 						} else if (Files.isRegularFile(child, NOFOLLOW_LINKS)) {
 							scan(child);
@@ -215,7 +214,7 @@ public abstract class Watcher implements Closeable {
 		}
 	}
 
-	private void scan(final Path file) throws IOException {
+	protected void scan(final Path file) throws IOException {
 		if (isMatchesFile(file)) {
 			process(file);
 			processedMap.put(file, Boolean.TRUE);
@@ -231,7 +230,7 @@ public abstract class Watcher implements Closeable {
 		return matches;
 	}
 
-	private void unscan(final Path file) throws IOException {
+	protected void unscan(final Path file) throws IOException {
 		if (isMatchesFile(file)) {
 			onRemove(file);
 			lastModified = System.currentTimeMillis();
@@ -251,9 +250,9 @@ public abstract class Watcher implements Closeable {
 		}
 	}
 
-	private void watch(final Path path) throws IOException {
-		if (watcher != null) {
-			WatchKey key = path.register(watcher, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
+	protected void watch(final Path path) throws IOException {
+		if (watchService != null) {
+			WatchKey key = path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
 			keys.put(key, path);
 			debug("Watched path " + path + " key " + key);
 		} else {
@@ -315,4 +314,5 @@ public abstract class Watcher implements Closeable {
 	protected abstract void process(Path path);
 
 	protected abstract void onRemove(Path path);
+
 }
