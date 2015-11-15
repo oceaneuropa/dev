@@ -1114,11 +1114,11 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 				Util.storeChecksum(bundle, artifact.getChecksum(), context);
 
-				InputStream in = new FileInputStream(transformed != null ? transformed : bundleFile);
+				InputStream is = new FileInputStream(transformed != null ? transformed : bundleFile);
 				try {
-					bundle.update(in);
+					updateBundle(bundle, is);
 				} finally {
-					in.close();
+					is.close();
 				}
 			}
 		} catch (Throwable t) {
