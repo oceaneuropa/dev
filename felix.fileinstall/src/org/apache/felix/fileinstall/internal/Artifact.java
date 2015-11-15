@@ -103,4 +103,5 @@ public class Artifact {
 	public void setChecksum(long checksum) {
 		this.checksum = checksum;
 	}
+
 }
