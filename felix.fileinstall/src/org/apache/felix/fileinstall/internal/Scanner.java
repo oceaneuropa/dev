@@ -18,7 +18,6 @@
  */
 package org.apache.felix.fileinstall.internal;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -38,24 +37,14 @@ import java.util.zip.CRC32;
  * In addition, if the scanner detects a change on a given file, it will wait until the checksum does not change anymore before reporting the change
  * on this file. This allows to not report the change until a big copy if complete for example.
  */
-public class Scanner implements Closeable {
+public class Scanner {
 
-	final File directory;
-	final FilenameFilter filter;
+	protected File directory;
+	protected FilenameFilter filter;
 
 	// Store checksums of files or directories
-	Map<File, Long> lastChecksums = new HashMap<File, Long>();
-	Map<File, Long> storedChecksums = new HashMap<File, Long>();
-
-	/**
-	 * Create a scanner for the specified directory
-	 *
-	 * @param directory
-	 *            the directory to scan
-	 */
-	public Scanner(File directory) {
-		this(directory, null);
-	}
+	protected Map<File, Long> lastChecksums = new HashMap<File, Long>();
+	protected Map<File, Long> storedChecksums = new HashMap<File, Long>();
 
 	/**
 	 * Create a scanner for the specified directory and file filter

@@ -34,7 +34,6 @@ public class WatcherScanner extends Scanner {
 	protected BundleContext bundleContext;
 	protected PathMatcher fileMatcher;
 	protected Watcher watcher;
-
 	protected Set<File> changed = new HashSet<File>();
 
 	/**

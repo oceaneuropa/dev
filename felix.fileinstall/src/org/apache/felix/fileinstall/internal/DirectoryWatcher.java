@@ -235,7 +235,6 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 
 	/**
 	 * Main run loop, will traverse the directory, and then handle the delta between installed and newly found/lost bundles and configurations.
-	 *
 	 */
 	@Override
 	public void run() {
@@ -270,17 +269,20 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 				FrameworkStartLevel startLevelSvc = context.getBundle(0).adapt(FrameworkStartLevel.class);
 				// Don't access the disk when the framework is still in a startup phase.
 				if (startLevelSvc.getStartLevel() >= activeLevel && context.getBundle(0).getState() == Bundle.ACTIVE) {
+
 					Set<File> files = scanner.scan(false);
-					// Check that there is a result. If not, this means that the directory can not be listed,
-					// so it's presumably not a valid directory (it may have been deleted by someone).
-					// In such case, just sleep
+					// Check that there is a result. If not, this means that the directory can not be listed, so it's presumably not a valid directory
+					// (it may have been deleted by someone). In such case, just sleep
 					if (files != null && !files.isEmpty()) {
 						process(files);
 					}
 				}
+
+				// e.g. wait for 2 seconds and scan the dir again
 				synchronized (this) {
 					wait(poll);
 				}
+
 			} catch (InterruptedException e) {
 				return;
 			} catch (Throwable e) {
@@ -1117,7 +1119,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 * @param bundle
 	 * @throws BundleException
 	 */
-	private void stopTransient(Bundle bundle) throws BundleException {
+	protected void stopTransient(Bundle bundle) throws BundleException {
 		// Stop the bundle transiently so that it will be restarted when startAllBundles() is called
 		// but this avoids the need to restart the bundle twice (once for the update and another one
 		// when refreshing packages).
@@ -1132,7 +1134,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 * Tries to start all the bundles which somehow got stopped transiently. The File Install component will only retry the start When
 	 * {@link #USE_START_TRANSIENT} is set to true or when a bundle is persistently started. Persistently stopped bundles are ignored.
 	 */
-	private void startAllBundles() {
+	protected void startAllBundles() {
 		FrameworkStartLevel startLevelSvc = context.getBundle(0).adapt(FrameworkStartLevel.class);
 		List<Bundle> bundles = new ArrayList<Bundle>();
 		for (Artifact artifact : getArtifacts()) {
@@ -1151,7 +1153,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	/**
 	 * Starts a bundle and removes it from the Collection when successfully started.
 	 */
-	private void startBundles(Collection<Bundle> bundles) {
+	protected void startBundles(Collection<Bundle> bundles) {
 		for (Iterator<Bundle> b = bundles.iterator(); b.hasNext();) {
 			if (startBundle(b.next())) {
 				b.remove();
@@ -1166,7 +1168,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 *            the bundle to start.
 	 * @return whether the bundle was started.
 	 */
-	private boolean startBundle(Bundle bundle) {
+	protected boolean startBundle(Bundle bundle) {
 		FrameworkStartLevel startLevelSvc = context.getBundle(0).adapt(FrameworkStartLevel.class);
 		// Fragments can never be started.
 		// Bundles can only be started transient when the start level of the framework is high
