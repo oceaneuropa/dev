@@ -1121,9 +1121,11 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					is.close();
 				}
 			}
+
 		} catch (Throwable t) {
 			log(Logger.LOG_WARNING, "Failed to update artifact " + artifact.getFile(), t);
 		}
+
 		return bundle;
 	}
 
@@ -1133,7 +1135,9 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 */
 	protected void startAllBundles() {
 		FrameworkStartLevel startLevelSvc = context.getBundle(0).adapt(FrameworkStartLevel.class);
+
 		List<Bundle> bundles = new ArrayList<Bundle>();
+
 		for (Artifact artifact : getArtifacts()) {
 			if (artifact.getBundleId() > 0) {
 				Bundle bundle = context.getBundle(artifact.getBundleId());
