@@ -53,9 +53,10 @@ public abstract class Watcher {
 	protected WatchService watchService;
 	protected PathMatcher dirMatcher;
 	protected PathMatcher fileMatcher;
-	protected final Map<WatchKey, Path> keys = new ConcurrentHashMap<WatchKey, Path>();
+
+	protected Map<WatchKey, Path> keyToPathMap = new ConcurrentHashMap<WatchKey, Path>();
+	protected Map<Path, Boolean> pathProcessedMap = new ConcurrentHashMap<Path, Boolean>();
 	protected volatile long lastModified;
-	protected final Map<Path, Boolean> processedMap = new ConcurrentHashMap<Path, Boolean>();
 
 	public void init() throws IOException {
 		if (root == null) {
@@ -77,6 +78,10 @@ public abstract class Watcher {
 		if (watchService == null) {
 			watchService = watch ? getFileSystem().newWatchService() : null;
 		}
+	}
+
+	protected FileSystem getFileSystem() {
+		return FileSystems.getDefault();
 	}
 
 	public void close() throws IOException {
@@ -145,10 +150,10 @@ public abstract class Watcher {
 	// -------------------------------------------------------------------------
 
 	public void rescan() throws IOException {
-		for (WatchKey key : keys.keySet()) {
+		for (WatchKey key : keyToPathMap.keySet()) {
 			key.cancel();
 		}
-		keys.clear();
+		keyToPathMap.clear();
 		Files.walkFileTree(root, new FilteringFileVisitor());
 	}
 
@@ -158,9 +163,9 @@ public abstract class Watcher {
 			if (key == null) {
 				break;
 			}
-			Path dir = keys.get(key);
+			Path dir = keyToPathMap.get(key);
 			if (dir == null) {
-				warn("Could not find key for " + key);
+				warn("Could not find dir for " + key);
 				continue;
 			}
 
@@ -204,10 +209,10 @@ public abstract class Watcher {
 			boolean valid = key.reset();
 			if (!valid) {
 				debug("Removing key " + key + " and dir " + dir + " from keys");
-				keys.remove(key);
+				keyToPathMap.remove(key);
 
 				// all directories are inaccessible
-				if (keys.isEmpty()) {
+				if (keyToPathMap.isEmpty()) {
 					break;
 				}
 			}
@@ -217,7 +222,7 @@ public abstract class Watcher {
 	protected void scan(final Path file) throws IOException {
 		if (isMatchesFile(file)) {
 			process(file);
-			processedMap.put(file, Boolean.TRUE);
+			pathProcessedMap.put(file, Boolean.TRUE);
 		}
 	}
 
@@ -236,11 +241,11 @@ public abstract class Watcher {
 			lastModified = System.currentTimeMillis();
 		} else {
 			// lets find all the files that now no longer exist
-			List<Path> files = new ArrayList<Path>(processedMap.keySet());
+			List<Path> files = new ArrayList<Path>(pathProcessedMap.keySet());
 			for (Path path : files) {
 				if (!Files.exists(path)) {
 					debug("File has been deleted: " + path);
-					processedMap.remove(path);
+					pathProcessedMap.remove(path);
 					if (isMatchesFile(path)) {
 						onRemove(file);
 						lastModified = System.currentTimeMillis();
@@ -253,15 +258,11 @@ public abstract class Watcher {
 	protected void watch(final Path path) throws IOException {
 		if (watchService != null) {
 			WatchKey key = path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
-			keys.put(key, path);
+			keyToPathMap.put(key, path);
 			debug("Watched path " + path + " key " + key);
 		} else {
 			warn("No watcher yet for path " + path);
 		}
-	}
-
-	protected FileSystem getFileSystem() {
-		return FileSystems.getDefault();
 	}
 
 	public class FilteringFileVisitor implements FileVisitor<Path> {

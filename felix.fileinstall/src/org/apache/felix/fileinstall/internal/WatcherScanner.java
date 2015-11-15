@@ -62,6 +62,7 @@ public class WatcherScanner extends Scanner {
 		this.watcher.rescan();
 	}
 
+	@Override
 	public Set<File> scan(boolean reportImmediately) {
 		watcher.processEvents();
 
@@ -71,46 +72,46 @@ public class WatcherScanner extends Scanner {
 			}
 
 			Set<File> files = new HashSet<File>();
-			Set<File> removed = new HashSet<File>();
+			Set<File> removedFiles = new HashSet<File>();
 
 			if (reportImmediately) {
-				removed.addAll(storedChecksums.keySet());
+				removedFiles.addAll(storedFileChecksumsMap.keySet());
 			}
 
 			for (Iterator<File> iterator = changed.iterator(); iterator.hasNext();) {
 				File file = iterator.next();
-				long lastChecksum = lastChecksums.get(file) != null ? (Long) lastChecksums.get(file) : 0;
-				long storedChecksum = storedChecksums.get(file) != null ? (Long) storedChecksums.get(file) : 0;
+				long lastChecksum = lastFileChecksumsMap.get(file) != null ? (Long) lastFileChecksumsMap.get(file) : 0;
+				long storedChecksum = storedFileChecksumsMap.get(file) != null ? (Long) storedFileChecksumsMap.get(file) : 0;
 				long newChecksum = checksum(file);
 
-				lastChecksums.put(file, newChecksum);
+				lastFileChecksumsMap.put(file, newChecksum);
 
 				if (file.exists()) {
 					// Only handle file when it does not change anymore and it has changed since last reported
 					if ((newChecksum == lastChecksum || reportImmediately)) {
 						if (newChecksum != storedChecksum) {
-							storedChecksums.put(file, newChecksum);
+							storedFileChecksumsMap.put(file, newChecksum);
 							files.add(file);
 						} else {
 							iterator.remove();
 						}
 						if (reportImmediately) {
-							removed.remove(file);
+							removedFiles.remove(file);
 						}
 					}
 				} else {
 					if (!reportImmediately) {
-						removed.add(file);
+						removedFiles.add(file);
 					}
 				}
 			}
 
-			for (File file : removed) {
+			for (File removedFile : removedFiles) {
 				// Make sure we'll handle a file that has been deleted
-				files.addAll(removed);
+				files.addAll(removedFiles);
 				// Remove no longer used checksums
-				lastChecksums.remove(file);
-				storedChecksums.remove(file);
+				lastFileChecksumsMap.remove(removedFile);
+				storedFileChecksumsMap.remove(removedFile);
 			}
 
 			return files;

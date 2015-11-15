@@ -43,8 +43,8 @@ public class Scanner {
 	protected FilenameFilter filter;
 
 	// Store checksums of files or directories
-	protected Map<File, Long> lastChecksums = new HashMap<File, Long>();
-	protected Map<File, Long> storedChecksums = new HashMap<File, Long>();
+	protected Map<File, Long> storedFileChecksumsMap = new HashMap<File, Long>();
+	protected Map<File, Long> lastFileChecksumsMap = new HashMap<File, Long>();
 
 	/**
 	 * Create a scanner for the specified directory and file filter
@@ -56,8 +56,8 @@ public class Scanner {
 	 */
 	public Scanner(File directory, final String filterString) {
 		this.directory = canon(directory);
-		if (filterString != null && filterString.length() > 0) {
 
+		if (filterString != null && filterString.length() > 0) {
 			this.filter = new FilenameFilter() {
 				Pattern pattern = Pattern.compile(filterString);
 
@@ -79,7 +79,7 @@ public class Scanner {
 	 *            a map of checksums
 	 */
 	public void initialize(Map<File, Long> checksums) {
-		storedChecksums.putAll(checksums);
+		storedFileChecksumsMap.putAll(checksums);
 	}
 
 	/**
@@ -97,16 +97,16 @@ public class Scanner {
 		}
 
 		Set<File> files = new HashSet<File>();
-		Set<File> removed = new HashSet<File>(storedChecksums.keySet());
+		Set<File> removed = new HashSet<File>(storedFileChecksumsMap.keySet());
 
 		for (File file : list) {
-			long lastChecksum = lastChecksums.get(file) != null ? (Long) lastChecksums.get(file) : 0;
-			long storedChecksum = storedChecksums.get(file) != null ? (Long) storedChecksums.get(file) : 0;
+			long lastChecksum = lastFileChecksumsMap.get(file) != null ? (Long) lastFileChecksumsMap.get(file) : 0;
+			long storedChecksum = storedFileChecksumsMap.get(file) != null ? (Long) storedFileChecksumsMap.get(file) : 0;
 			long newChecksum = checksum(file);
-			lastChecksums.put(file, newChecksum);
+			lastFileChecksumsMap.put(file, newChecksum);
 			// Only handle file when it does not change anymore and it has changed since last reported
 			if ((newChecksum == lastChecksum || reportImmediately) && newChecksum != storedChecksum) {
-				storedChecksums.put(file, newChecksum);
+				storedFileChecksumsMap.put(file, newChecksum);
 				files.add(file);
 			}
 			removed.remove(file);
@@ -116,8 +116,8 @@ public class Scanner {
 			// Make sure we'll handle a file that has been deleted
 			files.addAll(removed);
 			// Remove no longer used checksums
-			lastChecksums.remove(file);
-			storedChecksums.remove(file);
+			lastFileChecksumsMap.remove(file);
+			storedFileChecksumsMap.remove(file);
 		}
 		return files;
 	}
@@ -141,7 +141,7 @@ public class Scanner {
 	 * @return the checksum
 	 */
 	public long getChecksum(File file) {
-		Long c = storedChecksums.get(file);
+		Long c = storedFileChecksumsMap.get(file);
 		return c != null ? c : 0;
 	}
 
@@ -149,9 +149,9 @@ public class Scanner {
 	 * Update the checksum of a file if that file is already known locally.
 	 */
 	public void updateChecksum(File file) {
-		if (file != null && storedChecksums.containsKey(file)) {
+		if (file != null && storedFileChecksumsMap.containsKey(file)) {
 			long newChecksum = checksum(file);
-			storedChecksums.put(file, newChecksum);
+			storedFileChecksumsMap.put(file, newChecksum);
 		}
 	}
 
