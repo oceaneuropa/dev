@@ -38,6 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
@@ -57,10 +58,13 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleListener;
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkEvent;
+import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.Version;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
 import org.osgi.framework.wiring.BundleRevision;
+import org.osgi.framework.wiring.FrameworkWiring;
 
 /**
  * -DirectoryWatcher-
@@ -341,7 +345,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 * @throws InterruptedException
 	 */
 	private void doProcess(Set<File> files) throws InterruptedException {
-		List<ArtifactListener> atrifactListeners = fileInstall.getListeners();
+		List<ArtifactListener> atrifactListeners = fileInstall.getArtifactListeners();
 		List<Artifact> deleted = new ArrayList<Artifact>();
 		List<Artifact> modified = new ArrayList<Artifact>();
 		List<Artifact> created = new ArrayList<Artifact>();
@@ -473,7 +477,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 			if (bundlesToRefresh.size() > 0) {
 				// Refresh if any bundle got uninstalled or updated.
-				refresh(bundlesToRefresh);
+				refreshBundles(bundlesToRefresh);
 				// set the state to reattempt starting managed bundles which aren't already STARTING or ACTIVE
 				setStateChanged(true);
 			}
@@ -585,19 +589,19 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 		return true;
 	}
 
-	private void deleteTransformedFile(Artifact artifact) {
+	protected void deleteTransformedFile(Artifact artifact) {
 		if (artifact.getTransformed() != null && !artifact.getTransformed().equals(artifact.getPath()) && !artifact.getTransformed().delete()) {
 			log(Logger.LOG_WARNING, "Unable to delete transformed artifact: " + artifact.getTransformed().getAbsolutePath(), null);
 		}
 	}
 
-	private void deleteJaredDirectory(Artifact artifact) {
+	protected void deleteJaredDirectory(Artifact artifact) {
 		if (artifact.getJaredDirectory() != null && !artifact.getJaredDirectory().equals(artifact.getPath()) && !artifact.getJaredDirectory().delete()) {
 			log(Logger.LOG_WARNING, "Unable to delete jared artifact: " + artifact.getJaredDirectory().getAbsolutePath(), null);
 		}
 	}
 
-	private void prepareTempDir() {
+	protected void prepareTempDir() {
 		if (tmpDir == null) {
 			if (!javaIoTmpdir.exists() && !javaIoTmpdir.mkdirs()) {
 				throw new IllegalStateException("Unable to create temporary directory " + javaIoTmpdir);
@@ -622,7 +626,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 * @param dir
 	 *            The directory File Install will monitor
 	 */
-	private void prepareDir(File dir) {
+	protected void prepareDir(File dir) {
 		if (!dir.exists() && !dir.mkdirs()) {
 			log(Logger.LOG_ERROR, "Cannot create folder " + dir + ". Is the folder write-protected?", null);
 			throw new RuntimeException("Cannot create folder: " + dir);
@@ -642,23 +646,16 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 * @param e
 	 *            The throwable to log
 	 */
-	void log(int msgLevel, String message, Throwable e) {
+	protected void log(int msgLevel, String message, Throwable e) {
 		Util.log(context, logLevel, msgLevel, message, e);
 	}
 
 	/**
 	 * Check if a bundle is a fragment.
 	 */
-	boolean isFragment(Bundle bundle) {
+	protected boolean isFragment(Bundle bundle) {
 		BundleRevision rev = bundle.adapt(BundleRevision.class);
 		return (rev.getTypes() & BundleRevision.TYPE_FRAGMENT) != 0;
-	}
-
-	/**
-	 * Convenience to refresh the packages
-	 */
-	void refresh(Collection<Bundle> bundles) throws InterruptedException {
-		FileInstall.refresh(context, bundles);
 	}
 
 	/**
@@ -1022,7 +1019,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 			// Find a listener for this artifact if needed
 			if (artifact.getArtifactListener() == null) {
-				artifact.setArtifactListener(findListener(path, fileInstall.getListeners()));
+				artifact.setArtifactListener(findListener(path, fileInstall.getArtifactListeners()));
 			}
 
 			// Forget this artifact
@@ -1129,6 +1126,23 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				bundle.stop(Bundle.STOP_TRANSIENT);
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param bundles
+	 * @throws InterruptedException
+	 */
+	protected void refreshBundles(Collection<Bundle> bundles) throws InterruptedException {
+		final CountDownLatch latch = new CountDownLatch(1);
+		FrameworkWiring wiring = context.getBundle(0).adapt(FrameworkWiring.class);
+		wiring.refreshBundles(bundles, new FrameworkListener() {
+			@Override
+			public void frameworkEvent(FrameworkEvent event) {
+				latch.countDown();
+			}
+		});
+		latch.await();
 	}
 
 	/**

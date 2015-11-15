@@ -20,7 +20,6 @@ package org.apache.felix.fileinstall.internal;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Enumeration;
@@ -34,7 +33,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -44,16 +42,12 @@ import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.apache.felix.fileinstall.internal.Util.Logger;
 import org.apache.felix.utils.properties.InterpolationHelper;
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
-import org.osgi.framework.FrameworkEvent;
-import org.osgi.framework.FrameworkListener;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.framework.wiring.FrameworkWiring;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
@@ -68,8 +62,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<ArtifactListener, ArtifactListener> {
 
-	protected Map<ServiceReference<ArtifactListener>, ArtifactListener> listeners;
-	protected Map<String, DirectoryProcessor> dirWatchers;
+	protected Map<ServiceReference<ArtifactListener>, ArtifactListener> artifactListenersMap;
+	protected Map<String, DirectoryProcessor> dirProcessorsMap;
 	protected ReadWriteLock lock;
 	protected BundleTransformer bundleTransformer;
 
@@ -81,8 +75,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	protected volatile boolean stopped; // stopped in stop()
 
 	public FileInstall() {
-		listeners = new TreeMap<ServiceReference<ArtifactListener>, ArtifactListener>();
-		dirWatchers = new HashMap<String, DirectoryProcessor>();
+		artifactListenersMap = new TreeMap<ServiceReference<ArtifactListener>, ArtifactListener>();
+		dirProcessorsMap = new HashMap<String, DirectoryProcessor>();
 		lock = new ReentrantReadWriteLock();
 		bundleTransformer = new BundleTransformer();
 	}
@@ -173,9 +167,9 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 			urlHandlerRegistration.unregister();
 
 			List<DirectoryProcessor> watchersToClose = new ArrayList<DirectoryProcessor>();
-			synchronized (dirWatchers) {
-				watchersToClose.addAll(dirWatchers.values());
-				dirWatchers.clear();
+			synchronized (dirProcessorsMap) {
+				watchersToClose.addAll(dirProcessorsMap.values());
+				dirProcessorsMap.clear();
 			}
 
 			for (DirectoryProcessor watcherToClose : watchersToClose) {
@@ -239,24 +233,24 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 		InterpolationHelper.performSubstitution(properties, context);
 
-		DirectoryProcessor watcher = null;
-		synchronized (dirWatchers) {
-			watcher = dirWatchers.get(pid);
+		DirectoryProcessor dirProcessor = null;
+		synchronized (dirProcessorsMap) {
+			dirProcessor = dirProcessorsMap.get(pid);
 			// do not receate watcher if properties are the same
-			if (watcher != null && watcher.getProperties().equals(properties)) {
+			if (dirProcessor != null && dirProcessor.getProperties().equals(properties)) {
 				return;
 			}
 		}
-		if (watcher != null) {
-			watcher.close();
+		if (dirProcessor != null) {
+			dirProcessor.close();
 		}
 
-		watcher = new DirectoryProcessor(this, properties, context);
-		watcher.setDaemon(true);
-		synchronized (dirWatchers) {
-			dirWatchers.put(pid, watcher);
+		dirProcessor = new DirectoryProcessor(this, properties, context);
+		dirProcessor.setDaemon(true);
+		synchronized (dirProcessorsMap) {
+			dirProcessorsMap.put(pid, dirProcessor);
 		}
-		watcher.start();
+		dirProcessor.start();
 	}
 
 	/**
@@ -268,8 +262,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("\t pid = " + pid);
 
 		DirectoryProcessor watcher = null;
-		synchronized (dirWatchers) {
-			watcher = dirWatchers.remove(pid);
+		synchronized (dirProcessorsMap) {
+			watcher = dirProcessorsMap.remove(pid);
 		}
 
 		if (watcher != null) {
@@ -286,8 +280,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("\t file = " + file.getAbsolutePath());
 
 		List<DirectoryProcessor> watchersToUpdate = new ArrayList<DirectoryProcessor>();
-		synchronized (dirWatchers) {
-			watchersToUpdate.addAll(dirWatchers.values());
+		synchronized (dirProcessorsMap) {
+			watchersToUpdate.addAll(dirProcessorsMap.values());
 		}
 
 		for (DirectoryProcessor dirWatcher : watchersToUpdate) {
@@ -304,15 +298,15 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("FileInstall.addArtifactListener()");
 		println("\t artifactListener = " + artifactListener);
 
-		synchronized (listeners) {
-			listeners.put(reference, artifactListener);
+		synchronized (artifactListenersMap) {
+			artifactListenersMap.put(reference, artifactListener);
 		}
 
 		long currentStamp = reference.getBundle().getLastModified();
 
 		List<DirectoryProcessor> watchersToNotify = new ArrayList<DirectoryProcessor>();
-		synchronized (dirWatchers) {
-			watchersToNotify.addAll(dirWatchers.values());
+		synchronized (dirProcessorsMap) {
+			watchersToNotify.addAll(dirProcessorsMap.values());
 		}
 
 		for (DirectoryProcessor dirWatcher : watchersToNotify) {
@@ -329,13 +323,13 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("FileInstall.removeListener()");
 		println("\t artifactListener = " + artifactListener);
 
-		synchronized (listeners) {
-			listeners.remove(reference);
+		synchronized (artifactListenersMap) {
+			artifactListenersMap.remove(reference);
 		}
 
 		List<DirectoryProcessor> watchersToNotify = new ArrayList<DirectoryProcessor>();
-		synchronized (dirWatchers) {
-			watchersToNotify.addAll(dirWatchers.values());
+		synchronized (dirProcessorsMap) {
+			watchersToNotify.addAll(dirProcessorsMap.values());
 		}
 
 		for (DirectoryProcessor dirWatcher : watchersToNotify) {
@@ -343,31 +337,13 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		}
 	}
 
-	protected List<ArtifactListener> getListeners() {
-		synchronized (listeners) {
-			List<ArtifactListener> l = new ArrayList<ArtifactListener>(listeners.values());
-			Collections.reverse(l);
-			l.add(bundleTransformer);
-			return l;
+	protected List<ArtifactListener> getArtifactListeners() {
+		synchronized (artifactListenersMap) {
+			List<ArtifactListener> listeners = new ArrayList<ArtifactListener>(artifactListenersMap.values());
+			Collections.reverse(listeners);
+			listeners.add(bundleTransformer);
+			return listeners;
 		}
-	}
-
-	/**
-	 * Convenience to refresh the packages
-	 */
-	public static void refresh(BundleContext context, Collection<Bundle> bundles) throws InterruptedException {
-		final CountDownLatch latch = new CountDownLatch(1);
-
-		FrameworkWiring wiring = context.getBundle(0).adapt(FrameworkWiring.class);
-
-		wiring.refreshBundles(bundles, new FrameworkListener() {
-			@Override
-			public void frameworkEvent(FrameworkEvent event) {
-				latch.countDown();
-			}
-		});
-
-		latch.await();
 	}
 
 	public class ConfigAdminSupport {
