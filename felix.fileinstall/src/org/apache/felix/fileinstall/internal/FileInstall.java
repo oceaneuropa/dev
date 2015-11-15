@@ -69,7 +69,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<ArtifactListener, ArtifactListener> {
 
 	protected Map<ServiceReference<ArtifactListener>, ArtifactListener> listeners;
-	protected Map<String, DirectoryWatcher> dirWatchers;
+	protected Map<String, DirectoryProcessor> dirWatchers;
 	protected ReadWriteLock lock;
 	protected BundleTransformer bundleTransformer;
 
@@ -82,7 +82,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 	public FileInstall() {
 		listeners = new TreeMap<ServiceReference<ArtifactListener>, ArtifactListener>();
-		dirWatchers = new HashMap<String, DirectoryWatcher>();
+		dirWatchers = new HashMap<String, DirectoryProcessor>();
 		lock = new ReentrantReadWriteLock();
 		bundleTransformer = new BundleTransformer();
 	}
@@ -114,25 +114,25 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 			// Created the initial configuration
 			Hashtable<String, String> initProps = new Hashtable<String, String>();
-			set(initProps, DirectoryWatcher.POLL);
-			set(initProps, DirectoryWatcher.DIR);
-			set(initProps, DirectoryWatcher.LOG_LEVEL);
-			set(initProps, DirectoryWatcher.FILTER);
-			set(initProps, DirectoryWatcher.TMPDIR);
-			set(initProps, DirectoryWatcher.START_NEW_BUNDLES);
-			set(initProps, DirectoryWatcher.USE_START_TRANSIENT);
-			set(initProps, DirectoryWatcher.NO_INITIAL_DELAY);
-			set(initProps, DirectoryWatcher.START_LEVEL);
-			set(initProps, DirectoryWatcher.OPTIONAL_SCOPE);
+			set(initProps, DirectoryProcessor.POLL);
+			set(initProps, DirectoryProcessor.DIR);
+			set(initProps, DirectoryProcessor.LOG_LEVEL);
+			set(initProps, DirectoryProcessor.FILTER);
+			set(initProps, DirectoryProcessor.TMPDIR);
+			set(initProps, DirectoryProcessor.START_NEW_BUNDLES);
+			set(initProps, DirectoryProcessor.USE_START_TRANSIENT);
+			set(initProps, DirectoryProcessor.NO_INITIAL_DELAY);
+			set(initProps, DirectoryProcessor.START_LEVEL);
+			set(initProps, DirectoryProcessor.OPTIONAL_SCOPE);
 
 			// check if dir is an array of dirs
-			String dirs = initProps.get(DirectoryWatcher.DIR);
+			String dirs = initProps.get(DirectoryProcessor.DIR);
 			if (dirs != null && dirs.indexOf(',') != -1) {
 				StringTokenizer st = new StringTokenizer(dirs, ",");
 				int index = 0;
 				while (st.hasMoreTokens()) {
 					final String dir = st.nextToken().trim();
-					initProps.put(DirectoryWatcher.DIR, dir);
+					initProps.put(DirectoryProcessor.DIR, dir);
 
 					String name = "initial";
 					if (index > 0) {
@@ -172,13 +172,13 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		try {
 			urlHandlerRegistration.unregister();
 
-			List<DirectoryWatcher> watchersToClose = new ArrayList<DirectoryWatcher>();
+			List<DirectoryProcessor> watchersToClose = new ArrayList<DirectoryProcessor>();
 			synchronized (dirWatchers) {
 				watchersToClose.addAll(dirWatchers.values());
 				dirWatchers.clear();
 			}
 
-			for (DirectoryWatcher watcherToClose : watchersToClose) {
+			for (DirectoryProcessor watcherToClose : watchersToClose) {
 				try {
 					watcherToClose.close();
 				} catch (Exception e) {
@@ -239,7 +239,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 		InterpolationHelper.performSubstitution(properties, context);
 
-		DirectoryWatcher watcher = null;
+		DirectoryProcessor watcher = null;
 		synchronized (dirWatchers) {
 			watcher = dirWatchers.get(pid);
 			// do not receate watcher if properties are the same
@@ -251,7 +251,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 			watcher.close();
 		}
 
-		watcher = new DirectoryWatcher(this, properties, context);
+		watcher = new DirectoryProcessor(this, properties, context);
 		watcher.setDaemon(true);
 		synchronized (dirWatchers) {
 			dirWatchers.put(pid, watcher);
@@ -267,7 +267,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("FileInstall.deleted()");
 		println("\t pid = " + pid);
 
-		DirectoryWatcher watcher = null;
+		DirectoryProcessor watcher = null;
 		synchronized (dirWatchers) {
 			watcher = dirWatchers.remove(pid);
 		}
@@ -285,12 +285,12 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("FileInstall.updateChecksum()");
 		println("\t file = " + file.getAbsolutePath());
 
-		List<DirectoryWatcher> watchersToUpdate = new ArrayList<DirectoryWatcher>();
+		List<DirectoryProcessor> watchersToUpdate = new ArrayList<DirectoryProcessor>();
 		synchronized (dirWatchers) {
 			watchersToUpdate.addAll(dirWatchers.values());
 		}
 
-		for (DirectoryWatcher dirWatcher : watchersToUpdate) {
+		for (DirectoryProcessor dirWatcher : watchersToUpdate) {
 			dirWatcher.scanner.updateChecksum(file);
 		}
 	}
@@ -310,12 +310,12 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 		long currentStamp = reference.getBundle().getLastModified();
 
-		List<DirectoryWatcher> watchersToNotify = new ArrayList<DirectoryWatcher>();
+		List<DirectoryProcessor> watchersToNotify = new ArrayList<DirectoryProcessor>();
 		synchronized (dirWatchers) {
 			watchersToNotify.addAll(dirWatchers.values());
 		}
 
-		for (DirectoryWatcher dirWatcher : watchersToNotify) {
+		for (DirectoryProcessor dirWatcher : watchersToNotify) {
 			dirWatcher.addArtifactListener(artifactListener, currentStamp);
 		}
 	}
@@ -333,12 +333,12 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 			listeners.remove(reference);
 		}
 
-		List<DirectoryWatcher> watchersToNotify = new ArrayList<DirectoryWatcher>();
+		List<DirectoryProcessor> watchersToNotify = new ArrayList<DirectoryProcessor>();
 		synchronized (dirWatchers) {
 			watchersToNotify.addAll(dirWatchers.values());
 		}
 
-		for (DirectoryWatcher dirWatcher : watchersToNotify) {
+		for (DirectoryProcessor dirWatcher : watchersToNotify) {
 			dirWatcher.removeArtifactListener(artifactListener);
 		}
 	}

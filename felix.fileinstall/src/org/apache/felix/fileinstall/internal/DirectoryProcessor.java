@@ -75,7 +75,7 @@ import org.osgi.framework.wiring.BundleRevision;
  *
  * @author <a href="mailto:dev@felix.apache.org">Felix Project Team</a>
  */
-public class DirectoryWatcher extends Thread implements BundleListener {
+public class DirectoryProcessor extends Thread implements BundleListener {
 
 	public final static String FILENAME = "felix.fileinstall.filename";
 	public final static String POLL = "felix.fileinstall.poll";
@@ -154,13 +154,14 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 * @param properties
 	 * @param context
 	 */
-	public DirectoryWatcher(FileInstall fileInstall, Map<String, String> properties, BundleContext context) {
+	public DirectoryProcessor(FileInstall fileInstall, Map<String, String> properties, BundleContext context) {
 		super("fileinstall-" + getThreadName(properties));
 
 		this.fileInstall = fileInstall;
 		this.properties = properties;
 		this.context = context;
 
+		// read properties
 		poll = getLong(properties, POLL, 2000);
 		logLevel = getInt(properties, LOG_LEVEL, Util.getGlobalLogLevel(context));
 		originatingFileName = properties.get(FILENAME);
@@ -171,7 +172,6 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		tmpDir = getFile(properties, TMPDIR, null);
 		prepareTempDir();
 
-		// read properties
 		startBundles = getBoolean(properties, START_NEW_BUNDLES, true); // by default, we start bundles.
 		useStartTransient = getBoolean(properties, USE_START_TRANSIENT, false); // by default, we start bundles persistently.
 		useStartActivationPolicy = getBoolean(properties, USE_START_ACTIVATION_POLICY, true); // by default, we start bundles using activation policy.
@@ -182,7 +182,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		updateWithListeners = getBoolean(properties, UPDATE_WITH_LISTENERS, false); // Do not update bundles when listeners are updated
 		fragmentScope = properties.get(FRAGMENT_SCOPE);
 		optionalScope = properties.get(OPTIONAL_SCOPE);
-		disableNIO2 = getBoolean(properties, DISABLE_NIO2, false);
+		disableNIO2 = getBoolean(properties, DISABLE_NIO2, false); // by default, enable NIO API to scan dir
 
 		this.context.addBundleListener(this);
 
@@ -198,7 +198,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		}
 	}
 
-	private void verifyWatchedDir() {
+	protected void verifyWatchedDir() {
 		if (!watchedDirectory.exists()) {
 			// Issue #2069: Do not create the directory if it does not exist,
 			// instead, warn user and continue. We will automatically start
@@ -393,12 +393,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 				if (artifact != null) {
 					artifact.setChecksum(scanner.getChecksum(file));
 
-					// If there's no listener, this is because this artifact has been installed before
-					// fileinstall has been restarted. In this case, try to find a listener.
+					// If there's no listener, this is because this artifact has been installed before fileinstall has been restarted. In this case,
+					// try to find a listener.
 					if (artifact.getArtifactListener() == null) {
 						ArtifactListener listener = findListener(jar, atrifactListeners);
-						// If no listener can handle this artifact, we need to defer the
-						// processing for this artifact until one is found
+						// If no listener can handle this artifact, we need to defer the processing for this artifact until one is found
 						if (listener == null) {
 							synchronized (processingFailures) {
 								processingFailures.add(file);
@@ -408,8 +407,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 						artifact.setArtifactListener(listener);
 					}
 
-					// If the listener can not handle this file anymore,
-					// uninstall the artifact and try as if is was new
+					// If the listener can not handle this file anymore, uninstall the artifact and try as if is was new
 					if (!atrifactListeners.contains(artifact.getArtifactListener()) || !artifact.getArtifactListener().canHandle(jar)) {
 						deleted.add(artifact);
 
@@ -428,12 +426,12 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 					}
 
 				} else {
-					// File has been added
-					// Find the listener
+					// File has been added.
+
+					// Find the listener.
 					ArtifactListener listener = findListener(jar, atrifactListeners);
 
-					// If no listener can handle this artifact, we need to defer the
-					// processing for this artifact until one is found
+					// If no listener can handle this artifact, we need to defer the processing for this artifact until one is found
 					if (listener == null) {
 						synchronized (processingFailures) {
 							processingFailures.add(file);
@@ -458,11 +456,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		}
 
 		// Handle deleted artifacts
-		// We do the operations in the following order:
-		// uninstall, update, install, refresh & start.
-		Collection<Bundle> installedBundles = install(created);
-		Collection<Bundle> updatedBundles = update(modified);
+
+		// We do the operations in the following order: uninstall, update, install, refresh & start.
 		Collection<Bundle> uninstalledBundles = uninstall(deleted);
+		Collection<Bundle> updatedBundles = update(modified);
+		Collection<Bundle> installedBundles = install(created);
 
 		if (!uninstalledBundles.isEmpty() || !updatedBundles.isEmpty() || !installedBundles.isEmpty()) {
 			Set<Bundle> bundlesToRefresh = new HashSet<Bundle>();

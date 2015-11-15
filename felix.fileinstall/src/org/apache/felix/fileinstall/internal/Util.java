@@ -52,8 +52,8 @@ public class Util {
 	 * @return the global log level, or {@link Logger#LOG_ERROR}.
 	 */
 	public static int getGlobalLogLevel(BundleContext context) {
-		String s = context.getProperty(DirectoryWatcher.LOG_LEVEL);
-		s = (s == null) ? System.getProperty(DirectoryWatcher.LOG_LEVEL.toUpperCase().replace('.', '_')) : s;
+		String s = context.getProperty(DirectoryProcessor.LOG_LEVEL);
+		s = (s == null) ? System.getProperty(DirectoryProcessor.LOG_LEVEL.toUpperCase().replace('.', '_')) : s;
 		s = (s == null) ? "1" : s;
 		int logLevel = Logger.LOG_ERROR;
 		try {
@@ -112,9 +112,9 @@ public class Util {
 
 		DefaultLogger(BundleContext context) {
 			this.context = context;
-			String s = context.getProperty(DirectoryWatcher.LOG_DEFAULT);
-			s = (s == null) ? System.getProperty(DirectoryWatcher.LOG_DEFAULT.toUpperCase().replace('.', '_')) : s;
-			logDefault = (s == null) ? DirectoryWatcher.LOG_STDOUT : s;
+			String s = context.getProperty(DirectoryProcessor.LOG_DEFAULT);
+			s = (s == null) ? System.getProperty(DirectoryProcessor.LOG_DEFAULT.toUpperCase().replace('.', '_')) : s;
+			logDefault = (s == null) ? DirectoryProcessor.LOG_STDOUT : s;
 		}
 
 		public boolean isValidLogger(BundleContext context) {
@@ -126,7 +126,7 @@ public class Util {
 			// the message level is less than or equal to the log
 			// level.
 			if ((logLevel > 0) && (msgLevel <= logLevel)) {
-				if (DirectoryWatcher.LOG_JUL.equals(logDefault)) {
+				if (DirectoryProcessor.LOG_JUL.equals(logDefault)) {
 					Level lvl;
 					switch (msgLevel) {
 					case 1:

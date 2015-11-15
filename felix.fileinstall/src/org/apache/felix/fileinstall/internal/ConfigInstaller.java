@@ -131,7 +131,7 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 				Configuration config = getConfigurationAdmin().getConfiguration(configurationEvent.getPid(), configurationEvent.getFactoryPid());
 				Dictionary dict = config.getProperties();
 
-				String fileName = (String) dict.get(DirectoryWatcher.FILENAME);
+				String fileName = (String) dict.get(DirectoryProcessor.FILENAME);
 				File file = fileName != null ? fromConfigKey(fileName) : null;
 
 				if (file != null && file.isFile()) {
@@ -139,7 +139,7 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 						org.apache.felix.utils.properties.Properties props = new org.apache.felix.utils.properties.Properties(file, context);
 						for (Enumeration e = dict.keys(); e.hasMoreElements();) {
 							String key = e.nextElement().toString();
-							if (!Constants.SERVICE_PID.equals(key) && !ConfigurationAdmin.SERVICE_FACTORYPID.equals(key) && !DirectoryWatcher.FILENAME.equals(key)) {
+							if (!Constants.SERVICE_PID.equals(key) && !ConfigurationAdmin.SERVICE_FACTORYPID.equals(key) && !DirectoryProcessor.FILENAME.equals(key)) {
 								String val = dict.get(key).toString();
 								props.put(key, val);
 							}
@@ -151,7 +151,7 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 						Properties props = new Properties();
 						for (Enumeration e = dict.keys(); e.hasMoreElements();) {
 							String key = e.nextElement().toString();
-							if (!Constants.SERVICE_PID.equals(key) && !ConfigurationAdmin.SERVICE_FACTORYPID.equals(key) && !DirectoryWatcher.FILENAME.equals(key)) {
+							if (!Constants.SERVICE_PID.equals(key) && !ConfigurationAdmin.SERVICE_FACTORYPID.equals(key) && !DirectoryProcessor.FILENAME.equals(key)) {
 								props.put(key, dict.get(key));
 							}
 						}
@@ -174,9 +174,9 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 	}
 
 	protected boolean shouldSaveConfig() {
-		String str = this.context.getProperty(DirectoryWatcher.ENABLE_CONFIG_SAVE);
+		String str = this.context.getProperty(DirectoryProcessor.ENABLE_CONFIG_SAVE);
 		if (str == null) {
-			str = this.context.getProperty(DirectoryWatcher.DISABLE_CONFIG_SAVE);
+			str = this.context.getProperty(DirectoryProcessor.DISABLE_CONFIG_SAVE);
 		}
 		if (str != null) {
 			return Boolean.valueOf(str);
@@ -241,13 +241,13 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 		Dictionary<String, Object> props = config.getProperties();
 		Hashtable<String, Object> old = props != null ? new Hashtable<String, Object>(new DictionaryAsMap<String, Object>(props)) : null;
 		if (old != null) {
-			old.remove(DirectoryWatcher.FILENAME);
+			old.remove(DirectoryProcessor.FILENAME);
 			old.remove(Constants.SERVICE_PID);
 			old.remove(ConfigurationAdmin.SERVICE_FACTORYPID);
 		}
 
 		if (!map.equals(old)) {
-			map.put(DirectoryWatcher.FILENAME, toConfigKey(file));
+			map.put(DirectoryProcessor.FILENAME, toConfigKey(file));
 			if (old == null) {
 				Util.log(context, Logger.LOG_INFO, "Creating configuration from " + pid[0] + (pid[1] == null ? "" : "-" + pid[1]) + ".cfg", null);
 			} else {
@@ -316,7 +316,7 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 	}
 
 	protected Configuration findExistingConfiguration(String fileName) throws Exception {
-		String filter = "(" + DirectoryWatcher.FILENAME + "=" + escapeFilterValue(fileName) + ")";
+		String filter = "(" + DirectoryProcessor.FILENAME + "=" + escapeFilterValue(fileName) + ")";
 		Configuration[] configurations = getConfigurationAdmin().listConfigurations(filter);
 		if (configurations != null && configurations.length > 0) {
 			return configurations[0];
