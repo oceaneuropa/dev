@@ -32,10 +32,10 @@ public interface ArtifactListener {
 	 *
 	 * Error occuring when checking the artifact should be catched and not be thrown.
 	 *
-	 * @param artifact
+	 * @param file
 	 *            the artifact to check
 	 * @return <code>true</code> if this listener supports the given artifact, <code>false</code> otherwise
 	 */
-	boolean canHandle(File artifact);
+	boolean canHandle(File file);
 
 }

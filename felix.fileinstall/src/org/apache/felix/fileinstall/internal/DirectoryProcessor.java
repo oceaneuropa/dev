@@ -140,16 +140,16 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	protected Scanner scanner;
 
 	// Represents files that could not be processed because of a missing artifact listener
-	protected Set<File> processingFailures = new HashSet<File>();
+	protected Set<File> processingFailureFiles = new HashSet<File>();
 
 	// Represents installed artifacts which need to be started later because they failed to start
 	protected Set<Bundle> delayedBundles = new HashSet<Bundle>();
 
 	// Represents artifacts that could not be installed
-	protected Map<File, Artifact> installationFailures = new HashMap<File, Artifact>();
+	protected Map<File, Artifact> installationFailureFiles = new HashMap<File, Artifact>();
 
-	// flag (acces to which must be synchronized) that indicates wheter there's a change in state of system,
-	// which may result in an attempt to start the watched bundles
+	// flag (acces to which must be synchronized) that indicates wheter there's a change in state of system, which may result in an attempt to start
+	// the watched bundles
 	protected AtomicBoolean stateChanged = new AtomicBoolean();
 
 	/**
@@ -346,14 +346,15 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 */
 	private void doProcess(Set<File> files) throws InterruptedException {
 		List<ArtifactListener> atrifactListeners = fileInstall.getArtifactListeners();
+
 		List<Artifact> deletedArtifacts = new ArrayList<Artifact>();
 		List<Artifact> modifiedArtifacts = new ArrayList<Artifact>();
 		List<Artifact> createdArtifacts = new ArrayList<Artifact>();
 
 		// Try to process again files that could not be processed
-		synchronized (processingFailures) {
-			files.addAll(processingFailures);
-			processingFailures.clear();
+		synchronized (processingFailureFiles) {
+			files.addAll(processingFailureFiles);
+			processingFailureFiles.clear();
 		}
 
 		for (File file : files) {
@@ -370,7 +371,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 			} else {
 				// File exists
-				File jar = file;
+				File bundleFile = file;
 				URL jaredUrl = null;
 				try {
 					jaredUrl = file.toURI().toURL();
@@ -382,8 +383,8 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				if (file.isDirectory()) {
 					prepareTempDir();
 					try {
-						jar = new File(tmpDir, file.getName() + ".jar");
-						Util.jarDir(file, jar);
+						bundleFile = new File(tmpDir, file.getName() + ".jar");
+						Util.jarDir(file, bundleFile);
 						jaredUrl = new URL(JarDirUrlHandler.PROTOCOL, null, file.getPath());
 
 					} catch (IOException e) {
@@ -400,11 +401,11 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					// If there's no listener, this is because this artifact has been installed before fileinstall has been restarted. In this case,
 					// try to find a listener.
 					if (artifact.getArtifactListener() == null) {
-						ArtifactListener artifactListener = findListener(jar, atrifactListeners);
+						ArtifactListener artifactListener = findListener(bundleFile, atrifactListeners);
 						// If no listener can handle this artifact, we need to defer the processing for this artifact until one is found
 						if (artifactListener == null) {
-							synchronized (processingFailures) {
-								processingFailures.add(file);
+							synchronized (processingFailureFiles) {
+								processingFailureFiles.add(file);
 							}
 							continue;
 						}
@@ -412,13 +413,13 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					}
 
 					// If the listener can not handle this file anymore, uninstall the artifact and try as if is was new
-					if (!atrifactListeners.contains(artifact.getArtifactListener()) || !artifact.getArtifactListener().canHandle(jar)) {
+					if (!atrifactListeners.contains(artifact.getArtifactListener()) || !artifact.getArtifactListener().canHandle(bundleFile)) {
 						deletedArtifacts.add(artifact);
 
 					} else {
 						// The listener is still ok
 						deleteTransformedFile(artifact);
-						artifact.setJaredDirectory(jar);
+						artifact.setJaredDirectory(bundleFile);
 						artifact.setJaredUrl(jaredUrl);
 
 						if (transformArtifact(artifact)) {
@@ -433,20 +434,20 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					// File has been added.
 
 					// Find the listener.
-					ArtifactListener artifactListener = findListener(jar, atrifactListeners);
+					ArtifactListener artifactListener = findListener(bundleFile, atrifactListeners);
 
 					// If no listener can handle this artifact, we need to defer the processing for this artifact until one is found
 					if (artifactListener == null) {
-						synchronized (processingFailures) {
-							processingFailures.add(file);
+						synchronized (processingFailureFiles) {
+							processingFailureFiles.add(file);
 						}
 						continue;
 					}
 
 					// Create the artifact
 					artifact = new Artifact();
-					artifact.setPath(file);
-					artifact.setJaredDirectory(jar);
+					artifact.setFile(file);
+					artifact.setJaredDirectory(bundleFile);
 					artifact.setJaredUrl(jaredUrl);
 					artifact.setArtifactListener(artifactListener);
 					artifact.setChecksum(scanner.getChecksum(file));
@@ -516,10 +517,10 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				if (artifact.getArtifactListener() == null && artifact.getBundleId() > 0) {
 					Bundle bundle = context.getBundle(artifact.getBundleId());
 					if (bundle != null && bundle.getLastModified() < stamp) {
-						File path = artifact.getPath();
-						if (artifactListener.canHandle(path)) {
-							synchronized (processingFailures) {
-								processingFailures.add(path);
+						File file = artifact.getFile();
+						if (artifactListener.canHandle(file)) {
+							synchronized (processingFailureFiles) {
+								processingFailureFiles.add(file);
 							}
 						}
 					}
@@ -548,14 +549,14 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 	/**
 	 * 
-	 * @param artifact
-	 * @param listeners
+	 * @param file
+	 * @param artifactListeners
 	 * @return
 	 */
-	protected ArtifactListener findListener(File artifact, List<ArtifactListener> listeners) {
-		for (ArtifactListener listener : listeners) {
-			if (listener.canHandle(artifact)) {
-				return listener;
+	protected ArtifactListener findListener(File file, List<ArtifactListener> artifactListeners) {
+		for (ArtifactListener artifactListener : artifactListeners) {
+			if (artifactListener.canHandle(file)) {
+				return artifactListener;
 			}
 		}
 		return null;
@@ -576,7 +577,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					return true;
 				}
 			} catch (Exception e) {
-				log(Logger.LOG_WARNING, "Unable to transform artifact: " + artifact.getPath().getAbsolutePath(), e);
+				log(Logger.LOG_WARNING, "Unable to transform artifact: " + artifact.getFile().getAbsolutePath(), e);
 			}
 			return false;
 
@@ -589,7 +590,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					return true;
 				}
 			} catch (Exception e) {
-				log(Logger.LOG_WARNING, "Unable to transform artifact: " + artifact.getPath().getAbsolutePath(), e);
+				log(Logger.LOG_WARNING, "Unable to transform artifact: " + artifact.getFile().getAbsolutePath(), e);
 			}
 			return false;
 		}
@@ -597,13 +598,13 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	}
 
 	protected void deleteTransformedFile(Artifact artifact) {
-		if (artifact.getTransformed() != null && !artifact.getTransformed().equals(artifact.getPath()) && !artifact.getTransformed().delete()) {
+		if (artifact.getTransformed() != null && !artifact.getTransformed().equals(artifact.getFile()) && !artifact.getTransformed().delete()) {
 			log(Logger.LOG_WARNING, "Unable to delete transformed artifact: " + artifact.getTransformed().getAbsolutePath(), null);
 		}
 	}
 
 	protected void deleteJaredDirectory(Artifact artifact) {
-		if (artifact.getJaredDirectory() != null && !artifact.getJaredDirectory().equals(artifact.getPath()) && !artifact.getJaredDirectory().delete()) {
+		if (artifact.getJaredDirectory() != null && !artifact.getJaredDirectory().equals(artifact.getFile()) && !artifact.getJaredDirectory().delete()) {
 			log(Logger.LOG_WARNING, "Unable to delete jared artifact: " + artifact.getJaredDirectory().getAbsolutePath(), null);
 		}
 	}
@@ -827,7 +828,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				artifact.setBundleId(bundle.getBundleId());
 				artifact.setChecksum(Util.loadChecksum(bundle, context));
 				artifact.setArtifactListener(null);
-				artifact.setPath(new File(path));
+				artifact.setFile(new File(path));
 				setArtifact(new File(path), artifact);
 				fileChecksumsMap.put(new File(path), artifact.getChecksum());
 			}
@@ -891,7 +892,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	}
 
 	/**
-	 * Install an artifact and return the bundle object. It uses {@link Artifact#getPath()} as location of the new bundle. Before installing a file,
+	 * Install an artifact and return the bundle object. It uses {@link Artifact#getFile()} as location of the new bundle. Before installing a file,
 	 * it sees if the file has been identified as a bad file in earlier run. If yes, then it compares to see if the file has changed since then. It
 	 * installs the file if the file has changed. If the file has not been identified as a bad file in earlier run, then it always installs it.
 	 *
@@ -900,40 +901,45 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 * @return Bundle object that was installed
 	 */
 	private Bundle install(Artifact artifact) {
-		File path = artifact.getPath();
+		File bundleFile = artifact.getFile();
 		Bundle bundle = null;
 
 		AtomicBoolean modified = new AtomicBoolean();
 		try {
 			// If the listener is an installer, ask for an update
 			if (artifact.getArtifactListener() instanceof ArtifactInstaller) {
-				((ArtifactInstaller) artifact.getArtifactListener()).install(path);
+				((ArtifactInstaller) artifact.getArtifactListener()).install(bundleFile);
 
 			} else if (artifact.getArtifactListener() instanceof ArtifactUrlTransformer) {
 				// if the listener is an url transformer
-				Artifact badArtifact = installationFailures.get(path);
+				Artifact badArtifact = installationFailureFiles.get(bundleFile);
 				if (badArtifact != null && badArtifact.getChecksum() == artifact.getChecksum()) {
 					return null; // Don't attempt to install it; nothing has changed.
 				}
+
 				URL transformed = artifact.getTransformedUrl();
 				String location = transformed.toString();
 				BufferedInputStream in = new BufferedInputStream(transformed.openStream());
+
 				try {
 					bundle = installOrUpdateBundle(location, in, artifact.getChecksum(), modified);
 				} finally {
 					in.close();
 				}
+
 				artifact.setBundleId(bundle.getBundleId());
 
 			} else if (artifact.getArtifactListener() instanceof ArtifactTransformer) {
 				// if the listener is an artifact transformer
-				Artifact badArtifact = installationFailures.get(path);
+				Artifact badArtifact = installationFailureFiles.get(bundleFile);
 				if (badArtifact != null && badArtifact.getChecksum() == artifact.getChecksum()) {
 					return null; // Don't attempt to install it; nothing has changed.
 				}
+
 				File transformed = artifact.getTransformed();
-				String location = path.toURI().normalize().toString();
-				BufferedInputStream in = new BufferedInputStream(new FileInputStream(transformed != null ? transformed : path));
+				String location = bundleFile.toURI().normalize().toString();
+
+				BufferedInputStream in = new BufferedInputStream(new FileInputStream(transformed != null ? transformed : bundleFile));
 				try {
 					bundle = installOrUpdateBundle(location, in, artifact.getChecksum(), modified);
 				} finally {
@@ -941,17 +947,16 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				}
 				artifact.setBundleId(bundle.getBundleId());
 			}
-			installationFailures.remove(path);
 
-			setArtifact(path, artifact);
+			installationFailureFiles.remove(bundleFile);
+
+			setArtifact(bundleFile, artifact);
 
 		} catch (Exception e) {
-			log(Logger.LOG_ERROR, "Failed to install artifact: " + path, e);
+			log(Logger.LOG_ERROR, "Failed to install artifact: " + bundleFile, e);
 
-			// Add it our bad jars list, so that we don't
-			// attempt to install it again and again until the underlying
-			// jar has been modified.
-			installationFailures.put(path, artifact);
+			// Add it our bad jars list, so that we don't attempt to install it again and again until the underlying jar has been modified.
+			installationFailureFiles.put(bundleFile, artifact);
 		}
 
 		return modified.get() ? bundle : null;
@@ -1024,29 +1029,29 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	protected Bundle uninstall(Artifact artifact) {
 		Bundle bundle = null;
 		try {
-			File path = artifact.getPath();
+			File bundleFile = artifact.getFile();
 
 			// Find a listener for this artifact if needed
 			if (artifact.getArtifactListener() == null) {
-				artifact.setArtifactListener(findListener(path, fileInstall.getArtifactListeners()));
+				artifact.setArtifactListener(findListener(bundleFile, fileInstall.getArtifactListeners()));
 			}
 
 			// Forget this artifact
-			removeArtifact(path);
+			removeArtifact(bundleFile);
 
 			// Delete transformed file
 			deleteTransformedFile(artifact);
 
 			if (artifact.getArtifactListener() instanceof ArtifactInstaller) {
 				// if the listener is an installer, uninstall the artifact
-				((ArtifactInstaller) artifact.getArtifactListener()).uninstall(path);
+				((ArtifactInstaller) artifact.getArtifactListener()).uninstall(bundleFile);
 
 			} else if (artifact.getBundleId() != 0) {
 				// else we need uninstall the bundle
 				// old can't be null because of the way we calculate deleted list.
 				bundle = context.getBundle(artifact.getBundleId());
 				if (bundle == null) {
-					log(Logger.LOG_WARNING, "Failed to uninstall bundle: " + path + " with id: " + artifact.getBundleId() + ". The bundle has already been uninstalled", null);
+					log(Logger.LOG_WARNING, "Failed to uninstall bundle: " + bundleFile + " with id: " + artifact.getBundleId() + ". The bundle has already been uninstalled", null);
 					return null;
 				}
 
@@ -1055,7 +1060,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 			}
 
 		} catch (Exception e) {
-			log(Logger.LOG_WARNING, "Failed to uninstall artifact: " + artifact.getPath(), e);
+			log(Logger.LOG_WARNING, "Failed to uninstall artifact: " + artifact.getFile(), e);
 		}
 		return bundle;
 	}
@@ -1068,18 +1073,18 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	protected Bundle update(Artifact artifact) {
 		Bundle bundle = null;
 		try {
-			File path = artifact.getPath();
+			File bundleFile = artifact.getFile();
 
 			if (artifact.getArtifactListener() instanceof ArtifactInstaller) {
 				// If the listener is an installer, ask for an update
-				((ArtifactInstaller) artifact.getArtifactListener()).update(path);
+				((ArtifactInstaller) artifact.getArtifactListener()).update(bundleFile);
 
 			} else if (artifact.getArtifactListener() instanceof ArtifactUrlTransformer) {
 				// if the listener is an url transformer
 				URL transformed = artifact.getTransformedUrl();
 				bundle = context.getBundle(artifact.getBundleId());
 				if (bundle == null) {
-					log(Logger.LOG_WARNING, "Failed to update bundle: " + path + " with ID " + artifact.getBundleId() + ". The bundle has been uninstalled", null);
+					log(Logger.LOG_WARNING, "Failed to update bundle: " + bundleFile + " with ID " + artifact.getBundleId() + ". The bundle has been uninstalled", null);
 					return null;
 				}
 
@@ -1088,7 +1093,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 				Util.storeChecksum(bundle, artifact.getChecksum(), context);
 
-				InputStream is = (transformed != null) ? transformed.openStream() : new FileInputStream(path);
+				InputStream is = (transformed != null) ? transformed.openStream() : new FileInputStream(bundleFile);
 				try {
 					updateBundle(bundle, is);
 				} finally {
@@ -1100,7 +1105,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				File transformed = artifact.getTransformed();
 				bundle = context.getBundle(artifact.getBundleId());
 				if (bundle == null) {
-					log(Logger.LOG_WARNING, "Failed to update bundle: " + path + " with ID " + artifact.getBundleId() + ". The bundle has been uninstalled", null);
+					log(Logger.LOG_WARNING, "Failed to update bundle: " + bundleFile + " with ID " + artifact.getBundleId() + ". The bundle has been uninstalled", null);
 					return null;
 				}
 				Util.log(context, Logger.LOG_INFO, "Updating bundle " + bundle.getSymbolicName() + " / " + bundle.getVersion(), null);
@@ -1109,7 +1114,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 				Util.storeChecksum(bundle, artifact.getChecksum(), context);
 
-				InputStream in = new FileInputStream(transformed != null ? transformed : path);
+				InputStream in = new FileInputStream(transformed != null ? transformed : bundleFile);
 				try {
 					bundle.update(in);
 				} finally {
@@ -1117,7 +1122,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				}
 			}
 		} catch (Throwable t) {
-			log(Logger.LOG_WARNING, "Failed to update artifact " + artifact.getPath(), t);
+			log(Logger.LOG_WARNING, "Failed to update artifact " + artifact.getFile(), t);
 		}
 		return bundle;
 	}

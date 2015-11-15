@@ -28,7 +28,7 @@ import org.apache.felix.fileinstall.ArtifactListener;
  */
 public class Artifact {
 
-	protected File path;
+	protected File file;
 	protected File jaredDirectory;
 	protected URL jaredUrl;
 	protected ArtifactListener artifactListener;
@@ -40,12 +40,12 @@ public class Artifact {
 	public Artifact() {
 	}
 
-	public File getPath() {
-		return path;
+	public File getFile() {
+		return file;
 	}
 
-	public void setPath(File path) {
-		this.path = path;
+	public void setFile(File file) {
+		this.file = file;
 	}
 
 	public File getJaredDirectory() {
