@@ -492,6 +492,47 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 
 	/**
 	 * 
+	 * @param artifactListener
+	 * @param stamp
+	 */
+	public void addArtifactListener(ArtifactListener artifactListener, long stamp) {
+		if (updateWithListeners) {
+			for (Artifact artifact : getArtifacts()) {
+				if (artifact.getListener() == null && artifact.getBundleId() > 0) {
+					Bundle bundle = context.getBundle(artifact.getBundleId());
+					if (bundle != null && bundle.getLastModified() < stamp) {
+						File path = artifact.getPath();
+						if (artifactListener.canHandle(path)) {
+							synchronized (processingFailures) {
+								processingFailures.add(path);
+							}
+						}
+					}
+				}
+			}
+		}
+		synchronized (this) {
+			this.notifyAll();
+		}
+	}
+
+	/**
+	 * 
+	 * @param artifactListener
+	 */
+	public void removeArtifactListener(ArtifactListener artifactListener) {
+		for (Artifact artifact : getArtifacts()) {
+			if (artifact.getListener() == artifactListener) {
+				artifact.setListener(null);
+			}
+		}
+		synchronized (this) {
+			this.notifyAll();
+		}
+	}
+
+	/**
+	 * 
 	 * @param artifact
 	 * @param listeners
 	 * @return
@@ -1300,47 +1341,6 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 			}
 		}
 		return result;
-	}
-
-	/**
-	 * 
-	 * @param listener
-	 * @param stamp
-	 */
-	public void addListener(ArtifactListener listener, long stamp) {
-		if (updateWithListeners) {
-			for (Artifact artifact : getArtifacts()) {
-				if (artifact.getListener() == null && artifact.getBundleId() > 0) {
-					Bundle bundle = context.getBundle(artifact.getBundleId());
-					if (bundle != null && bundle.getLastModified() < stamp) {
-						File path = artifact.getPath();
-						if (listener.canHandle(path)) {
-							synchronized (processingFailures) {
-								processingFailures.add(path);
-							}
-						}
-					}
-				}
-			}
-		}
-		synchronized (this) {
-			this.notifyAll();
-		}
-	}
-
-	/**
-	 * 
-	 * @param listener
-	 */
-	public void removeListener(ArtifactListener listener) {
-		for (Artifact artifact : getArtifacts()) {
-			if (artifact.getListener() == listener) {
-				artifact.setListener(null);
-			}
-		}
-		synchronized (this) {
-			this.notifyAll();
-		}
 	}
 
 	/**

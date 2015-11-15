@@ -50,6 +50,9 @@ import org.osgi.service.cm.ConfigurationListener;
  * ArtifactInstaller for configurations.
  * 
  * TODO: This service lifecycle should be bound to the ConfigurationAdmin service lifecycle.
+ * 
+ * @see http://felix.apache.org/documentation/subprojects/apache-felix-config-admin.html
+ * @see http://blog.osgi.org/2010/06/how-to-use-config-admin.html
  */
 public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener {
 
@@ -68,6 +71,7 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 		this.context = context;
 		this.configAdmin = configAdmin;
 		this.fileInstall = fileInstall;
+		init();
 	}
 
 	public void init() {
@@ -328,4 +332,5 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 	protected void println(String message) {
 		System.out.println(message);
 	}
+
 }

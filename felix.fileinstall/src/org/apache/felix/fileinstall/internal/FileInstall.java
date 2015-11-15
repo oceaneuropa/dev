@@ -69,7 +69,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<ArtifactListener, ArtifactListener> {
 
 	protected Map<ServiceReference<ArtifactListener>, ArtifactListener> listeners;
-	protected Map<String, DirectoryWatcher> watchers;
+	protected Map<String, DirectoryWatcher> dirWatchers;
 	protected ReadWriteLock lock;
 	protected BundleTransformer bundleTransformer;
 
@@ -82,7 +82,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 	public FileInstall() {
 		listeners = new TreeMap<ServiceReference<ArtifactListener>, ArtifactListener>();
-		watchers = new HashMap<String, DirectoryWatcher>();
+		dirWatchers = new HashMap<String, DirectoryWatcher>();
 		lock = new ReentrantReadWriteLock();
 		bundleTransformer = new BundleTransformer();
 	}
@@ -173,9 +173,9 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 			urlHandlerRegistration.unregister();
 
 			List<DirectoryWatcher> watchersToClose = new ArrayList<DirectoryWatcher>();
-			synchronized (watchers) {
-				watchersToClose.addAll(watchers.values());
-				watchers.clear();
+			synchronized (dirWatchers) {
+				watchersToClose.addAll(dirWatchers.values());
+				dirWatchers.clear();
 			}
 
 			for (DirectoryWatcher watcherToClose : watchersToClose) {
@@ -206,7 +206,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		ArtifactListener artifactListener = context.getService(serviceReference);
 		println("\tartifactListener = " + artifactListener.getClass().getName());
 
-		addListener(serviceReference, artifactListener);
+		addArtifactListener(serviceReference, artifactListener);
 		return artifactListener;
 	}
 
@@ -214,15 +214,15 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	public void modifiedService(ServiceReference<ArtifactListener> reference, ArtifactListener artifactListener) {
 		println("FileInstall.modifiedService()");
 
-		removeListener(reference, artifactListener);
-		addListener(reference, artifactListener);
+		removeArtifactListener(reference, artifactListener);
+		addArtifactListener(reference, artifactListener);
 	}
 
 	@Override
 	public void removedService(ServiceReference<ArtifactListener> serviceReference, ArtifactListener artifactListener) {
 		println("FileInstall.removedService()");
 
-		removeListener(serviceReference, (ArtifactListener) artifactListener);
+		removeArtifactListener(serviceReference, (ArtifactListener) artifactListener);
 	}
 
 	/**
@@ -240,22 +240,21 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		InterpolationHelper.performSubstitution(properties, context);
 
 		DirectoryWatcher watcher = null;
-		synchronized (watchers) {
-			watcher = watchers.get(pid);
+		synchronized (dirWatchers) {
+			watcher = dirWatchers.get(pid);
 			// do not receate watcher if properties are the same
 			if (watcher != null && watcher.getProperties().equals(properties)) {
 				return;
 			}
 		}
 		if (watcher != null) {
-			// distroy exis
 			watcher.close();
 		}
 
 		watcher = new DirectoryWatcher(this, properties, context);
 		watcher.setDaemon(true);
-		synchronized (watchers) {
-			watchers.put(pid, watcher);
+		synchronized (dirWatchers) {
+			dirWatchers.put(pid, watcher);
 		}
 		watcher.start();
 	}
@@ -269,8 +268,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("\t pid = " + pid);
 
 		DirectoryWatcher watcher = null;
-		synchronized (watchers) {
-			watcher = watchers.remove(pid);
+		synchronized (dirWatchers) {
+			watcher = dirWatchers.remove(pid);
 		}
 
 		if (watcher != null) {
@@ -287,8 +286,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("\t file = " + file.getAbsolutePath());
 
 		List<DirectoryWatcher> watchersToUpdate = new ArrayList<DirectoryWatcher>();
-		synchronized (watchers) {
-			watchersToUpdate.addAll(watchers.values());
+		synchronized (dirWatchers) {
+			watchersToUpdate.addAll(dirWatchers.values());
 		}
 
 		for (DirectoryWatcher dirWatcher : watchersToUpdate) {
@@ -299,48 +298,48 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	/**
 	 * 
 	 * @param reference
-	 * @param listener
+	 * @param artifactListener
 	 */
-	protected void addListener(ServiceReference<ArtifactListener> reference, ArtifactListener listener) {
-		println("FileInstall.addListener()");
-		println("\t listener = " + listener);
+	protected void addArtifactListener(ServiceReference<ArtifactListener> reference, ArtifactListener artifactListener) {
+		println("FileInstall.addArtifactListener()");
+		println("\t artifactListener = " + artifactListener);
 
 		synchronized (listeners) {
-			listeners.put(reference, listener);
+			listeners.put(reference, artifactListener);
 		}
 
 		long currentStamp = reference.getBundle().getLastModified();
 
 		List<DirectoryWatcher> watchersToNotify = new ArrayList<DirectoryWatcher>();
-		synchronized (watchers) {
-			watchersToNotify.addAll(watchers.values());
+		synchronized (dirWatchers) {
+			watchersToNotify.addAll(dirWatchers.values());
 		}
 
 		for (DirectoryWatcher dirWatcher : watchersToNotify) {
-			dirWatcher.addListener(listener, currentStamp);
+			dirWatcher.addArtifactListener(artifactListener, currentStamp);
 		}
 	}
 
 	/**
 	 * 
 	 * @param reference
-	 * @param listener
+	 * @param artifactListener
 	 */
-	protected void removeListener(ServiceReference<ArtifactListener> reference, ArtifactListener listener) {
+	protected void removeArtifactListener(ServiceReference<ArtifactListener> reference, ArtifactListener artifactListener) {
 		println("FileInstall.removeListener()");
-		println("\t listener = " + listener);
+		println("\t artifactListener = " + artifactListener);
 
 		synchronized (listeners) {
 			listeners.remove(reference);
 		}
 
 		List<DirectoryWatcher> watchersToNotify = new ArrayList<DirectoryWatcher>();
-		synchronized (watchers) {
-			watchersToNotify.addAll(watchers.values());
+		synchronized (dirWatchers) {
+			watchersToNotify.addAll(dirWatchers.values());
 		}
 
 		for (DirectoryWatcher dirWatcher : watchersToNotify) {
-			dirWatcher.removeListener(listener);
+			dirWatcher.removeArtifactListener(artifactListener);
 		}
 	}
 
@@ -452,7 +451,6 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 					println("\tpid = " + pid);
 
 					ConfigInstaller configInstaller = new ConfigInstaller(this.context, configAdmin, fileInstall);
-					configInstaller.init();
 
 					configInstallers.put(pid, configInstaller);
 
