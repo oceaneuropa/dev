@@ -68,21 +68,23 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<ArtifactListener, ArtifactListener> {
 
-	protected ConfigAdminSupport cmSupport;
-	protected Map<ServiceReference, ArtifactListener> listeners;
-	protected BundleTransformer bundleTransformer;
-	protected BundleContext context;
+	protected Map<ServiceReference<ArtifactListener>, ArtifactListener> listeners;
 	protected Map<String, DirectoryWatcher> watchers;
-	protected ServiceTracker listenersTracker;
 	protected ReadWriteLock lock;
+	protected BundleTransformer bundleTransformer;
+
+	protected BundleContext context;
 	protected ServiceRegistration urlHandlerRegistration;
-	protected volatile boolean stopped;
+	protected ServiceTracker listenersTracker;
+
+	protected ConfigAdminSupport cmSupport;
+	protected volatile boolean stopped; // stopped in stop()
 
 	public FileInstall() {
-		listeners = new TreeMap<ServiceReference, ArtifactListener>();
-		bundleTransformer = new BundleTransformer();
+		listeners = new TreeMap<ServiceReference<ArtifactListener>, ArtifactListener>();
 		watchers = new HashMap<String, DirectoryWatcher>();
 		lock = new ReentrantReadWriteLock();
+		bundleTransformer = new BundleTransformer();
 	}
 
 	@Override
@@ -93,14 +95,17 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		lock.writeLock().lock();
 
 		try {
+			// 1. register a osgi URLStreamHandlerService
 			Hashtable<String, Object> props = new Hashtable<String, Object>();
 			props.put("url.handler.protocol", JarDirUrlHandler.PROTOCOL);
 			urlHandlerRegistration = context.registerService(URLStreamHandlerService.class.getName(), new JarDirUrlHandler(), props);
 
+			// 2. track ArtifactListener service (adding/modified/removed)
 			String flt = "(|(" + Constants.OBJECTCLASS + "=" + ArtifactInstaller.class.getName() + ")" + "(" + Constants.OBJECTCLASS + "=" + ArtifactTransformer.class.getName() + ")" + "(" + Constants.OBJECTCLASS + "=" + ArtifactUrlTransformer.class.getName() + "))";
 			listenersTracker = new ServiceTracker(context, FrameworkUtil.createFilter(flt), this);
 			listenersTracker.open();
 
+			// 3.
 			try {
 				cmSupport = new ConfigAdminSupport(context, this);
 			} catch (NoClassDefFoundError e) {
@@ -147,6 +152,18 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		}
 	}
 
+	// Adapted for FELIX-524
+	private void set(Hashtable<String, String> props, String key) {
+		String o = context.getProperty(key);
+		if (o == null) {
+			o = System.getProperty(key.toUpperCase().replace('.', '_'));
+			if (o == null) {
+				return;
+			}
+		}
+		props.put(key, o);
+	}
+
 	@Override
 	public void stop(BundleContext context) throws Exception {
 		println("FileInstall.stop()");
@@ -186,38 +203,26 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	public ArtifactListener addingService(ServiceReference<ArtifactListener> serviceReference) {
 		println("FileInstall.addingService()");
 
-		ArtifactListener listener = (ArtifactListener) context.getService(serviceReference);
-		println("\tlistener = " + listener.getClass().getName());
+		ArtifactListener artifactListener = context.getService(serviceReference);
+		println("\tartifactListener = " + artifactListener.getClass().getName());
 
-		addListener(serviceReference, listener);
-		return listener;
+		addListener(serviceReference, artifactListener);
+		return artifactListener;
 	}
 
 	@Override
-	public void modifiedService(ServiceReference<ArtifactListener> reference, ArtifactListener service) {
+	public void modifiedService(ServiceReference<ArtifactListener> reference, ArtifactListener artifactListener) {
 		println("FileInstall.modifiedService()");
 
-		removeListener(reference, (ArtifactListener) service);
-		addListener(reference, (ArtifactListener) service);
+		removeListener(reference, artifactListener);
+		addListener(reference, artifactListener);
 	}
 
 	@Override
-	public void removedService(ServiceReference<ArtifactListener> serviceReference, ArtifactListener service) {
+	public void removedService(ServiceReference<ArtifactListener> serviceReference, ArtifactListener artifactListener) {
 		println("FileInstall.removedService()");
 
-		removeListener(serviceReference, (ArtifactListener) service);
-	}
-
-	// Adapted for FELIX-524
-	private void set(Hashtable<String, String> props, String key) {
-		String o = context.getProperty(key);
-		if (o == null) {
-			o = System.getProperty(key.toUpperCase().replace('.', '_'));
-			if (o == null) {
-				return;
-			}
-		}
-		props.put(key, o);
+		removeListener(serviceReference, (ArtifactListener) artifactListener);
 	}
 
 	/**
@@ -264,7 +269,6 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		println("\t pid = " + pid);
 
 		DirectoryWatcher watcher = null;
-
 		synchronized (watchers) {
 			watcher = watchers.remove(pid);
 		}
@@ -379,6 +383,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		public ConfigAdminSupport(BundleContext context, FileInstall fileInstall) {
 			serviceTracker = new ConfigAdminServiceTracker(context, fileInstall);
 
+			// e.g. "service.pid" = "org.apache.felix.fileinstall"
 			Hashtable<String, Object> props = new Hashtable<String, Object>();
 			props.put(Constants.SERVICE_PID, serviceTracker.getName());
 
@@ -442,12 +447,14 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 					}
 					ConfigurationAdmin configAdmin = super.addingService(serviceReference);
 
-					long id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
+					long pid = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
+					println("ConfigAdminServiceTracker.addingService()");
+					println("\tpid = " + pid);
 
 					ConfigInstaller configInstaller = new ConfigInstaller(this.context, configAdmin, fileInstall);
 					configInstaller.init();
 
-					configInstallers.put(id, configInstaller);
+					configInstallers.put(pid, configInstaller);
 
 					return configAdmin;
 				} finally {
@@ -463,15 +470,18 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 						return;
 					}
 
+					println("ConfigAdminServiceTracker.addingSremovedServiceervice()");
 					Iterator<String> pidItor = pids.iterator();
 					while (pidItor.hasNext()) {
 						String pid = pidItor.next();
+						println("\tpid = " + pid);
+
 						fileInstall.deleted(pid);
 						pidItor.remove();
 					}
 
-					long id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-					ConfigInstaller configInstaller = configInstallers.remove(id);
+					long pid = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
+					ConfigInstaller configInstaller = configInstallers.remove(pid);
 					if (configInstaller != null) {
 						configInstaller.destroy();
 					}

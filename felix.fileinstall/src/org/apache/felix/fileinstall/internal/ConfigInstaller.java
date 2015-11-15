@@ -71,32 +71,46 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 	}
 
 	public void init() {
+		println("ConfigInstaller.init()");
 		registration = this.context.registerService(new String[] { ConfigurationListener.class.getName(), ArtifactListener.class.getName(), ArtifactInstaller.class.getName() }, this, null);
 	}
 
 	public void destroy() {
+		println("ConfigInstaller.destroy()");
 		registration.unregister();
 	}
 
 	/** ArtifactListener */
 	@Override
 	public boolean canHandle(File artifact) {
+		println("ConfigInstaller.canHandle()");
+		println("\tartifact = " + artifact.getAbsolutePath());
+
 		return artifact.getName().endsWith(".cfg") || artifact.getName().endsWith(".config");
 	}
 
 	/** ArtifactInstaller */
 	@Override
 	public void install(File artifact) throws Exception {
+		println("ConfigInstaller.install()");
+		println("\tartifact = " + artifact.getAbsolutePath());
+
 		setConfig(artifact);
 	}
 
 	@Override
 	public void update(File artifact) throws Exception {
+		println("ConfigInstaller.update()");
+		println("\tartifact = " + artifact.getAbsolutePath());
+
 		setConfig(artifact);
 	}
 
 	@Override
 	public void uninstall(File artifact) throws Exception {
+		println("ConfigInstaller.uninstall()");
+		println("\tartifact = " + artifact.getAbsolutePath());
+
 		deleteConfig(artifact);
 	}
 
@@ -104,18 +118,18 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 	@Override
 	public void configurationEvent(ConfigurationEvent configurationEvent) {
 		// Check if writing back configurations has been disabled.
-		{
-			if (!shouldSaveConfig()) {
-				return;
-			}
+		if (!shouldSaveConfig()) {
+			return;
 		}
 
 		if (configurationEvent.getType() == ConfigurationEvent.CM_UPDATED) {
 			try {
 				Configuration config = getConfigurationAdmin().getConfiguration(configurationEvent.getPid(), configurationEvent.getFactoryPid());
 				Dictionary dict = config.getProperties();
+
 				String fileName = (String) dict.get(DirectoryWatcher.FILENAME);
 				File file = fileName != null ? fromConfigKey(fileName) : null;
+
 				if (file != null && file.isFile()) {
 					if (fileName.endsWith(".cfg")) {
 						org.apache.felix.utils.properties.Properties props = new org.apache.felix.utils.properties.Properties(file, context);
@@ -148,6 +162,7 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 					// update file checksum since lastModified gets updated when writing
 					fileInstall.updateChecksum(file);
 				}
+
 			} catch (Exception e) {
 				Util.log(context, Logger.LOG_INFO, "Unable to save configuration", e);
 			}
@@ -178,8 +193,8 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 	 * @throws Exception
 	 */
 	protected boolean setConfig(final File file) throws Exception {
-		final Hashtable<String, Object> map = new Hashtable<String, Object>();
-		final InputStream in = new BufferedInputStream(new FileInputStream(file));
+		Hashtable<String, Object> map = new Hashtable<String, Object>();
+		InputStream in = new BufferedInputStream(new FileInputStream(file));
 		try {
 			if (file.getName().endsWith(".cfg")) {
 				Properties p = new Properties();
@@ -281,7 +296,7 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 		}
 	}
 
-	Configuration getConfiguration(String fileName, String pid, String factoryPid) throws Exception {
+	protected Configuration getConfiguration(String fileName, String pid, String factoryPid) throws Exception {
 		Configuration oldConfiguration = findExistingConfiguration(fileName);
 		if (oldConfiguration != null) {
 			return oldConfiguration;
@@ -296,7 +311,7 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 		}
 	}
 
-	Configuration findExistingConfiguration(String fileName) throws Exception {
+	protected Configuration findExistingConfiguration(String fileName) throws Exception {
 		String filter = "(" + DirectoryWatcher.FILENAME + "=" + escapeFilterValue(fileName) + ")";
 		Configuration[] configurations = getConfigurationAdmin().listConfigurations(filter);
 		if (configurations != null && configurations.length > 0) {
@@ -306,8 +321,11 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 		}
 	}
 
-	private String escapeFilterValue(String s) {
+	protected String escapeFilterValue(String s) {
 		return s.replaceAll("[(]", "\\\\(").replaceAll("[)]", "\\\\)").replaceAll("[=]", "\\\\=").replaceAll("[\\*]", "\\\\*");
 	}
 
+	protected void println(String message) {
+		System.out.println(message);
+	}
 }
