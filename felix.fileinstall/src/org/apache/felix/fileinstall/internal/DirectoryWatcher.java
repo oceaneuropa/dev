@@ -215,10 +215,12 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		return properties;
 	}
 
+	@Override
 	public void start() {
 		if (noInitialDelay) {
 			log(Logger.LOG_DEBUG, "Starting initial scan", null);
 			initializeCurrentManagedBundles();
+
 			Set<File> files = scanner.scan(true);
 			if (files != null) {
 				try {
@@ -235,6 +237,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 * Main run loop, will traverse the directory, and then handle the delta between installed and newly found/lost bundles and configurations.
 	 *
 	 */
+	@Override
 	public void run() {
 		// We must wait for FileInstall to complete initialisation
 		// to avoid race conditions observed in FELIX-2791
@@ -334,8 +337,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 * @throws InterruptedException
 	 */
 	private void doProcess(Set<File> files) throws InterruptedException {
-		// System.out.println("DirectoryWatcher.doProcess() " + files.size());
-		List<ArtifactListener> listeners = fileInstall.getListeners();
+		List<ArtifactListener> atrifactListeners = fileInstall.getListeners();
 		List<Artifact> deleted = new ArrayList<Artifact>();
 		List<Artifact> modified = new ArrayList<Artifact>();
 		List<Artifact> created = new ArrayList<Artifact>();
@@ -390,7 +392,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 					// If there's no listener, this is because this artifact has been installed before
 					// fileinstall has been restarted. In this case, try to find a listener.
 					if (artifact.getArtifactListener() == null) {
-						ArtifactListener listener = findListener(jar, listeners);
+						ArtifactListener listener = findListener(jar, atrifactListeners);
 						// If no listener can handle this artifact, we need to defer the
 						// processing for this artifact until one is found
 						if (listener == null) {
@@ -404,7 +406,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 
 					// If the listener can not handle this file anymore,
 					// uninstall the artifact and try as if is was new
-					if (!listeners.contains(artifact.getArtifactListener()) || !artifact.getArtifactListener().canHandle(jar)) {
+					if (!atrifactListeners.contains(artifact.getArtifactListener()) || !artifact.getArtifactListener().canHandle(jar)) {
 						deleted.add(artifact);
 
 					} else {
@@ -424,7 +426,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 				} else {
 					// File has been added
 					// Find the listener
-					ArtifactListener listener = findListener(jar, listeners);
+					ArtifactListener listener = findListener(jar, atrifactListeners);
 
 					// If no listener can handle this artifact, we need to defer the
 					// processing for this artifact until one is found
@@ -485,7 +487,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 			// Try to start newly installed bundles, or bundles which we missed on a previous round
 			startBundles(delayedStart);
 
-			// set the state as unchanged to not reattempt starting failed bundles
+			// set the state as unchanged to not re-attempt starting failed bundles
 			setStateChanged(false);
 		}
 	}
@@ -767,14 +769,13 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	private void initializeCurrentManagedBundles() {
 		Bundle[] bundles = this.context.getBundles();
 		String watchedDirPath = watchedDirectory.toURI().normalize().getPath();
+
 		Map<File, Long> checksums = new HashMap<File, Long>();
 		for (Bundle bundle : bundles) {
-			// Convert to a URI because the location of a bundle
-			// is typically a URI. At least, that's the case for
-			// autostart bundles and bundles installed by fileinstall.
-			// Normalisation is needed to ensure that we don't treat (e.g.)
-			// /tmp/foo and /tmp//foo differently.
+			// Convert to a URI because the location of a bundle is typically a URI. At least, that's the case for autostart bundles and bundles
+			// installed by fileinstall. Normalisation is needed to ensure that we don't treat e.g. /tmp/foo and /tmp//foo differently.
 			String location = bundle.getLocation();
+
 			String path = null;
 			if (location != null && !location.equals(Constants.SYSTEM_BUNDLE_LOCATION)) {
 				URI uri;
@@ -784,6 +785,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 					// Let's try to interpret the location as a file path
 					uri = new File(location).toURI().normalize();
 				}
+
 				if (uri.isOpaque() && uri.getSchemeSpecificPart() != null) {
 					// blueprint:file:/tmp/foo/baa.jar -> file:/tmp/foo/baa.jar
 					// blueprint:mvn:foo.baa/baa/0.0.1 -> mvn:foo.baa/baa/0.0.1
@@ -798,18 +800,21 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 					// mvn:foo.baa/baa/0.0.1 -> mvn:foo.baa/baa/0.0.1
 					// file:/tmp/foo/baa-1.0.jar$Symbolic-Name=baa&Version=1.0 -> /tmp/foo/baa-1.0.jar
 					path = schemeSpecificPart.substring(offsetFileProtocol, endOfPath);
+
 				} else {
 					// file:/tmp/foo/baa.jar -> /tmp/foo/baa.jar
 					// mnv:foo.baa/baa/0.0.1 -> foo.baa/baa/0.0.1
 					path = uri.getPath();
 				}
 			}
+
 			if (path == null) {
 				// jar.getPath is null means we could not parse the location
 				// as a meaningful URI or file path.
 				// We can't do any meaningful processing for this bundle.
 				continue;
 			}
+
 			final int index = path.lastIndexOf('/');
 			if (index != -1 && path.startsWith(watchedDirPath)) {
 				Artifact artifact = new Artifact();
@@ -821,6 +826,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 				checksums.put(new File(path), artifact.getChecksum());
 			}
 		}
+
 		scanner.initialize(checksums);
 	}
 
