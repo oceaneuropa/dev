@@ -271,21 +271,12 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		}
 	}
 
-	/**
-	 * 
-	 * @param file
-	 */
-	public void updateChecksum(File file) {
-		println("FileInstall.updateChecksum()");
-		println("\t file = " + file.getAbsolutePath());
-
-		List<DirectoryProcessor> watchersToUpdate = new ArrayList<DirectoryProcessor>();
-		synchronized (dirProcessorsMap) {
-			watchersToUpdate.addAll(dirProcessorsMap.values());
-		}
-
-		for (DirectoryProcessor dirWatcher : watchersToUpdate) {
-			dirWatcher.scanner.updateChecksum(file);
+	protected List<ArtifactListener> getArtifactListeners() {
+		synchronized (artifactListenersMap) {
+			List<ArtifactListener> listeners = new ArrayList<ArtifactListener>(artifactListenersMap.values());
+			Collections.reverse(listeners);
+			listeners.add(bundleTransformer);
+			return listeners;
 		}
 	}
 
@@ -337,12 +328,21 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		}
 	}
 
-	protected List<ArtifactListener> getArtifactListeners() {
-		synchronized (artifactListenersMap) {
-			List<ArtifactListener> listeners = new ArrayList<ArtifactListener>(artifactListenersMap.values());
-			Collections.reverse(listeners);
-			listeners.add(bundleTransformer);
-			return listeners;
+	/**
+	 * 
+	 * @param file
+	 */
+	public void updateChecksum(File file) {
+		println("FileInstall.updateChecksum()");
+		println("\t file = " + file.getAbsolutePath());
+
+		List<DirectoryProcessor> dirProcessors = new ArrayList<DirectoryProcessor>();
+		synchronized (dirProcessorsMap) {
+			dirProcessors.addAll(dirProcessorsMap.values());
+		}
+
+		for (DirectoryProcessor dirProcessor : dirProcessors) {
+			dirProcessor.scanner.updateChecksum(file);
 		}
 	}
 
