@@ -296,13 +296,13 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 		long currentStamp = reference.getBundle().getLastModified();
 
-		List<DirectoryProcessor> watchersToNotify = new ArrayList<DirectoryProcessor>();
+		List<DirectoryProcessor> dirProcessors = new ArrayList<DirectoryProcessor>();
 		synchronized (dirProcessorsMap) {
-			watchersToNotify.addAll(dirProcessorsMap.values());
+			dirProcessors.addAll(dirProcessorsMap.values());
 		}
 
-		for (DirectoryProcessor dirWatcher : watchersToNotify) {
-			dirWatcher.addArtifactListener(artifactListener, currentStamp);
+		for (DirectoryProcessor dirProcessor : dirProcessors) {
+			dirProcessor.addArtifactListener(artifactListener, currentStamp);
 		}
 	}
 
@@ -319,13 +319,13 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 			artifactListenersMap.remove(reference);
 		}
 
-		List<DirectoryProcessor> watchersToNotify = new ArrayList<DirectoryProcessor>();
+		List<DirectoryProcessor> dirProcessors = new ArrayList<DirectoryProcessor>();
 		synchronized (dirProcessorsMap) {
-			watchersToNotify.addAll(dirProcessorsMap.values());
+			dirProcessors.addAll(dirProcessorsMap.values());
 		}
 
-		for (DirectoryProcessor dirWatcher : watchersToNotify) {
-			dirWatcher.removeArtifactListener(artifactListener);
+		for (DirectoryProcessor dirProcessor : dirProcessors) {
+			dirProcessor.removeArtifactListener(artifactListener);
 		}
 	}
 
