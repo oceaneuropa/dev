@@ -389,7 +389,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 
 					// If there's no listener, this is because this artifact has been installed before
 					// fileinstall has been restarted. In this case, try to find a listener.
-					if (artifact.getListener() == null) {
+					if (artifact.getArtifactListener() == null) {
 						ArtifactListener listener = findListener(jar, listeners);
 						// If no listener can handle this artifact, we need to defer the
 						// processing for this artifact until one is found
@@ -399,12 +399,12 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 							}
 							continue;
 						}
-						artifact.setListener(listener);
+						artifact.setArtifactListener(listener);
 					}
 
 					// If the listener can not handle this file anymore,
 					// uninstall the artifact and try as if is was new
-					if (!listeners.contains(artifact.getListener()) || !artifact.getListener().canHandle(jar)) {
+					if (!listeners.contains(artifact.getArtifactListener()) || !artifact.getArtifactListener().canHandle(jar)) {
 						deleted.add(artifact);
 
 					} else {
@@ -440,7 +440,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 					artifact.setPath(file);
 					artifact.setJaredDirectory(jar);
 					artifact.setJaredUrl(jaredUrl);
-					artifact.setListener(listener);
+					artifact.setArtifactListener(listener);
 					artifact.setChecksum(scanner.getChecksum(file));
 					if (transformArtifact(artifact)) {
 						created.add(artifact);
@@ -498,7 +498,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	public void addArtifactListener(ArtifactListener artifactListener, long stamp) {
 		if (updateWithListeners) {
 			for (Artifact artifact : getArtifacts()) {
-				if (artifact.getListener() == null && artifact.getBundleId() > 0) {
+				if (artifact.getArtifactListener() == null && artifact.getBundleId() > 0) {
 					Bundle bundle = context.getBundle(artifact.getBundleId());
 					if (bundle != null && bundle.getLastModified() < stamp) {
 						File path = artifact.getPath();
@@ -522,8 +522,8 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 */
 	public void removeArtifactListener(ArtifactListener artifactListener) {
 		for (Artifact artifact : getArtifacts()) {
-			if (artifact.getListener() == artifactListener) {
-				artifact.setListener(null);
+			if (artifact.getArtifactListener() == artifactListener) {
+				artifact.setArtifactListener(null);
 			}
 		}
 		synchronized (this) {
@@ -552,10 +552,10 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	 * @return
 	 */
 	protected boolean transformArtifact(Artifact artifact) {
-		if (artifact.getListener() instanceof ArtifactTransformer) {
+		if (artifact.getArtifactListener() instanceof ArtifactTransformer) {
 			prepareTempDir();
 			try {
-				File transformed = ((ArtifactTransformer) artifact.getListener()).transform(artifact.getJaredDirectory(), tmpDir);
+				File transformed = ((ArtifactTransformer) artifact.getArtifactListener()).transform(artifact.getJaredDirectory(), tmpDir);
 				if (transformed != null) {
 					artifact.setTransformed(transformed);
 					return true;
@@ -565,10 +565,10 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 			}
 			return false;
 
-		} else if (artifact.getListener() instanceof ArtifactUrlTransformer) {
+		} else if (artifact.getArtifactListener() instanceof ArtifactUrlTransformer) {
 			try {
 				URL url = artifact.getJaredUrl();
-				URL transformed = ((ArtifactUrlTransformer) artifact.getListener()).transform(url);
+				URL transformed = ((ArtifactUrlTransformer) artifact.getArtifactListener()).transform(url);
 				if (transformed != null) {
 					artifact.setTransformedUrl(transformed);
 					return true;
@@ -815,7 +815,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 				Artifact artifact = new Artifact();
 				artifact.setBundleId(bundle.getBundleId());
 				artifact.setChecksum(Util.loadChecksum(bundle, context));
-				artifact.setListener(null);
+				artifact.setArtifactListener(null);
 				artifact.setPath(new File(path));
 				setArtifact(new File(path), artifact);
 				checksums.put(new File(path), artifact.getChecksum());
@@ -894,10 +894,10 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		AtomicBoolean modified = new AtomicBoolean();
 		try {
 			// If the listener is an installer, ask for an update
-			if (artifact.getListener() instanceof ArtifactInstaller) {
-				((ArtifactInstaller) artifact.getListener()).install(path);
+			if (artifact.getArtifactListener() instanceof ArtifactInstaller) {
+				((ArtifactInstaller) artifact.getArtifactListener()).install(path);
 
-			} else if (artifact.getListener() instanceof ArtifactUrlTransformer) {
+			} else if (artifact.getArtifactListener() instanceof ArtifactUrlTransformer) {
 				// if the listener is an url transformer
 				Artifact badArtifact = installationFailures.get(path);
 				if (badArtifact != null && badArtifact.getChecksum() == artifact.getChecksum()) {
@@ -913,7 +913,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 				}
 				artifact.setBundleId(bundle.getBundleId());
 
-			} else if (artifact.getListener() instanceof ArtifactTransformer) {
+			} else if (artifact.getArtifactListener() instanceof ArtifactTransformer) {
 				// if the listener is an artifact transformer
 				Artifact badArtifact = installationFailures.get(path);
 				if (badArtifact != null && badArtifact.getChecksum() == artifact.getChecksum()) {
@@ -1013,8 +1013,8 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 			File path = artifact.getPath();
 
 			// Find a listener for this artifact if needed
-			if (artifact.getListener() == null) {
-				artifact.setListener(findListener(path, fileInstall.getListeners()));
+			if (artifact.getArtifactListener() == null) {
+				artifact.setArtifactListener(findListener(path, fileInstall.getListeners()));
 			}
 
 			// Forget this artifact
@@ -1023,9 +1023,9 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 			// Delete transformed file
 			deleteTransformedFile(artifact);
 
-			if (artifact.getListener() instanceof ArtifactInstaller) {
+			if (artifact.getArtifactListener() instanceof ArtifactInstaller) {
 				// if the listener is an installer, uninstall the artifact
-				((ArtifactInstaller) artifact.getListener()).uninstall(path);
+				((ArtifactInstaller) artifact.getArtifactListener()).uninstall(path);
 
 			} else if (artifact.getBundleId() != 0) {
 				// else we need uninstall the bundle
@@ -1055,11 +1055,11 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		try {
 			File path = artifact.getPath();
 
-			if (artifact.getListener() instanceof ArtifactInstaller) {
+			if (artifact.getArtifactListener() instanceof ArtifactInstaller) {
 				// If the listener is an installer, ask for an update
-				((ArtifactInstaller) artifact.getListener()).update(path);
+				((ArtifactInstaller) artifact.getArtifactListener()).update(path);
 
-			} else if (artifact.getListener() instanceof ArtifactUrlTransformer) {
+			} else if (artifact.getArtifactListener() instanceof ArtifactUrlTransformer) {
 				// if the listener is an url transformer
 				URL transformed = artifact.getTransformedUrl();
 				bundle = context.getBundle(artifact.getBundleId());
@@ -1080,7 +1080,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 					in.close();
 				}
 
-			} else if (artifact.getListener() instanceof ArtifactTransformer) {
+			} else if (artifact.getArtifactListener() instanceof ArtifactTransformer) {
 				// else we need to ask for an update on the bundle
 				File transformed = artifact.getTransformed();
 				bundle = context.getBundle(artifact.getBundleId());

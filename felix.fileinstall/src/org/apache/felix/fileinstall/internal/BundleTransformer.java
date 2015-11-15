@@ -50,6 +50,7 @@ public class BundleTransformer implements ArtifactUrlTransformer {
 			if (m != null && m.getMainAttributes().getValue(new Attributes.Name("Bundle-SymbolicName")) != null) {
 				return true;
 			}
+
 		} catch (Exception e) {
 			// Ignore
 		} finally {

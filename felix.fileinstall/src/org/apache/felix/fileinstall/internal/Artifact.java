@@ -28,14 +28,14 @@ import org.apache.felix.fileinstall.ArtifactListener;
  */
 public class Artifact {
 
-	private File path;
-	private File jaredDirectory;
-	private URL jaredUrl;
-	private ArtifactListener listener;
-	private URL transformedUrl;
-	private File transformed;
-	private long bundleId = -1;
-	private long checksum;
+	protected File path;
+	protected File jaredDirectory;
+	protected URL jaredUrl;
+	protected ArtifactListener artifactListener;
+	protected URL transformedUrl;
+	protected File transformed;
+	protected long bundleId = -1;
+	protected long checksum;
 
 	public Artifact() {
 	}
@@ -64,12 +64,12 @@ public class Artifact {
 		this.jaredUrl = jaredUrl;
 	}
 
-	public ArtifactListener getListener() {
-		return listener;
+	public ArtifactListener getArtifactListener() {
+		return artifactListener;
 	}
 
-	public void setListener(ArtifactListener listener) {
-		this.listener = listener;
+	public void setArtifactListener(ArtifactListener artifactListener) {
+		this.artifactListener = artifactListener;
 	}
 
 	public File getTransformed() {
