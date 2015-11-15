@@ -33,7 +33,7 @@ public class WatcherScanner extends Scanner {
 
 	protected BundleContext bundleContext;
 	protected PathMatcher fileMatcher;
-	protected Watcher watcher;
+	protected WatcherService watcher;
 	protected Set<File> changed = new HashSet<File>();
 
 	/**
@@ -55,7 +55,50 @@ public class WatcherScanner extends Scanner {
 			this.fileMatcher = null;
 		}
 
-		this.watcher = new MyWatcher();
+		this.watcher = new WatcherService() {
+			@Override
+			protected void process(Path path) {
+				File file = path.toFile();
+				while (!file.getParentFile().equals(directory)) {
+					file = file.getParentFile();
+					if (file == null) {
+						return;
+					}
+				}
+				synchronized (changed) {
+					changed.add(file);
+				}
+			}
+
+			@Override
+			protected void onRemove(Path path) {
+				File file = path.toFile();
+				while (!file.getParentFile().equals(directory)) {
+					file = file.getParentFile();
+					if (file == null) {
+						return;
+					}
+				}
+				synchronized (changed) {
+					changed.add(file);
+				}
+			}
+
+			@Override
+			protected void debug(String message, Object... args) {
+				log(Util.Logger.LOG_DEBUG, message, args);
+			}
+
+			@Override
+			protected void warn(String message, Object... args) {
+				log(Util.Logger.LOG_WARNING, message, args);
+			}
+
+			protected void log(int level, String message, Object... args) {
+				String msg = String.format(message, args);
+				Util.log(bundleContext, level, msg, null);
+			}
+		};
 		this.watcher.setFileMatcher(fileMatcher);
 		this.watcher.setRootDirectory(this.directory);
 		this.watcher.init();
@@ -100,16 +143,18 @@ public class WatcherScanner extends Scanner {
 						}
 					}
 				} else {
+					// File has been deleted.
 					if (!reportImmediately) {
 						removedFiles.add(file);
 					}
 				}
 			}
 
+			// Make sure we'll handle a file that has been deleted
+			files.addAll(removedFiles);
+
+			// Remove no longer used checksums
 			for (File removedFile : removedFiles) {
-				// Make sure we'll handle a file that has been deleted
-				files.addAll(removedFiles);
-				// Remove no longer used checksums
 				lastFileChecksumsMap.remove(removedFile);
 				storedFileChecksumsMap.remove(removedFile);
 			}
@@ -120,52 +165,6 @@ public class WatcherScanner extends Scanner {
 
 	public void close() throws IOException {
 		watcher.close();
-	}
-
-	public class MyWatcher extends Watcher {
-
-		@Override
-		protected void process(Path path) {
-			File file = path.toFile();
-			while (!file.getParentFile().equals(directory)) {
-				file = file.getParentFile();
-				if (file == null) {
-					return;
-				}
-			}
-			synchronized (changed) {
-				changed.add(file);
-			}
-		}
-
-		@Override
-		protected void onRemove(Path path) {
-			File file = path.toFile();
-			while (!file.getParentFile().equals(directory)) {
-				file = file.getParentFile();
-				if (file == null) {
-					return;
-				}
-			}
-			synchronized (changed) {
-				changed.add(file);
-			}
-		}
-
-		@Override
-		protected void debug(String message, Object... args) {
-			log(Util.Logger.LOG_DEBUG, message, args);
-		}
-
-		@Override
-		protected void warn(String message, Object... args) {
-			log(Util.Logger.LOG_WARNING, message, args);
-		}
-
-		protected void log(int level, String message, Object... args) {
-			String msg = String.format(message, args);
-			Util.log(bundleContext, level, msg, null);
-		}
 	}
 
 }

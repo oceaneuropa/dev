@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A File watching service
  */
-public abstract class Watcher {
+public abstract class WatcherService {
 
 	protected Path root;
 	protected boolean watch = true;
@@ -148,7 +148,6 @@ public abstract class Watcher {
 
 	// Implementation methods
 	// -------------------------------------------------------------------------
-
 	public void rescan() throws IOException {
 		for (WatchKey key : keyToPathMap.keySet()) {
 			key.cancel();

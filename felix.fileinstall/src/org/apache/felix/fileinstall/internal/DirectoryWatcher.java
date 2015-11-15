@@ -127,7 +127,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 	protected boolean updateWithListeners;
 	protected String fragmentScope;
 	protected String optionalScope;
-	protected boolean disableNio2;
+	protected boolean disableNIO2;
 
 	// Map of all installed artifacts
 	protected Map<File, Artifact> currentManagedArtifacts = new HashMap<File, Artifact>();
@@ -171,6 +171,7 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		tmpDir = getFile(properties, TMPDIR, null);
 		prepareTempDir();
 
+		// read properties
 		startBundles = getBoolean(properties, START_NEW_BUNDLES, true); // by default, we start bundles.
 		useStartTransient = getBoolean(properties, USE_START_TRANSIENT, false); // by default, we start bundles persistently.
 		useStartActivationPolicy = getBoolean(properties, USE_START_ACTIVATION_POLICY, true); // by default, we start bundles using activation policy.
@@ -181,17 +182,19 @@ public class DirectoryWatcher extends Thread implements BundleListener {
 		updateWithListeners = getBoolean(properties, UPDATE_WITH_LISTENERS, false); // Do not update bundles when listeners are updated
 		fragmentScope = properties.get(FRAGMENT_SCOPE);
 		optionalScope = properties.get(OPTIONAL_SCOPE);
-		disableNio2 = getBoolean(properties, DISABLE_NIO2, false);
+		disableNIO2 = getBoolean(properties, DISABLE_NIO2, false);
+
 		this.context.addBundleListener(this);
 
-		if (disableNio2) {
-			scanner = new Scanner(watchedDirectory, filter);
-		} else {
+		if (!disableNIO2) {
 			try {
 				scanner = new WatcherScanner(context, watchedDirectory, filter);
 			} catch (Throwable t) {
-				scanner = new Scanner(watchedDirectory, filter);
+				t.printStackTrace();
 			}
+		}
+		if (scanner == null) {
+			scanner = new Scanner(watchedDirectory, filter);
 		}
 	}
 
