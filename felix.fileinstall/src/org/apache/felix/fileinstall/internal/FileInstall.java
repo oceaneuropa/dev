@@ -99,14 +99,14 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 			listenersTracker = new ServiceTracker(context, FrameworkUtil.createFilter(flt), this);
 			listenersTracker.open();
 
-			// 3.
+			// 3. when ConfigurationAdmin service is available, register ConfigInstaller (ArtifactInstaller) as a service.
 			try {
 				cmSupport = new ConfigAdminSupport(context, this);
 			} catch (NoClassDefFoundError e) {
 				Util.log(context, Logger.LOG_DEBUG, "ConfigAdmin is not available, some features will be disabled", e);
 			}
 
-			// Created the initial configuration
+			// 4. Created the initial configuration and use it to initialize DirectoryProcessor
 			Hashtable<String, String> initProps = new Hashtable<String, String>();
 			set(initProps, DirectoryProcessor.POLL);
 			set(initProps, DirectoryProcessor.DIR);
@@ -139,6 +139,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 			} else {
 				updated("initial", initProps);
 			}
+
 		} finally {
 			// now notify all the directory watchers to proceed
 			// We need this to avoid race conditions observed in FELIX-2791
@@ -166,15 +167,15 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		try {
 			urlHandlerRegistration.unregister();
 
-			List<DirectoryProcessor> watchersToClose = new ArrayList<DirectoryProcessor>();
+			List<DirectoryProcessor> dirProcessors = new ArrayList<DirectoryProcessor>();
 			synchronized (dirProcessorsMap) {
-				watchersToClose.addAll(dirProcessorsMap.values());
+				dirProcessors.addAll(dirProcessorsMap.values());
 				dirProcessorsMap.clear();
 			}
 
-			for (DirectoryProcessor watcherToClose : watchersToClose) {
+			for (DirectoryProcessor dirProcessor : dirProcessors) {
 				try {
-					watcherToClose.close();
+					dirProcessor.close();
 				} catch (Exception e) {
 					// Ignore
 				}
@@ -374,7 +375,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		public class ConfigAdminServiceTracker extends ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> implements ManagedServiceFactory {
 			protected FileInstall fileInstall;
 			protected Set<String> pids = Collections.synchronizedSet(new HashSet<String>());
-			protected Map<Long, ConfigInstaller> configInstallers = new HashMap<Long, ConfigInstaller>();
+			protected Map<Long, ConfigInstaller> configInstallerMap = new HashMap<Long, ConfigInstaller>();
 
 			/**
 			 * 
@@ -427,8 +428,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 					println("\tpid = " + pid);
 
 					ConfigInstaller configInstaller = new ConfigInstaller(this.context, configAdmin, fileInstall);
-
-					configInstallers.put(pid, configInstaller);
+					configInstallerMap.put(pid, configInstaller);
 
 					return configAdmin;
 				} finally {
@@ -444,7 +444,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 						return;
 					}
 
-					println("ConfigAdminServiceTracker.addingSremovedServiceervice()");
+					println("ConfigAdminServiceTracker.removedService()");
 					Iterator<String> pidItor = pids.iterator();
 					while (pidItor.hasNext()) {
 						String pid = pidItor.next();
@@ -455,7 +455,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 					}
 
 					long pid = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-					ConfigInstaller configInstaller = configInstallers.remove(pid);
+					ConfigInstaller configInstaller = configInstallerMap.remove(pid);
 					if (configInstaller != null) {
 						configInstaller.destroy();
 					}

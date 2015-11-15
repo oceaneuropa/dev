@@ -393,22 +393,22 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					}
 				}
 
-				// File has been modified
 				if (artifact != null) {
+					// File has been modified
 					artifact.setChecksum(scanner.getChecksum(file));
 
 					// If there's no listener, this is because this artifact has been installed before fileinstall has been restarted. In this case,
 					// try to find a listener.
 					if (artifact.getArtifactListener() == null) {
-						ArtifactListener listener = findListener(jar, atrifactListeners);
+						ArtifactListener artifactListener = findListener(jar, atrifactListeners);
 						// If no listener can handle this artifact, we need to defer the processing for this artifact until one is found
-						if (listener == null) {
+						if (artifactListener == null) {
 							synchronized (processingFailures) {
 								processingFailures.add(file);
 							}
 							continue;
 						}
-						artifact.setArtifactListener(listener);
+						artifact.setArtifactListener(artifactListener);
 					}
 
 					// If the listener can not handle this file anymore, uninstall the artifact and try as if is was new
@@ -433,10 +433,10 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					// File has been added.
 
 					// Find the listener.
-					ArtifactListener listener = findListener(jar, atrifactListeners);
+					ArtifactListener artifactListener = findListener(jar, atrifactListeners);
 
 					// If no listener can handle this artifact, we need to defer the processing for this artifact until one is found
-					if (listener == null) {
+					if (artifactListener == null) {
 						synchronized (processingFailures) {
 							processingFailures.add(file);
 						}
@@ -448,8 +448,9 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 					artifact.setPath(file);
 					artifact.setJaredDirectory(jar);
 					artifact.setJaredUrl(jaredUrl);
-					artifact.setArtifactListener(listener);
+					artifact.setArtifactListener(artifactListener);
 					artifact.setChecksum(scanner.getChecksum(file));
+
 					if (transformArtifact(artifact)) {
 						created.add(artifact);
 					} else {
@@ -461,7 +462,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 		// Handle deleted artifacts
 
-		// We do the operations in the following order: uninstall, update, install, refresh & start.
+		// do the operations in the following order: uninstall, update, install, refresh & start.
 		Collection<Bundle> uninstalledBundles = uninstall(deleted);
 		Collection<Bundle> updatedBundles = update(modified);
 		Collection<Bundle> installedBundles = install(created);
