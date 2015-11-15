@@ -119,7 +119,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	protected File tmpDir;
 	protected long poll;
 	protected int logLevel;
-	protected boolean startBundles;
+	protected boolean startNewBundles;
 	protected boolean useStartTransient;
 	protected boolean useStartActivationPolicy;
 	protected String filter;
@@ -143,7 +143,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	protected Set<File> processingFailures = new HashSet<File>();
 
 	// Represents installed artifacts which need to be started later because they failed to start
-	protected Set<Bundle> delayedStart = new HashSet<Bundle>();
+	protected Set<Bundle> delayedBundles = new HashSet<Bundle>();
 
 	// Represents artifacts that could not be installed
 	protected Map<File, Artifact> installationFailures = new HashMap<File, Artifact>();
@@ -176,7 +176,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 		tmpDir = getFile(properties, TMPDIR, null);
 		prepareTempDir();
 
-		startBundles = getBoolean(properties, START_NEW_BUNDLES, true); // by default, we start bundles.
+		startNewBundles = getBoolean(properties, START_NEW_BUNDLES, true); // by default, we start bundles.
 		useStartTransient = getBoolean(properties, USE_START_TRANSIENT, false); // by default, we start bundles persistently.
 		useStartActivationPolicy = getBoolean(properties, USE_START_ACTIVATION_POLICY, true); // by default, we start bundles using activation policy.
 		filter = properties.get(FILTER);
@@ -255,7 +255,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 		}
 
 		try {
-			log(Logger.LOG_DEBUG, "{" + POLL + " (ms) = " + poll + ", " + DIR + " = " + watchedDirectory.getAbsolutePath() + ", " + LOG_LEVEL + " = " + logLevel + ", " + START_NEW_BUNDLES + " = " + startBundles + ", " + TMPDIR + " = " + tmpDir + ", " + FILTER + " = " + filter + ", " + START_LEVEL + " = " + startLevel + "}", null);
+			log(Logger.LOG_DEBUG, "{" + POLL + " (ms) = " + poll + ", " + DIR + " = " + watchedDirectory.getAbsolutePath() + ", " + LOG_LEVEL + " = " + logLevel + ", " + START_NEW_BUNDLES + " = " + startNewBundles + ", " + TMPDIR + " = " + tmpDir + ", " + FILTER + " = " + filter + ", " + START_LEVEL + " = " + startLevel + "}", null);
 
 			if (!noInitialDelay) {
 				try {
@@ -485,15 +485,20 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 			}
 		}
 
-		if (startBundles && isStateChanged()) {
+		if (startNewBundles && isStateChanged()) {
 			// Try to start all the bundles that are not persistently stopped
 			startAllBundles();
 
-			delayedStart.addAll(installedBundles);
-			delayedStart.removeAll(uninstalledBundles);
+			delayedBundles.addAll(installedBundles);
+			delayedBundles.removeAll(uninstalledBundles);
 
-			// Try to start newly installed bundles, or bundles which we missed on a previous round
-			startBundles(delayedStart);
+			// Try to start newly installed bundles, or bundles which we missed on a previous round.
+			// Starts a bundle and removes it from the Collection when successfully started.
+			for (Iterator<Bundle> bundleItor = delayedBundles.iterator(); bundleItor.hasNext();) {
+				if (startBundle(bundleItor.next())) {
+					bundleItor.remove();
+				}
+			}
 
 			// set the state as unchanged to not re-attempt starting failed bundles
 			setStateChanged(false);
@@ -1134,16 +1139,11 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				}
 			}
 		}
-		startBundles(bundles);
-	}
 
-	/**
-	 * Starts a bundle and removes it from the Collection when successfully started.
-	 */
-	protected void startBundles(Collection<Bundle> bundles) {
-		for (Iterator<Bundle> b = bundles.iterator(); b.hasNext();) {
-			if (startBundle(b.next())) {
-				b.remove();
+		// Starts a bundle and removes it from the Collection when successfully started.
+		for (Iterator<Bundle> bundleItor = bundles.iterator(); bundleItor.hasNext();) {
+			if (startBundle(bundleItor.next())) {
+				bundleItor.remove();
 			}
 		}
 	}
@@ -1161,7 +1161,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 		// Bundles can only be started transient when the start level of the framework is high enough. Persistent (i.e. non-transient) starts will
 		// simply make the framework start the bundle when the start level is high enough.
-		if (startBundles && bundle.getState() != Bundle.UNINSTALLED && !isFragment(bundle) && startLevelSvc.getStartLevel() >= bundle.adapt(BundleStartLevel.class).getStartLevel()) {
+		if (startNewBundles && bundle.getState() != Bundle.UNINSTALLED && !isFragment(bundle) && startLevelSvc.getStartLevel() >= bundle.adapt(BundleStartLevel.class).getStartLevel()) {
 			try {
 				int options = useStartTransient ? Bundle.START_TRANSIENT : 0;
 				options |= useStartActivationPolicy ? Bundle.START_ACTIVATION_POLICY : 0;
@@ -1187,7 +1187,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	protected void stopBundle(Bundle bundle) throws BundleException {
 		// Stop the bundle transiently so that it will be restarted when startAllBundles() is called but this avoids the need to restart the bundle
 		// twice (once for the update and another one when refreshing packages).
-		if (startBundles) {
+		if (startNewBundles) {
 			if (!isFragment(bundle)) {
 				bundle.stop(Bundle.STOP_TRANSIENT);
 			}
