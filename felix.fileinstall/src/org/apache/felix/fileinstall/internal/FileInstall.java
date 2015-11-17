@@ -21,16 +21,10 @@ package org.apache.felix.fileinstall.internal;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -40,7 +34,6 @@ import org.apache.felix.fileinstall.ArtifactInstaller;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
-import org.apache.felix.fileinstall.internal.Util.Logger;
 import org.apache.felix.utils.properties.InterpolationHelper;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -48,9 +41,6 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.cm.ConfigurationAdmin;
-import org.osgi.service.cm.ConfigurationException;
-import org.osgi.service.cm.ManagedServiceFactory;
 import org.osgi.service.url.URLStreamHandlerService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
@@ -60,7 +50,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * fragment).
  *
  */
-public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<ArtifactListener, ArtifactListener> {
+public class FileInstall implements BundleActivator {
 
 	protected Map<ServiceReference<ArtifactListener>, ArtifactListener> artifactListenersMap;
 	protected Map<String, DirectoryProcessor> dirProcessorsMap;
@@ -68,10 +58,10 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	protected BundleTransformer bundleTransformer;
 
 	protected BundleContext context;
-	protected ServiceRegistration urlHandlerRegistration;
-	protected ServiceTracker listenersTracker;
+	protected ServiceRegistration<?> urlHandlerRegistration;
+	protected ServiceTracker<ArtifactListener, ArtifactListener> listenersTracker;
 
-	protected ConfigAdminSupport cmSupport;
+	protected ConfigAdminSupport configAdminSupport;
 	protected volatile boolean stopped; // stopped in stop()
 
 	public FileInstall() {
@@ -83,7 +73,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		println("FileInstall.start()");
+		Printer.pl("FileInstall.start()");
 
 		this.context = context;
 		lock.writeLock().lock();
@@ -96,15 +86,38 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 			// 2. track ArtifactListener service (adding/modified/removed)
 			String flt = "(|(" + Constants.OBJECTCLASS + "=" + ArtifactInstaller.class.getName() + ")" + "(" + Constants.OBJECTCLASS + "=" + ArtifactTransformer.class.getName() + ")" + "(" + Constants.OBJECTCLASS + "=" + ArtifactUrlTransformer.class.getName() + "))";
-			listenersTracker = new ServiceTracker(context, FrameworkUtil.createFilter(flt), this);
+			listenersTracker = new ServiceTracker<ArtifactListener, ArtifactListener>(context, FrameworkUtil.createFilter(flt), new ServiceTrackerCustomizer<ArtifactListener, ArtifactListener>() {
+				@Override
+				public ArtifactListener addingService(ServiceReference<ArtifactListener> serviceReference) {
+					Printer.pl("FileInstall.addingService()");
+
+					ArtifactListener artifactListener = context.getService(serviceReference);
+					Printer.pl("\tartifactListener = " + artifactListener.getClass().getName());
+
+					addArtifactListener(serviceReference, artifactListener);
+					return artifactListener;
+				}
+
+				@Override
+				public void modifiedService(ServiceReference<ArtifactListener> reference, ArtifactListener artifactListener) {
+					Printer.pl("FileInstall.modifiedService()");
+
+					removeArtifactListener(reference, artifactListener);
+					addArtifactListener(reference, artifactListener);
+				}
+
+				@Override
+				public void removedService(ServiceReference<ArtifactListener> serviceReference, ArtifactListener artifactListener) {
+					Printer.pl("FileInstall.removedService()");
+
+					removeArtifactListener(serviceReference, (ArtifactListener) artifactListener);
+				}
+			});
 			listenersTracker.open();
 
-			// 3. when ConfigurationAdmin service is available, register ConfigInstaller (ArtifactInstaller) as a service.
-			try {
-				cmSupport = new ConfigAdminSupport(context, this);
-			} catch (NoClassDefFoundError e) {
-				Util.log(context, Logger.LOG_DEBUG, "ConfigAdmin is not available, some features will be disabled", e);
-			}
+			// 3. when ConfigurationAdmin service is available, register ConfigInstaller as ArtifactInstaller.
+			configAdminSupport = new ConfigAdminSupport(context, this);
+			configAdminSupport.start();
 
 			// 4. Created the initial configuration and use it to initialize DirectoryProcessor
 			Hashtable<String, String> initProps = new Hashtable<String, String>();
@@ -128,7 +141,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 					final String dir = st.nextToken().trim();
 					initProps.put(DirectoryProcessor.DIR, dir);
 
-					String name = "initial";
+					String name = "runspace";
 					if (index > 0) {
 						name = name + index;
 					}
@@ -137,7 +150,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 					index++;
 				}
 			} else {
-				updated("initial", initProps);
+				updated("runspace", initProps);
 			}
 
 		} finally {
@@ -148,7 +161,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	}
 
 	// Adapted for FELIX-524
-	private void set(Hashtable<String, String> props, String key) {
+	protected void set(Hashtable<String, String> props, String key) {
 		String o = context.getProperty(key);
 		if (o == null) {
 			o = System.getProperty(key.toUpperCase().replace('.', '_'));
@@ -161,7 +174,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		println("FileInstall.stop()");
+		Printer.pl("FileInstall.stop()");
 
 		lock.writeLock().lock();
 		try {
@@ -185,39 +198,13 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 				listenersTracker.close();
 			}
 
-			if (cmSupport != null) {
-				cmSupport.close();
+			if (configAdminSupport != null) {
+				configAdminSupport.stop();
 			}
 		} finally {
 			stopped = true;
 			lock.writeLock().unlock();
 		}
-	}
-
-	@Override
-	public ArtifactListener addingService(ServiceReference<ArtifactListener> serviceReference) {
-		println("FileInstall.addingService()");
-
-		ArtifactListener artifactListener = context.getService(serviceReference);
-		println("\tartifactListener = " + artifactListener.getClass().getName());
-
-		addArtifactListener(serviceReference, artifactListener);
-		return artifactListener;
-	}
-
-	@Override
-	public void modifiedService(ServiceReference<ArtifactListener> reference, ArtifactListener artifactListener) {
-		println("FileInstall.modifiedService()");
-
-		removeArtifactListener(reference, artifactListener);
-		addArtifactListener(reference, artifactListener);
-	}
-
-	@Override
-	public void removedService(ServiceReference<ArtifactListener> serviceReference, ArtifactListener artifactListener) {
-		println("FileInstall.removedService()");
-
-		removeArtifactListener(serviceReference, (ArtifactListener) artifactListener);
 	}
 
 	/**
@@ -227,17 +214,30 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	 * @param properties
 	 */
 	public void updated(String pid, Map<String, String> properties) {
-		println("FileInstall.updated()");
-		println("\t pid = " + pid);
-		println("\t propertis = ");
-		println(properties);
+		Printer.pl("FileInstall.updated()");
+		Printer.pl("\t pid = " + pid);
+		Printer.pl("\t propertis = ");
+		Printer.pl(properties);
 
 		InterpolationHelper.performSubstitution(properties, context);
 
 		DirectoryProcessor dirProcessor = null;
 		synchronized (dirProcessorsMap) {
 			dirProcessor = dirProcessorsMap.get(pid);
-			// do not receate watcher if properties are the same
+
+			// If cannot locate dirProcessor with pid (e.g. org.apache.felix.fileinstall.<uuid>), find dirProcessor with same DIR property.
+			if (dirProcessor == null && properties != null) {
+				String fileinstallDir = properties.get(DirectoryProcessor.DIR);
+				for (DirectoryProcessor currDirProcessor : dirProcessorsMap.values()) {
+					String currFileinstallDir = currDirProcessor.getProperties().get(DirectoryProcessor.DIR);
+					if (fileinstallDir != null && fileinstallDir.equals(currFileinstallDir)) {
+						dirProcessor = currDirProcessor;
+						break;
+					}
+				}
+			}
+
+			// do not re-create watcher if properties are the same
 			if (dirProcessor != null && dirProcessor.getProperties().equals(properties)) {
 				return;
 			}
@@ -246,7 +246,7 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 			dirProcessor.close();
 		}
 
-		dirProcessor = new DirectoryProcessor(this, properties, context);
+		dirProcessor = new DirectoryProcessor(context, this, properties);
 		dirProcessor.setDaemon(true);
 		synchronized (dirProcessorsMap) {
 			dirProcessorsMap.put(pid, dirProcessor);
@@ -259,8 +259,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	 * @param pid
 	 */
 	public void deleted(String pid) {
-		println("FileInstall.deleted()");
-		println("\t pid = " + pid);
+		Printer.pl("FileInstall.deleted()");
+		Printer.pl("\t pid = " + pid);
 
 		DirectoryProcessor watcher = null;
 		synchronized (dirProcessorsMap) {
@@ -287,8 +287,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	 * @param artifactListener
 	 */
 	protected void addArtifactListener(ServiceReference<ArtifactListener> reference, ArtifactListener artifactListener) {
-		println("FileInstall.addArtifactListener()");
-		println("\t artifactListener = " + artifactListener);
+		Printer.pl("FileInstall.addArtifactListener()");
+		Printer.pl("\t artifactListener = " + artifactListener);
 
 		synchronized (artifactListenersMap) {
 			artifactListenersMap.put(reference, artifactListener);
@@ -312,8 +312,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	 * @param artifactListener
 	 */
 	protected void removeArtifactListener(ServiceReference<ArtifactListener> reference, ArtifactListener artifactListener) {
-		println("FileInstall.removeListener()");
-		println("\t artifactListener = " + artifactListener);
+		Printer.pl("FileInstall.removeListener()");
+		Printer.pl("\t artifactListener = " + artifactListener);
 
 		synchronized (artifactListenersMap) {
 			artifactListenersMap.remove(reference);
@@ -334,8 +334,8 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 	 * @param file
 	 */
 	public void updateChecksum(File file) {
-		println("FileInstall.updateChecksum()");
-		println("\t file = " + file.getAbsolutePath());
+		Printer.pl("FileInstall.updateChecksum()");
+		Printer.pl("\t file = " + file.getAbsolutePath());
 
 		List<DirectoryProcessor> dirProcessors = new ArrayList<DirectoryProcessor>();
 		synchronized (dirProcessorsMap) {
@@ -345,140 +345,6 @@ public class FileInstall implements BundleActivator, ServiceTrackerCustomizer<Ar
 		for (DirectoryProcessor dirProcessor : dirProcessors) {
 			dirProcessor.scanner.updateChecksum(file);
 		}
-	}
-
-	public class ConfigAdminSupport {
-		protected ConfigAdminServiceTracker serviceTracker;
-		protected ServiceRegistration registration;
-
-		/**
-		 * 
-		 * @param context
-		 * @param fileInstall
-		 */
-		public ConfigAdminSupport(BundleContext context, FileInstall fileInstall) {
-			serviceTracker = new ConfigAdminServiceTracker(context, fileInstall);
-
-			// e.g. "service.pid" = "org.apache.felix.fileinstall"
-			Hashtable<String, Object> props = new Hashtable<String, Object>();
-			props.put(Constants.SERVICE_PID, serviceTracker.getName());
-
-			registration = context.registerService(ManagedServiceFactory.class.getName(), serviceTracker, props);
-			serviceTracker.open();
-		}
-
-		public void close() {
-			serviceTracker.close();
-			registration.unregister();
-		}
-
-		public class ConfigAdminServiceTracker extends ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> implements ManagedServiceFactory {
-			protected FileInstall fileInstall;
-			protected Set<String> pids = Collections.synchronizedSet(new HashSet<String>());
-			protected Map<Long, ConfigInstaller> configInstallerMap = new HashMap<Long, ConfigInstaller>();
-
-			/**
-			 * 
-			 * @param bundleContext
-			 * @param fileInstall
-			 */
-			public ConfigAdminServiceTracker(BundleContext bundleContext, FileInstall fileInstall) {
-				super(bundleContext, ConfigurationAdmin.class.getName(), null);
-				this.fileInstall = fileInstall;
-			}
-
-			/** ManagedServiceFactory */
-			@Override
-			public String getName() {
-				return "org.apache.felix.fileinstall";
-			}
-
-			@Override
-			public void updated(String pid, Dictionary<String, ?> dictionary) throws ConfigurationException {
-				pids.add(pid);
-
-				Map<String, String> props = new HashMap<String, String>();
-				for (Enumeration<String> propEnum = dictionary.keys(); propEnum.hasMoreElements();) {
-					String key = propEnum.nextElement();
-					props.put(key, dictionary.get(key).toString());
-				}
-
-				fileInstall.updated(pid, props);
-			}
-
-			@Override
-			public void deleted(String pid) {
-				pids.remove(pid);
-
-				fileInstall.deleted(pid);
-			}
-
-			/** ConfigurationAdmin */
-			@Override
-			public ConfigurationAdmin addingService(ServiceReference<ConfigurationAdmin> serviceReference) {
-				lock.writeLock().lock();
-				try {
-					if (stopped) {
-						return null;
-					}
-					ConfigurationAdmin configAdmin = super.addingService(serviceReference);
-
-					long pid = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-					println("ConfigAdminServiceTracker.addingService()");
-					println("\tpid = " + pid);
-
-					ConfigInstaller configInstaller = new ConfigInstaller(this.context, configAdmin, fileInstall);
-					configInstallerMap.put(pid, configInstaller);
-
-					return configAdmin;
-				} finally {
-					lock.writeLock().unlock();
-				}
-			}
-
-			@Override
-			public void removedService(ServiceReference<ConfigurationAdmin> serviceReference, ConfigurationAdmin configAdmin) {
-				lock.writeLock().lock();
-				try {
-					if (stopped) {
-						return;
-					}
-
-					println("ConfigAdminServiceTracker.removedService()");
-					Iterator<String> pidItor = pids.iterator();
-					while (pidItor.hasNext()) {
-						String pid = pidItor.next();
-						println("\tpid = " + pid);
-
-						fileInstall.deleted(pid);
-						pidItor.remove();
-					}
-
-					long pid = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-					ConfigInstaller configInstaller = configInstallerMap.remove(pid);
-					if (configInstaller != null) {
-						configInstaller.destroy();
-					}
-
-					super.removedService(serviceReference, configAdmin);
-
-				} finally {
-					lock.writeLock().unlock();
-				}
-			}
-		}
-	}
-
-	protected void println(String message) {
-		System.out.println(message);
-	}
-
-	protected void println(Map<String, String> properties) {
-		System.out.println("------------------------------------------------------------------------");
-		for (Entry<String, String> entry : properties.entrySet()) {
-			System.out.println(entry.getKey() + " = " + entry.getValue());
-		}
-		System.out.println("------------------------------------------------------------------------");
 	}
 
 }

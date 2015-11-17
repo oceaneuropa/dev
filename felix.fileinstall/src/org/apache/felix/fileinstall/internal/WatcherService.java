@@ -58,6 +58,9 @@ public abstract class WatcherService {
 	protected Map<Path, Boolean> pathProcessedMap = new ConcurrentHashMap<Path, Boolean>();
 	protected volatile long lastModified;
 
+	public WatcherService() {
+	}
+
 	public void init() throws IOException {
 		if (root == null) {
 			Iterable<Path> rootDirectories = getFileSystem().getRootDirectories();
@@ -179,7 +182,6 @@ public abstract class WatcherService {
 				debug("Processing event {} on path {}", kind, child);
 
 				if (kind == OVERFLOW) {
-					// rescan();
 					continue;
 				}
 
@@ -218,6 +220,48 @@ public abstract class WatcherService {
 		}
 	}
 
+	public class FilteringFileVisitor implements FileVisitor<Path> {
+
+		@Override
+		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+			if (Thread.interrupted()) {
+				throw new InterruptedIOException();
+			}
+			if (dirMatcher != null) {
+				Path rel = root.relativize(dir);
+				if (!"".equals(rel.toString()) && !dirMatcher.matches(rel)) {
+					return FileVisitResult.SKIP_SUBTREE;
+				}
+			}
+			watch(dir);
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+			if (Thread.interrupted()) {
+				throw new InterruptedIOException();
+			}
+			scan(file);
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+			return FileVisitResult.CONTINUE;
+		}
+
+		@Override
+		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+			return FileVisitResult.CONTINUE;
+		}
+	}
+
+	/**
+	 * 
+	 * @param file
+	 * @throws IOException
+	 */
 	protected void scan(final Path file) throws IOException {
 		if (isMatchesFile(file)) {
 			process(file);
@@ -225,6 +269,11 @@ public abstract class WatcherService {
 		}
 	}
 
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 */
 	protected boolean isMatchesFile(Path file) {
 		boolean matches = true;
 		if (fileMatcher != null) {
@@ -234,6 +283,11 @@ public abstract class WatcherService {
 		return matches;
 	}
 
+	/**
+	 * 
+	 * @param file
+	 * @throws IOException
+	 */
 	protected void unscan(final Path file) throws IOException {
 		if (isMatchesFile(file)) {
 			onRemove(file);
@@ -254,6 +308,11 @@ public abstract class WatcherService {
 		}
 	}
 
+	/**
+	 * 
+	 * @param path
+	 * @throws IOException
+	 */
 	protected void watch(final Path path) throws IOException {
 		if (watchService != null) {
 			WatchKey key = path.register(watchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE);
@@ -261,39 +320,6 @@ public abstract class WatcherService {
 			debug("Watched path " + path + " key " + key);
 		} else {
 			warn("No watcher yet for path " + path);
-		}
-	}
-
-	public class FilteringFileVisitor implements FileVisitor<Path> {
-
-		public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-			if (Thread.interrupted()) {
-				throw new InterruptedIOException();
-			}
-			if (dirMatcher != null) {
-				Path rel = root.relativize(dir);
-				if (!"".equals(rel.toString()) && !dirMatcher.matches(rel)) {
-					return FileVisitResult.SKIP_SUBTREE;
-				}
-			}
-			watch(dir);
-			return FileVisitResult.CONTINUE;
-		}
-
-		public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-			if (Thread.interrupted()) {
-				throw new InterruptedIOException();
-			}
-			scan(file);
-			return FileVisitResult.CONTINUE;
-		}
-
-		public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
-			return FileVisitResult.CONTINUE;
-		}
-
-		public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-			return FileVisitResult.CONTINUE;
 		}
 	}
 
@@ -307,12 +333,30 @@ public abstract class WatcherService {
 		throw new IllegalArgumentException(message);
 	}
 
+	/**
+	 * 
+	 * @param message
+	 * @param args
+	 */
 	protected abstract void debug(String message, Object... args);
 
+	/**
+	 * 
+	 * @param message
+	 * @param args
+	 */
 	protected abstract void warn(String message, Object... args);
 
+	/**
+	 * 
+	 * @param path
+	 */
 	protected abstract void process(Path path);
 
+	/**
+	 * 
+	 * @param path
+	 */
 	protected abstract void onRemove(Path path);
 
 }

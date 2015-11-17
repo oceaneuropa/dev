@@ -123,7 +123,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	protected boolean useStartTransient;
 	protected boolean useStartActivationPolicy;
 	protected String filter;
-	protected BundleContext context;
+	protected BundleContext bundleContext;
 	protected String originatingFileName;
 	protected boolean noInitialDelay;
 	protected int startLevel;
@@ -137,7 +137,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	protected Map<File, Artifact> fileToArtifactMap = new HashMap<File, Artifact>();
 
 	// The scanner to report files changes
-	protected Scanner scanner;
+	protected DirectoryScanner scanner;
 
 	// Represents files that could not be processed because of a missing artifact listener
 	protected Set<File> processingFailureFiles = new HashSet<File>();
@@ -154,20 +154,20 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 	/**
 	 * 
+	 * @param bundleContext
 	 * @param fileInstall
 	 * @param properties
-	 * @param context
 	 */
-	public DirectoryProcessor(FileInstall fileInstall, Map<String, String> properties, BundleContext context) {
+	public DirectoryProcessor(BundleContext bundleContext, FileInstall fileInstall, Map<String, String> properties) {
 		super("fileinstall-" + getThreadName(properties));
 
+		this.bundleContext = bundleContext;
 		this.fileInstall = fileInstall;
 		this.properties = properties;
-		this.context = context;
 
 		// read properties
 		poll = getLong(properties, POLL, 2000);
-		logLevel = getInt(properties, LOG_LEVEL, Util.getGlobalLogLevel(context));
+		logLevel = getInt(properties, LOG_LEVEL, Util.getGlobalLogLevel(bundleContext));
 		originatingFileName = properties.get(FILENAME);
 
 		watchedDirectory = getFile(properties, DIR, new File("./load"));
@@ -188,17 +188,17 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 		optionalScope = properties.get(OPTIONAL_SCOPE);
 		disableNIO2 = getBoolean(properties, DISABLE_NIO2, false); // by default, enable NIO API to scan dir
 
-		this.context.addBundleListener(this);
+		this.bundleContext.addBundleListener(this);
 
 		if (!disableNIO2) {
 			try {
-				scanner = new WatcherScanner(context, watchedDirectory, filter);
+				scanner = new NioDirectoryScanner(bundleContext, watchedDirectory, filter);
 			} catch (Throwable t) {
 				t.printStackTrace();
 			}
 		}
 		if (scanner == null) {
-			scanner = new Scanner(watchedDirectory, filter);
+			scanner = new DirectoryScanner(watchedDirectory, filter);
 		}
 	}
 
@@ -273,11 +273,24 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 		while (!interrupted()) {
 			try {
-				FrameworkStartLevel startLevelSvc = context.getBundle(0).adapt(FrameworkStartLevel.class);
+				FrameworkStartLevel startLevelSvc = bundleContext.getBundle(0).adapt(FrameworkStartLevel.class);
 				// Don't access the disk when the framework is still in a startup phase.
-				if (startLevelSvc.getStartLevel() >= activeLevel && context.getBundle(0).getState() == Bundle.ACTIVE) {
+				if (startLevelSvc.getStartLevel() >= activeLevel && bundleContext.getBundle(0).getState() == Bundle.ACTIVE) {
 
 					Set<File> files = scanner.scan(false);
+
+					// YANGYANG4J begins
+					if (files != null) {
+						Printer.pl("DirectoryProcessor.run()");
+						if (!files.isEmpty()) {
+							Printer.pl("files.size() = " + files.size());
+						}
+						for (File file : files) {
+							Printer.pl("file is: " + file.getAbsolutePath());
+						}
+					}
+					// YANGYANG4J ends
+
 					// Check that there is a result. If not, this means that the directory can not be listed, so it's presumably not a valid directory
 					// (it may have been deleted by someone). In such case, just sleep
 					if (files != null && !files.isEmpty()) {
@@ -294,7 +307,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				return;
 			} catch (Throwable e) {
 				try {
-					context.getBundle();
+					bundleContext.getBundle();
 				} catch (IllegalStateException t) {
 					// FileInstall bundle has been uninstalled, exiting loop
 					return;
@@ -515,7 +528,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 		if (updateWithListeners) {
 			for (Artifact artifact : getArtifacts()) {
 				if (artifact.getArtifactListener() == null && artifact.getBundleId() > 0) {
-					Bundle bundle = context.getBundle(artifact.getBundleId());
+					Bundle bundle = bundleContext.getBundle(artifact.getBundleId());
 					if (bundle != null && bundle.getLastModified() < stamp) {
 						File file = artifact.getFile();
 						if (artifactListener.canHandle(file)) {
@@ -655,7 +668,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 *            The throwable to log
 	 */
 	protected void log(int msgLevel, String message, Throwable e) {
-		Util.log(context, logLevel, msgLevel, message, e);
+		Util.log(bundleContext, logLevel, msgLevel, message, e);
 	}
 
 	/**
@@ -751,7 +764,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	}
 
 	public void close() {
-		this.context.removeBundleListener(this);
+		this.bundleContext.removeBundleListener(this);
 		interrupt();
 		for (Artifact artifact : getArtifacts()) {
 			deleteTransformedFile(artifact);
@@ -774,7 +787,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 * {@link #watchedDirectory}.
 	 */
 	protected void initializeCurrentManagedBundles() {
-		Bundle[] bundles = this.context.getBundles();
+		Bundle[] bundles = this.bundleContext.getBundles();
 		String watchedDirPath = watchedDirectory.toURI().normalize().getPath();
 
 		Map<File, Long> fileChecksumsMap = new HashMap<File, Long>();
@@ -826,7 +839,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 			if (index != -1 && path.startsWith(watchedDirPath)) {
 				Artifact artifact = new Artifact();
 				artifact.setBundleId(bundle.getBundleId());
-				artifact.setChecksum(Util.loadChecksum(bundle, context));
+				artifact.setChecksum(Util.loadChecksum(bundle, bundleContext));
 				artifact.setArtifactListener(null);
 				artifact.setFile(new File(path));
 				setArtifact(new File(path), artifact);
@@ -985,7 +998,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 		String bundleVersion = m.getMainAttributes().getValue(Constants.BUNDLE_VERSION);
 		Version version = bundleVersion == null ? Version.emptyVersion : Version.parseVersion(bundleVersion);
 
-		Bundle[] bundles = context.getBundles();
+		Bundle[] bundles = bundleContext.getBundles();
 		for (Bundle bundle : bundles) {
 			if (bundle.getSymbolicName() != null && bundle.getSymbolicName().equals(bundleSymName)) {
 				bundleVersion = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
@@ -993,11 +1006,11 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 				if (version.equals(currVersion)) {
 					is.reset();
 
-					if (Util.loadChecksum(bundle, context) != checksum) {
+					if (Util.loadChecksum(bundle, bundleContext) != checksum) {
 						log(Logger.LOG_WARNING, "A bundle with the same symbolic name (" + bundleSymName + ") and version (" + bundleVersion + ") is already installed.  Updating this bundle instead.", null);
 						stopBundle(bundle);
 
-						Util.storeChecksum(bundle, checksum, context);
+						Util.storeChecksum(bundle, checksum, bundleContext);
 						updateBundle(bundle, is);
 
 						modified.set(true);
@@ -1008,10 +1021,10 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 		}
 		is.reset();
 
-		Util.log(context, Logger.LOG_INFO, "Installing bundle " + bundleSymName + " / " + version, null);
+		Util.log(bundleContext, Logger.LOG_INFO, "Installing bundle " + bundleSymName + " / " + version, null);
 
-		Bundle b = context.installBundle(bundleLocation, is);
-		Util.storeChecksum(b, checksum, context);
+		Bundle b = bundleContext.installBundle(bundleLocation, is);
+		Util.storeChecksum(b, checksum, bundleContext);
 
 		modified.set(true);
 
@@ -1049,7 +1062,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 			} else if (artifact.getBundleId() != 0) {
 				// else we need uninstall the bundle
 				// old can't be null because of the way we calculate deleted list.
-				bundle = context.getBundle(artifact.getBundleId());
+				bundle = bundleContext.getBundle(artifact.getBundleId());
 				if (bundle == null) {
 					log(Logger.LOG_WARNING, "Failed to uninstall bundle: " + bundleFile + " with id: " + artifact.getBundleId() + ". The bundle has already been uninstalled", null);
 					return null;
@@ -1082,16 +1095,16 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 			} else if (artifact.getArtifactListener() instanceof ArtifactUrlTransformer) {
 				// if the listener is an url transformer
 				URL transformed = artifact.getTransformedUrl();
-				bundle = context.getBundle(artifact.getBundleId());
+				bundle = bundleContext.getBundle(artifact.getBundleId());
 				if (bundle == null) {
 					log(Logger.LOG_WARNING, "Failed to update bundle: " + bundleFile + " with ID " + artifact.getBundleId() + ". The bundle has been uninstalled", null);
 					return null;
 				}
 
-				Util.log(context, Logger.LOG_INFO, "Updating bundle " + bundle.getSymbolicName() + " / " + bundle.getVersion(), null);
+				Util.log(bundleContext, Logger.LOG_INFO, "Updating bundle " + bundle.getSymbolicName() + " / " + bundle.getVersion(), null);
 				stopBundle(bundle);
 
-				Util.storeChecksum(bundle, artifact.getChecksum(), context);
+				Util.storeChecksum(bundle, artifact.getChecksum(), bundleContext);
 
 				InputStream is = (transformed != null) ? transformed.openStream() : new FileInputStream(bundleFile);
 				try {
@@ -1103,16 +1116,16 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 			} else if (artifact.getArtifactListener() instanceof ArtifactTransformer) {
 				// else we need to ask for an update on the bundle
 				File transformed = artifact.getTransformed();
-				bundle = context.getBundle(artifact.getBundleId());
+				bundle = bundleContext.getBundle(artifact.getBundleId());
 				if (bundle == null) {
 					log(Logger.LOG_WARNING, "Failed to update bundle: " + bundleFile + " with ID " + artifact.getBundleId() + ". The bundle has been uninstalled", null);
 					return null;
 				}
-				Util.log(context, Logger.LOG_INFO, "Updating bundle " + bundle.getSymbolicName() + " / " + bundle.getVersion(), null);
+				Util.log(bundleContext, Logger.LOG_INFO, "Updating bundle " + bundle.getSymbolicName() + " / " + bundle.getVersion(), null);
 
 				stopBundle(bundle);
 
-				Util.storeChecksum(bundle, artifact.getChecksum(), context);
+				Util.storeChecksum(bundle, artifact.getChecksum(), bundleContext);
 
 				InputStream is = new FileInputStream(transformed != null ? transformed : bundleFile);
 				try {
@@ -1134,13 +1147,13 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 * {@link #USE_START_TRANSIENT} is set to true or when a bundle is persistently started. Persistently stopped bundles are ignored.
 	 */
 	protected void startAllBundles() {
-		FrameworkStartLevel startLevelSvc = context.getBundle(0).adapt(FrameworkStartLevel.class);
+		FrameworkStartLevel startLevelSvc = bundleContext.getBundle(0).adapt(FrameworkStartLevel.class);
 
 		List<Bundle> bundles = new ArrayList<Bundle>();
 
 		for (Artifact artifact : getArtifacts()) {
 			if (artifact.getBundleId() > 0) {
-				Bundle bundle = context.getBundle(artifact.getBundleId());
+				Bundle bundle = bundleContext.getBundle(artifact.getBundleId());
 				if (bundle != null) {
 					if (bundle.getState() != Bundle.STARTING && bundle.getState() != Bundle.ACTIVE && (useStartTransient || bundle.adapt(BundleStartLevel.class).isPersistentlyStarted()) && startLevelSvc.getStartLevel() >= bundle.adapt(BundleStartLevel.class).getStartLevel()) {
 						bundles.add(bundle);
@@ -1165,7 +1178,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 * @return whether the bundle was started.
 	 */
 	protected boolean startBundle(Bundle bundle) {
-		FrameworkStartLevel startLevelSvc = context.getBundle(0).adapt(FrameworkStartLevel.class);
+		FrameworkStartLevel startLevelSvc = bundleContext.getBundle(0).adapt(FrameworkStartLevel.class);
 		// Fragments can never be started.
 
 		// Bundles can only be started transient when the start level of the framework is high enough. Persistent (i.e. non-transient) starts will
@@ -1210,7 +1223,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 	 */
 	protected void refreshBundles(Collection<Bundle> bundles) throws InterruptedException {
 		final CountDownLatch latch = new CountDownLatch(1);
-		FrameworkWiring wiring = context.getBundle(0).adapt(FrameworkWiring.class);
+		FrameworkWiring wiring = bundleContext.getBundle(0).adapt(FrameworkWiring.class);
 		wiring.refreshBundles(bundles, new FrameworkListener() {
 			@Override
 			public void frameworkEvent(FrameworkEvent event) {
@@ -1254,7 +1267,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 			Set<Bundle> bundles = new HashSet<Bundle>();
 			for (Artifact artifact : getArtifacts()) {
 				if (artifact.getBundleId() > 0) {
-					Bundle bundle = context.getBundle(artifact.getBundleId());
+					Bundle bundle = bundleContext.getBundle(artifact.getBundleId());
 					if (bundle != null) {
 						bundles.add(bundle);
 					}
@@ -1264,7 +1277,7 @@ public class DirectoryProcessor extends Thread implements BundleListener {
 
 		} else {
 			// Go through all bundles
-			return new HashSet<Bundle>(Arrays.asList(context.getBundles()));
+			return new HashSet<Bundle>(Arrays.asList(bundleContext.getBundles()));
 		}
 	}
 

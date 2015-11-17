@@ -29,12 +29,12 @@ import java.util.Set;
 
 import org.osgi.framework.BundleContext;
 
-public class WatcherScanner extends Scanner {
+public class NioDirectoryScanner extends DirectoryScanner {
 
 	protected BundleContext bundleContext;
 	protected PathMatcher fileMatcher;
-	protected WatcherService watcher;
-	protected Set<File> changed = new HashSet<File>();
+	protected WatcherService watcherService;
+	protected Set<File> changedFiles = new HashSet<File>();
 
 	/**
 	 * Create a scanner for the specified directory and file filter
@@ -44,7 +44,7 @@ public class WatcherScanner extends Scanner {
 	 * @param filterString
 	 *            a filter for file names
 	 */
-	public WatcherScanner(BundleContext bundleContext, File directory, String filterString) throws IOException {
+	public NioDirectoryScanner(BundleContext bundleContext, File directory, String filterString) throws IOException {
 		super(directory, filterString);
 
 		this.bundleContext = bundleContext;
@@ -55,7 +55,7 @@ public class WatcherScanner extends Scanner {
 			this.fileMatcher = null;
 		}
 
-		this.watcher = new WatcherService() {
+		this.watcherService = new WatcherService() {
 			@Override
 			protected void process(Path path) {
 				File file = path.toFile();
@@ -65,8 +65,8 @@ public class WatcherScanner extends Scanner {
 						return;
 					}
 				}
-				synchronized (changed) {
-					changed.add(file);
+				synchronized (changedFiles) {
+					changedFiles.add(file);
 				}
 			}
 
@@ -79,8 +79,8 @@ public class WatcherScanner extends Scanner {
 						return;
 					}
 				}
-				synchronized (changed) {
-					changed.add(file);
+				synchronized (changedFiles) {
+					changedFiles.add(file);
 				}
 			}
 
@@ -99,18 +99,18 @@ public class WatcherScanner extends Scanner {
 				Util.log(bundleContext, level, msg, null);
 			}
 		};
-		this.watcher.setFileMatcher(fileMatcher);
-		this.watcher.setRootDirectory(this.directory);
-		this.watcher.init();
-		this.watcher.rescan();
+		this.watcherService.setFileMatcher(fileMatcher);
+		this.watcherService.setRootDirectory(this.directory);
+		this.watcherService.init();
+		this.watcherService.rescan();
 	}
 
 	@Override
 	public Set<File> scan(boolean reportImmediately) {
-		watcher.processEvents();
+		watcherService.processEvents();
 
-		synchronized (changed) {
-			if (changed.isEmpty()) {
+		synchronized (changedFiles) {
+			if (changedFiles.isEmpty()) {
 				return new HashSet<File>();
 			}
 
@@ -121,13 +121,13 @@ public class WatcherScanner extends Scanner {
 				removedFiles.addAll(storedFileChecksumsMap.keySet());
 			}
 
-			for (Iterator<File> iterator = changed.iterator(); iterator.hasNext();) {
+			for (Iterator<File> iterator = changedFiles.iterator(); iterator.hasNext();) {
 				File file = iterator.next();
-				long lastChecksum = lastFileChecksumsMap.get(file) != null ? (Long) lastFileChecksumsMap.get(file) : 0;
+				long lastChecksum = latestFileChecksumsMap.get(file) != null ? (Long) latestFileChecksumsMap.get(file) : 0;
 				long storedChecksum = storedFileChecksumsMap.get(file) != null ? (Long) storedFileChecksumsMap.get(file) : 0;
 				long newChecksum = checksum(file);
 
-				lastFileChecksumsMap.put(file, newChecksum);
+				latestFileChecksumsMap.put(file, newChecksum);
 
 				if (file.exists()) {
 					// Only handle file when it does not change anymore and it has changed since last reported
@@ -155,7 +155,7 @@ public class WatcherScanner extends Scanner {
 
 			// Remove no longer used checksums
 			for (File removedFile : removedFiles) {
-				lastFileChecksumsMap.remove(removedFile);
+				latestFileChecksumsMap.remove(removedFile);
 				storedFileChecksumsMap.remove(removedFile);
 			}
 
@@ -164,7 +164,7 @@ public class WatcherScanner extends Scanner {
 	}
 
 	public void close() throws IOException {
-		watcher.close();
+		watcherService.close();
 	}
 
 }

@@ -37,14 +37,14 @@ import java.util.zip.CRC32;
  * In addition, if the scanner detects a change on a given file, it will wait until the checksum does not change anymore before reporting the change
  * on this file. This allows to not report the change until a big copy if complete for example.
  */
-public class Scanner {
+public class DirectoryScanner {
 
 	protected File directory;
 	protected FilenameFilter filter;
 
 	// Store checksums of files or directories
 	protected Map<File, Long> storedFileChecksumsMap = new HashMap<File, Long>();
-	protected Map<File, Long> lastFileChecksumsMap = new HashMap<File, Long>();
+	protected Map<File, Long> latestFileChecksumsMap = new HashMap<File, Long>();
 
 	/**
 	 * Create a scanner for the specified directory and file filter
@@ -54,7 +54,7 @@ public class Scanner {
 	 * @param filterString
 	 *            a filter for file names
 	 */
-	public Scanner(File directory, final String filterString) {
+	public DirectoryScanner(File directory, final String filterString) {
 		this.directory = canon(directory);
 
 		if (filterString != null && filterString.length() > 0) {
@@ -96,27 +96,29 @@ public class Scanner {
 			return null;
 		}
 
+		// files that are modified or deleted
 		Set<File> files = new HashSet<File>();
-		Set<File> removed = new HashSet<File>(storedFileChecksumsMap.keySet());
+		Set<File> removedFiles = new HashSet<File>(storedFileChecksumsMap.keySet());
 
 		for (File file : list) {
-			long lastChecksum = lastFileChecksumsMap.get(file) != null ? (Long) lastFileChecksumsMap.get(file) : 0;
+			long lastChecksum = latestFileChecksumsMap.get(file) != null ? (Long) latestFileChecksumsMap.get(file) : 0;
 			long storedChecksum = storedFileChecksumsMap.get(file) != null ? (Long) storedFileChecksumsMap.get(file) : 0;
 			long newChecksum = checksum(file);
-			lastFileChecksumsMap.put(file, newChecksum);
+			latestFileChecksumsMap.put(file, newChecksum);
 			// Only handle file when it does not change anymore and it has changed since last reported
 			if ((newChecksum == lastChecksum || reportImmediately) && newChecksum != storedChecksum) {
 				storedFileChecksumsMap.put(file, newChecksum);
 				files.add(file);
 			}
-			removed.remove(file);
+			removedFiles.remove(file);
 		}
 
-		for (File file : removed) {
-			// Make sure we'll handle a file that has been deleted
-			files.addAll(removed);
+		// Make sure we'll handle a file that has been deleted
+		files.addAll(removedFiles);
+
+		for (File file : removedFiles) {
 			// Remove no longer used checksums
-			lastFileChecksumsMap.remove(file);
+			latestFileChecksumsMap.remove(file);
 			storedFileChecksumsMap.remove(file);
 		}
 		return files;
