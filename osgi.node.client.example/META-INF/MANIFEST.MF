@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: OSGi Node Client Example
+Bundle-SymbolicName: osgi.node.client.example
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: osgi.node.client.example.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: javax.ws.rs;version="2.0.0",
+ javax.ws.rs.client;version="2.0.0",
+ javax.ws.rs.core;version="2.0.0",
+ org.glassfish.jersey.client;version="2.18.0",
+ org.glassfish.jersey.jackson;version="2.18.0",
+ org.glassfish.jersey.media.multipart;version="2.18.0",
+ org.osgi.framework;version="1.3.0"
+Export-Package: osgi.node.client.example;version="1.0.0"

@@ -36,15 +36,20 @@ public class Container implements BundleActivator {
 		if (debug) {
 			Printer.pl("Container.stop()");
 		}
-		Container.context = null;
 
 		// 1. Stop NodeApplication web service
-		this.nodeApplication.stop();
-		this.nodeApplication = null;
+		if (this.nodeApplication != null) {
+			this.nodeApplication.stop();
+			this.nodeApplication = null;
+		}
 
 		// 2. Stop WebService deployer
-		this.wsDeployer.stop();
-		this.wsDeployer = null;
+		if (this.wsDeployer != null) {
+			this.wsDeployer.stop();
+			this.wsDeployer = null;
+		}
+
+		Container.context = null;
 	}
 
 }
