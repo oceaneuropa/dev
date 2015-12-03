@@ -19,7 +19,7 @@ public class Activator implements BundleActivator, ServiceListener {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		System.out.println("tutorial-example-1: Starting to listen for service events @yangyang4j.");
+		System.out.println("tutorial-example-1: Starting to listen for service events @yangyang4j.A");
 		Activator.context = context;
 		context.addServiceListener(this);
 	}
