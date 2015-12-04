@@ -11,13 +11,13 @@ import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.RemoteIterator;
 
-public class HdfsClient {
+public class HdfsClientWin {
 
 	protected Configuration getConfiguration() {
 		Configuration conf = new Configuration();
-		conf.addResource(new Path("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/core-site.xml"));
-		conf.addResource(new Path("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/hdfs-site.xml"));
-		conf.addResource(new Path("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/mapred-site.xml"));
+		conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/core-site.xml"));
+		conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/hdfs-site.xml"));
+		conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/mapred-site.xml"));
 		// conf.set("fs.default.name", "hdfs://localhost:9000");
 		return conf;
 	}
@@ -130,20 +130,21 @@ public class HdfsClient {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		HdfsClient client = new HdfsClient();
+		HdfsClientWin client = new HdfsClientWin();
 
 		// test 1
 		// client.test1();
 
-		// test 2
-		client.test2();
-
 		// test copy file
 		try {
-			// client.copyFromLocal("/Users/yayang/apache/hadoop/readme.txt", "/yayang/apache/hadoop/readme.txt");
+			// client.copyFromLocal("C:/hadoop/readme.txt", "/yayang/apache/hadoop/readme.txt");
+			client.copyFromLocal("C:/hadoop/readme.txt", "/readme.txt");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// test 2
+		// client.test2();
 	}
 
 }
