@@ -16,8 +16,8 @@ public class HdfsClientMac {
 	protected Configuration getConfiguration() {
 		Configuration conf = new Configuration();
 		conf.addResource(new Path("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/core-site.xml"));
-		conf.addResource(new Path("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/hdfs-site.xml"));
-		conf.addResource(new Path("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/mapred-site.xml"));
+		// conf.addResource(new Path("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/hdfs-site.xml"));
+		// conf.addResource(new Path("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/mapred-site.xml"));
 		// conf.set("fs.default.name", "hdfs://localhost:9000");
 		return conf;
 	}
