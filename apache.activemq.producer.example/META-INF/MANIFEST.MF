@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache ActiveMQ Producer Example
+Bundle-SymbolicName: apache.activemq.producer.example
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: apache.activemq.producer.example.ProducerActivator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: javax.jms,
+ org.apache.activemq,
+ org.osgi.framework

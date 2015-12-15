@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Dec 14 10:50:25 PST 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0151-a1d4-53a9-00000fda6430 
+on database directory /Users/yayang/tibco_dev/workspaces/examples/apache.activemq.example/derbyDb with class loader sun.misc.Launcher$AppClassLoader@29453f44 
+Loaded from file:/Users/yayang/tibco_dev/workspaces/examples/apache.activemq.example/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_05-b13
+user.dir=/Users/yayang/tibco_dev/workspaces/examples/apache.activemq.example
+os.name=Mac OS X
+os.arch=x86_64
+os.version=10.9.5
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

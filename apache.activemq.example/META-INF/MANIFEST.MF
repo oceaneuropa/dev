@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache Activemq Example
+Bundle-SymbolicName: apache.activemq.example
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: apache.activemq.example.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.osgi.framework;version="1.3.0"
+Bundle-ClassPath: .,
+ lib/activemq-all-5.13.0.jar,
+ lib/derby.jar,
+ lib/hsqldb-2.3.3.jar

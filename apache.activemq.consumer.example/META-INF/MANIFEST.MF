@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Apache ActiveMQ Consumer Example
+Bundle-SymbolicName: apache.activemq.consumer.example
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: apache.activemq.consumer.example.ConsumerActivator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Import-Package: javax.jms,
+ org.apache.activemq,
+ org.osgi.framework
