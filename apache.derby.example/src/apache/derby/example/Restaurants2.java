@@ -37,7 +37,7 @@ public class Restaurants2 {
 	private static void createConnection() {
 		try {
 			Class.forName("org.apache.derby.jdbc.ClientDriver").newInstance();
-			conn = DriverManager.getConnection("jdbc:derby:derbyDB1");
+			conn = DriverManager.getConnection("jdbc:derby:derbyDB");
 		} catch (Exception except) {
 			except.printStackTrace();
 		}
@@ -101,7 +101,6 @@ public class Restaurants2 {
 				stmt.close();
 			}
 			if (conn != null) {
-				// DriverManager.getConnection("jdbc:derby:derbyDB1;shutdown=true");
 				conn.close();
 			}
 		} catch (SQLException e) {

@@ -38,7 +38,7 @@ public class Restaurants {
 			// Properties props = new Properties();
 			// props.put("user", "user1");
 			// props.put("password", "user1");
-			conn = DriverManager.getConnection("jdbc:derby:derbyDB1;create=true");
+			conn = DriverManager.getConnection("jdbc:derby:derbyDB;create=true");
 
 		} catch (Exception except) {
 			except.printStackTrace();
@@ -110,7 +110,7 @@ public class Restaurants {
 			}
 			if (conn != null) {
 				// DriverManager.getConnection(dbURL + ";shutdown=true");
-				DriverManager.getConnection("jdbc:derby:derbyDB1;shutdown=true");
+				DriverManager.getConnection("jdbc:derby:derbyDB;shutdown=true");
 				conn.close();
 			}
 		} catch (SQLException e) {

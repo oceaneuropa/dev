@@ -1,13 +1,16 @@
 ----------------------------------------------------------------
-Mon Dec 14 11:37:25 PST 2015:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0151-a1ff-5c6a-00000fe0a3c0 
-on database directory /Users/yayang/tibco_dev/workspaces/examples/apache.derby.example/derbyDB1 with class loader sun.misc.Launcher$AppClassLoader@29453f44 
-Loaded from file:/Users/yayang/tibco_dev/workspaces/examples/apache.derby.example/lib/derby.jar
+Tue Dec 15 12:08:26 PST 2015:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0151-a742-1ce8-00000fe0b978 
+on database directory /Users/yayang/git/oceaneruopa/dev/apache.derby.example/derbyDB with class loader sun.misc.Launcher$AppClassLoader@29453f44 
+Loaded from file:/Users/yayang/git/oceaneruopa/dev/apache.derby.example/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_05-b13
-user.dir=/Users/yayang/tibco_dev/workspaces/examples/apache.derby.example
+user.dir=/Users/yayang/git/oceaneruopa/dev/apache.derby.example
 os.name=Mac OS X
 os.arch=x86_64
 os.version=10.9.5
 derby.system.home=null
 Database Class Loader started - derby.database.classpath=''
+----------------------------------------------------------------
+Tue Dec 15 12:08:26 PST 2015:
+Shutting down instance a816c00e-0151-a742-1ce8-00000fe0b978 on database directory /Users/yayang/git/oceaneruopa/dev/apache.derby.example/derbyDB with class loader sun.misc.Launcher$AppClassLoader@29453f44 
