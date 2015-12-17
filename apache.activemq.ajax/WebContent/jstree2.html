@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jstree basic demos</title>
+	
+	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+	<script src="dist/jstree.min.js"></script>
+
+	<style>
+	html { margin:0; padding:0; font-size:62.5%; }
+	body { max-width:800px; min-width:300px; margin:0 auto; padding:20px 10px; font-size:14px; font-size:1.4em; }
+	h1 { font-size:1.8em; }
+	.demo { overflow:auto; border:1px solid silver; min-height:100px; }
+	</style>
+	<link rel="stylesheet" href="dist/themes/default/style.min.css" />
+</head>
+<body>
+	<h1>HTML demo</h1>
+	<div id="html" class="demo">
+		<ul>
+			<li data-jstree='{ "opened" : true }'>Root node
+				<ul>
+					<li data-jstree='{ "selected" : true }'>Child node 1</li>
+					<li>Child node 2
+						<ul>
+							<li data-jstree='{"icon":"http://help.eclipse.org/mars/topic/org.eclipse.platform.doc.user/images/ref-15.png"}'>sub node 21</li>
+							<li data-jstree='{"icon":"http://help.eclipse.org/mars/topic/org.eclipse.platform.doc.user/images/ref-15.png"}'>sub node 22</li>
+							<li data-jstree='{"icon":"http://help.eclipse.org/mars/topic/org.eclipse.platform.doc.user/images/ref-15.png"}'>sub node 23</li>
+						</ul>
+					</li>
+					<li data-jstree='{"icon":"icons/tree.png"}'>Child</li>
+					<li data-jstree='{"icon":"http://localhost:8080/mq/icons/docx.png"}'>Docx2</li>
+					<li data-jstree='{"icon":"http://help.eclipse.org/mars/topic/org.eclipse.linuxtools.docker.docs/Linux_Tools_Project/Docker_Tooling/User_Guide/images/LinuxToolsNewConnectionIcon.png"}'>Docx</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<script>
+	$('#html').jstree();
+	</script>
+</body>
+</html>
