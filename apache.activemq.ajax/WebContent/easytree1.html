@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>EasyTree Example 1</title>
+<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+<script type="text/javascript" src="js/jquery.easytree.min.js"></script>
+<link href="content/skin-win8/ui.easytree.css" rel="stylesheet" class="skins" type="text/css" />
+</head>
+<body>
+	<div id="demo_menu">
+		<ul>
+			<li><a href="http://www.easyjstree.com" target="_blank" class="current">Home</a></li>
+			<li class="isFolder">
+				Folder 1
+				<ul>
+					<li><a href="http://www.google.com" target="_blank">Go to Google.com</a></li>
+					<li><a href="http://www.yahoo.com" target="_blank">Go to Yahoo.com</a></li>
+				</ul>
+			</li>
+			<li class="isFolder">
+				Folder 2
+				<ul>
+					<li><a href="http://www.ebay.com" target="_blank">Go to eBay.com</a></li>
+					<li><a href="http://www.amazon.com" target="_blank">Go to Amazon.com</a></li>
+				</ul>
+			</li>
+			<li>
+				Node 1
+				<ul>
+					<li>Sub Node 1</li>
+					<li>Sub Node 2</li>
+					<li>Sub Node 3</li>
+				</ul>
+			</li>
+			<li>Node 2</li>
+		</ul>
+	</div>
+	<script>
+		$('#demo_menu').easytree();
+	</script>
+</body>
+</html>
