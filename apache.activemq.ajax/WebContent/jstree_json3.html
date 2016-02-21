@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jstree json demos</title>
+	
+	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+	<script src="dist/jstree.min.js"></script>
+
+	<style>
+	html { margin:0; padding:0; font-size:62.5%; }
+	body { max-width:800px; min-width:300px; margin:0 auto; padding:20px 10px; font-size:14px; font-size:1.4em; }
+	h1 { font-size:1.8em; }
+	.demo { overflow:auto; border:1px solid silver; min-height:100px; }
+	</style>
+	<link rel="stylesheet" href="dist/themes/default/style.min.css" />
+</head>
+<body>
+	<h1>JSON jstree demo3 (https://www.jstree.com/docs/json/)</h1>
+	<div id="using_json3" class="demo">
+	</div>
+	<script>
+	$('#using_json3').jstree({
+	    'core' : {
+	        'data' : function (obj, cb) {
+	            cb.call(this,
+	              ['Root 1', 'Root 2', 'Root 3']);
+	        }
+	    }});
+	</script>
+</body>
+</html>

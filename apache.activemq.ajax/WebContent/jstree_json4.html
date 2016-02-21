@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jstree json demos</title>
+	
+	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+	<script src="dist/jstree.min.js"></script>
+
+	<style>
+	html { margin:0; padding:0; font-size:62.5%; }
+	body { max-width:800px; min-width:300px; margin:0 auto; padding:20px 10px; font-size:14px; font-size:1.4em; }
+	h1 { font-size:1.8em; }
+	.demo { overflow:auto; border:1px solid silver; min-height:100px; }
+	</style>
+	<link rel="stylesheet" href="dist/themes/default/style.min.css" />
+</head>
+<body>
+	<h1>JSON jstree demo ajax (https://www.jstree.com/docs/json/)</h1>
+	<div id="using_json_ajax" class="demo">
+	</div>
+	<script>
+	$(function () {
+		$('#using_json_ajax').jstree({
+			'core' : {
+				'data' : {
+					'headers': { 'Access-Control-Allow-Origin':'https://www.jstree.com' },
+				    'url' : function (node) {
+				    	console.log("node.id = " + node.id);
+				        return node.id === '#' ? 'https://www.jstree.com/static/3.2.1/assets/ajax_roots.json' : 'https://www.jstree.com/static/3.2.1/assets/ajax_children.json';
+				    },
+				    'data' : function (node) {
+				        return { 'id' : node.id };
+				    }
+				}
+			}
+		});
+	});
+	</script>
+</body>
+</html>
