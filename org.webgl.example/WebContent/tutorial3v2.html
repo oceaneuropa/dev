@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WebGL tutorial 3 - Using shaders to apply color in WebGL</title>
+<link rel="stylesheet" href="./tutorial3/webgl.css" type="text/css">
+<script src="./tutorial3/sylvester.js" type="text/javascript"></script>
+<script src="./tutorial3/glUtils.js" type="text/javascript"></script>
+<script src="./tutorial3/tutorial3v2.js" type="text/javascript"></script>
+
+<!-- 
+Fragment shader
+Each pixel in a polygon is called a fragment in GL. 
+The fragment shader's job is to establish the color for each pixel. 
+In this case, we're simply assigning white to each pixel.
+
+gl_FragColor is a built-in GL variable that is used for the fragment's color. 
+Setting its value establishes the pixel's color, as seen below.
+
+In order to pick up the interpolated color for each pixel, we simply 
+need to change this to fetch the value from the vColor variable:
+
+Each fragment simply receives the interpolated color based on its 
+position relative to the vertices, instead of a fixed value.
+ -->
+<script id="shader-fs" type="x-shader/x-fragment">
+	// Things cause error:
+	// (1) if "aVertexColor" attribute is declared --- error occurs 
+	// attribute is only allowd in "x-shader/x-vertex"
+	// "aVertexColor" attribute is set to vColor in "x-shader/x-vertex"
+
+	// (2) if vColor variable is not defined --- error occurs
+	// need to declare a vColor variable here in "x-shader/x-fragment". 
+	// it somehow magically gets the vColor value initialized in "x-shader/x-vertex".
+
+	// (3) console.log() is not allowed in main().	
+
+    varying lowp vec4 vColor;
+	void main(void) {
+		// gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+
+		// assign vColor value to gl_FragColor (built-in GL variable used for the fragment's color)
+		gl_FragColor = vColor;
+	}
+</script>
+
+<!-- 
+Vertex shader
+The vertex shader defines the position and shape of each vertex.
+
+To make these colors actually get used, the vertex shader needs 
+to be updated to pull the appropriate color from the color buffer:
+ -->
+<script id="shader-vs" type="x-shader/x-vertex">
+	attribute vec3 aVertexPosition;
+	attribute vec4 aVertexColor; // added for color
+	uniform mat4 uMVMatrix;
+	uniform mat4 uPMatrix;
+	varying lowp vec4 vColor; // added for color
+
+	// Question: when main() is called?
+	// when shader is compiled? or when gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); is called?
+	// the answer is unknown. the answer will help understanding of how the WebGL code works.
+	void main(void) {
+		// assign "aVertexPosition" attribute value to gl_Position  (built-in GL variable used for the vertices location)
+		gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+
+		// assign "aVertexColor" attribute value to "vColor"
+		vColor = aVertexColor; // added for color
+	}
+</script>
+</head>
+<body onload="start()">
+	<canvas id="glcanvas" width="640" height="480">Your browser doesn't appear to support the <code>&lt;canvas&gt;</code> element.</canvas>
+</body>
+</html>

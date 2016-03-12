@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WebGL tutorial 2 - Adding 2D content to a WebGL context</title>
+<link rel="stylesheet" href="./tutorial2/webgl.css" type="text/css">
+<script src="./tutorial2/sylvester.js" type="text/javascript"></script>
+<script src="./tutorial2/glUtils.js" type="text/javascript"></script>
+<script src="./tutorial2/tutorial2v2.js" type="text/javascript"></script>
+
+<!-- 
+Fragment shader
+Each pixel in a polygon is called a fragment in GL. 
+The fragment shader's job is to establish the color for each pixel. 
+In this case, we're simply assigning white to each pixel.
+
+gl_FragColor is a built-in GL variable that is used for the fragment's color. 
+Setting its value establishes the pixel's color, as seen below.
+ -->
+<script id="shader-fs" type="x-shader/x-fragment">
+    void main(void) {
+		// color for the square drawn on canvas
+        gl_FragColor = vec4(0.0, 0.0, 0.8, 1.0);
+    }
+</script>
+
+<!-- 
+Vertex shader
+The vertex shader defines the position and shape of each vertex.
+ -->
+<script id="shader-vs" type="x-shader/x-vertex">
+	attribute vec3 aVertexPosition;
+	uniform mat4 uMVMatrix;
+	uniform mat4 uPMatrix;
+	void main(void) {
+    	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+	}
+</script>
+
+</head>
+<body onload="start()">
+	<canvas id="glcanvas" width="640" height="480">Your browser doesn't appear to support the <code>&lt;canvas&gt;</code> element.</canvas>
+</body>
+</html>
