@@ -46,22 +46,18 @@
 	// 3. Mapping the texture onto the faces
 	// 4. Updating the shaders
 
-    //A global variable for the WebGL context <WebGLRenderingContext> 
-	var canvas;
-	
-	// <WebGLRenderingContext>
-	var gl;
+	var canvas;	
+	var gl;									// A global variable for the WebGL context <WebGLRenderingContext>
 
-	// <WebGLBuffer> 
-	var cubeVerticesBuffer;
-	var cubeVerticesIndexBuffer;
-	var cubeVerticesTextureCoordBuffer;
+	var cubeVerticesBuffer;					// <WebGLBuffer> 
+	var cubeVerticesIndexBuffer;			// <WebGLBuffer> 
+	var cubeVerticesTextureCoordBuffer;		// <WebGLBuffer> 
 
-	var mvMatrix;
-	var shaderProgram;
+	var shaderProgram;						// <WebGLProgram>
 	var vertexPositionAttribute;
 	var textureCoordAttribute;
 	var perspectiveMatrix;
+	var mvMatrix;
 
 	// for animating the square
 	var lastCubeUpdateTime;
@@ -73,9 +69,8 @@
 	var yIncValue = -0.4;
 	var zIncValue = 0.3;
 
-	// for texture
-	// <WebGLTexture>
-	var cubeTexture;
+	// for texture	
+	var cubeTexture;	// <WebGLTexture>
 	var cubeImage;
 
     /**
@@ -137,33 +132,26 @@
 	function initShaders() {
 		console.log("initShaders()");
 
-		// get shader obj <WebGLShader> for MIME type "x-shader/x-fragment"
-		var fragmentShader = getShader(gl, "shader-fs");
-		// get shader obj <WebGLShader> for MIME type "x-shader/x-vertex"
-		var vertexShader = getShader(gl, "shader-vs");
+		var fragmentShader = getShader(gl, "shader-fs"); // get shader obj <WebGLShader> for MIME type "x-shader/x-fragment"		
+		var vertexShader = getShader(gl, "shader-vs"); // get shader obj <WebGLShader> for MIME type "x-shader/x-vertex"
 
 		// Create the shader program <WebGLProgram> and attach the two shaders to the shader program <WebGLProgram>.
 		shaderProgram = gl.createProgram();
 		gl.attachShader(shaderProgram, vertexShader);
 		gl.attachShader(shaderProgram, fragmentShader);
-		gl.linkProgram(shaderProgram);
 
-		// If creating the shader program failed, alert
+		gl.linkProgram(shaderProgram);
 		if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-			alert("Unable to initialize the shader program.");
+			alert("Unable to initialize the shader program."); // If creating the shader program failed, alert
 		}
 
 		gl.useProgram(shaderProgram);
 
-		// 1. initialize the position attribute for the shaderProgram
+		// 1. get the position attribute for the shaderProgram
 		vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
 		gl.enableVertexAttribArray(vertexPositionAttribute);
 
-		// 2. initialize the color attribute for the shaderProgram
-		// vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-		// gl.enableVertexAttribArray(vertexColorAttribute);
-
-		// 2. initialize the texture attribute for the shaderProgram
+		// 2. get the texture attribute for the shaderProgram
 		textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
 		gl.enableVertexAttribArray(textureCoordAttribute);
 	}
@@ -386,30 +374,35 @@
 		loadIdentity();
 
 		// Now move the drawing position a bit to where we want to start drawing the square.
-		mvTranslate([ -0.0, 0.0, -6.0 ]); // -6 means move along z axes into screen by 6 units (units of what?)
+		mvTranslate([0.0, 0.0, -6.0]); // move along z axes into screen by 6 units
 
 		// Animation
 		// Save the current matrix, then rotate before we draw.
   		mvPushMatrix();
-  		mvRotate(cubeRotation, [1, 1, 1]);
+  		mvRotate(cubeRotation, [1, 1, 0]);
   		// mvTranslate([cubeXOffset, cubeYOffset, cubeZOffset]);
 
   		// 1. Draw the cube by binding the array buffer to gl.ARRAY_BUFFER, setting attributes and pushing it to GL.
+  		// vertices array -> cubeVerticesBuffer -> vertexPositionAttribute -> aVertexPosition (in "shader-vs" shader program) -> gl_Position
   		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesBuffer);
   	  	gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
   		// 2. Set the texture coordinates attribute for the vertices.
+  		// textureCoordinates array -> cubeVerticesTextureCoordBuffer -> textureCoordAttribute -> aTextureCoord (in "shader-vs" shader program) -> vTextureCoord (in "shader-fs" shader program) -> gl_FragColor
   		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
   		gl.vertexAttribPointer(textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
-  
+
   	  	// 3. Specify the texture to map onto the faces.
   	  	// GL provides 32 texture registers; the first of these is gl.TEXTURE0. We bind our previously-loaded texture to that register,
+  	  	// Image ("./texture/leaftexture.png") -> cubeTexture -> gl.TEXTURE0 texture register
   	  	gl.activeTexture(gl.TEXTURE0);
   		gl.bindTexture(gl.TEXTURE_2D, cubeTexture);
+
   		// set the shader sampler uSampler (specified in the shader program) to use that texture.
   		gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
 
   	  	// 4. Draw the cube.
+  	  	// cubeVertexIndices array -> cubeVerticesIndexBuffer -> ?
   	  	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVerticesIndexBuffer);
   	  	setMatrixUniforms();
   	  	gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);

@@ -70,7 +70,7 @@ http://localhost:8080/gl/tutorial.html
 		https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Lighting_in_WebGL
 		https://github.com/mdn/webgl-examples/tree/gh-pages/tutorial/sample7
 		http://mdn.github.io/webgl-examples/tutorial/sample7/
-		
+
 		Note:
 		Phong shading
 		https://en.wikipedia.org/wiki/Phong_shading
