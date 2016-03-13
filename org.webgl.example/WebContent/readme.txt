@@ -7,6 +7,8 @@ https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
 
 WebGL tutorial:
 https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial
+http://localhost:8080/gl/tutorial.html
+
 
     WebGL tutorial 1 - Getting started with WebGL
         https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Getting_started_with_WebGL
@@ -63,6 +65,21 @@ https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial
 		Generally speaking, using textures whose sides are a power of two is ideal. They are efficiently stored in video memory and are not restricted in how they could be used. 
 		Artist-created textures should be scaled up or down to a nearby power of two and, really, should have been authored in power-of-two to begin with. 
 		Each side should be: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, or 2048 pixels. Many, but not all, devices can support 4096 pixels; some can support 8192 and above.
+
+	WebGL tutorial 7 - Lighting in WebGL
+		https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Lighting_in_WebGL
+		https://github.com/mdn/webgl-examples/tree/gh-pages/tutorial/sample7
+		http://mdn.github.io/webgl-examples/tutorial/sample7/
+		
+		Note:
+		Phong shading
+		https://en.wikipedia.org/wiki/Phong_shading
+		ambient reflection		环境反射
+		diffuse reflection		漫反射
+		specular reflection		镜面反射
+
+		Test URL:
+		http://localhost:8080/gl/tutorial7.html
 
 
 Testing URLs:

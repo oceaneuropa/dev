@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>WebGL tutorial 6 - Using textures in WebGL</title>
+<title>WebGL tutorial 7 - Lighting in WebGL</title>
 <link rel="stylesheet" href="./tutorial/webgl.css" type="text/css">
 <script src="./tutorial/sylvester.js" type="text/javascript"></script>
 <script src="./tutorial/glUtils.js" type="text/javascript"></script>
@@ -10,32 +10,71 @@
 <!-- shader program -->
 <script id="shader-fs" type="x-shader/x-fragment">	
 	varying highp vec2 vTextureCoord;
+	varying highp vec3 vLighting; // added for lighting
   	uniform sampler2D uSampler;
 
 	void main(void) {
 		// Instead of assigning a color value to the fragment's color, the fragment's color is computed by fetching the texel 
 		// (that is, the pixel within the texture) that the sampler says best maps to the fragment's position.
-	
+
 		// basically this converts the image pixel by pixel into colors at corresponding coordinates.
 		// GL still uses colors to draw the faces of the cube which appears to be image to human eyes.
-		gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+
+		// gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+
+		// take into account the lighting value computed by the vertex shader:
+		mediump vec4 texelColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t));
+		// fetch the color of the texel, just like we did in the previous example, but before setting the color of the fragment, 
+		// we multiply the texel's color by the lighting value to adjust the texel's color to take into account the effect of our light sources.
+    	gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
+
+		// this is a simple example, implementing basic per-vertex lighting. For more advanced graphics, 
+		// you'll want to implement per-pixel lighting, but this will get you headed in the right direction.
 	}
 </script>
 
-<!-- shader program -->
-<script id="shader-vs" type="x-shader/x-vertex">
-	attribute vec3 aVertexPosition;
-	attribute vec2 aTextureCoord;	
-	uniform mat4 uMVMatrix;
-	uniform mat4 uPMatrix;
-	varying highp vec2 vTextureCoord;
-	void main(void) {
-		gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-		// replace the vertex shader so that instead of fetching color data, it instead fetches the texture coordinate data.
-		// The key change here is that instead of fetching the vertex color, we're setting the texture coordinates; 
-		// this will indicate the location within the texture corresponding to the vertex.
-		vTextureCoord = aTextureCoord;
-	}
+<!-- shader program 
+
+update the vertex shader so it generates a shading value for each vertex based on the ambient lighting as well as the directional lighting
+-->
+<script id="shader-vs" type="x-shader/x-vertex">  	
+  	attribute highp vec3 aVertexPosition;
+  	attribute highp vec2 aTextureCoord;
+	attribute highp vec3 aVertexNormal; // added for lighting
+
+  	uniform highp mat4 uMVMatrix;
+  	uniform highp mat4 uPMatrix;
+	uniform highp mat4 uNormalMatrix; 	// added for lighting  
+
+  	varying highp vec2 vTextureCoord;
+  	varying highp vec3 vLighting;		// added for lighting
+
+  	void main(void) {
+		// compute the position of the vertex 
+    	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+		// obtain the coordinates of the texel (the pixel within the texture) corresponding to the vertex
+   	 	vTextureCoord = aTextureCoord;
+
+		// compute the shading for the vertex.
+
+    	// Apply lighting effect
+    	highp vec3 ambientLight = vec3(0.6, 0.6, 0.6);
+    	highp vec3 directionalLightColor = vec3(0.5, 0.5, 0.75);
+    	highp vec3 directionalVector = vec3(0.85, 0.8, 0.75);
+		
+		// transform the normal based on the current position and orientation of the cube, by multiplying the vertex's normal by the normal matrix
+   	 	highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
+
+		// compute the amount of directional lighting that needs to be applied to the vertex by calculating the dot product of the transformed normal 
+		// and the directional vector (that is, the direction from which the light is coming). If this value is less than zero, then we pin the value 
+		// to zero, since you can't have less than zero light.
+    	highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+
+		// Once the amount of directional lighting is computed, we can generate the lighting value by taking the ambient light and adding in the 
+		// product of the directional light's color and the amount of directional lighting to provide. As a result, we now have an RGB value that 
+		// will be used by the fragment shader to adjust the color of each pixel we render.
+    	vLighting = ambientLight + (directionalLightColor * directional);
+  	}
 </script>
 
 <!-- WebGL javascript program -->
@@ -54,8 +93,11 @@
 
 	// <WebGLBuffer> 
 	var cubeVerticesBuffer;
+	var cubeVerticesNormalBuffer;
+	var cubeVerticesColorBuffer;
 	var cubeVerticesIndexBuffer;
 	var cubeVerticesTextureCoordBuffer;
+	var vertexNormalAttribute;
 
 	var mvMatrix;
 	var shaderProgram;
@@ -159,13 +201,13 @@
 		vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
 		gl.enableVertexAttribArray(vertexPositionAttribute);
 
-		// 2. initialize the color attribute for the shaderProgram
-		// vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-		// gl.enableVertexAttribArray(vertexColorAttribute);
-
 		// 2. initialize the texture attribute for the shaderProgram
 		textureCoordAttribute = gl.getAttribLocation(shaderProgram, "aTextureCoord");
 		gl.enableVertexAttribArray(textureCoordAttribute);
+
+		// 3. initialize the "normal" attribute for the shaderProgram
+		vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+		gl.enableVertexAttribArray(vertexNormalAttribute);		
 	}
 
 	/**
@@ -222,51 +264,44 @@
 	}
 
 	/**
-	 * Create the buffers
+	 * create the buffer that contains its vertices
 	 */
 	function initBuffers() {
 		console.log("initBuffers()");
 
-		// 1. fill cubeVerticesBuffer with vertices array
-		// The vertices array defines the coordinates for each vertex of each face of the cube.
+		// 1. fill the cubeVerticesBuffer with the vertices array.
 		var vertices = [
-		  	// Front face 
-		  	// 正面的四个点的 (x, y, z)坐标
+		  	// Front face
 		  	-1.0, -1.0,  1.0,
 		   	 1.0, -1.0,  1.0,
 		     1.0,  1.0,  1.0,
 		  	-1.0,  1.0,  1.0,
 
-		  	// Back face 
-		  	// 背面的四个点的 (x, y, z)坐标
+		  	// Back face
 		  	-1.0, -1.0, -1.0,
 		  	-1.0,  1.0, -1.0,
 		     1.0,  1.0, -1.0,
 		   	 1.0, -1.0, -1.0,
 
-		  	// Top face 
-		  	// 上面的四个点的 (x, y, z)坐标
+		  	// Top face
 		  	-1.0,  1.0, -1.0,
 		  	-1.0,  1.0,  1.0,
 		     1.0,  1.0,  1.0,
 		   	 1.0,  1.0, -1.0,
 
-		  	// Bottom face 
-		  	// 下面的四个点的 (x, y, z)坐标
+		  	// Bottom face
 		  	-1.0, -1.0, -1.0,
 		   	 1.0, -1.0, -1.0,
 		   	 1.0, -1.0,  1.0,
 		  	-1.0, -1.0,  1.0,
 
-		  	// Right face 
-		  	// 右面的四个点的 (x, y, z)坐标
+		  	// Right face
 		   	 1.0, -1.0, -1.0,
 		   	 1.0,  1.0, -1.0,
 		   	 1.0,  1.0,  1.0,
 		   	 1.0, -1.0,  1.0,
 
-		  	// Left face 
-		  	// 左面的四个点的 (x, y, z)坐标
+		  	// Left face
 		  	-1.0, -1.0, -1.0,
 		  	-1.0, -1.0,  1.0,
 		  	-1.0,  1.0,  1.0,
@@ -276,10 +311,49 @@
 		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
-		// 2. fill texture buffer with textureCoordinates array
-		// The textureCoordinates array defines the texture coordinates corresponding to each vertex of each face. 
-		// Note that the texture coordinates range from 0.0 to 1.0; the dimensions of textures are normalized to 
-		// a range of 0.0 to 1.0 regardless of their actual size, for the purpose of texture mapping.
+		// 2. Set up the normals for the vertices, so that we can compute lighting.	
+		var vertexNormals = [
+		  	// Front
+			0.0,  0.0,  1.0,
+		   	0.0,  0.0,  1.0,
+		   	0.0,  0.0,  1.0,
+		   	0.0,  0.0,  1.0,
+		  
+		  	// Back
+		   	0.0,  0.0, -1.0,
+		   	0.0,  0.0, -1.0,
+		   	0.0,  0.0, -1.0,
+		   	0.0,  0.0, -1.0,
+
+		  	// Top
+		   	0.0,  1.0,  0.0,
+		   	0.0,  1.0,  0.0,
+		   	0.0,  1.0,  0.0,
+		   	0.0,  1.0,  0.0,
+
+		  	// Bottom
+		   	0.0, -1.0,  0.0,
+		   	0.0, -1.0,  0.0,
+		   	0.0, -1.0,  0.0,
+		   	0.0, -1.0,  0.0,
+
+		  	// Right
+		   	1.0,  0.0,  0.0,
+		   	1.0,  0.0,  0.0,
+		   	1.0,  0.0,  0.0,
+		   	1.0,  0.0,  0.0,
+
+		  	// Left
+		   -1.0,  0.0,  0.0,
+		   -1.0,  0.0,  0.0,
+		   -1.0,  0.0,  0.0,
+		   -1.0,  0.0,  0.0
+		];
+		cubeVerticesNormalBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesNormalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertexNormals), gl.STATIC_DRAW);
+
+		// 3. Map the texture onto the cube's faces.
 		var textureCoordinates = [
 			// Front
 		  	0.0,  0.0,
@@ -312,14 +386,14 @@
 		  	1.0,  1.0,
 		  	0.0,  1.0
 		];
+		// Build the element array buffer; this specifies the indices into the vertex array for each face's vertices.
 		cubeVerticesTextureCoordBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);			
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);
 
-		// 3. Build the element array buffer; this specifies the indices into the vertex array for each face's vertices.
-		// The cubeVertexIndices array defines each face as a pair of triangles, 
-		// specifying each triangle's vertices as an index into the cube's vertex array. 
-		// Thus the cube is described as a collection of 12 triangles.
+		// 4. This array defines each face as two triangles, using the indices into the vertex array to specify each triangle's position.
+		// Note: 
+		// The cube is described as a collection of 12 triangles.
 		var cubeVertexIndices = [
 			0,  1,  2,      0,  2,  3,		// front (two triangles)
 			4,  5,  6,      4,  6,  7,    	// back (two triangles)
@@ -330,7 +404,7 @@
 		];
 		cubeVerticesIndexBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVerticesIndexBuffer);
-		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);	
+		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cubeVertexIndices), gl.STATIC_DRAW);
 	}
 
 	/**
@@ -338,8 +412,6 @@
 	 * The handleTextureLoaded() callback will finish the job; it gets called each time a texture finishes loading.
 	 */
 	function initTextures() {
-		console.log("initTextures()");
-
 		//  create GL texture object <WebGLTexture>
 		cubeTexture = gl.createTexture();
 		// creates an Image object and loads into it the graphic file we wish to use as our texture
@@ -385,8 +457,8 @@
 		// Set the drawing position to the "identity" point, which is the center of the scene.
 		loadIdentity();
 
-		// Now move the drawing position a bit to where we want to start drawing the square.
-		mvTranslate([ -0.0, 0.0, -6.0 ]); // -6 means move along z axes into screen by 6 units (units of what?)
+		// Move the drawing position a bit to where we want to start drawing the square.
+		mvTranslate([0.0, 0.0, -6.0]);
 
 		// Animation
 		// Save the current matrix, then rotate before we draw.
@@ -401,15 +473,19 @@
   		// 2. Set the texture coordinates attribute for the vertices.
   		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
   		gl.vertexAttribPointer(textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
-  
-  	  	// 3. Specify the texture to map onto the faces.
+
+  		// 3. Bind the normals array to a shader attribute so the shader code can get access to it:
+  		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesNormalBuffer);
+  		gl.vertexAttribPointer(vertexNormalAttribute, 3, gl.FLOAT, false, 0, 0);
+
+  	  	// 4. Specify the texture to map onto the faces.
   	  	// GL provides 32 texture registers; the first of these is gl.TEXTURE0. We bind our previously-loaded texture to that register,
   	  	gl.activeTexture(gl.TEXTURE0);
   		gl.bindTexture(gl.TEXTURE_2D, cubeTexture);
   		// set the shader sampler uSampler (specified in the shader program) to use that texture.
   		gl.uniform1i(gl.getUniformLocation(shaderProgram, "uSampler"), 0);
 
-  	  	// 4. Draw the cube.
+  	  	// 5. Draw the cube.
   	  	gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cubeVerticesIndexBuffer);
   	  	setMatrixUniforms();
   	  	gl.drawElements(gl.TRIANGLES, 36, gl.UNSIGNED_SHORT, 0);
@@ -457,6 +533,15 @@
 
 		var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 		gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.flatten()));
+
+		// added for lighting
+		// Note:
+  		// update the code that builds the uniform matrices to generate and deliver to the shader a normal matrix, 
+  		// which is used to transform the normals when dealing with the current orientation of the cube in relation to the light source:		
+		var normalMatrix = mvMatrix.inverse();
+		normalMatrix = normalMatrix.transpose();
+		var nUniform = gl.getUniformLocation(shaderProgram, "uNormalMatrix");
+		gl.uniformMatrix4fv(nUniform, false, new Float32Array(normalMatrix.flatten()));
 	}
 
 	// These routines were borrowed from a sample previously written by Vlad Vukićević.
