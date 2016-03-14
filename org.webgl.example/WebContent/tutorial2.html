@@ -18,6 +18,9 @@ Setting its value establishes the pixel's color, as seen below.
  -->
 <script id="shader-fs" type="x-shader/x-fragment">
     void main(void) {
+		// http://stackoverflow.com/questions/35926331/webgl-computer-graphics-vec4
+		// vec4 (4 component vector). X is the red component, Y the green, and Z the blue. The last component (w) is the alpha.
+		// So this short code just simply fill the polygons with a white color.
         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
     }
 </script>

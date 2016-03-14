@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>WebGL Fundamentals - Example1 - Use pixels coordinates</title>
+<link type="text/css" href="resources/webgl-tutorials.css" rel="stylesheet" />
+<script src="resources/webgl-utils.js"></script>
+<script type="text/javascript">
+
+	window.onload = main;
+
+	function main() {
+		console.log("gl_main()");
+
+		//Get A WebGL context
+		var canvas = document.getElementById("canvas");
+		var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+		// setup a GLSL program
+		var program = createProgramFromScripts(gl, ["2d-vertex-shader", "2d-fragment-shader"]);
+		gl.useProgram(program);
+
+		// look up where the vertex data needs to go.
+		var positionLocation = gl.getAttribLocation(program, "a_position");
+
+		// set the resolution
+		var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+		gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+
+		// Create a buffer and put a single clipspace rectangle in it (2 triangles)
+		var buffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+		gl.bufferData(gl.ARRAY_BUFFER, 
+			new Float32Array([
+		     	10, 20,
+		     	80, 20,
+		     	10, 30,
+		     	10, 30,
+		     	80, 20,
+		     	80, 30]), 
+		     gl.STATIC_DRAW);
+		gl.enableVertexAttribArray(positionLocation);
+		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+		// draw
+		gl.drawArrays(gl.TRIANGLES, 0, 6);
+	}
+
+	function createProgramFromScripts(gl, shaderIds) {
+		console.log("createProgramFromScripts(" + gl + ",[" + shaderIds + "])");
+		var program = gl.createProgram();
+		for (i = 0; i < shaderIds.length; i++) { 
+		    var shader = getShader(gl, shaderIds[i]);
+		    gl.attachShader(program, shader);
+		}
+		gl.linkProgram(program);
+		return program;
+	}
+
+	function getShader(gl, shaderId) {
+		console.log("getShader(" + gl + "," + shaderId + ")");
+		var shaderScript = document.getElementById(shaderId);
+		if (!shaderScript) {
+			return null;
+		}
+
+		var shaderSource = "";
+		var currentChild = shaderScript.firstChild;
+		while (currentChild) {
+			if (currentChild.nodeType == currentChild.TEXT_NODE) {
+				shaderSource += currentChild.textContent;
+			}
+			currentChild = currentChild.nextSibling;
+		}
+		console.log("shaderSource=" + shaderSource);
+
+		var shader;
+		if (shaderScript.type == "x-shader/x-fragment") {
+			shader = gl.createShader(gl.FRAGMENT_SHADER);
+		} else if (shaderScript.type == "x-shader/x-vertex") {
+			shader = gl.createShader(gl.VERTEX_SHADER);
+		} else {
+			return null;
+		}
+
+		gl.shaderSource(shader, shaderSource);
+		gl.compileShader(shader);
+
+		// See if it compiled successfully
+		if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+			alert("An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader));
+			return null;
+		}
+		return shader;
+	}
+</script>
+<script id="2d-vertex-shader" type="x-shader/x-vertex">
+	attribute vec2 a_position;
+	uniform vec2 u_resolution;
+	void main() {
+   		// convert the rectangle from pixels to 0.0 to 1.0
+   		vec2 zeroToOne = a_position / u_resolution;
+
+   		// convert from 0->1 to 0->2
+   		vec2 zeroToTwo = zeroToOne * 2.0;
+
+   		// convert from 0->2 to -1->+1 (clipspace)
+   		vec2 clipSpace = zeroToTwo - 1.0;
+
+		// You might notice the rectangle is near the bottom of that area. WebGL considers the bottom left corner to be 0,0. 
+		// To get it to be the more traditional top left corner used for 2d graphics APIs we just flip the y coordinate.
+   		// gl_Position = vec4(clipSpace, 0, 1);
+		gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+	}
+</script>
+<script id="2d-fragment-shader" type="x-shader/x-fragment">
+	void main() {
+ 	 	gl_FragColor = vec4(0, 1, 0, 1);  // green
+	}
+</script>
+</head>
+<body>
+	<canvas id="canvas" width="640" height="480"></canvas>
+</body>
+</html>

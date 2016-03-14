@@ -346,7 +346,7 @@ to be updated to pull the appropriate color from the color buffer:
 		// Animation
 		// Save the current matrix, then rotate before we draw.
   		mvPushMatrix();
-  		mvRotate(cubeRotation, [1, 1, 0]);
+  		mvRotate(cubeRotation, [0, 1, 0]);
   		// mvTranslate([cubeXOffset, cubeYOffset, cubeZOffset]);
 
   		// 1. Draw the cube by binding the array buffer to gl.ARRAY_BUFFER, setting attributes and pushing it to GL.

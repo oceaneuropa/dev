@@ -451,21 +451,24 @@ update the vertex shader so it generates a shading value for each vertex based o
 		// Animation
 		// Save the current matrix, then rotate before we draw.
   		mvPushMatrix();
-  		mvRotate(cubeRotation, [1, 1, 0]);
+  		mvRotate(cubeRotation, [0, 1, 0]);
   		// mvTranslate([cubeXOffset, cubeYOffset, cubeZOffset]);
 
   		// 1. Draw the cube by binding the array buffer to gl.ARRAY_BUFFER, setting attributes and pushing it to GL.
   		// vertices array -> cubeVerticesBuffer -> vertexPositionAttribute -> aVertexPosition (in "shader-vs" shader program) -> gl_Position
+  		// 把cubeVerticesBuffer设置到"shader-vs" 着色器程序的aVertexPosition变量中。aVertexPosition变量用于初始化"shader-vs"着色器程序的gl_Position内建变量.
   		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesBuffer);
   	  	gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
   		// 2. Set the texture coordinates attribute for the vertices.
   		// textureCoordinates array -> cubeVerticesTextureCoordBuffer -> textureCoordAttribute -> aTextureCoord (in "shader-vs" shader program) -> vTextureCoord (in "shader-fs" shader program) -> gl_FragColor
+  		// 把cubeVerticesTextureCoordBuffer设置到"shader-vs" 着色器程序的aTextureCoord变量中。aTextureCoord变量用于初始化"shader-fs"着色器程序的gl_FragColor内建变量.
   		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
   		gl.vertexAttribPointer(textureCoordAttribute, 2, gl.FLOAT, false, 0, 0);
 
   		// 3. Bind the normals array to a shader attribute so the shader code can get access to it:
   		// vertexNormals array -> cubeVerticesNormalBuffer -> vertexNormalAttribute -> aVertexNormal (in "shader-vs" shader program) -> transformedNormal -> directional -> vLighting  (in "shader-fs" shader program) -> gl_FragColor
+  		// 把cubeVerticesNormalBuffer设置到"shader-vs" 着色器程序的aVertexNormal变量中。aVertexNormal变量用于初始化"shader-fs"着色器程序的vLighting变量和gl_FragColor内建变量.
   		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesNormalBuffer);
   		gl.vertexAttribPointer(vertexNormalAttribute, 3, gl.FLOAT, false, 0, 0);
 

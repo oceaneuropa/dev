@@ -216,6 +216,8 @@
 		console.log("initBuffers()");
 
 		// 1. fill cubeVerticesBuffer with vertices array
+		// vertices array -> cubeVerticesBuffer
+
 		// The vertices array defines the coordinates for each vertex of each face of the cube.
 		var vertices = [
 		  	// Front face 
@@ -264,7 +266,10 @@
 		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 
+
 		// 2. fill texture buffer with textureCoordinates array
+		// textureCoordinates array -> cubeVerticesTextureCoordBuffer
+
 		// The textureCoordinates array defines the texture coordinates corresponding to each vertex of each face. 
 		// Note that the texture coordinates range from 0.0 to 1.0; the dimensions of textures are normalized to 
 		// a range of 0.0 to 1.0 regardless of their actual size, for the purpose of texture mapping.
@@ -304,7 +309,10 @@
 		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesTextureCoordBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoordinates), gl.STATIC_DRAW);			
 
+
 		// 3. Build the element array buffer; this specifies the indices into the vertex array for each face's vertices.
+		// cubeVertexIndices array -> cubeVerticesIndexBuffer
+
 		// The cubeVertexIndices array defines each face as a pair of triangles, 
 		// specifying each triangle's vertices as an index into the cube's vertex array. 
 		// Thus the cube is described as a collection of 12 triangles.
@@ -379,10 +387,10 @@
 		// Animation
 		// Save the current matrix, then rotate before we draw.
   		mvPushMatrix();
-  		mvRotate(cubeRotation, [1, 1, 0]);
+  		mvRotate(cubeRotation, [0, 1, 0]);
   		// mvTranslate([cubeXOffset, cubeYOffset, cubeZOffset]);
 
-  		// 1. Draw the cube by binding the array buffer to gl.ARRAY_BUFFER, setting attributes and pushing it to GL.
+  		// 1. Push the cubeVerticesBuffer to the vertexPositionAttribute in the shader program.
   		// vertices array -> cubeVerticesBuffer -> vertexPositionAttribute -> aVertexPosition (in "shader-vs" shader program) -> gl_Position
   		gl.bindBuffer(gl.ARRAY_BUFFER, cubeVerticesBuffer);
   	  	gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);

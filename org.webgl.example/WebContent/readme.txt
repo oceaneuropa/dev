@@ -1,18 +1,39 @@
-Sessions:
+1. Online links:
+	http://learningwebgl.com/blog/?p=28
+	http://learningwebgl.com/blog/?page_id=1217
+	
+	https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
+	https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial
+	
+	http://webglfundamentals.org/ (WebGL Fundamentals)
+	
+	http://threejs.org/examples/
+	
+	https://www.khronos.org/webgl/
+	http://stackoverflow.com/questions/tagged/webgl
+	https://groups.google.com/forum/#!forum/webgl-dev-list
+
+
+2. Sessions:
 http://learningwebgl.com/blog/?p=28
+http://learningwebgl.com/blog/?page_id=1217
 https://github.com/gpjt/webgl-lessons
 
-WebGL API:
+	Test URLs:
+	http://localhost:8080/gl/
+	http://localhost:8080/gl/lesson01/index.html
+
+
+3. WebGL API:
 https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API
 
 WebGL tutorial:
 https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial
 http://localhost:8080/gl/tutorial.html
 
-
     WebGL tutorial 1 - Getting started with WebGL
         https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Getting_started_with_WebGL
-	
+
 		Test URL:
 		http://localhost:8080/gl/tutorial1.html
 
@@ -82,11 +103,26 @@ http://localhost:8080/gl/tutorial.html
 		http://localhost:8080/gl/tutorial7.html
 
 
-Testing URLs:
-http://localhost:8080/gl/
-http://localhost:8080/gl/lesson01/index.html
+4. WebGL Fundamentals
+http://webglfundamentals.org/
+
+	Example1 - http://webglfundamentals.org/webgl/lessons/webgl-fundamentals.html
+		http://webglfundamentals.org/webgl/webgl-fundamentals.html
+		http://webglfundamentals.org/webgl/webgl-2d-rectangle.html
+		http://webglfundamentals.org/webgl/webgl-2d-rectangle-top-left.html
+
+		Test URL:
+		http://localhost:8080/gl/fundamentals/example1_v1.html
+		http://localhost:8080/gl/fundamentals/example1_v2.html
+		http://localhost:8080/gl/fundamentals/example1_v3.html
 
 
+5. WebGL 101
+Q1. what is vec4? 
+	e.g. gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0)
 
+	Answer: 
+	It's a vec4 (4 component vector). X is the red component, Y the green, and Z the blue. The last component (w) is the alpha.
+	(from http://stackoverflow.com/questions/35926331/webgl-computer-graphics-vec4)
 
 
