@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSGi Node CLI Example
-Bundle-SymbolicName: osgi.node.cli.example
+Bundle-SymbolicName: org.nb.node.cli
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: osgi.node.cli.example.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

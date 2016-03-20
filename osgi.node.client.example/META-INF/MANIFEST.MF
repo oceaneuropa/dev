@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSGi Node Client Example
-Bundle-SymbolicName: osgi.node.client.example
+Bundle-SymbolicName: org.nb.node.client
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: osgi.node.client.example.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
