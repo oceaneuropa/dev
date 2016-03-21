@@ -10,6 +10,8 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import osgi.mgm.common.util.ClientConfiguration;
+import osgi.mgm.common.util.ClientException;
 import osgi.mgm.ws.dto.MetaSectorDTO;
 import osgi.mgm.ws.dto.StatusDTO;
 

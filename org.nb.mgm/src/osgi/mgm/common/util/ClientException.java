@@ -1,4 +1,4 @@
-package osgi.mgm.ws.client;
+package osgi.mgm.common.util;
 
 public class ClientException extends Exception {
 

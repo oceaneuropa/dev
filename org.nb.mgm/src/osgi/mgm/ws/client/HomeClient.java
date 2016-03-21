@@ -10,6 +10,8 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import osgi.mgm.common.util.ClientConfiguration;
+import osgi.mgm.common.util.ClientException;
 import osgi.mgm.ws.dto.HomeDTO;
 import osgi.mgm.ws.dto.StatusDTO;
 
@@ -133,7 +135,7 @@ public class HomeClient extends AbstractMgmClient {
 	 * @return new Home
 	 * @throws ClientException
 	 */
-	public HomeDTO createHome(String machineId, HomeDTO home) throws ClientException {
+	public HomeDTO addHome(String machineId, HomeDTO home) throws ClientException {
 		HomeDTO newHome = null;
 		try {
 			Builder builder = getRootPath().path(machineId).path("homes").request(MediaType.APPLICATION_JSON);
@@ -176,7 +178,7 @@ public class HomeClient extends AbstractMgmClient {
 	}
 
 	/**
-	 * Delete a Home from a Machine.
+	 * Delete a Home from a Machine by home Id.
 	 * 
 	 * Request URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
 	 * 

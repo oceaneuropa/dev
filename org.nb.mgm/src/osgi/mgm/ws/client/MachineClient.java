@@ -10,6 +10,8 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import osgi.mgm.common.util.ClientConfiguration;
+import osgi.mgm.common.util.ClientException;
 import osgi.mgm.ws.dto.MachineDTO;
 import osgi.mgm.ws.dto.StatusDTO;
 
@@ -128,7 +130,7 @@ public class MachineClient extends AbstractMgmClient {
 	 * @return new Machine
 	 * @throws ClientException
 	 */
-	public MachineDTO createMachine(MachineDTO machine) throws ClientException {
+	public MachineDTO addMachine(MachineDTO machine) throws ClientException {
 		MachineDTO newMachine = null;
 		try {
 			Builder builder = getRootPath().path("machines").request(MediaType.APPLICATION_JSON);

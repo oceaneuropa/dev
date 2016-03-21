@@ -9,6 +9,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 
+import osgi.mgm.common.util.ClientConfiguration;
+import osgi.mgm.common.util.ClientException;
 import osgi.mgm.ws.dto.ErrorDTO;
 
 public abstract class AbstractMgmClient {

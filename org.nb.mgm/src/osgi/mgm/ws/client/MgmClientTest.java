@@ -2,6 +2,8 @@ package osgi.mgm.ws.client;
 
 import java.util.List;
 
+import osgi.mgm.common.util.ClientConfiguration;
+import osgi.mgm.common.util.ClientException;
 import osgi.mgm.ws.dto.HomeDTO;
 import osgi.mgm.ws.dto.MachineDTO;
 

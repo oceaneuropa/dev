@@ -1,4 +1,4 @@
-package osgi.mgm.ws.client;
+package osgi.mgm.common.util;
 
 import java.net.URI;
 import java.security.KeyManagementException;
