@@ -167,6 +167,12 @@ public class ManagementImpl implements Management {
 	// ------------------------------------------------------------------------------------------
 	// MetaSector
 	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all MetaSectors.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
 	@Override
 	public List<MetaSector> getMetaSectors() throws ClientException {
 		List<MetaSector> metaSectors = new ArrayList<MetaSector>();
@@ -181,6 +187,13 @@ public class ManagementImpl implements Management {
 		return metaSectors;
 	}
 
+	/**
+	 * Get MetaSectors by filter.
+	 * 
+	 * @param filter
+	 * @return
+	 * @throws ClientException
+	 */
 	@Override
 	public List<MetaSector> getMetaSectors(String filter) throws ClientException {
 		List<MetaSector> metaSectors = new ArrayList<MetaSector>();
@@ -195,6 +208,13 @@ public class ManagementImpl implements Management {
 		return metaSectors;
 	}
 
+	/**
+	 * Get MetaSector by metaSector Id.
+	 * 
+	 * @param metaSectorId
+	 * @return
+	 * @throws ClientException
+	 */
 	@Override
 	public MetaSector getMetaSector(String metaSectorId) throws ClientException {
 		MetaSector metaSector = null;
@@ -208,6 +228,14 @@ public class ManagementImpl implements Management {
 		return metaSector;
 	}
 
+	/**
+	 * Add a MetaSector to the cluster.
+	 * 
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws ClientException
+	 */
 	@Override
 	public MetaSector addMetaSector(String name, String description) throws ClientException {
 		MetaSector metaSector = null;
@@ -225,6 +253,12 @@ public class ManagementImpl implements Management {
 		return metaSector;
 	}
 
+	/**
+	 * Delete a MetaSector from the cluster.
+	 * 
+	 * @param metaSectorId
+	 * @throws ClientException
+	 */
 	@Override
 	public boolean deleteMetaSector(String metaSectorId) throws ClientException {
 		checkClient(this.metaSectorClient);
@@ -266,7 +300,6 @@ public class ManagementImpl implements Management {
 		} else if (MetaSpaceClient.class.equals(adapter)) {
 			return (T) this.metaSpaceClient;
 		}
-
 		return null;
 	}
 
