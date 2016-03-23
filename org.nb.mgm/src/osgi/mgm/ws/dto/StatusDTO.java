@@ -22,32 +22,14 @@ public class StatusDTO {
 
 	/**
 	 * 
-	 * @param message
-	 */
-	public StatusDTO(String message) {
-		this.message = message;
-	}
-
-	/**
-	 * 
 	 * @param code
-	 * @param message
-	 */
-	public StatusDTO(String code, String message) {
-		this.code = code;
-		this.message = message;
-	}
-
-	/**
-	 * 
-	 * @param code
-	 * @param message
 	 * @param status
+	 * @param message
 	 */
-	public StatusDTO(String code, String message, String status) {
+	public StatusDTO(String code, String status, String message) {
 		this.code = code;
-		this.message = message;
 		this.status = status;
+		this.message = message;
 	}
 
 	@XmlElement
@@ -60,21 +42,28 @@ public class StatusDTO {
 	}
 
 	@XmlElement
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	@XmlElement
 	public String getStatus() {
 		return status;
 	}
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	public boolean isSuccess() {
+		if ("success".equalsIgnoreCase(this.status)) {
+			return true;
+		}
+		return false;
+	}
+
+	@XmlElement
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

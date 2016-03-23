@@ -53,6 +53,53 @@ public interface Management extends IAdaptable {
 	 * @param machineId
 	 * @throws ClientException
 	 */
-	public void deleteMachine(String machineId) throws ClientException;
+	public boolean deleteMachine(String machineId) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// MetaSector
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all MetaSectors.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<MetaSector> getMetaSectors() throws ClientException;
+
+	/**
+	 * Get MetaSectors by filter.
+	 * 
+	 * @param filter
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<MetaSector> getMetaSectors(String filter) throws ClientException;
+
+	/**
+	 * Get MetaSector by metaSector Id.
+	 * 
+	 * @param metaSectorId
+	 * @return
+	 * @throws ClientException
+	 */
+	public MetaSector getMetaSector(String metaSectorId) throws ClientException;
+
+	/**
+	 * Add a MetaSector to the cluster.
+	 * 
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws ClientException
+	 */
+	public MetaSector addMetaSector(String name, String description) throws ClientException;
+
+	/**
+	 * Delete a MetaSector from the cluster.
+	 * 
+	 * @param metaSectorId
+	 * @throws ClientException
+	 */
+	public boolean deleteMetaSector(String metaSectorId) throws ClientException;
 
 }

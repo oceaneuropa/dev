@@ -13,6 +13,7 @@ import osgi.mgm.ws.client.HomeClient;
 import osgi.mgm.ws.client.MachineClient;
 import osgi.mgm.ws.dto.HomeDTO;
 import osgi.mgm.ws.dto.MachineDTO;
+import osgi.mgm.ws.dto.StatusDTO;
 
 public class MachineImpl implements Machine {
 
@@ -57,9 +58,9 @@ public class MachineImpl implements Machine {
 	public void update() throws ClientException {
 		if (this.management != null) {
 			MachineClient machineClient = this.management.getAdapter(MachineClient.class);
-			if (machineClient != null) {
-				machineClient.updateMachine(this.machineDTO);
-			}
+			checkClient(machineClient);
+
+			machineClient.updateMachine(this.machineDTO);
 		}
 	}
 
@@ -137,9 +138,7 @@ public class MachineImpl implements Machine {
 	@Override
 	public List<Home> getHomes() throws ClientException {
 		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		if (homeClient == null) {
-			return null;
-		}
+		checkClient(homeClient);
 
 		List<Home> homes = new ArrayList<Home>();
 		List<HomeDTO> homeDTOs = homeClient.getHomes(this.getId());
@@ -160,9 +159,7 @@ public class MachineImpl implements Machine {
 	@Override
 	public List<Home> getHomes(String filter) throws ClientException {
 		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		if (homeClient == null) {
-			return null;
-		}
+		checkClient(homeClient);
 
 		List<Home> homes = new ArrayList<Home>();
 		List<HomeDTO> homeDTOs = homeClient.getHomes(this.getId(), filter);
@@ -182,9 +179,7 @@ public class MachineImpl implements Machine {
 	 */
 	public Home getHome(String homeId) throws ClientException {
 		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		if (homeClient == null) {
-			return null;
-		}
+		checkClient(homeClient);
 
 		Home home = null;
 		HomeDTO homeDTO = homeClient.getHome(getId(), homeId);
@@ -204,9 +199,7 @@ public class MachineImpl implements Machine {
 	 */
 	public Home addHome(String name, String description, String url) throws ClientException {
 		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		if (homeClient == null) {
-			return null;
-		}
+		checkClient(homeClient);
 
 		Home home = null;
 
@@ -229,13 +222,30 @@ public class MachineImpl implements Machine {
 	 * @return
 	 * @throws ClientException
 	 */
-	public void deleteHome(String homeId) throws ClientException {
+	public boolean deleteHome(String homeId) throws ClientException {
 		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		if (homeClient == null) {
-			return;
-		}
+		checkClient(homeClient);
 
-		homeClient.deleteHome(getId(), homeId);
+		StatusDTO status = homeClient.deleteHome(getId(), homeId);
+		if (status != null && status.isSuccess()) {
+			return true;
+		}
+		return false;
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Check WS Client
+	// ------------------------------------------------------------------------------------------
+	protected void checkClient(MachineClient machineClient) throws ClientException {
+		if (machineClient == null) {
+			throw new ClientException(401, "MachineClient is not found.", null);
+		}
+	}
+
+	protected void checkClient(HomeClient homeClient) throws ClientException {
+		if (homeClient == null) {
+			throw new ClientException(401, "HomeClient is not found.", null);
+		}
 	}
 
 	/** implement IAdaptable interface */

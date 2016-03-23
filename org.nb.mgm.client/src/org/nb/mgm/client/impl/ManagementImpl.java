@@ -5,19 +5,26 @@ import java.util.List;
 
 import org.nb.mgm.client.Machine;
 import org.nb.mgm.client.Management;
+import org.nb.mgm.client.MetaSector;
 import org.nb.mgm.client.MgmFactory;
 
 import osgi.mgm.common.util.ClientConfiguration;
 import osgi.mgm.common.util.ClientException;
 import osgi.mgm.ws.client.HomeClient;
 import osgi.mgm.ws.client.MachineClient;
+import osgi.mgm.ws.client.MetaSectorClient;
+import osgi.mgm.ws.client.MetaSpaceClient;
 import osgi.mgm.ws.dto.MachineDTO;
+import osgi.mgm.ws.dto.MetaSectorDTO;
+import osgi.mgm.ws.dto.StatusDTO;
 
 public class ManagementImpl implements Management {
 
 	private ClientConfiguration clientConfiguration;
 	private MachineClient machineClient;
 	private HomeClient homeClient;
+	private MetaSectorClient metaSectorClient;
+	private MetaSpaceClient metaSpaceClient;
 
 	/**
 	 * 
@@ -40,10 +47,14 @@ public class ManagementImpl implements Management {
 		this.clientConfiguration = ClientConfiguration.get(url, contextRoot, username);
 		this.clientConfiguration.setPassword(password);
 
-		// web service client for machines
+		// WS client for machine
 		this.machineClient = new MachineClient(this.clientConfiguration);
-		// web service client for homes
+		// WS client for home
 		this.homeClient = new HomeClient(this.clientConfiguration);
+		// WS client for metaSector
+		this.metaSectorClient = new MetaSectorClient(this.clientConfiguration);
+		// WS client for metaSpace
+		this.metaSpaceClient = new MetaSpaceClient(this.clientConfiguration);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -58,7 +69,10 @@ public class ManagementImpl implements Management {
 	@Override
 	public List<Machine> getMachines() throws ClientException {
 		List<Machine> machines = new ArrayList<Machine>();
+
+		checkClient(this.machineClient);
 		List<MachineDTO> machineDTOs = this.machineClient.getMachines();
+
 		for (MachineDTO machineDTO : machineDTOs) {
 			Machine machine = MgmFactory.createMachine(this, machineDTO);
 			machines.add(machine);
@@ -76,7 +90,10 @@ public class ManagementImpl implements Management {
 	@Override
 	public List<Machine> getMachines(String filter) throws ClientException {
 		List<Machine> machines = new ArrayList<Machine>();
+
+		checkClient(this.machineClient);
 		List<MachineDTO> machineDTOs = this.machineClient.getMachines(filter);
+
 		for (MachineDTO machineDTO : machineDTOs) {
 			Machine machine = MgmFactory.createMachine(this, machineDTO);
 			machines.add(machine);
@@ -94,7 +111,10 @@ public class ManagementImpl implements Management {
 	@Override
 	public Machine getMachine(String machineId) throws ClientException {
 		Machine machine = null;
+
+		checkClient(this.machineClient);
 		MachineDTO machineDTO = this.machineClient.getMachine(machineId);
+
 		if (machineDTO != null) {
 			machine = MgmFactory.createMachine(this, machineDTO);
 		}
@@ -119,7 +139,9 @@ public class ManagementImpl implements Management {
 		newMachineRequest.setDescription(description);
 		newMachineRequest.setIpAddress(ipAddress);
 
+		checkClient(this.machineClient);
 		MachineDTO newMachineDTO = this.machineClient.addMachine(newMachineRequest);
+
 		if (newMachineDTO != null) {
 			machine = MgmFactory.createMachine(this, newMachineDTO);
 		}
@@ -133,8 +155,99 @@ public class ManagementImpl implements Management {
 	 * @throws ClientException
 	 */
 	@Override
-	public void deleteMachine(String machineId) throws ClientException {
-		this.machineClient.deleteMachine(machineId);
+	public boolean deleteMachine(String machineId) throws ClientException {
+		checkClient(this.machineClient);
+		StatusDTO status = this.machineClient.deleteMachine(machineId);
+		if (status != null && status.isSuccess()) {
+			return true;
+		}
+		return false;
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// MetaSector
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public List<MetaSector> getMetaSectors() throws ClientException {
+		List<MetaSector> metaSectors = new ArrayList<MetaSector>();
+
+		checkClient(this.metaSectorClient);
+		List<MetaSectorDTO> machineDTOs = this.metaSectorClient.getMetaSectors();
+
+		for (MetaSectorDTO machineDTO : machineDTOs) {
+			MetaSector metaSector = MgmFactory.createMetaSector(this, machineDTO);
+			metaSectors.add(metaSector);
+		}
+		return metaSectors;
+	}
+
+	@Override
+	public List<MetaSector> getMetaSectors(String filter) throws ClientException {
+		List<MetaSector> metaSectors = new ArrayList<MetaSector>();
+
+		checkClient(this.metaSectorClient);
+		List<MetaSectorDTO> machineDTOs = this.metaSectorClient.getMetaSectors(filter);
+
+		for (MetaSectorDTO machineDTO : machineDTOs) {
+			MetaSector metaSector = MgmFactory.createMetaSector(this, machineDTO);
+			metaSectors.add(metaSector);
+		}
+		return metaSectors;
+	}
+
+	@Override
+	public MetaSector getMetaSector(String metaSectorId) throws ClientException {
+		MetaSector metaSector = null;
+
+		checkClient(this.metaSectorClient);
+		MetaSectorDTO metaSectorDTO = this.metaSectorClient.getMetaSector(metaSectorId);
+
+		if (metaSectorDTO != null) {
+			metaSector = MgmFactory.createMetaSector(this, metaSectorDTO);
+		}
+		return metaSector;
+	}
+
+	@Override
+	public MetaSector addMetaSector(String name, String description) throws ClientException {
+		MetaSector metaSector = null;
+
+		MetaSectorDTO newMetaSectorRequest = new MetaSectorDTO();
+		newMetaSectorRequest.setName(name);
+		newMetaSectorRequest.setDescription(description);
+
+		checkClient(this.metaSectorClient);
+		MetaSectorDTO newMetaSectorDTO = this.metaSectorClient.addMetaSector(newMetaSectorRequest);
+
+		if (newMetaSectorDTO != null) {
+			metaSector = MgmFactory.createMetaSector(this, newMetaSectorDTO);
+		}
+		return metaSector;
+	}
+
+	@Override
+	public boolean deleteMetaSector(String metaSectorId) throws ClientException {
+		checkClient(this.metaSectorClient);
+		StatusDTO status = this.metaSectorClient.deleteMetaSector(metaSectorId);
+		if (status != null && status.isSuccess()) {
+			return true;
+		}
+		return false;
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Check WS Client
+	// ------------------------------------------------------------------------------------------
+	protected void checkClient(MachineClient machineClient) throws ClientException {
+		if (machineClient == null) {
+			throw new ClientException(401, "MachineClient is not found.", null);
+		}
+	}
+
+	protected void checkClient(MetaSectorClient metaSectorClient) throws ClientException {
+		if (metaSectorClient == null) {
+			throw new ClientException(401, "MetaSectorClient is not found.", null);
+		}
 	}
 
 	/** implement IAdaptable interface */
@@ -146,7 +259,14 @@ public class ManagementImpl implements Management {
 
 		} else if (HomeClient.class.equals(adapter)) {
 			return (T) this.homeClient;
+
+		} else if (MetaSectorClient.class.equals(adapter)) {
+			return (T) this.metaSectorClient;
+
+		} else if (MetaSpaceClient.class.equals(adapter)) {
+			return (T) this.metaSpaceClient;
 		}
+
 		return null;
 	}
 

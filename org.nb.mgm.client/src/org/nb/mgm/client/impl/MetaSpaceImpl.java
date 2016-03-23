@@ -1,25 +1,26 @@
 package org.nb.mgm.client.impl;
 
-import org.nb.mgm.client.Home;
-import org.nb.mgm.client.Machine;
 import org.nb.mgm.client.Management;
+import org.nb.mgm.client.MetaSector;
+import org.nb.mgm.client.MetaSpace;
 
 import osgi.mgm.common.util.ClientException;
-import osgi.mgm.ws.client.HomeClient;
+import osgi.mgm.ws.client.MetaSpaceClient;
 import osgi.mgm.ws.dto.HomeDTO;
+import osgi.mgm.ws.dto.MetaSpaceDTO;
 
-public class HomeImpl implements Home {
+public class MetaSpaceImpl implements MetaSpace {
 
 	private boolean autoUpdate = false;
-	private Machine machine;
-	private HomeDTO homeDTO;
+	private MetaSector metaSector;
+	private MetaSpaceDTO metaSpaceDTO;
 
 	/**
 	 * 
-	 * @param homeDTO
+	 * @param metaSpaceDTO
 	 */
-	public HomeImpl(HomeDTO homeDTO) {
-		this.homeDTO = homeDTO;
+	public MetaSpaceImpl(MetaSpaceDTO metaSpaceDTO) {
+		this.metaSpaceDTO = metaSpaceDTO;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -28,19 +29,19 @@ public class HomeImpl implements Home {
 	@Override
 	public Management getManagement() {
 		Management management = null;
-		if (this.machine != null) {
-			management = this.machine.getManagement();
+		if (this.metaSector != null) {
+			management = this.metaSector.getManagement();
 		}
 		return management;
 	}
 
 	@Override
-	public Machine getMachine() {
-		return machine;
+	public MetaSector getMetaSector() {
+		return metaSector;
 	}
 
-	public void setMachine(Machine machine) {
-		this.machine = machine;
+	public void setMetaSector(MetaSector metaSector) {
+		this.metaSector = metaSector;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -58,14 +59,14 @@ public class HomeImpl implements Home {
 
 	@Override
 	public void update() throws ClientException {
-		if (this.machine != null) {
-			Management management = this.machine.getManagement();
-			String machineId = this.machine.getId();
+		if (this.metaSector != null) {
+			Management management = this.metaSector.getManagement();
+			String metaSectorId = this.metaSector.getId();
 
-			HomeClient homeClient = management.getAdapter(HomeClient.class);
-			checkClient(homeClient);
+			MetaSpaceClient metaSpaceClient = management.getAdapter(MetaSpaceClient.class);
+			checkClient(metaSpaceClient);
 
-			homeClient.updateHome(machineId, this.homeDTO);
+			metaSpaceClient.updateMetaSpace(metaSectorId, this.metaSpaceDTO);
 		}
 	}
 
@@ -74,20 +75,20 @@ public class HomeImpl implements Home {
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public String getId() {
-		return this.homeDTO.getId();
+		return this.metaSpaceDTO.getId();
 	}
 
 	@Override
 	public String getName() {
-		return this.homeDTO.getName();
+		return this.metaSpaceDTO.getName();
 	}
 
 	@Override
 	public void setName(String name) throws ClientException {
-		String oldName = this.homeDTO.getName();
+		String oldName = this.metaSpaceDTO.getName();
 
 		if ((oldName == null && name != null) || (oldName != null && !oldName.equals(name))) {
-			this.homeDTO.setName(name);
+			this.metaSpaceDTO.setName(name);
 
 			if (this.autoUpdate) {
 				update();
@@ -97,33 +98,15 @@ public class HomeImpl implements Home {
 
 	@Override
 	public String getDescription() {
-		return this.homeDTO.getDescription();
+		return this.metaSpaceDTO.getDescription();
 	}
 
 	@Override
 	public void setDescription(String description) throws ClientException {
-		String oldDescription = this.homeDTO.getDescription();
+		String oldDescription = this.metaSpaceDTO.getDescription();
 
 		if ((oldDescription == null && description != null) || (oldDescription != null && !oldDescription.equals(description))) {
-			this.homeDTO.setDescription(description);
-
-			if (this.autoUpdate) {
-				update();
-			}
-		}
-	}
-
-	@Override
-	public String getUrl() {
-		return this.homeDTO.getUrl();
-	}
-
-	@Override
-	public void setUrl(String url) throws ClientException {
-		String oldUrl = this.homeDTO.getUrl();
-
-		if ((oldUrl == null && url != null) || (oldUrl != null && !oldUrl.equals(url))) {
-			this.homeDTO.setUrl(url);
+			this.metaSpaceDTO.setDescription(description);
 
 			if (this.autoUpdate) {
 				update();
@@ -134,9 +117,9 @@ public class HomeImpl implements Home {
 	// ------------------------------------------------------------------------------------------
 	// Check WS Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(HomeClient homeClient) throws ClientException {
-		if (homeClient == null) {
-			throw new ClientException(401, "HomeClient is not found.", null);
+	protected void checkClient(MetaSpaceClient metaSpaceClient) throws ClientException {
+		if (metaSpaceClient == null) {
+			throw new ClientException(401, "MetaSpaceClient is not found.", null);
 		}
 	}
 
@@ -145,7 +128,7 @@ public class HomeImpl implements Home {
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		if (HomeDTO.class.equals(adapter)) {
-			return (T) this.homeDTO;
+			return (T) this.metaSpaceDTO;
 		}
 		return null;
 	}

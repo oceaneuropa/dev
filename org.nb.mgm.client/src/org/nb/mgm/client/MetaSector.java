@@ -5,7 +5,7 @@ import java.util.List;
 import osgi.mgm.common.util.ClientException;
 import osgi.mgm.common.util.IAdaptable;
 
-public interface Machine extends IAdaptable {
+public interface MetaSector extends IAdaptable {
 
 	// ------------------------------------------------------------------------------------------
 	// Parent
@@ -34,56 +34,51 @@ public interface Machine extends IAdaptable {
 
 	public void setDescription(String description) throws ClientException;
 
-	public String getIpAddress();
-
-	public void setIpAddress(String ipAddress) throws ClientException;
-
 	// ------------------------------------------------------------------------------------------
-	// Home
+	// MetaSpace
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get all Homes in a Machine.
+	 * Get all MetaSpaces in a MetaSector.
 	 * 
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<Home> getHomes() throws ClientException;
+	public List<MetaSpace> getMetaSpaces() throws ClientException;
 
 	/**
-	 * Get all Homes in a Machine by filter.
+	 * Get all MetaSpaces in a MetaSector by filter.
 	 * 
 	 * @param filter
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<Home> getHomes(String filter) throws ClientException;
+	public List<MetaSpace> getMetaSpaces(String filter) throws ClientException;
 
 	/**
-	 * Get Home by home Id.
+	 * Get MetaSpace by metaSpace Id.
 	 * 
-	 * @param homeId
+	 * @param metaSpaceId
 	 * @return
 	 * @throws ClientException
 	 */
-	public Home getHome(String homeId) throws ClientException;
+	public MetaSpace getMetaSpace(String metaSpaceId) throws ClientException;
 
 	/**
-	 * Add a Home to a Machine.
+	 * Add a MetaSpace to a MetaSector.
 	 * 
 	 * @param name
 	 * @param description
-	 * @param url
 	 * @throws ClientException
 	 */
-	public Home addHome(String name, String description, String url) throws ClientException;
+	public MetaSpace addMetaSpace(String name, String description) throws ClientException;
 
 	/**
-	 * Delete Home from a Machine by home Id.
+	 * Delete MetaSpace from a MetaSector by metaSpace Id.
 	 * 
-	 * @param homeId
+	 * @param metaSpaceId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean deleteHome(String homeId) throws ClientException;
+	public boolean deleteMetaSpace(String metaSpaceId) throws ClientException;
 
 }

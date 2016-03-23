@@ -134,7 +134,7 @@ public class MetaSpaceClient extends AbstractMgmClient {
 	 * @return new MetaSpace
 	 * @throws ClientException
 	 */
-	public MetaSpaceDTO createMetaSpace(String metaSectorId, MetaSpaceDTO metaSpace) throws ClientException {
+	public MetaSpaceDTO addMetaSpace(String metaSectorId, MetaSpaceDTO metaSpace) throws ClientException {
 		MetaSpaceDTO newMetaSpace = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("metaspaces").request(MediaType.APPLICATION_JSON);

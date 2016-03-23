@@ -130,7 +130,7 @@ public class MetaSectorClient extends AbstractMgmClient {
 	 * @return new MetaSector
 	 * @throws ClientException
 	 */
-	public MetaSectorDTO createMetaSector(MetaSectorDTO metaSector) throws ClientException {
+	public MetaSectorDTO addMetaSector(MetaSectorDTO metaSector) throws ClientException {
 		MetaSectorDTO newMetaSector = null;
 		try {
 			Builder builder = getRootPath().path("metasectors").request(MediaType.APPLICATION_JSON);
