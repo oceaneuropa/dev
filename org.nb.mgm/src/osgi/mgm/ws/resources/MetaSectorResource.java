@@ -90,8 +90,6 @@ public class MetaSectorResource {
 	 * 
 	 * @return
 	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMetaSectors() {
 		List<MetaSectorDTO> metaSectorDTOs = new ArrayList<MetaSectorDTO>();
 
@@ -135,8 +133,15 @@ public class MetaSectorResource {
 		MgmService mgm = getMgmService();
 		try {
 			// Get MetaSectors matched by query.
-			MetaSectorQuery metaSectorQuery = MetaSectorQuery.newBuilder().withFilter(filter).build();
-			for (MetaSector metaSector : mgm.getMetaSectors(metaSectorQuery)) {
+			List<MetaSector> metaSectors = null;
+			if (filter != null) {
+				MetaSectorQuery metaSectorQuery = MetaSectorQuery.newBuilder().withFilter(filter).build();
+				metaSectors = mgm.getMetaSectors(metaSectorQuery);
+			} else {
+				metaSectors = mgm.getMetaSectors();
+			}
+
+			for (MetaSector metaSector : metaSectors) {
 				MetaSectorDTO metaSectorDTO = DTOConverter.getInstance().toDTO(metaSector);
 
 				List<MetaSpaceDTO> metaSpaceDTOs = new ArrayList<MetaSpaceDTO>();

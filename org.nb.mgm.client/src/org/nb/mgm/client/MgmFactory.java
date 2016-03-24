@@ -85,9 +85,9 @@ public class MgmFactory {
 	 * @return
 	 */
 	public static MetaSpace createMetaSpace(MetaSector metaSector, MetaSpaceDTO metaSpaceDTO) {
-		MetaSpaceImpl home = new MetaSpaceImpl(metaSpaceDTO);
-		home.setMetaSector(metaSector);
-		return home;
+		MetaSpaceImpl metaSpace = new MetaSpaceImpl(metaSpaceDTO);
+		metaSpace.setMetaSector(metaSector);
+		return metaSpace;
 	}
 
 }

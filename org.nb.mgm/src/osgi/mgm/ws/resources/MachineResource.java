@@ -90,8 +90,6 @@ public class MachineResource {
 	 * 
 	 * @return
 	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMachines() {
 		List<MachineDTO> machineDTOs = new ArrayList<MachineDTO>();
 
@@ -134,8 +132,15 @@ public class MachineResource {
 		MgmService mgm = getMgmService();
 		try {
 			// Get Machines matched by query.
-			MachineQuery machineQuery = MachineQuery.newBuilder().withFilter(filter).build();
-			for (Machine machine : mgm.getMachines(machineQuery)) {
+			List<Machine> machines = null;
+			if (filter != null) {
+				MachineQuery machineQuery = MachineQuery.newBuilder().withFilter(filter).build();
+				machines = mgm.getMachines(machineQuery);
+			} else {
+				machines = mgm.getMachines();
+			}
+
+			for (Machine machine : machines) {
 				MachineDTO machineDTO = DTOConverter.getInstance().toDTO(machine);
 
 				List<HomeDTO> homeDTOs = new ArrayList<HomeDTO>();

@@ -39,7 +39,7 @@ public class MgmApplication extends Application {
 	public void start() {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.CONTEXT_ROOT, contextRoot);
-		this.serviceRegistration = this.bundleContext.registerService(MgmApplication.class, this, props);
+		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 	}
 
 	/**

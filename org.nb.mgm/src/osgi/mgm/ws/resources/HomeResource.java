@@ -94,8 +94,6 @@ public class HomeResource {
 	 * 
 	 * @return
 	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response getHomes( //
 			@PathParam("machineId") String machineId //
 	) {
@@ -177,8 +175,15 @@ public class HomeResource {
 			}
 
 			// 2. Get Homes in the Machine and matched by query.
-			HomeQuery homeQuery = HomeQuery.newBuilder().withFilter(filter).build();
-			for (Home home : mgm.getHomes(machineId, homeQuery)) {
+			List<Home> homes = null;
+			if (filter != null) {
+				HomeQuery homeQuery = HomeQuery.newBuilder().withFilter(filter).build();
+				homes = mgm.getHomes(machineId, homeQuery);
+			} else {
+				homes = mgm.getHomes(machineId);
+			}
+
+			for (Home home : homes) {
 				HomeDTO homeDTO = DTOConverter.getInstance().toDTO(home);
 
 				// 3. Set Machine DTO

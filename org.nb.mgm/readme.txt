@@ -1,3 +1,13 @@
+Program arguments:
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console
+
+VM arguments:
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dnode.http.host=localhost -Dorg.osgi.service.http.port=9090 -Dnode.http.host=localhost -Dnode.http.port=9090 -Dcluster.persistence.local.dir=C:\cluster\data
+
+
+
+
+
 Management web service
 
 Host

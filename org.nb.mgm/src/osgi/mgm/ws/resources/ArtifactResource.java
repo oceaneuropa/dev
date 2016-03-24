@@ -90,8 +90,6 @@ public class ArtifactResource {
 	 * 
 	 * @return
 	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response getArtifacts( //
 			@PathParam("metaSectorId") String metaSectorId //
 	) {
@@ -148,8 +146,15 @@ public class ArtifactResource {
 			}
 
 			// 2. Get all Artifacts in the MetaSector and matched by query.
-			ArtifactQuery artifactQuery = ArtifactQuery.newBuilder().withFilter(filter).build();
-			for (Artifact artifact : mgm.getArtifacts(metaSectorId, artifactQuery)) {
+			List<Artifact> artifacts = null;
+			if (filter != null) {
+				ArtifactQuery artifactQuery = ArtifactQuery.newBuilder().withFilter(filter).build();
+				artifacts = mgm.getArtifacts(metaSectorId, artifactQuery);
+			} else {
+				artifacts = mgm.getArtifacts(metaSectorId);
+			}
+
+			for (Artifact artifact : artifacts) {
 				ArtifactDTO artifactDTO = DTOConverter.getInstance().toDTO(artifact);
 
 				// 3. Set MetaSector DTO

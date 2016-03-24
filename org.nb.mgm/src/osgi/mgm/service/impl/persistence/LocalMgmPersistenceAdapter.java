@@ -71,7 +71,7 @@ public class LocalMgmPersistenceAdapter implements MgmPersistenceAdapter {
 			dir = (String) this.props.get(MgmConstants.CLUSTER_HOME_DIR);
 		}
 
-		File file = new File(dir + File.pathSeparator + "cluster.json");
+		File file = new File(dir, "cluster.json");
 		return file;
 	}
 

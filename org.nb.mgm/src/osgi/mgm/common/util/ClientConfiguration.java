@@ -108,6 +108,7 @@ public class ClientConfiguration {
 				this.port = DEFAULT_PORT;
 			}
 		}
+		this.contextRoot = contextRoot;
 	}
 
 	/**

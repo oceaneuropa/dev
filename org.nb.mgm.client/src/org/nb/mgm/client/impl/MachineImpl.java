@@ -258,4 +258,14 @@ public class MachineImpl implements Machine {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("id=").append(getId());
+		sb.append(",name=").append(getName());
+		sb.append(",description=").append(getDescription());
+		sb.append(",ip=").append(getIpAddress());
+		return sb.toString();
+	}
+
 }

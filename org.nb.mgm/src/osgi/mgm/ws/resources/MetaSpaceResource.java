@@ -92,8 +92,6 @@ public class MetaSpaceResource {
 	 * 
 	 * @return
 	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMetaSpaces( //
 			@PathParam("metaSectorId") String metaSectorId //
 	) {
@@ -162,26 +160,35 @@ public class MetaSpaceResource {
 			}
 
 			// 2. Get all MetaSpaces in the MetaSector and matched by query.
-			MetaSpaceQuery metaSpaceQuery = MetaSpaceQuery.newBuilder().withFilter(filter).build();
-			for (MetaSpace metaSpace : mgm.getMetaSpaces(metaSectorId, metaSpaceQuery)) {
-				MetaSpaceDTO metaSpaceDTO = DTOConverter.getInstance().toDTO(metaSpace);
+			List<MetaSpace> metaSpaces = null;
+			if (filter != null) {
+				MetaSpaceQuery metaSpaceQuery = MetaSpaceQuery.newBuilder().withFilter(filter).build();
+				metaSpaces = mgm.getMetaSpaces(metaSectorId, metaSpaceQuery);
+			} else {
+				metaSpaces = mgm.getMetaSpaces(metaSectorId);
+			}
 
-				// 3. Set MetaSector DTO
-				metaSpaceDTO.setMetaSector(metaSectorDTO);
+			if (metaSpaces != null) {
+				for (MetaSpace metaSpace : metaSpaces) {
+					MetaSpaceDTO metaSpaceDTO = DTOConverter.getInstance().toDTO(metaSpace);
 
-				// 4. Set deployed Artifacts DTO
-				List<ArtifactDTO> deployedArtifactDTOs = new ArrayList<ArtifactDTO>();
-				List<String> artifactIds = metaSpace.getDeployedArtifactIds();
-				for (String artifactId : artifactIds) {
-					Artifact artifact = mgm.getArtifact(artifactId);
-					if (artifact != null) {
-						ArtifactDTO artifactDTO = DTOConverter.getInstance().toDTO(artifact);
-						deployedArtifactDTOs.add(artifactDTO);
+					// 3. Set MetaSector DTO
+					metaSpaceDTO.setMetaSector(metaSectorDTO);
+
+					// 4. Set deployed Artifacts DTO
+					List<ArtifactDTO> deployedArtifactDTOs = new ArrayList<ArtifactDTO>();
+					List<String> artifactIds = metaSpace.getDeployedArtifactIds();
+					for (String artifactId : artifactIds) {
+						Artifact artifact = mgm.getArtifact(artifactId);
+						if (artifact != null) {
+							ArtifactDTO artifactDTO = DTOConverter.getInstance().toDTO(artifact);
+							deployedArtifactDTOs.add(artifactDTO);
+						}
 					}
-				}
-				metaSpaceDTO.setDeployedArtifacts(deployedArtifactDTOs);
+					metaSpaceDTO.setDeployedArtifacts(deployedArtifactDTOs);
 
-				metaSpaceDTOs.add(metaSpaceDTO);
+					metaSpaceDTOs.add(metaSpaceDTO);
+				}
 			}
 
 		} catch (MgmException e) {
