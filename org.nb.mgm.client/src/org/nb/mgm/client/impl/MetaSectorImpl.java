@@ -239,4 +239,13 @@ public class MetaSectorImpl implements MetaSector {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("id=").append(getId());
+		sb.append(",name=").append(getName());
+		sb.append(",description=").append(getDescription());
+		return sb.toString();
+	}
+
 }

@@ -26,19 +26,6 @@ public class MgmFactory {
 	}
 
 	/**
-	 * Create Management client.
-	 * 
-	 * @param url
-	 * @param contextRoot
-	 * @param username
-	 * @param password
-	 * @return
-	 */
-	public static Management createManagement(String url, String contextRoot, String username, String password) {
-		return new ManagementImpl(url, contextRoot, username, password);
-	}
-
-	/**
 	 * Create Machine client.
 	 * 
 	 * @param management
