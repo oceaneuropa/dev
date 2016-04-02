@@ -193,7 +193,7 @@ public class ManagementCommand {
 			}
 
 		} catch (ClientException e) {
-			System.out.println("ClientException: " + e.getMessage());
+			System.out.println(e.getMessage() + "(" + e.getCode() + ")");
 		}
 	}
 
@@ -221,6 +221,12 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void listHomes(Management mgm, String machineId) throws ClientException {
+		Machine machine = mgm.getMachine(machineId);
+		if (machine == null) {
+			System.out.println(MessageFormat.format("Machine with id=''{0}'' does not exist.", new Object[] { machineId }));
+			return;
+		}
+
 		List<Home> homes = mgm.getHomes(machineId);
 		String[][] rows = new String[homes.size()][HOME_TITLES.length];
 		int rowIndex = 0;
@@ -254,6 +260,12 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void listMetaSpaces(Management mgm, String metaSectorId) throws ClientException {
+		MetaSector metaSector = mgm.getMetaSector(metaSectorId);
+		if (metaSector == null) {
+			System.out.println(MessageFormat.format("MetaSector with id=''{0}'' does not exist.", new Object[] { metaSectorId }));
+			return;
+		}
+
 		List<MetaSpace> metaSpaces = mgm.getMetaSpaces(metaSectorId);
 		String[][] rows = new String[metaSpaces.size()][META_SPACE_TITLES.length];
 		int rowIndex = 0;

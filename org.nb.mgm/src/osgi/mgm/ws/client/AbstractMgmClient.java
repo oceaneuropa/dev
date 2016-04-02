@@ -46,7 +46,7 @@ public abstract class AbstractMgmClient {
 					e.printStackTrace();
 				}
 				if (error != null) {
-					throw new ClientException(response.getStatus(), error.getCode() + ": " + error.getMessage(), null);
+					throw new ClientException(response.getStatus(), error.getMessage(), null);
 				} else {
 					throw new ClientException(response.getStatus(), response.getStatusInfo().getReasonPhrase(), null);
 				}

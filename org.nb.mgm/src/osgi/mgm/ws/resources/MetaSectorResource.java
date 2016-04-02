@@ -162,8 +162,8 @@ public class MetaSectorResource {
 		try {
 			MetaSector metaSector = mgm.getMetaSector(metaSectorId);
 			if (metaSector == null) {
-				ErrorDTO metaSectorNotFoundError = new ErrorDTO("MetaSector cannot be found.");
-				return Response.ok().entity(metaSectorNotFoundError).build();
+				ErrorDTO metaSectorNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "MetaSector cannot be found.");
+				return Response.status(Status.NOT_FOUND).entity(metaSectorNotFoundError).build();
 			}
 			metaSectorDTO = DTOConverter.getInstance().toDTO(metaSector);
 

@@ -34,16 +34,6 @@ public class ManagementImpl implements Management {
 	/**
 	 * 
 	 * @param url
-	 * @param username
-	 * @param password
-	 */
-	public ManagementImpl(String url, String username, String password) {
-		this(url, "mgm", username, password);
-	}
-
-	/**
-	 * 
-	 * @param url
 	 * @param contextRoot
 	 * @param username
 	 * @param password

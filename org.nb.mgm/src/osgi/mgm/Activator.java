@@ -36,7 +36,7 @@ public class Activator implements BundleActivator {
 		Activator.mgm.start();
 
 		// 2. Start MgmApplication web service
-		this.mgmApplication = new MgmApplication(bundleContext, "/mgm");
+		this.mgmApplication = new MgmApplication(bundleContext, "/mgm/v1");
 		this.mgmApplication.start();
 	}
 

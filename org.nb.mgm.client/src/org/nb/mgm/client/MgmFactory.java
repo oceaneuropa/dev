@@ -22,7 +22,7 @@ public class MgmFactory {
 	 * @return
 	 */
 	public static Management createManagement(String url, String username, String password) {
-		return new ManagementImpl(url, username, password);
+		return new ManagementImpl(url, "mgm/v1", username, password);
 	}
 
 	/**

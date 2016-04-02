@@ -187,14 +187,12 @@ public class MetaSpaceResource {
 			// 1. Find MetaSpace by metaSpaceId and convert to DTO
 			MetaSpace metaSpace = mgm.getMetaSpace(metaSpaceId);
 			if (metaSpace == null) {
-				ErrorDTO metaSpaceNotFoundError = new ErrorDTO("MetaSpace cannot be found.");
-				return Response.ok().entity(metaSpaceNotFoundError).build();
+				ErrorDTO metaSpaceNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "MetaSpace cannot be found.");
+				return Response.status(Status.NOT_FOUND).entity(metaSpaceNotFoundError).build();
 			}
-			if (metaSectorId != null) {
-				if (metaSpace.getMetaSector() == null || !metaSectorId.equals(metaSpace.getMetaSector().getId())) {
-					ErrorDTO metaSectorIdNotMatchError = new ErrorDTO("The metaSectorId that the MetaSpace has does not match the given metaSectorId.");
-					return Response.ok().entity(metaSectorIdNotMatchError).build();
-				}
+			if (metaSectorId != null && (metaSpace.getMetaSector() == null || !metaSectorId.equals(metaSpace.getMetaSector().getId()))) {
+				ErrorDTO metaSectorIdNotMatchError = new ErrorDTO(String.valueOf(Status.INTERNAL_SERVER_ERROR.getStatusCode()), "The metaSectorId that the MetaSpace has does not match the given metaSectorId.");
+				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(metaSectorIdNotMatchError).build();
 			}
 			metaSpaceDTO = DTOConverter.getInstance().toDTO(metaSpace);
 

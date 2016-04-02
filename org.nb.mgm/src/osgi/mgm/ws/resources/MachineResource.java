@@ -170,8 +170,8 @@ public class MachineResource {
 		try {
 			Machine machine = mgm.getMachine(machineId);
 			if (machine == null) {
-				ErrorDTO machineNotFoundError = new ErrorDTO("Machine cannot be found.");
-				return Response.ok().entity(machineNotFoundError).build();
+				ErrorDTO machineNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "Machine cannot be found.");
+				return Response.status(Status.NOT_FOUND).entity(machineNotFoundError).build();
 			}
 			machineDTO = DTOConverter.getInstance().toDTO(machine);
 

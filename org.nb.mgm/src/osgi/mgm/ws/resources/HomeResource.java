@@ -208,14 +208,12 @@ public class HomeResource {
 			// 1. Find Home by homeId and convert to DTO
 			Home home = mgm.getHome(homeId);
 			if (home == null) {
-				ErrorDTO homeNotFoundError = new ErrorDTO("Home cannot be found.");
-				return Response.ok().entity(homeNotFoundError).build();
+				ErrorDTO homeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "Home cannot be found.");
+				return Response.status(Status.NOT_FOUND).entity(homeNotFoundError).build();
 			}
-			if (machineId != null) {
-				if (home.getMachine() == null || !machineId.equals(home.getMachine().getId())) {
-					ErrorDTO machineIdNotMatchError = new ErrorDTO("The machineId that the Home has does not match the given machineId.");
-					return Response.ok().entity(machineIdNotMatchError).build();
-				}
+			if (machineId != null && (home.getMachine() == null || !machineId.equals(home.getMachine().getId()))) {
+				ErrorDTO machineIdNotMatchError = new ErrorDTO(String.valueOf(Status.INTERNAL_SERVER_ERROR.getStatusCode()), "The machineId that the Home has does not match the given machineId.");
+				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(machineIdNotMatchError).build();
 			}
 			homeDTO = DTOConverter.getInstance().toDTO(home);
 
