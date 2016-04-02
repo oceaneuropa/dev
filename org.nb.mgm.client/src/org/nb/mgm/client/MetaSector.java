@@ -1,6 +1,7 @@
 package org.nb.mgm.client;
 
 import java.util.List;
+import java.util.Properties;
 
 import osgi.mgm.common.util.ClientException;
 import osgi.mgm.common.util.IAdaptable;
@@ -46,13 +47,14 @@ public interface MetaSector extends IAdaptable {
 	public List<MetaSpace> getMetaSpaces() throws ClientException;
 
 	/**
-	 * Get all MetaSpaces in a MetaSector by filter.
+	 * Get MetaSpaces in a MetaSector by query parameters.
 	 * 
-	 * @param filter
+	 * @param properties
+	 *            supported keys are: "name", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<MetaSpace> getMetaSpaces(String filter) throws ClientException;
+	public List<MetaSpace> getMetaSpaces(Properties properties) throws ClientException;
 
 	/**
 	 * Get MetaSpace by metaSpace Id.

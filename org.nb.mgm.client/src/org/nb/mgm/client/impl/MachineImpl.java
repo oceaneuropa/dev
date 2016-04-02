@@ -2,6 +2,7 @@ package org.nb.mgm.client.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.nb.mgm.client.Home;
 import org.nb.mgm.client.Machine;
@@ -137,32 +138,24 @@ public class MachineImpl implements Machine {
 	 */
 	@Override
 	public List<Home> getHomes() throws ClientException {
-		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		List<Home> homes = new ArrayList<Home>();
-		List<HomeDTO> homeDTOs = homeClient.getHomes(this.getId());
-		for (HomeDTO homeDTO : homeDTOs) {
-			Home home = MgmFactory.createHome(this, homeDTO);
-			homes.add(home);
-		}
-		return homes;
+		return getHomes(null);
 	}
 
 	/**
-	 * Get all Homes in a Machine by filter.
+	 * Get Homes in a Machine by query parameters.
 	 * 
-	 * @param filter
+	 * @param properties
+	 *            supported keys are: "name", "url", "status", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
 	@Override
-	public List<Home> getHomes(String filter) throws ClientException {
+	public List<Home> getHomes(Properties properties) throws ClientException {
 		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
 		checkClient(homeClient);
 
 		List<Home> homes = new ArrayList<Home>();
-		List<HomeDTO> homeDTOs = homeClient.getHomes(this.getId(), filter);
+		List<HomeDTO> homeDTOs = homeClient.getHomes(this.getId(), properties);
 		for (HomeDTO homeDTO : homeDTOs) {
 			Home home = MgmFactory.createHome(this, homeDTO);
 			homes.add(home);
@@ -193,11 +186,11 @@ public class MachineImpl implements Machine {
 	 * Add a Home to a Machine.
 	 * 
 	 * @param name
-	 * @param description
 	 * @param url
+	 * @param description
 	 * @throws ClientException
 	 */
-	public Home addHome(String name, String description, String url) throws ClientException {
+	public Home addHome(String name, String url, String description) throws ClientException {
 		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
 		checkClient(homeClient);
 
@@ -205,8 +198,8 @@ public class MachineImpl implements Machine {
 
 		HomeDTO newHomeRequest = new HomeDTO();
 		newHomeRequest.setName(name);
-		newHomeRequest.setDescription(description);
 		newHomeRequest.setUrl(url);
+		newHomeRequest.setDescription(description);
 
 		HomeDTO newHomeDTO = homeClient.addHome(getId(), newHomeRequest);
 		if (newHomeDTO != null) {
@@ -261,10 +254,12 @@ public class MachineImpl implements Machine {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("id=").append(getId());
-		sb.append(",name=").append(getName());
-		sb.append(",description=").append(getDescription());
-		sb.append(",ip=").append(getIpAddress());
+		sb.append("Machine(");
+		sb.append("id=\"").append(getId()).append("\"");
+		sb.append(", name=\"").append(getName()).append("\"");
+		sb.append(", ip=\"").append(getIpAddress()).append("\"");
+		sb.append(", description=\"").append(getDescription()).append("\"");
+		sb.append(")");
 		return sb.toString();
 	}
 

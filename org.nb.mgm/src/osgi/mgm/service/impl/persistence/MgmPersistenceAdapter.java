@@ -13,8 +13,12 @@ public interface MgmPersistenceAdapter {
 	/** persistence type values: db or local. */
 	public static final String PERSISTENCE_TYPE_DB = "db";
 	public static final String PERSISTENCE_TYPE_LOCAL = "local";
+
 	/** persistence local dir */
 	public static final String PERSISTENCE_LOCAL_DIR = "cluster.persistence.local.dir";
+
+	/** persistence autosave */
+	public static final String PERSISTENCE_AUTOSAVE = "cluster.persistence.autosave";
 
 	/**
 	 * Load cluster root data model.

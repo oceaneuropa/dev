@@ -30,12 +30,12 @@ public interface Home extends IAdaptable {
 
 	public void setName(String name) throws ClientException;
 
-	public String getDescription();
-
-	public void setDescription(String description) throws ClientException;
-
 	public String getUrl();
 
 	public void setUrl(String url) throws ClientException;
+
+	public String getDescription();
+
+	public void setDescription(String description) throws ClientException;
 
 }

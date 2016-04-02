@@ -96,24 +96,6 @@ public class HomeImpl implements Home {
 	}
 
 	@Override
-	public String getDescription() {
-		return this.homeDTO.getDescription();
-	}
-
-	@Override
-	public void setDescription(String description) throws ClientException {
-		String oldDescription = this.homeDTO.getDescription();
-
-		if ((oldDescription == null && description != null) || (oldDescription != null && !oldDescription.equals(description))) {
-			this.homeDTO.setDescription(description);
-
-			if (this.autoUpdate) {
-				update();
-			}
-		}
-	}
-
-	@Override
 	public String getUrl() {
 		return this.homeDTO.getUrl();
 	}
@@ -124,6 +106,24 @@ public class HomeImpl implements Home {
 
 		if ((oldUrl == null && url != null) || (oldUrl != null && !oldUrl.equals(url))) {
 			this.homeDTO.setUrl(url);
+
+			if (this.autoUpdate) {
+				update();
+			}
+		}
+	}
+
+	@Override
+	public String getDescription() {
+		return this.homeDTO.getDescription();
+	}
+
+	@Override
+	public void setDescription(String description) throws ClientException {
+		String oldDescription = this.homeDTO.getDescription();
+
+		if ((oldDescription == null && description != null) || (oldDescription != null && !oldDescription.equals(description))) {
+			this.homeDTO.setDescription(description);
 
 			if (this.autoUpdate) {
 				update();
@@ -148,6 +148,18 @@ public class HomeImpl implements Home {
 			return (T) this.homeDTO;
 		}
 		return null;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Home(");
+		sb.append("id=\"").append(getId()).append("\"");
+		sb.append(", name=\"").append(getName()).append("\"");
+		sb.append(", url=\"").append(getUrl()).append("\"");
+		sb.append(", description=\"").append(getDescription()).append("\"");
+		sb.append(")");
+		return sb.toString();
 	}
 
 }

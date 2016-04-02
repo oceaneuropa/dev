@@ -2,6 +2,7 @@ package org.nb.mgm.client.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.nb.mgm.client.Management;
 import org.nb.mgm.client.MetaSector;
@@ -115,34 +116,24 @@ public class MetaSectorImpl implements MetaSector {
 	 */
 	@Override
 	public List<MetaSpace> getMetaSpaces() throws ClientException {
-		MetaSpaceClient metaSpaceClient = this.management.getAdapter(MetaSpaceClient.class);
-		if (metaSpaceClient == null) {
-			return null;
-		}
-
-		List<MetaSpace> metaSpaces = new ArrayList<MetaSpace>();
-		List<MetaSpaceDTO> metaSpaceDTOs = metaSpaceClient.getMetaSpaces(this.getId());
-		for (MetaSpaceDTO metaSpaceDTO : metaSpaceDTOs) {
-			MetaSpace metaSpace = MgmFactory.createMetaSpace(this, metaSpaceDTO);
-			metaSpaces.add(metaSpace);
-		}
-		return metaSpaces;
+		return getMetaSpaces(null);
 	}
 
 	/**
-	 * Get all MetaSpaces in a MetaSector by filter.
+	 * Get MetaSpaces in a MetaSector by query parameters.
 	 * 
-	 * @param filter
+	 * @param properties
+	 *            supported keys are: "name", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
 	@Override
-	public List<MetaSpace> getMetaSpaces(String filter) throws ClientException {
+	public List<MetaSpace> getMetaSpaces(Properties properties) throws ClientException {
 		MetaSpaceClient metaSpaceClient = this.management.getAdapter(MetaSpaceClient.class);
 		checkClient(metaSpaceClient);
 
 		List<MetaSpace> metaSpaces = new ArrayList<MetaSpace>();
-		List<MetaSpaceDTO> metaSpaceDTOs = metaSpaceClient.getMetaSpaces(this.getId(), filter);
+		List<MetaSpaceDTO> metaSpaceDTOs = metaSpaceClient.getMetaSpaces(getId(), properties);
 		for (MetaSpaceDTO metaSpaceDTO : metaSpaceDTOs) {
 			MetaSpace metaSpace = MgmFactory.createMetaSpace(this, metaSpaceDTO);
 			metaSpaces.add(metaSpace);
@@ -242,9 +233,11 @@ public class MetaSectorImpl implements MetaSector {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("id=").append(getId());
-		sb.append(",name=").append(getName());
-		sb.append(",description=").append(getDescription());
+		sb.append("MetaSector(");
+		sb.append("id=\"").append(getId()).append("\"");
+		sb.append(", name=\"").append(getName()).append("\"");
+		sb.append(", description=\"").append(getDescription()).append("\"");
+		sb.append(")");
 		return sb.toString();
 	}
 

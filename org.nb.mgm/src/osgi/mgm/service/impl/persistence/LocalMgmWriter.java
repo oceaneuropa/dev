@@ -53,26 +53,30 @@ public class LocalMgmWriter {
 
 		// "machines" array
 		JSONArray machinesArray = new JSONArray();
-		List<Machine> machines = root.getMachines();
-		int machineIndex = 0;
-		for (Iterator<Machine> machineItor = machines.iterator(); machineItor.hasNext();) {
-			Machine machine = machineItor.next();
-			JSONObject machineJSON = machineToJSON(machine);
-			if (machineJSON != null) {
-				machinesArray.put(machineIndex++, machineJSON);
+		{
+			List<Machine> machines = root.getMachines();
+			int machineIndex = 0;
+			for (Iterator<Machine> machineItor = machines.iterator(); machineItor.hasNext();) {
+				Machine machine = machineItor.next();
+				JSONObject machineJSON = machineToJSON(machine);
+				if (machineJSON != null) {
+					machinesArray.put(machineIndex++, machineJSON);
+				}
 			}
 		}
 		rootJSON.put("machines", machinesArray);
 
 		// "metaSectors" array
 		JSONArray metaSectorsArray = new JSONArray();
-		List<MetaSector> metaSectors = root.getMetaSectors();
-		int metaSectorIndex = 0;
-		for (Iterator<MetaSector> metaSectorItor = metaSectors.iterator(); metaSectorItor.hasNext();) {
-			MetaSector metaSector = metaSectorItor.next();
-			JSONObject metaSectorJSON = metaSectorToJSON(metaSector);
-			if (metaSectorJSON != null) {
-				machinesArray.put(metaSectorIndex++, metaSectorJSON);
+		{
+			List<MetaSector> metaSectors = root.getMetaSectors();
+			int metaSectorIndex = 0;
+			for (Iterator<MetaSector> metaSectorItor = metaSectors.iterator(); metaSectorItor.hasNext();) {
+				MetaSector metaSector = metaSectorItor.next();
+				JSONObject metaSectorJSON = metaSectorToJSON(metaSector);
+				if (metaSectorJSON != null) {
+					metaSectorsArray.put(metaSectorIndex++, metaSectorJSON);
+				}
 			}
 		}
 		rootJSON.put("metaSectors", metaSectorsArray);
@@ -118,13 +122,15 @@ public class LocalMgmWriter {
 
 		// "homes" attribute
 		JSONArray homesArray = new JSONArray();
-		List<Home> homes = machine.getHomes();
-		int homeIndex = 0;
-		for (Iterator<Home> homeItor = homes.iterator(); homeItor.hasNext();) {
-			Home home = homeItor.next();
-			JSONObject homeJSON = homeToJSON(home);
-			if (homeJSON != null) {
-				homesArray.put(homeIndex++, homeJSON);
+		{
+			List<Home> homes = machine.getHomes();
+			int homeIndex = 0;
+			for (Iterator<Home> homeItor = homes.iterator(); homeItor.hasNext();) {
+				Home home = homeItor.next();
+				JSONObject homeJSON = homeToJSON(home);
+				if (homeJSON != null) {
+					homesArray.put(homeIndex++, homeJSON);
+				}
 			}
 		}
 		machineJSON.put("homes", homesArray);
@@ -171,11 +177,15 @@ public class LocalMgmWriter {
 
 		// "joinedMetaSectorIds" array
 		List<String> joinedMetaSectorIds = home.getJoinedMetaSectorIds();
-		homeJSON.put("joinedMetaSectorIds", joinedMetaSectorIds);
+		if (joinedMetaSectorIds != null && !joinedMetaSectorIds.isEmpty()) {
+			homeJSON.put("joinedMetaSectorIds", joinedMetaSectorIds);
+		}
 
 		// "joinedMetaSpaceIds" array
 		List<String> joinedMetaSpaceIds = home.getJoinedMetaSpaceIds();
-		homeJSON.put("joinedMetaSpaceIds", joinedMetaSpaceIds);
+		if (joinedMetaSpaceIds != null && !joinedMetaSpaceIds.isEmpty()) {
+			homeJSON.put("joinedMetaSpaceIds", joinedMetaSpaceIds);
+		}
 
 		return homeJSON;
 	}
@@ -212,26 +222,30 @@ public class LocalMgmWriter {
 
 		// "metaSpaces" array
 		JSONArray metaSpacesArray = new JSONArray();
-		List<MetaSpace> metaSpaces = metaSector.getMetaSpaces();
-		int metaSpaceIndex = 0;
-		for (Iterator<MetaSpace> metaSpaceItor = metaSpaces.iterator(); metaSpaceItor.hasNext();) {
-			MetaSpace metaSpace = metaSpaceItor.next();
-			JSONObject metaSpaceJSON = metaSpaceToJSON(metaSpace);
-			if (metaSpaceJSON != null) {
-				metaSpacesArray.put(metaSpaceIndex++, metaSpaceJSON);
+		{
+			List<MetaSpace> metaSpaces = metaSector.getMetaSpaces();
+			int metaSpaceIndex = 0;
+			for (Iterator<MetaSpace> metaSpaceItor = metaSpaces.iterator(); metaSpaceItor.hasNext();) {
+				MetaSpace metaSpace = metaSpaceItor.next();
+				JSONObject metaSpaceJSON = metaSpaceToJSON(metaSpace);
+				if (metaSpaceJSON != null) {
+					metaSpacesArray.put(metaSpaceIndex++, metaSpaceJSON);
+				}
 			}
 		}
 		metaSectorJSON.put("metaSpaces", metaSpacesArray);
 
 		// "artifacts" array
 		JSONArray artifactsArray = new JSONArray();
-		List<Artifact> artifacts = metaSector.getArtifacts();
-		int artifactIndex = 0;
-		for (Iterator<Artifact> artifactItor = artifacts.iterator(); artifactItor.hasNext();) {
-			Artifact artifact = artifactItor.next();
-			JSONObject artifactJSON = artifactToJSON(artifact);
-			if (artifactJSON != null) {
-				artifactsArray.put(artifactIndex++, artifactJSON);
+		{
+			List<Artifact> artifacts = metaSector.getArtifacts();
+			int artifactIndex = 0;
+			for (Iterator<Artifact> artifactItor = artifacts.iterator(); artifactItor.hasNext();) {
+				Artifact artifact = artifactItor.next();
+				JSONObject artifactJSON = artifactToJSON(artifact);
+				if (artifactJSON != null) {
+					artifactsArray.put(artifactIndex++, artifactJSON);
+				}
 			}
 		}
 		metaSectorJSON.put("artifacts", artifactsArray);
@@ -271,7 +285,9 @@ public class LocalMgmWriter {
 
 		// "deployedArtifactIds" array
 		List<String> deployedArtifactIds = metaSpace.getDeployedArtifactIds();
-		metaSpaceJSON.put("deployedArtifactIds", deployedArtifactIds);
+		if (deployedArtifactIds != null && !deployedArtifactIds.isEmpty()) {
+			metaSpaceJSON.put("deployedArtifactIds", deployedArtifactIds);
+		}
 
 		return metaSpaceJSON;
 	}

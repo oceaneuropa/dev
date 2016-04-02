@@ -30,6 +30,7 @@ import osgi.mgm.service.model.Artifact;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSpace;
 import osgi.mgm.service.model.MetaSpaceQuery;
+import osgi.mgm.service.model.MetaSpaceQuery.MetaSpaceQueryBuilder;
 import osgi.mgm.ws.dto.ArtifactDTO;
 import osgi.mgm.ws.dto.DTOConverter;
 import osgi.mgm.ws.dto.ErrorDTO;
@@ -38,11 +39,9 @@ import osgi.mgm.ws.dto.MetaSpaceDTO;
 import osgi.mgm.ws.dto.StatusDTO;
 
 /**
- * MetaSpace web service server resource
+ * MetaSpace web service resource
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?filter={filter}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
  * 
@@ -85,67 +84,27 @@ public class MetaSpaceResource {
 		return DTOConverter.getInstance().toDTO(e);
 	}
 
-	/**
-	 * Get all MetaSpaces in a MetaSector.
-	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces
-	 * 
-	 * @return
-	 */
-	public Response getMetaSpaces( //
-			@PathParam("metaSectorId") String metaSectorId //
-	) {
-		List<MetaSpaceDTO> metaSpaceDTOs = new ArrayList<MetaSpaceDTO>();
-
-		MgmService mgm = getMgmService();
-		try {
-			// Find MetaSector by metaSectorId.
-			MetaSectorDTO metaSectorDTO = null;
-			MetaSector metaSector = mgm.getMetaSector(metaSectorId);
-			if (metaSector != null) {
-				metaSectorDTO = DTOConverter.getInstance().toDTO(metaSector);
-			}
-
-			// Get all MetaSpaces in the MetaSector.
-			for (MetaSpace metaSpace : mgm.getMetaSpaces(metaSectorId)) {
-				MetaSpaceDTO metaSpaceDTO = DTOConverter.getInstance().toDTO(metaSpace);
-
-				// Set MetaSector DTO
-				metaSpaceDTO.setMetaSector(metaSectorDTO);
-
-				// Set deployed Artifacts DTO
-				List<ArtifactDTO> deployedArtifactDTOs = new ArrayList<ArtifactDTO>();
-				List<String> artifactIds = metaSpace.getDeployedArtifactIds();
-				for (String artifactId : artifactIds) {
-					Artifact artifact = mgm.getArtifact(artifactId);
-					if (artifact != null) {
-						ArtifactDTO artifactDTO = DTOConverter.getInstance().toDTO(artifact);
-						deployedArtifactDTOs.add(artifactDTO);
-					}
-				}
-				metaSpaceDTO.setDeployedArtifacts(deployedArtifactDTOs);
-
-				metaSpaceDTOs.add(metaSpaceDTO);
-			}
-
-		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+	protected void handleSave(MgmService mgm) {
+		if (!mgm.isAutoSave()) {
+			mgm.save();
 		}
-		return Response.ok().entity(metaSpaceDTOs).build();
 	}
 
 	/**
-	 * Get all MetaSpaces in a MetaSector by filter.
+	 * Get MetaSpaces in a MetaSector by query parameters.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?filter={filter}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
 	 * 
+	 * @param metaSectorId
+	 * @param name
+	 * @param filter
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMetaSpaces( //
 			@PathParam("metaSectorId") String metaSectorId, //
+			@QueryParam("name") String name, //
 			@QueryParam("filter") String filter //
 	) {
 		List<MetaSpaceDTO> metaSpaceDTOs = new ArrayList<MetaSpaceDTO>();
@@ -161,8 +120,15 @@ public class MetaSpaceResource {
 
 			// 2. Get all MetaSpaces in the MetaSector and matched by query.
 			List<MetaSpace> metaSpaces = null;
-			if (filter != null) {
-				MetaSpaceQuery metaSpaceQuery = MetaSpaceQuery.newBuilder().withFilter(filter).build();
+			if (name != null || filter != null) {
+				MetaSpaceQueryBuilder builder = MetaSpaceQuery.newBuilder();
+				if (name != null) {
+					builder.withName(name);
+				}
+				if (filter != null) {
+					builder.withFilter(filter);
+				}
+				MetaSpaceQuery metaSpaceQuery = builder.build();
 				metaSpaces = mgm.getMetaSpaces(metaSectorId, metaSpaceQuery);
 			} else {
 				metaSpaces = mgm.getMetaSpaces(metaSectorId);
@@ -203,11 +169,12 @@ public class MetaSpaceResource {
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
 	 * 
+	 * @param metaSectorId
 	 * @param metaSpaceId
 	 * @return
 	 */
 	@GET
-	@Path("/{metaSpaceId}")
+	@Path("{metaSpaceId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMetaSpace( //
 			@PathParam("metaSectorId") String metaSectorId, //
@@ -265,6 +232,7 @@ public class MetaSpaceResource {
 	 * 
 	 * Body parameter: MetaSpaceDTO
 	 * 
+	 * @param metaSectorId
 	 * @param metaSpaceDTO
 	 * @return
 	 */
@@ -305,6 +273,8 @@ public class MetaSpaceResource {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+
+		handleSave(mgm);
 
 		return Response.ok().entity(metaSpaceDTO).build();
 	}
@@ -351,6 +321,8 @@ public class MetaSpaceResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
+		handleSave(mgm);
+
 		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSpace is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
@@ -384,6 +356,8 @@ public class MetaSpaceResource {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+
+		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSpace is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();

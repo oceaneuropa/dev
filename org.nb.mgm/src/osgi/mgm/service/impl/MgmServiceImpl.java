@@ -59,6 +59,8 @@ public class MgmServiceImpl implements MgmService {
 	protected ReadWriteLock metaSpaceRWLock = new ReentrantReadWriteLock();
 	protected ReadWriteLock artifactRWLock = new ReentrantReadWriteLock();
 
+	protected boolean autoSave = false;
+
 	/**
 	 * 
 	 * @param bundleContext
@@ -70,6 +72,7 @@ public class MgmServiceImpl implements MgmService {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		set(props, MgmPersistenceAdapter.PERSISTENCE_TYPE);
 		set(props, MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
+		set(props, MgmPersistenceAdapter.PERSISTENCE_AUTOSAVE);
 
 		// get persistence
 		this.persistenceAdapter = MgmPersistenceFactory.createInstance(props);
@@ -134,6 +137,18 @@ public class MgmServiceImpl implements MgmService {
 			this.serviceReg.unregister();
 			this.serviceReg = null;
 		}
+	}
+
+	public boolean isAutoSave() {
+		return this.autoSave;
+	}
+
+	public void setAutoSave(boolean autoSave) {
+		this.autoSave = autoSave;
+	}
+
+	public void save() {
+		this.persistenceAdapter.save(this.root);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -205,7 +220,9 @@ public class MgmServiceImpl implements MgmService {
 		this.machineRWLock.writeLock().lock();
 		try {
 			this.machineDataHandler.addMachine(machine);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.machineRWLock.writeLock().unlock();
 		}
@@ -222,7 +239,9 @@ public class MgmServiceImpl implements MgmService {
 		this.machineRWLock.writeLock().lock();
 		try {
 			this.machineDataHandler.updateMachine(machine);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.machineRWLock.writeLock().unlock();
 		}
@@ -239,7 +258,9 @@ public class MgmServiceImpl implements MgmService {
 		this.machineRWLock.writeLock().lock();
 		try {
 			this.machineDataHandler.deleteMachine(machineId);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.machineRWLock.writeLock().unlock();
 		}
@@ -309,7 +330,9 @@ public class MgmServiceImpl implements MgmService {
 		this.homeRWLock.writeLock().lock();
 		try {
 			this.homeDataHandler.addHome(machineId, home);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.homeRWLock.writeLock().unlock();
 		}
@@ -326,7 +349,9 @@ public class MgmServiceImpl implements MgmService {
 		this.homeRWLock.writeLock().lock();
 		try {
 			this.homeDataHandler.updateHome(home);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.homeRWLock.writeLock().unlock();
 		}
@@ -358,7 +383,9 @@ public class MgmServiceImpl implements MgmService {
 			this.homeDataHandler.deleteHome(homeId);
 
 			// 4. Save cluster model
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.homeRWLock.writeLock().unlock();
 		}
@@ -426,7 +453,9 @@ public class MgmServiceImpl implements MgmService {
 		this.metaSectorRWLock.writeLock().lock();
 		try {
 			this.metaSectorDataHandler.addMetaSector(metaSector);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.metaSectorRWLock.writeLock().unlock();
 		}
@@ -443,7 +472,9 @@ public class MgmServiceImpl implements MgmService {
 		this.metaSectorRWLock.writeLock().lock();
 		try {
 			this.metaSectorDataHandler.updateMetaSector(metaSector);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.metaSectorRWLock.writeLock().unlock();
 		}
@@ -460,7 +491,9 @@ public class MgmServiceImpl implements MgmService {
 		this.metaSectorRWLock.writeLock().lock();
 		try {
 			this.metaSectorDataHandler.deleteMetaSector(metaSectorId);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.metaSectorRWLock.writeLock().unlock();
 		}
@@ -530,7 +563,9 @@ public class MgmServiceImpl implements MgmService {
 		this.metaSpaceRWLock.writeLock().lock();
 		try {
 			this.metaSpaceDataHandler.addMetaSpace(metaSectorId, metaSpace);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.metaSpaceRWLock.writeLock().unlock();
 		}
@@ -547,7 +582,9 @@ public class MgmServiceImpl implements MgmService {
 		this.metaSpaceRWLock.writeLock().lock();
 		try {
 			this.metaSpaceDataHandler.updateMetaSpace(metaSpace);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.metaSpaceRWLock.writeLock().unlock();
 		}
@@ -564,7 +601,9 @@ public class MgmServiceImpl implements MgmService {
 		this.metaSpaceRWLock.writeLock().lock();
 		try {
 			this.metaSpaceDataHandler.deleteMetaSpace(metaSpaceId);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.metaSpaceRWLock.writeLock().unlock();
 		}
@@ -634,7 +673,9 @@ public class MgmServiceImpl implements MgmService {
 		this.artifactRWLock.writeLock().lock();
 		try {
 			this.artifactDataHandler.addArtifact(metaSectorId, artifact);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.artifactRWLock.writeLock().unlock();
 		}
@@ -651,7 +692,9 @@ public class MgmServiceImpl implements MgmService {
 		this.artifactRWLock.writeLock().lock();
 		try {
 			this.artifactDataHandler.updateArtifact(artifact);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.artifactRWLock.writeLock().unlock();
 		}
@@ -668,7 +711,9 @@ public class MgmServiceImpl implements MgmService {
 		this.artifactRWLock.writeLock().lock();
 		try {
 			this.artifactDataHandler.deleteArtifact(artifactId);
-			this.persistenceAdapter.save(this.root);
+			if (isAutoSave()) {
+				save();
+			}
 		} finally {
 			this.artifactRWLock.writeLock().unlock();
 		}

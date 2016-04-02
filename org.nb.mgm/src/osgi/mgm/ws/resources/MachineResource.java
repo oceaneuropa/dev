@@ -29,6 +29,7 @@ import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.Home;
 import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MachineQuery;
+import osgi.mgm.service.model.MachineQuery.MachineQueryBuilder;
 import osgi.mgm.ws.dto.DTOConverter;
 import osgi.mgm.ws.dto.ErrorDTO;
 import osgi.mgm.ws.dto.HomeDTO;
@@ -36,11 +37,9 @@ import osgi.mgm.ws.dto.MachineDTO;
 import osgi.mgm.ws.dto.StatusDTO;
 
 /**
- * Machine web service server resource
+ * Machine web service resource
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/?filter={filter}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
  * 
@@ -83,58 +82,49 @@ public class MachineResource {
 		return DTOConverter.getInstance().toDTO(e);
 	}
 
-	/**
-	 * Get all Machines.
-	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines
-	 * 
-	 * @return
-	 */
-	public Response getMachines() {
-		List<MachineDTO> machineDTOs = new ArrayList<MachineDTO>();
-
-		MgmService mgm = getMgmService();
-		try {
-			// Get all Machines.
-			for (Machine machine : mgm.getMachines()) {
-				MachineDTO machineDTO = DTOConverter.getInstance().toDTO(machine);
-
-				List<HomeDTO> homeDTOs = new ArrayList<HomeDTO>();
-				for (Home home : mgm.getHomes(machine.getId())) {
-					HomeDTO homeDTO = DTOConverter.getInstance().toDTO(home);
-					homeDTO.setMachine(machineDTO);
-					homeDTOs.add(homeDTO);
-				}
-				machineDTO.setHomes(homeDTOs);
-
-				machineDTOs.add(machineDTO);
-			}
-		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+	protected void handleSave(MgmService mgm) {
+		if (!mgm.isAutoSave()) {
+			mgm.save();
 		}
-		return Response.ok().entity(machineDTOs).build();
 	}
 
 	/**
-	 * Get Machines by filter.
+	 * Get Machines by query parameters.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/?filter={filter}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
 	 * 
+	 * e.g. http://127.0.0.1:9090/mgm/machines
+	 * 
+	 * @param name
+	 * @param ipaddress
 	 * @param filter
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMachines(@QueryParam("filter") String filter) {
+	public Response getMachines( //
+			@QueryParam("name") String name, //
+			@QueryParam("ipaddress") String ipaddress, //
+			@QueryParam("filter") String filter //
+	) {
 		List<MachineDTO> machineDTOs = new ArrayList<MachineDTO>();
 
 		MgmService mgm = getMgmService();
 		try {
 			// Get Machines matched by query.
 			List<Machine> machines = null;
-			if (filter != null) {
-				MachineQuery machineQuery = MachineQuery.newBuilder().withFilter(filter).build();
+			if (name != null || ipaddress != null || filter != null) {
+				MachineQueryBuilder builder = MachineQuery.newBuilder();
+				if (name != null) {
+					builder.withName(name);
+				}
+				if (ipaddress != null) {
+					builder.withIpAddress(ipaddress);
+				}
+				if (filter != null) {
+					builder.withFilter(filter);
+				}
+				MachineQuery machineQuery = builder.build();
 				machines = mgm.getMachines(machineQuery);
 			} else {
 				machines = mgm.getMachines();
@@ -146,7 +136,7 @@ public class MachineResource {
 				List<HomeDTO> homeDTOs = new ArrayList<HomeDTO>();
 				for (Home home : mgm.getHomes(machine.getId())) {
 					HomeDTO homeDTO = DTOConverter.getInstance().toDTO(home);
-					homeDTO.setMachine(machineDTO);
+					// homeDTO.setMachine(machineDTO);
 					homeDTOs.add(homeDTO);
 				}
 				machineDTO.setHomes(homeDTOs);
@@ -171,7 +161,7 @@ public class MachineResource {
 	 * @return
 	 */
 	@GET
-	@Path("/machineId")
+	@Path("{machineId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMachine(@PathParam("machineId") String machineId) {
 		MachineDTO machineDTO = null;
@@ -235,6 +225,8 @@ public class MachineResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
+		handleSave(mgm);
+
 		return Response.ok().entity(machineDTO).build();
 	}
 
@@ -276,6 +268,8 @@ public class MachineResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
+		handleSave(mgm);
+
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Machine is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
@@ -305,6 +299,8 @@ public class MachineResource {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+
+		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Machine is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();

@@ -11,6 +11,7 @@ import org.osgi.framework.ServiceRegistration;
 
 import osgi.mgm.ws.resources.ArtifactResource;
 import osgi.mgm.ws.resources.FrameworkResource;
+import osgi.mgm.ws.resources.HomeResource;
 import osgi.mgm.ws.resources.MachineResource;
 import osgi.mgm.ws.resources.MetaSectorResource;
 import osgi.mgm.ws.resources.MetaSpaceResource;
@@ -59,6 +60,7 @@ public class MgmApplication extends Application {
 		// resources
 		classes.add(FrameworkResource.class);
 		classes.add(MachineResource.class);
+		classes.add(HomeResource.class);
 		classes.add(MetaSectorResource.class);
 		classes.add(MetaSpaceResource.class);
 		classes.add(ArtifactResource.class);

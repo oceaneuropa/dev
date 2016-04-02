@@ -133,4 +133,15 @@ public class MetaSpaceImpl implements MetaSpace {
 		return null;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("MetaSpace(");
+		sb.append("id=\"").append(getId()).append("\"");
+		sb.append(", name=\"").append(getName()).append("\"");
+		sb.append(", description=\"").append(getDescription()).append("\"");
+		sb.append(")");
+		return sb.toString();
+	}
+
 }

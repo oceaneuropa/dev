@@ -1,6 +1,7 @@
 package org.nb.mgm.client;
 
 import java.util.List;
+import java.util.Properties;
 
 import osgi.mgm.common.util.ClientException;
 import osgi.mgm.common.util.IAdaptable;
@@ -50,13 +51,14 @@ public interface Machine extends IAdaptable {
 	public List<Home> getHomes() throws ClientException;
 
 	/**
-	 * Get all Homes in a Machine by filter.
+	 * Get Homes in a Machine by query parameters.
 	 * 
-	 * @param filter
+	 * @param properties
+	 *            supported keys are: "name", "url", "status", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<Home> getHomes(String filter) throws ClientException;
+	public List<Home> getHomes(Properties properties) throws ClientException;
 
 	/**
 	 * Get Home by home Id.
@@ -71,8 +73,8 @@ public interface Machine extends IAdaptable {
 	 * Add a Home to a Machine.
 	 * 
 	 * @param name
-	 * @param description
 	 * @param url
+	 * @param description
 	 * @throws ClientException
 	 */
 	public Home addHome(String name, String description, String url) throws ClientException;

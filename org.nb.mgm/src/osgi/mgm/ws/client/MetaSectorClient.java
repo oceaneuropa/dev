@@ -2,9 +2,11 @@ package osgi.mgm.ws.client;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -18,9 +20,7 @@ import osgi.mgm.ws.dto.StatusDTO;
 /**
  * MetaSector web service client
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?filter={filter}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?name={name}&filter={filter}
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/{metaSectorId}
  * 
@@ -44,43 +44,38 @@ public class MetaSectorClient extends AbstractMgmClient {
 	/**
 	 * Get all MetaSectors.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors
-	 * 
 	 * @return
 	 * @throws ClientException
 	 */
 	public List<MetaSectorDTO> getMetaSectors() throws ClientException {
-		List<MetaSectorDTO> metaSectors = null;
-		try {
-			Builder builder = getRootPath().path("metasectors").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
-			checkResponse(response);
-
-			metaSectors = response.readEntity(new GenericType<List<MetaSectorDTO>>() {
-			});
-		} catch (ClientException e) {
-			handleException(e);
-		}
-		if (metaSectors == null) {
-			metaSectors = Collections.emptyList();
-		}
-		return metaSectors;
+		return getMetaSectors(null);
 	}
 
 	/**
-	 * Get MetaSectors by filter.
+	 * Get MetaSectors by query parameters.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?filter={filter}
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?name={name}&filter={filter}
 	 * 
-	 * @param filter
-	 * 
+	 * @param properties
+	 *            supported keys are: "name", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<MetaSectorDTO> getMetaSectors(String filter) throws ClientException {
+	public List<MetaSectorDTO> getMetaSectors(Properties properties) throws ClientException {
 		List<MetaSectorDTO> metaSectors = null;
 		try {
-			Builder builder = getRootPath().path("metasectors").queryParam("filter", filter).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("metasectors");
+			if (properties != null) {
+				String name = properties.getProperty("name");
+				if (name != null) {
+					target.queryParam("name", name);
+				}
+				String filter = properties.getProperty("filter");
+				if (filter != null) {
+					target.queryParam("filter", filter);
+				}
+			}
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
 			checkResponse(response);
 

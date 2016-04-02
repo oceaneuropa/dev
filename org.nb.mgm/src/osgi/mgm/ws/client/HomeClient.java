@@ -2,9 +2,11 @@ package osgi.mgm.ws.client;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -18,9 +20,7 @@ import osgi.mgm.ws.dto.StatusDTO;
 /**
  * Home web service client
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?filter={filter}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
  * 
@@ -44,7 +44,7 @@ public class HomeClient extends AbstractMgmClient {
 	/**
 	 * Get all Homes in a Machine.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
 	 * 
 	 * @param machineId
 	 * 
@@ -52,38 +52,43 @@ public class HomeClient extends AbstractMgmClient {
 	 * @throws ClientException
 	 */
 	public List<HomeDTO> getHomes(String machineId) throws ClientException {
-		List<HomeDTO> homes = null;
-		try {
-			Builder builder = getRootPath().path(machineId).path("homes").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
-			checkResponse(response);
-
-			homes = response.readEntity(new GenericType<List<HomeDTO>>() {
-			});
-		} catch (ClientException e) {
-			handleException(e);
-		}
-		if (homes == null) {
-			homes = Collections.emptyList();
-		}
-		return homes;
+		return getHomes(machineId, null);
 	}
 
 	/**
-	 * Get all Homes in a Machine by filter.
+	 * Get all Homes in a Machine by query parameters.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?filter={filter}
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
 	 * 
 	 * @param machineId
-	 * @param filter
-	 * 
+	 * @param properties
+	 *            supported keys are: "name", "url", "status", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<HomeDTO> getHomes(String machineId, String filter) throws ClientException {
+	public List<HomeDTO> getHomes(String machineId, Properties properties) throws ClientException {
 		List<HomeDTO> homes = null;
 		try {
-			Builder builder = getRootPath().path(machineId).path("homes").queryParam("filter", filter).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(machineId).path("homes");
+			if (properties != null) {
+				String name = properties.getProperty("name");
+				if (name != null) {
+					target.queryParam("name", name);
+				}
+				String url = properties.getProperty("url");
+				if (url != null) {
+					target.queryParam("url", url);
+				}
+				String status = properties.getProperty("status");
+				if (status != null) {
+					target.queryParam("status", url);
+				}
+				String filter = properties.getProperty("filter");
+				if (filter != null) {
+					target.queryParam("filter", filter);
+				}
+			}
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
 			checkResponse(response);
 

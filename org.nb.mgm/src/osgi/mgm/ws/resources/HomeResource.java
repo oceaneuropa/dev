@@ -28,6 +28,7 @@ import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.Home;
 import osgi.mgm.service.model.HomeQuery;
+import osgi.mgm.service.model.HomeQuery.HomeQueryBuilder;
 import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSpace;
@@ -42,9 +43,7 @@ import osgi.mgm.ws.dto.StatusDTO;
 /**
  * Home web service server resource
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?filter={filter}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
  * 
@@ -55,7 +54,7 @@ import osgi.mgm.ws.dto.StatusDTO;
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
  * 
  */
-@Path("{machineId}/homes")
+@Path("/{machineId}/homes")
 @Produces(MediaType.APPLICATION_JSON)
 public class HomeResource {
 
@@ -87,73 +86,21 @@ public class HomeResource {
 		return DTOConverter.getInstance().toDTO(e);
 	}
 
-	/**
-	 * Get all Homes in a Machine.
-	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
-	 * 
-	 * @return
-	 */
-	public Response getHomes( //
-			@PathParam("machineId") String machineId //
-	) {
-		List<HomeDTO> homeDTOs = new ArrayList<HomeDTO>();
-
-		MgmService mgm = getMgmService();
-		try {
-			// Find Machine by machineId.
-			MachineDTO machineDTO = null;
-			Machine machine = mgm.getMachine(machineId);
-			if (machine != null) {
-				machineDTO = DTOConverter.getInstance().toDTO(machine);
-			}
-
-			// Get all Homes in the Machine.
-			for (Home home : mgm.getHomes(machineId)) {
-				HomeDTO homeDTO = DTOConverter.getInstance().toDTO(home);
-
-				// Set Machine DTO
-				homeDTO.setMachine(machineDTO);
-
-				// Set joined MetaSectors DTO
-				List<MetaSectorDTO> joinedMetaSectorDTOs = new ArrayList<MetaSectorDTO>();
-				List<String> metaSectorIds = home.getJoinedMetaSectorIds();
-				for (String metaSectorId : metaSectorIds) {
-					MetaSector metaSector = mgm.getMetaSector(metaSectorId);
-					if (metaSector != null) {
-						MetaSectorDTO metaSectorDTO = DTOConverter.getInstance().toDTO(metaSector);
-						joinedMetaSectorDTOs.add(metaSectorDTO);
-					}
-				}
-				homeDTO.setJoinedMetaSectors(joinedMetaSectorDTOs);
-
-				// Set joined MetaSpaces DTO
-				List<MetaSpaceDTO> joinedMetaSpaceDTOs = new ArrayList<MetaSpaceDTO>();
-				List<String> metaSpaceIds = home.getJoinedMetaSpaceIds();
-				for (String metaSpaceId : metaSpaceIds) {
-					MetaSpace metaSpace = mgm.getMetaSpace(metaSpaceId);
-					if (metaSpace != null) {
-						MetaSpaceDTO metaSpaceDTO = DTOConverter.getInstance().toDTO(metaSpace);
-						joinedMetaSpaceDTOs.add(metaSpaceDTO);
-					}
-				}
-				homeDTO.setJoinedMetaSpaces(joinedMetaSpaceDTOs);
-
-				homeDTOs.add(homeDTO);
-			}
-
-		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+	protected void handleSave(MgmService mgm) {
+		if (!mgm.isAutoSave()) {
+			mgm.save();
 		}
-		return Response.ok().entity(homeDTOs).build();
 	}
 
 	/**
-	 * Get Homes in a Machine by filter.
+	 * Get Homes in a Machine by query parameters.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?filter={filter}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
 	 * 
+	 * @param machineId
+	 * @param name
+	 * @param url
+	 * @param status
 	 * @param filter
 	 * @return
 	 */
@@ -161,6 +108,9 @@ public class HomeResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getHomes( //
 			@PathParam("machineId") String machineId, //
+			@QueryParam("name") String name, //
+			@QueryParam("url") String url, //
+			@QueryParam("status") String status, //
 			@QueryParam("filter") String filter //
 	) {
 		List<HomeDTO> homeDTOs = new ArrayList<HomeDTO>();
@@ -176,8 +126,21 @@ public class HomeResource {
 
 			// 2. Get Homes in the Machine and matched by query.
 			List<Home> homes = null;
-			if (filter != null) {
-				HomeQuery homeQuery = HomeQuery.newBuilder().withFilter(filter).build();
+			if (name != null || url != null || status != null || filter != null) {
+				HomeQueryBuilder builder = HomeQuery.newBuilder();
+				if (name != null) {
+					builder.withName(name);
+				}
+				if (url != null) {
+					builder.withUrl(url);
+				}
+				if (status != null) {
+					builder.withStatus(status);
+				}
+				if (filter != null) {
+					builder.withFilter(filter);
+				}
+				HomeQuery homeQuery = builder.build();
 				homes = mgm.getHomes(machineId, homeQuery);
 			} else {
 				homes = mgm.getHomes(machineId);
@@ -232,7 +195,7 @@ public class HomeResource {
 	 * @return
 	 */
 	@GET
-	@Path("/{homeId}")
+	@Path("{homeId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getHome( //
 			@PathParam("machineId") String machineId, //
@@ -302,6 +265,7 @@ public class HomeResource {
 	 * 
 	 * Body parameter: HomeDTO
 	 * 
+	 * @param machineId
 	 * @param homeDTO
 	 * @return
 	 */
@@ -344,6 +308,8 @@ public class HomeResource {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+
+		handleSave(mgm);
 
 		return Response.ok().entity(homeDTO).build();
 	}
@@ -392,6 +358,8 @@ public class HomeResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
+		handleSave(mgm);
+
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Home is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
@@ -425,6 +393,8 @@ public class HomeResource {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+
+		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Home is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();

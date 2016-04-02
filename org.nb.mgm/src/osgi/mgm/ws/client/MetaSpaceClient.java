@@ -2,9 +2,11 @@ package osgi.mgm.ws.client;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -18,9 +20,7 @@ import osgi.mgm.ws.dto.StatusDTO;
 /**
  * MetaSpace web service client
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?filter={filter}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
  * 
@@ -44,45 +44,42 @@ public class MetaSpaceClient extends AbstractMgmClient {
 	/**
 	 * Get all MetaSpaces in a MetaSector.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
 	 * 
 	 * @param metaSectorId
 	 * @return
 	 * @throws ClientException
 	 */
 	public List<MetaSpaceDTO> getMetaSpaces(String metaSectorId) throws ClientException {
-		List<MetaSpaceDTO> metaSpaces = null;
-		try {
-			Builder builder = getRootPath().path(metaSectorId).path("metaspaces").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
-			checkResponse(response);
-
-			metaSpaces = response.readEntity(new GenericType<List<MetaSpaceDTO>>() {
-			});
-		} catch (ClientException e) {
-			handleException(e);
-		}
-		if (metaSpaces == null) {
-			metaSpaces = Collections.emptyList();
-		}
-		return metaSpaces;
+		return getMetaSpaces(metaSectorId, null);
 	}
 
 	/**
-	 * Get MetaSpaces in a MetaSector by filter.
+	 * Get MetaSpaces in a MetaSector by query parameters.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?filter={filter}
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
 	 * 
 	 * @param metaSectorId
-	 * @param filter
-	 * 
+	 * @param properties
+	 *            supported keys are: "name", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<MetaSpaceDTO> getMetaSpaces(String metaSectorId, String filter) throws ClientException {
+	public List<MetaSpaceDTO> getMetaSpaces(String metaSectorId, Properties properties) throws ClientException {
 		List<MetaSpaceDTO> metaSpaces = null;
 		try {
-			Builder builder = getRootPath().path(metaSectorId).path("metaspaces").queryParam("filter", filter).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(metaSectorId).path("metaspaces");
+			if (properties != null) {
+				String name = properties.getProperty("name");
+				if (name != null) {
+					target.queryParam("name", name);
+				}
+				String filter = properties.getProperty("filter");
+				if (filter != null) {
+					target.queryParam("filter", filter);
+				}
+			}
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
 			checkResponse(response);
 

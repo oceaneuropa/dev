@@ -1,6 +1,7 @@
 package org.nb.mgm.client;
 
 import java.util.List;
+import java.util.Properties;
 
 import osgi.mgm.common.util.ClientException;
 import osgi.mgm.common.util.IAdaptable;
@@ -19,13 +20,14 @@ public interface Management extends IAdaptable {
 	public List<Machine> getMachines() throws ClientException;
 
 	/**
-	 * Get Machines by filter.
+	 * Get Machines by query properties.
 	 * 
-	 * @param filter
+	 * @param properties
+	 *            supported keys are: "name", "ipaddress", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<Machine> getMachines(String filter) throws ClientException;
+	public List<Machine> getMachines(Properties properties) throws ClientException;
 
 	/**
 	 * Get Machine by machine Id.
@@ -40,12 +42,12 @@ public interface Management extends IAdaptable {
 	 * Add a Machine to the cluster.
 	 * 
 	 * @param name
-	 * @param description
 	 * @param ipAddress
+	 * @param description
 	 * @return
 	 * @throws ClientException
 	 */
-	public Machine addMachine(String name, String description, String ipAddress) throws ClientException;
+	public Machine addMachine(String name, String ipAddress, String description) throws ClientException;
 
 	/**
 	 * Delete a Machine from the cluster.
@@ -54,6 +56,61 @@ public interface Management extends IAdaptable {
 	 * @throws ClientException
 	 */
 	public boolean deleteMachine(String machineId) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// Home
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all Homes in a Machine.
+	 * 
+	 * @param machineId
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<Home> getHomes(String machineId) throws ClientException;
+
+	/**
+	 * Get Homes in a Machine by query parameters.
+	 * 
+	 * @param machineId
+	 * @param properties
+	 *            supported keys are: "name", "url", "status", "filter".
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<Home> getHomes(String machineId, Properties properties) throws ClientException;
+
+	/**
+	 * Get Home by machine Id and home Id.
+	 * 
+	 * @param machineId
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public Home getHome(String machineId, String homeId) throws ClientException;
+
+	/**
+	 * Add a Home to a Machine.
+	 * 
+	 * @param machineId
+	 * @param name
+	 * @param url
+	 * @param description
+	 * @return
+	 * @throws ClientException
+	 */
+	public Home addHome(String machineId, String name, String url, String description) throws ClientException;
+
+	/**
+	 * Delete a Home from a Machine by home Id.
+	 * 
+	 * @param machineId
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteHome(String machineId, String homeId) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// MetaSector
@@ -67,13 +124,15 @@ public interface Management extends IAdaptable {
 	public List<MetaSector> getMetaSectors() throws ClientException;
 
 	/**
-	 * Get MetaSectors by filter.
+	 * Get MetaSectors by query parameters.
 	 * 
-	 * @param filter
+	 * @param properties
+	 *            supported keys are: "name", "filter".
+	 * 
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<MetaSector> getMetaSectors(String filter) throws ClientException;
+	public List<MetaSector> getMetaSectors(Properties properties) throws ClientException;
 
 	/**
 	 * Get MetaSector by metaSector Id.
@@ -101,5 +160,62 @@ public interface Management extends IAdaptable {
 	 * @throws ClientException
 	 */
 	public boolean deleteMetaSector(String metaSectorId) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// MetaSpace
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all MetaSpaces in a MetaSector.
+	 * 
+	 * @param metaSectorId
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<MetaSpace> getMetaSpaces(String metaSectorId) throws ClientException;
+
+	/**
+	 * Get MetaSpaces in a MetaSector by query parameters.
+	 * 
+	 * @param metaSectorId
+	 * @param properties
+	 *            supported keys are: "name", "filter".
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<MetaSpace> getMetaSpaces(String metaSectorId, Properties properties) throws ClientException;
+
+	/**
+	 * Get MetaSpace by metaSector Id and metaSpace Id.
+	 * 
+	 * @param metaSectorId
+	 * @param metaSpaceId
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public MetaSpace getMetaSpace(String metaSectorId, String metaSpaceId) throws ClientException;
+
+	/**
+	 * Add a MetaSpace to a MetaSector.
+	 * 
+	 * @param metaSectorId
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws ClientException
+	 */
+	public MetaSpace addMetaSpace(String metaSectorId, String name, String description) throws ClientException;
+
+	/**
+	 * Delete a MetaSpace from a MetaSector.
+	 * 
+	 * @param metaSectorId
+	 * @param metaSpaceId
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteMetaSpace(String metaSectorId, String metaSpaceId) throws ClientException;
 
 }

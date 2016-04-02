@@ -8,3 +8,17 @@ http://grepcode.com/file/repo1.maven.org/maven2/org.ow2.chameleon.fuchsia.tools/
 Karaf SSH example
 Karaf JMX example
 https://karaf.apache.org/manual/latest-3.0.x/developers-guide/connect.html
+
+https://karaf.apache.org/manual/latest/developers-guide/extending.html
+
+REST request url:
+GET all machines:      http://127.0.0.1:9090/mgm/machines
+GET one machine by id: http://127.0.0.1:9090/mgm/machines/{machineId}
+
+
+OSGi command:
+mgm:login -url http://127.0.0.1:9090 -u admin -p 123
+mgm:list -machine
+mgm:list -metasector
+mgm:create -machine
+

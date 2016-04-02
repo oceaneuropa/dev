@@ -2,9 +2,11 @@ package osgi.mgm.ws.client;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
@@ -18,9 +20,7 @@ import osgi.mgm.ws.dto.StatusDTO;
 /**
  * Machine web service client
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?filter={filter}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
  * 
@@ -44,43 +44,44 @@ public class MachineClient extends AbstractMgmClient {
 	/**
 	 * Get all Machines.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
 	 * 
 	 * @return
 	 * @throws ClientException
 	 */
 	public List<MachineDTO> getMachines() throws ClientException {
-		List<MachineDTO> machines = null;
-		try {
-			Builder builder = getRootPath().path("machines").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
-			checkResponse(response);
-
-			machines = response.readEntity(new GenericType<List<MachineDTO>>() {
-			});
-		} catch (ClientException e) {
-			handleException(e);
-		}
-		if (machines == null) {
-			machines = Collections.emptyList();
-		}
-		return machines;
+		return getMachines(null);
 	}
 
 	/**
-	 * Get Machines by filter.
+	 * Get Machines by query parameter.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?filter={filter}
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
 	 * 
-	 * @param filter
-	 * 
+	 * @param properties
+	 *            supported keys are: "name", "ipaddress", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<MachineDTO> getMachines(String filter) throws ClientException {
+	public List<MachineDTO> getMachines(Properties properties) throws ClientException {
 		List<MachineDTO> machines = null;
 		try {
-			Builder builder = getRootPath().path("machines").queryParam("filter", filter).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("machines");
+			if (properties != null) {
+				String name = properties.getProperty("name");
+				if (name != null) {
+					target.queryParam("name", name);
+				}
+				String ipaddress = properties.getProperty("ipaddress");
+				if (ipaddress != null) {
+					target.queryParam("ipaddress", ipaddress);
+				}
+				String filter = properties.getProperty("filter");
+				if (filter != null) {
+					target.queryParam("filter", filter);
+				}
+			}
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
 			checkResponse(response);
 

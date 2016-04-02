@@ -28,6 +28,7 @@ import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSectorQuery;
+import osgi.mgm.service.model.MetaSectorQuery.MetaSectorQueryBuilder;
 import osgi.mgm.service.model.MetaSpace;
 import osgi.mgm.ws.dto.DTOConverter;
 import osgi.mgm.ws.dto.ErrorDTO;
@@ -36,11 +37,9 @@ import osgi.mgm.ws.dto.MetaSpaceDTO;
 import osgi.mgm.ws.dto.StatusDTO;
 
 /**
- * MetaSector web service server resource
+ * MetaSector web service resource
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?filter={filter}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?name={name}&filter={filter}
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/{metaSectorId}
  * 
@@ -83,59 +82,42 @@ public class MetaSectorResource {
 		return DTOConverter.getInstance().toDTO(e);
 	}
 
-	/**
-	 * Get all MetaSectors.
-	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors
-	 * 
-	 * @return
-	 */
-	public Response getMetaSectors() {
-		List<MetaSectorDTO> metaSectorDTOs = new ArrayList<MetaSectorDTO>();
-
-		MgmService mgm = getMgmService();
-		try {
-			// Get all MetaSectors.
-			for (MetaSector metaSector : mgm.getMetaSectors()) {
-				MetaSectorDTO metaSectorDTO = DTOConverter.getInstance().toDTO(metaSector);
-
-				List<MetaSpaceDTO> metaSpaceDTOs = new ArrayList<MetaSpaceDTO>();
-				for (MetaSpace metaSpace : mgm.getMetaSpaces(metaSector.getId())) {
-					MetaSpaceDTO metaSpaceDTO = DTOConverter.getInstance().toDTO(metaSpace);
-					metaSpaceDTO.setMetaSector(metaSectorDTO);
-					metaSpaceDTOs.add(metaSpaceDTO);
-				}
-				metaSectorDTO.setMetaSpaces(metaSpaceDTOs);
-
-				metaSectorDTOs.add(metaSectorDTO);
-			}
-		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+	protected void handleSave(MgmService mgm) {
+		if (!mgm.isAutoSave()) {
+			mgm.save();
 		}
-
-		return Response.ok().entity(metaSectorDTOs).build();
 	}
 
 	/**
-	 * Get MetaSectors by filter.
+	 * Get MetaSectors by query parameters.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?filter={filter}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?name={name}&filter={filter}
 	 * 
+	 * @param name
 	 * @param filter
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMetaSectors(@QueryParam("filter") String filter) {
+	public Response getMetaSectors( //
+			@QueryParam("name") String name, //
+			@QueryParam("filter") String filter //
+	) {
 		List<MetaSectorDTO> metaSectorDTOs = new ArrayList<MetaSectorDTO>();
 
 		MgmService mgm = getMgmService();
 		try {
 			// Get MetaSectors matched by query.
 			List<MetaSector> metaSectors = null;
-			if (filter != null) {
-				MetaSectorQuery metaSectorQuery = MetaSectorQuery.newBuilder().withFilter(filter).build();
+			if (name != null || filter != null) {
+				MetaSectorQueryBuilder builder = MetaSectorQuery.newBuilder();
+				if (name != null) {
+					builder.withName(name);
+				}
+				if (filter != null) {
+					builder.withFilter(filter);
+				}
+				MetaSectorQuery metaSectorQuery = builder.build();
 				metaSectors = mgm.getMetaSectors(metaSectorQuery);
 			} else {
 				metaSectors = mgm.getMetaSectors();
@@ -147,7 +129,7 @@ public class MetaSectorResource {
 				List<MetaSpaceDTO> metaSpaceDTOs = new ArrayList<MetaSpaceDTO>();
 				for (MetaSpace metaSpace : mgm.getMetaSpaces(metaSector.getId())) {
 					MetaSpaceDTO metaSpaceDTO = DTOConverter.getInstance().toDTO(metaSpace);
-					metaSpaceDTO.setMetaSector(metaSectorDTO);
+					// metaSpaceDTO.setMetaSector(metaSectorDTO);
 					metaSpaceDTOs.add(metaSpaceDTO);
 				}
 				metaSectorDTO.setMetaSpaces(metaSpaceDTOs);
@@ -171,19 +153,19 @@ public class MetaSectorResource {
 	 * @return
 	 */
 	@GET
-	@Path("/metaSectorId")
+	@Path("{metaSectorId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMetaSector(@PathParam("metaSectorId") String metaSectorId) {
 		MetaSectorDTO metaSectorDTO = null;
 
 		MgmService mgm = getMgmService();
 		try {
-			MetaSector machine = mgm.getMetaSector(metaSectorId);
-			if (machine == null) {
+			MetaSector metaSector = mgm.getMetaSector(metaSectorId);
+			if (metaSector == null) {
 				ErrorDTO metaSectorNotFoundError = new ErrorDTO("MetaSector cannot be found.");
 				return Response.ok().entity(metaSectorNotFoundError).build();
 			}
-			metaSectorDTO = DTOConverter.getInstance().toDTO(machine);
+			metaSectorDTO = DTOConverter.getInstance().toDTO(metaSector);
 
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e);
@@ -234,6 +216,8 @@ public class MetaSectorResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
+		handleSave(mgm);
+
 		return Response.ok().entity(metaSectorDTO).build();
 	}
 
@@ -273,6 +257,8 @@ public class MetaSectorResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
+		handleSave(mgm);
+
 		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSector is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
@@ -288,7 +274,7 @@ public class MetaSectorResource {
 	@DELETE
 	@Path("/{metaSectorId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteMachine(@PathParam(value = "metaSectorId") String metaSectorId) {
+	public Response deleteMetaSector(@PathParam(value = "metaSectorId") String metaSectorId) {
 		if (metaSectorId == null || metaSectorId.isEmpty()) {
 			ErrorDTO nullMetaSectorIdError = new ErrorDTO("metaSectorId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullMetaSectorIdError).build();
@@ -302,6 +288,8 @@ public class MetaSectorResource {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+
+		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSector is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();
