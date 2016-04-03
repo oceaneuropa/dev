@@ -1,6 +1,6 @@
 package osgi.mgm.service.impl;
 
-import static osgi.mgm.service.MgmConstants.ERROR_CODE_EMPTY_CLUSTER_ROOT;
+import static osgi.mgm.runtime.MgmConstants.ERROR_CODE_EMPTY_CLUSTER_ROOT;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -12,26 +12,26 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import osgi.mgm.service.MgmException;
+import osgi.mgm.runtime.MgmException;
+import osgi.mgm.runtime.handler.ArtifactDataHandler;
+import osgi.mgm.runtime.handler.HomeDataHandler;
+import osgi.mgm.runtime.handler.MachineDataHandler;
+import osgi.mgm.runtime.handler.MetaSectorDataHandler;
+import osgi.mgm.runtime.handler.MetaSpaceDataHandler;
+import osgi.mgm.runtime.model.Artifact;
+import osgi.mgm.runtime.model.ClusterRoot;
+import osgi.mgm.runtime.model.Home;
+import osgi.mgm.runtime.model.Machine;
+import osgi.mgm.runtime.model.MetaSector;
+import osgi.mgm.runtime.model.MetaSpace;
+import osgi.mgm.runtime.persistence.MgmPersistenceAdapter;
+import osgi.mgm.runtime.persistence.MgmPersistenceFactory;
+import osgi.mgm.runtime.query.ArtifactQuery;
+import osgi.mgm.runtime.query.HomeQuery;
+import osgi.mgm.runtime.query.MachineQuery;
+import osgi.mgm.runtime.query.MetaSectorQuery;
+import osgi.mgm.runtime.query.MetaSpaceQuery;
 import osgi.mgm.service.MgmService;
-import osgi.mgm.service.impl.datahandler.ArtifactDataHandler;
-import osgi.mgm.service.impl.datahandler.HomeDataHandler;
-import osgi.mgm.service.impl.datahandler.MachineDataHandler;
-import osgi.mgm.service.impl.datahandler.MetaSectorDataHandler;
-import osgi.mgm.service.impl.datahandler.MetaSpaceDataHandler;
-import osgi.mgm.service.impl.persistence.MgmPersistenceAdapter;
-import osgi.mgm.service.impl.persistence.MgmPersistenceFactory;
-import osgi.mgm.service.model.Artifact;
-import osgi.mgm.service.model.ArtifactQuery;
-import osgi.mgm.service.model.ClusterRoot;
-import osgi.mgm.service.model.Home;
-import osgi.mgm.service.model.HomeQuery;
-import osgi.mgm.service.model.Machine;
-import osgi.mgm.service.model.MachineQuery;
-import osgi.mgm.service.model.MetaSector;
-import osgi.mgm.service.model.MetaSectorQuery;
-import osgi.mgm.service.model.MetaSpace;
-import osgi.mgm.service.model.MetaSpaceQuery;
 
 public class MgmServiceImpl implements MgmService {
 

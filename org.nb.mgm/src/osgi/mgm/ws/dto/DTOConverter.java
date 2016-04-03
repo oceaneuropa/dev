@@ -1,11 +1,11 @@
 package osgi.mgm.ws.dto;
 
-import osgi.mgm.service.MgmException;
-import osgi.mgm.service.model.Artifact;
-import osgi.mgm.service.model.Home;
-import osgi.mgm.service.model.Machine;
-import osgi.mgm.service.model.MetaSector;
-import osgi.mgm.service.model.MetaSpace;
+import osgi.mgm.runtime.MgmException;
+import osgi.mgm.runtime.model.Artifact;
+import osgi.mgm.runtime.model.Home;
+import osgi.mgm.runtime.model.Machine;
+import osgi.mgm.runtime.model.MetaSector;
+import osgi.mgm.runtime.model.MetaSpace;
 
 public class DTOConverter {
 

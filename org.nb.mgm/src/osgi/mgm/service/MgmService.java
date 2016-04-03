@@ -2,17 +2,18 @@ package osgi.mgm.service;
 
 import java.util.List;
 
-import osgi.mgm.service.model.Artifact;
-import osgi.mgm.service.model.ArtifactQuery;
-import osgi.mgm.service.model.ClusterRoot;
-import osgi.mgm.service.model.Home;
-import osgi.mgm.service.model.HomeQuery;
-import osgi.mgm.service.model.Machine;
-import osgi.mgm.service.model.MachineQuery;
-import osgi.mgm.service.model.MetaSector;
-import osgi.mgm.service.model.MetaSectorQuery;
-import osgi.mgm.service.model.MetaSpace;
-import osgi.mgm.service.model.MetaSpaceQuery;
+import osgi.mgm.runtime.MgmException;
+import osgi.mgm.runtime.model.Artifact;
+import osgi.mgm.runtime.model.ClusterRoot;
+import osgi.mgm.runtime.model.Home;
+import osgi.mgm.runtime.model.Machine;
+import osgi.mgm.runtime.model.MetaSector;
+import osgi.mgm.runtime.model.MetaSpace;
+import osgi.mgm.runtime.query.ArtifactQuery;
+import osgi.mgm.runtime.query.HomeQuery;
+import osgi.mgm.runtime.query.MachineQuery;
+import osgi.mgm.runtime.query.MetaSectorQuery;
+import osgi.mgm.runtime.query.MetaSpaceQuery;
 
 public interface MgmService {
 
