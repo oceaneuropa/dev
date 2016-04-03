@@ -307,18 +307,17 @@ public class ManagementCommand {
 			// optional for Machine, Home, MetaSector, MetaSpace.
 			@Descriptor("Description of (Machine | Home | MetaSector | MetaSpace).") @Parameter(names = { "-description", "--description" }, absentValue = "") String description, //
 
-			// required for Machine
-			@Descriptor("IP address of Machine. Required when using -machine.") @Parameter(names = { "-ipaddress", "--ipaddress" }, absentValue = "") String ipaddress, //
+			// required for Machine (name, ip, description)
+			@Descriptor("IP address of Machine. Required when using -machine.") @Parameter(names = { "-ip", "--ipaddress" }, absentValue = "") String ipaddress, //
 
-			// required for Home
+			// required for Home (machineid, name, url, description)
 			@Descriptor("Machine Id for creating a new Home.") @Parameter(names = { "-machineid", "--machineid" }, absentValue = "") String machineid, //
 			@Descriptor("URL of a Home.") @Parameter(names = { "-url", "--url" }, absentValue = "") String url, //
 
-			// required for MetaSector
+			// required for MetaSector (name, description)
 
-			// required for MetaSpace
+			// required for MetaSpace (metasectorid, name, description)
 			@Descriptor("MetaSector Id for creating a new MetaSpace.") @Parameter(names = { "-metasectorid", "--metasectorid" }, absentValue = "") String metasectorid //
-
 	) {
 		if (this.mgm == null) {
 			System.out.println("Please login first.");
@@ -333,7 +332,7 @@ public class ManagementCommand {
 
 			// name is required for creating all entities
 			if ("".equals(name)) {
-				System.out.println("Please specify -name parameter.");
+				System.out.println("Please specify -name parameter for creating new (Machine | Home | MetaSector | MetaSpace).");
 				return;
 			}
 
@@ -581,7 +580,7 @@ public class ManagementCommand {
 
 			String machineId = machineIds[i];
 			if (machineId == null) {
-				System.out.println(MessageFormat.format("Cannot find the Machine that the Home with id=''{0}'' belongs to.", new Object[] { homeId }));
+				System.out.println(MessageFormat.format("Machine of the Home with id=''{0}'' is not found.", new Object[] { homeId }));
 				continue;
 			}
 
@@ -646,7 +645,7 @@ public class ManagementCommand {
 
 			String metaSectorId = metaSectorIds[i];
 			if (metaSectorId == null) {
-				System.out.println(MessageFormat.format("Cannot find the MetaSector that the MetaSpace with id=''{0}'' belongs to.", new Object[] { metaSpaceId }));
+				System.out.println(MessageFormat.format("MetaSector of the MetaSpace with id=''{0}'' is not found.", new Object[] { metaSpaceId }));
 				continue;
 			}
 
