@@ -50,13 +50,6 @@ public class StatusDTO {
 		this.status = status;
 	}
 
-	public boolean isSuccess() {
-		if ("success".equalsIgnoreCase(this.status)) {
-			return true;
-		}
-		return false;
-	}
-
 	@XmlElement
 	public String getMessage() {
 		return message;

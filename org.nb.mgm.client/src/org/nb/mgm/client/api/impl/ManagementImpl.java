@@ -146,7 +146,7 @@ public class ManagementImpl implements Management {
 		checkClient(this.machineClient);
 
 		StatusDTO status = this.machineClient.deleteMachine(machineId);
-		if (status != null && status.isSuccess()) {
+		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
 			return true;
 		}
 		return false;
@@ -261,7 +261,7 @@ public class ManagementImpl implements Management {
 		checkClient(this.homeClient);
 
 		StatusDTO status = this.homeClient.deleteHome(machineId, homeId);
-		if (status != null && status.isSuccess()) {
+		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
 			return true;
 		}
 		return false;
@@ -359,7 +359,7 @@ public class ManagementImpl implements Management {
 		checkClient(this.metaSectorClient);
 
 		StatusDTO status = this.metaSectorClient.deleteMetaSector(metaSectorId);
-		if (status != null && status.isSuccess()) {
+		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
 			return true;
 		}
 		return false;
@@ -475,7 +475,7 @@ public class ManagementImpl implements Management {
 		checkClient(this.metaSpaceClient);
 
 		StatusDTO status = this.metaSpaceClient.deleteMetaSpace(metaSectorId, metaSpaceId);
-		if (status != null && status.isSuccess()) {
+		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
 			return true;
 		}
 		return false;

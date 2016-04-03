@@ -199,7 +199,7 @@ public class MetaSectorImpl implements MetaSector {
 		checkClient(metaSpaceClient);
 
 		StatusDTO status = metaSpaceClient.deleteMetaSpace(getId(), metaSpaceId);
-		if (status != null && status.isSuccess()) {
+		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
 			return true;
 		}
 		return false;

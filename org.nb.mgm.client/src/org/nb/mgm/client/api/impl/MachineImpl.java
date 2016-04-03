@@ -220,7 +220,7 @@ public class MachineImpl implements Machine {
 		checkClient(homeClient);
 
 		StatusDTO status = homeClient.deleteHome(getId(), homeId);
-		if (status != null && status.isSuccess()) {
+		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
 			return true;
 		}
 		return false;
