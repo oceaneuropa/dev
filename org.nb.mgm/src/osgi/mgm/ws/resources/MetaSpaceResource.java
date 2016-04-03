@@ -23,7 +23,6 @@ import javax.ws.rs.ext.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import osgi.mgm.common.util.Util;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.Artifact;
@@ -31,6 +30,7 @@ import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSpace;
 import osgi.mgm.service.model.MetaSpaceQuery;
 import osgi.mgm.service.model.MetaSpaceQuery.MetaSpaceQueryBuilder;
+import osgi.mgm.util.Util;
 import osgi.mgm.ws.dto.ArtifactDTO;
 import osgi.mgm.ws.dto.DTOConverter;
 import osgi.mgm.ws.dto.ErrorDTO;
@@ -266,6 +266,9 @@ public class MetaSpaceResource {
 
 			if (Util.compare(id, newMetaSpace.getId()) != 0) {
 				metaSpaceDTO.setId(newMetaSpace.getId());
+			}
+			if (Util.compare(name, newMetaSpace.getName()) != 0) {
+				metaSpaceDTO.setName(newMetaSpace.getName());
 			}
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e);

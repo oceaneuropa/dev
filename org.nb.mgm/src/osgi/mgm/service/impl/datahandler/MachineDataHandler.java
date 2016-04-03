@@ -10,13 +10,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import osgi.mgm.common.util.SearchPattern;
-import osgi.mgm.common.util.Util;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.ClusterRoot;
 import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MachineQuery;
+import osgi.mgm.util.SearchPattern;
+import osgi.mgm.util.Util;
 
 /**
  * Data handler for Machine.
@@ -144,19 +144,43 @@ public class MachineDataHandler {
 			throw new MgmException(ERROR_CODE_MACHINE_ILLEGAL_PARAMETER, "Machine IP address cannot be empty.", null);
 		}
 
-		// Throw exception - Machine with same Id or name or IP address exists
+		// Throw exception - Machine with same Id or IP address exists
 		ClusterRoot root = getRoot();
 		for (Iterator<Machine> machineItor = root.getMachines().iterator(); machineItor.hasNext();) {
 			Machine currMachine = machineItor.next();
 			if (machine.getId().equals(currMachine.getId())) {
 				throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same Id already exists.", null);
 			}
-			if (machine.getName().equals(currMachine.getName())) {
-				throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same name already exists.", null);
-			}
+			// if (machine.getName().equals(currMachine.getName())) {
+			// throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same name already exists.", null);
+			// }
 			if (machine.getIpAddress().equals(currMachine.getIpAddress())) {
 				throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same IP address already exists.", null);
 			}
+		}
+
+		// Generate unique machine name
+		String name = machine.getName();
+		String uniqueName = name;
+		int index = 1;
+		while (true) {
+			boolean nameExist = false;
+			for (Iterator<Machine> machineItor = root.getMachines().iterator(); machineItor.hasNext();) {
+				Machine currMachine = machineItor.next();
+				if (uniqueName.equals(currMachine.getName())) {
+					nameExist = true;
+					break;
+				}
+			}
+			if (nameExist) {
+				uniqueName = name + "(" + index + ")";
+				index++;
+			} else {
+				break;
+			}
+		}
+		if (!uniqueName.equals(name)) {
+			machine.setName(uniqueName);
 		}
 
 		root.addMachine(machine);

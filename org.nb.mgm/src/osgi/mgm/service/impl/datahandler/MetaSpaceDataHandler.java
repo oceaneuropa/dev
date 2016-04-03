@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import osgi.mgm.common.util.SearchPattern;
-import osgi.mgm.common.util.Util;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.ClusterRoot;
@@ -21,6 +19,8 @@ import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSpace;
 import osgi.mgm.service.model.MetaSpaceQuery;
+import osgi.mgm.util.SearchPattern;
+import osgi.mgm.util.Util;
 
 /**
  * Data handler for MetaSpace.
@@ -158,7 +158,7 @@ public class MetaSpaceDataHandler {
 			throw new MgmException(ERROR_CODE_META_SPACE_ILLEGAL_PARAMETER, "MetaSpace name cannot be empty.", null);
 		}
 
-		// Throw exception - MetaSpace with same Id or name exists
+		// Throw exception - MetaSpace with same Id exists
 		List<MetaSpace> allMetaSpacesInMetaSector = metaSector.getMetaSpaces();
 		for (Iterator<MetaSpace> metaSpaceItor = allMetaSpacesInMetaSector.iterator(); metaSpaceItor.hasNext();) {
 			MetaSpace currMetaSpace = metaSpaceItor.next();
@@ -166,9 +166,33 @@ public class MetaSpaceDataHandler {
 			if (metaSpace.getId().equals(currMetaSpace.getId())) {
 				throw new MgmException(ERROR_CODE_META_SPACE_EXIST, "MetaSpace with same Id already exists.", null);
 			}
-			if (metaSpace.getName().equals(currMetaSpace.getName())) {
-				throw new MgmException(ERROR_CODE_META_SPACE_EXIST, "MetaSpace with same name already exists.", null);
+			// if (metaSpace.getName().equals(currMetaSpace.getName())) {
+			// throw new MgmException(ERROR_CODE_META_SPACE_EXIST, "MetaSpace with same name already exists.", null);
+			// }
+		}
+
+		// Generate unique metaSpace name
+		String name = metaSpace.getName();
+		String uniqueName = name;
+		int index = 1;
+		while (true) {
+			boolean nameExist = false;
+			for (Iterator<MetaSpace> metaSpaceItor = allMetaSpacesInMetaSector.iterator(); metaSpaceItor.hasNext();) {
+				MetaSpace currMetaSpace = metaSpaceItor.next();
+				if (uniqueName.equals(currMetaSpace.getName())) {
+					nameExist = true;
+					break;
+				}
 			}
+			if (nameExist) {
+				uniqueName = name + "(" + index + ")";
+				index++;
+			} else {
+				break;
+			}
+		}
+		if (!uniqueName.equals(name)) {
+			metaSpace.setName(uniqueName);
 		}
 
 		metaSector.addMetaSpace(metaSpace);

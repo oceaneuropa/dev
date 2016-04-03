@@ -8,13 +8,13 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import osgi.mgm.common.util.JSONUtil;
 import osgi.mgm.service.model.Artifact;
 import osgi.mgm.service.model.ClusterRoot;
 import osgi.mgm.service.model.Home;
 import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSpace;
+import osgi.mgm.util.JSONUtil;
 
 public class LocalMgmWriter {
 

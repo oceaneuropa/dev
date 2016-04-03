@@ -23,12 +23,12 @@ import javax.ws.rs.ext.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import osgi.mgm.common.util.Util;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.Home;
 import osgi.mgm.service.model.HomeQuery;
 import osgi.mgm.service.model.HomeQuery.HomeQueryBuilder;
+import osgi.mgm.util.Util;
 import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSpace;
@@ -301,6 +301,9 @@ public class HomeResource {
 
 			if (Util.compare(id, newHome.getId()) != 0) {
 				homeDTO.setId(newHome.getId());
+			}
+			if (Util.compare(name, newHome.getName()) != 0) {
+				homeDTO.setName(newHome.getName());
 			}
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e);

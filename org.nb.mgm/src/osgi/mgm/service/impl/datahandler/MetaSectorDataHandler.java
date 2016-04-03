@@ -10,8 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import osgi.mgm.common.util.SearchPattern;
-import osgi.mgm.common.util.Util;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.ClusterRoot;
@@ -19,6 +17,8 @@ import osgi.mgm.service.model.Home;
 import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSectorQuery;
+import osgi.mgm.util.SearchPattern;
+import osgi.mgm.util.Util;
 
 /**
  * Data handler for MetaSector.
@@ -139,16 +139,40 @@ public class MetaSectorDataHandler {
 			throw new MgmException(ERROR_CODE_META_SECTOR_ILLEGAL_PARAMETER, "MetaSector name cannot be empty.", null);
 		}
 
-		// Throw exception - MetaSector with same Id or name exists
+		// Throw exception - MetaSector with same Id exists
 		ClusterRoot root = getRoot();
 		for (Iterator<MetaSector> metaSectorItor = root.getMetaSectors().iterator(); metaSectorItor.hasNext();) {
 			MetaSector currMetaSector = metaSectorItor.next();
 			if (metaSector.getId().equals(currMetaSector.getId())) {
 				throw new MgmException(ERROR_CODE_META_SECTOR_EXIST, "MetaSector with same Id already exists.", null);
 			}
-			if (metaSector.getName().equals(currMetaSector.getName())) {
-				throw new MgmException(ERROR_CODE_META_SECTOR_EXIST, "MetaSector with same name already exists.", null);
+			// if (metaSector.getName().equals(currMetaSector.getName())) {
+			// throw new MgmException(ERROR_CODE_META_SECTOR_EXIST, "MetaSector with same name already exists.", null);
+			// }
+		}
+
+		// Generate unique metaSector name
+		String name = metaSector.getName();
+		String uniqueName = name;
+		int index = 1;
+		while (true) {
+			boolean nameExist = false;
+			for (Iterator<MetaSector> metaSectorItor = root.getMetaSectors().iterator(); metaSectorItor.hasNext();) {
+				MetaSector currMetaSector = metaSectorItor.next();
+				if (uniqueName.equals(currMetaSector.getName())) {
+					nameExist = true;
+					break;
+				}
 			}
+			if (nameExist) {
+				uniqueName = name + "(" + index + ")";
+				index++;
+			} else {
+				break;
+			}
+		}
+		if (!uniqueName.equals(name)) {
+			metaSector.setName(uniqueName);
 		}
 
 		root.addMetaSector(metaSector);

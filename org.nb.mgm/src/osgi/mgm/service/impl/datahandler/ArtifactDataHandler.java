@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import osgi.mgm.common.util.SearchPattern;
-import osgi.mgm.common.util.Util;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.Artifact;
@@ -20,6 +18,8 @@ import osgi.mgm.service.model.ArtifactQuery;
 import osgi.mgm.service.model.ClusterRoot;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSpace;
+import osgi.mgm.util.SearchPattern;
+import osgi.mgm.util.Util;
 
 /**
  * Data handler for Artifact.

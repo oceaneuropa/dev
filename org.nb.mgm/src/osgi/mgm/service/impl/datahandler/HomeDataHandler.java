@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import osgi.mgm.common.util.SearchPattern;
-import osgi.mgm.common.util.Util;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.ClusterRoot;
@@ -21,6 +19,8 @@ import osgi.mgm.service.model.HomeQuery;
 import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MetaSector;
 import osgi.mgm.service.model.MetaSpace;
+import osgi.mgm.util.SearchPattern;
+import osgi.mgm.util.Util;
 
 /**
  * Data handler for Home.
@@ -165,7 +165,7 @@ public class HomeDataHandler {
 			throw new MgmException(ERROR_CODE_HOME_ILLEGAL_PARAMETER, "Home URL cannot be empty.", null);
 		}
 
-		// Throw exception - Home with same Id or name or URL exists
+		// Throw exception - Home with same Id or URL exists
 		List<Home> allHomesInMachine = machine.getHomes();
 		for (Iterator<Home> homeItor = allHomesInMachine.iterator(); homeItor.hasNext();) {
 			Home currHome = homeItor.next();
@@ -173,12 +173,36 @@ public class HomeDataHandler {
 			if (home.getId().equals(currHome.getId())) {
 				throw new MgmException(ERROR_CODE_HOME_EXIST, "Home with same Id already exists.", null);
 			}
-			if (home.getName().equals(currHome.getName())) {
-				throw new MgmException(ERROR_CODE_HOME_EXIST, "Home with same name already exists.", null);
-			}
+			// if (home.getName().equals(currHome.getName())) {
+			// throw new MgmException(ERROR_CODE_HOME_EXIST, "Home with same name already exists.", null);
+			// }
 			if (home.getUrl().equals(currHome.getUrl())) {
 				throw new MgmException(ERROR_CODE_HOME_EXIST, "Home with same URL already exists.", null);
 			}
+		}
+
+		// Generate unique home name
+		String name = home.getName();
+		String uniqueName = name;
+		int index = 1;
+		while (true) {
+			boolean nameExist = false;
+			for (Iterator<Home> homeItor = allHomesInMachine.iterator(); homeItor.hasNext();) {
+				Home currHome = homeItor.next();
+				if (uniqueName.equals(currHome.getName())) {
+					nameExist = true;
+					break;
+				}
+			}
+			if (nameExist) {
+				uniqueName = name + "(" + index + ")";
+				index++;
+			} else {
+				break;
+			}
+		}
+		if (!uniqueName.equals(name)) {
+			home.setName(uniqueName);
 		}
 
 		machine.addHome(home);

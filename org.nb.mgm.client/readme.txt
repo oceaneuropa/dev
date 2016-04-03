@@ -20,16 +20,20 @@ OSGi command:
 mgm:login -url http://127.0.0.1:9090 -u admin -p 123
 
 mgm:list -machine
-
+mgm:list -metasector
 mgm:list -home -machineid b83f1a2c-49b6-4e1e-8f01-183b009d3397
 mgm:list -home -machineid c112e832-2c7a-4b04-bc7e-a36f83a6d1a8
 mgm:list -home -machineid 09efb046-684f-4659-b913-633aa9d72c83
-
-mgm:list -metasector
-
 mgm:list -metaspace -metasectorid 62f349e2-cf57-4074-9dd7-1e1b05fd1ae7
 mgm:list -metaspace -metasectorid 56b182cb-68e3-4d44-aa16-5cef55ae5a40
 mgm:list -metaspace -metasectorid 06961ea1-8917-48f5-bd39-251a0760efe1
 
-mgm:create -machine
+mgm:create -machine -name mymachine1 -ipaddress 192.168.0.1 -description 'this is my machine1'
+mgm:create -machine -name mymachine2 -ipaddress 192.168.0.2 -description 'this is my machine2'
+mgm:create -machine -name mymachine3 -ipaddress 192.168.0.3 -description 'this is my machine3'
+mgm:create -machine -name mymachine4 -ipaddress 192.168.0.4 -description 'this is my machine4'
+mgm:create -machine -name mymachine5 -ipaddress 192.168.0.5 -description 'this is my machine5'
+
+
+
 

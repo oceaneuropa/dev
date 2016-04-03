@@ -23,13 +23,13 @@ import javax.ws.rs.ext.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import osgi.mgm.common.util.Util;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.service.model.Home;
 import osgi.mgm.service.model.Machine;
 import osgi.mgm.service.model.MachineQuery;
 import osgi.mgm.service.model.MachineQuery.MachineQueryBuilder;
+import osgi.mgm.util.Util;
 import osgi.mgm.ws.dto.DTOConverter;
 import osgi.mgm.ws.dto.ErrorDTO;
 import osgi.mgm.ws.dto.HomeDTO;
@@ -219,6 +219,9 @@ public class MachineResource {
 
 			if (Util.compare(id, newMachine.getId()) != 0) {
 				machineDTO.setId(newMachine.getId());
+			}
+			if (Util.compare(name, newMachine.getName()) != 0) {
+				machineDTO.setName(newMachine.getName());
 			}
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e);
