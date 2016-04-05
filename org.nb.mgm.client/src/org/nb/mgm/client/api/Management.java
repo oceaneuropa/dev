@@ -81,6 +81,15 @@ public interface Management extends IAdaptable {
 	public List<Home> getHomes(String machineId, Properties properties) throws ClientException;
 
 	/**
+	 * Get Home by home Id.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public Home getHome(String homeId) throws ClientException;
+
+	/**
 	 * Get Home by machine Id and home Id.
 	 * 
 	 * @param machineId
@@ -104,6 +113,15 @@ public interface Management extends IAdaptable {
 
 	/**
 	 * Delete a Home from a Machine by home Id.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteHome(String homeId) throws ClientException;
+
+	/**
+	 * Delete a Home from a Machine by machine Id and home Id.
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -186,6 +204,16 @@ public interface Management extends IAdaptable {
 	public List<MetaSpace> getMetaSpaces(String metaSectorId, Properties properties) throws ClientException;
 
 	/**
+	 * Get MetaSpace by metaSpace Id.
+	 * 
+	 * @param metaSpaceId
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public MetaSpace getMetaSpace(String metaSpaceId) throws ClientException;
+
+	/**
 	 * Get MetaSpace by metaSector Id and metaSpace Id.
 	 * 
 	 * @param metaSectorId
@@ -208,7 +236,17 @@ public interface Management extends IAdaptable {
 	public MetaSpace addMetaSpace(String metaSectorId, String name, String description) throws ClientException;
 
 	/**
-	 * Delete a MetaSpace from a MetaSector.
+	 * Delete a MetaSpace from a MetaSector by metaSpace Id.
+	 * 
+	 * @param metaSpaceId
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteMetaSpace(String metaSpaceId) throws ClientException;
+
+	/**
+	 * Delete a MetaSpace from a MetaSector by metaSector Id and metaSpace Id.
 	 * 
 	 * @param metaSectorId
 	 * @param metaSpaceId

@@ -16,6 +16,7 @@ import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
 import org.nb.mgm.client.util.ClientException;
 import org.nb.mgm.client.util.PrintUtil;
+import org.nb.mgm.client.util.StringUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -25,6 +26,8 @@ public class ManagementCommand {
 	protected static String[] HOME_TITLES = new String[] { "ID", "Name", "URL", "Description" };
 	protected static String[] META_SECTOR_TITLES = new String[] { "ID", "Name", "Description" };
 	protected static String[] META_SPACE_TITLES = new String[] { "ID", "Name", "Description" };
+
+	protected static String NULL = "null";
 
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<?> registration;
@@ -42,7 +45,7 @@ public class ManagementCommand {
 		System.out.println("ManagementCommand.start()");
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "mgm");
-		props.put("osgi.command.function", new String[] { "login", "list", "create", "delete" });
+		props.put("osgi.command.function", new String[] { "login", "list", "create", "update", "delete" });
 		this.registration = bundleContext.registerService(ManagementCommand.class.getName(), this, props);
 	}
 
@@ -82,7 +85,7 @@ public class ManagementCommand {
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// list
+	// List
 	// ------------------------------------------------------------------------------------------
 	/**
 	 * List entities in the cluster.
@@ -277,7 +280,7 @@ public class ManagementCommand {
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// create
+	// Create
 	// ------------------------------------------------------------------------------------------
 	/**
 	 * mgm:create -machine
@@ -454,7 +457,266 @@ public class ManagementCommand {
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// delete
+	// Update
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * mgm:update -machine {machineId} -name {name} -ip {ipaddress} -description {description}
+	 * 
+	 * mgm:update -home {homeId} -name {name} -url {url} -description {description}
+	 * 
+	 * mgm:update -metasector {metasectorId} -name {name} -description {description}
+	 * 
+	 * mgm:update -metaspace {metaspaceId} -name {name} -description {description}
+	 * 
+	 * @param machineIdToUpdate
+	 * @param homeIdToUpdate
+	 * @param metaSectorIdToUpdate
+	 * @param metaSpaceIdToUpdate
+	 * @param name
+	 * @param description
+	 * @param ipaddress
+	 * @param url
+	 */
+	@Descriptor("Delete entity in the cluster.")
+	public void update( //
+			// Parameter
+			@Descriptor("Update Machine.") @Parameter(names = { "-machine", "--machine" }, absentValue = "") String machineIdToUpdate, //
+			@Descriptor("Update Home.") @Parameter(names = { "-home", "--home" }, absentValue = "") String homeIdToUpdate, //
+			@Descriptor("Update MetaSector.") @Parameter(names = { "-metasector", "--metasector" }, absentValue = "") String metaSectorIdToUpdate, //
+			@Descriptor("Delete MetaSpace.") @Parameter(names = { "-metaspace", "--metaspace" }, absentValue = "") String metaSpaceIdToUpdate, //
+
+			// name of Machine, Home, MetaSector, MetaSpace.
+			@Descriptor("Name of (Machine | Home | MetaSector | MetaSpace).") @Parameter(names = { "-name", "--name" }, absentValue = "null") String name, //
+			// description for Machine, Home, MetaSector, MetaSpace.
+			@Descriptor("Description of (Machine | Home | MetaSector | MetaSpace).") @Parameter(names = { "-description", "--description" }, absentValue = "null") String description, //
+
+			// Machine ip address
+			@Descriptor("IP address of Machine. Required when using -machine.") @Parameter(names = { "-ip", "--ipaddress" }, absentValue = "null") String ipaddress, //
+
+			// Home url
+			@Descriptor("URL of a Home.") @Parameter(names = { "-url", "--url" }, absentValue = "null") String url //
+	) {
+		if (this.mgm == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			if ("".equals(machineIdToUpdate) && "".equals(homeIdToUpdate) && "".equals(metaSectorIdToUpdate) && "".equals(metaSpaceIdToUpdate)) {
+				System.out.println("Please specify (-machine | -home | -metasector | -metaspace) parameter.");
+				return;
+			}
+
+			if (!"".equals(machineIdToUpdate)) {
+				if (NULL.equals(name) && NULL.equals(ipaddress) && NULL.equals(description)) {
+					System.out.println("Please specify -name or -ipaddress or -description parameter.");
+					return;
+				}
+				updateMachine(mgm, machineIdToUpdate, name, ipaddress, description);
+
+				listMachines(mgm);
+
+			} else if (!"".equals(homeIdToUpdate)) {
+				if (NULL.equals(name) && NULL.equals(url) && NULL.equals(description)) {
+					System.out.println("Please specify -name or -url or -description parameter.");
+					return;
+				}
+				updateHome(mgm, homeIdToUpdate, name, url, description);
+
+				Home home = mgm.getHome(homeIdToUpdate);
+				if (home != null && home.getMachine() != null) {
+					listHomes(mgm, home.getMachine().getId());
+				}
+
+			} else if (!"".equals(metaSectorIdToUpdate)) {
+				if (NULL.equals(name) && NULL.equals(description)) {
+					System.out.println("Please specify -name or -description parameter.");
+					return;
+				}
+				updateMetaSector(mgm, metaSectorIdToUpdate, name, description);
+
+				listMetaSectors(mgm);
+
+			} else if (!"".equals(metaSpaceIdToUpdate)) {
+				if (NULL.equals(name) && NULL.equals(description)) {
+					System.out.println("Please specify -name or -description parameter.");
+					return;
+				}
+				updateMetaSpace(mgm, metaSpaceIdToUpdate, name, description);
+
+				MetaSpace metaSpace = mgm.getMetaSpace(metaSpaceIdToUpdate);
+				if (metaSpace != null && metaSpace.getMetaSector() != null) {
+					listMetaSpaces(mgm, metaSpace.getMetaSector().getId());
+				}
+			}
+
+		} catch (ClientException e) {
+			System.out.println(e.getMessage() + "(" + e.getCode() + ")");
+		}
+	}
+
+	/**
+	 * Update Machine.
+	 * 
+	 * @param mgm
+	 * @param machineId
+	 * @param name
+	 * @param ipaddress
+	 * @param description
+	 * @throws ClientException
+	 */
+	protected void updateMachine(Management mgm, String machineId, String name, String ipaddress, String description) throws ClientException {
+		Machine machine = mgm.getMachine(machineId);
+		if (machine == null) {
+			System.out.println(MessageFormat.format("Machine with id=''{0}'' is not found.", new Object[] { machineId }));
+			return;
+		}
+
+		String oldName = machine.getName();
+		String oldIpAddress = machine.getIpAddress();
+		String oldDescription = machine.getDescription();
+
+		boolean isChanged = false;
+		if (!NULL.equals(name) && !StringUtil.equals(oldName, name)) {
+			machine.setName(name);
+			isChanged = true;
+		}
+		if (!NULL.equals(ipaddress) && !StringUtil.equals(oldIpAddress, ipaddress)) {
+			machine.setIpAddress(ipaddress);
+			isChanged = true;
+		}
+		if (!NULL.equals(description) && !StringUtil.equals(oldDescription, description)) {
+			machine.setDescription(description);
+			isChanged = true;
+		}
+
+		if (isChanged) {
+			System.out.println(MessageFormat.format("Machine with id=''{0}'' is updated.", new Object[] { machineId }));
+			machine.update();
+		} else {
+			System.out.println(MessageFormat.format("Machine with id=''{0}'' is not updated.", new Object[] { machineId }));
+		}
+	}
+
+	/**
+	 * Update Home.
+	 * 
+	 * @param mgm
+	 * @param homeId
+	 * @param name
+	 * @param url
+	 * @param description
+	 * @throws ClientException
+	 */
+	protected void updateHome(Management mgm, String homeId, String name, String url, String description) throws ClientException {
+		Home home = mgm.getHome(homeId);
+		if (home == null) {
+			System.out.println(MessageFormat.format("Home with id=''{0}'' is not found.", new Object[] { homeId }));
+			return;
+		}
+
+		String oldName = home.getName();
+		String oldUrl = home.getUrl();
+		String oldDescription = home.getDescription();
+
+		boolean isChanged = false;
+		if (!NULL.equals(name) && !StringUtil.equals(oldName, name)) {
+			home.setName(name);
+			isChanged = true;
+		}
+		if (!NULL.equals(url) && !StringUtil.equals(oldUrl, url)) {
+			home.setUrl(url);
+			isChanged = true;
+		}
+		if (!NULL.equals(description) && !StringUtil.equals(oldDescription, description)) {
+			home.setDescription(description);
+			isChanged = true;
+		}
+
+		if (isChanged) {
+			System.out.println(MessageFormat.format("Home with id=''{0}'' is updated.", new Object[] { homeId }));
+			home.update();
+		} else {
+			System.out.println(MessageFormat.format("Home with id=''{0}'' is not updated.", new Object[] { homeId }));
+		}
+	}
+
+	/**
+	 * Update MetaSector.
+	 * 
+	 * @param mgm
+	 * @param metaSectorId
+	 * @param name
+	 * @param description
+	 * @throws ClientException
+	 */
+	protected void updateMetaSector(Management mgm, String metaSectorId, String name, String description) throws ClientException {
+		MetaSector metaSector = mgm.getMetaSector(metaSectorId);
+		if (metaSector == null) {
+			System.out.println(MessageFormat.format("MetaSector with id=''{0}'' is not found.", new Object[] { metaSectorId }));
+			return;
+		}
+
+		String oldName = metaSector.getName();
+		String oldDescription = metaSector.getDescription();
+
+		boolean isChanged = false;
+		if (!NULL.equals(name) && !StringUtil.equals(oldName, name)) {
+			metaSector.setName(name);
+			isChanged = true;
+		}
+		if (!NULL.equals(description) && !StringUtil.equals(oldDescription, description)) {
+			metaSector.setDescription(description);
+			isChanged = true;
+		}
+
+		if (isChanged) {
+			System.out.println(MessageFormat.format("MetaSector with id=''{0}'' is updated.", new Object[] { metaSectorId }));
+			metaSector.update();
+		} else {
+			System.out.println(MessageFormat.format("MetaSector with id=''{0}'' is not updated.", new Object[] { metaSectorId }));
+		}
+	}
+
+	/**
+	 * Update MetaSpace.
+	 * 
+	 * @param mgm
+	 * @param metaSpaceId
+	 * @param name
+	 * @param description
+	 * @throws ClientException
+	 */
+	protected void updateMetaSpace(Management mgm, String metaSpaceId, String name, String description) throws ClientException {
+		MetaSpace metaSpace = mgm.getMetaSpace(metaSpaceId);
+		if (metaSpace == null) {
+			System.out.println(MessageFormat.format("MetaSpace with id=''{0}'' is not found.", new Object[] { metaSpaceId }));
+			return;
+		}
+
+		String oldName = metaSpace.getName();
+		String oldDescription = metaSpace.getDescription();
+
+		boolean isChanged = false;
+		if (!NULL.equals(name) && !StringUtil.equals(oldName, name)) {
+			metaSpace.setName(name);
+			isChanged = true;
+		}
+		if (!NULL.equals(description) && !StringUtil.equals(oldDescription, description)) {
+			metaSpace.setDescription(description);
+			isChanged = true;
+		}
+
+		if (isChanged) {
+			System.out.println(MessageFormat.format("MetaSpace with id=''{0}'' is updated.", new Object[] { metaSpaceId }));
+			metaSpace.update();
+		} else {
+			System.out.println(MessageFormat.format("MetaSpace with id=''{0}'' is not updated.", new Object[] { metaSpaceId }));
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Delete
 	// ------------------------------------------------------------------------------------------
 	/**
 	 * Delete entities from the cluster.
@@ -554,37 +816,9 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void deleteHomes(Management mgm, String[] homeIds) throws ClientException {
-		String[] machineIds = new String[homeIds.length];
-
-		List<Machine> machines = mgm.getMachines();
-		for (Machine machine : machines) {
-			String machineId = machine.getId();
-			List<Home> homes = machine.getHomes();
-
-			for (int i = 0; i < homeIds.length; i++) {
-				String homeId = homeIds[i];
-				if (machineIds[i] != null) {
-					continue;
-				}
-				for (Home home : homes) {
-					if (homeId.equals(home.getId())) {
-						machineIds[i] = machineId;
-						break;
-					}
-				}
-			}
-		}
-
 		for (int i = 0; i < homeIds.length; i++) {
 			String homeId = homeIds[i];
-
-			String machineId = machineIds[i];
-			if (machineId == null) {
-				System.out.println(MessageFormat.format("Machine of the Home with id=''{0}'' is not found.", new Object[] { homeId }));
-				continue;
-			}
-
-			boolean succeed = mgm.deleteHome(machineId, homeId);
+			boolean succeed = mgm.deleteHome(homeId);
 			if (succeed) {
 				System.out.println(MessageFormat.format("Home with id=''{0}'' is deleted.", new Object[] { homeId }));
 			} else {
@@ -619,37 +853,9 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void deleteMetaSpaces(Management mgm, String[] metaSpaceIds) throws ClientException {
-		String[] metaSectorIds = new String[metaSpaceIds.length];
-
-		List<MetaSector> metaSectors = mgm.getMetaSectors();
-		for (MetaSector metaSector : metaSectors) {
-			String metaSectorId = metaSector.getId();
-			List<MetaSpace> metaSpaces = metaSector.getMetaSpaces();
-
-			for (int i = 0; i < metaSpaceIds.length; i++) {
-				String metaSpaceId = metaSpaceIds[i];
-				if (metaSectorIds[i] != null) {
-					continue;
-				}
-				for (MetaSpace metaSpace : metaSpaces) {
-					if (metaSpaceId.equals(metaSpace.getId())) {
-						metaSectorIds[i] = metaSectorId;
-						break;
-					}
-				}
-			}
-		}
-
 		for (int i = 0; i < metaSpaceIds.length; i++) {
 			String metaSpaceId = metaSpaceIds[i];
-
-			String metaSectorId = metaSectorIds[i];
-			if (metaSectorId == null) {
-				System.out.println(MessageFormat.format("MetaSector of the MetaSpace with id=''{0}'' is not found.", new Object[] { metaSpaceId }));
-				continue;
-			}
-
-			boolean succeed = mgm.deleteMetaSpace(metaSectorId, metaSpaceId);
+			boolean succeed = mgm.deleteMetaSpace(metaSpaceId);
 			if (succeed) {
 				System.out.println(MessageFormat.format("MetaSpace with id=''{0}'' is deleted.", new Object[] { metaSpaceId }));
 			} else {

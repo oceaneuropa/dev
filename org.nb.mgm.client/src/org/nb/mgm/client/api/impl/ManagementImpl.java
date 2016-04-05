@@ -202,6 +202,36 @@ public class ManagementImpl implements Management {
 	 * @throws ClientException
 	 */
 	@Override
+	public Home getHome(String homeId) throws ClientException {
+		checkClient(this.homeClient);
+
+		Home home = null;
+		List<Machine> machines = getMachines();
+		for (Machine machine : machines) {
+			String machineId = machine.getId();
+			List<HomeDTO> homeDTOs = this.homeClient.getHomes(machineId, null);
+			for (HomeDTO homeDTO : homeDTOs) {
+				if (homeId.equals(homeDTO.getId())) {
+					home = MgmFactory.createHome(machine, homeDTO);
+					break;
+				}
+			}
+			if (home != null) {
+				break;
+			}
+		}
+		return home;
+	}
+
+	/**
+	 * Get Home by machine Id and home Id.
+	 * 
+	 * @param machineId
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	@Override
 	public Home getHome(String machineId, String homeId) throws ClientException {
 		checkClient(this.homeClient);
 
@@ -250,6 +280,40 @@ public class ManagementImpl implements Management {
 
 	/**
 	 * Delete a Home from a Machine by home Id.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteHome(String homeId) throws ClientException {
+		checkClient(this.homeClient);
+
+		String machineId = null;
+		List<Machine> machines = getMachines();
+		for (Machine machine : machines) {
+			String currMachineId = machine.getId();
+			List<HomeDTO> homeDTOs = this.homeClient.getHomes(currMachineId, null);
+			for (HomeDTO homeDTO : homeDTOs) {
+				if (homeId.equals(homeDTO.getId())) {
+					machineId = currMachineId;
+					break;
+				}
+			}
+			if (machineId != null) {
+				break;
+			}
+		}
+		if (machineId != null) {
+			StatusDTO status = this.homeClient.deleteHome(machineId, homeId);
+			if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Delete a Home from a Machine by machine Id and home Id.
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -408,6 +472,36 @@ public class ManagementImpl implements Management {
 	}
 
 	/**
+	 * Get MetaSpace by metaSpace Id.
+	 * 
+	 * @param metaSpaceId
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	@Override
+	public MetaSpace getMetaSpace(String metaSpaceId) throws ClientException {
+		checkClient(this.metaSpaceClient);
+
+		MetaSpace metaSpace = null;
+		List<MetaSector> metaSectors = getMetaSectors();
+		for (MetaSector metaSector : metaSectors) {
+			String metaSectorId = metaSector.getId();
+			List<MetaSpaceDTO> metaSpaceDTOs = this.metaSpaceClient.getMetaSpaces(metaSectorId);
+			for (MetaSpaceDTO metaSpaceDTO : metaSpaceDTOs) {
+				if (metaSpaceId.equals(metaSpaceDTO.getId())) {
+					metaSpace = MgmFactory.createMetaSpace(metaSector, metaSpaceDTO);
+					break;
+				}
+			}
+			if (metaSpace != null) {
+				break;
+			}
+		}
+		return metaSpace;
+	}
+
+	/**
 	 * Get MetaSpace by metaSector Id and metaSpace Id.
 	 * 
 	 * @param metaSectorId
@@ -462,7 +556,42 @@ public class ManagementImpl implements Management {
 	}
 
 	/**
-	 * Delete a MetaSpace from a MetaSector.
+	 * Delete a MetaSpace from a MetaSector by metaSpace Id.
+	 * 
+	 * @param metaSpaceId
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteMetaSpace(String metaSpaceId) throws ClientException {
+		checkClient(this.metaSpaceClient);
+
+		String metaSectorId = null;
+		List<MetaSector> metaSectors = getMetaSectors();
+		for (MetaSector metaSector : metaSectors) {
+			String currMetaSectorId = metaSector.getId();
+			List<MetaSpaceDTO> metaSpaceDTOs = this.metaSpaceClient.getMetaSpaces(currMetaSectorId, null);
+			for (MetaSpaceDTO metaSpaceDTO : metaSpaceDTOs) {
+				if (metaSpaceId.equals(metaSpaceDTO.getId())) {
+					metaSectorId = currMetaSectorId;
+					break;
+				}
+			}
+			if (metaSectorId != null) {
+				break;
+			}
+		}
+		if (metaSectorId != null) {
+			StatusDTO status = this.metaSpaceClient.deleteMetaSpace(metaSectorId, metaSpaceId);
+			if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Delete a MetaSpace from a MetaSector by metaSector Id and metaSpace Id.
 	 * 
 	 * @param metaSectorId
 	 * @param metaSpaceId
