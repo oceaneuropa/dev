@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSGi Agent Example
-Bundle-SymbolicName: osgi.agent.example
+Bundle-SymbolicName: org.nb.agent
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: osgi.agent.example.Agent
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
