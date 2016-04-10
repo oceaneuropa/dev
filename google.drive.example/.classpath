@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry exported="true" kind="lib" path="lib2/google-api-services-drive-v3-rev17-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/commons-logging-1.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-api-client-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-api-client-gson-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-api-client-jackson2-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-api-client-java6-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-api-client-servlet-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-http-client-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-http-client-gson-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-http-client-jackson2-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-http-client-jdo-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-oauth-client-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-oauth-client-appengine-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-oauth-client-java6-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-oauth-client-jetty-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/google-oauth-client-servlet-1.21.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/gson-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/httpclient-4.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/httpcore-4.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/jackson-core-2.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/jdo2-api-2.3-eb.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/jetty-6.1.26.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/jetty-util-6.1.26.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/jsr305-1.3.9.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib1/transaction-api-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib0/google-api-services-drive-v2-rev212-1.21.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
