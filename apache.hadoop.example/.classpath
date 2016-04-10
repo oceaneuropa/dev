@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib_common/hamcrest-core-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib_common/junit-4.12.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_common/slf4j-api-1.7.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_common/slf4j-log4j12-1.7.10.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib_web/asm-3.2.jar"/>

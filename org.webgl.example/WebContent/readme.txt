@@ -95,12 +95,20 @@ http://localhost:8080/gl/tutorial.html
 		Note:
 		Phong shading
 		https://en.wikipedia.org/wiki/Phong_shading
-		ambient reflection		环境反射
-		diffuse reflection		漫反射
-		specular reflection		镜面反射
+		ambient reflection		// environmental light
+		diffuse reflection		// sun light
+		specular reflection		// bulb light
 
 		Test URL:
 		http://localhost:8080/gl/tutorial7.html
+
+	
+	Read:
+	What is a transformation matrix?
+	https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Matrix_math_for_the_web
+	
+	WebGL model view projection
+	https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/WebGL_model_view_projection
 
 
 4. WebGL Fundamentals
@@ -111,10 +119,17 @@ http://webglfundamentals.org/
 		http://webglfundamentals.org/webgl/webgl-2d-rectangle.html
 		http://webglfundamentals.org/webgl/webgl-2d-rectangle-top-left.html
 
+		Read:
+		WebGL How It Works - 			http://webglfundamentals.org/webgl/lessons/webgl-how-it-works.html
+		WebGL Shaders and GLSL - 		http://webglfundamentals.org/webgl/lessons/webgl-shaders-and-glsl.html
+		WebGL Boilerplate - 			http://webglfundamentals.org/webgl/lessons/webgl-boilerplate.html
+		A Tiny WebGL helper Library - 	http://twgljs.org/
+
 		Test URL:
 		http://localhost:8080/gl/fundamentals/example1_v1.html
 		http://localhost:8080/gl/fundamentals/example1_v2.html
 		http://localhost:8080/gl/fundamentals/example1_v3.html
+		http://localhost:8080/gl/fundamentals/example1_v4.html
 
 
 5. WebGL 101

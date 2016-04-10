@@ -39,4 +39,6 @@ Bundle-ClassPath: .,
  lib_web/servlet-api-2.5.jar,
  lib_web/xercesImpl-2.9.1.jar,
  lib_web/xml-apis-1.3.04.jar,
- lib_web/xmlenc-0.52.jar
+ lib_web/xmlenc-0.52.jar,
+ lib_common/junit-4.12.jar,
+ lib_common/hamcrest-core-1.3.jar

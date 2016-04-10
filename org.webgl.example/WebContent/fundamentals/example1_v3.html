@@ -32,12 +32,12 @@
 		gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 		gl.bufferData(gl.ARRAY_BUFFER, 
 			new Float32Array([
-		     	10, 20,
-		     	80, 20,
-		     	10, 30,
-		     	10, 30,
-		     	80, 20,
-		     	80, 30]), 
+		     	10, 20, 	// triangle1 - point1
+		     	80, 20, 	// triangle1 - point2
+		     	10, 30, 	// triangle1 - point3
+		     	10, 30, 	// triangle2 - point1
+		     	80, 20, 	// triangle2 - point2
+		     	80, 30]), 	// triangle2 - point3 
 		     gl.STATIC_DRAW);
 		gl.enableVertexAttribArray(positionLocation);
 		gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);

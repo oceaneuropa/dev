@@ -33,10 +33,14 @@ public class HdfsClientMac {
 		return fs;
 	}
 
+	public void listFiles() {
+
+	}
+
 	public void test1() {
 		try {
 			FileSystem fs = getFileSystem();
-			fs.create(new Path("/readme.txt"));
+			// fs.create(new Path("/readme.txt"));
 
 			RemoteIterator<LocatedFileStatus> itor = fs.listFiles(new Path("/"), true);
 			while (itor.hasNext()) {
@@ -110,9 +114,9 @@ public class HdfsClientMac {
 		Path destPath = new Path(dest);
 
 		if (fs.exists(destPath)) {
-			System.out.println(destPath + " exits.");
+			// System.out.println(destPath + " exits.");
 		} else {
-			System.out.println(destPath + " doesn't exit.");
+			// System.out.println(destPath + " doesn't exit.");
 		}
 
 		try {
@@ -133,14 +137,16 @@ public class HdfsClientMac {
 		HdfsClientMac client = new HdfsClientMac();
 
 		// test 1
-		// client.test1();
+		client.test1();
 
 		// test 2
-		client.test2();
+		// client.test2();
 
 		// test copy file
 		try {
-			// client.copyFromLocal("/Users/yayang/apache/hadoop/readme.txt", "/yayang/apache/hadoop/readme.txt");
+			client.copyFromLocal("/Users/yayang/apache/hadoop/readme.txt", "/yayang/apache/hadoop/readme1.txt");
+			client.copyFromLocal("/Users/yayang/apache/hadoop/readme.txt", "/yayang/apache/hadoop/readme2.txt");
+			client.copyFromLocal("/Users/yayang/apache/hadoop/readme.txt", "/yayang/apache/hadoop/readme3.txt");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
