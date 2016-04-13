@@ -17,11 +17,11 @@ import org.junit.Test;
  * @see http://stackoverflow.com/questions/11342400/how-to-list-all-files-in-a-directory-and-its-subdirectories-in-hadoop-hdfs
  * 
  */
-public class HdfsClientMacTest /* extends TestCase */ {
+public class HdfsClientTest {
 
 	protected FileSystem fs;
 
-	public HdfsClientMacTest() {
+	public HdfsClientTest() {
 		this.fs = getFileSystem();
 	}
 
@@ -85,13 +85,45 @@ public class HdfsClientMacTest /* extends TestCase */ {
 	public void testCreateDir() throws IOException {
 		System.out.println("--- --- --- testCreateDir() --- --- ---");
 
-		FileStatus dir1 = HdfsUtil.mkdirs(fs, new Path(HdfsUtil.ROOT, "TestDirectory1"));
-		FileStatus dir2 = HdfsUtil.mkdirs(fs, new Path(HdfsUtil.ROOT, "TestDirectory2"));
-		FileStatus dir3 = HdfsUtil.mkdirs(fs, new Path(HdfsUtil.ROOT, "TestDirectory3"));
+		Path path1 = new Path(HdfsUtil.ROOT, "TestDirectory1");
+		Path path2 = new Path(HdfsUtil.ROOT, "TestDirectory2");
+		Path path3 = new Path(HdfsUtil.ROOT, "TestDirectory3");
 
-		boolean exist1 = HdfsUtil.exist(fs, dir1);
-		boolean exist2 = HdfsUtil.exist(fs, dir2);
-		boolean exist3 = HdfsUtil.exist(fs, dir3);
+		if (HdfsUtil.exist(fs, path1)) {
+			System.out.println(path1.getName() + " already exists.");
+		} else {
+			FileStatus dir1 = HdfsUtil.mkdirs(fs, path1);
+			boolean exist1 = HdfsUtil.exist(fs, dir1);
+			if (exist1) {
+				System.out.println(dir1.getPath().getName() + " is created.");
+			} else {
+				System.out.println(dir1.getPath().getName() + " cannot be created.");
+			}
+		}
+
+		if (HdfsUtil.exist(fs, path2)) {
+			System.out.println(path2.getName() + " already exists.");
+		} else {
+			FileStatus dir2 = HdfsUtil.mkdirs(fs, path2);
+			boolean exist2 = HdfsUtil.exist(fs, dir2);
+			if (exist2) {
+				System.out.println(dir2.getPath().getName() + " is created.");
+			} else {
+				System.out.println(dir2.getPath().getName() + " cannot be created.");
+			}
+		}
+
+		if (HdfsUtil.exist(fs, path3)) {
+			System.out.println(path3.getName() + " already exists.");
+		} else {
+			FileStatus dir3 = HdfsUtil.mkdirs(fs, path3);
+			boolean exist3 = HdfsUtil.exist(fs, dir3);
+			if (exist3) {
+				System.out.println(dir3.getPath().getName() + " is created.");
+			} else {
+				System.out.println(dir3.getPath().getName() + " cannot be created.");
+			}
+		}
 
 		System.out.println();
 	}
