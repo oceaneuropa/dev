@@ -133,18 +133,18 @@ public class HdfsClientWin {
 		HdfsClientWin client = new HdfsClientWin();
 
 		// test 1
-		// client.test1();
+		client.test1();
 
 		// test copy file
 		try {
-			// client.copyFromLocal("C:/hadoop/readme.txt", "/yayang/apache/hadoop/readme.txt");
+			client.copyFromLocal("C:/hadoop/readme.txt", "/yayang/apache/hadoop/readme.txt");
 			client.copyFromLocal("C:/hadoop/readme.txt", "/readme.txt");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		// test 2
-		// client.test2();
+		client.test2();
 	}
 
 }
