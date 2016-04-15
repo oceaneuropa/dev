@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response.Status.Family;
 import org.nb.mgm.client.util.ClientConfiguration;
 import org.nb.mgm.client.util.ClientException;
 
-import osgi.mgm.ws.dto.ErrorDTO;
+import osgi.mgm.ws.mgm.dto.ErrorDTO;
 
 public abstract class AbstractMgmClient {
 

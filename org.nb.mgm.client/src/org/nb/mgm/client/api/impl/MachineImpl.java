@@ -12,9 +12,9 @@ import org.nb.mgm.client.util.ClientException;
 import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.client.ws.MachineClient;
 
-import osgi.mgm.ws.dto.HomeDTO;
-import osgi.mgm.ws.dto.MachineDTO;
-import osgi.mgm.ws.dto.StatusDTO;
+import osgi.mgm.ws.mgm.dto.HomeDTO;
+import osgi.mgm.ws.mgm.dto.MachineDTO;
+import osgi.mgm.ws.mgm.dto.StatusDTO;
 
 public class MachineImpl implements Machine {
 

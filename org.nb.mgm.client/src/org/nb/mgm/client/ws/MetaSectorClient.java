@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response;
 import org.nb.mgm.client.util.ClientConfiguration;
 import org.nb.mgm.client.util.ClientException;
 
-import osgi.mgm.ws.dto.MetaSectorDTO;
-import osgi.mgm.ws.dto.StatusDTO;
+import osgi.mgm.ws.mgm.dto.MetaSectorDTO;
+import osgi.mgm.ws.mgm.dto.StatusDTO;
 
 /**
  * MetaSector web service client

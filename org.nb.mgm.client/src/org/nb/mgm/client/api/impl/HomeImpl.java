@@ -6,7 +6,7 @@ import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.util.ClientException;
 import org.nb.mgm.client.ws.HomeClient;
 
-import osgi.mgm.ws.dto.HomeDTO;
+import osgi.mgm.ws.mgm.dto.HomeDTO;
 
 public class HomeImpl implements Home {
 

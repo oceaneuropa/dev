@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 import org.nb.mgm.client.util.ClientConfiguration;
 import org.nb.mgm.client.util.ClientException;
 
-import osgi.mgm.ws.dto.ArtifactDTO;
-import osgi.mgm.ws.dto.StatusDTO;
+import osgi.mgm.ws.mgm.dto.ArtifactDTO;
+import osgi.mgm.ws.mgm.dto.StatusDTO;
 
 /**
  * Artifact web service client
