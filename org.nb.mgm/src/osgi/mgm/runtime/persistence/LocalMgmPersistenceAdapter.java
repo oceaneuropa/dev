@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import osgi.mgm.runtime.MgmConstants;
 import osgi.mgm.runtime.model.ClusterRoot;
+import osgi.mgm.service.MgmConstants;
 
 /*
  * {

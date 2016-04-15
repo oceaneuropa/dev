@@ -2,7 +2,6 @@ package osgi.mgm.service;
 
 import java.util.List;
 
-import osgi.mgm.runtime.MgmException;
 import osgi.mgm.runtime.model.Artifact;
 import osgi.mgm.runtime.model.ClusterRoot;
 import osgi.mgm.runtime.model.Home;

@@ -1,6 +1,6 @@
 package osgi.mgm.service.impl;
 
-import static osgi.mgm.runtime.MgmConstants.ERROR_CODE_EMPTY_CLUSTER_ROOT;
+import static osgi.mgm.service.MgmConstants.ERROR_CODE_EMPTY_CLUSTER_ROOT;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -12,7 +12,6 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import osgi.mgm.runtime.MgmException;
 import osgi.mgm.runtime.handler.ArtifactDataHandler;
 import osgi.mgm.runtime.handler.HomeDataHandler;
 import osgi.mgm.runtime.handler.MachineDataHandler;
@@ -31,6 +30,7 @@ import osgi.mgm.runtime.query.HomeQuery;
 import osgi.mgm.runtime.query.MachineQuery;
 import osgi.mgm.runtime.query.MetaSectorQuery;
 import osgi.mgm.runtime.query.MetaSpaceQuery;
+import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 
 public class MgmServiceImpl implements MgmService {

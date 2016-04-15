@@ -1,4 +1,4 @@
-package osgi.mgm.runtime;
+package osgi.mgm.service;
 
 public class MgmConstants {
 

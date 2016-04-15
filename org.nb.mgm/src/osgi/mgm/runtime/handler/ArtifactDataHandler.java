@@ -1,22 +1,22 @@
 package osgi.mgm.runtime.handler;
 
-import static osgi.mgm.runtime.MgmConstants.ERROR_CODE_ARTIFACT_EXIST;
-import static osgi.mgm.runtime.MgmConstants.ERROR_CODE_ARTIFACT_ILLEGAL_PARAMETER;
-import static osgi.mgm.runtime.MgmConstants.ERROR_CODE_ARTIFACT_ILLEGAL_STATES;
-import static osgi.mgm.runtime.MgmConstants.ERROR_CODE_ARTIFACT_NOT_FOUND;
-import static osgi.mgm.runtime.MgmConstants.ERROR_CODE_META_SECTOR_NOT_FOUND;
+import static osgi.mgm.service.MgmConstants.ERROR_CODE_ARTIFACT_EXIST;
+import static osgi.mgm.service.MgmConstants.ERROR_CODE_ARTIFACT_ILLEGAL_PARAMETER;
+import static osgi.mgm.service.MgmConstants.ERROR_CODE_ARTIFACT_ILLEGAL_STATES;
+import static osgi.mgm.service.MgmConstants.ERROR_CODE_ARTIFACT_NOT_FOUND;
+import static osgi.mgm.service.MgmConstants.ERROR_CODE_META_SECTOR_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import osgi.mgm.runtime.MgmException;
 import osgi.mgm.runtime.model.Artifact;
 import osgi.mgm.runtime.model.ClusterRoot;
 import osgi.mgm.runtime.model.MetaSector;
 import osgi.mgm.runtime.model.MetaSpace;
 import osgi.mgm.runtime.query.ArtifactQuery;
+import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.util.SearchPattern;
 import osgi.mgm.util.Util;

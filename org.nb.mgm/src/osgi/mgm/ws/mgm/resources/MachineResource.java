@@ -23,11 +23,11 @@ import javax.ws.rs.ext.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import osgi.mgm.runtime.MgmException;
 import osgi.mgm.runtime.model.Home;
 import osgi.mgm.runtime.model.Machine;
 import osgi.mgm.runtime.query.MachineQuery;
 import osgi.mgm.runtime.query.MachineQuery.MachineQueryBuilder;
+import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.util.Util;
 import osgi.mgm.ws.mgm.dto.DTOConverter;

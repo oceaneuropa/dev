@@ -23,10 +23,10 @@ import javax.ws.rs.ext.Providers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import osgi.mgm.runtime.MgmException;
 import osgi.mgm.runtime.model.Artifact;
 import osgi.mgm.runtime.model.MetaSector;
 import osgi.mgm.runtime.query.ArtifactQuery;
+import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.util.Util;
 import osgi.mgm.ws.mgm.dto.ArtifactDTO;
