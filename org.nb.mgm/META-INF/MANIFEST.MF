@@ -4,7 +4,7 @@ Bundle-Name: OSGi Management Example
 Bundle-SymbolicName: org.nb.mgm
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: osgi.mgm.Activator
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.ws.rs;version="2.0.1",
  javax.ws.rs.core;version="2.0.1",
  javax.ws.rs.ext;version="2.0.1",

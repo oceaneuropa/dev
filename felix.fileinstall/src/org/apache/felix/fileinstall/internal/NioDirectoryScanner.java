@@ -44,7 +44,7 @@ public class NioDirectoryScanner extends DirectoryScanner {
 	 * @param filterString
 	 *            a filter for file names
 	 */
-	public NioDirectoryScanner(BundleContext bundleContext, File directory, String filterString) throws IOException {
+	public NioDirectoryScanner(final BundleContext bundleContext, final File directory, String filterString) throws IOException {
 		super(directory, filterString);
 
 		this.bundleContext = bundleContext;

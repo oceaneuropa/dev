@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Felix Fileinstall
 Bundle-SymbolicName: felix.fileinstall;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.osgi.framework;version="1.8.0",
  org.osgi.framework.startlevel;version="1.0.0",
  org.osgi.framework.wiring;version="1.2.0",

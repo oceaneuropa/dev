@@ -72,7 +72,7 @@ public class FileInstall implements BundleActivator {
 	}
 
 	@Override
-	public void start(BundleContext context) throws Exception {
+	public void start(final BundleContext context) throws Exception {
 		Printer.pl("FileInstall.start()");
 
 		this.context = context;
