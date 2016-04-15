@@ -11,10 +11,9 @@ import org.nb.mgm.client.api.MgmFactory;
 import org.nb.mgm.client.util.ClientException;
 import org.nb.mgm.client.ws.MetaSectorClient;
 import org.nb.mgm.client.ws.MetaSpaceClient;
-
-import osgi.mgm.ws.dto.MetaSectorDTO;
-import osgi.mgm.ws.dto.MetaSpaceDTO;
-import osgi.mgm.ws.dto.StatusDTO;
+import org.nb.mgm.ws.dto.MetaSectorDTO;
+import org.nb.mgm.ws.dto.MetaSpaceDTO;
+import org.nb.mgm.ws.dto.StatusDTO;
 
 public class MetaSectorImpl implements MetaSector {
 

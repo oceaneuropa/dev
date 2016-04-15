@@ -16,12 +16,11 @@ import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.client.ws.MachineClient;
 import org.nb.mgm.client.ws.MetaSectorClient;
 import org.nb.mgm.client.ws.MetaSpaceClient;
-
-import osgi.mgm.ws.dto.HomeDTO;
-import osgi.mgm.ws.dto.MachineDTO;
-import osgi.mgm.ws.dto.MetaSectorDTO;
-import osgi.mgm.ws.dto.MetaSpaceDTO;
-import osgi.mgm.ws.dto.StatusDTO;
+import org.nb.mgm.ws.dto.HomeDTO;
+import org.nb.mgm.ws.dto.MachineDTO;
+import org.nb.mgm.ws.dto.MetaSectorDTO;
+import org.nb.mgm.ws.dto.MetaSpaceDTO;
+import org.nb.mgm.ws.dto.StatusDTO;
 
 public class ManagementImpl implements Management {
 

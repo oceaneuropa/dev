@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.nb.mgm.client.util.ClientConfiguration;
 import org.nb.mgm.client.util.ClientException;
-
-import osgi.mgm.ws.dto.HomeDTO;
-import osgi.mgm.ws.dto.MachineDTO;
+import org.nb.mgm.ws.dto.HomeDTO;
+import org.nb.mgm.ws.dto.MachineDTO;
 
 public class MgmClientTest {
 

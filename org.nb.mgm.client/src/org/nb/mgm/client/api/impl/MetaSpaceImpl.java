@@ -5,9 +5,8 @@ import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.util.ClientException;
 import org.nb.mgm.client.ws.MetaSpaceClient;
-
-import osgi.mgm.ws.dto.HomeDTO;
-import osgi.mgm.ws.dto.MetaSpaceDTO;
+import org.nb.mgm.ws.dto.HomeDTO;
+import org.nb.mgm.ws.dto.MetaSpaceDTO;
 
 public class MetaSpaceImpl implements MetaSpace {
 

@@ -14,9 +14,8 @@ import javax.ws.rs.core.Response;
 
 import org.nb.mgm.client.util.ClientConfiguration;
 import org.nb.mgm.client.util.ClientException;
-
-import osgi.mgm.ws.dto.HomeDTO;
-import osgi.mgm.ws.dto.StatusDTO;
+import org.nb.mgm.ws.dto.HomeDTO;
+import org.nb.mgm.ws.dto.StatusDTO;
 
 /**
  * Home web service client
