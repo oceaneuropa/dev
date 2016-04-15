@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.resources;
+package osgi.mgm.ws.resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +30,11 @@ import osgi.mgm.runtime.query.MachineQuery.MachineQueryBuilder;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.util.Util;
-import osgi.mgm.ws.mgm.dto.DTOConverter;
-import osgi.mgm.ws.mgm.dto.ErrorDTO;
-import osgi.mgm.ws.mgm.dto.HomeDTO;
-import osgi.mgm.ws.mgm.dto.MachineDTO;
-import osgi.mgm.ws.mgm.dto.StatusDTO;
+import osgi.mgm.ws.dto.DTOConverter;
+import osgi.mgm.ws.dto.ErrorDTO;
+import osgi.mgm.ws.dto.HomeDTO;
+import osgi.mgm.ws.dto.MachineDTO;
+import osgi.mgm.ws.dto.StatusDTO;
 
 /**
  * Machine web service resource

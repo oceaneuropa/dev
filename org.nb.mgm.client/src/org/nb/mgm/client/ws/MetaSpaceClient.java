@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response;
 import org.nb.mgm.client.util.ClientConfiguration;
 import org.nb.mgm.client.util.ClientException;
 
-import osgi.mgm.ws.mgm.dto.MetaSpaceDTO;
-import osgi.mgm.ws.mgm.dto.StatusDTO;
+import osgi.mgm.ws.dto.MetaSpaceDTO;
+import osgi.mgm.ws.dto.StatusDTO;
 
 /**
  * MetaSpace web service client

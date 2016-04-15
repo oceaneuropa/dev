@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.resources;
+package osgi.mgm.ws.resources;
 
 import javax.ws.rs.ext.ContextResolver;
 

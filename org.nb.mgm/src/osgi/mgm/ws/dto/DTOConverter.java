@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.dto;
+package osgi.mgm.ws.dto;
 
 import osgi.mgm.runtime.model.Artifact;
 import osgi.mgm.runtime.model.Home;

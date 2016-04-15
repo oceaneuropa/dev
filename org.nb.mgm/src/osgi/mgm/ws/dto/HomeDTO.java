@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.dto;
+package osgi.mgm.ws.dto;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.dto;
+package osgi.mgm.ws.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * DTO for MetaSpace
+ * DTO for Machine
  *
  */
 @XmlRootElement
-public class MetaSpaceDTO {
+public class MachineDTO {
 
 	@XmlElement
 	protected String id;
@@ -20,13 +20,12 @@ public class MetaSpaceDTO {
 	@XmlElement
 	protected String description;
 
-	// Container MetaSector
 	@XmlElement
-	protected MetaSectorDTO metaSector;
+	protected String ipAddress;
 
-	// List of Artifacts that are deployed to the MeteSpace.
+	// a list of Homes in the Machine
 	@XmlElement
-	protected List<ArtifactDTO> deployedArtifacts = new ArrayList<ArtifactDTO>();
+	protected List<HomeDTO> homes = new ArrayList<HomeDTO>();
 
 	@XmlElement
 	public String getId() {
@@ -56,21 +55,21 @@ public class MetaSpaceDTO {
 	}
 
 	@XmlElement
-	public MetaSectorDTO getMetaSector() {
-		return metaSector;
+	public String getIpAddress() {
+		return ipAddress;
 	}
 
-	public void setMetaSector(MetaSectorDTO metaSector) {
-		this.metaSector = metaSector;
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 
 	@XmlElement
-	public List<ArtifactDTO> getDeployedArtifacts() {
-		return deployedArtifacts;
+	public List<HomeDTO> getHomes() {
+		return homes;
 	}
 
-	public void setDeployedArtifacts(List<ArtifactDTO> deployedArtifacts) {
-		this.deployedArtifacts = deployedArtifacts;
+	public void setHomes(List<HomeDTO> homes) {
+		this.homes = homes;
 	}
 
 }

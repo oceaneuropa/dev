@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.dto;
+package osgi.mgm.ws.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * DTO for Machine
+ * DTO for MetaSector
  *
  */
 @XmlRootElement
-public class MachineDTO {
+public class MetaSectorDTO {
 
 	@XmlElement
 	protected String id;
@@ -20,12 +20,9 @@ public class MachineDTO {
 	@XmlElement
 	protected String description;
 
+	// a list of MetaSpace in the MetaSector
 	@XmlElement
-	protected String ipAddress;
-
-	// a list of Homes in the Machine
-	@XmlElement
-	protected List<HomeDTO> homes = new ArrayList<HomeDTO>();
+	protected List<MetaSpaceDTO> metaSpaces = new ArrayList<MetaSpaceDTO>();
 
 	@XmlElement
 	public String getId() {
@@ -55,21 +52,12 @@ public class MachineDTO {
 	}
 
 	@XmlElement
-	public String getIpAddress() {
-		return ipAddress;
+	public List<MetaSpaceDTO> getMetaSpaces() {
+		return metaSpaces;
 	}
 
-	public void setIpAddress(String ipAddress) {
-		this.ipAddress = ipAddress;
-	}
-
-	@XmlElement
-	public List<HomeDTO> getHomes() {
-		return homes;
-	}
-
-	public void setHomes(List<HomeDTO> homes) {
-		this.homes = homes;
+	public void setMetaSpaces(List<MetaSpaceDTO> metaSpaces) {
+		this.metaSpaces = metaSpaces;
 	}
 
 }

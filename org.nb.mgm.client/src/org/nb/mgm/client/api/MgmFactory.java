@@ -6,10 +6,10 @@ import org.nb.mgm.client.api.impl.ManagementImpl;
 import org.nb.mgm.client.api.impl.MetaSectorImpl;
 import org.nb.mgm.client.api.impl.MetaSpaceImpl;
 
-import osgi.mgm.ws.mgm.dto.HomeDTO;
-import osgi.mgm.ws.mgm.dto.MachineDTO;
-import osgi.mgm.ws.mgm.dto.MetaSectorDTO;
-import osgi.mgm.ws.mgm.dto.MetaSpaceDTO;
+import osgi.mgm.ws.dto.HomeDTO;
+import osgi.mgm.ws.dto.MachineDTO;
+import osgi.mgm.ws.dto.MetaSectorDTO;
+import osgi.mgm.ws.dto.MetaSpaceDTO;
 
 public class MgmFactory {
 

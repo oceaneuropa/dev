@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.resources;
+package osgi.mgm.ws.resources;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,12 +31,12 @@ import osgi.mgm.runtime.query.MetaSpaceQuery.MetaSpaceQueryBuilder;
 import osgi.mgm.service.MgmException;
 import osgi.mgm.service.MgmService;
 import osgi.mgm.util.Util;
-import osgi.mgm.ws.mgm.dto.ArtifactDTO;
-import osgi.mgm.ws.mgm.dto.DTOConverter;
-import osgi.mgm.ws.mgm.dto.ErrorDTO;
-import osgi.mgm.ws.mgm.dto.MetaSectorDTO;
-import osgi.mgm.ws.mgm.dto.MetaSpaceDTO;
-import osgi.mgm.ws.mgm.dto.StatusDTO;
+import osgi.mgm.ws.dto.ArtifactDTO;
+import osgi.mgm.ws.dto.DTOConverter;
+import osgi.mgm.ws.dto.ErrorDTO;
+import osgi.mgm.ws.dto.MetaSectorDTO;
+import osgi.mgm.ws.dto.MetaSpaceDTO;
+import osgi.mgm.ws.dto.StatusDTO;
 
 /**
  * MetaSpace web service resource

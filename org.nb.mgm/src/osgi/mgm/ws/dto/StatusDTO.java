@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.dto;
+package osgi.mgm.ws.dto;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

@@ -9,13 +9,13 @@ import javax.ws.rs.core.Application;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import osgi.mgm.ws.mgm.resources.ArtifactResource;
-import osgi.mgm.ws.mgm.resources.FrameworkResource;
-import osgi.mgm.ws.mgm.resources.HomeResource;
-import osgi.mgm.ws.mgm.resources.MachineResource;
-import osgi.mgm.ws.mgm.resources.MetaSectorResource;
-import osgi.mgm.ws.mgm.resources.MetaSpaceResource;
-import osgi.mgm.ws.mgm.resources.MgmServiceResolver;
+import osgi.mgm.ws.resources.ArtifactResource;
+import osgi.mgm.ws.resources.FrameworkResource;
+import osgi.mgm.ws.resources.HomeResource;
+import osgi.mgm.ws.resources.MachineResource;
+import osgi.mgm.ws.resources.MetaSectorResource;
+import osgi.mgm.ws.resources.MetaSpaceResource;
+import osgi.mgm.ws.resources.MgmServiceResolver;
 import osgi.node.example.Constants;
 
 public class MgmApplication extends Application {

@@ -1,4 +1,4 @@
-package osgi.mgm.ws.mgm.dto;
+package osgi.mgm.ws.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,11 +7,11 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * DTO for MetaSector
+ * DTO for MetaSpace
  *
  */
 @XmlRootElement
-public class MetaSectorDTO {
+public class MetaSpaceDTO {
 
 	@XmlElement
 	protected String id;
@@ -20,9 +20,13 @@ public class MetaSectorDTO {
 	@XmlElement
 	protected String description;
 
-	// a list of MetaSpace in the MetaSector
+	// Container MetaSector
 	@XmlElement
-	protected List<MetaSpaceDTO> metaSpaces = new ArrayList<MetaSpaceDTO>();
+	protected MetaSectorDTO metaSector;
+
+	// List of Artifacts that are deployed to the MeteSpace.
+	@XmlElement
+	protected List<ArtifactDTO> deployedArtifacts = new ArrayList<ArtifactDTO>();
 
 	@XmlElement
 	public String getId() {
@@ -52,12 +56,21 @@ public class MetaSectorDTO {
 	}
 
 	@XmlElement
-	public List<MetaSpaceDTO> getMetaSpaces() {
-		return metaSpaces;
+	public MetaSectorDTO getMetaSector() {
+		return metaSector;
 	}
 
-	public void setMetaSpaces(List<MetaSpaceDTO> metaSpaces) {
-		this.metaSpaces = metaSpaces;
+	public void setMetaSector(MetaSectorDTO metaSector) {
+		this.metaSector = metaSector;
+	}
+
+	@XmlElement
+	public List<ArtifactDTO> getDeployedArtifacts() {
+		return deployedArtifacts;
+	}
+
+	public void setDeployedArtifacts(List<ArtifactDTO> deployedArtifacts) {
+		this.deployedArtifacts = deployedArtifacts;
 	}
 
 }
