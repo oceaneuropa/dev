@@ -164,6 +164,7 @@ public class HdfsClientTest {
 
 	@Test
 	public void testUploadFiles() throws IOException {
+		System.out.println("--- --- --- testUploadFiles() --- --- ---");
 
 	}
 

@@ -42,3 +42,4 @@ Bundle-ClassPath: .,
  lib_web/xmlenc-0.52.jar,
  lib_common/junit-4.12.jar,
  lib_common/hamcrest-core-1.3.jar
+Export-Package: apache.hadoop.example
