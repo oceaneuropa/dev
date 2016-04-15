@@ -35,7 +35,7 @@ public class Activator implements BundleActivator {
 		Activator.driveService.start();
 
 		// 2. Start DriveApplication web service
-		this.driveApplication = new DriveApplication(bundleContext, "/mgm/v1");
+		this.driveApplication = new DriveApplication(bundleContext, "/drive/v1");
 		this.driveApplication.start();
 	}
 
