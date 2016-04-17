@@ -1,10 +1,51 @@
 Program arguments:
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 VM arguments:
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dnode.http.host=localhost -Dorg.osgi.service.http.port=9090 -Dnode.http.host=localhost -Dnode.http.port=9090 -Dcluster.persistence.local.dir=C:\cluster\data
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dnode.http.host=localhost -Dorg.osgi.service.http.port=9090 -Dnode.http.host=localhost -Dnode.http.port=9090 -Dcluster.persistence.local.dir=C:\cluster\data -Dcluster.home.dir=C:\cluster\home1
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+My Bundles:
+------------------------------------------------------------------------------------------
 
+------------------------------------------------------------------------------------------
+
+Required Bundles:
+------------------------------------------------------------------------------------------
+com.eclipsesource.jaxrs.jersey-all
+javax.activation
+javax.annotation
+javax.inject
+javax.servlet
+javax.ws.rs-api
+log4j
+org.apache.felix.gogo.command
+org.apache.felix.gogo.runtime
+org.apache.felix.gog.shell
+org.eclipse.equinox.common
+org.eclipse.equinox.console
+org.eclipse.equinox.ds
+org.eclipse.equinox.event
+org.eclipse.equinox.frameworkadmin
+org.eclipse.equinox.frameworkadmin.equinox
+org.eclipse.equinox.http.jetty
+org.eclipse.equinox.http.servlet
+org.eclipse.equinox.util
+org.eclipse.jetty.http
+org.eclipse.jetty.io
+org.eclipse.jetty.security
+org.eclipse.jetty.server
+org.eclipse.jetty.servlet
+org.eclipse.jetty.util
+org.eclipse.osgi
+org.eclipse.osgi.services
+org.eclipse.osgi.util
+slf4j.api
+slf4j.log4j
+------------------------------------------------------------------------------------------
 
 
 

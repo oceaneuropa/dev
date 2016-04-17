@@ -11,14 +11,14 @@ import org.slf4j.LoggerFactory;
 public class Activator implements BundleActivator {
 
 	protected static BundleContext context;
-	protected static MgmServiceImpl mgm;
+	protected static MgmServiceImpl mgmService;
 
 	public static BundleContext getContext() {
 		return context;
 	}
 
 	public static MgmService getMgmService() {
-		return Activator.mgm;
+		return Activator.mgmService;
 	}
 
 	protected MgmApplication mgmApplication;
@@ -31,8 +31,8 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 
 		// 1. Start Mgm management service
-		Activator.mgm = new MgmServiceImpl(bundleContext);
-		Activator.mgm.start();
+		Activator.mgmService = new MgmServiceImpl(bundleContext);
+		Activator.mgmService.start();
 
 		// 2. Start MgmApplication web service
 		this.mgmApplication = new MgmApplication(bundleContext, "/mgm/v1");
@@ -49,10 +49,10 @@ public class Activator implements BundleActivator {
 			this.mgmApplication = null;
 		}
 
-		// 2. Stop Management service
-		if (Activator.mgm != null) {
-			Activator.mgm.stop();
-			Activator.mgm = null;
+		// 2. Stop Mgm management service
+		if (Activator.mgmService != null) {
+			Activator.mgmService.stop();
+			Activator.mgmService = null;
 		}
 
 		Activator.context = null;

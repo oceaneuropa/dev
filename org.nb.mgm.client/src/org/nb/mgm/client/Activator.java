@@ -18,6 +18,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 
+		// Start the OSGi command for management
 		this.mgmCommand = new ManagementCommand(bundleContext);
 		this.mgmCommand.start();
 	}
@@ -26,6 +27,7 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
 
+		// Stop the OSGi command for management
 		if (this.mgmCommand != null) {
 			this.mgmCommand.stop();
 		}

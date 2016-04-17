@@ -8,17 +8,19 @@ import java.util.Properties;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.nb.common.rest.client.ClientException;
+import org.nb.common.util.PrintUtil;
+import org.nb.common.util.StringUtil;
 import org.nb.mgm.client.api.Home;
 import org.nb.mgm.client.api.Machine;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
-import org.nb.mgm.client.util.ClientException;
-import org.nb.mgm.client.util.PrintUtil;
-import org.nb.mgm.client.util.StringUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ManagementCommand {
 
@@ -29,6 +31,7 @@ public class ManagementCommand {
 
 	protected static String NULL = "null";
 
+	protected static Logger logger = LoggerFactory.getLogger(ManagementCommand.class);
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<?> registration;
 	protected Management mgm;
@@ -42,7 +45,8 @@ public class ManagementCommand {
 	}
 
 	public void start() {
-		System.out.println("ManagementCommand.start()");
+		logger.debug("ManagementCommand.start()");
+
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "mgm");
 		props.put("osgi.command.function", new String[] { "login", "list", "create", "update", "delete" });
@@ -50,7 +54,8 @@ public class ManagementCommand {
 	}
 
 	public void stop() {
-		System.out.println("ManagementCommand.stop()");
+		logger.debug("ManagementCommand.stop()");
+
 		if (this.registration != null) {
 			this.registration.unregister();
 			this.registration = null;

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.nb.common.rest.server.Constants;
 import org.nb.mgm.ws.resources.ArtifactResource;
 import org.nb.mgm.ws.resources.FrameworkResource;
 import org.nb.mgm.ws.resources.HomeResource;
@@ -15,11 +16,12 @@ import org.nb.mgm.ws.resources.MetaSpaceResource;
 import org.nb.mgm.ws.resources.MgmServiceResolver;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-
-import osgi.node.example.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MgmApplication extends Application {
 
+	protected static Logger logger = LoggerFactory.getLogger(MgmApplication.class);
 	protected BundleContext bundleContext;
 	protected String contextRoot;
 	protected ServiceRegistration<?> serviceRegistration;
@@ -38,6 +40,8 @@ public class MgmApplication extends Application {
 	 * Registry this MgmApplication as a web service. Called when Activator is started.
 	 */
 	public void start() {
+		logger.debug("MgmApplication.start()");
+
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.CONTEXT_ROOT, contextRoot);
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
@@ -47,6 +51,8 @@ public class MgmApplication extends Application {
 	 * Unregister the MgmApplication web service. Called when Activator is stopped.
 	 */
 	public void stop() {
+		logger.debug("MgmApplication.stop()");
+
 		if (this.serviceRegistration != null) {
 			this.serviceRegistration.unregister();
 			this.serviceRegistration = null;

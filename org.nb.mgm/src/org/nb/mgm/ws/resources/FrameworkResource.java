@@ -27,11 +27,11 @@ public class FrameworkResource {
 	protected Providers providers;
 
 	protected MgmService getMgmService() {
-		MgmService mgm = this.providers.getContextResolver(MgmService.class, MediaType.APPLICATION_JSON_TYPE).getContext(MgmService.class);
-		if (mgm == null) {
+		MgmService mgmService = this.providers.getContextResolver(MgmService.class, MediaType.APPLICATION_JSON_TYPE).getContext(MgmService.class);
+		if (mgmService == null) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}
-		return mgm;
+		return mgmService;
 	}
 
 	@GET

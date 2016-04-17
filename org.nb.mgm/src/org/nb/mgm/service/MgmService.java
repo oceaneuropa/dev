@@ -2,17 +2,17 @@ package org.nb.mgm.service;
 
 import java.util.List;
 
-import org.nb.mgm.runtime.model.Artifact;
-import org.nb.mgm.runtime.model.ClusterRoot;
-import org.nb.mgm.runtime.model.Home;
-import org.nb.mgm.runtime.model.Machine;
-import org.nb.mgm.runtime.model.MetaSector;
-import org.nb.mgm.runtime.model.MetaSpace;
-import org.nb.mgm.runtime.query.ArtifactQuery;
-import org.nb.mgm.runtime.query.HomeQuery;
-import org.nb.mgm.runtime.query.MachineQuery;
-import org.nb.mgm.runtime.query.MetaSectorQuery;
-import org.nb.mgm.runtime.query.MetaSpaceQuery;
+import org.nb.mgm.model.Artifact;
+import org.nb.mgm.model.ClusterRoot;
+import org.nb.mgm.model.Home;
+import org.nb.mgm.model.Machine;
+import org.nb.mgm.model.MetaSector;
+import org.nb.mgm.model.MetaSpace;
+import org.nb.mgm.query.ArtifactQuery;
+import org.nb.mgm.query.HomeQuery;
+import org.nb.mgm.query.MachineQuery;
+import org.nb.mgm.query.MetaSectorQuery;
+import org.nb.mgm.query.MetaSpaceQuery;
 
 public interface MgmService {
 

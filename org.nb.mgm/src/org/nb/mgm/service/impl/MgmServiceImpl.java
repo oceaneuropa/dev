@@ -7,24 +7,25 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.nb.mgm.runtime.handler.ArtifactDataHandler;
-import org.nb.mgm.runtime.handler.HomeDataHandler;
-import org.nb.mgm.runtime.handler.MachineDataHandler;
-import org.nb.mgm.runtime.handler.MetaSectorDataHandler;
-import org.nb.mgm.runtime.handler.MetaSpaceDataHandler;
-import org.nb.mgm.runtime.model.Artifact;
-import org.nb.mgm.runtime.model.ClusterRoot;
-import org.nb.mgm.runtime.model.Home;
-import org.nb.mgm.runtime.model.Machine;
-import org.nb.mgm.runtime.model.MetaSector;
-import org.nb.mgm.runtime.model.MetaSpace;
-import org.nb.mgm.runtime.persistence.MgmPersistenceAdapter;
-import org.nb.mgm.runtime.persistence.MgmPersistenceFactory;
-import org.nb.mgm.runtime.query.ArtifactQuery;
-import org.nb.mgm.runtime.query.HomeQuery;
-import org.nb.mgm.runtime.query.MachineQuery;
-import org.nb.mgm.runtime.query.MetaSectorQuery;
-import org.nb.mgm.runtime.query.MetaSpaceQuery;
+import org.nb.common.util.SystemPropertyUtil;
+import org.nb.mgm.handler.ArtifactHandler;
+import org.nb.mgm.handler.HomeHandler;
+import org.nb.mgm.handler.MachineHandler;
+import org.nb.mgm.handler.MetaSectorHandler;
+import org.nb.mgm.handler.MetaSpaceHandler;
+import org.nb.mgm.model.Artifact;
+import org.nb.mgm.model.ClusterRoot;
+import org.nb.mgm.model.Home;
+import org.nb.mgm.model.Machine;
+import org.nb.mgm.model.MetaSector;
+import org.nb.mgm.model.MetaSpace;
+import org.nb.mgm.persistence.MgmPersistenceAdapter;
+import org.nb.mgm.persistence.MgmPersistenceFactory;
+import org.nb.mgm.query.ArtifactQuery;
+import org.nb.mgm.query.HomeQuery;
+import org.nb.mgm.query.MachineQuery;
+import org.nb.mgm.query.MetaSectorQuery;
+import org.nb.mgm.query.MetaSpaceQuery;
 import org.nb.mgm.service.MgmException;
 import org.nb.mgm.service.MgmService;
 import org.osgi.framework.BundleContext;
@@ -45,11 +46,11 @@ public class MgmServiceImpl implements MgmService {
 	protected ClusterRoot root;
 
 	// data handlers
-	protected MachineDataHandler machineDataHandler;
-	protected HomeDataHandler homeDataHandler;
-	protected MetaSectorDataHandler metaSectorDataHandler;
-	protected MetaSpaceDataHandler metaSpaceDataHandler;
-	protected ArtifactDataHandler artifactDataHandler;
+	protected MachineHandler machineDataHandler;
+	protected HomeHandler homeDataHandler;
+	protected MetaSectorHandler metaSectorDataHandler;
+	protected MetaSpaceHandler metaSpaceDataHandler;
+	protected ArtifactHandler artifactDataHandler;
 
 	// read/write lock for data handlers
 	protected ReadWriteLock machineRWLock = new ReentrantReadWriteLock();
@@ -69,28 +70,12 @@ public class MgmServiceImpl implements MgmService {
 
 		// load properties
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		set(props, MgmPersistenceAdapter.PERSISTENCE_TYPE);
-		set(props, MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
-		set(props, MgmPersistenceAdapter.PERSISTENCE_AUTOSAVE);
+		SystemPropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_TYPE);
+		SystemPropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
+		SystemPropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_AUTOSAVE);
 
 		// get persistence
 		this.persistenceAdapter = MgmPersistenceFactory.createInstance(props);
-	}
-
-	/**
-	 * 
-	 * @param props
-	 * @param key
-	 */
-	protected void set(Hashtable<String, Object> props, String key) {
-		String value = this.bundleContext.getProperty(key);
-		if (value == null) {
-			value = System.getProperty(key);
-			if (value == null) {
-				return;
-			}
-		}
-		props.put(key, value);
 	}
 
 	/**
@@ -114,11 +99,11 @@ public class MgmServiceImpl implements MgmService {
 		}
 
 		// 2. create the data handlers
-		this.machineDataHandler = new MachineDataHandler(this);
-		this.homeDataHandler = new HomeDataHandler(this);
-		this.metaSectorDataHandler = new MetaSectorDataHandler(this);
-		this.metaSpaceDataHandler = new MetaSpaceDataHandler(this);
-		this.artifactDataHandler = new ArtifactDataHandler(this);
+		this.machineDataHandler = new MachineHandler(this);
+		this.homeDataHandler = new HomeHandler(this);
+		this.metaSectorDataHandler = new MetaSectorHandler(this);
+		this.metaSpaceDataHandler = new MetaSpaceHandler(this);
+		this.artifactDataHandler = new ArtifactHandler(this);
 
 		// 3. Register as a service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();

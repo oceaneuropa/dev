@@ -11,7 +11,12 @@ Import-Package: javax.ws.rs;version="2.0.1",
  org.glassfish.jersey.client;version="2.18.0",
  org.glassfish.jersey.jackson;version="2.18.0",
  org.glassfish.jersey.media.multipart;version="2.18.0",
+ org.json;version="2015.11.23",
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.nb.common,
- org.nb.common.rest.client
+ org.nb.common.rest.client,
+ org.nb.common.rest.model,
+ org.nb.common.rest.dto,
+ org.nb.common.rest.server,
+ org.nb.common.util

@@ -1,7 +1,7 @@
 package org.nb.mgm.client.api;
 
-import org.nb.mgm.client.util.ClientException;
-import org.nb.mgm.client.util.IAdaptable;
+import org.nb.common.rest.client.ClientException;
+import org.nb.common.util.IAdaptable;
 
 public interface Home extends IAdaptable {
 

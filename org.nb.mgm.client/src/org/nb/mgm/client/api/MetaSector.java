@@ -3,8 +3,8 @@ package org.nb.mgm.client.api;
 import java.util.List;
 import java.util.Properties;
 
-import org.nb.mgm.client.util.ClientException;
-import org.nb.mgm.client.util.IAdaptable;
+import org.nb.common.rest.client.ClientException;
+import org.nb.common.util.IAdaptable;
 
 public interface MetaSector extends IAdaptable {
 

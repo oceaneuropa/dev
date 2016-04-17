@@ -1,9 +1,9 @@
 package org.nb.mgm.client.api.impl;
 
+import org.nb.common.rest.client.ClientException;
 import org.nb.mgm.client.api.Home;
 import org.nb.mgm.client.api.Machine;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.util.ClientException;
 import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.ws.dto.HomeDTO;
 

@@ -10,8 +10,9 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.nb.mgm.client.util.ClientConfiguration;
-import org.nb.mgm.client.util.ClientException;
+import org.nb.common.rest.client.AbstractClient;
+import org.nb.common.rest.client.ClientConfiguration;
+import org.nb.common.rest.client.ClientException;
 import org.nb.mgm.ws.dto.ArtifactDTO;
 import org.nb.mgm.ws.dto.StatusDTO;
 
@@ -31,7 +32,7 @@ import org.nb.mgm.ws.dto.StatusDTO;
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts/{artifactId}
  * 
  */
-public class ArtifactClient extends AbstractMgmClient {
+public class ArtifactClient extends AbstractClient {
 
 	/**
 	 * 

@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.nb.common.rest.client.ClientException;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
-import org.nb.mgm.client.util.ClientException;
 import org.nb.mgm.client.ws.MetaSectorClient;
 import org.nb.mgm.client.ws.MetaSpaceClient;
 import org.nb.mgm.ws.dto.MetaSectorDTO;
