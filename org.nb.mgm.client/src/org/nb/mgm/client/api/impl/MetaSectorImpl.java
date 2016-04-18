@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.nb.common.rest.client.ClientException;
+import org.nb.common.rest.dto.StatusDTO;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
@@ -13,7 +14,6 @@ import org.nb.mgm.client.ws.MetaSectorClient;
 import org.nb.mgm.client.ws.MetaSpaceClient;
 import org.nb.mgm.ws.dto.MetaSectorDTO;
 import org.nb.mgm.ws.dto.MetaSpaceDTO;
-import org.nb.mgm.ws.dto.StatusDTO;
 
 public class MetaSectorImpl implements MetaSector {
 

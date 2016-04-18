@@ -21,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
 import org.nb.common.rest.dto.ErrorDTO;
+import org.nb.common.rest.dto.StatusDTO;
 import org.nb.common.util.Util;
 import org.nb.mgm.model.Home;
 import org.nb.mgm.model.Machine;
@@ -35,7 +36,6 @@ import org.nb.mgm.ws.dto.HomeDTO;
 import org.nb.mgm.ws.dto.MachineDTO;
 import org.nb.mgm.ws.dto.MetaSectorDTO;
 import org.nb.mgm.ws.dto.MetaSpaceDTO;
-import org.nb.mgm.ws.dto.StatusDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

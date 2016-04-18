@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response;
 import org.nb.common.rest.client.AbstractClient;
 import org.nb.common.rest.client.ClientConfiguration;
 import org.nb.common.rest.client.ClientException;
+import org.nb.common.rest.dto.StatusDTO;
 import org.nb.mgm.ws.dto.MetaSpaceDTO;
-import org.nb.mgm.ws.dto.StatusDTO;
 
 /**
  * MetaSpace web service client

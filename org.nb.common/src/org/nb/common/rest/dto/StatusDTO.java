@@ -1,4 +1,4 @@
-package org.nb.mgm.ws.dto;
+package org.nb.common.rest.dto;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -9,6 +9,10 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class StatusDTO {
+
+	public static StatusDTO successStatus(String message) {
+		return new StatusDTO("200", "success", message);
+	}
 
 	@XmlElement
 	protected String code;
