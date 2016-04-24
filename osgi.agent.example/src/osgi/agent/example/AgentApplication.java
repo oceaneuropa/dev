@@ -6,10 +6,9 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.origin.common.util.Constants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-
-import osgi.node.example.Constants;
 
 public class AgentApplication extends Application {
 

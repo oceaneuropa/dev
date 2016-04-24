@@ -8,7 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import osgi.node.example.Printer;
+import org.origin.common.util.Printer;
 
 @Path("/")
 public class AgentResource {

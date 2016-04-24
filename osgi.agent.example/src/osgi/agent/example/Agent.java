@@ -1,9 +1,8 @@
 package osgi.agent.example;
 
+import org.origin.common.util.Printer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-
-import osgi.node.example.Printer;
 
 public class Agent implements BundleActivator {
 

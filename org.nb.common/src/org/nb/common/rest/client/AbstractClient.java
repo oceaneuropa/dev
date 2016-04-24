@@ -9,6 +9,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 
+import org.nb.common.rest.dto.ErrorDTO;
+
 public abstract class AbstractClient {
 
 	protected ClientConfiguration config;
