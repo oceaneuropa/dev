@@ -1,7 +1,7 @@
 package org.nb.drive.rest.client;
 
-import org.nb.common.rest.client.AbstractClient;
-import org.nb.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.ClientConfiguration;
 
 public class DriveClient extends AbstractClient {
 

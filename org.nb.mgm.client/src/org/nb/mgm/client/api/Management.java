@@ -3,8 +3,8 @@ package org.nb.mgm.client.api;
 import java.util.List;
 import java.util.Properties;
 
-import org.nb.common.rest.client.ClientException;
 import org.nb.common.util.IAdaptable;
+import org.origin.common.rest.client.ClientException;
 
 public interface Management extends IAdaptable {
 

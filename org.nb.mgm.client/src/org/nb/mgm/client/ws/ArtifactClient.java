@@ -10,11 +10,11 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.nb.common.rest.client.AbstractClient;
-import org.nb.common.rest.client.ClientConfiguration;
-import org.nb.common.rest.client.ClientException;
-import org.nb.common.rest.dto.StatusDTO;
 import org.nb.mgm.ws.dto.ArtifactDTO;
+import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.dto.StatusDTO;
 
 /**
  * Artifact web service client

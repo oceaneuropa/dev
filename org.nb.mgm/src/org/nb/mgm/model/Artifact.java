@@ -1,6 +1,6 @@
 package org.nb.mgm.model;
 
-import org.nb.common.rest.model.ModelObject;
+import org.origin.common.rest.model.ModelObject;
 
 public class Artifact extends ModelObject {
 

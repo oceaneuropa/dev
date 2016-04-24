@@ -2,13 +2,13 @@ package org.nb.mgm.client;
 
 import java.util.List;
 
-import org.nb.common.rest.client.ClientException;
 import org.nb.mgm.client.api.Home;
 import org.nb.mgm.client.api.Machine;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
+import org.origin.common.rest.client.ClientException;
 
 public class Test1 {
 

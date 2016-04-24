@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.nb.common.rest.client.ClientException;
-import org.nb.common.rest.dto.StatusDTO;
 import org.nb.mgm.client.api.Home;
 import org.nb.mgm.client.api.Machine;
 import org.nb.mgm.client.api.Management;
@@ -14,6 +12,8 @@ import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.client.ws.MachineClient;
 import org.nb.mgm.ws.dto.HomeDTO;
 import org.nb.mgm.ws.dto.MachineDTO;
+import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.dto.StatusDTO;
 
 public class MachineImpl implements Machine {
 

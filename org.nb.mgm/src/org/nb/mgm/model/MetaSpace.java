@@ -3,7 +3,7 @@ package org.nb.mgm.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nb.common.rest.model.ModelObject;
+import org.origin.common.rest.model.ModelObject;
 
 public class MetaSpace extends ModelObject {
 

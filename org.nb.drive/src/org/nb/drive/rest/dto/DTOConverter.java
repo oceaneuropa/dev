@@ -2,8 +2,8 @@ package org.nb.drive.rest.dto;
 
 import java.io.File;
 
-import org.nb.common.rest.dto.ErrorDTO;
 import org.nb.drive.api.DriveException;
+import org.origin.common.rest.dto.ErrorDTO;
 
 public class DTOConverter {
 

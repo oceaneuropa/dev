@@ -1,9 +1,9 @@
 package org.nb.mgm.home.client;
 
 import org.junit.Test;
-import org.nb.common.rest.client.ClientException;
 import org.nb.mgm.home.client.api.HomeManagement;
 import org.nb.mgm.home.client.api.HomeMgmFactory;
+import org.origin.common.rest.client.ClientException;
 
 public class TestHomeManagement {
 

@@ -1,12 +1,12 @@
 package org.nb.mgm.ws.dto;
 
-import org.nb.common.rest.dto.ErrorDTO;
 import org.nb.mgm.model.Artifact;
 import org.nb.mgm.model.Home;
 import org.nb.mgm.model.Machine;
 import org.nb.mgm.model.MetaSector;
 import org.nb.mgm.model.MetaSpace;
 import org.nb.mgm.service.MgmException;
+import org.origin.common.rest.dto.ErrorDTO;
 
 public class DTOConverter {
 

@@ -7,9 +7,9 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
-import org.nb.common.rest.dto.ErrorDTO;
 import org.nb.drive.api.DriveException;
 import org.nb.drive.rest.dto.DTOConverter;
+import org.origin.common.rest.dto.ErrorDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

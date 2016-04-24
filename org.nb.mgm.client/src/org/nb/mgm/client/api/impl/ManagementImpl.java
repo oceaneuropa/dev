@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.nb.common.rest.client.ClientConfiguration;
-import org.nb.common.rest.client.ClientException;
-import org.nb.common.rest.dto.StatusDTO;
 import org.nb.mgm.client.api.Home;
 import org.nb.mgm.client.api.Machine;
 import org.nb.mgm.client.api.Management;
@@ -21,6 +18,9 @@ import org.nb.mgm.ws.dto.HomeDTO;
 import org.nb.mgm.ws.dto.MachineDTO;
 import org.nb.mgm.ws.dto.MetaSectorDTO;
 import org.nb.mgm.ws.dto.MetaSpaceDTO;
+import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.dto.StatusDTO;
 
 public class ManagementImpl implements Management {
 

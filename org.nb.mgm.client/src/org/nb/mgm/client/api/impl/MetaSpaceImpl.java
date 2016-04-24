@@ -1,12 +1,12 @@
 package org.nb.mgm.client.api.impl;
 
-import org.nb.common.rest.client.ClientException;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.ws.MetaSpaceClient;
 import org.nb.mgm.ws.dto.HomeDTO;
 import org.nb.mgm.ws.dto.MetaSpaceDTO;
+import org.origin.common.rest.client.ClientException;
 
 public class MetaSpaceImpl implements MetaSpace {
 

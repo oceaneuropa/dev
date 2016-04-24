@@ -6,10 +6,10 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.nb.common.rest.server.Constants;
 import org.nb.mgm.home.ws.resource.HomeApiResource;
 import org.nb.mgm.home.ws.resource.HomeServiceResolver;
 import org.nb.mgm.home.ws.resource.SectorResource;
+import org.origin.common.rest.server.Constants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;

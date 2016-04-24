@@ -1,7 +1,7 @@
 package org.nb.mgm.client.api;
 
-import org.nb.common.rest.client.ClientException;
 import org.nb.common.util.IAdaptable;
+import org.origin.common.rest.client.ClientException;
 
 public interface MetaSpace extends IAdaptable {
 
