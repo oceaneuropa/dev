@@ -20,7 +20,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
-import org.nb.common.util.Util;
 import org.nb.mgm.model.MetaSector;
 import org.nb.mgm.model.MetaSpace;
 import org.nb.mgm.query.MetaSectorQuery;
@@ -32,6 +31,7 @@ import org.nb.mgm.ws.dto.MetaSectorDTO;
 import org.nb.mgm.ws.dto.MetaSpaceDTO;
 import org.origin.common.rest.dto.ErrorDTO;
 import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

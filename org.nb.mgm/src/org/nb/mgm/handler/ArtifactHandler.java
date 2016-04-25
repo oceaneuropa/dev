@@ -11,8 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import org.nb.common.util.SearchPattern;
-import org.nb.common.util.Util;
 import org.nb.mgm.model.Artifact;
 import org.nb.mgm.model.ClusterRoot;
 import org.nb.mgm.model.MetaSector;
@@ -20,6 +18,8 @@ import org.nb.mgm.model.MetaSpace;
 import org.nb.mgm.query.ArtifactQuery;
 import org.nb.mgm.service.MgmException;
 import org.nb.mgm.service.MgmService;
+import org.origin.common.util.SearchPattern;
+import org.origin.common.util.Util;
 
 /**
  * Data handler for Artifact.

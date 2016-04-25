@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.nb.common.util.SystemPropertyUtil;
 import org.nb.mgm.handler.ArtifactHandler;
 import org.nb.mgm.handler.HomeHandler;
 import org.nb.mgm.handler.MachineHandler;
@@ -28,6 +27,7 @@ import org.nb.mgm.query.MetaSectorQuery;
 import org.nb.mgm.query.MetaSpaceQuery;
 import org.nb.mgm.service.MgmException;
 import org.nb.mgm.service.MgmService;
+import org.origin.common.util.SystemPropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;

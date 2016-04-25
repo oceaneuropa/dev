@@ -8,8 +8,6 @@ import java.util.Properties;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.nb.common.util.PrintUtil;
-import org.nb.common.util.StringUtil;
 import org.nb.mgm.client.api.Home;
 import org.nb.mgm.client.api.Machine;
 import org.nb.mgm.client.api.Management;
@@ -17,6 +15,8 @@ import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.util.PrintUtil;
+import org.origin.common.util.StringUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;

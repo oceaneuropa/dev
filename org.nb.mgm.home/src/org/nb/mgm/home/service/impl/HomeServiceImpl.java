@@ -3,9 +3,9 @@ package org.nb.mgm.home.service.impl;
 import java.io.File;
 import java.util.Hashtable;
 
-import org.nb.common.util.SystemPropertyUtil;
 import org.nb.mgm.home.handler.HomeDirHandler;
 import org.nb.mgm.home.service.HomeService;
+import org.origin.common.util.SystemPropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
