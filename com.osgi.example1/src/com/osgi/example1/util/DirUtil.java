@@ -30,8 +30,8 @@ public class DirUtil {
 	 * @throws IOException
 	 */
 	public InputStream getZipInputStream(final File directory) throws IOException {
-		PipedOutputStream pos = new PipedOutputStream();
-		PipedInputStream pis = new PipedInputStream(pos);
+		final PipedOutputStream pos = new PipedOutputStream();
+		final PipedInputStream pis = new PipedInputStream(pos);
 
 		new Thread() {
 			@Override
