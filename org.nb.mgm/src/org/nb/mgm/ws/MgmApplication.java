@@ -6,20 +6,14 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.nb.mgm.ws.resources.ArtifactResource;
-import org.nb.mgm.ws.resources.FrameworkResource;
-import org.nb.mgm.ws.resources.HomeResource;
-import org.nb.mgm.ws.resources.MachineResource;
-import org.nb.mgm.ws.resources.MetaSectorResource;
-import org.nb.mgm.ws.resources.MetaSpaceResource;
-import org.nb.mgm.ws.resources.MgmServiceResolver;
 import org.origin.common.rest.server.Constants;
+import org.origin.common.rest.server.AbstractApplication;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MgmApplication extends Application {
+public class MgmApplication extends AbstractApplication {
 
 	protected static Logger logger = LoggerFactory.getLogger(MgmApplication.class);
 	protected BundleContext bundleContext;

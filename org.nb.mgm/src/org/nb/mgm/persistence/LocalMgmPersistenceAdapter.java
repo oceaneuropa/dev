@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-import org.nb.mgm.model.ClusterRoot;
+import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.service.MgmConstants;
 
 /*

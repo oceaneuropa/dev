@@ -1,5 +1,6 @@
 package osgi.node.example;
 
+import org.origin.common.deploy.WSDeployer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

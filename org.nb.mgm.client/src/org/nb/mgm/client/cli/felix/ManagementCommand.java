@@ -15,7 +15,7 @@ import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.util.PrintUtil;
+import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.StringUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -219,7 +219,7 @@ public class ManagementCommand {
 		for (Machine machine : machines) {
 			rows[rowIndex++] = new String[] { machine.getId(), machine.getName(), machine.getIpAddress(), machine.getDescription() };
 		}
-		PrintUtil.prettyPrint(MACHINE_TITLES, rows);
+		PrettyPrinter.prettyPrint(MACHINE_TITLES, rows);
 	}
 
 	/**
@@ -242,7 +242,7 @@ public class ManagementCommand {
 		for (Home home : homes) {
 			rows[rowIndex++] = new String[] { home.getId(), home.getName(), home.getUrl(), home.getDescription() };
 		}
-		PrintUtil.prettyPrint(HOME_TITLES, rows);
+		PrettyPrinter.prettyPrint(HOME_TITLES, rows);
 	}
 
 	/**
@@ -258,7 +258,7 @@ public class ManagementCommand {
 		for (MetaSector metaSector : metaSectors) {
 			rows[rowIndex++] = new String[] { metaSector.getId(), metaSector.getName(), metaSector.getDescription() };
 		}
-		PrintUtil.prettyPrint(META_SECTOR_TITLES, rows);
+		PrettyPrinter.prettyPrint(META_SECTOR_TITLES, rows);
 	}
 
 	/**
@@ -281,7 +281,7 @@ public class ManagementCommand {
 		for (MetaSpace metaSpace : metaSpaces) {
 			rows[rowIndex++] = new String[] { metaSpace.getId(), metaSpace.getName(), metaSpace.getDescription() };
 		}
-		PrintUtil.prettyPrint(META_SPACE_TITLES, rows);
+		PrettyPrinter.prettyPrint(META_SPACE_TITLES, rows);
 	}
 
 	// ------------------------------------------------------------------------------------------

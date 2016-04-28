@@ -4,7 +4,7 @@ import org.nb.mgm.client.api.Home;
 import org.nb.mgm.client.api.Machine;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.ws.HomeClient;
-import org.nb.mgm.ws.dto.HomeDTO;
+import org.nb.mgm.model.dto.HomeDTO;
 import org.origin.common.rest.client.ClientException;
 
 public class HomeImpl implements Home {

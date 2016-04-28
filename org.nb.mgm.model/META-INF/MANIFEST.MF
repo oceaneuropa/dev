@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Management Model
+Bundle-SymbolicName: org.nb.mgm.model
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.nb.mgm.exception,
+ org.nb.mgm.model.dto,
+ org.nb.mgm.model.query,
+ org.nb.mgm.model.runtime
+Import-Package: org.origin.common.rest.dto,
+ org.origin.common.rest.model

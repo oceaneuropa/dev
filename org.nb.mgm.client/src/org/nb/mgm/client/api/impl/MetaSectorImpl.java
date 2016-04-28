@@ -10,8 +10,8 @@ import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
 import org.nb.mgm.client.ws.MetaSectorClient;
 import org.nb.mgm.client.ws.MetaSpaceClient;
-import org.nb.mgm.ws.dto.MetaSectorDTO;
-import org.nb.mgm.ws.dto.MetaSpaceDTO;
+import org.nb.mgm.model.dto.MetaSectorDTO;
+import org.nb.mgm.model.dto.MetaSpaceDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.dto.StatusDTO;
 

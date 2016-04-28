@@ -10,8 +10,8 @@ import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.MgmFactory;
 import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.client.ws.MachineClient;
-import org.nb.mgm.ws.dto.HomeDTO;
-import org.nb.mgm.ws.dto.MachineDTO;
+import org.nb.mgm.model.dto.HomeDTO;
+import org.nb.mgm.model.dto.MachineDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.dto.StatusDTO;
 

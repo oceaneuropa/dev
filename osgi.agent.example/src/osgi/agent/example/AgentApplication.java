@@ -6,11 +6,12 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.origin.common.util.Constants;
+import org.origin.common.rest.Constants;
+import org.origin.common.rest.server.AbstractApplication;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class AgentApplication extends Application {
+public class AgentApplication extends AbstractApplication {
 
 	protected BundleContext bundleContext;
 	protected String contextRoot;

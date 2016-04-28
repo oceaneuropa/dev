@@ -7,27 +7,27 @@ import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.handler.ArtifactHandler;
 import org.nb.mgm.handler.HomeHandler;
 import org.nb.mgm.handler.MachineHandler;
 import org.nb.mgm.handler.MetaSectorHandler;
 import org.nb.mgm.handler.MetaSpaceHandler;
-import org.nb.mgm.model.Artifact;
-import org.nb.mgm.model.ClusterRoot;
-import org.nb.mgm.model.Home;
-import org.nb.mgm.model.Machine;
-import org.nb.mgm.model.MetaSector;
-import org.nb.mgm.model.MetaSpace;
+import org.nb.mgm.model.query.ArtifactQuery;
+import org.nb.mgm.model.query.HomeQuery;
+import org.nb.mgm.model.query.MachineQuery;
+import org.nb.mgm.model.query.MetaSectorQuery;
+import org.nb.mgm.model.query.MetaSpaceQuery;
+import org.nb.mgm.model.runtime.Artifact;
+import org.nb.mgm.model.runtime.ClusterRoot;
+import org.nb.mgm.model.runtime.Home;
+import org.nb.mgm.model.runtime.Machine;
+import org.nb.mgm.model.runtime.MetaSector;
+import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.persistence.MgmPersistenceAdapter;
 import org.nb.mgm.persistence.MgmPersistenceFactory;
-import org.nb.mgm.query.ArtifactQuery;
-import org.nb.mgm.query.HomeQuery;
-import org.nb.mgm.query.MachineQuery;
-import org.nb.mgm.query.MetaSectorQuery;
-import org.nb.mgm.query.MetaSpaceQuery;
-import org.nb.mgm.service.MgmException;
 import org.nb.mgm.service.MgmService;
-import org.origin.common.util.SystemPropertyUtil;
+import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -70,9 +70,9 @@ public class MgmServiceImpl implements MgmService {
 
 		// load properties
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		SystemPropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_TYPE);
-		SystemPropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
-		SystemPropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_AUTOSAVE);
+		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_TYPE);
+		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
+		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_AUTOSAVE);
 
 		// get persistence
 		this.persistenceAdapter = MgmPersistenceFactory.createInstance(props);

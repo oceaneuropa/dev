@@ -10,10 +10,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import org.nb.mgm.model.ClusterRoot;
-import org.nb.mgm.model.Machine;
-import org.nb.mgm.query.MachineQuery;
-import org.nb.mgm.service.MgmException;
+import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.model.query.MachineQuery;
+import org.nb.mgm.model.runtime.ClusterRoot;
+import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.service.MgmService;
 import org.origin.common.util.SearchPattern;
 import org.origin.common.util.Util;

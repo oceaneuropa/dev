@@ -1,6 +1,6 @@
 package org.nb.mgm.persistence;
 
-import org.nb.mgm.model.ClusterRoot;
+import org.nb.mgm.model.runtime.ClusterRoot;
 
 public class DBMgmPersistenceAdapter implements MgmPersistenceAdapter {
 

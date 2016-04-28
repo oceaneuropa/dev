@@ -7,5 +7,7 @@ Bundle-Activator: osgi.agent.example.Agent
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.ws.rs;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",
+ org.origin.common.rest,
+ org.origin.common.rest.server,
  org.origin.common.util,
  org.osgi.framework;version="1.3.0"

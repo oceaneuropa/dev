@@ -9,10 +9,16 @@ Import-Package: javax.ws.rs;version="2.0.1",
  javax.ws.rs.core;version="2.0.1",
  javax.ws.rs.ext;version="2.0.1",
  org.json;version="[2015.11.23,2015.12.31)",
+ org.nb.mgm.exception,
+ org.nb.mgm.model.dto,
+ org.nb.mgm.model.query,
+ org.nb.mgm.model.runtime,
+ org.origin.common.deploy,
+ org.origin.common.json,
  org.origin.common.rest.dto,
  org.origin.common.rest.model,
  org.origin.common.rest.server,
  org.origin.common.util,
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.7.10"
-Export-Package: org.nb.mgm.ws.dto
+Export-Package: org.nb.mgm.service

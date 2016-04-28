@@ -7,13 +7,13 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.nb.mgm.model.Artifact;
-import org.nb.mgm.model.ClusterRoot;
-import org.nb.mgm.model.Home;
-import org.nb.mgm.model.Machine;
-import org.nb.mgm.model.MetaSector;
-import org.nb.mgm.model.MetaSpace;
-import org.origin.common.util.JSONUtil;
+import org.nb.mgm.model.runtime.Artifact;
+import org.nb.mgm.model.runtime.ClusterRoot;
+import org.nb.mgm.model.runtime.Home;
+import org.nb.mgm.model.runtime.Machine;
+import org.nb.mgm.model.runtime.MetaSector;
+import org.nb.mgm.model.runtime.MetaSpace;
+import org.origin.common.json.JSONUtil;
 
 public class LocalMgmWriter {
 

@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Mgm Client for Home
-Bundle-SymbolicName: org.nb.mgm.home.client
+Bundle-SymbolicName: org.nb.home.client
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.nb.mgm.home.client.Activator
+Bundle-Activator: org.nb.home.client.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.core;version="2.0.1",
@@ -13,3 +13,4 @@ Import-Package: javax.ws.rs.client;version="2.0.0",
  org.origin.common.rest.client,
  org.origin.common.util,
  org.osgi.framework;version="1.3.0"
+Export-Package: org.nb.home.client.api
