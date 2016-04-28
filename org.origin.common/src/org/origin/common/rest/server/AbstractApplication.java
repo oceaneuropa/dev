@@ -5,7 +5,17 @@ import javax.ws.rs.core.Application;
 import org.origin.common.deploy.DeployCallback;
 import org.osgi.service.http.HttpService;
 
-public class AbstractApplication extends Application implements DeployCallback {
+public abstract class AbstractApplication extends Application implements DeployCallback {
+
+	/**
+	 * Start the application.
+	 */
+	public abstract void start();
+
+	/**
+	 * Stop the application.
+	 */
+	public abstract void stop();
 
 	@Override
 	public void deployedTo(Object target) {
