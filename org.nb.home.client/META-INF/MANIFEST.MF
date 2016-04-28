@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Mgm Client for Home
+Bundle-Name: org.nb.home.client Client
 Bundle-SymbolicName: org.nb.home.client
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.nb.home.client.Activator
