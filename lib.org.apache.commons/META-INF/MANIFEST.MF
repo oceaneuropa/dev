@@ -5,6 +5,7 @@ Bundle-SymbolicName: lib.org.apache.commons
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/commons-io-2.5.jar,
+ lib/commons-dbutils-1.6.jar,
  lib/org.apache.commons.codec_1.6.0.v201305230611.jar,
  .
 Export-Package: org.apache.commons.codec,
@@ -13,6 +14,9 @@ Export-Package: org.apache.commons.codec,
  org.apache.commons.codec.language,
  org.apache.commons.codec.language.bm,
  org.apache.commons.codec.net,
+ org.apache.commons.dbutils,
+ org.apache.commons.dbutils.handlers,
+ org.apache.commons.dbutils.wrappers,
  org.apache.commons.io,
  org.apache.commons.io.comparator,
  org.apache.commons.io.filefilter,
