@@ -45,6 +45,34 @@ public class ClientConfiguration {
 		return config;
 	}
 
+	/**
+	 * 
+	 * @param url
+	 * @param contextRoot
+	 * @param username
+	 * @return
+	 */
+	public static synchronized ClientConfiguration get(String url, String contextRoot, String username, String password) {
+		String key = url + "::" + contextRoot + "::" + username;
+		ClientConfiguration config = configMap.get(key);
+		if (config == null) {
+			config = new ClientConfiguration(url, contextRoot);
+			config.setUsername(username);
+			if (password != null) {
+				config.setPassword(password);
+			}
+			configMap.put(key, config);
+		} else {
+			String oldPassword = config.getPassword();
+			if ((oldPassword == null && password != null) && (password != null && !password.equals(oldPassword))) {
+				// need to reset any cached login result
+
+				config.setPassword(password);
+			}
+		}
+		return config;
+	}
+
 	protected static TrustManager[] TRUST = new TrustManager[] { new X509TrustManager() {
 		@Override
 		public void checkClientTrusted(X509Certificate[] cert, String autyType) throws CertificateException {

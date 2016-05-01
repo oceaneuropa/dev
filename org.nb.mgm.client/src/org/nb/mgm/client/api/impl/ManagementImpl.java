@@ -24,11 +24,11 @@ import org.origin.common.rest.dto.StatusDTO;
 
 public class ManagementImpl implements Management {
 
-	private ClientConfiguration clientConfiguration;
-	private MachineClient machineClient;
-	private HomeClient homeClient;
-	private MetaSectorClient metaSectorClient;
-	private MetaSpaceClient metaSpaceClient;
+	protected ClientConfiguration clientConfig;
+	protected MachineClient machineClient;
+	protected HomeClient homeClient;
+	protected MetaSectorClient metaSectorClient;
+	protected MetaSpaceClient metaSpaceClient;
 
 	/**
 	 * 
@@ -38,17 +38,17 @@ public class ManagementImpl implements Management {
 	 * @param password
 	 */
 	public ManagementImpl(String url, String contextRoot, String username, String password) {
-		this.clientConfiguration = ClientConfiguration.get(url, contextRoot, username);
-		this.clientConfiguration.setPassword(password);
+		this.clientConfig = ClientConfiguration.get(url, contextRoot, username);
+		this.clientConfig.setPassword(password);
 
 		// Web service client for machine
-		this.machineClient = new MachineClient(this.clientConfiguration);
+		this.machineClient = new MachineClient(this.clientConfig);
 		// Web service client for home
-		this.homeClient = new HomeClient(this.clientConfiguration);
+		this.homeClient = new HomeClient(this.clientConfig);
 		// Web service client for metaSector
-		this.metaSectorClient = new MetaSectorClient(this.clientConfiguration);
+		this.metaSectorClient = new MetaSectorClient(this.clientConfig);
 		// Web service client for metaSpace
-		this.metaSpaceClient = new MetaSpaceClient(this.clientConfiguration);
+		this.metaSpaceClient = new MetaSpaceClient(this.clientConfig);
 	}
 
 	// ------------------------------------------------------------------------------------------

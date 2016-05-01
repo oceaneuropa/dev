@@ -1,4 +1,4 @@
-package org.origin.common.database;
+package org.origin.common.jdbc;
 
 public interface DatabaseTableAware {
 
@@ -20,12 +20,5 @@ public interface DatabaseTableAware {
 	 * @return
 	 */
 	public String getCreateTableSQL(String db);
-
-	/**
-	 * 
-	 * @param db
-	 * @return
-	 */
-	public String getDropTableSQL(String db);
 
 }

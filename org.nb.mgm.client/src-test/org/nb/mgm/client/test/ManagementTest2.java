@@ -11,11 +11,11 @@ import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
 import org.origin.common.rest.client.ClientException;
 
-public class TestManagement {
+public class ManagementTest2 {
 
 	protected Management mgm;
 
-	public TestManagement() {
+	public ManagementTest2() {
 		this.mgm = getManagement();
 	}
 
