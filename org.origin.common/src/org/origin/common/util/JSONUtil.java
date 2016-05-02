@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONUtil {
 
+	protected static final String PROPERTIES_SCHEMA_NAME = "__properties_schema__";
+
 	/**
 	 * Convert Properties to JSONObject.
 	 * 
@@ -38,9 +40,10 @@ public class JSONUtil {
 	/**
 	 * 
 	 * @param properties
+	 * @param createPropertySchema
 	 * @return
 	 */
-	public static JSONObject toJson(Map<String, Object> properties) {
+	public static JSONObject toJsonObject(Map<String, Object> properties, boolean createPropertySchema) {
 		JSONObject jsonObject = new JSONObject();
 		for (Iterator<Entry<String, Object>> entryItor = properties.entrySet().iterator(); entryItor.hasNext();) {
 			Entry<String, Object> entry = entryItor.next();
@@ -51,17 +54,36 @@ public class JSONUtil {
 			}
 			jsonObject.put(propName, propValue);
 		}
-		return jsonObject;
-	}
 
-	/**
-	 * 
-	 * @param properties
-	 * @return
-	 */
-	public static String toJsonString(Map<String, Object> properties) {
-		JSONObject jsonObject = toJson(properties);
-		return jsonObject.toString();
+		if (createPropertySchema) {
+			JSONObject schemaJsonObject = new JSONObject();
+			for (Iterator<Entry<String, Object>> entryItor = properties.entrySet().iterator(); entryItor.hasNext();) {
+				Entry<String, Object> entry = entryItor.next();
+				String propName = entry.getKey();
+				Object propValue = entry.getValue();
+				if (propValue instanceof Date) {
+					schemaJsonObject.put(propName, Date.class.getName());
+				} else if (propValue instanceof Boolean) {
+					schemaJsonObject.put(propName, Boolean.class.getName());
+				} else if (propValue instanceof Float) {
+					schemaJsonObject.put(propName, Float.class.getName());
+				} else if (propValue instanceof Double) {
+					schemaJsonObject.put(propName, Double.class.getName());
+				} else if (propValue instanceof Long) {
+					schemaJsonObject.put(propName, Long.class.getName());
+				} else if (propValue instanceof Integer) {
+					schemaJsonObject.put(propName, Integer.class.getName());
+				} else if (propValue instanceof String) {
+					schemaJsonObject.put(propName, String.class.getName());
+				} else {
+					// if not recognized, serialize it as String
+					schemaJsonObject.put(propName, String.class.getName());
+				}
+			}
+			jsonObject.put(PROPERTIES_SCHEMA_NAME, schemaJsonObject.toString());
+		}
+
+		return jsonObject;
 	}
 
 	public static Map<String, Object> toProperties1(String content) {
@@ -84,30 +106,165 @@ public class JSONUtil {
 		return properties;
 	}
 
-	public static Map<String, Object> toProperties2(String content) {
+	/**
+	 * 
+	 * @param content
+	 * @param loadByPropertiesSchema
+	 * @return
+	 */
+	public static Map<String, Object> toProperties(String content, boolean loadByPropertiesSchema) {
 		Map<String, Object> properties = new LinkedHashMap<String, Object>();
 		JSONObject jsonObject = new JSONObject(content);
+
 		JSONArray namesArray = jsonObject.names();
 		int length = namesArray.length();
+
+		Map<String, Class> propertySchemaMap = null;
+		if (loadByPropertiesSchema && jsonObject.has(PROPERTIES_SCHEMA_NAME)) {
+			// ---------------------------------------------------------------------------
+			// Load property type map begins
+			// ---------------------------------------------------------------------------
+			propertySchemaMap = new LinkedHashMap<String, Class>();
+			String propertiesSchema = jsonObject.getString(PROPERTIES_SCHEMA_NAME);
+			if (propertiesSchema != null) {
+				JSONObject schemaJsonObject = new JSONObject(propertiesSchema);
+				for (int i = 0; i < length; i++) {
+					Object obj = namesArray.get(i);
+					if (obj instanceof String) {
+						String propName = (String) obj;
+						if (PROPERTIES_SCHEMA_NAME.equals(propName)) {
+							continue;
+						}
+
+						String propClassName = schemaJsonObject.getString(propName);
+						Class propClass = null;
+						try {
+							propClass = Class.forName(propClassName);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						if (propClass != null) {
+							propertySchemaMap.put(propName, propClass);
+						}
+					}
+				}
+			}
+			// ---------------------------------------------------------------------------
+			// Load property type map ends
+			// ---------------------------------------------------------------------------
+		}
+
 		for (int i = 0; i < length; i++) {
 			Object obj = namesArray.get(i);
 			if (obj instanceof String) {
 				String propName = (String) obj;
-				Object propValue = jsonObject.get(propName);
+				Object propValue = null;
+
+				if (PROPERTIES_SCHEMA_NAME.equals(propName)) {
+					continue;
+				}
+
+				if (loadByPropertiesSchema && propertySchemaMap != null) {
+					String rawStringValue = null;
+					Object rawObjectValue = jsonObject.get(propName);
+					if (rawObjectValue != null) {
+						rawStringValue = rawObjectValue.toString();
+					}
+
+					Class propClass = propertySchemaMap.get(propName);
+					if (Date.class.isAssignableFrom(propClass)) {
+						// Convert string into Date
+						if (rawObjectValue != null && !Date.class.isAssignableFrom(rawObjectValue.getClass())) {
+							try {
+								Date dateValue = DateUtil.toDate(rawStringValue, DateUtil.SIMPLE_DATE_FORMAT0, DateUtil.SIMPLE_DATE_FORMAT1, DateUtil.SIMPLE_DATE_FORMAT2);
+								if (dateValue != null) {
+									propValue = dateValue;
+								}
+							} catch (Exception e) {
+								// e.printStackTrace();
+							}
+						}
+
+					} else if (Boolean.class.isAssignableFrom(propClass)) {
+						// Convert string into Boolean
+						if (rawObjectValue != null && !Boolean.class.isAssignableFrom(rawObjectValue.getClass())) {
+							try {
+								Boolean booleanValue = Boolean.valueOf(rawStringValue);
+								if (booleanValue != null) {
+									propValue = booleanValue;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+
+					} else if (Float.class.isAssignableFrom(propClass)) {
+						// Convert string into Float
+						if (rawObjectValue != null && !Float.class.isAssignableFrom(rawObjectValue.getClass())) {
+							try {
+								Float floatValue = Float.valueOf(rawStringValue);
+								if (floatValue != null) {
+									propValue = floatValue;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+
+					} else if (Double.class.isAssignableFrom(propClass)) {
+						// Convert string into Double
+						if (rawObjectValue != null && !Double.class.isAssignableFrom(rawObjectValue.getClass())) {
+							try {
+								Double floatValue = Double.valueOf(rawStringValue);
+								if (floatValue != null) {
+									propValue = floatValue;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+
+					} else if (Long.class.isAssignableFrom(propClass)) {
+						// Convert string into Long
+						if (rawObjectValue != null && !Long.class.isAssignableFrom(rawObjectValue.getClass())) {
+							try {
+								Long longValue = Long.valueOf(rawStringValue);
+								if (longValue != null) {
+									propValue = longValue;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+
+					} else if (Integer.class.isAssignableFrom(propClass)) {
+						// Convert string into Integer
+						if (rawObjectValue != null && !Integer.class.isAssignableFrom(rawObjectValue.getClass())) {
+							try {
+								Integer floatValue = Integer.valueOf(rawStringValue);
+								if (floatValue != null) {
+									propValue = floatValue;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+
+					if (propValue == null) {
+						propValue = jsonObject.get(propName);
+					}
+
+				} else {
+					propValue = jsonObject.get(propName);
+				}
+
 				if (propValue != null) {
 					properties.put(propName, propValue);
 				}
 			}
 		}
 		return properties;
-	}
-
-	public static String toString(JSONObject jsonObject) {
-		return jsonObject.toString();
-	}
-
-	public static String toString(JSONObject jsonObject, int indentFactor) {
-		return jsonObject.toString(indentFactor);
 	}
 
 	public static void main(String[] args) {
@@ -120,7 +277,7 @@ public class JSONUtil {
 		properties.put("mylong", new Long(2000000));
 		properties.put("myfloat", new Float(2.1));
 		properties.put("myboolean", new Boolean(false));
-		String contentString = JSONUtil.toJsonString(properties);
+		String contentString = JSONUtil.toJsonObject(properties, true).toString();
 		System.out.println(contentString);
 
 		System.out.println("------------------------------------------------------------------------------------------------");
@@ -133,7 +290,7 @@ public class JSONUtil {
 		}
 
 		System.out.println("------------------------------------------------------------------------------------------------");
-		Map<String, Object> properties12 = JSONUtil.toProperties2(contentString);
+		Map<String, Object> properties12 = JSONUtil.toProperties(contentString, true);
 		for (Iterator<Entry<String, Object>> entryItor = properties12.entrySet().iterator(); entryItor.hasNext();) {
 			Entry<String, Object> entry = entryItor.next();
 			String propName = entry.getKey();

@@ -7,6 +7,7 @@ import java.util.Date;
 
 public class DateUtil {
 
+	public static SimpleDateFormat SIMPLE_DATE_FORMAT0 = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -31,7 +32,7 @@ public class DateUtil {
 					break;
 				}
 			} catch (ParseException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 		}
 		return date;
