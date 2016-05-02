@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.origin.common
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.origin.common.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: javax.servlet;version="3.1.0",
+Import-Package: com.fasterxml.jackson.databind,
+ com.mysql.jdbc,
+ javax.servlet;version="3.1.0",
  javax.ws.rs;version="2.0.1",
  javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.core;version="2.0.1",
