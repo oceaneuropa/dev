@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONUtil {
 
-	protected static final String PROPERTIES_SCHEMA_NAME = "__properties_schema__";
+	protected static final String PROPERTIES_SCHEMA_NAME = "__schema__";
 
 	/**
 	 * Convert Properties to JSONObject.
