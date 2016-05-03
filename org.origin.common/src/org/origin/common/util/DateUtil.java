@@ -11,6 +11,20 @@ public class DateUtil {
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+	public static SimpleDateFormat[] COMMON_DATE_FORMATS;
+
+	static {
+		COMMON_DATE_FORMATS = new SimpleDateFormat[] { SIMPLE_DATE_FORMAT0, SIMPLE_DATE_FORMAT1, SIMPLE_DATE_FORMAT2 };
+	}
+
+	public static SimpleDateFormat getDefaultDateFormat() {
+		return SIMPLE_DATE_FORMAT0;
+	}
+
+	public static SimpleDateFormat[] getCommonDateFormats() {
+		return COMMON_DATE_FORMATS;
+	}
+
 	/**
 	 * 
 	 * @param dateString

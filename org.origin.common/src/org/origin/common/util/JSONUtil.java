@@ -176,12 +176,12 @@ public class JSONUtil {
 						// Convert string into Date
 						if (rawObjectValue != null && !Date.class.isAssignableFrom(rawObjectValue.getClass())) {
 							try {
-								Date dateValue = DateUtil.toDate(rawStringValue, DateUtil.SIMPLE_DATE_FORMAT0, DateUtil.SIMPLE_DATE_FORMAT1, DateUtil.SIMPLE_DATE_FORMAT2);
+								Date dateValue = DateUtil.toDate(rawStringValue, DateUtil.getCommonDateFormats());
 								if (dateValue != null) {
 									propValue = dateValue;
 								}
 							} catch (Exception e) {
-								// e.printStackTrace();
+								e.printStackTrace();
 							}
 						}
 

@@ -15,7 +15,6 @@ public class JDBCTest1 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
 		// jdbc.driver
 		String jdbcDriver = "com.mysql.jdbc.Driver";
 		// jdbc.url

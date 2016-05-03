@@ -184,6 +184,19 @@ public class DatabaseUtil {
 	}
 
 	/**
+	 * Drop a table.
+	 * 
+	 * @param conn
+	 * @param tableAware
+	 * @throws SQLException
+	 */
+	public static void dropTable(Connection conn, DatabaseTableAware tableAware) throws SQLException {
+		dropTable(conn, tableAware.getTableName());
+	}
+
+	/**
+	 * Drop a table.
+	 * 
 	 * http://www.tutorialspoint.com/jdbc/jdbc-drop-tables.htm
 	 * 
 	 * @param conn
