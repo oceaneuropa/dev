@@ -31,13 +31,13 @@ public class HdfsClientTest {
 
 	protected FileSystem getFileSystem() {
 		// For Mac
-		// Configuration conf = HdfsUtil.getConfiguration("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/core-site.xml");
+		Configuration conf = HdfsUtil.getConfiguration("/Users/yayang/apache/hadoop/hadoop-2.7.1/etc/hadoop/core-site.xml");
 
 		// For Windows
-		Configuration conf = new Configuration();
-		conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/core-site.xml"));
-		conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/hdfs-site.xml"));
-		conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/mapred-site.xml"));
+		// Configuration conf = new Configuration();
+		// conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/core-site.xml"));
+		// conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/hdfs-site.xml"));
+		// conf.addResource(new Path("C:/hadoop/hadoop-2.7.1/etc/hadoop/mapred-site.xml"));
 
 		return HdfsUtil.getFileSystem(conf);
 	}
