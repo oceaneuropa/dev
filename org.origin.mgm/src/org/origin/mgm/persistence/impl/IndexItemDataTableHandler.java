@@ -19,6 +19,8 @@ import org.origin.mgm.model.vo.IndexItemDataVO;
  */
 public class IndexItemDataTableHandler implements DatabaseTableAware {
 
+	public static IndexItemDataTableHandler INSTANCE = new IndexItemDataTableHandler();
+
 	@Override
 	public String getTableName() {
 		return "IndexItemData";

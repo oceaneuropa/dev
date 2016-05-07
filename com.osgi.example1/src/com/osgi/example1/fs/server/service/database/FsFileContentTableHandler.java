@@ -28,6 +28,8 @@ import com.osgi.example1.fs.common.vo.FileContentVO;
  */
 public class FsFileContentTableHandler implements DatabaseTableAware {
 
+	public static FsFileContentTableHandler INSTANCE = new FsFileContentTableHandler();
+
 	@Override
 	public String getTableName() {
 		return "FsFileContent";
@@ -46,7 +48,7 @@ public class FsFileContentTableHandler implements DatabaseTableAware {
 			// sb.append(" FOREIGN KEY (fileId) REFERENCES FsFileMetadata(fileId)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRE.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    fileContentId serial NOT NULL,");
 			sb.append("    fileId int NOT NULL,");

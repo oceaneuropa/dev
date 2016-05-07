@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.mgm.persistence.IndexServiceDataManager;
 
@@ -25,8 +24,8 @@ public class DatabaseIndexServiceDataManager implements IndexServiceDataManager 
 		this.dataTableHandler = new IndexItemDataTableHandler();
 		this.logTableHandler = new IndexItemLogTableHandler();
 		try {
-			DatabaseUtil.initialize(conn, dataTableHandler, DatabaseTableAware.MYSQL);
-			DatabaseUtil.initialize(conn, logTableHandler, DatabaseTableAware.MYSQL);
+			DatabaseUtil.initialize(conn, dataTableHandler);
+			DatabaseUtil.initialize(conn, logTableHandler);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

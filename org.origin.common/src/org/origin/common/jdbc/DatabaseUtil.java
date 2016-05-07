@@ -21,6 +21,24 @@ public class DatabaseUtil {
 	public static final String JDBC_PASSWORD = "jdbc.password";
 
 	/**
+	 * Create database connection properties.
+	 * 
+	 * @param driver
+	 * @param url
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public static Properties getProperties(String driver, String url, String username, String password) {
+		Properties properties = new Properties();
+		properties.setProperty(DatabaseUtil.JDBC_DRIVER, driver);
+		properties.setProperty(DatabaseUtil.JDBC_URL, url);
+		properties.setProperty(DatabaseUtil.JDBC_USERNAME, username);
+		properties.setProperty(DatabaseUtil.JDBC_PASSWORD, password);
+		return properties;
+	}
+
+	/**
 	 * 
 	 * @param properties
 	 * @return
@@ -73,22 +91,81 @@ public class DatabaseUtil {
 	}
 
 	/**
-	 * Create database table if not exist.
+	 * Initialize database table if not exists.
 	 * 
 	 * @param conn
 	 * @param tableAware
-	 * @param db
-	 *            Type of database described in constants of the DatabaseTableAware interface. e.g. DatabaseTableAware.MYSQL
 	 * @return Return true if table exists or a table is created. Return false if table doesn't exist and cannot be created.
 	 * @throws SQLException
 	 */
-	public static boolean initialize(Connection conn, DatabaseTableAware tableAware, String db) throws SQLException {
-		db = checkDB(db);
+	public static boolean initialize(Connection conn, DatabaseTableAware tableAware) throws SQLException {
+		String database = null;
+		DatabaseMetaData metaData = conn.getMetaData();
+		if (metaData != null) {
+			String productName = metaData.getDatabaseProductName();
+			if (productName != null) {
+				if (productName.toLowerCase().contains("mysql")) {
+					database = DatabaseTableAware.MYSQL;
+				} else if (productName.toLowerCase().contains("postgresql")) {
+					database = DatabaseTableAware.POSTGRESQL;
+				} else if (productName.toLowerCase().contains("oracle")) {
+					database = DatabaseTableAware.ORACLE;
+				} else if (productName.toLowerCase().contains("db2")) {
+					database = DatabaseTableAware.DB2;
+				} else if (productName.toLowerCase().contains("sqlserver")) {
+					database = DatabaseTableAware.SQLSERVER;
+				} else {
+					System.out.println("### ### Unsupported DatabaseProductName = " + productName);
+				}
+			}
+		}
+		database = checkDB(database);
+
 		if (tableExist(conn, tableAware.getTableName())) {
+			System.out.println("DatabaseUtil.initialize() table '" + tableAware.getTableName() + "' already exists.");
 			return true;
 		}
-		createTable(conn, tableAware.getCreateTableSQL(db));
-		return tableExist(conn, tableAware.getTableName());
+
+		createTable(conn, tableAware.getCreateTableSQL(database));
+
+		boolean exists = tableExist(conn, tableAware.getTableName());
+		if (exists) {
+			System.out.println("DatabaseUtil.initialize() table '" + tableAware.getTableName() + "' is created.");
+		} else {
+			System.out.println("DatabaseUtil.initialize() table '" + tableAware.getTableName() + "' failed to be created.");
+		}
+
+		// table exists --- table is created successfully
+		// table doesn't exist --- failed to create the table
+		return exists ? true : false;
+	}
+
+	/**
+	 * Dispose database table if exists.
+	 * 
+	 * @param conn
+	 * @param tableAware
+	 * @return Return true if table not exists or the table is dropped. Return false if the table exists and cannot be dropped.
+	 * @throws SQLException
+	 */
+	public static boolean dispose(Connection conn, DatabaseTableAware tableAware) throws SQLException {
+		if (!tableExist(conn, tableAware.getTableName())) {
+			System.out.println("DatabaseUtil.dispose() table '" + tableAware.getTableName() + "' does not exist.");
+			return true;
+		}
+
+		dropTable(conn, tableAware);
+
+		boolean exists = tableExist(conn, tableAware.getTableName());
+		if (exists) {
+			System.out.println("DatabaseUtil.dispose() table '" + tableAware.getTableName() + "' failed to be dropped.");
+		} else {
+			System.out.println("DatabaseUtil.dispose() table '" + tableAware.getTableName() + "' is dropped.");
+		}
+
+		// table still exists --- failed to drop the table
+		// table doesn't exist --- table is dropped successfully
+		return exists ? false : true;
 	}
 
 	/**
@@ -101,7 +178,7 @@ public class DatabaseUtil {
 			return DatabaseTableAware.MYSQL;
 		}
 		if (!DatabaseTableAware.MYSQL.equalsIgnoreCase(db) //
-				&& !DatabaseTableAware.POSTGRE.equalsIgnoreCase(db) //
+				&& !DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(db) //
 				&& !DatabaseTableAware.ORACLE.equalsIgnoreCase(db) //
 				&& !DatabaseTableAware.DB2.equalsIgnoreCase(db) //
 				&& !DatabaseTableAware.SQLSERVER.equalsIgnoreCase(db) //

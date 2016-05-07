@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.mgm.persistence.impl.IndexItemLogTableHandler;
 
@@ -22,7 +21,7 @@ public class IndexItemLogTableHandlerTest {
 		try {
 			// DatabaseUtil.dropTable(conn, logTableHandler);
 
-			DatabaseUtil.initialize(conn, logTableHandler, DatabaseTableAware.MYSQL);
+			DatabaseUtil.initialize(conn, logTableHandler);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

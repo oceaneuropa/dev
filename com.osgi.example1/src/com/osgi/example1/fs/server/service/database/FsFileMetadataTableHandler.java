@@ -17,6 +17,8 @@ import com.osgi.example1.fs.common.vo.FileMetadataVO;
 
 public class FsFileMetadataTableHandler implements DatabaseTableAware {
 
+	public static FsFileMetadataTableHandler INSTANCE = new FsFileMetadataTableHandler();
+
 	@Override
 	public String getTableName() {
 		return "FsFileMetadata";
@@ -42,7 +44,7 @@ public class FsFileMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    PRIMARY KEY (fileId)");
 			sb.append(");");
 
-		} else if (DatabaseTableAware.POSTGRE.equalsIgnoreCase(database)) {
+		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
 			sb.append("    fileId serial NOT NULL,");
 			sb.append("    parentFileId int NOT NULL DEFAULT -1,");

@@ -10,13 +10,35 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.origin.common.jdbc.DatabaseTableAware;
+import org.junit.Test;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.util.JSONUtil;
 import org.origin.mgm.model.vo.IndexItemDataVO;
 import org.origin.mgm.persistence.impl.IndexItemDataTableHandler;
 
 public class IndexItemDataTableHandlerTest {
+
+	protected Properties properties;
+	protected IndexItemDataTableHandler dataHandler = IndexItemDataTableHandler.INSTANCE;
+
+	public IndexItemDataTableHandlerTest() {
+		// this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
+		this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
+	}
+
+	public void setUp() {
+		// this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
+		this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
+	}
+
+	protected Connection getConnection() {
+		return DatabaseUtil.getConnection(this.properties);
+	}
+
+	@Test
+	public void test001_select() {
+
+	}
 
 	public static void main(String[] args) {
 		Properties properties = new Properties();
@@ -26,17 +48,12 @@ public class IndexItemDataTableHandlerTest {
 		properties.setProperty(DatabaseUtil.JDBC_PASSWORD, "admin");
 
 		Connection conn = DatabaseUtil.getConnection(properties);
-		IndexItemDataTableHandler dataTableHandler = new IndexItemDataTableHandler();
+		IndexItemDataTableHandler handler = new IndexItemDataTableHandler();
 		try {
 			// DatabaseUtil.dropTable(conn, dataTableHandler);
 
-			DatabaseUtil.initialize(conn, dataTableHandler, DatabaseTableAware.MYSQL);
+			DatabaseUtil.initialize(conn, handler);
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		try {
 			Map<String, Object> props1 = new LinkedHashMap<String, Object>();
 			props1.put("url", "http://127.0.0.1:9090/indexservice/v1");
 			props1.put("description", "IndexService1");
@@ -104,14 +121,14 @@ public class IndexItemDataTableHandlerTest {
 			// dataTableHandler.insert(conn, "indexservice", "node5", contentString5);
 			// dataTableHandler.insert(conn, "indexservice", "node6", contentString6);
 
-			dataTableHandler.updateProperties(conn, "indexservice", "node1", contentString1);
-			dataTableHandler.updateProperties(conn, "indexservice", "node2", contentString2);
-			dataTableHandler.updateProperties(conn, "indexservice", "node3", contentString3);
-			dataTableHandler.updateProperties(conn, "indexservice", "node4", contentString4);
-			dataTableHandler.updateProperties(conn, "indexservice", "node5", contentString5);
-			dataTableHandler.updateProperties(conn, "indexservice", "node6", contentString6);
+			handler.updateProperties(conn, "indexservice", "node1", contentString1);
+			handler.updateProperties(conn, "indexservice", "node2", contentString2);
+			handler.updateProperties(conn, "indexservice", "node3", contentString3);
+			handler.updateProperties(conn, "indexservice", "node4", contentString4);
+			handler.updateProperties(conn, "indexservice", "node5", contentString5);
+			handler.updateProperties(conn, "indexservice", "node6", contentString6);
 
-			List<IndexItemDataVO> indexItemVOs = dataTableHandler.get(conn);
+			List<IndexItemDataVO> indexItemVOs = handler.get(conn);
 			for (IndexItemDataVO indexItemVO : indexItemVOs) {
 				System.out.println("=============================================================================================");
 				System.out.println(indexItemVO);
