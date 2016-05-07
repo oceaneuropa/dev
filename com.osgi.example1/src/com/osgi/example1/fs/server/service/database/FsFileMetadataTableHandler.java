@@ -102,7 +102,7 @@ public class FsFileMetadataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected boolean getBoolean(Connection conn, int fileId, String columnName) throws SQLException {
+	protected boolean getBoolean(Connection conn, int fileId, final String columnName) throws SQLException {
 		String querySQL = "SELECT " + columnName + " FROM " + getTableName() + " WHERE fileId=?";
 		ResultSetSingleHandler<Boolean> handler = new ResultSetSingleHandler<Boolean>() {
 			@Override
