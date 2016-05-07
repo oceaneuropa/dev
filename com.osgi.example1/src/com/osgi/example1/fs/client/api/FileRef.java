@@ -1,9 +1,29 @@
 package com.osgi.example1.fs.client.api;
 
-import com.osgi.example1.fs.common.Path;
-
 public interface FileRef {
 
-	public Path getPath();
+	public String getPath();
+
+	public String getParent();
+
+	public FileRef getParentFile();
+
+	public String getName();
+
+	public boolean isDirectory();
+
+	public boolean isHidden();
+
+	public boolean exists();
+
+	public boolean canExecute();
+
+	public boolean canRead();
+
+	public boolean canWrite();
+
+	public long getLength();
+
+	public long getLastModified();
 
 }

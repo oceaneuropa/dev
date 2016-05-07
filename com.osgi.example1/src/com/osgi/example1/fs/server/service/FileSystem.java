@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 import com.osgi.example1.fs.common.Configuration;
 import com.osgi.example1.fs.common.Path;
-import com.osgi.example1.fs.common.dto.FileMetaData;
+import com.osgi.example1.fs.common.dto.FileMetadata;
 
 public interface FileSystem {
 
@@ -23,7 +23,7 @@ public interface FileSystem {
 	 * @param path
 	 * @return
 	 */
-	public FileMetaData getFileMetaData(Path path);
+	public FileMetadata getFileMetaData(Path path);
 
 	/**
 	 * List all file in the root directory.
@@ -54,7 +54,7 @@ public interface FileSystem {
 	 * @param path
 	 * @return
 	 */
-	public boolean mkdirs(Path path);
+	public boolean mkdirs(Path path) throws IOException;
 
 	/**
 	 * Create a new, empty file if and only if a file with this name does not yet exist.
@@ -83,6 +83,9 @@ public interface FileSystem {
 	 */
 	public InputStream getInputStream(Path path) throws IOException;
 
+	// -----------------------------------------------------------------------------------------
+	// Copy local file and directory to FS
+	// -----------------------------------------------------------------------------------------
 	/**
 	 * Copy a local file to a file in the FS.
 	 * 
@@ -91,7 +94,7 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public Path copyLocalFileToFile(File localFile, Path destFilePath) throws IOException;
+	public Path copyLocalFileToFsFile(File localFile, Path destFilePath) throws IOException;
 
 	/**
 	 * Copy a local file to a directory in the FS.
@@ -101,7 +104,7 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public Path copyLocalFileToDirectory(File localFile, Path destDirPath) throws IOException;
+	public Path copyLocalFileToFsDirectory(File localFile, Path destDirPath) throws IOException;
 
 	/**
 	 * Copy a local directory to a directory in the FS.
@@ -112,6 +115,6 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean copyLocalDirectoryToDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException;
+	public boolean copyLocalDirectoryToFsDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException;
 
 }

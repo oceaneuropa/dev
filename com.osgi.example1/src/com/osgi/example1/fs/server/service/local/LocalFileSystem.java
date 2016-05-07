@@ -9,7 +9,7 @@ import org.apache.commons.io.FileUtils;
 
 import com.osgi.example1.fs.common.Configuration;
 import com.osgi.example1.fs.common.Path;
-import com.osgi.example1.fs.common.dto.FileMetaData;
+import com.osgi.example1.fs.common.dto.FileMetadata;
 import com.osgi.example1.fs.server.service.FileSystem;
 
 public class LocalFileSystem implements FileSystem {
@@ -34,8 +34,8 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
-	public FileMetaData getFileMetaData(Path path) {
-		File file = new File(getHomeDirectory(), path.getName());
+	public FileMetadata getFileMetaData(Path path) {
+		File file = new File(getHomeDirectory(), path.getPathString());
 		return toMetaData(file);
 	}
 
@@ -51,7 +51,7 @@ public class LocalFileSystem implements FileSystem {
 
 	@Override
 	public Path[] listFiles(Path parent) {
-		File parentFile = new File(getHomeDirectory(), parent.getName());
+		File parentFile = new File(getHomeDirectory(), parent.getPathString());
 		if (parentFile.isFile()) {
 			return new Path[0];
 		}
@@ -65,13 +65,13 @@ public class LocalFileSystem implements FileSystem {
 
 	@Override
 	public boolean exists(Path path) {
-		File file = new File(getHomeDirectory(), path.getName());
+		File file = new File(getHomeDirectory(), path.getPathString());
 		return (file != null && file.exists()) ? true : false;
 	}
 
 	@Override
-	public boolean mkdirs(Path path) {
-		File file = new File(getHomeDirectory(), path.getName());
+	public boolean mkdirs(Path path) throws IOException {
+		File file = new File(getHomeDirectory(), path.getPathString());
 		if (!file.exists()) {
 			return file.mkdirs();
 		}
@@ -80,7 +80,7 @@ public class LocalFileSystem implements FileSystem {
 
 	@Override
 	public boolean createNewFile(Path path) throws IOException {
-		File file = new File(getHomeDirectory(), path.getName());
+		File file = new File(getHomeDirectory(), path.getPathString());
 		if (!file.exists()) {
 			if (file.getParentFile() != null && !file.getParentFile().exists()) {
 				file.getParentFile().mkdirs();
@@ -92,7 +92,7 @@ public class LocalFileSystem implements FileSystem {
 
 	@Override
 	public boolean delete(Path path) throws IOException {
-		File file = new File(getHomeDirectory(), path.getName());
+		File file = new File(getHomeDirectory(), path.getPathString());
 		if (file.exists()) {
 			if (file.isDirectory()) {
 				FileUtils.deleteDirectory(file);
@@ -106,12 +106,12 @@ public class LocalFileSystem implements FileSystem {
 
 	@Override
 	public InputStream getInputStream(Path path) throws IOException {
-		File file = new File(getHomeDirectory(), path.getName());
+		File file = new File(getHomeDirectory(), path.getPathString());
 		return new FileInputStream(file);
 	}
 
 	@Override
-	public Path copyLocalFileToFile(File localFile, Path destFilePath) throws IOException {
+	public Path copyLocalFileToFsFile(File localFile, Path destFilePath) throws IOException {
 		// Check source file
 		if (!localFile.exists()) {
 			throw new IOException("Source '" + localFile + "' does not exist.");
@@ -121,7 +121,7 @@ public class LocalFileSystem implements FileSystem {
 		}
 
 		// Check target file
-		File destFile = new File(getHomeDirectory(), destFilePath.getName());
+		File destFile = new File(getHomeDirectory(), destFilePath.getPathString());
 		if (destFile.isDirectory()) {
 			throw new IOException("Destination '" + destFile + "' exists but is a directory.");
 		}
@@ -139,17 +139,17 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Path copyLocalFileToDirectory(File localFile, Path destDirPath) throws IOException {
+	public Path copyLocalFileToFsDirectory(File localFile, Path destDirPath) throws IOException {
 		// Check source file
 		if (!localFile.exists()) {
-			throw new IOException("Source '" + localFile + "' does not exist.");
+			throw new IOException("Local file '" + localFile + "' does not exist.");
 		}
 		if (localFile.isDirectory()) {
-			throw new IOException("Source '" + localFile + "' exists but is a directory.");
+			throw new IOException("Local file '" + localFile + "' exists but is a directory.");
 		}
 
 		// Check target directory
-		File destDir = new File(getHomeDirectory(), destDirPath.getName());
+		File destDir = new File(getHomeDirectory(), destDirPath.getPathString());
 		if (destDir.exists() && !destDir.isDirectory()) {
 			throw new IllegalArgumentException("Destination '" + destDir + "' is not a directory");
 		}
@@ -169,17 +169,17 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
-	public boolean copyLocalDirectoryToDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException {
+	public boolean copyLocalDirectoryToFsDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException {
 		// Check source directory
 		if (!localDir.exists()) {
-			throw new IOException("Source '" + localDir + "' does not exist.");
+			throw new IOException("Local directory '" + localDir + "' does not exist.");
 		}
 		if (!localDir.isDirectory()) {
-			throw new IOException("Source '" + localDir + "' exists but is not a directory.");
+			throw new IOException("Local directory '" + localDir + "' exists but is not a directory.");
 		}
 
 		// Check target directory
-		File destDir = new File(getHomeDirectory(), destDirPath.getName());
+		File destDir = new File(getHomeDirectory(), destDirPath.getPathString());
 		if (destDir.exists() && !destDir.isDirectory()) {
 			throw new IllegalArgumentException("Destination '" + destDir + "' is not a directory");
 		}
@@ -201,8 +201,8 @@ public class LocalFileSystem implements FileSystem {
 	 * @param file
 	 * @return
 	 */
-	protected FileMetaData toMetaData(File file) {
-		FileMetaData metaData = new FileMetaData();
+	protected FileMetadata toMetaData(File file) {
+		FileMetadata metaData = new FileMetadata();
 
 		String name = file.getName();
 		boolean isDirectory = file.isDirectory();

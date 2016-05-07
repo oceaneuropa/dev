@@ -64,6 +64,15 @@ public class DatabaseUtil {
 	}
 
 	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
+	public static Connection getPostgresConnection(String host, int port, String schema, String username, String password) {
+		return getConnection("org.postgresql.Driver", "jdbc:postgresql://" + host + ":" + port + "/" + schema, username, password);
+	}
+
+	/**
 	 * Create database table if not exist.
 	 * 
 	 * @param conn
@@ -106,6 +115,18 @@ public class DatabaseUtil {
 	 * Check whether database table exists.
 	 * 
 	 * @param conn
+	 * @param tableAware
+	 * @return
+	 * @throws SQLException
+	 */
+	public static boolean tableExist(Connection conn, DatabaseTableAware tableAware) throws SQLException {
+		return tableExist(conn, tableAware.getTableName());
+	}
+
+	/**
+	 * Check whether database table exists.
+	 * 
+	 * @param conn
 	 * @param tableName
 	 * @return
 	 */
@@ -113,7 +134,7 @@ public class DatabaseUtil {
 		ResultSet rs = null;
 		try {
 			DatabaseMetaData meta = conn.getMetaData();
-			rs = meta.getTables(null, null, tableName, new String[] { "TABLE" });
+			rs = meta.getTables(null, null, null, new String[] { "TABLE" });
 			while (rs.next()) {
 				// System.out.println(" "
 				// + rs.getString("TABLE_CAT") + ", "
@@ -123,7 +144,7 @@ public class DatabaseUtil {
 				// + rs.getString("REMARKS")
 				// );
 				String currTableName = rs.getString("TABLE_NAME");
-				if (tableName.equals(currTableName)) {
+				if (tableName.equalsIgnoreCase(currTableName)) {
 					return true;
 				}
 			}
@@ -208,6 +229,8 @@ public class DatabaseUtil {
 		try {
 			stmt = conn.createStatement();
 			stmt.executeUpdate("DROP TABLE " + tableName);
+			// updatedCount is 0 for dropping a table.
+			// System.out.println("updatedCount = " + updatedCount);
 		} finally {
 			closeQuietly(stmt, true);
 		}
@@ -252,7 +275,7 @@ public class DatabaseUtil {
 	 *            parameters of the SQL
 	 * @param expectedRowCount
 	 *            expected number of rows to be updated. if -1 is specified, it means 1 or more rows are expected to be updated.
-	 * @return return true if number of rows are updated equals to the specified row number.
+	 * @return return true if number of rows are updated equals to the specified expectedRowCount.
 	 * @throws SQLException
 	 */
 	public static boolean update(Connection conn, String sql, Object[] params, int expectedRowCount) throws SQLException {

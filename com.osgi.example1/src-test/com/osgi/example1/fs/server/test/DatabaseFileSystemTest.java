@@ -2,43 +2,58 @@ package com.osgi.example1.fs.server.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Properties;
 
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+import org.junit.runners.MethodSorters;
+import org.origin.common.jdbc.DatabaseUtil;
 
 import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.server.service.FileSystem;
 import com.osgi.example1.fs.server.service.FileSystemUtil;
-import com.osgi.example1.fs.server.service.local.LocalFileSystem;
-import com.osgi.example1.fs.server.service.local.LocalFileSystemConfiguration;
+import com.osgi.example1.fs.server.service.database.DatabaseFileSystem;
+import com.osgi.example1.fs.server.service.database.DatabaseFileSystemConfiguration;
 
-public class LocalFileSystemTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class DatabaseFileSystemTest {
 
 	protected FileSystem fs;
 
-	public LocalFileSystemTest() {
-		this.fs = getLocalFileSystem();
+	public DatabaseFileSystemTest() {
+		this.fs = getDatabaseFileSystem();
 	}
 
 	protected void setUp() {
-		this.fs = getLocalFileSystem();
+		this.fs = getDatabaseFileSystem();
 	}
 
-	protected FileSystem getLocalFileSystem() {
-		// File homeDirector = new File("/Users/yayang/Downloads/apache"); // For Mac
-		// File homeDirector = new File("/Users/yayang/Downloads/Swagger"); // For Mac
-		File homeDirector = new File("/Users/yayang/Downloads/ear"); // For Mac
-		LocalFileSystemConfiguration config = new LocalFileSystemConfiguration(homeDirector);
-		return new LocalFileSystem(config);
+	protected FileSystem getDatabaseFileSystem() {
+		Properties properties = new Properties();
+
+		// MySQL
+		// properties.setProperty(DatabaseUtil.JDBC_DRIVER, "com.mysql.jdbc.Driver");
+		// properties.setProperty(DatabaseUtil.JDBC_URL, "jdbc:mysql://127.0.0.1:3306/origin");
+		// properties.setProperty(DatabaseUtil.JDBC_USERNAME, "root");
+		// properties.setProperty(DatabaseUtil.JDBC_PASSWORD, "admin");
+
+		// Postgres
+		properties.setProperty(DatabaseUtil.JDBC_DRIVER, "org.postgresql.Driver");
+		properties.setProperty(DatabaseUtil.JDBC_URL, "jdbc:postgresql://127.0.0.1:5432/origin");
+		properties.setProperty(DatabaseUtil.JDBC_USERNAME, "postgres");
+		properties.setProperty(DatabaseUtil.JDBC_PASSWORD, "admin");
+
+		DatabaseFileSystemConfiguration config = new DatabaseFileSystemConfiguration(properties);
+		return new DatabaseFileSystem(config);
 	}
 
-	@Ignore
 	@Test
-	public void testListRootFiles() throws IOException {
-		System.out.println("--- --- --- testListRootFiles() --- --- ---");
+	public void test001_listRootFiles() throws IOException {
+		System.out.println("--- --- --- test001_listRootFiles() --- --- ---");
 
 		Path[] memberPaths = fs.listRootFiles();
 		for (Path memberPath : memberPaths) {
@@ -51,10 +66,9 @@ public class LocalFileSystemTest {
 		System.out.println();
 	}
 
-	@Ignore
 	@Test
-	public void testListFiles() throws IOException {
-		System.out.println("--- --- --- testListFiles() --- --- ---");
+	public void test002_listFiles() throws IOException {
+		System.out.println("--- --- --- test002_listFiles() --- --- ---");
 
 		Path testDir = new Path("/test");
 		Path[] memberPaths = fs.listFiles(testDir);
@@ -65,9 +79,10 @@ public class LocalFileSystemTest {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
-	public void testCreateDir() throws IOException {
-		System.out.println("--- --- --- testCreateDir() --- --- ---");
+	public void test003_createDir() throws IOException {
+		System.out.println("--- --- --- test003_createDir() --- --- ---");
 
 		Path path1 = new Path("/test/dir1");
 		Path path2 = new Path("/test/dir2");
@@ -87,8 +102,8 @@ public class LocalFileSystemTest {
 
 	@Ignore
 	@Test
-	public void testDeleteFiles() throws IOException {
-		System.out.println("--- --- --- testDeleteFiles() --- --- ---");
+	public void test004_deleteFiles() throws IOException {
+		System.out.println("--- --- --- test004_deleteFiles() --- --- ---");
 
 		Path file1 = new Path("/test/dirToDelete1/gwt-dev.jar");
 		Path file2 = new Path("/test/dirToDelete1/gwt-user.jar");
@@ -158,8 +173,8 @@ public class LocalFileSystemTest {
 
 	@Ignore
 	@Test
-	public void testDeleteDir() throws IOException {
-		System.out.println("--- --- --- testDeleteDir() --- --- ---");
+	public void test005_deleteDir() throws IOException {
+		System.out.println("--- --- --- test005_deleteDir() --- --- ---");
 
 		Path dirPath1 = new Path("/test/dirToDelete1");
 		if (fs.exists(dirPath1)) {
@@ -188,9 +203,10 @@ public class LocalFileSystemTest {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
-	public void testCreateEmptyFiles() throws IOException {
-		System.out.println("--- --- --- testCreateEmptyFiles() --- --- ---");
+	public void test006_createEmptyFiles() throws IOException {
+		System.out.println("--- --- --- test006_createEmptyFiles() --- --- ---");
 
 		Path path1 = new Path("/test/dir1/newFile1.txt");
 		Path path2 = new Path("/test/dir1/newFile2.txt");
@@ -215,9 +231,10 @@ public class LocalFileSystemTest {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
-	public void testCopyFileToFile() throws IOException {
-		System.out.println("--- --- --- testCopyFileToFile() --- --- ---");
+	public void test007_copyFileToFile() throws IOException {
+		System.out.println("--- --- --- test007_copyFileToFile() --- --- ---");
 
 		File localFile1 = new File("/Users/yayang/Downloads/apache/commons-io-2.4.jar");
 		File localFile2 = new File("/Users/yayang/Downloads/apache/commons-io-2.5-bin.zip");
@@ -235,9 +252,10 @@ public class LocalFileSystemTest {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
-	public void testCopyFileToDir() throws IOException {
-		System.out.println("--- --- --- testCopyFileToDir() --- --- ---");
+	public void test008_copyFileToDir() throws IOException {
+		System.out.println("--- --- --- test008_copyFileToDir() --- --- ---");
 
 		File localFile1 = new File("/Users/yayang/Downloads/apache/hadoop/hadoop-common-2.7.1-sources.jar");
 		File localFile2 = new File("/Users/yayang/Downloads/apache/hadoop/hadoop-common-2.7.1.jar");
@@ -254,9 +272,10 @@ public class LocalFileSystemTest {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
-	public void testCopyDirToDir1() throws IOException {
-		System.out.println("--- --- --- testCopyDirToDir1() --- --- ---");
+	public void test009_copyDirToDir1() throws IOException {
+		System.out.println("--- --- --- test009_copyDirToDir1() --- --- ---");
 
 		File localDir = new File("/Users/yayang/Downloads/testdir");
 		Path destDirPath = new Path("/test/dir4");
@@ -270,9 +289,10 @@ public class LocalFileSystemTest {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
-	public void testCopyDirToDir2() throws IOException {
-		System.out.println("--- --- --- testCopyDirToDir2() --- --- ---");
+	public void test010_copyDirToDir2() throws IOException {
+		System.out.println("--- --- --- test010_copyDirToDir2() --- --- ---");
 
 		File localDir = new File("/Users/yayang/Downloads/testdir");
 		Path destDirPath = new Path("/test/dir5");
@@ -287,7 +307,7 @@ public class LocalFileSystemTest {
 	}
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(LocalFileSystemTest.class);
+		Result result = JUnitCore.runClasses(DatabaseFileSystemTest.class);
 
 		System.out.println("--- --- --- TestRunner.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {

@@ -57,6 +57,26 @@ public class FileUtil {
 	}
 
 	/**
+	 * Copies bytes array to a file destination. The directories up to destination will be created if they don't already exist. destination will be
+	 * overwritten if it already exists. The source stream is closed.
+	 * 
+	 * @param bytes
+	 * @param destination
+	 * @throws IOException
+	 */
+	public static void copyBytesToFile(byte[] bytes, final File destination) throws IOException {
+		InputStream is = null;
+		try {
+			is = IOUtil.toInputStream(bytes);
+			if (is != null) {
+				copyInputStreamToFile(is, destination);
+			}
+		} finally {
+			IOUtil.closeQuietly(is, true);
+		}
+	}
+
+	/**
 	 * Copies bytes from an InputStream source to a file destination. The directories up to destination will be created if they don't already exist.
 	 * destination will be overwritten if it already exists. The source stream is closed.
 	 *

@@ -1,7 +1,7 @@
 package com.osgi.example1.fs.server.service;
 
 import com.osgi.example1.fs.common.Path;
-import com.osgi.example1.fs.common.dto.FileMetaData;
+import com.osgi.example1.fs.common.dto.FileMetadata;
 
 public class FileSystemUtil {
 
@@ -17,7 +17,7 @@ public class FileSystemUtil {
 	 * @param level
 	 */
 	public static void walkFolders(FileSystem fs, Path path, int level) {
-		FileMetaData fileMetaData = fs.getFileMetaData(path);
+		FileMetadata fileMetaData = fs.getFileMetaData(path);
 		// System.out.println(getSpaces(level) + "path= " + path.getName());
 		// System.out.println(getSpaces(level) + "fileMetaData = " + fileMetaData.toString());
 		// System.out.println(getSpaces(level) + path.getName() + " " + fileMetaData.toString());

@@ -33,8 +33,8 @@ CREATE TABLE FsFileMetadata (
     canExecute BOOLEAN NOT NULL DEFAULT 1,
     canRead BOOLEAN NOT NULL DEFAULT 1,
     canWrite BOOLEAN NOT NULL DEFAULT 1,
-    length BIGINT,
-    lastModified BIGINT,
+    length BIGINT DEFAULT 0,
+    lastModified BIGINT DEFAULT 0,
     PRIMARY KEY (fileId)
 );
 ------------------------------------------------------------------------

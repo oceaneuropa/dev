@@ -8,16 +8,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class FileMetaData {
+public class FileMetadata {
 
+	@XmlElement
+	protected int fileId;
+	@XmlElement
+	protected int parentFileId;
 	@XmlElement
 	protected String name;
 	@XmlElement
 	protected boolean isDirectory;
 	@XmlElement
 	protected boolean isHidden;
-	// @XmlElement
-	// protected String absolutePath;
 	@XmlElement
 	protected String path;
 	@XmlElement
@@ -35,7 +37,25 @@ public class FileMetaData {
 	@XmlElement
 	protected long lastModified;
 
-	public FileMetaData() {
+	public FileMetadata() {
+	}
+
+	@XmlElement
+	public int getFileId() {
+		return fileId;
+	}
+
+	public void setFileId(int fileId) {
+		this.fileId = fileId;
+	}
+
+	@XmlElement
+	public int getParentFileId() {
+		return parentFileId;
+	}
+
+	public void setParentFileId(int parentFileId) {
+		this.parentFileId = parentFileId;
 	}
 
 	@XmlElement
@@ -64,15 +84,6 @@ public class FileMetaData {
 	public void setHidden(boolean isHidden) {
 		this.isHidden = isHidden;
 	}
-
-	// @XmlElement
-	// public String getAbsolutePath() {
-	// return absolutePath;
-	// }
-	//
-	// public void setAbsolutePath(String absolutePath) {
-	// this.absolutePath = absolutePath;
-	// }
 
 	@XmlElement
 	public String getPath() {
@@ -153,7 +164,6 @@ public class FileMetaData {
 		sb.append("(name=").append(this.name);
 		sb.append(", isDirectory=").append(this.isDirectory);
 		sb.append(", isHidden=").append(this.isHidden);
-		// sb.append(", absolutePath=").append(this.absolutePath);
 		sb.append(", path=").append(this.path);
 		sb.append(", parentPath=").append(this.parentPath);
 		sb.append(", exists=").append(this.exists);
