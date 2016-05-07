@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Log
+Bundle-SymbolicName: lib.log
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: lib/slf4j-api-1.7.10.jar,
+ lib/slf4j-log4j12-1.7.10.jar,
+ lib/slf4j-simple-1.7.10.jar,
+ lib/log4j-1.2.17.jar,
+ .
+Export-Package: org.apache.log4j;version="1.2.17",
+ org.slf4j;version="1.7.10",
+ org.slf4j.helpers;version="1.7.10",
+ org.slf4j.impl;version="1.7.10",
+ org.slf4j.spi;version="1.7.10"
