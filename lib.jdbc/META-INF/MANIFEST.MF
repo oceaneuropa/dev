@@ -5,7 +5,7 @@ Bundle-SymbolicName: lib.jdbc
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/mysql-connector-java-5.1.38-bin.jar,
- lib/postgresql-9.1-901-1.jdbc4.jar,
+ lib/postgresql-9.4.1208.jre7.jar,
  .
 Export-Package: com.mysql.jdbc,
  org.postgresql

@@ -105,7 +105,7 @@ public class FsFileMetadataTableHandlerTest {
 		System.out.println();
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void test003_createTable() {
 		System.out.println("--- --- --- test003_createTable() --- --- ---");
@@ -132,8 +132,8 @@ public class FsFileMetadataTableHandlerTest {
 
 	@Ignore
 	@Test
-	public void test004_insert() {
-		System.out.println("--- --- --- test004_insert() --- --- ---");
+	public void test004_insert_mac() {
+		System.out.println("--- --- --- test004_insert_mac() --- --- ---");
 		Connection conn = getConnection();
 		try {
 			this.handler.insert(conn, -1, "root1.txt", false, 10);
@@ -142,6 +142,29 @@ public class FsFileMetadataTableHandlerTest {
 			this.handler.insert(conn, -1, "dir1", true, 0);
 			this.handler.insert(conn, -1, "dir2", true, 0);
 			this.handler.insert(conn, -1, "dir3", true, 0);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		System.out.println();
+	}
+
+	// @Ignore
+	@Test
+	public void test004_insert_win() {
+		System.out.println("--- --- --- test004_insert_win() --- --- ---");
+		Connection conn = getConnection();
+		try {
+			this.handler.insert(conn, -1, "DownloadAllNumbers.txt", false, 0);
+			this.handler.insert(conn, -1, "ldiag.log", false, 0);
+			this.handler.insert(conn, -1, "leaftexture.png", false, 0);
+			this.handler.insert(conn, -1, "Monkey_Tower_Level_158.png", false, 0);
+			this.handler.insert(conn, -1, "Song For The Sun.mp3", false, 0);
+			this.handler.insert(conn, -1, "swagger_v01.rar", false, 0);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -185,7 +208,7 @@ public class FsFileMetadataTableHandlerTest {
 		System.out.println();
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void test007_select() {
 		System.out.println("--- --- --- test007_select() --- --- ---");
@@ -213,7 +236,7 @@ public class FsFileMetadataTableHandlerTest {
 		System.out.println();
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void test009_select() {
 		System.out.println("--- --- --- test009_select() --- --- ---");
