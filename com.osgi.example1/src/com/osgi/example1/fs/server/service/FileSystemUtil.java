@@ -1,12 +1,99 @@
 package com.osgi.example1.fs.server.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.common.dto.FileMetadata;
+import com.osgi.example1.util.FileUtil;
+import com.osgi.example1.util.IOUtil;
 
 public class FileSystemUtil {
 
-	public static void copyFileToDirectory() {
+	/**
+	 * Recursively copy a fs file to a local directory.
+	 * 
+	 * @param fs
+	 * @param sourceDirPath
+	 * @param localDir
+	 * @param includingSourceDir
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean copyFsDirectoryToLocalDirectory(FileSystem fs, Path sourceDirPath, File localDir, boolean includingSourceDir) throws IOException {
+		FileMetadata metadata = fs.getFileMetaData(sourceDirPath);
+		if (metadata == null || !metadata.exists()) {
+			System.out.println("Source '" + sourceDirPath.getPathString() + "' does not exist.");
+			return false;
+		}
+		if (!metadata.isDirectory()) {
+			System.out.println("Source '" + sourceDirPath.getPathString() + "' exists but is not a directory.");
+			return false;
+		}
+		if (includingSourceDir) {
+			copyFsFileToLocalDirectory(fs, sourceDirPath, localDir);
+		} else {
+			Path[] memberPaths = fs.listFiles(sourceDirPath);
+			for (Path memberPath : memberPaths) {
+				copyFsFileToLocalDirectory(fs, memberPath, localDir);
+			}
+		}
+		return true;
+	}
 
+	/**
+	 * Recursively copy a fs file or fs directory to a local directory.
+	 * 
+	 * @param fs
+	 * @param sourcePath
+	 * @param localDir
+	 * @throws IOException
+	 */
+	public static void copyFsFileToLocalDirectory(FileSystem fs, Path sourcePath, File localDir) throws IOException {
+		FileMetadata metadata = fs.getFileMetaData(sourcePath);
+		if (metadata == null || !metadata.exists()) {
+			System.out.println("Source '" + sourcePath.getPathString() + "' does not exist.");
+			return;
+		}
+
+		System.out.println(sourcePath.getPathString() + " -> " + localDir.getAbsolutePath());
+
+		if (metadata.isDirectory()) {
+			// sourcePath is directory
+			String dirName = sourcePath.getLastSegment();
+
+			// create new local dir
+			File newLocalDir = new File(localDir, dirName);
+			newLocalDir.mkdirs();
+
+			// recursively copy sourcePath's member paths to the new local dir.
+			Path[] memberPaths = fs.listFiles(sourcePath);
+			for (Path memberPath : memberPaths) {
+				copyFsFileToLocalDirectory(fs, memberPath, newLocalDir);
+			}
+
+		} else {
+			// sourcePath is file
+			String fileName = sourcePath.getLastSegment();
+			File newLocalFile = new File(localDir, fileName);
+
+			if (metadata.getLength() > 0) {
+				// if fs file has content, copy it to local dir
+				InputStream is = null;
+				try {
+					is = fs.getInputStream(sourcePath);
+					FileUtil.copyInputStreamToFile(is, newLocalFile);
+				} finally {
+					IOUtil.closeQuietly(is, true);
+				}
+			} else {
+				// if fs file doesn't have content, create new local file if not
+				if (!newLocalFile.exists()) {
+					newLocalFile.createNewFile();
+				}
+			}
+		}
 	}
 
 	/**

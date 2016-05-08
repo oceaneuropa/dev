@@ -82,12 +82,112 @@ public class Path implements Comparable<Path> {
 	}
 
 	/**
+	 * Get Path starting from path segment with specified start index (inclusive) and extend until the end of the path segment.
+	 * 
+	 * @param startIndex
+	 *            start index of path segment, inclusive
+	 * @return
+	 */
+	public Path getPath(int startIndex) {
+		String pathString = getPathString(startIndex);
+		if (pathString != null) {
+			return new Path(pathString);
+		}
+		return null;
+	}
+
+	/**
+	 * Get Path starting from path segment with specified start index (inclusive) and extend until the path segment with specified end index
+	 * (exclusive).
+	 * 
+	 * @param startIndex
+	 *            start index of path segment, inclusive
+	 * @param endIndex,
+	 *            end index of path segment, exclusive
+	 * @return
+	 */
+	public Path getPath(int startIndex, int endIndex) {
+		String pathString = getPathString(startIndex, endIndex);
+		if (pathString != null) {
+			return new Path(pathString);
+		}
+		return null;
+	}
+
+	/**
 	 * Get the string path of this Path.
 	 * 
 	 * @return
 	 */
 	public String getPathString() {
 		return this.pathString;
+	}
+
+	/**
+	 * Get Path string starting from path segment with specified start index (inclusive) and extend until the end of the path segment.
+	 * 
+	 * @param startIndex
+	 *            start index of path segment, inclusive
+	 * @return
+	 */
+	public String getPathString(int startIndex) {
+		if (isRoot() || isEmpty()) {
+			return null;
+		}
+
+		String[] segments = getSegments();
+		if (startIndex < 0 || startIndex >= segments.length) {
+			System.err.println("Start index is invalid.");
+			return null;
+		}
+		int endIndex = segments.length;
+		return getPathString(startIndex, endIndex);
+	}
+
+	/**
+	 * Get Path starting from path segment with specified start index (inclusive) and extend until the path segment with specified end index
+	 * (exclusive).
+	 * 
+	 * @param startIndex
+	 *            start index of path segment, inclusive
+	 * @param endIndex,
+	 *            end index of path segment, exclusive
+	 * @return
+	 */
+	public String getPathString(int startIndex, int endIndex) {
+		if (isRoot() || isEmpty()) {
+			return null;
+		}
+
+		String[] segments = getSegments();
+
+		if (startIndex < 0 || startIndex >= segments.length) {
+			System.err.println("Start index is invalid.");
+			return null;
+		}
+		if (endIndex <= startIndex || startIndex > segments.length) {
+			System.err.println("End index is invalid.");
+			return null;
+		}
+
+		StringBuilder sb = new StringBuilder();
+
+		if (startIndex == 0 && this.pathString != null && this.pathString.startsWith(SEPARATOR)) {
+			sb.append(SEPARATOR);
+		}
+
+		for (int i = startIndex; i < endIndex; i++) {
+			String segment = segments[i];
+			boolean isEndingSegment = (i == (endIndex - 1)) ? true : false;
+
+			sb.append(segment);
+
+			if (!isEndingSegment) {
+				sb.append(SEPARATOR);
+			}
+		}
+
+		return sb.toString();
 	}
 
 	/**
@@ -104,6 +204,24 @@ public class Path implements Comparable<Path> {
 	}
 
 	/**
+	 * Check whether a path is "/"
+	 * 
+	 * @return return true when the path is "/". return false otherwise.
+	 */
+	public boolean isRoot() {
+		return (SEPARATOR.equals(this.pathString)) ? true : false;
+	}
+
+	/**
+	 * Check whether a path is empty.
+	 * 
+	 * @return return true when the path has 0 path segments. return false when the path has 1 or more path segments.
+	 */
+	public boolean isEmpty() {
+		return (getSegments().length == 0) ? true : false;
+	}
+
+	/**
 	 * Get all the segments, separated by / in a path.
 	 * 
 	 * @return
@@ -116,21 +234,21 @@ public class Path implements Comparable<Path> {
 			if (thePathString.isEmpty() || SEPARATOR.equals(thePathString)) {
 				return EMPTY_STRINGS;
 			}
-			// remove starting /
+			// remove starting "/"
 			while (thePathString.startsWith(SEPARATOR)) {
 				thePathString = thePathString.substring(1);
 				if (thePathString.isEmpty() || SEPARATOR.equals(thePathString)) {
 					return EMPTY_STRINGS;
 				}
 			}
-			// remove ending /
+			// remove ending "/"
 			while (thePathString.endsWith(SEPARATOR)) {
 				thePathString = thePathString.substring(0, thePathString.lastIndexOf(SEPARATOR));
 				if (thePathString.isEmpty() || SEPARATOR.equals(thePathString)) {
 					return EMPTY_STRINGS;
 				}
 			}
-			// split by /
+			// split by "/"
 			segments = thePathString.split(SEPARATOR);
 		}
 		if (segments == null) {
@@ -254,6 +372,11 @@ public class Path implements Comparable<Path> {
 		System.out.println(Arrays.toString(segments6) + " (length=" + segments6.length + ")");
 		System.out.println(Arrays.toString(segments7) + " (length=" + segments7.length + ")");
 		System.out.println(Arrays.toString(segments8) + " (length=" + segments8.length + ")");
+
+		String subPath7 = path7.getPathString(0, 3);
+		String subPath8 = path8.getPathString(0, 3);
+		System.out.println("subPath7 = " + subPath7);
+		System.out.println("subPath8 = " + subPath8);
 	}
 
 }

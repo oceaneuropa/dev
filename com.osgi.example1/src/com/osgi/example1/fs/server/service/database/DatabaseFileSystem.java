@@ -211,6 +211,15 @@ public class DatabaseFileSystem implements FileSystem {
 		return false;
 	}
 
+	/**
+	 * @param path
+	 * @return
+	 */
+	public boolean isDirectory(Path path) {
+		FileMetadata metadata = getFileMetaData(path);
+		return (metadata != null && metadata.isDirectory()) ? true : false;
+	}
+
 	@Override
 	public boolean mkdirs(Path path) throws IOException {
 		String[] segments = path.getSegments();
@@ -226,6 +235,7 @@ public class DatabaseFileSystem implements FileSystem {
 			for (int i = 0; i < segments.length; i++) {
 				String segment = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
+				String currPathString = path.getPathString(0, i + 1);
 
 				FileMetadataVO vo = getFileMetadataHandler().getByName(conn, currParentFileId, segment);
 
@@ -235,11 +245,11 @@ public class DatabaseFileSystem implements FileSystem {
 				}
 				if (vo == null) {
 					// file record is not created --- failed to create current directory
-					throw new IOException("Directory " + segment + " cannot be created.");
+					throw new IOException("Directory '" + currPathString + "' cannot be created.");
 				}
 				if (!vo.isDirectory()) {
 					// file exist, but is not a directory --- invalid path parameter.
-					throw new IOException(segment + " already exists but is not a directory.");
+					throw new IOException("Path '" + currPathString + "' already exists but is not a directory.");
 				}
 
 				if (!isLastSegment) {
@@ -287,6 +297,7 @@ public class DatabaseFileSystem implements FileSystem {
 			for (int i = 0; i < segments.length; i++) {
 				String segment = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
+				String currPathString = path.getPathString(0, i + 1);
 
 				FileMetadataVO vo = getFileMetadataHandler().getByName(conn, currParentFileId, segment);
 
@@ -299,11 +310,11 @@ public class DatabaseFileSystem implements FileSystem {
 					}
 					if (vo == null) {
 						// file record is not created --- failed to create the new file
-						throw new IOException("Directory " + segment + " cannot be created.");
+						throw new IOException("Directory '" + currPathString + "' cannot be created.");
 					}
 					if (!vo.isDirectory()) {
 						// file record exists, but is not a directory --- invalid path parameter.
-						throw new IOException(segment + " already exists but is not a directory.");
+						throw new IOException("Path '" + currPathString + "' already exists but is not a directory.");
 					}
 
 					// not the last segment yet --- continue to look for the next segment until the last path segment
@@ -315,9 +326,9 @@ public class DatabaseFileSystem implements FileSystem {
 					// if file record already exists --- cannot create new file
 					if (vo != null) {
 						if (vo.isDirectory()) {
-							throw new IOException("Directory '" + segment + "' already exists.");
+							throw new IOException("Directory '" + currPathString + "' already exists.");
 						} else {
-							throw new IOException("File '" + segment + "' already exists.");
+							throw new IOException("File '" + currPathString + "' already exists.");
 						}
 					}
 
@@ -325,7 +336,7 @@ public class DatabaseFileSystem implements FileSystem {
 					vo = getFileMetadataHandler().insert(conn, currParentFileId, segment, false, 0);
 					if (vo == null) {
 						// file record is not created --- failed to create the new file
-						throw new IOException("File " + segment + " cannot be created.");
+						throw new IOException("File '" + currPathString + "' cannot be created.");
 					}
 
 					// new file is created.
@@ -343,12 +354,19 @@ public class DatabaseFileSystem implements FileSystem {
 	@Override
 	public boolean delete(Path path) throws IOException {
 		String[] segments = path.getSegments();
-		if (segments == null || segments.length == 0) {
+		if (path.isRoot()) {
+			// root path --- there is no file record for root --- root path itself cannot be delete.
+			System.err.println("Path is root. Cannot delete the root path itself.");
+			return false;
+		}
+		if (path.isEmpty()) {
 			// empty path --- which belongs to relative path --- which cannot be used to locate a file --- no file record is deleted.
+			System.err.println("Path is empty.");
 			return false;
 		}
 		if (!exists(path)) {
 			// file record for the given path doesn't exist --- no file record is deleted.
+			System.err.println("Path '" + path.getPathString() + "' does not exist.");
 			return false;
 		}
 
@@ -363,6 +381,7 @@ public class DatabaseFileSystem implements FileSystem {
 				FileMetadataVO vo = getFileMetadataHandler().getByName(conn, currParentFileId, segment);
 				if (vo == null) {
 					// the file record for one of the parent file or the target file itself cannot be found --- target file doesn't exist.
+					System.err.println("Path '" + path.getPathString(0, i + 1) + "' does not exist.");
 					return false;
 				}
 
