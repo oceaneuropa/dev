@@ -19,19 +19,19 @@ import com.osgi.example1.fs.common.vo.FileMetadataVO;
 import com.osgi.example1.fs.server.service.database.FsFileMetadataTableHandler;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class FsFileMetadataTableHandlerTest {
+public class FsFileMetadataTableHandlerTestWin {
 
 	protected Properties properties;
 	protected FsFileMetadataTableHandler metaHandler = FsFileMetadataTableHandler.INSTANCE;
 
-	public FsFileMetadataTableHandlerTest() {
-		// this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
-		this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
+	public FsFileMetadataTableHandlerTestWin() {
+		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
+		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
 	public void setUp() {
-		// this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
-		this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
+		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
+		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
 	protected Connection getConnection() {
@@ -62,31 +62,8 @@ public class FsFileMetadataTableHandlerTest {
 
 	@Ignore
 	@Test
-	public void test002_insert_mac() {
-		System.out.println("--- --- --- test002_insert_mac() --- --- ---");
-		Connection conn = getConnection();
-		try {
-			this.metaHandler.insert(conn, -1, "root1.txt", false, 10);
-			this.metaHandler.insert(conn, -1, "root2.txt", false, 11);
-			this.metaHandler.insert(conn, -1, "root3.txt", false, 12);
-			this.metaHandler.insert(conn, -1, "dir1", true, 0);
-			this.metaHandler.insert(conn, -1, "dir2", true, 0);
-			this.metaHandler.insert(conn, -1, "dir3", true, 0);
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		System.out.println();
-	}
-
-	@Ignore
-	@Test
-	public void test002_insert_win() {
-		System.out.println("--- --- --- test002_insert_win() --- --- ---");
+	public void test002_insert() {
+		System.out.println("--- --- --- test002_insert() --- --- ---");
 		Connection conn = getConnection();
 		try {
 			this.metaHandler.insert(conn, -1, "DownloadAllNumbers.txt", false, 0);
@@ -156,8 +133,8 @@ public class FsFileMetadataTableHandlerTest {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(FsFileMetadataTableHandlerTest.class);
-		System.out.println("--- --- --- FsFileMetadataTableHandlerTest.main() --- --- ---");
+		Result result = JUnitCore.runClasses(FsFileMetadataTableHandlerTestWin.class);
+		System.out.println("--- --- --- FsFileMetadataTableHandlerTestWin.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {
 			System.out.println(failure.toString());
 		}

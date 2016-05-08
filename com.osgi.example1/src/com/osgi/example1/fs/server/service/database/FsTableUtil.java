@@ -185,6 +185,49 @@ public class FsTableUtil {
 	}
 
 	/**
+	 * Write a input stream to file content table by file id.
+	 * 
+	 * @param conn
+	 * @param fileId
+	 * @param inputStream
+	 * @param fileLength
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	public static boolean writeFileContentMySQL(Connection conn, int fileId, InputStream inputStream, long fileLength) throws SQLException, IOException {
+		FileContentVO vo = null;
+		if (fileContentHandler.hasRecordByFileId(conn, fileId)) {
+			vo = fileContentHandler.getByFileId(conn, fileId);
+		} else {
+			vo = fileContentHandler.insert(conn, fileId);
+		}
+
+		if (vo != null) {
+			int fileContentId = vo.getFileContentId();
+
+			// byte[] bytes = IOUtil.toByteArray(inputStream);
+			// int bytesLength = bytes.length;
+			// System.out.println("bytesLength=" + bytesLength + ", fileLength=" + fileLength);
+
+			// ByteArrayInputStream bais = null;
+			try {
+				// bais = new ByteArrayInputStream(bytes);
+				boolean succeed = fileContentHandler.writeFileContent(conn, fileContentId, inputStream);
+				// boolean succeed = fileContentHandler.writeFileContent(conn, fileContentId, bytes);
+				if (succeed) {
+					// fileMetadataHandler.updateLength(conn, fileId, bytesLength);
+					fileMetadataHandler.updateLength(conn, fileId, fileLength);
+					return true;
+				}
+			} finally {
+				// IOUtil.closeQuietly(bais, true);
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Read bytes array from file content table by file id.
 	 * 
 	 * @param conn
@@ -206,6 +249,32 @@ public class FsTableUtil {
 			bytes = fileContentHandler.readFileContentPostgres(conn, fileContentId);
 		}
 		return bytes;
+	}
+
+	/**
+	 * Read bytes array from file content table by file id.
+	 * 
+	 * @param conn
+	 * @param fileId
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	public static InputStream readFileContentMySQL(Connection conn, int fileId) throws SQLException, IOException {
+		// byte[] bytes = null;
+		FileContentVO vo = null;
+		if (fileContentHandler.hasRecordByFileId(conn, fileId)) {
+			vo = fileContentHandler.getByFileId(conn, fileId);
+		} else {
+			vo = fileContentHandler.insert(conn, fileId);
+		}
+		if (vo != null) {
+			int fileContentId = vo.getFileContentId();
+			// bytes = fileContentHandler.readFileContent(conn, fileContentId);
+			return fileContentHandler.readFileContent(conn, fileContentId);
+		}
+		// return bytes;
+		return null;
 	}
 
 	/**

@@ -19,6 +19,21 @@ import com.osgi.example1.fs.common.vo.FileContentVO;
  * http://www.mysqltutorial.org/mysql-jdbc-blob
  * http://www.javaxp.com/2012/11/mysql-jdbc-example-for-blob-storage.html
  *
+ * 
+ * http://superuser.com/questions/418814/how-to-increase-mysql-max-allowed-packet-for-client
+ * -------------------------------------------------------------------------------------------
+ * C:\Program Files\MySQL\MySQL Server 5.7\bin> mysql -u root -p origin
+ * Password: admin
+ * 
+ * mysql> show variables like 'max_allowed_packet';
+ * 
+ * mysql> set global max_allowed_packet=1024 * 1024 * 512;
+ * 
+ * mysql> exit;
+ * 
+ * mysql> show variables like 'max_allowed_packet';
+ * -------------------------------------------------------------------------------------------
+ * 
  * Postgres
  * Storing Binary Data
  * https://jdbc.postgresql.org/documentation/80/binary-data.html#binary-data-example
@@ -195,6 +210,33 @@ public class FsFileContentTableHandler implements DatabaseTableAware {
 
 			pstmt = conn.prepareStatement(updateSQL);
 			pstmt.setBinaryStream(1, inputStream);
+			pstmt.setInt(2, fileContentId);
+
+			int updatedRowCount = pstmt.executeUpdate();
+			if (updatedRowCount == 1) {
+				return true;
+			}
+		} finally {
+			DatabaseUtil.closeQuietly(pstmt, true);
+		}
+		return false;
+	}
+
+	/**
+	 * Read file content from input stream and set it to the FsFileContent table's fileContent blob.
+	 * 
+	 * @param conn
+	 * @param fileContentId
+	 * @param bytes
+	 * @throws SQLException
+	 */
+	public boolean writeFileContent(Connection conn, int fileContentId, byte[] bytes) throws SQLException {
+		PreparedStatement pstmt = null;
+		try {
+			String updateSQL = "UPDATE " + getTableName() + " SET fileContent=? WHERE fileContentId=?";
+
+			pstmt = conn.prepareStatement(updateSQL);
+			pstmt.setBytes(1, bytes);
 			pstmt.setInt(2, fileContentId);
 
 			int updatedRowCount = pstmt.executeUpdate();
