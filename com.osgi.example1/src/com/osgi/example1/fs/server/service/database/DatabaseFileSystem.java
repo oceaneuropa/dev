@@ -154,7 +154,7 @@ public class DatabaseFileSystem implements FileSystem {
 						Path[] paths = new Path[memberVOs.size()];
 						for (int j = 0; j < memberVOs.size(); j++) {
 							FileMetadataVO memberVO = memberVOs.get(j);
-							paths[i] = new Path(parent, memberVO.getName());
+							paths[j] = new Path(parent, memberVO.getName());
 						}
 						return paths;
 					}
