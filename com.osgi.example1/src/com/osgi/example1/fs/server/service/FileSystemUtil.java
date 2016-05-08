@@ -24,11 +24,11 @@ public class FileSystemUtil {
 	public static boolean copyFsDirectoryToLocalDirectory(FileSystem fs, Path sourceDirPath, File localDir, boolean includingSourceDir) throws IOException {
 		FileMetadata metadata = fs.getFileMetaData(sourceDirPath);
 		if (metadata == null || !metadata.exists()) {
-			System.out.println("Source '" + sourceDirPath.getPathString() + "' does not exist.");
+			System.err.println("Source '" + sourceDirPath.getPathString() + "' does not exist.");
 			return false;
 		}
 		if (!metadata.isDirectory()) {
-			System.out.println("Source '" + sourceDirPath.getPathString() + "' exists but is not a directory.");
+			System.err.println("Source '" + sourceDirPath.getPathString() + "' exists but is not a directory.");
 			return false;
 		}
 		if (includingSourceDir) {
@@ -53,12 +53,11 @@ public class FileSystemUtil {
 	public static void copyFsFileToLocalDirectory(FileSystem fs, Path sourcePath, File localDir) throws IOException {
 		FileMetadata metadata = fs.getFileMetaData(sourcePath);
 		if (metadata == null || !metadata.exists()) {
-			System.out.println("Source '" + sourcePath.getPathString() + "' does not exist.");
+			System.err.println("Source '" + sourcePath.getPathString() + "' does not exist.");
 			return;
 		}
 
-		System.out.println(sourcePath.getPathString() + " -> " + localDir.getAbsolutePath());
-
+		// System.out.println(sourcePath.getPathString() + " -> " + localDir.getAbsolutePath());
 		if (metadata.isDirectory()) {
 			// sourcePath is directory
 			String dirName = sourcePath.getLastSegment();
@@ -72,7 +71,6 @@ public class FileSystemUtil {
 			for (Path memberPath : memberPaths) {
 				copyFsFileToLocalDirectory(fs, memberPath, newLocalDir);
 			}
-
 		} else {
 			// sourcePath is file
 			String fileName = sourcePath.getLastSegment();
@@ -108,8 +106,8 @@ public class FileSystemUtil {
 		// System.out.println(getSpaces(level) + "path= " + path.getName());
 		// System.out.println(getSpaces(level) + "fileMetaData = " + fileMetaData.toString());
 		// System.out.println(getSpaces(level) + path.getName() + " " + fileMetaData.toString());
-		System.out.println(getSpaces(level) + fileMetaData.getName() + " (" + fileMetaData.getPath() + ")");
 		// System.out.println(getSpaces(level) + fileMetaData.getName());
+		System.out.println(getSpaces(level) + fileMetaData.getName() + " (" + fileMetaData.getPath() + ")");
 
 		if (fileMetaData.isDirectory()) {
 			int deeperLevel = level + 1;

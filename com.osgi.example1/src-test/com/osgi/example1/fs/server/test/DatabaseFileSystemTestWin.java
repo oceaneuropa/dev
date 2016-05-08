@@ -51,7 +51,6 @@ public class DatabaseFileSystemTestWin {
 		System.out.println();
 	}
 
-	@Ignore
 	@Test
 	public void test002_createDir() throws IOException {
 		System.out.println("--- --- --- test002_createDir() --- --- ---");
@@ -72,7 +71,6 @@ public class DatabaseFileSystemTestWin {
 		System.out.println();
 	}
 
-	@Ignore
 	@Test
 	public void test003_createEmptyFiles() throws IOException {
 		System.out.println("--- --- --- test003_createEmptyFiles() --- --- ---");
@@ -100,7 +98,6 @@ public class DatabaseFileSystemTestWin {
 		System.out.println();
 	}
 
-	@Ignore
 	@Test
 	public void test004_copyLocalFileToFsFileOrFsDir() throws IOException {
 		System.out.println("--- --- --- test004_copyLocalFileToFsFileOrFsDir() --- --- ---");
@@ -125,7 +122,6 @@ public class DatabaseFileSystemTestWin {
 		System.out.println();
 	}
 
-	@Ignore
 	@Test
 	public void test005_copyLocalDirToFsDir() throws IOException {
 		System.out.println("--- --- --- test005_copyLocalDirToFsDir() --- --- ---");
@@ -202,18 +198,6 @@ public class DatabaseFileSystemTestWin {
 		Path[] paths = fs.listRootFiles();
 		for (Path path : paths) {
 			FileSystemUtil.copyFsFileToLocalDirectory(fs, path, localDir);
-		}
-
-		System.out.println();
-	}
-
-	@Test
-	public void test011_listRootFiles() throws IOException {
-		System.out.println("--- --- --- test011_listRootFiles() --- --- ---");
-
-		Path[] paths = fs.listRootFiles();
-		for (Path path : paths) {
-			FileSystemUtil.walkFolders(fs, path, 0);
 		}
 
 		System.out.println();

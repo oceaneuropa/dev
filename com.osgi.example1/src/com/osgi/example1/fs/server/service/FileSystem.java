@@ -83,9 +83,6 @@ public interface FileSystem {
 	 */
 	public InputStream getInputStream(Path path) throws IOException;
 
-	// -----------------------------------------------------------------------------------------
-	// Copy local file and directory to FS
-	// -----------------------------------------------------------------------------------------
 	/**
 	 * Copy a local file to a file in the FS.
 	 * 
