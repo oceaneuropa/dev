@@ -15,11 +15,11 @@ import com.osgi.example1.fs.server.service.FileSystemUtil;
 import com.osgi.example1.fs.server.service.local.LocalFileSystem;
 import com.osgi.example1.fs.server.service.local.LocalFileSystemConfiguration;
 
-public class LocalFileSystemTest {
+public class LocalFileSystemTestMac {
 
 	protected FileSystem fs;
 
-	public LocalFileSystemTest() {
+	public LocalFileSystemTestMac() {
 		this.fs = getLocalFileSystem();
 	}
 
@@ -287,9 +287,9 @@ public class LocalFileSystemTest {
 	}
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(LocalFileSystemTest.class);
+		Result result = JUnitCore.runClasses(LocalFileSystemTestMac.class);
 
-		System.out.println("--- --- --- TestRunner.main() --- --- ---");
+		System.out.println("--- --- --- LocalFileSystemTestMac.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {
 			System.out.println(failure.toString());
 		}
