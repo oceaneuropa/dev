@@ -6,12 +6,14 @@ import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.util.AdaptorSupport;
 
 public class HomeImpl implements Home {
 
 	private boolean autoUpdate = false;
 	private Machine machine;
 	private HomeDTO homeDTO;
+	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -146,7 +148,16 @@ public class HomeImpl implements Home {
 		if (HomeDTO.class.equals(adapter)) {
 			return (T) this.homeDTO;
 		}
+		T result = this.adaptorSupport.getAdapter(adapter);
+		if (result != null) {
+			return result;
+		}
 		return null;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		adaptorSupport.adapt(clazz, object);
 	}
 
 	@Override

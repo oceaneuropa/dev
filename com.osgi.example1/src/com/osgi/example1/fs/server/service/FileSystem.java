@@ -4,11 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.osgi.example1.fs.common.Configuration;
-import com.osgi.example1.fs.common.Path;
-import com.osgi.example1.fs.common.dto.FileMetadata;
+import org.origin.common.util.IAdaptable;
 
-public interface FileSystem {
+import com.osgi.example1.fs.common.Configuration;
+import com.osgi.example1.fs.common.FileMetadata;
+import com.osgi.example1.fs.common.Path;
+
+public interface FileSystem extends IAdaptable {
+
+	public void start();
+
+	public void stop();
 
 	/**
 	 * Get configuration of the file system.

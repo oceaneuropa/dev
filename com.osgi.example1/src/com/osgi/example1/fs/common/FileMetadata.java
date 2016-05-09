@@ -1,4 +1,4 @@
-package com.osgi.example1.fs.common.dto;
+package com.osgi.example1.fs.common;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -161,7 +161,7 @@ public class FileMetadata {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("(name=").append(this.name);
+		sb.append("FileMetadata(name=").append(this.name);
 		sb.append(", isDirectory=").append(this.isDirectory);
 		sb.append(", isHidden=").append(this.isHidden);
 		sb.append(", path=").append(this.path);

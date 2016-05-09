@@ -2,6 +2,10 @@ package com.osgi.example1.fs.common;
 
 import java.util.Arrays;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Path implements Comparable<Path> {
 
 	// path separator
@@ -9,6 +13,7 @@ public class Path implements Comparable<Path> {
 	public static final char SEPARATOR_CHAR = '/';
 	private static final String[] EMPTY_STRINGS = new String[] {};
 
+	@XmlElement
 	protected String pathString;
 
 	/**
@@ -119,6 +124,7 @@ public class Path implements Comparable<Path> {
 	 * 
 	 * @return
 	 */
+	@XmlElement
 	public String getPathString() {
 		return this.pathString;
 	}
@@ -301,7 +307,9 @@ public class Path implements Comparable<Path> {
 
 	@Override
 	public String toString() {
-		return this.pathString;
+		StringBuilder sb = new StringBuilder();
+		sb.append("Path(pathString=").append(this.pathString);
+		return sb.toString();
 	}
 
 	public static void main0(String[] args) {

@@ -14,12 +14,14 @@ import org.nb.mgm.model.dto.MetaSectorDTO;
 import org.nb.mgm.model.dto.MetaSpaceDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.util.AdaptorSupport;
 
 public class MetaSectorImpl implements MetaSector {
 
 	private boolean autoUpdate = false;
 	private Management management;
 	private MetaSectorDTO metaSectorDTO;
+	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	public MetaSectorImpl(MetaSectorDTO metaSectorDTO) {
 		this.metaSectorDTO = metaSectorDTO;
@@ -226,7 +228,16 @@ public class MetaSectorImpl implements MetaSector {
 		if (MetaSectorDTO.class.equals(adapter)) {
 			return (T) this.metaSectorDTO;
 		}
+		T result = this.adaptorSupport.getAdapter(adapter);
+		if (result != null) {
+			return result;
+		}
 		return null;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		adaptorSupport.adapt(clazz, object);
 	}
 
 	@Override

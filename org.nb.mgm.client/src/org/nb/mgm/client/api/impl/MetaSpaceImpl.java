@@ -7,12 +7,14 @@ import org.nb.mgm.client.ws.MetaSpaceClient;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MetaSpaceDTO;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.util.AdaptorSupport;
 
 public class MetaSpaceImpl implements MetaSpace {
 
 	private boolean autoUpdate = false;
 	private MetaSector metaSector;
 	private MetaSpaceDTO metaSpaceDTO;
+	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -129,7 +131,16 @@ public class MetaSpaceImpl implements MetaSpace {
 		if (HomeDTO.class.equals(adapter)) {
 			return (T) this.metaSpaceDTO;
 		}
+		T result = this.adaptorSupport.getAdapter(adapter);
+		if (result != null) {
+			return result;
+		}
 		return null;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		adaptorSupport.adapt(clazz, object);
 	}
 
 	@Override

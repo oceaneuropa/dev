@@ -14,12 +14,14 @@ import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.util.AdaptorSupport;
 
 public class MachineImpl implements Machine {
 
 	private boolean autoUpdate = false;
 	private Management management;
 	private MachineDTO machineDTO;
+	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -247,7 +249,16 @@ public class MachineImpl implements Machine {
 		if (MachineDTO.class.equals(adapter)) {
 			return (T) this.machineDTO;
 		}
+		T result = this.adaptorSupport.getAdapter(adapter);
+		if (result != null) {
+			return result;
+		}
 		return null;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		adaptorSupport.adapt(clazz, object);
 	}
 
 	@Override

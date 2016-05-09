@@ -4,17 +4,23 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Hashtable;
 
 import org.apache.commons.io.FileUtils;
+import org.origin.common.util.AdaptorSupport;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 import com.osgi.example1.fs.common.Configuration;
+import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
-import com.osgi.example1.fs.common.dto.FileMetadata;
 import com.osgi.example1.fs.server.service.FileSystem;
 
 public class LocalFileSystem implements FileSystem {
 
 	protected LocalFileSystemConfiguration config;
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
+	protected ServiceRegistration<?> serviceReg;
 
 	/**
 	 * 
@@ -22,6 +28,25 @@ public class LocalFileSystem implements FileSystem {
 	 */
 	public LocalFileSystem(LocalFileSystemConfiguration config) {
 		this.config = config;
+	}
+
+	@Override
+	public void start() {
+		BundleContext bundleContext = getAdapter(BundleContext.class);
+		if (bundleContext != null) {
+			// Register as a service
+			Hashtable<String, Object> props = new Hashtable<String, Object>();
+			this.serviceReg = bundleContext.registerService(FileSystem.class, this, props);
+		}
+	}
+
+	@Override
+	public void stop() {
+		// Unregister the service
+		if (this.serviceReg != null) {
+			this.serviceReg.unregister();
+			this.serviceReg = null;
+		}
 	}
 
 	protected File getHomeDirectory() {
@@ -240,6 +265,21 @@ public class LocalFileSystem implements FileSystem {
 		metaData.setLastModified(lastModified);
 
 		return metaData;
+	}
+
+	/** implement IAdaptable interface */
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		T result = this.adaptorSupport.getAdapter(adapter);
+		if (result != null) {
+			return result;
+		}
+		return null;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		adaptorSupport.adapt(clazz, object);
 	}
 
 }

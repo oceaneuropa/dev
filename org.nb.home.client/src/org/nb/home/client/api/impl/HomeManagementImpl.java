@@ -4,11 +4,13 @@ import org.nb.home.client.api.HomeManagement;
 import org.nb.home.client.ws.HomeApiClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.util.AdaptorSupport;
 
 public class HomeManagementImpl implements HomeManagement {
 
 	private ClientConfiguration clientConfiguration;
 	private HomeApiClient homeApiClient;
+	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -60,7 +62,16 @@ public class HomeManagementImpl implements HomeManagement {
 		if (HomeApiClient.class.equals(adapter)) {
 			return (T) this.homeApiClient;
 		}
+		T result = this.adaptorSupport.getAdapter(adapter);
+		if (result != null) {
+			return result;
+		}
 		return null;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		adaptorSupport.adapt(clazz, object);
 	}
 
 }
