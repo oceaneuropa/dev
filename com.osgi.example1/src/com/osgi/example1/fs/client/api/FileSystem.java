@@ -22,7 +22,7 @@ import com.osgi.example1.fs.common.Path;
  */
 public abstract class FileSystem {
 
-	public static FileSystem create(FileSystemConfiguration config) {
+	public static FileSystem newInstance(FileSystemConfiguration config) {
 		return new FileSystemImpl(config);
 	}
 
@@ -42,7 +42,7 @@ public abstract class FileSystem {
 	 * 
 	 * @return
 	 */
-	public abstract FileRef[] listRootFiles();
+	public abstract FileRef[] listRoots();
 
 	/**
 	 * List all files in a directory.

@@ -30,7 +30,7 @@ public class FsTestWin {
 
 	protected FileSystem getFileSystem() {
 		FileSystemConfiguration config = new FileSystemConfiguration("http://127.0.0.1:9090", "/fs/v1", "root", "admin");
-		return FileSystem.create(config);
+		return FileSystem.newInstance(config);
 	}
 
 	@Test

@@ -36,7 +36,7 @@ public class FileSystemImpl extends FileSystem {
 	}
 
 	@Override
-	public FileRef[] listRootFiles() {
+	public FileRef[] listRoots() {
 		FileRef[] fileRefs = null;
 		try {
 			Path[] paths = getClient().listRootFiles();

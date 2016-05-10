@@ -22,7 +22,7 @@ public abstract class FileRef {
 	}
 
 	public static FileRef[] listRoots(FileSystem fs) {
-		return fs.listRootFiles();
+		return fs.listRoots();
 	}
 
 	public static FileRef[] listFiles(FileRef parent) {
