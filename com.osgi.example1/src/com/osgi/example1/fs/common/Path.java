@@ -282,16 +282,21 @@ public class Path implements Comparable<Path> {
 
 	@XmlTransient
 	public Path getParent() {
-		int lastSeparatorIndex = pathString.lastIndexOf(SEPARATOR_CHAR);
-		if (pathString.length() == 0 // path is empty --- empty path --- doesn't have parent path.
-				|| lastSeparatorIndex == 0 // path starts with "/" --- root path --- doesn't have parent path.
-		) {
+		if (pathString.length() == 0) {
+			// path is empty --- empty path --- doesn't have parent path.
 			return null;
+		}
+
+		int lastSeparatorIndex = pathString.lastIndexOf(SEPARATOR_CHAR);
+		if (lastSeparatorIndex == 0) {
+			// path starts with "/" --- current path is contained by root path.
+			return ROOT;
 		}
 		if (lastSeparatorIndex == -1) {
 			// path does not contain "/" --- relative path --- doesn't have parent path.
 			return null;
 		}
+
 		// now the lastSeparatorIndex must be greater than 1.
 		return new Path(pathString.substring(0, lastSeparatorIndex));
 	}

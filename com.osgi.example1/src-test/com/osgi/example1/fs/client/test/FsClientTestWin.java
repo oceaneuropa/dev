@@ -2,12 +2,10 @@ package com.osgi.example1.fs.client.test;
 
 import java.io.IOException;
 
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.junit.runners.MethodSorters;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
@@ -15,12 +13,11 @@ import com.osgi.example1.fs.client.ws.FileSystemClient;
 import com.osgi.example1.fs.client.ws.FileSystemClientUtil;
 import com.osgi.example1.fs.common.Path;
 
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class FsClientTestMac {
+public class FsClientTestWin {
 
 	protected FileSystemClient fsClient;
 
-	public FsClientTestMac() {
+	public FsClientTestWin() {
 		this.fsClient = getClient();
 	}
 
@@ -54,21 +51,39 @@ public class FsClientTestMac {
 		System.out.println("--- --- --- test002_listFiles() --- --- ---");
 
 		try {
-			Path dir1Path = new Path(Path.ROOT, "dir1");
-			Path dir2Path = new Path(Path.ROOT, "dir2");
-			Path dir3Path = new Path(Path.ROOT, "dir3");
-			Path testPath = new Path(Path.ROOT, "test");
+			Path dir1Path = new Path(Path.ROOT, "test/dir1");
+			Path dir2Path = new Path(Path.ROOT, "test/dir2");
+			Path dir3Path = new Path(Path.ROOT, "test/dir3");
+			Path dir5Path = new Path(Path.ROOT, "test/dir5/07_Document/patent");
 
 			Path[] subPaths1 = this.fsClient.listFiles(dir1Path);
 			Path[] subPaths2 = this.fsClient.listFiles(dir2Path);
 			Path[] subPaths3 = this.fsClient.listFiles(dir3Path);
-			Path[] subPaths4 = this.fsClient.listFiles(testPath);
+			Path[] subPaths5 = this.fsClient.listFiles(dir5Path);
 
-			System.out.println("subPaths1.length = " + subPaths1.length);
-			System.out.println("subPaths2.length = " + subPaths2.length);
-			System.out.println("subPaths3.length = " + subPaths3.length);
-			System.out.println("subPaths4.length = " + subPaths4.length);
+			System.out.println("dir1Path = " + dir1Path.getPathString());
+			for (Path subPath1 : subPaths1) {
+				FileSystemClientUtil.walkFolders(fsClient, subPath1, 0);
+			}
+			System.out.println();
 
+			System.out.println("dir2Path = " + dir2Path.getPathString());
+			for (Path subPath2 : subPaths2) {
+				FileSystemClientUtil.walkFolders(fsClient, subPath2, 0);
+			}
+			System.out.println();
+
+			System.out.println("dir3Path = " + dir3Path.getPathString());
+			for (Path subPath3 : subPaths3) {
+				FileSystemClientUtil.walkFolders(fsClient, subPath3, 0);
+			}
+			System.out.println();
+
+			System.out.println("dir5Path = " + dir5Path.getPathString());
+			for (Path subPath5 : subPaths5) {
+				FileSystemClientUtil.walkFolders(fsClient, subPath5, 0);
+			}
+			System.out.println();
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}
@@ -81,8 +96,8 @@ public class FsClientTestMac {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(FsClientTestMac.class);
-		System.out.println("--- --- --- FsClientTestMac.main() --- --- ---");
+		Result result = JUnitCore.runClasses(FsClientTestWin.class);
+		System.out.println("--- --- --- FsClientTestWin.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {
 			System.out.println(failure.toString());
 		}
