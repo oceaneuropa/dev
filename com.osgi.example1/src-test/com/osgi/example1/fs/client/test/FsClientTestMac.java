@@ -12,7 +12,7 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.ws.FileSystemClient;
-import com.osgi.example1.fs.client.ws.FileSystemClientUtil;
+import com.osgi.example1.fs.client.ws.FileSystemUtil;
 import com.osgi.example1.fs.common.Path;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -40,7 +40,7 @@ public class FsClientTestMac {
 		try {
 			Path[] paths = this.fsClient.listRootFiles();
 			for (Path path : paths) {
-				FileSystemClientUtil.walkFolders(fsClient, path, 0);
+				FileSystemUtil.walkFolders(fsClient, path, 0);
 			}
 		} catch (ClientException e) {
 			e.printStackTrace();

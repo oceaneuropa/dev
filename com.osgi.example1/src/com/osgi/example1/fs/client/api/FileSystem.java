@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.osgi.example1.fs.client.api.impl.FileRefImpl;
+import com.osgi.example1.fs.client.api.impl.FileSystemImpl;
 import com.osgi.example1.fs.common.Path;
 
 /**
@@ -18,14 +20,29 @@ import com.osgi.example1.fs.common.Path;
  * directly from java.io.InputStream / OutputStream / Reader / Writer without creating temporary local file copies of the data I want to ship to
  * drive.
  */
-public interface FileSystem {
+public abstract class FileSystem {
+
+	public static FileSystem create(FileSystemConfiguration config) {
+		return new FileSystemImpl(config);
+	}
+
+	public abstract FileSystemConfiguration getConfiguration();
+
+	private FileRef ROOT = null;
+
+	public synchronized FileRef root() {
+		if (ROOT == null) {
+			ROOT = new FileRefImpl(this, Path.ROOT.getPathString());
+		}
+		return ROOT;
+	}
 
 	/**
 	 * List all file in the root directory.
 	 * 
 	 * @return
 	 */
-	public FileRef[] listRootFiles();
+	public abstract FileRef[] listRootFiles();
 
 	/**
 	 * List all files in a directory.
@@ -33,15 +50,7 @@ public interface FileSystem {
 	 * @param parent
 	 * @return
 	 */
-	public FileRef[] listFiles(FileRef parent);
-
-	/**
-	 * Check whether a file or a directory exists.
-	 * 
-	 * @param file
-	 * @return
-	 */
-	public boolean exists(FileRef file);
+	public abstract FileRef[] listFiles(FileRef parent);
 
 	/**
 	 * Create a directory.
@@ -49,7 +58,7 @@ public interface FileSystem {
 	 * @param dir
 	 * @return
 	 */
-	public boolean mkdirs(FileRef dir);
+	public abstract boolean mkdirs(FileRef dir);
 
 	/**
 	 * Create a new, empty file if and only if a file with this name does not yet exist.
@@ -58,7 +67,7 @@ public interface FileSystem {
 	 * @return true if the named file does not exist and was successfully created; false if the named file already exists.
 	 * @throws IOException
 	 */
-	public boolean createNewFile(FileRef file) throws IOException;
+	public abstract boolean createNewFile(FileRef file) throws IOException;
 
 	/**
 	 * Delete a file or a directory.
@@ -67,7 +76,7 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean delete(FileRef file) throws IOException;
+	public abstract boolean delete(FileRef file) throws IOException;
 
 	/**
 	 * Get the input stream of a file.
@@ -76,7 +85,7 @@ public interface FileSystem {
 	 * @return InputStream of the file. The client which calls this method is responsible for closing the InputStream object.
 	 * @throws IOException
 	 */
-	public InputStream getInputStream(Path path) throws IOException;
+	public abstract InputStream getInputStream(Path path) throws IOException;
 
 	// -----------------------------------------------------------------------------------------
 	// Upload local file and directory to FS
@@ -89,7 +98,7 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public FileRef uploadLocalFileToFile(File localFile, FileRef destFile) throws IOException;
+	public abstract FileRef uploadLocalFileToFile(File localFile, FileRef destFile) throws IOException;
 
 	/**
 	 * Upload a local file to a directory in the FS.
@@ -99,7 +108,7 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public FileRef uploadLocalFileToDirectory(File localFile, FileRef destDir) throws IOException;
+	public abstract FileRef uploadLocalFileToDirectory(File localFile, FileRef destDir) throws IOException;
 
 	/**
 	 * Upload a local directory to a directory in the FS.
@@ -110,7 +119,7 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean uploadLocalDirectoryToDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException;
+	public abstract boolean uploadLocalDirectoryToDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException;
 
 	// -----------------------------------------------------------------------------------------
 	// Download file and directory from FS to local
@@ -123,7 +132,7 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public File downloadFileToLocalFile(FileRef sourceFile, File localFile) throws IOException;
+	public abstract File downloadFileToLocalFile(FileRef sourceFile, File localFile) throws IOException;
 
 	/**
 	 * Download a file from the FS to a local directory.
@@ -133,7 +142,7 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public File downloadFileToLocalDirectory(FileRef sourceFile, File localDir) throws IOException;
+	public abstract File downloadFileToLocalDirectory(FileRef sourceFile, File localDir) throws IOException;
 
 	/**
 	 * Download a directory from the FS to a local directory.
@@ -144,6 +153,6 @@ public interface FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean downloadDirectoryToLocalDirectory(FileRef sourceDir, File localDir, boolean includingSourceDir) throws IOException;
+	public abstract boolean downloadDirectoryToLocalDirectory(FileRef sourceDir, File localDir, boolean includingSourceDir) throws IOException;
 
 }

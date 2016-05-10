@@ -110,12 +110,37 @@ public class FileSystemClient extends AbstractClient {
 				metadata = toFileMetadata(responseItem);
 			}
 
-			// metadata = response.readEntity(new GenericType<FileMetadata>() {
-			// });
 		} catch (ClientException | IOException e) {
 			handleException(e);
 		}
 		return metadata;
+	}
+
+	/**
+	 * Get file attribute by path and attribute name.
+	 * 
+	 * Request URL (GET): {scheme}://{host}:{port}/fs/v1/metadata?path={pathString}&attribute={attribute}
+	 * 
+	 * @param path
+	 * @param attribute
+	 * @param clazz
+	 * @return
+	 * @throws ClientException
+	 */
+	public <T> T getFileAttribute(Path path, String attribute, Class<T> clazz) throws ClientException {
+		T result = null;
+		WebTarget target = getRootPath().path("metadata").queryParam("path", path.getPathString()).queryParam("attribute", attribute);
+		try {
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			result = response.readEntity(clazz);
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return result;
 	}
 
 	/**

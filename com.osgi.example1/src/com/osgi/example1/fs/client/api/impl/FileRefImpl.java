@@ -1,132 +1,202 @@
 package com.osgi.example1.fs.client.api.impl;
 
+import org.origin.common.rest.client.ClientException;
+
 import com.osgi.example1.fs.client.api.FileRef;
+import com.osgi.example1.fs.client.api.FileSystem;
+import com.osgi.example1.fs.client.ws.FileSystemClient;
+import com.osgi.example1.fs.common.FileMetadata;
+import com.osgi.example1.fs.common.Path;
 
-public class FileRefImpl implements FileRef {
+public class FileRefImpl extends FileRef {
 
-	// path separator
-	public static final String SEPARATOR = "/";
-	public static final char SEPARATOR_CHAR = '/';
-
-	protected String pathString;
+	protected FileSystem fs;
+	protected Path path;
 
 	/**
 	 * 
+	 * @param fs
 	 * @param pathString
 	 */
-	public FileRefImpl(String pathString) {
-		this.pathString = pathString;
+	public FileRefImpl(FileSystem fs, String pathString) {
+		this.fs = fs;
+		this.path = new Path(pathString);
 	}
 
 	/**
 	 * 
+	 * @param fs
 	 * @param parent
 	 * @param child
 	 */
-	public FileRefImpl(FileRef parent, String child) {
-		this(parent.getPath(), child);
+	public FileRefImpl(FileSystem fs, FileRef parent, String child) {
+		this.fs = fs;
+		this.path = new Path(parent.path(), child);
 	}
 
 	/**
 	 * 
+	 * @param fs
 	 * @param parent
 	 * @param child
 	 */
-	public FileRefImpl(String parent, FileRef child) {
-		this(parent, child.getPath());
+	public FileRefImpl(FileSystem fs, String parent, FileRef child) {
+		this.fs = fs;
+		this.path = new Path(parent, child.path());
 	}
 
 	/**
 	 * 
+	 * @param fs
 	 * @param parentPath
 	 * @param childPath
 	 */
-	public FileRefImpl(String parentPath, String childPath) {
-		String path1 = parentPath;
-		String path2 = childPath;
-
-		String newPath = path1;
-
-		// path1 ends with "/" and path2 starts with "/" --- make sure there is only one "/" between then.
-		if (path1.endsWith(SEPARATOR) && path2.startsWith(SEPARATOR)) {
-			if (path2.length() > 1) {
-				path2 = path2.substring(1);
-			} else {
-				// path2's length is either 1 or greater than 1. if not greater than 1, must be 1 --- the "/"
-				path2 = "";
-			}
-		}
-		if (!path1.endsWith(SEPARATOR) && !path2.startsWith(SEPARATOR)) {
-			newPath += SEPARATOR;
-		}
-
-		newPath += path2;
-
-		this.pathString = newPath;
+	public FileRefImpl(FileSystem fs, String parentPath, String childPath) {
+		this.fs = fs;
+		this.path = new Path(parentPath, childPath);
 	}
 
-	protected void checkUpdate() {
+	public FileSystem getFileSystem() {
+		return this.fs;
+	}
 
+	protected FileSystemClient getClient() {
+		return this.fs.getConfiguration().getFileSystemClient();
+	}
+
+	@Override
+	public Path path() {
+		return this.path;
 	}
 
 	@Override
 	public String getPath() {
-		return this.pathString;
+		return this.path.getPathString();
 	}
 
 	@Override
 	public String getParent() {
-		return null;
+		return this.path.getParentPathString();
 	}
 
 	@Override
 	public FileRef getParentFile() {
-		return null;
+		return FileRef.newInstance(this.fs, this.path.getParentPathString());
 	}
 
 	@Override
 	public String getName() {
-		return null;
+		String name = null;
+		try {
+			name = getClient().getFileAttribute(this.path, FileMetadata.NAME, String.class);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return name;
 	}
 
 	@Override
 	public boolean isDirectory() {
-		return false;
+		boolean isDirectory = false;
+		try {
+			isDirectory = getClient().getFileAttribute(this.path, FileMetadata.IS_DIRECTORY, Boolean.class);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return isDirectory;
 	}
 
 	@Override
 	public boolean isHidden() {
-		return false;
+		boolean isHidden = false;
+		try {
+			isHidden = getClient().getFileAttribute(this.path, FileMetadata.IS_HIDDEN, Boolean.class);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return isHidden;
 	}
 
 	@Override
 	public boolean exists() {
-		return false;
+		boolean exists = false;
+		try {
+			exists = getClient().getFileAttribute(this.path, FileMetadata.EXISTS, Boolean.class);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return exists;
 	}
 
 	@Override
 	public boolean canExecute() {
-		return false;
+		boolean canExecute = false;
+		try {
+			canExecute = getClient().getFileAttribute(this.path, FileMetadata.CAN_EXECUTE, Boolean.class);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return canExecute;
 	}
 
 	@Override
 	public boolean canRead() {
-		return false;
+		boolean canRead = false;
+		try {
+			canRead = getClient().getFileAttribute(this.path, FileMetadata.CAN_READ, Boolean.class);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return canRead;
 	}
 
 	@Override
 	public boolean canWrite() {
-		return false;
+		boolean canWrite = false;
+		try {
+			canWrite = getClient().getFileAttribute(this.path, FileMetadata.CAN_WRITE, Boolean.class);
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return canWrite;
 	}
 
 	@Override
 	public long getLength() {
-		return 0;
+		long length = 0;
+		try {
+			length = getClient().getFileAttribute(this.path, FileMetadata.LENGTH, Long.class);
+			// Object attrValue = getClient().getFileAttribute(this.path, FileMetadata.LENGTH, Long.class);
+			// if (attrValue instanceof Long) {
+			// length = (long) attrValue;
+			// } else if (attrValue instanceof Integer) {
+			// length = Long.valueOf((Integer) attrValue);
+			// } else if (attrValue instanceof String) {
+			// length = Long.valueOf((String) attrValue);
+			// }
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return length;
 	}
 
 	@Override
 	public long getLastModified() {
-		return 0;
+		long lastModified = 0;
+		try {
+			lastModified = getClient().getFileAttribute(this.path, FileMetadata.LAST_MODIFIED, Long.class);
+			// Object attrValue = getClient().getFileAttribute(this.path, FileMetadata.LAST_MODIFIED, Long.class);
+			// if (attrValue instanceof Long) {
+			// lastModified = (long) attrValue;
+			// } else if (attrValue instanceof Integer) {
+			// lastModified = Long.valueOf((Integer) attrValue);
+			// } else if (attrValue instanceof String) {
+			// lastModified = Long.valueOf((String) attrValue);
+			// }
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		return lastModified;
 	}
 
 }

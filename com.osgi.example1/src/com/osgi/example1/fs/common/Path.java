@@ -323,8 +323,7 @@ public class Path implements Comparable<Path> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Path(pathString=");
-		sb.append(this.pathString);
+		sb.append("Path(pathString=").append(this.pathString);
 		sb.append(")");
 		return sb.toString();
 	}

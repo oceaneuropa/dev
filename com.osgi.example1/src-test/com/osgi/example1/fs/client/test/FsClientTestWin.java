@@ -10,7 +10,7 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.ws.FileSystemClient;
-import com.osgi.example1.fs.client.ws.FileSystemClientUtil;
+import com.osgi.example1.fs.client.ws.FileSystemUtil;
 import com.osgi.example1.fs.common.Path;
 
 public class FsClientTestWin {
@@ -37,7 +37,7 @@ public class FsClientTestWin {
 		try {
 			Path[] paths = this.fsClient.listRootFiles();
 			for (Path path : paths) {
-				FileSystemClientUtil.walkFolders(fsClient, path, 0);
+				FileSystemUtil.walkFolders(fsClient, path, 0);
 			}
 		} catch (ClientException e) {
 			e.printStackTrace();
@@ -63,25 +63,25 @@ public class FsClientTestWin {
 
 			System.out.println("dir1Path = " + dir1Path.getPathString());
 			for (Path subPath1 : subPaths1) {
-				FileSystemClientUtil.walkFolders(fsClient, subPath1, 0);
+				FileSystemUtil.walkFolders(fsClient, subPath1, 0);
 			}
 			System.out.println();
 
 			System.out.println("dir2Path = " + dir2Path.getPathString());
 			for (Path subPath2 : subPaths2) {
-				FileSystemClientUtil.walkFolders(fsClient, subPath2, 0);
+				FileSystemUtil.walkFolders(fsClient, subPath2, 0);
 			}
 			System.out.println();
 
 			System.out.println("dir3Path = " + dir3Path.getPathString());
 			for (Path subPath3 : subPaths3) {
-				FileSystemClientUtil.walkFolders(fsClient, subPath3, 0);
+				FileSystemUtil.walkFolders(fsClient, subPath3, 0);
 			}
 			System.out.println();
 
 			System.out.println("dir5Path = " + dir5Path.getPathString());
 			for (Path subPath5 : subPaths5) {
-				FileSystemClientUtil.walkFolders(fsClient, subPath5, 0);
+				FileSystemUtil.walkFolders(fsClient, subPath5, 0);
 			}
 			System.out.println();
 		} catch (ClientException e) {

@@ -2,10 +2,12 @@ package com.osgi.example1.fs.client.ws;
 
 import org.origin.common.rest.client.ClientException;
 
+import com.osgi.example1.fs.client.api.FileRef;
+import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
 
-public class FileSystemClientUtil {
+public class FileSystemUtil {
 
 	/**
 	 * Recursively walk through folders and print out folder path.
@@ -24,6 +26,26 @@ public class FileSystemClientUtil {
 			Path[] subPaths = fsClient.listFiles(path);
 			for (Path subPath : subPaths) {
 				walkFolders(fsClient, subPath, deeperLevel);
+			}
+		}
+	}
+
+	/**
+	 * Recursively walk through folders and print out folder path.
+	 * 
+	 * @param fs
+	 * @param file
+	 * @param level
+	 * @throws ClientException
+	 */
+	public static void walkFolders(FileSystem fs, FileRef file, int level) throws ClientException {
+		System.out.println(getSpaces(level) + file.getName() + " (" + file.getPath() + ")");
+
+		if (file.isDirectory()) {
+			int deeperLevel = level + 1;
+			FileRef[] subFiles = fs.listFiles(file);
+			for (FileRef subFile : subFiles) {
+				walkFolders(fs, subFile, deeperLevel);
 			}
 		}
 	}

@@ -10,6 +10,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class FileMetadata {
 
+	public static final String FILEID = "fileId";
+	public static final String PARENT_FILEID = "parentFileId";
+	public static final String NAME = "name";
+	public static final String IS_DIRECTORY = "isDirectory";
+	public static final String IS_HIDDEN = "isHidden";
+	public static final String PATH = "path";
+	public static final String PARENT_PATH = "parentPath";
+	public static final String EXISTS = "exists";
+	public static final String CAN_EXECUTE = "canExecute";
+	public static final String CAN_READ = "canRead";
+	public static final String CAN_WRITE = "canWrite";
+	public static final String LENGTH = "length";
+	public static final String LAST_MODIFIED = "lastModified";
+
 	@XmlElement
 	protected int fileId;
 	@XmlElement
@@ -155,6 +169,42 @@ public class FileMetadata {
 
 	public void setLastModified(long lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	/**
+	 * 
+	 * @param attrName
+	 * @return
+	 */
+	public Object getAttribute(String attrName) {
+		if (FILEID.equalsIgnoreCase(attrName)) {
+			return getFileId();
+		} else if (PARENT_FILEID.equalsIgnoreCase(attrName)) {
+			return getParentFileId();
+		} else if (NAME.equalsIgnoreCase(attrName)) {
+			return getName();
+		} else if (IS_DIRECTORY.equalsIgnoreCase(attrName)) {
+			return isDirectory();
+		} else if (IS_HIDDEN.equalsIgnoreCase(attrName)) {
+			return isHidden();
+		} else if (PATH.equalsIgnoreCase(attrName)) {
+			return getPath();
+		} else if (PARENT_PATH.equalsIgnoreCase(attrName)) {
+			return getParentPath();
+		} else if (EXISTS.equalsIgnoreCase(attrName)) {
+			return exists();
+		} else if (CAN_EXECUTE.equalsIgnoreCase(attrName)) {
+			return canExecute();
+		} else if (CAN_READ.equalsIgnoreCase(attrName)) {
+			return canRead();
+		} else if (CAN_WRITE.equalsIgnoreCase(attrName)) {
+			return canWrite();
+		} else if (LENGTH.equalsIgnoreCase(attrName)) {
+			return getLength();
+		} else if (LAST_MODIFIED.equalsIgnoreCase(attrName)) {
+			return getLastModified();
+		}
+		return null;
 	}
 
 	@Override

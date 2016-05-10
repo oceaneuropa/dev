@@ -1,29 +1,60 @@
 package com.osgi.example1.fs.client.api;
 
-public interface FileRef {
+import com.osgi.example1.fs.client.api.impl.FileRefImpl;
+import com.osgi.example1.fs.common.Path;
 
-	public String getPath();
+public abstract class FileRef {
 
-	public String getParent();
+	public static FileRef newInstance(FileSystem fs, String pathString) {
+		return new FileRefImpl(fs, pathString);
+	}
 
-	public FileRef getParentFile();
+	public static FileRef newInstance(FileSystem fs, FileRef parent, String child) {
+		return new FileRefImpl(fs, parent, child);
+	}
 
-	public String getName();
+	public static FileRef newInstance(FileSystem fs, String parent, FileRef child) {
+		return new FileRefImpl(fs, parent, child);
+	}
 
-	public boolean isDirectory();
+	public static FileRef newInstance(FileSystem fs, String parentPath, String childPath) {
+		return new FileRefImpl(fs, parentPath, childPath);
+	}
 
-	public boolean isHidden();
+	public static FileRef[] listRootFiles(FileSystem fs) {
+		return fs.listRootFiles();
+	}
 
-	public boolean exists();
+	public static FileRef[] listFiles(FileSystem fs, FileRef parent) {
+		return fs.listFiles(parent);
+	}
 
-	public boolean canExecute();
+	public abstract FileSystem getFileSystem();
 
-	public boolean canRead();
+	public abstract Path path();
 
-	public boolean canWrite();
+	public abstract String getPath();
 
-	public long getLength();
+	public abstract String getParent();
 
-	public long getLastModified();
+	public abstract FileRef getParentFile();
+
+	public abstract String getName();
+
+	public abstract boolean isDirectory();
+
+	public abstract boolean isHidden();
+
+	public abstract boolean exists();
+
+	public abstract boolean canExecute();
+
+	public abstract boolean canRead();
+
+	public abstract boolean canWrite();
+
+	public abstract long getLength();
+
+	public abstract long getLastModified();
 
 }

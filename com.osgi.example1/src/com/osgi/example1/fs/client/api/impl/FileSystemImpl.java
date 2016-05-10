@@ -4,12 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.origin.common.rest.client.ClientException;
+
 import com.osgi.example1.fs.client.api.FileRef;
 import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.api.FileSystemConfiguration;
+import com.osgi.example1.fs.client.ws.FileSystemClient;
 import com.osgi.example1.fs.common.Path;
 
-public class FileSystemImpl implements FileSystem {
+public class FileSystemImpl extends FileSystem {
+
+	protected static final FileRef[] EMPTY_FILES = new FileRef[0];
 
 	protected FileSystemConfiguration config;
 
@@ -19,22 +24,53 @@ public class FileSystemImpl implements FileSystem {
 	 */
 	public FileSystemImpl(FileSystemConfiguration config) {
 		this.config = config;
+	}
 
+	@Override
+	public FileSystemConfiguration getConfiguration() {
+		return this.config;
+	}
+
+	protected FileSystemClient getClient() {
+		return this.config.getFileSystemClient();
 	}
 
 	@Override
 	public FileRef[] listRootFiles() {
-		return null;
+		FileRef[] fileRefs = null;
+		try {
+			Path[] paths = getClient().listRootFiles();
+
+			fileRefs = new FileRef[paths.length];
+			for (int i = 0; i < paths.length; i++) {
+				fileRefs[i] = FileRef.newInstance(this, paths[i].getPathString());
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		if (fileRefs == null) {
+			fileRefs = EMPTY_FILES;
+		}
+		return fileRefs;
 	}
 
 	@Override
 	public FileRef[] listFiles(FileRef parent) {
-		return null;
-	}
+		FileRef[] fileRefs = null;
+		try {
+			Path[] paths = getClient().listFiles(parent.path());
 
-	@Override
-	public boolean exists(FileRef file) {
-		return false;
+			fileRefs = new FileRef[paths.length];
+			for (int i = 0; i < paths.length; i++) {
+				fileRefs[i] = FileRef.newInstance(this, paths[i].getPathString());
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		if (fileRefs == null) {
+			fileRefs = EMPTY_FILES;
+		}
+		return fileRefs;
 	}
 
 	@Override
