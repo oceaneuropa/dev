@@ -2,10 +2,12 @@ package com.osgi.example1.fs.client.test;
 
 import java.io.IOException;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+import org.junit.runners.MethodSorters;
 import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.api.FileRef;
@@ -13,6 +15,7 @@ import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.api.FileSystemConfiguration;
 import com.osgi.example1.fs.client.ws.FileSystemUtil;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FsTestWin {
 
 	protected FileSystem fs;
@@ -31,11 +34,11 @@ public class FsTestWin {
 	}
 
 	@Test
-	public void test001_listRootFiles() throws IOException {
-		System.out.println("--- --- --- test001_listRootFiles() --- --- ---");
+	public void test001_listRoots() throws IOException {
+		System.out.println("--- --- --- test001_listRoots() --- --- ---");
 
 		try {
-			FileRef[] files = FileRef.listRootFiles(fs);
+			FileRef[] files = FileRef.listRoots(fs);
 			for (FileRef file : files) {
 				FileSystemUtil.walkFolders(fs, file, 0);
 			}
@@ -56,10 +59,10 @@ public class FsTestWin {
 			FileRef dir3 = FileRef.newInstance(fs, "/test/dir3");
 			FileRef dir5 = FileRef.newInstance(fs, fs.root(), "test/dir5/07_Document/patent");
 
-			FileRef[] subFiles1 = FileRef.listFiles(fs, dir1);
-			FileRef[] subFiles2 = FileRef.listFiles(fs, dir2);
-			FileRef[] subFiles3 = FileRef.listFiles(fs, dir3);
-			FileRef[] subFiles5 = FileRef.listFiles(fs, dir5);
+			FileRef[] subFiles1 = FileRef.listFiles(dir1);
+			FileRef[] subFiles2 = FileRef.listFiles(dir2);
+			FileRef[] subFiles3 = FileRef.listFiles(dir3);
+			FileRef[] subFiles5 = FileRef.listFiles(dir5);
 
 			System.out.println("dir1 = " + dir1.getPath());
 			for (FileRef subFile1 : subFiles1) {

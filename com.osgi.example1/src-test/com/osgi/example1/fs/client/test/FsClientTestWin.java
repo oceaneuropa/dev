@@ -2,10 +2,12 @@ package com.osgi.example1.fs.client.test;
 
 import java.io.IOException;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
+import org.junit.runners.MethodSorters;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
@@ -13,6 +15,7 @@ import com.osgi.example1.fs.client.ws.FileSystemClient;
 import com.osgi.example1.fs.client.ws.FileSystemUtil;
 import com.osgi.example1.fs.common.Path;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FsClientTestWin {
 
 	protected FileSystemClient fsClient;

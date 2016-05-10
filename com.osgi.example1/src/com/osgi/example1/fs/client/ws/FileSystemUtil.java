@@ -43,7 +43,7 @@ public class FileSystemUtil {
 
 		if (file.isDirectory()) {
 			int deeperLevel = level + 1;
-			FileRef[] subFiles = fs.listFiles(file);
+			FileRef[] subFiles = FileRef.listFiles(file);
 			for (FileRef subFile : subFiles) {
 				walkFolders(fs, subFile, deeperLevel);
 			}

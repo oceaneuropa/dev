@@ -21,11 +21,12 @@ public abstract class FileRef {
 		return new FileRefImpl(fs, parentPath, childPath);
 	}
 
-	public static FileRef[] listRootFiles(FileSystem fs) {
+	public static FileRef[] listRoots(FileSystem fs) {
 		return fs.listRootFiles();
 	}
 
-	public static FileRef[] listFiles(FileSystem fs, FileRef parent) {
+	public static FileRef[] listFiles(FileRef parent) {
+		FileSystem fs = parent.getFileSystem();
 		return fs.listFiles(parent);
 	}
 
