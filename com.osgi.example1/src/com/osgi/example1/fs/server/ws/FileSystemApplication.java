@@ -32,7 +32,8 @@ public class FileSystemApplication extends AbstractApplication {
 
 	@Override
 	public void start() {
-		logger.debug("FileSystemApplication.start()");
+		// logger.debug("FileSystemApplication.start()");
+		System.out.println("FileSystemApplication.start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.CONTEXT_ROOT, contextRoot);
@@ -41,7 +42,8 @@ public class FileSystemApplication extends AbstractApplication {
 
 	@Override
 	public void stop() {
-		logger.debug("FileSystemApplication.stop()");
+		// logger.debug("FileSystemApplication.stop()");
+		System.out.println("FileSystemApplication.stop()");
 
 		if (this.serviceRegistration != null) {
 			this.serviceRegistration.unregister();
@@ -54,7 +56,8 @@ public class FileSystemApplication extends AbstractApplication {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 
 		// resources
-		classes.add(FileSystemResource.class);
+		classes.add(FileSystemPathsResource.class);
+		classes.add(FileSystemMetadataResource.class);
 
 		// resolvers
 		classes.add(FileSystemResolver.class);

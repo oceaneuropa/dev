@@ -82,7 +82,7 @@ public class DatabaseFileSystem implements FileSystem {
 			String[] segments = path.getSegments();
 			if (segments == null || segments.length == 0) {
 				// empty path --- which belongs to relative path --- which cannot be used to resolve a file --- return non-exists FileMetadata.
-				return createNonExistsFileMetadata(path);
+				return FsTableUtil.createNonExistsFileMetadata(path);
 			}
 
 			int currParentFileId = -1;
@@ -94,7 +94,7 @@ public class DatabaseFileSystem implements FileSystem {
 				FileMetadataVO vo = getFileMetadataHandler().getByName(conn, currParentFileId, dirName);
 				if (vo == null) {
 					// file record cannot be found --- file doesn't exist --- return non-exists FileMetadata.
-					return createNonExistsFileMetadata(path);
+					return FsTableUtil.createNonExistsFileMetadata(path);
 				}
 
 				if (!isLastSegment) {
@@ -102,7 +102,7 @@ public class DatabaseFileSystem implements FileSystem {
 					currParentFileId = vo.getFileId();
 				} else {
 					// file record is found --- file exists --- create FileMetadata from vo and return the FileMetadata.
-					return createFileMetadata(path, vo);
+					return FsTableUtil.createFileMetadata(path, vo);
 				}
 			}
 		} catch (SQLException e) {
@@ -112,7 +112,7 @@ public class DatabaseFileSystem implements FileSystem {
 		}
 
 		// file is not found --- return non-exists FileMetadata.
-		return createNonExistsFileMetadata(path);
+		return FsTableUtil.createNonExistsFileMetadata(path);
 	}
 
 	@Override
@@ -631,40 +631,6 @@ public class DatabaseFileSystem implements FileSystem {
 		} else {
 			copyLocalFileToFsDirectory(localFile, destDirPath);
 		}
-	}
-
-	protected FileMetadata createNonExistsFileMetadata(Path path) {
-		FileMetadata metadata = new FileMetadata();
-		metadata.setExists(false);
-		metadata.setName(path.getLastSegment());
-		metadata.setIsDirectory(false);
-		metadata.setHidden(false);
-		metadata.setPath(path.getPathString());
-		metadata.setParentPath(path.getParentPathString());
-		metadata.setCanExecute(false);
-		metadata.setCanRead(false);
-		metadata.setCanWrite(false);
-		metadata.setLength(-1);
-		metadata.setLastModified(-1);
-		return metadata;
-	}
-
-	protected FileMetadata createFileMetadata(Path path, FileMetadataVO vo) {
-		FileMetadata metadata = new FileMetadata();
-		metadata.setExists(true);
-		metadata.setFileId(vo.getFileId());
-		metadata.setParentFileId(vo.getParentFileId());
-		metadata.setName(vo.getName());
-		metadata.setIsDirectory(vo.isDirectory());
-		metadata.setHidden(vo.isHidden());
-		metadata.setPath(path.getPathString());
-		metadata.setParentPath(path.getParentPathString());
-		metadata.setCanExecute(vo.canExecute());
-		metadata.setCanRead(vo.canRead());
-		metadata.setCanWrite(vo.canWrite());
-		metadata.setLength(vo.getLength());
-		metadata.setLastModified(vo.getLastModified());
-		return metadata;
 	}
 
 	/** implement IAdaptable interface */

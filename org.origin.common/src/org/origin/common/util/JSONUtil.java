@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONUtil {
@@ -265,6 +266,17 @@ public class JSONUtil {
 			}
 		}
 		return properties;
+	}
+
+	/**
+	 * 
+	 * @param failOnUnknownProperties
+	 * @return
+	 */
+	public static ObjectMapper createObjectMapper(boolean failOnUnknownProperties) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, failOnUnknownProperties);
+		return mapper;
 	}
 
 	public static void main(String[] args) {

@@ -1,3 +1,55 @@
+osgi.fs.example
+
+------------------------------------------------------------------------
+com.osgi.example
+lib.jdbc
+lib.jersey
+lib.log
+lig.org.apache.commons
+lib.org.json
+lib.org.junit
+org.origin.common
+
+com.eclipsesource.jaxrs.jersey-all
+javax.activation
+javax.annotation
+javax.inject
+javax.servlet
+javax.ws.rs-api
+org.apache.felix.gogo.command
+org.apache.felix.gogo.runtime
+org.apache.felix.gog.shell
+org.eclipse.equinox.common
+org.eclipse.equinox.console
+org.eclipse.equinox.ds
+org.eclipse.equinox.event
+org.eclipse.equinox.frameworkadmin
+org.eclipse.equinox.frameworkadmin.equinox
+org.eclipse.equinox.http.jetty
+org.eclipse.equinox.http.servlet
+org.eclipse.equinox.util
+org.eclipse.jetty.http
+org.eclipse.jetty.io
+org.eclipse.jetty.security
+org.eclipse.jetty.server
+org.eclipse.jetty.servlet
+org.eclipse.jetty.util
+org.eclipse.osgi
+org.eclipse.osgi.services
+org.eclipse.osgi.util
+------------------------------------------------------------------------
+
+Program arguments:
+------------------------------------------------------------------------
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console
+------------------------------------------------------------------------
+
+VM arguments:
+------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=9090
+------------------------------------------------------------------------
+
+
 fsfilemetadata
 ------------------------------------------------------------------------
 	fileId 			(string) (pk)

@@ -1,16 +1,18 @@
 package com.osgi.example1.fs.common;
 
-import java.util.Arrays;
-
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement
 public class Path implements Comparable<Path> {
 
+	public static final Path ROOT = new Path("/");
+
 	// path separator
 	public static final String SEPARATOR = "/";
 	public static final char SEPARATOR_CHAR = '/';
+
 	private static final String[] EMPTY_STRINGS = new String[] {};
 
 	@XmlElement
@@ -136,6 +138,7 @@ public class Path implements Comparable<Path> {
 	 *            start index of path segment, inclusive
 	 * @return
 	 */
+	@XmlTransient
 	public String getPathString(int startIndex) {
 		if (isRoot() || isEmpty()) {
 			return null;
@@ -160,6 +163,7 @@ public class Path implements Comparable<Path> {
 	 *            end index of path segment, exclusive
 	 * @return
 	 */
+	@XmlTransient
 	public String getPathString(int startIndex, int endIndex) {
 		if (isRoot() || isEmpty()) {
 			return null;
@@ -201,6 +205,7 @@ public class Path implements Comparable<Path> {
 	 * 
 	 * @return
 	 */
+	@XmlTransient
 	public String getParentPathString() {
 		Path parentPath = getParent();
 		if (parentPath != null) {
@@ -214,6 +219,7 @@ public class Path implements Comparable<Path> {
 	 * 
 	 * @return return true when the path is "/". return false otherwise.
 	 */
+	@XmlTransient
 	public boolean isRoot() {
 		return (SEPARATOR.equals(this.pathString)) ? true : false;
 	}
@@ -223,6 +229,7 @@ public class Path implements Comparable<Path> {
 	 * 
 	 * @return return true when the path has 0 path segments. return false when the path has 1 or more path segments.
 	 */
+	@XmlTransient
 	public boolean isEmpty() {
 		return (getSegments().length == 0) ? true : false;
 	}
@@ -232,6 +239,7 @@ public class Path implements Comparable<Path> {
 	 * 
 	 * @return
 	 */
+	@XmlTransient
 	public String[] getSegments() {
 		String[] segments = null;
 		if (this.pathString != null) {
@@ -263,6 +271,7 @@ public class Path implements Comparable<Path> {
 		return segments;
 	}
 
+	@XmlTransient
 	public String getLastSegment() {
 		String[] segments = getSegments();
 		if (segments != null && segments.length > 0) {
@@ -271,6 +280,7 @@ public class Path implements Comparable<Path> {
 		return null;
 	}
 
+	@XmlTransient
 	public Path getParent() {
 		int lastSeparatorIndex = pathString.lastIndexOf(SEPARATOR_CHAR);
 		if (pathString.length() == 0 // path is empty --- empty path --- doesn't have parent path.
@@ -308,83 +318,10 @@ public class Path implements Comparable<Path> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Path(pathString=").append(this.pathString);
+		sb.append("Path(pathString=");
+		sb.append(this.pathString);
+		sb.append(")");
 		return sb.toString();
-	}
-
-	public static void main0(String[] args) {
-		String path0a = "";
-		String path0b = "/";
-		String path1 = "/dir1";
-		String path2 = "dir1";
-		String path3 = "/readme1.txt";
-		String path4 = "readme1.txt";
-		String path5 = "/path/to/the/dir2";
-		String path6 = "path/to/the/dir2";
-		String path7 = "/path/to/the/file.rar";
-		String path8 = "path/to/the/file.rar";
-
-		String[] segments0a = path0a.split(SEPARATOR);
-		String[] segments0b = path0b.split(SEPARATOR);
-		String[] segments1 = path1.split(SEPARATOR);
-		String[] segments2 = path2.split(SEPARATOR);
-		String[] segments3 = path3.split(SEPARATOR);
-		String[] segments4 = path4.split(SEPARATOR);
-		String[] segments5 = path5.split(SEPARATOR);
-		String[] segments6 = path6.split(SEPARATOR);
-		String[] segments7 = path7.split(SEPARATOR);
-		String[] segments8 = path8.split(SEPARATOR);
-
-		System.out.println(Arrays.toString(segments0a) + " (length=" + segments0a.length + ")");
-		System.out.println(Arrays.toString(segments0b) + " (length=" + segments0b.length + ")");
-		System.out.println(Arrays.toString(segments1) + " (length=" + segments1.length + ")");
-		System.out.println(Arrays.toString(segments2) + " (length=" + segments2.length + ")");
-		System.out.println(Arrays.toString(segments3) + " (length=" + segments3.length + ")");
-		System.out.println(Arrays.toString(segments4) + " (length=" + segments4.length + ")");
-		System.out.println(Arrays.toString(segments5) + " (length=" + segments5.length + ")");
-		System.out.println(Arrays.toString(segments6) + " (length=" + segments6.length + ")");
-		System.out.println(Arrays.toString(segments7) + " (length=" + segments7.length + ")");
-		System.out.println(Arrays.toString(segments8) + " (length=" + segments8.length + ")");
-	}
-
-	public static void main(String[] args) {
-		Path path0a = new Path("");
-		Path path0b = new Path("/");
-		Path path1 = new Path("/dir1");
-		Path path2 = new Path("dir1");
-		Path path3 = new Path("/readme1.txt");
-		Path path4 = new Path("readme1.txt");
-		Path path5 = new Path("/path/to/the/dir2");
-		Path path6 = new Path("path/to/the/dir2");
-		Path path7 = new Path("/path/to/the/file.rar");
-		Path path8 = new Path("path/to/the/file.rar");
-
-		String[] segments0a = path0a.getSegments();
-		String[] segments0b = path0b.getSegments();
-		String[] segments1 = path1.getSegments();
-		String[] segments2 = path2.getSegments();
-		String[] segments3 = path3.getSegments();
-		String[] segments4 = path4.getSegments();
-		String[] segments5 = path5.getSegments();
-		String[] segments6 = path6.getSegments();
-		String[] segments7 = path7.getSegments();
-		String[] segments8 = path8.getSegments();
-
-		System.out.println(Arrays.toString(segments0a) + " (length=" + segments0a.length + ")");
-		System.out.println(Arrays.toString(segments0b) + " (length=" + segments0b.length + ")");
-		System.out.println(Arrays.toString(segments1) + " (length=" + segments1.length + ")");
-		System.out.println(Arrays.toString(segments2) + " (length=" + segments2.length + ")");
-		System.out.println(Arrays.toString(segments3) + " (length=" + segments3.length + ")");
-		System.out.println(Arrays.toString(segments4) + " (length=" + segments4.length + ")");
-		System.out.println(Arrays.toString(segments5) + " (length=" + segments5.length + ")");
-		System.out.println(Arrays.toString(segments6) + " (length=" + segments6.length + ")");
-		System.out.println(Arrays.toString(segments7) + " (length=" + segments7.length + ")");
-		System.out.println(Arrays.toString(segments8) + " (length=" + segments8.length + ")");
-
-		String subPath7 = path7.getPathString(0, 3);
-		String subPath8 = path8.getPathString(0, 3);
-		System.out.println("subPath7 = " + subPath7);
-		System.out.println("subPath8 = " + subPath8);
 	}
 
 }

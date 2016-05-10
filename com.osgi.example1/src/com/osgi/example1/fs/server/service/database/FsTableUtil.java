@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.osgi.example1.fs.common.FileMetadata;
+import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.common.vo.FileContentVO;
 import com.osgi.example1.fs.common.vo.FileMetadataVO;
 import com.osgi.example1.util.IOUtil;
@@ -390,6 +392,56 @@ public class FsTableUtil {
 				}
 			}
 		}
+	}
+
+	public static FileMetadata createNullFileMetadata() {
+		FileMetadata metadata = new FileMetadata();
+		metadata.setExists(false);
+		metadata.setName(null);
+		metadata.setIsDirectory(false);
+		metadata.setHidden(false);
+		metadata.setPath(null);
+		metadata.setParentPath(null);
+		metadata.setCanExecute(false);
+		metadata.setCanRead(false);
+		metadata.setCanWrite(false);
+		metadata.setLength(-1);
+		metadata.setLastModified(-1);
+		return metadata;
+	}
+
+	public static FileMetadata createNonExistsFileMetadata(Path path) {
+		FileMetadata metadata = new FileMetadata();
+		metadata.setExists(false);
+		metadata.setName(path.getLastSegment());
+		metadata.setIsDirectory(false);
+		metadata.setHidden(false);
+		metadata.setPath(path.getPathString());
+		metadata.setParentPath(path.getParentPathString());
+		metadata.setCanExecute(false);
+		metadata.setCanRead(false);
+		metadata.setCanWrite(false);
+		metadata.setLength(-1);
+		metadata.setLastModified(-1);
+		return metadata;
+	}
+
+	public static FileMetadata createFileMetadata(Path path, FileMetadataVO vo) {
+		FileMetadata metadata = new FileMetadata();
+		metadata.setExists(true);
+		metadata.setFileId(vo.getFileId());
+		metadata.setParentFileId(vo.getParentFileId());
+		metadata.setName(vo.getName());
+		metadata.setIsDirectory(vo.isDirectory());
+		metadata.setHidden(vo.isHidden());
+		metadata.setPath(path.getPathString());
+		metadata.setParentPath(path.getParentPathString());
+		metadata.setCanExecute(vo.canExecute());
+		metadata.setCanRead(vo.canRead());
+		metadata.setCanWrite(vo.canWrite());
+		metadata.setLength(vo.getLength());
+		metadata.setLastModified(vo.getLastModified());
+		return metadata;
 	}
 
 }

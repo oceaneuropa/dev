@@ -14,18 +14,16 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.server.service.FileSystem;
 
-@javax.ws.rs.Path("/")
+@javax.ws.rs.Path("/paths")
 @Produces(MediaType.APPLICATION_JSON)
-public class FileSystemResource extends AbstractApplicationResource {
+public class FileSystemPathsResource extends AbstractApplicationResource {
 
 	/**
 	 * Get files.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/fs/v1/
+	 * URL (GET): {scheme}://{host}:{port}/fs/v1/paths
 	 * 
-	 * @param name
-	 * @param ipaddress
-	 * @param filter
+	 * @param parentPath
 	 * @return
 	 */
 	@GET
@@ -41,14 +39,17 @@ public class FileSystemResource extends AbstractApplicationResource {
 		}
 
 		if (parent == null || parent.isEmpty() || parent.isRoot()) {
-
+			Path[] paths = fs.listRootFiles();
+			for (Path path : paths) {
+				results.add(path);
+			}
+		} else {
+			Path[] paths = fs.listFiles(parent);
+			for (Path path : paths) {
+				results.add(path);
+			}
 		}
 
-		
-		com.osgi.example1.fs.common.Path[] paths = fs.listRootFiles();
-		for (com.osgi.example1.fs.common.Path path : paths) {
-			results.add(path);
-		}
 		return Response.ok().entity(results).build();
 	}
 
