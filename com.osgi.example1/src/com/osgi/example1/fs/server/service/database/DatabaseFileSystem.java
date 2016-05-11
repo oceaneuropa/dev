@@ -116,7 +116,7 @@ public class DatabaseFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Path[] listRootFiles() {
+	public Path[] listRoots() {
 		Connection conn = getConnection();
 		try {
 			// get member files in the root folder (not including in-trash file records)
@@ -139,13 +139,12 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public Path[] listFiles(Path parent) {
-		if (Path.SEPARATOR.equals(parent.getPathString())) {
+		if (parent.isRoot()) {
 			// parent path is "/" --- which is root path --- return root files path
-			return listRootFiles();
+			return listRoots();
 		}
 
-		String[] segments = parent.getSegments();
-		if (segments == null || segments.length == 0) {
+		if (parent.isEmpty()) {
 			// empty path --- which belongs to relative path --- which does not have member files --- return empty paths array
 			return EMPTY_PATHS;
 		}
@@ -154,6 +153,7 @@ public class DatabaseFileSystem implements FileSystem {
 		try {
 			int currParentFileId = -1;
 
+			String[] segments = parent.getSegments();
 			for (int i = 0; i < segments.length; i++) {
 				String dirName = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
@@ -197,8 +197,7 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public boolean exists(Path path) {
-		String[] segments = path.getSegments();
-		if (segments == null || segments.length == 0) {
+		if (path.isEmpty()) {
 			// empty path --- which belongs to relative path --- which cannot be used to resolve a file --- equivalent to file doesn't exist.
 			return false;
 		}
@@ -207,6 +206,7 @@ public class DatabaseFileSystem implements FileSystem {
 		try {
 			int currParentFileId = -1;
 
+			String[] segments = path.getSegments();
 			for (int i = 0; i < segments.length; i++) {
 				String segment = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
@@ -236,10 +236,7 @@ public class DatabaseFileSystem implements FileSystem {
 		return false;
 	}
 
-	/**
-	 * @param path
-	 * @return
-	 */
+	@Override
 	public boolean isDirectory(Path path) {
 		FileMetadata metadata = getFileMetaData(path);
 		return (metadata != null && metadata.isDirectory()) ? true : false;
@@ -247,8 +244,7 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public boolean mkdirs(Path path) throws IOException {
-		String[] segments = path.getSegments();
-		if (segments == null || segments.length == 0) {
+		if (path.isEmpty()) {
 			// empty path --- which belongs to relative path --- which cannot be used to locate file --- cannot create directories.
 			return false;
 		}
@@ -257,6 +253,7 @@ public class DatabaseFileSystem implements FileSystem {
 		try {
 			int currParentFileId = -1;
 
+			String[] segments = path.getSegments();
 			for (int i = 0; i < segments.length; i++) {
 				String segment = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
@@ -309,8 +306,7 @@ public class DatabaseFileSystem implements FileSystem {
 		// get or create file record for any directories in the path. then create the file record for the file (file or directory) itself.
 		// throw IOException if file (file or directory) already exists.
 
-		String[] segments = path.getSegments();
-		if (segments == null || segments.length == 0) {
+		if (path.isEmpty()) {
 			// empty path --- which belongs to relative path --- which cannot be used to locate file --- cannot create new file for relative path.
 			return false;
 		}
@@ -319,6 +315,7 @@ public class DatabaseFileSystem implements FileSystem {
 		try {
 			int currParentFileId = -1;
 
+			String[] segments = path.getSegments();
 			for (int i = 0; i < segments.length; i++) {
 				String segment = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
@@ -378,10 +375,9 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public boolean delete(Path path) throws IOException {
-		String[] segments = path.getSegments();
 		if (path.isRoot()) {
 			// root path --- there is no file record for root --- root path itself cannot be delete.
-			System.err.println("Path is root. Cannot delete the root path itself.");
+			System.err.println("Path is root - '/'. Cannot delete the root path itself.");
 			return false;
 		}
 		if (path.isEmpty()) {
@@ -399,6 +395,7 @@ public class DatabaseFileSystem implements FileSystem {
 		try {
 			int currParentFileId = -1;
 
+			String[] segments = path.getSegments();
 			for (int i = 0; i < segments.length; i++) {
 				String segment = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
@@ -431,8 +428,7 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public InputStream getInputStream(Path path) throws IOException {
-		String[] segments = path.getSegments();
-		if (segments == null || segments.length == 0) {
+		if (path.isEmpty()) {
 			// empty path --- which belongs to relative path --- which cannot be used to locate a file --- cannot get input stream
 			return null;
 		}
@@ -441,6 +437,7 @@ public class DatabaseFileSystem implements FileSystem {
 		try {
 			int currParentFileId = -1;
 
+			String[] segments = path.getSegments();
 			for (int i = 0; i < segments.length; i++) {
 				String segment = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
@@ -498,28 +495,26 @@ public class DatabaseFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Path copyLocalFileToFsFile(File localFile, Path destFilePath) throws IOException {
-		// Check source file
-		if (!localFile.exists()) {
-			throw new IOException("Local file '" + localFile + "' does not exist.");
-		}
-		if (localFile.isDirectory()) {
-			throw new IOException("Local file '" + localFile + "' exists but is a directory.");
+	public Path copyInputStreamToFsFile(InputStream inputStream, Path destFilePath) throws IOException {
+		// Check inputStream
+		if (inputStream == null) {
+			throw new IOException("InputStream is null.");
 		}
 
 		// Check target file
 		Connection conn = getConnection();
 		try {
-			String[] segments = destFilePath.getSegments();
-			if (segments == null || segments.length == 0) {
-				throw new IOException("Target path '" + destFilePath.getPathString() + "' is empty.");
+			if (destFilePath.isEmpty()) {
+				throw new IOException("Path '" + destFilePath.getPathString() + "' is empty.");
 			}
 
 			int currParentFileId = -1;
 
+			String[] segments = destFilePath.getSegments();
 			for (int i = 0; i < segments.length; i++) {
 				String segment = segments[i];
 				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
+				String currPathString = destFilePath.getPathString(0, i + 1);
 
 				FileMetadataVO vo = getFileMetadataHandler().getByName(conn, currParentFileId, segment);
 
@@ -536,11 +531,11 @@ public class DatabaseFileSystem implements FileSystem {
 					}
 					if (vo == null) {
 						// file record is not created --- failed to create the new file
-						throw new IOException("Directory " + segment + " cannot be created.");
+						throw new IOException("Path " + currPathString + " cannot be created.");
 					}
 					if (!vo.isDirectory()) {
 						// file record exists, but is not a directory --- invalid path parameter.
-						throw new IOException(segment + " exists but is not a directory.");
+						throw new IOException("Path '" + currPathString + "' exists but is not a directory.");
 					}
 
 					// not the last segment yet --- continue to look for the next segment until the last path segment
@@ -555,11 +550,92 @@ public class DatabaseFileSystem implements FileSystem {
 					}
 					if (vo == null) {
 						// file record is not created --- failed to create the new file
-						throw new IOException("File " + segment + " cannot be created.");
+						throw new IOException("Path '" + currPathString + "' cannot be created.");
 					}
 					if (vo.isDirectory()) {
 						// target file is a directory --- target is expected to be a file --- invalid path.
-						throw new IOException("File " + segment + " exists but is a directory.");
+						throw new IOException("Path '" + currPathString + "' exists but is a directory.");
+					}
+
+					// TODO: get database name from Connection and determine which method to call to write file content into.
+
+					// using Postgres database
+					FsTableUtil.writeFileContentPostgres(conn, vo.getFileId(), inputStream);
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+
+		return destFilePath;
+	}
+
+	@Override
+	public Path copyLocalFileToFsFile(File localFile, Path destFilePath) throws IOException {
+		// Check source file
+		if (!localFile.exists()) {
+			throw new IOException("Local file '" + localFile + "' does not exist.");
+		}
+		if (localFile.isDirectory()) {
+			throw new IOException("Local file '" + localFile + "' exists but is a directory.");
+		}
+
+		// Check target file
+		Connection conn = getConnection();
+		try {
+			if (destFilePath.isEmpty()) {
+				throw new IOException("Path '" + destFilePath.getPathString() + "' is empty.");
+			}
+
+			int currParentFileId = -1;
+
+			String[] segments = destFilePath.getSegments();
+			for (int i = 0; i < segments.length; i++) {
+				String segment = segments[i];
+				boolean isLastSegment = (i == (segments.length - 1)) ? true : false;
+				String currPathString = destFilePath.getPathString(0, i + 1);
+
+				FileMetadataVO vo = getFileMetadataHandler().getByName(conn, currParentFileId, segment);
+
+				if (!isLastSegment) {
+					// not last segment --- expected to be a directory
+
+					// Note:
+					// Writing data to file. need to make sure parent directories exist.
+
+					// make sure file record exists
+					if (vo == null) {
+						// file record not exists --- create file record for the current directory
+						vo = getFileMetadataHandler().insert(conn, currParentFileId, segment, true, 0);
+					}
+					if (vo == null) {
+						// file record is not created --- failed to create the new file
+						throw new IOException("Path " + currPathString + " cannot be created.");
+					}
+					if (!vo.isDirectory()) {
+						// file record exists, but is not a directory --- invalid path parameter.
+						throw new IOException("Path '" + currPathString + "' exists but is not a directory.");
+					}
+
+					// not the last segment yet --- continue to look for the next segment until the last path segment
+					currParentFileId = vo.getFileId();
+
+				} else {
+					// is last segment --- expected to be a file
+
+					// make sure file record exists
+					if (vo == null) {
+						vo = getFileMetadataHandler().insert(conn, currParentFileId, segment, false, 0);
+					}
+					if (vo == null) {
+						// file record is not created --- failed to create the new file
+						throw new IOException("Path '" + currPathString + "' cannot be created.");
+					}
+					if (vo.isDirectory()) {
+						// target file is a directory --- target is expected to be a file --- invalid path.
+						throw new IOException("Path '" + currPathString + "' exists but is a directory.");
 					}
 
 					// TODO: get database name from Connection and determine which method to call to write file content into.
@@ -568,7 +644,7 @@ public class DatabaseFileSystem implements FileSystem {
 					FileInputStream fis = null;
 					try {
 						fis = new FileInputStream(localFile);
-						FsTableUtil.writeFileContentPostgres(conn, vo.getFileId(), fis, localFile.length());
+						FsTableUtil.writeFileContentPostgres(conn, vo.getFileId(), fis);
 					} finally {
 						IOUtil.closeQuietly(fis, true);
 					}
@@ -607,13 +683,20 @@ public class DatabaseFileSystem implements FileSystem {
 		List<File> encounteredFiles = new ArrayList<File>();
 		File[] memberFiles = localDir.listFiles();
 		for (File memberFile : memberFiles) {
-			copyLocalFileOrDirectoryToFsDirectory(memberFile, destDirPath, encounteredFiles);
+			doCopyLocalFileOrDirectoryToFsDirectory(memberFile, destDirPath, encounteredFiles);
 		}
 
 		return true;
 	}
 
-	protected void copyLocalFileOrDirectoryToFsDirectory(File localFile, Path destDirPath, List<File> encounteredFiles) throws IOException {
+	/**
+	 * 
+	 * @param localFile
+	 * @param destDirPath
+	 * @param encounteredFiles
+	 * @throws IOException
+	 */
+	protected void doCopyLocalFileOrDirectoryToFsDirectory(File localFile, Path destDirPath, List<File> encounteredFiles) throws IOException {
 		if (localFile == null || encounteredFiles.contains(localFile)) {
 			return;
 		} else {
@@ -626,7 +709,7 @@ public class DatabaseFileSystem implements FileSystem {
 
 			File[] memberFiles = localFile.listFiles();
 			for (File memberFile : memberFiles) {
-				copyLocalFileOrDirectoryToFsDirectory(memberFile, newDestDirPath, encounteredFiles);
+				doCopyLocalFileOrDirectoryToFsDirectory(memberFile, newDestDirPath, encounteredFiles);
 			}
 		} else {
 			copyLocalFileToFsDirectory(localFile, destDirPath);

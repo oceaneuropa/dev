@@ -41,24 +41,27 @@ public abstract class FileSystem {
 	 * List all file in the root directory.
 	 * 
 	 * @return
+	 * @throws IOException
 	 */
-	public abstract FileRef[] listRoots();
+	public abstract FileRef[] listRoots() throws IOException;
 
 	/**
 	 * List all files in a directory.
 	 * 
 	 * @param parent
 	 * @return
+	 * @throws IOException
 	 */
-	public abstract FileRef[] listFiles(FileRef parent);
+	public abstract FileRef[] listFiles(FileRef parent) throws IOException;
 
 	/**
 	 * Create a directory.
 	 * 
 	 * @param dir
 	 * @return
+	 * @throws IOException
 	 */
-	public abstract boolean mkdirs(FileRef dir);
+	public abstract boolean mkdirs(FileRef dir) throws IOException;
 
 	/**
 	 * Create a new, empty file if and only if a file with this name does not yet exist.
@@ -98,7 +101,7 @@ public abstract class FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract FileRef uploadLocalFileToFile(File localFile, FileRef destFile) throws IOException;
+	public abstract boolean uploadFileToFile(File localFile, FileRef destFile) throws IOException;
 
 	/**
 	 * Upload a local file to a directory in the FS.
@@ -108,7 +111,7 @@ public abstract class FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract FileRef uploadLocalFileToDirectory(File localFile, FileRef destDir) throws IOException;
+	public abstract boolean uploadFileToDirectory(File localFile, FileRef destDir) throws IOException;
 
 	/**
 	 * Upload a local directory to a directory in the FS.
@@ -119,7 +122,7 @@ public abstract class FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract boolean uploadLocalDirectoryToDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException;
+	public abstract boolean uploadDirectoryToDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException;
 
 	// -----------------------------------------------------------------------------------------
 	// Download file and directory from FS to local

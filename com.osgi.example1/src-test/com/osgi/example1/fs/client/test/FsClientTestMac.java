@@ -38,7 +38,7 @@ public class FsClientTestMac {
 		System.out.println("--- --- --- test001_listRootFiles() --- --- ---");
 
 		try {
-			Path[] paths = this.fsClient.listRootFiles();
+			Path[] paths = this.fsClient.listRoots();
 			for (Path path : paths) {
 				FileSystemUtil.walkFolders(fsClient, path, 0);
 			}

@@ -10,8 +10,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class StatusDTO {
 
-	public static StatusDTO successStatus(String message) {
+	public static StatusDTO success(String message) {
 		return new StatusDTO("200", "success", message);
+	}
+
+	public static StatusDTO status(String code, String status, String message) {
+		return new StatusDTO(code, status, message);
 	}
 
 	@XmlElement

@@ -151,12 +151,11 @@ public class FsTableUtil {
 	 * @param conn
 	 * @param fileId
 	 * @param inputStream
-	 * @param fileLength
 	 * @return
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static boolean writeFileContentPostgres(Connection conn, int fileId, InputStream inputStream, long fileLength) throws SQLException, IOException {
+	public static boolean writeFileContentPostgres(Connection conn, int fileId, InputStream inputStream) throws SQLException, IOException {
 		FileContentVO vo = null;
 		if (fileContentHandler.hasRecordByFileId(conn, fileId)) {
 			vo = fileContentHandler.getByFileId(conn, fileId);
@@ -169,7 +168,6 @@ public class FsTableUtil {
 
 			byte[] bytes = IOUtil.toByteArray(inputStream);
 			int bytesLength = bytes.length;
-			// System.out.println("bytesLength=" + bytesLength + ", fileLength=" + fileLength);
 
 			ByteArrayInputStream bais = null;
 			try {
@@ -392,22 +390,6 @@ public class FsTableUtil {
 				}
 			}
 		}
-	}
-
-	public static FileMetadata createNullFileMetadata() {
-		FileMetadata metadata = new FileMetadata();
-		metadata.setExists(false);
-		metadata.setName(null);
-		metadata.setIsDirectory(false);
-		metadata.setHidden(false);
-		metadata.setPath(null);
-		metadata.setParentPath(null);
-		metadata.setCanExecute(false);
-		metadata.setCanRead(false);
-		metadata.setCanWrite(false);
-		metadata.setLength(-1);
-		metadata.setLastModified(-1);
-		return metadata;
 	}
 
 	public static FileMetadata createNonExistsFileMetadata(Path path) {

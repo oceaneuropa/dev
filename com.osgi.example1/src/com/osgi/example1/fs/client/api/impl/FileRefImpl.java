@@ -1,5 +1,7 @@
 package com.osgi.example1.fs.client.api.impl;
 
+import java.io.IOException;
+
 import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.api.FileRef;
@@ -60,8 +62,28 @@ public class FileRefImpl extends FileRef {
 		return this.fs;
 	}
 
-	protected FileSystemClient getClient() {
+	protected FileSystemClient getFsClient() {
 		return this.fs.getConfiguration().getFileSystemClient();
+	}
+
+	/**
+	 * Throw IOException with ClientException.
+	 * 
+	 * @param e
+	 * @throws IOException
+	 */
+	protected void handleClientException(ClientException e) throws IOException {
+		e.printStackTrace();
+
+		int code = e.getCode();
+		String message = e.getMessage();
+		Throwable t = e.getCause();
+
+		String newMessage = message + " (" + code + ")";
+		if (t != null) {
+			newMessage += " (" + t.getClass().getSimpleName() + ":" + t.getMessage() + ")";
+		}
+		throw new IOException(newMessage);
 	}
 
 	@Override
@@ -85,87 +107,87 @@ public class FileRefImpl extends FileRef {
 	}
 
 	@Override
-	public String getName() {
+	public String getName() throws IOException {
 		String name = null;
 		try {
-			name = getClient().getFileAttribute(this.path, FileMetadata.NAME, String.class);
+			name = getFsClient().getFileAttribute(this.path, FileMetadata.NAME, String.class);
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return name;
 	}
 
 	@Override
-	public boolean isDirectory() {
+	public boolean isDirectory() throws IOException {
 		boolean isDirectory = false;
 		try {
-			isDirectory = getClient().getFileAttribute(this.path, FileMetadata.IS_DIRECTORY, Boolean.class);
+			isDirectory = getFsClient().getFileAttribute(this.path, FileMetadata.IS_DIRECTORY, Boolean.class);
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return isDirectory;
 	}
 
 	@Override
-	public boolean isHidden() {
+	public boolean isHidden() throws IOException {
 		boolean isHidden = false;
 		try {
-			isHidden = getClient().getFileAttribute(this.path, FileMetadata.IS_HIDDEN, Boolean.class);
+			isHidden = getFsClient().getFileAttribute(this.path, FileMetadata.IS_HIDDEN, Boolean.class);
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return isHidden;
 	}
 
 	@Override
-	public boolean exists() {
+	public boolean exists() throws IOException {
 		boolean exists = false;
 		try {
-			exists = getClient().getFileAttribute(this.path, FileMetadata.EXISTS, Boolean.class);
+			exists = getFsClient().getFileAttribute(this.path, FileMetadata.EXISTS, Boolean.class);
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return exists;
 	}
 
 	@Override
-	public boolean canExecute() {
+	public boolean canExecute() throws IOException {
 		boolean canExecute = false;
 		try {
-			canExecute = getClient().getFileAttribute(this.path, FileMetadata.CAN_EXECUTE, Boolean.class);
+			canExecute = getFsClient().getFileAttribute(this.path, FileMetadata.CAN_EXECUTE, Boolean.class);
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return canExecute;
 	}
 
 	@Override
-	public boolean canRead() {
+	public boolean canRead() throws IOException {
 		boolean canRead = false;
 		try {
-			canRead = getClient().getFileAttribute(this.path, FileMetadata.CAN_READ, Boolean.class);
+			canRead = getFsClient().getFileAttribute(this.path, FileMetadata.CAN_READ, Boolean.class);
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return canRead;
 	}
 
 	@Override
-	public boolean canWrite() {
+	public boolean canWrite() throws IOException {
 		boolean canWrite = false;
 		try {
-			canWrite = getClient().getFileAttribute(this.path, FileMetadata.CAN_WRITE, Boolean.class);
+			canWrite = getFsClient().getFileAttribute(this.path, FileMetadata.CAN_WRITE, Boolean.class);
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return canWrite;
 	}
 
 	@Override
-	public long getLength() {
+	public long getLength() throws IOException {
 		long length = 0;
 		try {
-			length = getClient().getFileAttribute(this.path, FileMetadata.LENGTH, Long.class);
+			length = getFsClient().getFileAttribute(this.path, FileMetadata.LENGTH, Long.class);
 			// Object attrValue = getClient().getFileAttribute(this.path, FileMetadata.LENGTH, Long.class);
 			// if (attrValue instanceof Long) {
 			// length = (long) attrValue;
@@ -175,16 +197,16 @@ public class FileRefImpl extends FileRef {
 			// length = Long.valueOf((String) attrValue);
 			// }
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return length;
 	}
 
 	@Override
-	public long getLastModified() {
+	public long getLastModified() throws IOException {
 		long lastModified = 0;
 		try {
-			lastModified = getClient().getFileAttribute(this.path, FileMetadata.LAST_MODIFIED, Long.class);
+			lastModified = getFsClient().getFileAttribute(this.path, FileMetadata.LAST_MODIFIED, Long.class);
 			// Object attrValue = getClient().getFileAttribute(this.path, FileMetadata.LAST_MODIFIED, Long.class);
 			// if (attrValue instanceof Long) {
 			// lastModified = (long) attrValue;
@@ -194,9 +216,24 @@ public class FileRefImpl extends FileRef {
 			// lastModified = Long.valueOf((String) attrValue);
 			// }
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		return lastModified;
+	}
+
+	@Override
+	public boolean createNewFile() throws IOException {
+		return this.fs.createNewFile(this);
+	}
+
+	@Override
+	public boolean mkdirs() throws IOException {
+		return this.fs.mkdirs(this);
+	}
+
+	@Override
+	public boolean delete() throws IOException {
+		return this.fs.delete(this);
 	}
 
 }

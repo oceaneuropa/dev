@@ -31,22 +31,42 @@ public class FileSystemImpl extends FileSystem {
 		return this.config;
 	}
 
-	protected FileSystemClient getClient() {
+	protected FileSystemClient getFsClient() {
 		return this.config.getFileSystemClient();
 	}
 
+	/**
+	 * Throw IOException with ClientException.
+	 * 
+	 * @param e
+	 * @throws IOException
+	 */
+	protected void handleClientException(ClientException e) throws IOException {
+		e.printStackTrace();
+
+		int code = e.getCode();
+		String message = e.getMessage();
+		Throwable t = e.getCause();
+
+		String newMessage = message + " (" + code + ")";
+		if (t != null) {
+			newMessage += " (" + t.getClass().getSimpleName() + ":" + t.getMessage() + ")";
+		}
+		throw new IOException(newMessage);
+	}
+
 	@Override
-	public FileRef[] listRoots() {
+	public FileRef[] listRoots() throws IOException {
 		FileRef[] fileRefs = null;
 		try {
-			Path[] paths = getClient().listRootFiles();
+			Path[] paths = getFsClient().listRoots();
 
 			fileRefs = new FileRef[paths.length];
 			for (int i = 0; i < paths.length; i++) {
 				fileRefs[i] = FileRef.newInstance(this, paths[i].getPathString());
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		if (fileRefs == null) {
 			fileRefs = EMPTY_FILES;
@@ -55,17 +75,17 @@ public class FileSystemImpl extends FileSystem {
 	}
 
 	@Override
-	public FileRef[] listFiles(FileRef parent) {
+	public FileRef[] listFiles(FileRef parent) throws IOException {
 		FileRef[] fileRefs = null;
 		try {
-			Path[] paths = getClient().listFiles(parent.path());
+			Path[] paths = getFsClient().listFiles(parent.path());
 
 			fileRefs = new FileRef[paths.length];
 			for (int i = 0; i < paths.length; i++) {
 				fileRefs[i] = FileRef.newInstance(this, paths[i].getPathString());
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			handleClientException(e);
 		}
 		if (fileRefs == null) {
 			fileRefs = EMPTY_FILES;
@@ -74,17 +94,32 @@ public class FileSystemImpl extends FileSystem {
 	}
 
 	@Override
-	public boolean mkdirs(FileRef dir) {
+	public boolean mkdirs(FileRef dir) throws IOException {
+		try {
+			return getFsClient().mkdirs(dir.path());
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean createNewFile(FileRef file) throws IOException {
+		try {
+			return getFsClient().createNewFile(file.path());
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean delete(FileRef file) throws IOException {
+		try {
+			return getFsClient().delete(file.path());
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
 		return false;
 	}
 
@@ -97,17 +132,32 @@ public class FileSystemImpl extends FileSystem {
 	// Upload local file and directory to FS
 	// -----------------------------------------------------------------------------------------
 	@Override
-	public FileRef uploadLocalFileToFile(File localFile, FileRef destFile) throws IOException {
-		return null;
+	public boolean uploadFileToFile(File localFile, FileRef destFile) throws IOException {
+		try {
+			return getFsClient().uploadFileToFile(localFile, destFile.path());
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
+		return false;
 	}
 
 	@Override
-	public FileRef uploadLocalFileToDirectory(File localFile, FileRef destDir) throws IOException {
-		return null;
+	public boolean uploadFileToDirectory(File localFile, FileRef destDir) throws IOException {
+		try {
+			return getFsClient().uploadFileToDirectory(localFile, destDir.path());
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
+		return false;
 	}
 
 	@Override
-	public boolean uploadLocalDirectoryToDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException {
+	public boolean uploadDirectoryToDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException {
+		try {
+			return getFsClient().uploadDirectoryToDirectory(localDir, destDir.path(), includingSourceDir);
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
 		return false;
 	}
 

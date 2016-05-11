@@ -16,10 +16,10 @@ import com.osgi.example1.fs.server.service.FileSystem;
 
 @javax.ws.rs.Path("/paths")
 @Produces(MediaType.APPLICATION_JSON)
-public class FileSystemPathsResource extends AbstractApplicationResource {
+public class FilePathResource extends AbstractApplicationResource {
 
 	/**
-	 * Get files.
+	 * Get file paths with parent path.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/fs/v1/paths
 	 * 
@@ -28,29 +28,24 @@ public class FileSystemPathsResource extends AbstractApplicationResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getFiles(@QueryParam("parentPath") String parentPath) {
-		List<Path> results = new ArrayList<Path>();
+	public Response get(@QueryParam("parentPath") String parentPath) {
+		List<Path> resultPaths = new ArrayList<Path>();
 
 		FileSystem fs = getService(FileSystem.class);
-
-		Path parent = null;
-		if (parentPath != null) {
-			parent = new Path(parentPath);
-		}
+		Path parent = (parentPath != null) ? new Path(parentPath) : null;
 
 		if (parent == null || parent.isEmpty() || parent.isRoot()) {
-			Path[] paths = fs.listRootFiles();
+			Path[] paths = fs.listRoots();
 			for (Path path : paths) {
-				results.add(path);
+				resultPaths.add(path);
 			}
 		} else {
 			Path[] paths = fs.listFiles(parent);
 			for (Path path : paths) {
-				results.add(path);
+				resultPaths.add(path);
 			}
 		}
-
-		return Response.ok().entity(results).build();
+		return Response.ok().entity(resultPaths).build();
 	}
 
 }

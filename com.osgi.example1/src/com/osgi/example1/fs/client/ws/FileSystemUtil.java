@@ -1,5 +1,7 @@
 package com.osgi.example1.fs.client.ws;
 
+import java.io.IOException;
+
 import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.api.FileRef;
@@ -36,9 +38,9 @@ public class FileSystemUtil {
 	 * @param fs
 	 * @param file
 	 * @param level
-	 * @throws ClientException
+	 * @throws IOException
 	 */
-	public static void walkFolders(FileSystem fs, FileRef file, int level) throws ClientException {
+	public static void walkFolders(FileSystem fs, FileRef file, int level) throws IOException {
 		System.out.println(getSpaces(level) + file.getName() + " (" + file.getPath() + ")");
 
 		if (file.isDirectory()) {

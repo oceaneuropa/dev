@@ -40,7 +40,7 @@ public class LocalFileSystemTestMac {
 	public void testListRootFiles() throws IOException {
 		System.out.println("--- --- --- testListRootFiles() --- --- ---");
 
-		Path[] memberPaths = fs.listRootFiles();
+		Path[] memberPaths = fs.listRoots();
 		for (Path memberPath : memberPaths) {
 			// FileMetaData fileMetaData = fs.getFileMetaData(rootPath);
 			// System.out.println("rootPath.getName() = " + rootPath.getName());

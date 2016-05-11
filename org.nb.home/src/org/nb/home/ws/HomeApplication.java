@@ -6,8 +6,8 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
-import org.origin.common.rest.server.Constants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;

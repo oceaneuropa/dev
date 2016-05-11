@@ -1,18 +1,28 @@
 package com.osgi.example1.fs.client.ws;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.dto.StatusDTO;
 import org.origin.common.util.JSONUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +32,8 @@ import com.osgi.example1.fs.common.Path;
 public class FileSystemClient extends AbstractClient {
 
 	protected static List<Path> EMPTY_PATHS = new ArrayList<Path>();
+	protected static String ACTION_MKDIRS = "mkdirs";
+	protected static String ACTION_CREATE_NEW_FILE = "createNewFile";
 
 	/**
 	 * 
@@ -39,7 +51,7 @@ public class FileSystemClient extends AbstractClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public Path[] listRootFiles() throws ClientException {
+	public Path[] listRoots() throws ClientException {
 		return listFiles(null);
 	}
 
@@ -141,6 +153,246 @@ public class FileSystemClient extends AbstractClient {
 			handleException(e);
 		}
 		return result;
+	}
+
+	/**
+	 * Create directories for a Path.
+	 * 
+	 * Request URL (POST): {scheme}://{host}:{port}/fs/v1/metadata?path={pathString}&action=mkdirs
+	 * 
+	 * @param path
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean mkdirs(Path path) throws ClientException {
+		WebTarget target = getRootPath().path("metadata").queryParam("path", path.getPathString()).queryParam("action", ACTION_MKDIRS);
+		try {
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).post(null);
+			checkResponse(response);
+
+			// String responseString = response.readEntity(String.class);
+			// int responseStatus = response.getStatus();
+			// System.out.println("responseString = " + responseString);
+			// System.out.println("responseStatus = " + responseStatus);
+
+			StatusDTO status = response.readEntity(StatusDTO.class);
+			if (status != null && "success".equals(status.getStatus())) {
+				return true;
+			}
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return false;
+	}
+
+	/**
+	 * Create new empty file for a Path.
+	 * 
+	 * Request URL (POST): {scheme}://{host}:{port}/fs/v1/metadata?path={pathString}&action=createNewFile
+	 * 
+	 * @param path
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean createNewFile(Path path) throws ClientException {
+		WebTarget target = getRootPath().path("metadata").queryParam("path", path.getPathString()).queryParam("action", ACTION_CREATE_NEW_FILE);
+		try {
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).post(null);
+			checkResponse(response);
+
+			// String responseString = response.readEntity(String.class);
+			// int responseStatus = response.getStatus();
+			// System.out.println("responseString = " + responseString);
+			// System.out.println("responseStatus = " + responseStatus);
+
+			StatusDTO status = response.readEntity(StatusDTO.class);
+			if (status != null && "success".equals(status.getStatus())) {
+				return true;
+			}
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return false;
+	}
+
+	/**
+	 * Upload local file to dest file path.
+	 * 
+	 * @param localFile
+	 * @param destFilePath
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	public boolean uploadFileToFile(File localFile, Path destFilePath) throws ClientException, IOException {
+		// Check source file
+		if (!localFile.exists()) {
+			throw new IOException("Local file '" + localFile + "' does not exist.");
+		}
+		if (localFile.isDirectory()) {
+			throw new IOException("Local file '" + localFile + "' exists but is a directory.");
+		}
+
+		try {
+			MultiPart multipart = new FormDataMultiPart();
+			{
+				FileDataBodyPart filePart = new FileDataBodyPart("file", localFile, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+				{
+					FormDataContentDisposition.FormDataContentDispositionBuilder formBuilder = FormDataContentDisposition.name(localFile.getName());
+					formBuilder.fileName(URLEncoder.encode(localFile.getName(), "UTF-8"));
+					formBuilder.size(localFile.length());
+					formBuilder.modificationDate(new Date(localFile.lastModified()));
+					filePart.setFormDataContentDisposition(formBuilder.build());
+				}
+				multipart.bodyPart(filePart);
+			}
+
+			WebTarget target = getRootPath().path("content").queryParam("path", destFilePath.getPathString());
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).post(Entity.entity(multipart, MediaType.MULTIPART_FORM_DATA));
+			checkResponse(response);
+
+			StatusDTO status = response.readEntity(StatusDTO.class);
+			if (status != null && "success".equals(status.getStatus())) {
+				return true;
+			}
+
+		} catch (ClientException e) {
+			handleException(e);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Upload local file to dest directory path.
+	 * 
+	 * @param localFile
+	 * @param destFilePath
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	public boolean uploadFileToDirectory(File localFile, Path destDirPath) throws ClientException, IOException {
+		Path destFilePath = new Path(destDirPath, localFile.getName());
+		return uploadFileToFile(localFile, destFilePath);
+	}
+
+	/**
+	 * Upload local directory to dest directory path.
+	 * 
+	 * @param localDir
+	 * @param destDirPath
+	 * @param includingSourceDir
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	public boolean uploadDirectoryToDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws ClientException, IOException {
+		// Check source directory
+		if (!localDir.exists()) {
+			throw new IOException("Local directory '" + localDir + "' does not exist.");
+		}
+		if (!localDir.isDirectory()) {
+			throw new IOException("Local directory '" + localDir + "' exists but is not a directory.");
+		}
+
+		if (includingSourceDir) {
+			destDirPath = new Path(destDirPath, localDir.getName());
+		}
+
+		// Recursively copy every file from the localDir to the destDirPath.
+		List<File> encounteredFiles = new ArrayList<File>();
+		File[] memberFiles = localDir.listFiles();
+		for (File memberFile : memberFiles) {
+			boolean succeed = doUploadDirectoryToDirectory(memberFile, destDirPath, encounteredFiles);
+			if (!succeed) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param localFile
+	 * @param destDirPath
+	 * @param encounteredFiles
+	 * @throws IOException
+	 * @throws ClientException
+	 */
+	protected boolean doUploadDirectoryToDirectory(File localFile, Path destDirPath, List<File> encounteredFiles) throws IOException {
+		if (localFile == null || encounteredFiles.contains(localFile)) {
+			return true;
+		} else {
+			encounteredFiles.add(localFile);
+		}
+
+		if (localFile.isDirectory()) {
+			Path newDestDirPath = new Path(destDirPath, localFile.getName());
+			try {
+				mkdirs(newDestDirPath);
+			} catch (ClientException e) {
+				e.printStackTrace();
+				return false;
+			}
+
+			File[] memberFiles = localFile.listFiles();
+			for (File memberFile : memberFiles) {
+				boolean succeed = doUploadDirectoryToDirectory(memberFile, newDestDirPath, encounteredFiles);
+				if (!succeed) {
+					return false;
+				}
+			}
+			return true;
+
+		} else {
+			try {
+				return uploadFileToDirectory(localFile, destDirPath);
+			} catch (ClientException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+	}
+
+	/**
+	 * Delete a file or a directory.
+	 * 
+	 * Request URL (POST): {scheme}://{host}:{port}/fs/v1/metadata?path={pathString}&action=createNewFile
+	 * 
+	 * @param path
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean delete(Path path) throws ClientException {
+		WebTarget target = getRootPath().path("metadata").queryParam("path", path.getPathString());
+		try {
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).delete();
+			checkResponse(response);
+
+			// String responseString = response.readEntity(String.class);
+			// int responseStatus = response.getStatus();
+			// System.out.println("responseString = " + responseString);
+			// System.out.println("responseStatus = " + responseStatus);
+
+			StatusDTO status = response.readEntity(StatusDTO.class);
+			if (status != null && "success".equals(status.getStatus())) {
+				return true;
+			}
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return false;
 	}
 
 	/**

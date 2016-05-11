@@ -43,7 +43,7 @@ public class DatabaseFileSystemTestMac {
 	public void test001_listRootFiles() throws IOException {
 		System.out.println("--- --- --- test001_listRootFiles() --- --- ---");
 
-		Path[] memberPaths = fs.listRootFiles();
+		Path[] memberPaths = fs.listRoots();
 		for (Path memberPath : memberPaths) {
 			// FileMetaData fileMetaData = fs.getFileMetaData(rootPath);
 			// System.out.println("rootPath.getName() = " + rootPath.getName());

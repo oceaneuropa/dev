@@ -65,7 +65,7 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Path[] listRootFiles() {
+	public Path[] listRoots() {
 		File[] rootFiles = getHomeDirectory().listFiles();
 		Path[] paths = new Path[rootFiles.length];
 		for (int i = 0; i < rootFiles.length; i++) {
@@ -92,6 +92,12 @@ public class LocalFileSystem implements FileSystem {
 	public boolean exists(Path path) {
 		File file = new File(getHomeDirectory(), path.getPathString());
 		return (file != null && file.exists()) ? true : false;
+	}
+
+	@Override
+	public boolean isDirectory(Path path) {
+		FileMetadata metadata = getFileMetaData(path);
+		return (metadata != null && metadata.isDirectory()) ? true : false;
 	}
 
 	@Override
@@ -136,6 +142,31 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
+	public Path copyInputStreamToFsFile(InputStream inputStream, Path destFilePath) throws IOException {
+		// Check inputStream
+		if (inputStream == null) {
+			throw new IOException("InputStream is null.");
+		}
+
+		// Check target file
+		File destFile = new File(getHomeDirectory(), destFilePath.getPathString());
+		if (destFile.isDirectory()) {
+			throw new IOException("Path '" + destFile + "' exists but is a directory.");
+		}
+		if (destFile.getParentFile() != null && !destFile.getParentFile().exists()) {
+			destFile.getParentFile().mkdirs();
+		}
+		if (destFile.exists() && !destFile.canWrite()) {
+			throw new IOException("Path '" + destFile + "' exists but is read-only.");
+		}
+
+		// Copy input stream to file.
+		FileUtils.copyInputStreamToFile(inputStream, destFile);
+
+		return destFilePath;
+	}
+
+	@Override
 	public Path copyLocalFileToFsFile(File localFile, Path destFilePath) throws IOException {
 		// Check source file
 		if (!localFile.exists()) {
@@ -148,13 +179,13 @@ public class LocalFileSystem implements FileSystem {
 		// Check target file
 		File destFile = new File(getHomeDirectory(), destFilePath.getPathString());
 		if (destFile.isDirectory()) {
-			throw new IOException("Destination '" + destFile + "' exists but is a directory.");
+			throw new IOException("Path '" + destFile + "' exists but is a directory.");
 		}
 		if (destFile.getParentFile() != null && !destFile.getParentFile().exists()) {
 			destFile.getParentFile().mkdirs();
 		}
 		if (destFile.exists() && !destFile.canWrite()) {
-			throw new IOException("Destination '" + destFile + "' exists but is read-only");
+			throw new IOException("Path '" + destFile + "' exists but is read-only");
 		}
 
 		// Copy file
@@ -176,7 +207,7 @@ public class LocalFileSystem implements FileSystem {
 		// Check target directory
 		File destDir = new File(getHomeDirectory(), destDirPath.getPathString());
 		if (destDir.exists() && !destDir.isDirectory()) {
-			throw new IllegalArgumentException("Destination '" + destDir + "' is not a directory");
+			throw new IllegalArgumentException("Path '" + destDir + "' is not a directory.");
 		}
 		if (!destDir.exists()) {
 			destDir.mkdirs();
@@ -184,7 +215,7 @@ public class LocalFileSystem implements FileSystem {
 
 		File destFile = new File(destDir, localFile.getName());
 		if (destFile.exists() && !destFile.canWrite()) {
-			throw new IOException("Destination '" + destFile + "' exists but is read-only");
+			throw new IOException("Path '" + destFile + "' exists but is read-only.");
 		}
 
 		// Copy file
@@ -206,7 +237,7 @@ public class LocalFileSystem implements FileSystem {
 		// Check target directory
 		File destDir = new File(getHomeDirectory(), destDirPath.getPathString());
 		if (destDir.exists() && !destDir.isDirectory()) {
-			throw new IllegalArgumentException("Destination '" + destDir + "' is not a directory");
+			throw new IllegalArgumentException("Path '" + destDir + "' exists but is not a directory.");
 		}
 		if (!destDir.exists()) {
 			destDir.mkdirs();

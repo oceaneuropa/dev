@@ -43,7 +43,7 @@ public class DatabaseFileSystemTestWin {
 	public void test001_listRootFiles() throws IOException {
 		System.out.println("--- --- --- test001_listRootFiles() --- --- ---");
 
-		Path[] memberPaths = fs.listRootFiles();
+		Path[] memberPaths = fs.listRoots();
 		for (Path memberPath : memberPaths) {
 			FileSystemUtil.walkFolders(fs, memberPath, 0);
 		}
@@ -153,7 +153,7 @@ public class DatabaseFileSystemTestWin {
 
 		File localDir = new File("C:/downloads/test_target");
 
-		Path[] paths = fs.listRootFiles();
+		Path[] paths = fs.listRoots();
 		for (Path path : paths) {
 			FileSystemUtil.copyFsFileToLocalDirectory(fs, path, localDir);
 		}
@@ -195,7 +195,7 @@ public class DatabaseFileSystemTestWin {
 
 		File localDir = new File("C:/downloads/test_target");
 
-		Path[] paths = fs.listRootFiles();
+		Path[] paths = fs.listRoots();
 		for (Path path : paths) {
 			FileSystemUtil.copyFsFileToLocalDirectory(fs, path, localDir);
 		}

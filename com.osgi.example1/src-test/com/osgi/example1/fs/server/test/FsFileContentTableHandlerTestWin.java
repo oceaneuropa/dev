@@ -69,30 +69,30 @@ public class FsFileContentTableHandlerTestWin {
 			File file5 = new File("C:/downloads/test_source/Song For The Sun.mp3");
 			File file6 = new File("C:/downloads/test_source/swagger_v01.rar");
 
-			long length1 = file1.length();
-			long length2 = file2.length();
-			long length3 = file3.length();
-			long length4 = file4.length();
-			long length5 = file5.length();
-			long length6 = file6.length();
+			// long length1 = file1.length();
+			// long length2 = file2.length();
+			// long length3 = file3.length();
+			// long length4 = file4.length();
+			// long length5 = file5.length();
+			// long length6 = file6.length();
 
 			is1 = new FileInputStream(file1);
-			boolean succeed1 = FsTableUtil.writeFileContentPostgres(conn, 1, is1, length1);
+			boolean succeed1 = FsTableUtil.writeFileContentPostgres(conn, 1, is1);
 
 			is2 = new FileInputStream(file2);
-			boolean succeed2 = FsTableUtil.writeFileContentPostgres(conn, 2, is2, length2);
+			boolean succeed2 = FsTableUtil.writeFileContentPostgres(conn, 2, is2);
 
 			is3 = new FileInputStream(file3);
-			boolean succeed3 = FsTableUtil.writeFileContentPostgres(conn, 3, is3, length3);
+			boolean succeed3 = FsTableUtil.writeFileContentPostgres(conn, 3, is3);
 
 			is4 = new FileInputStream(file4);
-			boolean succeed4 = FsTableUtil.writeFileContentPostgres(conn, 4, is4, length4);
+			boolean succeed4 = FsTableUtil.writeFileContentPostgres(conn, 4, is4);
 
 			is5 = new FileInputStream(file5);
-			boolean succeed5 = FsTableUtil.writeFileContentPostgres(conn, 5, is5, length5);
+			boolean succeed5 = FsTableUtil.writeFileContentPostgres(conn, 5, is5);
 
 			is6 = new FileInputStream(file6);
-			boolean succeed6 = FsTableUtil.writeFileContentPostgres(conn, 6, is6, length6);
+			boolean succeed6 = FsTableUtil.writeFileContentPostgres(conn, 6, is6);
 
 			System.out.println("succeed1 = " + succeed1);
 			System.out.println("succeed2 = " + succeed2);

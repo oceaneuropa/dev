@@ -8,7 +8,6 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.api.FileRef;
 import com.osgi.example1.fs.client.api.FileSystem;
@@ -42,7 +41,7 @@ public class FsTestWin {
 			for (FileRef file : files) {
 				FileSystemUtil.walkFolders(fs, file, 0);
 			}
-		} catch (ClientException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
@@ -88,7 +87,7 @@ public class FsTestWin {
 			}
 			System.out.println();
 
-		} catch (ClientException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

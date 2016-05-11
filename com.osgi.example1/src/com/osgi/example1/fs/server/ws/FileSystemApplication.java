@@ -6,8 +6,8 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
-import org.origin.common.rest.server.Constants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class FileSystemApplication extends AbstractApplication {
 	@Override
 	public void start() {
 		// logger.debug("FileSystemApplication.start()");
-		System.out.println("FileSystemApplication.start()");
+		// System.out.println("FileSystemApplication.start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.CONTEXT_ROOT, contextRoot);
@@ -43,7 +43,7 @@ public class FileSystemApplication extends AbstractApplication {
 	@Override
 	public void stop() {
 		// logger.debug("FileSystemApplication.stop()");
-		System.out.println("FileSystemApplication.stop()");
+		// System.out.println("FileSystemApplication.stop()");
 
 		if (this.serviceRegistration != null) {
 			this.serviceRegistration.unregister();
@@ -56,8 +56,9 @@ public class FileSystemApplication extends AbstractApplication {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 
 		// resources
-		classes.add(FileSystemPathsResource.class);
-		classes.add(FileSystemMetadataResource.class);
+		classes.add(FilePathResource.class);
+		classes.add(FileMetadataResource.class);
+		classes.add(FileContentResource.class);
 
 		// resolvers
 		classes.add(FileSystemResolver.class);

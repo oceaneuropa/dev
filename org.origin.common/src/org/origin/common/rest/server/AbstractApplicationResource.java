@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
+import org.origin.common.rest.dto.ErrorDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +27,22 @@ public class AbstractApplicationResource {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}
 		return service;
+	}
+
+	/**
+	 * Handle Exception and create ErrorDTO from it.
+	 * 
+	 * @param e
+	 * @param errorCode
+	 * @param printStackTrace
+	 * @return
+	 */
+	protected ErrorDTO handleError(Exception e, String errorCode, boolean printStackTrace) {
+		if (printStackTrace) {
+			e.printStackTrace();	
+		}
+		logger.error(e.getMessage());
+		return ErrorDTO.toDTO(e, errorCode);
 	}
 
 }

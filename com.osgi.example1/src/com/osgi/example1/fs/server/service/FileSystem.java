@@ -24,7 +24,7 @@ public interface FileSystem extends IAdaptable {
 	public Configuration getConfiguration();
 
 	/**
-	 * Get file meta data.
+	 * Get file metadata.
 	 * 
 	 * @param path
 	 * @return
@@ -32,14 +32,14 @@ public interface FileSystem extends IAdaptable {
 	public FileMetadata getFileMetaData(Path path);
 
 	/**
-	 * List all file in the root directory.
+	 * List files in root directory.
 	 * 
 	 * @return
 	 */
-	public Path[] listRootFiles();
+	public Path[] listRoots();
 
 	/**
-	 * List all files in a directory.
+	 * List files in a directory.
 	 * 
 	 * @param parent
 	 * @return
@@ -53,6 +53,14 @@ public interface FileSystem extends IAdaptable {
 	 * @return
 	 */
 	public boolean exists(Path path);
+
+	/**
+	 * Check whether a path is a directory.
+	 * 
+	 * @param path
+	 * @return
+	 */
+	public boolean isDirectory(Path path);
 
 	/**
 	 * Create a directory.
@@ -88,6 +96,16 @@ public interface FileSystem extends IAdaptable {
 	 * @throws IOException
 	 */
 	public InputStream getInputStream(Path path) throws IOException;
+
+	/**
+	 * Copy the file content read from a input stream to a file in the FS.
+	 * 
+	 * @param inputStream
+	 * @param destFilePath
+	 * @return
+	 * @throws IOException
+	 */
+	public Path copyInputStreamToFsFile(InputStream inputStream, Path destFilePath) throws IOException;
 
 	/**
 	 * Copy a local file to a file in the FS.
