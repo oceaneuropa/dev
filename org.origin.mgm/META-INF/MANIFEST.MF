@@ -6,9 +6,9 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.origin.mgm.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: com.mysql.jdbc,
- javax.ws.rs;version="2.0.1",
- javax.ws.rs.core;version="2.0.1",
- javax.ws.rs.ext;version="2.0.1",
+ javax.ws.rs,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
  org.json;version="2015.11.23",
  org.junit,
  org.junit.runner,
