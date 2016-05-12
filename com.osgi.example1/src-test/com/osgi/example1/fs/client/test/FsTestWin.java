@@ -1,8 +1,10 @@
 package com.osgi.example1.fs.client.test;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
@@ -48,6 +50,7 @@ public class FsTestWin {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test002_listFiles() throws IOException {
 		System.out.println("--- --- --- test002_listFiles() --- --- ---");
@@ -90,6 +93,170 @@ public class FsTestWin {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		System.out.println();
+	}
+
+	@Test
+	public void test003_createFiles() throws IOException {
+		System.out.println("--- --- --- test003_createFiles() --- --- ---");
+
+		FileRef dir1 = FileRef.newInstance(fs, "/test1");
+		FileRef dir2 = FileRef.newInstance(fs, "/test1/tmp1");
+		FileRef dir3 = FileRef.newInstance(fs, "/test1/tmp2");
+		FileRef file1 = FileRef.newInstance(fs, "/test1/newFile1.txt");
+		FileRef file2 = FileRef.newInstance(fs, "/test1/tmp1/newFile2.txt");
+		FileRef file3 = FileRef.newInstance(fs, "/test1/tmp2/newFile3.txt");
+
+		if (!dir1.exists()) {
+			boolean succeed = dir1.mkdirs();
+			if (succeed) {
+				System.out.println("Directory '" + dir1.getPath() + "' is created.");
+			} else {
+				System.out.println("Directory '" + dir1.getPath() + "' is not created.");
+			}
+		} else {
+			System.out.println("Directory '" + dir1.getPath() + "' already exists.");
+		}
+
+		if (!dir2.exists()) {
+			boolean succeed = dir2.mkdirs();
+			if (succeed) {
+				System.out.println("Directory '" + dir2.getPath() + "' is created.");
+			} else {
+				System.out.println("Directory '" + dir2.getPath() + "' is not created.");
+			}
+		} else {
+			System.out.println("Directory '" + dir2.getPath() + "' already exists.");
+		}
+
+		if (!dir3.exists()) {
+			boolean succeed = dir2.mkdirs();
+			if (succeed) {
+				System.out.println("Directory '" + dir3.getPath() + "' is created.");
+			} else {
+				System.out.println("Directory '" + dir3.getPath() + "' is not created.");
+			}
+		} else {
+			System.out.println("Directory '" + dir3.getPath() + "' already exists.");
+		}
+
+		if (!file1.exists()) {
+			boolean succeed = file1.createNewFile();
+			if (succeed) {
+				System.out.println("File '" + file1.getPath() + "' is created.");
+			} else {
+				System.out.println("File '" + file1.getPath() + "' is not created.");
+			}
+		} else {
+			System.out.println("File '" + file1.getPath() + "' already exists.");
+		}
+
+		if (!file2.exists()) {
+			boolean succeed = file2.createNewFile();
+			if (succeed) {
+				System.out.println("File '" + file2.getPath() + "' is created.");
+			} else {
+				System.out.println("File '" + file2.getPath() + "' is not created.");
+			}
+		} else {
+			System.out.println("File '" + file2.getPath() + "' already exists.");
+		}
+
+		if (!file3.exists()) {
+			boolean succeed = file3.createNewFile();
+			if (succeed) {
+				System.out.println("File '" + file3.getPath() + "' is created.");
+			} else {
+				System.out.println("File '" + file3.getPath() + "' is not created.");
+			}
+		} else {
+			System.out.println("File '" + file3.getPath() + "' already exists.");
+		}
+
+		System.out.println();
+	}
+
+	@Test
+	public void test004_uploadFiles() throws IOException {
+		System.out.println("--- --- --- test004_uploadFiles() --- --- ---");
+
+		File localDir = new File("C:/downloads/test_source2/test2");
+		FileRef refDir = FileRef.newInstance(fs, "/");
+		boolean succeed = fs.uploadDirectoryToFsDirectory(localDir, refDir, true);
+
+		if (succeed) {
+			System.out.println(localDir.getAbsolutePath() + " is uploaded to " + refDir.getPath());
+		} else {
+			System.out.println("Failed to upload " + localDir.getAbsolutePath());
+		}
+
+		System.out.println();
+	}
+
+	@Ignore
+	@Test
+	public void test005_downloadFiles() throws IOException {
+		System.out.println("--- --- --- test005_downloadFiles() --- --- ---");
+
+		FileRef refFile1 = FileRef.newInstance(fs, "/test2/readme.txt");
+		FileRef refFile2 = FileRef.newInstance(fs, "/test2/Smokingpipes_2016-01-22.pdf");
+
+		File dir = new File("C:/downloads/test_target2/test2");
+		File localFile1 = new File(dir, refFile1.getName());
+		File localFile2 = new File(dir, refFile2.getName());
+
+		boolean succeed1 = fs.downloadFsFileToFile(refFile1, localFile1);
+		boolean succeed2 = fs.downloadFsFileToFile(refFile2, localFile2);
+
+		if (succeed1) {
+			System.out.println(refFile1.getPath() + " is downloaded to " + localFile1.getAbsolutePath());
+		} else {
+			System.out.println("Failed to download " + refFile1.getPath());
+		}
+		if (succeed2) {
+			System.out.println(refFile2.getPath() + " is downloaded to " + localFile2.getAbsolutePath());
+		} else {
+			System.out.println("Failed to download " + refFile2.getPath());
+		}
+
+		System.out.println();
+	}
+
+	@Test
+	public void test006_downloadDirectories() throws IOException {
+		System.out.println("--- --- --- test006_downloadDirectories() --- --- ---");
+
+		FileRef refDir = FileRef.newInstance(fs, "/test2");
+		File dir = new File("C:/downloads/test_target2");
+
+		boolean succeed = fs.downloadFsDirectoryToDirectory(refDir, dir, true);
+
+		if (succeed) {
+			System.out.println(refDir.getPath() + " is downloaded to " + dir.getAbsolutePath());
+		} else {
+			System.out.println("Failed to download " + refDir.getPath());
+		}
+
+		System.out.println();
+	}
+
+	@Ignore
+	@Test
+	public void test007_deleteFiles() throws IOException {
+		System.out.println("--- --- --- test007_deleteFiles() --- --- ---");
+
+		FileRef refDir = FileRef.newInstance(fs, "/test2/images");
+		FileRef refFile = FileRef.newInstance(fs, "/test2/readme.txt");
+		FileRef refDir2 = FileRef.newInstance(fs, "/test2");
+
+		boolean succeed1 = refDir.delete();
+		boolean succeed2 = refFile.delete();
+		boolean succeed3 = refDir2.delete();
+
+		System.out.println(refDir.getPath() + " is deleted? " + succeed1);
+		System.out.println(refFile.getPath() + " is deleted? " + succeed2);
+		System.out.println(refDir2.getPath() + " is deleted? " + succeed3);
 
 		System.out.println();
 	}
