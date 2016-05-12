@@ -3,6 +3,7 @@ package com.osgi.example1.fs.client.api;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import com.osgi.example1.fs.client.api.impl.FileRefImpl;
 import com.osgi.example1.fs.client.api.impl.FileSystemImpl;
@@ -82,13 +83,32 @@ public abstract class FileSystem {
 	public abstract boolean delete(FileRef file) throws IOException;
 
 	/**
-	 * Get the input stream of a file.
+	 * Get the InputStream of a FileRef.
 	 * 
-	 * @param path
-	 * @return InputStream of the file. The client which calls this method is responsible for closing the InputStream object.
+	 * @param fileRef
+	 * @return InputStream of the file. The client which calls this method is responsible for closing the InputStream.
 	 * @throws IOException
 	 */
-	public abstract InputStream getInputStream(Path path) throws IOException;
+	public abstract InputStream getInputStream(FileRef fileRef) throws IOException;
+
+	/**
+	 * Get the OutputStream of a FileRef.
+	 * 
+	 * @param fileRef
+	 * @return OutputStream of the file. The client which calls this method is responsible for closing the OutputStream.
+	 * @throws IOException
+	 */
+	public abstract OutputStream getOutputStream(FileRef fileRef) throws IOException;
+
+	/**
+	 * Upload a InputStream to a file in the FS.
+	 * 
+	 * @param input
+	 * @param destFile
+	 * @return
+	 * @throws IOException
+	 */
+	public abstract boolean uploadInputStreamToFsFile(InputStream input, FileRef destFile) throws IOException;
 
 	/**
 	 * Upload a local file to a file in the FS.
@@ -120,6 +140,16 @@ public abstract class FileSystem {
 	 * @throws IOException
 	 */
 	public abstract boolean uploadDirectoryToFsDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException;
+
+	/**
+	 * Download a file from FS and write the file content to a OutputStream.
+	 * 
+	 * @param sourceFileRef
+	 * @param output
+	 * @return
+	 * @throws IOException
+	 */
+	public abstract boolean downloadFsFileToOutputStream(FileRef sourceFileRef, OutputStream output) throws IOException;
 
 	/**
 	 * Download a file from the FS to a local file.

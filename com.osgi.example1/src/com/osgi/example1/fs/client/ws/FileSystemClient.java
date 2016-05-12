@@ -22,6 +22,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -368,6 +369,36 @@ public class FileSystemClient extends AbstractClient {
 	}
 
 	/**
+	 * Upload file content read from InputStream to dest file path.
+	 * 
+	 * @param input
+	 * @param destFilePath
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	public boolean uploadInputStreamToFsFile(InputStream input, Path destFilePath) throws ClientException, IOException {
+		try {
+			MultiPart multipart = new FormDataMultiPart();
+			StreamDataBodyPart filePart = new StreamDataBodyPart("file", input, "file", MediaType.APPLICATION_OCTET_STREAM_TYPE);
+			multipart.bodyPart(filePart);
+
+			WebTarget target = getRootPath().path("content").queryParam("path", destFilePath.getPathString());
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).post(Entity.entity(multipart, multipart.getMediaType()));
+			checkResponse(response);
+
+			StatusDTO status = response.readEntity(StatusDTO.class);
+			if (status != null && "success".equals(status.getStatus())) {
+				return true;
+			}
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return false;
+	}
+
+	/**
 	 * Upload local file to dest file path.
 	 * 
 	 * @param localFile
@@ -508,6 +539,52 @@ public class FileSystemClient extends AbstractClient {
 				return false;
 			}
 		}
+	}
+
+	/**
+	 * Download file from FS and write the file content to a OutputStream.
+	 * 
+	 * @param sourceFilePath
+	 * @param output
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	public boolean downloadFsFileToOutputStream(Path sourceFilePath, OutputStream output) throws ClientException, IOException {
+		// Check source
+		if (sourceFilePath.isRoot()) {
+			throw new IOException("Source path '" + sourceFilePath.getPathString() + "' is not a file.");
+		}
+		if (sourceFilePath.isEmpty()) {
+			throw new IOException("Source path '" + sourceFilePath.getPathString() + "' is empty.");
+		}
+		boolean exists = exists(sourceFilePath);
+		if (!exists) {
+			throw new IOException("Source path '" + sourceFilePath.getPathString() + "' does not exist.");
+		}
+		boolean isDirectory = isDirectory(sourceFilePath);
+		if (isDirectory) {
+			throw new IOException("Source path '" + sourceFilePath.getPathString() + "' exists but is a directory.");
+		}
+
+		InputStream input = null;
+		try {
+			WebTarget target = getRootPath().path("content").queryParam("path", sourceFilePath.getPathString());
+			Builder builder = target.request(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			input = response.readEntity(InputStream.class);
+
+			if (input != null) {
+				IOUtil.copy(input, output);
+			}
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(input, true);
+		}
+		return true;
 	}
 
 	/**

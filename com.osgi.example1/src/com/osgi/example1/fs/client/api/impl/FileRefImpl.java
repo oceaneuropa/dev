@@ -1,6 +1,8 @@
 package com.osgi.example1.fs.client.api.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.origin.common.rest.client.ClientException;
 
@@ -218,6 +220,16 @@ public class FileRefImpl extends FileRef {
 	@Override
 	public boolean delete() throws IOException {
 		return this.fs.delete(this);
+	}
+
+	@Override
+	public InputStream getInputStream(FileRef fileRef) throws IOException {
+		return this.fs.getInputStream(this);
+	}
+
+	@Override
+	public OutputStream getOutputStream(FileRef fileRef) throws IOException {
+		return this.fs.getOutputStream(this);
 	}
 
 }

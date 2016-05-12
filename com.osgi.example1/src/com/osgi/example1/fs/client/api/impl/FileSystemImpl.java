@@ -3,10 +3,13 @@ package com.osgi.example1.fs.client.api.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.api.FileRef;
+import com.osgi.example1.fs.client.api.FileRefInputStream;
+import com.osgi.example1.fs.client.api.FileRefOutputStream;
 import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.api.FileSystemConfiguration;
 import com.osgi.example1.fs.client.ws.FileSystemClient;
@@ -124,8 +127,23 @@ public class FileSystemImpl extends FileSystem {
 	}
 
 	@Override
-	public InputStream getInputStream(Path path) throws IOException {
-		return null;
+	public InputStream getInputStream(FileRef fileRef) throws IOException {
+		return new FileRefInputStream(fileRef);
+	}
+
+	@Override
+	public OutputStream getOutputStream(FileRef fileRef) throws IOException {
+		return new FileRefOutputStream(fileRef);
+	}
+
+	@Override
+	public boolean uploadInputStreamToFsFile(InputStream input, FileRef destFile) throws IOException {
+		try {
+			return getFsClient().uploadInputStreamToFsFile(input, destFile.path());
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
+		return false;
 	}
 
 	@Override
@@ -152,6 +170,16 @@ public class FileSystemImpl extends FileSystem {
 	public boolean uploadDirectoryToFsDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException {
 		try {
 			return getFsClient().uploadDirectoryToFsDirectory(localDir, destDir.path(), includingSourceDir);
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean downloadFsFileToOutputStream(FileRef sourceFileRef, OutputStream output) throws IOException {
+		try {
+			return getFsClient().downloadFsFileToOutputStream(sourceFileRef.path(), output);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
