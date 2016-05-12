@@ -5,9 +5,9 @@ Bundle-SymbolicName: org.nb.mgm
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.nb.mgm.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: javax.ws.rs;version="2.0.1",
- javax.ws.rs.core;version="2.0.1",
- javax.ws.rs.ext;version="2.0.1",
+Import-Package: javax.ws.rs,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
  org.json;version="[2015.11.23,2015.12.31)",
  org.nb.mgm.exception,
  org.nb.mgm.model.dto,

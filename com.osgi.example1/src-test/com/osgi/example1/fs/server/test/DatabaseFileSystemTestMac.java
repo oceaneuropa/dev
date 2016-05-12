@@ -39,9 +39,10 @@ public class DatabaseFileSystemTestMac {
 		return new DatabaseFileSystem(config);
 	}
 
+	@Ignore
 	@Test
-	public void test001_listRootFiles() throws IOException {
-		System.out.println("--- --- --- test001_listRootFiles() --- --- ---");
+	public void test001_listRoots() throws IOException {
+		System.out.println("--- --- --- test001_listRoots() --- --- ---");
 
 		Path[] memberPaths = fs.listRoots();
 		for (Path memberPath : memberPaths) {
@@ -54,6 +55,7 @@ public class DatabaseFileSystemTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test002_createDir() throws IOException {
 		System.out.println("--- --- --- test002_createDir() --- --- ---");
@@ -74,6 +76,7 @@ public class DatabaseFileSystemTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test002_createEmptyFiles() throws IOException {
 		System.out.println("--- --- --- test002_createEmptyFiles() --- --- ---");
@@ -101,6 +104,7 @@ public class DatabaseFileSystemTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test003_listFiles() throws IOException {
 		System.out.println("--- --- --- test003_listFiles() --- --- ---");
@@ -219,16 +223,16 @@ public class DatabaseFileSystemTestMac {
 
 	@Ignore
 	@Test
-	public void test007_copyFileToFile() throws IOException {
-		System.out.println("--- --- --- test007_copyFileToFile() --- --- ---");
+	public void test007_copyLocalFileToFsFile() throws IOException {
+		System.out.println("--- --- --- test007_copyLocalFileToFsFile() --- --- ---");
 
 		File localFile1 = new File("/Users/yayang/Downloads/apache/commons-io-2.4.jar");
 		File localFile2 = new File("/Users/yayang/Downloads/apache/commons-io-2.5-bin.zip");
 
 		Path destDirPath = new Path("/test/dir2");
 
-		fs.copyLocalFileToFsFile(localFile1, new Path(destDirPath, localFile1.getName()));
-		fs.copyLocalFileToFsFile(localFile2, new Path(destDirPath, localFile2.getName()));
+		fs.copyFileToFsFile(localFile1, new Path(destDirPath, localFile1.getName()));
+		fs.copyFileToFsFile(localFile2, new Path(destDirPath, localFile2.getName()));
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {
@@ -240,15 +244,15 @@ public class DatabaseFileSystemTestMac {
 
 	@Ignore
 	@Test
-	public void test008_copyFileToDir() throws IOException {
-		System.out.println("--- --- --- test008_copyFileToDir() --- --- ---");
+	public void test008_copyLocalFileToFsDir() throws IOException {
+		System.out.println("--- --- --- test008_copyLocalFileToFsDir() --- --- ---");
 
 		File localFile1 = new File("/Users/yayang/Downloads/apache/hadoop/hadoop-common-2.7.1-sources.jar");
 		File localFile2 = new File("/Users/yayang/Downloads/apache/hadoop/hadoop-common-2.7.1.jar");
 
 		Path destDirPath = new Path("/test/dir3");
-		fs.copyLocalFileToFsDirectory(localFile1, destDirPath);
-		fs.copyLocalFileToFsDirectory(localFile2, destDirPath);
+		fs.copyFileToFsDirectory(localFile1, destDirPath);
+		fs.copyFileToFsDirectory(localFile2, destDirPath);
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {
@@ -260,12 +264,12 @@ public class DatabaseFileSystemTestMac {
 
 	@Ignore
 	@Test
-	public void test009_copyDirToDir1() throws IOException {
-		System.out.println("--- --- --- test009_copyDirToDir1() --- --- ---");
+	public void test009_copyLocalDirToFsDir1() throws IOException {
+		System.out.println("--- --- --- test009_copyLocalDirToFsDir1() --- --- ---");
 
 		File localDir = new File("/Users/yayang/Downloads/testdir");
 		Path destDirPath = new Path("/test/dir4");
-		fs.copyLocalDirectoryToFsDirectory(localDir, destDirPath, true);
+		fs.copyDirectoryToFsDirectory(localDir, destDirPath, true);
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {
@@ -277,16 +281,30 @@ public class DatabaseFileSystemTestMac {
 
 	@Ignore
 	@Test
-	public void test010_copyDirToDir2() throws IOException {
-		System.out.println("--- --- --- test010_copyDirToDir2() --- --- ---");
+	public void test010_copyLocalDirToFsDir2() throws IOException {
+		System.out.println("--- --- --- test010_copyLocalDirToFsDir2() --- --- ---");
 
 		File localDir = new File("/Users/yayang/Downloads/testdir");
 		Path destDirPath = new Path("/test/dir5");
-		fs.copyLocalDirectoryToFsDirectory(localDir, destDirPath, false);
+		fs.copyDirectoryToFsDirectory(localDir, destDirPath, false);
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {
 			FileSystemUtil.walkFolders(fs, memberPath, 0);
+		}
+
+		System.out.println();
+	}
+
+	@Test
+	public void test0011_copyFsDirToLocalDir() throws IOException {
+		System.out.println("--- --- --- test0011_copyFsDirToLocalDir() --- --- ---");
+
+		File localDir = new File("/Users/yayang/Downloads/test_target");
+
+		Path[] paths = fs.listRoots();
+		for (Path path : paths) {
+			FileSystemUtil.copyFsFileToLocalDirectory(fs, path, localDir);
 		}
 
 		System.out.println();

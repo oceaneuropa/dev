@@ -1,5 +1,6 @@
 package com.osgi.example1.fs.client.test;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.FixMethodOrder;
@@ -96,6 +97,7 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test003_createFiles() throws IOException {
 		System.out.println("--- --- --- test003_createFiles() --- --- ---");
@@ -159,10 +161,99 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Test
+	public void test004_uploadFiles() throws IOException {
+		System.out.println("--- --- --- test004_uploadFiles() --- --- ---");
+
+		File localFile1 = new File("/Users/yayang/Downloads/test/source/Book.xsd");
+		File localFile2 = new File("/Users/yayang/Downloads/test/source/swagger-parser-master.zip");
+		File localFile3 = new File("/Users/yayang/Downloads/test/source/commons-io-2.5-src.zip");
+
+		FileRef dir = FileRef.newInstance(fs, "/dir2");
+		FileRef refFile1 = FileRef.newInstance(fs, dir, localFile1.getName());
+		FileRef refFile2 = FileRef.newInstance(fs, dir, localFile2.getName());
+		FileRef refFile3 = FileRef.newInstance(fs, dir, localFile3.getName());
+
+		boolean succeed1 = fs.uploadFileToFsFile(localFile1, refFile1);
+		boolean succeed2 = fs.uploadFileToFsFile(localFile2, refFile2);
+		boolean succeed3 = fs.uploadFileToFsFile(localFile3, refFile3);
+
+		if (succeed1) {
+			System.out.println(localFile1.getAbsolutePath() + " is uploaded to " + refFile1.getPath());
+		} else {
+			System.out.println("Failed to upload " + localFile1.getAbsolutePath());
+		}
+		if (succeed2) {
+			System.out.println(localFile2.getAbsolutePath() + " is uploaded to " + refFile2.getPath());
+		} else {
+			System.out.println("Failed to upload " + localFile2.getAbsolutePath());
+		}
+		if (succeed3) {
+			System.out.println(localFile3.getAbsolutePath() + " is uploaded to " + refFile3.getPath());
+		} else {
+			System.out.println("Failed to upload " + localFile3.getAbsolutePath());
+		}
+
+		System.out.println();
+	}
+
+	@Test
+	public void test005_downloadFiles() throws IOException {
+		System.out.println("--- --- --- test005_downloadFiles() --- --- ---");
+
+		FileRef refFile1 = FileRef.newInstance(fs, "/dir2/Book.xsd");
+		FileRef refFile2 = FileRef.newInstance(fs, "/dir2/swagger-parser-master.zip");
+		FileRef refFile3 = FileRef.newInstance(fs, "/dir2/commons-io-2.5-src.zip");
+
+		File dir = new File("/Users/yayang/Downloads/test/target2/");
+		File localFile1 = new File(dir, refFile1.getName());
+		File localFile2 = new File(dir, refFile2.getName());
+
+		boolean succeed1 = fs.downloadFsFileToFile(refFile1, localFile1);
+		boolean succeed2 = fs.downloadFsFileToFile(refFile2, localFile2);
+		boolean succeed3 = fs.downloadFsFileToDirectory(refFile3, dir);
+
+		if (succeed1) {
+			System.out.println(refFile1.getPath() + " is downloaded to " + localFile1.getAbsolutePath());
+		} else {
+			System.out.println("Failed to download " + refFile1.getPath());
+		}
+		if (succeed2) {
+			System.out.println(refFile2.getPath() + " is downloaded to " + localFile2.getAbsolutePath());
+		} else {
+			System.out.println("Failed to download " + refFile2.getPath());
+		}
+		if (succeed3) {
+			System.out.println(refFile3.getPath() + " is downloaded into " + dir.getAbsolutePath());
+		} else {
+			System.out.println("Failed to download " + refFile3.getPath());
+		}
+
+		System.out.println();
+	}
+
+	@Test
+	public void test006_downloadDirectories() throws IOException {
+		System.out.println("--- --- --- test006_downloadDirectories() --- --- ---");
+
+		FileRef dirRef = FileRef.newInstance(fs, "/dir1");
+		File dir = new File("/Users/yayang/Downloads/test/target2/");
+
+		boolean succeed = fs.downloadFsDirectoryToDirectory(dirRef, dir, true);
+
+		if (succeed) {
+			System.out.println(dirRef.getPath() + " is downloaded to " + dir.getAbsolutePath());
+		} else {
+			System.out.println("Failed to download " + dirRef.getPath());
+		}
+
+		System.out.println();
+	}
+
 	@Ignore
 	@Test
-	public void test004_deleteFiles() throws IOException {
-		System.out.println("--- --- --- test004_deleteFiles() --- --- ---");
+	public void test007_deleteFiles() throws IOException {
+		System.out.println("--- --- --- test007_deleteFiles() --- --- ---");
 
 		FileRef file1 = FileRef.newInstance(fs, "/dir1/newFile1.txt");
 		FileRef file2 = FileRef.newInstance(fs, "/dir1/newFile2.txt");
@@ -183,17 +274,25 @@ public class FsTestMac {
 	}
 
 	@Test
-	public void test005_listFiles() throws IOException {
-		System.out.println("--- --- --- test005_listFiles() --- --- ---");
+	public void test008_listFiles() throws IOException {
+		System.out.println("--- --- --- test008_listFiles() --- --- ---");
 
 		try {
 			FileRef dir1 = FileRef.newInstance(fs, "/dir1");
+			FileRef dir2 = FileRef.newInstance(fs, "/dir2");
 
 			FileRef[] subFiles1 = FileRef.listFiles(dir1);
+			FileRef[] subFiles2 = FileRef.listFiles(dir2);
 
 			System.out.println("dir1 = " + dir1.getPath());
-			for (FileRef subFile1 : subFiles1) {
-				FileSystemUtil.walkFolders(fs, subFile1, 0);
+			for (FileRef subFile : subFiles1) {
+				FileSystemUtil.walkFolders(fs, subFile, 0);
+			}
+			System.out.println();
+
+			System.out.println("dir2 = " + dir2.getPath());
+			for (FileRef subFile : subFiles2) {
+				FileSystemUtil.walkFolders(fs, subFile, 0);
 			}
 			System.out.println();
 

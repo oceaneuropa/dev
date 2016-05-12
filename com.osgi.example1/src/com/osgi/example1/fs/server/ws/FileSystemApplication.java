@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.osgi.framework.BundleContext;
@@ -53,17 +54,22 @@ public class FileSystemApplication extends AbstractApplication {
 
 	@Override
 	public Set<Class<?>> getClasses() {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
+		Set<Class<?>> resources = new HashSet<Class<?>>();
 
 		// resources
-		classes.add(FilePathResource.class);
-		classes.add(FileMetadataResource.class);
-		classes.add(FileContentResource.class);
+		resources.add(FilePathResource.class);
+		resources.add(FileMetadataResource.class);
+		resources.add(FileContentResource.class);
 
 		// resolvers
-		classes.add(FileSystemResolver.class);
+		resources.add(FileSystemResolver.class);
 
-		return classes;
+		// http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
+		// In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
+		// Add additional features such as support for Multipart.
+		resources.add(MultiPartFeature.class);
+
+		return resources;
 	}
 
 }

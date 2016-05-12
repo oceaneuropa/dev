@@ -40,8 +40,8 @@ public class DatabaseFileSystemTestWin {
 	}
 
 	@Test
-	public void test001_listRootFiles() throws IOException {
-		System.out.println("--- --- --- test001_listRootFiles() --- --- ---");
+	public void test001_listRoots() throws IOException {
+		System.out.println("--- --- --- test001_listRoots() --- --- ---");
 
 		Path[] memberPaths = fs.listRoots();
 		for (Path memberPath : memberPaths) {
@@ -109,10 +109,10 @@ public class DatabaseFileSystemTestWin {
 
 		Path destDirPath = new Path("/test/dir2");
 
-		fs.copyLocalFileToFsFile(localFile1, new Path(destDirPath, localFile1.getName()));
-		fs.copyLocalFileToFsFile(localFile2, new Path(destDirPath, localFile2.getName()));
-		fs.copyLocalFileToFsDirectory(localFile3, destDirPath);
-		fs.copyLocalFileToFsDirectory(localFile4, destDirPath);
+		fs.copyFileToFsFile(localFile1, new Path(destDirPath, localFile1.getName()));
+		fs.copyFileToFsFile(localFile2, new Path(destDirPath, localFile2.getName()));
+		fs.copyFileToFsDirectory(localFile3, destDirPath);
+		fs.copyFileToFsDirectory(localFile4, destDirPath);
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {
@@ -134,9 +134,9 @@ public class DatabaseFileSystemTestWin {
 		Path destDirPath2 = new Path("/test/dir3");
 		Path destDirPath3 = new Path("/test/");
 
-		fs.copyLocalDirectoryToFsDirectory(localDir1, destDirPath1, true);
-		fs.copyLocalDirectoryToFsDirectory(localDir2, destDirPath2, false);
-		fs.copyLocalDirectoryToFsDirectory(localDir3, destDirPath3, true);
+		fs.copyDirectoryToFsDirectory(localDir1, destDirPath1, true);
+		fs.copyDirectoryToFsDirectory(localDir2, destDirPath2, false);
+		fs.copyDirectoryToFsDirectory(localDir3, destDirPath3, true);
 
 		Path[] paths = fs.listFiles(destDirPath1);
 		for (Path path : paths) {

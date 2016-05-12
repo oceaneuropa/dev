@@ -7,7 +7,6 @@ import org.origin.common.rest.client.ClientException;
 import com.osgi.example1.fs.client.api.FileRef;
 import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.ws.FileSystemClient;
-import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
 
 public class FileRefImpl extends FileRef {
@@ -108,12 +107,13 @@ public class FileRefImpl extends FileRef {
 
 	@Override
 	public String getName() throws IOException {
-		String name = null;
-		try {
-			name = getFsClient().getFileAttribute(this.path, FileMetadata.NAME, String.class);
-		} catch (ClientException e) {
-			handleClientException(e);
+		if (this.path.isRoot()) {
+			return this.path.getPathString();
 		}
+		if (this.path.isEmpty()) {
+			return null;
+		}
+		String name = this.path.getLastSegment();
 		return name;
 	}
 
@@ -121,7 +121,7 @@ public class FileRefImpl extends FileRef {
 	public boolean isDirectory() throws IOException {
 		boolean isDirectory = false;
 		try {
-			isDirectory = getFsClient().getFileAttribute(this.path, FileMetadata.IS_DIRECTORY, Boolean.class);
+			isDirectory = getFsClient().isDirectory(this.path);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -132,7 +132,7 @@ public class FileRefImpl extends FileRef {
 	public boolean isHidden() throws IOException {
 		boolean isHidden = false;
 		try {
-			isHidden = getFsClient().getFileAttribute(this.path, FileMetadata.IS_HIDDEN, Boolean.class);
+			isHidden = getFsClient().isHidden(this.path);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -143,7 +143,7 @@ public class FileRefImpl extends FileRef {
 	public boolean exists() throws IOException {
 		boolean exists = false;
 		try {
-			exists = getFsClient().getFileAttribute(this.path, FileMetadata.EXISTS, Boolean.class);
+			exists = getFsClient().exists(this.path);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -154,7 +154,7 @@ public class FileRefImpl extends FileRef {
 	public boolean canExecute() throws IOException {
 		boolean canExecute = false;
 		try {
-			canExecute = getFsClient().getFileAttribute(this.path, FileMetadata.CAN_EXECUTE, Boolean.class);
+			canExecute = getFsClient().canExecute(this.path);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -165,7 +165,7 @@ public class FileRefImpl extends FileRef {
 	public boolean canRead() throws IOException {
 		boolean canRead = false;
 		try {
-			canRead = getFsClient().getFileAttribute(this.path, FileMetadata.CAN_READ, Boolean.class);
+			canRead = getFsClient().canRead(this.path);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -176,7 +176,7 @@ public class FileRefImpl extends FileRef {
 	public boolean canWrite() throws IOException {
 		boolean canWrite = false;
 		try {
-			canWrite = getFsClient().getFileAttribute(this.path, FileMetadata.CAN_WRITE, Boolean.class);
+			canWrite = getFsClient().canWrite(this.path);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -187,15 +187,7 @@ public class FileRefImpl extends FileRef {
 	public long getLength() throws IOException {
 		long length = 0;
 		try {
-			length = getFsClient().getFileAttribute(this.path, FileMetadata.LENGTH, Long.class);
-			// Object attrValue = getClient().getFileAttribute(this.path, FileMetadata.LENGTH, Long.class);
-			// if (attrValue instanceof Long) {
-			// length = (long) attrValue;
-			// } else if (attrValue instanceof Integer) {
-			// length = Long.valueOf((Integer) attrValue);
-			// } else if (attrValue instanceof String) {
-			// length = Long.valueOf((String) attrValue);
-			// }
+			length = getFsClient().getLength(this.path);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -206,15 +198,7 @@ public class FileRefImpl extends FileRef {
 	public long getLastModified() throws IOException {
 		long lastModified = 0;
 		try {
-			lastModified = getFsClient().getFileAttribute(this.path, FileMetadata.LAST_MODIFIED, Long.class);
-			// Object attrValue = getClient().getFileAttribute(this.path, FileMetadata.LAST_MODIFIED, Long.class);
-			// if (attrValue instanceof Long) {
-			// lastModified = (long) attrValue;
-			// } else if (attrValue instanceof Integer) {
-			// lastModified = Long.valueOf((Integer) attrValue);
-			// } else if (attrValue instanceof String) {
-			// lastModified = Long.valueOf((String) attrValue);
-			// }
+			lastModified = getFsClient().getLastModified(this.path);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}

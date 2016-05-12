@@ -115,7 +115,7 @@ public interface FileSystem extends IAdaptable {
 	 * @return
 	 * @throws IOException
 	 */
-	public Path copyLocalFileToFsFile(File localFile, Path destFilePath) throws IOException;
+	public Path copyFileToFsFile(File localFile, Path destFilePath) throws IOException;
 
 	/**
 	 * Copy a local file to a directory in the FS.
@@ -125,7 +125,7 @@ public interface FileSystem extends IAdaptable {
 	 * @return
 	 * @throws IOException
 	 */
-	public Path copyLocalFileToFsDirectory(File localFile, Path destDirPath) throws IOException;
+	public Path copyFileToFsDirectory(File localFile, Path destDirPath) throws IOException;
 
 	/**
 	 * Copy a local directory to a directory in the FS.
@@ -136,6 +136,6 @@ public interface FileSystem extends IAdaptable {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean copyLocalDirectoryToFsDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException;
+	public boolean copyDirectoryToFsDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException;
 
 }

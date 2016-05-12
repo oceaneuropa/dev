@@ -428,8 +428,9 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public InputStream getInputStream(Path path) throws IOException {
-		if (path.isEmpty()) {
-			// empty path --- which belongs to relative path --- which cannot be used to locate a file --- cannot get input stream
+		if (path.isRoot() || path.isEmpty()) {
+			// root path --- cannot be used to locate a file --- cannot get input stream
+			// empty path --- belongs to relative path --- cannot be used to locate a file --- cannot get input stream
 			return null;
 		}
 
@@ -573,7 +574,7 @@ public class DatabaseFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Path copyLocalFileToFsFile(File localFile, Path destFilePath) throws IOException {
+	public Path copyFileToFsFile(File localFile, Path destFilePath) throws IOException {
 		// Check source file
 		if (!localFile.exists()) {
 			throw new IOException("Local file '" + localFile + "' does not exist.");
@@ -660,13 +661,13 @@ public class DatabaseFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Path copyLocalFileToFsDirectory(File localFile, Path destDirPath) throws IOException {
+	public Path copyFileToFsDirectory(File localFile, Path destDirPath) throws IOException {
 		Path destFilePath = new Path(destDirPath, localFile.getName());
-		return copyLocalFileToFsFile(localFile, destFilePath);
+		return copyFileToFsFile(localFile, destFilePath);
 	}
 
 	@Override
-	public boolean copyLocalDirectoryToFsDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException {
+	public boolean copyDirectoryToFsDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException {
 		// Check source directory
 		if (!localDir.exists()) {
 			throw new IOException("Local directory '" + localDir + "' does not exist.");
@@ -679,7 +680,7 @@ public class DatabaseFileSystem implements FileSystem {
 			destDirPath = new Path(destDirPath, localDir.getName());
 		}
 
-		// recursively copy every file from the localDir to the destDirPath.
+		// Recursively copy every file from the localDir to the destDirPath.
 		List<File> encounteredFiles = new ArrayList<File>();
 		File[] memberFiles = localDir.listFiles();
 		for (File memberFile : memberFiles) {
@@ -712,7 +713,7 @@ public class DatabaseFileSystem implements FileSystem {
 				doCopyLocalFileOrDirectoryToFsDirectory(memberFile, newDestDirPath, encounteredFiles);
 			}
 		} else {
-			copyLocalFileToFsDirectory(localFile, destDirPath);
+			copyFileToFsDirectory(localFile, destDirPath);
 		}
 	}
 

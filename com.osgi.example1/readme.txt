@@ -126,3 +126,18 @@ http://www.javaxp.com/2012/11/mysql-jdbc-example-for-blob-storage.html
 ------------------------------------------------------------------------
 
 
+Links:
+------------------------------------------------------------------------
+Java web service to download file (server side): 
+http://stackoverflow.com/questions/10100936/file-downloading-in-restful-web-services
+https://www.youtube.com/watch?v=0kxae9K3Frs
+
+download file from FTP
+http://www.java2s.com/Code/Java/Network-Protocol/DownloadfilefromFTPserver.htm
+http://www.mysamplecode.com/2012/03/apache-commons-ftpclient-java-example_16.html
+------------------------------------------------------------------------
+
+
+
+
+

@@ -128,13 +128,10 @@ public class FileSystemImpl extends FileSystem {
 		return null;
 	}
 
-	// -----------------------------------------------------------------------------------------
-	// Upload local file and directory to FS
-	// -----------------------------------------------------------------------------------------
 	@Override
-	public boolean uploadFileToFile(File localFile, FileRef destFile) throws IOException {
+	public boolean uploadFileToFsFile(File localFile, FileRef destFile) throws IOException {
 		try {
-			return getFsClient().uploadFileToFile(localFile, destFile.path());
+			return getFsClient().uploadFileToFsFile(localFile, destFile.path());
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -142,9 +139,9 @@ public class FileSystemImpl extends FileSystem {
 	}
 
 	@Override
-	public boolean uploadFileToDirectory(File localFile, FileRef destDir) throws IOException {
+	public boolean uploadFileToFsDirectory(File localFile, FileRef destDir) throws IOException {
 		try {
-			return getFsClient().uploadFileToDirectory(localFile, destDir.path());
+			return getFsClient().uploadFileToFsDirectory(localFile, destDir.path());
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
@@ -152,30 +149,42 @@ public class FileSystemImpl extends FileSystem {
 	}
 
 	@Override
-	public boolean uploadDirectoryToDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException {
+	public boolean uploadDirectoryToFsDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException {
 		try {
-			return getFsClient().uploadDirectoryToDirectory(localDir, destDir.path(), includingSourceDir);
+			return getFsClient().uploadDirectoryToFsDirectory(localDir, destDir.path(), includingSourceDir);
 		} catch (ClientException e) {
 			handleClientException(e);
 		}
 		return false;
 	}
 
-	// -----------------------------------------------------------------------------------------
-	// Download file and directory from FS to local
-	// -----------------------------------------------------------------------------------------
 	@Override
-	public File downloadFileToLocalFile(FileRef sourceFile, File localFile) throws IOException {
-		return null;
+	public boolean downloadFsFileToFile(FileRef sourceFile, File localFile) throws IOException {
+		try {
+			return getFsClient().downloadFsFileToFile(sourceFile.path(), localFile);
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
+		return false;
 	}
 
 	@Override
-	public File downloadFileToLocalDirectory(FileRef sourceFile, File localDir) throws IOException {
-		return null;
+	public boolean downloadFsFileToDirectory(FileRef sourceFile, File localDir) throws IOException {
+		try {
+			return getFsClient().downloadFsFileToDirectory(sourceFile.path(), localDir);
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
+		return false;
 	}
 
 	@Override
-	public boolean downloadDirectoryToLocalDirectory(FileRef sourceDir, File localDir, boolean includingSourceDir) throws IOException {
+	public boolean downloadFsDirectoryToDirectory(FileRef sourceDir, File localDir, boolean includingSourceDir) throws IOException {
+		try {
+			return getFsClient().downloadFsDirectoryToDirectory(sourceDir.path(), localDir, includingSourceDir);
+		} catch (ClientException e) {
+			handleClientException(e);
+		}
 		return false;
 	}
 

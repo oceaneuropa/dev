@@ -167,7 +167,7 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Path copyLocalFileToFsFile(File localFile, Path destFilePath) throws IOException {
+	public Path copyFileToFsFile(File localFile, Path destFilePath) throws IOException {
 		// Check source file
 		if (!localFile.exists()) {
 			throw new IOException("Source '" + localFile + "' does not exist.");
@@ -195,7 +195,7 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Path copyLocalFileToFsDirectory(File localFile, Path destDirPath) throws IOException {
+	public Path copyFileToFsDirectory(File localFile, Path destDirPath) throws IOException {
 		// Check source file
 		if (!localFile.exists()) {
 			throw new IOException("Local file '" + localFile + "' does not exist.");
@@ -225,7 +225,7 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
-	public boolean copyLocalDirectoryToFsDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException {
+	public boolean copyDirectoryToFsDirectory(File localDir, Path destDirPath, boolean includingSourceDir) throws IOException {
 		// Check source directory
 		if (!localDir.exists()) {
 			throw new IOException("Local directory '" + localDir + "' does not exist.");

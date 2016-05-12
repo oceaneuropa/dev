@@ -224,8 +224,8 @@ public class LocalFileSystemTestMac {
 
 		Path destDirPath = new Path("/test/dir2");
 
-		fs.copyLocalFileToFsFile(localFile1, new Path(destDirPath, localFile1.getName()));
-		fs.copyLocalFileToFsFile(localFile2, new Path(destDirPath, localFile2.getName()));
+		fs.copyFileToFsFile(localFile1, new Path(destDirPath, localFile1.getName()));
+		fs.copyFileToFsFile(localFile2, new Path(destDirPath, localFile2.getName()));
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {
@@ -243,8 +243,8 @@ public class LocalFileSystemTestMac {
 		File localFile2 = new File("/Users/yayang/Downloads/apache/hadoop/hadoop-common-2.7.1.jar");
 
 		Path destDirPath = new Path("/test/dir3");
-		fs.copyLocalFileToFsDirectory(localFile1, destDirPath);
-		fs.copyLocalFileToFsDirectory(localFile2, destDirPath);
+		fs.copyFileToFsDirectory(localFile1, destDirPath);
+		fs.copyFileToFsDirectory(localFile2, destDirPath);
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {
@@ -260,7 +260,7 @@ public class LocalFileSystemTestMac {
 
 		File localDir = new File("/Users/yayang/Downloads/testdir");
 		Path destDirPath = new Path("/test/dir4");
-		fs.copyLocalDirectoryToFsDirectory(localDir, destDirPath, true);
+		fs.copyDirectoryToFsDirectory(localDir, destDirPath, true);
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {
@@ -276,7 +276,7 @@ public class LocalFileSystemTestMac {
 
 		File localDir = new File("/Users/yayang/Downloads/testdir");
 		Path destDirPath = new Path("/test/dir5");
-		fs.copyLocalDirectoryToFsDirectory(localDir, destDirPath, false);
+		fs.copyDirectoryToFsDirectory(localDir, destDirPath, false);
 
 		Path[] memberPaths = fs.listFiles(destDirPath);
 		for (Path memberPath : memberPaths) {

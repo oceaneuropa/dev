@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -25,6 +26,46 @@ import com.osgi.example1.util.IOUtil;
 @Produces(MediaType.APPLICATION_JSON)
 public class FileContentResource extends AbstractApplicationResource {
 
+	@GET
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })
+	public Response getFileContent(@QueryParam(value = "path") String pathString) {
+		if (pathString == null) {
+			return Response.status(Status.BAD_REQUEST).entity(ErrorDTO.newInstance("File path is null.")).build();
+		}
+		Path path = new Path(pathString);
+		FileSystem fs = getService(FileSystem.class);
+
+		boolean exists = fs.exists(path);
+		if (!exists) {
+			return Response.status(Status.NOT_FOUND).entity(ErrorDTO.newInstance("Path '" + path.getPathString() + "' does not exist.")).build();
+		}
+		boolean isDirectory = fs.isDirectory(path);
+		if (isDirectory) {
+			return Response.status(Status.BAD_REQUEST).entity(ErrorDTO.newInstance("Path '" + path.getPathString() + "' exists but is a directory.")).build();
+		}
+
+		String fileName = path.getLastSegment();
+
+		byte[] bytes = null;
+		InputStream input = null;
+		try {
+			input = fs.getInputStream(path);
+			if (input != null) {
+				bytes = IOUtil.toByteArray(input);
+			}
+		} catch (IOException e) {
+			ErrorDTO error = handleError(e, "500", true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		} finally {
+			IOUtil.closeQuietly(input, true);
+		}
+		if (bytes == null) {
+			bytes = new byte[0];
+		}
+
+		return Response.ok(bytes, MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename = " + fileName).build();
+	}
+
 	@POST
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadFile( //
@@ -35,9 +76,8 @@ public class FileContentResource extends AbstractApplicationResource {
 		if (pathString == null) {
 			return Response.status(Status.BAD_REQUEST).entity(ErrorDTO.newInstance("File path is null.")).build();
 		}
-
-		FileSystem fs = getService(FileSystem.class);
 		Path path = new Path(pathString);
+		FileSystem fs = getService(FileSystem.class);
 
 		try {
 			if (fs.exists(path) && fs.isDirectory(path)) {

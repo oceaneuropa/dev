@@ -27,7 +27,7 @@ public abstract class FileRef {
 	 * @return
 	 */
 	public static FileRef newInstance(FileSystem fs, FileRef parent, String child) {
-		return new FileRefImpl(fs, parent, child);
+		return new FileRefImpl(parent.getFileSystem(), parent, child);
 	}
 
 	/**

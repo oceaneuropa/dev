@@ -28,13 +28,13 @@ public abstract class FileSystem {
 
 	public abstract FileSystemConfiguration getConfiguration();
 
-	private FileRef ROOT = null;
+	private FileRef root = null;
 
 	public synchronized FileRef root() {
-		if (ROOT == null) {
-			ROOT = new FileRefImpl(this, Path.ROOT.getPathString());
+		if (root == null) {
+			root = new FileRefImpl(this, Path.ROOT.getPathString());
 		}
-		return ROOT;
+		return root;
 	}
 
 	/**
@@ -90,9 +90,6 @@ public abstract class FileSystem {
 	 */
 	public abstract InputStream getInputStream(Path path) throws IOException;
 
-	// -----------------------------------------------------------------------------------------
-	// Upload local file and directory to FS
-	// -----------------------------------------------------------------------------------------
 	/**
 	 * Upload a local file to a file in the FS.
 	 * 
@@ -101,7 +98,7 @@ public abstract class FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract boolean uploadFileToFile(File localFile, FileRef destFile) throws IOException;
+	public abstract boolean uploadFileToFsFile(File localFile, FileRef destFile) throws IOException;
 
 	/**
 	 * Upload a local file to a directory in the FS.
@@ -111,7 +108,7 @@ public abstract class FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract boolean uploadFileToDirectory(File localFile, FileRef destDir) throws IOException;
+	public abstract boolean uploadFileToFsDirectory(File localFile, FileRef destDir) throws IOException;
 
 	/**
 	 * Upload a local directory to a directory in the FS.
@@ -122,40 +119,37 @@ public abstract class FileSystem {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract boolean uploadDirectoryToDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException;
+	public abstract boolean uploadDirectoryToFsDirectory(File localDir, FileRef destDir, boolean includingSourceDir) throws IOException;
 
-	// -----------------------------------------------------------------------------------------
-	// Download file and directory from FS to local
-	// -----------------------------------------------------------------------------------------
 	/**
 	 * Download a file from the FS to a local file.
 	 * 
-	 * @param sourceFile
+	 * @param sourceFileRef
 	 * @param localFile
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract File downloadFileToLocalFile(FileRef sourceFile, File localFile) throws IOException;
+	public abstract boolean downloadFsFileToFile(FileRef sourceFileRef, File localFile) throws IOException;
 
 	/**
 	 * Download a file from the FS to a local directory.
 	 * 
-	 * @param sourceFile
+	 * @param sourceFileRef
 	 * @param localDir
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract File downloadFileToLocalDirectory(FileRef sourceFile, File localDir) throws IOException;
+	public abstract boolean downloadFsFileToDirectory(FileRef sourceFileRef, File localDir) throws IOException;
 
 	/**
 	 * Download a directory from the FS to a local directory.
 	 * 
-	 * @param sourceDir
+	 * @param sourceDirRef
 	 * @param localDir
 	 * @param includingSourceDir
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract boolean downloadDirectoryToLocalDirectory(FileRef sourceDir, File localDir, boolean includingSourceDir) throws IOException;
+	public abstract boolean downloadFsDirectoryToDirectory(FileRef sourceDirRef, File localDir, boolean includingSourceDir) throws IOException;
 
 }

@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.nb.home.client
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.nb.home.client.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: javax.ws.rs.client;version="2.0.0",
- javax.ws.rs.core;version="2.0.1",
+Import-Package: javax.ws.rs.client,
+ javax.ws.rs.core,
  org.junit,
  org.junit.runner,
  org.junit.runner.notification,
