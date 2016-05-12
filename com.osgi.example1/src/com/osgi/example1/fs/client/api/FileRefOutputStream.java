@@ -6,6 +6,10 @@ import java.io.PipedOutputStream;
 
 import com.osgi.example1.util.IOUtil;
 
+/**
+ * A file ref output stream that uploads the content of a file on the fly.
+ * 
+ */
 public class FileRefOutputStream extends PipedOutputStream {
 
 	private FileRef fileRef;

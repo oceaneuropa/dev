@@ -7,7 +7,7 @@ import java.io.PipedOutputStream;
 import com.osgi.example1.util.IOUtil;
 
 /**
- * A file ref input stream that downloads the content of the file on the fly.
+ * A file ref input stream that downloads the content of a file on the fly.
  * 
  */
 public class FileRefInputStream extends PipedInputStream {
