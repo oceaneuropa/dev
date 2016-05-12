@@ -12,9 +12,13 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 
 import com.osgi.example1.fs.client.api.FileRef;
+import com.osgi.example1.fs.client.api.FileRefInputStream;
+import com.osgi.example1.fs.client.api.FileRefOutputStream;
 import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.api.FileSystemConfiguration;
 import com.osgi.example1.fs.client.ws.FileSystemUtil;
+import com.osgi.example1.util.FileUtil;
+import com.osgi.example1.util.IOUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FsTestWin {
@@ -194,10 +198,54 @@ public class FsTestWin {
 		System.out.println();
 	}
 
-	@Ignore
 	@Test
-	public void test005_downloadFiles() throws IOException {
-		System.out.println("--- --- --- test005_downloadFiles() --- --- ---");
+	public void test005_uploadOutputStream() throws IOException {
+		System.out.println("--- --- --- test005_uploadOutputStream() --- --- ---");
+
+		File localFile1 = new File("C:/downloads/test_source2/test2/doc.json");
+		File localFile2 = new File("C:/downloads/test_source2/test2/DownloadAllNumbers.txt");
+
+		FileRef refFile1 = FileRef.newInstance(fs, "/test2/doc.json");
+		FileRef refFile2 = FileRef.newInstance(fs, "/test2/DownloadAllNumbers.txt");
+
+		FileRefOutputStream fos1 = null;
+		try {
+			fos1 = new FileRefOutputStream(refFile1);
+			FileUtil.copyFileToOutputStream(localFile1, fos1);
+
+			if (refFile1.exists()) {
+				System.out.println(localFile1.getAbsolutePath() + " is uploaded to " + refFile1.getPath());
+			} else {
+				System.out.println(localFile1.getAbsolutePath() + " is not uploaded to " + refFile1.getPath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(fos1, true);
+		}
+
+		FileRefOutputStream fos2 = null;
+		try {
+			fos2 = new FileRefOutputStream(refFile2);
+			FileUtil.copyFileToOutputStream(localFile2, fos2);
+
+			if (refFile1.exists()) {
+				System.out.println(localFile2.getAbsolutePath() + " is uploaded to " + refFile2.getPath());
+			} else {
+				System.out.println(localFile2.getAbsolutePath() + " is not uploaded to " + refFile2.getPath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(fos2, true);
+		}
+
+		System.out.println();
+	}
+
+	@Test
+	public void test006_downloadFiles() throws IOException {
+		System.out.println("--- --- --- test006_downloadFiles() --- --- ---");
 
 		FileRef refFile1 = FileRef.newInstance(fs, "/test2/readme.txt");
 		FileRef refFile2 = FileRef.newInstance(fs, "/test2/Smokingpipes_2016-01-22.pdf");
@@ -224,8 +272,8 @@ public class FsTestWin {
 	}
 
 	@Test
-	public void test006_downloadDirectories() throws IOException {
-		System.out.println("--- --- --- test006_downloadDirectories() --- --- ---");
+	public void test007_downloadDirectories() throws IOException {
+		System.out.println("--- --- --- test007_downloadDirectories() --- --- ---");
 
 		FileRef refDir = FileRef.newInstance(fs, "/test2");
 		File dir = new File("C:/downloads/test_target2");
@@ -241,10 +289,90 @@ public class FsTestWin {
 		System.out.println();
 	}
 
+	@Test
+	public void test008_downloadInputStream() throws IOException {
+		System.out.println("--- --- --- test008_downloadInputStream() --- --- ---");
+
+		File destLocalFile1 = new File("C:/downloads/test_target2/test2/readme(D).txt");
+		File destLocalFile2 = new File("C:/downloads/test_target2/test2/Smokingpipes_2016-01-22(D).pdf");
+		File destLocalFile3 = new File("C:/downloads/test_target2/test2/doc(D).json");
+		File destLocalFile4 = new File("C:/downloads/test_target2/test2/DownloadAllNumbers(D).txt");
+
+		FileRef refFile1 = FileRef.newInstance(fs, "/test2/readme.txt");
+		FileRefInputStream fis1 = null;
+		try {
+			fis1 = new FileRefInputStream(refFile1);
+			FileUtil.copyInputStreamToFile(fis1, destLocalFile1);
+
+			if (destLocalFile1.exists()) {
+				System.out.println(refFile1.getPath() + " is downloaded to " + destLocalFile1.getAbsolutePath());
+			} else {
+				System.out.println(refFile1.getPath() + " is not downloaded to " + destLocalFile1.getAbsolutePath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(fis1, true);
+		}
+
+		FileRef refFile2 = FileRef.newInstance(fs, "/test2/Smokingpipes_2016-01-22.pdf");
+		FileRefInputStream fis2 = null;
+		try {
+			fis2 = new FileRefInputStream(refFile2);
+			FileUtil.copyInputStreamToFile(fis2, destLocalFile2);
+
+			if (destLocalFile2.exists()) {
+				System.out.println(refFile2.getPath() + " is downloaded to " + destLocalFile2.getAbsolutePath());
+			} else {
+				System.out.println(refFile2.getPath() + " is not downloaded to " + destLocalFile2.getAbsolutePath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(fis2, true);
+		}
+
+		FileRef refFile3 = FileRef.newInstance(fs, "/test2/doc.json");
+		FileRefInputStream fis3 = null;
+		try {
+			fis3 = new FileRefInputStream(refFile3);
+			FileUtil.copyInputStreamToFile(fis3, destLocalFile3);
+
+			if (destLocalFile3.exists()) {
+				System.out.println(refFile3.getPath() + " is downloaded to " + destLocalFile3.getAbsolutePath());
+			} else {
+				System.out.println(refFile3.getPath() + " is not downloaded to " + destLocalFile3.getAbsolutePath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(fis3, true);
+		}
+
+		FileRef refFile4 = FileRef.newInstance(fs, "/test2/DownloadAllNumbers.txt");
+		FileRefInputStream fis4 = null;
+		try {
+			fis4 = new FileRefInputStream(refFile4);
+			FileUtil.copyInputStreamToFile(fis4, destLocalFile4);
+
+			if (destLocalFile4.exists()) {
+				System.out.println(refFile4.getPath() + " is downloaded to " + destLocalFile4.getAbsolutePath());
+			} else {
+				System.out.println(refFile4.getPath() + " is not downloaded to " + destLocalFile4.getAbsolutePath());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(fis4, true);
+		}
+
+		System.out.println();
+	}
+
 	@Ignore
 	@Test
-	public void test007_deleteFiles() throws IOException {
-		System.out.println("--- --- --- test007_deleteFiles() --- --- ---");
+	public void test009_deleteFiles() throws IOException {
+		System.out.println("--- --- --- test009_deleteFiles() --- --- ---");
 
 		FileRef refDir = FileRef.newInstance(fs, "/test2/images");
 		FileRef refFile = FileRef.newInstance(fs, "/test2/readme.txt");

@@ -1,6 +1,8 @@
 package com.osgi.example1.fs.client.api;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import com.osgi.example1.fs.client.api.impl.FileRefImpl;
 import com.osgi.example1.fs.common.Path;
@@ -197,5 +199,23 @@ public abstract class FileRef {
 	 * @throws IOException
 	 */
 	public abstract boolean delete() throws IOException;
+
+	/**
+	 * Get the InputStream of a ref file.
+	 * 
+	 * @param fileRef
+	 * @return InputStream of the file. The client which calls this method is responsible for closing the InputStream.
+	 * @throws IOException
+	 */
+	public abstract InputStream getInputStream(FileRef fileRef) throws IOException;
+
+	/**
+	 * Get the OutputStream of a ref file.
+	 * 
+	 * @param fileRef
+	 * @return OutputStream of the file. The client which calls this method is responsible for closing the OutputStream.
+	 * @throws IOException
+	 */
+	public abstract OutputStream getOutputStream(FileRef fileRef) throws IOException;
 
 }
