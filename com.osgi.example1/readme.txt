@@ -135,6 +135,10 @@ https://www.youtube.com/watch?v=0kxae9K3Frs
 download file from FTP
 http://www.java2s.com/Code/Java/Network-Protocol/DownloadfilefromFTPserver.htm
 http://www.mysamplecode.com/2012/03/apache-commons-ftpclient-java-example_16.html
+
+StreamDataBodyPart
+http://www.programcreek.com/java-api-examples/index.php?api=org.glassfish.jersey.media.multipart.MultiPart
+http://www.massapi.com/class/st/StreamDataBodyPart.html
 ------------------------------------------------------------------------
 
 
