@@ -16,9 +16,9 @@ public interface DatabaseTableAware {
 
 	/**
 	 * 
-	 * @param db
+	 * @param database
 	 * @return
 	 */
-	public String getCreateTableSQL(String db);
+	public String getCreateTableSQL(String database);
 
 }

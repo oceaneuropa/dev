@@ -211,11 +211,12 @@ public class FileMetadata {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("FileMetadata(name=").append(this.name);
+		sb.append("FileMetadata (");
+		sb.append("name='").append(this.name).append("'");
 		sb.append(", isDirectory=").append(this.isDirectory);
 		sb.append(", isHidden=").append(this.isHidden);
-		sb.append(", path=").append(this.path);
-		sb.append(", parentPath=").append(this.parentPath);
+		sb.append(", path=").append(this.path).append("'");
+		sb.append(", parentPath=").append(this.parentPath).append("'");
 		sb.append(", exists=").append(this.exists);
 		sb.append(", canExecute=").append(this.canExecute);
 		sb.append(", canRead=").append(this.canRead);

@@ -294,7 +294,7 @@ public class FileSystemClient extends AbstractClient {
 			// System.out.println("responseStatus = " + responseStatus);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);
-			if (status != null && "success".equals(status.getStatus())) {
+			if (status != null && status.success()) {
 				return true;
 			}
 
@@ -326,7 +326,7 @@ public class FileSystemClient extends AbstractClient {
 			// System.out.println("responseStatus = " + responseStatus);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);
-			if (status != null && "success".equals(status.getStatus())) {
+			if (status != null && status.success()) {
 				return true;
 			}
 
@@ -358,7 +358,7 @@ public class FileSystemClient extends AbstractClient {
 			// System.out.println("responseStatus = " + responseStatus);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);
-			if (status != null && "success".equals(status.getStatus())) {
+			if (status != null && status.success()) {
 				return true;
 			}
 
@@ -389,7 +389,7 @@ public class FileSystemClient extends AbstractClient {
 			checkResponse(response);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);
-			if (status != null && "success".equals(status.getStatus())) {
+			if (status != null && status.success()) {
 				return true;
 			}
 		} catch (ClientException e) {
@@ -436,7 +436,7 @@ public class FileSystemClient extends AbstractClient {
 			checkResponse(response);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);
-			if (status != null && "success".equals(status.getStatus())) {
+			if (status != null && status.success()) {
 				return true;
 			}
 

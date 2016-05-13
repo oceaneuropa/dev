@@ -2,6 +2,8 @@ package com.osgi.example1.fs.client.test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -12,9 +14,13 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 
 import com.osgi.example1.fs.client.api.FileRef;
+import com.osgi.example1.fs.client.api.FileRefInputStream;
+import com.osgi.example1.fs.client.api.FileRefOutputStream;
 import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.api.FileSystemConfiguration;
 import com.osgi.example1.fs.client.ws.FileSystemUtil;
+import com.osgi.example1.util.FileUtil;
+import com.osgi.example1.util.IOUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FsTestMac {
@@ -34,14 +40,28 @@ public class FsTestMac {
 		return FileSystem.newInstance(config);
 	}
 
+	@Ignore
+	@Test
+	public void test000_deleteAllFiles() throws IOException {
+		System.out.println("--- --- --- test000_deleteAllFiles() --- --- ---");
+
+		FileRef[] fileRefs = FileRef.listRoots(fs);
+		for (FileRef fileRef : fileRefs) {
+			boolean succeed = fileRef.delete();
+			System.out.println(fileRef.getPath() + " is deleted? " + succeed);
+		}
+
+		System.out.println();
+	}
+
 	@Test
 	public void test001_listRoots() throws IOException {
 		System.out.println("--- --- --- test001_listRoots() --- --- ---");
 
 		try {
-			FileRef[] files = FileRef.listRoots(fs);
-			for (FileRef file : files) {
-				FileSystemUtil.walkFolders(fs, file, 0);
+			FileRef[] fileRefs = FileRef.listRoots(fs);
+			for (FileRef fileRef : fileRefs) {
+				FileSystemUtil.walkFolders(fs, fileRef, 0);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -56,37 +76,29 @@ public class FsTestMac {
 		System.out.println("--- --- --- test002_listFiles() --- --- ---");
 
 		try {
-			FileRef dir1 = FileRef.newInstance(fs, "/test/dir1");
-			FileRef dir2 = FileRef.newInstance(fs, "/test/dir2");
-			FileRef dir3 = FileRef.newInstance(fs, "/test/dir3");
-			FileRef dir5 = FileRef.newInstance(fs, fs.root(), "test/dir5/jackson");
+			FileRef dirRef1 = FileRef.newInstance(fs, "/dir1");
+			FileRef dirRef2 = FileRef.newInstance(fs, "/dir2");
+			FileRef dirRef3 = FileRef.newInstance(fs, "/dir3");
 
-			FileRef[] subFiles1 = FileRef.listFiles(dir1);
-			FileRef[] subFiles2 = FileRef.listFiles(dir2);
-			FileRef[] subFiles3 = FileRef.listFiles(dir3);
-			FileRef[] subFiles5 = FileRef.listFiles(dir5);
+			FileRef[] subFileRefs1 = FileRef.listFiles(dirRef1);
+			FileRef[] subFileRefs2 = FileRef.listFiles(dirRef2);
+			FileRef[] subFileRefs3 = FileRef.listFiles(dirRef3);
 
-			System.out.println("dir1 = " + dir1.getPath());
-			for (FileRef subFile1 : subFiles1) {
+			System.out.println("Path '" + dirRef1.getPath() + "' members:");
+			for (FileRef subFile1 : subFileRefs1) {
 				FileSystemUtil.walkFolders(fs, subFile1, 0);
 			}
 			System.out.println();
 
-			System.out.println("dir2 = " + dir2.getPath());
-			for (FileRef subFile2 : subFiles2) {
+			System.out.println("Path '" + dirRef2.getPath() + "' members:");
+			for (FileRef subFile2 : subFileRefs2) {
 				FileSystemUtil.walkFolders(fs, subFile2, 0);
 			}
 			System.out.println();
 
-			System.out.println("dir3 = " + dir3.getPath());
-			for (FileRef subFile3 : subFiles3) {
+			System.out.println("Path '" + dirRef3.getPath() + "' members:");
+			for (FileRef subFile3 : subFileRefs3) {
 				FileSystemUtil.walkFolders(fs, subFile3, 0);
-			}
-			System.out.println();
-
-			System.out.println("dir5 = " + dir5.getPath());
-			for (FileRef subFile5 : subFiles5) {
-				FileSystemUtil.walkFolders(fs, subFile5, 0);
 			}
 			System.out.println();
 
@@ -97,66 +109,74 @@ public class FsTestMac {
 		System.out.println();
 	}
 
-	@Ignore
 	@Test
 	public void test003_createFiles() throws IOException {
 		System.out.println("--- --- --- test003_createFiles() --- --- ---");
 
-		FileRef file1 = FileRef.newInstance(fs, "/dir1/newFile1.txt");
-		FileRef file2 = FileRef.newInstance(fs, "/dir1/newFile2.txt");
-		FileRef file3 = FileRef.newInstance(fs, "/dir1/newFile3.txt");
-		FileRef dir1 = FileRef.newInstance(fs, "/dir1/new/path/to/somewhere1");
-		FileRef dir2 = FileRef.newInstance(fs, "/dir1/new/path/to/somewhere2");
-		FileRef dir3 = FileRef.newInstance(fs, "/dir1/new/path/to/somewhere3");
+		FileRef dirRef1 = FileRef.newInstance(fs, "/newDir/tmp1");
+		FileRef dirRef2 = FileRef.newInstance(fs, "/newDir/tmp2");
+		FileRef dirRef3 = FileRef.newInstance(fs, "/newDir/tmp3");
+
+		FileRef fileRef1 = FileRef.newInstance(fs, "/newDir/newEmptyFile1.txt");
+		FileRef fileRef2 = FileRef.newInstance(fs, "/newDir/tmp2/newEmptyFile2.txt");
+		FileRef fileRef3 = FileRef.newInstance(fs, "/newDir/tmp3/newEmptyFile3.txt");
 
 		boolean succeed1 = false;
-		if (!file1.exists()) {
-			succeed1 = file1.createNewFile();
+		if (!dirRef1.exists()) {
+			succeed1 = dirRef1.mkdirs();
 		} else {
-			System.out.println("File '" + file1.getPath() + "' already exists.");
+			System.out.println("Path '" + dirRef1.getPath() + "' already exists.");
 		}
 
 		boolean succeed2 = false;
-		if (!file2.exists()) {
-			succeed2 = file2.createNewFile();
+		if (!dirRef2.exists()) {
+			succeed2 = dirRef2.mkdirs();
 		} else {
-			System.out.println("File '" + file2.getPath() + "' already exists.");
+			System.out.println("Path '" + dirRef2.getPath() + "' already exists.");
 		}
 
 		boolean succeed3 = false;
-		if (!file3.exists()) {
-			succeed3 = file3.createNewFile();
+		if (!dirRef3.exists()) {
+			succeed3 = dirRef3.mkdirs();
 		} else {
-			System.out.println("File '" + file3.getPath() + "' already exists.");
+			System.out.println("Path '" + dirRef3.getPath() + "' already exists.");
 		}
 
 		boolean succeed4 = false;
-		if (!dir1.exists()) {
-			succeed4 = dir1.mkdirs();
+		if (!fileRef1.exists()) {
+			succeed4 = fileRef1.createNewFile();
 		} else {
-			System.out.println("Directory '" + dir1.getPath() + "' already exists.");
+			System.out.println("Path '" + fileRef1.getPath() + "' already exists.");
 		}
 
 		boolean succeed5 = false;
-		if (!dir2.exists()) {
-			succeed5 = dir2.mkdirs();
+		if (!fileRef2.exists()) {
+			succeed5 = fileRef2.createNewFile();
 		} else {
-			System.out.println("Directory '" + dir2.getPath() + "' already exists.");
+			System.out.println("Path '" + fileRef2.getPath() + "' already exists.");
 		}
 
 		boolean succeed6 = false;
-		if (!dir3.exists()) {
-			succeed6 = dir3.mkdirs();
+		if (!fileRef3.exists()) {
+			succeed6 = fileRef3.createNewFile();
 		} else {
-			System.out.println("Directory '" + dir3.getPath() + "' already exists.");
+			System.out.println("Path '" + fileRef3.getPath() + "' already exists.");
 		}
 
-		System.out.println(file1.getPath() + " is created? " + succeed1);
-		System.out.println(file2.getPath() + " is created? " + succeed2);
-		System.out.println(file3.getPath() + " is created? " + succeed3);
-		System.out.println(dir1.getPath() + " is created? " + succeed4);
-		System.out.println(dir2.getPath() + " is created? " + succeed5);
-		System.out.println(dir3.getPath() + " is created? " + succeed6);
+		System.out.println("Path '" + dirRef1.getPath() + "' is created (succeed=" + succeed1 + ")? " + dirRef1.exists());
+		System.out.println("Path '" + dirRef2.getPath() + "' is created (succeed=" + succeed2 + ")? " + dirRef2.exists());
+		System.out.println("Path '" + dirRef3.getPath() + "' is created (succeed=" + succeed3 + ")? " + dirRef3.exists());
+		System.out.println("Path '" + fileRef1.getPath() + "' is created (succeed=" + succeed4 + ")? " + fileRef1.exists());
+		System.out.println("Path '" + fileRef2.getPath() + "' is created (succeed=" + succeed5 + ")? " + fileRef2.exists());
+		System.out.println("Path '" + fileRef3.getPath() + "' is created (succeed=" + succeed6 + ")? " + fileRef3.exists());
+
+		System.out.println();
+		System.out.println(dirRef1);
+		System.out.println(dirRef2);
+		System.out.println(dirRef3);
+		System.out.println(fileRef1);
+		System.out.println(fileRef2);
+		System.out.println(fileRef3);
 
 		System.out.println();
 	}
@@ -165,140 +185,194 @@ public class FsTestMac {
 	public void test004_uploadFiles() throws IOException {
 		System.out.println("--- --- --- test004_uploadFiles() --- --- ---");
 
-		File localFile1 = new File("/Users/yayang/Downloads/test/source/Book.xsd");
-		File localFile2 = new File("/Users/yayang/Downloads/test/source/swagger-parser-master.zip");
-		File localFile3 = new File("/Users/yayang/Downloads/test/source/commons-io-2.5-src.zip");
+		File localFile1 = new File("/Users/yayang/Downloads/test_source1/invoke.timeout.zip");
+		File localFile2 = new File("/Users/yayang/Downloads/test_source1/japanese_issue.zip");
 
-		FileRef dir = FileRef.newInstance(fs, "/dir2");
-		FileRef refFile1 = FileRef.newInstance(fs, dir, localFile1.getName());
-		FileRef refFile2 = FileRef.newInstance(fs, dir, localFile2.getName());
-		FileRef refFile3 = FileRef.newInstance(fs, dir, localFile3.getName());
+		FileRef fileRef1 = FileRef.newInstance(fs, fs.root(), localFile1.getName());
+		FileRef fileRef2 = FileRef.newInstance(fs, fs.root(), localFile2.getName());
 
-		boolean succeed1 = fs.uploadFileToFsFile(localFile1, refFile1);
-		boolean succeed2 = fs.uploadFileToFsFile(localFile2, refFile2);
-		boolean succeed3 = fs.uploadFileToFsFile(localFile3, refFile3);
+		boolean succeed1 = fs.uploadFileToFsFile(localFile1, fileRef1);
+		boolean succeed2 = fs.uploadFileToFsFile(localFile2, fileRef2);
 
-		if (succeed1) {
-			System.out.println(localFile1.getAbsolutePath() + " is uploaded to " + refFile1.getPath());
-		} else {
-			System.out.println("Failed to upload " + localFile1.getAbsolutePath());
+		System.out.println("Local file '" + localFile1.getAbsolutePath() + "' is uploaded to path '" + fileRef1.getPath() + "' (succeed=" + succeed1 + ")? " + fileRef1.exists());
+		System.out.println("Local file '" + localFile2.getAbsolutePath() + "' is uploaded to path '" + fileRef2.getPath() + "' (succeed=" + succeed2 + ")? " + fileRef2.exists());
+
+		System.out.println();
+	}
+
+	@Test
+	public void test005_uploadUsingOutputStream() throws IOException {
+		System.out.println("--- --- --- test005_uploadUsingOutputStream() --- --- ---");
+
+		File localFile1 = new File("/Users/yayang/Downloads/test_source2/log_01.txt");
+		File localFile2 = new File("/Users/yayang/Downloads/test_source2/xsd-sourcedoc-2.10.0.zip");
+
+		FileRef fileRef1 = FileRef.newInstance(fs, "/log_01.txt");
+		FileRef fileRef2 = FileRef.newInstance(fs, "/xsd-sourcedoc-2.10.0.zip");
+
+		OutputStream output1 = null;
+		try {
+			output1 = new FileRefOutputStream(fileRef1);
+			FileUtil.copyFileToOutputStream(localFile1, output1);
+			System.out.println("Local file '" + localFile1.getAbsolutePath() + "' is uploaded to path '" + fileRef1.getPath() + "'? " + fileRef1.exists());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(output1, true);
 		}
-		if (succeed2) {
-			System.out.println(localFile2.getAbsolutePath() + " is uploaded to " + refFile2.getPath());
-		} else {
-			System.out.println("Failed to upload " + localFile2.getAbsolutePath());
-		}
-		if (succeed3) {
-			System.out.println(localFile3.getAbsolutePath() + " is uploaded to " + refFile3.getPath());
-		} else {
-			System.out.println("Failed to upload " + localFile3.getAbsolutePath());
+
+		FileRefOutputStream output2 = null;
+		try {
+			output2 = new FileRefOutputStream(fileRef2);
+			FileUtil.copyFileToOutputStream(localFile2, output2);
+			System.out.println("Local file '" + localFile2.getAbsolutePath() + "' is uploaded to path '" + fileRef2.getPath() + "'? " + fileRef2.exists());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(output2, true);
 		}
 
 		System.out.println();
 	}
 
 	@Test
-	public void test005_downloadFiles() throws IOException {
-		System.out.println("--- --- --- test005_downloadFiles() --- --- ---");
+	public void test006_uploadDirectories() throws IOException {
+		System.out.println("--- --- --- test006_uploadDirectories() --- --- ---");
 
-		FileRef refFile1 = FileRef.newInstance(fs, "/dir2/Book.xsd");
-		FileRef refFile2 = FileRef.newInstance(fs, "/dir2/swagger-parser-master.zip");
-		FileRef refFile3 = FileRef.newInstance(fs, "/dir2/commons-io-2.5-src.zip");
+		File localDir = new File("/Users/yayang/Downloads/test_source1");
+		FileRef dirRef = fs.root();
 
-		File dir = new File("/Users/yayang/Downloads/test/target2/");
-		File localFile1 = new File(dir, refFile1.getName());
-		File localFile2 = new File(dir, refFile2.getName());
+		boolean succeed = fs.uploadDirectoryToFsDirectory(localDir, dirRef, false);
+		System.out.println("Local directory '" + localDir.getAbsolutePath() + "' is uploaded to path '" + dirRef.getPath() + "'? " + succeed);
 
-		boolean succeed1 = fs.downloadFsFileToFile(refFile1, localFile1);
-		boolean succeed2 = fs.downloadFsFileToFile(refFile2, localFile2);
-		boolean succeed3 = fs.downloadFsFileToDirectory(refFile3, dir);
+		System.out.println();
+	}
 
-		if (succeed1) {
-			System.out.println(refFile1.getPath() + " is downloaded to " + localFile1.getAbsolutePath());
-		} else {
-			System.out.println("Failed to download " + refFile1.getPath());
-		}
-		if (succeed2) {
-			System.out.println(refFile2.getPath() + " is downloaded to " + localFile2.getAbsolutePath());
-		} else {
-			System.out.println("Failed to download " + refFile2.getPath());
-		}
-		if (succeed3) {
-			System.out.println(refFile3.getPath() + " is downloaded into " + dir.getAbsolutePath());
-		} else {
-			System.out.println("Failed to download " + refFile3.getPath());
+	@Test
+	public void test007_downloadFiles() throws IOException {
+		System.out.println("--- --- --- test007_downloadFiles() --- --- ---");
+
+		FileRef fileRef1 = FileRef.newInstance(fs, "/invoke.timeout.zip");
+		FileRef fileRef2 = FileRef.newInstance(fs, "/japanese_issue.zip");
+		FileRef fileRef3 = FileRef.newInstance(fs, "/log_01.txt");
+		FileRef fileRef4 = FileRef.newInstance(fs, "/xsd-sourcedoc-2.10.0.zip");
+
+		File localDir = new File("/Users/yayang/Downloads/test_target2/");
+		File localFile1 = new File(localDir, "invoke.timeout(A).zip");
+		File localFile2 = new File(localDir, "japanese_issue(A).zip");
+		File localFile3 = new File(localDir, "log_01(A).txt");
+		File localFile4 = new File(localDir, "xsd-sourcedoc-2.10.0(A).zip");
+
+		boolean succeed1 = fs.downloadFsFileToFile(fileRef1, localFile1);
+		boolean succeed2 = fs.downloadFsFileToFile(fileRef2, localFile2);
+		boolean succeed3 = fs.downloadFsFileToFile(fileRef3, localFile3);
+		boolean succeed4 = fs.downloadFsFileToFile(fileRef4, localFile4);
+
+		System.out.println("Path '" + fileRef1.getPath() + "' is downloaded to local file '" + localFile1.getAbsolutePath() + "'? " + succeed1);
+		System.out.println("Path '" + fileRef2.getPath() + "' is downloaded to local file '" + localFile2.getAbsolutePath() + "'? " + succeed2);
+		System.out.println("Path '" + fileRef3.getPath() + "' is downloaded to local file '" + localFile3.getAbsolutePath() + "'? " + succeed3);
+		System.out.println("Path '" + fileRef4.getPath() + "' is downloaded to local file '" + localFile4.getAbsolutePath() + "'? " + succeed4);
+
+		System.out.println();
+	}
+
+	@Test
+	public void test008_downloadDirectories() throws IOException {
+		System.out.println("--- --- --- test008_downloadDirectories() --- --- ---");
+
+		File localDir = new File("/Users/yayang/Downloads/test_target1");
+		FileRef[] fileRefs = FileRef.listRoots(fs);
+		for (FileRef fileRef : fileRefs) {
+			boolean succeed = false;
+			if (fileRef.isDirectory()) {
+				succeed = fs.downloadFsDirectoryToDirectory(fileRef, localDir, true);
+			} else {
+				succeed = fs.downloadFsFileToDirectory(fileRef, localDir);
+			}
+			System.out.println("Path '" + fileRef.getPath() + "' is downloaded to local dir '" + localDir.getAbsolutePath() + "'? " + succeed);
 		}
 
 		System.out.println();
 	}
 
 	@Test
-	public void test006_downloadDirectories() throws IOException {
-		System.out.println("--- --- --- test006_downloadDirectories() --- --- ---");
+	public void test009_downloadUsingInputStream() throws IOException {
+		System.out.println("--- --- --- test009_downloadUsingInputStream() --- --- ---");
 
-		FileRef dirRef = FileRef.newInstance(fs, "/dir1");
-		File dir = new File("/Users/yayang/Downloads/test/target2/");
+		File localDir = new File("/Users/yayang/Downloads/test_target2/");
+		File localFile1 = new File(localDir, "invoke.timeout(B).zip");
+		File localFile2 = new File(localDir, "japanese_issue(B).zip");
+		File localFile3 = new File(localDir, "log_01(B).txt");
+		File localFile4 = new File(localDir, "xsd-sourcedoc-2.10.0(B).zip");
 
-		boolean succeed = fs.downloadFsDirectoryToDirectory(dirRef, dir, true);
+		FileRef fileRef1 = FileRef.newInstance(fs, "/invoke.timeout.zip");
+		FileRef fileRef2 = FileRef.newInstance(fs, "/japanese_issue.zip");
+		FileRef fileRef3 = FileRef.newInstance(fs, "/log_01.txt");
+		FileRef fileRef4 = FileRef.newInstance(fs, "/xsd-sourcedoc-2.10.0.zip");
 
-		if (succeed) {
-			System.out.println(dirRef.getPath() + " is downloaded to " + dir.getAbsolutePath());
-		} else {
-			System.out.println("Failed to download " + dirRef.getPath());
+		InputStream input1 = null;
+		try {
+			input1 = new FileRefInputStream(fileRef1);
+			FileUtil.copyInputStreamToFile(input1, localFile1);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(input1, true);
 		}
+
+		InputStream input2 = null;
+		try {
+			input2 = new FileRefInputStream(fileRef2);
+			FileUtil.copyInputStreamToFile(input2, localFile2);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(input2, true);
+		}
+
+		InputStream input3 = null;
+		try {
+			input3 = new FileRefInputStream(fileRef3);
+			FileUtil.copyInputStreamToFile(input3, localFile3);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(input3, true);
+		}
+
+		InputStream input4 = null;
+		try {
+			input4 = new FileRefInputStream(fileRef4);
+			FileUtil.copyInputStreamToFile(input4, localFile4);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			IOUtil.closeQuietly(input4, true);
+		}
+
+		System.out.println("Path '" + fileRef1.getPath() + " is downloaded to '" + localFile1.getAbsolutePath() + "'? " + localFile1.exists());
+		System.out.println("Path '" + fileRef2.getPath() + " is downloaded to '" + localFile2.getAbsolutePath() + "'? " + localFile2.exists());
+		System.out.println("Path '" + fileRef3.getPath() + " is downloaded to '" + localFile3.getAbsolutePath() + "'? " + localFile3.exists());
+		System.out.println("Path '" + fileRef4.getPath() + " is downloaded to '" + localFile4.getAbsolutePath() + "'? " + localFile4.exists());
 
 		System.out.println();
 	}
 
 	@Ignore
 	@Test
-	public void test007_deleteFiles() throws IOException {
-		System.out.println("--- --- --- test007_deleteFiles() --- --- ---");
+	public void test010_deleteFiles() throws IOException {
+		System.out.println("--- --- --- test010_deleteFiles() --- --- ---");
 
-		FileRef file1 = FileRef.newInstance(fs, "/dir1/newFile1.txt");
-		FileRef file2 = FileRef.newInstance(fs, "/dir1/newFile2.txt");
-		FileRef file3 = FileRef.newInstance(fs, "/dir1/newFile3.txt");
-		FileRef dir1New = FileRef.newInstance(fs, "/dir1/new");
+		FileRef fileRef1 = FileRef.newInstance(fs, "/newDir/tmp2/newEmptyFile2.txt");
+		FileRef dirRef2 = FileRef.newInstance(fs, "/newDir/tmp3");
 
-		boolean succeed1 = file1.delete();
-		boolean succeed2 = file2.delete();
-		boolean succeed3 = file3.delete();
-		boolean succeed4 = dir1New.delete();
+		boolean succeed1 = fileRef1.delete();
+		boolean succeed2 = dirRef2.delete();
 
-		System.out.println(file1.getPath() + " is deleted? " + succeed1);
-		System.out.println(file2.getPath() + " is deleted? " + succeed2);
-		System.out.println(file3.getPath() + " is deleted? " + succeed3);
-		System.out.println(dir1New.getPath() + " is deleted? " + succeed4);
-
-		System.out.println();
-	}
-
-	@Test
-	public void test008_listFiles() throws IOException {
-		System.out.println("--- --- --- test008_listFiles() --- --- ---");
-
-		try {
-			FileRef dir1 = FileRef.newInstance(fs, "/dir1");
-			FileRef dir2 = FileRef.newInstance(fs, "/dir2");
-
-			FileRef[] subFiles1 = FileRef.listFiles(dir1);
-			FileRef[] subFiles2 = FileRef.listFiles(dir2);
-
-			System.out.println("dir1 = " + dir1.getPath());
-			for (FileRef subFile : subFiles1) {
-				FileSystemUtil.walkFolders(fs, subFile, 0);
-			}
-			System.out.println();
-
-			System.out.println("dir2 = " + dir2.getPath());
-			for (FileRef subFile : subFiles2) {
-				FileSystemUtil.walkFolders(fs, subFile, 0);
-			}
-			System.out.println();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		System.out.println("Path '" + fileRef1.getPath() + "' is deleted (succeed=" + succeed1 + ")? " + !fileRef1.exists());
+		System.out.println("Path '" + dirRef2.getPath() + "' is deleted (succeed=" + succeed2 + ")? " + !dirRef2.exists());
 
 		System.out.println();
 	}

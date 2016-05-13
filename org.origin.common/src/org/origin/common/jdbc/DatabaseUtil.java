@@ -115,7 +115,7 @@ public class DatabaseUtil {
 				} else if (productName.toLowerCase().contains("sqlserver")) {
 					database = DatabaseTableAware.SQLSERVER;
 				} else {
-					System.out.println("### ### Unsupported DatabaseProductName = " + productName);
+					System.out.println("### ### Unsupported database product name: '" + productName + "'.");
 				}
 			}
 		}

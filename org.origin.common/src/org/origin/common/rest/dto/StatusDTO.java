@@ -2,6 +2,7 @@ package org.origin.common.rest.dto;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  * DTO for status
@@ -65,6 +66,11 @@ public class StatusDTO {
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	@XmlTransient
+	public boolean success() {
+		return ("success".equalsIgnoreCase(this.status)) ? true : false;
 	}
 
 }

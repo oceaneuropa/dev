@@ -9,6 +9,7 @@ import org.origin.common.rest.client.ClientException;
 import com.osgi.example1.fs.client.api.FileRef;
 import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.ws.FileSystemClient;
+import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
 
 public class FileRefImpl extends FileRef {
@@ -230,6 +231,34 @@ public class FileRefImpl extends FileRef {
 	@Override
 	public OutputStream getOutputStream(FileRef fileRef) throws IOException {
 		return this.fs.getOutputStream(this);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("FileRef (");
+		try {
+			FileMetadata metadata = getFsClient().getFileMetadata(this.path);
+			if (metadata != null) {
+				sb.append("name='").append(metadata.getName()).append("'");
+				sb.append(", isDirectory=").append(metadata.isDirectory());
+				sb.append(", isHidden=").append(metadata.isHidden());
+				sb.append(", path='").append(metadata.getPath()).append("'");
+				sb.append(", parentPath='").append(metadata.getParentPath()).append("'");
+				sb.append(", exists=").append(metadata.exists());
+				sb.append(", canExecute=").append(metadata.canExecute());
+				sb.append(", canRead=").append(metadata.canRead());
+				sb.append(", canWrite=").append(metadata.canWrite());
+				sb.append(", length=").append(metadata.getLength());
+				sb.append(", lastModified=").append(metadata.getLastModified());
+			} else {
+				sb.append("path='").append(this.path).append("'");
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		sb.append(")");
+		return sb.toString();
 	}
 
 }
