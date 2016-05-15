@@ -6,8 +6,8 @@ import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.ws.MetaSpaceClient;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MetaSpaceDTO;
+import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.util.AdaptorSupport;
 
 public class MetaSpaceImpl implements MetaSpace {
 

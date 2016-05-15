@@ -24,6 +24,7 @@ import org.origin.common.io.IOUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
@@ -36,6 +37,16 @@ import org.osgi.framework.wiring.FrameworkWiring;
 public class BundleUtil {
 
 	private static final String CHECKSUM_SUFFIX = ".checksum";
+
+	/**
+	 * Get current BundleContext.
+	 * 
+	 * @return
+	 */
+	public static BundleContext getBundleContext() {
+		Bundle b = ((BundleReference) BundleUtil.class.getClassLoader()).getBundle();
+		return b.getBundleContext();
+	}
 
 	/**
 	 * Check whether a file is a bundle file.

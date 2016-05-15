@@ -1,4 +1,4 @@
-package org.origin.common.util;
+package org.origin.common.adapter;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;

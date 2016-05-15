@@ -8,11 +8,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.origin.common.io.IOUtil;
+
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.common.vo.FileContentVO;
 import com.osgi.example1.fs.common.vo.FileMetadataVO;
-import com.osgi.example1.util.IOUtil;
 
 public class FsTableUtil {
 

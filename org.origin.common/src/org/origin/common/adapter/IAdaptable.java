@@ -1,4 +1,4 @@
-package org.origin.common.util;
+package org.origin.common.adapter;
 
 /**
  * An interface for an adaptable object.

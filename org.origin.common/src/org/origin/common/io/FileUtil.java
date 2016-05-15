@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.CRC32;
+import java.util.zip.CheckedInputStream;
+import java.util.zip.Checksum;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.NullOutputStream;
 
 public class FileUtil {
 
@@ -54,6 +59,26 @@ public class FileUtil {
 	 */
 	public static void copyFileToFile(File srcFile, File destFile) throws IOException {
 		org.apache.commons.io.FileUtils.copyFile(srcFile, destFile);
+	}
+
+	/**
+	 * Copies bytes array to a file destination. The directories up to destination will be created if they don't already exist. destination will be
+	 * overwritten if it already exists. The source stream is closed.
+	 * 
+	 * @param bytes
+	 * @param destination
+	 * @throws IOException
+	 */
+	public static void copyBytesToFile(byte[] bytes, final File destination) throws IOException {
+		InputStream is = null;
+		try {
+			is = IOUtil.toInputStream(bytes);
+			if (is != null) {
+				copyInputStreamToFile(is, destination);
+			}
+		} finally {
+			IOUtil.closeQuietly(is, true);
+		}
 	}
 
 	/**
@@ -132,6 +157,66 @@ public class FileUtil {
 	}
 
 	// ------------------------------------------------------------------------------------
+	// Create tmp file. Replace file.
+	// ------------------------------------------------------------------------------------
+	/**
+	 * Create a tmp file for a base file.
+	 * 
+	 * @see org.apache.hadoop.fs.FileUtil
+	 * 
+	 * @param basefile
+	 *            the base file of the tmp
+	 * @param prefix
+	 *            file name prefix of tmp
+	 * @param isDeleteOnExit
+	 *            if true, the tmp will be deleted when the VM exits
+	 * @return a newly created tmp file
+	 * @exception IOException
+	 *                If a tmp file cannot created
+	 * @see java.io.File#createTempFile(String, String, File)
+	 * @see java.io.File#deleteOnExit()
+	 */
+	public static File createLocalTempFile(final File basefile, final String prefix, final boolean isDeleteOnExit) throws IOException {
+		File tmp = File.createTempFile(prefix + basefile.getName(), "", basefile.getParentFile());
+		if (isDeleteOnExit) {
+			tmp.deleteOnExit();
+		}
+		return tmp;
+	}
+
+	/**
+	 * Move the src file to the name specified by target.
+	 * 
+	 * @see org.apache.hadoop.fs.FileUtil
+	 * 
+	 * @param src
+	 *            the source file
+	 * @param target
+	 *            the target file
+	 * @exception IOException
+	 *                If this operation fails
+	 */
+	public static void replaceFile(File src, File target) throws IOException {
+		/*
+		 * renameTo() has two limitations on Windows platform. src.renameTo(target) fails if 1) If target already exists OR 2) If target is already
+		 * open for reading/writing.
+		 */
+		if (!src.renameTo(target)) {
+			int retries = 5;
+			while (target.exists() && !target.delete() && retries-- >= 0) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					throw new IOException("replaceFile interrupted.");
+				}
+			}
+			if (!src.renameTo(target)) {
+				throw new IOException("Unable to rename " + src + " to " + target);
+			}
+		}
+	}
+
+	// ------------------------------------------------------------------------------------
 	// Checksum
 	// ------------------------------------------------------------------------------------
 	/**
@@ -169,6 +254,63 @@ public class FileUtil {
 			crc.update((int) (l & 0x000000ff));
 			l >>= 8;
 		}
+	}
+
+	/**
+	 * Computes the checksum of a file using the CRC32 checksum routine. The value of the checksum is returned.
+	 *
+	 * @see org.apache.commons.io.FileUtils
+	 * 
+	 * @param file
+	 *            the file to checksum, must not be {@code null}
+	 * @return the checksum value
+	 * @throws NullPointerException
+	 *             if the file or checksum is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the file is a directory
+	 * @throws IOException
+	 *             if an IO error occurs reading the file
+	 */
+	public static long checksumCRC32(File file) throws IOException {
+		final CRC32 crc = new CRC32();
+		checksum(file, crc);
+		return crc.getValue();
+	}
+
+	/**
+	 * Computes the checksum of a file using the specified checksum object. Multiple files may be checked using one <code>Checksum</code> instance if
+	 * desired simply by reusing the same checksum object. For example:
+	 * 
+	 * <pre>
+	 * long csum = FileUtil.checksum(file, new CRC32()).getValue();
+	 * </pre>
+	 *
+	 * @see org.apache.commons.io.FileUtils
+	 *
+	 * @param file
+	 *            the file to checksum, must not be {@code null}
+	 * @param checksum
+	 *            the checksum object to be used, must not be {@code null}
+	 * @return the checksum specified, updated with the content of the file
+	 * @throws NullPointerException
+	 *             if the file or checksum is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the file is a directory
+	 * @throws IOException
+	 *             if an IO error occurs reading the file
+	 */
+	public static Checksum checksum(final File file, final Checksum checksum) throws IOException {
+		if (file.isDirectory()) {
+			throw new IllegalArgumentException("Checksums can't be computed on directories");
+		}
+		InputStream in = null;
+		try {
+			in = new CheckedInputStream(new FileInputStream(file), checksum);
+			IOUtils.copy(in, new NullOutputStream());
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
+		return checksum;
 	}
 
 	// ------------------------------------------------------------------------------------

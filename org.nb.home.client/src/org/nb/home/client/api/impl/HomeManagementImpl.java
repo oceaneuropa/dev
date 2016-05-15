@@ -2,9 +2,9 @@ package org.nb.home.client.api.impl;
 
 import org.nb.home.client.api.HomeManagement;
 import org.nb.home.client.ws.HomeApiClient;
+import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.util.AdaptorSupport;
 
 public class HomeManagementImpl implements HomeManagement {
 

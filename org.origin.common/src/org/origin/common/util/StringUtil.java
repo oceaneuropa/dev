@@ -2,6 +2,8 @@ package org.origin.common.util;
 
 public class StringUtil {
 
+	public static char[] HEX_CHARS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
 	public static boolean equals(String value1, String value2) {
 		if ((value1 != null && value1.equals(value2)) || (value2 != null && value2.equals(value1))) {
 			return true;
@@ -10,6 +12,25 @@ public class StringUtil {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Returns a string representation of the byte array as a series of hexadecimal characters.
+	 *
+	 * @see com.google.gwt.util.tools.shared.StringUtils
+	 *
+	 * @param bytes
+	 *            byte array to convert
+	 * @return a string representation of the byte array as a series of hexadecimal characters
+	 */
+	public static String toHexString(byte[] bytes) {
+		char[] hexString = new char[2 * bytes.length];
+		int j = 0;
+		for (int i = 0; i < bytes.length; i++) {
+			hexString[j++] = HEX_CHARS[(bytes[i] & 0xF0) >> 4];
+			hexString[j++] = HEX_CHARS[bytes[i] & 0x0F];
+		}
+		return new String(hexString);
 	}
 
 }

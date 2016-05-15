@@ -9,15 +9,13 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
-
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.output.StringBuilderWriter;
 
 public class IOUtil {
 	/**
@@ -481,6 +479,194 @@ public class IOUtil {
 			} else {
 				// ignore
 			}
+		}
+	}
+
+	/**
+	 * Close the Closeable objects and <b>ignore</b> any {@link IOException} or null pointers. Must only be used for cleanup in exception handlers.
+	 *
+	 * @param log
+	 *            the log to record problems to at debug level. Can be null.
+	 * @param closeables
+	 *            the objects to close
+	 */
+	public static void closeQuietly(boolean printStackTrace, Closeable... closeables) {
+		for (java.io.Closeable c : closeables) {
+			if (c != null) {
+				try {
+					c.close();
+				} catch (IOException e) {
+					if (printStackTrace) {
+						e.printStackTrace();
+					} else {
+						// ignore
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * @see org.apache.commons.io.output.StringBuilderWriter
+	 *
+	 */
+	public static class StringBuilderWriter extends Writer implements Serializable {
+
+		private static final long serialVersionUID = 5122517056858241663L;
+		private final StringBuilder builder;
+
+		public StringBuilderWriter() {
+			this.builder = new StringBuilder();
+		}
+
+		public StringBuilderWriter(final int capacity) {
+			this.builder = new StringBuilder(capacity);
+		}
+
+		/**
+		 * Constructs a new instance with the specified {@link StringBuilder}.
+		 * 
+		 * <p>
+		 * If {@code builder} is null a new instance with default capacity will be created.
+		 * </p>
+		 *
+		 * @param builder
+		 *            The String builder. May be null.
+		 */
+		public StringBuilderWriter(final StringBuilder builder) {
+			this.builder = builder != null ? builder : new StringBuilder();
+		}
+
+		/**
+		 * Appends a single character to this Writer.
+		 *
+		 * @param value
+		 *            The character to append
+		 * @return This writer instance
+		 */
+		@Override
+		public Writer append(final char value) {
+			builder.append(value);
+			return this;
+		}
+
+		/**
+		 * Appends a character sequence to this Writer.
+		 *
+		 * @param value
+		 *            The character to append
+		 * @return This writer instance
+		 */
+		@Override
+		public Writer append(final CharSequence value) {
+			builder.append(value);
+			return this;
+		}
+
+		/**
+		 * Appends a portion of a character sequence to the {@link StringBuilder}.
+		 *
+		 * @param value
+		 *            The character to append
+		 * @param start
+		 *            The index of the first character
+		 * @param end
+		 *            The index of the last character + 1
+		 * @return This writer instance
+		 */
+		@Override
+		public Writer append(final CharSequence value, final int start, final int end) {
+			builder.append(value, start, end);
+			return this;
+		}
+
+		/**
+		 * Closing this writer has no effect.
+		 */
+		@Override
+		public void close() {
+		}
+
+		/**
+		 * Flushing this writer has no effect.
+		 */
+		@Override
+		public void flush() {
+		}
+
+		/**
+		 * Writes a String to the {@link StringBuilder}.
+		 * 
+		 * @param value
+		 *            The value to write
+		 */
+		@Override
+		public void write(final String value) {
+			if (value != null) {
+				builder.append(value);
+			}
+		}
+
+		/**
+		 * Writes a portion of a character array to the {@link StringBuilder}.
+		 *
+		 * @param value
+		 *            The value to write
+		 * @param offset
+		 *            The index of the first character
+		 * @param length
+		 *            The number of characters to write
+		 */
+		@Override
+		public void write(final char[] value, final int offset, final int length) {
+			if (value != null) {
+				builder.append(value, offset, length);
+			}
+		}
+
+		/**
+		 * @return The underlying builder.
+		 */
+		public StringBuilder getBuilder() {
+			return builder;
+		}
+
+		/**
+		 * @return The contents of the String builder.
+		 */
+		@Override
+		public String toString() {
+			return builder.toString();
+		}
+	}
+
+	/**
+	 * @see org.apache.commons.io.Charsets
+	 * 
+	 */
+	public static class Charsets {
+		/**
+		 * Returns the given Charset or the default Charset if the given Charset is null.
+		 * 
+		 * @param charset
+		 *            A charset or null.
+		 * @return the given Charset or the default Charset if the given Charset is null
+		 */
+		public static Charset toCharset(final Charset charset) {
+			return charset == null ? Charset.defaultCharset() : charset;
+		}
+
+		/**
+		 * Returns a Charset for the named charset. If the name is null, return the default Charset.
+		 * 
+		 * @param charset
+		 *            The name of the requested charset, may be null.
+		 * @return a Charset for the named charset
+		 * @throws java.nio.charset.UnsupportedCharsetException
+		 *             If the named charset is unavailable
+		 */
+		public static Charset toCharset(final String charset) {
+			return charset == null ? Charset.defaultCharset() : Charset.forName(charset);
 		}
 	}
 

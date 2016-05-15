@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.origin.common.util.IAdaptable;
+import org.origin.common.adapter.IAdaptable;
 
 import com.osgi.example1.fs.common.Configuration;
 import com.osgi.example1.fs.common.FileMetadata;

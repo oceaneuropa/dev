@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.io.IOUtil;
 import org.origin.common.jdbc.DatabaseUtil;
-import org.origin.common.util.AdaptorSupport;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -21,7 +22,6 @@ import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.common.vo.FileContentVO;
 import com.osgi.example1.fs.common.vo.FileMetadataVO;
 import com.osgi.example1.fs.server.service.FileSystem;
-import com.osgi.example1.util.IOUtil;
 
 public class DatabaseFileSystem implements FileSystem {
 

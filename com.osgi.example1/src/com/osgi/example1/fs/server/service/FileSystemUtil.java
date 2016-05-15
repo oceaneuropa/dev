@@ -4,10 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.origin.common.io.FileUtil;
+import org.origin.common.io.IOUtil;
+
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
-import com.osgi.example1.util.FileUtil;
-import com.osgi.example1.util.IOUtil;
 
 public class FileSystemUtil {
 

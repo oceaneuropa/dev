@@ -23,6 +23,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
+import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -32,7 +33,6 @@ import org.origin.common.util.JSONUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
-import com.osgi.example1.util.IOUtil;
 
 public class FileSystemClient extends AbstractClient {
 

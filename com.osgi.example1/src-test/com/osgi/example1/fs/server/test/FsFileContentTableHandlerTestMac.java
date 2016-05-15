@@ -14,13 +14,13 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
+import org.origin.common.io.FileUtil;
+import org.origin.common.io.IOUtil;
 import org.origin.common.jdbc.DatabaseUtil;
 
 import com.osgi.example1.fs.server.service.database.FsFileContentTableHandler;
 import com.osgi.example1.fs.server.service.database.FsFileMetadataTableHandler;
 import com.osgi.example1.fs.server.service.database.FsTableUtil;
-import com.osgi.example1.util.FileUtil;
-import com.osgi.example1.util.IOUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FsFileContentTableHandlerTestMac {

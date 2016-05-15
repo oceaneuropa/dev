@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.Hashtable;
 
 import org.apache.commons.io.FileUtils;
-import org.origin.common.util.AdaptorSupport;
+import org.origin.common.adapter.AdaptorSupport;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 

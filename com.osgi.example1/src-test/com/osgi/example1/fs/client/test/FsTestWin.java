@@ -12,6 +12,8 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
+import org.origin.common.io.FileUtil;
+import org.origin.common.io.IOUtil;
 
 import com.osgi.example1.fs.client.api.FileRef;
 import com.osgi.example1.fs.client.api.FileRefInputStream;
@@ -19,8 +21,6 @@ import com.osgi.example1.fs.client.api.FileRefOutputStream;
 import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.api.FileSystemConfiguration;
 import com.osgi.example1.fs.client.ws.FileSystemUtil;
-import com.osgi.example1.util.FileUtil;
-import com.osgi.example1.util.IOUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FsTestWin {

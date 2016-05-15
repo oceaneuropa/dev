@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 
-import com.osgi.example1.util.IOUtil;
+import org.origin.common.io.IOUtil;
 
 /**
  * A file ref output stream that uploads the content of a file on the fly.

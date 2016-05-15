@@ -14,13 +14,13 @@ import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.origin.common.io.IOUtil;
 import org.origin.common.rest.dto.ErrorDTO;
 import org.origin.common.rest.dto.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 
 import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.server.service.FileSystem;
-import com.osgi.example1.util.IOUtil;
 
 @javax.ws.rs.Path("/content")
 @Produces(MediaType.APPLICATION_JSON)
