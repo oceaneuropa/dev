@@ -1,16 +1,18 @@
 package org.origin.common;
 
+import org.origin.common.annotation.Annotated;
+import org.origin.common.annotation.DependencyConfigurator;
 import org.origin.common.deploy.WSDeployer;
 import org.origin.common.osgi.PropertiesConfigCommand;
-import org.origin.common.osgi.PropertiesConfigAdmin;
+import org.origin.common.osgi.PropertiesConfigServiceFactory;
 import org.origin.common.util.Printer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
 	private static BundleContext context;
-	private static PropertiesConfigAdmin qnameServiceAdminSupport;
 
 	static BundleContext getContext() {
 		return context;
@@ -18,7 +20,15 @@ public class Activator implements BundleActivator {
 
 	protected WSDeployer wsDeployer;
 	// protected NodeApplication nodeApplication;
-	protected PropertiesConfigCommand qnameCommand;
+	// protected PropertiesConfigAdmin propertiesConfigAdmin;
+
+	protected DependencyConfigurator dependencyConfigurator;
+
+	protected PropertiesConfigServiceFactory propertiesConfigFactory;
+	protected ServiceRegistration<?> propertiesConfigFactoryReg;
+
+	protected PropertiesConfigCommand propertiesConfigCommand;
+	protected ServiceRegistration<?> propertiesConfigCommandReg;
 
 	protected boolean debug = true;
 
@@ -28,47 +38,61 @@ public class Activator implements BundleActivator {
 
 		Activator.context = bundleContext;
 
-		// 1. Start WebService deployer
-		this.wsDeployer = new WSDeployer(bundleContext);
-		this.wsDeployer.start();
-
-		// 2. Start NodeApplication web service
+		// Start NodeApplication web service
 		// this.nodeApplication = new NodeApplication(bundleContext, "/node");
 		// this.nodeApplication.start();
 
-		// 3. Start the QNameServiceAdminSupport service
-		Activator.qnameServiceAdminSupport = new PropertiesConfigAdmin(bundleContext);
-		Activator.qnameServiceAdminSupport.start();
+		// this.propertiesConfigAdmin = new PropertiesConfigAdmin(bundleContext);
+		// this.propertiesConfigAdmin.start();
 
-		this.qnameCommand = new PropertiesConfigCommand(bundleContext);
-		this.qnameCommand.start();
+		// Start WebService deployer
+		this.wsDeployer = new WSDeployer(bundleContext);
+		this.wsDeployer.start();
+
+		this.dependencyConfigurator = new DependencyConfigurator(bundleContext);
+		this.dependencyConfigurator.start();
+
+		this.propertiesConfigFactory = new PropertiesConfigServiceFactory(bundleContext);
+		this.propertiesConfigFactoryReg = bundleContext.registerService(Annotated.class.getName(), propertiesConfigFactory, null);
+
+		this.propertiesConfigCommand = new PropertiesConfigCommand(bundleContext);
+		this.propertiesConfigCommandReg = bundleContext.registerService(Annotated.class.getName(), propertiesConfigCommand, null);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		Printer.pl("org.origin.common.Activator.stop()");
 
-		// 1. Stop NodeApplication web service
+		// Stop NodeApplication web service
 		// if (this.nodeApplication != null) {
 		// this.nodeApplication.stop();
 		// this.nodeApplication = null;
 		// }
 
-		// 2. Stop WebService deployer
+		// if (this.propertiesConfigAdmin != null) {
+		// this.propertiesConfigAdmin.stop();
+		// this.propertiesConfigAdmin = null;
+		// }
+
+		// Stop WebService deployer
 		if (this.wsDeployer != null) {
 			this.wsDeployer.stop();
 			this.wsDeployer = null;
 		}
 
-		// 3. Stop the QNameServiceAdminSupport service
-		if (Activator.qnameServiceAdminSupport != null) {
-			Activator.qnameServiceAdminSupport.stop();
-			Activator.qnameServiceAdminSupport = null;
+		if (this.dependencyConfigurator != null) {
+			this.dependencyConfigurator.stop();
+			this.dependencyConfigurator = null;
 		}
 
-		if (this.qnameCommand != null) {
-			this.qnameCommand.stop();
-			this.qnameCommand = null;
+		if (this.propertiesConfigFactoryReg != null) {
+			this.propertiesConfigFactoryReg.unregister();
+			this.propertiesConfigFactoryReg = null;
+		}
+
+		if (this.propertiesConfigCommandReg != null) {
+			this.propertiesConfigCommandReg.unregister();
+			this.propertiesConfigCommandReg = null;
 		}
 
 		Activator.context = null;

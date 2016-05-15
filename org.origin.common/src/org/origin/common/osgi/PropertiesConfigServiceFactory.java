@@ -7,18 +7,28 @@ import java.util.concurrent.ConcurrentMap;
 
 import javax.xml.namespace.QName;
 
+import org.origin.common.annotation.Annotated;
+import org.origin.common.annotation.Dependency;
+import org.origin.common.annotation.DependencyFullfilled;
+import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
 
-public class PropertiesConfigServiceFactory implements ManagedServiceFactory {
+public class PropertiesConfigServiceFactory implements ManagedServiceFactory, Annotated {
+
+	public static String SERVICE_PID = "properties.config.service.factory";
 
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<ManagedServiceFactory> serviceReg;
 	protected ConcurrentMap<QName, PropertiesConfigService> qnameToQNameServiceMap = new ConcurrentHashMap<QName, PropertiesConfigService>();
+
+	@Dependency
+	protected ConfigurationAdmin configAdmin;
 
 	/**
 	 * 
@@ -28,16 +38,18 @@ public class PropertiesConfigServiceFactory implements ManagedServiceFactory {
 		this.bundleContext = bundleContext;
 	}
 
+	@DependencyFullfilled
 	public void start() {
-		System.out.println("QNameServiceFactory.start()");
+		System.out.println("PropertiesConfigServiceFactory.start()");
 
 		Dictionary<String, String> configs = new Hashtable<String, String>();
-		configs.put(Constants.SERVICE_PID, "qname.service.admin");
+		configs.put(Constants.SERVICE_PID, SERVICE_PID);
 		this.serviceReg = this.bundleContext.registerService(ManagedServiceFactory.class, this, configs);
 	}
 
+	@DependencyUnfullfilled
 	public void stop() {
-		System.out.println("QNameServiceFactory.stop()");
+		System.out.println("PropertiesConfigServiceFactory.stop()");
 
 		if (this.serviceReg != null) {
 			this.serviceReg.unregister();
@@ -47,13 +59,14 @@ public class PropertiesConfigServiceFactory implements ManagedServiceFactory {
 
 	@Override
 	public String getName() {
-		return "QName Service Factory";
+		return "Properties Config Service Factory";
 	}
 
 	@Override
 	public void updated(String service_pid, Dictionary<String, ?> configs) throws ConfigurationException {
-		System.out.println("QNameServiceFactory.updated() serviceId='" + service_pid + "'");
+		System.out.println("PropertiesConfigServiceFactory.updated() serviceId='" + service_pid + "'");
 		Printer.pl(configs);
+		System.out.println("configs:");
 		// ------------------------------------------------------------------------
 		// p1 = v1
 		// qname = {t1}n1
@@ -64,7 +77,7 @@ public class PropertiesConfigServiceFactory implements ManagedServiceFactory {
 
 	@Override
 	public void deleted(String pId) {
-		System.out.println("QNameServiceFactory.deleted() serviceId='" + pId + "'");
+		System.out.println("PropertiesConfigServiceFactory.deleted() serviceId='" + pId + "'");
 	}
 
 }

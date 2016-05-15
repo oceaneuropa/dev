@@ -37,7 +37,7 @@ public class PropertiesConfigAdmin {
 
 				// ConfigurationAdmin (service.id='62') is added.
 				long configAdminServiceId = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-				System.out.println("ConfigurationAdmin (service.id='" + configAdminServiceId + "') is added.");
+				System.out.println("PropertiesConfigAdmin.ServiceTracker.addingService() ConfigurationAdmin (service.id='" + configAdminServiceId + "') is added.");
 
 				if (configAdmin != null) {
 					if (qnameServiceFactory == null) {
@@ -53,7 +53,7 @@ public class PropertiesConfigAdmin {
 			public void removedService(ServiceReference<ConfigurationAdmin> serviceReference, ConfigurationAdmin configAdmin) {
 				// ConfigurationAdmin (service.id='62') is removed.
 				long configAdminServiceId = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-				System.out.println("ConfigurationAdmin (service.id='" + configAdminServiceId + "') is removed.");
+				System.out.println("PropertiesConfigAdmin.ServiceTracker.removedService() ConfigurationAdmin (service.id='" + configAdminServiceId + "') is removed.");
 
 				if (qnameServiceFactory != null) {
 					qnameServiceFactory = new PropertiesConfigServiceFactory(bundleContext);
