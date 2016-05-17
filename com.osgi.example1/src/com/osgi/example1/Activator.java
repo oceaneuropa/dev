@@ -9,6 +9,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.osgi.example1.fs.client.cli.FileSystemCommand;
 import com.osgi.example1.fs.server.service.FileSystem;
 import com.osgi.example1.fs.server.service.database.DatabaseFileSystem;
 import com.osgi.example1.fs.server.service.database.DatabaseFileSystemConfiguration;
@@ -34,6 +35,7 @@ public class Activator implements BundleActivator {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected FileSystemApplication fsApplication;
+	protected FileSystemCommand fsCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -52,6 +54,9 @@ public class Activator implements BundleActivator {
 		// 2. Start FileSystemApplication web service
 		this.fsApplication = new FileSystemApplication(bundleContext, "/fs/v1");
 		this.fsApplication.start();
+
+		this.fsCommand = new FileSystemCommand(bundleContext);
+		this.fsCommand.start();
 	}
 
 	protected FileSystem getDatabaseFileSystem(BundleContext bundleContext) {
@@ -72,13 +77,19 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		Printer.pl("Activator.stop()");
 
-		// 1. Stop FileSystemApplication web service
+		// 1. Stop FileSystemCommand cli command
+		if (this.fsCommand != null) {
+			this.fsCommand.stop();
+			this.fsCommand = null;
+		}
+
+		// 2. Stop FileSystemApplication web service
 		if (this.fsApplication != null) {
 			this.fsApplication.stop();
 			this.fsApplication = null;
 		}
 
-		// 2. Stop FileSystem service
+		// 3. Stop FileSystem service
 		if (Activator.fsService != null) {
 			Activator.fsService.stop();
 			Activator.fsService = null;

@@ -33,6 +33,7 @@ Import-Package: com.fasterxml.jackson.databind,
  org.slf4j;version="1.7.10"
 Export-Package: org.origin.common,
  org.origin.common.adapter,
+ org.origin.common.annotation,
  org.origin.common.deploy,
  org.origin.common.env,
  org.origin.common.io,

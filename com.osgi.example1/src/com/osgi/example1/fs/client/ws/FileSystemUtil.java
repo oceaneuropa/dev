@@ -42,6 +42,7 @@ public class FileSystemUtil {
 	 */
 	public static void walkFolders(FileSystem fs, FileRef file, int level) throws IOException {
 		System.out.println(getSpaces(level) + file.getName() + " (" + file.getPath() + ")");
+		// System.out.println(getSpaces(level) + file.getName());
 
 		if (file.isDirectory()) {
 			int deeperLevel = level + 1;

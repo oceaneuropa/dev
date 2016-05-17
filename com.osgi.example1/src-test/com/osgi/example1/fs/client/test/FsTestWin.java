@@ -37,6 +37,7 @@ public class FsTestWin {
 
 	protected FileSystem getFileSystem() {
 		FileSystemConfiguration config = new FileSystemConfiguration("http://127.0.0.1:9090", "/fs/v1", "root", "admin");
+		// FileSystemConfiguration config = new FileSystemConfiguration("http://10.0.0.130:9090", "/fs/v1", "root", "admin");
 		return FileSystem.newInstance(config);
 	}
 
@@ -103,6 +104,7 @@ public class FsTestWin {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test003_createFiles() throws IOException {
 		System.out.println("--- --- --- test003_createFiles() --- --- ---");
@@ -183,6 +185,7 @@ public class FsTestWin {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test004_uploadFiles() throws IOException {
 		System.out.println("--- --- --- test004_uploadFiles() --- --- ---");
@@ -200,6 +203,7 @@ public class FsTestWin {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test005_uploadUsingOutputStream() throws IOException {
 		System.out.println("--- --- --- test005_uploadUsingOutputStream() --- --- ---");
@@ -245,6 +249,7 @@ public class FsTestWin {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test006_downloadFiles() throws IOException {
 		System.out.println("--- --- --- test006_downloadFiles() --- --- ---");
@@ -277,8 +282,11 @@ public class FsTestWin {
 	public void test007_downloadDirectories() throws IOException {
 		System.out.println("--- --- --- test007_downloadDirectories() --- --- ---");
 
-		FileRef refDir = FileRef.newInstance(fs, "/test2");
-		File dir = new File("C:/downloads/test_target2");
+		// FileRef refDir = FileRef.newInstance(fs, "/test2");
+		// File dir = new File("C:/downloads/test_target2");
+
+		FileRef refDir = FileRef.newInstance(fs, "/osgi");
+		File dir = new File("C:/shared");
 
 		boolean succeed = fs.downloadFsDirectoryToDirectory(refDir, dir, true);
 
@@ -291,6 +299,7 @@ public class FsTestWin {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test008_downloadUsingInputStream() throws IOException {
 		System.out.println("--- --- --- test008_downloadUsingInputStream() --- --- ---");

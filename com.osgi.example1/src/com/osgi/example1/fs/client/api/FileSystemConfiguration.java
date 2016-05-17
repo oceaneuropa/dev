@@ -20,6 +20,16 @@ public class FileSystemConfiguration extends Configuration {
 	/**
 	 * 
 	 * @param url
+	 * @param username
+	 * @param password
+	 */
+	public FileSystemConfiguration(String url, String username, String password) {
+		this(url, "/fs/v1", username, password);
+	}
+
+	/**
+	 * 
+	 * @param url
 	 * @param contextRoot
 	 * @param username
 	 * @param password
