@@ -49,7 +49,7 @@ public class PropertiesConfigCommand implements Annotated {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "origin");
-		props.put("osgi.command.function", new String[] { "lprops", "setprop", "rmprop", "rmprops" });
+		props.put("osgi.command.function", new String[] { "lprops", "setprop", "rmprop", "rmprops", "rmallprops" });
 		this.registration = bundleContext.registerService(PropertiesConfigCommand.class.getName(), this, props);
 	}
 
@@ -346,6 +346,23 @@ public class PropertiesConfigCommand implements Annotated {
 
 		System.out.println("Configuration for '" + qNameString + "' is found.");
 		config.delete();
+	}
+
+	/**
+	 * Remove all properties of all QNames.
+	 * 
+	 * @throws Exception
+	 */
+	@Descriptor("Remove all properties of all QNames")
+	public void rmallprops() throws Exception {
+		String filter = getFilterString();
+
+		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
+		if (configs != null) {
+			for (Configuration config : configs) {
+				config.delete();
+			}
+		}
 	}
 
 }
