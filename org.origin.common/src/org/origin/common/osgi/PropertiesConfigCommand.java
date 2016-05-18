@@ -18,6 +18,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.event.EventAdmin;
 
 public class PropertiesConfigCommand implements Annotated {
 
@@ -32,8 +33,8 @@ public class PropertiesConfigCommand implements Annotated {
 	@Dependency
 	protected ConfigurationAdmin configAdmin;
 
-	// @Dependency
-	// protected EventAdmin eventAdmin;
+	@Dependency
+	protected EventAdmin eventAdmin;
 
 	/**
 	 * 

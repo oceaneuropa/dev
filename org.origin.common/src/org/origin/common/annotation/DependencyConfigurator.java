@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -115,46 +116,69 @@ public class DependencyConfigurator {
 			if (dependencyFieldsMap != null && !dependencyFieldsMap.isEmpty()) {
 				annotatedToDependencyFieldsMap.put(annotated, dependencyFieldsMap);
 
-				// For each Field with dependency. Get the dependent class and get the existing dependent service (through ServiceReferences) for it.
-				// If a dependent service already exists, add it to the Field.
+				boolean ignore = true;
+				if (!ignore) {
+					// For each Field with dependency. Get the dependent class and get the existing dependent service (through ServiceReferences) for
+					// it. If a dependent service already exists, add it to the Field.
+					for (Iterator<Field> fieldItor = dependencyFieldsMap.keySet().iterator(); fieldItor.hasNext();) {
+						Field field = fieldItor.next();
+						Class dependentClass = dependencyFieldsMap.get(field);
+
+						Object dependentService = null;
+						try {
+							Collection<ServiceReference<?>> serviceReferences = bundleContext.getServiceReferences(dependentClass, null);
+							for (ServiceReference<?> serviceReference : serviceReferences) {
+								try {
+									dependentService = bundleContext.getService(serviceReference);
+									if (dependentService != null) {
+										long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
+										System.out.println("Service for " + dependentClass.getName() + " (service.id='" + service_id + "') already exists.");
+										break;
+									}
+								} finally {
+									bundleContext.ungetService(serviceReference);
+								}
+							}
+							if (dependentService != null) {
+								// Set dependentService to the field of the Annotated object.
+								dependentServiceAdded(annotated, field, dependentService);
+							}
+						} catch (InvalidSyntaxException e) {
+							e.printStackTrace();
+						}
+					}
+
+					// Evaluate the dependency status of the current Annotated object
+					evaluateDependendy(annotated);
+				}
+
 				for (Iterator<Field> fieldItor = dependencyFieldsMap.keySet().iterator(); fieldItor.hasNext();) {
 					Field field = fieldItor.next();
 					Class dependentClass = dependencyFieldsMap.get(field);
 
 					Object dependentService = null;
-					try {
-						Collection<ServiceReference<?>> serviceReferences = bundleContext.getServiceReferences(dependentClass, null);
-						for (ServiceReference<?> serviceReference : serviceReferences) {
-							try {
-								dependentService = bundleContext.getService(serviceReference);
+
+					// init ServiceTracker for the dependentClasses
+					ServiceTracker<Object, Object> dependentServiceTracker = initDependentServiceTracker(dependentClass);
+					if (dependentServiceTracker != null) {
+						SortedMap<ServiceReference<Object>, Object> map = dependentServiceTracker.getTracked();
+						if (map != null) {
+							for (Iterator<Object> dependentServiceItor = map.values().iterator(); dependentServiceItor.hasNext();) {
+								dependentService = dependentServiceItor.next();
 								if (dependentService != null) {
-									long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-									System.out.println("Service for " + dependentClass.getName() + " (service.id='" + service_id + "') already exists.");
 									break;
 								}
-							} finally {
-								bundleContext.ungetService(serviceReference);
 							}
 						}
-						if (dependentService != null) {
-							// Set dependentService to the field of the Annotated object.
-							dependentServiceAdded(annotated, field, dependentService);
-						}
-					} catch (InvalidSyntaxException e) {
-						e.printStackTrace();
+					}
+
+					if (dependentService != null) {
+						dependentServiceAdded(annotated, field, dependentService);
 					}
 				}
 
 				// Evaluate the dependency status of the current Annotated object
 				evaluateDependendy(annotated);
-
-				// init ServiceTracker for the dependentClasses
-				Collection<Class> dependentClasses = dependencyFieldsMap.values();
-				for (Iterator<Class> classItor = dependentClasses.iterator(); classItor.hasNext();) {
-					Class dependentClass = classItor.next();
-
-					initDependentServiceTracker(dependentClass);
-				}
 			}
 		}
 	}
@@ -228,13 +252,13 @@ public class DependencyConfigurator {
 	 * @param dependentClass
 	 */
 	@SuppressWarnings("unchecked")
-	protected <T> void initDependentServiceTracker(final Class<T> dependentClass) {
+	protected <T> ServiceTracker<T, T> initDependentServiceTracker(final Class<T> dependentClass) {
 		System.out.println("DependencyConfigurator.initDependentServiceTracker() for " + dependentClass.getName());
 
 		ServiceTracker<T, T> serviceTracker = dependentClassToServiceTrackerMap.get(dependentClass);
 		if (serviceTracker != null) {
 			// ServiceTracker for a dependent class has been opened.
-			return;
+			return serviceTracker;
 		}
 
 		serviceTracker = new ServiceTracker<T, T>(bundleContext, dependentClass.getName(), null) {
@@ -302,7 +326,10 @@ public class DependencyConfigurator {
 			}
 		};
 		serviceTracker.open();
+
 		dependentClassToServiceTrackerMap.put(dependentClass, serviceTracker);
+
+		return serviceTracker;
 	}
 
 	/**
