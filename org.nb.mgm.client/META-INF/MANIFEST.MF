@@ -27,5 +27,6 @@ Import-Package: javax.ws.rs,
  org.slf4j.spi;version="1.7.10"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.nb.mgm.client,
- org.nb.mgm.client.api
+ org.nb.mgm.client.api,
+ org.nb.mgm.client.cli
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.10.0"

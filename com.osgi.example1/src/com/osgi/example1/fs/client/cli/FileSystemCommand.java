@@ -1,5 +1,6 @@
 package com.osgi.example1.fs.client.cli;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Hashtable;
 
@@ -32,7 +33,7 @@ public class FileSystemCommand {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "fs");
-		props.put("osgi.command.function", new String[] { "login", "lroots", "lfiles", "download", "upload", "del" });
+		props.put("osgi.command.function", new String[] { "fslogin", "fslroots", "fslfiles", "fsupload", "fsdownload", "fsdelete" });
 		this.registration = bundleContext.registerService(FileSystemCommand.class.getName(), this, props);
 	}
 
@@ -45,8 +46,17 @@ public class FileSystemCommand {
 		}
 	}
 
+	/**
+	 * Login in file system.
+	 * 
+	 * @param url
+	 *            e.g. http://127.0.0.1:9090
+	 * @param username
+	 * @param password
+	 * @throws Exception
+	 */
 	@Descriptor("Login file system")
-	public void login( //
+	public void fslogin( //
 			@Descriptor("url") @Parameter(absentValue = "", names = { "-url", "--url" }) String url, //
 			@Descriptor("username") @Parameter(absentValue = "admin", names = { "-u", "--username" }) String username, //
 			@Descriptor("password") @Parameter(absentValue = "", names = { "-p", "--password" }) String password //
@@ -58,8 +68,14 @@ public class FileSystemCommand {
 		}
 	}
 
-	@Descriptor("List root files")
-	public void lroots( //
+	/**
+	 * List root files in the file system.
+	 * 
+	 * @param recursive
+	 * @throws Exception
+	 */
+	@Descriptor("List root files in the file system")
+	public void fslroots( //
 			// Options
 			@Descriptor("Show files in sub-directories recursively") @Parameter(names = { "-r", "--recursive" }, absentValue = "false", presentValue = "true") boolean recursive //
 	) throws Exception {
@@ -85,10 +101,19 @@ public class FileSystemCommand {
 		}
 	}
 
-	@Descriptor("List files")
-	public void lfiles( //
+	/**
+	 * List files in the file system.
+	 * 
+	 * @param recursive
+	 *            whether to list files in sub-directories recursively
+	 * @param pathString
+	 *            parent path in the file system
+	 * @throws Exception
+	 */
+	@Descriptor("List files in the file system")
+	public void fslfiles( //
 			// Options
-			@Descriptor("Show files in sub-directories recursively") @Parameter(names = { "-r", "--recursive" }, absentValue = "false", presentValue = "true") boolean recursive, //
+			@Descriptor("List files in sub-directories recursively") @Parameter(names = { "-r", "--recursive" }, absentValue = "false", presentValue = "true") boolean recursive, //
 			// Parameters
 			@Descriptor("Parent directory path") @Parameter(absentValue = "", names = { "-p", "--path" }) String pathString //
 	) throws Exception {
@@ -98,13 +123,13 @@ public class FileSystemCommand {
 		}
 
 		if (pathString == null) {
-			lroots(recursive);
+			fslroots(recursive);
 			return;
 		}
 
 		FileRef fileRef = FileRef.newInstance(fs, pathString);
 		if (fileRef.path().isRoot()) {
-			lroots(recursive);
+			fslroots(recursive);
 			return;
 		}
 		if (!fileRef.exists()) {
@@ -132,6 +157,194 @@ public class FileSystemCommand {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Upload file or directory from local file system to the file system.
+	 * 
+	 * @param localPathString
+	 *            local file or directory path
+	 * @param fsPathString
+	 *            file system path
+	 * @param includeSourceDir
+	 * @throws Exception
+	 */
+	@Descriptor("Upload file or directory to the file system")
+	public void fsupload( //
+			// Parameters
+			@Descriptor("Local path") @Parameter(absentValue = "", names = { "-s", "--src" }) String localPathString, //
+			@Descriptor("File system path") @Parameter(absentValue = "", names = { "-d", "--dest" }) String fsPathString, //
+			@Descriptor("When uploading a directory, whether to include the source directory.") @Parameter(absentValue = "true", names = { "-includesourcedir", "--includesourcedir" }) boolean includeSourceDir //
+	) throws Exception {
+		if (fs == null) {
+			printOutLoginMessage();
+			return;
+		}
+
+		localPathString = normalizeLocalPath(localPathString);
+		if (localPathString == null || localPathString.isEmpty()) {
+			System.out.println("Source path cannot be empty.");
+			return;
+		}
+
+		if (fsPathString == null || fsPathString.isEmpty()) {
+			System.out.println("Target path cannot be empty.");
+			return;
+		}
+
+		File localFile = new File(localPathString);
+		FileRef destFile = FileRef.newInstance(fs, fsPathString);
+
+		if (!localFile.exists()) {
+			System.out.println("Source '" + localFile.getAbsolutePath() + "' does not exist.");
+			return;
+		}
+
+		if (destFile.path().isEmpty()) {
+			System.out.println("Target path cannot be empty.");
+			return;
+		}
+
+		boolean succeed = false;
+
+		if (localFile.isFile()) {
+			boolean uploadToDirectory = false;
+			if (destFile.path().isRoot()) {
+				uploadToDirectory = true;
+			}
+			if (!destFile.exists()) {
+				// target path doesn't exist --- check last segment of the path to decide whether it is a dir or not.
+				String lastSegment = destFile.path().getLastSegment();
+				// Note that if source file name doesn't have file extension and source file name matches the dest path last segment, the dest path is
+				// considered as file.
+				if (!lastSegment.contains(".") && !localFile.getName().equals(lastSegment)) {
+					uploadToDirectory = true;
+				}
+			} else {
+				if (destFile.isDirectory()) {
+					uploadToDirectory = true;
+				}
+			}
+
+			if (uploadToDirectory) {
+				// upload local file to fs directory
+				succeed = fs.uploadFileToFsDirectory(localFile, destFile);
+			} else {
+				// upload local file to fs file
+				succeed = fs.uploadFileToFsFile(localFile, destFile);
+			}
+		} else {
+			// fs dest path must be a directory
+			if (destFile.exists() && !destFile.isDirectory()) {
+				// upload local directory to fs file --- wrong
+				System.out.println("Target path '" + destFile.getPath() + "' exists but is not a directory.");
+				return;
+			}
+
+			// upload local directory to fs directory
+			succeed = fs.uploadDirectoryToFsDirectory(localFile, destFile, includeSourceDir);
+		}
+
+		System.out.println("Source '" + localFile.getAbsolutePath() + "' is uploaded to target '" + destFile.getPath() + "' " + (succeed ? "successfully" : "unsuccessfully"));
+	}
+
+	/**
+	 * Download file or directory from the file system to local file system.
+	 * 
+	 * @param fsPathString
+	 * @throws Exception
+	 */
+	@Descriptor("Download file or directory from the file system to local file system")
+	public void fsdownload( //
+			// Parameters
+			@Descriptor("File system path") @Parameter(absentValue = "", names = { "-s", "--src" }) String fsPathString, //
+			@Descriptor("Local path") @Parameter(absentValue = "", names = { "-d", "--dest" }) String localPathString, //
+			@Descriptor("When uploading a directory, whether to include the source directory.") @Parameter(absentValue = "true", names = { "-includesourcedir", "--includesourcedir" }) boolean includeSourceDir //
+	) throws Exception {
+		if (fsPathString == null || fsPathString.isEmpty()) {
+			System.out.println("Source path cannot be empty.");
+			return;
+		}
+
+		localPathString = normalizeLocalPath(localPathString);
+		if (localPathString == null || localPathString.isEmpty()) {
+			System.out.println("Target path cannot be empty.");
+			return;
+		}
+
+		FileRef fileRef = FileRef.newInstance(fs, fsPathString);
+		File localFile = new File(localPathString);
+
+		if (!fileRef.exists()) {
+			System.out.println("Source path '" + fileRef.getPath() + "' does not exist.");
+			return;
+		}
+
+		boolean succeed = false;
+
+		boolean downloadToFile = localFile.isFile();
+		if (downloadToFile) {
+			// download to local file
+			if (fileRef.isDirectory()) {
+				// download fs directory to local file --- wrong
+				System.out.println("Source path '" + fileRef.getPath() + "' is a directory which cannot be downloaded to a file.");
+				return;
+
+			} else {
+				// download fs file to local file
+				succeed = fs.downloadFsFileToFile(fileRef, localFile);
+			}
+		} else {
+			// download to local directory
+			if (fileRef.isDirectory()) {
+				// download fs directory to local directory
+				succeed = fs.downloadFsDirectoryToDirectory(fileRef, localFile, includeSourceDir);
+			} else {
+				// download fs file to local directory
+				succeed = fs.downloadFsFileToDirectory(fileRef, localFile);
+			}
+		}
+
+		System.out.println("Source '" + fileRef.getPath() + "' is downloaded to target '" + localFile.getAbsolutePath() + "' " + (succeed ? "successfully" : "unsuccessfully"));
+	}
+
+	/**
+	 * Delete a file or a directory from the file system.
+	 * 
+	 * @param pathString
+	 * @throws Exception
+	 */
+	public void fsdelete( //
+			// Parameters
+			@Descriptor("Parent directory path") @Parameter(absentValue = "", names = { "-p", "--path" }) String fsPathString //
+	) throws Exception {
+		FileRef fileRef = FileRef.newInstance(fs, fsPathString);
+		if (fileRef.path().isRoot()) {
+			System.out.println("Root path cannot be deleted.");
+			return;
+		}
+		if (fileRef.path().isEmpty()) {
+			System.out.println("Path cannot be empty.");
+			return;
+		}
+
+		boolean succeed = fileRef.delete();
+		System.out.println("Path '" + fileRef.getPath() + "' is deleted " + (succeed ? "successfully" : "unsuccessfully"));
+	}
+
+	/**
+	 * Replace "\" in the local file path with "/".
+	 * 
+	 * @param localPathString
+	 * @return
+	 */
+	protected String normalizeLocalPath(String localPathString) {
+		if (localPathString != null) {
+			if (localPathString.contains("\\")) {
+				localPathString = localPathString.replaceAll("\\", "/");
+			}
+		}
+		return localPathString;
 	}
 
 	protected void printOutLoginMessage() {

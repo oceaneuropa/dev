@@ -1,4 +1,4 @@
-package org.nb.mgm.client.cli.felix;
+package org.nb.mgm.client.cli;
 
 import java.text.MessageFormat;
 import java.util.Arrays;

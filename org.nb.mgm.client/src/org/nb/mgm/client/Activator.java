@@ -1,6 +1,6 @@
 package org.nb.mgm.client;
 
-import org.nb.mgm.client.cli.felix.ManagementCommand;
+import org.nb.mgm.client.cli.ManagementCommand;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

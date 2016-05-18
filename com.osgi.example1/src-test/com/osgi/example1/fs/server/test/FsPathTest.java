@@ -63,6 +63,7 @@ public class FsPathTest {
 
 		Path path0a = new Path("");
 		Path path0b = new Path("/");
+		Path path0c = new Path("///");
 		Path path1 = new Path("/dir1");
 		Path path2 = new Path("dir1");
 		Path path3 = new Path("/readme1.txt");
@@ -74,6 +75,7 @@ public class FsPathTest {
 
 		String[] segments0a = path0a.getSegments();
 		String[] segments0b = path0b.getSegments();
+		String[] segments0c = path0c.getSegments();
 		String[] segments1 = path1.getSegments();
 		String[] segments2 = path2.getSegments();
 		String[] segments3 = path3.getSegments();
@@ -85,6 +87,7 @@ public class FsPathTest {
 
 		System.out.println(Arrays.toString(segments0a) + " (length=" + segments0a.length + ")");
 		System.out.println(Arrays.toString(segments0b) + " (length=" + segments0b.length + ")");
+		System.out.println(Arrays.toString(segments0c) + " (length=" + segments0c.length + ")");
 		System.out.println(Arrays.toString(segments1) + " (length=" + segments1.length + ")");
 		System.out.println(Arrays.toString(segments2) + " (length=" + segments2.length + ")");
 		System.out.println(Arrays.toString(segments3) + " (length=" + segments3.length + ")");

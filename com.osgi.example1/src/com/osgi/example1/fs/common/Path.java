@@ -4,6 +4,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.origin.common.util.StringUtil;
+
 @XmlRootElement
 public class Path implements Comparable<Path> {
 
@@ -249,19 +251,10 @@ public class Path implements Comparable<Path> {
 				return EMPTY_STRINGS;
 			}
 			// remove starting "/"
-			while (thePathString.startsWith(SEPARATOR)) {
-				thePathString = thePathString.substring(1);
-				if (thePathString.isEmpty() || SEPARATOR.equals(thePathString)) {
-					return EMPTY_STRINGS;
-				}
-			}
+			thePathString = StringUtil.removeStartingCharacters(thePathString, SEPARATOR);
 			// remove ending "/"
-			while (thePathString.endsWith(SEPARATOR)) {
-				thePathString = thePathString.substring(0, thePathString.lastIndexOf(SEPARATOR));
-				if (thePathString.isEmpty() || SEPARATOR.equals(thePathString)) {
-					return EMPTY_STRINGS;
-				}
-			}
+			thePathString = StringUtil.removeEndingCharacters(thePathString, SEPARATOR);
+
 			// split by "/"
 			segments = thePathString.split(SEPARATOR);
 		}
