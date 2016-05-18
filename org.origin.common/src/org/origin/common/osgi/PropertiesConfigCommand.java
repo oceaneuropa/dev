@@ -23,8 +23,8 @@ public class PropertiesConfigCommand implements Annotated {
 
 	/** managed service factory ID --- "properties.config.service.factory" */
 	public static final String FACTORY_PID = PropertiesConfigServiceFactory.SERVICE_PID;
-	/** property name for QName */
-	public static final String QNAME = "qname";
+	/** property name for the unique id of a set of properties related to the id */
+	public static final String CONFIG_ID = "config.id";
 
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<?> registration;
@@ -63,8 +63,17 @@ public class PropertiesConfigCommand implements Annotated {
 		}
 	}
 
+	/**
+	 * Normalize the fullname parameter.
+	 * 
+	 * @param fullname
+	 * @return
+	 */
 	protected String normalizeFullName(String fullname) {
-		if (fullname != null && !fullname.isEmpty()) {
+		if (fullname != null) {
+			// remove starting and ending spaces
+			fullname = fullname.trim();
+
 			// remove starting "."
 			fullname = StringUtil.removeStartingCharacters(fullname, ".");
 			// remove ending "."
@@ -73,6 +82,14 @@ public class PropertiesConfigCommand implements Annotated {
 		return fullname;
 	}
 
+	/**
+	 * Get QName string from full name or from the combination of tns and local name.
+	 * 
+	 * @param fullname
+	 * @param tns
+	 * @param localName
+	 * @return
+	 */
 	protected String getQNameString(String fullname, String tns, String localName) {
 		String qNameString = null;
 		if (!fullname.isEmpty()) {
@@ -92,12 +109,23 @@ public class PropertiesConfigCommand implements Annotated {
 		return qNameString;
 	}
 
+	/**
+	 * Get filter for all Configurations of the "properties.config.service.factory" managed service factory.
+	 * 
+	 * @return
+	 */
 	protected String getFilterString() {
 		return "(service.factoryPid=" + FACTORY_PID + ")";
 	}
 
+	/**
+	 * Get filter for Configurations of the "properties.config.service.factory" managed service factory with specified given QName.
+	 * 
+	 * @param qNameString
+	 * @return
+	 */
 	protected String getFilterString(String qNameString) {
-		return "(&(service.factoryPid=" + FACTORY_PID + ")(" + QNAME + "=" + qNameString + "))";
+		return "(&(service.factoryPid=" + FACTORY_PID + ")(" + CONFIG_ID + "=" + qNameString + "))";
 	}
 
 	/**
@@ -111,8 +139,6 @@ public class PropertiesConfigCommand implements Annotated {
 			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
 			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName //
 	) throws Exception {
-		// System.out.println("PropertiesConfigCommand.lprops()");
-
 		fullname = normalizeFullName(fullname);
 
 		String filter = null;
@@ -160,12 +186,15 @@ public class PropertiesConfigCommand implements Annotated {
 			@Descriptor("propValue") @Parameter(absentValue = "", names = { "-pv", "--propertyvalue" }) String propValue, //
 			@Descriptor("propType") @Parameter(absentValue = "string", names = { "-pt", "--propertytype" }) String propType //
 	) throws Exception {
-		// System.out.println("PropertiesConfigCommand.setproperty()");
-
 		fullname = normalizeFullName(fullname);
 
 		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
 			System.err.println("Please specify either full name (-fn or --fullname) or a combination of target namespace (-t or --tns) and local name (-n or --name).");
+			return;
+		}
+
+		if ("service.factoryPid".equalsIgnoreCase(propName) || "service.pid".equalsIgnoreCase(propName) || CONFIG_ID.equalsIgnoreCase(propName)) {
+			System.err.println("Property name '" + propName + "' is preserved and cannot be changed.");
 			return;
 		}
 
@@ -191,7 +220,7 @@ public class PropertiesConfigCommand implements Annotated {
 			configProps = new Hashtable<String, Object>();
 		}
 		if (createNewConfig) {
-			configProps.put(QNAME, qNameString);
+			configProps.put(CONFIG_ID, qNameString);
 		}
 
 		Object propertyObject = null;
@@ -276,7 +305,6 @@ public class PropertiesConfigCommand implements Annotated {
 			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName, //
 			@Descriptor("propName") @Parameter(absentValue = "", names = { "-pn", "--propertyname" }) String propName //
 	) throws Exception {
-
 		fullname = normalizeFullName(fullname);
 
 		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
