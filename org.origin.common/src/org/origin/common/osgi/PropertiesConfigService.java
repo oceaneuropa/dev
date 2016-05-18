@@ -3,25 +3,66 @@ package org.origin.common.osgi;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.xml.namespace.QName;
-
+import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class PropertiesConfigService {
 
 	protected BundleContext bundleContext;
-	protected QName qname;
+	protected String pid;
+	protected String configId;
+	protected Dictionary<String, ?> configs;
+
 	protected ServiceRegistration<PropertiesConfigService> serviceReg;
 
 	/**
 	 * 
 	 * @param bundleContext
-	 * @param qname
 	 */
-	public PropertiesConfigService(BundleContext bundleContext, QName qname) {
+	public PropertiesConfigService(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
-		this.qname = qname;
+	}
+
+	public String getPid() {
+		return pid;
+	}
+
+	public void setPid(String pid) {
+		this.pid = pid;
+	}
+
+	public String getConfigId() {
+		return configId;
+	}
+
+	public void setConfigId(String configId) {
+		this.configId = configId;
+	}
+
+	public Dictionary<String, ?> getConfigs() {
+		return configs;
+	}
+
+	public void setConfigs(Dictionary<String, ?> configs) {
+		this.configs = configs;
+	}
+
+	public void updateConfigs(Dictionary<String, ?> configs) {
+		System.out.println("PropertiesConfigService.updateConfigs()");
+
+		this.configs = configs;
+
+		System.out.println("Configs properties:");
+		Printer.pl(configs);
+		// Example:
+		// ------------------------------------------------------------------------
+		// service.factoryPid = properties.config.service.factory
+		// service.pid = properties.config.service.factory.ed642480-56d8-4f6b-afda-dcf61d5df2d4
+		// config.id = {t1}n1
+		// p1 = v1
+		// p2 = v2
+		// ------------------------------------------------------------------------
 	}
 
 	public void start() {

@@ -5,13 +5,10 @@ import java.util.Hashtable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import javax.xml.namespace.QName;
-
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
-import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
@@ -21,11 +18,14 @@ import org.osgi.service.cm.ManagedServiceFactory;
 
 public class PropertiesConfigServiceFactory implements ManagedServiceFactory, Annotated {
 
+	/** managed service factory ID */
 	public static String SERVICE_PID = "properties.config.service.factory";
+	/** property name for the unique id of a set of properties related to the id */
+	public static final String CONFIG_ID = "config.id";
 
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<ManagedServiceFactory> serviceReg;
-	protected ConcurrentMap<QName, PropertiesConfigService> qnameToQNameServiceMap = new ConcurrentHashMap<QName, PropertiesConfigService>();
+	protected ConcurrentMap<String, PropertiesConfigService> pidToPropConfigServiceMap = new ConcurrentHashMap<String, PropertiesConfigService>();
 
 	@Dependency
 	protected ConfigurationAdmin configAdmin;
@@ -63,21 +63,38 @@ public class PropertiesConfigServiceFactory implements ManagedServiceFactory, An
 	}
 
 	@Override
-	public void updated(String service_pid, Dictionary<String, ?> configs) throws ConfigurationException {
-		System.out.println("PropertiesConfigServiceFactory.updated() serviceId='" + service_pid + "'");
-		Printer.pl(configs);
-		System.out.println("configs:");
-		// ------------------------------------------------------------------------
-		// p1 = v1
-		// qname = {t1}n1
-		// service.factoryPid = qname.service.admin
-		// service.pid = qname.service.admin.ed642480-56d8-4f6b-afda-dcf61d5df2d4
-		// ------------------------------------------------------------------------
+	public void updated(String pid, Dictionary<String, ?> configs) throws ConfigurationException {
+		System.out.println("PropertiesConfigServiceFactory.updated() pid='" + pid + "'");
+
+		PropertiesConfigService propConfigService = pidToPropConfigServiceMap.get(pid);
+		if (propConfigService == null) {
+			propConfigService = new PropertiesConfigService(this.bundleContext);
+			propConfigService.setPid(pid);
+
+			Object configId = configs.get(CONFIG_ID);
+			if (configId != null) {
+				propConfigService.setConfigId(configId.toString());
+			}
+
+			propConfigService.setConfigs(configs);
+			propConfigService.start();
+			pidToPropConfigServiceMap.put(pid, propConfigService);
+
+		} else {
+			propConfigService.updateConfigs(configs);
+		}
 	}
 
 	@Override
-	public void deleted(String pId) {
-		System.out.println("PropertiesConfigServiceFactory.deleted() serviceId='" + pId + "'");
+	public void deleted(String pid) {
+		System.out.println("PropertiesConfigServiceFactory.deleted() pid='" + pid + "'");
+
+		if (pidToPropConfigServiceMap.containsKey(pid)) {
+			PropertiesConfigService propConfigService = pidToPropConfigServiceMap.remove(pid);
+			if (propConfigService != null) {
+				propConfigService.stop();
+			}
+		}
 	}
 
 }

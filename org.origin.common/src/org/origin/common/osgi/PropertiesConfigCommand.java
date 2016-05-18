@@ -21,7 +21,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 
 public class PropertiesConfigCommand implements Annotated {
 
-	/** managed service factory ID --- "properties.config.service.factory" */
+	/** managed service factory ID */
 	public static final String FACTORY_PID = PropertiesConfigServiceFactory.SERVICE_PID;
 	/** property name for the unique id of a set of properties related to the id */
 	public static final String CONFIG_ID = "config.id";
@@ -309,6 +309,11 @@ public class PropertiesConfigCommand implements Annotated {
 
 		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
 			System.err.println("Please specify either full name (-fn or --fullname) or a combination of target namespace (-t or --tns) and local name (-n or --name).");
+			return;
+		}
+
+		if (propName.isEmpty()) {
+			System.err.println("Please specify the property name (-pn or --propertyname) to be removed.");
 			return;
 		}
 
