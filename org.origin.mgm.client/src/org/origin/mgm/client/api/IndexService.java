@@ -1,81 +1,67 @@
 package org.origin.mgm.client.api;
 
+import java.io.IOException;
 import java.util.List;
 
-import org.origin.common.rest.client.ClientException;
-import org.origin.mgm.model.runtime.IndexItem;
+import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.adapter.IAdaptable;
+import org.origin.mgm.client.api.impl.IndexServiceImpl;
 
-public interface IndexService {
+public abstract class IndexService implements IAdaptable {
 
 	/**
+	 * 
+	 * @param config
+	 * @param indexProviderId
+	 * @return
+	 */
+	public static IndexService newInstance(IndexServiceConfiguration config) {
+		return new IndexServiceImpl(config);
+	}
+
+	private AdaptorSupport adaptorSupport = new AdaptorSupport();
+
+	/**
+	 * Get remote index service server configuration
 	 * 
 	 * @return
 	 */
-	public List<IndexItem> getIndexItems() throws ClientException;
+	public abstract IndexServiceConfiguration getConfiguration();
 
 	/**
-	 * Check whether an item indexed.
+	 * Get all index items with any namespace and created by any index provider.
 	 * 
-	 * @param type
-	 * @param name
 	 * @return
 	 */
-	public boolean isIndexed(String type, String name);
+	public abstract List<IndexItem> getIndexItems() throws IOException;
 
 	/**
-	 * Add an index item.
+	 * Get index items with specified namespace.
 	 * 
-	 * @param type
-	 * @param name
-	 */
-	public void addIndexItem(String type, String name);
-
-	/**
-	 * Remove in index item.
-	 * 
-	 * @param type
-	 * @param name
-	 */
-	public void removeIndexItem(String type, String name);
-
-	/**
-	 * Check whether a property of an index item is available.
-	 * 
-	 * @param type
-	 * @param name
-	 * @param propName
-	 *            property name
 	 * @return
 	 */
-	public boolean hasProperty(String type, String name, String propName);
+	public abstract List<IndexItem> getIndexItems(String namespace) throws IOException;
 
 	/**
-	 * Set the property of an index item.
+	 * Get index items with specified namespace and created by specified indexer provider.
 	 * 
-	 * @param type
-	 * @param name
-	 * @param propName
-	 * @param propValue
+	 * @return
 	 */
-	public void setProperty(String type, String name, String propName, String propValue);
+	public abstract List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IOException;
 
-	/**
-	 * Set the volatile property of an index item.
-	 * 
-	 * @param type
-	 * @param name
-	 * @param propName
-	 * @param propValue
-	 */
-	public void setVolatileProperty(String type, String name, String propName, String propValue);
+	/** implement IAdaptable interface */
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		T result = this.adaptorSupport.getAdapter(adapter);
+		if (result != null) {
+			return result;
+		}
+		return null;
+	}
 
-	/**
-	 * Remove the property of an index item
-	 * 
-	 * @param type
-	 * @param name
-	 * @param propName
-	 */
-	public void removeProperty(String type, String name, String propName);
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
+	}
 
 }

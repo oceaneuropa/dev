@@ -60,7 +60,7 @@ public class IndexServiceApplication extends AbstractApplication {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 
 		// resources
-		classes.add(IndexServiceResource.class);
+		classes.add(IndexItemsResource.class);
 
 		// resolvers
 		classes.add(IndexServiceResolver.class);

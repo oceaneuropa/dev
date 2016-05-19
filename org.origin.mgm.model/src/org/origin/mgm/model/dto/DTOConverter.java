@@ -1,6 +1,6 @@
 package org.origin.mgm.model.dto;
 
-import org.origin.common.rest.dto.ErrorDTO;
+import org.origin.common.rest.model.ErrorDTO;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
 
@@ -52,7 +52,7 @@ public class DTOConverter {
 		}
 		IndexItemDTO dto = new IndexItemDTO();
 
-		dto.setType(indexItem.getType());
+		dto.setNamespace(indexItem.getNamespace());
 		dto.setName(indexItem.getName());
 		dto.setProperties(indexItem.getProperties());
 

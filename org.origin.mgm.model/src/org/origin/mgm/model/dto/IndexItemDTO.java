@@ -9,19 +9,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class IndexItemDTO {
 
 	@XmlElement
-	protected String type;
+	protected String indexProviderId;
+	@XmlElement
+	protected String namespace;
 	@XmlElement
 	protected String name;
 	@XmlElement
 	protected Map<String, Object> properties;
 
 	@XmlElement
-	public String getType() {
-		return type;
+	public String getNamespace() {
+		return namespace;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
 	}
 
 	@XmlElement

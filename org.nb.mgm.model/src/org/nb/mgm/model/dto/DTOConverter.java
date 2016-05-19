@@ -6,7 +6,7 @@ import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
-import org.origin.common.rest.dto.ErrorDTO;
+import org.origin.common.rest.model.ErrorDTO;
 
 public class DTOConverter {
 

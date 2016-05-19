@@ -12,7 +12,7 @@ import java.util.Properties;
 
 import org.junit.Test;
 import org.origin.common.jdbc.DatabaseUtil;
-import org.origin.common.util.JSONUtil;
+import org.origin.common.json.JSONUtil;
 import org.origin.mgm.model.vo.IndexItemDataVO;
 import org.origin.mgm.persistence.impl.IndexItemDataTableHandler;
 

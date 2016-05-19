@@ -1,4 +1,4 @@
-package org.origin.common.rest.dto;
+package org.origin.common.rest.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

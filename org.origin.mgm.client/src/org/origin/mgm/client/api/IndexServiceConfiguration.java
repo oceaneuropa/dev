@@ -1,20 +1,19 @@
-package com.osgi.example1.fs.client.api;
+package org.origin.mgm.client.api;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.mgm.client.ws.IndexServiceClient;
 
-import com.osgi.example1.fs.client.ws.FileSystemClient;
-
-public class FileSystemConfiguration {
+public class IndexServiceConfiguration {
 
 	protected String url;
 	protected String contextRoot;
 	protected String username;
 	protected String password;
 
-	protected Map<ClientConfiguration, FileSystemClient> clientMap = new HashMap<ClientConfiguration, FileSystemClient>();
+	protected Map<ClientConfiguration, IndexServiceClient> clientMap = new HashMap<ClientConfiguration, IndexServiceClient>();
 
 	/**
 	 * 
@@ -22,8 +21,8 @@ public class FileSystemConfiguration {
 	 * @param username
 	 * @param password
 	 */
-	public FileSystemConfiguration(String url, String username, String password) {
-		this(url, "/fs/v1", username, password);
+	public IndexServiceConfiguration(String url, String username, String password) {
+		this(url, "/indexservice/v1", username, password);
 	}
 
 	/**
@@ -33,18 +32,18 @@ public class FileSystemConfiguration {
 	 * @param username
 	 * @param password
 	 */
-	public FileSystemConfiguration(String url, String contextRoot, String username, String password) {
+	public IndexServiceConfiguration(String url, String contextRoot, String username, String password) {
 		this.url = url;
 		this.contextRoot = contextRoot;
 		this.username = username;
 		this.password = password;
 	}
 
-	public synchronized FileSystemClient getFileSystemClient() {
+	public synchronized IndexServiceClient getIndexServiceClient() {
 		ClientConfiguration config = ClientConfiguration.get(url, contextRoot, username, password);
-		FileSystemClient fsClient = this.clientMap.get(config);
+		IndexServiceClient fsClient = this.clientMap.get(config);
 		if (fsClient == null) {
-			fsClient = new FileSystemClient(config);
+			fsClient = new IndexServiceClient(config);
 			this.clientMap.put(config, fsClient);
 		}
 		return fsClient;

@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.origin.common.io.IOUtil;
-import org.origin.common.rest.dto.ErrorDTO;
-import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 
 import com.osgi.example1.fs.common.Path;

@@ -3,14 +3,12 @@ package org.origin.mgm.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.xml.namespace.QName;
 
 import org.origin.mgm.exception.IndexServiceException;
-import org.origin.mgm.model.query.IndexItemQuery;
 import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.service.IndexService;
 import org.origin.mgm.service.IndexServiceListener;
@@ -36,12 +34,16 @@ public class IndexServiceImpl implements IndexService {
 	}
 
 	public void start() {
+		System.out.println("IndexServiceImpl.start()");
+
 		// Register as a IndexService
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceReg = this.bundleContext.registerService(IndexService.class, this, props);
 	}
 
 	public void stop() {
+		System.out.println("IndexServiceImpl.stop()");
+
 		// Unregister the IndexService
 		if (this.serviceReg != null) {
 			this.serviceReg.unregister();
@@ -49,112 +51,59 @@ public class IndexServiceImpl implements IndexService {
 		}
 	}
 
-	/**
-	 * Get a list of index items.
-	 * 
-	 * @return
-	 * @throws IndexServiceException
-	 */
 	@Override
 	public List<IndexItem> getIndexItems() throws IndexServiceException {
 		return this.indexItems;
 	}
 
-	/**
-	 * Get a list of index items by type.
-	 * 
-	 * @param type
-	 * @return
-	 * @throws IndexServiceException
-	 */
 	@Override
-	public List<IndexItem> getIndexItems(String type) throws IndexServiceException {
-		if (type == null) {
+	public List<IndexItem> getIndexItems(String namespace) throws IndexServiceException {
+		if (namespace == null) {
 			return getIndexItems();
 		}
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 		for (IndexItem indexItem : this.indexItems) {
-			if (type.equals(indexItem.getType())) {
+			if (namespace.equals(indexItem.getNamespace())) {
 				indexItems.add(indexItem);
 			}
 		}
 		return indexItems;
 	}
 
-	/**
-	 * Get a list of index items by query.
-	 * 
-	 * @param indexItemQuery
-	 * @return
-	 * @throws IndexServiceException
-	 */
 	@Override
-	public List<IndexItem> getIndexItems(IndexItemQuery serviceQuery) throws IndexServiceException {
-		return null;
-	}
-
-	/**
-	 * Check whether an item is indexed.
-	 * 
-	 * @param type
-	 * @param name
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	@Override
-	public boolean isIndexed(String type, String name) throws IndexServiceException {
-		if (type == null) {
-			type = IndexItem.DEFAULT_TYPE;
+	public List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IndexServiceException {
+		if (namespace == null) {
+			return getIndexItems();
 		}
+		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 		for (IndexItem indexItem : this.indexItems) {
-			if (indexItem.getType().equals(type) && indexItem.getName().equals(name)) {
-				return true;
+			if (namespace.equals(indexItem.getNamespace())) {
+				indexItems.add(indexItem);
 			}
 		}
-		return false;
+		return indexItems;
 	}
 
-	/**
-	 * Create an index item.
-	 * 
-	 * @param type
-	 * @param name
-	 * @param props
-	 *            e.g. description, url
-	 * @throws IndexServiceException
-	 */
 	@Override
-	public void createIndexItem(String namespace, String name, Map<String, Object> props) throws IndexServiceException {
-		if (isIndexed(namespace, name)) {
-			// Service is already registered.
-			if (props != null) {
-				// Update existing service registry entry's properties map.
-				for (Iterator<String> nameItor = props.keySet().iterator(); nameItor.hasNext();) {
-					String propName = nameItor.next();
-					Object propValue = props.get(propName);
-
-					if (hasProperty(namespace, name, propName)) {
-						// Property already exists. Update property value only when necessary.
-						Object oldPropValue = getProperty(namespace, name, propName);
-						if ((oldPropValue == null && propValue != null) || (oldPropValue != null && !oldPropValue.equals(propValue))) {
-							setProperty(namespace, name, propName, propValue);
-						}
-					} else {
-						// Property doesn't exist yet.
-						setProperty(namespace, name, propName, propValue);
-					}
-				}
-			}
-
-		} else {
-			// Service is not registered yet
-			// QName qname = IndexItem.getQName(namespace, name);
-			// IndexItem entry = new IndexItem(null, namespace, name, props);
-			// this.indexItems.put(qname, entry);
-
-			// Notify service added event
-			// this.listenerSupport.notifyIndexItemAdded(entry);
-		}
+	public void createIndexItem(String indexProviderId, String namespace, String name) throws IndexServiceException {
+		// if (props != null) {
+		// // Update existing service registry entry's properties map.
+		// for (Iterator<String> nameItor = props.keySet().iterator(); nameItor.hasNext();) {
+		// String propName = nameItor.next();
+		// Object propValue = props.get(propName);
+		//
+		// if (hasProperty(namespace, name, propName)) {
+		// // Property already exists. Update property value only when necessary.
+		// Object oldPropValue = getProperty(namespace, name, propName);
+		// if ((oldPropValue == null && propValue != null) || (oldPropValue != null && !oldPropValue.equals(propValue))) {
+		// setProperty(namespace, name, propName, propValue);
+		// }
+		// } else {
+		// // Property doesn't exist yet.
+		// setProperty(namespace, name, propName, propValue);
+		// }
+		// }
+		// }
 	}
 
 	/**
@@ -165,13 +114,7 @@ public class IndexServiceImpl implements IndexService {
 	 * @throws IndexServiceException
 	 */
 	public void removeIndexItem(String type, String name) throws IndexServiceException {
-		if (isIndexed(type, name)) {
-			// QName qname = IndexItem.getQName(type, name);
-			// IndexItem entry = this.indexItems.remove(qname);
-			//
-			// // Notify service removed event
-			// this.listenerSupport.notifyIndexItemRemoved(entry);
-		}
+
 	}
 
 	/**

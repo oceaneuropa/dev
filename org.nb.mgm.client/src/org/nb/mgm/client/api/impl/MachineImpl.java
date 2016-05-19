@@ -14,7 +14,7 @@ import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.rest.model.StatusDTO;
 
 public class MachineImpl implements Machine {
 

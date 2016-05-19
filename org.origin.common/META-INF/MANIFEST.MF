@@ -42,7 +42,6 @@ Export-Package: org.origin.common,
  org.origin.common.osgi,
  org.origin.common.rest,
  org.origin.common.rest.client,
- org.origin.common.rest.dto,
  org.origin.common.rest.model,
  org.origin.common.rest.server,
  org.origin.common.util

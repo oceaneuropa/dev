@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.mgm.exception.IndexServiceException;
-import org.origin.mgm.model.query.IndexItemQuery;
 import org.origin.mgm.model.runtime.IndexItem;
 
 /**
@@ -14,7 +13,7 @@ import org.origin.mgm.model.runtime.IndexItem;
 public interface IndexService {
 
 	/**
-	 * Get a list of index items.
+	 * Get all index items with any namespace and created by any index provider.
 	 * 
 	 * @return
 	 * @throws IndexServiceException
@@ -22,43 +21,34 @@ public interface IndexService {
 	public List<IndexItem> getIndexItems() throws IndexServiceException;
 
 	/**
-	 * Get a list of index items by type.
+	 * Get index items with specified namespace.
 	 * 
-	 * @param type
+	 * @param namespace
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public List<IndexItem> getIndexItems(String type) throws IndexServiceException;
+	public List<IndexItem> getIndexItems(String namespace) throws IndexServiceException;
 
 	/**
-	 * Get a list of index items by query.
+	 * Get index items with specified namespace and created by specified indexer provider.
 	 * 
-	 * @param indexItemQuery
+	 * @param indexProviderId
+	 * @param namespace
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public List<IndexItem> getIndexItems(IndexItemQuery indexItemQuery) throws IndexServiceException;
-
-	/**
-	 * Check whether an item is indexed.
-	 * 
-	 * @param type
-	 * @param name
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	public boolean isIndexed(String type, String name) throws IndexServiceException;
+	public List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IndexServiceException;
 
 	/**
 	 * Create an index item.
 	 * 
-	 * @param type
+	 * @param namespace
 	 * @param name
 	 * @param props
 	 *            e.g. description, url
 	 * @throws IndexServiceException
 	 */
-	public void createIndexItem(String type, String name, Map<String, Object> props) throws IndexServiceException;
+	public void createIndexItem(String indexProviderId, String namespace, String name) throws IndexServiceException;
 
 	/**
 	 * Remove an index item.

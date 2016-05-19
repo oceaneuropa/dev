@@ -17,8 +17,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.origin.common.rest.dto.ErrorDTO;
-import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.dto.DTOConverter;
@@ -39,7 +39,7 @@ import org.origin.mgm.service.IndexService;
  */
 @Path("/serviceregistry/{namespace}/{name}/properties")
 @Produces(MediaType.APPLICATION_JSON)
-public class IndexServicePropertyResource extends AbstractApplicationResource {
+public class IndexItemPropertiesResource extends AbstractApplicationResource {
 
 	/**
 	 * Handle MgmException and create ErrorDTO from it.

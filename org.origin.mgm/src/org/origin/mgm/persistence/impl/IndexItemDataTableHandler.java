@@ -32,8 +32,8 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
 			sql += "	id int NOT NULL AUTO_INCREMENT,";
-			sql += "	type varchar(255) NOT NULL,";
-			sql += "	name varchar(255) NOT NULL,";
+			sql += "	namespace varchar(500) NOT NULL,";
+			sql += "	name varchar(500) NOT NULL,";
 			sql += "	properties varchar(20000) DEFAULT NULL,";
 			sql += "	lastUpdateTime varchar(50) DEFAULT NULL,";
 			sql += "	PRIMARY KEY (id)";
@@ -232,7 +232,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * http://www.tutorialspoint.com/jdbc/jdbc-update-records.htm
 	 * 
 	 * @param conn
-	 * @param type
+	 * @param namespace
 	 * @param name
 	 * @param propertiesString
 	 * @return

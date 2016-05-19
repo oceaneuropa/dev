@@ -57,7 +57,7 @@ public class FileSystemApplication extends AbstractApplication {
 		Set<Class<?>> resources = new HashSet<Class<?>>();
 
 		// resources
-		resources.add(FilePathResource.class);
+		resources.add(FilePathsResource.class);
 		resources.add(FileMetadataResource.class);
 		resources.add(FileContentResource.class);
 

@@ -27,8 +27,8 @@ import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.dto.StatusDTO;
-import org.origin.common.util.JSONUtil;
+import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.json.JSONUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osgi.example1.fs.common.FileMetadata;

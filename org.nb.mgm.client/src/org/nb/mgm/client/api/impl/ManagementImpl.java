@@ -21,7 +21,7 @@ import org.nb.mgm.model.dto.MetaSpaceDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.rest.model.StatusDTO;
 
 public class ManagementImpl implements Management {
 

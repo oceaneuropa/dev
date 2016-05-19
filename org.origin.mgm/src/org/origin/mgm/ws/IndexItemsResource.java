@@ -9,15 +9,14 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.origin.common.rest.dto.ErrorDTO;
-import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.dto.DTOConverter;
@@ -26,51 +25,38 @@ import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.service.IndexService;
 
 /**
- * Service registry resource
+ * Index items resource
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/management/v1/serviceregistry?namespace={namespace}
+ * URL (GET): {scheme}://{host}:{port}/indexservice/v1/indexitems
  *
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/management/v1/serviceregistry
+ * URL (POST): {scheme}://{host}:{port}/indexservice/v1/indexitems
  *
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/management/v1/serviceregistry?namespace={namespace}&name={name}
+ * URL (DELETE): {scheme}://{host}:{port}/indexservice/v1/serviceregistry?namespace={namespace}&name={name}
  *
  */
-@Path("/serviceregistry")
+@javax.ws.rs.Path("/indexitems")
 @Produces(MediaType.APPLICATION_JSON)
-public class IndexServiceResource extends AbstractApplicationResource {
+public class IndexItemsResource extends AbstractApplicationResource {
 
 	/**
-	 * Handle MgmException and create ErrorDTO from it.
+	 * Get index items.
 	 * 
-	 * @param e
-	 * @return
-	 */
-	protected ErrorDTO handleError(IndexServiceException e) {
-		e.printStackTrace();
-		this.logger.error(e.getMessage());
-		return DTOConverter.getInstance().toDTO(e);
-	}
-
-	/**
-	 * Get registered services.
+	 * URL (GET): {scheme}://{host}:{port}/indexservice/v1/indexitems
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/management/v1/serviceregistry?namespace={namespace}
-	 * 
-	 * @param name
-	 * @param ipaddress
-	 * @param filter
+	 * @param namespace
+	 *            type of an index item.
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getIndexItems(@QueryParam("type") String type) {
+	public Response getIndexItems(@QueryParam("indexproviderid") String indexProviderId, @QueryParam("namespace") String namespace) {
 		List<IndexItemDTO> indexItemDTOs = new ArrayList<IndexItemDTO>();
 
 		IndexService indexService = getService(IndexService.class);
 		try {
 			List<IndexItem> indexItems = null;
-			if (type != null) {
-				indexItems = indexService.getIndexItems(type);
+			if (namespace != null) {
+				indexItems = indexService.getIndexItems(namespace);
 			} else {
 				indexItems = indexService.getIndexItems();
 			}
@@ -81,7 +67,7 @@ public class IndexServiceResource extends AbstractApplicationResource {
 			}
 
 		} catch (IndexServiceException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -103,15 +89,15 @@ public class IndexServiceResource extends AbstractApplicationResource {
 	public Response addIndexItem(IndexItemDTO indexItemDTO) {
 		IndexService indexService = getService(IndexService.class);
 		try {
-			String type = indexItemDTO.getType();
+			String type = indexItemDTO.getNamespace();
 			String name = indexItemDTO.getName();
 			Map<String, Object> props = indexItemDTO.getProperties();
 
-			indexService.createIndexItem(type, name, props);
+			// indexService.createIndexItem(indexProviderId, type, name);
 
-		} catch (IndexServiceException e) {
-			ErrorDTO error = handleError(e);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		} catch (Exception e) {
+			// ErrorDTO error = handleError(e, e.getCode(), true);
+			// return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
 		return Response.ok().entity(indexItemDTO).build();
@@ -139,14 +125,15 @@ public class IndexServiceResource extends AbstractApplicationResource {
 
 		IndexService indexService = getService(IndexService.class);
 		try {
-			if (indexService.isIndexed(namespace, name)) {
-				StatusDTO statusDTO = new StatusDTO("201", "serviceNotFound", MessageFormat.format("Service ''{0}'' is not found.", new Object[] { IndexItem.getFullName(namespace, name) }));
-				return Response.ok().entity(statusDTO).build();
-			}
+			// if (indexService.isIndexed(namespace, name)) {
+			// StatusDTO statusDTO = new StatusDTO("201", "serviceNotFound", MessageFormat.format("Service ''{0}'' is not found.", new Object[] {
+			// IndexItem.getFullName(namespace, name) }));
+			// return Response.ok().entity(statusDTO).build();
+			// }
 
 			indexService.removeIndexItem(namespace, name);
 		} catch (IndexServiceException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 

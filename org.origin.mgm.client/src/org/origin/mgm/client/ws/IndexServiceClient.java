@@ -25,6 +25,16 @@ public class IndexServiceClient extends AbstractClient {
 	}
 
 	/**
+	 * Ping the Home management server.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public int ping() throws ClientException {
+		return 1;
+	}
+
+	/**
 	 * 
 	 * @param type
 	 * @return

@@ -14,7 +14,7 @@ import org.nb.mgm.model.dto.ArtifactDTO;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.rest.model.StatusDTO;
 
 /**
  * Artifact web service client

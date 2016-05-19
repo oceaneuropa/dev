@@ -16,7 +16,7 @@ import com.osgi.example1.fs.server.service.FileSystem;
 
 @javax.ws.rs.Path("/paths")
 @Produces(MediaType.APPLICATION_JSON)
-public class FilePathResource extends AbstractApplicationResource {
+public class FilePathsResource extends AbstractApplicationResource {
 
 	/**
 	 * Get file paths with parent path.

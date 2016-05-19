@@ -14,7 +14,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
 import org.nb.home.service.HomeService;
-import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.rest.model.StatusDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

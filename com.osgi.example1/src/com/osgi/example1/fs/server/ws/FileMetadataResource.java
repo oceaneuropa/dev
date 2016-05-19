@@ -12,8 +12,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.origin.common.rest.dto.ErrorDTO;
-import org.origin.common.rest.dto.StatusDTO;
+import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 
 import com.osgi.example1.fs.common.FileMetadata;

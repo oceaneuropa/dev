@@ -1,16 +1,15 @@
 package org.origin.mgm.client.api.impl;
 
+import java.io.IOException;
 import java.util.List;
 
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexService;
-import org.origin.mgm.client.ws.IndexServiceClient;
-import org.origin.mgm.model.runtime.IndexItem;
+import org.origin.mgm.client.api.IndexServiceConfiguration;
 
-public class IndexServiceImpl implements IndexService {
+public class IndexServiceImpl extends IndexService {
 
-	protected ClientConfiguration clientConfig;
-	protected IndexServiceClient indexServiceClient;
+	protected IndexServiceConfiguration config;
 
 	/**
 	 * 
@@ -19,11 +18,13 @@ public class IndexServiceImpl implements IndexService {
 	 * @param username
 	 * @param password
 	 */
-	public IndexServiceImpl(String url, String contextRoot, String username, String password) {
-		this.clientConfig = ClientConfiguration.get(url, contextRoot, username, password);
+	public IndexServiceImpl(IndexServiceConfiguration config) {
+		this.config = config;
+	}
 
-		// ws client for IndexService
-		this.indexServiceClient = new IndexServiceClient(this.clientConfig);
+	@Override
+	public IndexServiceConfiguration getConfiguration() {
+		return this.config;
 	}
 
 	@Override
@@ -32,38 +33,13 @@ public class IndexServiceImpl implements IndexService {
 	}
 
 	@Override
-	public boolean isIndexed(String type, String name) {
-		return false;
+	public List<IndexItem> getIndexItems(String namespace) throws IOException {
+		return null;
 	}
 
 	@Override
-	public void addIndexItem(String type, String name) {
-
-	}
-
-	@Override
-	public void removeIndexItem(String type, String name) {
-
-	}
-
-	@Override
-	public boolean hasProperty(String type, String name, String propName) {
-		return false;
-	}
-
-	@Override
-	public void setProperty(String type, String name, String propName, String propValue) {
-
-	}
-
-	@Override
-	public void setVolatileProperty(String type, String name, String propName, String propValue) {
-
-	}
-
-	@Override
-	public void removeProperty(String type, String name, String propName) {
-
+	public List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IOException {
+		return null;
 	}
 
 }

@@ -35,7 +35,7 @@ public class IndexItem {
 	}
 
 	protected Integer id;
-	protected String type;
+	protected String namespace;
 	protected String name;
 	protected Map<String, Object> properties = new LinkedHashMap<String, Object>();
 
@@ -54,7 +54,7 @@ public class IndexItem {
 			throw new IllegalArgumentException("name is null.");
 		}
 		this.id = id;
-		this.type = type != null ? type : DEFAULT_TYPE;
+		this.namespace = type != null ? type : DEFAULT_TYPE;
 		this.name = name;
 		if (props != null) {
 			this.properties = props;
@@ -69,12 +69,12 @@ public class IndexItem {
 		this.id = id;
 	}
 
-	public String getType() {
-		return type;
+	public String getNamespace() {
+		return namespace;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
 	}
 
 	public String getName() {
@@ -101,7 +101,7 @@ public class IndexItem {
 		StringBuilder sb = new StringBuilder();
 		sb.append("id:");
 		sb.append(this.id);
-		sb.append(getFullName(this.type, this.name));
+		sb.append(getFullName(this.namespace, this.name));
 		sb.append("properties:");
 		sb.append(this.properties.toString());
 		return sb.toString();
@@ -109,7 +109,7 @@ public class IndexItem {
 
 	@Override
 	public int hashCode() {
-		return ("{" + this.type + "}" + this.name).hashCode();
+		return ("{" + this.namespace + "}" + this.name).hashCode();
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class IndexItem {
 			return false;
 		}
 		IndexItem other = (IndexItem) object;
-		if (this.type.equals(other.getType()) && this.name.equals(other.getName())) {
+		if (this.namespace.equals(other.getNamespace()) && this.name.equals(other.getName())) {
 			return true;
 		}
 		return false;
