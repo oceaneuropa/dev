@@ -5,11 +5,15 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.xml.namespace.QName;
 
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
+import org.origin.mgm.persistence.impl.IndexItemDataTableHandler;
+import org.origin.mgm.persistence.impl.IndexItemLogTableHandler;
 import org.origin.mgm.service.IndexService;
 import org.origin.mgm.service.IndexServiceListener;
 import org.origin.mgm.service.IndexServiceListenerSupport;
@@ -19,11 +23,16 @@ import org.osgi.framework.ServiceRegistration;
 public class IndexServiceImpl implements IndexService {
 
 	protected List<IndexItem> indexItems = new ArrayList<IndexItem>();
+	protected IndexItemDataTableHandler dataTableHandler = IndexItemDataTableHandler.INSTANCE;
+	protected IndexItemLogTableHandler logTableHandler = IndexItemLogTableHandler.INSTANCE;
 
 	protected IndexServiceListenerSupport listenerSupport = new IndexServiceListenerSupport();
 	protected BundleContext bundleContext;
 
 	protected ServiceRegistration<?> serviceReg;
+
+	protected int revision = 0;
+	protected ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
 	/**
 	 * 
@@ -48,6 +57,18 @@ public class IndexServiceImpl implements IndexService {
 		if (this.serviceReg != null) {
 			this.serviceReg.unregister();
 			this.serviceReg = null;
+		}
+	}
+
+	public synchronized void synchronize() {
+		System.out.println("IndexServiceImpl.synchronize()");
+
+		if (revision <= 0) {
+			// data is not loaded
+
+		} else {
+			// data have been loaded
+
 		}
 	}
 
@@ -86,24 +107,7 @@ public class IndexServiceImpl implements IndexService {
 
 	@Override
 	public void createIndexItem(String indexProviderId, String namespace, String name) throws IndexServiceException {
-		// if (props != null) {
-		// // Update existing service registry entry's properties map.
-		// for (Iterator<String> nameItor = props.keySet().iterator(); nameItor.hasNext();) {
-		// String propName = nameItor.next();
-		// Object propValue = props.get(propName);
-		//
-		// if (hasProperty(namespace, name, propName)) {
-		// // Property already exists. Update property value only when necessary.
-		// Object oldPropValue = getProperty(namespace, name, propName);
-		// if ((oldPropValue == null && propValue != null) || (oldPropValue != null && !oldPropValue.equals(propValue))) {
-		// setProperty(namespace, name, propName, propValue);
-		// }
-		// } else {
-		// // Property doesn't exist yet.
-		// setProperty(namespace, name, propName, propValue);
-		// }
-		// }
-		// }
+
 	}
 
 	/**

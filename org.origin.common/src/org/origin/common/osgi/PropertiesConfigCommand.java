@@ -20,6 +20,15 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.event.EventAdmin;
 
+/**
+ * @see http://grepcode.com/file/repository.grepcode.com/java/eclipse.org/4.2/org.eclipse.equinox/console/1.0.0/org/eclipse/equinox/console/commands/
+ *      EquinoxCommandProvider.java#exit() for how to read confirm message : Really want to stop Equinox? (y/n; default=y) y
+ * 
+ * @see source code from org.eclipse.equinox.console.source_1.0.0.v20120522-1841.jar
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class PropertiesConfigCommand implements Annotated {
 
 	/** managed service factory ID */

@@ -76,7 +76,7 @@ public class PropertiesConfigServiceFactory implements ManagedServiceFactory, An
 				propConfigService.setConfigId(configId.toString());
 			}
 
-			propConfigService.setConfigs(configs);
+			propConfigService.initConfigs(configs);
 			propConfigService.start();
 			pidToPropConfigServiceMap.put(pid, propConfigService);
 

@@ -44,8 +44,13 @@ public class PropertiesConfigService {
 		return configs;
 	}
 
-	public void setConfigs(Dictionary<String, ?> configs) {
+	public void initConfigs(Dictionary<String, ?> configs) {
+		System.out.println("PropertiesConfigService.initConfigs()");
+
 		this.configs = configs;
+
+		System.out.println("Initialize configs properties:");
+		Printer.pl(configs);
 	}
 
 	public void updateConfigs(Dictionary<String, ?> configs) {
@@ -53,7 +58,7 @@ public class PropertiesConfigService {
 
 		this.configs = configs;
 
-		System.out.println("Configs properties:");
+		System.out.println("Updated configs properties:");
 		Printer.pl(configs);
 		// Example:
 		// ------------------------------------------------------------------------

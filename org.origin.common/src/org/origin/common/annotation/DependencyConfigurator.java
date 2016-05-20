@@ -67,7 +67,7 @@ public class DependencyConfigurator {
 			@Override
 			public void removedService(ServiceReference<Annotated> serviceReference, Annotated annotated) {
 				long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-				System.out.println("DependencyConfigurator.ServiceTracker.addingService() Annotated [" + annotated.getClass().getName() + "] (service.id='" + service_id + "') is removed.");
+				System.out.println("DependencyConfigurator.ServiceTracker.removedService() Annotated [" + annotated.getClass().getName() + "] (service.id='" + service_id + "') is removed.");
 				removeAnnotated(annotated);
 				super.removedService(serviceReference, annotated);
 			}
@@ -194,29 +194,29 @@ public class DependencyConfigurator {
 		if (annotated != null && annotatedObjects.contains(annotated)) {
 			annotatedObjects.remove(annotated);
 
-			Map<Field, Class> dependencyFieldsMap = annotatedToDependencyFieldsMap.get(annotated);
+			Map<Field, Class> dependencyFieldsMap = annotatedToDependencyFieldsMap.remove(annotated);
 			if (dependencyFieldsMap != null && !dependencyFieldsMap.isEmpty()) {
-				Collection<Class> dependentClasses = dependencyFieldsMap.values();
-				for (Iterator<Class> classItor = dependentClasses.iterator(); classItor.hasNext();) {
-					Class dependentClass = classItor.next();
-
-					boolean beingUsed = false;
-					for (Iterator<Annotated> annotatedItor = annotatedToDependencyFieldsMap.keySet().iterator(); annotatedItor.hasNext();) {
-						Annotated currAnnotated = annotatedItor.next();
-						if (annotated.equals(currAnnotated)) {
-							continue;
-						}
-						Map<Field, Class> currDependencyFieldsMap = annotatedToDependencyFieldsMap.get(currAnnotated);
-						if (currDependencyFieldsMap != null && currDependencyFieldsMap.values().contains(dependentClass)) {
-							beingUsed = true;
-							break;
-						}
-					}
-					if (!beingUsed) {
-						disposeDependentServiceTracker(dependentClass);
-					}
-				}
-				annotatedToDependencyFieldsMap.remove(annotated);
+				// Collection<Class> dependentClasses = dependencyFieldsMap.values();
+				// for (Iterator<Class> classItor = dependentClasses.iterator(); classItor.hasNext();) {
+				// Class dependentClass = classItor.next();
+				//
+				// boolean beingUsed = false;
+				// for (Iterator<Annotated> annotatedItor = annotatedToDependencyFieldsMap.keySet().iterator(); annotatedItor.hasNext();) {
+				// Annotated currAnnotated = annotatedItor.next();
+				// if (annotated.equals(currAnnotated)) {
+				// continue;
+				// }
+				// Map<Field, Class> currDependencyFieldsMap = annotatedToDependencyFieldsMap.get(currAnnotated);
+				// if (currDependencyFieldsMap != null && currDependencyFieldsMap.values().contains(dependentClass)) {
+				// beingUsed = true;
+				// break;
+				// }
+				// }
+				// if (!beingUsed) {
+				// disposeDependentServiceTracker(dependentClass);
+				// }
+				// }
+				// annotatedToDependencyFieldsMap.remove(annotated);
 			}
 		}
 	}
@@ -338,7 +338,7 @@ public class DependencyConfigurator {
 	 * @param dependentClass
 	 */
 	protected <T> void disposeDependentServiceTracker(Class<?> dependentClass) {
-		System.out.println("DependencyConfigurator.disposeDependentServiceTracker() for " + dependentClass.getClass());
+		System.out.println("DependencyConfigurator.disposeDependentServiceTracker() for " + dependentClass.getName());
 		if (dependentClassToServiceTrackerMap.containsKey(dependentClass)) {
 			ServiceTracker<?, ?> serviceTracker = dependentClassToServiceTrackerMap.remove(dependentClass);
 			if (serviceTracker != null) {
