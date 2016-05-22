@@ -6,7 +6,6 @@ import java.io.InputStream;
 
 import org.origin.common.adapter.IAdaptable;
 
-import com.osgi.example1.fs.common.Configuration;
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
 
@@ -21,7 +20,7 @@ public interface FileSystem extends IAdaptable {
 	 * 
 	 * @return
 	 */
-	public Configuration getConfiguration();
+	public FileSystemConfiguration getConfiguration();
 
 	/**
 	 * Get file metadata.

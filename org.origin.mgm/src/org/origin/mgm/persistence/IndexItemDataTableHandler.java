@@ -1,4 +1,4 @@
-package org.origin.mgm.persistence.impl;
+package org.origin.mgm.persistence;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -31,12 +31,24 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		String sql = "";
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
-			sql += "	id int NOT NULL AUTO_INCREMENT,";
+			sql += "	indexitemid int NOT NULL AUTO_INCREMENT,";
+			sql += "	indexproviderid varchar(500) NOT NULL,";
 			sql += "	namespace varchar(500) NOT NULL,";
 			sql += "	name varchar(500) NOT NULL,";
 			sql += "	properties varchar(20000) DEFAULT NULL,";
 			sql += "	lastUpdateTime varchar(50) DEFAULT NULL,";
-			sql += "	PRIMARY KEY (id)";
+			sql += "	PRIMARY KEY (indexitemid)";
+			sql += ");";
+
+		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
+			sql += "	indexitemid serial NOT NULL,";
+			sql += "	indexproviderid varchar(500) NOT NULL,";
+			sql += "	namespace varchar(500) NOT NULL,";
+			sql += "	name varchar(500) NOT NULL,";
+			sql += "	properties varchar(20000) DEFAULT NULL,";
+			sql += "	lastUpdateTime varchar(50) DEFAULT NULL,";
+			sql += "	PRIMARY KEY (indexitemid)";
 			sql += ");";
 		}
 		return sql;

@@ -2,9 +2,9 @@ package com.osgi.example1.fs.server.service.local;
 
 import java.io.File;
 
-import com.osgi.example1.fs.common.Configuration;
+import com.osgi.example1.fs.server.service.FileSystemConfiguration;
 
-public class LocalFileSystemConfiguration extends Configuration {
+public class LocalFileSystemConfiguration extends FileSystemConfiguration {
 
 	protected File homeDirectory;
 

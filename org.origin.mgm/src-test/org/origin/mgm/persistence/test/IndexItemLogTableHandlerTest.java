@@ -2,10 +2,12 @@ package org.origin.mgm.persistence.test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Properties;
 
 import org.origin.common.jdbc.DatabaseUtil;
-import org.origin.mgm.persistence.impl.IndexItemLogTableHandler;
+import org.origin.common.util.DateUtil;
+import org.origin.mgm.persistence.IndexItemCommandLogTableHandler;
 
 public class IndexItemLogTableHandlerTest {
 
@@ -17,17 +19,17 @@ public class IndexItemLogTableHandlerTest {
 		properties.setProperty(DatabaseUtil.JDBC_PASSWORD, "admin");
 
 		Connection conn = DatabaseUtil.getConnection(properties);
-		IndexItemLogTableHandler logTableHandler = new IndexItemLogTableHandler();
+		IndexItemCommandLogTableHandler logTableHandler = new IndexItemCommandLogTableHandler();
 		try {
 			// DatabaseUtil.dropTable(conn, logTableHandler);
-
-			DatabaseUtil.initialize(conn, logTableHandler);
-		} catch (SQLException e) {
+			// DatabaseUtil.initialize(conn, logTableHandler);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		try {
-			logTableHandler.insert(conn, "add_item", "{type=}");
+			String updateTimeString = DateUtil.toString(new Date(), DateUtil.getDefaultDateFormat());
+			logTableHandler.insert(conn, "create_index_item", "{type=}", "create_index_item", "{type=}", updateTimeString);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -1,29 +1,27 @@
-package org.origin.mgm.persistence.impl;
+package org.origin.mgm.persistence;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
-import org.origin.common.util.DateUtil;
-import org.origin.mgm.model.vo.IndexItemLogVO;
+import org.origin.mgm.model.vo.IndexItemCommandLogVO;
 
 /**
- * CRUD methods for the IndexItemLog table.
+ * CRUD methods for the IndexItemCommandLog table.
  *
  */
-public class IndexItemLogTableHandler implements DatabaseTableAware {
+public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 
-	public static IndexItemLogTableHandler INSTANCE = new IndexItemLogTableHandler();
+	public static IndexItemCommandLogTableHandler INSTANCE = new IndexItemCommandLogTableHandler();
 
 	@Override
 	public String getTableName() {
-		return "IndexItemLog";
+		return "IndexItemCommandLog";
 	}
 
 	@Override
@@ -32,8 +30,21 @@ public class IndexItemLogTableHandler implements DatabaseTableAware {
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
 			sql += "	revision int NOT NULL AUTO_INCREMENT,";
-			sql += "	command varchar(255) NOT NULL,";
+			sql += "	command varchar(500) NOT NULL,";
 			sql += "	arguments varchar(20000) NOT NULL,";
+			sql += "	undoCommand varchar(500) NOT NULL,";
+			sql += "	undoArguments varchar(20000) NOT NULL,";
+			sql += "	lastUpdateTime varchar(50) DEFAULT NULL,";
+			sql += "	PRIMARY KEY (revision)";
+			sql += ");";
+
+		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
+			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
+			sql += "	revision serial NOT NULL,";
+			sql += "	command varchar(500) NOT NULL,";
+			sql += "	arguments varchar(20000) NOT NULL,";
+			sql += "	undoCommand varchar(500) NOT NULL,";
+			sql += "	undoArguments varchar(20000) NOT NULL,";
 			sql += "	lastUpdateTime varchar(50) DEFAULT NULL,";
 			sql += "	PRIMARY KEY (revision)";
 			sql += ");";
@@ -48,16 +59,18 @@ public class IndexItemLogTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemLogVO> get(Connection conn) throws SQLException {
-		ResultSetListHandler<IndexItemLogVO> handler = new ResultSetListHandler<IndexItemLogVO>() {
+	public List<IndexItemCommandLogVO> get(Connection conn) throws SQLException {
+		ResultSetListHandler<IndexItemCommandLogVO> handler = new ResultSetListHandler<IndexItemCommandLogVO>() {
 			@Override
-			protected IndexItemLogVO handleRow(ResultSet rs) throws SQLException {
+			protected IndexItemCommandLogVO handleRow(ResultSet rs) throws SQLException {
 				Integer revision = rs.getInt("revision");
 				String command = rs.getString("command");
 				String arguments = rs.getString("arguments");
-				String lastUpdateTimeString = rs.getString("lastUpdateTime");
+				String undoCommand = rs.getString("undoCommand");
+				String undoArguments = rs.getString("undoArguments");
+				String updateTimeString = rs.getString("lastUpdateTime");
 
-				return new IndexItemLogVO(revision, command, arguments, lastUpdateTimeString);
+				return new IndexItemCommandLogVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
 			}
 		};
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " ORDER BY revision ASC", null, handler);
@@ -73,16 +86,18 @@ public class IndexItemLogTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemLogVO> get(Connection conn, int startRevision) throws SQLException {
-		ResultSetListHandler<IndexItemLogVO> handler = new ResultSetListHandler<IndexItemLogVO>() {
+	public List<IndexItemCommandLogVO> get(Connection conn, int startRevision) throws SQLException {
+		ResultSetListHandler<IndexItemCommandLogVO> handler = new ResultSetListHandler<IndexItemCommandLogVO>() {
 			@Override
-			protected IndexItemLogVO handleRow(ResultSet rs) throws SQLException {
+			protected IndexItemCommandLogVO handleRow(ResultSet rs) throws SQLException {
 				Integer revision = rs.getInt("revision");
 				String command = rs.getString("command");
 				String arguments = rs.getString("arguments");
-				String lastUpdateTimeString = rs.getString("lastUpdateTime");
+				String undoCommand = rs.getString("undoCommand");
+				String undoArguments = rs.getString("undoArguments");
+				String updateTimeString = rs.getString("lastUpdateTime");
 
-				return new IndexItemLogVO(revision, command, arguments, lastUpdateTimeString);
+				return new IndexItemCommandLogVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
 			}
 		};
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE revision>=? ORDER BY revision ASC", new Object[] { startRevision }, handler);
@@ -100,16 +115,18 @@ public class IndexItemLogTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemLogVO> get(Connection conn, int startRevision, int endRevision) throws SQLException {
-		ResultSetListHandler<IndexItemLogVO> handler = new ResultSetListHandler<IndexItemLogVO>() {
+	public List<IndexItemCommandLogVO> get(Connection conn, int startRevision, int endRevision) throws SQLException {
+		ResultSetListHandler<IndexItemCommandLogVO> handler = new ResultSetListHandler<IndexItemCommandLogVO>() {
 			@Override
-			protected IndexItemLogVO handleRow(ResultSet rs) throws SQLException {
+			protected IndexItemCommandLogVO handleRow(ResultSet rs) throws SQLException {
 				Integer revision = rs.getInt("revision");
 				String command = rs.getString("command");
 				String arguments = rs.getString("arguments");
-				String lastUpdateTimeString = rs.getString("lastUpdateTime");
+				String undoCommand = rs.getString("undoCommand");
+				String undoArguments = rs.getString("undoArguments");
+				String updateTimeString = rs.getString("lastUpdateTime");
 
-				return new IndexItemLogVO(revision, command, arguments, lastUpdateTimeString);
+				return new IndexItemCommandLogVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
 			}
 		};
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE revision>=? AND revision<? ORDER BY revision ASC", new Object[] { startRevision, endRevision }, handler);
@@ -157,25 +174,25 @@ public class IndexItemLogTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Insert a log item.
 	 * 
-	 * http://www.tutorialspoint.com/jdbc/jdbc-insert-records.htm
+	 * @see http://www.tutorialspoint.com/jdbc/jdbc-insert-records.htm
 	 * 
 	 * @param conn
 	 * @param command
 	 * @param arguments
+	 * @param undoCommand
+	 * @param undoArguments
+	 * @param lastUpdateTime
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean insert(Connection conn, String command, String arguments) throws SQLException {
-		String lastUpdateTimeString = DateUtil.toString(new Date(), DateUtil.getDefaultDateFormat());
-		return DatabaseUtil.update(conn, "INSERT INTO " + getTableName() + " (command, arguments, lastUpdateTime) VALUES (?, ?, ?)", new Object[] { command, arguments, lastUpdateTimeString }, 1);
+	public boolean insert(Connection conn, String command, String arguments, String undoCommand, String undoArguments, String lastUpdateTime) throws SQLException {
+		return DatabaseUtil.update(conn, "INSERT INTO " + getTableName() + " (command, arguments, undoCommand, undoArguments, lastUpdateTime) VALUES (?, ?, ?)", new Object[] { command, arguments, undoCommand, undoArguments, lastUpdateTime }, 1);
 	}
 
 	/**
-	 * Delete a log item.
 	 * 
-	 * http://www.tutorialspoint.com/jdbc/jdbc-delete-records.htm
+	 * @see http://www.tutorialspoint.com/jdbc/jdbc-delete-records.htm
 	 * 
 	 * @param conn
 	 * @param revision

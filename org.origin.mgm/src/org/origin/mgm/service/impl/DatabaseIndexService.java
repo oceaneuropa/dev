@@ -1,5 +1,7 @@
 package org.origin.mgm.service.impl;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -10,36 +12,40 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.xml.namespace.QName;
 
+import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
-import org.origin.mgm.persistence.impl.IndexItemDataTableHandler;
-import org.origin.mgm.persistence.impl.IndexItemLogTableHandler;
+import org.origin.mgm.persistence.IndexItemDataTableHandler;
+import org.origin.mgm.persistence.IndexItemCommandLogTableHandler;
 import org.origin.mgm.service.IndexService;
 import org.origin.mgm.service.IndexServiceListener;
 import org.origin.mgm.service.IndexServiceListenerSupport;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class IndexServiceImpl implements IndexService {
+public class DatabaseIndexService implements IndexService {
 
 	protected List<IndexItem> indexItems = new ArrayList<IndexItem>();
 	protected IndexItemDataTableHandler dataTableHandler = IndexItemDataTableHandler.INSTANCE;
-	protected IndexItemLogTableHandler logTableHandler = IndexItemLogTableHandler.INSTANCE;
+	protected IndexItemCommandLogTableHandler logTableHandler = IndexItemCommandLogTableHandler.INSTANCE;
 
 	protected IndexServiceListenerSupport listenerSupport = new IndexServiceListenerSupport();
 	protected BundleContext bundleContext;
+	protected DatabaseIndexServiceConfiguration indexServiceConfig;
 
 	protected ServiceRegistration<?> serviceReg;
 
-	protected int revision = 0;
+	protected int cachedRevision = 0;
 	protected ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
 	/**
 	 * 
 	 * @param bundleContext
+	 * @param indexServiceConfig
 	 */
-	public IndexServiceImpl(BundleContext bundleContext) {
+	public DatabaseIndexService(BundleContext bundleContext, DatabaseIndexServiceConfiguration indexServiceConfig) {
 		this.bundleContext = bundleContext;
+		this.indexServiceConfig = indexServiceConfig;
 	}
 
 	public void start() {
@@ -63,13 +69,57 @@ public class IndexServiceImpl implements IndexService {
 	public synchronized void synchronize() {
 		System.out.println("IndexServiceImpl.synchronize()");
 
-		if (revision <= 0) {
-			// data is not loaded
+		// get the max revision number from the log table
+		int maxRevision = 0;
+		Connection conn = indexServiceConfig.getConnection();
+		try {
+			maxRevision = logTableHandler.getMaxRevision(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+
+		System.out.println("maxRevision = " + maxRevision);
+		System.out.println("cachedRevision = " + cachedRevision);
+
+		if (cachedRevision <= 0) {
+			// data is not cached yet
+			reloadIndexItems();
 
 		} else {
-			// data have been loaded
+			// data have already been cached
+			if (cachedRevision == maxRevision) {
+				// The cached data is update to date. No need to sync with database.
 
+			} else if (cachedRevision < maxRevision) {
+				// The cached data is left behind the true data. Need to sync with database.
+				// Get the logs [cachedRevision + 1, maxRevision] and use the logs to update the cached data.
+
+			} else if (cachedRevision > maxRevision) {
+				// The cached data is in front of the true data.
+				// Revert the cached data from cachedRevision to maxRevision. --- how to do that?
+
+				// Note:
+				// To support revert. It requires:
+
+				// (1) Every log contains a atomic action (with command name and command arguments)
+				// --- that means the set of commands and arguments need to be clearly defined.
+
+				// (2) Every log contains a undo action (with command name and command arguments) that can undo the changes made by the action.
+				// --- that means a Command model for each write-action that can create, modify, delete index item or its properties need to
+				// be defined and implemented. (similar to the Eclipse refactoring Change model)
+				// --- and that a simple framework for executing the Commands are needed.
+			}
 		}
+	}
+
+	protected void reloadIndexItems() {
+
+	}
+
+	protected void keepupWithIndexItems(int fromRevision, int toRevision) {
+
 	}
 
 	@Override

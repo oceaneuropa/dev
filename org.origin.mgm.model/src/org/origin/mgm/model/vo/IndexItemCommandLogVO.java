@@ -1,13 +1,15 @@
 package org.origin.mgm.model.vo;
 
-public class IndexItemLogVO {
+public class IndexItemCommandLogVO {
 
 	protected Integer revision;
 	protected String command;
 	protected String arguments;
+	protected String undoCommand;
+	protected String undoArguments;
 	protected String lastUpdateTimeString;
 
-	public IndexItemLogVO() {
+	public IndexItemCommandLogVO() {
 	}
 
 	/**
@@ -15,9 +17,11 @@ public class IndexItemLogVO {
 	 * @param revision
 	 * @param command
 	 * @param arguments
+	 * @param undoCommand
+	 * @param undoArguments
 	 * @param lastUpdateTimeString
 	 */
-	public IndexItemLogVO(Integer revision, String command, String arguments, String lastUpdateTimeString) {
+	public IndexItemCommandLogVO(Integer revision, String command, String arguments, String undoCommand, String undoArguments, String lastUpdateTimeString) {
 		this.revision = revision;
 		this.command = command;
 		this.arguments = arguments;

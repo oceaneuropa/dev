@@ -16,11 +16,11 @@ import org.origin.common.jdbc.DatabaseUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import com.osgi.example1.fs.common.Configuration;
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.common.vo.FileContentVO;
 import com.osgi.example1.fs.common.vo.FileMetadataVO;
+import com.osgi.example1.fs.server.service.FileSystemConfiguration;
 import com.osgi.example1.fs.server.service.FileSystem;
 
 public class DatabaseFileSystem implements FileSystem {
@@ -71,7 +71,7 @@ public class DatabaseFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Configuration getConfiguration() {
+	public FileSystemConfiguration getConfiguration() {
 		return this.config;
 	}
 

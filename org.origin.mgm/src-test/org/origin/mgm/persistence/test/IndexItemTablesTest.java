@@ -11,14 +11,14 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.origin.common.jdbc.DatabaseUtil;
-import org.origin.mgm.persistence.impl.IndexItemDataTableHandler;
-import org.origin.mgm.persistence.impl.IndexItemLogTableHandler;
+import org.origin.mgm.persistence.IndexItemDataTableHandler;
+import org.origin.mgm.persistence.IndexItemCommandLogTableHandler;
 
 public class IndexItemTablesTest {
 
 	protected Properties properties;
 	protected IndexItemDataTableHandler dataHandler = IndexItemDataTableHandler.INSTANCE;
-	protected IndexItemLogTableHandler logHandler = IndexItemLogTableHandler.INSTANCE;
+	protected IndexItemCommandLogTableHandler logHandler = IndexItemCommandLogTableHandler.INSTANCE;
 
 	public IndexItemTablesTest() {
 		// this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");

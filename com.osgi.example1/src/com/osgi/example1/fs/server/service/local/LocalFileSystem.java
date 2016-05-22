@@ -11,9 +11,9 @@ import org.origin.common.adapter.AdaptorSupport;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import com.osgi.example1.fs.common.Configuration;
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
+import com.osgi.example1.fs.server.service.FileSystemConfiguration;
 import com.osgi.example1.fs.server.service.FileSystem;
 
 public class LocalFileSystem implements FileSystem {
@@ -54,7 +54,7 @@ public class LocalFileSystem implements FileSystem {
 	}
 
 	@Override
-	public Configuration getConfiguration() {
+	public FileSystemConfiguration getConfiguration() {
 		return this.config;
 	}
 

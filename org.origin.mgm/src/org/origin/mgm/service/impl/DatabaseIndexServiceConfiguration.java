@@ -1,13 +1,12 @@
-package com.osgi.example1.fs.server.service.database;
+package org.origin.mgm.service.impl;
 
 import java.sql.Connection;
 import java.util.Properties;
 
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.mgm.service.IndexServiceConfiguration;
 
-import com.osgi.example1.fs.server.service.FileSystemConfiguration;
-
-public class DatabaseFileSystemConfiguration extends FileSystemConfiguration {
+public class DatabaseIndexServiceConfiguration extends IndexServiceConfiguration {
 
 	protected Properties properties;
 
@@ -15,7 +14,7 @@ public class DatabaseFileSystemConfiguration extends FileSystemConfiguration {
 	 * 
 	 * @param properties
 	 */
-	public DatabaseFileSystemConfiguration(Properties properties) {
+	public DatabaseIndexServiceConfiguration(Properties properties) {
 		this.properties = properties;
 	}
 
