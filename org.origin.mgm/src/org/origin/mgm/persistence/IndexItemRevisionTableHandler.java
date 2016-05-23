@@ -9,19 +9,19 @@ import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
-import org.origin.mgm.model.vo.IndexItemCommandLogVO;
+import org.origin.mgm.model.vo.IndexItemRevisionVO;
 
 /**
  * CRUD methods for the IndexItemCommandLog table.
  *
  */
-public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
+public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 
-	public static IndexItemCommandLogTableHandler INSTANCE = new IndexItemCommandLogTableHandler();
+	public static IndexItemRevisionTableHandler INSTANCE = new IndexItemRevisionTableHandler();
 
 	@Override
 	public String getTableName() {
-		return "IndexItemCommandLog";
+		return "IndexItemRevision";
 	}
 
 	@Override
@@ -31,10 +31,10 @@ public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
 			sql += "	revision int NOT NULL AUTO_INCREMENT,";
 			sql += "	command varchar(500) NOT NULL,";
-			sql += "	arguments varchar(20000) NOT NULL,";
+			sql += "	arguments varchar(10000) NOT NULL,";
 			sql += "	undoCommand varchar(500) NOT NULL,";
-			sql += "	undoArguments varchar(20000) NOT NULL,";
-			sql += "	lastUpdateTime varchar(50) DEFAULT NULL,";
+			sql += "	undoArguments varchar(10000) NOT NULL,";
+			sql += "	updateTime varchar(50) DEFAULT NULL,";
 			sql += "	PRIMARY KEY (revision)";
 			sql += ");";
 
@@ -42,10 +42,10 @@ public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
 			sql += "	revision serial NOT NULL,";
 			sql += "	command varchar(500) NOT NULL,";
-			sql += "	arguments varchar(20000) NOT NULL,";
+			sql += "	arguments varchar(10000) NOT NULL,";
 			sql += "	undoCommand varchar(500) NOT NULL,";
-			sql += "	undoArguments varchar(20000) NOT NULL,";
-			sql += "	lastUpdateTime varchar(50) DEFAULT NULL,";
+			sql += "	undoArguments varchar(10000) NOT NULL,";
+			sql += "	updateTime varchar(50) DEFAULT NULL,";
 			sql += "	PRIMARY KEY (revision)";
 			sql += ");";
 		}
@@ -59,10 +59,10 @@ public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemCommandLogVO> get(Connection conn) throws SQLException {
-		ResultSetListHandler<IndexItemCommandLogVO> handler = new ResultSetListHandler<IndexItemCommandLogVO>() {
+	public List<IndexItemRevisionVO> get(Connection conn) throws SQLException {
+		ResultSetListHandler<IndexItemRevisionVO> handler = new ResultSetListHandler<IndexItemRevisionVO>() {
 			@Override
-			protected IndexItemCommandLogVO handleRow(ResultSet rs) throws SQLException {
+			protected IndexItemRevisionVO handleRow(ResultSet rs) throws SQLException {
 				Integer revision = rs.getInt("revision");
 				String command = rs.getString("command");
 				String arguments = rs.getString("arguments");
@@ -70,7 +70,7 @@ public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 				String undoArguments = rs.getString("undoArguments");
 				String updateTimeString = rs.getString("lastUpdateTime");
 
-				return new IndexItemCommandLogVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
+				return new IndexItemRevisionVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
 			}
 		};
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " ORDER BY revision ASC", null, handler);
@@ -86,10 +86,10 @@ public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemCommandLogVO> get(Connection conn, int startRevision) throws SQLException {
-		ResultSetListHandler<IndexItemCommandLogVO> handler = new ResultSetListHandler<IndexItemCommandLogVO>() {
+	public List<IndexItemRevisionVO> get(Connection conn, int startRevision) throws SQLException {
+		ResultSetListHandler<IndexItemRevisionVO> handler = new ResultSetListHandler<IndexItemRevisionVO>() {
 			@Override
-			protected IndexItemCommandLogVO handleRow(ResultSet rs) throws SQLException {
+			protected IndexItemRevisionVO handleRow(ResultSet rs) throws SQLException {
 				Integer revision = rs.getInt("revision");
 				String command = rs.getString("command");
 				String arguments = rs.getString("arguments");
@@ -97,7 +97,7 @@ public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 				String undoArguments = rs.getString("undoArguments");
 				String updateTimeString = rs.getString("lastUpdateTime");
 
-				return new IndexItemCommandLogVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
+				return new IndexItemRevisionVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
 			}
 		};
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE revision>=? ORDER BY revision ASC", new Object[] { startRevision }, handler);
@@ -115,10 +115,10 @@ public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemCommandLogVO> get(Connection conn, int startRevision, int endRevision) throws SQLException {
-		ResultSetListHandler<IndexItemCommandLogVO> handler = new ResultSetListHandler<IndexItemCommandLogVO>() {
+	public List<IndexItemRevisionVO> get(Connection conn, int startRevision, int endRevision) throws SQLException {
+		ResultSetListHandler<IndexItemRevisionVO> handler = new ResultSetListHandler<IndexItemRevisionVO>() {
 			@Override
-			protected IndexItemCommandLogVO handleRow(ResultSet rs) throws SQLException {
+			protected IndexItemRevisionVO handleRow(ResultSet rs) throws SQLException {
 				Integer revision = rs.getInt("revision");
 				String command = rs.getString("command");
 				String arguments = rs.getString("arguments");
@@ -126,7 +126,7 @@ public class IndexItemCommandLogTableHandler implements DatabaseTableAware {
 				String undoArguments = rs.getString("undoArguments");
 				String updateTimeString = rs.getString("lastUpdateTime");
 
-				return new IndexItemCommandLogVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
+				return new IndexItemRevisionVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
 			}
 		};
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE revision>=? AND revision<? ORDER BY revision ASC", new Object[] { startRevision, endRevision }, handler);

@@ -7,22 +7,30 @@ import java.util.Date;
 
 public class DateUtil {
 
+	/*
+	 * @see http://docs.oracle.com/javase/1.5.0/docs/api/java/text/SimpleDateFormat.html
+	 */
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT0 = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static SimpleDateFormat SIMPLE_DATE_FORMAT3 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
 	public static SimpleDateFormat[] COMMON_DATE_FORMATS;
 
 	static {
-		COMMON_DATE_FORMATS = new SimpleDateFormat[] { SIMPLE_DATE_FORMAT0, SIMPLE_DATE_FORMAT1, SIMPLE_DATE_FORMAT2 };
+		COMMON_DATE_FORMATS = new SimpleDateFormat[] { SIMPLE_DATE_FORMAT0, SIMPLE_DATE_FORMAT1, SIMPLE_DATE_FORMAT2, SIMPLE_DATE_FORMAT3 };
+	}
+
+	public static SimpleDateFormat[] getCommonDateFormats() {
+		return COMMON_DATE_FORMATS;
 	}
 
 	public static SimpleDateFormat getDefaultDateFormat() {
 		return SIMPLE_DATE_FORMAT0;
 	}
 
-	public static SimpleDateFormat[] getCommonDateFormats() {
-		return COMMON_DATE_FORMATS;
+	public static SimpleDateFormat getJdbcDateFormat() {
+		return SIMPLE_DATE_FORMAT3;
 	}
 
 	/**

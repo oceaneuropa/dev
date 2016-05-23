@@ -19,7 +19,7 @@ import org.origin.mgm.persistence.IndexItemDataTableHandler;
 public class IndexItemDataTableHandlerTest {
 
 	protected Properties properties;
-	protected IndexItemDataTableHandler dataHandler = IndexItemDataTableHandler.INSTANCE;
+	protected IndexItemDataTableHandler dataTableHandler = IndexItemDataTableHandler.INSTANCE;
 
 	public IndexItemDataTableHandlerTest() {
 		// this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
@@ -37,6 +37,26 @@ public class IndexItemDataTableHandlerTest {
 
 	@Test
 	public void test001_select() {
+		System.out.println("--- --- --- test001_select() --- --- ---");
+
+		Connection conn = getConnection();
+		try {
+			List<IndexItemDataVO> vos = this.dataTableHandler.getAll(conn);
+			System.out.println("vos.size()=" + vos.size());
+			for (IndexItemDataVO vo : vos) {
+				System.out.println(vo.toString());
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+
+		System.out.println();
+	}
+
+	@Test
+	public void test002_insert() {
 
 	}
 
@@ -121,14 +141,14 @@ public class IndexItemDataTableHandlerTest {
 			// dataTableHandler.insert(conn, "indexservice", "node5", contentString5);
 			// dataTableHandler.insert(conn, "indexservice", "node6", contentString6);
 
-			handler.updateProperties(conn, "indexservice", "node1", contentString1);
-			handler.updateProperties(conn, "indexservice", "node2", contentString2);
-			handler.updateProperties(conn, "indexservice", "node3", contentString3);
-			handler.updateProperties(conn, "indexservice", "node4", contentString4);
-			handler.updateProperties(conn, "indexservice", "node5", contentString5);
-			handler.updateProperties(conn, "indexservice", "node6", contentString6);
+			// handler.updateProperties(conn, "indexservice", "node1", contentString1);
+			// handler.updateProperties(conn, "indexservice", "node2", contentString2);
+			// handler.updateProperties(conn, "indexservice", "node3", contentString3);
+			// handler.updateProperties(conn, "indexservice", "node4", contentString4);
+			// handler.updateProperties(conn, "indexservice", "node5", contentString5);
+			// handler.updateProperties(conn, "indexservice", "node6", contentString6);
 
-			List<IndexItemDataVO> indexItemVOs = handler.get(conn);
+			List<IndexItemDataVO> indexItemVOs = handler.getAll(conn);
 			for (IndexItemDataVO indexItemVO : indexItemVOs) {
 				System.out.println("=============================================================================================");
 				System.out.println(indexItemVO);

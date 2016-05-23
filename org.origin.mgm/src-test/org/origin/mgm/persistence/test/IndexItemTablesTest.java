@@ -12,13 +12,15 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.mgm.persistence.IndexItemDataTableHandler;
-import org.origin.mgm.persistence.IndexItemCommandLogTableHandler;
+import org.origin.mgm.persistence.IndexItemRequestTableHandler;
+import org.origin.mgm.persistence.IndexItemRevisionTableHandler;
 
 public class IndexItemTablesTest {
 
 	protected Properties properties;
+	protected IndexItemRequestTableHandler requestHandler = IndexItemRequestTableHandler.INSTANCE;
 	protected IndexItemDataTableHandler dataHandler = IndexItemDataTableHandler.INSTANCE;
-	protected IndexItemCommandLogTableHandler logHandler = IndexItemCommandLogTableHandler.INSTANCE;
+	protected IndexItemRevisionTableHandler revisionHandler = IndexItemRevisionTableHandler.INSTANCE;
 
 	public IndexItemTablesTest() {
 		// this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
@@ -60,8 +62,9 @@ public class IndexItemTablesTest {
 
 		Connection conn = DatabaseUtil.getConnection(properties);
 		try {
+			DatabaseUtil.initialize(conn, requestHandler);
 			DatabaseUtil.initialize(conn, dataHandler);
-			DatabaseUtil.initialize(conn, logHandler);
+			DatabaseUtil.initialize(conn, revisionHandler);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -78,8 +81,9 @@ public class IndexItemTablesTest {
 
 		Connection conn = DatabaseUtil.getConnection(properties);
 		try {
-			// DatabaseUtil.dispose(conn, dataHandler);
-			// DatabaseUtil.dispose(conn, logHandler);
+			DatabaseUtil.dispose(conn, requestHandler);
+			DatabaseUtil.dispose(conn, dataHandler);
+			DatabaseUtil.dispose(conn, revisionHandler);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

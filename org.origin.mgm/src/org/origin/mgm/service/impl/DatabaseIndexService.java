@@ -16,7 +16,7 @@ import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.persistence.IndexItemDataTableHandler;
-import org.origin.mgm.persistence.IndexItemCommandLogTableHandler;
+import org.origin.mgm.persistence.IndexItemRevisionTableHandler;
 import org.origin.mgm.service.IndexService;
 import org.origin.mgm.service.IndexServiceListener;
 import org.origin.mgm.service.IndexServiceListenerSupport;
@@ -27,7 +27,7 @@ public class DatabaseIndexService implements IndexService {
 
 	protected List<IndexItem> indexItems = new ArrayList<IndexItem>();
 	protected IndexItemDataTableHandler dataTableHandler = IndexItemDataTableHandler.INSTANCE;
-	protected IndexItemCommandLogTableHandler logTableHandler = IndexItemCommandLogTableHandler.INSTANCE;
+	protected IndexItemRevisionTableHandler logTableHandler = IndexItemRevisionTableHandler.INSTANCE;
 
 	protected IndexServiceListenerSupport listenerSupport = new IndexServiceListenerSupport();
 	protected BundleContext bundleContext;

@@ -381,6 +381,45 @@ public class DatabaseUtil {
 	}
 
 	/**
+	 * Execute SQL to insert/update/delete one item in database.
+	 * 
+	 * INSERT INTO table_name (column1,column2,column3,...) VALUES (value1,value2,value3,...);
+	 * 
+	 * @see http://stackoverflow.com/questions/1915166/how-to-get-the-insert-id-in-jdbc
+	 * 
+	 * @param conn
+	 *            JDBC Connection
+	 * @param sql
+	 *            SQL script
+	 * @param params
+	 *            parameters of the SQL
+	 * @param expectedRowCount
+	 *            expected number of rows to be updated. if -1 is specified, it means 1 or more rows are expected to be updated.
+	 * @return return true if number of rows are updated equals to the specified expectedRowCount.
+	 * @throws SQLException
+	 */
+	public static Integer insert(Connection conn, String sql, Object[] params) throws SQLException {
+		int generatedKey = 0;
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			fillStatement(stmt, params);
+			int updatedRowCount = stmt.executeUpdate();
+			if (updatedRowCount > 0) {
+				ResultSet generatedKeys = stmt.getGeneratedKeys();
+				if (generatedKeys.next()) {
+					generatedKey = generatedKeys.getInt(1);
+				}
+			}
+		} finally {
+			closeQuietly(rs, true);
+			closeQuietly(stmt, true);
+		}
+		return generatedKey;
+	}
+
+	/**
 	 * Fill PreparedStatement replacement parameters with the given objects.
 	 *
 	 * @param stmt

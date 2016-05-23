@@ -63,11 +63,27 @@ public class CreateIndexItemCommand extends AbstractCommand {
 		Connection conn = context.getAdapter(Connection.class);
 		ExceptionUtil.checkNotNull(conn, null, null);
 		try {
-
+			
+			
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return null;
 	}
 
+	protected void sendRequest() {
+
+	}
+
+	protected void udpateRequest() {
+
+	}
+
+	protected void completeRequest() {
+
+	}
+
+	protected void cancelRequest() {
+
+	}
 }

@@ -7,7 +7,7 @@ import java.util.Properties;
 
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.util.DateUtil;
-import org.origin.mgm.persistence.IndexItemCommandLogTableHandler;
+import org.origin.mgm.persistence.IndexItemRevisionTableHandler;
 
 public class IndexItemLogTableHandlerTest {
 
@@ -19,7 +19,7 @@ public class IndexItemLogTableHandlerTest {
 		properties.setProperty(DatabaseUtil.JDBC_PASSWORD, "admin");
 
 		Connection conn = DatabaseUtil.getConnection(properties);
-		IndexItemCommandLogTableHandler logTableHandler = new IndexItemCommandLogTableHandler();
+		IndexItemRevisionTableHandler logTableHandler = new IndexItemRevisionTableHandler();
 		try {
 			// DatabaseUtil.dropTable(conn, logTableHandler);
 			// DatabaseUtil.initialize(conn, logTableHandler);
@@ -28,7 +28,7 @@ public class IndexItemLogTableHandlerTest {
 		}
 
 		try {
-			String updateTimeString = DateUtil.toString(new Date(), DateUtil.getDefaultDateFormat());
+			String updateTimeString = DateUtil.toString(new Date(), DateUtil.getJdbcDateFormat());
 			logTableHandler.insert(conn, "create_index_item", "{type=}", "create_index_item", "{type=}", updateTimeString);
 
 		} catch (SQLException e) {
