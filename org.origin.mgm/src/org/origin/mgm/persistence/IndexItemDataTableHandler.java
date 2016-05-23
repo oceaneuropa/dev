@@ -3,6 +3,7 @@ package org.origin.mgm.persistence;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -60,6 +61,10 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 				return null;
 			}
 		};
+	}
+
+	protected DateFormat getDateFormat() {
+		return DateUtil.getJdbcDateFormat();
 	}
 
 	@Override
@@ -165,8 +170,8 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		if (lastUpdateTime == null) {
 			lastUpdateTime = createTime;
 		}
-		String createTimeString = DateUtil.toString(createTime, DateUtil.getJdbcDateFormat());
-		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, DateUtil.getJdbcDateFormat());
+		String createTimeString = DateUtil.toString(createTime, getDateFormat());
+		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
 
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? AND namespace=? AND name=? AND properties=? AND createTime=? AND lastUpdateTime=? ORDER BY " + getPKName() + " DESC", new Object[] { indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString }, this.rsSingleHandler);
 	}
@@ -210,8 +215,8 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		if (lastUpdateTime == null) {
 			lastUpdateTime = createTime;
 		}
-		String createTimeString = DateUtil.toString(createTime, DateUtil.getJdbcDateFormat());
-		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, DateUtil.getJdbcDateFormat());
+		String createTimeString = DateUtil.toString(createTime, getDateFormat());
+		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
 
 		Integer indexItemId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, namespace, name, properties, createTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString });
 		if (indexItemId > 0) {

@@ -3,6 +3,7 @@ package org.origin.mgm.persistence;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -22,8 +23,8 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	public static IndexItemRequestTableHandler INSTANCE = new IndexItemRequestTableHandler();
 
 	public static final String STATUS_PENDING = "pending";
-	public static final String STATUS_CANCELLED = "cancelled";
 	public static final String STATUS_COMPLETED = "completed";
+	public static final String STATUS_CANCELLED = "cancelled";
 
 	protected ResultSetListHandler<IndexItemRequestVO> rsListHandler;
 
@@ -42,6 +43,10 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 				return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString);
 			}
 		};
+	}
+
+	protected DateFormat getDateFormat() {
+		return DateUtil.getJdbcDateFormat();
 	}
 
 	@Override
@@ -83,35 +88,40 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 		return sql;
 	}
 
+	/**
+	 * 
+	 * @param status
+	 * @return
+	 */
 	protected String checkStatus(String status) {
-		if (status == null) {
-			status = STATUS_PENDING;
-		} else if (!STATUS_PENDING.equals(status) && !STATUS_CANCELLED.equals(status) && !STATUS_COMPLETED.equals(status)) {
+		if (!STATUS_PENDING.equals(status) && !STATUS_CANCELLED.equals(status) && !STATUS_COMPLETED.equals(status)) {
 			status = STATUS_PENDING;
 		}
 		return status;
 	}
 
 	/**
-	 * Get a list of request items (last request shown first)
+	 * Get a list of request items.
+	 * 
+	 * Later requests are shown first.
 	 * 
 	 * @param conn
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemRequestVO> getAll(Connection conn) throws SQLException {
+	public List<IndexItemRequestVO> getAllRequests(Connection conn) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " ORDER BY " + getPKName() + " DESC", null, this.rsListHandler);
 	}
 
 	/**
-	 * Get a list of pending requests that requested before the specified requestId --- current request need to wait until previous active requests
-	 * completes (or cancelled).
+	 * Get a list of active pending requests (where the lastUpdateTime is updated every 1 second) that happened before the specified requestId. The
+	 * request with the specified requestId need to wait until previous active requests are completed or cancelled (check every 1 second).
 	 * 
-	 * Pending requests with lastUpdateTime later than x seconds ago are considered as active requests and are included.
+	 * Pending requests with lastUpdateTime within 5 seconds of current time are considered as active requests and are included.
 	 * 
-	 * Pending requests with lastUpdateTime earlier x seconds ago are considered as inactive or expired requests and are not included.
+	 * Pending requests with lastUpdateTime longer than 5 seconds of current time are considered as inactive or expired requests and are not included.
 	 * 
-	 * (request with latest update time shown first)
+	 * Later requests are shown first.
 	 * 
 	 * @param conn
 	 * @param requestId
@@ -119,7 +129,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemRequestVO> getPendings(Connection conn, Integer requestId, int withinSeconds) throws SQLException {
+	public List<IndexItemRequestVO> getPendingRequests(Connection conn, Integer requestId, int withinSeconds) throws SQLException {
 		if (withinSeconds < 0) {
 			withinSeconds = 0;
 		}
@@ -129,9 +139,9 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 		calendar.add(Calendar.SECOND, withinSeconds);
 		Date expireDate = calendar.getTime();
 
-		String expireDateString = DateUtil.toString(expireDate, DateUtil.getJdbcDateFormat());
+		String expireDateString = DateUtil.toString(expireDate, getDateFormat());
 
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE requestId<? AND status=? AND lastUpdateTime>=? ORDER BY lastUpdateTime DESC", new Object[] { requestId, STATUS_PENDING, expireDateString }, this.rsListHandler);
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE requestId<? AND status=? AND lastUpdateTime>=? ORDER BY " + getPKName() + " DESC", new Object[] { requestId, STATUS_PENDING, expireDateString }, this.rsListHandler);
 	}
 
 	/**
@@ -155,8 +165,8 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 		if (lastUpdateTime == null) {
 			lastUpdateTime = requestTime;
 		}
-		String requestTimeString = DateUtil.toString(requestTime, DateUtil.getJdbcDateFormat());
-		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, DateUtil.getJdbcDateFormat());
+		String requestTimeString = DateUtil.toString(requestTime, getDateFormat());
+		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
 
 		Integer requestId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, command, arguments, status, requestTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString });
 		if (requestId > 0) {
@@ -164,6 +174,48 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 		}
 
 		return vo;
+	}
+
+	/**
+	 * Update request last update time.
+	 * 
+	 * @param conn
+	 * @param requestId
+	 * @param lastUpdateTime
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateLastUpdateTime(Connection conn, Integer requestId, Date lastUpdateTime) throws SQLException {
+		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET lastUpdateTime=? WHERE requestId=?", new Object[] { lastUpdateTimeString, requestId }, 1);
+	}
+
+	/**
+	 * Update request status as completed.
+	 * 
+	 * @param conn
+	 * @param requestId
+	 * @param lastUpdateTime
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateStatusAsCompleted(Connection conn, Integer requestId, Date lastUpdateTime) throws SQLException {
+		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET status=?, lastUpdateTime=? WHERE requestId=?", new Object[] { STATUS_COMPLETED, lastUpdateTimeString, requestId }, 1);
+	}
+
+	/**
+	 * Update request status as cancelled.
+	 * 
+	 * @param conn
+	 * @param requestId
+	 * @param lastUpdateTime
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateStatusAsCancelled(Connection conn, Integer requestId, Date lastUpdateTime) throws SQLException {
+		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET status=?, lastUpdateTime=? WHERE requestId=?", new Object[] { STATUS_CANCELLED, lastUpdateTimeString, requestId }, 1);
 	}
 
 	/**
