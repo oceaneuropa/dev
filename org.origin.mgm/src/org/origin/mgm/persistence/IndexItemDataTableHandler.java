@@ -40,7 +40,10 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 				String createTimeString = rs.getString("createTime");
 				String lastUpdateTimeString = rs.getString("lastUpdateTime");
 
-				return new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString);
+				Date createTime = createTimeString != null ? DateUtil.toDate(createTimeString, DateUtil.getCommonDateFormats()) : null;
+				Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
+
+				return new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTime, lastUpdateTime);
 			}
 		};
 
@@ -56,7 +59,10 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 					String createTimeString = rs.getString("createTime");
 					String lastUpdateTimeString = rs.getString("lastUpdateTime");
 
-					return new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString);
+					Date createTime = createTimeString != null ? DateUtil.toDate(createTimeString, DateUtil.getCommonDateFormats()) : null;
+					Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
+
+					return new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTime, lastUpdateTime);
 				}
 				return null;
 			}
@@ -210,7 +216,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 
 		Integer indexItemId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, namespace, name, properties, createTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString });
 		if (indexItemId > 0) {
-			newIndexItemVO = new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString);
+			newIndexItemVO = new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTime, lastUpdateTime);
 		}
 		return newIndexItemVO;
 	}

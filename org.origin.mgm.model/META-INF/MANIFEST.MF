@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.origin.mgm.model.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.origin.common.rest.model,
+ org.origin.common.util,
  org.osgi.framework;version="1.3.0"
 Export-Package: org.origin.mgm.exception,
  org.origin.mgm.model,

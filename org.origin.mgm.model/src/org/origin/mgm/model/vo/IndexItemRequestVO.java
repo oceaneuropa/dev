@@ -1,5 +1,10 @@
 package org.origin.mgm.model.vo;
 
+import java.text.DateFormat;
+import java.util.Date;
+
+import org.origin.common.util.DateUtil;
+
 public class IndexItemRequestVO {
 
 	protected Integer requestId;
@@ -7,8 +12,8 @@ public class IndexItemRequestVO {
 	protected String command;
 	protected String arguments;
 	protected String status;
-	protected String requestTimeString;
-	protected String lastUpdateTimeString;
+	protected Date requestTime;
+	protected Date lastUpdateTime;
 
 	public IndexItemRequestVO() {
 	}
@@ -20,17 +25,17 @@ public class IndexItemRequestVO {
 	 * @param command
 	 * @param arguments
 	 * @param status
-	 * @param requestTimeString
-	 * @param lastUpdateTimeString
+	 * @param requestTime
+	 * @param lastUpdateTime
 	 */
-	public IndexItemRequestVO(Integer requestId, String indexProviderId, String command, String arguments, String status, String requestTimeString, String lastUpdateTimeString) {
+	public IndexItemRequestVO(Integer requestId, String indexProviderId, String command, String arguments, String status, Date requestTime, Date lastUpdateTime) {
 		this.requestId = requestId;
 		this.indexProviderId = indexProviderId;
 		this.command = command;
 		this.arguments = arguments;
 		this.status = status;
-		this.requestTimeString = requestTimeString;
-		this.lastUpdateTimeString = lastUpdateTimeString;
+		this.requestTime = requestTime;
+		this.lastUpdateTime = lastUpdateTime;
 	}
 
 	public Integer getRequestId() {
@@ -73,33 +78,40 @@ public class IndexItemRequestVO {
 		this.status = status;
 	}
 
-	public String getRequestTimeString() {
-		return requestTimeString;
+	public Date getRequestTime() {
+		return requestTime;
 	}
 
-	public void setRequestTimeString(String requestTimeString) {
-		this.requestTimeString = requestTimeString;
+	public void setRequestTime(Date requestTime) {
+		this.requestTime = requestTime;
 	}
 
-	public String getLastUpdateTimeString() {
-		return lastUpdateTimeString;
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
 	}
 
-	public void setLastUpdateTimeString(String lastUpdateTimeString) {
-		this.lastUpdateTimeString = lastUpdateTimeString;
+	public void setLastUpdateTime(Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	protected DateFormat getDateFormat() {
+		return DateUtil.getJdbcDateFormat();
 	}
 
 	@Override
 	public String toString() {
+		String requestTimeString = requestTime != null ? DateUtil.toString(requestTime, getDateFormat()) : null;
+		String lastUpdateTimeString = lastUpdateTime != null ? DateUtil.toString(lastUpdateTime, getDateFormat()) : null;
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("IndexItemRequestVO(");
 		sb.append("requestId=").append(this.requestId);
-		sb.append("indexProviderId=").append(this.indexProviderId);
+		sb.append(", indexProviderId=").append(this.indexProviderId);
 		sb.append(", command=").append(this.command);
 		sb.append(", arguments=").append(this.arguments);
 		sb.append(", status=").append(this.status);
-		sb.append(", requestTimeString=").append(this.requestTimeString);
-		sb.append(", lastUpdateTimeString=").append(this.lastUpdateTimeString);
+		sb.append(", requestTime=").append(requestTimeString);
+		sb.append(", lastUpdateTime=").append(lastUpdateTimeString);
 		sb.append(")");
 		return sb.toString();
 	}

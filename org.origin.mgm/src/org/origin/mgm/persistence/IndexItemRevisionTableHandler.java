@@ -33,13 +33,16 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 			@Override
 			protected IndexItemRevisionVO handleRow(ResultSet rs) throws SQLException {
 				Integer revisionId = rs.getInt("revisionId");
+				String indexProviderId = rs.getString("indexProviderId");
 				String command = rs.getString("command");
 				String arguments = rs.getString("arguments");
 				String undoCommand = rs.getString("undoCommand");
 				String undoArguments = rs.getString("undoArguments");
 				String updateTimeString = rs.getString("updateTime");
 
-				return new IndexItemRevisionVO(revisionId, command, arguments, undoCommand, undoArguments, updateTimeString);
+				Date lastUpdate = updateTimeString != null ? DateUtil.toDate(updateTimeString, DateUtil.getCommonDateFormats()) : null;
+
+				return new IndexItemRevisionVO(revisionId, indexProviderId, command, arguments, undoCommand, undoArguments, lastUpdate);
 			}
 		};
 
@@ -48,13 +51,16 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 			public IndexItemRevisionVO handle(ResultSet rs) throws SQLException {
 				if (rs.next()) {
 					Integer revisionId = rs.getInt("revisionId");
+					String indexProviderId = rs.getString("indexProviderId");
 					String command = rs.getString("command");
 					String arguments = rs.getString("arguments");
 					String undoCommand = rs.getString("undoCommand");
 					String undoArguments = rs.getString("undoArguments");
 					String updateTimeString = rs.getString("updateTime");
 
-					return new IndexItemRevisionVO(revisionId, command, arguments, undoCommand, undoArguments, updateTimeString);
+					Date lastUpdate = updateTimeString != null ? DateUtil.toDate(updateTimeString, DateUtil.getCommonDateFormats()) : null;
+
+					return new IndexItemRevisionVO(revisionId, indexProviderId, command, arguments, undoCommand, undoArguments, lastUpdate);
 				}
 				return null;
 			}
@@ -149,7 +155,7 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public IndexItemRevisionVO getIndexItem(Connection conn, Integer revisionId) throws SQLException {
+	public IndexItemRevisionVO getRevision(Connection conn, Integer revisionId) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + "=?", new Object[] { revisionId }, this.rsSingleHandler);
 	}
 
@@ -185,13 +191,13 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public IndexItemRevisionVO insert(Connection conn, String command, String arguments, String undoCommand, String undoArguments, Date updateTime) throws SQLException {
+	public IndexItemRevisionVO insert(Connection conn, String indexProviderId, String command, String arguments, String undoCommand, String undoArguments, Date updateTime) throws SQLException {
 		IndexItemRevisionVO newRevisionVO = null;
 		String updateTimeString = DateUtil.toString(updateTime, getDateFormat());
 
-		Integer revisionId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (command, arguments, undoCommand, undoArguments, updateTime) VALUES (?, ?, ?, ?, ?)", new Object[] { command, arguments, undoCommand, undoArguments, updateTimeString });
+		Integer revisionId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, command, arguments, undoCommand, undoArguments, updateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, command, arguments, undoCommand, undoArguments, updateTimeString });
 		if (revisionId > 0) {
-			newRevisionVO = new IndexItemRevisionVO(revisionId, command, arguments, undoCommand, undoArguments, updateTimeString);
+			newRevisionVO = new IndexItemRevisionVO(revisionId, indexProviderId, command, arguments, undoCommand, undoArguments, updateTime);
 		}
 		return newRevisionVO;
 	}

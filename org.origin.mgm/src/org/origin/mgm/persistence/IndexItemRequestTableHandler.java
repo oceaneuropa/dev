@@ -42,7 +42,10 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 				String requestTimeString = rs.getString("requestTime");
 				String lastUpdateTimeString = rs.getString("lastUpdateTime");
 
-				return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString);
+				Date requestTime = requestTimeString != null ? DateUtil.toDate(requestTimeString, DateUtil.getCommonDateFormats()) : null;
+				Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
+
+				return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTime, lastUpdateTime);
 			}
 		};
 
@@ -58,7 +61,10 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 					String requestTimeString = rs.getString("requestTime");
 					String lastUpdateTimeString = rs.getString("lastUpdateTime");
 
-					return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString);
+					Date requestTime = requestTimeString != null ? DateUtil.toDate(requestTimeString, DateUtil.getCommonDateFormats()) : null;
+					Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
+
+					return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTime, lastUpdateTime);
 				}
 				return null;
 			}
@@ -222,7 +228,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 
 		Integer requestId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, command, arguments, status, requestTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString });
 		if (requestId > 0) {
-			newRequestVO = new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString);
+			newRequestVO = new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTime, lastUpdateTime);
 		}
 		return newRequestVO;
 	}

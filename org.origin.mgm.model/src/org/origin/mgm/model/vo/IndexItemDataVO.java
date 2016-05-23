@@ -1,5 +1,10 @@
 package org.origin.mgm.model.vo;
 
+import java.text.DateFormat;
+import java.util.Date;
+
+import org.origin.common.util.DateUtil;
+
 public class IndexItemDataVO {
 
 	protected Integer indexItemId;
@@ -7,8 +12,8 @@ public class IndexItemDataVO {
 	protected String namespace;
 	protected String name;
 	protected String propertiesString;
-	protected String createTimeString;
-	protected String lastUpdateTimeString;
+	protected Date createTime;
+	protected Date lastUpdateTime;
 
 	public IndexItemDataVO() {
 	}
@@ -20,17 +25,17 @@ public class IndexItemDataVO {
 	 * @param namespace
 	 * @param name
 	 * @param propertiesString
-	 * @param createTimeString
-	 * @param lastUpdateTimeString
+	 * @param createTime
+	 * @param lastUpdateTime
 	 */
-	public IndexItemDataVO(Integer indexItemId, String indexProviderId, String namespace, String name, String propertiesString, String createTimeString, String lastUpdateTimeString) {
+	public IndexItemDataVO(Integer indexItemId, String indexProviderId, String namespace, String name, String propertiesString, Date createTime, Date lastUpdateTime) {
 		this.indexItemId = indexItemId;
 		this.indexProviderId = indexProviderId;
 		this.namespace = namespace;
 		this.name = name;
 		this.propertiesString = propertiesString;
-		this.createTimeString = createTimeString;
-		this.lastUpdateTimeString = lastUpdateTimeString;
+		this.createTime = createTime;
+		this.lastUpdateTime = lastUpdateTime;
 	}
 
 	public Integer getIndexItemId() {
@@ -73,33 +78,40 @@ public class IndexItemDataVO {
 		this.propertiesString = propertiesString;
 	}
 
-	public String getCreateTimeString() {
-		return createTimeString;
+	public Date getCreateTime() {
+		return createTime;
 	}
 
-	public void setCreateTimeString(String createTimeString) {
-		this.createTimeString = createTimeString;
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
-	public String getLastUpdateTimeString() {
-		return lastUpdateTimeString;
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
 	}
 
-	public void setLastUpdateTimeString(String lastUpdateTimeString) {
-		this.lastUpdateTimeString = lastUpdateTimeString;
+	public void setLastUpdateTime(Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	protected DateFormat getDateFormat() {
+		return DateUtil.getJdbcDateFormat();
 	}
 
 	@Override
 	public String toString() {
+		String createTimeString = createTime != null ? DateUtil.toString(createTime, getDateFormat()) : null;
+		String lastUpdateTimeString = lastUpdateTime != null ? DateUtil.toString(lastUpdateTime, getDateFormat()) : null;
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("IndexItemDataVO(");
 		sb.append("indexItemId=").append(this.indexItemId);
-		sb.append("indexProviderId=").append(this.indexProviderId);
+		sb.append(", indexProviderId=").append(this.indexProviderId);
 		sb.append(", namespace=").append(this.namespace);
 		sb.append(", name=").append(this.name);
 		sb.append(", propertiesString=").append(this.propertiesString);
-		sb.append(", createTimeString=").append(this.createTimeString);
-		sb.append(", lastUpdateTimeString=").append(this.lastUpdateTimeString);
+		sb.append(", createTime=").append(createTimeString);
+		sb.append(", lastUpdateTime=").append(lastUpdateTimeString);
 		sb.append(")");
 		return sb.toString();
 	}
