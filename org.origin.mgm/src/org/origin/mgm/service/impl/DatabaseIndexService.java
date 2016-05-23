@@ -35,7 +35,7 @@ public class DatabaseIndexService implements IndexService {
 
 	protected ServiceRegistration<?> serviceReg;
 
-	protected int cachedRevision = 0;
+	protected int cachedRevisionId = 0;
 	protected ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
 	/**
@@ -70,33 +70,33 @@ public class DatabaseIndexService implements IndexService {
 		System.out.println("IndexServiceImpl.synchronize()");
 
 		// get the max revision number from the log table
-		int maxRevision = 0;
+		int maxRevisionId = 0;
 		Connection conn = indexServiceConfig.getConnection();
 		try {
-			maxRevision = logTableHandler.getMaxRevision(conn);
+			maxRevisionId = logTableHandler.getMaxRevisionId(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 
-		System.out.println("maxRevision = " + maxRevision);
-		System.out.println("cachedRevision = " + cachedRevision);
+		System.out.println("maxRevisionId = " + maxRevisionId);
+		System.out.println("cachedRevisionId = " + cachedRevisionId);
 
-		if (cachedRevision <= 0) {
+		if (cachedRevisionId <= 0) {
 			// data is not cached yet
 			reloadIndexItems();
 
 		} else {
 			// data have already been cached
-			if (cachedRevision == maxRevision) {
+			if (cachedRevisionId == maxRevisionId) {
 				// The cached data is update to date. No need to sync with database.
 
-			} else if (cachedRevision < maxRevision) {
+			} else if (cachedRevisionId < maxRevisionId) {
 				// The cached data is left behind the true data. Need to sync with database.
 				// Get the logs [cachedRevision + 1, maxRevision] and use the logs to update the cached data.
 
-			} else if (cachedRevision > maxRevision) {
+			} else if (cachedRevisionId > maxRevisionId) {
 				// The cached data is in front of the true data.
 				// Revert the cached data from cachedRevision to maxRevision. --- how to do that?
 

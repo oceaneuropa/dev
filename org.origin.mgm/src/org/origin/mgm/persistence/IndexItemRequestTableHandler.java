@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
@@ -27,6 +28,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	public static final String STATUS_CANCELLED = "cancelled";
 
 	protected ResultSetListHandler<IndexItemRequestVO> rsListHandler;
+	protected AbstractResultSetHandler<IndexItemRequestVO> rsSingleHandler;
 
 	public IndexItemRequestTableHandler() {
 		this.rsListHandler = new ResultSetListHandler<IndexItemRequestVO>() {
@@ -41,6 +43,24 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 				String lastUpdateTimeString = rs.getString("lastUpdateTime");
 
 				return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString);
+			}
+		};
+
+		this.rsSingleHandler = new AbstractResultSetHandler<IndexItemRequestVO>() {
+			@Override
+			public IndexItemRequestVO handle(ResultSet rs) throws SQLException {
+				if (rs.next()) {
+					Integer requestId = rs.getInt("requestId");
+					String indexProviderId = rs.getString("indexProviderId");
+					String command = rs.getString("command");
+					String arguments = rs.getString("arguments");
+					String status = rs.getString("status");
+					String requestTimeString = rs.getString("requestTime");
+					String lastUpdateTimeString = rs.getString("lastUpdateTime");
+
+					return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString);
+				}
+				return null;
 			}
 		};
 	}
@@ -109,7 +129,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemRequestVO> getAllRequests(Connection conn) throws SQLException {
+	public List<IndexItemRequestVO> getRequests(Connection conn) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " ORDER BY " + getPKName() + " DESC", null, this.rsListHandler);
 	}
 
@@ -145,6 +165,38 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	}
 
 	/**
+	 * Get a request by requestId.
+	 * 
+	 * @param conn
+	 * @param requestId
+	 * @return
+	 * @throws SQLException
+	 */
+	public IndexItemRequestVO getRequest(Connection conn, Integer requestId) throws SQLException {
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE requestId=?", new Object[] { requestId }, this.rsSingleHandler);
+	}
+
+	/**
+	 * Get the max requestId.
+	 * 
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+	public Integer getMaxRequestId(Connection conn) throws SQLException {
+		AbstractResultSetHandler<Integer> handler = new AbstractResultSetHandler<Integer>() {
+			@Override
+			public Integer handle(ResultSet rs) throws SQLException {
+				if (rs.next()) {
+					return rs.getInt(1);
+				}
+				return 0;
+			}
+		};
+		return DatabaseUtil.query(conn, "SELECT MAX(" + getPKName() + ") FROM " + getTableName() + "", null, handler);
+	}
+
+	/**
 	 * Insert a request item.
 	 * 
 	 * @param conn
@@ -158,7 +210,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public IndexItemRequestVO insert(Connection conn, String indexProviderId, String command, String arguments, String status, Date requestTime, Date lastUpdateTime) throws SQLException {
-		IndexItemRequestVO vo = null;
+		IndexItemRequestVO newRequestVO = null;
 
 		status = checkStatus(status);
 
@@ -170,10 +222,9 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 
 		Integer requestId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, command, arguments, status, requestTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString });
 		if (requestId > 0) {
-			vo = new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString);
+			newRequestVO = new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTimeString, lastUpdateTimeString);
 		}
-
-		return vo;
+		return newRequestVO;
 	}
 
 	/**

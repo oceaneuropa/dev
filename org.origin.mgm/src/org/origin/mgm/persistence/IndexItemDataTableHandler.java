@@ -113,35 +113,36 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> getAll(Connection conn) throws SQLException {
+	public List<IndexItemDataVO> getIndexItems(Connection conn) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " ORDER BY " + getPKName() + " ASC", null, this.rsListHandler);
 	}
 
 	/**
+	 * Get a list of index items by indexProviderId.
 	 * 
 	 * @param conn
 	 * @param indexProviderId
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> getByIndexProviderId(Connection conn, String indexProviderId) throws SQLException {
+	public List<IndexItemDataVO> getIndexItemsByIndexProviderId(Connection conn, String indexProviderId) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? ORDER BY " + getPKName() + " ASC ", new Object[] { indexProviderId }, this.rsListHandler);
 	}
 
 	/**
-	 * Get a list of index items.
+	 * Get a list of index items by namespace.
 	 * 
 	 * @param conn
 	 * @param namespace
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> getByNamespace(Connection conn, String namespace) throws SQLException {
+	public List<IndexItemDataVO> getIndexItemsByNamespace(Connection conn, String namespace) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE namespace=? ORDER BY " + getPKName() + " ASC ", new Object[] { namespace }, this.rsListHandler);
 	}
 
 	/**
-	 * Get a list of index items.
+	 * Get a list of index items by indexProviderId and namespace.
 	 * 
 	 * @param conn
 	 * @param indexProviderId
@@ -149,31 +150,20 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> get(Connection conn, String indexProviderId, String namespace) throws SQLException {
+	public List<IndexItemDataVO> getIndexItemsByIndexProviderIdAndNamespace(Connection conn, String indexProviderId, String namespace) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? AND namespace=? ORDER BY " + getPKName() + " ASC ", new Object[] { indexProviderId, namespace }, this.rsListHandler);
 	}
 
 	/**
-	 * Get an index item.
+	 * Get an index item by indexItemId.
 	 * 
 	 * @param conn
-	 * @param indexProviderId
-	 * @param namespace
-	 * @param name
-	 * @param propertiesString
-	 * @param createTime
-	 * @param lastUpdateTime
+	 * @param indexItemId
 	 * @return
 	 * @throws SQLException
 	 */
-	public IndexItemDataVO get(Connection conn, String indexProviderId, String namespace, String name, String propertiesString, Date createTime, Date lastUpdateTime) throws SQLException {
-		if (lastUpdateTime == null) {
-			lastUpdateTime = createTime;
-		}
-		String createTimeString = DateUtil.toString(createTime, getDateFormat());
-		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
-
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? AND namespace=? AND name=? AND properties=? AND createTime=? AND lastUpdateTime=? ORDER BY " + getPKName() + " DESC", new Object[] { indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString }, this.rsSingleHandler);
+	public IndexItemDataVO getIndexItem(Connection conn, Integer indexItemId) throws SQLException {
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexItemId=?", new Object[] { indexItemId }, this.rsSingleHandler);
 	}
 
 	/**
@@ -193,7 +183,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 				return 0;
 			}
 		};
-		return DatabaseUtil.query(conn, "SELECT MAX(" + getPKName() + ") FROM " + getTableName(), null, handler);
+		return DatabaseUtil.query(conn, "SELECT MAX(" + getPKName() + ") FROM " + getTableName() + "", null, handler);
 	}
 
 	/**
@@ -210,7 +200,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public IndexItemDataVO insert(Connection conn, String indexProviderId, String namespace, String name, String propertiesString, Date createTime, Date lastUpdateTime) throws SQLException {
-		IndexItemDataVO vo = null;
+		IndexItemDataVO newIndexItemVO = null;
 
 		if (lastUpdateTime == null) {
 			lastUpdateTime = createTime;
@@ -220,10 +210,9 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 
 		Integer indexItemId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, namespace, name, properties, createTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString });
 		if (indexItemId > 0) {
-			vo = new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString);
+			newIndexItemVO = new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString);
 		}
-
-		return vo;
+		return newIndexItemVO;
 	}
 
 	/**
@@ -237,6 +226,52 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	public boolean delete(Connection conn, Integer indexItemId) throws SQLException {
 		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE indexItemId=?", new Object[] { indexItemId }, 1);
 	}
+
+	// /**
+	// * Get the max indexItemId.
+	// *
+	// * @param conn
+	// * @return
+	// * @throws SQLException
+	// */
+	// public Integer getMaxIndexItemId(Connection conn) throws SQLException {
+	// AbstractResultSetHandler<Integer> handler = new AbstractResultSetHandler<Integer>() {
+	// @Override
+	// public Integer handle(ResultSet rs) throws SQLException {
+	// if (rs.next()) {
+	// return rs.getInt(1);
+	// }
+	// return 0;
+	// }
+	// };
+	// return DatabaseUtil.query(conn, "SELECT MAX(" + getPKName() + ") FROM " + getTableName(), null, handler);
+	// }
+
+	// /**
+	// * Get an index item.
+	// *
+	// * @param conn
+	// * @param indexProviderId
+	// * @param namespace
+	// * @param name
+	// * @param propertiesString
+	// * @param createTime
+	// * @param lastUpdateTime
+	// * @return
+	// * @throws SQLException
+	// */
+	// public IndexItemDataVO getIndexItem(Connection conn, String indexProviderId, String namespace, String name, String propertiesString, Date
+	// createTime, Date lastUpdateTime) throws SQLException {
+	// if (lastUpdateTime == null) {
+	// lastUpdateTime = createTime;
+	// }
+	// String createTimeString = DateUtil.toString(createTime, getDateFormat());
+	// String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
+	//
+	// return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? AND namespace=? AND name=? AND properties=? AND
+	// createTime=? AND lastUpdateTime=? ORDER BY " + getPKName() + " DESC", new Object[] { indexProviderId, namespace, name, propertiesString,
+	// createTimeString, lastUpdateTimeString }, this.rsSingleHandler);
+	// }
 
 	// /**
 	// * Get the id of an index item with specified type and name.

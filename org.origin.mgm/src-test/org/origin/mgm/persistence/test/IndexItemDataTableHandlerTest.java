@@ -41,7 +41,7 @@ public class IndexItemDataTableHandlerTest {
 
 		Connection conn = getConnection();
 		try {
-			List<IndexItemDataVO> vos = this.dataTableHandler.getAll(conn);
+			List<IndexItemDataVO> vos = this.dataTableHandler.getIndexItems(conn);
 			System.out.println("vos.size()=" + vos.size());
 			for (IndexItemDataVO vo : vos) {
 				System.out.println(vo.toString());
@@ -148,7 +148,7 @@ public class IndexItemDataTableHandlerTest {
 			// handler.updateProperties(conn, "indexservice", "node5", contentString5);
 			// handler.updateProperties(conn, "indexservice", "node6", contentString6);
 
-			List<IndexItemDataVO> indexItemVOs = handler.getAll(conn);
+			List<IndexItemDataVO> indexItemVOs = handler.getIndexItems(conn);
 			for (IndexItemDataVO indexItemVO : indexItemVOs) {
 				System.out.println("=============================================================================================");
 				System.out.println(indexItemVO);

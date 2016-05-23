@@ -1,7 +1,6 @@
 package org.origin.mgm.persistence.test;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.Properties;
 
@@ -29,9 +28,9 @@ public class IndexItemLogTableHandlerTest {
 
 		try {
 			String updateTimeString = DateUtil.toString(new Date(), DateUtil.getJdbcDateFormat());
-			logTableHandler.insert(conn, "create_index_item", "{type=}", "create_index_item", "{type=}", updateTimeString);
+			// logTableHandler.insert(conn, "create_index_item", "{type=}", "create_index_item", "{type=}", updateTimeString);
 
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

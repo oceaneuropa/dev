@@ -3,25 +3,75 @@ package org.origin.mgm.persistence;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
+import org.origin.common.util.DateUtil;
 import org.origin.mgm.model.vo.IndexItemRevisionVO;
 
-/**
+/*
  * CRUD methods for the IndexItemCommandLog table.
- *
+ * 
+ * @see http://www.tutorialspoint.com/jdbc/jdbc-insert-records.htm
+ * @see http://www.tutorialspoint.com/jdbc/jdbc-delete-records.htm
+ * 
  */
 public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 
 	public static IndexItemRevisionTableHandler INSTANCE = new IndexItemRevisionTableHandler();
 
+	protected ResultSetListHandler<IndexItemRevisionVO> rsListHandler;
+	protected AbstractResultSetHandler<IndexItemRevisionVO> rsSingleHandler;
+
+	public IndexItemRevisionTableHandler() {
+		this.rsListHandler = new ResultSetListHandler<IndexItemRevisionVO>() {
+			@Override
+			protected IndexItemRevisionVO handleRow(ResultSet rs) throws SQLException {
+				Integer revisionId = rs.getInt("revisionId");
+				String command = rs.getString("command");
+				String arguments = rs.getString("arguments");
+				String undoCommand = rs.getString("undoCommand");
+				String undoArguments = rs.getString("undoArguments");
+				String updateTimeString = rs.getString("updateTime");
+
+				return new IndexItemRevisionVO(revisionId, command, arguments, undoCommand, undoArguments, updateTimeString);
+			}
+		};
+
+		this.rsSingleHandler = new AbstractResultSetHandler<IndexItemRevisionVO>() {
+			@Override
+			public IndexItemRevisionVO handle(ResultSet rs) throws SQLException {
+				if (rs.next()) {
+					Integer revisionId = rs.getInt("revisionId");
+					String command = rs.getString("command");
+					String arguments = rs.getString("arguments");
+					String undoCommand = rs.getString("undoCommand");
+					String undoArguments = rs.getString("undoArguments");
+					String updateTimeString = rs.getString("updateTime");
+
+					return new IndexItemRevisionVO(revisionId, command, arguments, undoCommand, undoArguments, updateTimeString);
+				}
+				return null;
+			}
+		};
+	}
+
+	protected DateFormat getDateFormat() {
+		return DateUtil.getJdbcDateFormat();
+	}
+
 	@Override
 	public String getTableName() {
 		return "IndexItemRevision";
+	}
+
+	protected String getPKName() {
+		return "revisionId";
 	}
 
 	@Override
@@ -29,138 +79,88 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 		String sql = "";
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
-			sql += "	revision int NOT NULL AUTO_INCREMENT,";
+			sql += "	revisionId int NOT NULL AUTO_INCREMENT,";
 			sql += "	command varchar(500) NOT NULL,";
 			sql += "	arguments varchar(10000) NOT NULL,";
 			sql += "	undoCommand varchar(500) NOT NULL,";
 			sql += "	undoArguments varchar(10000) NOT NULL,";
 			sql += "	updateTime varchar(50) DEFAULT NULL,";
-			sql += "	PRIMARY KEY (revision)";
+			sql += "	PRIMARY KEY (revisionId)";
 			sql += ");";
 
 		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
 			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
-			sql += "	revision serial NOT NULL,";
+			sql += "	revisionId serial NOT NULL,";
 			sql += "	command varchar(500) NOT NULL,";
 			sql += "	arguments varchar(10000) NOT NULL,";
 			sql += "	undoCommand varchar(500) NOT NULL,";
 			sql += "	undoArguments varchar(10000) NOT NULL,";
 			sql += "	updateTime varchar(50) DEFAULT NULL,";
-			sql += "	PRIMARY KEY (revision)";
+			sql += "	PRIMARY KEY (revisionId)";
 			sql += ");";
 		}
 		return sql;
 	}
 
 	/**
-	 * Get all log items.
+	 * Get a list of revisions.
 	 * 
 	 * @param conn
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemRevisionVO> get(Connection conn) throws SQLException {
-		ResultSetListHandler<IndexItemRevisionVO> handler = new ResultSetListHandler<IndexItemRevisionVO>() {
-			@Override
-			protected IndexItemRevisionVO handleRow(ResultSet rs) throws SQLException {
-				Integer revision = rs.getInt("revision");
-				String command = rs.getString("command");
-				String arguments = rs.getString("arguments");
-				String undoCommand = rs.getString("undoCommand");
-				String undoArguments = rs.getString("undoArguments");
-				String updateTimeString = rs.getString("lastUpdateTime");
-
-				return new IndexItemRevisionVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
-			}
-		};
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " ORDER BY revision ASC", null, handler);
+	public List<IndexItemRevisionVO> getRevisions(Connection conn) throws SQLException {
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " ORDER BY " + getPKName() + " ASC", null, this.rsListHandler);
 	}
 
 	/**
-	 * Get the log items which begins with the log item (inclusive) with the specified startRevision and extends to the log item with the largest
-	 * revision.
+	 * Get a list of revisions which begins with (inclusive) the specified startRevisionId and extends to the latest revision.
 	 * 
 	 * @param conn
-	 * @param startRevision
-	 *            the beginning revision, inclusive.
+	 * @param startRevisionId
+	 *            the beginning revisionId, inclusive.
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemRevisionVO> get(Connection conn, int startRevision) throws SQLException {
-		ResultSetListHandler<IndexItemRevisionVO> handler = new ResultSetListHandler<IndexItemRevisionVO>() {
-			@Override
-			protected IndexItemRevisionVO handleRow(ResultSet rs) throws SQLException {
-				Integer revision = rs.getInt("revision");
-				String command = rs.getString("command");
-				String arguments = rs.getString("arguments");
-				String undoCommand = rs.getString("undoCommand");
-				String undoArguments = rs.getString("undoArguments");
-				String updateTimeString = rs.getString("lastUpdateTime");
-
-				return new IndexItemRevisionVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
-			}
-		};
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE revision>=? ORDER BY revision ASC", new Object[] { startRevision }, handler);
+	public List<IndexItemRevisionVO> getRevisions(Connection conn, int startRevisionId) throws SQLException {
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + ">=? ORDER BY " + getPKName() + " ASC", new Object[] { startRevisionId }, this.rsListHandler);
 	}
 
 	/**
-	 * Get the log items which begins with the log item (inclusive) with the specified startRevision and ends with the log item (exclusive) with the
-	 * specified endRevision.
+	 * Get a list of revisions which begins with (inclusive) the specified startRevisionId and ends with (exclusive) the specified endRevisionId.
 	 * 
 	 * @param conn
-	 * @param startRevision
-	 *            the beginning revision, inclusive.
-	 * @param endRevision
-	 *            the ending revision, exclusive.
+	 * @param startRevisionId
+	 *            the beginning revisionId, inclusive.
+	 * @param endRevisionId
+	 *            the ending revisionId, exclusive.
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemRevisionVO> get(Connection conn, int startRevision, int endRevision) throws SQLException {
-		ResultSetListHandler<IndexItemRevisionVO> handler = new ResultSetListHandler<IndexItemRevisionVO>() {
-			@Override
-			protected IndexItemRevisionVO handleRow(ResultSet rs) throws SQLException {
-				Integer revision = rs.getInt("revision");
-				String command = rs.getString("command");
-				String arguments = rs.getString("arguments");
-				String undoCommand = rs.getString("undoCommand");
-				String undoArguments = rs.getString("undoArguments");
-				String updateTimeString = rs.getString("lastUpdateTime");
-
-				return new IndexItemRevisionVO(revision, command, arguments, undoCommand, undoArguments, updateTimeString);
-			}
-		};
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE revision>=? AND revision<? ORDER BY revision ASC", new Object[] { startRevision, endRevision }, handler);
+	public List<IndexItemRevisionVO> getRevisions(Connection conn, int startRevisionId, int endRevisionId) throws SQLException {
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + ">=? AND " + getPKName() + "<? ORDER BY " + getPKName() + " ASC", new Object[] { startRevisionId, endRevisionId }, this.rsListHandler);
 	}
 
 	/**
-	 * Check whether a log item with specified revision exists.
+	 * Get a revision by revisionId.
 	 * 
 	 * @param conn
-	 * @param revision
+	 * @param revisionId
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean exist(Connection conn, int revision) throws SQLException {
-		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
-			@Override
-			public Boolean handle(ResultSet rs) throws SQLException {
-				if (rs.next()) {
-					return true;
-				}
-				return false;
-			}
-		};
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE revision=?", new Object[] { revision }, handler);
+	public IndexItemRevisionVO getIndexItem(Connection conn, Integer revisionId) throws SQLException {
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + "=?", new Object[] { revisionId }, this.rsSingleHandler);
 	}
 
 	/**
-	 * Get the max revision of all log items.
+	 * Get the max revisionId.
 	 * 
 	 * @param conn
 	 * @return
 	 * @throws SQLException
 	 */
-	public Integer getMaxRevision(Connection conn) throws SQLException {
+	public Integer getMaxRevisionId(Connection conn) throws SQLException {
 		AbstractResultSetHandler<Integer> handler = new AbstractResultSetHandler<Integer>() {
 			@Override
 			public Integer handle(ResultSet rs) throws SQLException {
@@ -170,40 +170,63 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 				return 0;
 			}
 		};
-		return DatabaseUtil.query(conn, "SELECT MAX(revision) FROM " + getTableName() + "", null, handler);
+		return DatabaseUtil.query(conn, "SELECT MAX(" + getPKName() + ") FROM " + getTableName() + "", null, handler);
 	}
 
 	/**
-	 * 
-	 * @see http://www.tutorialspoint.com/jdbc/jdbc-insert-records.htm
+	 * Insert a revision.
 	 * 
 	 * @param conn
 	 * @param command
 	 * @param arguments
 	 * @param undoCommand
 	 * @param undoArguments
-	 * @param lastUpdateTime
+	 * @param updateTime
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean insert(Connection conn, String command, String arguments, String undoCommand, String undoArguments, String lastUpdateTime) throws SQLException {
-		return DatabaseUtil.update(conn, "INSERT INTO " + getTableName() + " (command, arguments, undoCommand, undoArguments, lastUpdateTime) VALUES (?, ?, ?)", new Object[] { command, arguments, undoCommand, undoArguments, lastUpdateTime }, 1);
+	public IndexItemRevisionVO insert(Connection conn, String command, String arguments, String undoCommand, String undoArguments, Date updateTime) throws SQLException {
+		IndexItemRevisionVO newRevisionVO = null;
+		String updateTimeString = DateUtil.toString(updateTime, getDateFormat());
+
+		Integer revisionId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (command, arguments, undoCommand, undoArguments, updateTime) VALUES (?, ?, ?, ?, ?)", new Object[] { command, arguments, undoCommand, undoArguments, updateTimeString });
+		if (revisionId > 0) {
+			newRevisionVO = new IndexItemRevisionVO(revisionId, command, arguments, undoCommand, undoArguments, updateTimeString);
+		}
+		return newRevisionVO;
 	}
 
 	/**
-	 * 
-	 * @see http://www.tutorialspoint.com/jdbc/jdbc-delete-records.htm
+	 * Delete a revision.
 	 * 
 	 * @param conn
-	 * @param revision
+	 * @param revisionId
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean delete(Connection conn, int revision) throws SQLException {
-		if (!exist(conn, revision)) {
-			throw new SQLException("A log item with same revision does not exist.");
-		}
-		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE revision=?", new Object[] { revision }, 1);
+	public boolean delete(Connection conn, int revisionId) throws SQLException {
+		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE revisionId=?", new Object[] { revisionId }, 1);
 	}
+
+	// /**
+	// * Check whether a log item with specified revision exists.
+	// *
+	// * @param conn
+	// * @param revision
+	// * @return
+	// * @throws SQLException
+	// */
+	// public boolean exist(Connection conn, int revision) throws SQLException {
+	// AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
+	// @Override
+	// public Boolean handle(ResultSet rs) throws SQLException {
+	// if (rs.next()) {
+	// return true;
+	// }
+	// return false;
+	// }
+	// };
+	// return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE revision=?", new Object[] { revision }, handler);
+	// }
 
 }
