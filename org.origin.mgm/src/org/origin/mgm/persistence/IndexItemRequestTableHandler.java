@@ -34,18 +34,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 		this.rsListHandler = new ResultSetListHandler<IndexItemRequestVO>() {
 			@Override
 			protected IndexItemRequestVO handleRow(ResultSet rs) throws SQLException {
-				Integer requestId = rs.getInt("requestId");
-				String indexProviderId = rs.getString("indexProviderId");
-				String command = rs.getString("command");
-				String arguments = rs.getString("arguments");
-				String status = rs.getString("status");
-				String requestTimeString = rs.getString("requestTime");
-				String lastUpdateTimeString = rs.getString("lastUpdateTime");
-
-				Date requestTime = requestTimeString != null ? DateUtil.toDate(requestTimeString, DateUtil.getCommonDateFormats()) : null;
-				Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
-
-				return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTime, lastUpdateTime);
+				return createVO(rs);
 			}
 		};
 
@@ -53,22 +42,33 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 			@Override
 			public IndexItemRequestVO handle(ResultSet rs) throws SQLException {
 				if (rs.next()) {
-					Integer requestId = rs.getInt("requestId");
-					String indexProviderId = rs.getString("indexProviderId");
-					String command = rs.getString("command");
-					String arguments = rs.getString("arguments");
-					String status = rs.getString("status");
-					String requestTimeString = rs.getString("requestTime");
-					String lastUpdateTimeString = rs.getString("lastUpdateTime");
-
-					Date requestTime = requestTimeString != null ? DateUtil.toDate(requestTimeString, DateUtil.getCommonDateFormats()) : null;
-					Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
-
-					return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTime, lastUpdateTime);
+					return createVO(rs);
 				}
 				return null;
 			}
 		};
+	}
+
+	/**
+	 * Create a IndexItemRequestVO from a ResultSet.
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	protected IndexItemRequestVO createVO(ResultSet rs) throws SQLException {
+		Integer requestId = rs.getInt("requestId");
+		String indexProviderId = rs.getString("indexProviderId");
+		String command = rs.getString("command");
+		String arguments = rs.getString("arguments");
+		String status = rs.getString("status");
+		String requestTimeString = rs.getString("requestTime");
+		String lastUpdateTimeString = rs.getString("lastUpdateTime");
+
+		Date requestTime = requestTimeString != null ? DateUtil.toDate(requestTimeString, DateUtil.getCommonDateFormats()) : null;
+		Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
+
+		return new IndexItemRequestVO(requestId, indexProviderId, command, arguments, status, requestTime, lastUpdateTime);
 	}
 
 	protected DateFormat getDateFormat() {

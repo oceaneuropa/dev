@@ -32,18 +32,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		this.rsListHandler = new ResultSetListHandler<IndexItemDataVO>() {
 			@Override
 			protected IndexItemDataVO handleRow(ResultSet rs) throws SQLException {
-				Integer indexItemId = rs.getInt("indexItemId");
-				String indexProviderId = rs.getString("indexProviderId");
-				String namespace = rs.getString("namespace");
-				String name = rs.getString("name");
-				String propertiesString = rs.getString("properties");
-				String createTimeString = rs.getString("createTime");
-				String lastUpdateTimeString = rs.getString("lastUpdateTime");
-
-				Date createTime = createTimeString != null ? DateUtil.toDate(createTimeString, DateUtil.getCommonDateFormats()) : null;
-				Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
-
-				return new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTime, lastUpdateTime);
+				return createVO(rs);
 			}
 		};
 
@@ -51,22 +40,33 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 			@Override
 			public IndexItemDataVO handle(ResultSet rs) throws SQLException {
 				if (rs.next()) {
-					Integer indexItemId = rs.getInt("indexItemId");
-					String indexProviderId = rs.getString("indexProviderId");
-					String namespace = rs.getString("namespace");
-					String name = rs.getString("name");
-					String propertiesString = rs.getString("properties");
-					String createTimeString = rs.getString("createTime");
-					String lastUpdateTimeString = rs.getString("lastUpdateTime");
-
-					Date createTime = createTimeString != null ? DateUtil.toDate(createTimeString, DateUtil.getCommonDateFormats()) : null;
-					Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
-
-					return new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTime, lastUpdateTime);
+					return createVO(rs);
 				}
 				return null;
 			}
 		};
+	}
+
+	/**
+	 * Create a IndexItemDataVO from a ResultSet.
+	 * 
+	 * @param rs
+	 * @return
+	 * @throws SQLException
+	 */
+	protected IndexItemDataVO createVO(ResultSet rs) throws SQLException {
+		Integer indexItemId = rs.getInt("indexItemId");
+		String indexProviderId = rs.getString("indexProviderId");
+		String namespace = rs.getString("namespace");
+		String name = rs.getString("name");
+		String propertiesString = rs.getString("properties");
+		String createTimeString = rs.getString("createTime");
+		String lastUpdateTimeString = rs.getString("lastUpdateTime");
+
+		Date createTime = createTimeString != null ? DateUtil.toDate(createTimeString, DateUtil.getCommonDateFormats()) : null;
+		Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
+
+		return new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTime, lastUpdateTime);
 	}
 
 	protected DateFormat getDateFormat() {
@@ -232,99 +232,6 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	public boolean delete(Connection conn, Integer indexItemId) throws SQLException {
 		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE indexItemId=?", new Object[] { indexItemId }, 1);
 	}
-
-	// /**
-	// * Get the max indexItemId.
-	// *
-	// * @param conn
-	// * @return
-	// * @throws SQLException
-	// */
-	// public Integer getMaxIndexItemId(Connection conn) throws SQLException {
-	// AbstractResultSetHandler<Integer> handler = new AbstractResultSetHandler<Integer>() {
-	// @Override
-	// public Integer handle(ResultSet rs) throws SQLException {
-	// if (rs.next()) {
-	// return rs.getInt(1);
-	// }
-	// return 0;
-	// }
-	// };
-	// return DatabaseUtil.query(conn, "SELECT MAX(" + getPKName() + ") FROM " + getTableName(), null, handler);
-	// }
-
-	// /**
-	// * Get an index item.
-	// *
-	// * @param conn
-	// * @param indexProviderId
-	// * @param namespace
-	// * @param name
-	// * @param propertiesString
-	// * @param createTime
-	// * @param lastUpdateTime
-	// * @return
-	// * @throws SQLException
-	// */
-	// public IndexItemDataVO getIndexItem(Connection conn, String indexProviderId, String namespace, String name, String propertiesString, Date
-	// createTime, Date lastUpdateTime) throws SQLException {
-	// if (lastUpdateTime == null) {
-	// lastUpdateTime = createTime;
-	// }
-	// String createTimeString = DateUtil.toString(createTime, getDateFormat());
-	// String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
-	//
-	// return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? AND namespace=? AND name=? AND properties=? AND
-	// createTime=? AND lastUpdateTime=? ORDER BY " + getPKName() + " DESC", new Object[] { indexProviderId, namespace, name, propertiesString,
-	// createTimeString, lastUpdateTimeString }, this.rsSingleHandler);
-	// }
-
-	// /**
-	// * Get the id of an index item with specified type and name.
-	// *
-	// * @param conn
-	// * @param type
-	// * @param name
-	// * @return
-	// * @throws SQLException
-	// */
-	// public Integer getId(Connection conn, String type, String name) throws SQLException {
-	// AbstractResultSetHandler<Integer> handler = new AbstractResultSetHandler<Integer>() {
-	// @Override
-	// public Integer handle(ResultSet rs) throws SQLException {
-	// if (rs.next()) {
-	// Integer id = rs.getInt("id");
-	// return id;
-	// }
-	// return -1;
-	// }
-	// };
-	// return DatabaseUtil.query(conn, "SELECT id FROM " + getTableName() + " WHERE type=? AND name=? ORDER BY id ASC", new Object[] { type, name },
-	// handler);
-	// }
-
-	// /**
-	// * Check whether an index item exists.
-	// *
-	// * @param conn
-	// * @param type
-	// * @param name
-	// * @return
-	// * @throws SQLException
-	// */
-	// public boolean exist(Connection conn, String type, String name) throws SQLException {
-	// AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
-	// @Override
-	// public Boolean handle(ResultSet rs) throws SQLException {
-	// if (rs.next()) {
-	// return true;
-	// }
-	// return false;
-	// }
-	// };
-	// return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE type=? AND name=? ORDER BY id ASC", new Object[] { type, name },
-	// handler);
-	// }
 
 	// /**
 	// * Update the properties of an index item.
