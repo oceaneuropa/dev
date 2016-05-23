@@ -15,8 +15,8 @@ import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.util.DateUtil;
 import org.origin.mgm.model.vo.IndexItemRequestVO;
 
-/**
- * CRUD methods for the IndexItemCommandRequest table.
+/*
+ * CRUD methods for the IndexItemRequest table.
  *
  */
 public class IndexItemRequestTableHandler implements DatabaseTableAware {
@@ -179,7 +179,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public IndexItemRequestVO getRequest(Connection conn, Integer requestId) throws SQLException {
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE requestId=?", new Object[] { requestId }, this.rsSingleHandler);
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + "=?", new Object[] { requestId }, this.rsSingleHandler);
 	}
 
 	/**

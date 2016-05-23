@@ -169,7 +169,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public IndexItemDataVO getIndexItem(Connection conn, Integer indexItemId) throws SQLException {
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexItemId=?", new Object[] { indexItemId }, this.rsSingleHandler);
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + "=?", new Object[] { indexItemId }, this.rsSingleHandler);
 	}
 
 	/**

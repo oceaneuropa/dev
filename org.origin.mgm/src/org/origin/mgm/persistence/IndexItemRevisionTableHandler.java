@@ -15,7 +15,7 @@ import org.origin.common.util.DateUtil;
 import org.origin.mgm.model.vo.IndexItemRevisionVO;
 
 /*
- * CRUD methods for the IndexItemCommandLog table.
+ * CRUD methods for the IndexItemRevision table.
  * 
  * @see http://www.tutorialspoint.com/jdbc/jdbc-insert-records.htm
  * @see http://www.tutorialspoint.com/jdbc/jdbc-delete-records.htm
