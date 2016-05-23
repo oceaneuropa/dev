@@ -183,6 +183,7 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 	 * Insert a revision.
 	 * 
 	 * @param conn
+	 * @param indexProviderId
 	 * @param command
 	 * @param arguments
 	 * @param undoCommand
