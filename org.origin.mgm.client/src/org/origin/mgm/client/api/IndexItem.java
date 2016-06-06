@@ -2,8 +2,6 @@ package org.origin.mgm.client.api;
 
 import java.util.Map;
 
-import javax.xml.namespace.QName;
-
 public interface IndexItem {
 
 	/**
@@ -16,7 +14,13 @@ public interface IndexItem {
 	 * 
 	 * @return
 	 */
-	public QName getQName();
+	public String getNamespace();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getName();
 
 	/**
 	 * 

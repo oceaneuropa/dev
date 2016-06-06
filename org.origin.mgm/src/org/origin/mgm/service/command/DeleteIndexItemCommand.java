@@ -28,7 +28,7 @@ public class DeleteIndexItemCommand extends AbstractCommand {
 	}
 
 	@Override
-	public AbstractCommand execute(CommandContext context) throws CommandException {
+	public void execute(CommandContext context) throws CommandException {
 		Connection conn = context.getAdapter(Connection.class);
 		ExceptionUtil.checkNotNull(conn, null, null);
 		try {
@@ -36,7 +36,11 @@ public class DeleteIndexItemCommand extends AbstractCommand {
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
-		return null;
+	}
+
+	@Override
+	public void undo(CommandContext context) throws CommandException {
+
 	}
 
 }

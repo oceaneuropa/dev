@@ -109,6 +109,7 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test003_createFiles() throws IOException {
 		System.out.println("--- --- --- test003_createFiles() --- --- ---");
@@ -181,6 +182,7 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test004_uploadFiles() throws IOException {
 		System.out.println("--- --- --- test004_uploadFiles() --- --- ---");
@@ -200,6 +202,7 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test005_uploadUsingOutputStream() throws IOException {
 		System.out.println("--- --- --- test005_uploadUsingOutputStream() --- --- ---");
@@ -237,12 +240,15 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test006_uploadDirectories() throws IOException {
 		System.out.println("--- --- --- test006_uploadDirectories() --- --- ---");
 
-		File localDir = new File("/Users/yayang/Downloads/test_source1");
-		FileRef dirRef = fs.root();
+		// File localDir = new File("/Users/yayang/Downloads/test_source1");
+		// FileRef dirRef = fs.root();
+		File localDir = new File("/Users/yayang/osgi");
+		FileRef dirRef = FileRef.newInstance(fs, "/osgi");
 
 		boolean succeed = fs.uploadDirectoryToFsDirectory(localDir, dirRef, false);
 		System.out.println("Local directory '" + localDir.getAbsolutePath() + "' is uploaded to path '" + dirRef.getPath() + "'? " + succeed);
@@ -250,6 +256,7 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test007_downloadFiles() throws IOException {
 		System.out.println("--- --- --- test007_downloadFiles() --- --- ---");
@@ -278,6 +285,7 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test008_downloadDirectories() throws IOException {
 		System.out.println("--- --- --- test008_downloadDirectories() --- --- ---");
@@ -297,6 +305,7 @@ public class FsTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test009_downloadUsingInputStream() throws IOException {
 		System.out.println("--- --- --- test009_downloadUsingInputStream() --- --- ---");
@@ -360,19 +369,21 @@ public class FsTestMac {
 		System.out.println();
 	}
 
-	@Ignore
 	@Test
 	public void test010_deleteFiles() throws IOException {
 		System.out.println("--- --- --- test010_deleteFiles() --- --- ---");
 
-		FileRef fileRef1 = FileRef.newInstance(fs, "/newDir/tmp2/newEmptyFile2.txt");
-		FileRef dirRef2 = FileRef.newInstance(fs, "/newDir/tmp3");
+		// FileRef fileRef1 = FileRef.newInstance(fs, "/newDir/tmp2/newEmptyFile2.txt");
+		// FileRef dirRef2 = FileRef.newInstance(fs, "/newDir/tmp3");
+		FileRef dirRef3 = FileRef.newInstance(fs, "/osgi");
 
-		boolean succeed1 = fileRef1.delete();
-		boolean succeed2 = dirRef2.delete();
+		// boolean succeed1 = fileRef1.delete();
+		// boolean succeed2 = dirRef2.delete();
+		boolean succeed3 = dirRef3.delete();
 
-		System.out.println("Path '" + fileRef1.getPath() + "' is deleted (succeed=" + succeed1 + ")? " + !fileRef1.exists());
-		System.out.println("Path '" + dirRef2.getPath() + "' is deleted (succeed=" + succeed2 + ")? " + !dirRef2.exists());
+		// System.out.println("Path '" + fileRef1.getPath() + "' is deleted (succeed=" + succeed1 + ")? " + !fileRef1.exists());
+		// System.out.println("Path '" + dirRef2.getPath() + "' is deleted (succeed=" + succeed2 + ")? " + !dirRef2.exists());
+		System.out.println("Path '" + dirRef3.getPath() + "' is deleted (succeed=" + succeed3 + ")? " + !dirRef3.exists());
 
 		System.out.println();
 	}

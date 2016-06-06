@@ -1,7 +1,7 @@
 package org.origin.common.util;
 
 import java.io.File;
-import java.util.Hashtable;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,57 +11,126 @@ import org.osgi.framework.BundleContext;
 
 public class PropertyUtil {
 
-	public static void printSystemProperties() {
-		System.out.println("System Properties:");
-		System.out.println("----------------------------------------------------------------------------------------");
-		Properties props = System.getProperties();
-		for (Iterator<Entry<Object, Object>> entryItor = props.entrySet().iterator(); entryItor.hasNext();) {
-			Entry<Object, Object> entry = entryItor.next();
-			Object key = entry.getKey();
-			Object value = entry.getValue();
-			System.out.println(key + "=" + value);
-		}
-		System.out.println("----------------------------------------------------------------------------------------");
-	}
-
-	public static void printSystemEnvironmentVariables() {
-		System.out.println("System Environment Variables:");
-		System.out.println("----------------------------------------------------------------------------------------");
-		Map<String, String> envs = System.getenv();
-		for (Iterator<Entry<String, String>> entryItor = envs.entrySet().iterator(); entryItor.hasNext();) {
-			Entry<String, String> entry = entryItor.next();
-			String key = entry.getKey();
-			String value = entry.getValue();
-			System.out.println(key + "=" + value);
-		}
-		System.out.println("----------------------------------------------------------------------------------------");
-	}
-
 	/**
 	 * Get property by key from BundleContext. If not found, get property by key from System property.
 	 * 
 	 * Then set the property value to the given properties table.
 	 * 
-	 * @param key
+	 * @param name
 	 * @param bundleContext
 	 * @param props
 	 */
-	public static void loadProperty(BundleContext bundleContext, Hashtable<String, Object> props, String key) {
+	public static void loadProperty(BundleContext bundleContext, Map<Object, Object> props, String name) {
+		loadProperty(bundleContext, props, name, null);
+	}
+
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param props
+	 * @param name
+	 * @param propClass
+	 */
+	public static void loadProperty(BundleContext bundleContext, Map<Object, Object> props, String name, Class<?> propClass) {
 		// load property from BundelContext
-		String value = bundleContext.getProperty(key);
+		String stringValue = bundleContext.getProperty(name);
 
 		// load property from system property
-		if (value == null) {
-			value = System.getProperty(key);
+		if (stringValue == null) {
+			stringValue = System.getProperty(name);
 		}
 
 		// load property from environment variable
-		if (value == null) {
-			value = System.getenv(key);
+		if (stringValue == null) {
+			stringValue = System.getenv(name);
 		}
 
-		if (value != null) {
-			props.put(key, value);
+		if (stringValue == null) {
+			System.err.println("PropertyUtil.loadProperty() cannot find property value for '" + name + "'.");
+			return;
+		}
+
+		if (propClass != null) {
+			Object propValue = null;
+			Exception conversionException = null;
+			if (Date.class.isAssignableFrom(propClass)) {
+				// Convert string into Date
+				try {
+					Date dateValue = DateUtil.toDate(stringValue, DateUtil.getCommonDateFormats());
+					if (dateValue != null) {
+						propValue = dateValue;
+					}
+				} catch (Exception e) {
+					conversionException = e;
+				}
+
+			} else if (Boolean.class.isAssignableFrom(propClass)) {
+				// Convert string into Boolean
+				try {
+					Boolean booleanValue = Boolean.valueOf(stringValue);
+					if (booleanValue != null) {
+						propValue = booleanValue;
+					}
+				} catch (Exception e) {
+					conversionException = e;
+				}
+
+			} else if (Float.class.isAssignableFrom(propClass)) {
+				// Convert string into Float
+				try {
+					Float floatValue = Float.valueOf(stringValue);
+					if (floatValue != null) {
+						propValue = floatValue;
+					}
+				} catch (Exception e) {
+					conversionException = e;
+				}
+
+			} else if (Double.class.isAssignableFrom(propClass)) {
+				// Convert string into Double
+				try {
+					Double floatValue = Double.valueOf(stringValue);
+					if (floatValue != null) {
+						propValue = floatValue;
+					}
+				} catch (Exception e) {
+					conversionException = e;
+				}
+
+			} else if (Long.class.isAssignableFrom(propClass)) {
+				// Convert string into Long
+				try {
+					Long longValue = Long.valueOf(stringValue);
+					if (longValue != null) {
+						propValue = longValue;
+					}
+				} catch (Exception e) {
+					conversionException = e;
+				}
+
+			} else if (Integer.class.isAssignableFrom(propClass)) {
+				// Convert string into Integer
+				try {
+					Integer integerValue = Integer.valueOf(stringValue);
+					if (integerValue != null) {
+						propValue = integerValue;
+					}
+				} catch (Exception e) {
+					conversionException = e;
+				}
+			}
+
+			if (propValue != null) {
+				props.put(name, propValue);
+
+			} else {
+				System.err.println("PropertyUtil.loadProperty() cannot convert '" + stringValue + "' to " + propClass.getName() + ". " + (conversionException != null ? conversionException.getMessage() : ""));
+				conversionException.printStackTrace();
+				props.put(name, stringValue);
+			}
+
+		} else {
+			props.put(name, stringValue);
 		}
 	}
 
@@ -76,10 +145,10 @@ public class PropertyUtil {
 	 *            the default value
 	 * @return the property as a boolean or the default value
 	 */
-	public static String getProperty(Map<String, String> properties, String propertyName, String defaultValue) {
-		String value = properties.get(propertyName);
+	public static String getString(Map<?, ?> properties, String propertyName, String defaultValue) {
+		Object value = properties.get(propertyName);
 		if (value != null) {
-			return value;
+			return value.toString();
 		}
 		return defaultValue;
 	}
@@ -95,10 +164,13 @@ public class PropertyUtil {
 	 *            the default value
 	 * @return the property as a boolean or the default value
 	 */
-	public static boolean getBoolean(Map<String, String> properties, String propertyName, boolean defaultValue) {
-		String value = properties.get(propertyName);
+	public static boolean getBoolean(Map<?, ?> properties, String propertyName, boolean defaultValue) {
+		Object value = properties.get(propertyName);
+		if (value instanceof Boolean) {
+			return (Boolean) value;
+		}
 		if (value != null) {
-			return Boolean.valueOf(value);
+			return Boolean.valueOf(value.toString());
 		}
 		return defaultValue;
 	}
@@ -114,11 +186,14 @@ public class PropertyUtil {
 	 *            the default value
 	 * @return the property as a long or the default value
 	 */
-	public static int getInt(Map<String, String> properties, String propertyName, int defaultValue) {
-		String value = properties.get(propertyName);
+	public static int getInt(Map<?, ?> properties, String propertyName, int defaultValue) {
+		Object value = properties.get(propertyName);
+		if (value instanceof Integer) {
+			return (Integer) value;
+		}
 		if (value != null) {
 			try {
-				return Integer.parseInt(value);
+				return Integer.parseInt(value.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -137,11 +212,66 @@ public class PropertyUtil {
 	 *            the default value
 	 * @return the property as a long or the default value
 	 */
-	public static long getLong(Map<String, String> properties, String propertyName, long defaultValue) {
-		String value = properties.get(propertyName);
+	public static long getLong(Map<?, ?> properties, String propertyName, long defaultValue) {
+		Object value = properties.get(propertyName);
+		if (value instanceof Long) {
+			return (Long) value;
+		}
 		if (value != null) {
 			try {
-				return Long.parseLong(value);
+				return Long.parseLong(value.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return defaultValue;
+	}
+
+	/**
+	 * Retrieve a property as a float.
+	 * 
+	 * @param properties
+	 *            the properties to retrieve the value from
+	 * @param propertyName
+	 *            the name of the property to retrieve
+	 * @param defaultValue
+	 *            the default value
+	 * @return
+	 */
+	public static float getFloat(Map<?, ?> properties, String propertyName, float defaultValue) {
+		Object value = properties.get(propertyName);
+		if (value instanceof Float) {
+			return (Float) value;
+		}
+		if (value != null) {
+			try {
+				return Float.parseFloat(value.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return defaultValue;
+	}
+
+	/**
+	 * Retrieve a property as a double.
+	 * 
+	 * @param properties
+	 *            the properties to retrieve the value from
+	 * @param propertyName
+	 *            the name of the property to retrieve
+	 * @param defaultValue
+	 *            the default value
+	 * @return
+	 */
+	public static double getDouble(Map<?, ?> properties, String propertyName, double defaultValue) {
+		Object value = properties.get(propertyName);
+		if (value instanceof Double) {
+			return (Double) value;
+		}
+		if (value != null) {
+			try {
+				return Double.parseDouble(value.toString());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -160,12 +290,41 @@ public class PropertyUtil {
 	 *            the default value
 	 * @return the property as a File or the default value
 	 */
-	public static File getFile(Map<String, String> properties, String propertyName, File defaultFile) {
-		String value = properties.get(propertyName);
+	public static File getFile(Map<?, ?> properties, String propertyName, File defaultFile) {
+		Object value = properties.get(propertyName);
+		if (value instanceof File) {
+			return (File) value;
+		}
 		if (value != null) {
-			return new File(value);
+			return new File(value.toString());
 		}
 		return defaultFile;
+	}
+
+	private static void printSystemProperties() {
+		System.out.println("System Properties:");
+		System.out.println("----------------------------------------------------------------------------------------");
+		Properties props = System.getProperties();
+		for (Iterator<Entry<Object, Object>> entryItor = props.entrySet().iterator(); entryItor.hasNext();) {
+			Entry<Object, Object> entry = entryItor.next();
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+			System.out.println(key + "=" + value);
+		}
+		System.out.println("----------------------------------------------------------------------------------------");
+	}
+
+	private static void printSystemEnvironmentVariables() {
+		System.out.println("System Environment Variables:");
+		System.out.println("----------------------------------------------------------------------------------------");
+		Map<String, String> envs = System.getenv();
+		for (Iterator<Entry<String, String>> entryItor = envs.entrySet().iterator(); entryItor.hasNext();) {
+			Entry<String, String> entry = entryItor.next();
+			String key = entry.getKey();
+			String value = entry.getValue();
+			System.out.println(key + "=" + value);
+		}
+		System.out.println("----------------------------------------------------------------------------------------");
 	}
 
 }

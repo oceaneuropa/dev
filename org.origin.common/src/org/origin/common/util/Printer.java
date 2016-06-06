@@ -20,12 +20,12 @@ public class Printer {
 	 * 
 	 * @param props
 	 */
-	public static void pl(Map<String, String> props) {
+	public static void pl(Map<Object, Object> props) {
 		System.out.println("------------------------------------------------------------------------");
 		if (props == null) {
 			System.out.println("null");
 		} else {
-			for (Entry<String, String> entry : props.entrySet()) {
+			for (Entry<Object, Object> entry : props.entrySet()) {
 				System.out.println(entry.getKey() + " = " + entry.getValue());
 			}
 		}

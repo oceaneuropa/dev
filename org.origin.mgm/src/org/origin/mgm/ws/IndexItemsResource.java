@@ -27,11 +27,11 @@ import org.origin.mgm.service.IndexService;
 /**
  * Index items resource
  * 
- * URL (GET): {scheme}://{host}:{port}/indexservice/v1/indexitems
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexProviderId={indexProviderId}&namespace={namespace}
  *
- * URL (POST): {scheme}://{host}:{port}/indexservice/v1/indexitems
+ * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems
  *
- * URL (DELETE): {scheme}://{host}:{port}/indexservice/v1/serviceregistry?namespace={namespace}&name={name}
+ * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexitemId={indexitemId}
  *
  */
 @javax.ws.rs.Path("/indexitems")
@@ -41,10 +41,10 @@ public class IndexItemsResource extends AbstractApplicationResource {
 	/**
 	 * Get index items.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/indexservice/v1/indexitems
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexProviderId={indexProviderId}&namespace={namespace}
 	 * 
+	 * @param indexProviderId
 	 * @param namespace
-	 *            type of an index item.
 	 * @return
 	 */
 	@GET
@@ -55,8 +55,15 @@ public class IndexItemsResource extends AbstractApplicationResource {
 		IndexService indexService = getService(IndexService.class);
 		try {
 			List<IndexItem> indexItems = null;
-			if (namespace != null) {
-				indexItems = indexService.getIndexItems(namespace);
+			if (indexProviderId != null && namespace != null) {
+				indexItems = indexService.getIndexItems(indexProviderId, namespace);
+
+			} else if (indexProviderId != null && namespace == null) {
+				indexItems = indexService.getIndexItemsByIndexProvider(indexProviderId);
+
+			} else if (indexProviderId == null && namespace != null) {
+				indexItems = indexService.getIndexItemsByNamespace(namespace);
+
 			} else {
 				indexItems = indexService.getIndexItems();
 			}
@@ -75,11 +82,11 @@ public class IndexItemsResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Register a service to the service registry.
+	 * Add an index item.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/management/v1/serviceregistry
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems
 	 * 
-	 * Body parameter: ServiceEntryDTO
+	 * Body parameter: IndexItemDTO
 	 * 
 	 * @param indexItemDTO
 	 * @return
@@ -87,57 +94,59 @@ public class IndexItemsResource extends AbstractApplicationResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addIndexItem(IndexItemDTO indexItemDTO) {
+		if (indexItemDTO == null) {
+			ErrorDTO nullBody = new ErrorDTO("Body parameter (IndexItemDTO) is null.");
+			return Response.status(Status.BAD_REQUEST).entity(nullBody).build();
+		}
+
 		IndexService indexService = getService(IndexService.class);
 		try {
-			String type = indexItemDTO.getNamespace();
+			String indexProviderId = indexItemDTO.getIndexProviderId();
+			String namespace = indexItemDTO.getNamespace();
 			String name = indexItemDTO.getName();
-			Map<String, Object> props = indexItemDTO.getProperties();
+			Map<String, Object> properties = indexItemDTO.getProperties();
 
-			// indexService.createIndexItem(indexProviderId, type, name);
+			indexService.addIndexItem(indexProviderId, namespace, name, properties);
 
-		} catch (Exception e) {
-			// ErrorDTO error = handleError(e, e.getCode(), true);
-			// return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		} catch (IndexServiceException e) {
+			ErrorDTO error = handleError(e, e.getCode(), true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
 		return Response.ok().entity(indexItemDTO).build();
 	}
 
 	/**
-	 * Unregister a service from the service registry.
+	 * Remove an index item.
 	 * 
-	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/management/v1/serviceregistry?namespace={namespace}&name={name}
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexitemId={indexitemId}
 	 * 
-	 * @param namespace
-	 * @param name
+	 * @param indexItemId
 	 * @return
 	 */
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response removeService(@QueryParam("namespace") String namespace, @QueryParam("name") String name) {
-		if (namespace == null) {
-			namespace = IndexItem.DEFAULT_TYPE;
-		}
-		if (name == null || name.isEmpty()) {
-			ErrorDTO nullNameError = new ErrorDTO("name is null.");
-			return Response.status(Status.BAD_REQUEST).entity(nullNameError).build();
+	public Response removeIndexItem(@QueryParam("indexItemId") Integer indexItemId) {
+		if (indexItemId == null) {
+			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId is null.");
+			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
 		}
 
 		IndexService indexService = getService(IndexService.class);
+		boolean succeed = false;
 		try {
-			// if (indexService.isIndexed(namespace, name)) {
-			// StatusDTO statusDTO = new StatusDTO("201", "serviceNotFound", MessageFormat.format("Service ''{0}'' is not found.", new Object[] {
-			// IndexItem.getFullName(namespace, name) }));
-			// return Response.ok().entity(statusDTO).build();
-			// }
-
-			indexService.removeIndexItem(namespace, name);
+			succeed = indexService.removeIndexItem(indexItemId);
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", MessageFormat.format("Service ''{0}'' is unregistered successfully.", new Object[] { IndexItem.getFullName(namespace, name) }));
+		StatusDTO statusDTO = null;
+		if (succeed) {
+			statusDTO = new StatusDTO("200", "success", MessageFormat.format("IndexItem (indexItemId={0}) is removed successfully.", new Object[] { indexItemId }));
+		} else {
+			statusDTO = new StatusDTO("200", "fail", MessageFormat.format("IndexItem (indexItemId={0}) is not removed.", new Object[] { indexItemId }));
+		}
 		return Response.ok().entity(statusDTO).build();
 	}
 

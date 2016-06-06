@@ -13,6 +13,13 @@ public abstract class AbstractCommand {
 	 * @return
 	 * @throws CommandException
 	 */
-	public abstract AbstractCommand execute(CommandContext context) throws CommandException;
+	public abstract void execute(CommandContext context) throws CommandException;
+
+	/**
+	 * 
+	 * @param context
+	 * @throws CommandException
+	 */
+	public abstract void undo(CommandContext context) throws CommandException;
 
 }

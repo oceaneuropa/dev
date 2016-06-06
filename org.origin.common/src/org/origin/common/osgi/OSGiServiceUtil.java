@@ -3,6 +3,7 @@ package org.origin.common.osgi;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class OSGiServiceUtil {
 
-	protected static Map<Object, List<ServiceRegistration<?>>> serviceToRegistrationMap = new HashMap<Object, List<ServiceRegistration<?>>>();
+	protected static Map<Object, Map<Object, ServiceRegistration<?>>> serviceToRegistrationMap = new HashMap<Object, Map<Object, ServiceRegistration<?>>>();
 	protected static ReadWriteLock rwLock = new ReentrantReadWriteLock();
 
 	static {
@@ -59,10 +60,10 @@ public class OSGiServiceUtil {
 		}
 	}
 
-	private static List<ServiceRegistration<?>> getServiceRegistrations(Object service) {
-		List<ServiceRegistration<?>> serviceRegistrations = serviceToRegistrationMap.get(service);
+	private static Map<Object, ServiceRegistration<?>> getServiceRegistrations(Object service) {
+		Map<Object, ServiceRegistration<?>> serviceRegistrations = serviceToRegistrationMap.get(service);
 		if (serviceRegistrations == null) {
-			serviceRegistrations = new ArrayList<ServiceRegistration<?>>();
+			serviceRegistrations = new LinkedHashMap<Object, ServiceRegistration<?>>();
 			serviceToRegistrationMap.put(service, serviceRegistrations);
 		}
 		return serviceRegistrations;
@@ -96,7 +97,7 @@ public class OSGiServiceUtil {
 		try {
 			ServiceRegistration<?> serviceRegistration = bundleContext.registerService(classNames, service, properties);
 			if (serviceRegistration != null) {
-				getServiceRegistrations(service).add(serviceRegistration);
+				getServiceRegistrations(service).put(classNames, serviceRegistration);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -112,7 +113,7 @@ public class OSGiServiceUtil {
 	 * @param service
 	 */
 	public static void register(BundleContext bundleContext, String className, Object service) {
-		register(bundleContext, className, service);
+		register(bundleContext, className, service, null);
 	}
 
 	/**
@@ -133,7 +134,7 @@ public class OSGiServiceUtil {
 		try {
 			ServiceRegistration<?> serviceRegistration = bundleContext.registerService(className, service, properties);
 			if (serviceRegistration != null) {
-				getServiceRegistrations(service).add(serviceRegistration);
+				getServiceRegistrations(service).put(className, serviceRegistration);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -170,7 +171,7 @@ public class OSGiServiceUtil {
 		try {
 			ServiceRegistration<?> serviceRegistration = bundleContext.registerService(clazz, service, properties);
 			if (serviceRegistration != null) {
-				getServiceRegistrations(service).add(serviceRegistration);
+				getServiceRegistrations(service).put(clazz, serviceRegistration);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -194,9 +195,69 @@ public class OSGiServiceUtil {
 
 		rwLock.writeLock().lock();
 		try {
-			List<ServiceRegistration<?>> serviceRegistrations = serviceToRegistrationMap.remove(service);
+			Map<Object, ServiceRegistration<?>> serviceRegistrations = serviceToRegistrationMap.remove(service);
 			if (serviceRegistrations != null) {
-				for (ServiceRegistration<?> serviceRegistration : serviceRegistrations) {
+				for (ServiceRegistration<?> serviceRegistration : serviceRegistrations.values()) {
+					try {
+						serviceRegistration.unregister();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		} finally {
+			rwLock.writeLock().unlock();
+			// System.out.println("OSGiServiceRegistry.unregister(" + service + ") is done.");
+		}
+	}
+
+	/**
+	 * 
+	 * @param classNames
+	 * @param service
+	 */
+	public static void unregister(String[] classNames, Object service) {
+		doUnregister(classNames, service);
+	}
+
+	/**
+	 * 
+	 * @param className
+	 * @param service
+	 */
+	public static void unregister(String className, Object service) {
+		doUnregister(className, service);
+	}
+
+	/**
+	 * 
+	 * @param clazz
+	 * @param service
+	 */
+	public static void unregister(Class<?> clazz, Object service) {
+		doUnregister(clazz, service);
+	}
+
+	/**
+	 * 
+	 * @param registrationType
+	 * @param service
+	 */
+	private static void doUnregister(Object registrationType, Object service) {
+		System.out.println("OSGiServiceUtil.unregister(" + service + ")");
+
+		if (service == null) {
+			// fail without throwing exception
+			System.err.println("OSGiServiceUtil.unregister(). service is null.");
+			return;
+		}
+
+		rwLock.writeLock().lock();
+		try {
+			Map<Object, ServiceRegistration<?>> serviceRegistrations = serviceToRegistrationMap.get(service);
+			if (serviceRegistrations != null) {
+				ServiceRegistration<?> serviceRegistration = serviceRegistrations.remove(registrationType);
+				if (serviceRegistration != null) {
 					try {
 						serviceRegistration.unregister();
 					} catch (Exception e) {

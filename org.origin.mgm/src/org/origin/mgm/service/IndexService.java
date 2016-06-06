@@ -6,11 +6,14 @@ import java.util.Map;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
 
-/**
- * ServiceRegistry Service
- * 
- */
 public interface IndexService {
+
+	/**
+	 * Get the index service configuration.
+	 * 
+	 * @return
+	 */
+	public IndexServiceConfiguration getConfiguration();
 
 	/**
 	 * Get all index items with any namespace and created by any index provider.
@@ -21,13 +24,22 @@ public interface IndexService {
 	public List<IndexItem> getIndexItems() throws IndexServiceException;
 
 	/**
+	 * Get index items with specified indexProviderId.
+	 * 
+	 * @param indexProviderId
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	public List<IndexItem> getIndexItemsByIndexProvider(String indexProviderId) throws IndexServiceException;
+
+	/**
 	 * Get index items with specified namespace.
 	 * 
 	 * @param namespace
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public List<IndexItem> getIndexItems(String namespace) throws IndexServiceException;
+	public List<IndexItem> getIndexItemsByNamespace(String namespace) throws IndexServiceException;
 
 	/**
 	 * Get index items with specified namespace and created by specified indexer provider.
@@ -40,24 +52,24 @@ public interface IndexService {
 	public List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IndexServiceException;
 
 	/**
-	 * Create an index item.
+	 * Add an index item.
 	 * 
+	 * @param indexProviderId
 	 * @param namespace
 	 * @param name
-	 * @param props
-	 *            e.g. description, url
+	 * @param properties
+	 * @return
 	 * @throws IndexServiceException
 	 */
-	public void createIndexItem(String indexProviderId, String namespace, String name) throws IndexServiceException;
+	public boolean addIndexItem(String indexProviderId, String namespace, String name, Map<String, Object> properties) throws IndexServiceException;
 
 	/**
 	 * Remove an index item.
 	 * 
-	 * @param type
-	 * @param name
+	 * @param indexItemId
 	 * @throws IndexServiceException
 	 */
-	public void removeIndexItem(String type, String name) throws IndexServiceException;
+	public boolean removeIndexItem(Integer indexItemId) throws IndexServiceException;
 
 	/**
 	 * Get all properties names of an index item.

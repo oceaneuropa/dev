@@ -2,11 +2,16 @@ package org.origin.mgm.client.api;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.mgm.client.api.impl.IndexServiceImpl;
 
+/**
+ * Used by client to search index items.
+ *
+ */
 public abstract class IndexService implements IAdaptable {
 
 	/**
@@ -29,25 +34,49 @@ public abstract class IndexService implements IAdaptable {
 	public abstract IndexServiceConfiguration getConfiguration();
 
 	/**
-	 * Get all index items with any namespace and created by any index provider.
+	 * Get all index items.
 	 * 
 	 * @return
 	 */
 	public abstract List<IndexItem> getIndexItems() throws IOException;
 
 	/**
-	 * Get index items with specified namespace.
+	 * Get index items, which are created by any index provider, with specified namespace.
 	 * 
+	 * @param namespace
 	 * @return
+	 * @throws IOException
 	 */
-	public abstract List<IndexItem> getIndexItems(String namespace) throws IOException;
+	public abstract List<IndexItem> getIndexItemsByNamespace(String namespace) throws IOException;
 
 	/**
-	 * Get index items with specified namespace and created by specified indexer provider.
+	 * Get all index items created by specified indexer provider.
 	 * 
+	 * @param indexProviderId
 	 * @return
+	 * @throws IOException
+	 */
+	public abstract List<IndexItem> getIndexItemsByIndexProvider(String indexProviderId) throws IOException;
+
+	/**
+	 * Get index items created by specified indexer provider and with specified namespace.
+	 * 
+	 * @param indexProviderId
+	 * @param namespace
+	 * @return
+	 * @throws IOException
 	 */
 	public abstract List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IOException;
+
+	/**
+	 * Execute an action with optional parameters.
+	 * 
+	 * @param action
+	 * @param parameters
+	 * @return
+	 * @throws IOException
+	 */
+	public abstract boolean action(String action, Map<String, Object> parameters) throws IOException;
 
 	/** implement IAdaptable interface */
 	@Override

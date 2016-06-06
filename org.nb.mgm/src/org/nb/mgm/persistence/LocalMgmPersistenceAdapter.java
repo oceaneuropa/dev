@@ -55,13 +55,13 @@ import org.nb.mgm.service.MgmConstants;
  */
 public class LocalMgmPersistenceAdapter implements MgmPersistenceAdapter {
 
-	protected Map<String, Object> props;
+	protected Map<Object, Object> props;
 
 	/**
 	 * 
 	 * @param props
 	 */
-	public LocalMgmPersistenceAdapter(Map<String, Object> props) {
+	public LocalMgmPersistenceAdapter(Map<Object, Object> props) {
 		this.props = props;
 	}
 

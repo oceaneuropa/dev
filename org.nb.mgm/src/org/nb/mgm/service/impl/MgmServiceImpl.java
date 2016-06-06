@@ -4,6 +4,7 @@ import static org.nb.mgm.service.MgmConstants.ERROR_CODE_EMPTY_CLUSTER_ROOT;
 
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -69,7 +70,7 @@ public class MgmServiceImpl implements MgmService {
 		this.bundleContext = bundleContext;
 
 		// load properties
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		Map<Object, Object> props = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_TYPE);
 		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
 		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_AUTOSAVE);

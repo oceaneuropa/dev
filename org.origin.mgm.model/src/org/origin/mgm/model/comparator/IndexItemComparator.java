@@ -59,11 +59,11 @@ public class IndexItemComparator implements Comparator<IndexItem> {
 
 	@Override
 	public int compare(IndexItem item1, IndexItem item2) {
-		Integer id1 = item1.getId();
+		Integer indexItemId1 = item1.getIndexItemId();
 		// String type1 = item1.getType();
 		// String name1 = item1.getName();
 
-		Integer id2 = item2.getId();
+		Integer indexItemId2 = item2.getIndexItemId();
 		// String type2 = item2.getType();
 		// String name2 = item2.getName();
 
@@ -73,7 +73,7 @@ public class IndexItemComparator implements Comparator<IndexItem> {
 			// return type2.compareTo(type1);
 			// }
 			// return name2.compareTo(name1);
-			return id2.compareTo(id1);
+			return indexItemId2.compareTo(indexItemId1);
 		}
 
 		// sort asc
@@ -81,7 +81,7 @@ public class IndexItemComparator implements Comparator<IndexItem> {
 		// return type1.compareTo(type2);
 		// }
 		// return name1.compareTo(name2);
-		return id1.compareTo(id2);
+		return indexItemId1.compareTo(indexItemId2);
 	}
 
 }

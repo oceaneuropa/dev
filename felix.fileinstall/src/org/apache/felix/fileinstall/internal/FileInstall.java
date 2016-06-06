@@ -262,13 +262,13 @@ public class FileInstall implements BundleActivator {
 		Printer.pl("FileInstall.deleted()");
 		Printer.pl("\t pid = " + pid);
 
-		DirectoryProcessor watcher = null;
+		DirectoryProcessor dirProcessor = null;
 		synchronized (dirProcessorsMap) {
-			watcher = dirProcessorsMap.remove(pid);
+			dirProcessor = dirProcessorsMap.remove(pid);
 		}
 
-		if (watcher != null) {
-			watcher.close();
+		if (dirProcessor != null) {
+			dirProcessor.close();
 		}
 	}
 

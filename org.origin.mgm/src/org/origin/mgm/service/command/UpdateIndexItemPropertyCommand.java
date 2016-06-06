@@ -9,8 +9,13 @@ public class UpdateIndexItemPropertyCommand extends AbstractCommand {
 	public final static String COMMAND_NAME = "update_index_item";
 
 	@Override
-	public AbstractCommand execute(CommandContext context) throws CommandException {
-		return null;
+	public void execute(CommandContext context) throws CommandException {
+
+	}
+
+	@Override
+	public void undo(CommandContext context) {
+
 	}
 
 }

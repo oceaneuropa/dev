@@ -8,16 +8,23 @@ import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.mgm.client.api.impl.IndexProviderImpl;
 
+/*
+ * Used by index provider to create/update/delete index items.
+ * 
+ * Note: 
+ * indexProviderId should never appear in the method parameters, since the IndexProvider already holds a indexProviderId when created.
+ * 
+ */
 public abstract class IndexProvider implements IAdaptable {
 
 	/**
 	 * 
-	 * @param config
 	 * @param indexProviderId
+	 * @param config
 	 * @return
 	 */
-	public static IndexProvider newInstance(IndexServiceConfiguration config, String indexProviderId) {
-		return new IndexProviderImpl(config, indexProviderId);
+	public static IndexProvider newInstance(String indexProviderId, IndexServiceConfiguration config) {
+		return new IndexProviderImpl(indexProviderId, config);
 	}
 
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
@@ -44,7 +51,7 @@ public abstract class IndexProvider implements IAdaptable {
 	public abstract List<IndexItemConfigurable> getIndexItems() throws IOException;
 
 	/**
-	 * Get index items created by this index provider with specified tns.
+	 * Get index items created by this index provider with specified namespace.
 	 * 
 	 * @param namespace
 	 * @return
@@ -52,23 +59,15 @@ public abstract class IndexProvider implements IAdaptable {
 	public abstract List<IndexItemConfigurable> getIndexItems(String namespace) throws IOException;
 
 	/**
-	 * Create a index item.
-	 * 
-	 * @param namespace
-	 * @param name
-	 * @return
-	 */
-	public abstract IndexItemConfigurable createIndexItem(String namespace, String name) throws IOException;
-
-	/**
-	 * Create a index item with properties.
+	 * Add an index item.
 	 * 
 	 * @param namespace
 	 * @param name
 	 * @param properties
 	 * @return
+	 * @throws IOException
 	 */
-	public abstract IndexItemConfigurable createIndexItem(String namespace, String name, Map<String, Object> properties) throws IOException;
+	public abstract IndexItemConfigurable addIndexItem(String namespace, String name, Map<String, Object> properties) throws IOException;
 
 	/** implement IAdaptable interface */
 	@Override

@@ -169,6 +169,22 @@ public class DatabaseUtil {
 	}
 
 	/**
+	 * Clear all data in a database table.
+	 * 
+	 * @param conn
+	 * @param tableAware
+	 * @throws SQLException
+	 */
+	public static void clear(Connection conn, DatabaseTableAware tableAware) throws SQLException {
+		boolean succeed = update(conn, "DELETE FROM " + tableAware.getTableName(), null, -1);
+		if (succeed) {
+			System.out.println("DatabaseUtil.clear() table '" + tableAware.getTableName() + "' data is cleared.");
+		} else {
+			System.out.println("DatabaseUtil.clear() table '" + tableAware.getTableName() + "' data is not cleared.");
+		}
+	}
+
+	/**
 	 * 
 	 * @param db
 	 * @return

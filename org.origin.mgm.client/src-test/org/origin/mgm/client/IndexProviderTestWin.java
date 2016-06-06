@@ -27,7 +27,7 @@ public class IndexProviderTestWin {
 	protected IndexProvider getIndexProvider() {
 		IndexServiceConfiguration config = new IndexServiceConfiguration("http://127.0.0.1:9090", "admin", "123");
 		String indexProviderId = "filesystem.index.provider";
-		return IndexProvider.newInstance(config, indexProviderId);
+		return IndexProvider.newInstance(indexProviderId, config);
 	}
 
 	@Test

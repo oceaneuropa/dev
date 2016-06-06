@@ -237,11 +237,11 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 		Printer.pl("\t newProps = ");
 		Printer.pl(newProps);
 
-		String fileName = toConfigKey(file);
+		String configKey = toConfigKey(file);
 
 		String servicePid = pid[0];
 		String factoryPid = pid[1];
-		Configuration config = getConfiguration(fileName, servicePid, factoryPid);
+		Configuration config = getConfiguration(configKey, servicePid, factoryPid);
 
 		Dictionary<String, Object> props = config.getProperties();
 		Printer.pl("\t props = ");
@@ -249,13 +249,13 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 
 		Hashtable<String, Object> originalProps = props != null ? new Hashtable<String, Object>(new DictionaryAsMap<String, Object>(props)) : null;
 		if (originalProps != null) {
-			originalProps.remove(DirectoryProcessor.FILENAME);
+			originalProps.remove("felix.fileinstall.filename");
 			originalProps.remove(Constants.SERVICE_PID);
 			originalProps.remove(ConfigurationAdmin.SERVICE_FACTORYPID);
 		}
 
 		if (!newProps.equals(originalProps)) {
-			newProps.put(DirectoryProcessor.FILENAME, fileName);
+			newProps.put("felix.fileinstall.filename", configKey);
 
 			if (originalProps == null) {
 				Util.log(bundleContext, Logger.LOG_INFO, "Creating configuration from " + pid[0] + (pid[1] == null ? "" : "-" + pid[1]) + ".cfg", null);
@@ -311,15 +311,15 @@ public class ConfigInstaller implements ArtifactInstaller, ConfigurationListener
 
 	/**
 	 * 
-	 * @param fileName
+	 * @param configKey
 	 * @param pid
 	 * @param factoryPid
 	 * @return
 	 * @throws Exception
 	 */
-	protected Configuration getConfiguration(String fileName, String pid, String factoryPid) throws Exception {
+	protected Configuration getConfiguration(String configKey, String pid, String factoryPid) throws Exception {
 		Configuration existingConfiguration = null;
-		String filter = "(" + DirectoryProcessor.FILENAME + "=" + escapeFilterValue(fileName) + ")";
+		String filter = "(felix.fileinstall.filename=" + escapeFilterValue(configKey) + ")";
 		Configuration[] configurations = configAdmin.listConfigurations(filter);
 		if (configurations != null && configurations.length > 0) {
 			existingConfiguration = configurations[0];

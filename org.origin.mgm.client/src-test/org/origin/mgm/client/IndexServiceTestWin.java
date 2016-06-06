@@ -50,7 +50,7 @@ public class IndexServiceTestWin {
 		System.out.println("--- --- --- test002_getIndexItemsWithNamespace() --- --- ---");
 		String namespace = "drive";
 		try {
-			List<IndexItem> indexItems = indexService.getIndexItems(namespace);
+			List<IndexItem> indexItems = indexService.getIndexItemsByNamespace(namespace);
 			for (IndexItem indexItem : indexItems) {
 				System.out.println(indexItem.toString());
 			}

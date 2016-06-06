@@ -2,6 +2,7 @@ package org.nb.home.service.impl;
 
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.nb.home.handler.HomeDirHandler;
 import org.nb.home.service.HomeService;
@@ -25,7 +26,7 @@ public class HomeServiceImpl implements HomeService {
 		this.bundleContext = bundleContext;
 
 		// load properties
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		Map<Object, Object> props = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(this.bundleContext, props, CLUSTER_HOME_DIR);
 
 		String homePath = (String) props.get(CLUSTER_HOME_DIR);

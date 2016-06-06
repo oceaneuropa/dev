@@ -85,8 +85,9 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		String sql = "";
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
-			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
+			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	revisionId int NOT NULL AUTO_INCREMENT,";
+			sql += "	indexProviderId varchar(500) NOT NULL,";
 			sql += "	command varchar(500) NOT NULL,";
 			sql += "	arguments varchar(10000) NOT NULL,";
 			sql += "	undoCommand varchar(500) NOT NULL,";
@@ -96,8 +97,9 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 			sql += ");";
 
 		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
-			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
+			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	revisionId serial NOT NULL,";
+			sql += "	indexProviderId varchar(500) NOT NULL,";
 			sql += "	command varchar(500) NOT NULL,";
 			sql += "	arguments varchar(10000) NOT NULL,";
 			sql += "	undoCommand varchar(500) NOT NULL,";
@@ -134,18 +136,18 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Get a list of revisions which begins with (inclusive) the specified startRevisionId and ends with (exclusive) the specified endRevisionId.
+	 * Get a list of revisions which begins with (inclusive) the specified startRevisionId and ends with (inclusive) the specified endRevisionId.
 	 * 
 	 * @param conn
 	 * @param startRevisionId
 	 *            the beginning revisionId, inclusive.
 	 * @param endRevisionId
-	 *            the ending revisionId, exclusive.
+	 *            the ending revisionId, inclusive.
 	 * @return
 	 * @throws SQLException
 	 */
 	public List<IndexItemRevisionVO> getRevisions(Connection conn, int startRevisionId, int endRevisionId) throws SQLException {
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + ">=? AND " + getPKName() + "<? ORDER BY " + getPKName() + " ASC", new Object[] { startRevisionId, endRevisionId }, this.rsListHandler);
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + ">=? AND " + getPKName() + "<=? ORDER BY " + getPKName() + " ASC", new Object[] { startRevisionId, endRevisionId }, this.rsListHandler);
 	}
 
 	/**
@@ -186,20 +188,20 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 	 * @param conn
 	 * @param indexProviderId
 	 * @param command
-	 * @param arguments
+	 * @param argumentsString
 	 * @param undoCommand
-	 * @param undoArguments
+	 * @param undoArgumentsString
 	 * @param updateTime
 	 * @return
 	 * @throws SQLException
 	 */
-	public IndexItemRevisionVO insert(Connection conn, String indexProviderId, String command, String arguments, String undoCommand, String undoArguments, Date updateTime) throws SQLException {
+	public IndexItemRevisionVO insert(Connection conn, String indexProviderId, String command, String argumentsString, String undoCommand, String undoArgumentsString, Date updateTime) throws SQLException {
 		IndexItemRevisionVO newRevisionVO = null;
 		String updateTimeString = DateUtil.toString(updateTime, getDateFormat());
 
-		Integer revisionId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, command, arguments, undoCommand, undoArguments, updateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, command, arguments, undoCommand, undoArguments, updateTimeString });
+		Integer revisionId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, command, arguments, undoCommand, undoArguments, updateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, command, argumentsString, undoCommand, undoArgumentsString, updateTimeString });
 		if (revisionId > 0) {
-			newRevisionVO = new IndexItemRevisionVO(revisionId, indexProviderId, command, arguments, undoCommand, undoArguments, updateTime);
+			newRevisionVO = new IndexItemRevisionVO(revisionId, indexProviderId, command, argumentsString, undoCommand, undoArgumentsString, updateTime);
 		}
 		return newRevisionVO;
 	}

@@ -88,7 +88,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		String sql = "";
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
-			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
+			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	requestId int NOT NULL AUTO_INCREMENT,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";
 			sql += "	command varchar(500) NOT NULL,";
@@ -100,7 +100,7 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 			sql += ");";
 
 		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
-			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
+			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	requestId serial NOT NULL,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";
 			sql += "	command varchar(500) NOT NULL,";
@@ -155,14 +155,14 @@ public class IndexItemRequestTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemRequestVO> getPendingRequests(Connection conn, Integer requestId, int withinSeconds) throws SQLException {
+	public List<IndexItemRequestVO> getActivePendingRequests(Connection conn, Integer requestId, int withinSeconds) throws SQLException {
 		if (withinSeconds < 0) {
 			withinSeconds = 0;
 		}
 
 		// gets a calendar using the default time zone and locale.
 		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.SECOND, withinSeconds);
+		calendar.add(Calendar.SECOND, -withinSeconds);
 		Date expireDate = calendar.getTime();
 
 		String expireDateString = DateUtil.toString(expireDate, getDateFormat());

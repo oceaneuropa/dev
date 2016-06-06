@@ -1,5 +1,5 @@
 package org.origin.mgm.service;
 
-public class IndexServiceConfiguration {
+public abstract class IndexServiceConfiguration {
 
 }

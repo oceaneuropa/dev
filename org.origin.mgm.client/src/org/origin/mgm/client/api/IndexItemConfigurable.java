@@ -12,11 +12,6 @@ public interface IndexItemConfigurable extends IndexItem {
 	public void update(Map<String, Object> properties);
 
 	/**
-	 * Delete current index item.
-	 */
-	public void delete();
-
-	/**
 	 * Set the property of an index item.
 	 * 
 	 * @param propName
@@ -41,5 +36,10 @@ public interface IndexItemConfigurable extends IndexItem {
 	 * @param propName
 	 */
 	public void removeProperty(String propName);
+
+	/**
+	 * Delete the index item.
+	 */
+	public void delete();
 
 }

@@ -86,7 +86,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	public String getCreateTableSQL(String database) {
 		String sql = "";
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
-			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
+			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	indexItemId int NOT NULL AUTO_INCREMENT,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";
 			sql += "	namespace varchar(500) NOT NULL,";
@@ -98,7 +98,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 			sql += ");";
 
 		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
-			sql += "CREATE TABLE IF NOT EXISTS origin." + getTableName() + " (";
+			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	indexItemId serial NOT NULL,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";
 			sql += "	namespace varchar(500) NOT NULL,";
