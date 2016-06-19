@@ -7,7 +7,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -20,8 +19,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import javax.xml.namespace.QName;
-
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -30,6 +27,7 @@ import org.origin.common.command.EditingDomain;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.osgi.OSGiServiceUtil;
+import org.origin.common.util.CommandRequestHandler;
 import org.origin.common.util.CompareUtil;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.IntegerComparator;
@@ -44,7 +42,6 @@ import org.origin.mgm.persistence.IndexItemDataTableHandler;
 import org.origin.mgm.persistence.IndexItemRequestTableHandler;
 import org.origin.mgm.persistence.IndexItemRevisionTableHandler;
 import org.origin.mgm.service.IndexService;
-import org.origin.mgm.service.IndexServiceActionAware;
 import org.origin.mgm.service.IndexServiceConfiguration;
 import org.origin.mgm.service.IndexServiceConstants;
 import org.origin.mgm.service.IndexServiceListener;
@@ -53,7 +50,7 @@ import org.origin.mgm.service.IndexServiceUpdatable;
 import org.origin.mgm.service.command.RevisionCommand;
 import org.osgi.framework.BundleContext;
 
-public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, ConnectionAware, LifecycleAware, IndexServiceActionAware {
+public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, ConnectionAware, LifecycleAware, CommandRequestHandler {
 
 	protected BundleContext bundleContext;
 	protected DatabaseIndexServiceConfiguration indexServiceConfig;
@@ -115,20 +112,20 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
-	// Methods for actions
+	// Methods for handle command requests
 	// ------------------------------------------------------------------------------------------------------------
-	/** implement IndexServiceActionAware interface */
+	/** implement CommandRequestHandler interface */
 	@Override
-	public boolean isActionSupported(String action) {
-		if ("sync".equalsIgnoreCase(action)) {
+	public boolean isCommandSupported(String command, Map<String, Object> parameters) {
+		if ("sync".equalsIgnoreCase(command)) {
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean onAction(String action, Map<String, Object> parameters) {
-		if ("sync".equalsIgnoreCase(action)) {
+	public boolean performCommand(String command, Map<String, Object> parameters) {
+		if ("sync".equalsIgnoreCase(command)) {
 			try {
 				synchronize();
 			} catch (IndexServiceException e) {
@@ -142,28 +139,28 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	// ------------------------------------------------------------------------------------------------------------
 	// Methods accessing config properties
 	// ------------------------------------------------------------------------------------------------------------
-	protected String getNodeName() {
-		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_PROP_NODE_NAME, null);
+	protected String getServiceName() {
+		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_SERVICE_NAME, null);
 	}
 
-	protected String getNodeUrl() {
-		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_PROP_NODE_URL, null);
+	protected String getServiceUrl() {
+		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_SERVICE_URL, null);
 	}
 
-	protected String getNodeContextRoot() {
-		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_PROP_NODE_CONTEXT_ROOT, null);
+	protected String getServiceContextRoot() {
+		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_SERVICE_CONTEXT_ROOT, null);
 	}
 
-	protected String getNodeUsername() {
-		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_PROP_NODE_USERNAME, null);
+	protected String getServiceUsername() {
+		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_SERVICE_USERNAME, null);
 	}
 
-	protected String getNodePassword() {
-		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_PROP_NODE_PASSWORD, null);
+	protected String getServicePassword() {
+		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_SERVICE_PASSWORD, null);
 	}
 
-	protected Integer getHeartbeatExpireTime() {
-		return PropertyUtil.getInt(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_PROP_HEARTBEAT_EXPIRE_TIME, IndexServiceConstants.DEFAULT_HEARTBEAT_EXPIRE_TIME);
+	protected Integer getServiceHeartbeatExpireTime() {
+		return PropertyUtil.getInt(this.indexServiceConfig.getProperties(), IndexServiceConstants.CONFIG_SERVICE_HEARTBEAT_EXPIRE_TIME, IndexServiceConstants.DEFAULT_HEARTBEAT_EXPIRE_TIME);
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
@@ -186,45 +183,8 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 			e.printStackTrace();
 		}
 
-		// Check/register index item for the current index service node.
-		try {
-			// Get configuration of the index service node from the config.ini file
-			String nodeName = getNodeName();
-			String nodeUrl = getNodeUrl();
-			String nodeContextRoot = getNodeContextRoot();
-			String nodeUsername = getNodeUsername();
-			String nodePassword = getNodePassword();
-
-			IndexItem matchedIndexItem = null;
-			List<IndexItem> cachedIndexItems = getIndexItems();
-			for (IndexItem cachedIndexItem : cachedIndexItems) {
-				if (IndexServiceConstants.INDEX_PROVIDER_ID.equals(cachedIndexItem.getIndexProviderId()) && IndexServiceConstants.NAMESPACE.equals(cachedIndexItem.getNamespace())) {
-					if (nodeName != null && nodeName.equals(cachedIndexItem.getName())) {
-						matchedIndexItem = cachedIndexItem;
-						break;
-					}
-				}
-			}
-
-			if (matchedIndexItem == null) {
-				// Add an index item for the current index service node and put the url, contextRoot, username, password for accessing the node as the
-				// properties of the index item.
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(IndexServiceConstants.IDX_PROP_URL, nodeUrl);
-				properties.put(IndexServiceConstants.IDX_PROP_CONTEXT_ROOT, nodeContextRoot);
-				properties.put(IndexServiceConstants.IDX_PROP_USERNAME, nodeUsername);
-				properties.put(IndexServiceConstants.IDX_PROP_PASSWORD, nodePassword);
-
-				addIndexItem(IndexServiceConstants.INDEX_PROVIDER_ID, IndexServiceConstants.NAMESPACE, nodeName, properties);
-
-			} else {
-				// TODO:
-				// Check properties of the index item and update the properties if changed.
-
-			}
-		} catch (IndexServiceException e) {
-			e.printStackTrace();
-		}
+		// Check/register the current index service as a service.
+		registerAsService();
 
 		scheduleBroadcaster();
 		scheduleSynchronizer();
@@ -262,6 +222,46 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		// dispose the command stack
 		EditingDomain.getEditingDomain(IndexServiceConstants.EDITING_DOMAIN).disposeCommandStack(this);
 		this.revisionCommandStack = null;
+	}
+
+	/**
+	 * Check/register the current index service as a service.
+	 * 
+	 */
+	protected void registerAsService() {
+		try {
+			// Get configuration of the index service from the config.ini file
+			String name = getServiceName();
+			String url = getServiceUrl();
+			String contextRoot = getServiceContextRoot();
+			String username = getServiceUsername();
+			String password = getServicePassword();
+
+			IndexItem matchedIndexItem = null;
+			List<IndexItem> cachedIndexItems = getIndexItems();
+			for (IndexItem cachedIndexItem : cachedIndexItems) {
+				if (IndexServiceConstants.INDEX_PROVIDER_ID.equals(cachedIndexItem.getIndexProviderId()) && IndexServiceConstants.NAMESPACE.equals(cachedIndexItem.getNamespace())) {
+					if (name != null && name.equals(cachedIndexItem.getName())) {
+						matchedIndexItem = cachedIndexItem;
+						break;
+					}
+				}
+			}
+
+			if (matchedIndexItem == null) {
+				// Add an index item for the current index service and put the url, contextRoot, username, password for accessing the service as
+				// properties of the index item.
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(IndexServiceConstants.IDX_PROP_URL, url);
+				properties.put(IndexServiceConstants.IDX_PROP_CONTEXT_ROOT, contextRoot);
+				properties.put(IndexServiceConstants.IDX_PROP_USERNAME, username);
+				properties.put(IndexServiceConstants.IDX_PROP_PASSWORD, password);
+
+				addIndexItem(IndexServiceConstants.INDEX_PROVIDER_ID, IndexServiceConstants.NAMESPACE, name, properties);
+			}
+		} catch (IndexServiceException e) {
+			e.printStackTrace();
+		}
 	}
 
 	protected void scheduleBroadcaster() {
@@ -336,12 +336,12 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	// ------------------------------------------------------------------------------------------------------------
 	public synchronized void broadcast() throws IndexServiceException {
 		try {
-			String nodeName = getNodeName();
+			String serviceName = getServiceName();
 
 			List<IndexItem> indexItems = getIndexItemsByNamespace(IndexServiceConstants.NAMESPACE);
 
 			for (IndexItem indexItem : indexItems) {
-				String currNodeName = indexItem.getName();
+				String currName = indexItem.getName();
 				String url = (String) indexItem.getProperty(IndexServiceConstants.IDX_PROP_URL);
 				String contextRoot = (String) indexItem.getProperty(IndexServiceConstants.IDX_PROP_CONTEXT_ROOT);
 				String username = (String) indexItem.getProperty(IndexServiceConstants.IDX_PROP_USERNAME);
@@ -350,24 +350,24 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 				// gets a calendar using the default time zone and locale.
 				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.SECOND, -getHeartbeatExpireTime());
+				calendar.add(Calendar.SECOND, -getServiceHeartbeatExpireTime());
 				Date heartbeatTimeoutTime = calendar.getTime();
 
-				if (nodeName != null && nodeName.equals(currNodeName)) {
-					System.err.println("Ignore notifying current index service node '" + currNodeName + "'.");
+				if (serviceName != null && serviceName.equals(currName)) {
+					System.err.println("Ignore notifying current index service node '" + currName + "'.");
 					continue;
 				}
 
 				// Last heartbeat happened 30 seconds ago. Index service node is considered as not running.
 				if (lastHeartbeatTime == null || lastHeartbeatTime.compareTo(heartbeatTimeoutTime) <= 0) {
-					System.err.println("Index service node '" + currNodeName + "' is not running (last heartbeat time is " + lastHeartbeatTime + " ).");
+					System.err.println("Index service node '" + currName + "' is not running (last heartbeat time is " + lastHeartbeatTime + " ).");
 					continue;
 				}
 
 				org.origin.mgm.client.api.IndexServiceConfiguration config = contextRoot == null ? new org.origin.mgm.client.api.IndexServiceConfiguration(url, username, password) : new org.origin.mgm.client.api.IndexServiceConfiguration(url, contextRoot, username, password);
 				final org.origin.mgm.client.api.IndexService indexService = org.origin.mgm.client.api.IndexService.newInstance(config);
 				try {
-					indexService.action("sync", null);
+					indexService.sendCommand("sync", null);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -387,8 +387,9 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		}
 
 		CommandContext context = new CommandContext();
-		context.adapt(ConnectionAware.class, this);
 		context.adapt(IndexService.class, this);
+		context.adapt(CommandRequestHandler.class, this);
+		context.adapt(ConnectionAware.class, this);
 
 		if (cachedRevisionId <= 0) {
 			// data is not cached
@@ -527,11 +528,14 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 			for (IndexItemRevisionVO revisionVO : revisionVOs) {
 				Integer revisionId = revisionVO.getRevisionId();
 				String command = revisionVO.getCommand();
-				String argumentsString = revisionVO.getArguments();
+				String argumentsString = revisionVO.getArgumentsString();
 				String undoCommand = revisionVO.getUndoCommand();
-				String undoArgumentsString = revisionVO.getUndoArguments();
+				String undoArgumentsString = revisionVO.getUndoArgumentsString();
 
-				RevisionCommand revisionCommand = new RevisionCommand(this, revisionId, command, argumentsString, undoCommand, undoArgumentsString);
+				Map<String, Object> arguments = JSONUtil.toProperties(argumentsString, true);
+				Map<String, Object> undoArguments = JSONUtil.toProperties(undoArgumentsString, true);
+
+				RevisionCommand revisionCommand = new RevisionCommand(this, revisionId, command, arguments, undoCommand, undoArguments);
 				try {
 					// Create/Delete/Update index item with revision command
 					this.revisionCommandStack.execute(context, revisionCommand);
@@ -857,29 +861,167 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IndexServiceException {
-		List<IndexItem> indexItems = new ArrayList<IndexItem>();
-		for (IndexItem indexItem : this.cachedIndexItems) {
-			if (indexItem.getIndexProviderId().equals(indexProviderId) && indexItem.getNamespace().equals(namespace)) {
-				indexItems.add(indexItem);
+		this.indexItemsRWLock.readLock().lock();
+		try {
+			List<IndexItem> indexItems = new ArrayList<IndexItem>();
+			for (IndexItem indexItem : this.cachedIndexItems) {
+				if (indexItem.getIndexProviderId().equals(indexProviderId) && indexItem.getNamespace().equals(namespace)) {
+					indexItems.add(indexItem);
+				}
 			}
+			return indexItems;
+		} finally {
+			this.indexItemsRWLock.readLock().unlock();
 		}
-		return indexItems;
 	}
 
+	/**
+	 * Check whether a property of an index item exists.
+	 * 
+	 * @param indexItemId
+	 * @param propName
+	 * @return
+	 * @throws IndexServiceException
+	 */
 	@Override
-	public boolean addIndexItem(String indexProviderId, String namespace, String name, Map<String, Object> properties) throws IndexServiceException {
-		boolean succeed = false;
+	public boolean hasProperty(Integer indexItemId, String propName) throws IndexServiceException {
+		if (debug) {
+			System.out.println(getClassName() + ".hasProperty(" + indexItemId + ", '" + propName + "')");
+		}
+		if (indexItemId == null) {
+			throw new IllegalArgumentException("indexItemId is null.");
+		}
+		if (propName == null) {
+			throw new IllegalArgumentException("propName is null.");
+		}
 
-		// -------------------------------------------------------------------------------------------------------
-		// Step1. Create a new request
-		// -------------------------------------------------------------------------------------------------------
-		Map<String, Object> arguments = new HashMap<String, Object>();
-		arguments.put(IndexServiceConstants.IDX_INDEX_PROVIDER_ID, indexProviderId);
-		arguments.put(IndexServiceConstants.IDX_NAMESPACE, namespace);
-		arguments.put(IndexServiceConstants.IDX_NAME, name);
-		arguments.put(IndexServiceConstants.IDX_PROPERTIES, properties);
+		this.indexItemsRWLock.readLock().lock();
+		try {
+			IndexItem matchedIndexItem = null;
+			for (IndexItem indexItem : this.cachedIndexItems) {
+				if (indexItemId.equals(indexItem.getIndexItemId())) {
+					matchedIndexItem = indexItem;
+					break;
+				}
+			}
+			if (matchedIndexItem != null) {
+				if (matchedIndexItem.hasProperty(propName) || matchedIndexItem.hasRuntimeProperty(propName)) {
+					return true;
+				}
+			}
+		} finally {
+			this.indexItemsRWLock.readLock().unlock();
+		}
 
-		IndexItemRequestVO newRequestVO = getDatabaseHelper().createNewRequestInDatabase(this, indexProviderId, IndexServiceConstants.CMD_CREATE_INDEX_ITEM, JSONUtil.toJsonString(arguments));
+		return false;
+	}
+
+	/**
+	 * Get the values of all properties of an index item.
+	 * 
+	 * @param indexItemId
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	@Override
+	public Map<String, ?> getProperties(Integer indexItemId) throws IndexServiceException {
+		if (debug) {
+			System.out.println(getClassName() + ".getProperties(" + indexItemId + ")");
+		}
+		if (indexItemId == null) {
+			throw new IllegalArgumentException("indexItemId is null.");
+		}
+
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		this.indexItemsRWLock.readLock().lock();
+		try {
+			IndexItem matchedIndexItem = null;
+			for (IndexItem indexItem : this.cachedIndexItems) {
+				if (indexItemId.equals(indexItem.getIndexItemId())) {
+					matchedIndexItem = indexItem;
+					break;
+				}
+			}
+			if (matchedIndexItem != null) {
+				Map<String, Object> properties = matchedIndexItem.getProperties();
+				if (properties != null) {
+					result.putAll(properties);
+				}
+				// runtime properties take the privilege. runtime properties overwrite other properties
+				Map<String, Object> runtimeProperties = matchedIndexItem.getRuntimeProperties();
+				if (runtimeProperties != null) {
+					result.putAll(runtimeProperties);
+				}
+			}
+		} finally {
+			this.indexItemsRWLock.readLock().unlock();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get the property value of an index item.
+	 * 
+	 * @param indexItemId
+	 * @param propName
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	@Override
+	public Map<String, ?> getProperty(Integer indexItemId, String propName) throws IndexServiceException {
+		if (debug) {
+			System.out.println(getClassName() + ".getProperty(" + indexItemId + ", '" + propName + "')");
+		}
+		if (indexItemId == null) {
+			throw new IllegalArgumentException("indexItemId is null.");
+		}
+		if (propName == null) {
+			throw new IllegalArgumentException("propName is null.");
+		}
+
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		this.indexItemsRWLock.readLock().lock();
+		try {
+			IndexItem matchedIndexItem = null;
+			for (IndexItem indexItem : this.cachedIndexItems) {
+				if (indexItemId.equals(indexItem.getIndexItemId())) {
+					matchedIndexItem = indexItem;
+					break;
+				}
+			}
+			if (matchedIndexItem != null) {
+				// runtime properties take the privilege
+				Object propValue = matchedIndexItem.getRuntimeProperty(propName);
+				if (propValue == null) {
+					propValue = matchedIndexItem.getProperty(propName);
+				}
+				if (propValue != null) {
+					result.put(propName, propValue);
+				}
+			}
+		} finally {
+			this.indexItemsRWLock.readLock().unlock();
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param indexProviderId
+	 * @param requestCommand
+	 * @param requestArguments
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	protected Object[] createRequest(String indexProviderId, String requestCommand, Map<String, Object> requestArguments) throws IndexServiceException {
+		// -------------------------------------------------------------------------------------------------------
+		// Step1. Create a new request in database.
+		// -------------------------------------------------------------------------------------------------------
+		IndexItemRequestVO newRequestVO = getDatabaseHelper().createNewRequestInDatabase(this, indexProviderId, requestCommand, JSONUtil.toJsonString(requestArguments));
 		final Integer requestId = newRequestVO.getRequestId();
 
 		// -------------------------------------------------------------------------------------------------------
@@ -893,16 +1035,15 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 			}
 		};
 		// update request's lastUpdateTime every second. initial delay 1 second
-		final ScheduledFuture<?>[] requestUpdaterHandle = new ScheduledFuture<?>[1];
-		requestUpdaterHandle[0] = requestUpdatorScheduler.scheduleAtFixedRate(requestUpdater, 1, 1, SECONDS);
+		ScheduledFuture<?> requestUpdaterHandle = requestUpdatorScheduler.scheduleAtFixedRate(requestUpdater, 1, 1, SECONDS);
 
-		// From now on, for each exception occurs, the requestUpdater need to be cancelled.
 		try {
 			// -------------------------------------------------------------------------------------------------------
-			// Step3. Check if there are previous pending requests that are still active (last update time within 10 seconds).
-			// Wait (for a max of 10 seconds) until no previous active pending requests exist.
+			// Step3. Wait for previous active pending requests.
 			// -------------------------------------------------------------------------------------------------------
 			long totalWaitingTime = 0;
+			// Check previous pending requests that are still active (last update time within 10 seconds).
+			// Wait (for a max of 10 seconds) until no previous active pending requests exist.
 			while (getDatabaseHelper().hasActivePendingRequestsInDatabase(this, requestId)) {
 				// Stops waiting if total waiting time exceed 10 seconds. 10 seconds should be long enough for any single command to complete.
 				if (totalWaitingTime > 10 * 1000) {
@@ -924,75 +1065,21 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 					e.printStackTrace();
 				}
 			}
-
-			// -------------------------------------------------------------------------------------------------------
-			// Step 4. Create index item data and get the new indexItemId.
-			// -------------------------------------------------------------------------------------------------------
-			IndexItemDataVO newIndexItemVO = getDatabaseHelper().createIndexItemInDatabase(this, indexProviderId, namespace, name, JSONUtil.toJsonString(properties));
-
-			Integer indexItemId = newIndexItemVO.getIndexItemId();
-			String newPropertiesString = newIndexItemVO.getPropertiesString();
-			Date createTime = newIndexItemVO.getCreateTime();
-			Date lastUpdateTime = newIndexItemVO.getLastUpdateTime();
-			Map<String, Object> newProperties = JSONUtil.toProperties(newPropertiesString);
-
-			// -------------------------------------------------------------------------------------------------------
-			// Step 5. Update revision table
-			// -------------------------------------------------------------------------------------------------------
-			// command and arguments
-			String command = IndexServiceConstants.CMD_CREATE_INDEX_ITEM;
-			Map<String, Object> commandArguments = new HashMap<String, Object>();
-			commandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
-			commandArguments.put(IndexServiceConstants.IDX_INDEX_PROVIDER_ID, indexProviderId);
-			commandArguments.put(IndexServiceConstants.IDX_NAMESPACE, namespace);
-			commandArguments.put(IndexServiceConstants.IDX_NAME, namespace);
-			commandArguments.put(IndexServiceConstants.IDX_PROPERTIES, newProperties);
-			commandArguments.put(IndexServiceConstants.IDX_CREATE_TIME, createTime);
-			commandArguments.put(IndexServiceConstants.IDX_LAST_UPDATE_TIME, lastUpdateTime);
-
-			// undo command and undo arguments
-			String undoCommand = IndexServiceConstants.CMD_DELETE_INDEX_ITEM;
-			Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
-			undoCommandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
-
-			getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
-
-			// -------------------------------------------------------------------------------------------------------
-			// Step 6. Mark the request as completed. Stops the requestUpdater.
-			// -------------------------------------------------------------------------------------------------------
-			getDatabaseHelper().completeRequestInDatabase(this, requestId, requestUpdaterHandle[0]);
-			succeed = true;
-
-		} finally {
-			// -------------------------------------------------------------------------------------------------------
-			// Step 7. Mark the request as cancelled. Stops the requestUpdater.
-			// -------------------------------------------------------------------------------------------------------
-			if (!succeed) {
-				getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle[0]);
-			}
+		} catch (IndexServiceException e) {
+			// Mark the request as cancelled and stops the requestUpdater.
+			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			throw e;
 		}
-
-		// -------------------------------------------------------------------------------------------------------
-		// Step 8. Synchronize with database again.
-		// -------------------------------------------------------------------------------------------------------
-		synchronize();
-
-		// -------------------------------------------------------------------------------------------------------
-		// Step 9. Notify other index services to synchronize
-		// -------------------------------------------------------------------------------------------------------
-		notifyIndexServicesToSync();
-
-		return succeed;
+		return new Object[] { requestId, requestUpdaterHandle };
 	}
 
-	protected void notifyIndexServicesToSync() {
+	protected void notifyOtherIndexServicesToSync() {
 		try {
-			String nodeName = getNodeName();
+			String serviceName = getServiceName();
 
 			List<IndexItem> indexItems = getIndexItemsByNamespace(IndexServiceConstants.NAMESPACE);
-
 			for (IndexItem indexItem : indexItems) {
-				String indexServiceNodeName = indexItem.getName();
+				String currName = indexItem.getName();
 				String url = (String) indexItem.getProperty(IndexServiceConstants.IDX_PROP_URL);
 				String contextRoot = (String) indexItem.getProperty(IndexServiceConstants.IDX_PROP_CONTEXT_ROOT);
 				String username = (String) indexItem.getProperty(IndexServiceConstants.IDX_PROP_USERNAME);
@@ -1001,24 +1088,24 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 				// gets a calendar using the default time zone and locale.
 				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.SECOND, -getHeartbeatExpireTime());
+				calendar.add(Calendar.SECOND, -getServiceHeartbeatExpireTime());
 				Date heartbeatTimeoutTime = calendar.getTime();
 
-				if (nodeName != null && nodeName.equals(indexServiceNodeName)) {
-					System.err.println("Ignore notifying current index service node '" + indexServiceNodeName + "'.");
+				if (serviceName != null && serviceName.equals(currName)) {
+					System.err.println("Ignore notifying current index service node '" + currName + "'.");
 					continue;
 				}
 
 				// Last heartbeat happened 30 seconds ago. Index service node is considered as not running.
 				if (lastHeartbeatTime == null || lastHeartbeatTime.compareTo(heartbeatTimeoutTime) <= 0) {
-					System.err.println("Index service node '" + indexServiceNodeName + "' is not running (last heartbeat time is " + lastHeartbeatTime + " ).");
+					System.err.println("Index service node '" + currName + "' is not running (last heartbeat time is " + lastHeartbeatTime + " ).");
 					continue;
 				}
 
 				org.origin.mgm.client.api.IndexServiceConfiguration config = contextRoot == null ? new org.origin.mgm.client.api.IndexServiceConfiguration(url, username, password) : new org.origin.mgm.client.api.IndexServiceConfiguration(url, contextRoot, username, password);
 				final org.origin.mgm.client.api.IndexService indexService = org.origin.mgm.client.api.IndexService.newInstance(config);
 				try {
-					indexService.action("sync", null);
+					indexService.sendCommand("sync", null);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -1026,6 +1113,103 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		} catch (IndexServiceException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public boolean addIndexItem(String indexProviderId, String namespace, String name, Map<String, Object> properties) throws IndexServiceException {
+		boolean succeed = false;
+
+		// -------------------------------------------------------------------------------------------------------
+		// Step1. Create a new request record in database.
+		// -------------------------------------------------------------------------------------------------------
+		String requestCommand = IndexServiceConstants.CMD_CREATE_INDEX_ITEM;
+		Map<String, Object> requestArguments = new HashMap<String, Object>();
+		requestArguments.put(IndexServiceConstants.IDX_INDEX_PROVIDER_ID, indexProviderId);
+		requestArguments.put(IndexServiceConstants.IDX_NAMESPACE, namespace);
+		requestArguments.put(IndexServiceConstants.IDX_NAME, name);
+		requestArguments.put(IndexServiceConstants.IDX_PROPERTIES, properties);
+
+		Object[] requestResult = createRequest(indexProviderId, requestCommand, requestArguments);
+		Integer requestId = (Integer) requestResult[0];
+		ScheduledFuture<?> requestUpdaterHandle = (ScheduledFuture<?>) requestResult[1];
+
+		try {
+			IndexItemDataVO newIndexItemVO = null;
+			IndexItemRevisionVO revisionVO = null;
+
+			// -------------------------------------------------------------------------------------------------------
+			// Step 2. Create index item record in database.
+			// -------------------------------------------------------------------------------------------------------
+			newIndexItemVO = getDatabaseHelper().createIndexItemInDatabase(this, indexProviderId, namespace, name, JSONUtil.toJsonString(properties));
+
+			if (newIndexItemVO != null) {
+				Integer indexItemId = newIndexItemVO.getIndexItemId();
+				String newPropertiesString = newIndexItemVO.getPropertiesString();
+				Date createTime = newIndexItemVO.getCreateTime();
+				Date lastUpdateTime = newIndexItemVO.getLastUpdateTime();
+				Map<String, Object> newProperties = JSONUtil.toProperties(newPropertiesString);
+
+				// -------------------------------------------------------------------------------------------------------
+				// Step 3. Create revision record in database.
+				// -------------------------------------------------------------------------------------------------------
+				// command and arguments (for creating index item)
+				String command = IndexServiceConstants.CMD_CREATE_INDEX_ITEM;
+				Map<String, Object> commandArguments = new HashMap<String, Object>();
+				commandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+				commandArguments.put(IndexServiceConstants.IDX_INDEX_PROVIDER_ID, indexProviderId);
+				commandArguments.put(IndexServiceConstants.IDX_NAMESPACE, namespace);
+				commandArguments.put(IndexServiceConstants.IDX_NAME, name);
+				commandArguments.put(IndexServiceConstants.IDX_PROPERTIES, newProperties);
+				commandArguments.put(IndexServiceConstants.IDX_CREATE_TIME, createTime);
+				commandArguments.put(IndexServiceConstants.IDX_LAST_UPDATE_TIME, lastUpdateTime);
+
+				// undo command and arguments (for deleting index item)
+				String undoCommand = IndexServiceConstants.CMD_DELETE_INDEX_ITEM;
+				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
+				undoCommandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+
+				revisionVO = getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
+			}
+
+			if (newIndexItemVO != null && revisionVO != null) {
+				succeed = true;
+			}
+
+		} catch (IndexServiceException e) {
+			// -------------------------------------------------------------------------------------------------------
+			// Step 5. Cancel the request
+			// -------------------------------------------------------------------------------------------------------
+			// Mark the request as cancelled and stops the requestUpdater.
+			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			throw e;
+
+		} finally {
+			if (succeed) {
+				// -------------------------------------------------------------------------------------------------------
+				// Step 4. Complete the request
+				// -------------------------------------------------------------------------------------------------------
+				// Mark the request as completed and stops the requestUpdater.
+				getDatabaseHelper().completeRequestInDatabase(this, requestId, requestUpdaterHandle);
+
+				// Synchronize with database again.
+				// Reason to synchronize is that (1) the database may have been updated by other index services, while the current index service was
+				// waiting for their requests to complete. (2) the current index service create record in index item table and revision table. the
+				// cached index items and cached revisionId still need to be updated by doing the synchronization.
+				synchronize();
+
+				// Notify other index services to synchronize
+				notifyOtherIndexServicesToSync();
+
+			} else {
+				// -------------------------------------------------------------------------------------------------------
+				// Step 5. Cancel the request
+				// -------------------------------------------------------------------------------------------------------
+				// Mark the request as cancelled and stops the requestUpdater.
+				getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			}
+		}
+
+		return succeed;
 	}
 
 	/**
@@ -1036,139 +1220,297 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	 */
 	@Override
 	public boolean removeIndexItem(Integer indexItemId) throws IndexServiceException {
-		return false;
+		boolean succeed = false;
+
+		// 1. Retrieve index item data from database.
+		IndexItemDataVO indexItemVO = getDatabaseHelper().getIndexItemFromDatabase(this, indexItemId);
+		if (indexItemVO == null) {
+			if (debug) {
+				System.out.println(getClassName() + ".removeIndexItem() IndexItem (indexItemId=" + indexItemId + ")  cannot be found in database.");
+			}
+			return false;
+		}
+		String indexProviderId = indexItemVO.getIndexProviderId();
+		String namespace = indexItemVO.getNamespace();
+		String name = indexItemVO.getName();
+		String propertiesString = indexItemVO.getPropertiesString();
+		Date createTime = indexItemVO.getCreateTime();
+		Date lastUpdateTime = indexItemVO.getLastUpdateTime();
+		Map<String, Object> properties = JSONUtil.toProperties(propertiesString);
+
+		// 2. Create a new request record in database.
+		String requestCommand = IndexServiceConstants.CMD_DELETE_INDEX_ITEM;
+		Map<String, Object> requestArguments = new HashMap<String, Object>();
+		requestArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+
+		Object[] requestResult = createRequest(indexProviderId, requestCommand, requestArguments);
+		Integer requestId = (Integer) requestResult[0];
+		ScheduledFuture<?> requestUpdaterHandle = (ScheduledFuture<?>) requestResult[1];
+
+		try {
+			boolean deleted = false;
+			IndexItemRevisionVO revisionVO = null;
+
+			// 3. Delete index item record in database.
+			deleted = getDatabaseHelper().deleteIndexItemInDatababse(this, indexItemId);
+
+			// 4. Create revision record in database.
+			if (deleted) {
+				// command and arguments (for deleting index item)
+				String command = IndexServiceConstants.CMD_DELETE_INDEX_ITEM;
+				Map<String, Object> commandArguments = new HashMap<String, Object>();
+				commandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+
+				// undo command and arguments (for creating index item)
+				String undoCommand = IndexServiceConstants.CMD_CREATE_INDEX_ITEM;
+				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
+				undoCommandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+				undoCommandArguments.put(IndexServiceConstants.IDX_INDEX_PROVIDER_ID, indexProviderId);
+				undoCommandArguments.put(IndexServiceConstants.IDX_NAMESPACE, namespace);
+				undoCommandArguments.put(IndexServiceConstants.IDX_NAME, name);
+				undoCommandArguments.put(IndexServiceConstants.IDX_PROPERTIES, properties);
+				undoCommandArguments.put(IndexServiceConstants.IDX_CREATE_TIME, createTime);
+				undoCommandArguments.put(IndexServiceConstants.IDX_LAST_UPDATE_TIME, lastUpdateTime);
+
+				revisionVO = getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
+			}
+
+			if (deleted && revisionVO != null) {
+				succeed = true;
+			}
+
+		} catch (IndexServiceException e) {
+			// Mark the request as cancelled and stops the requestUpdater.
+			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			throw e;
+
+		} finally {
+			if (succeed) {
+				// Mark the request as completed and stops the requestUpdater.
+				getDatabaseHelper().completeRequestInDatabase(this, requestId, requestUpdaterHandle);
+
+				// Synchronize with database again.
+				synchronize();
+
+				// Notify other index services to synchronize
+				notifyOtherIndexServicesToSync();
+
+			} else {
+				// Mark the request as cancelled and stops the requestUpdater.
+				getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			}
+		}
+
+		return succeed;
 	}
 
 	/**
-	 * Get all properties names of a service.
+	 * Set the properties of an index item.
 	 * 
-	 * @param namespace
-	 * @param name
+	 * @param indexItemId
+	 * @param properties
+	 * @throws IndexServiceException
+	 */
+	@Override
+	public boolean setProperty(Integer indexItemId, Map<String, Object> properties) throws IndexServiceException {
+		boolean succeed = false;
+
+		// 1. Retrieve index item data from database.
+		IndexItemDataVO indexItemVO = getDatabaseHelper().getIndexItemFromDatabase(this, indexItemId);
+		if (indexItemVO == null) {
+			if (debug) {
+				System.out.println(getClassName() + ".setProperty() IndexItem (indexItemId=" + indexItemId + ")  cannot be found in database.");
+			}
+			return false;
+		}
+		if (properties == null || properties.isEmpty()) {
+			if (debug) {
+				System.out.println(getClassName() + ".setProperty() IndexItem (indexItemId=" + indexItemId + ")  properties are empty.");
+			}
+			return false;
+		}
+		String indexProviderId = indexItemVO.getIndexProviderId();
+		String propertiesString = indexItemVO.getPropertiesString();
+		Date oldLastUpdateTime = indexItemVO.getLastUpdateTime();
+		Map<String, Object> oldAllProperties = JSONUtil.toProperties(propertiesString);
+
+		Map<String, Object> newAllProperties = new HashMap<String, Object>();
+		newAllProperties.putAll(oldAllProperties);
+		newAllProperties.putAll(properties);
+
+		// 2. Create a new request record in database.
+		String requestCommand = IndexServiceConstants.CMD_UPDATE_INDEX_ITEM;
+		Map<String, Object> requestArguments = new HashMap<String, Object>();
+		requestArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+		requestArguments.put(IndexServiceConstants.IDX_PROPERTIES, properties);
+
+		Object[] requestResult = createRequest(indexProviderId, requestCommand, requestArguments);
+		Integer requestId = (Integer) requestResult[0];
+		ScheduledFuture<?> requestUpdaterHandle = (ScheduledFuture<?>) requestResult[1];
+
+		try {
+			boolean updated = false;
+			Date newLastUpdateTime = new Date();
+			IndexItemRevisionVO revisionVO = null;
+
+			// 3. Update index item record in database.
+			updated = getDatabaseHelper().updateIndexItemPropertiesInDatabase(this, indexItemId, newAllProperties, newLastUpdateTime);
+
+			// 4. Create revision record in database.
+			if (updated) {
+				// command and arguments (for updating index item properties)
+				String command = IndexServiceConstants.CMD_UPDATE_INDEX_ITEM;
+				Map<String, Object> commandArguments = new HashMap<String, Object>();
+				commandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+				commandArguments.put(IndexServiceConstants.IDX_PROPERTIES, oldAllProperties);
+				commandArguments.put(IndexServiceConstants.IDX_LAST_UPDATE_TIME, oldLastUpdateTime);
+
+				// undo command and arguments (for reverting changes to the index item properties)
+				String undoCommand = IndexServiceConstants.CMD_UPDATE_INDEX_ITEM;
+				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
+				undoCommandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+				commandArguments.put(IndexServiceConstants.IDX_PROPERTIES, newAllProperties);
+				commandArguments.put(IndexServiceConstants.IDX_LAST_UPDATE_TIME, newLastUpdateTime);
+
+				revisionVO = getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
+			}
+
+			if (updated && revisionVO != null) {
+				succeed = true;
+			}
+
+		} catch (IndexServiceException e) {
+			// Mark the request as cancelled and stops the requestUpdater.
+			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			throw e;
+
+		} finally {
+			if (succeed) {
+				// Mark the request as completed and stops the requestUpdater.
+				getDatabaseHelper().completeRequestInDatabase(this, requestId, requestUpdaterHandle);
+
+				// Synchronize with database again.
+				synchronize();
+
+				// Notify other index services to synchronize
+				notifyOtherIndexServicesToSync();
+
+			} else {
+				// Mark the request as cancelled and stops the requestUpdater.
+				getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			}
+		}
+
+		return succeed;
+	}
+
+	/**
+	 * Remove the properties of an index item.
+	 * 
+	 * @param indexItemId
+	 * @param propNames
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public String[] getPropertyNames(String namespace, String name) throws IndexServiceException {
-		QName qname = IndexItem.getQName(namespace, name);
-		// IndexItem entry = this.indexItems.get(qname);
-		// if (entry != null && entry.getProperties() != null) {
-		// return entry.getProperties().keySet().toArray(new String[entry.getProperties().size()]);
-		// }
-		return new String[] {};
-	}
+	@Override
+	public boolean removeProperty(Integer indexItemId, List<String> propNames) throws IndexServiceException {
+		boolean succeed = false;
 
-	/**
-	 * Get the properties of a service.
-	 * 
-	 * @param namespace
-	 * @param name
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	public Map<String, Object> getProperties(String namespace, String name) throws IndexServiceException {
-		QName qname = IndexItem.getQName(namespace, name);
-		// IndexItem entry = this.indexItems.get(qname);
-		// if (entry != null) {
-		// return entry.getProperties();
-		// }
-		return Collections.emptyMap();
-	}
+		// 1. Retrieve index item data from database.
+		IndexItemDataVO indexItemVO = getDatabaseHelper().getIndexItemFromDatabase(this, indexItemId);
+		if (indexItemVO == null) {
+			if (debug) {
+				System.out.println(getClassName() + ".removeProperty() IndexItem (indexItemId=" + indexItemId + ")  cannot be found in database.");
+			}
+			return false;
+		}
+		if (propNames == null || propNames.isEmpty()) {
+			if (debug) {
+				System.out.println(getClassName() + ".removeProperty() IndexItem's (indexItemId=" + indexItemId + ")  property names are empty.");
+			}
+			return false;
+		}
+		String indexProviderId = indexItemVO.getIndexProviderId();
+		String propertiesString = indexItemVO.getPropertiesString();
+		Date oldLastUpdateTime = indexItemVO.getLastUpdateTime();
+		Map<String, Object> oldAllProperties = JSONUtil.toProperties(propertiesString);
 
-	/**
-	 * Check whether a property of a service is available.
-	 * 
-	 * @param namespace
-	 *            namespace of the service
-	 * @param name
-	 *            name of the service
-	 * @param propName
-	 *            property name
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	public boolean hasProperty(String namespace, String name, String propName) throws IndexServiceException {
-		QName qname = IndexItem.getQName(namespace, name);
-		// IndexItem entry = this.indexItems.get(qname);
-		// if (entry != null && entry.getProperties() != null && propName != null && entry.getProperties().containsKey(propName)) {
-		// return true;
-		// }
-		return false;
-	}
+		Map<String, Object> newAllProperties = new HashMap<String, Object>();
+		newAllProperties.putAll(oldAllProperties);
+		for (String propName : propNames) {
+			newAllProperties.remove(propName);
+		}
 
-	/**
-	 * Get the property value of a service.
-	 * 
-	 * @param namespace
-	 * @param name
-	 * @param propName
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	public Object getProperty(String namespace, String name, String propName) throws IndexServiceException {
-		QName qname = IndexItem.getQName(namespace, name);
-		// IndexItem entry = this.indexItems.get(qname);
-		// if (entry != null && entry.getProperties() != null && propName != null) {
-		// return entry.getProperties().get(propName);
-		// }
-		return null;
-	}
+		// 2. Create a new request record in database.
+		Map<String, Object> requestArgsProperties = new HashMap<String, Object>();
+		for (String propName : propNames) {
+			Object propValue = oldAllProperties.get(propName);
+			requestArgsProperties.put(propName, propValue);
+		}
 
-	/**
-	 * Set the property of a service.
-	 * 
-	 * @param namespace
-	 *            namespace of the service
-	 * @param name
-	 *            name of the service
-	 * @param propName
-	 *            property name
-	 * @param propValue
-	 *            property value
-	 * @throws IndexServiceException
-	 */
-	public void setProperty(String namespace, String name, String propName, Object propValue) throws IndexServiceException {
-		QName qname = IndexItem.getQName(namespace, name);
-		// IndexItem entry = this.indexItems.get(qname);
-		// if (entry != null && entry.getProperties() != null && propName != null) {
-		//
-		// if (entry.getProperties().containsKey(propName)) {
-		// Object oldPropValue = entry.getProperties().get(propName);
-		//
-		// if ((oldPropValue == null && propValue != null) || (oldPropValue != null && !oldPropValue.equals(propValue))) {
-		// entry.getProperties().put(propName, propValue);
-		//
-		// // Notify service property changed event
-		// this.listenerSupport.notifyPropertyChanged(namespace, name, propName, oldPropValue, propValue);
-		// }
-		//
-		// } else {
-		// entry.getProperties().put(propName, propValue);
-		//
-		// // Notify service property added event
-		// this.listenerSupport.notifyPropertyAdded(namespace, name, propName, propValue);
-		// }
-		// }
-	}
+		String requestCommand = IndexServiceConstants.CMD_UPDATE_INDEX_ITEM;
+		Map<String, Object> requestArguments = new HashMap<String, Object>();
+		requestArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+		requestArguments.put(IndexServiceConstants.IDX_PROPERTIES, requestArgsProperties);
 
-	/**
-	 * Remove the property of a service.
-	 * 
-	 * @param namespace
-	 *            namespace of the service
-	 * @param name
-	 *            name of the service
-	 * @param propName
-	 *            property name
-	 * @throws IndexServiceException
-	 */
-	public void removeProperty(String namespace, String name, String propName) throws IndexServiceException {
-		QName qname = IndexItem.getQName(namespace, name);
-		// IndexItem entry = this.indexItems.get(qname);
-		// if (entry != null && entry.getProperties() != null && propName != null) {
-		// entry.getProperties().remove(propName);
-		//
-		// // Notify service property removed event
-		// this.listenerSupport.notifyPropertyRemoved(namespace, name, propName);
-		// }
+		Object[] requestResult = createRequest(indexProviderId, requestCommand, requestArguments);
+		Integer requestId = (Integer) requestResult[0];
+		ScheduledFuture<?> requestUpdaterHandle = (ScheduledFuture<?>) requestResult[1];
+
+		try {
+			boolean updated = false;
+			Date newLastUpdateTime = new Date();
+			IndexItemRevisionVO revisionVO = null;
+
+			// 3. Update index item record in database.
+			updated = getDatabaseHelper().updateIndexItemPropertiesInDatabase(this, indexItemId, newAllProperties, newLastUpdateTime);
+
+			// 4. Create revision record in database.
+			if (updated) {
+				// command and arguments (for updating index item properties)
+				String command = IndexServiceConstants.CMD_UPDATE_INDEX_ITEM;
+				Map<String, Object> commandArguments = new HashMap<String, Object>();
+				commandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+				commandArguments.put(IndexServiceConstants.IDX_PROPERTIES, oldAllProperties);
+				commandArguments.put(IndexServiceConstants.IDX_LAST_UPDATE_TIME, oldLastUpdateTime);
+
+				// undo command and arguments (for reverting changes to the index item properties)
+				String undoCommand = IndexServiceConstants.CMD_UPDATE_INDEX_ITEM;
+				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
+				undoCommandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
+				commandArguments.put(IndexServiceConstants.IDX_PROPERTIES, newAllProperties);
+				commandArguments.put(IndexServiceConstants.IDX_LAST_UPDATE_TIME, newLastUpdateTime);
+
+				revisionVO = getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
+			}
+
+			if (updated && revisionVO != null) {
+				succeed = true;
+			}
+
+		} catch (IndexServiceException e) {
+			// Mark the request as cancelled and stops the requestUpdater.
+			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			throw e;
+
+		} finally {
+			if (succeed) {
+				// Mark the request as completed and stops the requestUpdater.
+				getDatabaseHelper().completeRequestInDatabase(this, requestId, requestUpdaterHandle);
+
+				// Synchronize with database again.
+				synchronize();
+
+				// Notify other index services to synchronize
+				notifyOtherIndexServicesToSync();
+
+			} else {
+				// Mark the request as cancelled and stops the requestUpdater.
+				getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
+			}
+		}
+
+		return succeed;
 	}
 
 	/**
@@ -1252,7 +1594,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	}
 
 	@Override
-	public void udpateCachedIndexItem(Integer indexItemId, Map<String, Object> properties, Date lastUpdateTime) throws IndexServiceException {
+	public void updateCachedIndexItemProperties(Integer indexItemId, Map<String, Object> properties, Date lastUpdateTime) throws IndexServiceException {
 		if (debug) {
 			System.out.println(getClassName() + ".udpateCachedIndexItem()");
 		}
@@ -1282,6 +1624,9 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		}
 	}
 
+	// ------------------------------------------------------------------------------------------------------------
+	// helper methods called by validate() method
+	// ------------------------------------------------------------------------------------------------------------
 	/**
 	 * 
 	 * @param indexItemSnapshot
@@ -1414,4 +1759,5 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 		return isUpdated;
 	}
+
 }

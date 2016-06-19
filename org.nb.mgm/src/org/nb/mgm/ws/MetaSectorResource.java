@@ -28,7 +28,7 @@ import org.nb.mgm.model.query.MetaSectorQuery;
 import org.nb.mgm.model.query.MetaSectorQuery.MetaSectorQueryBuilder;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.Util;
@@ -61,8 +61,8 @@ public class MetaSectorResource {
 	@Context
 	protected UriInfo uriInfo;
 
-	protected MgmService getMgmService() {
-		MgmService mgm = this.providers.getContextResolver(MgmService.class, MediaType.APPLICATION_JSON_TYPE).getContext(MgmService.class);
+	protected ManagementService getMgmService() {
+		ManagementService mgm = this.providers.getContextResolver(ManagementService.class, MediaType.APPLICATION_JSON_TYPE).getContext(ManagementService.class);
 		if (mgm == null) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}
@@ -81,7 +81,7 @@ public class MetaSectorResource {
 		return DTOConverter.getInstance().toDTO(e);
 	}
 
-	protected void handleSave(MgmService mgm) {
+	protected void handleSave(ManagementService mgm) {
 		if (!mgm.isAutoSave()) {
 			mgm.save();
 		}
@@ -104,7 +104,7 @@ public class MetaSectorResource {
 	) {
 		List<MetaSectorDTO> metaSectorDTOs = new ArrayList<MetaSectorDTO>();
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			// Get MetaSectors matched by query.
 			List<MetaSector> metaSectors = null;
@@ -157,7 +157,7 @@ public class MetaSectorResource {
 	public Response getMetaSector(@PathParam("metaSectorId") String metaSectorId) {
 		MetaSectorDTO metaSectorDTO = null;
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			MetaSector metaSector = mgm.getMetaSector(metaSectorId);
 			if (metaSector == null) {
@@ -192,7 +192,7 @@ public class MetaSectorResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullMetaSectorDTOError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 
 		MetaSector newMetaSector = new MetaSector(mgm.getRoot());
 
@@ -241,7 +241,7 @@ public class MetaSectorResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullDTOError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			String id = metaSectorDTO.getId();
 			String name = metaSectorDTO.getName();
@@ -282,7 +282,7 @@ public class MetaSectorResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullMetaSectorIdError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			mgm.deleteMetaSector(metaSectorId);
 

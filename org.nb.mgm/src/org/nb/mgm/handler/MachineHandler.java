@@ -14,7 +14,7 @@ import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.model.query.MachineQuery;
 import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.Machine;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.util.SearchPattern;
 import org.origin.common.util.Util;
 
@@ -24,13 +24,13 @@ import org.origin.common.util.Util;
  */
 public class MachineHandler {
 
-	protected MgmService mgmService;
+	protected ManagementService mgmService;
 
 	/**
 	 * 
 	 * @param mgmService
 	 */
-	public MachineHandler(MgmService mgmService) {
+	public MachineHandler(ManagementService mgmService) {
 		this.mgmService = mgmService;
 	}
 
@@ -154,9 +154,9 @@ public class MachineHandler {
 			// if (machine.getName().equals(currMachine.getName())) {
 			// throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same name already exists.", null);
 			// }
-			if (machine.getIpAddress().equals(currMachine.getIpAddress())) {
-				throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same IP address already exists.", null);
-			}
+			// if (machine.getIpAddress().equals(currMachine.getIpAddress())) {
+			// throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same IP address already exists.", null);
+			// }
 		}
 
 		// Generate unique machine name

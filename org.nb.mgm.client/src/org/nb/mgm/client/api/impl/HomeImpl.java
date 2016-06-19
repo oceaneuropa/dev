@@ -1,5 +1,8 @@
 package org.nb.mgm.client.api.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.nb.mgm.client.api.Home;
 import org.nb.mgm.client.api.Machine;
 import org.nb.mgm.client.api.Management;
@@ -7,6 +10,7 @@ import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.StatusDTO;
 
 public class HomeImpl implements Home {
 
@@ -58,7 +62,7 @@ public class HomeImpl implements Home {
 	}
 
 	@Override
-	public void update() throws ClientException {
+	public boolean update() throws ClientException {
 		if (this.machine != null) {
 			Management management = this.machine.getManagement();
 			String machineId = this.machine.getId();
@@ -66,8 +70,12 @@ public class HomeImpl implements Home {
 			HomeClient homeClient = management.getAdapter(HomeClient.class);
 			checkClient(homeClient);
 
-			homeClient.updateHome(machineId, this.homeDTO);
+			StatusDTO status = homeClient.updateHome(machineId, this.homeDTO);
+			if (status != null && status.success()) {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -130,6 +138,28 @@ public class HomeImpl implements Home {
 				update();
 			}
 		}
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Properties
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public Map<String, Object> getProperties() throws ClientException {
+		Map<String, Object> properties = null;
+		if (this.machine != null) {
+			Management management = this.machine.getManagement();
+			String machineId = this.machine.getId();
+			String homeId = this.homeDTO.getId();
+
+			HomeClient homeClient = management.getAdapter(HomeClient.class);
+			checkClient(homeClient);
+
+			properties = homeClient.getProperties(machineId, homeId);
+		}
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+		}
+		return properties;
 	}
 
 	// ------------------------------------------------------------------------------------------

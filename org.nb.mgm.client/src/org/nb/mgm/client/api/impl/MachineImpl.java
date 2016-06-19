@@ -57,13 +57,17 @@ public class MachineImpl implements Machine {
 	}
 
 	@Override
-	public void update() throws ClientException {
+	public boolean update() throws ClientException {
 		if (this.management != null) {
 			MachineClient machineClient = this.management.getAdapter(MachineClient.class);
 			checkClient(machineClient);
 
-			machineClient.updateMachine(this.machineDTO);
+			StatusDTO status = machineClient.updateMachine(this.machineDTO);
+			if (status != null && status.success()) {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	// ------------------------------------------------------------------------------------------

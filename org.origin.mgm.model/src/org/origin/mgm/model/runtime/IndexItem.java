@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
 
 import org.origin.common.json.JSONUtil;
 import org.origin.common.util.DateUtil;
@@ -14,29 +13,29 @@ public class IndexItem {
 
 	public static final String DEFAULT_TYPE = XMLConstants.DEFAULT_NS_PREFIX;
 
-	/**
-	 * 
-	 * @param namespace
-	 * @param name
-	 * @return
-	 */
-	public static QName getQName(String namespace, String name) {
-		if (name == null || name.trim().isEmpty()) {
-			throw new IllegalArgumentException("name is null.");
-		}
-		namespace = namespace != null ? namespace : DEFAULT_TYPE;
-		return new QName(namespace, name);
-	}
-
-	/**
-	 * 
-	 * @param namespace
-	 * @param name
-	 * @return
-	 */
-	public static String getFullName(String namespace, String name) {
-		return getQName(namespace, name).toString();
-	}
+	// /**
+	// *
+	// * @param namespace
+	// * @param name
+	// * @return
+	// */
+	// public static QName getQName(String namespace, String name) {
+	// if (name == null || name.trim().isEmpty()) {
+	// throw new IllegalArgumentException("name is null.");
+	// }
+	// namespace = namespace != null ? namespace : DEFAULT_TYPE;
+	// return new QName(namespace, name);
+	// }
+	//
+	// /**
+	// *
+	// * @param namespace
+	// * @param name
+	// * @return
+	// */
+	// public static String getFullName(String namespace, String name) {
+	// return getQName(namespace, name).toString();
+	// }
 
 	protected Integer indexItemId;
 	protected String indexProviderId;
@@ -117,8 +116,16 @@ public class IndexItem {
 		this.name = name;
 	}
 
+	public boolean hasProperty(String name) {
+		return this.properties.containsKey(name);
+	}
+
 	public Object getProperty(String name) {
 		return this.properties.get(name);
+	}
+
+	public void setProperty(String name, Object value) {
+		this.properties.put(name, value);
 	}
 
 	public Map<String, Object> getProperties() {
@@ -129,8 +136,16 @@ public class IndexItem {
 		this.properties = properties;
 	}
 
+	public boolean hasRuntimeProperty(String name) {
+		return this.runtimeProperties.containsKey(name);
+	}
+
 	public Object getRuntimeProperty(String name) {
 		return this.runtimeProperties.get(name);
+	}
+
+	public void setRuntimeProperty(String name, Object value) {
+		this.runtimeProperties.put(name, value);
 	}
 
 	public Map<String, Object> getRuntimeProperties() {

@@ -6,19 +6,19 @@ import javax.xml.bind.annotation.XmlElement;
 
 import org.origin.common.json.JSONUtil;
 
-public class IndexItemActionDTO {
+public class IndexItemCommandRequestDTO {
 	@XmlElement
-	protected String action;
+	protected String command;
 	@XmlElement
 	protected Map<String, Object> parameters;
 
 	@XmlElement
-	public String getAction() {
-		return action;
+	public String getCommand() {
+		return this.command;
 	}
 
-	public void setAction(String action) {
-		this.action = action;
+	public void setCommand(String action) {
+		this.command = action;
 	}
 
 	@XmlElement
@@ -35,8 +35,8 @@ public class IndexItemActionDTO {
 		String parametersString = JSONUtil.toJsonString(this.parameters);
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("IndexItemActionDTO (");
-		sb.append("action").append(this.action);
+		sb.append("IndexItemCommandRequestDTO (");
+		sb.append("command").append(this.command);
 		sb.append(", parameters=").append(parametersString);
 		sb.append(")");
 		return sb.toString();

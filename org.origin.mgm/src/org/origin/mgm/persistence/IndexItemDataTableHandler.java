@@ -233,22 +233,21 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE indexItemId=?", new Object[] { indexItemId }, 1);
 	}
 
-	// /**
-	// * Update the properties of an index item.
-	// *
-	// * http://www.tutorialspoint.com/jdbc/jdbc-update-records.htm
-	// *
-	// * @param conn
-	// * @param namespace
-	// * @param name
-	// * @param propertiesString
-	// * @return
-	// * @throws SQLException
-	// */
-	// public boolean updateProperties(Connection conn, int id, String propertiesString) throws SQLException {
-	// String lastUpdateTimeString = DateUtil.toString(new Date(), DateUtil.getDefaultDateFormat());
-	// return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET properties=?, lastUpdateTime=? WHERE id=?", new Object[] {
-	// propertiesString, lastUpdateTimeString, id }, 1);
-	// }
+	/**
+	 * Update the properties of an index item.
+	 *
+	 * http://www.tutorialspoint.com/jdbc/jdbc-update-records.htm
+	 * 
+	 * @param conn
+	 * @param indexItemId
+	 * @param propertiesString
+	 * @param lastUpdateTime
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateProperties(Connection conn, int indexItemId, String propertiesString, Date lastUpdateTime) throws SQLException {
+		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, DateUtil.getDefaultDateFormat());
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET properties=?, lastUpdateTime=? WHERE indexItemId=?", new Object[] { propertiesString, lastUpdateTimeString, indexItemId }, 1);
+	}
 
 }

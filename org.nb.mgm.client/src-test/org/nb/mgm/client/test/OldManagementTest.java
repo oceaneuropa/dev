@@ -10,7 +10,7 @@ import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
 import org.origin.common.rest.client.ClientException;
 
-public class ManagementTest1 {
+public class OldManagementTest {
 
 	public static void main(String[] args) {
 		Management mgm = MgmFactory.createManagement("http://127.0.0.1:9090", "admin", "123");

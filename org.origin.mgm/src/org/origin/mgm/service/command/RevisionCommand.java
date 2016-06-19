@@ -6,60 +6,56 @@ import java.util.Map;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
-import org.origin.common.json.JSONUtil;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
+import org.origin.mgm.service.IndexServiceConstants;
 import org.origin.mgm.service.IndexServiceUpdatable;
 
 public class RevisionCommand extends AbstractCommand {
 
-	public final static String CREATE_INDEX_ITEM_COMMAND = "create_index_item";
-	public final static String DELETE_INDEX_ITEM_COMMAND = "delete_index_item";
-	public final static String UPDATE_INDEX_ITEM_COMMAND = "update_index_item";
-
 	protected IndexServiceUpdatable indexServiceUpdatable;
 	protected Integer revisionId;
 	protected String command;
-	protected String argumentsString;
+	protected Map<String, Object> arguments;
 	protected String undoCommand;
-	protected String undoArgumentsString;
+	protected Map<String, Object> undoArguments;
 
 	/**
 	 * 
 	 * @param indexServiceUpdatable
 	 * @param revisionId
 	 * @param command
-	 * @param argumentsString
+	 * @param arguments
 	 * @param undoCommand
-	 * @param undoArgumentsString
+	 * @param undoArguments
 	 */
-	public RevisionCommand(IndexServiceUpdatable indexServiceUpdatable, Integer revisionId, String command, String argumentsString, String undoCommand, String undoArgumentsString) {
+	public RevisionCommand(IndexServiceUpdatable indexServiceUpdatable, Integer revisionId, String command, Map<String, Object> arguments, String undoCommand, Map<String, Object> undoArguments) {
 		this.indexServiceUpdatable = indexServiceUpdatable;
 		this.revisionId = revisionId;
 		this.command = command;
-		this.argumentsString = argumentsString;
+		this.arguments = arguments;
 		this.undoCommand = undoCommand;
-		this.undoArgumentsString = undoArgumentsString;
+		this.undoArguments = undoArguments;
 	}
 
 	public Integer getRevisionId() {
 		return this.revisionId;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute(CommandContext context) throws CommandException {
-		Map<String, Object> arguments = JSONUtil.toProperties(argumentsString, true);
+		if (IndexServiceConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
+			Integer indexItemId = (Integer) this.arguments.get("indexItemId");
+			String indexProviderId = (String) this.arguments.get("indexProviderId");
+			String namespace = (String) this.arguments.get("namespace");
+			String name = (String) this.arguments.get("name");
+			Map<String, Object> properties = (Map<String, Object>) this.arguments.get("properties");
+			Date createTime = (Date) this.arguments.get("createTime");
+			Date lastUpdateTime = (Date) this.arguments.get("lastUpdateTime");
 
-		if (CREATE_INDEX_ITEM_COMMAND.equalsIgnoreCase(this.command)) {
-			Integer indexItemId = (Integer) arguments.get("indexItemId");
-			String indexProviderId = (String) arguments.get("indexProviderId");
-			String namespace = (String) arguments.get("namespace");
-			String name = (String) arguments.get("name");
-			String propertiesString = (String) arguments.get("properties");
-			Date createTime = (Date) arguments.get("createTime");
-			Date lastUpdateTime = (Date) arguments.get("lastUpdateTime");
-
-			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+			// String propertiesString = (String) arguments.get("properties");
+			// Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 
 			try {
 				IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, namespace, name, properties, createTime, lastUpdateTime);
@@ -69,8 +65,8 @@ public class RevisionCommand extends AbstractCommand {
 				throw new CommandException(e);
 			}
 
-		} else if (DELETE_INDEX_ITEM_COMMAND.equalsIgnoreCase(this.command)) {
-			Integer indexItemId = (Integer) arguments.get("indexItemId");
+		} else if (IndexServiceConstants.CMD_DELETE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
+			Integer indexItemId = (Integer) this.arguments.get("indexItemId");
 
 			try {
 				this.indexServiceUpdatable.removeCachedIndexItem(indexItemId);
@@ -79,15 +75,16 @@ public class RevisionCommand extends AbstractCommand {
 				throw new CommandException(e);
 			}
 
-		} else if (UPDATE_INDEX_ITEM_COMMAND.equalsIgnoreCase(this.command)) {
-			Integer indexItemId = (Integer) arguments.get("indexItemId");
-			String propertiesString = (String) arguments.get("properties");
-			Date lastUpdateTime = (Date) arguments.get("lastUpdateTime");
+		} else if (IndexServiceConstants.CMD_UPDATE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
+			Integer indexItemId = (Integer) this.arguments.get("indexItemId");
+			Map<String, Object> properties = (Map<String, Object>) this.arguments.get("properties");
+			Date lastUpdateTime = (Date) this.arguments.get("lastUpdateTime");
 
-			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+			// String propertiesString = (String) this.arguments.get("properties");
+			// Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 
 			try {
-				this.indexServiceUpdatable.udpateCachedIndexItem(indexItemId, properties, lastUpdateTime);
+				this.indexServiceUpdatable.updateCachedIndexItemProperties(indexItemId, properties, lastUpdateTime);
 			} catch (IndexServiceException e) {
 				e.printStackTrace();
 				throw new CommandException(e);
@@ -98,20 +95,20 @@ public class RevisionCommand extends AbstractCommand {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void undo(CommandContext context) throws CommandException {
-		Map<String, Object> undoArguments = JSONUtil.toProperties(undoArgumentsString, true);
+		if (IndexServiceConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
+			Integer indexItemId = (Integer) this.undoArguments.get("indexItemId");
+			String indexProviderId = (String) this.undoArguments.get("indexProviderId");
+			String namespace = (String) this.undoArguments.get("namespace");
+			String name = (String) this.undoArguments.get("name");
+			Map<String, Object> properties = (Map<String, Object>) this.undoArguments.get("properties");
+			Date createTime = (Date) this.undoArguments.get("createTime");
+			Date lastUpdateTime = (Date) this.undoArguments.get("lastUpdateTime");
 
-		if (CREATE_INDEX_ITEM_COMMAND.equalsIgnoreCase(this.undoCommand)) {
-			Integer indexItemId = (Integer) undoArguments.get("indexItemId");
-			String indexProviderId = (String) undoArguments.get("indexProviderId");
-			String namespace = (String) undoArguments.get("namespace");
-			String name = (String) undoArguments.get("name");
-			String propertiesString = (String) undoArguments.get("properties");
-			Date createTime = (Date) undoArguments.get("createTime");
-			Date lastUpdateTime = (Date) undoArguments.get("lastUpdateTime");
-
-			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+			// String propertiesString = (String) undoArguments.get("properties");
+			// Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 
 			IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, namespace, name, properties, createTime, lastUpdateTime);
 			try {
@@ -121,22 +118,33 @@ public class RevisionCommand extends AbstractCommand {
 				throw new CommandException(e);
 			}
 
-		} else if (UPDATE_INDEX_ITEM_COMMAND.equalsIgnoreCase(this.undoCommand)) {
-			Integer indexItemId = (Integer) undoArguments.get("indexItemId");
-			String propertiesString = (String) undoArguments.get("properties");
-			Date lastUpdateTime = (Date) undoArguments.get("lastUpdateTime");
-
-			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+		} else if (IndexServiceConstants.CMD_DELETE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
+			Integer indexItemId = (Integer) this.undoArguments.get("indexItemId");
 
 			try {
-				this.indexServiceUpdatable.udpateCachedIndexItem(indexItemId, properties, lastUpdateTime);
+				this.indexServiceUpdatable.removeCachedIndexItem(indexItemId);
+			} catch (IndexServiceException e) {
+				e.printStackTrace();
+				throw new CommandException(e);
+			}
+
+		} else if (IndexServiceConstants.CMD_UPDATE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
+			Integer indexItemId = (Integer) this.undoArguments.get("indexItemId");
+			Map<String, Object> properties = (Map<String, Object>) this.arguments.get("properties");
+			Date lastUpdateTime = (Date) this.undoArguments.get("lastUpdateTime");
+
+			// String propertiesString = (String) this.undoArguments.get("properties");
+			// Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+
+			try {
+				this.indexServiceUpdatable.updateCachedIndexItemProperties(indexItemId, properties, lastUpdateTime);
 			} catch (IndexServiceException e) {
 				e.printStackTrace();
 				throw new CommandException(e);
 			}
 
 		} else {
-			System.out.println("SyncIndexItemCommand.undo() Unsupported command: " + this.command);
+			System.out.println("RevisionCommand.undo() Unsupported command: " + this.command);
 		}
 	}
 

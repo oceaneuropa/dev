@@ -27,11 +27,11 @@ import org.origin.mgm.service.IndexService;
 /**
  * Index items resource
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexProviderId={indexProviderId}&namespace={namespace}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexproviderid={indexproviderid}&namespace={namespace}
  *
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems
  *
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexitemId={indexitemId}
+ * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexitemid={indexitemid}
  *
  */
 @javax.ws.rs.Path("/indexitems")
@@ -41,7 +41,7 @@ public class IndexItemsResource extends AbstractApplicationResource {
 	/**
 	 * Get index items.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexProviderId={indexProviderId}&namespace={namespace}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexproviderid={indexproviderid}&namespace={namespace}
 	 * 
 	 * @param indexProviderId
 	 * @param namespace
@@ -119,14 +119,14 @@ public class IndexItemsResource extends AbstractApplicationResource {
 	/**
 	 * Remove an index item.
 	 * 
-	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexitemId={indexitemId}
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexitemid={indexitemid}
 	 * 
 	 * @param indexItemId
 	 * @return
 	 */
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response removeIndexItem(@QueryParam("indexItemId") Integer indexItemId) {
+	public Response removeIndexItem(@QueryParam("indexitemid") Integer indexItemId) {
 		if (indexItemId == null) {
 			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();

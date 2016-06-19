@@ -89,9 +89,9 @@ public class IndexServiceImpl extends IndexService {
 	}
 
 	@Override
-	public boolean action(String action, Map<String, Object> parameters) throws IOException {
+	public boolean sendCommand(String command, Map<String, Object> parameters) throws IOException {
 		try {
-			StatusDTO status = getClient().action(action, parameters);
+			StatusDTO status = getClient().sendCommand(command, parameters);
 			if (status != null && status.success()) {
 				return true;
 			}

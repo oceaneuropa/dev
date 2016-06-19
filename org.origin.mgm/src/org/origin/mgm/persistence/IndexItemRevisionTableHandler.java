@@ -58,14 +58,14 @@ public class IndexItemRevisionTableHandler implements DatabaseTableAware {
 		Integer revisionId = rs.getInt("revisionId");
 		String indexProviderId = rs.getString("indexProviderId");
 		String command = rs.getString("command");
-		String arguments = rs.getString("arguments");
+		String argumentsString = rs.getString("arguments");
 		String undoCommand = rs.getString("undoCommand");
-		String undoArguments = rs.getString("undoArguments");
+		String undoArgumentsString = rs.getString("undoArguments");
 		String updateTimeString = rs.getString("updateTime");
 
 		Date lastUpdate = updateTimeString != null ? DateUtil.toDate(updateTimeString, DateUtil.getCommonDateFormats()) : null;
 
-		return new IndexItemRevisionVO(revisionId, indexProviderId, command, arguments, undoCommand, undoArguments, lastUpdate);
+		return new IndexItemRevisionVO(revisionId, indexProviderId, command, argumentsString, undoCommand, undoArgumentsString, lastUpdate);
 	}
 
 	protected DateFormat getDateFormat() {

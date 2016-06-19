@@ -18,7 +18,7 @@ import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.util.SearchPattern;
 import org.origin.common.util.Util;
 
@@ -28,13 +28,13 @@ import org.origin.common.util.Util;
  */
 public class MetaSpaceHandler {
 
-	protected MgmService mgmService;
+	protected ManagementService mgmService;
 
 	/**
 	 * 
 	 * @param mgmService
 	 */
-	public MetaSpaceHandler(MgmService mgmService) {
+	public MetaSpaceHandler(ManagementService mgmService) {
 		this.mgmService = mgmService;
 	}
 

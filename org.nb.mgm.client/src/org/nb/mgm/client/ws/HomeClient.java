@@ -1,7 +1,9 @@
 package org.nb.mgm.client.ws;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.ws.rs.client.Entity;
@@ -206,6 +208,33 @@ public class HomeClient extends AbstractClient {
 			handleException(e);
 		}
 		return status;
+	}
+
+	/**
+	 * Get home properties.
+	 * 
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties
+	 * 
+	 * @param machineId
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public Map<String, Object> getProperties(String machineId, String homeId) throws ClientException {
+		Map<String, Object> properties = new LinkedHashMap<String, Object>();
+
+		try {
+			Builder builder = getRootPath().path(machineId).path("homes").path(homeId).path("properties").request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			properties = response.readEntity(new GenericType<Map<String, Object>>() {
+			});
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return properties;
 	}
 
 }

@@ -2,6 +2,7 @@ package org.nb.mgm.client.api.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.nb.mgm.client.api.Home;
@@ -76,7 +77,7 @@ public class ManagementImpl implements Management {
 	 * @throws ClientException
 	 */
 	@Override
-	public List<Machine> getMachines(Properties properties) throws ClientException {
+	public List<Machine> getMachines(Map<String, ?> properties) throws ClientException {
 		checkClient(this.machineClient);
 
 		List<Machine> machines = new ArrayList<Machine>();
@@ -147,7 +148,7 @@ public class ManagementImpl implements Management {
 		checkClient(this.machineClient);
 
 		StatusDTO status = this.machineClient.deleteMachine(machineId);
-		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
+		if (status != null && status.success()) {
 			return true;
 		}
 		return false;

@@ -1,7 +1,7 @@
 package org.nb.mgm;
 
-import org.nb.mgm.service.MgmService;
-import org.nb.mgm.service.impl.MgmServiceImpl;
+import org.nb.mgm.service.ManagementService;
+import org.nb.mgm.service.impl.ManagementServiceImpl;
 import org.nb.mgm.ws.MgmApplication;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -11,13 +11,13 @@ import org.slf4j.LoggerFactory;
 public class Activator implements BundleActivator {
 
 	protected static BundleContext context;
-	protected static MgmServiceImpl mgmService;
+	protected static ManagementServiceImpl mgmService;
 
 	public static BundleContext getContext() {
 		return context;
 	}
 
-	public static MgmService getMgmService() {
+	public static ManagementService getMgmService() {
 		return Activator.mgmService;
 	}
 
@@ -31,7 +31,7 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 
 		// 1. Start Mgm management service
-		Activator.mgmService = new MgmServiceImpl(bundleContext);
+		Activator.mgmService = new ManagementServiceImpl(bundleContext);
 		Activator.mgmService.start();
 
 		// 2. Start MgmApplication web service

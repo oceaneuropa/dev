@@ -27,7 +27,7 @@ import org.nb.mgm.model.dto.MetaSectorDTO;
 import org.nb.mgm.model.query.ArtifactQuery;
 import org.nb.mgm.model.runtime.Artifact;
 import org.nb.mgm.model.runtime.MetaSector;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.Util;
@@ -62,8 +62,8 @@ public class ArtifactResource {
 	@Context
 	protected UriInfo uriInfo;
 
-	protected MgmService getMgmService() {
-		MgmService mgm = this.providers.getContextResolver(MgmService.class, MediaType.APPLICATION_JSON_TYPE).getContext(MgmService.class);
+	protected ManagementService getMgmService() {
+		ManagementService mgm = this.providers.getContextResolver(ManagementService.class, MediaType.APPLICATION_JSON_TYPE).getContext(ManagementService.class);
 		if (mgm == null) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}
@@ -94,7 +94,7 @@ public class ArtifactResource {
 	) {
 		List<ArtifactDTO> artifactDTOs = new ArrayList<ArtifactDTO>();
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			// Find MetaSector by metaSectorId.
 			MetaSectorDTO metaSectorDTO = null;
@@ -135,7 +135,7 @@ public class ArtifactResource {
 	) {
 		List<ArtifactDTO> artifactDTOs = new ArrayList<ArtifactDTO>();
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			// 1. Find MetaSector by metaSectorId.
 			MetaSectorDTO metaSectorDTO = null;
@@ -186,7 +186,7 @@ public class ArtifactResource {
 	) {
 		ArtifactDTO artifactDTO = null;
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			// 1. Find Artifact by artifactId and convert to DTO
 			Artifact artifact = mgm.getArtifact(artifactId);
@@ -240,7 +240,7 @@ public class ArtifactResource {
 		}
 
 		// 2. Always get management service first.
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 
 		// 3. Create Artifact runtime model with parameters.
 		Artifact newArtifact = new Artifact();
@@ -300,7 +300,7 @@ public class ArtifactResource {
 		}
 
 		// 2. Always get management service first.
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 
 		try {
 			// 3. Create MetaSpace runtime model with parameters.
@@ -362,7 +362,7 @@ public class ArtifactResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullArtifactIdError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			mgm.deleteArtifact(artifactId);
 

@@ -1,6 +1,7 @@
 package org.nb.mgm.client.api;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.origin.common.adapter.IAdaptable;
@@ -27,7 +28,7 @@ public interface Management extends IAdaptable {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<Machine> getMachines(Properties properties) throws ClientException;
+	public List<Machine> getMachines(Map<String, ?> properties) throws ClientException;
 
 	/**
 	 * Get Machine by machine Id.

@@ -1,6 +1,7 @@
 package org.nb.mgm.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.model.query.ArtifactQuery;
@@ -15,7 +16,7 @@ import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
 
-public interface MgmService {
+public interface ManagementService {
 
 	// ------------------------------------------------------------------------------------------
 	// Save
@@ -136,6 +137,33 @@ public interface MgmService {
 	 * @throws MgmException
 	 */
 	public void deleteHome(String homeId) throws MgmException;
+
+	/**
+	 * Get Home properties.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws MgmException
+	 */
+	public Map<String, Object> getHomeProperties(String homeId) throws MgmException;
+
+	/**
+	 * Set Home properties.
+	 * 
+	 * @param homeId
+	 * @param properties
+	 * @throws MgmException
+	 */
+	public boolean setHomeProperties(String homeId, Map<String, Object> properties) throws MgmException;
+
+	/**
+	 * Remove Home properties.
+	 * 
+	 * @param homeId
+	 * @param propNames
+	 * @throws MgmException
+	 */
+	public boolean removeHomeProperties(String homeId, List<String> propNames) throws MgmException;
 
 	// ------------------------------------------------------------------------------------------
 	// MetaSector

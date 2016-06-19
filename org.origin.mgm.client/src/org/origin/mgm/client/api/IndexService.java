@@ -76,7 +76,7 @@ public abstract class IndexService implements IAdaptable {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract boolean action(String action, Map<String, Object> parameters) throws IOException;
+	public abstract boolean sendCommand(String action, Map<String, Object> parameters) throws IOException;
 
 	/** implement IAdaptable interface */
 	@Override

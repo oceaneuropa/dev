@@ -16,7 +16,7 @@ import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.util.SearchPattern;
 import org.origin.common.util.Util;
 
@@ -26,13 +26,13 @@ import org.origin.common.util.Util;
  */
 public class MetaSectorHandler {
 
-	protected MgmService mgmService;
+	protected ManagementService mgmService;
 
 	/**
 	 * 
 	 * @param mgmService
 	 */
-	public MetaSectorHandler(MgmService mgmService) {
+	public MetaSectorHandler(ManagementService mgmService) {
 		this.mgmService = mgmService;
 	}
 

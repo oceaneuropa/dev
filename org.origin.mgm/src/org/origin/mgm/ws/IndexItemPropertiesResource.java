@@ -1,7 +1,7 @@
 package org.origin.mgm.ws;
 
 import java.text.MessageFormat;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
@@ -17,32 +17,32 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.dto.DTOConverter;
-import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.service.IndexService;
 
 /**
- * Service registry properties resource
+ * Index item properties resource
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/serviceregistry/{namespace}/{name}/properties
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties
  *
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/serviceregistry/{namespace}/{name}/properties
+ * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties?properties={propertiesString}
+ * 
+ * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties?properties={propertiesString}
  *
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/serviceregistry/{namespace}/{name}/properties
- *
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/serviceregistry/{namespace}/{name}/properties
+ * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties?propertynames={propertyNamesString}
  *
  */
-@Path("/serviceregistry/{namespace}/{name}/properties")
+@Path("/indexitems/{indexitemid}/properties")
 @Produces(MediaType.APPLICATION_JSON)
 public class IndexItemPropertiesResource extends AbstractApplicationResource {
 
 	/**
-	 * Handle MgmException and create ErrorDTO from it.
+	 * Handle IndexServiceException and create ErrorDTO from it.
 	 * 
 	 * @param e
 	 * @return
@@ -54,22 +54,22 @@ public class IndexItemPropertiesResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Get properties of a service.
+	 * Get properties of an index item.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/serviceregistry/{namespace}/{name}/properties
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties
 	 * 
-	 * @param namespace
+	 * @param indexItemId
 	 * @param name
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProperties(@PathParam("namespace") String namespace, @PathParam("name") String name) {
-		Map<String, Object> properties = null;
+	public Response getProperties(@PathParam("indexitemid") Integer indexItemId) {
+		Map<String, ?> properties = null;
 
-		IndexService serviceRegistry = getService(IndexService.class);
+		IndexService indexService = getService(IndexService.class);
 		try {
-			properties = serviceRegistry.getProperties(namespace, name);
+			properties = indexService.getProperties(indexItemId);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e);
@@ -80,40 +80,41 @@ public class IndexItemPropertiesResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Set a property to a service.
+	 * Set properties to an index item.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/serviceregistry/{namespace}/{name}/properties?propName={propName}&propValue={propValue}
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties?properties={propertiesString}
 	 * 
-	 * @param namespace
-	 * @param name
-	 * @param propName
-	 * @param propValue
+	 * @param indexItemId
+	 * @param propertiesString
 	 * @return
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addProperty( //
-			@PathParam("namespace") String namespace, //
-			@PathParam("name") String name, //
-			@QueryParam("propName") String propName, //
-			@QueryParam("propValue") Object propValue) {
+	public Response addProperty(@PathParam("indexitemid") Integer indexItemId, @QueryParam("properties") String propertiesString) {
+		boolean succeed = false;
 		IndexService indexService = getService(IndexService.class);
 		try {
-			indexService.setProperty(namespace, name, propName, propValue);
+			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+			succeed = indexService.setProperty(indexItemId, properties);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", MessageFormat.format("Service ''{0}'' property ''{1}'' is set to ''{2}'' successfully.", new Object[] { IndexItem.getFullName(namespace, name), propName, propValue }));
+		StatusDTO statusDTO = null;
+		if (succeed) {
+			statusDTO = new StatusDTO("200", "success", MessageFormat.format("IndexItem (indexItemId={0}) properties are added successfully.", new Object[] { indexItemId }));
+		} else {
+			statusDTO = new StatusDTO("200", "fail", MessageFormat.format("IndexItem (indexItemId={0}) properties are not added.", new Object[] { indexItemId }));
+		}
 		return Response.ok().entity(statusDTO).build();
 	}
 
 	/**
-	 * Update properties of a service.
+	 * Update properties of an index item.
 	 * 
-	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/serviceregistry/{namespace}/{name}/properties
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties?properties={propertiesString}
 	 * 
 	 * Body parameter: properties
 	 * 
@@ -122,32 +123,31 @@ public class IndexItemPropertiesResource extends AbstractApplicationResource {
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateProperties(@PathParam("namespace") String namespace, @PathParam("name") String name, Map<String, Object> properties) {
-		if (properties == null || properties.isEmpty()) {
-			ErrorDTO nullDTOError = new ErrorDTO("properties is empty.");
-			return Response.status(Status.BAD_REQUEST).entity(nullDTOError).build();
-		}
-
+	public Response updateProperties(@PathParam("indexitemid") Integer indexItemId, @QueryParam("properties") String propertiesString) {
+		boolean succeed = false;
 		IndexService indexService = getService(IndexService.class);
 		try {
-			for (Iterator<String> propNameItor = properties.keySet().iterator(); propNameItor.hasNext();) {
-				String propName = propNameItor.next();
-				Object propValue = properties.get(propName);
-				indexService.setProperty(namespace, namespace, propName, propValue);
-			}
+			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+			succeed = indexService.setProperty(indexItemId, properties);
+
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", MessageFormat.format("Service ''{0}'' properties are updated successfully.", new Object[] { IndexItem.getFullName(namespace, name) }));
+		StatusDTO statusDTO = null;
+		if (succeed) {
+			statusDTO = new StatusDTO("200", "success", MessageFormat.format("IndexItem (indexItemId={0}) properties are updated successfully.", new Object[] { indexItemId }));
+		} else {
+			statusDTO = new StatusDTO("200", "fail", MessageFormat.format("IndexItem (indexItemId={0}) properties are not updated.", new Object[] { indexItemId }));
+		}
 		return Response.ok().entity(statusDTO).build();
 	}
 
 	/**
-	 * Remove a property from a service.
+	 * Remove properties from an index item.
 	 * 
-	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/serviceregistry/{namespace}/{name}/properties?propName={propName}
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties?propertynames={propertyNamesString}
 	 * 
 	 * @param namespace
 	 * @param name
@@ -156,27 +156,24 @@ public class IndexItemPropertiesResource extends AbstractApplicationResource {
 	 */
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response removeProperty(@PathParam("namespace") String namespace, @PathParam("name") String name, @QueryParam("propName") String propName) {
-		if (propName == null || propName.isEmpty()) {
-			ErrorDTO nullPropNameError = new ErrorDTO("propName is null.");
-			return Response.status(Status.BAD_REQUEST).entity(nullPropNameError).build();
-		}
-
+	public Response removeProperty(@PathParam("indexitemid") Integer indexItemId, @QueryParam("propertynames") String propertyNamesString) {
+		boolean succeed = false;
 		IndexService indexService = getService(IndexService.class);
 		try {
-			if (!indexService.hasProperty(namespace, name, propName)) {
-				StatusDTO statusDTO = new StatusDTO("201", "servicePropertyNotFound", MessageFormat.format("Service ''{0}'''s property ''{1}'' is not found.", new Object[] { IndexItem.getFullName(namespace, name), propName }));
-				return Response.ok().entity(statusDTO).build();
-			}
-
-			indexService.removeProperty(namespace, name, propName);
+			List<?> propNames = JSONUtil.toList(propertyNamesString, true);
+			indexService.removeProperty(indexItemId, (List<String>) propNames);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", MessageFormat.format("Service ''{0}'' is unregistered successfully.", new Object[] { IndexItem.getFullName(namespace, name) }));
+		StatusDTO statusDTO = null;
+		if (succeed) {
+			statusDTO = new StatusDTO("200", "success", MessageFormat.format("IndexItem (indexItemId={0}) properties are removed successfully.", new Object[] { indexItemId }));
+		} else {
+			statusDTO = new StatusDTO("200", "fail", MessageFormat.format("IndexItem (indexItemId={0}) properties are not removed.", new Object[] { indexItemId }));
+		}
 		return Response.ok().entity(statusDTO).build();
 	}
 

@@ -11,17 +11,16 @@ public class IndexServiceConstants {
 	// constants for the values related to the index service.
 	public static final String EDITING_DOMAIN = "indexservice"; // editing domain name for editing index services
 	public static final String INDEX_PROVIDER_ID = "indexservice.index.provider"; // index provider id for index services
-	public static final String NAMESPACE = "index.service.node"; // namespace of index item for index services
-	public static final String NAME_PREFIX = "node"; // default name of index item for index services
-	public static final int DEFAULT_HEARTBEAT_EXPIRE_TIME = 30; // 30 seconds (if no heartbeat for the last 30 seconds, the node is considered as not active)
+	public static final String NAMESPACE = "index.service"; // namespace of index item for index services
+	public static final int DEFAULT_HEARTBEAT_EXPIRE_TIME = 30; // if no heartbeat for the last 30 seconds, the node is considered as not active.
 
 	// constants for configuration property names
-	public static final String CONFIG_PROP_NODE_NAME = "index.service.node.name";
-	public static final String CONFIG_PROP_NODE_URL = "index.service.node.url";
-	public static final String CONFIG_PROP_NODE_CONTEXT_ROOT = "index.service.node.contextRoot";
-	public static final String CONFIG_PROP_NODE_USERNAME = "index.service.node.username";
-	public static final String CONFIG_PROP_NODE_PASSWORD = "index.service.node.password";
-	public static final String CONFIG_PROP_HEARTBEAT_EXPIRE_TIME = "index.service.heartbeatExpireTime";
+	public static final String CONFIG_SERVICE_NAME = "index.service.name";
+	public static final String CONFIG_SERVICE_URL = "index.service.url";
+	public static final String CONFIG_SERVICE_CONTEXT_ROOT = "index.service.contextRoot";
+	public static final String CONFIG_SERVICE_USERNAME = "index.service.username";
+	public static final String CONFIG_SERVICE_PASSWORD = "index.service.password";
+	public static final String CONFIG_SERVICE_HEARTBEAT_EXPIRE_TIME = "index.service.heartbeatExpireTime";
 
 	// constants for command names
 	public static final String CMD_CREATE_INDEX_ITEM = "create_index_item";

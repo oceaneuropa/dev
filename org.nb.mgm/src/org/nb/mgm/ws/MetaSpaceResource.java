@@ -30,7 +30,7 @@ import org.nb.mgm.model.query.MetaSpaceQuery.MetaSpaceQueryBuilder;
 import org.nb.mgm.model.runtime.Artifact;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.Util;
@@ -63,8 +63,8 @@ public class MetaSpaceResource {
 	@Context
 	protected UriInfo uriInfo;
 
-	protected MgmService getMgmService() {
-		MgmService mgm = this.providers.getContextResolver(MgmService.class, MediaType.APPLICATION_JSON_TYPE).getContext(MgmService.class);
+	protected ManagementService getMgmService() {
+		ManagementService mgm = this.providers.getContextResolver(ManagementService.class, MediaType.APPLICATION_JSON_TYPE).getContext(ManagementService.class);
 		if (mgm == null) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}
@@ -83,7 +83,7 @@ public class MetaSpaceResource {
 		return DTOConverter.getInstance().toDTO(e);
 	}
 
-	protected void handleSave(MgmService mgm) {
+	protected void handleSave(ManagementService mgm) {
 		if (!mgm.isAutoSave()) {
 			mgm.save();
 		}
@@ -108,7 +108,7 @@ public class MetaSpaceResource {
 	) {
 		List<MetaSpaceDTO> metaSpaceDTOs = new ArrayList<MetaSpaceDTO>();
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			// 1. Find MetaSector by metaSectorId.
 			MetaSectorDTO metaSectorDTO = null;
@@ -181,7 +181,7 @@ public class MetaSpaceResource {
 	) {
 		MetaSpaceDTO metaSpaceDTO = null;
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			// 1. Find MetaSpace by metaSpaceId and convert to DTO
 			MetaSpace metaSpace = mgm.getMetaSpace(metaSpaceId);
@@ -246,7 +246,7 @@ public class MetaSpaceResource {
 		}
 
 		// 2. Always get management service first.
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 
 		// 3. Create MetaSpace runtime model with parameters.
 		MetaSpace newMetaSpace = new MetaSpace();
@@ -299,7 +299,7 @@ public class MetaSpaceResource {
 		}
 
 		// 2. Always get management service first.
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 
 		try {
 			// 3. Create MetaSpace runtime model with parameters.
@@ -348,7 +348,7 @@ public class MetaSpaceResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullMetaSpaceIdError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			mgm.deleteMetaSpace(metaSpaceId);
 

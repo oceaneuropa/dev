@@ -3,12 +3,12 @@ package org.nb.mgm.ws;
 import javax.ws.rs.ext.ContextResolver;
 
 import org.nb.mgm.Activator;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 
-public class MgmServiceResolver implements ContextResolver<MgmService> {
+public class MgmServiceResolver implements ContextResolver<ManagementService> {
 
 	@Override
-	public MgmService getContext(Class<?> clazz) {
+	public ManagementService getContext(Class<?> clazz) {
 		return Activator.getMgmService();
 	}
 

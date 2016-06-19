@@ -2,8 +2,10 @@ package org.nb.mgm.client.cli;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.felix.service.command.Descriptor;
@@ -145,8 +147,8 @@ public class ManagementCommand {
 					listHomes(this.mgm, machineId);
 
 				} else if (!"".equals(machineName)) {
-					Properties properties = new Properties();
-					properties.setProperty("name", machineName);
+					Map<String, Object> properties = new HashMap<String, Object>();
+					properties.put("name", machineName);
 					List<Machine> machines = this.mgm.getMachines(properties);
 
 					if (machines.isEmpty()) {

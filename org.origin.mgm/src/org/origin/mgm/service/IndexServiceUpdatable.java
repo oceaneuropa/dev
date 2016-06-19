@@ -29,6 +29,6 @@ public interface IndexServiceUpdatable extends IndexService {
 	 * @param properties
 	 * @param lastUpdateTime
 	 */
-	public void udpateCachedIndexItem(Integer indexItemId, Map<String, Object> properties, Date lastUpdateTime) throws IndexServiceException;
+	public void updateCachedIndexItemProperties(Integer indexItemId, Map<String, Object> properties, Date lastUpdateTime) throws IndexServiceException;
 
 }

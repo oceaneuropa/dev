@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,8 +26,8 @@ public class FrameworkResource {
 	@Context
 	protected Providers providers;
 
-	protected MgmService getMgmService() {
-		MgmService mgmService = this.providers.getContextResolver(MgmService.class, MediaType.APPLICATION_JSON_TYPE).getContext(MgmService.class);
+	protected ManagementService getMgmService() {
+		ManagementService mgmService = this.providers.getContextResolver(ManagementService.class, MediaType.APPLICATION_JSON_TYPE).getContext(ManagementService.class);
 		if (mgmService == null) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}

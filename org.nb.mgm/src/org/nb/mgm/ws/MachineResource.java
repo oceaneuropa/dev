@@ -28,7 +28,7 @@ import org.nb.mgm.model.query.MachineQuery;
 import org.nb.mgm.model.query.MachineQuery.MachineQueryBuilder;
 import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.Util;
@@ -61,8 +61,8 @@ public class MachineResource {
 	@Context
 	protected UriInfo uriInfo;
 
-	protected MgmService getMgmService() {
-		MgmService mgm = this.providers.getContextResolver(MgmService.class, MediaType.APPLICATION_JSON_TYPE).getContext(MgmService.class);
+	protected ManagementService getMgmService() {
+		ManagementService mgm = this.providers.getContextResolver(ManagementService.class, MediaType.APPLICATION_JSON_TYPE).getContext(ManagementService.class);
 		if (mgm == null) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}
@@ -81,7 +81,7 @@ public class MachineResource {
 		return DTOConverter.getInstance().toDTO(e);
 	}
 
-	protected void handleSave(MgmService mgm) {
+	protected void handleSave(ManagementService mgm) {
 		if (!mgm.isAutoSave()) {
 			mgm.save();
 		}
@@ -108,7 +108,7 @@ public class MachineResource {
 	) {
 		List<MachineDTO> machineDTOs = new ArrayList<MachineDTO>();
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			// Get Machines matched by query.
 			List<Machine> machines = null;
@@ -165,7 +165,7 @@ public class MachineResource {
 	public Response getMachine(@PathParam("machineId") String machineId) {
 		MachineDTO machineDTO = null;
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			Machine machine = mgm.getMachine(machineId);
 			if (machine == null) {
@@ -200,7 +200,7 @@ public class MachineResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullMachineDTOError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 
 		String id = machineDTO.getId();
 		String name = machineDTO.getName();
@@ -250,7 +250,7 @@ public class MachineResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullDTOError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			String id = machineDTO.getId();
 			String name = machineDTO.getName();
@@ -293,7 +293,7 @@ public class MachineResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullMachineIdError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getMgmService();
 		try {
 			mgm.deleteMachine(machineId);
 

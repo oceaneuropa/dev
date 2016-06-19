@@ -57,7 +57,7 @@ public class IndexServiceApplication extends AbstractApplication {
 
 		// resources
 		classes.add(IndexItemsResource.class);
-		classes.add(IndexItemsActionResource.class);
+		classes.add(IndexItemsCommandRequestResource.class);
 
 		// resolvers
 		classes.add(IndexServiceResolver.class);

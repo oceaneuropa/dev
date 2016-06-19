@@ -72,67 +72,52 @@ public interface IndexService {
 	public boolean removeIndexItem(Integer indexItemId) throws IndexServiceException;
 
 	/**
-	 * Get all properties names of an index item.
+	 * Check whether a property of an index item exists.
 	 * 
-	 * @param type
-	 * @param name
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	public String[] getPropertyNames(String type, String name) throws IndexServiceException;
-
-	/**
-	 * Get the properties of an index item.
-	 * 
-	 * @param type
-	 * @param name
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	public Map<String, Object> getProperties(String type, String name) throws IndexServiceException;
-
-	/**
-	 * Check whether a property of an index item is available.
-	 * 
-	 * @param type
-	 * @param name
+	 * @param indexItemId
 	 * @param propName
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public boolean hasProperty(String namespace, String name, String propName) throws IndexServiceException;
+	public boolean hasProperty(Integer indexItemId, String propName) throws IndexServiceException;
+
+	/**
+	 * Get the values of all properties of an index item.
+	 * 
+	 * @param indexItemId
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	public Map<String, ?> getProperties(Integer indexItemId) throws IndexServiceException;
 
 	/**
 	 * Get the property value of an index item.
 	 * 
-	 * @param type
-	 * @param name
+	 * @param indexItemId
 	 * @param propName
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public Object getProperty(String type, String name, String propName) throws IndexServiceException;
+	public Map<String, ?> getProperty(Integer indexItemId, String propName) throws IndexServiceException;
 
 	/**
-	 * Set the property of a service.
+	 * Set the properties of an index item.
 	 * 
-	 * @param type
-	 * @param name
-	 * @param propName
-	 * @param propValue
+	 * @param indexItemId
+	 * @param properties
 	 * @throws IndexServiceException
 	 */
-	public void setProperty(String type, String name, String propName, Object propValue) throws IndexServiceException;
+	public boolean setProperty(Integer indexItemId, Map<String, Object> properties) throws IndexServiceException;
 
 	/**
-	 * Remove the property of a service.
+	 * Remove the properties of an index item.
 	 * 
-	 * @param type
-	 * @param name
-	 * @param propName
+	 * @param indexItemId
+	 * @param propNames
+	 * @return
 	 * @throws IndexServiceException
 	 */
-	public void removeProperty(String type, String name, String propName) throws IndexServiceException;
+	public boolean removeProperty(Integer indexItemId, List<String> propNames) throws IndexServiceException;
 
 	/**
 	 * Add a IndexServiceListener.

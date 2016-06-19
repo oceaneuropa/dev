@@ -9,6 +9,7 @@ import static org.nb.mgm.service.MgmConstants.ERROR_CODE_MACHINE_NOT_FOUND;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.nb.mgm.exception.MgmException;
@@ -18,7 +19,7 @@ import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.util.SearchPattern;
 import org.origin.common.util.Util;
 
@@ -28,13 +29,13 @@ import org.origin.common.util.Util;
  */
 public class HomeHandler {
 
-	protected MgmService mgmService;
+	protected ManagementService mgmService;
 
 	/**
 	 * 
 	 * @param mgmService
 	 */
-	public HomeHandler(MgmService mgmService) {
+	public HomeHandler(ManagementService mgmService) {
 		this.mgmService = mgmService;
 	}
 
@@ -291,6 +292,50 @@ public class HomeHandler {
 		Machine machine = homeToDelete.getMachine();
 		if (machine != null) {
 			machine.deleteHome(homeToDelete);
+		}
+	}
+
+	/**
+	 * Get Home properties.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws MgmException
+	 */
+	public Map<String, Object> getProperties(String homeId) throws MgmException {
+		Map<String, Object> properties = null;
+		Home home = getHome(homeId);
+		if (home != null) {
+			properties = home.getProperties();
+		}
+		return properties;
+	}
+
+	/**
+	 * Set Home properties.
+	 * 
+	 * @param homeId
+	 * @param properties
+	 * @throws MgmException
+	 */
+	public void setProperties(String homeId, Map<String, Object> properties) throws MgmException {
+		Home home = getHome(homeId);
+		if (home != null) {
+			home.setProperties(properties);
+		}
+	}
+
+	/**
+	 * Remove Home properties.
+	 * 
+	 * @param homeId
+	 * @param propNames
+	 * @throws MgmException
+	 */
+	public void removeProperties(String homeId, List<String> propNames) throws MgmException {
+		Home home = getHome(homeId);
+		if (home != null) {
+			home.removeProperties(propNames);
 		}
 	}
 

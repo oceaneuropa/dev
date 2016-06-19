@@ -27,14 +27,14 @@ import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.persistence.MgmPersistenceAdapter;
 import org.nb.mgm.persistence.MgmPersistenceFactory;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MgmServiceImpl implements MgmService {
+public class ManagementServiceImpl implements ManagementService {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected BundleContext bundleContext;
@@ -66,7 +66,7 @@ public class MgmServiceImpl implements MgmService {
 	 * 
 	 * @param bundleContext
 	 */
-	public MgmServiceImpl(BundleContext bundleContext) {
+	public ManagementServiceImpl(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 
 		// load properties
@@ -108,7 +108,7 @@ public class MgmServiceImpl implements MgmService {
 
 		// 3. Register as a service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		this.serviceReg = this.bundleContext.registerService(MgmService.class, this, props);
+		this.serviceReg = this.bundleContext.registerService(ManagementService.class, this, props);
 	}
 
 	/**
@@ -371,6 +371,69 @@ public class MgmServiceImpl implements MgmService {
 			if (isAutoSave()) {
 				save();
 			}
+		} finally {
+			this.homeRWLock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * Get Home properties.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws MgmException
+	 */
+	@Override
+	public Map<String, Object> getHomeProperties(String homeId) throws MgmException {
+		this.homeRWLock.readLock().lock();
+		try {
+			return this.homeDataHandler.getProperties(homeId);
+		} finally {
+			this.homeRWLock.readLock().unlock();
+		}
+	}
+
+	/**
+	 * Set Home properties.
+	 * 
+	 * @param homeId
+	 * @param properties
+	 * @throws MgmException
+	 */
+	@Override
+	public boolean setHomeProperties(String homeId, Map<String, Object> properties) throws MgmException {
+		this.homeRWLock.writeLock().lock();
+		try {
+			this.homeDataHandler.setProperties(homeId, properties);
+
+			if (isAutoSave()) {
+				save();
+			}
+			return true;
+
+		} finally {
+			this.homeRWLock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * Remove Home properties.
+	 * 
+	 * @param homeId
+	 * @param propNames
+	 * @throws MgmException
+	 */
+	@Override
+	public boolean removeHomeProperties(String homeId, List<String> propNames) throws MgmException {
+		this.homeRWLock.writeLock().lock();
+		try {
+			this.homeDataHandler.removeProperties(homeId, propNames);
+
+			if (isAutoSave()) {
+				save();
+			}
+			return true;
+
 		} finally {
 			this.homeRWLock.writeLock().unlock();
 		}

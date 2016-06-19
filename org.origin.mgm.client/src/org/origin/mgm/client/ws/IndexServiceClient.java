@@ -16,7 +16,7 @@ import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.mgm.model.dto.IndexItemActionDTO;
+import org.origin.mgm.model.dto.IndexItemCommandRequestDTO;
 import org.origin.mgm.model.dto.IndexItemDTO;
 
 /**
@@ -121,22 +121,22 @@ public class IndexServiceClient extends AbstractClient {
 	/**
 	 * Execute an action.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems/action (Body parameter: IndexItemActionDTO)
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems/commandRequest (Body parameter: IndexItemCommandRequestDTO)
 	 * 
-	 * @param action
+	 * @param command
 	 * @param parameters
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO action(String action, Map<String, Object> parameters) throws ClientException {
+	public StatusDTO sendCommand(String command, Map<String, Object> parameters) throws ClientException {
 		StatusDTO status = null;
 		try {
-			IndexItemActionDTO actionRequest = new IndexItemActionDTO();
-			actionRequest.setAction(action);
-			actionRequest.setParameters(parameters);
+			IndexItemCommandRequestDTO commandRequest = new IndexItemCommandRequestDTO();
+			commandRequest.setCommand(command);
+			commandRequest.setParameters(parameters);
 
-			Builder builder = getRootPath().path("indexitems").path("action").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexItemActionDTO>(actionRequest) {
+			Builder builder = getRootPath().path("indexitems").path("commandRequest").request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexItemCommandRequestDTO>(commandRequest) {
 			}));
 			checkResponse(response);
 

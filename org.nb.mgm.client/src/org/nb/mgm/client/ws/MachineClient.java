@@ -2,7 +2,7 @@ package org.nb.mgm.client.ws;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
@@ -17,6 +17,7 @@ import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.util.PropertyUtil;
 
 /**
  * Machine web service client
@@ -64,20 +65,20 @@ public class MachineClient extends AbstractClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<MachineDTO> getMachines(Properties properties) throws ClientException {
+	public List<MachineDTO> getMachines(Map<String, ?> properties) throws ClientException {
 		List<MachineDTO> machines = null;
 		try {
 			WebTarget target = getRootPath().path("machines");
 			if (properties != null) {
-				String name = properties.getProperty("name");
+				String name = PropertyUtil.getString(properties, "name", null);
 				if (name != null) {
 					target.queryParam("name", name);
 				}
-				String ipaddress = properties.getProperty("ipaddress");
+				String ipaddress = PropertyUtil.getString(properties, "ipaddress", null);
 				if (ipaddress != null) {
 					target.queryParam("ipaddress", ipaddress);
 				}
-				String filter = properties.getProperty("filter");
+				String filter = PropertyUtil.getString(properties, "filter", null);
 				if (filter != null) {
 					target.queryParam("filter", filter);
 				}

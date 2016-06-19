@@ -12,13 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.Providers;
 
 import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.model.dto.DTOConverter;
@@ -32,12 +28,11 @@ import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
-import org.nb.mgm.service.MgmService;
+import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.common.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Home web service server resource
@@ -55,37 +50,9 @@ import org.slf4j.LoggerFactory;
  */
 @Path("/{machineId}/homes")
 @Produces(MediaType.APPLICATION_JSON)
-public class HomeResource {
+public class HomeResource extends AbstractApplicationResource {
 
-	protected static Logger logger = LoggerFactory.getLogger(HomeResource.class);
-
-	@Context
-	protected Providers providers;
-
-	@Context
-	protected UriInfo uriInfo;
-
-	protected MgmService getMgmService() {
-		MgmService mgm = this.providers.getContextResolver(MgmService.class, MediaType.APPLICATION_JSON_TYPE).getContext(MgmService.class);
-		if (mgm == null) {
-			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
-		}
-		return mgm;
-	}
-
-	/**
-	 * Handle MgmException and create ErrorDTO from it.
-	 * 
-	 * @param e
-	 * @return
-	 */
-	protected ErrorDTO handleError(MgmException e) {
-		e.printStackTrace();
-		logger.error(e.getMessage());
-		return DTOConverter.getInstance().toDTO(e);
-	}
-
-	protected void handleSave(MgmService mgm) {
+	protected void handleSave(ManagementService mgm) {
 		if (!mgm.isAutoSave()) {
 			mgm.save();
 		}
@@ -114,7 +81,7 @@ public class HomeResource {
 	) {
 		List<HomeDTO> homeDTOs = new ArrayList<HomeDTO>();
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			// 1. Find Machine by machineId
 			MachineDTO machineDTO = null;
@@ -179,7 +146,7 @@ public class HomeResource {
 			}
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 		return Response.ok().entity(homeDTOs).build();
@@ -202,7 +169,7 @@ public class HomeResource {
 	) {
 		HomeDTO homeDTO = null;
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			// 1. Find Home by homeId and convert to DTO
 			Home home = mgm.getHome(homeId);
@@ -248,7 +215,7 @@ public class HomeResource {
 			homeDTO.setJoinedMetaSpaces(joinedMetaSpaceDTOs);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -279,7 +246,7 @@ public class HomeResource {
 		}
 
 		// 2. Always get management service first.
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 
 		// 3. Create Home runtime model with parameters.
 		Home newHome = new Home();
@@ -305,7 +272,7 @@ public class HomeResource {
 				homeDTO.setName(newHome.getName());
 			}
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -334,7 +301,7 @@ public class HomeResource {
 		}
 
 		// 2. Always get management service first.
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 
 		try {
 			// 3. Create Home runtime model with parameters.
@@ -354,7 +321,7 @@ public class HomeResource {
 			mgm.updateHome(home);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -385,12 +352,12 @@ public class HomeResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullHomeIdError).build();
 		}
 
-		MgmService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			mgm.deleteHome(homeId);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 

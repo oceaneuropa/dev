@@ -51,11 +51,11 @@ public class IndexItemRevisionTableHandlerTestMac {
 			for (IndexItemRevisionVO vo : vos) {
 				System.out.println(vo.toString());
 
-				String argumentsString = vo.getArguments();
+				String argumentsString = vo.getArgumentsString();
 				Map<String, Object> arguments = JSONUtil.toProperties(argumentsString, true);
 				System.out.println(arguments);
 
-				String undoArgumentsString = vo.getUndoArguments();
+				String undoArgumentsString = vo.getUndoArgumentsString();
 				Map<String, Object> undoArguments = JSONUtil.toProperties(undoArgumentsString, true);
 				System.out.println(undoArguments);
 

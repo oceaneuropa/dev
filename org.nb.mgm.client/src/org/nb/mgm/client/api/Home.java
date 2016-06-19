@@ -1,5 +1,7 @@
 package org.nb.mgm.client.api;
 
+import java.util.Map;
+
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
@@ -19,7 +21,7 @@ public interface Home extends IAdaptable {
 
 	public void setAutoUpdate(boolean autoUpdate);
 
-	public void update() throws ClientException;
+	public boolean update() throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Attribute
@@ -37,5 +39,10 @@ public interface Home extends IAdaptable {
 	public String getDescription();
 
 	public void setDescription(String description) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// Properties
+	// ------------------------------------------------------------------------------------------
+	public Map<String, Object> getProperties() throws ClientException;
 
 }

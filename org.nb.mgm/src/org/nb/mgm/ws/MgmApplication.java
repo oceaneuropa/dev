@@ -61,6 +61,7 @@ public class MgmApplication extends AbstractApplication {
 		classes.add(FrameworkResource.class);
 		classes.add(MachineResource.class);
 		classes.add(HomeResource.class);
+		classes.add(HomePropertiesResource.class);
 		classes.add(MetaSectorResource.class);
 		classes.add(MetaSpaceResource.class);
 		classes.add(ArtifactResource.class);

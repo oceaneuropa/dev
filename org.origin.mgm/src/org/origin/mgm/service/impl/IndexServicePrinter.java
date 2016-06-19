@@ -104,25 +104,25 @@ public class IndexServicePrinter {
 		return properties;
 	}
 
-	protected String getNodeName() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_PROP_NODE_NAME, null);
+	protected String getServiceName() {
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_SERVICE_NAME, null);
 	}
 
-	protected String getNodeUrl() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_PROP_NODE_URL, null);
+	protected String getServiceUrl() {
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_SERVICE_URL, null);
 	}
 
-	protected String getNodeContextRoot() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_PROP_NODE_CONTEXT_ROOT, null);
+	protected String getServiceContextRoot() {
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_SERVICE_CONTEXT_ROOT, null);
 	}
 
 	/**
 	 * Print out the profile of this index service node.
 	 */
 	public void printProfile() {
-		String name = getNodeName();
-		String url = getNodeUrl();
-		String contextRoot = getNodeContextRoot();
+		String name = getServiceName();
+		String url = getServiceUrl();
+		String contextRoot = getServiceContextRoot();
 		// String username = getNodeUsername();
 		// String password = getNodePassword();
 

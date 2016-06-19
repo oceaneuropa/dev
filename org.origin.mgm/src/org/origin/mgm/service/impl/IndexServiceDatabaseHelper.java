@@ -56,6 +56,7 @@ public class IndexServiceDatabaseHelper {
 			if (!activePendingRequests.isEmpty()) {
 				hasActivePendingRequests = true;
 			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when getting active pending requests from database. Message: " + e.getMessage());
@@ -80,8 +81,8 @@ public class IndexServiceDatabaseHelper {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
-
 			newRequestVO = requestTableHandler.insert(conn, indexProviderId, command, argumentsString, STATUS_PENDING, new Date(), null);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when creating a request for creating an index item in database. Message: " + e.getMessage());
@@ -105,7 +106,7 @@ public class IndexServiceDatabaseHelper {
 		try {
 			conn = connAware.getConnection();
 
-			requestTableHandler.updateLastUpdateTime(conn, requestId, date);
+			this.requestTableHandler.updateLastUpdateTime(conn, requestId, date);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -132,7 +133,7 @@ public class IndexServiceDatabaseHelper {
 			}
 
 			// mark the request status as cancelled
-			requestTableHandler.updateStatusAsCompleted(conn, requestId, new Date());
+			this.requestTableHandler.updateStatusAsCompleted(conn, requestId, new Date());
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -161,7 +162,7 @@ public class IndexServiceDatabaseHelper {
 			}
 
 			// mark the request status as cancelled
-			requestTableHandler.updateStatusAsCancelled(conn, requestId, new Date());
+			this.requestTableHandler.updateStatusAsCancelled(conn, requestId, new Date());
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -186,12 +187,11 @@ public class IndexServiceDatabaseHelper {
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 
 		List<IndexItemDataVO> indexItemVOs = null;
-
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
+			indexItemVOs = this.dataTableHandler.getIndexItems(conn);
 
-			indexItemVOs = dataTableHandler.getIndexItems(conn);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when loading index items from database. Message: " + e.getMessage());
@@ -210,6 +210,29 @@ public class IndexServiceDatabaseHelper {
 			// System.out.println(getClassName() + ".getIndexItemsFromDatabase() indexItems.size() is " + indexItems.size());
 		}
 		return indexItems;
+	}
+
+	/**
+	 * 
+	 * @param connAware
+	 * @param indexItemId
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	public IndexItemDataVO getIndexItemFromDatabase(ConnectionAware connAware, Integer indexItemId) throws IndexServiceException {
+		IndexItemDataVO indexItemVO = null;
+		Connection conn = null;
+		try {
+			conn = connAware.getConnection();
+			indexItemVO = this.dataTableHandler.getIndexItem(conn, indexItemId);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when loading index item (indexItemid=" + indexItemId + ") from database. Message: " + e.getMessage());
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return indexItemVO;
 	}
 
 	/**
@@ -248,8 +271,8 @@ public class IndexServiceDatabaseHelper {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
+			newIndexItemVO = this.dataTableHandler.insert(conn, indexProviderId, namespace, name, propertiesString, new Date(), null);
 
-			newIndexItemVO = dataTableHandler.insert(conn, indexProviderId, namespace, name, propertiesString, new Date(), null);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when creating an index item in database. Message: " + e.getMessage());
@@ -260,6 +283,51 @@ public class IndexServiceDatabaseHelper {
 			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, "Cannot create index item in database.");
 		}
 		return newIndexItemVO;
+	}
+
+	/**
+	 * 
+	 * @param connAware
+	 * @param indexItemId
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	public boolean deleteIndexItemInDatababse(ConnectionAware connAware, Integer indexItemId) throws IndexServiceException {
+		Connection conn = null;
+		try {
+			conn = connAware.getConnection();
+			return this.dataTableHandler.delete(conn, indexItemId);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when deleting an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+	}
+
+	/**
+	 * 
+	 * @param connAware
+	 * @param indexItemId
+	 * @param allProperties
+	 * @param lastUpdateTime
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	public boolean updateIndexItemPropertiesInDatabase(ConnectionAware connAware, Integer indexItemId, Map<String, Object> allProperties, Date lastUpdateTime) throws IndexServiceException {
+		Connection conn = null;
+		try {
+			String propertiesString = JSONUtil.toJsonString(allProperties);
+			conn = connAware.getConnection();
+			return this.dataTableHandler.updateProperties(conn, indexItemId, propertiesString, lastUpdateTime);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when updating the properties of an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
 	}
 
 	/**
@@ -277,8 +345,7 @@ public class IndexServiceDatabaseHelper {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
-
-			latestRevisionId = revisionTableHandler.getMaxRevisionId(conn);
+			latestRevisionId = this.revisionTableHandler.getMaxRevisionId(conn);
 			if (debug) {
 				// System.out.println(getClassName() + ".getLatestRevisionIdFromDatabase() latestRevisionId is " + latestRevisionId);
 			}
@@ -308,8 +375,8 @@ public class IndexServiceDatabaseHelper {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
+			revisionVOs = this.revisionTableHandler.getRevisions(conn, startRevisionId, endRevisionId);
 
-			revisionVOs = revisionTableHandler.getRevisions(conn, startRevisionId, endRevisionId);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when getting revisions from database. Message: " + e.getMessage());
@@ -344,7 +411,7 @@ public class IndexServiceDatabaseHelper {
 			String undoCommandArgumentsString = JSONUtil.toJsonString(undoCommandArguments);
 
 			Date updateTime = new Date();
-			newRevisionVO = revisionTableHandler.insert(conn, indexProviderId, "create_index_item", commandArgumentsString, "delete_index_item", undoCommandArgumentsString, updateTime);
+			newRevisionVO = this.revisionTableHandler.insert(conn, indexProviderId, command, commandArgumentsString, undoCommand, undoCommandArgumentsString, updateTime);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

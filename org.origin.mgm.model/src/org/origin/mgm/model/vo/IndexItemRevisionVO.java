@@ -10,9 +10,9 @@ public class IndexItemRevisionVO {
 	protected Integer revisionId;
 	protected String indexProviderId;
 	protected String command;
-	protected String arguments;
+	protected String argumentsString;
 	protected String undoCommand;
-	protected String undoArguments;
+	protected String undoArgumentsString;
 	protected Date updateTime;
 
 	public IndexItemRevisionVO() {
@@ -23,18 +23,18 @@ public class IndexItemRevisionVO {
 	 * @param revisionId
 	 * @param indexProviderId
 	 * @param command
-	 * @param arguments
+	 * @param argumentsString
 	 * @param undoCommand
-	 * @param undoArguments
+	 * @param undoArgumentsString
 	 * @param updateTime
 	 */
-	public IndexItemRevisionVO(Integer revisionId, String indexProviderId, String command, String arguments, String undoCommand, String undoArguments, Date updateTime) {
+	public IndexItemRevisionVO(Integer revisionId, String indexProviderId, String command, String argumentsString, String undoCommand, String undoArgumentsString, Date updateTime) {
 		this.revisionId = revisionId;
 		this.indexProviderId = indexProviderId;
 		this.command = command;
-		this.arguments = arguments;
+		this.argumentsString = argumentsString;
 		this.undoCommand = undoCommand;
-		this.undoArguments = undoArguments;
+		this.undoArgumentsString = undoArgumentsString;
 		this.updateTime = updateTime;
 	}
 
@@ -62,12 +62,12 @@ public class IndexItemRevisionVO {
 		this.command = command;
 	}
 
-	public String getArguments() {
-		return arguments;
+	public String getArgumentsString() {
+		return argumentsString;
 	}
 
-	public void setArguments(String arguments) {
-		this.arguments = arguments;
+	public void setArgumentsString(String argumentsString) {
+		this.argumentsString = argumentsString;
 	}
 
 	public String getUndoCommand() {
@@ -78,12 +78,12 @@ public class IndexItemRevisionVO {
 		this.undoCommand = undoCommand;
 	}
 
-	public String getUndoArguments() {
-		return undoArguments;
+	public String getUndoArgumentsString() {
+		return undoArgumentsString;
 	}
 
-	public void setUndoArguments(String undoArguments) {
-		this.undoArguments = undoArguments;
+	public void setUndoArgumentsString(String undoArgumentsString) {
+		this.undoArgumentsString = undoArgumentsString;
 	}
 
 	public Date getUpdateTime() {
@@ -107,9 +107,9 @@ public class IndexItemRevisionVO {
 		sb.append("revisionId=").append(this.revisionId);
 		sb.append(", indexProviderId=").append(this.indexProviderId);
 		sb.append(", command=").append(this.command);
-		sb.append(", arguments=").append(this.arguments);
+		sb.append(", arguments=").append(this.argumentsString);
 		sb.append(", undoCommand=").append(this.undoCommand);
-		sb.append(", undoArguments=").append(this.undoArguments);
+		sb.append(", undoArguments=").append(this.undoArgumentsString);
 		sb.append(", updateTime=").append(updateTimeString);
 		sb.append(")");
 		return sb.toString();
