@@ -45,7 +45,7 @@ public interface Home extends IAdaptable {
 	// Properties
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get Machine properties.
+	 * Get Home properties.
 	 * 
 	 * @return
 	 * @throws ClientException
@@ -53,7 +53,7 @@ public interface Home extends IAdaptable {
 	public Map<String, Object> getProperties() throws ClientException;
 
 	/**
-	 * Set Machine property.
+	 * Set Home property.
 	 * 
 	 * @param propName
 	 * @param propValue
@@ -63,7 +63,7 @@ public interface Home extends IAdaptable {
 	public boolean setProperty(String propName, Object propValue) throws ClientException;
 
 	/**
-	 * Set Machine properties.
+	 * Set Home properties.
 	 * 
 	 * @param properties
 	 * @return
@@ -72,7 +72,16 @@ public interface Home extends IAdaptable {
 	public boolean setProperties(Map<String, Object> properties) throws ClientException;
 
 	/**
-	 * Remove Machine properties.
+	 * Remove Home property.
+	 * 
+	 * @param propertyName
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean removeProperty(String propertyName) throws ClientException;
+
+	/**
+	 * Remove Home properties.
 	 * 
 	 * @param propertyNames
 	 * @return

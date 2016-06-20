@@ -29,7 +29,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 /**
  * Machine properties resource.
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=false
  * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?properties={propertiesString}
  * 
@@ -53,15 +53,15 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 	/**
 	 * Get Machine properties.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=false
 	 * 
 	 * @param machineId
-	 * @param homeId
+	 * @param useJsonString
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProperties(@PathParam("machineId") String machineId) {
+	public Response getProperties(@PathParam("machineId") String machineId, @QueryParam("useJsonString") boolean useJsonString) {
 		if (machineId == null || machineId.isEmpty()) {
 			ErrorDTO nullMachineIdError = new ErrorDTO("machineId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullMachineIdError).build();
@@ -82,10 +82,17 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 		}
-		return Response.ok().entity(properties).build();
+
+		if (useJsonString) {
+			String propertiesString = JSONUtil.toJsonString(properties);
+			return Response.ok().entity(propertiesString).build();
+		} else {
+			return Response.ok().entity(properties).build();
+		}
 	}
 
 	/**
@@ -99,7 +106,7 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setProperties(@PathParam("machineId") String machineId, @QueryParam("properties") String propertiesString) {
+	public Response setProperties(@PathParam("machineId") String machineId, String propertiesString) {
 		if (machineId == null || machineId.isEmpty()) {
 			ErrorDTO nullMachineIdError = new ErrorDTO("machineId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullMachineIdError).build();
@@ -143,7 +150,7 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response putProperties(@PathParam("machineId") String machineId, @QueryParam("properties") String propertiesString) {
+	public Response putProperties(@PathParam("machineId") String machineId, String propertiesString) {
 		return setProperties(machineId, propertiesString);
 	}
 
@@ -162,6 +169,10 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 		if (machineId == null || machineId.isEmpty()) {
 			ErrorDTO nullMachineIdError = new ErrorDTO("machineId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullMachineIdError).build();
+		}
+		if (propertyNames.isEmpty()) {
+			ErrorDTO emptyPropertyNamesError = new ErrorDTO("Property names are empty.");
+			return Response.status(Status.BAD_REQUEST).entity(emptyPropertyNamesError).build();
 		}
 
 		boolean succeed = false;

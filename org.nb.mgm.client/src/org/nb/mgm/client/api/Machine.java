@@ -120,6 +120,15 @@ public interface Machine extends IAdaptable {
 	public boolean setProperties(Map<String, Object> properties) throws ClientException;
 
 	/**
+	 * Remove Machine property.
+	 * 
+	 * @param propertyName
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean removeProperty(String propertyName) throws ClientException;
+
+	/**
 	 * Remove Machine properties.
 	 * 
 	 * @param propertyNames

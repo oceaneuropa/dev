@@ -60,16 +60,11 @@ public class MachineImpl implements Machine {
 
 	@Override
 	public boolean update() throws ClientException {
-		if (this.management != null) {
-			MachineClient machineClient = this.management.getAdapter(MachineClient.class);
-			checkClient(machineClient);
+		MachineClient machineClient = this.management.getAdapter(MachineClient.class);
+		checkClient(machineClient);
 
-			StatusDTO status = machineClient.updateMachine(this.machineDTO);
-			if (status != null && status.success()) {
-				return true;
-			}
-		}
-		return false;
+		StatusDTO status = machineClient.updateMachine(this.machineDTO);
+		return (status != null && status.success()) ? true : false;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -238,15 +233,12 @@ public class MachineImpl implements Machine {
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public Map<String, Object> getProperties() throws ClientException {
-		Map<String, Object> properties = null;
-		if (this.management != null) {
-			String machineId = this.machineDTO.getId();
+		String machineId = this.machineDTO.getId();
 
-			MachineClient machineClient = management.getAdapter(MachineClient.class);
-			checkClient(machineClient);
+		MachineClient machineClient = this.management.getAdapter(MachineClient.class);
+		checkClient(machineClient);
 
-			// properties = machineClient.getProperties(machineId, machineId);
-		}
+		Map<String, Object> properties = machineClient.getProperties(machineId, true);
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 		}
@@ -254,18 +246,39 @@ public class MachineImpl implements Machine {
 	}
 
 	@Override
-	public boolean setProperty(String propName, Object propValue) {
-		return false;
+	public boolean setProperty(String propName, Object propValue) throws ClientException {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(propName, propValue);
+		return setProperties(properties);
 	}
 
 	@Override
-	public boolean setProperties(Map<String, Object> properties) {
-		return false;
+	public boolean setProperties(Map<String, Object> properties) throws ClientException {
+		String machineId = this.machineDTO.getId();
+
+		MachineClient machineClient = this.management.getAdapter(MachineClient.class);
+		checkClient(machineClient);
+
+		StatusDTO status = machineClient.setProperties(machineId, properties);
+		return (status != null && status.success()) ? true : false;
 	}
 
 	@Override
-	public boolean removeProperties(List<String> propertyNames) {
-		return false;
+	public boolean removeProperty(String propertyName) throws ClientException {
+		List<String> propertyNames = new ArrayList<String>();
+		propertyNames.add(propertyName);
+		return removeProperties(propertyNames);
+	}
+
+	@Override
+	public boolean removeProperties(List<String> propertyNames) throws ClientException {
+		String machineId = this.machineDTO.getId();
+
+		MachineClient machineClient = this.management.getAdapter(MachineClient.class);
+		checkClient(machineClient);
+
+		StatusDTO status = machineClient.removeProperties(machineId, propertyNames);
+		return (status != null && status.success()) ? true : false;
 	}
 
 	// ------------------------------------------------------------------------------------------

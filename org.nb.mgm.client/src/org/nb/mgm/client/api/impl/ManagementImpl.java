@@ -148,10 +148,7 @@ public class ManagementImpl implements Management {
 		checkClient(this.machineClient);
 
 		StatusDTO status = this.machineClient.deleteMachine(machineId);
-		if (status != null && status.success()) {
-			return true;
-		}
-		return false;
+		return (status != null && status.success()) ? true : false;
 	}
 
 	// ------------------------------------------------------------------------------------------

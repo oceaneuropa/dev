@@ -248,6 +248,7 @@ public class HomeClient extends AbstractClient {
 	}
 
 	/**
+	 * Set Home properties.
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -275,6 +276,7 @@ public class HomeClient extends AbstractClient {
 	}
 
 	/**
+	 * Remove Home properties.
 	 * 
 	 * @param machineId
 	 * @param homeId

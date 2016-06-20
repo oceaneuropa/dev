@@ -1,5 +1,6 @@
 package org.nb.mgm.client.api.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,10 +68,7 @@ public class HomeImpl implements Home {
 		checkClient(homeClient);
 
 		StatusDTO status = homeClient.updateHome(machineId, this.homeDTO);
-		if (status != null && status.success()) {
-			return true;
-		}
-		return false;
+		return (status != null && status.success()) ? true : false;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -135,12 +133,11 @@ public class HomeImpl implements Home {
 		}
 	}
 
-	// ------------------------------------------------------------------------------------------
+	// ---------------------------- --------------------------------------------------------------
 	// Properties
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public Map<String, Object> getProperties() throws ClientException {
-		Map<String, Object> properties = null;
 		Management management = this.machine.getManagement();
 		String machineId = this.machine.getId();
 		String homeId = this.homeDTO.getId();
@@ -148,7 +145,7 @@ public class HomeImpl implements Home {
 		HomeClient homeClient = management.getAdapter(HomeClient.class);
 		checkClient(homeClient);
 
-		properties = homeClient.getProperties(machineId, homeId, true);
+		Map<String, Object> properties = homeClient.getProperties(machineId, homeId, true);
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 		}
@@ -158,6 +155,7 @@ public class HomeImpl implements Home {
 	@Override
 	public boolean setProperty(String propName, Object propValue) throws ClientException {
 		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(propName, propValue);
 		return setProperties(properties);
 	}
 
@@ -171,10 +169,14 @@ public class HomeImpl implements Home {
 		checkClient(homeClient);
 
 		StatusDTO status = homeClient.setProperties(machineId, homeId, properties);
-		if (status != null && status.success()) {
-			return true;
-		}
-		return false;
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public boolean removeProperty(String propertyName) throws ClientException {
+		List<String> propertyNames = new ArrayList<String>();
+		propertyNames.add(propertyName);
+		return removeProperties(propertyNames);
 	}
 
 	@Override
@@ -187,10 +189,7 @@ public class HomeImpl implements Home {
 		checkClient(homeClient);
 
 		StatusDTO status = homeClient.removeProperties(machineId, homeId, propertyNames);
-		if (status != null && status.success()) {
-			return true;
-		}
-		return false;
+		return (status != null && status.success()) ? true : false;
 	}
 
 	// ------------------------------------------------------------------------------------------

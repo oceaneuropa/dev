@@ -58,14 +58,6 @@ public class Home extends ModelObject {
 		this.properties.putAll(properties);
 	}
 
-	public void setProperty(String propName, Object propValue) {
-		this.properties.put(propName, propValue);
-	}
-
-	public void removeProperty(String propName) {
-		this.properties.remove(propName);
-	}
-
 	public void removeProperties(List<String> propNames) {
 		for (String propName : propNames) {
 			this.properties.remove(propName);

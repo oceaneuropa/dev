@@ -92,14 +92,12 @@ public class IndexServiceImpl extends IndexService {
 	public boolean sendCommand(String command, Map<String, Object> parameters) throws IOException {
 		try {
 			StatusDTO status = getClient().sendCommand(command, parameters);
-			if (status != null && status.success()) {
-				return true;
-			}
+			return (status != null && status.success()) ? true : false;
+
 		} catch (ClientException e) {
 			e.printStackTrace();
 			throw new IOException(e);
 		}
-		return false;
 	}
 
 }

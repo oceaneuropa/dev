@@ -56,7 +56,7 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	/**
 	 * Get Home properties.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?useJsonString=false
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -112,8 +112,6 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	// public Response setProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId, @QueryParam("properties") String
-	// propertiesString) {
 	public Response setProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId, String propertiesString) {
 		if (homeId == null || homeId.isEmpty()) {
 			ErrorDTO nullHomeIdError = new ErrorDTO("homeId is null.");
