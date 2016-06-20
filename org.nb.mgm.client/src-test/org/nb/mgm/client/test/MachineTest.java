@@ -1,6 +1,11 @@
 package org.nb.mgm.client.test;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
@@ -17,14 +22,14 @@ import org.origin.common.rest.client.ClientException;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MachineTest {
 
-	protected Management mgm;
+	protected Management management;
 
 	public MachineTest() {
-		this.mgm = getManagement();
+		this.management = getManagement();
 	}
 
 	protected void setUp() {
-		this.mgm = getManagement();
+		this.management = getManagement();
 	}
 
 	protected Management getManagement() {
@@ -35,11 +40,23 @@ public class MachineTest {
 	public void test001_getMachines() {
 		System.out.println("--- --- --- test001_getMachines() --- --- ---");
 		try {
-			List<Machine> machines = mgm.getMachines();
+			List<Machine> machines = this.management.getMachines();
 			for (Machine machine : machines) {
+				String machineName = machine.getName();
+				if (!machineName.startsWith("Machine")) {
+					continue;
+				}
+
 				System.out.println(machine.toString());
-				
-				
+
+				Map<String, Object> properties = machine.getProperties();
+				System.out.println("\t\tproperties (size=" + properties.size() + "):");
+				for (Iterator<String> propNameItor = properties.keySet().iterator(); propNameItor.hasNext();) {
+					String propName = propNameItor.next();
+					Object propValue = properties.get(propName);
+					Class clazz = propValue != null ? propValue.getClass() : null;
+					System.out.println("\t\t\t" + propName + "=" + propValue + "(" + (clazz != null ? clazz.getName() : "null") + ")");
+				}
 			}
 		} catch (ClientException e) {
 			e.printStackTrace();
@@ -51,11 +68,11 @@ public class MachineTest {
 	public void test002_deleteMachines() {
 		System.out.println("--- --- --- test002_deleteMachines() --- --- ---");
 		try {
-			List<Machine> machines = mgm.getMachines();
+			List<Machine> machines = this.management.getMachines();
 			for (Machine machine : machines) {
 				String machineId = machine.getId();
 				String machineName = machine.getName();
-				boolean succeed = mgm.deleteMachine(machine.getId());
+				boolean succeed = this.management.deleteMachine(machine.getId());
 
 				if (succeed) {
 					System.out.println("Machine '" + machineName + "' (" + machineId + ") is deleted.");
@@ -79,7 +96,7 @@ public class MachineTest {
 				String ipAddress = "127.0.0." + (i + 1);
 				String description = "description of " + machineName;
 
-				Machine newMachine = mgm.addMachine(machineName, ipAddress, description);
+				Machine newMachine = this.management.addMachine(machineName, ipAddress, description);
 				if (newMachine == null) {
 					System.out.println("new Machine is: null");
 				} else {
@@ -96,7 +113,7 @@ public class MachineTest {
 	public void test004_updateMachines() {
 		System.out.println("--- --- --- test004_updateMachines() --- --- ---");
 		try {
-			List<Machine> machines = mgm.getMachines();
+			List<Machine> machines = this.management.getMachines();
 			for (Machine machine : machines) {
 				String machineId = machine.getId();
 				String machineName = machine.getName();
@@ -139,6 +156,78 @@ public class MachineTest {
 					}
 				} else {
 					System.out.println("Machine '" + machineName + "' (" + machineId + ") is not required to be updated.");
+				}
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		System.out.println();
+	}
+
+	@Ignore
+	public void test005_postMachineProperties() {
+		System.out.println("--- --- --- test005_postMachineProperties() --- --- ---");
+		try {
+			List<Machine> machines = this.management.getMachines();
+			for (Machine machine : machines) {
+				String machineId = machine.getId();
+				String machineName = machine.getName();
+
+				if ("Machine1".equals(machineName) || "Machine2".equals(machineName) || "Machine3".equals(machineName)) {
+					Map<String, Object> newProperties = new LinkedHashMap<String, Object>();
+					newProperties.put("date1", new Date());
+					newProperties.put("date2", new Date());
+					newProperties.put("float1", new Float(5.01));
+					newProperties.put("float2", new Float(5.02));
+					newProperties.put("long1", new Long(5001));
+					newProperties.put("long2", new Long(5002));
+					newProperties.put("string1", "true");
+					newProperties.put("string2", "65.43");
+					newProperties.put("boolean1", true);
+					newProperties.put("boolean2", false);
+
+					boolean succeed = machine.setProperties(newProperties);
+					if (succeed) {
+						System.out.println("\tMachine '" + machineName + "' (" + machineId + ") properties are updated.");
+					} else {
+						System.out.println("\tMachine '" + machineName + "' (" + machineId + ") properties failed to be updated.");
+					}
+				}
+			}
+
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		System.out.println();
+	}
+
+	@Ignore
+	public void test006_removeMachineProperties() {
+		System.out.println("--- --- --- test006_removeMachineProperties() --- --- ---");
+		try {
+			List<Machine> machines = management.getMachines();
+			for (Machine machine : machines) {
+				String machineId = machine.getId();
+				String machineName = machine.getName();
+
+				if ("Machine1".equals(machineName) || "Machine2".equals(machineName) || "Machine3".equals(machineName)) {
+					List<String> propertyNames = new ArrayList<String>();
+					propertyNames.add("machine_date1");
+					propertyNames.add("machine_date2");
+					propertyNames.add("machine_float1");
+					propertyNames.add("machine_float2");
+					propertyNames.add("machine_long1");
+					propertyNames.add("machine_long2");
+					propertyNames.add("machine_string1");
+					propertyNames.add("machine_string2");
+					propertyNames.add("machine_string3");
+
+					boolean succeed = machine.removeProperties(propertyNames);
+					if (succeed) {
+						System.out.println("\tMachine '" + machineName + "' (" + machineId + ") properties are removed.");
+					} else {
+						System.out.println("\tMachine '" + machineName + "' (" + machineId + ") properties failed to be removed.");
+					}
 				}
 			}
 		} catch (ClientException e) {
