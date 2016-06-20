@@ -3,6 +3,7 @@ package org.nb.mgm.persistence;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -126,6 +127,18 @@ public class LocalMgmReader {
 		}
 		machine.setIpAddress(ipAddress);
 
+		// "properties" attribute
+		Map<String, Object> properties = null;
+		if (machineJSON.has("properties")) {
+			String propertiesString = machineJSON.getString("properties");
+			if (propertiesString != null) {
+				properties = JSONUtil.toProperties(propertiesString);
+			}
+		}
+		if (properties != null) {
+			machine.setProperties(properties);
+		}
+
 		// "homes" array
 		if (machineJSON.has("homes")) {
 			JSONArray homesArray = machineJSON.getJSONArray("homes");
@@ -188,6 +201,18 @@ public class LocalMgmReader {
 			url = homeJSON.getString("url");
 		}
 		home.setUrl(url);
+
+		// "properties" attribute
+		Map<String, Object> properties = null;
+		if (homeJSON.has("properties")) {
+			String propertiesString = homeJSON.getString("properties");
+			if (propertiesString != null) {
+				properties = JSONUtil.toProperties(propertiesString);
+			}
+		}
+		if (properties != null) {
+			home.setProperties(properties);
+		}
 
 		// "joinedMetaSectorIds" array
 		if (homeJSON.has("joinedMetaSectorIds")) {

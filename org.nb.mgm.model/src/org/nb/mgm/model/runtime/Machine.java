@@ -1,13 +1,16 @@
 package org.nb.mgm.model.runtime;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.origin.common.rest.model.ModelObject;
 
 public class Machine extends ModelObject {
 
 	protected String ipAddress;
+	protected Map<String, Object> properties = new HashMap<String, Object>();
 
 	protected List<Home> homes = new ArrayList<Home>();
 
@@ -28,6 +31,31 @@ public class Machine extends ModelObject {
 
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
+	}
+
+	// ----------------------------------------------------------------------------------------------------------------
+	// properties
+	// ----------------------------------------------------------------------------------------------------------------
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties.putAll(properties);
+	}
+
+	public void setProperty(String propName, Object propValue) {
+		this.properties.put(propName, propValue);
+	}
+
+	public void removeProperty(String propName) {
+		this.properties.remove(propName);
+	}
+
+	public void removeProperties(List<String> propNames) {
+		for (String propName : propNames) {
+			this.properties.remove(propName);
+		}
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------

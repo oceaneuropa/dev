@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.HomeDTO;
+import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -211,30 +212,94 @@ public class HomeClient extends AbstractClient {
 	}
 
 	/**
-	 * Get home properties.
+	 * Get Home properties.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties
 	 * 
 	 * @param machineId
 	 * @param homeId
+	 * @param useJsonString
 	 * @return
 	 * @throws ClientException
 	 */
-	public Map<String, Object> getProperties(String machineId, String homeId) throws ClientException {
+	public Map<String, Object> getProperties(String machineId, String homeId, boolean useJsonString) throws ClientException {
 		Map<String, Object> properties = new LinkedHashMap<String, Object>();
-
 		try {
-			Builder builder = getRootPath().path(machineId).path("homes").path(homeId).path("properties").request(MediaType.APPLICATION_JSON);
+			WebTarget webTarget = getRootPath().path(machineId).path("homes").path(homeId).path("properties");
+			if (useJsonString) {
+				webTarget = webTarget.queryParam("useJsonString", useJsonString);
+			}
+			Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
 			checkResponse(response);
 
-			properties = response.readEntity(new GenericType<Map<String, Object>>() {
-			});
+			if (useJsonString) {
+				String propertiesString = response.readEntity(String.class);
+				properties = JSONUtil.toProperties(propertiesString);
+			} else {
+				properties = response.readEntity(new GenericType<Map<String, Object>>() {
+				});
+			}
 
 		} catch (ClientException e) {
 			handleException(e);
 		}
 		return properties;
+	}
+
+	/**
+	 * 
+	 * @param machineId
+	 * @param homeId
+	 * @param properties
+	 * @return
+	 * @throws ClientException
+	 */
+	public StatusDTO setProperties(String machineId, String homeId, Map<String, Object> properties) throws ClientException {
+		StatusDTO status = null;
+		try {
+			String propertiesString = JSONUtil.toJsonString(properties);
+
+			// Builder builder = getRootPath().path(machineId).path("homes").path(homeId).path("properties").queryParam("properties",
+			// propertiesString).request(MediaType.APPLICATION_JSON);
+			Builder builder = getRootPath().path(machineId).path("homes").path(homeId).path("properties").request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).post(Entity.json(propertiesString));
+			checkResponse(response);
+
+			status = response.readEntity(StatusDTO.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return status;
+	}
+
+	/**
+	 * 
+	 * @param machineId
+	 * @param homeId
+	 * @param propertyNames
+	 * @return
+	 * @throws ClientException
+	 */
+	public StatusDTO removeProperties(String machineId, String homeId, List<String> propertyNames) throws ClientException {
+		StatusDTO status = null;
+		try {
+			WebTarget webTarget = getRootPath().path(machineId).path("homes").path(homeId).path("properties");
+			for (String propertyName : propertyNames) {
+				webTarget = webTarget.queryParam("propertyName", propertyName);
+			}
+
+			Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).delete();
+			checkResponse(response);
+
+			status = response.readEntity(StatusDTO.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return status;
 	}
 
 }

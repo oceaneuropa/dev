@@ -31,8 +31,10 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 
 		// 1. Start Mgm management service
-		Activator.mgmService = new ManagementServiceImpl(bundleContext);
-		Activator.mgmService.start();
+		ManagementServiceImpl mgmService = new ManagementServiceImpl(bundleContext);
+		mgmService.setAutoSave(true);
+		mgmService.start();
+		Activator.mgmService = mgmService;
 
 		// 2. Start MgmApplication web service
 		this.mgmApplication = new MgmApplication(bundleContext, "/mgm/v1");

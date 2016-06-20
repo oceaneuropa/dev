@@ -35,7 +35,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.common.util.Util;
 
 /**
- * Home web service server resource
+ * Home resource.
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
  * 
@@ -235,10 +235,7 @@ public class HomeResource extends AbstractApplicationResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createHome( //
-			@PathParam("machineId") String machineId, //
-			HomeDTO homeDTO //
-	) {
+	public Response createHome(@PathParam("machineId") String machineId, HomeDTO homeDTO) {
 		// 1. Validate parameters.
 		if (homeDTO == null) {
 			ErrorDTO nullHomeDTOError = new ErrorDTO("homeDTO is null.");

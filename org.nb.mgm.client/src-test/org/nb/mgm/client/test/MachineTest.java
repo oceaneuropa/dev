@@ -38,6 +38,8 @@ public class MachineTest {
 			List<Machine> machines = mgm.getMachines();
 			for (Machine machine : machines) {
 				System.out.println(machine.toString());
+				
+				
 			}
 		} catch (ClientException e) {
 			e.printStackTrace();

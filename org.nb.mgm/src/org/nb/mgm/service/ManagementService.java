@@ -85,6 +85,33 @@ public interface ManagementService {
 	 */
 	public void deleteMachine(String machineId) throws MgmException;
 
+	/**
+	 * Get Machine properties.
+	 * 
+	 * @param machineId
+	 * @return
+	 * @throws MgmException
+	 */
+	public Map<String, Object> getMachineProperties(String machineId) throws MgmException;
+
+	/**
+	 * Set Machine properties.
+	 * 
+	 * @param machineId
+	 * @param properties
+	 * @throws MgmException
+	 */
+	public boolean setMachineProperties(String machineId, Map<String, Object> properties) throws MgmException;
+
+	/**
+	 * Remove Machine properties.
+	 * 
+	 * @param machineId
+	 * @param propNames
+	 * @throws MgmException
+	 */
+	public boolean removeMachineProperties(String machineId, List<String> propNames) throws MgmException;
+
 	// ------------------------------------------------------------------------------------------
 	// Home
 	// ------------------------------------------------------------------------------------------

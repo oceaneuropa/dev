@@ -27,22 +27,21 @@ import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 
 /**
- * Get home properties.
+ * Home properties resource.
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties
- * 
- * Set or update a home property.
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?useJsonString=false
  * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?properties={propertiesString}
  * 
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?properties={propertiesString}
  * 
- * Update a home property.
- *
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?propertynames={propertyNamesString}
- * 
+ * URL (DELETE):
+ * {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
  * 
  * @see http://stackoverflow.com/questions/13750010/jersey-client-how-to-add-a-list-as-query-parameter
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ * 
  */
 @Path("/{machineId}/homes/{homeId}/properties")
 @Produces(MediaType.APPLICATION_JSON)
@@ -55,17 +54,18 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Get properties of a home.
+	 * Get Home properties.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties
 	 * 
 	 * @param machineId
 	 * @param homeId
+	 * @param useJsonString
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId) {
+	public Response getProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId, @QueryParam("useJsonString") boolean useJsonString) {
 		if (homeId == null || homeId.isEmpty()) {
 			ErrorDTO nullHomeIdError = new ErrorDTO("homeId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullHomeIdError).build();
@@ -77,19 +77,27 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 		try {
 			Home home = mgm.getHome(homeId);
 			if (home == null) {
-				ErrorDTO nullHomeIdError = new ErrorDTO("home cannot be found.");
-				return Response.status(Status.BAD_REQUEST).entity(nullHomeIdError).build();
+				ErrorDTO homeNotFoundError = new ErrorDTO("Home cannot be found.");
+				return Response.status(Status.BAD_REQUEST).entity(homeNotFoundError).build();
 			}
-			properties = home.getProperties();
+
+			properties = mgm.getHomeProperties(homeId);
 
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 		}
-		return Response.ok().entity(properties).build();
+
+		if (useJsonString) {
+			String propertiesString = JSONUtil.toJsonString(properties);
+			return Response.ok().entity(propertiesString).build();
+		} else {
+			return Response.ok().entity(properties).build();
+		}
 	}
 
 	/**
@@ -104,7 +112,9 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId, @QueryParam("properties") String propertiesString) {
+	// public Response setProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId, @QueryParam("properties") String
+	// propertiesString) {
+	public Response setProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId, String propertiesString) {
 		if (homeId == null || homeId.isEmpty()) {
 			ErrorDTO nullHomeIdError = new ErrorDTO("homeId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullHomeIdError).build();
@@ -116,12 +126,11 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 		try {
 			Home home = mgm.getHome(homeId);
 			if (home == null) {
-				ErrorDTO nullHomeIdError = new ErrorDTO("home cannot be found.");
-				return Response.status(Status.BAD_REQUEST).entity(nullHomeIdError).build();
+				ErrorDTO homeNotFoundError = new ErrorDTO("Home cannot be found.");
+				return Response.status(Status.BAD_REQUEST).entity(homeNotFoundError).build();
 			}
 
 			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
-
 			succeed = mgm.setHomeProperties(homeId, properties);
 
 		} catch (MgmException e) {
@@ -143,13 +152,14 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?properties={propertiesString}
 	 * 
-	 * @param indexItemId
+	 * @param machineId
+	 * @param homeId
 	 * @param propertiesString
 	 * @return
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response putProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId, @QueryParam("properties") String propertiesString) {
+	public Response putProperties(@PathParam("machineId") String machineId, @PathParam("homeId") String homeId, String propertiesString) {
 		return setProperties(machineId, homeId, propertiesString);
 	}
 
@@ -157,8 +167,7 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	 * Delete Home properties.
 	 * 
 	 * URL (DELETE):
-	 * {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?propertyName={propertyName1}&propertyName={propertyName2}&
-	 * propertyName={propertyName3}&...
+	 * {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -172,6 +181,10 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 			ErrorDTO nullHomeIdError = new ErrorDTO("homeId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullHomeIdError).build();
 		}
+		if (propertyNames.isEmpty()) {
+			ErrorDTO emptyPropertyNamesError = new ErrorDTO("Property names are empty.");
+			return Response.status(Status.BAD_REQUEST).entity(emptyPropertyNamesError).build();
+		}
 
 		boolean succeed = false;
 
@@ -179,8 +192,8 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 		try {
 			Home home = mgm.getHome(homeId);
 			if (home == null) {
-				ErrorDTO nullHomeIdError = new ErrorDTO("home cannot be found.");
-				return Response.status(Status.BAD_REQUEST).entity(nullHomeIdError).build();
+				ErrorDTO homeNotFoundError = new ErrorDTO("Home cannot be found.");
+				return Response.status(Status.BAD_REQUEST).entity(homeNotFoundError).build();
 			}
 
 			succeed = mgm.removeHomeProperties(homeId, propertyNames);

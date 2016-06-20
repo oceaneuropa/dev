@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -119,6 +120,13 @@ public class LocalMgmWriter {
 			machineJSON.put("ipAddress", ipAddress);
 		}
 
+		// "properties" attribute
+		Map<String, Object> properties = machine.getProperties();
+		String propertiesString = JSONUtil.toJsonString(properties);
+		if (propertiesString != null) {
+			machineJSON.put("properties", propertiesString);
+		}
+
 		// "homes" attribute
 		JSONArray homesArray = new JSONArray();
 		{
@@ -172,6 +180,13 @@ public class LocalMgmWriter {
 		String url = home.getUrl();
 		if (url != null) {
 			homeJSON.put("url", url);
+		}
+
+		// "properties" attribute
+		Map<String, Object> properties = home.getProperties();
+		String propertiesString = JSONUtil.toJsonString(properties);
+		if (propertiesString != null) {
+			homeJSON.put("properties", propertiesString);
 		}
 
 		// "joinedMetaSectorIds" array

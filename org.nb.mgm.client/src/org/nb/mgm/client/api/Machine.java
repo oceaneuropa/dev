@@ -1,6 +1,7 @@
 package org.nb.mgm.client.api;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.origin.common.adapter.IAdaptable;
@@ -87,5 +88,44 @@ public interface Machine extends IAdaptable {
 	 * @throws ClientException
 	 */
 	public boolean deleteHome(String homeId) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// Properties
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get Machine properties.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public Map<String, Object> getProperties() throws ClientException;
+
+	/**
+	 * Set Machine property.
+	 * 
+	 * @param propName
+	 * @param propValue
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean setProperty(String propName, Object propValue) throws ClientException;
+
+	/**
+	 * Set Machine properties.
+	 * 
+	 * @param properties
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean setProperties(Map<String, Object> properties) throws ClientException;
+
+	/**
+	 * Remove Machine properties.
+	 * 
+	 * @param propertyNames
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean removeProperties(List<String> propertyNames) throws ClientException;
 
 }

@@ -1,7 +1,6 @@
 package org.nb.mgm.model.runtime;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,10 +36,7 @@ public class Home extends ModelObject {
 	}
 
 	protected void init() {
-		properties.put("startTime", new Date());
-		properties.put("name", "testName");
-		properties.put("number", new Integer(10));
-		properties.put("numberStr", "10");
+
 	}
 
 	public String getUrl() {

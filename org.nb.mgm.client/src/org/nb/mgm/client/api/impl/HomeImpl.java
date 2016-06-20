@@ -1,6 +1,7 @@
 package org.nb.mgm.client.api.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nb.mgm.client.api.Home;
@@ -32,11 +33,7 @@ public class HomeImpl implements Home {
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public Management getManagement() {
-		Management management = null;
-		if (this.machine != null) {
-			management = this.machine.getManagement();
-		}
-		return management;
+		return this.machine.getManagement();
 	}
 
 	@Override
@@ -63,17 +60,15 @@ public class HomeImpl implements Home {
 
 	@Override
 	public boolean update() throws ClientException {
-		if (this.machine != null) {
-			Management management = this.machine.getManagement();
-			String machineId = this.machine.getId();
+		Management management = this.machine.getManagement();
+		String machineId = this.machine.getId();
 
-			HomeClient homeClient = management.getAdapter(HomeClient.class);
-			checkClient(homeClient);
+		HomeClient homeClient = management.getAdapter(HomeClient.class);
+		checkClient(homeClient);
 
-			StatusDTO status = homeClient.updateHome(machineId, this.homeDTO);
-			if (status != null && status.success()) {
-				return true;
-			}
+		StatusDTO status = homeClient.updateHome(machineId, this.homeDTO);
+		if (status != null && status.success()) {
+			return true;
 		}
 		return false;
 	}
@@ -146,20 +141,56 @@ public class HomeImpl implements Home {
 	@Override
 	public Map<String, Object> getProperties() throws ClientException {
 		Map<String, Object> properties = null;
-		if (this.machine != null) {
-			Management management = this.machine.getManagement();
-			String machineId = this.machine.getId();
-			String homeId = this.homeDTO.getId();
+		Management management = this.machine.getManagement();
+		String machineId = this.machine.getId();
+		String homeId = this.homeDTO.getId();
 
-			HomeClient homeClient = management.getAdapter(HomeClient.class);
-			checkClient(homeClient);
+		HomeClient homeClient = management.getAdapter(HomeClient.class);
+		checkClient(homeClient);
 
-			properties = homeClient.getProperties(machineId, homeId);
-		}
+		properties = homeClient.getProperties(machineId, homeId, true);
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 		}
 		return properties;
+	}
+
+	@Override
+	public boolean setProperty(String propName, Object propValue) throws ClientException {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		return setProperties(properties);
+	}
+
+	@Override
+	public boolean setProperties(Map<String, Object> properties) throws ClientException {
+		Management management = this.machine.getManagement();
+		String machineId = this.machine.getId();
+		String homeId = this.homeDTO.getId();
+
+		HomeClient homeClient = management.getAdapter(HomeClient.class);
+		checkClient(homeClient);
+
+		StatusDTO status = homeClient.setProperties(machineId, homeId, properties);
+		if (status != null && status.success()) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean removeProperties(List<String> propertyNames) throws ClientException {
+		Management management = this.machine.getManagement();
+		String machineId = this.machine.getId();
+		String homeId = this.homeDTO.getId();
+
+		HomeClient homeClient = management.getAdapter(HomeClient.class);
+		checkClient(homeClient);
+
+		StatusDTO status = homeClient.removeProperties(machineId, homeId, propertyNames);
+		if (status != null && status.success()) {
+			return true;
+		}
+		return false;
 	}
 
 	// ------------------------------------------------------------------------------------------

@@ -1,6 +1,9 @@
 package org.nb.mgm.client.test;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +46,10 @@ public class HomeTest {
 				String machineId = machine.getId();
 				String machineName = machine.getName();
 				List<Home> homes = machine.getHomes();
+
+				if (!machineName.startsWith("Machine")) {
+					continue;
+				}
 
 				System.out.println("Machine '" + machineName + "' (" + machineId + ") homes (size=" + homes.size() + "):");
 				for (Home home : homes) {
@@ -145,6 +152,92 @@ public class HomeTest {
 						System.out.println("Home302 is created: " + home302.toString());
 					} else {
 						System.out.println("Home302 failed to be created.");
+					}
+				}
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		System.out.println();
+	}
+
+	@Ignore
+	public void test004_postHomeProperties() {
+		System.out.println("--- --- --- test004_postHomeProperties() --- --- ---");
+		try {
+			List<Machine> machines = mgm.getMachines();
+			for (Machine machine : machines) {
+				String machineId = machine.getId();
+				String machineName = machine.getName();
+				List<Home> homes = machine.getHomes();
+
+				if ("Machine1".equals(machineName)) {
+					System.out.println("Machine '" + machineName + "' (" + machineId + ") homes (size=" + homes.size() + "):");
+					for (Home home : homes) {
+						String homeId = home.getId();
+						String homeName = home.getName();
+						if ("Home101".equals(homeName) || "Home102".equals(homeName)) {
+							Map<String, Object> newProperties = new LinkedHashMap<String, Object>();
+							newProperties.put("date1", new Date());
+							newProperties.put("float1", new Float(1.2));
+							newProperties.put("long1", new Long(888));
+							newProperties.put("date2", new Date());
+							newProperties.put("float2", new Float(2.2));
+							newProperties.put("long2", new Long(999));
+							newProperties.put("string1", "true");
+							newProperties.put("string2", "777");
+							newProperties.put("string3", "12.34");
+
+							boolean succeed = home.setProperties(newProperties);
+							if (succeed) {
+								System.out.println("\tHome '" + homeName + "' (" + homeId + ") properties are updated.");
+							} else {
+								System.out.println("\tHome '" + homeName + "' (" + homeId + ") properties failed to be updated.");
+							}
+						}
+					}
+				}
+			}
+
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
+		System.out.println();
+	}
+
+	@Ignore
+	public void test005_removeHomeProperties() {
+		System.out.println("--- --- --- test005_removeHomeProperties() --- --- ---");
+		// properties.put("startTime", new Date());
+		// properties.put("name", "testName");
+		// properties.put("number", new Integer(10));
+		// properties.put("numberStr", "10");
+		try {
+			List<Machine> machines = mgm.getMachines();
+			for (Machine machine : machines) {
+				String machineId = machine.getId();
+				String machineName = machine.getName();
+				List<Home> homes = machine.getHomes();
+
+				if ("Machine1".equals(machineName)) {
+					System.out.println("Machine '" + machineName + "' (" + machineId + ") homes (size=" + homes.size() + "):");
+					for (Home home : homes) {
+						String homeId = home.getId();
+						String homeName = home.getName();
+						if ("Home101".equals(homeName) || "Home102".equals(homeName)) {
+							List<String> propertyNames = new ArrayList<String>();
+							propertyNames.add("startTime");
+							propertyNames.add("name");
+							propertyNames.add("number");
+							propertyNames.add("numberStr");
+
+							boolean succeed = home.removeProperties(propertyNames);
+							if (succeed) {
+								System.out.println("\tHome '" + homeName + "' (" + homeId + ") properties are removed.");
+							} else {
+								System.out.println("\tHome '" + homeName + "' (" + homeId + ") properties failed to be removed.");
+							}
+						}
 					}
 				}
 			}

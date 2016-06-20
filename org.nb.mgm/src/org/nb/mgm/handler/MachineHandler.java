@@ -8,6 +8,7 @@ import static org.nb.mgm.service.MgmConstants.ERROR_CODE_MACHINE_NOT_FOUND;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.nb.mgm.exception.MgmException;
@@ -253,6 +254,50 @@ public class MachineHandler {
 		// Delete Machine from cluster root.
 		ClusterRoot root = getRoot();
 		root.deleteMachine(machineToDelete);
+	}
+
+	/**
+	 * Get Machine properties.
+	 * 
+	 * @param machineId
+	 * @return
+	 * @throws MgmException
+	 */
+	public Map<String, Object> getProperties(String machineId) throws MgmException {
+		Map<String, Object> properties = null;
+		Machine machine = getMachine(machineId);
+		if (machine != null) {
+			properties = machine.getProperties();
+		}
+		return properties;
+	}
+
+	/**
+	 * Set Machine properties.
+	 * 
+	 * @param machineId
+	 * @param properties
+	 * @throws MgmException
+	 */
+	public void setProperties(String machineId, Map<String, Object> properties) throws MgmException {
+		Machine machine = getMachine(machineId);
+		if (machine != null) {
+			machine.setProperties(properties);
+		}
+	}
+
+	/**
+	 * Remove Machine properties.
+	 * 
+	 * @param machineId
+	 * @param propNames
+	 * @throws MgmException
+	 */
+	public void removeProperties(String machineId, List<String> propNames) throws MgmException {
+		Machine machine = getMachine(machineId);
+		if (machine != null) {
+			machine.removeProperties(propNames);
+		}
 	}
 
 }

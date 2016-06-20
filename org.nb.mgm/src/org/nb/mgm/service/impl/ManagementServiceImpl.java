@@ -251,6 +251,62 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
+	/**
+	 * Get Machine properties.
+	 * 
+	 * @param machineId
+	 * @return
+	 * @throws MgmException
+	 */
+	public Map<String, Object> getMachineProperties(String machineId) throws MgmException {
+		this.machineRWLock.readLock().lock();
+		try {
+			return this.machineDataHandler.getProperties(machineId);
+		} finally {
+			this.machineRWLock.readLock().unlock();
+		}
+	}
+
+	/**
+	 * Set Machine properties.
+	 * 
+	 * @param machineId
+	 * @param properties
+	 * @throws MgmException
+	 */
+	public boolean setMachineProperties(String machineId, Map<String, Object> properties) throws MgmException {
+		this.machineRWLock.writeLock().lock();
+		try {
+			this.machineDataHandler.setProperties(machineId, properties);
+			if (isAutoSave()) {
+				save();
+			}
+			return true;
+		} finally {
+			this.machineRWLock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * Remove Machine properties.
+	 * 
+	 * @param machineId
+	 * @param propNames
+	 * @throws MgmException
+	 */
+	public boolean removeMachineProperties(String machineId, List<String> propNames) throws MgmException {
+		this.machineRWLock.writeLock().lock();
+		try {
+			this.machineDataHandler.removeProperties(machineId, propNames);
+			if (isAutoSave()) {
+				save();
+			}
+			return true;
+		} finally {
+			this.machineRWLock.writeLock().unlock();
+		}
+	}
+
 	// ------------------------------------------------------------------------------------------
 	// Home
 	// ------------------------------------------------------------------------------------------
@@ -405,12 +461,10 @@ public class ManagementServiceImpl implements ManagementService {
 		this.homeRWLock.writeLock().lock();
 		try {
 			this.homeDataHandler.setProperties(homeId, properties);
-
 			if (isAutoSave()) {
 				save();
 			}
 			return true;
-
 		} finally {
 			this.homeRWLock.writeLock().unlock();
 		}
@@ -428,12 +482,10 @@ public class ManagementServiceImpl implements ManagementService {
 		this.homeRWLock.writeLock().lock();
 		try {
 			this.homeDataHandler.removeProperties(homeId, propNames);
-
 			if (isAutoSave()) {
 				save();
 			}
 			return true;
-
 		} finally {
 			this.homeRWLock.writeLock().unlock();
 		}

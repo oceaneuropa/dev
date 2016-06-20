@@ -1,7 +1,9 @@
 package org.nb.mgm.client.api.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.nb.mgm.client.api.Home;
@@ -228,6 +230,41 @@ public class MachineImpl implements Machine {
 		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
 			return true;
 		}
+		return false;
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Properties
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public Map<String, Object> getProperties() throws ClientException {
+		Map<String, Object> properties = null;
+		if (this.management != null) {
+			String machineId = this.machineDTO.getId();
+
+			MachineClient machineClient = management.getAdapter(MachineClient.class);
+			checkClient(machineClient);
+
+			// properties = machineClient.getProperties(machineId, machineId);
+		}
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+		}
+		return properties;
+	}
+
+	@Override
+	public boolean setProperty(String propName, Object propValue) {
+		return false;
+	}
+
+	@Override
+	public boolean setProperties(Map<String, Object> properties) {
+		return false;
+	}
+
+	@Override
+	public boolean removeProperties(List<String> propertyNames) {
 		return false;
 	}
 
