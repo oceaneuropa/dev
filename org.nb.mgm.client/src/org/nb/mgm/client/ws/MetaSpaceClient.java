@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.MetaSpaceDTO;
+import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -68,6 +69,7 @@ public class MetaSpaceClient extends AbstractClient {
 	 */
 	public List<MetaSpaceDTO> getMetaSpaces(String metaSectorId, Properties properties) throws ClientException {
 		List<MetaSpaceDTO> metaSpaces = null;
+		Response response = null;
 		try {
 			WebTarget target = getRootPath().path(metaSectorId).path("metaspaces");
 			if (properties != null) {
@@ -81,13 +83,15 @@ public class MetaSpaceClient extends AbstractClient {
 				}
 			}
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			metaSpaces = response.readEntity(new GenericType<List<MetaSpaceDTO>>() {
 			});
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		if (metaSpaces == null) {
 			metaSpaces = Collections.emptyList();
@@ -108,14 +112,17 @@ public class MetaSpaceClient extends AbstractClient {
 	 */
 	public MetaSpaceDTO getMetaSpace(String metaSectorId, String metaSpaceId) throws ClientException {
 		MetaSpaceDTO metaSpace = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("metaspaces").path(metaSpaceId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			metaSpace = response.readEntity(MetaSpaceDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return metaSpace;
 	}
@@ -134,15 +141,18 @@ public class MetaSpaceClient extends AbstractClient {
 	 */
 	public MetaSpaceDTO addMetaSpace(String metaSectorId, MetaSpaceDTO metaSpace) throws ClientException {
 		MetaSpaceDTO newMetaSpace = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("metaspaces").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<MetaSpaceDTO>(metaSpace) {
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<MetaSpaceDTO>(metaSpace) {
 			}));
 			checkResponse(response);
 
 			newMetaSpace = response.readEntity(MetaSpaceDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return newMetaSpace;
 	}
@@ -161,15 +171,18 @@ public class MetaSpaceClient extends AbstractClient {
 	 */
 	public StatusDTO updateMetaSpace(String metaSectorId, MetaSpaceDTO metaSpace) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("metaspaces").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).put(Entity.json(new GenericEntity<MetaSpaceDTO>(metaSpace) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MetaSpaceDTO>(metaSpace) {
 			}));
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -187,14 +200,17 @@ public class MetaSpaceClient extends AbstractClient {
 	 */
 	public StatusDTO deleteMetaSpace(String metaSectorId, String metaSpaceId) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("metaspaces").path(metaSpaceId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).delete();
+			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

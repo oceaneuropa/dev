@@ -26,17 +26,13 @@ import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 
-/**
+/*
  * Home properties resource.
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?useJsonString=false
- * 
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?properties={propertiesString}
- * 
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?properties={propertiesString}
- * 
- * URL (DELETE):
- * {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
+ * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties (Body parameter "properties": string)
+ * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties (Body parameter "properties": string)
+ * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
  * 
  * @see http://stackoverflow.com/questions/13750010/jersey-client-how-to-add-a-list-as-query-parameter
  * 
@@ -103,7 +99,7 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	/**
 	 * Set Home properties.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?properties={propertiesString}
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties (Body parameter "properties": string)
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -148,7 +144,7 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	/**
 	 * Set Home properties.
 	 * 
-	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?properties={propertiesString}
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties (Body parameter "properties": string)
 	 * 
 	 * @param machineId
 	 * @param homeId

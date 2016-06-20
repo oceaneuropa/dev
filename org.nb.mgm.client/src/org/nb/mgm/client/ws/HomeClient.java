@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.HomeDTO;
+import org.origin.common.io.IOUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
@@ -72,6 +73,7 @@ public class HomeClient extends AbstractClient {
 	 */
 	public List<HomeDTO> getHomes(String machineId, Properties properties) throws ClientException {
 		List<HomeDTO> homes = null;
+		Response response = null;
 		try {
 			WebTarget target = getRootPath().path(machineId).path("homes");
 			if (properties != null) {
@@ -93,13 +95,15 @@ public class HomeClient extends AbstractClient {
 				}
 			}
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			homes = response.readEntity(new GenericType<List<HomeDTO>>() {
 			});
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		if (homes == null) {
 			homes = Collections.emptyList();
@@ -120,14 +124,17 @@ public class HomeClient extends AbstractClient {
 	 */
 	public HomeDTO getHome(String machineId, String homeId) throws ClientException {
 		HomeDTO home = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(machineId).path("homes").path(homeId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			home = response.readEntity(HomeDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return home;
 	}
@@ -146,15 +153,18 @@ public class HomeClient extends AbstractClient {
 	 */
 	public HomeDTO addHome(String machineId, HomeDTO home) throws ClientException {
 		HomeDTO newHome = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(machineId).path("homes").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<HomeDTO>(home) {
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<HomeDTO>(home) {
 			}));
 			checkResponse(response);
 
 			newHome = response.readEntity(HomeDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return newHome;
 	}
@@ -173,15 +183,18 @@ public class HomeClient extends AbstractClient {
 	 */
 	public StatusDTO updateHome(String machineId, HomeDTO home) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(machineId).path("homes").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).put(Entity.json(new GenericEntity<HomeDTO>(home) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<HomeDTO>(home) {
 			}));
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -199,14 +212,19 @@ public class HomeClient extends AbstractClient {
 	 */
 	public StatusDTO deleteHome(String machineId, String homeId) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(machineId).path("homes").path(homeId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).delete();
+			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
+			response.close();
+
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -224,13 +242,14 @@ public class HomeClient extends AbstractClient {
 	 */
 	public Map<String, Object> getProperties(String machineId, String homeId, boolean useJsonString) throws ClientException {
 		Map<String, Object> properties = new LinkedHashMap<String, Object>();
+		Response response = null;
 		try {
 			WebTarget webTarget = getRootPath().path(machineId).path("homes").path(homeId).path("properties");
 			if (useJsonString) {
 				webTarget = webTarget.queryParam("useJsonString", useJsonString);
 			}
 			Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			if (useJsonString) {
@@ -243,6 +262,8 @@ public class HomeClient extends AbstractClient {
 
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return properties;
 	}
@@ -258,19 +279,20 @@ public class HomeClient extends AbstractClient {
 	 */
 	public StatusDTO setProperties(String machineId, String homeId, Map<String, Object> properties) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			String propertiesString = JSONUtil.toJsonString(properties);
 
-			// Builder builder = getRootPath().path(machineId).path("homes").path(homeId).path("properties").queryParam("properties",
-			// propertiesString).request(MediaType.APPLICATION_JSON);
 			Builder builder = getRootPath().path(machineId).path("homes").path(homeId).path("properties").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(propertiesString));
+			response = updateHeaders(builder).post(Entity.json(propertiesString));
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -286,6 +308,7 @@ public class HomeClient extends AbstractClient {
 	 */
 	public StatusDTO removeProperties(String machineId, String homeId, List<String> propertyNames) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			WebTarget webTarget = getRootPath().path(machineId).path("homes").path(homeId).path("properties");
 			for (String propertyName : propertyNames) {
@@ -293,13 +316,15 @@ public class HomeClient extends AbstractClient {
 			}
 
 			Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).delete();
+			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

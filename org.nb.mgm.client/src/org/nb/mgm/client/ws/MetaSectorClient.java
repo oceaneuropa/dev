@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.MetaSectorDTO;
+import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -64,6 +65,7 @@ public class MetaSectorClient extends AbstractClient {
 	 */
 	public List<MetaSectorDTO> getMetaSectors(Properties properties) throws ClientException {
 		List<MetaSectorDTO> metaSectors = null;
+		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("metasectors");
 			if (properties != null) {
@@ -77,13 +79,15 @@ public class MetaSectorClient extends AbstractClient {
 				}
 			}
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			metaSectors = response.readEntity(new GenericType<List<MetaSectorDTO>>() {
 			});
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		if (metaSectors == null) {
 			metaSectors = Collections.emptyList();
@@ -103,14 +107,17 @@ public class MetaSectorClient extends AbstractClient {
 	 */
 	public MetaSectorDTO getMetaSector(String metaSectorId) throws ClientException {
 		MetaSectorDTO metaSector = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path("metasectors").path(metaSectorId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			metaSector = response.readEntity(MetaSectorDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return metaSector;
 	}
@@ -128,15 +135,18 @@ public class MetaSectorClient extends AbstractClient {
 	 */
 	public MetaSectorDTO addMetaSector(MetaSectorDTO metaSector) throws ClientException {
 		MetaSectorDTO newMetaSector = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path("metasectors").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<MetaSectorDTO>(metaSector) {
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<MetaSectorDTO>(metaSector) {
 			}));
 			checkResponse(response);
 
 			newMetaSector = response.readEntity(MetaSectorDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return newMetaSector;
 	}
@@ -154,15 +164,18 @@ public class MetaSectorClient extends AbstractClient {
 	 */
 	public StatusDTO updateMetaSector(MetaSectorDTO metaSector) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path("metasectors").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).put(Entity.json(new GenericEntity<MetaSectorDTO>(metaSector) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MetaSectorDTO>(metaSector) {
 			}));
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -179,14 +192,17 @@ public class MetaSectorClient extends AbstractClient {
 	 */
 	public StatusDTO deleteMetaSector(String metaSectorId) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path("metasectors").path(metaSectorId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).delete();
+			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

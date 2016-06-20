@@ -14,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.MachineDTO;
+import org.origin.common.io.IOUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
@@ -21,18 +22,21 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.PropertyUtil;
 
-/**
+/*
  * Machine web service client
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
+ * Machine resource
  * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter} 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
- * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineDTO)
- * 
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineDTO)
- * 
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
+ * 
+ * Machine properties resource
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=false
+ * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
+ * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
  * 
  */
 public class MachineClient extends AbstractClient {
@@ -69,6 +73,7 @@ public class MachineClient extends AbstractClient {
 	 */
 	public List<MachineDTO> getMachines(Map<String, ?> properties) throws ClientException {
 		List<MachineDTO> machines = null;
+		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("machines");
 			if (properties != null) {
@@ -86,13 +91,15 @@ public class MachineClient extends AbstractClient {
 				}
 			}
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			machines = response.readEntity(new GenericType<List<MachineDTO>>() {
 			});
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		if (machines == null) {
 			machines = Collections.emptyList();
@@ -112,14 +119,17 @@ public class MachineClient extends AbstractClient {
 	 */
 	public MachineDTO getMachine(String machineId) throws ClientException {
 		MachineDTO machine = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path("machines").path(machineId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			machine = response.readEntity(MachineDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return machine;
 	}
@@ -137,15 +147,18 @@ public class MachineClient extends AbstractClient {
 	 */
 	public MachineDTO addMachine(MachineDTO machine) throws ClientException {
 		MachineDTO newMachine = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path("machines").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<MachineDTO>(machine) {
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<MachineDTO>(machine) {
 			}));
 			checkResponse(response);
 
 			newMachine = response.readEntity(MachineDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return newMachine;
 	}
@@ -163,15 +176,18 @@ public class MachineClient extends AbstractClient {
 	 */
 	public StatusDTO updateMachine(MachineDTO machine) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path("machines").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).put(Entity.json(new GenericEntity<MachineDTO>(machine) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MachineDTO>(machine) {
 			}));
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -188,14 +204,17 @@ public class MachineClient extends AbstractClient {
 	 */
 	public StatusDTO deleteMachine(String machineId) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path("machines").path(machineId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).delete();
+			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -203,7 +222,7 @@ public class MachineClient extends AbstractClient {
 	/**
 	 * Get Machine properties.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties
+	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=false
 	 * 
 	 * @param machineId
 	 * @param useJsonString
@@ -212,13 +231,14 @@ public class MachineClient extends AbstractClient {
 	 */
 	public Map<String, Object> getProperties(String machineId, boolean useJsonString) throws ClientException {
 		Map<String, Object> properties = new LinkedHashMap<String, Object>();
+		Response response = null;
 		try {
 			WebTarget webTarget = getRootPath().path(machineId).path("properties");
 			if (useJsonString) {
 				webTarget = webTarget.queryParam("useJsonString", useJsonString);
 			}
 			Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			if (useJsonString) {
@@ -231,12 +251,16 @@ public class MachineClient extends AbstractClient {
 
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return properties;
 	}
 
 	/**
 	 * Set Machine properties.
+	 * 
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
 	 * 
 	 * @param machineId
 	 * @param properties
@@ -245,23 +269,28 @@ public class MachineClient extends AbstractClient {
 	 */
 	public StatusDTO setProperties(String machineId, Map<String, Object> properties) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			String propertiesString = JSONUtil.toJsonString(properties);
 
 			Builder builder = getRootPath().path(machineId).path("properties").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(propertiesString));
+			response = updateHeaders(builder).post(Entity.json(propertiesString));
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
 
 	/**
 	 * Remove Machine properties.
+	 * 
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
 	 * 
 	 * @param machineId
 	 * @param propertyNames
@@ -270,6 +299,7 @@ public class MachineClient extends AbstractClient {
 	 */
 	public StatusDTO removeProperties(String machineId, List<String> propertyNames) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			WebTarget webTarget = getRootPath().path(machineId).path("properties");
 			for (String propertyName : propertyNames) {
@@ -277,13 +307,15 @@ public class MachineClient extends AbstractClient {
 			}
 
 			Builder builder = webTarget.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).delete();
+			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

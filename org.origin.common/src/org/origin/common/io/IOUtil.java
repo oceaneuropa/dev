@@ -17,6 +17,8 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+
 public class IOUtil {
 	/**
 	 * Represents the end-of-file (or stream).
@@ -484,11 +486,12 @@ public class IOUtil {
 
 	/**
 	 * Close the Closeable objects and <b>ignore</b> any {@link IOException} or null pointers. Must only be used for cleanup in exception handlers.
-	 *
-	 * @param log
-	 *            the log to record problems to at debug level. Can be null.
-	 * @param closeables
-	 *            the objects to close
+	 * 
+	 * @param printStackTrace
+	 *            if printStackTrace is false, any exceptions will be ignored. if printStackTrace is true, if any exceptions occurs, it will be
+	 *            printed out.
+	 * @param closeable
+	 *            a Closeable to be closed.
 	 */
 	public static void closeQuietly(boolean printStackTrace, Closeable... closeables) {
 		for (java.io.Closeable c : closeables) {
@@ -502,6 +505,27 @@ public class IOUtil {
 						// ignore
 					}
 				}
+			}
+		}
+	}
+
+	/**
+	 * Close the Closeable objects and <b>ignore</b> any {@link IOException} or null pointers. Must only be used for cleanup in exception handlers.
+	 * 
+	 * @param response
+	 *            Close javax.ws.rs.core.Response.
+	 * @param printStackTrace
+	 */
+	public static void closeQuietly(Response response, boolean printStackTrace) {
+		try {
+			if (response != null) {
+				response.close();
+			}
+		} catch (Exception ioe) {
+			if (printStackTrace) {
+				ioe.printStackTrace();
+			} else {
+				// ignore
 			}
 		}
 	}

@@ -26,15 +26,12 @@ import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 
-/**
+/*
  * Machine properties resource.
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=false
- * 
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?properties={propertiesString}
- * 
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?properties={propertiesString}
- * 
+ * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
+ * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
@@ -98,7 +95,7 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 	/**
 	 * Set Machine properties.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?properties={propertiesString}
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
 	 * 
 	 * @param machineId
 	 * @param propertiesString
@@ -142,7 +139,7 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 	/**
 	 * Set Machine properties.
 	 * 
-	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?properties={propertiesString}
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
 	 * 
 	 * @param machineId
 	 * @param propertiesString

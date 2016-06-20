@@ -60,7 +60,7 @@ public class HomeTest {
 					for (Iterator<String> propNameItor = properties.keySet().iterator(); propNameItor.hasNext();) {
 						String propName = propNameItor.next();
 						Object propValue = properties.get(propName);
-						Class clazz = propValue != null ? propValue.getClass() : null;
+						Class<?> clazz = propValue != null ? propValue.getClass() : null;
 						System.out.println("\t\t\t" + propName + "=" + propValue + "(" + (clazz != null ? clazz.getName() : "null") + ")");
 					}
 				}

@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.ArtifactDTO;
+import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -54,15 +55,18 @@ public class ArtifactClient extends AbstractClient {
 	 */
 	public List<ArtifactDTO> getArtifacts(String metaSectorId) throws ClientException {
 		List<ArtifactDTO> artifacts = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("artifacts").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			artifacts = response.readEntity(new GenericType<List<ArtifactDTO>>() {
 			});
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		if (artifacts == null) {
 			artifacts = Collections.emptyList();
@@ -83,15 +87,18 @@ public class ArtifactClient extends AbstractClient {
 	 */
 	public List<ArtifactDTO> getArtifacts(String metaSectorId, String filter) throws ClientException {
 		List<ArtifactDTO> artifacts = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("artifacts").queryParam("filter", filter).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			artifacts = response.readEntity(new GenericType<List<ArtifactDTO>>() {
 			});
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		if (artifacts == null) {
 			artifacts = Collections.emptyList();
@@ -112,14 +119,17 @@ public class ArtifactClient extends AbstractClient {
 	 */
 	public ArtifactDTO getArtifact(String metaSectorId, String artifactId) throws ClientException {
 		ArtifactDTO artifact = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("artifacts").path(artifactId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).get();
+			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			artifact = response.readEntity(ArtifactDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return artifact;
 	}
@@ -138,15 +148,18 @@ public class ArtifactClient extends AbstractClient {
 	 */
 	public ArtifactDTO createArtifact(String metaSectorId, ArtifactDTO artifact) throws ClientException {
 		ArtifactDTO newArtifact = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("artifacts").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<ArtifactDTO>(artifact) {
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<ArtifactDTO>(artifact) {
 			}));
 			checkResponse(response);
 
 			newArtifact = response.readEntity(ArtifactDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return newArtifact;
 	}
@@ -165,15 +178,18 @@ public class ArtifactClient extends AbstractClient {
 	 */
 	public StatusDTO updateArtifact(String metaSectorId, ArtifactDTO artifact) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("artifacts").request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).put(Entity.json(new GenericEntity<ArtifactDTO>(artifact) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<ArtifactDTO>(artifact) {
 			}));
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -191,14 +207,17 @@ public class ArtifactClient extends AbstractClient {
 	 */
 	public StatusDTO deleteArtifact(String metaSectorId, String artifactId) throws ClientException {
 		StatusDTO status = null;
+		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("artifacts").path(artifactId).request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).delete();
+			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
