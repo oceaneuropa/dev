@@ -50,12 +50,12 @@ public class MachineTest {
 				System.out.println(machine.toString());
 
 				Map<String, Object> properties = machine.getProperties();
-				System.out.println("\t\tproperties (size=" + properties.size() + "):");
+				System.out.println("\tproperties (size=" + properties.size() + "):");
 				for (Iterator<String> propNameItor = properties.keySet().iterator(); propNameItor.hasNext();) {
 					String propName = propNameItor.next();
 					Object propValue = properties.get(propName);
 					Class<?> clazz = propValue != null ? propValue.getClass() : null;
-					System.out.println("\t\t\t" + propName + "=" + propValue + "(" + (clazz != null ? clazz.getName() : "null") + ")");
+					System.out.println("\t\t" + propName + "=" + propValue + "(" + (clazz != null ? clazz.getName() : "null") + ")");
 				}
 			}
 		} catch (ClientException e) {
