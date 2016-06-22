@@ -12,13 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.Providers;
 
 import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.model.dto.ArtifactDTO;
@@ -30,57 +26,23 @@ import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.common.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * Artifact web service server resource
+/*
+ * Artifact web service server resource.
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts?filter={filter}
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts/{artifactId}
- * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts (Body parameter: ArtifactDTO)
- * 
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts (Body parameter: ArtifactDTO)
- * 
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts/{artifactId}
  * 
  */
 @Path("{metaSectorId}/artifacts")
 @Produces(MediaType.APPLICATION_JSON)
-public class ArtifactResource {
-
-	protected static Logger logger = LoggerFactory.getLogger(ArtifactResource.class);
-
-	@Context
-	protected Providers providers;
-
-	@Context
-	protected UriInfo uriInfo;
-
-	protected ManagementService getMgmService() {
-		ManagementService mgm = this.providers.getContextResolver(ManagementService.class, MediaType.APPLICATION_JSON_TYPE).getContext(ManagementService.class);
-		if (mgm == null) {
-			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
-		}
-		return mgm;
-	}
-
-	/**
-	 * Handle MgmException and create ErrorDTO from it.
-	 * 
-	 * @param e
-	 * @return
-	 */
-	protected ErrorDTO handleError(MgmException e) {
-		e.printStackTrace();
-		logger.error(e.getMessage());
-		return DTOConverter.getInstance().toDTO(e);
-	}
+public class ArtifactResource extends AbstractApplicationResource {
 
 	/**
 	 * Get all Artifacts in a MetaSector.
@@ -94,7 +56,7 @@ public class ArtifactResource {
 	) {
 		List<ArtifactDTO> artifactDTOs = new ArrayList<ArtifactDTO>();
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			// Find MetaSector by metaSectorId.
 			MetaSectorDTO metaSectorDTO = null;
@@ -114,7 +76,7 @@ public class ArtifactResource {
 			}
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 		return Response.ok().entity(artifactDTOs).build();
@@ -135,7 +97,7 @@ public class ArtifactResource {
 	) {
 		List<ArtifactDTO> artifactDTOs = new ArrayList<ArtifactDTO>();
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			// 1. Find MetaSector by metaSectorId.
 			MetaSectorDTO metaSectorDTO = null;
@@ -163,7 +125,7 @@ public class ArtifactResource {
 			}
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 		return Response.ok().entity(artifactDTOs).build();
@@ -186,7 +148,7 @@ public class ArtifactResource {
 	) {
 		ArtifactDTO artifactDTO = null;
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			// 1. Find Artifact by artifactId and convert to DTO
 			Artifact artifact = mgm.getArtifact(artifactId);
@@ -210,7 +172,7 @@ public class ArtifactResource {
 			}
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -240,7 +202,7 @@ public class ArtifactResource {
 		}
 
 		// 2. Always get management service first.
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 
 		// 3. Create Artifact runtime model with parameters.
 		Artifact newArtifact = new Artifact();
@@ -273,7 +235,7 @@ public class ArtifactResource {
 				artifactDTO.setId(newArtifact.getId());
 			}
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -300,7 +262,7 @@ public class ArtifactResource {
 		}
 
 		// 2. Always get management service first.
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 
 		try {
 			// 3. Create MetaSpace runtime model with parameters.
@@ -330,7 +292,7 @@ public class ArtifactResource {
 			mgm.updateArtifact(artifact);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -362,12 +324,12 @@ public class ArtifactResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullArtifactIdError).build();
 		}
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			mgm.deleteArtifact(artifactId);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 

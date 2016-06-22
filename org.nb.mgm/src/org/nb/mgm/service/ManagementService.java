@@ -15,6 +15,7 @@ import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
+import org.nb.mgm.model.runtime.Namespace;
 
 public interface ManagementService {
 
@@ -33,10 +34,54 @@ public interface ManagementService {
 	public ClusterRoot getRoot();
 
 	// ------------------------------------------------------------------------------------------
+	// Namespace
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get Namespaces.
+	 * 
+	 * @return
+	 * @throws MgmException
+	 */
+	// public List<Namespace> getNamespaces() throws MgmException;
+
+	/**
+	 * Get Namespace detailed information by namespace name.
+	 * 
+	 * @param namespace
+	 * @return
+	 * @throws MgmException
+	 */
+	// public Namespace getNamespace(String namespace) throws MgmException;
+
+	/**
+	 * Add a Namespace.
+	 * 
+	 * @param namespace
+	 * @throws MgmException
+	 */
+	// public void addNamespace(Namespace namespace) throws MgmException;
+
+	/**
+	 * Update Namespace detailed information.
+	 * 
+	 * @param namespace
+	 * @throws MgmException
+	 */
+	// public void updateNamespace(Namespace namespace) throws MgmException;
+
+	/**
+	 * Remove a Namespace by namespace name.
+	 * 
+	 * @param namespace
+	 * @throws MgmException
+	 */
+	// public void deleteNamespace(String namespace) throws MgmException;
+
+	// ------------------------------------------------------------------------------------------
 	// Machine
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get all Machines.
+	 * Get Machines.
 	 * 
 	 * @return
 	 * @throws MgmException
@@ -53,7 +98,7 @@ public interface ManagementService {
 	public List<Machine> getMachines(MachineQuery query) throws MgmException;
 
 	/**
-	 * Get Machine information by Id.
+	 * Get Machine detailed information by Id.
 	 * 
 	 * @param machineId
 	 * @return
@@ -62,7 +107,7 @@ public interface ManagementService {
 	public Machine getMachine(String machineId) throws MgmException;
 
 	/**
-	 * Add a Machine to the cluster.
+	 * Add a Machine.
 	 * 
 	 * @param machine
 	 * @throws MgmException
@@ -78,7 +123,7 @@ public interface ManagementService {
 	public void updateMachine(Machine machine) throws MgmException;
 
 	/**
-	 * Delete a Machine from the cluster.
+	 * Remove a Machine.
 	 * 
 	 * @param machineId
 	 * @throws MgmException

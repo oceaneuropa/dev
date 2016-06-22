@@ -6,6 +6,7 @@ import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
+import org.nb.mgm.model.runtime.Namespace;
 import org.origin.common.rest.model.ErrorDTO;
 
 public class DTOConverter {
@@ -40,6 +41,25 @@ public class DTOConverter {
 			String causeName = e.getClass().getName();
 			dto.setException(causeName);
 		}
+
+		return dto;
+	}
+
+	/**
+	 * Convert Namespace runtime model to Namespace DTO.
+	 * 
+	 * @param namespace
+	 * @return
+	 */
+	public NamespaceDTO toDTO(Namespace namespace) {
+		if (namespace == null) {
+			return null;
+		}
+		NamespaceDTO dto = new NamespaceDTO();
+
+		dto.setId(namespace.getId());
+		dto.setName(namespace.getName());
+		dto.setDescription(namespace.getDescription());
 
 		return dto;
 	}

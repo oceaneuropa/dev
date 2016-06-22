@@ -12,13 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.Providers;
 
 import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.model.dto.DTOConverter;
@@ -31,55 +27,22 @@ import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.common.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Machine resource.
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
- * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter} 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
- * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineDTO)
- * 
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineDTO)
- * 
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
  * 
  */
 @Path("/machines")
 @Produces(MediaType.APPLICATION_JSON)
-public class MachineResource {
-
-	protected static Logger logger = LoggerFactory.getLogger(MachineResource.class);
-
-	@Context
-	protected Providers providers;
-
-	@Context
-	protected UriInfo uriInfo;
-
-	protected ManagementService getMgmService() {
-		ManagementService mgm = this.providers.getContextResolver(ManagementService.class, MediaType.APPLICATION_JSON_TYPE).getContext(ManagementService.class);
-		if (mgm == null) {
-			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
-		}
-		return mgm;
-	}
-
-	/**
-	 * Handle MgmException and create ErrorDTO from it.
-	 * 
-	 * @param e
-	 * @return
-	 */
-	protected ErrorDTO handleError(MgmException e) {
-		e.printStackTrace();
-		logger.error(e.getMessage());
-		return DTOConverter.getInstance().toDTO(e);
-	}
+public class MachineResource extends AbstractApplicationResource {
 
 	protected void handleSave(ManagementService mgm) {
 		if (!mgm.isAutoSave()) {
@@ -101,14 +64,10 @@ public class MachineResource {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMachines( //
-			@QueryParam("name") String name, //
-			@QueryParam("ipaddress") String ipaddress, //
-			@QueryParam("filter") String filter //
-	) {
+	public Response getMachines(@QueryParam("name") String name, @QueryParam("ipaddress") String ipaddress, @QueryParam("filter") String filter) {
 		List<MachineDTO> machineDTOs = new ArrayList<MachineDTO>();
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			// Get Machines matched by query.
 			List<Machine> machines = null;
@@ -144,7 +103,7 @@ public class MachineResource {
 			}
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -165,7 +124,7 @@ public class MachineResource {
 	public Response getMachine(@PathParam("machineId") String machineId) {
 		MachineDTO machineDTO = null;
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			Machine machine = mgm.getMachine(machineId);
 			if (machine == null) {
@@ -175,7 +134,7 @@ public class MachineResource {
 			machineDTO = DTOConverter.getInstance().toDTO(machine);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -200,7 +159,7 @@ public class MachineResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullMachineDTOError).build();
 		}
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 
 		String id = machineDTO.getId();
 		String name = machineDTO.getName();
@@ -223,7 +182,7 @@ public class MachineResource {
 				machineDTO.setName(newMachine.getName());
 			}
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -250,7 +209,7 @@ public class MachineResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullDTOError).build();
 		}
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			String id = machineDTO.getId();
 			String name = machineDTO.getName();
@@ -266,7 +225,7 @@ public class MachineResource {
 			mgm.updateMachine(machine);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -293,12 +252,12 @@ public class MachineResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullMachineIdError).build();
 		}
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			mgm.deleteMachine(machineId);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 

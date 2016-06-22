@@ -34,17 +34,13 @@ import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.common.util.Util;
 
-/**
+/*
  * Home resource.
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
- * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes (Body parameter: HomeDTO)
- * 
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes (Body parameter: HomeDTO)
- * 
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
  * 
  */

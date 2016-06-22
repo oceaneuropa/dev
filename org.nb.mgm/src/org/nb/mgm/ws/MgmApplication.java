@@ -67,6 +67,8 @@ public class MgmApplication extends AbstractApplication {
 		classes.add(MetaSpaceResource.class);
 		classes.add(ArtifactResource.class);
 
+		classes.add(NamespaceResource.class);
+
 		// resolvers
 		classes.add(MgmServiceResolver.class);
 

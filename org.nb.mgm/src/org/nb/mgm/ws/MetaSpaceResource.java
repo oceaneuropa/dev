@@ -12,13 +12,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.ext.Providers;
 
 import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.model.dto.ArtifactDTO;
@@ -33,55 +29,22 @@ import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.common.util.Util;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * MetaSpace web service resource
+/*
+ * MetaSpace web service resource.
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
- * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces (Body parameter: MetaSpaceDTO)
- * 
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces (Body parameter: MetaSpaceDTO)
- * 
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
  * 
  */
 @Path("{metaSectorId}/metaspaces")
 @Produces(MediaType.APPLICATION_JSON)
-public class MetaSpaceResource {
-
-	protected static Logger logger = LoggerFactory.getLogger(MetaSpaceResource.class);
-
-	@Context
-	protected Providers providers;
-
-	@Context
-	protected UriInfo uriInfo;
-
-	protected ManagementService getMgmService() {
-		ManagementService mgm = this.providers.getContextResolver(ManagementService.class, MediaType.APPLICATION_JSON_TYPE).getContext(ManagementService.class);
-		if (mgm == null) {
-			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
-		}
-		return mgm;
-	}
-
-	/**
-	 * Handle MgmException and create ErrorDTO from it.
-	 * 
-	 * @param e
-	 * @return
-	 */
-	protected ErrorDTO handleError(MgmException e) {
-		e.printStackTrace();
-		logger.error(e.getMessage());
-		return DTOConverter.getInstance().toDTO(e);
-	}
+public class MetaSpaceResource extends AbstractApplicationResource {
 
 	protected void handleSave(ManagementService mgm) {
 		if (!mgm.isAutoSave()) {
@@ -108,7 +71,7 @@ public class MetaSpaceResource {
 	) {
 		List<MetaSpaceDTO> metaSpaceDTOs = new ArrayList<MetaSpaceDTO>();
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			// 1. Find MetaSector by metaSectorId.
 			MetaSectorDTO metaSectorDTO = null;
@@ -157,7 +120,7 @@ public class MetaSpaceResource {
 			}
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 		return Response.ok().entity(metaSpaceDTOs).build();
@@ -181,7 +144,7 @@ public class MetaSpaceResource {
 	) {
 		MetaSpaceDTO metaSpaceDTO = null;
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			// 1. Find MetaSpace by metaSpaceId and convert to DTO
 			MetaSpace metaSpace = mgm.getMetaSpace(metaSpaceId);
@@ -215,7 +178,7 @@ public class MetaSpaceResource {
 			metaSpaceDTO.setDeployedArtifacts(deployedArtifactDTOs);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -246,7 +209,7 @@ public class MetaSpaceResource {
 		}
 
 		// 2. Always get management service first.
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 
 		// 3. Create MetaSpace runtime model with parameters.
 		MetaSpace newMetaSpace = new MetaSpace();
@@ -270,7 +233,7 @@ public class MetaSpaceResource {
 				metaSpaceDTO.setName(newMetaSpace.getName());
 			}
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -299,7 +262,7 @@ public class MetaSpaceResource {
 		}
 
 		// 2. Always get management service first.
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 
 		try {
 			// 3. Create MetaSpace runtime model with parameters.
@@ -317,7 +280,7 @@ public class MetaSpaceResource {
 			mgm.updateMetaSpace(metaSpace);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -348,12 +311,12 @@ public class MetaSpaceResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullMetaSpaceIdError).build();
 		}
 
-		ManagementService mgm = getMgmService();
+		ManagementService mgm = getService(ManagementService.class);
 		try {
 			mgm.deleteMetaSpace(metaSpaceId);
 
 		} catch (MgmException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 

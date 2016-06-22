@@ -52,14 +52,24 @@ public class HomeTest {
 				}
 
 				System.out.println("Machine '" + machineName + "' (" + machineId + ") homes (size=" + homes.size() + "):");
+
+				Map<String, Object> machineProperties = machine.getProperties();
+				System.out.println("\tproperties (size=" + machineProperties.size() + "):");
+				for (Iterator<String> propNameItor = machineProperties.keySet().iterator(); propNameItor.hasNext();) {
+					String propName = propNameItor.next();
+					Object propValue = machineProperties.get(propName);
+					Class<?> clazz = propValue != null ? propValue.getClass() : null;
+					System.out.println("\t\t" + propName + "=" + propValue + "(" + (clazz != null ? clazz.getName() : "null") + ")");
+				}
+
 				for (Home home : homes) {
 					System.out.println("\t" + home.toString());
 
-					Map<String, Object> properties = home.getProperties();
-					System.out.println("\t\tproperties (size=" + properties.size() + "):");
-					for (Iterator<String> propNameItor = properties.keySet().iterator(); propNameItor.hasNext();) {
+					Map<String, Object> homeProperties = home.getProperties();
+					System.out.println("\t\tproperties (size=" + homeProperties.size() + "):");
+					for (Iterator<String> propNameItor = homeProperties.keySet().iterator(); propNameItor.hasNext();) {
 						String propName = propNameItor.next();
-						Object propValue = properties.get(propName);
+						Object propValue = homeProperties.get(propName);
 						Class<?> clazz = propValue != null ? propValue.getClass() : null;
 						System.out.println("\t\t\t" + propName + "=" + propValue + "(" + (clazz != null ? clazz.getName() : "null") + ")");
 					}
