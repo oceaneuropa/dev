@@ -2,7 +2,7 @@ package org.nb.mgm.persistence;
 
 import org.nb.mgm.model.runtime.ClusterRoot;
 
-public class DBMgmPersistenceAdapter implements MgmPersistenceAdapter {
+public class DBPersistenceAdapter implements MgmPersistenceAdapter {
 
 	@Override
 	public ClusterRoot load() {

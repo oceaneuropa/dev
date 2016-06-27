@@ -13,13 +13,16 @@ import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
+import org.nb.mgm.model.runtime.Project;
+import org.nb.mgm.model.runtime.ProjectHomeConfig;
+import org.nb.mgm.model.runtime.ProjectNodeConfig;
 import org.origin.common.json.JSONUtil;
 
-public class LocalMgmReader {
+public class LocalJsonReader {
 
 	protected File file;
 
-	public LocalMgmReader(File file) {
+	public LocalJsonReader(File file) {
 		this.file = file;
 	}
 
@@ -35,7 +38,7 @@ public class LocalMgmReader {
 	}
 
 	/**
-	 * Convert root JSONObject to ClusterRoot model.
+	 * Convert root JSONObject to ClusterRoot.
 	 * 
 	 * @param rootJSON
 	 * @return
@@ -83,11 +86,29 @@ public class LocalMgmReader {
 			}
 		}
 
+		// "projects" array
+		if (rootJSON.has("projects")) {
+			JSONArray projectsArray = rootJSON.getJSONArray("projects");
+			if (projectsArray != null) {
+				int length = projectsArray.length();
+				for (int i = 0; i < length; i++) {
+					JSONObject projectJSON = projectsArray.getJSONObject(i);
+					if (projectJSON != null) {
+						Project project = jsonToProject(projectJSON);
+						if (project != null) {
+							project.setParent(root);
+							root.addProject(project);
+						}
+					}
+				}
+			}
+		}
+
 		return root;
 	}
 
 	/**
-	 * Convert machine JSONObject to Machine model.
+	 * Convert machine JSONObject to Machine.
 	 * 
 	 * @param machineJSON
 	 * @return
@@ -161,7 +182,7 @@ public class LocalMgmReader {
 	}
 
 	/**
-	 * Convert home JSONObject to Home model.
+	 * Convert home JSONObject to Home.
 	 * 
 	 * @param homeJSON
 	 * @return
@@ -234,7 +255,7 @@ public class LocalMgmReader {
 	}
 
 	/**
-	 * Convert metaSector JSONObject to MetaSector model.
+	 * Convert metaSector JSONObject to MetaSector.
 	 * 
 	 * @param metaSectorJSON
 	 * @return
@@ -307,7 +328,7 @@ public class LocalMgmReader {
 	}
 
 	/**
-	 * Convert metaSpace JSONObject to MetaSpace model.
+	 * Convert metaSpace JSONObject to MetaSpace.
 	 * 
 	 * @param metaSectorJSON
 	 * @return
@@ -353,7 +374,7 @@ public class LocalMgmReader {
 	}
 
 	/**
-	 * Convert artifact JSONObject to Artifact model.
+	 * Convert artifact JSONObject to Artifact.
 	 * 
 	 * @param artifactJSON
 	 * @return
@@ -415,6 +436,165 @@ public class LocalMgmReader {
 		artifact.setChecksum(checksum);
 
 		return artifact;
+	}
+
+	/**
+	 * Convert project JSONObject to Project.
+	 * 
+	 * @param projectJSON
+	 * @return
+	 */
+	protected Project jsonToProject(JSONObject projectJSON) {
+		if (projectJSON == null) {
+			return null;
+		}
+
+		Project project = new Project();
+
+		// "id" attribute
+		String id = null;
+		if (projectJSON.has("id")) {
+			id = projectJSON.getString("id");
+		}
+		project.setId(id);
+
+		// "name" attribute
+		String name = null;
+		if (projectJSON.has("name")) {
+			name = projectJSON.getString("name");
+		}
+		project.setName(name);
+
+		// "description" attribute
+		String description = null;
+		if (projectJSON.has("description")) {
+			description = projectJSON.getString("description");
+		}
+		project.setDescription(description);
+
+		// "homeConfigs" array
+		if (projectJSON.has("homeConfigs")) {
+			JSONArray homeConfigsArray = projectJSON.getJSONArray("homeConfigs");
+			if (homeConfigsArray != null) {
+				int length = homeConfigsArray.length();
+				for (int i = 0; i < length; i++) {
+					JSONObject homeConfigJSON = homeConfigsArray.getJSONObject(i);
+					if (homeConfigJSON != null) {
+						ProjectHomeConfig homeConfig = jsonToProjectHomeConfig(homeConfigJSON);
+						if (homeConfig != null) {
+							homeConfig.setParent(project);
+							project.addHomeConfig(homeConfig);
+						}
+					}
+				}
+			}
+		}
+
+		return project;
+	}
+
+	/**
+	 * Convert homeConfig JSONObject to ProjectHomeConfig.
+	 * 
+	 * @param homeConfigJSON
+	 * @return
+	 */
+	protected ProjectHomeConfig jsonToProjectHomeConfig(JSONObject homeConfigJSON) {
+		if (homeConfigJSON == null) {
+			return null;
+		}
+
+		ProjectHomeConfig homeConfig = new ProjectHomeConfig();
+
+		// "id" attribute
+		String id = null;
+		if (homeConfigJSON.has("id")) {
+			id = homeConfigJSON.getString("id");
+		}
+		homeConfig.setId(id);
+
+		// "name" attribute
+		String name = null;
+		if (homeConfigJSON.has("name")) {
+			name = homeConfigJSON.getString("name");
+		}
+		homeConfig.setName(name);
+
+		// "description" attribute
+		String description = null;
+		if (homeConfigJSON.has("description")) {
+			description = homeConfigJSON.getString("description");
+		}
+		homeConfig.setDescription(description);
+
+		// "nodeConfigs" array
+		if (homeConfigJSON.has("nodeConfigs")) {
+			JSONArray nodeConfigsArray = homeConfigJSON.getJSONArray("nodeConfigs");
+			if (nodeConfigsArray != null) {
+				int length = nodeConfigsArray.length();
+				for (int i = 0; i < length; i++) {
+					JSONObject nodeConfigJSON = nodeConfigsArray.getJSONObject(i);
+					if (nodeConfigJSON != null) {
+						ProjectNodeConfig nodeConfig = jsonToProjectNodeConfig(nodeConfigJSON);
+						if (nodeConfig != null) {
+							nodeConfig.setParent(homeConfig);
+							homeConfig.addNodeConfig(nodeConfig);
+						}
+					}
+				}
+			}
+		}
+
+		return homeConfig;
+	}
+
+	/**
+	 * Convert nodeConfig JSONObject to ProjectNodeConfig.
+	 * 
+	 * @param nodeConfigJSON
+	 * @return
+	 */
+	protected ProjectNodeConfig jsonToProjectNodeConfig(JSONObject nodeConfigJSON) {
+		if (nodeConfigJSON == null) {
+			return null;
+		}
+
+		ProjectNodeConfig nodeConfig = new ProjectNodeConfig();
+
+		// "id" attribute
+		String id = null;
+		if (nodeConfigJSON.has("id")) {
+			id = nodeConfigJSON.getString("id");
+		}
+		nodeConfig.setId(id);
+
+		// "name" attribute
+		String name = null;
+		if (nodeConfigJSON.has("name")) {
+			name = nodeConfigJSON.getString("name");
+		}
+		nodeConfig.setName(name);
+
+		// "description" attribute
+		String description = null;
+		if (nodeConfigJSON.has("description")) {
+			description = nodeConfigJSON.getString("description");
+		}
+		nodeConfig.setDescription(description);
+
+		// "properties" attribute
+		Map<String, Object> properties = null;
+		if (nodeConfigJSON.has("properties")) {
+			String propertiesString = nodeConfigJSON.getString("properties");
+			if (propertiesString != null) {
+				properties = JSONUtil.toProperties(propertiesString);
+			}
+		}
+		if (properties != null) {
+			nodeConfig.setProperties(properties);
+		}
+
+		return nodeConfig;
 	}
 
 }

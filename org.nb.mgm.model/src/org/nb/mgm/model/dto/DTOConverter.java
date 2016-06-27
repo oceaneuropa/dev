@@ -7,6 +7,9 @@ import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Namespace;
+import org.nb.mgm.model.runtime.Project;
+import org.nb.mgm.model.runtime.ProjectHomeConfig;
+import org.nb.mgm.model.runtime.ProjectNodeConfig;
 import org.origin.common.rest.model.ErrorDTO;
 
 public class DTOConverter {
@@ -170,6 +173,42 @@ public class DTOConverter {
 		dto.setChecksum(artifact.getChecksum());
 
 		return dto;
+	}
+
+	/**
+	 * Convert Project runtime model to ProjectDTO.
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public ProjectDTO toDTO(Project project) {
+		ProjectDTO dto = new ProjectDTO();
+
+		dto.setId(project.getId());
+		dto.setName(project.getName());
+		dto.setDescription(project.getDescription());
+
+		return dto;
+	}
+
+	/**
+	 * Convert ProjectHomeConfig runtime model to ProjectHomeConfigDTO.
+	 * 
+	 * @param homeConfig
+	 * @return
+	 */
+	public ProjectHomeConfigDTO toDTO(ProjectHomeConfig homeConfig) {
+		return null;
+	}
+
+	/**
+	 * Convert ProjectHomeConfig runtime model to ProjectHomeConfigDTO.
+	 * 
+	 * @param nodeConfig
+	 * @return
+	 */
+	public ProjectNodeConfigDTO toDTO(ProjectNodeConfig nodeConfig) {
+		return null;
 	}
 
 }

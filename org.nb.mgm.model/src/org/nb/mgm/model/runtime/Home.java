@@ -110,4 +110,24 @@ public class Home extends ModelObject {
 		}
 	}
 
+	public static class HomeProxy extends Home {
+
+		public HomeProxy() {
+			super();
+		}
+
+		/**
+		 * 
+		 * @param machine
+		 */
+		public HomeProxy(Machine machine) {
+			super(machine);
+		}
+
+		@Override
+		public boolean isProxy() {
+			return true;
+		}
+	}
+
 }

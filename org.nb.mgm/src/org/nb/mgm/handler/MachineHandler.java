@@ -1,9 +1,9 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_MACHINE_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_MACHINE_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_MACHINE_ILLEGAL_STATES;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_MACHINE_NOT_FOUND;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -102,7 +102,7 @@ public class MachineHandler {
 
 		// Throw exception - empty Id
 		if (machineId == null || machineId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_MACHINE_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
 		}
 
 		// Find Machine by Id
@@ -127,7 +127,7 @@ public class MachineHandler {
 	public void addMachine(Machine machine) throws MgmException {
 		// Throw exception - empty Machine
 		if (machine == null) {
-			throw new MgmException(ERROR_CODE_MACHINE_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
 		}
 
 		// Generate unique Machine Id
@@ -137,12 +137,12 @@ public class MachineHandler {
 
 		// Throw exception - empty Machine name
 		if (machine.getName() == null || machine.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_MACHINE_ILLEGAL_PARAMETER, "Machine name cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine name cannot be empty.", null);
 		}
 
 		// Throw exception - empty Machine IP address
 		if (machine.getIpAddress() == null || machine.getIpAddress().isEmpty()) {
-			throw new MgmException(ERROR_CODE_MACHINE_ILLEGAL_PARAMETER, "Machine IP address cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine IP address cannot be empty.", null);
 		}
 
 		// Throw exception - Machine with same Id or IP address exists
@@ -150,13 +150,13 @@ public class MachineHandler {
 		for (Iterator<Machine> machineItor = root.getMachines().iterator(); machineItor.hasNext();) {
 			Machine currMachine = machineItor.next();
 			if (machine.getId().equals(currMachine.getId())) {
-				throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same Id already exists.", null);
+				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Machine with same Id already exists.", null);
 			}
 			// if (machine.getName().equals(currMachine.getName())) {
-			// throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same name already exists.", null);
+			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Machine with same name already exists.", null);
 			// }
 			// if (machine.getIpAddress().equals(currMachine.getIpAddress())) {
-			// throw new MgmException(ERROR_CODE_MACHINE_EXIST, "Machine with same IP address already exists.", null);
+			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Machine with same IP address already exists.", null);
 			// }
 		}
 
@@ -196,7 +196,7 @@ public class MachineHandler {
 	public void updateMachine(Machine machine) throws MgmException {
 		// Throw exception - empty Machine
 		if (machine == null) {
-			throw new MgmException(ERROR_CODE_MACHINE_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
 		}
 
 		// Find Machine by Id
@@ -204,7 +204,7 @@ public class MachineHandler {
 
 		// Throw exception - Machine not found
 		if (machineToUpdate == null) {
-			throw new MgmException(ERROR_CODE_MACHINE_NOT_FOUND, "Machine cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
 		}
 
 		// No need to update when they are the same object.
@@ -235,7 +235,7 @@ public class MachineHandler {
 	public void deleteMachine(String machineId) throws MgmException {
 		// Throw exception - empty Id
 		if (machineId == null || machineId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_MACHINE_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
 		}
 
 		// Find Machine by Id
@@ -243,12 +243,12 @@ public class MachineHandler {
 
 		// Throw exception - Machine not found
 		if (machineToDelete == null) {
-			throw new MgmException(ERROR_CODE_MACHINE_NOT_FOUND, "Machine cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
 		}
 
 		// Throw exception - Machine contains Homes
 		if (!machineToDelete.getHomes().isEmpty()) {
-			throw new MgmException(ERROR_CODE_MACHINE_ILLEGAL_STATES, "Machine cannot be deleted. Please delete Homes in the Machine first.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Machine cannot be deleted. Please delete Homes in the Machine first.", null);
 		}
 
 		// Delete Machine from cluster root.

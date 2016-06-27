@@ -1,10 +1,9 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_HOME_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_HOME_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_HOME_ILLEGAL_STATES;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_HOME_NOT_FOUND;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_MACHINE_NOT_FOUND;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -64,7 +63,7 @@ public class HomeHandler {
 		// Container Machine must exist
 		Machine machine = this.mgmService.getMachine(machineId);
 		if (machine == null) {
-			throw new MgmException(ERROR_CODE_MACHINE_NOT_FOUND, "Machine cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
 		}
 
 		// Get all Homes in the Machine
@@ -114,7 +113,7 @@ public class HomeHandler {
 
 		// Throw exception - empty Id
 		if (homeId == null || homeId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_HOME_ILLEGAL_PARAMETER, "Home Id cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home Id cannot be empty.", null);
 		}
 
 		// Iterate though all Machines and then all Homes in each Machine. Find the Home with matching Id.
@@ -148,7 +147,7 @@ public class HomeHandler {
 		// Container Machine must exist
 		Machine machine = this.mgmService.getMachine(machineId);
 		if (machine == null) {
-			throw new MgmException(ERROR_CODE_MACHINE_NOT_FOUND, "Machine cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
 		}
 
 		// Generate unique Home Id
@@ -158,12 +157,12 @@ public class HomeHandler {
 
 		// Throw exception - empty Home name
 		if (home.getName() == null || home.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_HOME_ILLEGAL_PARAMETER, "Home name cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home name cannot be empty.", null);
 		}
 
 		// Throw exception - empty Home URL
 		if (home.getUrl() == null || home.getUrl().isEmpty()) {
-			throw new MgmException(ERROR_CODE_HOME_ILLEGAL_PARAMETER, "Home URL cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home URL cannot be empty.", null);
 		}
 
 		// Throw exception - Home with same Id or URL exists
@@ -172,13 +171,13 @@ public class HomeHandler {
 			Home currHome = homeItor.next();
 
 			if (home.getId().equals(currHome.getId())) {
-				throw new MgmException(ERROR_CODE_HOME_EXIST, "Home with same Id already exists.", null);
+				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same Id already exists.", null);
 			}
 			// if (home.getName().equals(currHome.getName())) {
-			// throw new MgmException(ERROR_CODE_HOME_EXIST, "Home with same name already exists.", null);
+			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same name already exists.", null);
 			// }
 			if (home.getUrl().equals(currHome.getUrl())) {
-				throw new MgmException(ERROR_CODE_HOME_EXIST, "Home with same URL already exists.", null);
+				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same URL already exists.", null);
 			}
 		}
 
@@ -218,7 +217,7 @@ public class HomeHandler {
 	public void updateHome(Home home) throws MgmException {
 		// Throw exception - empty Home
 		if (home == null) {
-			throw new MgmException(ERROR_CODE_HOME_ILLEGAL_PARAMETER, "Home cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home cannot be empty.", null);
 		}
 
 		// Find Home by Id
@@ -252,15 +251,15 @@ public class HomeHandler {
 	public void deleteHome(String homeId) throws MgmException {
 		// Throw exception - empty Id
 		if (homeId == null || homeId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_HOME_ILLEGAL_PARAMETER, "Home Id cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home Id cannot be empty.", null);
 		}
 
 		// Find Home by Id
 		Home homeToDelete = getHome(homeId);
 
-		// Throw exception - Machine not found
+		// Throw exception - Home not found
 		if (homeToDelete == null) {
-			throw new MgmException(ERROR_CODE_HOME_NOT_FOUND, "Home cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Home cannot be found.", null);
 		}
 
 		// Throw exception - Cannot delete Home, if it joins MetaSector or MetaSpace.
@@ -273,7 +272,7 @@ public class HomeHandler {
 			}
 		}
 		if (foundJoinedMetaSectors) {
-			throw new MgmException(ERROR_CODE_HOME_ILLEGAL_STATES, "Home cannot be deleted. Please remove the Home from the MetaSectors first.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Home cannot be deleted. Please remove the Home from the MetaSectors first.", null);
 		}
 
 		boolean foundJoinedMetaSpaces = false;
@@ -285,7 +284,7 @@ public class HomeHandler {
 			}
 		}
 		if (foundJoinedMetaSpaces) {
-			throw new MgmException(ERROR_CODE_HOME_ILLEGAL_STATES, "Home cannot be deleted. Please remove the Home from the MetaSpaces first.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Home cannot be deleted. Please remove the Home from the MetaSpaces first.", null);
 		}
 
 		// Delete Home from Machine.

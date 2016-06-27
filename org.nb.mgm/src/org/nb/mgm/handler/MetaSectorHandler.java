@@ -1,9 +1,9 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_META_SECTOR_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_META_SECTOR_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_META_SECTOR_ILLEGAL_STATES;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_META_SECTOR_NOT_FOUND;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -101,7 +101,7 @@ public class MetaSectorHandler {
 
 		// Throw exception - empty Id
 		if (metaSectorId == null || metaSectorId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
 		}
 
 		// Find MetaSector by Id
@@ -126,7 +126,7 @@ public class MetaSectorHandler {
 	public void addMetaSector(MetaSector metaSector) throws MgmException {
 		// Throw exception - empty MetaSector
 		if (metaSector == null) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_ILLEGAL_PARAMETER, "MetaSector cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSector cannot be empty.", null);
 		}
 
 		// Generate unique MetaSector Id
@@ -136,7 +136,7 @@ public class MetaSectorHandler {
 
 		// Throw exception - empty MetaSector name
 		if (metaSector.getName() == null || metaSector.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_ILLEGAL_PARAMETER, "MetaSector name cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSector name cannot be empty.", null);
 		}
 
 		// Throw exception - MetaSector with same Id exists
@@ -144,7 +144,7 @@ public class MetaSectorHandler {
 		for (Iterator<MetaSector> metaSectorItor = root.getMetaSectors().iterator(); metaSectorItor.hasNext();) {
 			MetaSector currMetaSector = metaSectorItor.next();
 			if (metaSector.getId().equals(currMetaSector.getId())) {
-				throw new MgmException(ERROR_CODE_META_SECTOR_EXIST, "MetaSector with same Id already exists.", null);
+				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "MetaSector with same Id already exists.", null);
 			}
 			// if (metaSector.getName().equals(currMetaSector.getName())) {
 			// throw new MgmException(ERROR_CODE_META_SECTOR_EXIST, "MetaSector with same name already exists.", null);
@@ -187,7 +187,7 @@ public class MetaSectorHandler {
 	public void updateMetaSector(MetaSector metaSector) throws MgmException {
 		// Throw exception - empty Machine
 		if (metaSector == null) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_ILLEGAL_PARAMETER, "MetaSector cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSector cannot be empty.", null);
 		}
 
 		// Find MetaSector by Id
@@ -195,7 +195,7 @@ public class MetaSectorHandler {
 
 		// Throw exception - Machine not found
 		if (metaSectorToUpdate == null) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_NOT_FOUND, "MetaSector cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSector cannot be found.", null);
 		}
 
 		// No need to update when they are the same object.
@@ -223,7 +223,7 @@ public class MetaSectorHandler {
 	public void deleteMetaSector(String metaSectorId) throws MgmException {
 		// Throw exception - empty Id
 		if (metaSectorId == null || metaSectorId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_ILLEGAL_PARAMETER, "MetaSector Id cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSector Id cannot be empty.", null);
 		}
 
 		// Find MetaSector by Id
@@ -231,12 +231,12 @@ public class MetaSectorHandler {
 
 		// Throw exception - MetaSector not found
 		if (metaSectorToDelete == null) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_NOT_FOUND, "MetaSector cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSector cannot be found.", null);
 		}
 
 		// Throw exception - Cannot delete the MetaSector, if it contains MetaSpaces
 		if (!metaSectorToDelete.getMetaSpaces().isEmpty()) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_ILLEGAL_STATES, "MetaSector cannot be deleted. Please delete MetaSpaces in the MetaSector first.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "MetaSector cannot be deleted. Please delete MetaSpaces in the MetaSector first.", null);
 		}
 
 		// Throw exception - Cannot delete the MetaSector, if there are Homes which join the MetaSector.
@@ -258,7 +258,7 @@ public class MetaSectorHandler {
 			}
 		}
 		if (foundHomeJoinedThisMetaSector) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_ILLEGAL_STATES, "MetaSector cannot be deleted. Please remove Homes which joined this MetaSector first.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "MetaSector cannot be deleted. Please remove Homes which joined this MetaSector first.", null);
 		}
 
 		// Delete MetaSector from cluster root.

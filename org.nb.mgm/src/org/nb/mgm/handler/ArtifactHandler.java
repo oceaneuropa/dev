@@ -1,10 +1,9 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ARTIFACT_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ARTIFACT_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ARTIFACT_ILLEGAL_STATES;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ARTIFACT_NOT_FOUND;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_META_SECTOR_NOT_FOUND;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,7 +61,7 @@ public class ArtifactHandler {
 		// Container Machine must exist
 		MetaSector metaSector = this.mgmService.getMetaSector(metaSectorId);
 		if (metaSector == null) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_NOT_FOUND, "MetaSector cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSector cannot be found.", null);
 		}
 
 		// Get all Artifact in the MetaSector
@@ -121,7 +120,7 @@ public class ArtifactHandler {
 
 		// Throw exception - empty Id
 		if (artifactId == null || artifactId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ARTIFACT_ILLEGAL_PARAMETER, "Artifact Id cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Artifact Id cannot be empty.", null);
 		}
 
 		// Iterate though all MetaSectors and then all Artifacts in each MetaSector. Find the Artifact with matching Id.
@@ -155,7 +154,7 @@ public class ArtifactHandler {
 		// Container MetaSector must exist
 		MetaSector metaSector = this.mgmService.getMetaSector(metaSectorId);
 		if (metaSector == null) {
-			throw new MgmException(ERROR_CODE_META_SECTOR_NOT_FOUND, "MetaSector cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSector cannot be found.", null);
 		}
 
 		// Generate unique Artifact Id
@@ -165,7 +164,7 @@ public class ArtifactHandler {
 
 		// Throw exception - empty Artifact name
 		if (artifact.getName() == null || artifact.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ARTIFACT_ILLEGAL_PARAMETER, "Artifact name cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Artifact name cannot be empty.", null);
 		}
 
 		// Throw exception - Artifact with same Id or same name+version or same filePath exists
@@ -185,7 +184,7 @@ public class ArtifactHandler {
 
 			// Check Id exits
 			if (id != null && id.equals(currId)) {
-				throw new MgmException(ERROR_CODE_ARTIFACT_EXIST, "Artifact with same Id already exists.", null);
+				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Artifact with same Id already exists.", null);
 			}
 
 			// Check name + version exists
@@ -197,13 +196,13 @@ public class ArtifactHandler {
 					sameVersion = true;
 				}
 				if (sameVersion) {
-					throw new MgmException(ERROR_CODE_ARTIFACT_EXIST, "Artifact with same name and version already exists.", null);
+					throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Artifact with same name and version already exists.", null);
 				}
 			}
 
 			// Check filePath exists
 			if (filePath != null && filePath.equals(currFilePath)) {
-				throw new MgmException(ERROR_CODE_ARTIFACT_EXIST, "Artifact with same file path already exists.", null);
+				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Artifact with same file path already exists.", null);
 			}
 		}
 
@@ -219,7 +218,7 @@ public class ArtifactHandler {
 	public void updateArtifact(Artifact artifact) throws MgmException {
 		// Throw exception - empty Artifact
 		if (artifact == null) {
-			throw new MgmException(ERROR_CODE_ARTIFACT_ILLEGAL_PARAMETER, "Artifact cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Artifact cannot be empty.", null);
 		}
 
 		// Find Artifact by Id
@@ -269,7 +268,7 @@ public class ArtifactHandler {
 	public void deleteArtifact(String artifactId) throws MgmException {
 		// Throw exception - empty Id
 		if (artifactId == null || artifactId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ARTIFACT_ILLEGAL_PARAMETER, "Artifact Id cannot be empty.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Artifact Id cannot be empty.", null);
 		}
 
 		// Find Artifact by Id
@@ -277,7 +276,7 @@ public class ArtifactHandler {
 
 		// Throw exception - Artifact not found
 		if (artifactToDelete == null) {
-			throw new MgmException(ERROR_CODE_ARTIFACT_NOT_FOUND, "Artifact cannot be found.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Artifact cannot be found.", null);
 		}
 
 		// Check whether a MetaSpace can be deleted.
@@ -315,7 +314,7 @@ public class ArtifactHandler {
 			}
 		}
 		if (foundDeployedToMetaSpace) {
-			throw new MgmException(ERROR_CODE_ARTIFACT_ILLEGAL_STATES, "Artifact cannot be deleted. Please undeploy the Artifact from MetaSpace first.", null);
+			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Artifact cannot be deleted. Please undeploy the Artifact from MetaSpace first.", null);
 		}
 	}
 

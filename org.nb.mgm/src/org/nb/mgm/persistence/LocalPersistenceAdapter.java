@@ -53,7 +53,7 @@ import org.nb.mgm.service.MgmConstants;
  * }
  * 
  */
-public class LocalMgmPersistenceAdapter implements MgmPersistenceAdapter {
+public class LocalPersistenceAdapter implements MgmPersistenceAdapter {
 
 	protected Map<Object, Object> props;
 
@@ -61,7 +61,7 @@ public class LocalMgmPersistenceAdapter implements MgmPersistenceAdapter {
 	 * 
 	 * @param props
 	 */
-	public LocalMgmPersistenceAdapter(Map<Object, Object> props) {
+	public LocalPersistenceAdapter(Map<Object, Object> props) {
 		this.props = props;
 	}
 
@@ -84,7 +84,7 @@ public class LocalMgmPersistenceAdapter implements MgmPersistenceAdapter {
 			save(root);
 		}
 
-		LocalMgmReader reader = new LocalMgmReader(file);
+		LocalJsonReader reader = new LocalJsonReader(file);
 		ClusterRoot root = reader.read();
 		return root;
 	}
@@ -92,7 +92,7 @@ public class LocalMgmPersistenceAdapter implements MgmPersistenceAdapter {
 	@Override
 	public void save(ClusterRoot root) {
 		File file = getPersistenceFile();
-		LocalMgmWriter writer = new LocalMgmWriter(file, root);
+		LocalJsonWriter writer = new LocalJsonWriter(file, root);
 		try {
 			writer.write();
 		} catch (IOException e) {

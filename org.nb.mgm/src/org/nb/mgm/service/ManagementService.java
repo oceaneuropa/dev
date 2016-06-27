@@ -15,7 +15,9 @@ import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
-import org.nb.mgm.model.runtime.Namespace;
+import org.nb.mgm.model.runtime.Project;
+import org.nb.mgm.model.runtime.ProjectHomeConfig;
+import org.nb.mgm.model.runtime.ProjectNodeConfig;
 
 public interface ManagementService {
 
@@ -393,5 +395,137 @@ public interface ManagementService {
 	 * @throws MgmException
 	 */
 	public void deleteArtifact(String artifactId) throws MgmException;
+
+	// ------------------------------------------------------------------------------------------
+	// Project
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get Projects.
+	 * 
+	 * @return
+	 * @throws MgmException
+	 */
+	public List<Project> getProjects() throws MgmException;
+
+	/**
+	 * Get Project detailed information by Id.
+	 * 
+	 * @param projectId
+	 * @return
+	 * @throws MgmException
+	 */
+	public Project getProject(String projectId) throws MgmException;
+
+	/**
+	 * Add a Project.
+	 * 
+	 * @param project
+	 * @throws MgmException
+	 */
+	public void addProject(Project project) throws MgmException;
+
+	/**
+	 * Update Project information.
+	 * 
+	 * @param project
+	 * @throws MgmException
+	 */
+	public void updateProject(Project project) throws MgmException;
+
+	/**
+	 * Remove a Project.
+	 * 
+	 * @param projectId
+	 * @throws MgmException
+	 */
+	public boolean deleteProject(String projectId) throws MgmException;
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectHomeConfig
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all ProjectHomeConfigs in a Project.
+	 * 
+	 * @param projectId
+	 * @return
+	 */
+	public List<ProjectHomeConfig> getProjectHomeConfigs(String projectId) throws MgmException;
+
+	/**
+	 * Get ProjectHomeConfig information by Id.
+	 * 
+	 * @param homeConfigId
+	 * @return
+	 */
+	public ProjectHomeConfig getProjectHomeConfig(String homeConfigId) throws MgmException;
+
+	/**
+	 * Add a ProjectHomeConfig to a Project.
+	 * 
+	 * @param projectId
+	 * @param homeConfig
+	 * @throws MgmException
+	 */
+	public void addProjectHomeConfig(String projectId, ProjectHomeConfig homeConfig) throws MgmException;
+
+	/**
+	 * Update ProjectHomeConfig information.
+	 * 
+	 * @param homeConfig
+	 * @throws MgmException
+	 */
+	public void updateProjectHomeConfig(ProjectHomeConfig homeConfig) throws MgmException;
+
+	/**
+	 * Delete a ProjectHomeConfig from a Project.
+	 * 
+	 * @param homeConfigId
+	 * @throws MgmException
+	 */
+	public boolean deleteProjectHomeConfig(String homeConfigId) throws MgmException;
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectNodeConfig
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all ProjectNodeConfigs in a Project.
+	 * 
+	 * @param homeConfigId
+	 * @return
+	 */
+	public List<ProjectNodeConfig> getProjectNodeConfigs(String homeConfigId) throws MgmException;
+
+	/**
+	 * Get ProjectNodeConfig information by Id.
+	 * 
+	 * @param nodeConfigId
+	 * @return
+	 */
+	public ProjectNodeConfig getProjectNodeConfig(String nodeConfigId) throws MgmException;
+
+	/**
+	 * Add a ProjectNodeConfig to a Project.
+	 * 
+	 * @param homeConfigId
+	 * @param nodeConfig
+	 * @throws MgmException
+	 */
+	public void addProjectNodeConfig(String homeConfigId, ProjectNodeConfig nodeConfig) throws MgmException;
+
+	/**
+	 * Update ProjectNodeConfig information.
+	 * 
+	 * @param nodeConfig
+	 * @throws MgmException
+	 */
+	public void updateProjectNodeConfig(ProjectNodeConfig nodeConfig) throws MgmException;
+
+	/**
+	 * Delete a ProjectNodeConfig from a ProjectHomeConfig.
+	 * 
+	 * @param nodeConfigId
+	 * @throws MgmException
+	 */
+	public boolean deleteProjectNodeConfig(String nodeConfigId) throws MgmException;
 
 }

@@ -18,6 +18,10 @@ public class ModelObject {
 		this.parent = parent;
 	}
 
+	public boolean isProxy() {
+		return false;
+	}
+
 	public void setParent(Object parent) {
 		this.parent = parent;
 	}

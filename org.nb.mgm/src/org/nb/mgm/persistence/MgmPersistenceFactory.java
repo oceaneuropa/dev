@@ -23,14 +23,14 @@ public class MgmPersistenceFactory {
 			String type = (String) props.get(PERSISTENCE_TYPE);
 
 			if (PERSISTENCE_TYPE_DB.equals(type)) {
-				persistenceAdapter = new DBMgmPersistenceAdapter();
+				persistenceAdapter = new DBPersistenceAdapter();
 			} else if (PERSISTENCE_TYPE_LOCAL.equals(type)) {
-				persistenceAdapter = new LocalMgmPersistenceAdapter(props);
+				persistenceAdapter = new LocalPersistenceAdapter(props);
 			}
 		}
 
 		if (persistenceAdapter == null) {
-			persistenceAdapter = new LocalMgmPersistenceAdapter(props);
+			persistenceAdapter = new LocalPersistenceAdapter(props);
 		}
 		return persistenceAdapter;
 	}

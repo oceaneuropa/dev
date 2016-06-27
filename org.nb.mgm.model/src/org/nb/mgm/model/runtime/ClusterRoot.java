@@ -57,6 +57,7 @@ public class ClusterRoot {
 
 	protected List<Machine> machines = new ArrayList<Machine>();
 	protected List<MetaSector> metaSectors = new ArrayList<MetaSector>();
+	protected List<Project> projects = new ArrayList<Project>();
 
 	public ClusterRoot() {
 	}
@@ -130,6 +131,27 @@ public class ClusterRoot {
 			}
 		}
 		return metaSector;
+	}
+
+	// ----------------------------------------------------------------------------------------------------------------
+	// Project
+	// ----------------------------------------------------------------------------------------------------------------
+	public List<Project> getProjects() {
+		return this.projects;
+	}
+
+	public boolean addProject(Project project) {
+		if (project != null && !this.projects.contains(project)) {
+			return this.projects.add(project);
+		}
+		return false;
+	}
+
+	public boolean deleteProject(Project project) {
+		if (project != null && this.projects.contains(project)) {
+			return this.projects.remove(project);
+		}
+		return false;
 	}
 
 }
