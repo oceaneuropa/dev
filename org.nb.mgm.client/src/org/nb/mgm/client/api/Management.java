@@ -257,4 +257,55 @@ public interface Management extends IAdaptable {
 	 */
 	public boolean deleteMetaSpace(String metaSectorId, String metaSpaceId) throws ClientException;
 
+	// ------------------------------------------------------------------------------------------
+	// Project
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all Projects.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<Project> getProjects() throws ClientException;
+
+	/**
+	 * Get Project by Id.
+	 * 
+	 * @param projectId
+	 * @return
+	 * @throws ClientException
+	 */
+	public Project getProject(String projectId) throws ClientException;
+
+	/**
+	 * Add a Project.
+	 * 
+	 * @param projectId
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws ClientException
+	 */
+	public Project addProject(String projectId, String name, String description) throws ClientException;
+
+	/**
+	 * Delete a Project.
+	 * 
+	 * @param projectId
+	 * @throws ClientException
+	 */
+	public boolean deleteProject(String projectId) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectHomeConfig
+	// ------------------------------------------------------------------------------------------
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectNodeConfig
+	// ------------------------------------------------------------------------------------------
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectSoftwareConfig
+	// ------------------------------------------------------------------------------------------
+
 }

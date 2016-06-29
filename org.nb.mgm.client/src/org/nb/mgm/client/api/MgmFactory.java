@@ -5,10 +5,12 @@ import org.nb.mgm.client.api.impl.MachineImpl;
 import org.nb.mgm.client.api.impl.ManagementImpl;
 import org.nb.mgm.client.api.impl.MetaSectorImpl;
 import org.nb.mgm.client.api.impl.MetaSpaceImpl;
+import org.nb.mgm.client.api.impl.ProjectImpl;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.nb.mgm.model.dto.MetaSectorDTO;
 import org.nb.mgm.model.dto.MetaSpaceDTO;
+import org.nb.mgm.model.dto.ProjectDTO;
 
 public class MgmFactory {
 
@@ -74,6 +76,19 @@ public class MgmFactory {
 		MetaSpaceImpl metaSpace = new MetaSpaceImpl(metaSpaceDTO);
 		metaSpace.setMetaSector(metaSector);
 		return metaSpace;
+	}
+
+	/**
+	 * Create Project client.
+	 * 
+	 * @param management
+	 * @param projectDTO
+	 * @return
+	 */
+	public static Project createProject(Management management, ProjectDTO projectDTO) {
+		ProjectImpl project = new ProjectImpl(projectDTO);
+		project.setManagement(management);
+		return project;
 	}
 
 }

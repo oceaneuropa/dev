@@ -198,7 +198,16 @@ public class DTOConverter {
 	 * @return
 	 */
 	public ProjectHomeConfigDTO toDTO(ProjectHomeConfig homeConfig) {
-		return null;
+		if (homeConfig == null) {
+			return null;
+		}
+		ProjectHomeConfigDTO dto = new ProjectHomeConfigDTO();
+
+		dto.setId(homeConfig.getId());
+		dto.setName(homeConfig.getName());
+		dto.setDescription(homeConfig.getDescription());
+
+		return dto;
 	}
 
 	/**

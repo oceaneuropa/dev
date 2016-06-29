@@ -11,14 +11,17 @@ import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.MetaSector;
 import org.nb.mgm.client.api.MetaSpace;
 import org.nb.mgm.client.api.MgmFactory;
+import org.nb.mgm.client.api.Project;
 import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.client.ws.MachineClient;
 import org.nb.mgm.client.ws.MetaSectorClient;
 import org.nb.mgm.client.ws.MetaSpaceClient;
+import org.nb.mgm.client.ws.ProjectClient;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.nb.mgm.model.dto.MetaSectorDTO;
 import org.nb.mgm.model.dto.MetaSpaceDTO;
+import org.nb.mgm.model.dto.ProjectDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -27,10 +30,13 @@ import org.origin.common.rest.model.StatusDTO;
 public class ManagementImpl implements Management {
 
 	private ClientConfiguration clientConfig;
+
 	private MachineClient machineClient;
 	private HomeClient homeClient;
 	private MetaSectorClient metaSectorClient;
 	private MetaSpaceClient metaSpaceClient;
+	private ProjectClient projectClient;
+
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
@@ -44,14 +50,11 @@ public class ManagementImpl implements Management {
 		this.clientConfig = ClientConfiguration.get(url, contextRoot, username);
 		this.clientConfig.setPassword(password);
 
-		// Web service client for machine
 		this.machineClient = new MachineClient(this.clientConfig);
-		// Web service client for home
 		this.homeClient = new HomeClient(this.clientConfig);
-		// Web service client for metaSector
 		this.metaSectorClient = new MetaSectorClient(this.clientConfig);
-		// Web service client for metaSpace
 		this.metaSpaceClient = new MetaSpaceClient(this.clientConfig);
+		this.projectClient = new ProjectClient(this.clientConfig);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -610,6 +613,62 @@ public class ManagementImpl implements Management {
 	}
 
 	// ------------------------------------------------------------------------------------------
+	// Project
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public List<Project> getProjects() throws ClientException {
+		checkClient(this.projectClient);
+
+		List<Project> projects = new ArrayList<Project>();
+
+		List<ProjectDTO> projectDTOs = this.projectClient.getProjects();
+		for (ProjectDTO projectDTO : projectDTOs) {
+			Project project = MgmFactory.createProject(this, projectDTO);
+			projects.add(project);
+		}
+		return projects;
+	}
+
+	@Override
+	public Project getProject(String projectId) throws ClientException {
+		checkClient(this.projectClient);
+
+		Project project = null;
+
+		ProjectDTO projectDTO = this.projectClient.getProject(projectId);
+		if (projectDTO != null) {
+			project = MgmFactory.createProject(this, projectDTO);
+		}
+		return project;
+	}
+
+	@Override
+	public Project addProject(String projectId, String name, String description) throws ClientException {
+		checkClient(this.projectClient);
+
+		Project project = null;
+
+		ProjectDTO newProjectRequest = new ProjectDTO();
+		newProjectRequest.setId(projectId);
+		newProjectRequest.setName(name);
+		newProjectRequest.setDescription(description);
+
+		ProjectDTO newProjectDTO = this.projectClient.addProject(newProjectRequest);
+		if (newProjectDTO != null) {
+			project = MgmFactory.createProject(this, newProjectDTO);
+		}
+		return project;
+	}
+
+	@Override
+	public boolean deleteProject(String projectId) throws ClientException {
+		checkClient(this.projectClient);
+
+		StatusDTO status = this.projectClient.deleteProject(projectId);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	// ------------------------------------------------------------------------------------------
 	// Check WS Client
 	// ------------------------------------------------------------------------------------------
 	/**
@@ -656,6 +715,17 @@ public class ManagementImpl implements Management {
 		}
 	}
 
+	/**
+	 * 
+	 * @param projectClient
+	 * @throws ClientException
+	 */
+	protected void checkClient(ProjectClient projectClient) throws ClientException {
+		if (projectClient == null) {
+			throw new ClientException(401, "ProjectClient is null.", null);
+		}
+	}
+
 	/** implement IAdaptable interface */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -671,7 +741,11 @@ public class ManagementImpl implements Management {
 
 		} else if (MetaSpaceClient.class.equals(adapter)) {
 			return (T) this.metaSpaceClient;
+
+		} else if (ProjectClient.class.equals(adapter)) {
+			return (T) this.projectClient;
 		}
+
 		T result = this.adaptorSupport.getAdapter(adapter);
 		if (result != null) {
 			return result;

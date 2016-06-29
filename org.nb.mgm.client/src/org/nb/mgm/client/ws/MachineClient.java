@@ -22,10 +22,8 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.PropertyUtil;
 
-/*
- * Machine web service client
- * 
- * Machine resource
+/* 
+ * Machine resource client
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter} 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
@@ -52,7 +50,7 @@ public class MachineClient extends AbstractClient {
 	/**
 	 * Get all Machines.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
 	 * 
 	 * @return
 	 * @throws ClientException
@@ -64,7 +62,7 @@ public class MachineClient extends AbstractClient {
 	/**
 	 * Get Machines by query parameter.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
 	 * 
 	 * @param properties
 	 *            supported keys are: "name", "ipaddress", "filter".
@@ -110,7 +108,7 @@ public class MachineClient extends AbstractClient {
 	/**
 	 * Get Machine by machine Id.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
 	 * 
 	 * @param machineId
 	 * 
@@ -137,7 +135,7 @@ public class MachineClient extends AbstractClient {
 	/**
 	 * Add a Machine to the cluster.
 	 * 
-	 * Request URL (POST): {scheme}://{host}:{port}/{contextRoot}/machines
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/machines
 	 * 
 	 * @param machine
 	 *            Body parameter for the new Machine.
@@ -166,7 +164,7 @@ public class MachineClient extends AbstractClient {
 	/**
 	 * Update Machine information.
 	 * 
-	 * Request URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines
 	 * 
 	 * @param machine
 	 *            Body parameter for updating the Machine.
@@ -195,7 +193,7 @@ public class MachineClient extends AbstractClient {
 	/**
 	 * Delete a Machine from the cluster.
 	 * 
-	 * Request URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
 	 * 
 	 * @param machineId
 	 * 
@@ -222,7 +220,7 @@ public class MachineClient extends AbstractClient {
 	/**
 	 * Get Machine properties.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=false
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=false
 	 * 
 	 * @param machineId
 	 * @param useJsonString

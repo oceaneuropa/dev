@@ -30,6 +30,7 @@ public class ManagementCommand {
 	protected static String[] HOME_TITLES = new String[] { "ID", "Name", "URL", "Description" };
 	protected static String[] META_SECTOR_TITLES = new String[] { "ID", "Name", "Description" };
 	protected static String[] META_SPACE_TITLES = new String[] { "ID", "Name", "Description" };
+	protected static String[] PROJECT_TITLES = new String[] { "ID", "Name", "Description" };
 
 	protected static String NULL = "null";
 
