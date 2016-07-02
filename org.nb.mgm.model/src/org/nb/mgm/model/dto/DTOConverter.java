@@ -8,8 +8,8 @@ import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Namespace;
 import org.nb.mgm.model.runtime.Project;
-import org.nb.mgm.model.runtime.ProjectHomeConfig;
-import org.nb.mgm.model.runtime.ProjectNodeConfig;
+import org.nb.mgm.model.runtime.ProjectHome;
+import org.nb.mgm.model.runtime.ProjectNode;
 import org.origin.common.rest.model.ErrorDTO;
 
 public class DTOConverter {
@@ -192,32 +192,41 @@ public class DTOConverter {
 	}
 
 	/**
-	 * Convert ProjectHomeConfig runtime model to ProjectHomeConfigDTO.
+	 * Convert ProjectHome runtime model to ProjectHomeDTO.
 	 * 
-	 * @param homeConfig
+	 * @param projectHome
 	 * @return
 	 */
-	public ProjectHomeConfigDTO toDTO(ProjectHomeConfig homeConfig) {
-		if (homeConfig == null) {
+	public ProjectHomeDTO toDTO(ProjectHome projectHome) {
+		if (projectHome == null) {
 			return null;
 		}
-		ProjectHomeConfigDTO dto = new ProjectHomeConfigDTO();
+		ProjectHomeDTO dto = new ProjectHomeDTO();
 
-		dto.setId(homeConfig.getId());
-		dto.setName(homeConfig.getName());
-		dto.setDescription(homeConfig.getDescription());
+		dto.setId(projectHome.getId());
+		dto.setName(projectHome.getName());
+		dto.setDescription(projectHome.getDescription());
 
 		return dto;
 	}
 
 	/**
-	 * Convert ProjectHomeConfig runtime model to ProjectHomeConfigDTO.
+	 * Convert ProjectNode runtime model to ProjectNodeDTO.
 	 * 
-	 * @param nodeConfig
+	 * @param projectNode
 	 * @return
 	 */
-	public ProjectNodeConfigDTO toDTO(ProjectNodeConfig nodeConfig) {
-		return null;
+	public ProjectNodeDTO toDTO(ProjectNode projectNode) {
+		if (projectNode == null) {
+			return null;
+		}
+		ProjectNodeDTO dto = new ProjectNodeDTO();
+
+		dto.setId(projectNode.getId());
+		dto.setName(projectNode.getName());
+		dto.setDescription(projectNode.getDescription());
+
+		return dto;
 	}
 
 }

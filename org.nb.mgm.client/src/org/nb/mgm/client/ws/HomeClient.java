@@ -22,19 +22,14 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-/**
+/*
  * Home web service client
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
- * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes (Body parameter: HomeDTO)
- * 
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes (Body parameter: HomeDTO)
- * 
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
- * 
  */
 public class HomeClient extends AbstractClient {
 
@@ -49,7 +44,7 @@ public class HomeClient extends AbstractClient {
 	/**
 	 * Get all Homes in a Machine.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
 	 * 
 	 * @param machineId
 	 * 
@@ -63,7 +58,7 @@ public class HomeClient extends AbstractClient {
 	/**
 	 * Get all Homes in a Machine by query parameters.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
 	 * 
 	 * @param machineId
 	 * @param properties
@@ -114,7 +109,7 @@ public class HomeClient extends AbstractClient {
 	/**
 	 * Get Home by machine Id and home Id.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -142,7 +137,7 @@ public class HomeClient extends AbstractClient {
 	/**
 	 * Add a Home to a Machine.
 	 * 
-	 * Request URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
 	 * 
 	 * @param machineId
 	 * @param home
@@ -172,7 +167,7 @@ public class HomeClient extends AbstractClient {
 	/**
 	 * Update Home information.
 	 * 
-	 * Request URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
 	 * 
 	 * @param machineId
 	 * @param home
@@ -202,7 +197,7 @@ public class HomeClient extends AbstractClient {
 	/**
 	 * Delete a Home from a Machine by home Id.
 	 * 
-	 * Request URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -232,7 +227,7 @@ public class HomeClient extends AbstractClient {
 	/**
 	 * Get Home properties.
 	 * 
-	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties
 	 * 
 	 * @param machineId
 	 * @param homeId

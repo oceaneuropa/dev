@@ -15,8 +15,8 @@ import org.nb.mgm.handler.MachineHandler;
 import org.nb.mgm.handler.MetaSectorHandler;
 import org.nb.mgm.handler.MetaSpaceHandler;
 import org.nb.mgm.handler.ProjectHandler;
-import org.nb.mgm.handler.ProjectHomeConfigHandler;
-import org.nb.mgm.handler.ProjectNodeConfigHandler;
+import org.nb.mgm.handler.ProjectHomeHandler;
+import org.nb.mgm.handler.ProjectNodeHandler;
 import org.nb.mgm.model.query.ArtifactQuery;
 import org.nb.mgm.model.query.HomeQuery;
 import org.nb.mgm.model.query.MachineQuery;
@@ -29,8 +29,8 @@ import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Project;
-import org.nb.mgm.model.runtime.ProjectHomeConfig;
-import org.nb.mgm.model.runtime.ProjectNodeConfig;
+import org.nb.mgm.model.runtime.ProjectHome;
+import org.nb.mgm.model.runtime.ProjectNode;
 import org.nb.mgm.persistence.MgmPersistenceAdapter;
 import org.nb.mgm.persistence.MgmPersistenceFactory;
 import org.nb.mgm.service.ManagementService;
@@ -59,8 +59,8 @@ public class ManagementServiceImpl implements ManagementService {
 	protected MetaSpaceHandler metaSpaceHandler;
 	protected ArtifactHandler artifactHandler;
 	protected ProjectHandler projectHandler;
-	protected ProjectHomeConfigHandler homeConfigHandler;
-	protected ProjectNodeConfigHandler nodeConfigHandler;
+	protected ProjectHomeHandler projectHomeHandler;
+	protected ProjectNodeHandler projectNodeHandler;
 
 	// read/write lock for data handlers
 	protected ReadWriteLock machineRWLock = new ReentrantReadWriteLock();
@@ -69,8 +69,8 @@ public class ManagementServiceImpl implements ManagementService {
 	protected ReadWriteLock metaSpaceRWLock = new ReentrantReadWriteLock();
 	protected ReadWriteLock artifactRWLock = new ReentrantReadWriteLock();
 	protected ReadWriteLock projectRWLock = new ReentrantReadWriteLock();
-	protected ReadWriteLock homeConfigRWLock = new ReentrantReadWriteLock();
-	protected ReadWriteLock nodeConfigRWLock = new ReentrantReadWriteLock();
+	protected ReadWriteLock projectHomeRWLock = new ReentrantReadWriteLock();
+	protected ReadWriteLock projectNodeRWLock = new ReentrantReadWriteLock();
 
 	protected boolean autoSave = false;
 
@@ -118,8 +118,8 @@ public class ManagementServiceImpl implements ManagementService {
 		this.metaSpaceHandler = new MetaSpaceHandler(this);
 		this.artifactHandler = new ArtifactHandler(this);
 		this.projectHandler = new ProjectHandler(this);
-		this.homeConfigHandler = new ProjectHomeConfigHandler(this);
-		this.nodeConfigHandler = new ProjectNodeConfigHandler(this);
+		this.projectHomeHandler = new ProjectHomeHandler(this);
+		this.projectNodeHandler = new ProjectNodeHandler(this);
 
 		// 3. Register as a service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -898,65 +898,65 @@ public class ManagementServiceImpl implements ManagementService {
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// ProjectHomeConfig
+	// ProjectHome
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public List<ProjectHomeConfig> getProjectHomeConfigs(String projectId) throws MgmException {
-		this.homeConfigRWLock.readLock().lock();
+	public List<ProjectHome> getProjectHomes(String projectId) throws MgmException {
+		this.projectHomeRWLock.readLock().lock();
 		try {
-			return this.homeConfigHandler.getHomeConfigs(projectId);
+			return this.projectHomeHandler.getProjectHomes(projectId);
 		} finally {
-			this.homeConfigRWLock.readLock().unlock();
+			this.projectHomeRWLock.readLock().unlock();
 		}
 	}
 
 	@Override
-	public ProjectHomeConfig getProjectHomeConfig(String homeConfigId) throws MgmException {
-		this.homeConfigRWLock.readLock().lock();
+	public ProjectHome getProjectHome(String projectId, String projectHomeId) throws MgmException {
+		this.projectHomeRWLock.readLock().lock();
 		try {
-			return this.homeConfigHandler.getHomeConfig(homeConfigId);
+			return this.projectHomeHandler.getProjectHome(projectId, projectHomeId);
 		} finally {
-			this.homeConfigRWLock.readLock().unlock();
+			this.projectHomeRWLock.readLock().unlock();
 		}
 	}
 
 	@Override
-	public void addProjectHomeConfig(String projectId, ProjectHomeConfig homeConfig) throws MgmException {
-		this.homeConfigRWLock.writeLock().lock();
+	public void addProjectHome(String projectId, ProjectHome projectHome) throws MgmException {
+		this.projectHomeRWLock.writeLock().lock();
 		try {
-			this.homeConfigHandler.addHomeConfig(projectId, homeConfig);
+			this.projectHomeHandler.addProjectHome(projectId, projectHome);
 			if (isAutoSave()) {
 				save();
 			}
 		} finally {
-			this.homeConfigRWLock.writeLock().unlock();
+			this.projectHomeRWLock.writeLock().unlock();
 		}
 	}
 
 	@Override
-	public void updateProjectHomeConfig(ProjectHomeConfig homeConfig) throws MgmException {
-		this.homeConfigRWLock.writeLock().lock();
+	public void updateProjectHome(String projectId, ProjectHome projectHome) throws MgmException {
+		this.projectHomeRWLock.writeLock().lock();
 		try {
-			this.homeConfigHandler.updateHomeConfig(homeConfig);
+			this.projectHomeHandler.updateProjectHome(projectId, projectHome);
 			if (isAutoSave()) {
 				save();
 			}
 		} finally {
-			this.homeConfigRWLock.writeLock().unlock();
+			this.projectHomeRWLock.writeLock().unlock();
 		}
 	}
 
 	@Override
-	public boolean deleteProjectHomeConfig(String homeConfigId) throws MgmException {
-		this.homeConfigRWLock.writeLock().lock();
+	public boolean deleteProjectHome(String projectId, String projectHomeId) throws MgmException {
+		this.projectHomeRWLock.writeLock().lock();
 		try {
 			// TODO:
-			// 1. Send command to remote Home (if a Home is configured):
+			// 1. Send command to remote Home (if a remote Home is configured):
 			// (1) Stop all nodes that belongs to the project in the remote home
 			// (2) Delete all nodes that belongs to the project in the remote home
 
-			// 3. Delete ProjectHomeConfig
-			boolean succeed = this.homeConfigHandler.deleteHomeConfig(homeConfigId);
+			// 3. Delete ProjectHome
+			boolean succeed = this.projectHomeHandler.deleteProjectHome(projectId, projectHomeId);
 
 			// 4. Save cluster model
 			if (isAutoSave()) {
@@ -965,70 +965,70 @@ public class ManagementServiceImpl implements ManagementService {
 
 			return succeed;
 		} finally {
-			this.homeConfigRWLock.writeLock().unlock();
+			this.projectHomeRWLock.writeLock().unlock();
 		}
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// ProjectNodeConfig
+	// ProjectNode
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public List<ProjectNodeConfig> getProjectNodeConfigs(String homeConfigId) throws MgmException {
-		this.nodeConfigRWLock.readLock().lock();
+	public List<ProjectNode> getProjectNodes(String projectId, String projectHomeId) throws MgmException {
+		this.projectNodeRWLock.readLock().lock();
 		try {
-			return this.nodeConfigHandler.getNodeConfigs(homeConfigId);
+			return this.projectNodeHandler.getProjectNodes(projectId, projectHomeId);
 		} finally {
-			this.nodeConfigRWLock.readLock().unlock();
+			this.projectNodeRWLock.readLock().unlock();
 		}
 	}
 
 	@Override
-	public ProjectNodeConfig getProjectNodeConfig(String nodeConfigId) throws MgmException {
-		this.nodeConfigRWLock.readLock().lock();
+	public ProjectNode getProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException {
+		this.projectNodeRWLock.readLock().lock();
 		try {
-			return this.nodeConfigHandler.getNodeConfig(nodeConfigId);
+			return this.projectNodeHandler.getProjectNode(projectId, projectHomeId, projectNodeId);
 		} finally {
-			this.nodeConfigRWLock.readLock().unlock();
+			this.projectNodeRWLock.readLock().unlock();
 		}
 	}
 
 	@Override
-	public void addProjectNodeConfig(String homeConfigId, ProjectNodeConfig nodeConfig) throws MgmException {
-		this.nodeConfigRWLock.writeLock().lock();
+	public void addProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException {
+		this.projectNodeRWLock.writeLock().lock();
 		try {
-			this.nodeConfigHandler.addNodeConfig(homeConfigId, nodeConfig);
+			this.projectNodeHandler.addProjectNode(projectId, projectHomeId, projectNode);
 			if (isAutoSave()) {
 				save();
 			}
 		} finally {
-			this.nodeConfigRWLock.writeLock().unlock();
+			this.projectNodeRWLock.writeLock().unlock();
 		}
 	}
 
 	@Override
-	public void updateProjectNodeConfig(ProjectNodeConfig nodeConfig) throws MgmException {
-		this.nodeConfigRWLock.writeLock().lock();
+	public void updateProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException {
+		this.projectNodeRWLock.writeLock().lock();
 		try {
-			this.nodeConfigHandler.updateNodeConfig(nodeConfig);
+			this.projectNodeHandler.updateProjectNode(projectId, projectHomeId, projectNode);
 			if (isAutoSave()) {
 				save();
 			}
 		} finally {
-			this.nodeConfigRWLock.writeLock().unlock();
+			this.projectNodeRWLock.writeLock().unlock();
 		}
 	}
 
 	@Override
-	public boolean deleteProjectNodeConfig(String nodeConfigId) throws MgmException {
-		this.nodeConfigRWLock.writeLock().lock();
+	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException {
+		this.projectNodeRWLock.writeLock().lock();
 		try {
 			// TODO:
 			// 1. Send command to remote Home (if a Home is configured):
 			// (1) Stop the node in the remote home
 			// (2) Delete the node in the remote home
 
-			// 3. Delete ProjectNodeConfig
-			boolean succeed = this.nodeConfigHandler.deleteNodeConfig(nodeConfigId);
+			// 3. Delete ProjectNode
+			boolean succeed = this.projectNodeHandler.deleteProjectNode(projectId, projectHomeId, projectNodeId);
 
 			// 4. Save cluster model
 			if (isAutoSave()) {
@@ -1037,7 +1037,7 @@ public class ManagementServiceImpl implements ManagementService {
 
 			return succeed;
 		} finally {
-			this.nodeConfigRWLock.writeLock().unlock();
+			this.projectNodeRWLock.writeLock().unlock();
 		}
 	}
 

@@ -8,12 +8,12 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.nb.mgm.client.api.Home;
-import org.nb.mgm.client.api.Machine;
+import org.nb.mgm.client.api.IHome;
+import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.api.MetaSector;
-import org.nb.mgm.client.api.MetaSpace;
-import org.nb.mgm.client.api.MgmFactory;
+import org.nb.mgm.client.api.IMetaSector;
+import org.nb.mgm.client.api.IMetaSpace;
+import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -30,15 +30,15 @@ public class ManagementTest {
 	}
 
 	protected Management getManagement() {
-		return MgmFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
+		return ManagementFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
 	}
 
 	@Test
 	public void test001_getMachines() {
 		System.out.println("--- --- --- test001_getMachines() --- --- ---");
 		try {
-			List<Machine> machines = mgm.getMachines();
-			for (Machine machine : machines) {
+			List<IMachine> machines = mgm.getMachines();
+			for (IMachine machine : machines) {
 				System.out.println(machine.toString());
 			}
 		} catch (ClientException e) {
@@ -51,13 +51,13 @@ public class ManagementTest {
 	public void test002_getHomes() {
 		System.out.println("--- --- --- test002_getHomes() --- --- ---");
 		try {
-			List<Machine> machines = mgm.getMachines();
-			for (Machine machine : machines) {
+			List<IMachine> machines = mgm.getMachines();
+			for (IMachine machine : machines) {
 				String machineId = machine.getId();
 				System.out.println("machineId = " + machineId);
 
-				List<Home> homes = mgm.getHomes(machineId);
-				for (Home home : homes) {
+				List<IHome> homes = mgm.getHomes(machineId);
+				for (IHome home : homes) {
 					System.out.println("\t" + home.toString());
 				}
 
@@ -73,8 +73,8 @@ public class ManagementTest {
 	public void test003_getMetaSectors() {
 		System.out.println("--- --- --- test003_getMetaSectors() --- --- ---");
 		try {
-			List<MetaSector> metaSectors = mgm.getMetaSectors();
-			for (MetaSector metaSector : metaSectors) {
+			List<IMetaSector> metaSectors = mgm.getMetaSectors();
+			for (IMetaSector metaSector : metaSectors) {
 				System.out.println(metaSector.toString());
 			}
 		} catch (ClientException e) {
@@ -87,13 +87,13 @@ public class ManagementTest {
 	public void test004_getMetaSpaces() {
 		System.out.println("--- --- --- test004_getMetaSpaces() --- --- ---");
 		try {
-			List<MetaSector> metaSectors = mgm.getMetaSectors();
-			for (MetaSector metaSector : metaSectors) {
+			List<IMetaSector> metaSectors = mgm.getMetaSectors();
+			for (IMetaSector metaSector : metaSectors) {
 				String metaSectorId = metaSector.getId();
 				System.out.println("metaSectorId = " + metaSectorId);
 
-				List<MetaSpace> metaSpaces = mgm.getMetaSpaces(metaSectorId);
-				for (MetaSpace metaSpace : metaSpaces) {
+				List<IMetaSpace> metaSpaces = mgm.getMetaSpaces(metaSectorId);
+				for (IMetaSpace metaSpace : metaSpaces) {
 					System.out.println("\t" + metaSpace.toString());
 				}
 				System.out.println();

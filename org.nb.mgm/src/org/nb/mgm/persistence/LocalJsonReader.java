@@ -14,8 +14,8 @@ import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Project;
-import org.nb.mgm.model.runtime.ProjectHomeConfig;
-import org.nb.mgm.model.runtime.ProjectNodeConfig;
+import org.nb.mgm.model.runtime.ProjectHome;
+import org.nb.mgm.model.runtime.ProjectNode;
 import org.origin.common.json.JSONUtil;
 
 public class LocalJsonReader {
@@ -480,10 +480,10 @@ public class LocalJsonReader {
 				for (int i = 0; i < length; i++) {
 					JSONObject homeConfigJSON = homeConfigsArray.getJSONObject(i);
 					if (homeConfigJSON != null) {
-						ProjectHomeConfig homeConfig = jsonToProjectHomeConfig(homeConfigJSON);
+						ProjectHome homeConfig = jsonToProjectHomeConfig(homeConfigJSON);
 						if (homeConfig != null) {
 							homeConfig.setParent(project);
-							project.addHomeConfig(homeConfig);
+							project.addHome(homeConfig);
 						}
 					}
 				}
@@ -499,12 +499,12 @@ public class LocalJsonReader {
 	 * @param homeConfigJSON
 	 * @return
 	 */
-	protected ProjectHomeConfig jsonToProjectHomeConfig(JSONObject homeConfigJSON) {
+	protected ProjectHome jsonToProjectHomeConfig(JSONObject homeConfigJSON) {
 		if (homeConfigJSON == null) {
 			return null;
 		}
 
-		ProjectHomeConfig homeConfig = new ProjectHomeConfig();
+		ProjectHome homeConfig = new ProjectHome();
 
 		// "id" attribute
 		String id = null;
@@ -535,10 +535,10 @@ public class LocalJsonReader {
 				for (int i = 0; i < length; i++) {
 					JSONObject nodeConfigJSON = nodeConfigsArray.getJSONObject(i);
 					if (nodeConfigJSON != null) {
-						ProjectNodeConfig nodeConfig = jsonToProjectNodeConfig(nodeConfigJSON);
+						ProjectNode nodeConfig = jsonToProjectNodeConfig(nodeConfigJSON);
 						if (nodeConfig != null) {
 							nodeConfig.setParent(homeConfig);
-							homeConfig.addNodeConfig(nodeConfig);
+							homeConfig.addNode(nodeConfig);
 						}
 					}
 				}
@@ -554,12 +554,12 @@ public class LocalJsonReader {
 	 * @param nodeConfigJSON
 	 * @return
 	 */
-	protected ProjectNodeConfig jsonToProjectNodeConfig(JSONObject nodeConfigJSON) {
+	protected ProjectNode jsonToProjectNodeConfig(JSONObject nodeConfigJSON) {
 		if (nodeConfigJSON == null) {
 			return null;
 		}
 
-		ProjectNodeConfig nodeConfig = new ProjectNodeConfig();
+		ProjectNode nodeConfig = new ProjectNode();
 
 		// "id" attribute
 		String id = null;

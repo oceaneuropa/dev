@@ -1,19 +1,17 @@
 package org.nb.mgm.client.api;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Properties;
 
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface ProjectHomeConfig extends IAdaptable {
+public interface IMetaSector extends IAdaptable {
 
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	public Management getManagement();
-
-	public Project getProject();
 
 	// ------------------------------------------------------------------------------------------
 	// Auto Update Attributes
@@ -22,7 +20,7 @@ public interface ProjectHomeConfig extends IAdaptable {
 
 	public void setAutoUpdate(boolean autoUpdate);
 
-	public boolean update() throws ClientException;
+	public void update() throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Attribute
@@ -38,51 +36,51 @@ public interface ProjectHomeConfig extends IAdaptable {
 	public void setDescription(String description) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
-	// Properties
+	// MetaSpace
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get Home properties.
+	 * Get all MetaSpaces in a MetaSector.
 	 * 
 	 * @return
 	 * @throws ClientException
 	 */
-	public Map<String, Object> getProperties() throws ClientException;
+	public List<IMetaSpace> getMetaSpaces() throws ClientException;
 
 	/**
-	 * Set Home property.
-	 * 
-	 * @param propName
-	 * @param propValue
-	 * @return
-	 * @throws ClientException
-	 */
-	public boolean setProperty(String propName, Object propValue) throws ClientException;
-
-	/**
-	 * Set Home properties.
+	 * Get MetaSpaces in a MetaSector by query parameters.
 	 * 
 	 * @param properties
+	 *            supported keys are: "name", "filter".
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean setProperties(Map<String, Object> properties) throws ClientException;
+	public List<IMetaSpace> getMetaSpaces(Properties properties) throws ClientException;
 
 	/**
-	 * Remove Home property.
+	 * Get MetaSpace by metaSpace Id.
 	 * 
-	 * @param propertyName
+	 * @param metaSpaceId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean removeProperty(String propertyName) throws ClientException;
+	public IMetaSpace getMetaSpace(String metaSpaceId) throws ClientException;
 
 	/**
-	 * Remove Home properties.
+	 * Add a MetaSpace to a MetaSector.
 	 * 
-	 * @param propertyNames
+	 * @param name
+	 * @param description
+	 * @throws ClientException
+	 */
+	public IMetaSpace addMetaSpace(String name, String description) throws ClientException;
+
+	/**
+	 * Delete MetaSpace from a MetaSector by metaSpace Id.
+	 * 
+	 * @param metaSpaceId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean removeProperties(List<String> propertyNames) throws ClientException;
+	public boolean deleteMetaSpace(String metaSpaceId) throws ClientException;
 
 }

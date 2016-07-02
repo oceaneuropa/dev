@@ -3,12 +3,16 @@ package org.nb.mgm.client.api;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface Project extends IAdaptable {
+public interface IProjectNode extends IAdaptable {
 
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	public Management getManagement();
+
+	public IProject getProject();
+
+	public IProjectHome getProjectHome();
 
 	// ------------------------------------------------------------------------------------------
 	// Auto Update Attributes

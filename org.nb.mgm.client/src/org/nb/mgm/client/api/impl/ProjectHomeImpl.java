@@ -1,19 +1,19 @@
 package org.nb.mgm.client.api.impl;
 
-import org.nb.mgm.client.api.IMetaSector;
-import org.nb.mgm.client.api.IMetaSpace;
+import org.nb.mgm.client.api.IProject;
+import org.nb.mgm.client.api.IProjectHome;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.ws.MetaSpaceClient;
-import org.nb.mgm.model.dto.HomeDTO;
-import org.nb.mgm.model.dto.MetaSpaceDTO;
+import org.nb.mgm.client.ws.ProjectHomeClient;
+import org.nb.mgm.model.dto.ProjectHomeDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.StatusDTO;
 
-public class MetaSpaceImpl implements IMetaSpace {
+public class ProjectHomeImpl implements IProjectHome {
 
 	private Management management;
-	private IMetaSector metaSector;
-	private MetaSpaceDTO metaSpaceDTO;
+	private IProject project;
+	private ProjectHomeDTO projectHomeDTO;
 
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 	private boolean autoUpdate = false;
@@ -21,13 +21,13 @@ public class MetaSpaceImpl implements IMetaSpace {
 	/**
 	 * 
 	 * @param management
-	 * @param metaSector
-	 * @param metaSpaceDTO
+	 * @param project
+	 * @param projectHomeDTO
 	 */
-	public MetaSpaceImpl(Management management, IMetaSector metaSector, MetaSpaceDTO metaSpaceDTO) {
+	public ProjectHomeImpl(Management management, IProject project, ProjectHomeDTO projectHomeDTO) {
 		this.management = management;
-		this.metaSector = metaSector;
-		this.metaSpaceDTO = metaSpaceDTO;
+		this.project = project;
+		this.projectHomeDTO = projectHomeDTO;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -39,8 +39,8 @@ public class MetaSpaceImpl implements IMetaSpace {
 	}
 
 	@Override
-	public IMetaSector getMetaSector() {
-		return metaSector;
+	public IProject getProject() {
+		return this.project;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -57,16 +57,15 @@ public class MetaSpaceImpl implements IMetaSpace {
 	}
 
 	@Override
-	public void update() throws ClientException {
-		if (this.metaSector != null) {
-			Management management = this.metaSector.getManagement();
-			String metaSectorId = this.metaSector.getId();
+	public boolean update() throws ClientException {
+		Management management = this.project.getManagement();
+		String projectId = this.project.getId();
 
-			MetaSpaceClient metaSpaceClient = management.getAdapter(MetaSpaceClient.class);
-			checkClient(metaSpaceClient);
+		ProjectHomeClient projectHomeClient = management.getAdapter(ProjectHomeClient.class);
+		checkClient(projectHomeClient);
 
-			metaSpaceClient.updateMetaSpace(metaSectorId, this.metaSpaceDTO);
-		}
+		StatusDTO status = projectHomeClient.updateProjectHome(projectId, this.projectHomeDTO);
+		return (status != null && status.success()) ? true : false;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -74,20 +73,20 @@ public class MetaSpaceImpl implements IMetaSpace {
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public String getId() {
-		return this.metaSpaceDTO.getId();
+		return this.projectHomeDTO.getId();
 	}
 
 	@Override
 	public String getName() {
-		return this.metaSpaceDTO.getName();
+		return this.projectHomeDTO.getName();
 	}
 
 	@Override
 	public void setName(String name) throws ClientException {
-		String oldName = this.metaSpaceDTO.getName();
+		String oldName = this.projectHomeDTO.getName();
 
 		if ((oldName == null && name != null) || (oldName != null && !oldName.equals(name))) {
-			this.metaSpaceDTO.setName(name);
+			this.projectHomeDTO.setName(name);
 
 			if (this.autoUpdate) {
 				update();
@@ -97,15 +96,15 @@ public class MetaSpaceImpl implements IMetaSpace {
 
 	@Override
 	public String getDescription() {
-		return this.metaSpaceDTO.getDescription();
+		return this.projectHomeDTO.getDescription();
 	}
 
 	@Override
 	public void setDescription(String description) throws ClientException {
-		String oldDescription = this.metaSpaceDTO.getDescription();
+		String oldDescription = this.projectHomeDTO.getDescription();
 
 		if ((oldDescription == null && description != null) || (oldDescription != null && !oldDescription.equals(description))) {
-			this.metaSpaceDTO.setDescription(description);
+			this.projectHomeDTO.setDescription(description);
 
 			if (this.autoUpdate) {
 				update();
@@ -116,9 +115,9 @@ public class MetaSpaceImpl implements IMetaSpace {
 	// ------------------------------------------------------------------------------------------
 	// Check WS Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(MetaSpaceClient metaSpaceClient) throws ClientException {
-		if (metaSpaceClient == null) {
-			throw new ClientException(401, "MetaSpaceClient is not found.", null);
+	protected void checkClient(ProjectHomeClient projectHomeClient) throws ClientException {
+		if (projectHomeClient == null) {
+			throw new ClientException(401, "ProjectHomeClient is not found.", null);
 		}
 	}
 
@@ -126,8 +125,8 @@ public class MetaSpaceImpl implements IMetaSpace {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		if (HomeDTO.class.equals(adapter)) {
-			return (T) this.metaSpaceDTO;
+		if (ProjectHomeDTO.class.equals(adapter)) {
+			return (T) this.projectHomeDTO;
 		}
 		T result = this.adaptorSupport.getAdapter(adapter);
 		if (result != null) {
@@ -144,7 +143,7 @@ public class MetaSpaceImpl implements IMetaSpace {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("MetaSpace(");
+		sb.append("ProjectHome(");
 		sb.append("id=\"").append(getId()).append("\"");
 		sb.append(", name=\"").append(getName()).append("\"");
 		sb.append(", description=\"").append(getDescription()).append("\"");

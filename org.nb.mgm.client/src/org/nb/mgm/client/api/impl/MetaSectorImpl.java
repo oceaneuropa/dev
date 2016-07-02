@@ -1,29 +1,31 @@
 package org.nb.mgm.client.api.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.nb.mgm.client.api.IMetaSector;
+import org.nb.mgm.client.api.IMetaSpace;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.api.MetaSector;
-import org.nb.mgm.client.api.MetaSpace;
-import org.nb.mgm.client.api.MgmFactory;
 import org.nb.mgm.client.ws.MetaSectorClient;
-import org.nb.mgm.client.ws.MetaSpaceClient;
 import org.nb.mgm.model.dto.MetaSectorDTO;
-import org.nb.mgm.model.dto.MetaSpaceDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.model.StatusDTO;
 
-public class MetaSectorImpl implements MetaSector {
+public class MetaSectorImpl implements IMetaSector {
 
-	private boolean autoUpdate = false;
 	private Management management;
 	private MetaSectorDTO metaSectorDTO;
-	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
-	public MetaSectorImpl(MetaSectorDTO metaSectorDTO) {
+	private AdaptorSupport adaptorSupport = new AdaptorSupport();
+	private boolean autoUpdate = false;
+
+	/**
+	 * 
+	 * @param management
+	 * @param metaSectorDTO
+	 */
+	public MetaSectorImpl(Management management, MetaSectorDTO metaSectorDTO) {
+		this.management = management;
 		this.metaSectorDTO = metaSectorDTO;
 	}
 
@@ -33,10 +35,6 @@ public class MetaSectorImpl implements MetaSector {
 	@Override
 	public Management getManagement() {
 		return management;
-	}
-
-	public void setManagement(Management management) {
-		this.management = management;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -116,7 +114,7 @@ public class MetaSectorImpl implements MetaSector {
 	 * @throws ClientException
 	 */
 	@Override
-	public List<MetaSpace> getMetaSpaces() throws ClientException {
+	public List<IMetaSpace> getMetaSpaces() throws ClientException {
 		return getMetaSpaces(null);
 	}
 
@@ -129,17 +127,8 @@ public class MetaSectorImpl implements MetaSector {
 	 * @throws ClientException
 	 */
 	@Override
-	public List<MetaSpace> getMetaSpaces(Properties properties) throws ClientException {
-		MetaSpaceClient metaSpaceClient = this.management.getAdapter(MetaSpaceClient.class);
-		checkClient(metaSpaceClient);
-
-		List<MetaSpace> metaSpaces = new ArrayList<MetaSpace>();
-		List<MetaSpaceDTO> metaSpaceDTOs = metaSpaceClient.getMetaSpaces(getId(), properties);
-		for (MetaSpaceDTO metaSpaceDTO : metaSpaceDTOs) {
-			MetaSpace metaSpace = MgmFactory.createMetaSpace(this, metaSpaceDTO);
-			metaSpaces.add(metaSpace);
-		}
-		return metaSpaces;
+	public List<IMetaSpace> getMetaSpaces(Properties properties) throws ClientException {
+		return this.management.getMetaSpaces(getId(), properties);
 	}
 
 	/**
@@ -150,16 +139,8 @@ public class MetaSectorImpl implements MetaSector {
 	 * @throws ClientException
 	 */
 	@Override
-	public MetaSpace getMetaSpace(String metaSpaceId) throws ClientException {
-		MetaSpaceClient metaSpaceClient = this.management.getAdapter(MetaSpaceClient.class);
-		checkClient(metaSpaceClient);
-
-		MetaSpace metaSpace = null;
-		MetaSpaceDTO metaSpaceDTO = metaSpaceClient.getMetaSpace(getId(), metaSpaceId);
-		if (metaSpaceDTO != null) {
-			metaSpace = MgmFactory.createMetaSpace(this, metaSpaceDTO);
-		}
-		return metaSpace;
+	public IMetaSpace getMetaSpace(String metaSpaceId) throws ClientException {
+		return this.management.getMetaSpace(getId(), metaSpaceId);
 	}
 
 	/**
@@ -170,21 +151,8 @@ public class MetaSectorImpl implements MetaSector {
 	 * @throws ClientException
 	 */
 	@Override
-	public MetaSpace addMetaSpace(String name, String description) throws ClientException {
-		MetaSpaceClient metaSpaceClient = this.management.getAdapter(MetaSpaceClient.class);
-		checkClient(metaSpaceClient);
-
-		MetaSpace metaSpace = null;
-
-		MetaSpaceDTO newMetaSpaceRequest = new MetaSpaceDTO();
-		newMetaSpaceRequest.setName(name);
-		newMetaSpaceRequest.setDescription(description);
-
-		MetaSpaceDTO newMetaSpaceDTO = metaSpaceClient.addMetaSpace(getId(), newMetaSpaceRequest);
-		if (newMetaSpaceDTO != null) {
-			metaSpace = MgmFactory.createMetaSpace(this, newMetaSpaceDTO);
-		}
-		return metaSpace;
+	public IMetaSpace addMetaSpace(String name, String description) throws ClientException {
+		return this.management.addMetaSpace(getId(), name, description);
 	}
 
 	/**
@@ -196,14 +164,7 @@ public class MetaSectorImpl implements MetaSector {
 	 */
 	@Override
 	public boolean deleteMetaSpace(String metaSpaceId) throws ClientException {
-		MetaSpaceClient metaSpaceClient = this.management.getAdapter(MetaSpaceClient.class);
-		checkClient(metaSpaceClient);
-
-		StatusDTO status = metaSpaceClient.deleteMetaSpace(getId(), metaSpaceId);
-		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
-			return true;
-		}
-		return false;
+		return this.management.deleteMetaSpace(getId(), metaSpaceId);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -212,12 +173,6 @@ public class MetaSectorImpl implements MetaSector {
 	protected void checkClient(MetaSectorClient metaSectorClient) throws ClientException {
 		if (metaSectorClient == null) {
 			throw new ClientException(401, "MetaSectorClient is not found.", null);
-		}
-	}
-
-	protected void checkClient(MetaSpaceClient metaSpaceClient) throws ClientException {
-		if (metaSpaceClient == null) {
-			throw new ClientException(401, "MetaSpaceClient is not found.", null);
 		}
 	}
 

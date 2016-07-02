@@ -5,8 +5,9 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class ProjectHomeConfigDTO {
+public class ProjectHomeDTO {
 
+	// Attributes
 	@XmlElement
 	protected String id;
 	@XmlElement
@@ -20,11 +21,11 @@ public class ProjectHomeConfigDTO {
 
 	// The Home that the ProjectHomeConfig is configured with. Could be null if the ProjectHomeConfig is not configured with any Home.
 	@XmlElement
-	protected HomeDTO home;
+	protected HomeDTO remoteHome;
 
 	// a list of ProjectNodeConfigs in the ProjectHomeConfig
 	@XmlElement
-	protected List<ProjectNodeConfigDTO> nodeConfigs = new ArrayList<ProjectNodeConfigDTO>();
+	protected List<ProjectNodeDTO> nodeConfigs = new ArrayList<ProjectNodeDTO>();
 
 	@XmlElement
 	public ProjectDTO getProject() {
@@ -36,12 +37,12 @@ public class ProjectHomeConfigDTO {
 	}
 
 	@XmlElement
-	public HomeDTO getHome() {
-		return home;
+	public HomeDTO getRemoteHome() {
+		return remoteHome;
 	}
 
-	public void setHome(HomeDTO home) {
-		this.home = home;
+	public void setRemoteHome(HomeDTO remoteHome) {
+		this.remoteHome = remoteHome;
 	}
 
 	@XmlElement
@@ -72,11 +73,11 @@ public class ProjectHomeConfigDTO {
 	}
 
 	@XmlElement
-	public List<ProjectNodeConfigDTO> getNodeConfigs() {
+	public List<ProjectNodeDTO> getNodeConfigs() {
 		return nodeConfigs;
 	}
 
-	public void setNodeConfigs(List<ProjectNodeConfigDTO> nodeConfigs) {
+	public void setNodeConfigs(List<ProjectNodeDTO> nodeConfigs) {
 		this.nodeConfigs = nodeConfigs;
 	}
 

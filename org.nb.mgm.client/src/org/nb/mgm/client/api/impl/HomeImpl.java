@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nb.mgm.client.api.Home;
-import org.nb.mgm.client.api.Machine;
+import org.nb.mgm.client.api.IHome;
+import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.model.dto.HomeDTO;
@@ -14,18 +14,24 @@ import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-public class HomeImpl implements Home {
+public class HomeImpl implements IHome {
 
-	private boolean autoUpdate = false;
-	private Machine machine;
+	private Management management;
+	private IMachine machine;
 	private HomeDTO homeDTO;
+
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
+	private boolean autoUpdate = false;
 
 	/**
 	 * 
+	 * @param management
+	 * @param machine
 	 * @param homeDTO
 	 */
-	public HomeImpl(HomeDTO homeDTO) {
+	public HomeImpl(Management management, IMachine machine, HomeDTO homeDTO) {
+		this.management = management;
+		this.machine = machine;
 		this.homeDTO = homeDTO;
 	}
 
@@ -34,16 +40,12 @@ public class HomeImpl implements Home {
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public Management getManagement() {
-		return this.machine.getManagement();
+		return this.management;
 	}
 
 	@Override
-	public Machine getMachine() {
+	public IMachine getMachine() {
 		return machine;
-	}
-
-	public void setMachine(Machine machine) {
-		this.machine = machine;
 	}
 
 	// ------------------------------------------------------------------------------------------

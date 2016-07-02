@@ -6,30 +6,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.nb.mgm.client.api.Home;
-import org.nb.mgm.client.api.Machine;
+import org.nb.mgm.client.api.IHome;
+import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.api.MgmFactory;
-import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.client.ws.MachineClient;
-import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-public class MachineImpl implements Machine {
+public class MachineImpl implements IMachine {
 
-	private boolean autoUpdate = false;
 	private Management management;
 	private MachineDTO machineDTO;
+
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
+	private boolean autoUpdate = false;
 
 	/**
 	 * 
+	 * @param management
 	 * @param machineDTO
 	 */
-	public MachineImpl(MachineDTO machineDTO) {
+	public MachineImpl(Management management, MachineDTO machineDTO) {
+		this.management = management;
 		this.machineDTO = machineDTO;
 	}
 
@@ -39,10 +39,6 @@ public class MachineImpl implements Machine {
 	@Override
 	public Management getManagement() {
 		return management;
-	}
-
-	public void setManagement(Management management) {
-		this.management = management;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -133,18 +129,18 @@ public class MachineImpl implements Machine {
 	// Home
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get all Homes in a Machine.
+	 * Get all Homes of the Machine.
 	 * 
 	 * @return
 	 * @throws ClientException
 	 */
 	@Override
-	public List<Home> getHomes() throws ClientException {
-		return getHomes(null);
+	public List<IHome> getHomes() throws ClientException {
+		return this.management.getHomes(getId());
 	}
 
 	/**
-	 * Get Homes in a Machine by query parameters.
+	 * Get Homes by query parameters of the Machine.
 	 * 
 	 * @param properties
 	 *            supported keys are: "name", "url", "status", "filter".
@@ -152,80 +148,42 @@ public class MachineImpl implements Machine {
 	 * @throws ClientException
 	 */
 	@Override
-	public List<Home> getHomes(Properties properties) throws ClientException {
-		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		List<Home> homes = new ArrayList<Home>();
-		List<HomeDTO> homeDTOs = homeClient.getHomes(this.getId(), properties);
-		for (HomeDTO homeDTO : homeDTOs) {
-			Home home = MgmFactory.createHome(this, homeDTO);
-			homes.add(home);
-		}
-		return homes;
+	public List<IHome> getHomes(Properties properties) throws ClientException {
+		return this.management.getHomes(getId(), properties);
 	}
 
 	/**
-	 * Get Home by home Id.
+	 * Get Home by homeId.
 	 * 
 	 * @param homeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public Home getHome(String homeId) throws ClientException {
-		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		Home home = null;
-		HomeDTO homeDTO = homeClient.getHome(getId(), homeId);
-		if (homeDTO != null) {
-			home = MgmFactory.createHome(this, homeDTO);
-		}
-		return home;
+	public IHome getHome(String homeId) throws ClientException {
+		return this.management.getHome(getId(), homeId);
 	}
 
 	/**
-	 * Add a Home to a Machine.
+	 * Add a Home to the Machine.
 	 * 
 	 * @param name
 	 * @param url
 	 * @param description
 	 * @throws ClientException
 	 */
-	public Home addHome(String name, String url, String description) throws ClientException {
-		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		Home home = null;
-
-		HomeDTO newHomeRequest = new HomeDTO();
-		newHomeRequest.setName(name);
-		newHomeRequest.setUrl(url);
-		newHomeRequest.setDescription(description);
-
-		HomeDTO newHomeDTO = homeClient.addHome(getId(), newHomeRequest);
-		if (newHomeDTO != null) {
-			home = MgmFactory.createHome(this, newHomeDTO);
-		}
-		return home;
+	public IHome addHome(String name, String url, String description) throws ClientException {
+		return this.management.addHome(getId(), name, url, description);
 	}
 
 	/**
-	 * Delete Home from a Machine by home Id.
+	 * Delete Home from the Machine by homeId.
 	 * 
 	 * @param homeId
 	 * @return
 	 * @throws ClientException
 	 */
 	public boolean deleteHome(String homeId) throws ClientException {
-		HomeClient homeClient = this.management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		StatusDTO status = homeClient.deleteHome(getId(), homeId);
-		if (status != null && "success".equalsIgnoreCase(status.getStatus())) {
-			return true;
-		}
-		return false;
+		return this.management.deleteHome(getId(), homeId);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -287,12 +245,6 @@ public class MachineImpl implements Machine {
 	protected void checkClient(MachineClient machineClient) throws ClientException {
 		if (machineClient == null) {
 			throw new ClientException(401, "MachineClient is not found.", null);
-		}
-	}
-
-	protected void checkClient(HomeClient homeClient) throws ClientException {
-		if (homeClient == null) {
-			throw new ClientException(401, "HomeClient is not found.", null);
 		}
 	}
 

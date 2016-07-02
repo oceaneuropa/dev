@@ -6,27 +6,37 @@ import java.util.Map;
 
 import org.origin.common.rest.model.ModelObject;
 
-public class ProjectNodeConfig extends ModelObject {
+public class ProjectNode extends ModelObject {
 
 	protected Map<String, Object> properties = new HashMap<String, Object>();
 
-	public ProjectNodeConfig() {
+	public ProjectNode() {
 	}
 
 	/**
 	 * 
 	 * @param parent
 	 */
-	public ProjectNodeConfig(ProjectHomeConfig parent) {
+	public ProjectNode(ProjectHome parent) {
 		super(parent);
 	}
 
+	/**
+	 * Get parent Project
+	 * 
+	 * @return
+	 */
 	public Project getProject() {
 		return this.getParent(Project.class);
 	}
 
-	public ProjectHomeConfig getProjectHomeConfig() {
-		return this.getParent(ProjectHomeConfig.class);
+	/**
+	 * Get parent ProjectHome
+	 * 
+	 * @return
+	 */
+	public ProjectHome getProjectHome() {
+		return this.getParent(ProjectHome.class);
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------

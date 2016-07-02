@@ -18,9 +18,9 @@ import javax.ws.rs.core.Response.Status;
 import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.ProjectDTO;
-import org.nb.mgm.model.dto.ProjectHomeConfigDTO;
+import org.nb.mgm.model.dto.ProjectHomeDTO;
 import org.nb.mgm.model.runtime.Project;
-import org.nb.mgm.model.runtime.ProjectHomeConfig;
+import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
@@ -66,9 +66,9 @@ public class ProjectResource extends AbstractApplicationResource {
 			for (Project project : projects) {
 				ProjectDTO projectDTO = DTOConverter.getInstance().toDTO(project);
 
-				List<ProjectHomeConfigDTO> homeConfigDTOs = new ArrayList<ProjectHomeConfigDTO>();
-				for (ProjectHomeConfig homeConfig : mgm.getProjectHomeConfigs(project.getId())) {
-					ProjectHomeConfigDTO homeConfigDTO = DTOConverter.getInstance().toDTO(homeConfig);
+				List<ProjectHomeDTO> homeConfigDTOs = new ArrayList<ProjectHomeDTO>();
+				for (ProjectHome homeConfig : mgm.getProjectHomes(project.getId())) {
+					ProjectHomeDTO homeConfigDTO = DTOConverter.getInstance().toDTO(homeConfig);
 					homeConfigDTOs.add(homeConfigDTO);
 				}
 				projectDTO.setHomeConfigs(homeConfigDTOs);
@@ -126,7 +126,7 @@ public class ProjectResource extends AbstractApplicationResource {
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createProject(ProjectDTO projectDTO) {
+	public Response addProject(ProjectDTO projectDTO) {
 		if (projectDTO == null) {
 			ErrorDTO nullProjectDTOError = new ErrorDTO("projectDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullProjectDTOError).build();

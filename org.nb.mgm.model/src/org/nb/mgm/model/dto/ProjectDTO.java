@@ -16,7 +16,7 @@ public class ProjectDTO {
 
 	// a list of ProjectHomeConfigs in the Project
 	@XmlElement
-	protected List<ProjectHomeConfigDTO> homeConfigs = new ArrayList<ProjectHomeConfigDTO>();
+	protected List<ProjectHomeDTO> homeConfigs = new ArrayList<ProjectHomeDTO>();
 
 	@XmlElement
 	public String getId() {
@@ -46,11 +46,11 @@ public class ProjectDTO {
 	}
 
 	@XmlElement
-	public List<ProjectHomeConfigDTO> getHomeConfigs() {
+	public List<ProjectHomeDTO> getHomeConfigs() {
 		return homeConfigs;
 	}
 
-	public void setHomeConfigs(List<ProjectHomeConfigDTO> homeConfigs) {
+	public void setHomeConfigs(List<ProjectHomeDTO> homeConfigs) {
 		this.homeConfigs = homeConfigs;
 	}
 

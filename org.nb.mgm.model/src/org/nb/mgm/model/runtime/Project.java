@@ -7,7 +7,7 @@ import org.origin.common.rest.model.ModelObject;
 
 public class Project extends ModelObject {
 
-	protected List<ProjectHomeConfig> homeConfigs = new ArrayList<ProjectHomeConfig>();
+	protected List<ProjectHome> projectHomes = new ArrayList<ProjectHome>();
 
 	public Project() {
 	}
@@ -21,25 +21,25 @@ public class Project extends ModelObject {
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------
-	// ProjectHomeConfig
+	// ProjectHome
 	// ----------------------------------------------------------------------------------------------------------------
-	public List<ProjectHomeConfig> getHomeConfigs() {
-		return this.homeConfigs;
+	public List<ProjectHome> getHomes() {
+		return this.projectHomes;
 	}
 
-	public boolean addHomeConfig(ProjectHomeConfig homeConfig) {
-		if (homeConfig != null && !this.homeConfigs.contains(homeConfig)) {
-			homeConfig.setParent(this);
-			this.homeConfigs.add(homeConfig);
+	public boolean addHome(ProjectHome projectHome) {
+		if (projectHome != null && !this.projectHomes.contains(projectHome)) {
+			projectHome.setParent(this);
+			this.projectHomes.add(projectHome);
 			return true;
 		}
 		return false;
 	}
 
-	public boolean removeHomeConfig(ProjectHomeConfig homeConfig) {
-		if (homeConfig != null && this.homeConfigs.contains(homeConfig)) {
-			this.homeConfigs.remove(homeConfig);
-			homeConfig.setParent(null);
+	public boolean deleteHome(ProjectHome projectHome) {
+		if (projectHome != null && this.projectHomes.contains(projectHome)) {
+			this.projectHomes.remove(projectHome);
+			projectHome.setParent(null);
 			return true;
 		}
 		return false;

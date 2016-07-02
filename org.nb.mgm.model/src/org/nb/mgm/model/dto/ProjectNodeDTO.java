@@ -2,14 +2,41 @@ package org.nb.mgm.model.dto;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class ProjectNodeConfigDTO {
+public class ProjectNodeDTO {
 
+	// Attributes
 	@XmlElement
 	protected String id;
 	@XmlElement
 	protected String name;
 	@XmlElement
 	protected String description;
+
+	// Container ProjectDTO
+	@XmlElement
+	protected ProjectDTO projectDTO;
+
+	// Container ProjectHomeDTO
+	@XmlElement
+	protected ProjectHomeDTO projectHomeDTO;
+
+	@XmlElement
+	public ProjectDTO getProject() {
+		return projectDTO;
+	}
+
+	public void setProject(ProjectDTO projectDTO) {
+		this.projectDTO = projectDTO;
+	}
+
+	@XmlElement
+	public ProjectHomeDTO getProjectHome() {
+		return projectHomeDTO;
+	}
+
+	public void setProjectHome(ProjectHomeDTO projectHomeDTO) {
+		this.projectHomeDTO = projectHomeDTO;
+	}
 
 	@XmlElement
 	public String getId() {

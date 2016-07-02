@@ -9,6 +9,16 @@ public class ClientException extends Exception {
 	/**
 	 * 
 	 * @param code
+	 * @param cause
+	 */
+	public ClientException(int code, String message) {
+		super(message);
+		this.code = code;
+	}
+
+	/**
+	 * 
+	 * @param code
 	 * @param message
 	 * @param cause
 	 */

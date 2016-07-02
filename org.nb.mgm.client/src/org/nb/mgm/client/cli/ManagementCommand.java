@@ -10,12 +10,12 @@ import java.util.Properties;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.nb.mgm.client.api.Home;
-import org.nb.mgm.client.api.Machine;
+import org.nb.mgm.client.api.IHome;
+import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.api.MetaSector;
-import org.nb.mgm.client.api.MetaSpace;
-import org.nb.mgm.client.api.MgmFactory;
+import org.nb.mgm.client.api.IMetaSector;
+import org.nb.mgm.client.api.IMetaSpace;
+import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.StringUtil;
@@ -89,7 +89,7 @@ public class ManagementCommand {
 			System.out.println("-password parameter is required.");
 			return;
 		}
-		this.mgm = MgmFactory.createManagement(url, username, password);
+		this.mgm = ManagementFactory.createManagement(url, username, password);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -150,7 +150,7 @@ public class ManagementCommand {
 				} else if (!"".equals(machineName)) {
 					Map<String, Object> properties = new HashMap<String, Object>();
 					properties.put("name", machineName);
-					List<Machine> machines = this.mgm.getMachines(properties);
+					List<IMachine> machines = this.mgm.getMachines(properties);
 
 					if (machines.isEmpty()) {
 						System.out.println(MessageFormat.format("Machine with name ''{0}'' is not found.", new Object[] { machineName }));
@@ -184,7 +184,7 @@ public class ManagementCommand {
 				} else if (!"".equals(metaSectorName)) {
 					Properties properties = new Properties();
 					properties.setProperty("name", metaSectorName);
-					List<MetaSector> metaSectors = this.mgm.getMetaSectors(properties);
+					List<IMetaSector> metaSectors = this.mgm.getMetaSectors(properties);
 
 					if (metaSectors.isEmpty()) {
 						System.out.println(MessageFormat.format("MetaSector with name ''{0}'' is not found.", new Object[] { metaSectorName }));
@@ -216,10 +216,10 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void listMachines(Management mgm) throws ClientException {
-		List<Machine> machines = mgm.getMachines();
+		List<IMachine> machines = mgm.getMachines();
 		String[][] rows = new String[machines.size()][MACHINE_TITLES.length];
 		int rowIndex = 0;
-		for (Machine machine : machines) {
+		for (IMachine machine : machines) {
 			rows[rowIndex++] = new String[] { machine.getId(), machine.getName(), machine.getIpAddress(), machine.getDescription() };
 		}
 		PrettyPrinter.prettyPrint(MACHINE_TITLES, rows);
@@ -233,16 +233,16 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void listHomes(Management mgm, String machineId) throws ClientException {
-		Machine machine = mgm.getMachine(machineId);
+		IMachine machine = mgm.getMachine(machineId);
 		if (machine == null) {
 			System.out.println(MessageFormat.format("Machine with id=''{0}'' does not exist.", new Object[] { machineId }));
 			return;
 		}
 
-		List<Home> homes = mgm.getHomes(machineId);
+		List<IHome> homes = mgm.getHomes(machineId);
 		String[][] rows = new String[homes.size()][HOME_TITLES.length];
 		int rowIndex = 0;
-		for (Home home : homes) {
+		for (IHome home : homes) {
 			rows[rowIndex++] = new String[] { home.getId(), home.getName(), home.getUrl(), home.getDescription() };
 		}
 		PrettyPrinter.prettyPrint(HOME_TITLES, rows);
@@ -255,10 +255,10 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void listMetaSectors(Management mgm) throws ClientException {
-		List<MetaSector> metaSectors = this.mgm.getMetaSectors();
+		List<IMetaSector> metaSectors = this.mgm.getMetaSectors();
 		String[][] rows = new String[metaSectors.size()][META_SECTOR_TITLES.length];
 		int rowIndex = 0;
-		for (MetaSector metaSector : metaSectors) {
+		for (IMetaSector metaSector : metaSectors) {
 			rows[rowIndex++] = new String[] { metaSector.getId(), metaSector.getName(), metaSector.getDescription() };
 		}
 		PrettyPrinter.prettyPrint(META_SECTOR_TITLES, rows);
@@ -272,16 +272,16 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void listMetaSpaces(Management mgm, String metaSectorId) throws ClientException {
-		MetaSector metaSector = mgm.getMetaSector(metaSectorId);
+		IMetaSector metaSector = mgm.getMetaSector(metaSectorId);
 		if (metaSector == null) {
 			System.out.println(MessageFormat.format("MetaSector with id=''{0}'' does not exist.", new Object[] { metaSectorId }));
 			return;
 		}
 
-		List<MetaSpace> metaSpaces = mgm.getMetaSpaces(metaSectorId);
+		List<IMetaSpace> metaSpaces = mgm.getMetaSpaces(metaSectorId);
 		String[][] rows = new String[metaSpaces.size()][META_SPACE_TITLES.length];
 		int rowIndex = 0;
-		for (MetaSpace metaSpace : metaSpaces) {
+		for (IMetaSpace metaSpace : metaSpaces) {
 			rows[rowIndex++] = new String[] { metaSpace.getId(), metaSpace.getName(), metaSpace.getDescription() };
 		}
 		PrettyPrinter.prettyPrint(META_SPACE_TITLES, rows);
@@ -402,7 +402,7 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void createMachine(Management mgm, String name, String ipaddress, String description) throws ClientException {
-		Machine newMachine = mgm.addMachine(name, ipaddress, description);
+		IMachine newMachine = mgm.addMachine(name, ipaddress, description);
 		if (newMachine != null) {
 			System.out.println("New Machine is created. ");
 		} else {
@@ -421,7 +421,7 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void createHome(Management mgm, String machineid, String name, String url, String description) throws ClientException {
-		Home newHome = mgm.addHome(machineid, name, url, description);
+		IHome newHome = mgm.addHome(machineid, name, url, description);
 		if (newHome != null) {
 			System.out.println("New Home is created. ");
 		} else {
@@ -438,7 +438,7 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void createMetaSector(Management mgm, String name, String description) throws ClientException {
-		MetaSector newMetaSector = mgm.addMetaSector(name, description);
+		IMetaSector newMetaSector = mgm.addMetaSector(name, description);
 		if (newMetaSector != null) {
 			System.out.println("New MetaSector is created. ");
 		} else {
@@ -456,7 +456,7 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void createMetaSpace(Management mgm, String metasectorid, String name, String description) throws ClientException {
-		MetaSpace newMetaSpace = mgm.addMetaSpace(metasectorid, name, description);
+		IMetaSpace newMetaSpace = mgm.addMetaSpace(metasectorid, name, description);
 		if (newMetaSpace != null) {
 			System.out.println("New MetaSpace is created. ");
 		} else {
@@ -531,7 +531,7 @@ public class ManagementCommand {
 				}
 				updateHome(mgm, homeIdToUpdate, name, url, description);
 
-				Home home = mgm.getHome(homeIdToUpdate);
+				IHome home = mgm.getHome(homeIdToUpdate);
 				if (home != null && home.getMachine() != null) {
 					listHomes(mgm, home.getMachine().getId());
 				}
@@ -552,7 +552,7 @@ public class ManagementCommand {
 				}
 				updateMetaSpace(mgm, metaSpaceIdToUpdate, name, description);
 
-				MetaSpace metaSpace = mgm.getMetaSpace(metaSpaceIdToUpdate);
+				IMetaSpace metaSpace = mgm.getMetaSpace(metaSpaceIdToUpdate);
 				if (metaSpace != null && metaSpace.getMetaSector() != null) {
 					listMetaSpaces(mgm, metaSpace.getMetaSector().getId());
 				}
@@ -574,7 +574,7 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void updateMachine(Management mgm, String machineId, String name, String ipaddress, String description) throws ClientException {
-		Machine machine = mgm.getMachine(machineId);
+		IMachine machine = mgm.getMachine(machineId);
 		if (machine == null) {
 			System.out.println(MessageFormat.format("Machine with id=''{0}'' is not found.", new Object[] { machineId }));
 			return;
@@ -617,7 +617,7 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void updateHome(Management mgm, String homeId, String name, String url, String description) throws ClientException {
-		Home home = mgm.getHome(homeId);
+		IHome home = mgm.getHome(homeId);
 		if (home == null) {
 			System.out.println(MessageFormat.format("Home with id=''{0}'' is not found.", new Object[] { homeId }));
 			return;
@@ -659,7 +659,7 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void updateMetaSector(Management mgm, String metaSectorId, String name, String description) throws ClientException {
-		MetaSector metaSector = mgm.getMetaSector(metaSectorId);
+		IMetaSector metaSector = mgm.getMetaSector(metaSectorId);
 		if (metaSector == null) {
 			System.out.println(MessageFormat.format("MetaSector with id=''{0}'' is not found.", new Object[] { metaSectorId }));
 			return;
@@ -696,7 +696,7 @@ public class ManagementCommand {
 	 * @throws ClientException
 	 */
 	protected void updateMetaSpace(Management mgm, String metaSpaceId, String name, String description) throws ClientException {
-		MetaSpace metaSpace = mgm.getMetaSpace(metaSpaceId);
+		IMetaSpace metaSpace = mgm.getMetaSpace(metaSpaceId);
 		if (metaSpace == null) {
 			System.out.println(MessageFormat.format("MetaSpace with id=''{0}'' is not found.", new Object[] { metaSpaceId }));
 			return;

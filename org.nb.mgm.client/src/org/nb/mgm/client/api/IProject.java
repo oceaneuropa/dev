@@ -1,12 +1,11 @@
 package org.nb.mgm.client.api;
 
 import java.util.List;
-import java.util.Properties;
 
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface MetaSector extends IAdaptable {
+public interface IProject extends IAdaptable {
 
 	// ------------------------------------------------------------------------------------------
 	// Parent
@@ -20,7 +19,7 @@ public interface MetaSector extends IAdaptable {
 
 	public void setAutoUpdate(boolean autoUpdate);
 
-	public void update() throws ClientException;
+	public boolean update() throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Attribute
@@ -36,51 +35,41 @@ public interface MetaSector extends IAdaptable {
 	public void setDescription(String description) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
-	// MetaSpace
+	// ProjectHome
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get all MetaSpaces in a MetaSector.
+	 * Get all ProjectHomes in a Project.
 	 * 
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<MetaSpace> getMetaSpaces() throws ClientException;
+	public List<IProjectHome> getProjectHomes() throws ClientException;
 
 	/**
-	 * Get MetaSpaces in a MetaSector by query parameters.
+	 * Get ProjectHome by projectHomeId.
 	 * 
-	 * @param properties
-	 *            supported keys are: "name", "filter".
+	 * @param projectHomeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<MetaSpace> getMetaSpaces(Properties properties) throws ClientException;
+	public IProjectHome getProjectHome(String projectHomeId) throws ClientException;
 
 	/**
-	 * Get MetaSpace by metaSpace Id.
-	 * 
-	 * @param metaSpaceId
-	 * @return
-	 * @throws ClientException
-	 */
-	public MetaSpace getMetaSpace(String metaSpaceId) throws ClientException;
-
-	/**
-	 * Add a MetaSpace to a MetaSector.
+	 * Add a ProjectHome to a Project.
 	 * 
 	 * @param name
 	 * @param description
 	 * @throws ClientException
 	 */
-	public MetaSpace addMetaSpace(String name, String description) throws ClientException;
+	public IProjectHome addProjectHome(String name, String description) throws ClientException;
 
 	/**
-	 * Delete MetaSpace from a MetaSector by metaSpace Id.
+	 * Delete ProjectHome from a Project by projectHomeId.
 	 * 
-	 * @param metaSpaceId
+	 * @param projectHomeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean deleteMetaSpace(String metaSpaceId) throws ClientException;
+	public boolean deleteProjectHome(String projectHomeId) throws ClientException;
 
 }

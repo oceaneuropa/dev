@@ -15,8 +15,8 @@ import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Project;
-import org.nb.mgm.model.runtime.ProjectHomeConfig;
-import org.nb.mgm.model.runtime.ProjectNodeConfig;
+import org.nb.mgm.model.runtime.ProjectHome;
+import org.nb.mgm.model.runtime.ProjectNode;
 import org.origin.common.json.JSONUtil;
 
 public class LocalJsonWriter {
@@ -411,10 +411,10 @@ public class LocalJsonWriter {
 		// "homeConfigs" attribute
 		JSONArray homeConfigsArray = new JSONArray();
 		{
-			List<ProjectHomeConfig> homeConfigs = project.getHomeConfigs();
+			List<ProjectHome> homeConfigs = project.getHomes();
 			int homeConfigIndex = 0;
-			for (Iterator<ProjectHomeConfig> homeItor = homeConfigs.iterator(); homeItor.hasNext();) {
-				ProjectHomeConfig homeConfig = homeItor.next();
+			for (Iterator<ProjectHome> homeItor = homeConfigs.iterator(); homeItor.hasNext();) {
+				ProjectHome homeConfig = homeItor.next();
 				JSONObject homeConfigJSON = projectHomeConfigToJSON(homeConfig);
 				if (homeConfigJSON != null) {
 					homeConfigsArray.put(homeConfigIndex++, homeConfigJSON);
@@ -432,7 +432,7 @@ public class LocalJsonWriter {
 	 * @param homeConfig
 	 * @return
 	 */
-	protected JSONObject projectHomeConfigToJSON(ProjectHomeConfig homeConfig) {
+	protected JSONObject projectHomeConfigToJSON(ProjectHome homeConfig) {
 		if (homeConfig == null) {
 			return null;
 		}
@@ -458,7 +458,7 @@ public class LocalJsonWriter {
 		}
 
 		// "homeId" attribute
-		Home home = homeConfig.getHome();
+		Home home = homeConfig.getRemoteHome();
 		if (home != null) {
 			String homeId = home.getId();
 			homeConfigJSON.put("homeId", homeId);
@@ -474,10 +474,10 @@ public class LocalJsonWriter {
 		// "nodeConfigs" attribute
 		JSONArray nodeConfigsArray = new JSONArray();
 		{
-			List<ProjectNodeConfig> nodeConfigs = homeConfig.getNodeConfigs();
+			List<ProjectNode> nodeConfigs = homeConfig.getNodes();
 			int nodeConfigIndex = 0;
-			for (Iterator<ProjectNodeConfig> homeItor = nodeConfigs.iterator(); homeItor.hasNext();) {
-				ProjectNodeConfig nodeConfig = homeItor.next();
+			for (Iterator<ProjectNode> homeItor = nodeConfigs.iterator(); homeItor.hasNext();) {
+				ProjectNode nodeConfig = homeItor.next();
 				JSONObject nodeConfigJSON = projectNodeConfigToJSON(nodeConfig);
 				if (nodeConfigJSON != null) {
 					nodeConfigsArray.put(nodeConfigIndex++, nodeConfigJSON);
@@ -495,7 +495,7 @@ public class LocalJsonWriter {
 	 * @param nodeConfig
 	 * @return
 	 */
-	protected JSONObject projectNodeConfigToJSON(ProjectNodeConfig nodeConfig) {
+	protected JSONObject projectNodeConfigToJSON(ProjectNode nodeConfig) {
 		if (nodeConfig == null) {
 			return null;
 		}

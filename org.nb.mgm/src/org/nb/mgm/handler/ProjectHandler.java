@@ -160,7 +160,7 @@ public class ProjectHandler {
 		}
 
 		// Throw exception - Project contains HomeConfigs
-		if (!projectToDelete.getHomeConfigs().isEmpty()) {
+		if (!projectToDelete.getHomes().isEmpty()) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Project cannot be deleted. Please delete Home configurations in the Project first.", null);
 		}
 

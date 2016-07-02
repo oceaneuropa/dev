@@ -11,8 +11,9 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.api.MgmFactory;
-import org.nb.mgm.client.api.Project;
+import org.nb.mgm.client.api.IProject;
+import org.nb.mgm.client.api.IProjectHome;
+import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.DateUtil;
 
@@ -30,16 +31,25 @@ public class ProjectTest {
 	}
 
 	protected Management getManagement() {
-		return MgmFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
+		return ManagementFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
 	}
 
 	@Test
 	public void test001_getProjects() {
 		System.out.println("--- --- --- test001_getProjects() --- --- ---");
 		try {
-			List<Project> projects = this.management.getProjects();
-			for (Project project : projects) {
+			List<IProject> projects = this.management.getProjects();
+			for (IProject project : projects) {
 				System.out.println(project.toString());
+
+				List<IProjectHome> projectHomes = project.getProjectHomes();
+				for (IProjectHome projectHome : projectHomes) {
+					System.out.println("\t" + projectHome.toString());
+				}
+
+				if (!projectHomes.isEmpty()) {
+					System.out.println();
+				}
 			}
 		} catch (ClientException e) {
 			e.printStackTrace();
@@ -51,10 +61,16 @@ public class ProjectTest {
 	public void test002_deleteProjects() {
 		System.out.println("--- --- --- test002_deleteProjects() --- --- ---");
 		try {
-			List<Project> projects = this.management.getProjects();
-			for (Project project : projects) {
+			List<IProject> projects = this.management.getProjects();
+			for (IProject project : projects) {
 				String projectId = project.getId();
 				String projectName = project.getName();
+
+				List<IProjectHome> projectHomes = project.getProjectHomes();
+				for (IProjectHome projectHome : projectHomes) {
+					project.deleteProjectHome(projectHome.getId());
+				}
+
 				boolean succeed = this.management.deleteProject(projectId);
 
 				if (succeed) {
@@ -79,7 +95,7 @@ public class ProjectTest {
 				String projectName = "Project " + i;
 				String description = "Description of " + projectName;
 
-				Project newProject = this.management.addProject(projectId, projectName, description);
+				IProject newProject = this.management.addProject(projectId, projectName, description);
 				if (newProject == null) {
 					System.out.println("new Project is: null");
 				} else {
@@ -96,11 +112,10 @@ public class ProjectTest {
 	public void test004_updateProjects() {
 		System.out.println("--- --- --- test004_updateProjects() --- --- ---");
 		try {
-			List<Project> projects = this.management.getProjects();
-			for (Project project : projects) {
+			List<IProject> projects = this.management.getProjects();
+			for (IProject project : projects) {
 				String projectId = project.getId();
 				String projectName = project.getName();
-				// String projectDescription = project.getDescription();
 				String newProjectDescription = "Description of " + projectName + " (" + DateUtil.toString(new Date(), DateUtil.SIMPLE_DATE_FORMAT3) + ")";
 
 				project.setDescription(newProjectDescription);

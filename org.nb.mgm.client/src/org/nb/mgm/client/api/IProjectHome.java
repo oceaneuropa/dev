@@ -3,14 +3,14 @@ package org.nb.mgm.client.api;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface MetaSpace extends IAdaptable {
+public interface IProjectHome extends IAdaptable {
 
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	public Management getManagement();
 
-	public MetaSector getMetaSector();
+	public IProject getProject();
 
 	// ------------------------------------------------------------------------------------------
 	// Auto Update Attributes
@@ -19,7 +19,7 @@ public interface MetaSpace extends IAdaptable {
 
 	public void setAutoUpdate(boolean autoUpdate);
 
-	public void update() throws ClientException;
+	public boolean update() throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Attribute

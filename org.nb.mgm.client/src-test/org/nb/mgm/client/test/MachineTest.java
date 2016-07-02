@@ -14,9 +14,9 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.nb.mgm.client.api.Machine;
+import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.api.MgmFactory;
+import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -33,15 +33,15 @@ public class MachineTest {
 	}
 
 	protected Management getManagement() {
-		return MgmFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
+		return ManagementFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
 	}
 
 	@Test
 	public void test001_getMachines() {
 		System.out.println("--- --- --- test001_getMachines() --- --- ---");
 		try {
-			List<Machine> machines = this.management.getMachines();
-			for (Machine machine : machines) {
+			List<IMachine> machines = this.management.getMachines();
+			for (IMachine machine : machines) {
 				String machineName = machine.getName();
 				if (!machineName.startsWith("Machine")) {
 					continue;
@@ -68,8 +68,8 @@ public class MachineTest {
 	public void test002_deleteMachines() {
 		System.out.println("--- --- --- test002_deleteMachines() --- --- ---");
 		try {
-			List<Machine> machines = this.management.getMachines();
-			for (Machine machine : machines) {
+			List<IMachine> machines = this.management.getMachines();
+			for (IMachine machine : machines) {
 				String machineId = machine.getId();
 				String machineName = machine.getName();
 				boolean succeed = this.management.deleteMachine(machine.getId());
@@ -96,7 +96,7 @@ public class MachineTest {
 				String ipAddress = "127.0.0." + (i + 1);
 				String description = "description of " + machineName;
 
-				Machine newMachine = this.management.addMachine(machineName, ipAddress, description);
+				IMachine newMachine = this.management.addMachine(machineName, ipAddress, description);
 				if (newMachine == null) {
 					System.out.println("new Machine is: null");
 				} else {
@@ -113,8 +113,8 @@ public class MachineTest {
 	public void test004_updateMachines() {
 		System.out.println("--- --- --- test004_updateMachines() --- --- ---");
 		try {
-			List<Machine> machines = this.management.getMachines();
-			for (Machine machine : machines) {
+			List<IMachine> machines = this.management.getMachines();
+			for (IMachine machine : machines) {
 				String machineId = machine.getId();
 				String machineName = machine.getName();
 
@@ -168,8 +168,8 @@ public class MachineTest {
 	public void test005_postMachineProperties() {
 		System.out.println("--- --- --- test005_postMachineProperties() --- --- ---");
 		try {
-			List<Machine> machines = this.management.getMachines();
-			for (Machine machine : machines) {
+			List<IMachine> machines = this.management.getMachines();
+			for (IMachine machine : machines) {
 				String machineId = machine.getId();
 				String machineName = machine.getName();
 
@@ -205,8 +205,8 @@ public class MachineTest {
 	public void test006_removeMachineProperties() {
 		System.out.println("--- --- --- test006_removeMachineProperties() --- --- ---");
 		try {
-			List<Machine> machines = management.getMachines();
-			for (Machine machine : machines) {
+			List<IMachine> machines = management.getMachines();
+			for (IMachine machine : machines) {
 				String machineId = machine.getId();
 				String machineName = machine.getName();
 

@@ -16,8 +16,8 @@ import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Project;
-import org.nb.mgm.model.runtime.ProjectHomeConfig;
-import org.nb.mgm.model.runtime.ProjectNodeConfig;
+import org.nb.mgm.model.runtime.ProjectHome;
+import org.nb.mgm.model.runtime.ProjectNode;
 
 public interface ManagementService {
 
@@ -441,91 +441,105 @@ public interface ManagementService {
 	public boolean deleteProject(String projectId) throws MgmException;
 
 	// ------------------------------------------------------------------------------------------
-	// ProjectHomeConfig
+	// ProjectHome
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get all ProjectHomeConfigs in a Project.
+	 * Get ProjectHomes from a Project.
 	 * 
 	 * @param projectId
 	 * @return
 	 */
-	public List<ProjectHomeConfig> getProjectHomeConfigs(String projectId) throws MgmException;
+	public List<ProjectHome> getProjectHomes(String projectId) throws MgmException;
 
 	/**
-	 * Get ProjectHomeConfig information by Id.
-	 * 
-	 * @param homeConfigId
-	 * @return
-	 */
-	public ProjectHomeConfig getProjectHomeConfig(String homeConfigId) throws MgmException;
-
-	/**
-	 * Add a ProjectHomeConfig to a Project.
+	 * Get ProjectHome.
 	 * 
 	 * @param projectId
-	 * @param homeConfig
-	 * @throws MgmException
-	 */
-	public void addProjectHomeConfig(String projectId, ProjectHomeConfig homeConfig) throws MgmException;
-
-	/**
-	 * Update ProjectHomeConfig information.
-	 * 
-	 * @param homeConfig
-	 * @throws MgmException
-	 */
-	public void updateProjectHomeConfig(ProjectHomeConfig homeConfig) throws MgmException;
-
-	/**
-	 * Delete a ProjectHomeConfig from a Project.
-	 * 
-	 * @param homeConfigId
-	 * @throws MgmException
-	 */
-	public boolean deleteProjectHomeConfig(String homeConfigId) throws MgmException;
-
-	// ------------------------------------------------------------------------------------------
-	// ProjectNodeConfig
-	// ------------------------------------------------------------------------------------------
-	/**
-	 * Get all ProjectNodeConfigs in a Project.
-	 * 
-	 * @param homeConfigId
+	 * @param projectHomeId
 	 * @return
 	 */
-	public List<ProjectNodeConfig> getProjectNodeConfigs(String homeConfigId) throws MgmException;
+	public ProjectHome getProjectHome(String projectId, String projectHomeId) throws MgmException;
 
 	/**
-	 * Get ProjectNodeConfig information by Id.
+	 * Add a ProjectHome to a Project.
 	 * 
-	 * @param nodeConfigId
+	 * @param projectId
+	 * @param projectHome
+	 * @throws MgmException
+	 */
+	public void addProjectHome(String projectId, ProjectHome projectHome) throws MgmException;
+
+	/**
+	 * Update ProjectHome.
+	 * 
+	 * @param projectId
+	 * @param projectHome
+	 * @throws MgmException
+	 */
+	public void updateProjectHome(String projectId, ProjectHome projectHome) throws MgmException;
+
+	/**
+	 * Delete a ProjectHome from a Project.
+	 * 
+	 * @param projectId
+	 * @param projectHome
+	 * @throws MgmException
+	 */
+	public boolean deleteProjectHome(String projectId, String projectHome) throws MgmException;
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectNode
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get ProjectNodes from a ProjectHome.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
 	 * @return
-	 */
-	public ProjectNodeConfig getProjectNodeConfig(String nodeConfigId) throws MgmException;
-
-	/**
-	 * Add a ProjectNodeConfig to a Project.
-	 * 
-	 * @param homeConfigId
-	 * @param nodeConfig
 	 * @throws MgmException
 	 */
-	public void addProjectNodeConfig(String homeConfigId, ProjectNodeConfig nodeConfig) throws MgmException;
+	public List<ProjectNode> getProjectNodes(String projectId, String projectHomeId) throws MgmException;
 
 	/**
-	 * Update ProjectNodeConfig information.
+	 * Get ProjectNode.
 	 * 
-	 * @param nodeConfig
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @return
 	 * @throws MgmException
 	 */
-	public void updateProjectNodeConfig(ProjectNodeConfig nodeConfig) throws MgmException;
+	public ProjectNode getProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException;
 
 	/**
-	 * Delete a ProjectNodeConfig from a ProjectHomeConfig.
+	 * Add a ProjectNode to a ProjectHome.
 	 * 
-	 * @param nodeConfigId
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNode
 	 * @throws MgmException
 	 */
-	public boolean deleteProjectNodeConfig(String nodeConfigId) throws MgmException;
+	public void addProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException;
+
+	/**
+	 * Update ProjectNode.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNode
+	 * @throws MgmException
+	 */
+	public void updateProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException;
+
+	/**
+	 * Delete a ProjectNode from a ProjectHome.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @return
+	 * @throws MgmException
+	 */
+	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException;
 
 }

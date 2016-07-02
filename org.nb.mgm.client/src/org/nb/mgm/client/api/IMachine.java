@@ -2,18 +2,17 @@ package org.nb.mgm.client.api;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface Home extends IAdaptable {
+public interface IMachine extends IAdaptable {
 
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	public Management getManagement();
-
-	public Machine getMachine();
 
 	// ------------------------------------------------------------------------------------------
 	// Auto Update Attributes
@@ -33,19 +32,68 @@ public interface Home extends IAdaptable {
 
 	public void setName(String name) throws ClientException;
 
-	public String getUrl();
-
-	public void setUrl(String url) throws ClientException;
-
 	public String getDescription();
 
 	public void setDescription(String description) throws ClientException;
+
+	public String getIpAddress();
+
+	public void setIpAddress(String ipAddress) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// Home
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all Homes in a Machine.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<IHome> getHomes() throws ClientException;
+
+	/**
+	 * Get Homes in a Machine by query parameters.
+	 * 
+	 * @param properties
+	 *            supported keys are: "name", "url", "status", "filter".
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<IHome> getHomes(Properties properties) throws ClientException;
+
+	/**
+	 * Get Home by home Id.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public IHome getHome(String homeId) throws ClientException;
+
+	/**
+	 * Add a Home to a Machine.
+	 * 
+	 * @param name
+	 * @param url
+	 * @param description
+	 * @throws ClientException
+	 */
+	public IHome addHome(String name, String description, String url) throws ClientException;
+
+	/**
+	 * Delete Home from a Machine by home Id.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteHome(String homeId) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Properties
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get Home properties.
+	 * Get Machine properties.
 	 * 
 	 * @return
 	 * @throws ClientException
@@ -53,7 +101,7 @@ public interface Home extends IAdaptable {
 	public Map<String, Object> getProperties() throws ClientException;
 
 	/**
-	 * Set Home property.
+	 * Set Machine property.
 	 * 
 	 * @param propName
 	 * @param propValue
@@ -63,7 +111,7 @@ public interface Home extends IAdaptable {
 	public boolean setProperty(String propName, Object propValue) throws ClientException;
 
 	/**
-	 * Set Home properties.
+	 * Set Machine properties.
 	 * 
 	 * @param properties
 	 * @return
@@ -72,7 +120,7 @@ public interface Home extends IAdaptable {
 	public boolean setProperties(Map<String, Object> properties) throws ClientException;
 
 	/**
-	 * Remove Home property.
+	 * Remove Machine property.
 	 * 
 	 * @param propertyName
 	 * @return
@@ -81,7 +129,7 @@ public interface Home extends IAdaptable {
 	public boolean removeProperty(String propertyName) throws ClientException;
 
 	/**
-	 * Remove Home properties.
+	 * Remove Machine properties.
 	 * 
 	 * @param propertyNames
 	 * @return

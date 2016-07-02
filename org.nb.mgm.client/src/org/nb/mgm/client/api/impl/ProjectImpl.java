@@ -1,14 +1,17 @@
 package org.nb.mgm.client.api.impl;
 
+import java.util.List;
+
+import org.nb.mgm.client.api.IProject;
+import org.nb.mgm.client.api.IProjectHome;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.api.Project;
 import org.nb.mgm.client.ws.ProjectClient;
 import org.nb.mgm.model.dto.ProjectDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-public class ProjectImpl implements Project {
+public class ProjectImpl implements IProject {
 
 	private boolean autoUpdate = false;
 	private Management management;
@@ -17,9 +20,11 @@ public class ProjectImpl implements Project {
 
 	/**
 	 * 
+	 * @param management
 	 * @param projectDTO
 	 */
-	public ProjectImpl(ProjectDTO projectDTO) {
+	public ProjectImpl(Management management, ProjectDTO projectDTO) {
+		this.management = management;
 		this.projectDTO = projectDTO;
 	}
 
@@ -99,6 +104,29 @@ public class ProjectImpl implements Project {
 				update();
 			}
 		}
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectHome
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public List<IProjectHome> getProjectHomes() throws ClientException {
+		return this.management.getProjectHomes(getId());
+	}
+
+	@Override
+	public IProjectHome getProjectHome(String projectHomeId) throws ClientException {
+		return this.management.getProjectHome(getId(), projectHomeId);
+	}
+
+	@Override
+	public IProjectHome addProjectHome(String name, String description) throws ClientException {
+		return this.management.addProjectHome(getId(), name, description);
+	}
+
+	@Override
+	public boolean deleteProjectHome(String projectHomeId) throws ClientException {
+		return this.management.deleteProjectHome(getId(), projectHomeId);
 	}
 
 	// ------------------------------------------------------------------------------------------
