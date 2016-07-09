@@ -74,11 +74,10 @@ public interface IMachine extends IAdaptable {
 	 * Add a Home to a Machine.
 	 * 
 	 * @param name
-	 * @param url
 	 * @param description
 	 * @throws ClientException
 	 */
-	public IHome addHome(String name, String description, String url) throws ClientException;
+	public IHome addHome(String name, String description) throws ClientException;
 
 	/**
 	 * Delete Home from a Machine by home Id.

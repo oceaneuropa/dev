@@ -188,12 +188,12 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
-	 * @param projectNodeDTO
+	 * @param newProjectNodeRequestDTO
 	 * @return
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addProjectNode(@PathParam("projectId") String projectId, @PathParam("projectHomeId") String projectHomeId, ProjectNodeDTO projectNodeDTO) {
+	public Response addProjectNode(@PathParam("projectId") String projectId, @PathParam("projectHomeId") String projectHomeId, ProjectNodeDTO newProjectNodeRequestDTO) {
 		// Validate parameters
 		if (projectHomeId == null || projectHomeId.isEmpty()) {
 			ErrorDTO nullProjectIdError = new ErrorDTO("projectId is null.");
@@ -203,13 +203,14 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 			ErrorDTO nullProjectHomeIdError = new ErrorDTO("projectHomeId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullProjectHomeIdError).build();
 		}
-		if (projectNodeDTO == null) {
+		if (newProjectNodeRequestDTO == null) {
 			ErrorDTO nullProjectHomeDTOError = new ErrorDTO("projectNodeDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullProjectHomeDTOError).build();
 		}
 
 		ManagementService mgm = getService(ManagementService.class);
 
+		ProjectNodeDTO newProjectNodeDTO = null;
 		try {
 			// Find Project. Create ProjectDTO
 			Project project = mgm.getProject(projectId);
@@ -229,37 +230,27 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 
 			// Create new ProjectNode request
 			ProjectNode newProjectNodeRequest = new ProjectNode();
-			String id = projectNodeDTO.getId();
-			String name = projectNodeDTO.getName();
-			String description = projectNodeDTO.getDescription();
+			String id = newProjectNodeRequestDTO.getId();
+			String name = newProjectNodeRequestDTO.getName();
+			String description = newProjectNodeRequestDTO.getDescription();
 
 			newProjectNodeRequest.setId(id);
 			newProjectNodeRequest.setName(name);
 			newProjectNodeRequest.setDescription(description);
 
 			// Add ProjectNode to ProjectHome
-			mgm.addProjectNode(projectId, projectHomeId, newProjectNodeRequest);
-
-			// if (Util.compare(id, newProjectNodeRequest.getId()) != 0) {
-			// projectNodeDTO.setId(newProjectNodeRequest.getId());
-			// }
-			// if (Util.compare(name, newProjectNodeRequest.getName()) != 0) {
-			// projectNodeDTO.setName(newProjectNodeRequest.getName());
-			// }
-
-			// Find ProjectNode. Create ProjectNodeDTO.
-			ProjectNode projectNode = mgm.getProjectNode(projectId, projectHomeId, newProjectNodeRequest.getId());
-			if (projectNode == null) {
+			ProjectNode newProjectNode = mgm.addProjectNode(projectId, projectHomeId, newProjectNodeRequest);
+			if (newProjectNode == null) {
 				ErrorDTO projectNodeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "New ProjectNode cannot be found.");
 				return Response.status(Status.NOT_FOUND).entity(projectNodeNotFoundError).build();
 			}
-			projectNodeDTO = DTOConverter.getInstance().toDTO(projectNode);
+			newProjectNodeDTO = DTOConverter.getInstance().toDTO(newProjectNode);
 
 			// Set container ProjectDTO
-			projectNodeDTO.setProject(projectDTO);
+			newProjectNodeDTO.setProject(projectDTO);
 
 			// Set container ProjectHomeDTO
-			projectNodeDTO.setProjectHome(projectHomeDTO);
+			newProjectNodeDTO.setProjectHome(projectHomeDTO);
 
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -269,7 +260,7 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 		// Save changes
 		handleSave(mgm);
 
-		return Response.ok().entity(projectNodeDTO).build();
+		return Response.ok().entity(newProjectNodeDTO).build();
 	}
 
 	/**

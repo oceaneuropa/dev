@@ -28,7 +28,6 @@ import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
-import org.origin.common.util.Util;
 
 /*
  * Machine resource.
@@ -51,7 +50,7 @@ public class MachineResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Get Machines by query parameters.
+	 * Get Machines.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
 	 * 
@@ -111,7 +110,7 @@ public class MachineResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Get Machine by machine Id.
+	 * Get a Machine.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
 	 * 
@@ -142,45 +141,45 @@ public class MachineResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Add a Machine to the cluster.
+	 * Add a Machine.
 	 * 
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/machines
 	 * 
 	 * Body parameter: MachineDTO
 	 * 
-	 * @param machineDTO
+	 * @param newMachineRequestDTO
 	 * @return
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createMachine(MachineDTO machineDTO) {
-		if (machineDTO == null) {
+	public Response createMachine(MachineDTO newMachineRequestDTO) {
+		if (newMachineRequestDTO == null) {
 			ErrorDTO nullMachineDTOError = new ErrorDTO("machineDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullMachineDTOError).build();
 		}
 
 		ManagementService mgm = getService(ManagementService.class);
 
-		String id = machineDTO.getId();
-		String name = machineDTO.getName();
-		String description = machineDTO.getDescription();
-		String ipAddress = machineDTO.getIpAddress();
-
-		Machine newMachine = new Machine(mgm.getRoot());
-		newMachine.setId(id);
-		newMachine.setName(name);
-		newMachine.setDescription(description);
-		newMachine.setIpAddress(ipAddress);
-
+		MachineDTO newMachineDTO = null;
 		try {
-			mgm.addMachine(newMachine);
+			String id = newMachineRequestDTO.getId();
+			String name = newMachineRequestDTO.getName();
+			String description = newMachineRequestDTO.getDescription();
+			String ipAddress = newMachineRequestDTO.getIpAddress();
 
-			if (Util.compare(id, newMachine.getId()) != 0) {
-				machineDTO.setId(newMachine.getId());
+			Machine newMachineRequest = new Machine(mgm.getRoot());
+			newMachineRequest.setId(id);
+			newMachineRequest.setName(name);
+			newMachineRequest.setDescription(description);
+			newMachineRequest.setIpAddress(ipAddress);
+
+			Machine newMachine = mgm.addMachine(newMachineRequest);
+			if (newMachine == null) {
+				ErrorDTO projectHomeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "New Machine cannot be added.");
+				return Response.status(Status.NOT_FOUND).entity(projectHomeNotFoundError).build();
 			}
-			if (Util.compare(name, newMachine.getName()) != 0) {
-				machineDTO.setName(newMachine.getName());
-			}
+			newMachineDTO = DTOConverter.getInstance().toDTO(newMachine);
+
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
@@ -188,11 +187,11 @@ public class MachineResource extends AbstractApplicationResource {
 
 		handleSave(mgm);
 
-		return Response.ok().entity(machineDTO).build();
+		return Response.ok().entity(newMachineDTO).build();
 	}
 
 	/**
-	 * Update Machine information.
+	 * Update Machine.
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines
 	 * 
@@ -236,7 +235,7 @@ public class MachineResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Delete a Machine from the cluster.
+	 * Remove a Machine.
 	 * 
 	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
 	 * 
@@ -263,7 +262,7 @@ public class MachineResource extends AbstractApplicationResource {
 
 		handleSave(mgm);
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "Machine is deleted successfully.");
+		StatusDTO statusDTO = new StatusDTO("200", "success", "Machine is removed successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 

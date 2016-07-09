@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import org.nb.mgm.exception.MgmException;
 import org.nb.mgm.model.query.HomeQuery;
-import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
@@ -38,12 +37,8 @@ public class HomeHandler {
 		this.mgmService = mgmService;
 	}
 
-	protected ClusterRoot getRoot() {
-		return this.mgmService.getRoot();
-	}
-
 	/**
-	 * Get all Homes in a Machine.
+	 * Get Homes.
 	 * 
 	 * @param machineId
 	 * @return
@@ -53,7 +48,7 @@ public class HomeHandler {
 	}
 
 	/**
-	 * Get Homes in a Machine by query.
+	 * Get Homes.
 	 * 
 	 * @param machineId
 	 * @param query
@@ -77,23 +72,21 @@ public class HomeHandler {
 		} else {
 			// Query is available - return Homes which match the search patterns
 			SearchPattern namePattern = SearchPattern.createPattern(query.getName());
-			SearchPattern urlPattern = SearchPattern.createPattern(query.getUrl());
 			SearchPattern filterPattern = SearchPattern.createPattern(query.getFilter());
 			// String status = query.getStatus();
 
 			for (Iterator<Home> homeItor = allHomesInMachine.iterator(); homeItor.hasNext();) {
 				Home currHome = homeItor.next();
 				boolean matchName = namePattern != null ? namePattern.matches(currHome.getName()) : true;
-				boolean matchUrl = urlPattern != null ? urlPattern.matches(currHome.getUrl()) : true;
 				boolean matchFilter = false;
 				if (filterPattern != null) {
-					if (filterPattern.matches(currHome.getName()) || filterPattern.matches(currHome.getUrl())) {
+					if (filterPattern.matches(currHome.getName())) {
 						matchFilter = true;
 					}
 				} else {
 					matchFilter = true;
 				}
-				if (matchName && matchUrl && matchFilter) {
+				if (matchName && matchFilter) {
 					matchedHomes.add(currHome);
 				}
 			}
@@ -103,7 +96,7 @@ public class HomeHandler {
 	}
 
 	/**
-	 * Get Home information by Home Id.
+	 * Get a Home.
 	 * 
 	 * @param homeId
 	 * @return
@@ -140,10 +133,10 @@ public class HomeHandler {
 	 * Add a Home to a Machine.
 	 * 
 	 * @param machineId
-	 * @param home
+	 * @param newHomeRequest
 	 * @throws MgmException
 	 */
-	public void addHome(String machineId, Home home) throws MgmException {
+	public Home addHome(String machineId, Home newHomeRequest) throws MgmException {
 		// Container Machine must exist
 		Machine machine = this.mgmService.getMachine(machineId);
 		if (machine == null) {
@@ -151,18 +144,13 @@ public class HomeHandler {
 		}
 
 		// Generate unique Home Id
-		if (home.getId() == null || home.getId().isEmpty()) {
-			home.setId(UUID.randomUUID().toString());
+		if (newHomeRequest.getId() == null || newHomeRequest.getId().isEmpty()) {
+			newHomeRequest.setId(UUID.randomUUID().toString());
 		}
 
 		// Throw exception - empty Home name
-		if (home.getName() == null || home.getName().isEmpty()) {
+		if (newHomeRequest.getName() == null || newHomeRequest.getName().isEmpty()) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home name cannot be empty.", null);
-		}
-
-		// Throw exception - empty Home URL
-		if (home.getUrl() == null || home.getUrl().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home URL cannot be empty.", null);
 		}
 
 		// Throw exception - Home with same Id or URL exists
@@ -170,19 +158,19 @@ public class HomeHandler {
 		for (Iterator<Home> homeItor = allHomesInMachine.iterator(); homeItor.hasNext();) {
 			Home currHome = homeItor.next();
 
-			if (home.getId().equals(currHome.getId())) {
+			if (newHomeRequest.getId().equals(currHome.getId())) {
 				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same Id already exists.", null);
 			}
 			// if (home.getName().equals(currHome.getName())) {
 			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same name already exists.", null);
 			// }
-			if (home.getUrl().equals(currHome.getUrl())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same URL already exists.", null);
-			}
+			// if (home.getUrl().equals(currHome.getUrl())) {
+			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same URL already exists.", null);
+			// }
 		}
 
 		// Generate unique home name
-		String name = home.getName();
+		String name = newHomeRequest.getName();
 		String uniqueName = name;
 		int index = 1;
 		while (true) {
@@ -202,43 +190,41 @@ public class HomeHandler {
 			}
 		}
 		if (!uniqueName.equals(name)) {
-			home.setName(uniqueName);
+			newHomeRequest.setName(uniqueName);
 		}
 
-		machine.addHome(home);
+		machine.addHome(newHomeRequest);
+
+		return newHomeRequest;
 	}
 
 	/**
-	 * Update Home information.
+	 * Update Home.
 	 * 
-	 * @param home
+	 * @param updateHomeRequest
 	 * @throws MgmException
 	 */
-	public void updateHome(Home home) throws MgmException {
+	public void updateHome(Home updateHomeRequest) throws MgmException {
 		// Throw exception - empty Home
-		if (home == null) {
+		if (updateHomeRequest == null) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home cannot be empty.", null);
 		}
 
 		// Find Home by Id
-		Home homeToUpdate = getHome(home.getId());
+		Home homeToUpdate = getHome(updateHomeRequest.getId());
 
 		// No need to update when they are the same object.
-		if (homeToUpdate == home) {
+		if (homeToUpdate == updateHomeRequest) {
 			return;
 		}
 
-		// Home name is changed - Update Home name
-		if (Util.compare(homeToUpdate.getName(), home.getName()) != 0) {
-			homeToUpdate.setName(home.getName());
+		// Update name
+		if (Util.compare(homeToUpdate.getName(), updateHomeRequest.getName()) != 0) {
+			homeToUpdate.setName(updateHomeRequest.getName());
 		}
-		// Home description is changed - Update Home description
-		if (Util.compare(homeToUpdate.getDescription(), home.getDescription()) != 0) {
-			homeToUpdate.setDescription(home.getDescription());
-		}
-		// Home URL is changed - Update Home URL
-		if (Util.compare(homeToUpdate.getUrl(), home.getUrl()) != 0) {
-			homeToUpdate.setUrl(home.getUrl());
+		// Update description
+		if (Util.compare(homeToUpdate.getDescription(), updateHomeRequest.getDescription()) != 0) {
+			homeToUpdate.setDescription(updateHomeRequest.getDescription());
 		}
 	}
 

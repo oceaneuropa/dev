@@ -7,7 +7,6 @@ public class HomeQuery {
 	}
 
 	protected String name;
-	protected String url;
 	protected String filter;
 	protected String status;
 
@@ -20,14 +19,6 @@ public class HomeQuery {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
 	}
 
 	public String getFilter() {
@@ -59,11 +50,6 @@ public class HomeQuery {
 
 		public HomeQueryBuilder withName(String name) {
 			this.query.setName(name);
-			return this;
-		}
-
-		public HomeQueryBuilder withUrl(String url) {
-			this.query.setUrl(url);
 			return this;
 		}
 

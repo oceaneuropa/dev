@@ -11,7 +11,10 @@ Import-Package: javax.ws.rs.client,
  org.junit.runner,
  org.junit.runner.notification,
  org.origin.common.adapter,
+ org.origin.common.annotation,
+ org.origin.common.osgi,
  org.origin.common.rest.client,
  org.origin.common.util,
  org.osgi.framework;version="1.3.0"
 Export-Package: org.nb.home.client.api
+Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"

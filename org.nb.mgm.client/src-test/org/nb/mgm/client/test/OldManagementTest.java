@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
-import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.IMetaSector;
 import org.nb.mgm.client.api.IMetaSpace;
+import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 
@@ -35,7 +35,7 @@ public class OldManagementTest {
 
 					String machineId = newMachine.getId();
 					for (int j = 1; j <= 2; j++) {
-						mgm.addHome(machineId, "home" + i + j, "C:/cluster" + i + j, "home_" + i + "_" + j);
+						mgm.addHome(machineId, "home" + i + j, "home_" + i + "_" + j);
 					}
 				}
 			}

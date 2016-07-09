@@ -14,13 +14,13 @@ import org.origin.common.rest.client.ClientException;
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
  * 
  */
-public class HomeApiClient extends AbstractClient {
+public class HomeControlClient extends AbstractClient {
 
 	/**
 	 * 
 	 * @param config
 	 */
-	public HomeApiClient(ClientConfiguration config) {
+	public HomeControlClient(ClientConfiguration config) {
 		super(config);
 	}
 

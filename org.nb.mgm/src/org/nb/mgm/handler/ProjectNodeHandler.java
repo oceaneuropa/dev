@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.nb.mgm.exception.MgmException;
-import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
 import org.nb.mgm.service.ManagementService;
@@ -26,10 +25,6 @@ public class ProjectNodeHandler {
 	 */
 	public ProjectNodeHandler(ManagementService mgmService) {
 		this.mgmService = mgmService;
-	}
-
-	protected ClusterRoot getRoot() {
-		return this.mgmService.getRoot();
 	}
 
 	/**
@@ -97,14 +92,14 @@ public class ProjectNodeHandler {
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
-	 * @param projectNode
+	 * @param newProjectNodeRequest
 	 * @throws MgmException
 	 */
-	public void addProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException {
+	public ProjectNode addProjectNode(String projectId, String projectHomeId, ProjectNode newProjectNodeRequest) throws MgmException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
-		checkProjectNode(projectNode);
+		checkProjectNode(newProjectNodeRequest);
 
 		// Container ProjectHome must exist
 		ProjectHome projectHome = this.mgmService.getProjectHome(projectId, projectHomeId);
@@ -113,24 +108,24 @@ public class ProjectNodeHandler {
 		}
 
 		// Generate unique ProjectNode Id
-		if (projectNode.getId() == null || projectNode.getId().isEmpty()) {
-			projectNode.setId(UUID.randomUUID().toString());
+		if (newProjectNodeRequest.getId() == null || newProjectNodeRequest.getId().isEmpty()) {
+			newProjectNodeRequest.setId(UUID.randomUUID().toString());
 		}
 
 		// Throw exception - empty ProjectHome name
 		// if (projectNode.getName() == null || projectNode.getName().isEmpty()) {
 		// throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "ProjectNode name cannot be empty.", null);
 		// }
-		if (projectNode.getName() == null || projectNode.getName().isEmpty()) {
-			projectNode.setName("Node");
+		if (newProjectNodeRequest.getName() == null || newProjectNodeRequest.getName().isEmpty()) {
+			newProjectNodeRequest.setName("Node");
 		}
 
-		// Throw exception - ProjectNode with same Id or name exists
+		// Throw exception - ProjectNode with same Id or name exists within the same ProjectHome
 		for (Iterator<ProjectNode> projectNodeItor = projectHome.getNodes().iterator(); projectNodeItor.hasNext();) {
 			ProjectNode currProjectNode = projectNodeItor.next();
 
-			if (projectNode.getId().equals(currProjectNode.getId())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "ProjectNode with same Id already exists.", null);
+			if (newProjectNodeRequest.getId().equals(currProjectNode.getId())) {
+				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "ProjectNode with same Id already exists in the ProjectHome.", null);
 			}
 			// if (projectNode.getName().equals(currProjectNode.getName())) {
 			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "ProjectNode with same name already exists.", null);
@@ -138,7 +133,7 @@ public class ProjectNodeHandler {
 		}
 
 		// Generate unique ProjectNode name
-		String name = projectNode.getName();
+		String name = newProjectNodeRequest.getName();
 		String uniqueName = name;
 		int index = 1;
 		while (true) {
@@ -158,10 +153,12 @@ public class ProjectNodeHandler {
 			}
 		}
 		if (!uniqueName.equals(name)) {
-			projectNode.setName(uniqueName);
+			newProjectNodeRequest.setName(uniqueName);
 		}
 
-		projectHome.addNode(projectNode);
+		projectHome.addNode(newProjectNodeRequest);
+
+		return newProjectNodeRequest;
 	}
 
 	/**
@@ -169,30 +166,30 @@ public class ProjectNodeHandler {
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
-	 * @param projectNode
+	 * @param updateProjectNodeRequest
 	 * @throws MgmException
 	 */
-	public void updateProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException {
+	public void updateProjectNode(String projectId, String projectHomeId, ProjectNode updateProjectNodeRequest) throws MgmException {
 		// Throw exception - empty ProjectNode
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
-		checkProjectNode(projectNode);
+		checkProjectNode(updateProjectNodeRequest);
 
 		// Find ProjectNode
-		ProjectNode projectNodeToUpdate = getProjectNode(projectId, projectHomeId, projectNode.getId());
+		ProjectNode projectNodeToUpdate = getProjectNode(projectId, projectHomeId, updateProjectNodeRequest.getId());
 
 		// No need to update when they are the same object.
-		if (projectNodeToUpdate == projectNode) {
+		if (projectNodeToUpdate == updateProjectNodeRequest) {
 			return;
 		}
 
-		// ProjectNode name is changed - Update ProjectNode name
-		if (Util.compare(projectNodeToUpdate.getName(), projectNode.getName()) != 0) {
-			projectNodeToUpdate.setName(projectNode.getName());
+		// Update name
+		if (Util.compare(projectNodeToUpdate.getName(), updateProjectNodeRequest.getName()) != 0) {
+			projectNodeToUpdate.setName(updateProjectNodeRequest.getName());
 		}
-		// ProjectNode description is changed - Update ProjectNode description
-		if (Util.compare(projectNodeToUpdate.getDescription(), projectNode.getDescription()) != 0) {
-			projectNodeToUpdate.setDescription(projectNode.getDescription());
+		// Update description
+		if (Util.compare(projectNodeToUpdate.getDescription(), updateProjectNodeRequest.getDescription()) != 0) {
+			projectNodeToUpdate.setDescription(updateProjectNodeRequest.getDescription());
 		}
 	}
 

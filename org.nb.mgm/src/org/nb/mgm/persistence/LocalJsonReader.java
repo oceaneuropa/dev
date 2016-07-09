@@ -2,6 +2,7 @@ package org.nb.mgm.persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,9 @@ import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
+import org.nb.mgm.model.runtime.Software;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.util.DateUtil;
 
 public class LocalJsonReader {
 
@@ -217,11 +220,11 @@ public class LocalJsonReader {
 		home.setDescription(description);
 
 		// "url" attribute
-		String url = null;
-		if (homeJSON.has("url")) {
-			url = homeJSON.getString("url");
-		}
-		home.setUrl(url);
+		// String url = null;
+		// if (homeJSON.has("url")) {
+		// url = homeJSON.getString("url");
+		// }
+		// home.setUrl(url);
 
 		// "properties" attribute
 		Map<String, Object> properties = null;
@@ -478,12 +481,30 @@ public class LocalJsonReader {
 			if (homeConfigsArray != null) {
 				int length = homeConfigsArray.length();
 				for (int i = 0; i < length; i++) {
-					JSONObject homeConfigJSON = homeConfigsArray.getJSONObject(i);
-					if (homeConfigJSON != null) {
-						ProjectHome homeConfig = jsonToProjectHomeConfig(homeConfigJSON);
-						if (homeConfig != null) {
-							homeConfig.setParent(project);
-							project.addHome(homeConfig);
+					JSONObject projectHomeJSON = homeConfigsArray.getJSONObject(i);
+					if (projectHomeJSON != null) {
+						ProjectHome projectHome = jsonToProjectHome(projectHomeJSON);
+						if (projectHome != null) {
+							projectHome.setParent(project);
+							project.addHome(projectHome);
+						}
+					}
+				}
+			}
+		}
+
+		// "softwareConfigs" array
+		if (projectJSON.has("softwareConfigs")) {
+			JSONArray softwareConfigsArray = projectJSON.getJSONArray("softwareConfigs");
+			if (softwareConfigsArray != null) {
+				int length = softwareConfigsArray.length();
+				for (int i = 0; i < length; i++) {
+					JSONObject softwareJSON = softwareConfigsArray.getJSONObject(i);
+					if (softwareJSON != null) {
+						Software software = jsonToSoftware(softwareJSON);
+						if (software != null) {
+							software.setParent(project);
+							project.addSoftware(software);
 						}
 					}
 				}
@@ -494,107 +515,198 @@ public class LocalJsonReader {
 	}
 
 	/**
-	 * Convert homeConfig JSONObject to ProjectHomeConfig.
+	 * Convert Software JSONObject to Software.
 	 * 
-	 * @param homeConfigJSON
+	 * @param softwareJSON
 	 * @return
 	 */
-	protected ProjectHome jsonToProjectHomeConfig(JSONObject homeConfigJSON) {
-		if (homeConfigJSON == null) {
+	protected Software jsonToSoftware(JSONObject softwareJSON) {
+		if (softwareJSON == null) {
 			return null;
 		}
 
-		ProjectHome homeConfig = new ProjectHome();
+		Software software = new Software();
 
 		// "id" attribute
 		String id = null;
-		if (homeConfigJSON.has("id")) {
-			id = homeConfigJSON.getString("id");
+		if (softwareJSON.has("id")) {
+			id = softwareJSON.getString("id");
 		}
-		homeConfig.setId(id);
+		software.setId(id);
+
+		// "type" attribute
+		String type = null;
+		if (softwareJSON.has("type")) {
+			type = softwareJSON.getString("type");
+		}
+		software.setType(type);
 
 		// "name" attribute
 		String name = null;
-		if (homeConfigJSON.has("name")) {
-			name = homeConfigJSON.getString("name");
+		if (softwareJSON.has("name")) {
+			name = softwareJSON.getString("name");
 		}
-		homeConfig.setName(name);
+		software.setName(name);
+
+		// "version" attribute
+		String version = null;
+		if (softwareJSON.has("version")) {
+			version = softwareJSON.getString("version");
+		}
+		software.setVersion(version);
 
 		// "description" attribute
 		String description = null;
-		if (homeConfigJSON.has("description")) {
-			description = homeConfigJSON.getString("description");
+		if (softwareJSON.has("description")) {
+			description = softwareJSON.getString("description");
 		}
-		homeConfig.setDescription(description);
+		software.setDescription(description);
+
+		// "length" attribute
+		long length = 0;
+		if (softwareJSON.has("length")) {
+			try {
+				// Object lengthObj = softwareJSON.get("length"); // this method returns an Integer object.
+				length = softwareJSON.getLong("length");
+			} catch (Exception e) {
+				e.printStackTrace();
+				length = 0;
+			}
+		}
+		software.setLength(length);
+
+		// "lastModified" attribute
+		Date lastModified = null;
+		if (softwareJSON.has("lastModified")) {
+			try {
+				String lastModifiedString = softwareJSON.getString("lastModified");
+				lastModified = DateUtil.toDate(lastModifiedString, DateUtil.getCommonDateFormats());
+			} catch (Exception e) {
+				e.printStackTrace();
+				lastModified = null;
+			}
+		}
+		software.setLastModified(lastModified);
+
+		// "md5" attribute
+		String md5 = null;
+		if (softwareJSON.has("md5")) {
+			md5 = softwareJSON.getString("md5");
+		}
+		software.setMd5(md5);
+
+		// "localPath" attribute
+		String localPath = null;
+		if (softwareJSON.has("localPath")) {
+			localPath = softwareJSON.getString("localPath");
+		}
+		software.setLocalPath(localPath);
+
+		return software;
+	}
+
+	/**
+	 * Convert ProjectHome JSONObject to ProjectHome.
+	 * 
+	 * @param projectHomeJSON
+	 * @return
+	 */
+	protected ProjectHome jsonToProjectHome(JSONObject projectHomeJSON) {
+		if (projectHomeJSON == null) {
+			return null;
+		}
+
+		ProjectHome projectHome = new ProjectHome();
+
+		// "id" attribute
+		String id = null;
+		if (projectHomeJSON.has("id")) {
+			id = projectHomeJSON.getString("id");
+		}
+		projectHome.setId(id);
+
+		// "name" attribute
+		String name = null;
+		if (projectHomeJSON.has("name")) {
+			name = projectHomeJSON.getString("name");
+		}
+		projectHome.setName(name);
+
+		// "description" attribute
+		String description = null;
+		if (projectHomeJSON.has("description")) {
+			description = projectHomeJSON.getString("description");
+		}
+		projectHome.setDescription(description);
 
 		// "nodeConfigs" array
-		if (homeConfigJSON.has("nodeConfigs")) {
-			JSONArray nodeConfigsArray = homeConfigJSON.getJSONArray("nodeConfigs");
+		if (projectHomeJSON.has("nodeConfigs")) {
+			JSONArray nodeConfigsArray = projectHomeJSON.getJSONArray("nodeConfigs");
 			if (nodeConfigsArray != null) {
 				int length = nodeConfigsArray.length();
 				for (int i = 0; i < length; i++) {
-					JSONObject nodeConfigJSON = nodeConfigsArray.getJSONObject(i);
-					if (nodeConfigJSON != null) {
-						ProjectNode nodeConfig = jsonToProjectNodeConfig(nodeConfigJSON);
-						if (nodeConfig != null) {
-							nodeConfig.setParent(homeConfig);
-							homeConfig.addNode(nodeConfig);
+					JSONObject projectNodeJSON = nodeConfigsArray.getJSONObject(i);
+					if (projectNodeJSON != null) {
+						ProjectNode projectNode = jsonToProjectNode(projectNodeJSON);
+						if (projectNode != null) {
+							projectNode.setParent(projectHome);
+							projectHome.addNode(projectNode);
 						}
 					}
 				}
 			}
 		}
 
-		return homeConfig;
+		return projectHome;
 	}
 
 	/**
-	 * Convert nodeConfig JSONObject to ProjectNodeConfig.
+	 * Convert ProjectNode JSONObject to ProjectNode.
 	 * 
-	 * @param nodeConfigJSON
+	 * @param projectNodeJSON
 	 * @return
 	 */
-	protected ProjectNode jsonToProjectNodeConfig(JSONObject nodeConfigJSON) {
-		if (nodeConfigJSON == null) {
+	protected ProjectNode jsonToProjectNode(JSONObject projectNodeJSON) {
+		if (projectNodeJSON == null) {
 			return null;
 		}
 
-		ProjectNode nodeConfig = new ProjectNode();
+		ProjectNode projectNode = new ProjectNode();
 
 		// "id" attribute
 		String id = null;
-		if (nodeConfigJSON.has("id")) {
-			id = nodeConfigJSON.getString("id");
+		if (projectNodeJSON.has("id")) {
+			id = projectNodeJSON.getString("id");
 		}
-		nodeConfig.setId(id);
+		projectNode.setId(id);
 
 		// "name" attribute
 		String name = null;
-		if (nodeConfigJSON.has("name")) {
-			name = nodeConfigJSON.getString("name");
+		if (projectNodeJSON.has("name")) {
+			name = projectNodeJSON.getString("name");
 		}
-		nodeConfig.setName(name);
+		projectNode.setName(name);
 
 		// "description" attribute
 		String description = null;
-		if (nodeConfigJSON.has("description")) {
-			description = nodeConfigJSON.getString("description");
+		if (projectNodeJSON.has("description")) {
+			description = projectNodeJSON.getString("description");
 		}
-		nodeConfig.setDescription(description);
+		projectNode.setDescription(description);
 
 		// "properties" attribute
 		Map<String, Object> properties = null;
-		if (nodeConfigJSON.has("properties")) {
-			String propertiesString = nodeConfigJSON.getString("properties");
+		if (projectNodeJSON.has("properties")) {
+			String propertiesString = projectNodeJSON.getString("properties");
 			if (propertiesString != null) {
 				properties = JSONUtil.toProperties(propertiesString);
 			}
 		}
 		if (properties != null) {
-			nodeConfig.setProperties(properties);
+			projectNode.setProperties(properties);
 		}
 
-		return nodeConfig;
+		return projectNode;
 	}
 
 }

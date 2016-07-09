@@ -12,10 +12,9 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
-import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.IMetaSector;
 import org.nb.mgm.client.api.IMetaSpace;
-import org.nb.mgm.client.api.ManagementFactory;
+import org.nb.mgm.client.api.Management;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.StringUtil;
@@ -27,10 +26,9 @@ import org.slf4j.LoggerFactory;
 public class ManagementCommand {
 
 	protected static String[] MACHINE_TITLES = new String[] { "ID", "Name", "IP", "Description" };
-	protected static String[] HOME_TITLES = new String[] { "ID", "Name", "URL", "Description" };
+	protected static String[] HOME_TITLES = new String[] { "ID", "Name", "Description" };
 	protected static String[] META_SECTOR_TITLES = new String[] { "ID", "Name", "Description" };
 	protected static String[] META_SPACE_TITLES = new String[] { "ID", "Name", "Description" };
-	protected static String[] PROJECT_TITLES = new String[] { "ID", "Name", "Description" };
 
 	protected static String NULL = "null";
 
@@ -51,8 +49,8 @@ public class ManagementCommand {
 		logger.debug("ManagementCommand.start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "mgm");
-		props.put("osgi.command.function", new String[] { "login", "list", "create", "update", "delete" });
+		props.put("osgi.command.scope", "nb");
+		props.put("osgi.command.function", new String[] { "list", "create", "update", "delete" });
 		this.registration = bundleContext.registerService(ManagementCommand.class.getName(), this, props);
 	}
 
@@ -63,33 +61,6 @@ public class ManagementCommand {
 			this.registration.unregister();
 			this.registration = null;
 		}
-	}
-
-	/**
-	 * mgm:login -url http://127.0.0.1:9090 -u admin -p 123
-	 * 
-	 * @param url
-	 * @param username
-	 * @param password
-	 */
-	@Descriptor("Login to the cloud")
-	public void login(@Descriptor("url") @Parameter(names = { "-url", "--url" }, absentValue = "") String url, //
-			@Descriptor("username") @Parameter(names = { "-u", "--username" }, absentValue = "") String username, //
-			@Descriptor("password") @Parameter(names = { "-p", "--password" }, absentValue = "") String password //
-	) {
-		if (url.isEmpty()) {
-			System.out.println("--url parameter is required.");
-			return;
-		}
-		if (username.isEmpty()) {
-			System.out.println("--username parameter is required.");
-			return;
-		}
-		if (password.isEmpty()) {
-			System.out.println("-password parameter is required.");
-			return;
-		}
-		this.mgm = ManagementFactory.createManagement(url, username, password);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -210,7 +181,7 @@ public class ManagementCommand {
 	}
 
 	/**
-	 * Print out all Machines.
+	 * List all Machines.
 	 * 
 	 * @param mgm
 	 * @throws ClientException
@@ -243,7 +214,7 @@ public class ManagementCommand {
 		String[][] rows = new String[homes.size()][HOME_TITLES.length];
 		int rowIndex = 0;
 		for (IHome home : homes) {
-			rows[rowIndex++] = new String[] { home.getId(), home.getName(), home.getUrl(), home.getDescription() };
+			rows[rowIndex++] = new String[] { home.getId(), home.getName(), home.getDescription() };
 		}
 		PrettyPrinter.prettyPrint(HOME_TITLES, rows);
 	}
@@ -323,7 +294,6 @@ public class ManagementCommand {
 
 			// required for Home (machineid, name, url, description)
 			@Descriptor("Machine Id for creating a new Home.") @Parameter(names = { "-machineid", "--machineid" }, absentValue = "") String machineid, //
-			@Descriptor("URL of a Home.") @Parameter(names = { "-url", "--url" }, absentValue = "") String url, //
 
 			// required for MetaSector (name, description)
 
@@ -366,11 +336,7 @@ public class ManagementCommand {
 					System.out.println("Please specify -machineid parameter.");
 					return;
 				}
-				if ("".equals(url)) {
-					System.out.println("Please specify -url parameter.");
-					return;
-				}
-				createHome(this.mgm, machineid, name, url, description);
+				createHome(this.mgm, machineid, name, description);
 
 			} else if (createMetaSector) {
 				// name (required)
@@ -420,8 +386,8 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void createHome(Management mgm, String machineid, String name, String url, String description) throws ClientException {
-		IHome newHome = mgm.addHome(machineid, name, url, description);
+	protected void createHome(Management mgm, String machineid, String name, String description) throws ClientException {
+		IHome newHome = mgm.addHome(machineid, name, description);
 		if (newHome != null) {
 			System.out.println("New Home is created. ");
 		} else {
@@ -624,16 +590,11 @@ public class ManagementCommand {
 		}
 
 		String oldName = home.getName();
-		String oldUrl = home.getUrl();
 		String oldDescription = home.getDescription();
 
 		boolean isChanged = false;
 		if (!NULL.equals(name) && !StringUtil.equals(oldName, name)) {
 			home.setName(name);
-			isChanged = true;
-		}
-		if (!NULL.equals(url) && !StringUtil.equals(oldUrl, url)) {
-			home.setUrl(url);
 			isChanged = true;
 		}
 		if (!NULL.equals(description) && !StringUtil.equals(oldDescription, description)) {
@@ -807,7 +768,7 @@ public class ManagementCommand {
 	 */
 	protected void deleteMachines(Management mgm, String[] machineIds) throws ClientException {
 		for (String machineId : machineIds) {
-			boolean succeed = mgm.deleteMachine(machineId);
+			boolean succeed = mgm.removeMachine(machineId);
 			if (succeed) {
 				System.out.println(MessageFormat.format("Machine with id=''{0}'' is deleted.", new Object[] { machineId }));
 			} else {
@@ -826,7 +787,7 @@ public class ManagementCommand {
 	protected void deleteHomes(Management mgm, String[] homeIds) throws ClientException {
 		for (int i = 0; i < homeIds.length; i++) {
 			String homeId = homeIds[i];
-			boolean succeed = mgm.deleteHome(homeId);
+			boolean succeed = mgm.removeHome(homeId);
 			if (succeed) {
 				System.out.println(MessageFormat.format("Home with id=''{0}'' is deleted.", new Object[] { homeId }));
 			} else {

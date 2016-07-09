@@ -37,7 +37,7 @@ public class Activator implements BundleActivator {
 		Activator.homeService = new HomeServiceImpl(bundleContext);
 		Activator.homeService.start();
 
-		// 2. Start HomeApplication web service
+		// 2. Start HomeApplication
 		this.homeApplication = new HomeApplication(bundleContext, "/home/v1");
 		this.homeApplication.start();
 	}
@@ -46,13 +46,13 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		this.logger.debug("Home Management Activator.stop()");
 
-		// 1. Stop HomeApplication service
+		// 1. Stop HomeApplication
 		if (this.homeApplication != null) {
 			this.homeApplication.stop();
 			this.homeApplication = null;
 		}
 
-		// 2. Stop Home management service
+		// 2. Stop HomeApplication service
 		if (Activator.homeService != null) {
 			Activator.homeService.stop();
 			Activator.homeService = null;

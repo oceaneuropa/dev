@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * DTO for Machine
+ * DTO for Home
  *
  */
 @XmlRootElement
@@ -19,9 +19,6 @@ public class HomeDTO {
 	protected String name;
 	@XmlElement
 	protected String description;
-
-	@XmlElement
-	protected String url;
 
 	// Container Machine
 	@XmlElement
@@ -60,15 +57,6 @@ public class HomeDTO {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@XmlElement
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
 	}
 
 	@XmlElement

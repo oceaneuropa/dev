@@ -25,7 +25,6 @@ import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
-import org.origin.common.util.Util;
 
 /*
  * Project resource.
@@ -134,24 +133,24 @@ public class ProjectResource extends AbstractApplicationResource {
 
 		ManagementService mgm = getService(ManagementService.class);
 
-		String id = projectDTO.getId();
-		String name = projectDTO.getName();
-		String description = projectDTO.getDescription();
-
-		Project newProjectRequest = new Project(mgm.getRoot());
-		newProjectRequest.setId(id);
-		newProjectRequest.setName(name);
-		newProjectRequest.setDescription(description);
-
+		ProjectDTO newProjectDTO = null;
 		try {
-			mgm.addProject(newProjectRequest);
+			String id = projectDTO.getId();
+			String name = projectDTO.getName();
+			String description = projectDTO.getDescription();
 
-			if (Util.compare(id, newProjectRequest.getId()) != 0) {
-				projectDTO.setId(newProjectRequest.getId());
+			Project newProjectRequest = new Project(mgm.getRoot());
+			newProjectRequest.setId(id);
+			newProjectRequest.setName(name);
+			newProjectRequest.setDescription(description);
+
+			Project newProject = mgm.addProject(newProjectRequest);
+			if (newProject == null) {
+				ErrorDTO projectNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "New Project cannot be created.");
+				return Response.status(Status.NOT_FOUND).entity(projectNotFoundError).build();
 			}
-			if (Util.compare(name, newProjectRequest.getName()) != 0) {
-				projectDTO.setName(newProjectRequest.getName());
-			}
+			newProjectDTO = DTOConverter.getInstance().toDTO(newProject);
+
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
@@ -159,7 +158,7 @@ public class ProjectResource extends AbstractApplicationResource {
 
 		handleSave(mgm);
 
-		return Response.ok().entity(projectDTO).build();
+		return Response.ok().entity(newProjectDTO).build();
 	}
 
 	/**

@@ -8,6 +8,7 @@ import org.origin.common.rest.model.ModelObject;
 public class Project extends ModelObject {
 
 	protected List<ProjectHome> projectHomes = new ArrayList<ProjectHome>();
+	protected List<Software> projectSoftwareList = new ArrayList<Software>();
 
 	public Project() {
 	}
@@ -40,6 +41,31 @@ public class Project extends ModelObject {
 		if (projectHome != null && this.projectHomes.contains(projectHome)) {
 			this.projectHomes.remove(projectHome);
 			projectHome.setParent(null);
+			return true;
+		}
+		return false;
+	}
+
+	// ----------------------------------------------------------------------------------------------------------------
+	// ProjectSoftware
+	// ----------------------------------------------------------------------------------------------------------------
+	public List<Software> getSoftware() {
+		return this.projectSoftwareList;
+	}
+
+	public boolean addSoftware(Software software) {
+		if (software != null && !this.projectSoftwareList.contains(software)) {
+			software.setParent(this);
+			this.projectSoftwareList.add(software);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean deleteSoftware(Software software) {
+		if (software != null && this.projectSoftwareList.contains(software)) {
+			this.projectSoftwareList.remove(software);
+			software.setParent(null);
 			return true;
 		}
 		return false;

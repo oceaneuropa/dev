@@ -46,7 +46,7 @@ public class ProjectHandler {
 	}
 
 	/**
-	 * Get Project by Id.
+	 * Get a Project.
 	 * 
 	 * @param projectId
 	 * @return
@@ -72,52 +72,54 @@ public class ProjectHandler {
 	}
 
 	/**
-	 * Add a Project to the cluster.
+	 * Add a Project.
 	 * 
-	 * @param project
+	 * @param newProjectRequest
 	 * @throws MgmException
 	 */
-	public void addProject(Project project) throws MgmException {
+	public Project addProject(Project newProjectRequest) throws MgmException {
 		// Throw exception - empty Project
-		if (project == null) {
+		if (newProjectRequest == null) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project cannot be empty.", null);
 		}
 
 		// Throw exception - empty Project id
-		if (project.getId() == null || project.getId().isEmpty()) {
+		if (newProjectRequest.getId() == null || newProjectRequest.getId().isEmpty()) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project id cannot be empty.", null);
 		}
 
 		// Throw exception - empty Project name
-		if (project.getName() == null || project.getName().isEmpty()) {
+		if (newProjectRequest.getName() == null || newProjectRequest.getName().isEmpty()) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project name cannot be empty.", null);
 		}
 
 		ClusterRoot root = getRoot();
 		for (Iterator<Project> projectItor = root.getProjects().iterator(); projectItor.hasNext();) {
 			Project currProject = projectItor.next();
-			if (project.getId().equals(currProject.getId())) {
+			if (newProjectRequest.getId().equals(currProject.getId())) {
 				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Project with same Id already exists.", null);
 			}
 		}
 
-		root.addProject(project);
+		root.addProject(newProjectRequest);
+
+		return newProjectRequest;
 	}
 
 	/**
-	 * Update Project information.
+	 * Update Project.
 	 * 
-	 * @param project
+	 * @param updateProjectRequest
 	 * @throws MgmException
 	 */
-	public void updateProject(Project project) throws MgmException {
+	public void updateProject(Project updateProjectRequest) throws MgmException {
 		// Throw exception - empty Project
-		if (project == null) {
+		if (updateProjectRequest == null) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project cannot be empty.", null);
 		}
 
 		// Find Project by Id
-		Project projectToUpdate = getProject(project.getId());
+		Project projectToUpdate = getProject(updateProjectRequest.getId());
 
 		// Throw exception - Project not found
 		if (projectToUpdate == null) {
@@ -125,22 +127,22 @@ public class ProjectHandler {
 		}
 
 		// No need to update when they are the same object.
-		if (projectToUpdate == project) {
+		if (projectToUpdate == updateProjectRequest) {
 			return;
 		}
 
-		// Project name is changed - Update Project name
-		if (Util.compare(projectToUpdate.getName(), project.getName()) != 0) {
-			projectToUpdate.setName(project.getName());
+		// Update name
+		if (Util.compare(projectToUpdate.getName(), updateProjectRequest.getName()) != 0) {
+			projectToUpdate.setName(updateProjectRequest.getName());
 		}
-		// Project description is changed - Project Machine description
-		if (Util.compare(projectToUpdate.getDescription(), project.getDescription()) != 0) {
-			projectToUpdate.setDescription(project.getDescription());
+		// Update description
+		if (Util.compare(projectToUpdate.getDescription(), updateProjectRequest.getDescription()) != 0) {
+			projectToUpdate.setDescription(updateProjectRequest.getDescription());
 		}
 	}
 
 	/**
-	 * Delete a Project from the cluster.
+	 * Delete a Project.
 	 * 
 	 * @param projectId
 	 * @throws MgmException

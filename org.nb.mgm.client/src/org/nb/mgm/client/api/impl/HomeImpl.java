@@ -100,24 +100,6 @@ public class HomeImpl implements IHome {
 	}
 
 	@Override
-	public String getUrl() {
-		return this.homeDTO.getUrl();
-	}
-
-	@Override
-	public void setUrl(String url) throws ClientException {
-		String oldUrl = this.homeDTO.getUrl();
-
-		if ((oldUrl == null && url != null) || (oldUrl != null && !oldUrl.equals(url))) {
-			this.homeDTO.setUrl(url);
-
-			if (this.autoUpdate) {
-				update();
-			}
-		}
-	}
-
-	@Override
 	public String getDescription() {
 		return this.homeDTO.getDescription();
 	}
@@ -228,7 +210,6 @@ public class HomeImpl implements IHome {
 		sb.append("Home(");
 		sb.append("id=\"").append(getId()).append("\"");
 		sb.append(", name=\"").append(getName()).append("\"");
-		sb.append(", url=\"").append(getUrl()).append("\"");
 		sb.append(", description=\"").append(getDescription()).append("\"");
 		sb.append(")");
 		return sb.toString();

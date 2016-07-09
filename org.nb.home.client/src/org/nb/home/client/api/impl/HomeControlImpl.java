@@ -1,15 +1,15 @@
 package org.nb.home.client.api.impl;
 
-import org.nb.home.client.api.HomeManagement;
-import org.nb.home.client.ws.HomeApiClient;
+import org.nb.home.client.api.IHomeControl;
+import org.nb.home.client.ws.HomeControlClient;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
-public class HomeManagementImpl implements HomeManagement {
+public class HomeControlImpl implements IHomeControl {
 
 	private ClientConfiguration clientConfiguration;
-	private HomeApiClient homeApiClient;
+	private HomeControlClient homeControlClient;
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
@@ -19,19 +19,19 @@ public class HomeManagementImpl implements HomeManagement {
 	 * @param username
 	 * @param password
 	 */
-	public HomeManagementImpl(String url, String contextRoot, String username, String password) {
+	public HomeControlImpl(String url, String contextRoot, String username, String password) {
 		this.clientConfiguration = ClientConfiguration.get(url, contextRoot, username);
 		this.clientConfiguration.setPassword(password);
 
 		// Web service client for Home API
-		this.homeApiClient = new HomeApiClient(this.clientConfiguration);
+		this.homeControlClient = new HomeControlClient(this.clientConfiguration);
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// Home management API
+	// Home control
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Ping the Home management server.
+	 * Ping the Home.
 	 * 
 	 * @return
 	 * @throws ClientException
@@ -39,19 +39,19 @@ public class HomeManagementImpl implements HomeManagement {
 	@Override
 	public int ping() throws ClientException {
 		int ping = 0;
-		HomeApiClient homeApiClient = this.getAdapter(HomeApiClient.class);
-		checkClient(homeApiClient);
+		HomeControlClient homeControlClient = getAdapter(HomeControlClient.class);
+		checkClient(homeControlClient);
 
-		ping = homeApiClient.ping();
+		ping = homeControlClient.ping();
 		return ping;
 	}
 
 	// ------------------------------------------------------------------------------------------
 	// Check WS Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(HomeApiClient homeApiClient) throws ClientException {
-		if (homeApiClient == null) {
-			throw new ClientException(401, "HomeApiClient is not found.", null);
+	protected void checkClient(HomeControlClient homeControlClient) throws ClientException {
+		if (homeControlClient == null) {
+			throw new ClientException(401, "HomeControlClient is not found.", null);
 		}
 	}
 
@@ -59,8 +59,11 @@ public class HomeManagementImpl implements HomeManagement {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		if (HomeApiClient.class.equals(adapter)) {
-			return (T) this.homeApiClient;
+		if (ClientConfiguration.class.equals(adapter)) {
+			return (T) this.clientConfiguration;
+		}
+		if (HomeControlClient.class.equals(adapter)) {
+			return (T) this.homeControlClient;
 		}
 		T result = this.adaptorSupport.getAdapter(adapter);
 		if (result != null) {

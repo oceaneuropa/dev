@@ -2,7 +2,7 @@ package org.nb.mgm;
 
 import org.nb.mgm.service.ManagementService;
 import org.nb.mgm.service.impl.ManagementServiceImpl;
-import org.nb.mgm.ws.MgmApplication;
+import org.nb.mgm.ws.ManagementApplication;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -21,7 +21,7 @@ public class Activator implements BundleActivator {
 		return Activator.mgmService;
 	}
 
-	protected MgmApplication mgmApplication;
+	protected ManagementApplication mgmApplication;
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Override
@@ -30,14 +30,14 @@ public class Activator implements BundleActivator {
 
 		Activator.context = bundleContext;
 
-		// 1. Start Mgm management service
+		// 1. Start the management service
 		ManagementServiceImpl mgmService = new ManagementServiceImpl(bundleContext);
 		mgmService.setAutoSave(true);
 		mgmService.start();
 		Activator.mgmService = mgmService;
 
-		// 2. Start MgmApplication web service
-		this.mgmApplication = new MgmApplication(bundleContext, "/mgm/v1");
+		// 2. Start ManagementApplication
+		this.mgmApplication = new ManagementApplication(bundleContext, "/mgm/v1");
 		this.mgmApplication.start();
 	}
 
@@ -45,13 +45,13 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		this.logger.debug("Management Activator.stop()");
 
-		// 1. Stop MgmApplication service
+		// 1. Stop ManagementApplication
 		if (this.mgmApplication != null) {
 			this.mgmApplication.stop();
 			this.mgmApplication = null;
 		}
 
-		// 2. Stop Mgm management service
+		// 2. Stop the management service
 		if (Activator.mgmService != null) {
 			Activator.mgmService.stop();
 			Activator.mgmService = null;

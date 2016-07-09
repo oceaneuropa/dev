@@ -14,9 +14,10 @@ import org.nb.mgm.client.api.IMetaSpace;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
 import org.nb.mgm.client.api.IProjectNode;
+import org.nb.mgm.client.api.ISoftware;
 import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.api.MgmConstants;
 import org.nb.mgm.client.api.ManagementFactory;
+import org.nb.mgm.client.api.MgmConstants;
 import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.client.ws.MachineClient;
 import org.nb.mgm.client.ws.MetaSectorClient;
@@ -24,6 +25,7 @@ import org.nb.mgm.client.ws.MetaSpaceClient;
 import org.nb.mgm.client.ws.ProjectClient;
 import org.nb.mgm.client.ws.ProjectHomeClient;
 import org.nb.mgm.client.ws.ProjectNodeClient;
+import org.nb.mgm.client.ws.ProjectSoftwareClient;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.nb.mgm.model.dto.MetaSectorDTO;
@@ -31,6 +33,7 @@ import org.nb.mgm.model.dto.MetaSpaceDTO;
 import org.nb.mgm.model.dto.ProjectDTO;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
 import org.nb.mgm.model.dto.ProjectNodeDTO;
+import org.nb.mgm.model.dto.SoftwareDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -47,6 +50,7 @@ public class ManagementImpl implements Management {
 	private ProjectClient projectClient;
 	private ProjectHomeClient projectHomeClient;
 	private ProjectNodeClient projectNodeClient;
+	private ProjectSoftwareClient projectSoftwareClient;
 
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
@@ -68,6 +72,7 @@ public class ManagementImpl implements Management {
 		this.projectClient = new ProjectClient(this.clientConfig);
 		this.projectHomeClient = new ProjectHomeClient(this.clientConfig);
 		this.projectNodeClient = new ProjectNodeClient(this.clientConfig);
+		this.projectSoftwareClient = new ProjectSoftwareClient(this.clientConfig);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -125,7 +130,7 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
-	public boolean deleteMachine(String machineId) throws ClientException {
+	public boolean removeMachine(String machineId) throws ClientException {
 		checkClient(this.machineClient);
 		checkMachineId(machineId);
 
@@ -213,7 +218,7 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
-	public IHome addHome(String machineId, String name, String url, String description) throws ClientException {
+	public IHome addHome(String machineId, String name, String description) throws ClientException {
 		checkClient(this.homeClient);
 		checkMachineId(machineId);
 
@@ -223,7 +228,6 @@ public class ManagementImpl implements Management {
 		if (machine != null) {
 			HomeDTO newHomeRequest = new HomeDTO();
 			newHomeRequest.setName(name);
-			newHomeRequest.setUrl(url);
 			newHomeRequest.setDescription(description);
 
 			HomeDTO newHomeDTO = this.homeClient.addHome(machineId, newHomeRequest);
@@ -235,7 +239,7 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
-	public boolean deleteHome(String machineId, String homeId) throws ClientException {
+	public boolean removeHome(String machineId, String homeId) throws ClientException {
 		checkClient(this.homeClient);
 		checkMachineId(machineId);
 		checkHomeId(homeId);
@@ -245,7 +249,7 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
-	public boolean deleteHome(String homeId) throws ClientException {
+	public boolean removeHome(String homeId) throws ClientException {
 		checkClient(this.homeClient);
 		checkHomeId(homeId);
 
@@ -272,7 +276,7 @@ public class ManagementImpl implements Management {
 		}
 
 		if (machineId != null) {
-			return deleteHome(machineId, homeId);
+			return removeHome(machineId, homeId);
 		}
 		return false;
 	}
@@ -677,6 +681,201 @@ public class ManagementImpl implements Management {
 	}
 
 	// ------------------------------------------------------------------------------------------
+	// ProjectSoftware
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get Software in a Project.
+	 * 
+	 * @param projectId
+	 * @return
+	 * @throws ClientException
+	 */
+	@Override
+	public List<ISoftware> getProjectSoftwareList(String projectId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+
+		List<ISoftware> softwareList = new ArrayList<ISoftware>();
+
+		IProject project = getProject(projectId);
+		if (project != null) {
+			List<SoftwareDTO> softwareDTOs = this.projectSoftwareClient.getProjectSoftware(projectId);
+			for (SoftwareDTO softwareDTO : softwareDTOs) {
+				ISoftware software = ManagementFactory.createSoftware(this, project, softwareDTO);
+				softwareList.add(software);
+			}
+		}
+		return softwareList;
+	}
+
+	/**
+	 * Get Software.
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	@Override
+	public ISoftware getProjectSoftware(String projectId, String softwareId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+		checkSoftwareId(softwareId);
+
+		ISoftware software = null;
+
+		IProject project = getProject(projectId);
+		if (project != null) {
+			SoftwareDTO softwareDTO = this.projectSoftwareClient.getProjectSoftware(projectId, softwareId);
+			if (softwareDTO != null) {
+				software = ManagementFactory.createSoftware(this, project, softwareDTO);
+			}
+		}
+		return software;
+	}
+
+	/**
+	 * Get Software.
+	 * 
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	@Override
+	public ISoftware getProjectSoftware(String softwareId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectHomeId(softwareId);
+
+		ISoftware software = null;
+
+		String projectId = null;
+		int matchedSoftwareCounts = 0;
+		List<IProject> projects = getProjects();
+		for (IProject project : projects) {
+			String currProjectId = project.getId();
+
+			List<SoftwareDTO> softwareDTOs = this.projectSoftwareClient.getProjectSoftware(currProjectId);
+			for (SoftwareDTO softwareDTO : softwareDTOs) {
+				String currSoftwareId = softwareDTO.getId();
+
+				if (softwareId.equals(currSoftwareId)) {
+					if (projectId == null) {
+						projectId = currProjectId;
+					}
+					matchedSoftwareCounts++;
+				}
+			}
+		}
+		if (matchedSoftwareCounts > 1) {
+			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Software with specified softwareId are found.");
+		}
+
+		if (projectId != null) {
+			software = getProjectSoftware(projectId, softwareId);
+		}
+		return software;
+	}
+
+	/**
+	 * Add Software to a Project.
+	 * 
+	 * @param projectId
+	 * @param name
+	 * @param description
+	 * @return
+	 * @throws ClientException
+	 */
+	@Override
+	public ISoftware addProjectSoftware(String projectId, String type, String name, String version, String description) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+
+		// if (file == null || !file.exists()) {
+		// throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "Software file cannot be found.", null);
+		// }
+
+		ISoftware software = null;
+
+		IProject project = getProject(projectId);
+		if (project != null) {
+			SoftwareDTO newSoftwareRequest = new SoftwareDTO();
+			newSoftwareRequest.setType(type);
+			newSoftwareRequest.setName(name);
+			newSoftwareRequest.setVersion(version);
+			newSoftwareRequest.setDescription(description);
+
+			// if (file != null) {
+			// long length = file.length();
+			// Date lastModified = new Date(file.lastModified());
+			// newSoftwareRequest.setLength(length);
+			// newSoftwareRequest.setLastModified(lastModified);
+			// }
+
+			SoftwareDTO newSoftwareDTO = this.projectSoftwareClient.addProjectSoftware(projectId, newSoftwareRequest);
+			if (newSoftwareDTO != null) {
+				software = ManagementFactory.createSoftware(this, project, newSoftwareDTO);
+			}
+		}
+		return software;
+	}
+
+	/**
+	 * Delete Software from a Project.
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteProjectSoftware(String projectId, String softwareId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+		checkSoftwareId(softwareId);
+
+		StatusDTO status = this.projectSoftwareClient.deleteProjectSoftware(projectId, softwareId);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	/**
+	 * Delete Software from a Project.
+	 * 
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteProjectSoftware(String softwareId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkSoftwareId(softwareId);
+
+		String projectId = null;
+		int matchedSoftwareCounts = 0;
+		List<IProject> projects = getProjects();
+		for (IProject project : projects) {
+			String currProjectId = project.getId();
+
+			List<SoftwareDTO> softwareDTOs = this.projectSoftwareClient.getProjectSoftware(currProjectId);
+			for (SoftwareDTO softwareDTO : softwareDTOs) {
+				String currSoftwareId = softwareDTO.getId();
+
+				if (softwareId.equals(currSoftwareId)) {
+					if (projectId == null) {
+						projectId = currProjectId;
+					}
+					matchedSoftwareCounts++;
+				}
+			}
+		}
+		if (matchedSoftwareCounts > 1) {
+			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Software with specified softwareId are found.");
+		}
+
+		if (projectId != null) {
+			return deleteProjectSoftware(projectId, softwareId);
+		}
+		return false;
+	}
+
+	// ------------------------------------------------------------------------------------------
 	// ProjectNode
 	// ------------------------------------------------------------------------------------------
 	@Override
@@ -769,13 +968,14 @@ public class ManagementImpl implements Management {
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
+	 * @param projectNodeId
 	 * @param name
 	 * @param description
 	 * @return
 	 * @throws ClientException
 	 */
 	@Override
-	public IProjectNode addProjectNode(String projectId, String projectHomeId, String name, String description) throws ClientException {
+	public IProjectNode addProjectNode(String projectId, String projectHomeId, String projectNodeId, String name, String description) throws ClientException {
 		checkClient(this.projectNodeClient);
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
@@ -784,8 +984,10 @@ public class ManagementImpl implements Management {
 
 		IProject project = getProject(projectId);
 		IProjectHome projectHome = getProjectHome(projectId, projectHomeId);
+
 		if (project != null && projectHome != null) {
 			ProjectNodeDTO newProjectNodeRequest = new ProjectNodeDTO();
+			newProjectNodeRequest.setId(projectNodeId);
 			newProjectNodeRequest.setName(name);
 			newProjectNodeRequest.setDescription(description);
 
@@ -946,6 +1148,17 @@ public class ManagementImpl implements Management {
 		}
 	}
 
+	/**
+	 * 
+	 * @param projectSoftwareClient
+	 * @throws ClientException
+	 */
+	protected void checkClient(ProjectSoftwareClient projectSoftwareClient) throws ClientException {
+		if (projectSoftwareClient == null) {
+			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectSoftwareClient is not found.", null);
+		}
+	}
+
 	// ------------------------------------------------------------------------------------------
 	// Check IDs
 	// ------------------------------------------------------------------------------------------
@@ -1026,6 +1239,17 @@ public class ManagementImpl implements Management {
 		}
 	}
 
+	/**
+	 * 
+	 * @param softwareId
+	 * @throws ClientException
+	 */
+	protected void checkSoftwareId(String softwareId) throws ClientException {
+		if (softwareId == null || softwareId.trim().isEmpty()) {
+			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "softwareId is empty.", null);
+		}
+	}
+
 	/** implement IAdaptable interface */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -1050,6 +1274,9 @@ public class ManagementImpl implements Management {
 
 		} else if (ProjectNodeClient.class.equals(adapter)) {
 			return (T) this.projectNodeClient;
+
+		} else if (ProjectSoftwareClient.class.equals(adapter)) {
+			return (T) this.projectSoftwareClient;
 		}
 
 		T result = this.adaptorSupport.getAdapter(adapter);

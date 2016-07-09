@@ -10,9 +10,9 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
+import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.DateUtil;
@@ -36,7 +36,7 @@ public class ProjectHomeTest {
 
 	@Test
 	public void test001_getProjectHomes() {
-		System.out.println("--- --- --- test001_getProjectHomes() --- --- ---");
+		System.out.println("--- --- --- ProjectHome_test001_getProjectHomes() --- --- ---");
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {
@@ -61,23 +61,21 @@ public class ProjectHomeTest {
 
 	@Ignore
 	public void test002_deleteProjectHomes() {
-		System.out.println("--- --- --- test002_deleteProjectHomes() --- --- ---");
+		System.out.println("--- --- --- ProjectHome_test002_deleteProjectHomes() --- --- ---");
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {
-				String projectId = project.getId();
-				String projectName = project.getName();
-
 				List<IProjectHome> projectHomes = project.getProjectHomes();
+
 				for (IProjectHome projectHome : projectHomes) {
 					String projectHomeId = projectHome.getId();
 					String projectHomeName = projectHome.getName();
 					boolean succeed = project.deleteProjectHome(projectHomeId);
 
 					if (succeed) {
-						System.out.println("ProjectHome '" + projectHomeName + "' (" + projectHomeId + ") is deleted from Project '" + projectName + "' (" + projectId + ").");
+						System.out.println("ProjectHome '" + projectHomeName + "' (" + projectHomeId + ") is deleted.");
 					} else {
-						System.out.println("ProjectHome ' '" + projectHomeName + "' (" + projectHomeId + ") failed to be deleted from Project '" + projectName + "' (" + projectId + ").");
+						System.out.println("ProjectHome ' '" + projectHomeName + "' (" + projectHomeId + ") is not deleted.");
 					}
 				}
 			}
@@ -89,42 +87,41 @@ public class ProjectHomeTest {
 
 	@Ignore
 	public void test003_addProjectHomes() {
-		System.out.println("--- --- --- test003_addProjectHomes() --- --- ---");
+		System.out.println("--- --- --- ProjectHome_test003_addProjectHomes() --- --- ---");
 
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {
 				String projectId = project.getId();
-				String projectName = project.getName();
 
 				if ("Project1".equals(projectId)) {
-					IProjectHome newProjectHomeConfig11 = this.management.addProjectHome(projectId, "HomeConfig11", "Description of HomeConfig11");
-					if (newProjectHomeConfig11 != null) {
-						System.out.println(newProjectHomeConfig11 + " is created in Project '" + projectName + "' (" + projectId + ").");
-					} else {
-						System.out.println("HomeConfig11 failed to be created in Project '" + projectName + "' (" + projectId + ").");
-					}
+					IProjectHome home1 = project.addProjectHome("HomeConfig11", "Description of HomeConfig11");
+					IProjectHome home2 = project.addProjectHome("HomeConfig12", "Description of HomeConfig12");
 
-					IProjectHome newProjectHomeConfig12 = this.management.addProjectHome(projectId, "HomeConfig12", "Description of HomeConfig12");
-					if (newProjectHomeConfig12 != null) {
-						System.out.println(newProjectHomeConfig12 + " is created in Project '" + projectName + "' (" + projectId + ").");
+					if (home1 != null) {
+						System.out.println("HomeConfig11 is created.");
 					} else {
-						System.out.println("HomeConfig12 failed to be created in Project '" + projectName + "' (" + projectId + ").");
+						System.out.println("HomeConfig11 is not created.");
+					}
+					if (home2 != null) {
+						System.out.println("HomeConfig12 is created.");
+					} else {
+						System.out.println("HomeConfig12 is not created.");
 					}
 
 				} else if ("Project2".equals(projectId)) {
-					IProjectHome newProjectHomeConfig21 = this.management.addProjectHome(projectId, "HomeConfig21", "Description of HomeConfig21");
-					if (newProjectHomeConfig21 != null) {
-						System.out.println(newProjectHomeConfig21 + " is created in Project '" + projectName + "' (" + projectId + ").");
-					} else {
-						System.out.println("HomeConfig21 failed to be created in Project '" + projectName + "' (" + projectId + ").");
-					}
+					IProjectHome home3 = project.addProjectHome("HomeConfig21", "Description of HomeConfig21");
+					IProjectHome home4 = project.addProjectHome("HomeConfig22", "Description of HomeConfig22");
 
-					IProjectHome newProjectHomeConfig22 = this.management.addProjectHome(projectId, "HomeConfig22", "Description of HomeConfig22");
-					if (newProjectHomeConfig22 != null) {
-						System.out.println(newProjectHomeConfig22 + " is created in Project '" + projectName + "' (" + projectId + ").");
+					if (home3 != null) {
+						System.out.println("HomeConfig21 is created.");
 					} else {
-						System.out.println("HomeConfig22 failed to be created in Project '" + projectName + "' (" + projectId + ").");
+						System.out.println("HomeConfig21 is not created.");
+					}
+					if (home4 != null) {
+						System.out.println("HomeConfig22 is created.");
+					} else {
+						System.out.println("HomeConfig22 is not created.");
 					}
 				}
 			}
@@ -136,27 +133,25 @@ public class ProjectHomeTest {
 	}
 
 	@Ignore
-	public void test004_updateProjectHomeConfigs() {
-		System.out.println("--- --- --- test004_updateProjectHomeConfigs() --- --- ---");
+	public void test004_updateProjectHomes() {
+		System.out.println("--- --- --- ProjectHome_test004_updateProjectHomes() --- --- ---");
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {
-				String projectId = project.getId();
-				String projectName = project.getName();
+				List<IProjectHome> projectHomes = project.getProjectHomes();
 
-				List<IProjectHome> homeConfigs = project.getProjectHomes();
-				for (IProjectHome homeConfig : homeConfigs) {
-					String homeConfigId = homeConfig.getId();
-					String homeConfigName = homeConfig.getName();
-					String newHomeConfigDescription = "Description of " + homeConfigName + " (" + DateUtil.toString(new Date(), DateUtil.SIMPLE_DATE_FORMAT3) + ")";
+				for (IProjectHome projectHome : projectHomes) {
+					String projectHomeId = projectHome.getId();
+					String projectHomeName = projectHome.getName();
+					String newProjectHomeDescription = "Description of " + projectHomeName + " (" + DateUtil.toString(new Date(), DateUtil.SIMPLE_DATE_FORMAT3) + ")";
 
-					homeConfig.setDescription(newHomeConfigDescription);
-					boolean succeed = homeConfig.update();
+					projectHome.setDescription(newProjectHomeDescription);
+					boolean succeed = projectHome.update();
 
 					if (succeed) {
-						System.out.println("ProjectHomeConfig '" + homeConfigName + "' (" + homeConfigId + ") is updated in Project '" + projectName + "' (" + projectId + ").");
+						System.out.println("ProjectHome '" + projectHomeName + "' (" + projectHomeId + ") is updated.");
 					} else {
-						System.out.println("ProjectHomeConfig '" + homeConfigName + "' (" + homeConfigId + ") failed to be updated in Project '" + projectName + "' (" + projectId + ").");
+						System.out.println("ProjectHome '" + projectHomeName + "' (" + projectHomeId + ") is not updated.");
 					}
 				}
 			}

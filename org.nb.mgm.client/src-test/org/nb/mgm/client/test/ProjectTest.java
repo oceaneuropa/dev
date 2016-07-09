@@ -10,9 +10,9 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
+import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.DateUtil;
@@ -36,7 +36,7 @@ public class ProjectTest {
 
 	@Test
 	public void test001_getProjects() {
-		System.out.println("--- --- --- test001_getProjects() --- --- ---");
+		System.out.println("--- --- --- Project_test001_getProjects() --- --- ---");
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {
@@ -59,7 +59,7 @@ public class ProjectTest {
 
 	@Ignore
 	public void test002_deleteProjects() {
-		System.out.println("--- --- --- test002_deleteProjects() --- --- ---");
+		System.out.println("--- --- --- Project_test002_deleteProjects() --- --- ---");
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {
@@ -87,7 +87,7 @@ public class ProjectTest {
 
 	@Ignore
 	public void test003_addProjects() {
-		System.out.println("--- --- --- test003_addProjects() --- --- ---");
+		System.out.println("--- --- --- Project_test003_addProjects() --- --- ---");
 
 		try {
 			for (int i = 1; i <= 3; i++) {
@@ -110,7 +110,7 @@ public class ProjectTest {
 
 	@Ignore
 	public void test004_updateProjects() {
-		System.out.println("--- --- --- test004_updateProjects() --- --- ---");
+		System.out.println("--- --- --- Project_test004_updateProjects() --- --- ---");
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {

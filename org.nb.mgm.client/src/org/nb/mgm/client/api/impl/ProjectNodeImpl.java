@@ -67,12 +67,15 @@ public class ProjectNodeImpl implements IProjectNode {
 
 	@Override
 	public boolean update() throws ClientException {
-		Management management = this.project.getManagement();
+		checkManagement(this.management);
+		checkProject(this.project);
+		checkProjectHome(this.projectHome);
+
+		ProjectNodeClient projectNodeClient = this.management.getAdapter(ProjectNodeClient.class);
+		checkClient(projectNodeClient);
+
 		String projectId = this.project.getId();
 		String projectHomeId = this.projectHome.getId();
-
-		ProjectNodeClient projectNodeClient = management.getAdapter(ProjectNodeClient.class);
-		checkClient(projectNodeClient);
 
 		StatusDTO status = projectNodeClient.updateProjectNode(projectId, projectHomeId, this.projectNodeDTO);
 		return (status != null && status.success()) ? true : false;
@@ -128,6 +131,24 @@ public class ProjectNodeImpl implements IProjectNode {
 	protected void checkClient(ProjectNodeClient projectNodeClient) throws ClientException {
 		if (projectNodeClient == null) {
 			throw new ClientException(401, "ProjectNodeClient is not found.", null);
+		}
+	}
+
+	protected void checkManagement(Management management) throws ClientException {
+		if (management == null) {
+			throw new ClientException(401, "management is null.", null);
+		}
+	}
+
+	protected void checkProject(IProject project) throws ClientException {
+		if (project == null) {
+			throw new ClientException(401, "project is null.", null);
+		}
+	}
+
+	protected void checkProjectHome(IProjectHome projectHome) throws ClientException {
+		if (projectHome == null) {
+			throw new ClientException(401, "projectHome is null.", null);
 		}
 	}
 

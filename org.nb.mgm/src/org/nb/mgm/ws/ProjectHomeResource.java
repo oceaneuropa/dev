@@ -169,24 +169,25 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes (Body parameter: ProjectHomeDTO)
 	 * 
 	 * @param projectId
-	 * @param projectHomeDTO
+	 * @param newProjectHomeRequestDTO
 	 * @return
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addProjectHome(@PathParam("projectId") String projectId, ProjectHomeDTO projectHomeDTO) {
+	public Response addProjectHome(@PathParam("projectId") String projectId, ProjectHomeDTO newProjectHomeRequestDTO) {
 		// Validate parameters
 		if (projectId == null || projectId.isEmpty()) {
 			ErrorDTO nullProjectIdError = new ErrorDTO("projectId is empty.");
 			return Response.status(Status.BAD_REQUEST).entity(nullProjectIdError).build();
 		}
-		if (projectHomeDTO == null) {
-			ErrorDTO nullProjectHomeDTOError = new ErrorDTO("projectHomeDTO is empty.");
+		if (newProjectHomeRequestDTO == null) {
+			ErrorDTO nullProjectHomeDTOError = new ErrorDTO("newProjectHomeRequestDTO is empty.");
 			return Response.status(Status.BAD_REQUEST).entity(nullProjectHomeDTOError).build();
 		}
 
 		ManagementService mgm = getService(ManagementService.class);
 
+		ProjectHomeDTO newProjectHomeDTO = null;
 		try {
 			// Find Project. Create ProjectDTO.
 			Project project = mgm.getProject(projectId);
@@ -198,40 +199,30 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 
 			// Create new ProjectHome request
 			ProjectHome newProjectHomeRequest = new ProjectHome();
-			String id = projectHomeDTO.getId();
-			String name = projectHomeDTO.getName();
-			String description = projectHomeDTO.getDescription();
+			String id = newProjectHomeRequestDTO.getId();
+			String name = newProjectHomeRequestDTO.getName();
+			String description = newProjectHomeRequestDTO.getDescription();
 
 			newProjectHomeRequest.setId(id);
 			newProjectHomeRequest.setName(name);
 			newProjectHomeRequest.setDescription(description);
 
 			// Add ProjectHome to Project
-			mgm.addProjectHome(projectId, newProjectHomeRequest);
-
-			// if (Util.compare(id, newProjectHomeRequest.getId()) != 0) {
-			// projectHomeDTO.setId(newProjectHomeRequest.getId());
-			// }
-			// if (Util.compare(name, newProjectHomeRequest.getName()) != 0) {
-			// projectHomeDTO.setName(newProjectHomeRequest.getName());
-			// }
-
-			// Find ProjectHome. Create ProjectHomeDTO.
-			ProjectHome projectHome = mgm.getProjectHome(projectId, newProjectHomeRequest.getId());
-			if (projectHome == null) {
-				ErrorDTO projectHomeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "New ProjectHome cannot be found.");
+			ProjectHome newProjectHome = mgm.addProjectHome(projectId, newProjectHomeRequest);
+			if (newProjectHome == null) {
+				ErrorDTO projectHomeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "New ProjectHome cannot be created.");
 				return Response.status(Status.NOT_FOUND).entity(projectHomeNotFoundError).build();
 			}
-			projectHomeDTO = DTOConverter.getInstance().toDTO(projectHome);
+			newProjectHomeDTO = DTOConverter.getInstance().toDTO(newProjectHome);
 
 			// Set container ProjectDTO
-			projectHomeDTO.setProject(projectDTO);
+			newProjectHomeDTO.setProject(projectDTO);
 
 			// Set remote HomeDTO (if configured)
-			Home remoteHome = projectHome.getRemoteHome();
+			Home remoteHome = newProjectHome.getRemoteHome();
 			if (remoteHome != null) {
 				HomeDTO remoteHomeDTO = DTOConverter.getInstance().toDTO(remoteHome);
-				projectHomeDTO.setRemoteHome(remoteHomeDTO);
+				newProjectHomeDTO.setRemoteHome(remoteHomeDTO);
 			}
 
 		} catch (MgmException e) {
@@ -242,7 +233,7 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 		// Save changes
 		handleSave(mgm);
 
-		return Response.ok().entity(projectHomeDTO).build();
+		return Response.ok().entity(newProjectHomeDTO).build();
 	}
 
 	/**

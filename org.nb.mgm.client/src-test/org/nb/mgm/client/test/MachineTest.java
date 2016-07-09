@@ -43,9 +43,9 @@ public class MachineTest {
 			List<IMachine> machines = this.management.getMachines();
 			for (IMachine machine : machines) {
 				String machineName = machine.getName();
-				if (!machineName.startsWith("Machine")) {
-					continue;
-				}
+//				if (!machineName.startsWith("Machine")) {
+//					continue;
+//				}
 
 				System.out.println(machine.toString());
 
@@ -72,7 +72,7 @@ public class MachineTest {
 			for (IMachine machine : machines) {
 				String machineId = machine.getId();
 				String machineName = machine.getName();
-				boolean succeed = this.management.deleteMachine(machine.getId());
+				boolean succeed = this.management.removeMachine(machine.getId());
 
 				if (succeed) {
 					System.out.println("Machine '" + machineName + "' (" + machineId + ") is deleted.");

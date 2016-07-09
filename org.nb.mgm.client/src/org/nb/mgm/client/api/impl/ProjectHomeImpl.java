@@ -1,7 +1,10 @@
 package org.nb.mgm.client.api.impl;
 
+import java.util.List;
+
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
+import org.nb.mgm.client.api.IProjectNode;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.ws.ProjectHomeClient;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
@@ -58,11 +61,13 @@ public class ProjectHomeImpl implements IProjectHome {
 
 	@Override
 	public boolean update() throws ClientException {
-		Management management = this.project.getManagement();
-		String projectId = this.project.getId();
+		checkManagement(this.management);
+		checkProject(this.project);
 
-		ProjectHomeClient projectHomeClient = management.getAdapter(ProjectHomeClient.class);
+		ProjectHomeClient projectHomeClient = this.management.getAdapter(ProjectHomeClient.class);
 		checkClient(projectHomeClient);
+
+		String projectId = this.project.getId();
 
 		StatusDTO status = projectHomeClient.updateProjectHome(projectId, this.projectHomeDTO);
 		return (status != null && status.success()) ? true : false;
@@ -113,11 +118,66 @@ public class ProjectHomeImpl implements IProjectHome {
 	}
 
 	// ------------------------------------------------------------------------------------------
+	// ProjectNode
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public List<IProjectNode> getProjectNodes() throws ClientException {
+		checkManagement(this.management);
+		checkProject(this.project);
+
+		String projectId = this.project.getId();
+		String projectHomeId = getId();
+		return this.management.getProjectNodes(projectId, projectHomeId);
+	}
+
+	@Override
+	public IProjectNode getProjectNode(String projectNodeId) throws ClientException {
+		checkManagement(this.management);
+		checkProject(this.project);
+
+		String projectId = this.project.getId();
+		String projectHomeId = getId();
+		return this.management.getProjectNode(projectId, projectHomeId, projectNodeId);
+	}
+
+	@Override
+	public IProjectNode addProjectNode(String projectNodeId, String name, String description) throws ClientException {
+		checkManagement(this.management);
+		checkProject(this.project);
+
+		String projectId = this.project.getId();
+		String projectHomeId = getId();
+		return this.management.addProjectNode(projectId, projectHomeId, projectNodeId, name, description);
+	}
+
+	@Override
+	public boolean deleteProjectNode(String projectNodeId) throws ClientException {
+		checkManagement(this.management);
+		checkProject(this.project);
+
+		String projectId = this.project.getId();
+		String projectHomeId = getId();
+		return this.management.deleteProjectNode(projectId, projectHomeId, projectNodeId);
+	}
+
+	// ------------------------------------------------------------------------------------------
 	// Check WS Client
 	// ------------------------------------------------------------------------------------------
 	protected void checkClient(ProjectHomeClient projectHomeClient) throws ClientException {
 		if (projectHomeClient == null) {
 			throw new ClientException(401, "ProjectHomeClient is not found.", null);
+		}
+	}
+
+	protected void checkManagement(Management management) throws ClientException {
+		if (management == null) {
+			throw new ClientException(401, "management is null.", null);
+		}
+	}
+
+	protected void checkProject(IProject project) throws ClientException {
+		if (project == null) {
+			throw new ClientException(401, "project is null.", null);
 		}
 	}
 

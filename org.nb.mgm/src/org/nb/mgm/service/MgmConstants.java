@@ -4,6 +4,7 @@ public class MgmConstants {
 
 	// System errors are belong 1000
 	public static final int ERROR_CODE_WS_CLIENT_NOT_FOUND = 401;
+	public static final int ERROR_CODE_SERVER_ERROR = 500;
 
 	// home dir
 	public static final String CLUSTER_HOME_DIR = "cluster.home.dir";

@@ -9,7 +9,6 @@ import org.origin.common.rest.model.ModelObject;
 
 public class Home extends ModelObject {
 
-	protected String url;
 	protected Map<String, Object> properties = new HashMap<String, Object>();
 
 	protected List<String> joinedMetaSectorIds = new ArrayList<String>();
@@ -37,14 +36,6 @@ public class Home extends ModelObject {
 
 	protected void init() {
 
-	}
-
-	public String getUrl() {
-		return this.url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------

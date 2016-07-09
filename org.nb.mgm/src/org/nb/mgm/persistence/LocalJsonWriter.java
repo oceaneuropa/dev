@@ -2,6 +2,7 @@ package org.nb.mgm.persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,9 @@ import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
+import org.nb.mgm.model.runtime.Software;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.util.DateUtil;
 
 public class LocalJsonWriter {
 
@@ -195,10 +198,10 @@ public class LocalJsonWriter {
 		}
 
 		// "url" attribute
-		String url = home.getUrl();
-		if (url != null) {
-			homeJSON.put("url", url);
-		}
+		// String url = home.getUrl();
+		// if (url != null) {
+		// homeJSON.put("url", url);
+		// }
 
 		// "properties" attribute
 		Map<String, Object> properties = home.getProperties();
@@ -411,57 +414,71 @@ public class LocalJsonWriter {
 		// "homeConfigs" attribute
 		JSONArray homeConfigsArray = new JSONArray();
 		{
-			List<ProjectHome> homeConfigs = project.getHomes();
+			List<ProjectHome> projectHomes = project.getHomes();
 			int homeConfigIndex = 0;
-			for (Iterator<ProjectHome> homeItor = homeConfigs.iterator(); homeItor.hasNext();) {
-				ProjectHome homeConfig = homeItor.next();
-				JSONObject homeConfigJSON = projectHomeConfigToJSON(homeConfig);
-				if (homeConfigJSON != null) {
-					homeConfigsArray.put(homeConfigIndex++, homeConfigJSON);
+			for (Iterator<ProjectHome> projectHomeItor = projectHomes.iterator(); projectHomeItor.hasNext();) {
+				ProjectHome projectHome = projectHomeItor.next();
+				JSONObject projectHomeJSON = projectHomeToJSON(projectHome);
+				if (projectHomeJSON != null) {
+					homeConfigsArray.put(homeConfigIndex++, projectHomeJSON);
 				}
 			}
 		}
 		projectJSON.put("homeConfigs", homeConfigsArray);
 
+		// "softwareConfigs" attribute
+		JSONArray softwareConfigsArray = new JSONArray();
+		{
+			int softwareIndex = 0;
+			for (Iterator<Software> softwareItor = project.getSoftware().iterator(); softwareItor.hasNext();) {
+				Software software = softwareItor.next();
+				JSONObject softwareJSON = softwareToJSON(software);
+				if (softwareJSON != null) {
+					softwareConfigsArray.put(softwareIndex++, softwareJSON);
+				}
+			}
+		}
+		projectJSON.put("softwareConfigs", softwareConfigsArray);
+
 		return projectJSON;
 	}
 
 	/**
-	 * Convert ProjectHomeConfig model to JSONObject
+	 * Convert ProjectHome model to JSONObject
 	 * 
-	 * @param homeConfig
+	 * @param projectHome
 	 * @return
 	 */
-	protected JSONObject projectHomeConfigToJSON(ProjectHome homeConfig) {
-		if (homeConfig == null) {
+	protected JSONObject projectHomeToJSON(ProjectHome projectHome) {
+		if (projectHome == null) {
 			return null;
 		}
 
-		JSONObject homeConfigJSON = new JSONObject();
+		JSONObject projectHomeJSON = new JSONObject();
 
 		// "id" attribute
-		String id = homeConfig.getId();
+		String id = projectHome.getId();
 		if (id != null) {
-			homeConfigJSON.put("id", id);
+			projectHomeJSON.put("id", id);
 		}
 
 		// "name" attribute
-		String name = homeConfig.getName();
+		String name = projectHome.getName();
 		if (name != null) {
-			homeConfigJSON.put("name", name);
+			projectHomeJSON.put("name", name);
 		}
 
 		// "description" attribute
-		String description = homeConfig.getDescription();
+		String description = projectHome.getDescription();
 		if (description != null) {
-			homeConfigJSON.put("description", description);
+			projectHomeJSON.put("description", description);
 		}
 
 		// "homeId" attribute
-		Home home = homeConfig.getRemoteHome();
+		Home home = projectHome.getRemoteHome();
 		if (home != null) {
 			String homeId = home.getId();
-			homeConfigJSON.put("homeId", homeId);
+			projectHomeJSON.put("homeId", homeId);
 		}
 
 		// "properties" attribute
@@ -474,60 +491,128 @@ public class LocalJsonWriter {
 		// "nodeConfigs" attribute
 		JSONArray nodeConfigsArray = new JSONArray();
 		{
-			List<ProjectNode> nodeConfigs = homeConfig.getNodes();
+			List<ProjectNode> projectNodes = projectHome.getNodes();
 			int nodeConfigIndex = 0;
-			for (Iterator<ProjectNode> homeItor = nodeConfigs.iterator(); homeItor.hasNext();) {
-				ProjectNode nodeConfig = homeItor.next();
-				JSONObject nodeConfigJSON = projectNodeConfigToJSON(nodeConfig);
-				if (nodeConfigJSON != null) {
-					nodeConfigsArray.put(nodeConfigIndex++, nodeConfigJSON);
+			for (Iterator<ProjectNode> projectNodeItor = projectNodes.iterator(); projectNodeItor.hasNext();) {
+				ProjectNode projectNode = projectNodeItor.next();
+				JSONObject projectNodeJSON = projectNodeToJSON(projectNode);
+				if (projectNodeJSON != null) {
+					nodeConfigsArray.put(nodeConfigIndex++, projectNodeJSON);
 				}
 			}
 		}
-		homeConfigJSON.put("nodeConfigs", nodeConfigsArray);
+		projectHomeJSON.put("nodeConfigs", nodeConfigsArray);
 
-		return homeConfigJSON;
+		return projectHomeJSON;
 	}
 
 	/**
-	 * Convert ProjectNodeConfig model to JSONObject
+	 * Convert Software model to JSONObject
 	 * 
-	 * @param nodeConfig
+	 * @param software
 	 * @return
 	 */
-	protected JSONObject projectNodeConfigToJSON(ProjectNode nodeConfig) {
-		if (nodeConfig == null) {
+	protected JSONObject softwareToJSON(Software software) {
+		if (software == null) {
 			return null;
 		}
 
-		JSONObject nodeConfigJSON = new JSONObject();
+		JSONObject softwareJSON = new JSONObject();
 
 		// "id" attribute
-		String id = nodeConfig.getId();
+		String id = software.getId();
 		if (id != null) {
-			nodeConfigJSON.put("id", id);
+			softwareJSON.put("id", id);
+		}
+
+		// "type" attribute
+		String type = software.getType();
+		if (type != null) {
+			softwareJSON.put("type", type);
 		}
 
 		// "name" attribute
-		String name = nodeConfig.getName();
+		String name = software.getName();
 		if (name != null) {
-			nodeConfigJSON.put("name", name);
+			softwareJSON.put("name", name);
+		}
+
+		// "version" attribute
+		String version = software.getVersion();
+		if (version != null) {
+			softwareJSON.put("version", version);
 		}
 
 		// "description" attribute
-		String description = nodeConfig.getDescription();
+		String description = software.getDescription();
 		if (description != null) {
-			nodeConfigJSON.put("description", description);
+			softwareJSON.put("description", description);
+		}
+
+		// "length" attribute
+		long length = software.getLength();
+		softwareJSON.put("length", length);
+
+		// "lastModified" attribute
+		Date lastModified = software.getLastModified();
+		if (lastModified != null) {
+			softwareJSON.put("lastModified", DateUtil.toString(lastModified, DateUtil.getJdbcDateFormat()));
+		}
+
+		// "md5" attribute
+		String md5 = software.getMd5();
+		if (md5 != null) {
+			softwareJSON.put("md5", md5);
+		}
+
+		// "localPath" attribute
+		String localPath = software.getLocalPath();
+		if (localPath != null) {
+			softwareJSON.put("localPath", localPath);
+		}
+
+		return softwareJSON;
+	}
+
+	/**
+	 * Convert ProjectNode model to JSONObject
+	 * 
+	 * @param projectNode
+	 * @return
+	 */
+	protected JSONObject projectNodeToJSON(ProjectNode projectNode) {
+		if (projectNode == null) {
+			return null;
+		}
+
+		JSONObject projectNodeJSON = new JSONObject();
+
+		// "id" attribute
+		String id = projectNode.getId();
+		if (id != null) {
+			projectNodeJSON.put("id", id);
+		}
+
+		// "name" attribute
+		String name = projectNode.getName();
+		if (name != null) {
+			projectNodeJSON.put("name", name);
+		}
+
+		// "description" attribute
+		String description = projectNode.getDescription();
+		if (description != null) {
+			projectNodeJSON.put("description", description);
 		}
 
 		// "properties" attribute
-		Map<String, Object> properties = nodeConfig.getProperties();
+		Map<String, Object> properties = projectNode.getProperties();
 		String propertiesString = JSONUtil.toJsonString(properties);
 		if (propertiesString != null) {
-			nodeConfigJSON.put("properties", propertiesString);
+			projectNodeJSON.put("properties", propertiesString);
 		}
 
-		return nodeConfigJSON;
+		return projectNodeJSON;
 	}
 
 }

@@ -47,9 +47,9 @@ public class HomeTest {
 				String machineName = machine.getName();
 				List<IHome> homes = machine.getHomes();
 
-				if (!machineName.startsWith("Machine")) {
-					continue;
-				}
+//				if (!machineName.startsWith("Machine")) {
+//					continue;
+//				}
 
 				System.out.println("Machine '" + machineName + "' (" + machineId + ") homes (size=" + homes.size() + "):");
 
@@ -96,7 +96,7 @@ public class HomeTest {
 					String homeId = home.getId();
 					String homeName = home.getName();
 
-					boolean succeed = mgm.deleteHome(machineId, homeId);
+					boolean succeed = mgm.removeHome(machineId, homeId);
 					if (succeed) {
 						System.out.println("\tHome '" + homeName + "' (" + homeId + ") is deleted.");
 					} else {
@@ -120,8 +120,8 @@ public class HomeTest {
 				String machineName = machine.getName();
 
 				if ("Machine1".equals(machineName)) {
-					IHome home101 = mgm.addHome(machineId, "Home101", "/Users/yayang/tibco_dev/Home101", "Description of Home101");
-					IHome home102 = mgm.addHome(machineId, "Home102", "/Users/yayang/tibco_dev/Home102", "Description of Home102");
+					IHome home101 = mgm.addHome(machineId, "Home101", "Description of Home101");
+					IHome home102 = mgm.addHome(machineId, "Home102", "Description of Home102");
 
 					if (home101 != null) {
 						System.out.println("Home101 is created: " + home101.toString());
@@ -135,8 +135,8 @@ public class HomeTest {
 					}
 
 				} else if ("Machine2".equals(machineName)) {
-					IHome home201 = mgm.addHome(machineId, "Home201", "/Users/yayang/tibco_dev/Home201", "Description of Home201");
-					IHome home202 = mgm.addHome(machineId, "Home202", "/Users/yayang/tibco_dev/Home202", "Description of Home202");
+					IHome home201 = mgm.addHome(machineId, "Home201", "Description of Home201");
+					IHome home202 = mgm.addHome(machineId, "Home202", "Description of Home202");
 
 					if (home201 != null) {
 						System.out.println("Home201 is created: " + home201.toString());
@@ -150,8 +150,8 @@ public class HomeTest {
 					}
 
 				} else if ("Machine3".equals(machineName)) {
-					IHome home301 = mgm.addHome(machineId, "Home301", "/Users/yayang/tibco_dev/Home301", "Description of Home301");
-					IHome home302 = mgm.addHome(machineId, "Home302", "/Users/yayang/tibco_dev/Home302", "Description of Home302");
+					IHome home301 = mgm.addHome(machineId, "Home301", "Description of Home301");
+					IHome home302 = mgm.addHome(machineId, "Home302", "Description of Home302");
 
 					if (home301 != null) {
 						System.out.println("Home301 is created: " + home301.toString());

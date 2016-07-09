@@ -17,6 +17,7 @@ VM arguments:
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dnode.http.host=localhost -Dorg.osgi.service.http.port=9090 -Dnode.http.host=localhost -Dnode.http.port=9090 -Dcluster.persistence.local.dir=C:\cluster\data -Dcluster.home.dir=C:\cluster\home1
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dnode.http.host=localhost -Dorg.osgi.service.http.port=9090 -Dnode.http.host=localhost -Dnode.http.port=9090 -Dcluster.persistence.local.dir=/Users/yayang/cluster/data -Dcluster.home.dir=/Users/yayang/cluster/home1
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true                            -Dorg.osgi.service.http.port=9090                                                  -Dcluster.persistence.local.dir=/Users/yayang/cluster/data -Dcluster.home.dir=/Users/yayang/cluster/home1 -DNB_HOME=/Users/yayang/cluster
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 My Bundles:

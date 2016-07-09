@@ -2,6 +2,8 @@ package org.nb.mgm.service.impl;
 
 import static org.nb.mgm.service.MgmConstants.ERROR_CODE_EMPTY_CLUSTER_ROOT;
 
+import java.io.InputStream;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +19,7 @@ import org.nb.mgm.handler.MetaSpaceHandler;
 import org.nb.mgm.handler.ProjectHandler;
 import org.nb.mgm.handler.ProjectHomeHandler;
 import org.nb.mgm.handler.ProjectNodeHandler;
+import org.nb.mgm.handler.ProjectSoftwareHandler;
 import org.nb.mgm.model.query.ArtifactQuery;
 import org.nb.mgm.model.query.HomeQuery;
 import org.nb.mgm.model.query.MachineQuery;
@@ -31,6 +34,7 @@ import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
+import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.persistence.MgmPersistenceAdapter;
 import org.nb.mgm.persistence.MgmPersistenceFactory;
 import org.nb.mgm.service.ManagementService;
@@ -61,6 +65,7 @@ public class ManagementServiceImpl implements ManagementService {
 	protected ProjectHandler projectHandler;
 	protected ProjectHomeHandler projectHomeHandler;
 	protected ProjectNodeHandler projectNodeHandler;
+	protected ProjectSoftwareHandler projectSoftwareHandler;
 
 	// read/write lock for data handlers
 	protected ReadWriteLock machineRWLock = new ReentrantReadWriteLock();
@@ -71,8 +76,11 @@ public class ManagementServiceImpl implements ManagementService {
 	protected ReadWriteLock projectRWLock = new ReentrantReadWriteLock();
 	protected ReadWriteLock projectHomeRWLock = new ReentrantReadWriteLock();
 	protected ReadWriteLock projectNodeRWLock = new ReentrantReadWriteLock();
+	protected ReadWriteLock projectSoftwareRWLock = new ReentrantReadWriteLock();
 
 	protected boolean autoSave = false;
+
+	protected Map<Object, Object> props;
 
 	/**
 	 * 
@@ -82,13 +90,29 @@ public class ManagementServiceImpl implements ManagementService {
 		this.bundleContext = bundleContext;
 
 		// load properties
-		Map<Object, Object> props = new Hashtable<Object, Object>();
+		this.props = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_TYPE);
 		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
 		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_AUTOSAVE);
 
 		// get persistence
 		this.persistenceAdapter = MgmPersistenceFactory.createInstance(props);
+	}
+
+	public String getPersistenceType() {
+		String persistenceType = null;
+		if (this.props.get(MgmPersistenceAdapter.PERSISTENCE_TYPE) instanceof String) {
+			persistenceType = (String) this.props.get(MgmPersistenceAdapter.PERSISTENCE_TYPE);
+		}
+		return persistenceType;
+	}
+
+	public String getLocalDirPath() {
+		String localDirPath = null;
+		if (this.props.get(MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR) instanceof String) {
+			localDirPath = (String) this.props.get(MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
+		}
+		return localDirPath;
 	}
 
 	/**
@@ -120,6 +144,7 @@ public class ManagementServiceImpl implements ManagementService {
 		this.projectHandler = new ProjectHandler(this);
 		this.projectHomeHandler = new ProjectHomeHandler(this);
 		this.projectNodeHandler = new ProjectNodeHandler(this);
+		this.projectSoftwareHandler = new ProjectSoftwareHandler(this);
 
 		// 3. Register as a service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -161,11 +186,6 @@ public class ManagementServiceImpl implements ManagementService {
 	// ------------------------------------------------------------------------------------------
 	// Machine
 	// ------------------------------------------------------------------------------------------
-	/**
-	 * Get all Machines.
-	 * 
-	 * @return
-	 */
 	@Override
 	public List<Machine> getMachines() throws MgmException {
 		this.machineRWLock.readLock().lock();
@@ -176,12 +196,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get Machines by query.
-	 * 
-	 * @param query
-	 * @return
-	 */
 	@Override
 	public List<Machine> getMachines(MachineQuery query) throws MgmException {
 		this.machineRWLock.readLock().lock();
@@ -192,13 +206,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get Machine information by Id.
-	 * 
-	 * @param machineId
-	 * @return
-	 * @throws MgmException
-	 */
 	@Override
 	public Machine getMachine(String machineId) throws MgmException {
 		this.machineRWLock.readLock().lock();
@@ -209,31 +216,20 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Add a Machine to the cluster.
-	 * 
-	 * @param machine
-	 * @throws MgmException
-	 */
 	@Override
-	public void addMachine(Machine machine) throws MgmException {
+	public Machine addMachine(Machine newMachineRequest) throws MgmException {
 		this.machineRWLock.writeLock().lock();
 		try {
-			this.machineHandler.addMachine(machine);
+			Machine newMachine = this.machineHandler.addMachine(newMachineRequest);
 			if (isAutoSave()) {
 				save();
 			}
+			return newMachine;
 		} finally {
 			this.machineRWLock.writeLock().unlock();
 		}
 	}
 
-	/**
-	 * Update Machine information.
-	 * 
-	 * @param machine
-	 * @throws MgmException
-	 */
 	@Override
 	public void updateMachine(Machine machine) throws MgmException {
 		this.machineRWLock.writeLock().lock();
@@ -247,12 +243,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Delete a Machine from the cluster.
-	 * 
-	 * @param machineId
-	 * @throws MgmException
-	 */
 	@Override
 	public void deleteMachine(String machineId) throws MgmException {
 		this.machineRWLock.writeLock().lock();
@@ -266,13 +256,7 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get Machine properties.
-	 * 
-	 * @param machineId
-	 * @return
-	 * @throws MgmException
-	 */
+	@Override
 	public Map<String, Object> getMachineProperties(String machineId) throws MgmException {
 		this.machineRWLock.readLock().lock();
 		try {
@@ -282,13 +266,7 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Set Machine properties.
-	 * 
-	 * @param machineId
-	 * @param properties
-	 * @throws MgmException
-	 */
+	@Override
 	public boolean setMachineProperties(String machineId, Map<String, Object> properties) throws MgmException {
 		this.machineRWLock.writeLock().lock();
 		try {
@@ -302,13 +280,7 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Remove Machine properties.
-	 * 
-	 * @param machineId
-	 * @param propNames
-	 * @throws MgmException
-	 */
+	@Override
 	public boolean removeMachineProperties(String machineId, List<String> propNames) throws MgmException {
 		this.machineRWLock.writeLock().lock();
 		try {
@@ -325,12 +297,6 @@ public class ManagementServiceImpl implements ManagementService {
 	// ------------------------------------------------------------------------------------------
 	// Home
 	// ------------------------------------------------------------------------------------------
-	/**
-	 * Get all Homes in a Machine.
-	 * 
-	 * @param machineId
-	 * @return
-	 */
 	@Override
 	public List<Home> getHomes(String machineId) throws MgmException {
 		this.homeRWLock.readLock().lock();
@@ -341,13 +307,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get Homes in a Machine by query.
-	 * 
-	 * @param machineId
-	 * @param query
-	 * @return
-	 */
 	@Override
 	public List<Home> getHomes(String machineId, HomeQuery query) throws MgmException {
 		this.homeRWLock.readLock().lock();
@@ -358,12 +317,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get Home information by Id.
-	 * 
-	 * @param homeId
-	 * @return
-	 */
 	@Override
 	public Home getHome(String homeId) throws MgmException {
 		this.homeRWLock.readLock().lock();
@@ -374,32 +327,20 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Add a Home to a Machine.
-	 * 
-	 * @param machineId
-	 * @param home
-	 * @throws MgmException
-	 */
 	@Override
-	public void addHome(String machineId, Home home) throws MgmException {
+	public Home addHome(String machineId, Home newHomeRequest) throws MgmException {
 		this.homeRWLock.writeLock().lock();
 		try {
-			this.homeHandler.addHome(machineId, home);
+			Home newHome = this.homeHandler.addHome(machineId, newHomeRequest);
 			if (isAutoSave()) {
 				save();
 			}
+			return newHome;
 		} finally {
 			this.homeRWLock.writeLock().unlock();
 		}
 	}
 
-	/**
-	 * Update Home information.
-	 * 
-	 * @param home
-	 * @throws MgmException
-	 */
 	@Override
 	public void updateHome(Home home) throws MgmException {
 		this.homeRWLock.writeLock().lock();
@@ -413,12 +354,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Delete a Home from a Machine.
-	 * 
-	 * @param homeId
-	 * @throws MgmException
-	 */
 	@Override
 	public void deleteHome(String homeId) throws MgmException {
 		this.homeRWLock.writeLock().lock();
@@ -447,13 +382,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get Home properties.
-	 * 
-	 * @param homeId
-	 * @return
-	 * @throws MgmException
-	 */
 	@Override
 	public Map<String, Object> getHomeProperties(String homeId) throws MgmException {
 		this.homeRWLock.readLock().lock();
@@ -464,13 +392,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Set Home properties.
-	 * 
-	 * @param homeId
-	 * @param properties
-	 * @throws MgmException
-	 */
 	@Override
 	public boolean setHomeProperties(String homeId, Map<String, Object> properties) throws MgmException {
 		this.homeRWLock.writeLock().lock();
@@ -485,13 +406,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Remove Home properties.
-	 * 
-	 * @param homeId
-	 * @param propNames
-	 * @throws MgmException
-	 */
 	@Override
 	public boolean removeHomeProperties(String homeId, List<String> propNames) throws MgmException {
 		this.homeRWLock.writeLock().lock();
@@ -509,11 +423,6 @@ public class ManagementServiceImpl implements ManagementService {
 	// ------------------------------------------------------------------------------------------
 	// MetaSector
 	// ------------------------------------------------------------------------------------------
-	/**
-	 * Get all MetaSectors.
-	 * 
-	 * @return
-	 */
 	@Override
 	public List<MetaSector> getMetaSectors() throws MgmException {
 		this.metaSectorRWLock.readLock().lock();
@@ -524,12 +433,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get MetaSectors by query.
-	 * 
-	 * @param query
-	 * @return
-	 */
 	@Override
 	public List<MetaSector> getMetaSectors(MetaSectorQuery query) throws MgmException {
 		this.metaSectorRWLock.readLock().lock();
@@ -540,13 +443,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get MetaSector information by Id.
-	 * 
-	 * @param metaSectorId
-	 * @return
-	 * @throws MgmException
-	 */
 	@Override
 	public MetaSector getMetaSector(String metaSectorId) throws MgmException {
 		this.metaSectorRWLock.readLock().lock();
@@ -557,12 +453,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Add a MetaSector to the cluster.
-	 * 
-	 * @param metaSector
-	 * @throws MgmException
-	 */
 	@Override
 	public void addMetaSector(MetaSector metaSector) throws MgmException {
 		this.metaSectorRWLock.writeLock().lock();
@@ -576,12 +466,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Update MetaSector information.
-	 * 
-	 * @param metaSector
-	 * @throws MgmException
-	 */
 	@Override
 	public void updateMetaSector(MetaSector metaSector) throws MgmException {
 		this.metaSectorRWLock.writeLock().lock();
@@ -595,12 +479,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Delete a MetaSector from the cluster.
-	 * 
-	 * @param metaSectorId
-	 * @throws MgmException
-	 */
 	@Override
 	public void deleteMetaSector(String metaSectorId) throws MgmException {
 		this.metaSectorRWLock.writeLock().lock();
@@ -617,12 +495,6 @@ public class ManagementServiceImpl implements ManagementService {
 	// ------------------------------------------------------------------------------------------
 	// MetaSpace
 	// ------------------------------------------------------------------------------------------
-	/**
-	 * Get all MetaSpaces in a MetaSector.
-	 * 
-	 * @param metaSectorId
-	 * @return
-	 */
 	@Override
 	public List<MetaSpace> getMetaSpaces(String metaSectorId) throws MgmException {
 		this.metaSpaceRWLock.readLock().lock();
@@ -633,13 +505,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get MetaSpaces in a MetaSector by query.
-	 * 
-	 * @param metaSectorId
-	 * @param query
-	 * @return
-	 */
 	@Override
 	public List<MetaSpace> getMetaSpaces(String metaSectorId, MetaSpaceQuery query) throws MgmException {
 		this.metaSpaceRWLock.readLock().lock();
@@ -650,12 +515,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get MetaSpace information by Id.
-	 * 
-	 * @param metaSpaceId
-	 * @return
-	 */
 	@Override
 	public MetaSpace getMetaSpace(String metaSpaceId) throws MgmException {
 		this.metaSpaceRWLock.readLock().lock();
@@ -666,13 +525,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Add a MetaSpace to a MetaSector.
-	 * 
-	 * @param metaSectorId
-	 * @param metaSpace
-	 * @throws MgmException
-	 */
 	@Override
 	public void addMetaSpace(String metaSectorId, MetaSpace metaSpace) throws MgmException {
 		this.metaSpaceRWLock.writeLock().lock();
@@ -686,12 +538,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Update MetaSpace information.
-	 * 
-	 * @param metaSpace
-	 * @throws MgmException
-	 */
 	@Override
 	public void updateMetaSpace(MetaSpace metaSpace) throws MgmException {
 		this.metaSpaceRWLock.writeLock().lock();
@@ -705,12 +551,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Delete a MetaSpace from a MetaSector.
-	 * 
-	 * @param metaSpaceId
-	 * @throws MgmException
-	 */
 	@Override
 	public void deleteMetaSpace(String metaSpaceId) throws MgmException {
 		this.metaSpaceRWLock.writeLock().lock();
@@ -727,12 +567,6 @@ public class ManagementServiceImpl implements ManagementService {
 	// ------------------------------------------------------------------------------------------
 	// Artifact
 	// ------------------------------------------------------------------------------------------
-	/**
-	 * Get all Artifacts in a MetaSector.
-	 * 
-	 * @param metaSectorId
-	 * @return
-	 */
 	@Override
 	public List<Artifact> getArtifacts(String metaSectorId) throws MgmException {
 		this.artifactRWLock.readLock().lock();
@@ -743,13 +577,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get Artifacts in a MetaSector by query.
-	 * 
-	 * @param metaSectorId
-	 * @param query
-	 * @return
-	 */
 	@Override
 	public List<Artifact> getArtifacts(String metaSectorId, ArtifactQuery query) throws MgmException {
 		this.artifactRWLock.readLock().lock();
@@ -760,12 +587,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Get Artifact information by Id.
-	 * 
-	 * @param artifactId
-	 * @return
-	 */
 	@Override
 	public Artifact getArtifact(String artifactId) throws MgmException {
 		this.artifactRWLock.readLock().lock();
@@ -776,13 +597,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Add a Artifact to a MetaSector.
-	 * 
-	 * @param metaSectorId
-	 * @param artifact
-	 * @throws MgmException
-	 */
 	@Override
 	public void addArtifact(String metaSectorId, Artifact artifact) throws MgmException {
 		this.artifactRWLock.writeLock().lock();
@@ -796,12 +610,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Update Artifact information.
-	 * 
-	 * @param artifact
-	 * @throws MgmException
-	 */
 	@Override
 	public void updateArtifact(Artifact artifact) throws MgmException {
 		this.artifactRWLock.writeLock().lock();
@@ -815,12 +623,6 @@ public class ManagementServiceImpl implements ManagementService {
 		}
 	}
 
-	/**
-	 * Delete a Artifact from a MetaSector.
-	 * 
-	 * @param artifactId
-	 * @throws MgmException
-	 */
 	@Override
 	public void deleteArtifact(String artifactId) throws MgmException {
 		this.artifactRWLock.writeLock().lock();
@@ -858,13 +660,14 @@ public class ManagementServiceImpl implements ManagementService {
 	}
 
 	@Override
-	public void addProject(Project project) throws MgmException {
+	public Project addProject(Project newProjectRequest) throws MgmException {
 		this.projectRWLock.writeLock().lock();
 		try {
-			this.projectHandler.addProject(project);
+			Project newProject = this.projectHandler.addProject(newProjectRequest);
 			if (isAutoSave()) {
 				save();
 			}
+			return newProject;
 		} finally {
 			this.projectRWLock.writeLock().unlock();
 		}
@@ -921,13 +724,14 @@ public class ManagementServiceImpl implements ManagementService {
 	}
 
 	@Override
-	public void addProjectHome(String projectId, ProjectHome projectHome) throws MgmException {
+	public ProjectHome addProjectHome(String projectId, ProjectHome projectHome) throws MgmException {
 		this.projectHomeRWLock.writeLock().lock();
 		try {
-			this.projectHomeHandler.addProjectHome(projectId, projectHome);
+			ProjectHome newProjectHome = this.projectHomeHandler.addProjectHome(projectId, projectHome);
 			if (isAutoSave()) {
 				save();
 			}
+			return newProjectHome;
 		} finally {
 			this.projectHomeRWLock.writeLock().unlock();
 		}
@@ -993,13 +797,14 @@ public class ManagementServiceImpl implements ManagementService {
 	}
 
 	@Override
-	public void addProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException {
+	public ProjectNode addProjectNode(String projectId, String projectHomeId, ProjectNode newProjectNodeRequest) throws MgmException {
 		this.projectNodeRWLock.writeLock().lock();
 		try {
-			this.projectNodeHandler.addProjectNode(projectId, projectHomeId, projectNode);
+			ProjectNode newProjectNode = this.projectNodeHandler.addProjectNode(projectId, projectHomeId, newProjectNodeRequest);
 			if (isAutoSave()) {
 				save();
 			}
+			return newProjectNode;
 		} finally {
 			this.projectNodeRWLock.writeLock().unlock();
 		}
@@ -1038,6 +843,98 @@ public class ManagementServiceImpl implements ManagementService {
 			return succeed;
 		} finally {
 			this.projectNodeRWLock.writeLock().unlock();
+		}
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Project Software
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public List<Software> getProjectSoftware(String projectId) throws MgmException {
+		this.projectSoftwareRWLock.readLock().lock();
+		try {
+			return this.projectSoftwareHandler.getProjectSoftware(projectId);
+		} finally {
+			this.projectSoftwareRWLock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public Software getProjectSoftware(String projectId, String softwareId) throws MgmException {
+		this.projectSoftwareRWLock.readLock().lock();
+		try {
+			return this.projectSoftwareHandler.getProjectSoftware(projectId, softwareId);
+		} finally {
+			this.projectSoftwareRWLock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public InputStream getProjectSoftwareContent(String projectId, String softwareId) throws MgmException {
+		this.projectSoftwareRWLock.readLock().lock();
+		try {
+			return this.projectSoftwareHandler.getProjectSoftwareContent(projectId, softwareId);
+		} finally {
+			this.projectSoftwareRWLock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public boolean setProjectSoftwareContent(String projectId, String softwareId, String fileName, long length, Date lastModified, InputStream input) throws MgmException {
+		this.projectSoftwareRWLock.writeLock().lock();
+		try {
+			boolean succeed = this.projectSoftwareHandler.setProjectSoftwareContent(projectId, softwareId, fileName, length, lastModified, input);
+			if (isAutoSave()) {
+				save();
+			}
+			return succeed;
+		} finally {
+			this.projectSoftwareRWLock.writeLock().unlock();
+		}
+	}
+
+	@Override
+	public Software addProjectSoftware(String projectId, Software newSoftwareRequest) throws MgmException {
+		this.projectSoftwareRWLock.writeLock().lock();
+		try {
+			Software newSoftware = this.projectSoftwareHandler.addProjectSoftware(projectId, newSoftwareRequest);
+			if (isAutoSave()) {
+				save();
+			}
+			return newSoftware;
+		} finally {
+			this.projectSoftwareRWLock.writeLock().unlock();
+		}
+	}
+
+	@Override
+	public void updateProjectSoftware(String projectId, Software software) throws MgmException {
+		this.projectSoftwareRWLock.writeLock().lock();
+		try {
+			this.projectSoftwareHandler.updateProjectSoftware(projectId, software);
+			if (isAutoSave()) {
+				save();
+			}
+		} finally {
+			this.projectSoftwareRWLock.writeLock().unlock();
+		}
+	}
+
+	@Override
+	public boolean deleteProjectSoftware(String projectId, String softwareId) throws MgmException {
+		this.projectSoftwareRWLock.writeLock().lock();
+		try {
+			// TODO:
+			// 1. Remove the software from ProjectHome.
+			// 2. Undeploy the woftware from remote Home.
+
+			boolean succeed = this.projectSoftwareHandler.deleteProjectSoftware(projectId, softwareId);
+			if (succeed && isAutoSave()) {
+				save();
+			}
+			return succeed;
+		} finally {
+			this.projectSoftwareRWLock.writeLock().unlock();
 		}
 	}
 

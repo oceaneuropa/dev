@@ -3,10 +3,10 @@ package org.nb.home.client.api;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface HomeManagement extends IAdaptable {
+public interface IHomeControl extends IAdaptable {
 
 	/**
-	 * Ping the Home management server.
+	 * Ping the Home.
 	 * 
 	 * @return
 	 * @throws ClientException

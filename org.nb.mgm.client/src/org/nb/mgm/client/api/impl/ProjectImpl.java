@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
+import org.nb.mgm.client.api.ISoftware;
 import org.nb.mgm.client.api.Management;
 import org.nb.mgm.client.ws.ProjectClient;
 import org.nb.mgm.model.dto.ProjectDTO;
@@ -55,6 +56,8 @@ public class ProjectImpl implements IProject {
 
 	@Override
 	public boolean update() throws ClientException {
+		checkManagement(this.management);
+
 		ProjectClient projectClient = this.management.getAdapter(ProjectClient.class);
 		checkClient(projectClient);
 
@@ -130,11 +133,40 @@ public class ProjectImpl implements IProject {
 	}
 
 	// ------------------------------------------------------------------------------------------
+	// ProjectSoftware
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public List<ISoftware> getProjectSoftware() throws ClientException {
+		return this.management.getProjectSoftwareList(getId());
+	}
+
+	@Override
+	public ISoftware getProjectSoftware(String softwareId) throws ClientException {
+		return this.management.getProjectSoftware(getId(), softwareId);
+	}
+
+	@Override
+	public ISoftware addProjectSoftware(String type, String name, String version, String description) throws ClientException {
+		return this.management.addProjectSoftware(getId(), type, name, version, description);
+	}
+
+	@Override
+	public boolean deleteProjectSoftware(String softwareId) throws ClientException {
+		return this.management.deleteProjectSoftware(getId(), softwareId);
+	}
+
+	// ------------------------------------------------------------------------------------------
 	// Check WS Client
 	// ------------------------------------------------------------------------------------------
 	protected void checkClient(ProjectClient projectClient) throws ClientException {
 		if (projectClient == null) {
 			throw new ClientException(401, "ProjectClient is not found.", null);
+		}
+	}
+
+	protected void checkManagement(Management management) throws ClientException {
+		if (management == null) {
+			throw new ClientException(401, "management is null.", null);
 		}
 	}
 

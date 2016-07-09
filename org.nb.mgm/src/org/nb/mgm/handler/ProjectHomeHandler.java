@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.nb.mgm.exception.MgmException;
-import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.service.ManagementService;
@@ -26,10 +25,6 @@ public class ProjectHomeHandler {
 	 */
 	public ProjectHomeHandler(ManagementService mgmService) {
 		this.mgmService = mgmService;
-	}
-
-	protected ClusterRoot getRoot() {
-		return this.mgmService.getRoot();
 	}
 
 	/**
@@ -56,7 +51,7 @@ public class ProjectHomeHandler {
 	}
 
 	/**
-	 * Get ProjectHome information by Id.
+	 * Get a ProjectHome.
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -89,37 +84,37 @@ public class ProjectHomeHandler {
 	 * Add a ProjectHome to a Project.
 	 * 
 	 * @param projectId
-	 * @param projectHome
+	 * @param newProjectHomeRequest
 	 */
-	public void addProjectHome(String projectId, ProjectHome projectHome) throws MgmException {
+	public ProjectHome addProjectHome(String projectId, ProjectHome newProjectHomeRequest) throws MgmException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 
 		// Throw exception - empty ProjectHome
-		checkProjectHome(projectHome);
+		checkProjectHome(newProjectHomeRequest);
 
 		// Container Project must exist
 		Project project = this.mgmService.getProject(projectId);
 		checkContainerProject(project);
 
 		// Generate unique ProjectHome Id
-		if (projectHome.getId() == null || projectHome.getId().isEmpty()) {
-			projectHome.setId(UUID.randomUUID().toString());
+		if (newProjectHomeRequest.getId() == null || newProjectHomeRequest.getId().isEmpty()) {
+			newProjectHomeRequest.setId(UUID.randomUUID().toString());
 		}
 
 		// Throw exception - empty ProjectHome name
 		// if (projectHome.getName() == null || projectHome.getName().isEmpty()) {
 		// throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "ProjectHome name cannot be empty.", null);
 		// }
-		if (projectHome.getName() == null || projectHome.getName().isEmpty()) {
-			projectHome.setName("Home");
+		if (newProjectHomeRequest.getName() == null || newProjectHomeRequest.getName().isEmpty()) {
+			newProjectHomeRequest.setName("Home");
 		}
 
 		// Throw exception - ProjectHome with same Id or name exists
 		for (Iterator<ProjectHome> projectHomeItor = project.getHomes().iterator(); projectHomeItor.hasNext();) {
 			ProjectHome currProjectHome = projectHomeItor.next();
 
-			if (projectHome.getId().equals(currProjectHome.getId())) {
+			if (newProjectHomeRequest.getId().equals(currProjectHome.getId())) {
 				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "ProjectHome with same Id already exists.", null);
 			}
 			// if (projectHome.getName().equals(currProjectHome.getName())) {
@@ -128,7 +123,7 @@ public class ProjectHomeHandler {
 		}
 
 		// Generate unique ProjectHome name
-		String name = projectHome.getName();
+		String name = newProjectHomeRequest.getName();
 		String uniqueName = name;
 		int index = 1;
 		while (true) {
@@ -148,48 +143,50 @@ public class ProjectHomeHandler {
 			}
 		}
 		if (!uniqueName.equals(name)) {
-			projectHome.setName(uniqueName);
+			newProjectHomeRequest.setName(uniqueName);
 		}
 
-		project.addHome(projectHome);
+		project.addHome(newProjectHomeRequest);
+
+		return newProjectHomeRequest;
 	}
 
 	/**
-	 * Update ProjectHome information.
+	 * Update ProjectHome.
 	 * 
 	 * @param projectId
-	 * @param projectHome
+	 * @param updateProjectHomeRequest
 	 */
-	public void updateProjectHome(String projectId, ProjectHome projectHome) throws MgmException {
+	public void updateProjectHome(String projectId, ProjectHome updateProjectHomeRequest) throws MgmException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 
 		// Throw exception - empty ProjectHome
-		checkProjectHome(projectHome);
+		checkProjectHome(updateProjectHomeRequest);
 
 		// Find ProjectHome by Id
-		ProjectHome projectHomeToUpdate = getProjectHome(projectId, projectHome.getId());
+		ProjectHome projectHomeToUpdate = getProjectHome(projectId, updateProjectHomeRequest.getId());
 
 		// Throw exception - ProjectHome not found
 		checkProjectHomeNotFound(projectHomeToUpdate);
 
 		// No need to update when they are the same object.
-		if (projectHomeToUpdate == projectHome) {
+		if (projectHomeToUpdate == updateProjectHomeRequest) {
 			return;
 		}
 
-		// ProjectHome name is changed - Update ProjectHome name
-		if (Util.compare(projectHomeToUpdate.getName(), projectHome.getName()) != 0) {
-			projectHomeToUpdate.setName(projectHome.getName());
+		// Update name
+		if (Util.compare(projectHomeToUpdate.getName(), updateProjectHomeRequest.getName()) != 0) {
+			projectHomeToUpdate.setName(updateProjectHomeRequest.getName());
 		}
-		// ProjectHome description is changed - Update ProjectHome description
-		if (Util.compare(projectHomeToUpdate.getDescription(), projectHome.getDescription()) != 0) {
-			projectHomeToUpdate.setDescription(projectHome.getDescription());
+		// Update description
+		if (Util.compare(projectHomeToUpdate.getDescription(), updateProjectHomeRequest.getDescription()) != 0) {
+			projectHomeToUpdate.setDescription(updateProjectHomeRequest.getDescription());
 		}
 	}
 
 	/**
-	 * Delete ProjectHome by projectId and projectHomeId.
+	 * Delete ProjectHome from Project.
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -199,18 +196,16 @@ public class ProjectHomeHandler {
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
 
-		// Find ProjectHome by Id
-		ProjectHome projectHomeToDelete = getProjectHome(projectId, projectHomeId);
+		// Find Project
+		Project project = this.mgmService.getProject(projectId);
+		checkContainerProject(project);
 
-		// Throw exception - ProjectHome not found
+		// Find ProjectHome
+		ProjectHome projectHomeToDelete = getProjectHome(projectId, projectHomeId);
 		checkProjectHomeNotFound(projectHomeToDelete);
 
 		// Delete ProjectHome from Project.
-		Project project = projectHomeToDelete.getProject();
-		if (project != null) {
-			return project.deleteHome(projectHomeToDelete);
-		}
-		return false;
+		return project.deleteHome(projectHomeToDelete);
 	}
 
 	protected void checkProjectId(String projectId) throws MgmException {

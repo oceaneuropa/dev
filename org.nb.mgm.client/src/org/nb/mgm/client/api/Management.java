@@ -21,7 +21,7 @@ public interface Management extends IAdaptable {
 	public List<IMachine> getMachines() throws ClientException;
 
 	/**
-	 * Get Machines by query properties.
+	 * Get Machines.
 	 * 
 	 * @param properties
 	 *            supported keys are: "name", "ipaddress", "filter".
@@ -31,7 +31,7 @@ public interface Management extends IAdaptable {
 	public List<IMachine> getMachines(Map<String, ?> properties) throws ClientException;
 
 	/**
-	 * Get Machine.
+	 * Get a Machine.
 	 * 
 	 * @param machineId
 	 * @return
@@ -51,12 +51,12 @@ public interface Management extends IAdaptable {
 	public IMachine addMachine(String name, String ipAddress, String description) throws ClientException;
 
 	/**
-	 * Delete a Machine.
+	 * Remove a Machine.
 	 * 
 	 * @param machineId
 	 * @throws ClientException
 	 */
-	public boolean deleteMachine(String machineId) throws ClientException;
+	public boolean removeMachine(String machineId) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Home
@@ -82,7 +82,7 @@ public interface Management extends IAdaptable {
 	public List<IHome> getHomes(String machineId, Properties properties) throws ClientException;
 
 	/**
-	 * Get Home.
+	 * Get a Home.
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -92,7 +92,7 @@ public interface Management extends IAdaptable {
 	public IHome getHome(String machineId, String homeId) throws ClientException;
 
 	/**
-	 * Get Home.
+	 * Get a Home.
 	 * 
 	 * @param homeId
 	 * @return
@@ -105,31 +105,30 @@ public interface Management extends IAdaptable {
 	 * 
 	 * @param machineId
 	 * @param name
-	 * @param url
 	 * @param description
 	 * @return
 	 * @throws ClientException
 	 */
-	public IHome addHome(String machineId, String name, String url, String description) throws ClientException;
+	public IHome addHome(String machineId, String name, String description) throws ClientException;
 
 	/**
-	 * Delete a Home from a Machine.
+	 * Remove a Home from a Machine.
 	 * 
 	 * @param machineId
 	 * @param homeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean deleteHome(String machineId, String homeId) throws ClientException;
+	public boolean removeHome(String machineId, String homeId) throws ClientException;
 
 	/**
-	 * Delete a Home from a Machine.
+	 * Remove a Home from a Machine.
 	 * 
 	 * @param homeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean deleteHome(String homeId) throws ClientException;
+	public boolean removeHome(String homeId) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// MetaSector
@@ -154,7 +153,7 @@ public interface Management extends IAdaptable {
 	public List<IMetaSector> getMetaSectors(Properties properties) throws ClientException;
 
 	/**
-	 * Get MetaSector.
+	 * Get a MetaSector.
 	 * 
 	 * @param metaSectorId
 	 * @return
@@ -205,7 +204,7 @@ public interface Management extends IAdaptable {
 	public List<IMetaSpace> getMetaSpaces(String metaSectorId, Properties properties) throws ClientException;
 
 	/**
-	 * Get MetaSpace from a MetaSector.
+	 * Get a MetaSpace.
 	 * 
 	 * @param metaSectorId
 	 * @param metaSpaceId
@@ -216,7 +215,7 @@ public interface Management extends IAdaptable {
 	public IMetaSpace getMetaSpace(String metaSectorId, String metaSpaceId) throws ClientException;
 
 	/**
-	 * Get MetaSpace from a MetaSector.
+	 * Get a MetaSpace.
 	 * 
 	 * @param metaSpaceId
 	 * 
@@ -261,7 +260,7 @@ public interface Management extends IAdaptable {
 	// Project
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get all Projects.
+	 * Get Projects.
 	 * 
 	 * @return
 	 * @throws ClientException
@@ -269,7 +268,7 @@ public interface Management extends IAdaptable {
 	public List<IProject> getProjects() throws ClientException;
 
 	/**
-	 * Get Project by Id.
+	 * Get a Project.
 	 * 
 	 * @param projectId
 	 * @return
@@ -297,10 +296,10 @@ public interface Management extends IAdaptable {
 	public boolean deleteProject(String projectId) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
-	// ProjectHomeConfig
+	// ProjectHome
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get ProjectHomes from a Project.
+	 * Get ProjectHomes in a Project.
 	 * 
 	 * @param projectId
 	 * @return
@@ -309,7 +308,7 @@ public interface Management extends IAdaptable {
 	public List<IProjectHome> getProjectHomes(String projectId) throws ClientException;
 
 	/**
-	 * Get ProjectHome.
+	 * Get a ProjectHome.
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -319,7 +318,7 @@ public interface Management extends IAdaptable {
 	public IProjectHome getProjectHome(String projectId, String projectHomeId) throws ClientException;
 
 	/**
-	 * Get ProjectHome.
+	 * Get a ProjectHome.
 	 * 
 	 * @param projectHomeId
 	 * @return
@@ -339,7 +338,7 @@ public interface Management extends IAdaptable {
 	public IProjectHome addProjectHome(String projectId, String name, String description) throws ClientException;
 
 	/**
-	 * Delete a ProjectHome from a Project by projectId and projectHomeId.
+	 * Delete a ProjectHome from a Project.
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -349,7 +348,7 @@ public interface Management extends IAdaptable {
 	public boolean deleteProjectHome(String projectId, String projectHomeId) throws ClientException;
 
 	/**
-	 * Delete a ProjectHome from a Project by projectHomeId.
+	 * Delete a ProjectHome from a Project.
 	 * 
 	 * @param projectHomeId
 	 * @return
@@ -361,7 +360,7 @@ public interface Management extends IAdaptable {
 	// ProjectNode
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get ProjectNodes from a ProjectHome.
+	 * Get ProjectNodes in a ProjectHome.
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -371,7 +370,7 @@ public interface Management extends IAdaptable {
 	public List<IProjectNode> getProjectNodes(String projectId, String projectHomeId) throws ClientException;
 
 	/**
-	 * Get ProjectNode.
+	 * Get a ProjectNode.
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -382,7 +381,7 @@ public interface Management extends IAdaptable {
 	public IProjectNode getProjectNode(String projectId, String projectHomeId, String projectNodeId) throws ClientException;
 
 	/**
-	 * Get ProjectNode.
+	 * Get a ProjectNode.
 	 * 
 	 * @param projectNodeId
 	 * @return
@@ -395,12 +394,13 @@ public interface Management extends IAdaptable {
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
+	 * @param projectNodeId
 	 * @param name
 	 * @param description
 	 * @return
 	 * @throws ClientException
 	 */
-	public IProjectNode addProjectNode(String projectId, String projectHomeId, String name, String description) throws ClientException;
+	public IProjectNode addProjectNode(String projectId, String projectHomeId, String projectNodeId, String name, String description) throws ClientException;
 
 	/**
 	 * Delete a ProjectNode from a ProjectHome.
@@ -414,6 +414,7 @@ public interface Management extends IAdaptable {
 	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws ClientException;
 
 	/**
+	 * Delete a ProjectNode from a ProjectHome.
 	 * 
 	 * @param projectNodeId
 	 * @return
@@ -424,5 +425,64 @@ public interface Management extends IAdaptable {
 	// ------------------------------------------------------------------------------------------
 	// ProjectSoftware
 	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get Software in a Project.
+	 * 
+	 * @param projectId
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<ISoftware> getProjectSoftwareList(String projectId) throws ClientException;
+
+	/**
+	 * Get Software.
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	public ISoftware getProjectSoftware(String projectId, String softwareId) throws ClientException;
+
+	/**
+	 * Get Software.
+	 * 
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	public ISoftware getProjectSoftware(String softwareId) throws ClientException;
+
+	/**
+	 * Add Software to a Project.
+	 * 
+	 * @param projectId
+	 * @param type
+	 * @param name
+	 * @param version
+	 * @param description
+	 * @return
+	 * @throws ClientException
+	 */
+	public ISoftware addProjectSoftware(String projectId, String type, String name, String version, String description) throws ClientException;
+
+	/**
+	 * Delete Software from a Project.
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteProjectSoftware(String projectId, String softwareId) throws ClientException;
+
+	/**
+	 * Delete Software from a Project.
+	 * 
+	 * @param softewareId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteProjectSoftware(String softewareId) throws ClientException;
 
 }

@@ -40,7 +40,7 @@ public class MachineHandler {
 	}
 
 	/**
-	 * Get all Machines.
+	 * Get Machines.
 	 * 
 	 * @return
 	 */
@@ -49,7 +49,7 @@ public class MachineHandler {
 	}
 
 	/**
-	 * Get Machines by query.
+	 * Get Machines.
 	 * 
 	 * @param query
 	 * @return
@@ -91,7 +91,7 @@ public class MachineHandler {
 	}
 
 	/**
-	 * Get Machine information by Id.
+	 * Get a Machine.
 	 * 
 	 * @param machineId
 	 * @return
@@ -119,29 +119,29 @@ public class MachineHandler {
 	}
 
 	/**
-	 * Add a Machine to the cluster.
+	 * Add a Machine.
 	 * 
-	 * @param machine
+	 * @param newMachineRequest
 	 * @throws MgmException
 	 */
-	public void addMachine(Machine machine) throws MgmException {
+	public Machine addMachine(Machine newMachineRequest) throws MgmException {
 		// Throw exception - empty Machine
-		if (machine == null) {
+		if (newMachineRequest == null) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
 		}
 
 		// Generate unique Machine Id
-		if (machine.getId() == null || machine.getId().isEmpty()) {
-			machine.setId(UUID.randomUUID().toString());
+		if (newMachineRequest.getId() == null || newMachineRequest.getId().isEmpty()) {
+			newMachineRequest.setId(UUID.randomUUID().toString());
 		}
 
 		// Throw exception - empty Machine name
-		if (machine.getName() == null || machine.getName().isEmpty()) {
+		if (newMachineRequest.getName() == null || newMachineRequest.getName().isEmpty()) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine name cannot be empty.", null);
 		}
 
 		// Throw exception - empty Machine IP address
-		if (machine.getIpAddress() == null || machine.getIpAddress().isEmpty()) {
+		if (newMachineRequest.getIpAddress() == null || newMachineRequest.getIpAddress().isEmpty()) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine IP address cannot be empty.", null);
 		}
 
@@ -149,7 +149,7 @@ public class MachineHandler {
 		ClusterRoot root = getRoot();
 		for (Iterator<Machine> machineItor = root.getMachines().iterator(); machineItor.hasNext();) {
 			Machine currMachine = machineItor.next();
-			if (machine.getId().equals(currMachine.getId())) {
+			if (newMachineRequest.getId().equals(currMachine.getId())) {
 				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Machine with same Id already exists.", null);
 			}
 			// if (machine.getName().equals(currMachine.getName())) {
@@ -161,7 +161,7 @@ public class MachineHandler {
 		}
 
 		// Generate unique machine name
-		String name = machine.getName();
+		String name = newMachineRequest.getName();
 		String uniqueName = name;
 		int index = 1;
 		while (true) {
@@ -181,26 +181,28 @@ public class MachineHandler {
 			}
 		}
 		if (!uniqueName.equals(name)) {
-			machine.setName(uniqueName);
+			newMachineRequest.setName(uniqueName);
 		}
 
-		root.addMachine(machine);
+		root.addMachine(newMachineRequest);
+
+		return newMachineRequest;
 	}
 
 	/**
-	 * Update Machine information.
+	 * Update Machine.
 	 * 
-	 * @param machine
+	 * @param updateMachineRequest
 	 * @throws MgmException
 	 */
-	public void updateMachine(Machine machine) throws MgmException {
+	public void updateMachine(Machine updateMachineRequest) throws MgmException {
 		// Throw exception - empty Machine
-		if (machine == null) {
+		if (updateMachineRequest == null) {
 			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
 		}
 
 		// Find Machine by Id
-		Machine machineToUpdate = getMachine(machine.getId());
+		Machine machineToUpdate = getMachine(updateMachineRequest.getId());
 
 		// Throw exception - Machine not found
 		if (machineToUpdate == null) {
@@ -208,26 +210,26 @@ public class MachineHandler {
 		}
 
 		// No need to update when they are the same object.
-		if (machineToUpdate == machine) {
+		if (machineToUpdate == updateMachineRequest) {
 			return;
 		}
 
-		// Machine name is changed - Update Machine name
-		if (Util.compare(machineToUpdate.getName(), machine.getName()) != 0) {
-			machineToUpdate.setName(machine.getName());
+		// Update name
+		if (Util.compare(machineToUpdate.getName(), updateMachineRequest.getName()) != 0) {
+			machineToUpdate.setName(updateMachineRequest.getName());
 		}
-		// Machine description is changed - Update Machine description
-		if (Util.compare(machineToUpdate.getDescription(), machine.getDescription()) != 0) {
-			machineToUpdate.setDescription(machine.getDescription());
+		// Update description
+		if (Util.compare(machineToUpdate.getDescription(), updateMachineRequest.getDescription()) != 0) {
+			machineToUpdate.setDescription(updateMachineRequest.getDescription());
 		}
-		// Machine IP address is changed - Update Machine IP address
-		if (Util.compare(machineToUpdate.getIpAddress(), machine.getIpAddress()) != 0) {
-			machineToUpdate.setIpAddress(machine.getIpAddress());
+		// Update IP address
+		if (Util.compare(machineToUpdate.getIpAddress(), updateMachineRequest.getIpAddress()) != 0) {
+			machineToUpdate.setIpAddress(updateMachineRequest.getIpAddress());
 		}
 	}
 
 	/**
-	 * Delete a Machine from the cluster.
+	 * Delete a Machine.
 	 * 
 	 * @param machineId
 	 * @throws MgmException

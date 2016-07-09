@@ -32,7 +32,6 @@ import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
-import org.origin.common.util.Util;
 
 /*
  * Home resource.
@@ -71,7 +70,6 @@ public class HomeResource extends AbstractApplicationResource {
 	public Response getHomes( //
 			@PathParam("machineId") String machineId, //
 			@QueryParam("name") String name, //
-			@QueryParam("url") String url, //
 			@QueryParam("status") String status, //
 			@QueryParam("filter") String filter //
 	) {
@@ -88,13 +86,10 @@ public class HomeResource extends AbstractApplicationResource {
 
 			// 2. Get Homes in the Machine and matched by query.
 			List<Home> homes = null;
-			if (name != null || url != null || status != null || filter != null) {
+			if (name != null || status != null || filter != null) {
 				HomeQueryBuilder builder = HomeQuery.newBuilder();
 				if (name != null) {
 					builder.withName(name);
-				}
-				if (url != null) {
-					builder.withUrl(url);
 				}
 				if (status != null) {
 					builder.withStatus(status);
@@ -226,14 +221,14 @@ public class HomeResource extends AbstractApplicationResource {
 	 * Body parameter: HomeDTO
 	 * 
 	 * @param machineId
-	 * @param homeDTO
+	 * @param newHomeRequestDTO
 	 * @return
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response createHome(@PathParam("machineId") String machineId, HomeDTO homeDTO) {
+	public Response createHome(@PathParam("machineId") String machineId, HomeDTO newHomeRequestDTO) {
 		// 1. Validate parameters.
-		if (homeDTO == null) {
+		if (newHomeRequestDTO == null) {
 			ErrorDTO nullHomeDTOError = new ErrorDTO("homeDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullHomeDTOError).build();
 		}
@@ -241,29 +236,27 @@ public class HomeResource extends AbstractApplicationResource {
 		// 2. Always get management service first.
 		ManagementService mgm = getService(ManagementService.class);
 
-		// 3. Create Home runtime model with parameters.
-		Home newHome = new Home();
-
-		String id = homeDTO.getId();
-		String name = homeDTO.getName();
-		String description = homeDTO.getDescription();
-		String url = homeDTO.getUrl();
-
-		newHome.setId(id);
-		newHome.setName(name);
-		newHome.setDescription(description);
-		newHome.setUrl(url);
-
-		// 4. Add Home to Machine.
+		HomeDTO newHomeDTO = null;
 		try {
-			mgm.addHome(machineId, newHome);
+			// 3. Create Home runtime model with parameters.
+			Home newHomeRequest = new Home();
 
-			if (Util.compare(id, newHome.getId()) != 0) {
-				homeDTO.setId(newHome.getId());
+			String id = newHomeRequestDTO.getId();
+			String name = newHomeRequestDTO.getName();
+			String description = newHomeRequestDTO.getDescription();
+
+			newHomeRequest.setId(id);
+			newHomeRequest.setName(name);
+			newHomeRequest.setDescription(description);
+
+			// 4. Add Home to Machine.
+			Home newHome = mgm.addHome(machineId, newHomeRequest);
+			if (newHome == null) {
+				ErrorDTO homeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "New Home cannot be added.");
+				return Response.status(Status.NOT_FOUND).entity(homeNotFoundError).build();
 			}
-			if (Util.compare(name, newHome.getName()) != 0) {
-				homeDTO.setName(newHome.getName());
-			}
+			newHomeDTO = DTOConverter.getInstance().toDTO(newHome);
+
 		} catch (MgmException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
@@ -271,7 +264,7 @@ public class HomeResource extends AbstractApplicationResource {
 
 		handleSave(mgm);
 
-		return Response.ok().entity(homeDTO).build();
+		return Response.ok().entity(newHomeDTO).build();
 	}
 
 	/**
@@ -303,12 +296,10 @@ public class HomeResource extends AbstractApplicationResource {
 			String id = homeDTO.getId();
 			String name = homeDTO.getName();
 			String description = homeDTO.getDescription();
-			String url = homeDTO.getUrl();
 
 			home.setId(id);
 			home.setName(name);
 			home.setDescription(description);
-			home.setUrl(url);
 
 			// 4. Update Home.
 			mgm.updateHome(home);

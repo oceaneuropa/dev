@@ -10,6 +10,7 @@ import org.nb.mgm.model.runtime.Namespace;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
+import org.nb.mgm.model.runtime.Software;
 import org.origin.common.rest.model.ErrorDTO;
 
 public class DTOConverter {
@@ -103,8 +104,6 @@ public class DTOConverter {
 		dto.setId(home.getId());
 		dto.setName(home.getName());
 		dto.setDescription(home.getDescription());
-
-		dto.setUrl(home.getUrl());
 
 		return dto;
 	}
@@ -225,6 +224,31 @@ public class DTOConverter {
 		dto.setId(projectNode.getId());
 		dto.setName(projectNode.getName());
 		dto.setDescription(projectNode.getDescription());
+
+		return dto;
+	}
+
+	/**
+	 * Convert Software runtime model to SoftwareDTO.
+	 * 
+	 * @param software
+	 * @return
+	 */
+	public SoftwareDTO toDTO(Software software) {
+		if (software == null) {
+			return null;
+		}
+		SoftwareDTO dto = new SoftwareDTO();
+
+		dto.setId(software.getId());
+		dto.setType(software.getType());
+		dto.setName(software.getName());
+		dto.setVersion(software.getVersion());
+		dto.setDescription(software.getDescription());
+		dto.setLength(software.getLength());
+		dto.setLastModified(software.getLastModified());
+		dto.setMd5(software.getMd5());
+		dto.setLocalPath(software.getLocalPath());
 
 		return dto;
 	}

@@ -1,5 +1,7 @@
 package org.nb.mgm.service;
 
+import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
+import org.nb.mgm.model.runtime.Software;
 
 public interface ManagementService {
 
@@ -91,7 +94,7 @@ public interface ManagementService {
 	public List<Machine> getMachines() throws MgmException;
 
 	/**
-	 * Get Machines by query.
+	 * Get Machines.
 	 * 
 	 * @param query
 	 * @return
@@ -100,7 +103,7 @@ public interface ManagementService {
 	public List<Machine> getMachines(MachineQuery query) throws MgmException;
 
 	/**
-	 * Get Machine detailed information by Id.
+	 * Get a Machine.
 	 * 
 	 * @param machineId
 	 * @return
@@ -111,13 +114,14 @@ public interface ManagementService {
 	/**
 	 * Add a Machine.
 	 * 
-	 * @param machine
+	 * @param newMachineRequest
+	 * @return
 	 * @throws MgmException
 	 */
-	public void addMachine(Machine machine) throws MgmException;
+	public Machine addMachine(Machine newMachineRequest) throws MgmException;
 
 	/**
-	 * Update Machine information.
+	 * Update Machine.
 	 * 
 	 * @param machine
 	 * @throws MgmException
@@ -191,10 +195,11 @@ public interface ManagementService {
 	 * Add a Home to a Machine.
 	 * 
 	 * @param machineId
-	 * @param home
+	 * @param newHomeRequest
+	 * @return
 	 * @throws MgmException
 	 */
-	public void addHome(String machineId, Home home) throws MgmException;
+	public Home addHome(String machineId, Home newHomeRequest) throws MgmException;
 
 	/**
 	 * Update Home information.
@@ -419,10 +424,11 @@ public interface ManagementService {
 	/**
 	 * Add a Project.
 	 * 
-	 * @param project
+	 * @param newProjectRequest
+	 * @return
 	 * @throws MgmException
 	 */
-	public void addProject(Project project) throws MgmException;
+	public Project addProject(Project newProjectRequest) throws MgmException;
 
 	/**
 	 * Update Project information.
@@ -464,28 +470,29 @@ public interface ManagementService {
 	 * Add a ProjectHome to a Project.
 	 * 
 	 * @param projectId
-	 * @param projectHome
+	 * @param newProjectHomeRequest
+	 * @return
 	 * @throws MgmException
 	 */
-	public void addProjectHome(String projectId, ProjectHome projectHome) throws MgmException;
+	public ProjectHome addProjectHome(String projectId, ProjectHome newProjectHomeRequest) throws MgmException;
 
 	/**
 	 * Update ProjectHome.
 	 * 
 	 * @param projectId
-	 * @param projectHome
+	 * @param updateProjectHomeRequest
 	 * @throws MgmException
 	 */
-	public void updateProjectHome(String projectId, ProjectHome projectHome) throws MgmException;
+	public void updateProjectHome(String projectId, ProjectHome updateProjectHomeRequest) throws MgmException;
 
 	/**
 	 * Delete a ProjectHome from a Project.
 	 * 
 	 * @param projectId
-	 * @param projectHome
+	 * @param projectHomeId
 	 * @throws MgmException
 	 */
-	public boolean deleteProjectHome(String projectId, String projectHome) throws MgmException;
+	public boolean deleteProjectHome(String projectId, String projectHomeId) throws MgmException;
 
 	// ------------------------------------------------------------------------------------------
 	// ProjectNode
@@ -517,9 +524,10 @@ public interface ManagementService {
 	 * @param projectId
 	 * @param projectHomeId
 	 * @param projectNode
+	 * @return
 	 * @throws MgmException
 	 */
-	public void addProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException;
+	public ProjectNode addProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException;
 
 	/**
 	 * Update ProjectNode.
@@ -541,5 +549,76 @@ public interface ManagementService {
 	 * @throws MgmException
 	 */
 	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException;
+
+	// ------------------------------------------------------------------------------------------
+	// Project Software
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get all software in a Project.
+	 * 
+	 * @param projectId
+	 * @return
+	 */
+	public List<Software> getProjectSoftware(String projectId) throws MgmException;
+
+	/**
+	 * Get one piece of software.
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @return
+	 */
+	public Software getProjectSoftware(String projectId, String softwareId) throws MgmException;
+
+	/**
+	 * Get Software content.
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @return
+	 */
+	public InputStream getProjectSoftwareContent(String projectId, String softwareId) throws MgmException;
+
+	/**
+	 * Set Software content.
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @param fileName
+	 * @param length
+	 * @param lastModified
+	 * @param input
+	 * @return
+	 * @throws MgmException
+	 */
+	public boolean setProjectSoftwareContent(String projectId, String softwareId, String fileName, long length, Date lastModified, InputStream input) throws MgmException;
+
+	/**
+	 * Add a Software to a Project.
+	 * 
+	 * @param projectId
+	 * @param newSoftwareRequest
+	 * @return
+	 * @throws MgmException
+	 */
+	public Software addProjectSoftware(String projectId, Software newSoftwareRequest) throws MgmException;
+
+	/**
+	 * Update Software information.
+	 * 
+	 * @param projectId
+	 * @param software
+	 * @throws MgmException
+	 */
+	public void updateProjectSoftware(String projectId, Software software) throws MgmException;
+
+	/**
+	 * Delete a piece of software from a Project.
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @throws MgmException
+	 */
+	public boolean deleteProjectSoftware(String projectId, String softwareId) throws MgmException;
 
 }

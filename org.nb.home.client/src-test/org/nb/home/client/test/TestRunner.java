@@ -7,7 +7,7 @@ import org.junit.runner.notification.Failure;
 public class TestRunner {
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(TestHomeManagement.class);
+		Result result = JUnitCore.runClasses(HomeTest.class);
 
 		System.out.println("--- --- --- TestRunner.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {

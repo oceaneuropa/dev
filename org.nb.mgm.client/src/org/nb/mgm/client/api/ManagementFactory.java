@@ -8,6 +8,7 @@ import org.nb.mgm.client.api.impl.MetaSpaceImpl;
 import org.nb.mgm.client.api.impl.ProjectHomeImpl;
 import org.nb.mgm.client.api.impl.ProjectImpl;
 import org.nb.mgm.client.api.impl.ProjectNodeImpl;
+import org.nb.mgm.client.api.impl.SoftwareImpl;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.nb.mgm.model.dto.MetaSectorDTO;
@@ -15,11 +16,12 @@ import org.nb.mgm.model.dto.MetaSpaceDTO;
 import org.nb.mgm.model.dto.ProjectDTO;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
 import org.nb.mgm.model.dto.ProjectNodeDTO;
+import org.nb.mgm.model.dto.SoftwareDTO;
 
 public class ManagementFactory {
 
 	/**
-	 * Create Management client.
+	 * Create Management client interface.
 	 * 
 	 * @param url
 	 * @param username
@@ -31,7 +33,7 @@ public class ManagementFactory {
 	}
 
 	/**
-	 * Create Machine client.
+	 * Create Machine client interface.
 	 * 
 	 * @param management
 	 * @param machineDTO
@@ -42,7 +44,7 @@ public class ManagementFactory {
 	}
 
 	/**
-	 * Create Home client.
+	 * Create Home client interface.
 	 * 
 	 * @param management
 	 * @param machine
@@ -54,7 +56,7 @@ public class ManagementFactory {
 	}
 
 	/**
-	 * Create MetaSector client.
+	 * Create MetaSector client interface.
 	 * 
 	 * @param management
 	 * @param metaSectorDTO
@@ -65,7 +67,7 @@ public class ManagementFactory {
 	}
 
 	/**
-	 * Create MetaSpace client.
+	 * Create MetaSpace client interface.
 	 * 
 	 * @param management
 	 * @param metaSector
@@ -77,7 +79,7 @@ public class ManagementFactory {
 	}
 
 	/**
-	 * Create Project client.
+	 * Create Project client interface.
 	 * 
 	 * @param management
 	 * @param projectDTO
@@ -88,7 +90,7 @@ public class ManagementFactory {
 	}
 
 	/**
-	 * Create ProjectHome client.
+	 * Create ProjectHome client interface.
 	 * 
 	 * @param management
 	 * @param project
@@ -100,7 +102,7 @@ public class ManagementFactory {
 	}
 
 	/**
-	 * Create ProjectNode client.
+	 * Create ProjectNode client interface.
 	 * 
 	 * @param management
 	 * @param project
@@ -110,6 +112,18 @@ public class ManagementFactory {
 	 */
 	public static IProjectNode createProjectNode(Management management, IProject project, IProjectHome projectHome, ProjectNodeDTO projectNodeDTO) {
 		return new ProjectNodeImpl(management, project, projectHome, projectNodeDTO);
+	}
+
+	/**
+	 * Create Software client interface.
+	 * 
+	 * @param management
+	 * @param project
+	 * @param softwareDTO
+	 * @return
+	 */
+	public static ISoftware createSoftware(Management management, IProject project, SoftwareDTO softwareDTO) {
+		return new SoftwareImpl(management, project, softwareDTO);
 	}
 
 }

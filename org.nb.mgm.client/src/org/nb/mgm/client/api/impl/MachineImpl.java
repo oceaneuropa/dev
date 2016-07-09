@@ -171,8 +171,8 @@ public class MachineImpl implements IMachine {
 	 * @param description
 	 * @throws ClientException
 	 */
-	public IHome addHome(String name, String url, String description) throws ClientException {
-		return this.management.addHome(getId(), name, url, description);
+	public IHome addHome(String name, String description) throws ClientException {
+		return this.management.addHome(getId(), name, description);
 	}
 
 	/**
@@ -183,7 +183,7 @@ public class MachineImpl implements IMachine {
 	 * @throws ClientException
 	 */
 	public boolean deleteHome(String homeId) throws ClientException {
-		return this.management.deleteHome(getId(), homeId);
+		return this.management.removeHome(getId(), homeId);
 	}
 
 	// ------------------------------------------------------------------------------------------

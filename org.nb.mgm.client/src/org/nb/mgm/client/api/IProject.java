@@ -38,7 +38,7 @@ public interface IProject extends IAdaptable {
 	// ProjectHome
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Get all ProjectHomes in a Project.
+	 * Get ProjectHomes in a Project.
 	 * 
 	 * @return
 	 * @throws ClientException
@@ -46,7 +46,7 @@ public interface IProject extends IAdaptable {
 	public List<IProjectHome> getProjectHomes() throws ClientException;
 
 	/**
-	 * Get ProjectHome by projectHomeId.
+	 * Get ProjectHome.
 	 * 
 	 * @param projectHomeId
 	 * @return
@@ -64,12 +64,50 @@ public interface IProject extends IAdaptable {
 	public IProjectHome addProjectHome(String name, String description) throws ClientException;
 
 	/**
-	 * Delete ProjectHome from a Project by projectHomeId.
+	 * Delete ProjectHome from a Project.
 	 * 
 	 * @param projectHomeId
 	 * @return
 	 * @throws ClientException
 	 */
 	public boolean deleteProjectHome(String projectHomeId) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectSoftware
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get Software in a Project.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<ISoftware> getProjectSoftware() throws ClientException;
+
+	/**
+	 * Get Software.
+	 * 
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	public ISoftware getProjectSoftware(String softwareId) throws ClientException;
+
+	/**
+	 * Add a Software to a Project.
+	 * 
+	 * @param name
+	 * @param description
+	 * @throws ClientException
+	 */
+	public ISoftware addProjectSoftware(String type, String name, String version, String description) throws ClientException;
+
+	/**
+	 * Delete Software from a Project.
+	 * 
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteProjectSoftware(String softwareId) throws ClientException;
 
 }
