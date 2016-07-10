@@ -1,7 +1,10 @@
 package org.nb.mgm.client.ws;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collections;
@@ -205,22 +208,29 @@ public class ProjectSoftwareClient extends AbstractClient {
 	 * 
 	 * FormDataParam: InputStream, FormDataContentDisposition
 	 * 
-	 * @param softwareFile
+	 * @param srcFile
 	 * @param destFilePath
 	 * @return
 	 * @throws ClientException
 	 * @throws IOException
 	 */
-	public StatusDTO uploadProjectSoftwareFile(String projectId, String softwareId, File softwareFile) throws ClientException {
+	public StatusDTO uploadProjectSoftwareFile(String projectId, String softwareId, File srcFile) throws ClientException {
+		if (srcFile == null || !srcFile.exists()) {
+			throw new ClientException(401, "Software file doesn't exist.");
+		}
+		if (!srcFile.isFile()) {
+			throw new ClientException(401, "Software file is not a file.");
+		}
+
 		try {
 			MultiPart multipart = new FormDataMultiPart();
 			{
-				FileDataBodyPart filePart = new FileDataBodyPart("file", softwareFile, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+				FileDataBodyPart filePart = new FileDataBodyPart("file", srcFile, MediaType.APPLICATION_OCTET_STREAM_TYPE);
 				{
 					FormDataContentDisposition.FormDataContentDispositionBuilder formBuilder = FormDataContentDisposition.name("file");
-					formBuilder.fileName(URLEncoder.encode(softwareFile.getName(), "UTF-8"));
-					formBuilder.size(softwareFile.length());
-					formBuilder.modificationDate(new Date(softwareFile.lastModified()));
+					formBuilder.fileName(URLEncoder.encode(srcFile.getName(), "UTF-8"));
+					formBuilder.size(srcFile.length());
+					formBuilder.modificationDate(new Date(srcFile.lastModified()));
 					filePart.setFormDataContentDisposition(formBuilder.build());
 				}
 				multipart.bodyPart(filePart);
@@ -234,13 +244,83 @@ public class ProjectSoftwareClient extends AbstractClient {
 			StatusDTO status = response.readEntity(StatusDTO.class);
 			return status;
 
-		} catch (ClientException e) {
-			handleException(e);
-		} catch (UnsupportedEncodingException e) {
+		} catch (ClientException | UnsupportedEncodingException e) {
 			handleException(e);
 		}
 
 		return null;
+	}
+
+	/**
+	 * Download Software from Project.
+	 * 
+	 * @param sourceFilePath
+	 * @param destFile
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	public boolean downloadProjectSoftawreToFile(String projectId, String softwareId, File destFile) throws ClientException {
+		// Check dest
+		if (destFile.exists() && destFile.isDirectory()) {
+			// throw new IOException("File '" + destFile.getAbsolutePath() + "' exists but is a directory.");
+			throw new ClientException(500, "File '" + destFile.getAbsolutePath() + "' exists but is a directory.");
+		}
+		if (destFile.getParentFile() != null && !destFile.getParentFile().exists()) {
+			destFile.getParentFile().mkdirs();
+		}
+
+		InputStream input = null;
+		OutputStream output = null;
+		try {
+			WebTarget target = getRootPath().path("projects").path(projectId).path("software").path(softwareId).path("content");
+			Builder builder = target.request(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			input = response.readEntity(InputStream.class);
+			output = new FileOutputStream(destFile);
+
+			if (input != null && output != null) {
+				IOUtil.copy(input, output);
+			}
+		} catch (ClientException | IOException e) {
+			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(output, true);
+			IOUtil.closeQuietly(input, true);
+		}
+		return true;
+	}
+
+	/**
+	 * Download Software from Project.
+	 * 
+	 * @param sourceFilePath
+	 * @param output
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	public boolean downloadProjectSoftawreToOutputStream(String projectId, String softwareId, OutputStream output) throws ClientException {
+		InputStream input = null;
+		try {
+			WebTarget target = getRootPath().path("projects").path(projectId).path("software").path(softwareId).path("content");
+			Builder builder = target.request(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			input = response.readEntity(InputStream.class);
+
+			if (input != null) {
+				IOUtil.copy(input, output);
+			}
+		} catch (ClientException | IOException e) {
+			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(input, true);
+		}
+		return true;
 	}
 
 }

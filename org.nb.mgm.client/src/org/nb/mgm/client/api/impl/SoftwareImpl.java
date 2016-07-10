@@ -1,6 +1,7 @@
 package org.nb.mgm.client.api.impl;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.Date;
 
 import org.nb.mgm.client.api.IProject;
@@ -218,19 +219,47 @@ public class SoftwareImpl implements ISoftware {
 	// File content
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public boolean uploadSoftware(File softwareFile) throws ClientException {
-		if (softwareFile == null || !softwareFile.exists()) {
-			throw new ClientException(401, "Software file doesn't exist.", null);
-		}
-
+	public boolean uploadSoftware(File srcFile) throws ClientException {
 		if (this.project != null) {
+			// This Software is for Project.
 			ProjectSoftwareClient projectSoftwareClient = this.management.getAdapter(ProjectSoftwareClient.class);
 			checkClient(projectSoftwareClient);
 
 			String projectId = this.project.getId();
 			String softwareId = getId();
-			StatusDTO status = projectSoftwareClient.uploadProjectSoftwareFile(projectId, softwareId, softwareFile);
+
+			StatusDTO status = projectSoftwareClient.uploadProjectSoftwareFile(projectId, softwareId, srcFile);
 			return (status != null && status.success()) ? true : false;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean downloadSoftware(File destFile) throws ClientException {
+		if (this.project != null) {
+			// This Software is for Project.
+			ProjectSoftwareClient projectSoftwareClient = this.management.getAdapter(ProjectSoftwareClient.class);
+			checkClient(projectSoftwareClient);
+
+			String projectId = this.project.getId();
+			String softwareId = getId();
+
+			return projectSoftwareClient.downloadProjectSoftawreToFile(projectId, softwareId, destFile);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean downloadSoftware(OutputStream output) throws ClientException {
+		if (this.project != null) {
+			// This Software is for Project.
+			ProjectSoftwareClient projectSoftwareClient = this.management.getAdapter(ProjectSoftwareClient.class);
+			checkClient(projectSoftwareClient);
+
+			String projectId = this.project.getId();
+			String softwareId = getId();
+
+			return projectSoftwareClient.downloadProjectSoftawreToOutputStream(projectId, softwareId, output);
 		}
 		return false;
 	}

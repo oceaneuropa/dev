@@ -1,6 +1,7 @@
 package org.nb.mgm.client.api;
 
 import java.io.File;
+import java.io.OutputStream;
 import java.util.Date;
 
 import org.origin.common.adapter.IAdaptable;
@@ -63,11 +64,28 @@ public interface ISoftware extends IAdaptable {
 	// File content
 	// ------------------------------------------------------------------------------------------
 	/**
+	 * Upload Software to Project.
 	 * 
-	 * @param softwareFile
+	 * @param srcFile
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean uploadSoftware(File softwareFile) throws ClientException;
+	public boolean uploadSoftware(File srcFile) throws ClientException;
+
+	/**
+	 * Download Software from Project.
+	 * 
+	 * @param destFile
+	 * @throws ClientException
+	 */
+	public boolean downloadSoftware(File destFile) throws ClientException;
+
+	/**
+	 * Download Software from Project.
+	 * 
+	 * @param destFile
+	 * @throws ClientException
+	 */
+	public boolean downloadSoftware(OutputStream output) throws ClientException;
 
 }

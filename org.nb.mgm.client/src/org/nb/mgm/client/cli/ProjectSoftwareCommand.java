@@ -2,6 +2,7 @@ package org.nb.mgm.client.cli;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class ProjectSoftwareCommand implements Annotated {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "nb");
-		props.put("osgi.command.function", new String[] { "lprojectsoftware", "addprojectsoftware", "updateprojectsoftware", "deleteprojectsoftware", "uploadprojectsoftware" });
+		props.put("osgi.command.function", new String[] { "lprojectsoftware", "addprojectsoftware", "updateprojectsoftware", "deleteprojectsoftware", "uploadprojectsoftware", "downloadprojectsoftware" });
 		this.registration = this.bundleContext.registerService(ProjectSoftwareCommand.class.getName(), this, props);
 
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
@@ -326,15 +327,14 @@ public class ProjectSoftwareCommand implements Annotated {
 	}
 
 	/**
-	 * Upload a Software to Project.
+	 * Upload Software to Project.
 	 * 
-	 * Command: uploadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <softwareFilePath>
+	 * Command: uploadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <filePath>
 	 * 
 	 * e.g.
 	 * 
 	 * uploadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file '/Users/yayang/Downloads/test_software/commons-io-2.5-bin.zip'
-	 * 
-	 * uploadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file '/Users/yayang/Downloads/test_software/japanese_issue.zip'
+	 * uploadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/yayang/Downloads/test_software/japanese_issue.zip'
 	 * 
 	 * @param projectId
 	 * @param softwareId
@@ -358,11 +358,8 @@ public class ProjectSoftwareCommand implements Annotated {
 				return;
 			}
 
-			// file is required
-			File file = new File(filePath);
-			if (!file.exists() || !file.isFile()) {
-				System.out.println("Please specify -file parameter with existing file location.");
-				return;
+			if ("".equals(filePath)) {
+				System.out.println("Please specify -file parameter.");
 			}
 
 			ISoftware software = null;
@@ -376,12 +373,119 @@ public class ProjectSoftwareCommand implements Annotated {
 				return;
 			}
 
-			boolean succeed = software.uploadSoftware(file);
+			// file is required
+			File srcFile = new File(filePath);
+			if (!srcFile.exists() || !srcFile.isFile()) {
+				System.out.println("Please specify -file parameter..");
+				return;
+			}
+
+			boolean succeed = software.uploadSoftware(srcFile);
 			if (succeed) {
 				System.out.println("Software is uploaded. ");
 			} else {
 				System.out.println("Failed to upload Software.");
 			}
+		} catch (ClientException e) {
+			System.out.println("Failed to upload Software. " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Download Software from Project.
+	 * 
+	 * Command: downloadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <filePath>
+	 * 
+	 * e.g.
+	 * 
+	 * downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file '/Users/yayang/Downloads/test_software2/commons-io-2.5-bin.zip' 
+	 * downloadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/yayang/Downloads/test_software2/japanese_issue.zip'
+	 *
+	 * downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -dir '/Users/yayang/Downloads/test_software2'
+	 * downloadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -dir '/Users/yayang/Downloads/test_software2'
+	 * 
+	 * @param projectId
+	 * @param softwareId
+	 * @param filePath
+	 */
+	@Descriptor("Download Software from Project")
+	public void downloadprojectsoftware( //
+			// Parameters
+			@Descriptor("Project ID") @Parameter(names = { "-projectid", "--projectId" }, absentValue = "") String projectId, // optional
+			@Descriptor("Software ID") @Parameter(names = { "-softwareid", "--softwareId" }, absentValue = "") String softwareId, // required
+			@Descriptor("Software file dest path") @Parameter(names = { "-file", "--file" }, absentValue = "") String filePath, // optional
+			@Descriptor("Software file dest directory") @Parameter(names = { "-dir", "--dir" }, absentValue = "") String dirPath // optional
+	) {
+		if (this.management == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			// softwareId is required
+			if ("".equals(softwareId)) {
+				System.out.println("Please specify -softwareid parameter.");
+				return;
+			}
+
+			// Either filePath or dirPath is required.
+			if ("".equals(filePath) && "".equals(dirPath)) {
+				System.out.println("Please specify -file parameter or -dir parameter.");
+			}
+
+			ISoftware software = null;
+			if ("".equals(projectId)) {
+				software = this.management.getProjectSoftware(softwareId);
+			} else {
+				software = this.management.getProjectSoftware(projectId, softwareId);
+			}
+			if (software == null) {
+				System.out.println("Software is not found.");
+				return;
+			}
+
+			Date lastModified = software.getLastModified();
+
+			boolean succeed = false;
+			File destFile = null;
+			if (!"".equals(filePath)) {
+				// download Software to file
+				destFile = new File(filePath);
+				if (destFile.exists() && destFile.isDirectory()) {
+					System.out.println("Target file exists but is a directory.");
+					return;
+				}
+
+				succeed = software.downloadSoftware(destFile);
+
+			} else if (!"".equals(dirPath)) {
+				// download Software to directory
+				File destDir = new File(dirPath);
+				if (destDir.exists() && destDir.isFile()) {
+					System.out.println("Target directory exists but is a file.");
+					return;
+				}
+
+				String localPath = software.getLocalPath();
+				File tempFile = new File(localPath);
+				destFile = new File(destDir, tempFile.getName());
+				if (destFile.exists() && destFile.isDirectory()) {
+					System.out.println("Target file exists but is a directory.");
+					return;
+				}
+
+				succeed = software.downloadSoftware(destFile);
+			}
+
+			if (succeed) {
+				if (destFile != null && lastModified != null) {
+					destFile.setLastModified(lastModified.getTime());
+				}
+				System.out.println("Software is downloaded. ");
+			} else {
+				System.out.println("Failed to download Software.");
+			}
+
 		} catch (ClientException e) {
 			System.out.println("Failed to upload Software. " + e.getMessage());
 		}
