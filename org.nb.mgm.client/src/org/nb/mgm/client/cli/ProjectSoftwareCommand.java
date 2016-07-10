@@ -24,7 +24,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class ProjectSoftwareCommand implements Annotated {
 
-	protected static String[] SOFTWARE_TITLES = new String[] { "Project", "ID", "Type", "Name", "Version", "Description", "Length", "Last Modified", "Local Path" };
+	protected static String[] SOFTWARE_TITLES = new String[] { "Project", "ID", "Type", "Name", "Version", "Description", "File Name", "Exists", "Length", "Last Modified" };
 
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<?> registration;
@@ -112,12 +112,12 @@ public class ProjectSoftwareCommand implements Annotated {
 				projectText = "";
 			}
 
+			String fileName = software.getFileName() != null ? software.getFileName() : "n/a";
+			String exists = software.exists() ? "true" : "false";
 			String lengthText = String.valueOf(software.getLength());
-			String lastModifiedText = software.getLastModified() != null ? DateUtil.toString(software.getLastModified(), DateUtil.getJdbcDateFormat()) : "";
-			// String md5Text = software.getMd5() != null ? software.getMd5() : "";
-			String localPath = software.getLocalPath() != null ? software.getLocalPath() : "";
-			rows[rowIndex++] = new String[] { projectText, software.getId(), software.getType(), software.getName(), software.getVersion(), software.getDescription(), lengthText, lastModifiedText, localPath };
+			String lastModifiedText = software.getLastModified() != null ? DateUtil.toString(software.getLastModified(), DateUtil.getJdbcDateFormat()) : "n/a";
 
+			rows[rowIndex++] = new String[] { projectText, software.getId(), software.getType(), software.getName(), software.getVersion(), software.getDescription(), fileName, exists, lengthText, lastModifiedText };
 			prevProjectId = currProjectId;
 		}
 
@@ -128,6 +128,9 @@ public class ProjectSoftwareCommand implements Annotated {
 	 * Add a software to a Project.
 	 * 
 	 * Command: addprojectsoftware -projectid <projectId> -type <softwareType> -name <softwareName> -desc <softwareDescription> -file <filePath>
+	 * 
+	 * e.g. addprojectsoftware -projectid Project1 -type os -name OSX -version 2.0.10 -desc 'OSX description' -file
+	 * '/Users/yayang/Downloads/test_software/uber.wsdl.zip'
 	 * 
 	 * @param projectId
 	 * @param name
@@ -140,8 +143,8 @@ public class ProjectSoftwareCommand implements Annotated {
 			@Descriptor("Software Type") @Parameter(names = { "-type", "--type" }, absentValue = "") String type, // required
 			@Descriptor("Software Name") @Parameter(names = { "-name", "--name" }, absentValue = "") String name, // required
 			@Descriptor("Software Version") @Parameter(names = { "-version", "--version" }, absentValue = "") String version, // optional
-			@Descriptor("Software Description") @Parameter(names = { "-desc", "--description" }, absentValue = "") String description // optional,
-	// @Descriptor("Software file path") @Parameter(names = { "-file", "--file" }, absentValue = "") String filePath // optional
+			@Descriptor("Software Description") @Parameter(names = { "-desc", "--description" }, absentValue = "") String description, // optional,
+			@Descriptor("Software file path") @Parameter(names = { "-file", "--file" }, absentValue = "") String filePath // optional
 	) {
 		if (this.management == null) {
 			System.out.println("Please login first.");
@@ -175,6 +178,22 @@ public class ProjectSoftwareCommand implements Annotated {
 
 			ISoftware newSoftware = project.addProjectSoftware(type, name, version, description);
 			if (newSoftware != null) {
+				// check filePath parameter
+				if (!"".equals(filePath)) {
+					// upload Software to Project
+					File srcFile = new File(filePath);
+					if (!srcFile.exists()) {
+						System.out.println("Software file doesn't exist.");
+					}
+					if (srcFile.exists() && srcFile.isDirectory()) {
+						System.out.println("Software file exists but is a directory.");
+					}
+					if (srcFile.exists() && srcFile.isFile()) {
+						newSoftware.uploadSoftware(srcFile);
+					} else {
+						System.out.println("Software file is invalid.");
+					}
+				}
 				System.out.println("New Software is created. ");
 			} else {
 				System.out.println("New Software is not created.");
@@ -332,9 +351,9 @@ public class ProjectSoftwareCommand implements Annotated {
 	 * Command: uploadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <filePath>
 	 * 
 	 * e.g.
-	 * 
 	 * uploadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file '/Users/yayang/Downloads/test_software/commons-io-2.5-bin.zip'
 	 * uploadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/yayang/Downloads/test_software/japanese_issue.zip'
+	 * uploadprojectsoftware -projectid Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/yayang/Downloads/test_software/uber.wsdl.zip'
 	 * 
 	 * @param projectId
 	 * @param softwareId
@@ -397,12 +416,14 @@ public class ProjectSoftwareCommand implements Annotated {
 	 * Command: downloadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <filePath>
 	 * 
 	 * e.g.
-	 * 
-	 * downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file '/Users/yayang/Downloads/test_software2/commons-io-2.5-bin.zip' 
+	 * downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file '/Users/yayang/Downloads/test_software2/commons-io-2.5-bin.zip'
 	 * downloadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/yayang/Downloads/test_software2/japanese_issue.zip'
-	 *
+	 * downloadprojectsoftware -projectid Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/yayang/Downloads/test_software2/uber.wsdl.zip'
+	 * 
+	 * e.g.
 	 * downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -dir '/Users/yayang/Downloads/test_software2'
 	 * downloadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -dir '/Users/yayang/Downloads/test_software2'
+	 * downloadprojectsoftware -projectid Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -dir '/Users/yayang/Downloads/test_software2'
 	 * 
 	 * @param projectId
 	 * @param softwareId
@@ -466,9 +487,11 @@ public class ProjectSoftwareCommand implements Annotated {
 					return;
 				}
 
-				String localPath = software.getLocalPath();
-				File tempFile = new File(localPath);
-				destFile = new File(destDir, tempFile.getName());
+				// String localPath = software.getLocalPath();
+				// File tempFile = new File(localPath);
+				// destFile = new File(destDir, tempFile.getName());
+				String fileName = software.getFileName();
+				destFile = new File(destDir, fileName);
 				if (destFile.exists() && destFile.isDirectory()) {
 					System.out.println("Target file exists but is a directory.");
 					return;

@@ -33,9 +33,10 @@ public class SoftwareDTO {
 	protected Date lastModified;
 	@XmlElement
 	protected String md5;
-
+	// @XmlElement
+	// protected String localPath;
 	@XmlElement
-	protected String localPath;
+	protected String fileName;
 
 	@XmlElement
 	public ProjectDTO getProject() {
@@ -110,12 +111,20 @@ public class SoftwareDTO {
 		this.md5 = md5;
 	}
 
-	public String getLocalPath() {
-		return localPath;
+	// public String getLocalPath() {
+	// return localPath;
+	// }
+
+	// public void setLocalPath(String localPath) {
+	// this.localPath = localPath;
+	// }
+
+	public String getFileName() {
+		return fileName;
 	}
 
-	public void setLocalPath(String localPath) {
-		this.localPath = localPath;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }

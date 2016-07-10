@@ -210,14 +210,33 @@ public class SoftwareImpl implements ISoftware {
 		}
 	}
 
+	// @Override
+	// public String getLocalPath() {
+	// return this.softwareDTO.getLocalPath();
+	// }
+
 	@Override
-	public String getLocalPath() {
-		return this.softwareDTO.getLocalPath();
+	public String getFileName() {
+		return this.softwareDTO.getFileName();
 	}
 
 	// ------------------------------------------------------------------------------------------
 	// File content
 	// ------------------------------------------------------------------------------------------
+	/**
+	 * Tests whether the Software file exists.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	@Override
+	public boolean exists() throws ClientException {
+		if (getLength() > 0) {
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public boolean uploadSoftware(File srcFile) throws ClientException {
 		if (this.project != null) {

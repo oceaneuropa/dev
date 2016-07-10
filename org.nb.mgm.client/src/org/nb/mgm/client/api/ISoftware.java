@@ -58,11 +58,21 @@ public interface ISoftware extends IAdaptable {
 
 	public void setMd5(String md5) throws ClientException;
 
-	public String getLocalPath();
+	// public String getLocalPath();
+
+	public String getFileName();
 
 	// ------------------------------------------------------------------------------------------
 	// File content
 	// ------------------------------------------------------------------------------------------
+	/**
+	 * Tests whether the Software file exists.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean exists() throws ClientException;
+
 	/**
 	 * Upload Software to Project.
 	 * 

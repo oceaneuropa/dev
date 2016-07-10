@@ -602,6 +602,13 @@ public class LocalJsonReader {
 		}
 		software.setLocalPath(localPath);
 
+		// "fileName" attribute
+		String fileName = null;
+		if (softwareJSON.has("fileName")) {
+			fileName = softwareJSON.getString("fileName");
+		}
+		software.setFileName(fileName);
+
 		return software;
 	}
 

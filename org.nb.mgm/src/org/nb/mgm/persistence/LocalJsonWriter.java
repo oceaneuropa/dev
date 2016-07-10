@@ -571,6 +571,12 @@ public class LocalJsonWriter {
 			softwareJSON.put("localPath", localPath);
 		}
 
+		// "fileName" attribute
+		String fileName = software.getFileName();
+		if (fileName != null) {
+			softwareJSON.put("fileName", fileName);
+		}
+
 		return softwareJSON;
 	}
 

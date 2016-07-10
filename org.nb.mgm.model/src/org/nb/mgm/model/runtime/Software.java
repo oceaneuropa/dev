@@ -15,6 +15,9 @@ public class Software extends ModelObject {
 	// for local Admin only (where a Software is stored in file system folder)
 	protected String localPath;
 
+	// for local or DB Admin
+	protected String fileName;
+
 	public Software() {
 	}
 
@@ -75,6 +78,14 @@ public class Software extends ModelObject {
 
 	public void setLocalPath(String localPath) {
 		this.localPath = localPath;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }

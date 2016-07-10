@@ -248,7 +248,8 @@ public class DTOConverter {
 		dto.setLength(software.getLength());
 		dto.setLastModified(software.getLastModified());
 		dto.setMd5(software.getMd5());
-		dto.setLocalPath(software.getLocalPath());
+		// dto.setLocalPath(software.getLocalPath());
+		dto.setFileName(software.getFileName());
 
 		return dto;
 	}

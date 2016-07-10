@@ -95,6 +95,7 @@ public class ProjectSoftwareHandler {
 	 * @param projectId
 	 * @param softwareId
 	 * @return
+	 * @throws MgmException
 	 */
 	public InputStream getProjectSoftwareContent(String projectId, String softwareId) throws MgmException {
 		InputStream is = null;
@@ -122,7 +123,11 @@ public class ProjectSoftwareHandler {
 	 * @param projectId
 	 * @param softwareId
 	 * @param fileName
+	 * @param length
+	 * @param lastModified
 	 * @param input
+	 * @return
+	 * @throws MgmException
 	 */
 	public boolean setProjectSoftwareContent(String projectId, String softwareId, String fileName, long length, Date lastModified, InputStream input) throws MgmException {
 		Software software = getProjectSoftware(projectId, softwareId);
@@ -160,6 +165,7 @@ public class ProjectSoftwareHandler {
 					software.setLength(length);
 					software.setLastModified(lastModified);
 					software.setLocalPath(softwareFile.getAbsolutePath());
+					software.setFileName(fileName);
 
 					return true;
 				}
