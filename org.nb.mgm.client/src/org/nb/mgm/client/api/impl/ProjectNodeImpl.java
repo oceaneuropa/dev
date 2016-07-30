@@ -1,18 +1,19 @@
 package org.nb.mgm.client.api.impl;
 
+import java.util.List;
+
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
 import org.nb.mgm.client.api.IProjectNode;
-import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.ws.ProjectNodeClient;
+import org.nb.mgm.client.api.ISoftware;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.model.dto.ProjectNodeDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.model.StatusDTO;
 
 public class ProjectNodeImpl implements IProjectNode {
 
-	private Management management;
+	private ManagementClient management;
 	private IProject project;
 	private IProjectHome projectHome;
 	private ProjectNodeDTO projectNodeDTO;
@@ -27,7 +28,7 @@ public class ProjectNodeImpl implements IProjectNode {
 	 * @param projectHome
 	 * @param projectNodeDTO
 	 */
-	public ProjectNodeImpl(Management management, IProject project, IProjectHome projectHome, ProjectNodeDTO projectNodeDTO) {
+	public ProjectNodeImpl(ManagementClient management, IProject project, IProjectHome projectHome, ProjectNodeDTO projectNodeDTO) {
 		this.management = management;
 		this.project = project;
 		this.projectHome = projectHome;
@@ -38,7 +39,7 @@ public class ProjectNodeImpl implements IProjectNode {
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public Management getManagement() {
+	public ManagementClient getManagement() {
 		return this.management;
 	}
 
@@ -71,14 +72,9 @@ public class ProjectNodeImpl implements IProjectNode {
 		checkProject(this.project);
 		checkProjectHome(this.projectHome);
 
-		ProjectNodeClient projectNodeClient = this.management.getAdapter(ProjectNodeClient.class);
-		checkClient(projectNodeClient);
-
 		String projectId = this.project.getId();
 		String projectHomeId = this.projectHome.getId();
-
-		StatusDTO status = projectNodeClient.updateProjectNode(projectId, projectHomeId, this.projectNodeDTO);
-		return (status != null && status.success()) ? true : false;
+		return this.management.updateProjectNode(projectId, projectHomeId, this.projectNodeDTO);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -126,26 +122,74 @@ public class ProjectNodeImpl implements IProjectNode {
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// Check WS Client
+	// Software
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(ProjectNodeClient projectNodeClient) throws ClientException {
-		if (projectNodeClient == null) {
-			throw new ClientException(401, "ProjectNodeClient is not found.", null);
-		}
+	@Override
+	public List<ISoftware> getSoftware() throws ClientException {
+		checkManagement(this.management);
+		checkProject(this.project);
+		checkProjectHome(this.projectHome);
+
+		String projectId = this.project.getId();
+		String projectHomeId = this.projectHome.getId();
+		String projectNodeId = this.getId();
+		return this.management.getProjectNodeSoftware(projectId, projectHomeId, projectNodeId);
 	}
 
-	protected void checkManagement(Management management) throws ClientException {
+	@Override
+	public boolean installSoftware(String softwareId) throws ClientException {
+		checkManagement(this.management);
+		checkProject(this.project);
+		checkProjectHome(this.projectHome);
+
+		String projectId = this.project.getId();
+		String projectHomeId = this.projectHome.getId();
+		String projectNodeId = this.getId();
+		return this.management.installProjectNodeSoftware(projectId, projectHomeId, projectNodeId, softwareId);
+	}
+
+	@Override
+	public boolean uninstallSoftware(String softwareId) throws ClientException {
+		checkManagement(this.management);
+		checkProject(this.project);
+		checkProjectHome(this.projectHome);
+
+		String projectId = this.project.getId();
+		String projectHomeId = this.projectHome.getId();
+		String projectNodeId = this.getId();
+		return this.management.uninstallProjectNodeSoftware(projectId, projectHomeId, projectNodeId, softwareId);
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Check Management Client
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * @param management
+	 * @throws ClientException
+	 */
+	protected void checkManagement(ManagementClient management) throws ClientException {
 		if (management == null) {
 			throw new ClientException(401, "management is null.", null);
 		}
 	}
 
+	/**
+	 * 
+	 * @param project
+	 * @throws ClientException
+	 */
 	protected void checkProject(IProject project) throws ClientException {
 		if (project == null) {
 			throw new ClientException(401, "project is null.", null);
 		}
 	}
 
+	/**
+	 * 
+	 * @param projectHome
+	 * @throws ClientException
+	 */
 	protected void checkProjectHome(IProjectHome projectHome) throws ClientException {
 		if (projectHome == null) {
 			throw new ClientException(401, "projectHome is null.", null);

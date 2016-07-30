@@ -1,9 +1,9 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.query.HomeQuery;
 import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
@@ -43,7 +43,7 @@ public class HomeHandler {
 	 * @param machineId
 	 * @return
 	 */
-	public List<Home> getHomes(String machineId) throws MgmException {
+	public List<Home> getHomes(String machineId) throws ManagementException {
 		return getHomes(machineId, null);
 	}
 
@@ -54,11 +54,11 @@ public class HomeHandler {
 	 * @param query
 	 * @return
 	 */
-	public List<Home> getHomes(String machineId, HomeQuery query) throws MgmException {
+	public List<Home> getHomes(String machineId, HomeQuery query) throws ManagementException {
 		// Container Machine must exist
 		Machine machine = this.mgmService.getMachine(machineId);
 		if (machine == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
 		}
 
 		// Get all Homes in the Machine
@@ -101,12 +101,12 @@ public class HomeHandler {
 	 * @param homeId
 	 * @return
 	 */
-	public Home getHome(String homeId) throws MgmException {
+	public Home getHome(String homeId) throws ManagementException {
 		Home resultHome = null;
 
 		// Throw exception - empty Id
 		if (homeId == null || homeId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home Id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home Id cannot be empty.", null);
 		}
 
 		// Iterate though all Machines and then all Homes in each Machine. Find the Home with matching Id.
@@ -134,13 +134,13 @@ public class HomeHandler {
 	 * 
 	 * @param machineId
 	 * @param newHomeRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Home addHome(String machineId, Home newHomeRequest) throws MgmException {
+	public Home addHome(String machineId, Home newHomeRequest) throws ManagementException {
 		// Container Machine must exist
 		Machine machine = this.mgmService.getMachine(machineId);
 		if (machine == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
 		}
 
 		// Generate unique Home Id
@@ -150,7 +150,7 @@ public class HomeHandler {
 
 		// Throw exception - empty Home name
 		if (newHomeRequest.getName() == null || newHomeRequest.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home name cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home name cannot be empty.", null);
 		}
 
 		// Throw exception - Home with same Id or URL exists
@@ -159,7 +159,7 @@ public class HomeHandler {
 			Home currHome = homeItor.next();
 
 			if (newHomeRequest.getId().equals(currHome.getId())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same Id already exists.", null);
+				throw new ManagementException(ERROR_CODE_ENTITY_EXIST, "Home with same Id already exists.", null);
 			}
 			// if (home.getName().equals(currHome.getName())) {
 			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Home with same name already exists.", null);
@@ -202,12 +202,12 @@ public class HomeHandler {
 	 * Update Home.
 	 * 
 	 * @param updateHomeRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateHome(Home updateHomeRequest) throws MgmException {
+	public void updateHome(Home updateHomeRequest) throws ManagementException {
 		// Throw exception - empty Home
 		if (updateHomeRequest == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home cannot be empty.", null);
 		}
 
 		// Find Home by Id
@@ -232,12 +232,12 @@ public class HomeHandler {
 	 * Delete a Home from a Machine.
 	 * 
 	 * @param homeId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void deleteHome(String homeId) throws MgmException {
+	public void deleteHome(String homeId) throws ManagementException {
 		// Throw exception - empty Id
 		if (homeId == null || homeId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home Id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Home Id cannot be empty.", null);
 		}
 
 		// Find Home by Id
@@ -245,7 +245,7 @@ public class HomeHandler {
 
 		// Throw exception - Home not found
 		if (homeToDelete == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Home cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Home cannot be found.", null);
 		}
 
 		// Throw exception - Cannot delete Home, if it joins MetaSector or MetaSpace.
@@ -258,7 +258,7 @@ public class HomeHandler {
 			}
 		}
 		if (foundJoinedMetaSectors) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Home cannot be deleted. Please remove the Home from the MetaSectors first.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Home cannot be deleted. Please remove the Home from the MetaSectors first.", null);
 		}
 
 		boolean foundJoinedMetaSpaces = false;
@@ -270,7 +270,7 @@ public class HomeHandler {
 			}
 		}
 		if (foundJoinedMetaSpaces) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Home cannot be deleted. Please remove the Home from the MetaSpaces first.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Home cannot be deleted. Please remove the Home from the MetaSpaces first.", null);
 		}
 
 		// Delete Home from Machine.
@@ -285,9 +285,9 @@ public class HomeHandler {
 	 * 
 	 * @param homeId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Map<String, Object> getProperties(String homeId) throws MgmException {
+	public Map<String, Object> getProperties(String homeId) throws ManagementException {
 		Map<String, Object> properties = null;
 		Home home = getHome(homeId);
 		if (home != null) {
@@ -301,9 +301,9 @@ public class HomeHandler {
 	 * 
 	 * @param homeId
 	 * @param properties
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void setProperties(String homeId, Map<String, Object> properties) throws MgmException {
+	public void setProperties(String homeId, Map<String, Object> properties) throws ManagementException {
 		Home home = getHome(homeId);
 		if (home != null) {
 			home.setProperties(properties);
@@ -315,9 +315,9 @@ public class HomeHandler {
 	 * 
 	 * @param homeId
 	 * @param propNames
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void removeProperties(String homeId, List<String> propNames) throws MgmException {
+	public void removeProperties(String homeId, List<String> propNames) throws ManagementException {
 		Home home = getHome(homeId);
 		if (home != null) {
 			home.removeProperties(propNames);

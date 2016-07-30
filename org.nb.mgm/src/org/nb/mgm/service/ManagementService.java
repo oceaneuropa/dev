@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.query.ArtifactQuery;
 import org.nb.mgm.model.query.HomeQuery;
 import org.nb.mgm.model.query.MachineQuery;
@@ -39,129 +39,85 @@ public interface ManagementService {
 	public ClusterRoot getRoot();
 
 	// ------------------------------------------------------------------------------------------
-	// Namespace
-	// ------------------------------------------------------------------------------------------
-	/**
-	 * Get Namespaces.
-	 * 
-	 * @return
-	 * @throws MgmException
-	 */
-	// public List<Namespace> getNamespaces() throws MgmException;
-
-	/**
-	 * Get Namespace detailed information by namespace name.
-	 * 
-	 * @param namespace
-	 * @return
-	 * @throws MgmException
-	 */
-	// public Namespace getNamespace(String namespace) throws MgmException;
-
-	/**
-	 * Add a Namespace.
-	 * 
-	 * @param namespace
-	 * @throws MgmException
-	 */
-	// public void addNamespace(Namespace namespace) throws MgmException;
-
-	/**
-	 * Update Namespace detailed information.
-	 * 
-	 * @param namespace
-	 * @throws MgmException
-	 */
-	// public void updateNamespace(Namespace namespace) throws MgmException;
-
-	/**
-	 * Remove a Namespace by namespace name.
-	 * 
-	 * @param namespace
-	 * @throws MgmException
-	 */
-	// public void deleteNamespace(String namespace) throws MgmException;
-
-	// ------------------------------------------------------------------------------------------
 	// Machine
 	// ------------------------------------------------------------------------------------------
 	/**
 	 * Get Machines.
 	 * 
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public List<Machine> getMachines() throws MgmException;
+	public List<Machine> getMachines() throws ManagementException;
 
 	/**
 	 * Get Machines.
 	 * 
 	 * @param query
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public List<Machine> getMachines(MachineQuery query) throws MgmException;
+	public List<Machine> getMachines(MachineQuery query) throws ManagementException;
 
 	/**
 	 * Get a Machine.
 	 * 
 	 * @param machineId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Machine getMachine(String machineId) throws MgmException;
+	public Machine getMachine(String machineId) throws ManagementException;
 
 	/**
 	 * Add a Machine.
 	 * 
 	 * @param newMachineRequest
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Machine addMachine(Machine newMachineRequest) throws MgmException;
+	public Machine addMachine(Machine newMachineRequest) throws ManagementException;
 
 	/**
 	 * Update Machine.
 	 * 
 	 * @param machine
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateMachine(Machine machine) throws MgmException;
+	public void updateMachine(Machine machine) throws ManagementException;
 
 	/**
 	 * Remove a Machine.
 	 * 
 	 * @param machineId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void deleteMachine(String machineId) throws MgmException;
+	public void deleteMachine(String machineId) throws ManagementException;
 
 	/**
 	 * Get Machine properties.
 	 * 
 	 * @param machineId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Map<String, Object> getMachineProperties(String machineId) throws MgmException;
+	public Map<String, Object> getMachineProperties(String machineId) throws ManagementException;
 
 	/**
 	 * Set Machine properties.
 	 * 
 	 * @param machineId
 	 * @param properties
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean setMachineProperties(String machineId, Map<String, Object> properties) throws MgmException;
+	public boolean setMachineProperties(String machineId, Map<String, Object> properties) throws ManagementException;
 
 	/**
 	 * Remove Machine properties.
 	 * 
 	 * @param machineId
 	 * @param propNames
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean removeMachineProperties(String machineId, List<String> propNames) throws MgmException;
+	public boolean removeMachineProperties(String machineId, List<String> propNames) throws ManagementException;
 
 	// ------------------------------------------------------------------------------------------
 	// Home
@@ -172,7 +128,7 @@ public interface ManagementService {
 	 * @param machineId
 	 * @return
 	 */
-	public List<Home> getHomes(String machineId) throws MgmException;
+	public List<Home> getHomes(String machineId) throws ManagementException;
 
 	/**
 	 * Get Homes in a Machine by query.
@@ -181,7 +137,7 @@ public interface ManagementService {
 	 * @param query
 	 * @return
 	 */
-	public List<Home> getHomes(String machineId, HomeQuery query) throws MgmException;
+	public List<Home> getHomes(String machineId, HomeQuery query) throws ManagementException;
 
 	/**
 	 * Get Home information by Id.
@@ -189,7 +145,7 @@ public interface ManagementService {
 	 * @param homeId
 	 * @return
 	 */
-	public Home getHome(String homeId) throws MgmException;
+	public Home getHome(String homeId) throws ManagementException;
 
 	/**
 	 * Add a Home to a Machine.
@@ -197,52 +153,52 @@ public interface ManagementService {
 	 * @param machineId
 	 * @param newHomeRequest
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Home addHome(String machineId, Home newHomeRequest) throws MgmException;
+	public Home addHome(String machineId, Home newHomeRequest) throws ManagementException;
 
 	/**
 	 * Update Home information.
 	 * 
 	 * @param home
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateHome(Home home) throws MgmException;
+	public void updateHome(Home home) throws ManagementException;
 
 	/**
 	 * Delete a Home from a Machine.
 	 * 
 	 * @param homeId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void deleteHome(String homeId) throws MgmException;
+	public void deleteHome(String homeId) throws ManagementException;
 
 	/**
 	 * Get Home properties.
 	 * 
 	 * @param homeId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Map<String, Object> getHomeProperties(String homeId) throws MgmException;
+	public Map<String, Object> getHomeProperties(String homeId) throws ManagementException;
 
 	/**
 	 * Set Home properties.
 	 * 
 	 * @param homeId
 	 * @param properties
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean setHomeProperties(String homeId, Map<String, Object> properties) throws MgmException;
+	public boolean setHomeProperties(String homeId, Map<String, Object> properties) throws ManagementException;
 
 	/**
 	 * Remove Home properties.
 	 * 
 	 * @param homeId
 	 * @param propNames
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean removeHomeProperties(String homeId, List<String> propNames) throws MgmException;
+	public boolean removeHomeProperties(String homeId, List<String> propNames) throws ManagementException;
 
 	// ------------------------------------------------------------------------------------------
 	// MetaSector
@@ -252,7 +208,7 @@ public interface ManagementService {
 	 * 
 	 * @return
 	 */
-	public List<MetaSector> getMetaSectors() throws MgmException;
+	public List<MetaSector> getMetaSectors() throws ManagementException;
 
 	/**
 	 * Get MetaSectors by query.
@@ -260,40 +216,40 @@ public interface ManagementService {
 	 * @param query
 	 * @return
 	 */
-	public List<MetaSector> getMetaSectors(MetaSectorQuery query) throws MgmException;
+	public List<MetaSector> getMetaSectors(MetaSectorQuery query) throws ManagementException;
 
 	/**
 	 * Get MetaSector information by Id.
 	 * 
 	 * @param metaSectorId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public MetaSector getMetaSector(String metaSectorId) throws MgmException;
+	public MetaSector getMetaSector(String metaSectorId) throws ManagementException;
 
 	/**
 	 * Add a MetaSector to the cluster.
 	 * 
 	 * @param metaSector
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void addMetaSector(MetaSector metaSector) throws MgmException;
+	public void addMetaSector(MetaSector metaSector) throws ManagementException;
 
 	/**
 	 * Update MetaSector information.
 	 * 
 	 * @param metaSector
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateMetaSector(MetaSector metaSector) throws MgmException;
+	public void updateMetaSector(MetaSector metaSector) throws ManagementException;
 
 	/**
 	 * Delete a MetaSector from the cluster.
 	 * 
 	 * @param metaSectorId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void deleteMetaSector(String metaSectorId) throws MgmException;
+	public void deleteMetaSector(String metaSectorId) throws ManagementException;
 
 	// ------------------------------------------------------------------------------------------
 	// MetaSpace
@@ -304,7 +260,7 @@ public interface ManagementService {
 	 * @param metaSectorId
 	 * @return
 	 */
-	public List<MetaSpace> getMetaSpaces(String metaSectorId) throws MgmException;
+	public List<MetaSpace> getMetaSpaces(String metaSectorId) throws ManagementException;
 
 	/**
 	 * Get MetaSpaces in a MetaSector by query.
@@ -313,7 +269,7 @@ public interface ManagementService {
 	 * @param query
 	 * @return
 	 */
-	public List<MetaSpace> getMetaSpaces(String metaSectorId, MetaSpaceQuery query) throws MgmException;
+	public List<MetaSpace> getMetaSpaces(String metaSectorId, MetaSpaceQuery query) throws ManagementException;
 
 	/**
 	 * Get MetaSpace information by Id.
@@ -321,32 +277,32 @@ public interface ManagementService {
 	 * @param metaSpaceId
 	 * @return
 	 */
-	public MetaSpace getMetaSpace(String metaSpaceId) throws MgmException;
+	public MetaSpace getMetaSpace(String metaSpaceId) throws ManagementException;
 
 	/**
 	 * Add a MetaSpace to a MetaSector.
 	 * 
 	 * @param metaSectorId
 	 * @param metaSpace
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void addMetaSpace(String metaSectorId, MetaSpace metaSpace) throws MgmException;
+	public void addMetaSpace(String metaSectorId, MetaSpace metaSpace) throws ManagementException;
 
 	/**
 	 * Update MetaSpace information.
 	 * 
 	 * @param metaSpace
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateMetaSpace(MetaSpace metaSpace) throws MgmException;
+	public void updateMetaSpace(MetaSpace metaSpace) throws ManagementException;
 
 	/**
 	 * Delete a MetaSpace from a MetaSector.
 	 * 
 	 * @param metaSpaceId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void deleteMetaSpace(String metaSpaceId) throws MgmException;
+	public void deleteMetaSpace(String metaSpaceId) throws ManagementException;
 
 	// ------------------------------------------------------------------------------------------
 	// Artifact
@@ -357,7 +313,7 @@ public interface ManagementService {
 	 * @param metaSectorId
 	 * @return
 	 */
-	public List<Artifact> getArtifacts(String metaSectorId) throws MgmException;
+	public List<Artifact> getArtifacts(String metaSectorId) throws ManagementException;
 
 	/**
 	 * Get Artifacts in a MetaSector by query.
@@ -366,7 +322,7 @@ public interface ManagementService {
 	 * @param query
 	 * @return
 	 */
-	public List<Artifact> getArtifacts(String metaSectorId, ArtifactQuery query) throws MgmException;
+	public List<Artifact> getArtifacts(String metaSectorId, ArtifactQuery query) throws ManagementException;
 
 	/**
 	 * Get Artifact information by Id.
@@ -374,32 +330,32 @@ public interface ManagementService {
 	 * @param artifactId
 	 * @return
 	 */
-	public Artifact getArtifact(String artifactId) throws MgmException;
+	public Artifact getArtifact(String artifactId) throws ManagementException;
 
 	/**
 	 * Add a Artifact to a MetaSector.
 	 * 
 	 * @param metaSectorId
 	 * @param artifact
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void addArtifact(String metaSectorId, Artifact artifact) throws MgmException;
+	public void addArtifact(String metaSectorId, Artifact artifact) throws ManagementException;
 
 	/**
 	 * Update Artifact information.
 	 * 
 	 * @param artifact
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateArtifact(Artifact artifact) throws MgmException;
+	public void updateArtifact(Artifact artifact) throws ManagementException;
 
 	/**
 	 * Delete a Artifact from a MetaSector.
 	 * 
 	 * @param artifactId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void deleteArtifact(String artifactId) throws MgmException;
+	public void deleteArtifact(String artifactId) throws ManagementException;
 
 	// ------------------------------------------------------------------------------------------
 	// Project
@@ -408,43 +364,43 @@ public interface ManagementService {
 	 * Get Projects.
 	 * 
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public List<Project> getProjects() throws MgmException;
+	public List<Project> getProjects() throws ManagementException;
 
 	/**
 	 * Get Project detailed information by Id.
 	 * 
 	 * @param projectId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Project getProject(String projectId) throws MgmException;
+	public Project getProject(String projectId) throws ManagementException;
 
 	/**
 	 * Add a Project.
 	 * 
 	 * @param newProjectRequest
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Project addProject(Project newProjectRequest) throws MgmException;
+	public Project addProject(Project newProjectRequest) throws ManagementException;
 
 	/**
 	 * Update Project information.
 	 * 
 	 * @param project
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateProject(Project project) throws MgmException;
+	public void updateProject(Project project) throws ManagementException;
 
 	/**
 	 * Remove a Project.
 	 * 
 	 * @param projectId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean deleteProject(String projectId) throws MgmException;
+	public boolean deleteProject(String projectId) throws ManagementException;
 
 	// ------------------------------------------------------------------------------------------
 	// ProjectHome
@@ -455,7 +411,7 @@ public interface ManagementService {
 	 * @param projectId
 	 * @return
 	 */
-	public List<ProjectHome> getProjectHomes(String projectId) throws MgmException;
+	public List<ProjectHome> getProjectHomes(String projectId) throws ManagementException;
 
 	/**
 	 * Get ProjectHome.
@@ -464,7 +420,7 @@ public interface ManagementService {
 	 * @param projectHomeId
 	 * @return
 	 */
-	public ProjectHome getProjectHome(String projectId, String projectHomeId) throws MgmException;
+	public ProjectHome getProjectHome(String projectId, String projectHomeId) throws ManagementException;
 
 	/**
 	 * Add a ProjectHome to a Project.
@@ -472,27 +428,49 @@ public interface ManagementService {
 	 * @param projectId
 	 * @param newProjectHomeRequest
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public ProjectHome addProjectHome(String projectId, ProjectHome newProjectHomeRequest) throws MgmException;
+	public ProjectHome addProjectHome(String projectId, ProjectHome newProjectHomeRequest) throws ManagementException;
 
 	/**
 	 * Update ProjectHome.
 	 * 
 	 * @param projectId
 	 * @param updateProjectHomeRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateProjectHome(String projectId, ProjectHome updateProjectHomeRequest) throws MgmException;
+	public void updateProjectHome(String projectId, ProjectHome updateProjectHomeRequest) throws ManagementException;
 
 	/**
 	 * Delete a ProjectHome from a Project.
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean deleteProjectHome(String projectId, String projectHomeId) throws MgmException;
+	public boolean deleteProjectHome(String projectId, String projectHomeId) throws ManagementException;
+
+	/**
+	 * Set ProjectHome's deployment Home.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param homeId
+	 * @return
+	 * @throws ManagementException
+	 */
+	public boolean setProjectDeploymentHome(String projectId, String projectHomeId, String homeId) throws ManagementException;
+
+	/**
+	 * Remove ProjectHome's deployment Home.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param homeId
+	 * @return
+	 * @throws ManagementException
+	 */
+	public boolean removeProjectDeploymentHome(String projectId, String projectHomeId, String homeId) throws ManagementException;
 
 	// ------------------------------------------------------------------------------------------
 	// ProjectNode
@@ -503,9 +481,9 @@ public interface ManagementService {
 	 * @param projectId
 	 * @param projectHomeId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public List<ProjectNode> getProjectNodes(String projectId, String projectHomeId) throws MgmException;
+	public List<ProjectNode> getProjectNodes(String projectId, String projectHomeId) throws ManagementException;
 
 	/**
 	 * Get ProjectNode.
@@ -514,9 +492,9 @@ public interface ManagementService {
 	 * @param projectHomeId
 	 * @param projectNodeId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public ProjectNode getProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException;
+	public ProjectNode getProjectNode(String projectId, String projectHomeId, String projectNodeId) throws ManagementException;
 
 	/**
 	 * Add a ProjectNode to a ProjectHome.
@@ -525,9 +503,9 @@ public interface ManagementService {
 	 * @param projectHomeId
 	 * @param projectNode
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public ProjectNode addProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException;
+	public ProjectNode addProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws ManagementException;
 
 	/**
 	 * Update ProjectNode.
@@ -535,9 +513,9 @@ public interface ManagementService {
 	 * @param projectId
 	 * @param projectHomeId
 	 * @param projectNode
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws MgmException;
+	public void updateProjectNode(String projectId, String projectHomeId, ProjectNode projectNode) throws ManagementException;
 
 	/**
 	 * Delete a ProjectNode from a ProjectHome.
@@ -546,9 +524,44 @@ public interface ManagementService {
 	 * @param projectHomeId
 	 * @param projectNodeId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException;
+	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws ManagementException;
+
+	/**
+	 * Get a list of Software installed on a ProjectNode.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @return
+	 * @throws ManagementException
+	 */
+	public List<Software> getInstalledProjectNodeSoftware(String projectId, String projectHomeId, String projectNodeId) throws ManagementException;
+
+	/**
+	 * Install Software to ProjectNode.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @param softwareId
+	 * @return
+	 * @throws ManagementException
+	 */
+	public boolean installProjectNodeSoftware(String projectId, String projectHomeId, String projectNodeId, String softwareId) throws ManagementException;
+
+	/**
+	 * Uninstall Software from ProjectNode.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @param softwareId
+	 * @return
+	 * @throws ManagementException
+	 */
+	public boolean uninstallProjectNodeSoftware(String projectId, String projectHomeId, String projectNodeId, String softwareId) throws ManagementException;
 
 	// ------------------------------------------------------------------------------------------
 	// Project Software
@@ -559,7 +572,7 @@ public interface ManagementService {
 	 * @param projectId
 	 * @return
 	 */
-	public List<Software> getProjectSoftware(String projectId) throws MgmException;
+	public List<Software> getProjectSoftware(String projectId) throws ManagementException;
 
 	/**
 	 * Get one piece of software.
@@ -568,7 +581,7 @@ public interface ManagementService {
 	 * @param softwareId
 	 * @return
 	 */
-	public Software getProjectSoftware(String projectId, String softwareId) throws MgmException;
+	public Software getProjectSoftware(String projectId, String softwareId) throws ManagementException;
 
 	/**
 	 * Get Software content.
@@ -577,7 +590,7 @@ public interface ManagementService {
 	 * @param softwareId
 	 * @return
 	 */
-	public InputStream getProjectSoftwareContent(String projectId, String softwareId) throws MgmException;
+	public InputStream getProjectSoftwareContent(String projectId, String softwareId) throws ManagementException;
 
 	/**
 	 * Set Software content.
@@ -589,9 +602,9 @@ public interface ManagementService {
 	 * @param lastModified
 	 * @param input
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean setProjectSoftwareContent(String projectId, String softwareId, String fileName, long length, Date lastModified, InputStream input) throws MgmException;
+	public boolean setProjectSoftwareContent(String projectId, String softwareId, String fileName, long length, Date lastModified, InputStream input) throws ManagementException;
 
 	/**
 	 * Add a Software to a Project.
@@ -599,26 +612,26 @@ public interface ManagementService {
 	 * @param projectId
 	 * @param newSoftwareRequest
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Software addProjectSoftware(String projectId, Software newSoftwareRequest) throws MgmException;
+	public Software addProjectSoftware(String projectId, Software newSoftwareRequest) throws ManagementException;
 
 	/**
 	 * Update Software information.
 	 * 
 	 * @param projectId
 	 * @param software
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateProjectSoftware(String projectId, Software software) throws MgmException;
+	public void updateProjectSoftware(String projectId, Software software) throws ManagementException;
 
 	/**
 	 * Delete a piece of software from a Project.
 	 * 
 	 * @param projectId
 	 * @param softwareId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean deleteProjectSoftware(String projectId, String softwareId) throws MgmException;
+	public boolean deleteProjectSoftware(String projectId, String softwareId) throws ManagementException;
 
 }

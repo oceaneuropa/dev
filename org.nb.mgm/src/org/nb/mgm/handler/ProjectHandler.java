@@ -1,15 +1,15 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.service.ManagementService;
@@ -36,7 +36,7 @@ public class ProjectHandler {
 	 * 
 	 * @return
 	 */
-	public List<Project> getProjects() throws MgmException {
+	public List<Project> getProjects() throws ManagementException {
 		List<Project> resultProjects = new ArrayList<Project>();
 
 		ClusterRoot root = getRoot();
@@ -50,12 +50,12 @@ public class ProjectHandler {
 	 * 
 	 * @param projectId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Project getProject(String projectId) throws MgmException {
+	public Project getProject(String projectId) throws ManagementException {
 		// Throw exception - empty Project id
 		if (projectId == null || projectId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project Id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project Id cannot be empty.", null);
 		}
 
 		Project resultProject = null;
@@ -75,29 +75,29 @@ public class ProjectHandler {
 	 * Add a Project.
 	 * 
 	 * @param newProjectRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Project addProject(Project newProjectRequest) throws MgmException {
+	public Project addProject(Project newProjectRequest) throws ManagementException {
 		// Throw exception - empty Project
 		if (newProjectRequest == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project cannot be empty.", null);
 		}
 
 		// Throw exception - empty Project id
 		if (newProjectRequest.getId() == null || newProjectRequest.getId().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project id cannot be empty.", null);
 		}
 
 		// Throw exception - empty Project name
 		if (newProjectRequest.getName() == null || newProjectRequest.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project name cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project name cannot be empty.", null);
 		}
 
 		ClusterRoot root = getRoot();
 		for (Iterator<Project> projectItor = root.getProjects().iterator(); projectItor.hasNext();) {
 			Project currProject = projectItor.next();
 			if (newProjectRequest.getId().equals(currProject.getId())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Project with same Id already exists.", null);
+				throw new ManagementException(ERROR_CODE_ENTITY_EXIST, "Project with same Id already exists.", null);
 			}
 		}
 
@@ -110,12 +110,12 @@ public class ProjectHandler {
 	 * Update Project.
 	 * 
 	 * @param updateProjectRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateProject(Project updateProjectRequest) throws MgmException {
+	public void updateProject(Project updateProjectRequest) throws ManagementException {
 		// Throw exception - empty Project
 		if (updateProjectRequest == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project cannot be empty.", null);
 		}
 
 		// Find Project by Id
@@ -123,7 +123,7 @@ public class ProjectHandler {
 
 		// Throw exception - Project not found
 		if (projectToUpdate == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Project cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Project cannot be found.", null);
 		}
 
 		// No need to update when they are the same object.
@@ -145,12 +145,12 @@ public class ProjectHandler {
 	 * Delete a Project.
 	 * 
 	 * @param projectId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean deleteProject(String projectId) throws MgmException {
+	public boolean deleteProject(String projectId) throws ManagementException {
 		// Throw exception - empty Id
 		if (projectId == null || projectId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project Id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Project Id cannot be empty.", null);
 		}
 
 		// Find Project by Id
@@ -158,12 +158,12 @@ public class ProjectHandler {
 
 		// Throw exception - Project not found
 		if (projectToDelete == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Project cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Project cannot be found.", null);
 		}
 
 		// Throw exception - Project contains HomeConfigs
 		if (!projectToDelete.getHomes().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Project cannot be deleted. Please delete Home configurations in the Project first.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Project cannot be deleted. Please delete Home configurations in the Project first.", null);
 		}
 
 		// Delete Project from cluster root.

@@ -1,22 +1,22 @@
 package org.nb.mgm.exception;
 
-public class MgmException extends Exception {
+public class ManagementException extends Exception {
 
 	private static final long serialVersionUID = 8431290190713404092L;
 
 	protected String code;
 
-	public MgmException(String code, String message) {
+	public ManagementException(String code, String message) {
 		super(message);
 		this.code = code;
 	}
 
-	public MgmException(String code, String message, Throwable cause) {
+	public ManagementException(String code, String message, Throwable cause) {
 		super(message, cause);
 		this.code = code;
 	}
 
-	public MgmException(String code, Throwable cause) {
+	public ManagementException(String code, Throwable cause) {
 		super(cause);
 		this.code = code;
 	}

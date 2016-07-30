@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.nb.mgm.model.runtime.ClusterRoot;
-import org.nb.mgm.service.MgmConstants;
+import org.nb.mgm.service.ManagementConstants;
 
 /*
  * {
@@ -68,7 +68,7 @@ public class LocalPersistenceAdapter implements MgmPersistenceAdapter {
 	protected File getPersistenceFile() {
 		String dir = (String) this.props.get(PERSISTENCE_LOCAL_DIR);
 		if (dir == null || dir.isEmpty()) {
-			dir = (String) this.props.get(MgmConstants.CLUSTER_HOME_DIR);
+			dir = (String) this.props.get(ManagementConstants.CLUSTER_HOME_DIR);
 		}
 
 		File file = new File(dir, "cluster.json");

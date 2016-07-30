@@ -12,7 +12,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.ISoftware;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.DateUtil;
@@ -20,7 +20,7 @@ import org.origin.common.util.DateUtil;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ProjectSoftwareTest {
 
-	protected Management management;
+	protected ManagementClient management;
 
 	public ProjectSoftwareTest() {
 		this.management = getManagement();
@@ -30,7 +30,7 @@ public class ProjectSoftwareTest {
 		this.management = getManagement();
 	}
 
-	protected Management getManagement() {
+	protected ManagementClient getManagement() {
 		return ManagementFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
 	}
 
@@ -42,10 +42,10 @@ public class ProjectSoftwareTest {
 			for (IProject project : projects) {
 				System.out.println(project.toString());
 
-				List<ISoftware> softwareList = project.getProjectSoftware();
+				List<ISoftware> softwareList = project.getSoftware();
 				for (ISoftware software : softwareList) {
 					String softwareId = software.getId();
-					ISoftware softwareFound = project.getProjectSoftware(softwareId);
+					ISoftware softwareFound = project.getSoftware(softwareId);
 					// System.out.println("\t" + software.toString());
 					System.out.println("\t" + softwareFound.toString());
 				}
@@ -65,13 +65,13 @@ public class ProjectSoftwareTest {
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {
-				List<ISoftware> softwareList = project.getProjectSoftware();
+				List<ISoftware> softwareList = project.getSoftware();
 
 				for (ISoftware software : softwareList) {
 					String softwareId = software.getId();
 					String softwareName = software.getName();
 
-					boolean succeed = project.deleteProjectSoftware(softwareId);
+					boolean succeed = project.deleteSoftware(softwareId);
 					if (succeed) {
 						System.out.println("'" + softwareName + "' (" + softwareId + ") is deleted.");
 					} else {
@@ -95,8 +95,8 @@ public class ProjectSoftwareTest {
 				String projectId = project.getId();
 
 				if ("Project1".equals(projectId)) {
-					ISoftware software1 = project.addProjectSoftware("system", "ServiceRegistry", "1.0.0", "ServiceRegistry description.");
-					ISoftware software2 = project.addProjectSoftware("system", "UserRegistry", "1.0.0", "UserRegistry description.");
+					ISoftware software1 = project.addSoftware("system", "ServiceRegistry", "1.0.0", "ServiceRegistry description.");
+					ISoftware software2 = project.addSoftware("system", "UserRegistry", "1.0.0", "UserRegistry description.");
 
 					if (software1 != null) {
 						System.out.println("ServiceRegistry is created.");
@@ -110,8 +110,8 @@ public class ProjectSoftwareTest {
 					}
 
 				} else if ("Project2".equals(projectId)) {
-					ISoftware software3 = project.addProjectSoftware("system", "AppStore", "1.0.0", "AppStore description.");
-					ISoftware software4 = project.addProjectSoftware("system", "DistributedFileSystem", "1.0.0", "DistributedFileSystem description.");
+					ISoftware software3 = project.addSoftware("system", "AppStore", "1.0.0", "AppStore description.");
+					ISoftware software4 = project.addSoftware("system", "DistributedFileSystem", "1.0.0", "DistributedFileSystem description.");
 
 					if (software3 != null) {
 						System.out.println("AppStore is created.");
@@ -138,7 +138,7 @@ public class ProjectSoftwareTest {
 		try {
 			List<IProject> projects = this.management.getProjects();
 			for (IProject project : projects) {
-				List<ISoftware> softwareList = project.getProjectSoftware();
+				List<ISoftware> softwareList = project.getSoftware();
 
 				for (ISoftware software : softwareList) {
 					String softwareId = software.getId();

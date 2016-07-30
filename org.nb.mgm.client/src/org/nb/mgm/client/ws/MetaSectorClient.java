@@ -19,18 +19,14 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-/**
- * MetaSector web service client
+/*
+ * MetaSector resource client
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?name={name}&filter={filter}
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/{metaSectorId}
- * 
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/metasectors/ (Body parameter: MetaSectorDTO)
- * 
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/metasectors/ (Body parameter: MetaSectorDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/metasectors/ (Body parameter: MetaSectorDTO)
- * 
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/metasectors/{metaSectorId}
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/metasectors/{metaSectorId}
  * 
  */
 public class MetaSectorClient extends AbstractClient {
@@ -44,7 +40,7 @@ public class MetaSectorClient extends AbstractClient {
 	}
 
 	/**
-	 * Get all MetaSectors.
+	 * Get MetaSectors.
 	 * 
 	 * @return
 	 * @throws ClientException
@@ -54,7 +50,7 @@ public class MetaSectorClient extends AbstractClient {
 	}
 
 	/**
-	 * Get MetaSectors by query parameters.
+	 * Get MetaSectors.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/?name={name}&filter={filter}
 	 * 
@@ -96,7 +92,7 @@ public class MetaSectorClient extends AbstractClient {
 	}
 
 	/**
-	 * Get MetaSector by metaSector Id.
+	 * Get a MetaSector.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/metasectors/{metaSectorId}
 	 * 
@@ -123,7 +119,7 @@ public class MetaSectorClient extends AbstractClient {
 	}
 
 	/**
-	 * Add a MetaSector to the cluster.
+	 * Add a MetaSector.
 	 * 
 	 * Request URL (POST): {scheme}://{host}:{port}/{contextRoot}/metasectors
 	 * 
@@ -152,22 +148,22 @@ public class MetaSectorClient extends AbstractClient {
 	}
 
 	/**
-	 * Update MetaSector information.
+	 * Update a MetaSector.
 	 * 
 	 * Request URL (PUT): {scheme}://{host}:{port}/{contextRoot}/metasectors (Body parameter: MetaSectorDTO)
 	 * 
-	 * @param metaSector
+	 * @param updateMetaSectorRequest
 	 *            Body parameter for updating the MetaSector.
 	 * 
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateMetaSector(MetaSectorDTO metaSector) throws ClientException {
+	public StatusDTO updateMetaSector(MetaSectorDTO updateMetaSectorRequest) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
 			Builder builder = getRootPath().path("metasectors").request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MetaSectorDTO>(metaSector) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MetaSectorDTO>(updateMetaSectorRequest) {
 			}));
 			checkResponse(response);
 
@@ -181,7 +177,7 @@ public class MetaSectorClient extends AbstractClient {
 	}
 
 	/**
-	 * Delete a MetaSector from the cluster.
+	 * Delete a MetaSector.
 	 * 
 	 * Request URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/metasectors/{metaSectorId}
 	 * 

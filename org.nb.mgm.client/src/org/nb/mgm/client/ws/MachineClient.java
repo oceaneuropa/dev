@@ -27,14 +27,14 @@ import org.origin.common.util.PropertyUtil;
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter} 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineDTO)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineDTO)
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
  * 
  * Machine properties resource
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=false
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?useJsonString=true
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
  * 
  */
 public class MachineClient extends AbstractClient {
@@ -48,7 +48,7 @@ public class MachineClient extends AbstractClient {
 	}
 
 	/**
-	 * Get all Machines.
+	 * Get Machines.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
 	 * 
@@ -60,7 +60,7 @@ public class MachineClient extends AbstractClient {
 	}
 
 	/**
-	 * Get Machines by query parameter.
+	 * Get Machines.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines?name={name}&ipaddress={ipaddress}&filter={filter}
 	 * 
@@ -106,7 +106,7 @@ public class MachineClient extends AbstractClient {
 	}
 
 	/**
-	 * Get Machine by machine Id.
+	 * Get a Machine.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
 	 * 
@@ -133,7 +133,7 @@ public class MachineClient extends AbstractClient {
 	}
 
 	/**
-	 * Add a Machine to the cluster.
+	 * Add a Machine.
 	 * 
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/machines
 	 * 
@@ -162,22 +162,22 @@ public class MachineClient extends AbstractClient {
 	}
 
 	/**
-	 * Update Machine information.
+	 * Update a Machine.
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines
 	 * 
-	 * @param machine
+	 * @param updateMachineRequest
 	 *            Body parameter for updating the Machine.
 	 * 
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateMachine(MachineDTO machine) throws ClientException {
+	public StatusDTO updateMachine(MachineDTO updateMachineRequest) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
 			Builder builder = getRootPath().path("machines").request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MachineDTO>(machine) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MachineDTO>(updateMachineRequest) {
 			}));
 			checkResponse(response);
 
@@ -191,7 +191,7 @@ public class MachineClient extends AbstractClient {
 	}
 
 	/**
-	 * Delete a Machine from the cluster.
+	 * Delete a Machine.
 	 * 
 	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
 	 * 

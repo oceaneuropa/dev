@@ -49,10 +49,38 @@ public class Project extends ModelObject {
 	// ----------------------------------------------------------------------------------------------------------------
 	// ProjectSoftware
 	// ----------------------------------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * @return
+	 */
 	public List<Software> getSoftware() {
 		return this.projectSoftwareList;
 	}
 
+	/**
+	 * 
+	 * @param softwareId
+	 * @return
+	 */
+	public Software getSoftware(String softwareId) {
+		Software software = null;
+		if (softwareId != null) {
+			for (Software currSoftware : this.projectSoftwareList) {
+				String currSoftwareId = currSoftware.getId();
+				if (softwareId.equals(currSoftwareId)) {
+					software = currSoftware;
+					break;
+				}
+			}
+		}
+		return software;
+	}
+
+	/**
+	 * 
+	 * @param software
+	 * @return
+	 */
 	public boolean addSoftware(Software software) {
 		if (software != null && !this.projectSoftwareList.contains(software)) {
 			software.setParent(this);
@@ -62,6 +90,11 @@ public class Project extends ModelObject {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param software
+	 * @return
+	 */
 	public boolean deleteSoftware(Software software) {
 		if (software != null && this.projectSoftwareList.contains(software)) {
 			this.projectSoftwareList.remove(software);

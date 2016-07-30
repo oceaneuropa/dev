@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.nb.mgm.model.runtime.Artifact;
 import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.Home;
+import org.nb.mgm.model.runtime.Home.HomeProxy;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
@@ -664,6 +665,18 @@ public class LocalJsonReader {
 			}
 		}
 
+		// "deploymentHome" attribute
+		if (projectHomeJSON.has("deploymentHome")) {
+			JSONObject deploymentHomeJSON = projectHomeJSON.getJSONObject("deploymentHome");
+			{
+				if (deploymentHomeJSON.has("homeId")) {
+					String homeId = deploymentHomeJSON.getString("homeId");
+					HomeProxy homeProxy = new HomeProxy(homeId);
+					projectHome.setDeploymentHome(homeProxy);
+				}
+			}
+		}
+
 		return projectHome;
 	}
 
@@ -711,6 +724,27 @@ public class LocalJsonReader {
 		}
 		if (properties != null) {
 			projectNode.setProperties(properties);
+		}
+
+		// "installedSoftware" attribute
+		if (projectNodeJSON.has("installedSoftware")) {
+			JSONArray softwareArray = projectNodeJSON.getJSONArray("installedSoftware");
+			if (softwareArray != null) {
+				int length = softwareArray.length();
+				for (int i = 0; i < length; i++) {
+					JSONObject softwareJSON = softwareArray.getJSONObject(i);
+					if (softwareJSON != null) {
+						// "softwareId" attribute
+						String softwareId = null;
+						if (softwareJSON.has("softwareId")) {
+							softwareId = softwareJSON.getString("softwareId");
+						}
+						if (softwareId != null) {
+							projectNode.addSoftwareId(softwareId);
+						}
+					}
+				}
+			}
 		}
 
 		return projectNode;

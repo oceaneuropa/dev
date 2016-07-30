@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.io.IOUtil;
@@ -35,12 +35,6 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 @Path("/projects/{projectId}/software/{softwareId}/content")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectSoftwareContentResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/software/{softwareId}/content
@@ -90,7 +84,7 @@ public class ProjectSoftwareContentResource extends AbstractApplicationResource 
 				bytes = IOUtil.toByteArray(input);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		} catch (IOException e) {
@@ -151,7 +145,7 @@ public class ProjectSoftwareContentResource extends AbstractApplicationResource 
 				return Response.ok().entity(StatusDTO.status("201", "failed", "File is not uplaoded.")).build();
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		} finally {

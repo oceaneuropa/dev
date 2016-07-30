@@ -11,7 +11,7 @@ public interface IHome extends IAdaptable {
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
-	public Management getManagement();
+	public ManagementClient getManagement();
 
 	public IMachine getMachine();
 

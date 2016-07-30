@@ -8,7 +8,7 @@ import org.origin.common.rest.model.ModelObject;
 
 public class ProjectHome extends ModelObject {
 
-	protected Home remoteHome;
+	protected Home deploymentHome;
 	protected List<ProjectNode> projectNodes = new ArrayList<ProjectNode>();
 
 	public ProjectHome() {
@@ -26,28 +26,57 @@ public class ProjectHome extends ModelObject {
 		return this.getParent(Project.class);
 	}
 
-	public void setRemoteHome(Home home) {
-		this.remoteHome = home;
+	public void setDeploymentHome(Home home) {
+		this.deploymentHome = home;
 	}
 
-	public Home getRemoteHome() {
-		if (this.remoteHome != null && this.remoteHome.isProxy()) {
-			String remoteHomeId = this.remoteHome.getId();
+	public Home getDeploymentHome() {
+		if (this.deploymentHome != null && this.deploymentHome.isProxy()) {
+			String homeId = this.deploymentHome.getId();
 			ClusterRoot root = getParent(ClusterRoot.class);
-			if (remoteHomeId != null && root != null) {
+			if (homeId != null && root != null) {
 				for (Iterator<Machine> machineItor = root.getMachines().iterator(); machineItor.hasNext();) {
 					Machine currMachine = machineItor.next();
 					for (Iterator<Home> homeItor = currMachine.getHomes().iterator(); homeItor.hasNext();) {
 						Home currHome = homeItor.next();
-						if (remoteHomeId.equals(currHome.getId())) {
-							this.remoteHome = currHome;
-							return this.remoteHome;
+						if (homeId.equals(currHome.getId())) {
+							this.deploymentHome = currHome;
+							return this.deploymentHome;
 						}
 					}
 				}
 			}
 		}
-		return this.remoteHome;
+		return this.deploymentHome;
+	}
+
+	@Override
+	public boolean hasAttribute(String attributeName) {
+		boolean result = super.hasAttribute(attributeName);
+		if (result) {
+			return true;
+		}
+		if ("homeId".equals(attributeName)) {
+			Home home = getDeploymentHome();
+			if (home != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public Object getAttribute(String attributeName) {
+		Object value = super.getAttribute(attributeName);
+		if (value == null) {
+			if ("homeId".equals(attributeName)) {
+				Home home = getDeploymentHome();
+				if (home != null) {
+					value = home.getId();
+				}
+			}
+		}
+		return value;
 	}
 
 	// ----------------------------------------------------------------------------------------------------------------

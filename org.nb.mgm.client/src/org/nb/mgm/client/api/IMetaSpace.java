@@ -8,7 +8,7 @@ public interface IMetaSpace extends IAdaptable {
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
-	public Management getManagement();
+	public ManagementClient getManagement();
 
 	public IMetaSector getMetaSector();
 
@@ -19,7 +19,7 @@ public interface IMetaSpace extends IAdaptable {
 
 	public void setAutoUpdate(boolean autoUpdate);
 
-	public void update() throws ClientException;
+	public boolean update() throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Attribute

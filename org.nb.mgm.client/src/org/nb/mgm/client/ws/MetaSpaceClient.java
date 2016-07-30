@@ -19,18 +19,14 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-/**
- * MetaSpace web service client
+/*
+ * MetaSpace resource client
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
- * 
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces (Body parameter: MetaSpaceDTO)
- * 
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces (Body parameter: MetaSpaceDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces (Body parameter: MetaSpaceDTO)
- * 
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
  * 
  */
 public class MetaSpaceClient extends AbstractClient {
@@ -44,7 +40,7 @@ public class MetaSpaceClient extends AbstractClient {
 	}
 
 	/**
-	 * Get all MetaSpaces in a MetaSector.
+	 * Get MetaSpaces in a MetaSector.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
 	 * 
@@ -57,7 +53,7 @@ public class MetaSpaceClient extends AbstractClient {
 	}
 
 	/**
-	 * Get MetaSpaces in a MetaSector by query parameters.
+	 * Get MetaSpaces in a MetaSector.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces?name={name}&filter={filter}
 	 * 
@@ -100,7 +96,7 @@ public class MetaSpaceClient extends AbstractClient {
 	}
 
 	/**
-	 * Get MetaSpace by metaSector Id and metaSpace Id.
+	 * Get a MetaSpace from a MetaSector.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces/{metaSpaceId}
 	 * 
@@ -158,23 +154,23 @@ public class MetaSpaceClient extends AbstractClient {
 	}
 
 	/**
-	 * Update MetaSpace information.
+	 * Update a MetaSpace.
 	 * 
 	 * Request URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/metaspaces
 	 * 
 	 * @param metaSectorId
-	 * @param metaSpace
+	 * @param updateMetaSpaceRequest
 	 *            Body parameter for updating the MetaSpace.
 	 * 
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateMetaSpace(String metaSectorId, MetaSpaceDTO metaSpace) throws ClientException {
+	public StatusDTO updateMetaSpace(String metaSectorId, MetaSpaceDTO updateMetaSpaceRequest) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("metaspaces").request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MetaSpaceDTO>(metaSpace) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MetaSpaceDTO>(updateMetaSpaceRequest) {
 			}));
 			checkResponse(response);
 

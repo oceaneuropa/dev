@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
@@ -42,12 +42,6 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 @Path("/machines")
 @Produces(MediaType.APPLICATION_JSON)
 public class MachineResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * Get Machines.
@@ -101,7 +95,7 @@ public class MachineResource extends AbstractApplicationResource {
 				machineDTOs.add(machineDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -132,7 +126,7 @@ public class MachineResource extends AbstractApplicationResource {
 			}
 			machineDTO = DTOConverter.getInstance().toDTO(machine);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -180,12 +174,10 @@ public class MachineResource extends AbstractApplicationResource {
 			}
 			newMachineDTO = DTOConverter.getInstance().toDTO(newMachine);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		return Response.ok().entity(newMachineDTO).build();
 	}
@@ -223,12 +215,10 @@ public class MachineResource extends AbstractApplicationResource {
 
 			mgm.updateMachine(machine);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Machine is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
@@ -255,12 +245,10 @@ public class MachineResource extends AbstractApplicationResource {
 		try {
 			mgm.deleteMachine(machineId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Machine is removed successfully.");
 		return Response.ok().entity(statusDTO).build();

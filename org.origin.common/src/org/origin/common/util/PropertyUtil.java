@@ -327,4 +327,67 @@ public class PropertyUtil {
 		System.out.println("----------------------------------------------------------------------------------------");
 	}
 
+	/**
+	 * Get property value.
+	 * 
+	 * @param typeName
+	 * @param valueString
+	 * @return
+	 */
+	public static Object getPropertyValue(String typeName, String valueString) {
+		if (valueString == null) {
+			return valueString;
+		}
+		Object value = null;
+		if ("string".equals(typeName)) {
+			value = valueString;
+		} else if ("boolean".equals(typeName)) {
+			try {
+				value = Boolean.parseBoolean(valueString);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("int".equals(typeName)) {
+			try {
+				value = Integer.parseInt(valueString);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("long".equals(typeName)) {
+			try {
+				value = Long.parseLong(valueString);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("float".equals(typeName)) {
+			try {
+				value = Float.parseFloat(valueString);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("double".equals(typeName)) {
+			try {
+				value = Double.parseDouble(valueString);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else if ("date".equals(typeName)) {
+			long time = -1;
+			try {
+				time = Long.parseLong(valueString);
+			} catch (Exception e) {
+				time = -1;
+			}
+			if (time >= 0) {
+				value = DateUtil.toDate(time);
+			} else {
+				value = DateUtil.toDate(valueString, DateUtil.getCommonDateFormats());
+			}
+		}
+		if (value == null) {
+			value = valueString;
+		}
+		return value;
+	}
+
 }

@@ -5,11 +5,13 @@ import java.util.List;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
@@ -25,6 +27,10 @@ import org.origin.common.rest.model.StatusDTO;
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes (Body parameter: ProjectHomeDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes (Body parameter: ProjectHomeDTO)
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}
+ * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/hasAttribute?attribute={attributeName}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/attribute?attribute={attributeName}
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/action (Body parameter: Action)
  * 
  */
 public class ProjectHomeClient extends AbstractClient {
@@ -126,7 +132,7 @@ public class ProjectHomeClient extends AbstractClient {
 	}
 
 	/**
-	 * Update ProjectHome.
+	 * Update a ProjectHome.
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes (Body parameter: ProjectHomeDTO)
 	 * 
@@ -175,8 +181,92 @@ public class ProjectHomeClient extends AbstractClient {
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
-			response.close();
 
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
+		}
+		return status;
+	}
+
+	/**
+	 * Get ProjectHome attribute
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/hasAttribute?attribute={attributeName}
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param attribute
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean hasProjectHomeAttribute(String projectId, String projectHomeId, String attribute) throws ClientException {
+		boolean hasAttribute = false;
+		WebTarget target = getRootPath().path("projects").path(projectId).path("homes").path(projectHomeId).path("hasAttribute").queryParam("attribute", attribute);
+		try {
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			hasAttribute = response.readEntity(Boolean.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return hasAttribute;
+	}
+
+	/**
+	 * Get ProjectHome attribute
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/attribute?attribute={attributeName}
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param attribute
+	 * @param clazz
+	 * @return
+	 * @throws ClientException
+	 */
+	public <T> T getProjectHomeAttribute(String projectId, String projectHomeId, String attribute, Class<T> clazz) throws ClientException {
+		T result = null;
+		WebTarget target = getRootPath().path("projects").path(projectId).path("homes").path(projectHomeId).path("attribute").queryParam("attribute", attribute);
+		try {
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			result = response.readEntity(clazz);
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return result;
+	}
+
+	/**
+	 * Send an Action to a ProjectHome.
+	 * 
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/action (Body: Action)
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param action
+	 * 
+	 * @return new ProjectHome
+	 * @throws ClientException
+	 */
+	public StatusDTO sendAction(String projectId, String projectHomeId, Action action) throws ClientException {
+		StatusDTO status = null;
+		Response response = null;
+		try {
+			Builder builder = getRootPath().path("projects").path(projectId).path("homes").path(projectHomeId).path("action").request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<Action>(action) {
+			}));
+			checkResponse(response);
+
+			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {

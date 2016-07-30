@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.ProjectDTO;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
@@ -31,20 +31,14 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects (Body parameter: ProjectDTO)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects (Body parameter: ProjectDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/projects (Body parameter: ProjectDTO)
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}
  * 
  */
 @Path("/projects")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * Get Projects
@@ -74,7 +68,7 @@ public class ProjectResource extends AbstractApplicationResource {
 
 				projectDTOs.add(projectDTO);
 			}
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -105,7 +99,7 @@ public class ProjectResource extends AbstractApplicationResource {
 			}
 			projectDTO = DTOConverter.getInstance().toDTO(project);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -151,12 +145,10 @@ public class ProjectResource extends AbstractApplicationResource {
 			}
 			newProjectDTO = DTOConverter.getInstance().toDTO(newProject);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		return Response.ok().entity(newProjectDTO).build();
 	}
@@ -192,12 +184,10 @@ public class ProjectResource extends AbstractApplicationResource {
 
 			mgm.updateProject(updateProjectRequest);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Project is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
@@ -225,12 +215,10 @@ public class ProjectResource extends AbstractApplicationResource {
 		try {
 			succeed = mgm.deleteProject(projectId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		StatusDTO statusDTO = null;
 		if (succeed) {

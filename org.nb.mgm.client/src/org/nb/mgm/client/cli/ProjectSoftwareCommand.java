@@ -10,7 +10,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.ISoftware;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -24,13 +24,13 @@ import org.osgi.framework.ServiceRegistration;
 
 public class ProjectSoftwareCommand implements Annotated {
 
-	protected static String[] SOFTWARE_TITLES = new String[] { "Project", "ID", "Type", "Name", "Version", "Description", "File Name", "Exists", "Length", "Last Modified" };
+	protected static String[] SOFTWARE_TITLES = new String[] { "ID", "Type", "Name", "Version", "Description", "File Name", "Exists", "Length", "Last Modified" };
 
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<?> registration;
 
 	@Dependency
-	protected Management management;
+	protected ManagementClient management;
 
 	/**
 	 * 
@@ -94,7 +94,7 @@ public class ProjectSoftwareCommand implements Annotated {
 		for (IProject project : projects) {
 			String currProjectId = project.getId();
 			if ("".equals(projectId) || currProjectId.equals(projectId)) {
-				List<ISoftware> currSoftwareList = project.getProjectSoftware();
+				List<ISoftware> currSoftwareList = project.getSoftware();
 				if (!currSoftwareList.isEmpty()) {
 					softwareList.addAll(currSoftwareList);
 				}
@@ -103,22 +103,30 @@ public class ProjectSoftwareCommand implements Annotated {
 
 		String[][] rows = new String[softwareList.size()][SOFTWARE_TITLES.length];
 		int rowIndex = 0;
-		String prevProjectId = null;
+		// String prevProjectId = null;
 		for (ISoftware software : softwareList) {
 			IProject project = software.getProject();
 			String currProjectId = project.getId();
-			String projectText = project.getName() + " (" + currProjectId + ")";
-			if (prevProjectId != null && prevProjectId.equals(currProjectId)) {
-				projectText = "";
-			}
+			// String projectText = project.getName() + " (" + currProjectId + ")";
+			// if (prevProjectId != null && prevProjectId.equals(currProjectId)) {
+			// projectText = "";
+			// }
 
 			String fileName = software.getFileName() != null ? software.getFileName() : "n/a";
 			String exists = software.exists() ? "true" : "false";
 			String lengthText = String.valueOf(software.getLength());
 			String lastModifiedText = software.getLastModified() != null ? DateUtil.toString(software.getLastModified(), DateUtil.getJdbcDateFormat()) : "n/a";
 
-			rows[rowIndex++] = new String[] { projectText, software.getId(), software.getType(), software.getName(), software.getVersion(), software.getDescription(), fileName, exists, lengthText, lastModifiedText };
-			prevProjectId = currProjectId;
+			String currSoftwareId = software.getId();
+			String type = software.getType();
+			String name = software.getName();
+			String version = software.getVersion();
+			String desc = software.getDescription();
+
+			String softwareText = "[" + currProjectId + "]/" + name;
+
+			rows[rowIndex++] = new String[] { currSoftwareId, type, softwareText, version, desc, fileName, exists, lengthText, lastModifiedText };
+			// prevProjectId = currProjectId;
 		}
 
 		PrettyPrinter.prettyPrint(SOFTWARE_TITLES, rows);
@@ -176,7 +184,7 @@ public class ProjectSoftwareCommand implements Annotated {
 				return;
 			}
 
-			ISoftware newSoftware = project.addProjectSoftware(type, name, version, description);
+			ISoftware newSoftware = project.addSoftware(type, name, version, description);
 			if (newSoftware != null) {
 				// check filePath parameter
 				if (!"".equals(filePath)) {
@@ -350,10 +358,10 @@ public class ProjectSoftwareCommand implements Annotated {
 	 * 
 	 * Command: uploadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <filePath>
 	 * 
-	 * e.g.
-	 * uploadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file '/Users/yayang/Downloads/test_software/commons-io-2.5-bin.zip'
-	 * uploadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/yayang/Downloads/test_software/japanese_issue.zip'
-	 * uploadprojectsoftware -projectid Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/yayang/Downloads/test_software/uber.wsdl.zip'
+	 * e.g. uploadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file
+	 * '/Users/yayang/Downloads/test_software/commons-io-2.5-bin.zip' uploadprojectsoftware -projectid Project2 -softwareid
+	 * ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/yayang/Downloads/test_software/japanese_issue.zip' uploadprojectsoftware -projectid Project1
+	 * -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/yayang/Downloads/test_software/uber.wsdl.zip'
 	 * 
 	 * @param projectId
 	 * @param softwareId
@@ -415,13 +423,12 @@ public class ProjectSoftwareCommand implements Annotated {
 	 * 
 	 * Command: downloadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <filePath>
 	 * 
-	 * e.g.
-	 * downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file '/Users/yayang/Downloads/test_software2/commons-io-2.5-bin.zip'
-	 * downloadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/yayang/Downloads/test_software2/japanese_issue.zip'
-	 * downloadprojectsoftware -projectid Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/yayang/Downloads/test_software2/uber.wsdl.zip'
+	 * e.g. downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file
+	 * '/Users/yayang/Downloads/test_software2/commons-io-2.5-bin.zip' downloadprojectsoftware -projectid Project2 -softwareid
+	 * ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/yayang/Downloads/test_software2/japanese_issue.zip' downloadprojectsoftware -projectid
+	 * Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/yayang/Downloads/test_software2/uber.wsdl.zip'
 	 * 
-	 * e.g.
-	 * downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -dir '/Users/yayang/Downloads/test_software2'
+	 * e.g. downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -dir '/Users/yayang/Downloads/test_software2'
 	 * downloadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -dir '/Users/yayang/Downloads/test_software2'
 	 * downloadprojectsoftware -projectid Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -dir '/Users/yayang/Downloads/test_software2'
 	 * 
@@ -508,9 +515,8 @@ public class ProjectSoftwareCommand implements Annotated {
 			} else {
 				System.out.println("Failed to download Software.");
 			}
-
 		} catch (ClientException e) {
-			System.out.println("Failed to upload Software. " + e.getMessage());
+			System.out.println("Failed to download Software. " + e.getMessage());
 		}
 	}
 

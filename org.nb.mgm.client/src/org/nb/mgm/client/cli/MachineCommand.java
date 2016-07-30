@@ -1,12 +1,14 @@
 package org.nb.mgm.client.cli;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -19,11 +21,12 @@ import org.osgi.framework.BundleContext;
 public class MachineCommand implements Annotated {
 
 	protected static String[] MACHINE_TITLES = new String[] { "ID", "Name", "IP Address", "Description" };
+	protected static String[] MACHINE_TITLES_ALL = new String[] { "ID", "Name", "IP Address", "Description", "Home" };
 
 	protected BundleContext bundleContext;
 
 	@Dependency
-	protected Management management;
+	protected ManagementClient management;
 
 	/**
 	 * 
@@ -67,19 +70,68 @@ public class MachineCommand implements Annotated {
 	 * @throws ClientException
 	 */
 	@Descriptor("List Machines")
-	public void lmachines() throws ClientException {
+	public void lmachines(
+			// Options
+			@Descriptor("List with detailed information of each Machine") @Parameter(names = { "-all", "--all" }, absentValue = "false", presentValue = "true") boolean all //
+	) throws ClientException {
 		if (this.management == null) {
 			System.out.println("Please login first.");
 			return;
 		}
 
+		all = true;
+
 		List<IMachine> machines = this.management.getMachines(null);
-		String[][] rows = new String[machines.size()][MACHINE_TITLES.length];
-		int rowIndex = 0;
-		for (IMachine machine : machines) {
-			rows[rowIndex++] = new String[] { machine.getId(), machine.getName(), machine.getIpAddress(), machine.getDescription() };
+		if (all) {
+			List<String[]> items = new ArrayList<String[]>();
+			for (IMachine machine : machines) {
+				String machineId = machine.getId();
+				String name = machine.getName();
+				String ipAddress = machine.getIpAddress();
+				String desc = machine.getDescription();
+
+				List<IHome> homes = machine.getHomes();
+				if (homes.isEmpty()) {
+					String[] item = new String[] { machineId, name, ipAddress, desc, "" };
+					items.add(item);
+
+				} else {
+					for (int i = 0; i < homes.size(); i++) {
+						IHome currHome = homes.get(i);
+						String homeName = currHome.getName();
+						String homeText = homeName;
+
+						String[] item = null;
+						if (i == 0) {
+							item = new String[] { machineId, name, ipAddress, desc, homeText };
+						} else {
+							item = new String[] { "", "", "", "", homeText };
+						}
+						items.add(item);
+					}
+				}
+			}
+
+			String[][] rows = new String[items.size()][MACHINE_TITLES_ALL.length];
+			int rowIndex = 0;
+			for (String[] item : items) {
+				rows[rowIndex++] = item;
+			}
+			PrettyPrinter.prettyPrint(MACHINE_TITLES_ALL, rows, machines.size());
+
+		} else {
+			String[][] rows = new String[machines.size()][MACHINE_TITLES.length];
+			int rowIndex = 0;
+			for (IMachine machine : machines) {
+				String machineId = machine.getId();
+				String name = machine.getName();
+				String ipAddress = machine.getIpAddress();
+				String desc = machine.getDescription();
+
+				rows[rowIndex++] = new String[] { machineId, name, ipAddress, desc };
+			}
+			PrettyPrinter.prettyPrint(MACHINE_TITLES, rows, machines.size());
 		}
-		PrettyPrinter.prettyPrint(MACHINE_TITLES, rows);
 	}
 
 	/**

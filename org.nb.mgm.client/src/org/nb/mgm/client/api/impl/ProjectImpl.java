@@ -5,17 +5,15 @@ import java.util.List;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
 import org.nb.mgm.client.api.ISoftware;
-import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.ws.ProjectClient;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.model.dto.ProjectDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.model.StatusDTO;
 
 public class ProjectImpl implements IProject {
 
 	private boolean autoUpdate = false;
-	private Management management;
+	private ManagementClient management;
 	private ProjectDTO projectDTO;
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
 
@@ -24,7 +22,7 @@ public class ProjectImpl implements IProject {
 	 * @param management
 	 * @param projectDTO
 	 */
-	public ProjectImpl(Management management, ProjectDTO projectDTO) {
+	public ProjectImpl(ManagementClient management, ProjectDTO projectDTO) {
 		this.management = management;
 		this.projectDTO = projectDTO;
 	}
@@ -33,11 +31,11 @@ public class ProjectImpl implements IProject {
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public Management getManagement() {
+	public ManagementClient getManagement() {
 		return management;
 	}
 
-	public void setManagement(Management management) {
+	public void setManagement(ManagementClient management) {
 		this.management = management;
 	}
 
@@ -57,12 +55,7 @@ public class ProjectImpl implements IProject {
 	@Override
 	public boolean update() throws ClientException {
 		checkManagement(this.management);
-
-		ProjectClient projectClient = this.management.getAdapter(ProjectClient.class);
-		checkClient(projectClient);
-
-		StatusDTO status = projectClient.updateProject(this.projectDTO);
-		return (status != null && status.success()) ? true : false;
+		return this.management.updateProject(this.projectDTO);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -114,21 +107,25 @@ public class ProjectImpl implements IProject {
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public List<IProjectHome> getProjectHomes() throws ClientException {
+		checkManagement(this.management);
 		return this.management.getProjectHomes(getId());
 	}
 
 	@Override
 	public IProjectHome getProjectHome(String projectHomeId) throws ClientException {
+		checkManagement(this.management);
 		return this.management.getProjectHome(getId(), projectHomeId);
 	}
 
 	@Override
 	public IProjectHome addProjectHome(String name, String description) throws ClientException {
+		checkManagement(this.management);
 		return this.management.addProjectHome(getId(), name, description);
 	}
 
 	@Override
 	public boolean deleteProjectHome(String projectHomeId) throws ClientException {
+		checkManagement(this.management);
 		return this.management.deleteProjectHome(getId(), projectHomeId);
 	}
 
@@ -136,35 +133,37 @@ public class ProjectImpl implements IProject {
 	// ProjectSoftware
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public List<ISoftware> getProjectSoftware() throws ClientException {
+	public List<ISoftware> getSoftware() throws ClientException {
+		checkManagement(this.management);
 		return this.management.getProjectSoftwareList(getId());
 	}
 
 	@Override
-	public ISoftware getProjectSoftware(String softwareId) throws ClientException {
+	public ISoftware getSoftware(String softwareId) throws ClientException {
+		checkManagement(this.management);
 		return this.management.getProjectSoftware(getId(), softwareId);
 	}
 
 	@Override
-	public ISoftware addProjectSoftware(String type, String name, String version, String description) throws ClientException {
+	public ISoftware addSoftware(String type, String name, String version, String description) throws ClientException {
+		checkManagement(this.management);
 		return this.management.addProjectSoftware(getId(), type, name, version, description);
 	}
 
 	@Override
-	public boolean deleteProjectSoftware(String softwareId) throws ClientException {
+	public boolean deleteSoftware(String softwareId) throws ClientException {
+		checkManagement(this.management);
 		return this.management.deleteProjectSoftware(getId(), softwareId);
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// Check WS Client
+	// Check Management Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(ProjectClient projectClient) throws ClientException {
-		if (projectClient == null) {
-			throw new ClientException(401, "ProjectClient is not found.", null);
-		}
-	}
-
-	protected void checkManagement(Management management) throws ClientException {
+	/**
+	 * @param management
+	 * @throws ClientException
+	 */
+	protected void checkManagement(ManagementClient management) throws ClientException {
 		if (management == null) {
 			throw new ClientException(401, "management is null.", null);
 		}

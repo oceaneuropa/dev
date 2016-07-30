@@ -23,13 +23,14 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
 /*
- * Home web service client
+ * Home resource client
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes (Body parameter: HomeDTO)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes (Body parameter: HomeDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes (Body parameter: HomeDTO)
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
+ * 
  */
 public class HomeClient extends AbstractClient {
 
@@ -42,7 +43,7 @@ public class HomeClient extends AbstractClient {
 	}
 
 	/**
-	 * Get all Homes in a Machine.
+	 * Get Homes in a Machine.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
 	 * 
@@ -56,7 +57,7 @@ public class HomeClient extends AbstractClient {
 	}
 
 	/**
-	 * Get all Homes in a Machine by query parameters.
+	 * Get Homes in a Machine.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes?name={name}&url={url}&status={status}&filter={filter}
 	 * 
@@ -107,7 +108,7 @@ public class HomeClient extends AbstractClient {
 	}
 
 	/**
-	 * Get Home by machine Id and home Id.
+	 * Get a Home in a Machine.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
 	 * 
@@ -165,23 +166,23 @@ public class HomeClient extends AbstractClient {
 	}
 
 	/**
-	 * Update Home information.
+	 * Update a Home.
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes
 	 * 
 	 * @param machineId
-	 * @param home
+	 * @param updateHomeRequest
 	 *            Body parameter for updating the Home.
 	 * 
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateHome(String machineId, HomeDTO home) throws ClientException {
+	public StatusDTO updateHome(String machineId, HomeDTO updateHomeRequest) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
 			Builder builder = getRootPath().path(machineId).path("homes").request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).put(Entity.json(new GenericEntity<HomeDTO>(home) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<HomeDTO>(updateHomeRequest) {
 			}));
 			checkResponse(response);
 
@@ -195,7 +196,7 @@ public class HomeClient extends AbstractClient {
 	}
 
 	/**
-	 * Delete a Home from a Machine by home Id.
+	 * Delete a Home from a Machine.
 	 * 
 	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
 	 * 

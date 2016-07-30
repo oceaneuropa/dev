@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
@@ -46,12 +46,6 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 @Path("/{machineId}/homes")
 @Produces(MediaType.APPLICATION_JSON)
 public class HomeResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * Get Homes in a Machine by query parameters.
@@ -136,7 +130,7 @@ public class HomeResource extends AbstractApplicationResource {
 				homeDTOs.add(homeDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -205,7 +199,7 @@ public class HomeResource extends AbstractApplicationResource {
 			}
 			homeDTO.setJoinedMetaSpaces(joinedMetaSpaceDTOs);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -257,12 +251,10 @@ public class HomeResource extends AbstractApplicationResource {
 			}
 			newHomeDTO = DTOConverter.getInstance().toDTO(newHome);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		return Response.ok().entity(newHomeDTO).build();
 	}
@@ -304,12 +296,10 @@ public class HomeResource extends AbstractApplicationResource {
 			// 4. Update Home.
 			mgm.updateHome(home);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Home is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
@@ -340,12 +330,10 @@ public class HomeResource extends AbstractApplicationResource {
 		try {
 			mgm.deleteHome(homeId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Home is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();

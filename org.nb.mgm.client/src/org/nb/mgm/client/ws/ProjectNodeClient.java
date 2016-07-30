@@ -5,12 +5,15 @@ import java.util.List;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.ProjectNodeDTO;
+import org.nb.mgm.model.dto.SoftwareDTO;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
@@ -25,6 +28,11 @@ import org.origin.common.rest.model.StatusDTO;
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes (Body parameter: ProjectNodeDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes (Body parameter: ProjectNodeDTO)
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}
+ * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/hasAttribute?attribute={attributeName}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/attribute?attribute={attributeName}
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/action (Body parameter: Action)
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/software
  * 
  */
 public class ProjectNodeClient extends AbstractClient {
@@ -129,7 +137,7 @@ public class ProjectNodeClient extends AbstractClient {
 	}
 
 	/**
-	 * Update ProjectNode.
+	 * Update a ProjectNode.
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes (Body parameter: ProjectNodeDTO)
 	 * 
@@ -188,6 +196,129 @@ public class ProjectNodeClient extends AbstractClient {
 			IOUtil.closeQuietly(response, true);
 		}
 		return status;
+	}
+
+	/**
+	 * Get ProjectNode attribute
+	 * 
+	 * URL (GET):
+	 * {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/hasAttribute?attribute={attributeName}
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @param attribute
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean hasProjectNodeAttribute(String projectId, String projectHomeId, String projectNodeId, String attribute) throws ClientException {
+		boolean hasAttribute = false;
+		WebTarget target = getRootPath().path("projects").path(projectId).path("homes").path(projectHomeId).path("nodes").path(projectNodeId).path("hasAttribute").queryParam("attribute", attribute);
+		try {
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			hasAttribute = response.readEntity(Boolean.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return hasAttribute;
+	}
+
+	/**
+	 * Get ProjectNode attribute
+	 * 
+	 * URL (GET):
+	 * {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/attribute?attribute={attributeName}
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @param attribute
+	 * @param clazz
+	 * @return
+	 * @throws ClientException
+	 */
+	public <T> T getProjectNodeAttribute(String projectId, String projectHomeId, String projectNodeId, String attribute, Class<T> clazz) throws ClientException {
+		T result = null;
+		WebTarget target = getRootPath().path("projects").path(projectId).path("homes").path(projectHomeId).path("nodes").path(projectNodeId).path("attribute").queryParam("attribute", attribute);
+		try {
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			result = response.readEntity(clazz);
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return result;
+	}
+
+	/**
+	 * Send an Action to a ProjectNode.
+	 * 
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/action (Body parameter:
+	 * Action)
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @param action
+	 * 
+	 * @return new ProjectHome
+	 * @throws ClientException
+	 */
+	public StatusDTO sendAction(String projectId, String projectHomeId, String projectNodeId, Action action) throws ClientException {
+		StatusDTO status = null;
+		Response response = null;
+		try {
+			Builder builder = getRootPath().path("projects").path(projectId).path("homes").path(projectHomeId).path("nodes").path(projectNodeId).path("action").request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<Action>(action) {
+			}));
+			checkResponse(response);
+
+			status = response.readEntity(StatusDTO.class);
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
+		}
+		return status;
+	}
+
+	/**
+	 * Get Software installed on a ProjectNode.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/software
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectId
+	 * @return SoftwareDTO list.
+	 * @throws ClientException
+	 */
+	public List<SoftwareDTO> getProjectNodeSoftware(String projectId, String projectHomeId, String projectNodeId) throws ClientException {
+		List<SoftwareDTO> softwareDTOs = null;
+		Response response = null;
+		try {
+			Builder builder = getRootPath().path("projects").path(projectId).path("homes").path(projectHomeId).path("nodes").path(projectNodeId).path("software").request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			softwareDTOs = response.readEntity(new GenericType<List<SoftwareDTO>>() {
+			});
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			IOUtil.closeQuietly(response, true);
+		}
+		if (softwareDTOs == null) {
+			softwareDTOs = Collections.emptyList();
+		}
+		return softwareDTOs;
 	}
 
 }

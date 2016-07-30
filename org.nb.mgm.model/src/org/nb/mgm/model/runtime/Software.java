@@ -88,4 +88,30 @@ public class Software extends ModelObject {
 		this.fileName = fileName;
 	}
 
+	public static class SoftwareProxy extends Software {
+		/**
+		 * 
+		 * @param softwareId
+		 */
+		public SoftwareProxy(String softwareId) {
+			super();
+			setId(softwareId);
+		}
+
+		/**
+		 * 
+		 * @param project
+		 * @param softwareId
+		 */
+		public SoftwareProxy(Project project, String softwareId) {
+			super(project);
+			setId(softwareId);
+		}
+
+		@Override
+		public boolean isProxy() {
+			return true;
+		}
+	}
+
 }

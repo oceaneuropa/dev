@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.json.JSONUtil;
@@ -42,12 +42,6 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 @Path("/{machineId}/homes/{homeId}/properties")
 @Produces(MediaType.APPLICATION_JSON)
 public class HomePropertiesResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * Get Home properties.
@@ -79,7 +73,7 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 
 			properties = mgm.getHomeProperties(homeId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -127,7 +121,7 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 			succeed = mgm.setHomeProperties(homeId, properties);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -192,7 +186,7 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 
 			succeed = mgm.removeHomeProperties(homeId, propertyNames);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

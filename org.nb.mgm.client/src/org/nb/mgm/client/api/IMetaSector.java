@@ -11,7 +11,7 @@ public interface IMetaSector extends IAdaptable {
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
-	public Management getManagement();
+	public ManagementClient getManagement();
 
 	// ------------------------------------------------------------------------------------------
 	// Auto Update Attributes
@@ -20,7 +20,7 @@ public interface IMetaSector extends IAdaptable {
 
 	public void setAutoUpdate(boolean autoUpdate);
 
-	public void update() throws ClientException;
+	public boolean update() throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Attribute

@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.dto.ArtifactDTO;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.MetaSectorDTO;
@@ -75,7 +75,7 @@ public class ArtifactResource extends AbstractApplicationResource {
 				artifactDTOs.add(artifactDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -124,7 +124,7 @@ public class ArtifactResource extends AbstractApplicationResource {
 				artifactDTOs.add(artifactDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -171,7 +171,7 @@ public class ArtifactResource extends AbstractApplicationResource {
 				artifactDTO.setMetaSector(metaSectorDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -234,7 +234,7 @@ public class ArtifactResource extends AbstractApplicationResource {
 			if (Util.compare(id, newArtifact.getId()) != 0) {
 				artifactDTO.setId(newArtifact.getId());
 			}
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -291,7 +291,7 @@ public class ArtifactResource extends AbstractApplicationResource {
 			// 4. Update Artifact.
 			mgm.updateArtifact(artifact);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -328,7 +328,7 @@ public class ArtifactResource extends AbstractApplicationResource {
 		try {
 			mgm.deleteArtifact(artifactId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

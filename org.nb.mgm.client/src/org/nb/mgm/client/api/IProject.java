@@ -10,7 +10,7 @@ public interface IProject extends IAdaptable {
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
-	public Management getManagement();
+	public ManagementClient getManagement();
 
 	// ------------------------------------------------------------------------------------------
 	// Auto Update Attributes
@@ -81,7 +81,7 @@ public interface IProject extends IAdaptable {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<ISoftware> getProjectSoftware() throws ClientException;
+	public List<ISoftware> getSoftware() throws ClientException;
 
 	/**
 	 * Get Software.
@@ -90,7 +90,7 @@ public interface IProject extends IAdaptable {
 	 * @return
 	 * @throws ClientException
 	 */
-	public ISoftware getProjectSoftware(String softwareId) throws ClientException;
+	public ISoftware getSoftware(String softwareId) throws ClientException;
 
 	/**
 	 * Add a Software to a Project.
@@ -99,7 +99,7 @@ public interface IProject extends IAdaptable {
 	 * @param description
 	 * @throws ClientException
 	 */
-	public ISoftware addProjectSoftware(String type, String name, String version, String description) throws ClientException;
+	public ISoftware addSoftware(String type, String name, String version, String description) throws ClientException;
 
 	/**
 	 * Delete Software from a Project.
@@ -108,6 +108,6 @@ public interface IProject extends IAdaptable {
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean deleteProjectSoftware(String softwareId) throws ClientException;
+	public boolean deleteSoftware(String softwareId) throws ClientException;
 
 }

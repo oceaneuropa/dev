@@ -7,16 +7,14 @@ import java.util.Map;
 
 import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
-import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.ws.HomeClient;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.model.StatusDTO;
 
 public class HomeImpl implements IHome {
 
-	private Management management;
+	private ManagementClient management;
 	private IMachine machine;
 	private HomeDTO homeDTO;
 
@@ -29,7 +27,7 @@ public class HomeImpl implements IHome {
 	 * @param machine
 	 * @param homeDTO
 	 */
-	public HomeImpl(Management management, IMachine machine, HomeDTO homeDTO) {
+	public HomeImpl(ManagementClient management, IMachine machine, HomeDTO homeDTO) {
 		this.management = management;
 		this.machine = machine;
 		this.homeDTO = homeDTO;
@@ -39,7 +37,7 @@ public class HomeImpl implements IHome {
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public Management getManagement() {
+	public ManagementClient getManagement() {
 		return this.management;
 	}
 
@@ -63,14 +61,11 @@ public class HomeImpl implements IHome {
 
 	@Override
 	public boolean update() throws ClientException {
-		Management management = this.machine.getManagement();
+		checkManagement(this.management);
+		checkMachine(this.machine);
+
 		String machineId = this.machine.getId();
-
-		HomeClient homeClient = management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		StatusDTO status = homeClient.updateHome(machineId, this.homeDTO);
-		return (status != null && status.success()) ? true : false;
+		return this.management.updateHome(machineId, this.homeDTO);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -122,18 +117,12 @@ public class HomeImpl implements IHome {
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public Map<String, Object> getProperties() throws ClientException {
-		Management management = this.machine.getManagement();
+		checkManagement(this.management);
+		checkMachine(this.machine);
+
 		String machineId = this.machine.getId();
 		String homeId = this.homeDTO.getId();
-
-		HomeClient homeClient = management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		Map<String, Object> properties = homeClient.getProperties(machineId, homeId, true);
-		if (properties == null) {
-			properties = new HashMap<String, Object>();
-		}
-		return properties;
+		return this.management.getHomeProperties(machineId, homeId, true);
 	}
 
 	@Override
@@ -145,15 +134,12 @@ public class HomeImpl implements IHome {
 
 	@Override
 	public boolean setProperties(Map<String, Object> properties) throws ClientException {
-		Management management = this.machine.getManagement();
+		checkManagement(this.management);
+		checkMachine(this.machine);
+
 		String machineId = this.machine.getId();
 		String homeId = this.homeDTO.getId();
-
-		HomeClient homeClient = management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		StatusDTO status = homeClient.setProperties(machineId, homeId, properties);
-		return (status != null && status.success()) ? true : false;
+		return this.management.setHomeProperties(machineId, homeId, properties);
 	}
 
 	@Override
@@ -165,23 +151,34 @@ public class HomeImpl implements IHome {
 
 	@Override
 	public boolean removeProperties(List<String> propertyNames) throws ClientException {
-		Management management = this.machine.getManagement();
+		checkManagement(this.management);
+		checkMachine(this.machine);
+
 		String machineId = this.machine.getId();
 		String homeId = this.homeDTO.getId();
-
-		HomeClient homeClient = management.getAdapter(HomeClient.class);
-		checkClient(homeClient);
-
-		StatusDTO status = homeClient.removeProperties(machineId, homeId, propertyNames);
-		return (status != null && status.success()) ? true : false;
+		return this.management.removeHomeProperties(machineId, homeId, propertyNames);
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// Check WS Client
+	// Check Management Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(HomeClient homeClient) throws ClientException {
-		if (homeClient == null) {
-			throw new ClientException(401, "HomeClient is not found.", null);
+	/**
+	 * @param management
+	 * @throws ClientException
+	 */
+	protected void checkManagement(ManagementClient management) throws ClientException {
+		if (management == null) {
+			throw new ClientException(401, "management is null.", null);
+		}
+	}
+
+	/**
+	 * @param machine
+	 * @throws ClientException
+	 */
+	protected void checkMachine(IMachine machine) throws ClientException {
+		if (machine == null) {
+			throw new ClientException(401, "machine is null.", null);
 		}
 	}
 

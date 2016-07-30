@@ -1,17 +1,19 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
+import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.util.Util;
 
@@ -33,9 +35,9 @@ public class ProjectNodeHandler {
 	 * @param projectId
 	 * @param projectHomeId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public List<ProjectNode> getProjectNodes(String projectId, String projectHomeId) throws MgmException {
+	public List<ProjectNode> getProjectNodes(String projectId, String projectHomeId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
@@ -43,7 +45,7 @@ public class ProjectNodeHandler {
 		// Container ProjectHome must exist
 		ProjectHome projectHome = this.mgmService.getProjectHome(projectId, projectHomeId);
 		if (projectHome == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Container ProjectHome cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Container ProjectHome cannot be found.", null);
 		}
 
 		List<ProjectNode> projectNodes = projectHome.getNodes();
@@ -61,9 +63,9 @@ public class ProjectNodeHandler {
 	 * @param projectHomeId
 	 * @param projectNodeId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public ProjectNode getProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException {
+	public ProjectNode getProjectNode(String projectId, String projectHomeId, String projectNodeId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
@@ -72,7 +74,7 @@ public class ProjectNodeHandler {
 		// Container ProjectHome must exist
 		ProjectHome projectHome = this.mgmService.getProjectHome(projectId, projectHomeId);
 		if (projectHome == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Container ProjectHome cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Container ProjectHome cannot be found.", null);
 		}
 
 		ProjectNode resultProjectNode = null;
@@ -93,9 +95,9 @@ public class ProjectNodeHandler {
 	 * @param projectId
 	 * @param projectHomeId
 	 * @param newProjectNodeRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public ProjectNode addProjectNode(String projectId, String projectHomeId, ProjectNode newProjectNodeRequest) throws MgmException {
+	public ProjectNode addProjectNode(String projectId, String projectHomeId, ProjectNode newProjectNodeRequest) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
@@ -104,7 +106,7 @@ public class ProjectNodeHandler {
 		// Container ProjectHome must exist
 		ProjectHome projectHome = this.mgmService.getProjectHome(projectId, projectHomeId);
 		if (projectHome == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Container ProjectHome cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Container ProjectHome cannot be found.", null);
 		}
 
 		// Generate unique ProjectNode Id
@@ -125,7 +127,7 @@ public class ProjectNodeHandler {
 			ProjectNode currProjectNode = projectNodeItor.next();
 
 			if (newProjectNodeRequest.getId().equals(currProjectNode.getId())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "ProjectNode with same Id already exists in the ProjectHome.", null);
+				throw new ManagementException(ERROR_CODE_ENTITY_EXIST, "ProjectNode with same Id already exists in the ProjectHome.", null);
 			}
 			// if (projectNode.getName().equals(currProjectNode.getName())) {
 			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "ProjectNode with same name already exists.", null);
@@ -167,9 +169,9 @@ public class ProjectNodeHandler {
 	 * @param projectId
 	 * @param projectHomeId
 	 * @param updateProjectNodeRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateProjectNode(String projectId, String projectHomeId, ProjectNode updateProjectNodeRequest) throws MgmException {
+	public void updateProjectNode(String projectId, String projectHomeId, ProjectNode updateProjectNodeRequest) throws ManagementException {
 		// Throw exception - empty ProjectNode
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
@@ -200,9 +202,9 @@ public class ProjectNodeHandler {
 	 * @param projectHomeId
 	 * @param projectNodeId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws MgmException {
+	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
@@ -210,10 +212,8 @@ public class ProjectNodeHandler {
 
 		// Find ProjectNode
 		ProjectNode projectNodeToDelete = getProjectNode(projectId, projectHomeId, projectNodeId);
-
-		// Throw exception - ProjectNode not found
 		if (projectNodeToDelete == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "ProjectNode cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "ProjectNode cannot be found.", null);
 		}
 
 		// Delete ProjectHome from Project.
@@ -225,46 +225,127 @@ public class ProjectNodeHandler {
 	}
 
 	/**
+	 * Get a list of Software installed on a ProjectNode.
 	 * 
 	 * @param projectId
-	 * @throws MgmException
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @return
+	 * @throws ManagementException
 	 */
-	protected void checkProjectId(String projectId) throws MgmException {
+	public List<Software> getInstalledSoftware(String projectId, String projectHomeId, String projectNodeId) throws ManagementException {
+		// Find Project
+		Project project = this.mgmService.getProject(projectId);
+		if (project == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Project cannot be found.", null);
+		}
+		// Find ProjectNode
+		ProjectNode projectNode = getProjectNode(projectId, projectHomeId, projectNodeId);
+		if (projectNode == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "ProjectNode cannot be found.", null);
+		}
+		return projectNode.getInstalledSoftware();
+	}
+
+	/**
+	 * Install Software to ProjectNode.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @param softwareId
+	 * @return
+	 * @throws ManagementException
+	 */
+	public boolean installSoftware(String projectId, String projectHomeId, String projectNodeId, String softwareId) throws ManagementException {
+		// Find Project
+		Project project = this.mgmService.getProject(projectId);
+		if (project == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Project cannot be found.", null);
+		}
+		// Find Software
+		Software software = project.getSoftware(softwareId);
+		if (software == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Software cannot be found.", null);
+		}
+		// Find ProjectNode
+		ProjectNode projectNode = getProjectNode(projectId, projectHomeId, projectNodeId);
+		if (projectNode == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "ProjectNode cannot be found.", null);
+		}
+		return projectNode.installSoftware(softwareId);
+	}
+
+	/**
+	 * Uninstall Software from ProjectNode.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param projectNodeId
+	 * @param softwareId
+	 * @return
+	 * @throws ManagementException
+	 */
+	public boolean uninstallSoftware(String projectId, String projectHomeId, String projectNodeId, String softwareId) throws ManagementException {
+		// Find Project
+		Project project = this.mgmService.getProject(projectId);
+		if (project == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Project cannot be found.", null);
+		}
+		// Find Software
+		Software software = project.getSoftware(softwareId);
+		if (software == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Software cannot be found.", null);
+		}
+		// Find ProjectNode
+		ProjectNode projectNode = getProjectNode(projectId, projectHomeId, projectNodeId);
+		if (projectNode == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "ProjectNode cannot be found.", null);
+		}
+		return projectNode.uninstallSoftware(softwareId);
+	}
+
+	/**
+	 * 
+	 * @param projectId
+	 * @throws ManagementException
+	 */
+	protected void checkProjectId(String projectId) throws ManagementException {
 		if (projectId == null || projectId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectId cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectId cannot be empty.", null);
 		}
 	}
 
 	/**
 	 * 
 	 * @param projectHomeId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	protected void checkProjectHomeId(String projectHomeId) throws MgmException {
+	protected void checkProjectHomeId(String projectHomeId) throws ManagementException {
 		if (projectHomeId == null || projectHomeId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectHomeId cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectHomeId cannot be empty.", null);
 		}
 	}
 
 	/**
 	 * 
 	 * @param projectNodeId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	protected void checkProjectNodeId(String projectNodeId) throws MgmException {
+	protected void checkProjectNodeId(String projectNodeId) throws ManagementException {
 		if (projectNodeId == null || projectNodeId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectNodeId cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectNodeId cannot be empty.", null);
 		}
 	}
 
 	/**
 	 * 
 	 * @param projectNode
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	protected void checkProjectNode(ProjectNode projectNode) throws MgmException {
+	protected void checkProjectNode(ProjectNode projectNode) throws ManagementException {
 		if (projectNode == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "ProjectNode cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "ProjectNode cannot be empty.", null);
 		}
 	}
 

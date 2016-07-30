@@ -1,8 +1,11 @@
 package org.nb.mgm.client.api.impl;
 
-import static org.nb.mgm.client.api.MgmConstants.ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND;
+import static org.nb.mgm.client.api.ManagementConstants.ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND;
 
+import java.io.File;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -15,9 +18,9 @@ import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
 import org.nb.mgm.client.api.IProjectNode;
 import org.nb.mgm.client.api.ISoftware;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
+import org.nb.mgm.client.api.ManagementConstants;
 import org.nb.mgm.client.api.ManagementFactory;
-import org.nb.mgm.client.api.MgmConstants;
 import org.nb.mgm.client.ws.HomeClient;
 import org.nb.mgm.client.ws.MachineClient;
 import org.nb.mgm.client.ws.MetaSectorClient;
@@ -26,6 +29,7 @@ import org.nb.mgm.client.ws.ProjectClient;
 import org.nb.mgm.client.ws.ProjectHomeClient;
 import org.nb.mgm.client.ws.ProjectNodeClient;
 import org.nb.mgm.client.ws.ProjectSoftwareClient;
+import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.nb.mgm.model.dto.MetaSectorDTO;
@@ -39,7 +43,7 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-public class ManagementImpl implements Management {
+public class ManagementClientImpl implements ManagementClient {
 
 	private ClientConfiguration clientConfig;
 
@@ -61,7 +65,7 @@ public class ManagementImpl implements Management {
 	 * @param username
 	 * @param password
 	 */
-	public ManagementImpl(String url, String contextRoot, String username, String password) {
+	public ManagementClientImpl(String url, String contextRoot, String username, String password) {
 		this.clientConfig = ClientConfiguration.get(url, contextRoot, username);
 		this.clientConfig.setPassword(password);
 
@@ -130,11 +134,49 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
+	public boolean updateMachine(MachineDTO updateMachineRequest) throws ClientException {
+		checkClient(this.machineClient);
+
+		StatusDTO status = this.machineClient.updateMachine(updateMachineRequest);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
 	public boolean removeMachine(String machineId) throws ClientException {
 		checkClient(this.machineClient);
 		checkMachineId(machineId);
 
 		StatusDTO status = this.machineClient.deleteMachine(machineId);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public Map<String, Object> getMachineProperties(String machineId, boolean useJsonString) throws ClientException {
+		checkClient(this.machineClient);
+		checkMachineId(machineId);
+
+		Map<String, Object> properties = this.machineClient.getProperties(machineId, true);
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+		}
+		return properties;
+	}
+
+	@Override
+	public boolean setMachineProperties(String machineId, Map<String, Object> properties) throws ClientException {
+		checkClient(this.machineClient);
+		checkMachineId(machineId);
+
+		StatusDTO status = this.machineClient.setProperties(machineId, properties);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public boolean removeMachineProperties(String machineId, List<String> propertyNames) throws ClientException {
+		checkClient(this.machineClient);
+		checkMachineId(machineId);
+
+		StatusDTO status = this.machineClient.removeProperties(machineId, propertyNames);
 		return (status != null && status.success()) ? true : false;
 	}
 
@@ -188,29 +230,7 @@ public class ManagementImpl implements Management {
 		checkHomeId(homeId);
 
 		IHome home = null;
-
-		String machineId = null;
-		int matchedHomeCount = 0;
-		List<IMachine> machines = getMachines();
-		for (IMachine machine : machines) {
-			String currMachineId = machine.getId();
-
-			List<HomeDTO> homeDTOs = this.homeClient.getHomes(currMachineId, null);
-			for (HomeDTO homeDTO : homeDTOs) {
-				String currHomeId = homeDTO.getId();
-
-				if (homeId.equals(currHomeId)) {
-					if (machineId == null) {
-						machineId = currMachineId;
-					}
-					matchedHomeCount++;
-				}
-			}
-		}
-		if (matchedHomeCount > 1) {
-			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Homes with specified homeId are found.");
-		}
-
+		String machineId = getContainerMachineId(homeId);
 		if (machineId != null) {
 			home = getHome(machineId, homeId);
 		}
@@ -223,7 +243,6 @@ public class ManagementImpl implements Management {
 		checkMachineId(machineId);
 
 		IHome home = null;
-
 		IMachine machine = getMachine(machineId);
 		if (machine != null) {
 			HomeDTO newHomeRequest = new HomeDTO();
@@ -236,6 +255,15 @@ public class ManagementImpl implements Management {
 			}
 		}
 		return home;
+	}
+
+	@Override
+	public boolean updateHome(String machineId, HomeDTO updateHomeRequest) throws ClientException {
+		checkClient(this.homeClient);
+		checkMachineId(machineId);
+
+		StatusDTO status = this.homeClient.updateHome(machineId, updateHomeRequest);
+		return (status != null && status.success()) ? true : false;
 	}
 
 	@Override
@@ -253,6 +281,54 @@ public class ManagementImpl implements Management {
 		checkClient(this.homeClient);
 		checkHomeId(homeId);
 
+		String machineId = getContainerMachineId(homeId);
+		if (machineId != null) {
+			return removeHome(machineId, homeId);
+		}
+		return false;
+	}
+
+	@Override
+	public Map<String, Object> getHomeProperties(String machineId, String homeId, boolean useJsonString) throws ClientException {
+		checkClient(this.homeClient);
+		checkMachineId(machineId);
+		checkHomeId(homeId);
+
+		Map<String, Object> properties = this.homeClient.getProperties(machineId, homeId, true);
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+		}
+		return properties;
+	}
+
+	@Override
+	public boolean setHomeProperties(String machineId, String homeId, Map<String, Object> properties) throws ClientException {
+		checkClient(this.homeClient);
+		checkMachineId(machineId);
+		checkHomeId(homeId);
+
+		StatusDTO status = this.homeClient.setProperties(machineId, homeId, properties);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public boolean removeHomeProperties(String machineId, String homeId, List<String> propertyNames) throws ClientException {
+		checkClient(this.homeClient);
+		checkMachineId(machineId);
+		checkHomeId(homeId);
+
+		StatusDTO status = this.homeClient.removeProperties(machineId, homeId, propertyNames);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	/**
+	 * Get container Machine Id of a Home.
+	 * 
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	protected String getContainerMachineId(String homeId) throws ClientException {
 		String machineId = null;
 		int matchedHomeCount = 0;
 		List<IMachine> machines = getMachines();
@@ -274,11 +350,7 @@ public class ManagementImpl implements Management {
 		if (matchedHomeCount > 1) {
 			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Homes with specified homeId are found.");
 		}
-
-		if (machineId != null) {
-			return removeHome(machineId, homeId);
-		}
-		return false;
+		return machineId;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -331,6 +403,14 @@ public class ManagementImpl implements Management {
 			metaSector = ManagementFactory.createMetaSector(this, newMetaSectorDTO);
 		}
 		return metaSector;
+	}
+
+	@Override
+	public boolean updateMetaSector(MetaSectorDTO updateMetaSectorRequest) throws ClientException {
+		checkClient(this.metaSectorClient);
+
+		StatusDTO status = this.metaSectorClient.updateMetaSector(updateMetaSectorRequest);
+		return (status != null && status.success()) ? true : false;
 	}
 
 	@Override
@@ -441,6 +521,15 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
+	public boolean updateMetaSpace(String metaSectorId, MetaSpaceDTO updateMetaSpaceRequest) throws ClientException {
+		checkClient(this.metaSpaceClient);
+		checkMetaSectorId(metaSectorId);
+
+		StatusDTO status = this.metaSpaceClient.updateMetaSpace(metaSectorId, updateMetaSpaceRequest);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
 	public boolean deleteMetaSpace(String metaSectorId, String metaSpaceId) throws ClientException {
 		checkClient(this.metaSpaceClient);
 		checkMetaSectorId(metaSectorId);
@@ -534,6 +623,14 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
+	public boolean updateProject(ProjectDTO updateProjectRequest) throws ClientException {
+		checkClient(this.projectClient);
+
+		StatusDTO status = this.projectClient.updateProject(updateProjectRequest);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
 	public boolean deleteProject(String projectId) throws ClientException {
 		checkClient(this.projectClient);
 		checkProjectId(projectId);
@@ -587,29 +684,7 @@ public class ManagementImpl implements Management {
 		checkProjectHomeId(projectHomeId);
 
 		IProjectHome projectHome = null;
-
-		String projectId = null;
-		int matchedProjectHomeCounts = 0;
-		List<IProject> projects = getProjects();
-		for (IProject project : projects) {
-			String currProjectId = project.getId();
-
-			List<ProjectHomeDTO> projectHomeDTOs = this.projectHomeClient.getProjectHomes(currProjectId);
-			for (ProjectHomeDTO projectHomeDTO : projectHomeDTOs) {
-				String currProjectHomeId = projectHomeDTO.getId();
-
-				if (projectHomeId.equals(currProjectHomeId)) {
-					if (projectId == null) {
-						projectId = currProjectId;
-					}
-					matchedProjectHomeCounts++;
-				}
-			}
-		}
-		if (matchedProjectHomeCounts > 1) {
-			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple ProjectHomes with specified projectHomeId are found.");
-		}
-
+		String projectId = getContainerProjectIdOfProjectHome(projectHomeId);
 		if (projectId != null) {
 			projectHome = getProjectHome(projectId, projectHomeId);
 		}
@@ -638,6 +713,15 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
+	public boolean updateProjectHome(String projectId, ProjectHomeDTO updateProjectHomeRequest) throws ClientException {
+		checkClient(this.projectHomeClient);
+		checkProjectId(projectId);
+
+		StatusDTO status = this.projectHomeClient.updateProjectHome(projectId, updateProjectHomeRequest);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
 	public boolean deleteProjectHome(String projectId, String projectHomeId) throws ClientException {
 		checkClient(this.projectHomeClient);
 		checkProjectId(projectId);
@@ -652,6 +736,76 @@ public class ManagementImpl implements Management {
 		checkClient(this.projectHomeClient);
 		checkProjectHomeId(projectHomeId);
 
+		String projectId = getContainerProjectIdOfProjectHome(projectHomeId);
+		if (projectId != null) {
+			return deleteProjectHome(projectId, projectHomeId);
+		}
+		return false;
+	}
+
+	@Override
+	public IHome getProjectDeploymentHome(String projectHomeId) throws ClientException {
+		checkClient(this.projectHomeClient);
+		checkProjectHomeId(projectHomeId);
+
+		IHome home = null;
+		String projectId = getContainerProjectIdOfProjectHome(projectHomeId);
+		if (projectId != null) {
+			boolean hasAttribute = projectHomeClient.hasProjectHomeAttribute(projectId, projectHomeId, "homeId");
+			if (hasAttribute) {
+				String homeId = this.projectHomeClient.getProjectHomeAttribute(projectId, projectHomeId, "homeId", String.class);
+				if (homeId != null && !homeId.isEmpty()) {
+					home = getHome(homeId);
+				}
+			}
+		}
+		return home;
+	}
+
+	@Override
+	public boolean setProjectDeploymentHome(String projectHomeId, String homeId) throws ClientException {
+		checkClient(this.projectHomeClient);
+		checkProjectHomeId(projectHomeId);
+		checkHomeId(homeId);
+
+		String projectId = getContainerProjectIdOfProjectHome(projectHomeId);
+		if (projectId != null) {
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("homeId", homeId);
+			Action action = new Action("set_project_deployment_home", parameters);
+
+			StatusDTO status = this.projectHomeClient.sendAction(projectId, projectHomeId, action);
+			return (status != null && status.success()) ? true : false;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean removeProjectDeploymentHome(String projectHomeId, String homeId) throws ClientException {
+		checkClient(this.projectHomeClient);
+		checkProjectHomeId(projectHomeId);
+		checkHomeId(homeId);
+
+		String projectId = getContainerProjectIdOfProjectHome(projectHomeId);
+		if (projectId != null) {
+			Map<String, Object> parameters = new HashMap<String, Object>();
+			parameters.put("homeId", homeId);
+			Action action = new Action("remove_project_deployment_home", parameters);
+
+			StatusDTO status = this.projectHomeClient.sendAction(projectId, projectHomeId, action);
+			return (status != null && status.success()) ? true : false;
+		}
+		return false;
+	}
+
+	/**
+	 * Get container Project id of a ProjectHome.
+	 * 
+	 * @param projectHomeId
+	 * @return
+	 * @throws ClientException
+	 */
+	protected String getContainerProjectIdOfProjectHome(String projectHomeId) throws ClientException {
 		String projectId = null;
 		int matchedProjectHomeCounts = 0;
 		List<IProject> projects = getProjects();
@@ -673,206 +827,7 @@ public class ManagementImpl implements Management {
 		if (matchedProjectHomeCounts > 1) {
 			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple ProjectHomes with specified projectHomeId are found.");
 		}
-
-		if (projectId != null) {
-			return deleteProjectHome(projectId, projectHomeId);
-		}
-		return false;
-	}
-
-	// ------------------------------------------------------------------------------------------
-	// ProjectSoftware
-	// ------------------------------------------------------------------------------------------
-	/**
-	 * Get Software in a Project.
-	 * 
-	 * @param projectId
-	 * @return
-	 * @throws ClientException
-	 */
-	@Override
-	public List<ISoftware> getProjectSoftwareList(String projectId) throws ClientException {
-		checkClient(this.projectSoftwareClient);
-		checkProjectId(projectId);
-
-		List<ISoftware> softwareList = new ArrayList<ISoftware>();
-
-		IProject project = getProject(projectId);
-		if (project != null) {
-			List<SoftwareDTO> softwareDTOs = this.projectSoftwareClient.getProjectSoftware(projectId);
-			for (SoftwareDTO softwareDTO : softwareDTOs) {
-				ISoftware software = ManagementFactory.createSoftware(this, project, softwareDTO);
-				softwareList.add(software);
-			}
-		}
-		return softwareList;
-	}
-
-	/**
-	 * Get Software.
-	 * 
-	 * @param projectId
-	 * @param softwareId
-	 * @return
-	 * @throws ClientException
-	 */
-	@Override
-	public ISoftware getProjectSoftware(String projectId, String softwareId) throws ClientException {
-		checkClient(this.projectSoftwareClient);
-		checkProjectId(projectId);
-		checkSoftwareId(softwareId);
-
-		ISoftware software = null;
-
-		IProject project = getProject(projectId);
-		if (project != null) {
-			SoftwareDTO softwareDTO = this.projectSoftwareClient.getProjectSoftware(projectId, softwareId);
-			if (softwareDTO != null) {
-				software = ManagementFactory.createSoftware(this, project, softwareDTO);
-			}
-		}
-		return software;
-	}
-
-	/**
-	 * Get Software.
-	 * 
-	 * @param softwareId
-	 * @return
-	 * @throws ClientException
-	 */
-	@Override
-	public ISoftware getProjectSoftware(String softwareId) throws ClientException {
-		checkClient(this.projectSoftwareClient);
-		checkProjectHomeId(softwareId);
-
-		ISoftware software = null;
-
-		String projectId = null;
-		int matchedSoftwareCounts = 0;
-		List<IProject> projects = getProjects();
-		for (IProject project : projects) {
-			String currProjectId = project.getId();
-
-			List<SoftwareDTO> softwareDTOs = this.projectSoftwareClient.getProjectSoftware(currProjectId);
-			for (SoftwareDTO softwareDTO : softwareDTOs) {
-				String currSoftwareId = softwareDTO.getId();
-
-				if (softwareId.equals(currSoftwareId)) {
-					if (projectId == null) {
-						projectId = currProjectId;
-					}
-					matchedSoftwareCounts++;
-				}
-			}
-		}
-		if (matchedSoftwareCounts > 1) {
-			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Software with specified softwareId are found.");
-		}
-
-		if (projectId != null) {
-			software = getProjectSoftware(projectId, softwareId);
-		}
-		return software;
-	}
-
-	/**
-	 * Add Software to a Project.
-	 * 
-	 * @param projectId
-	 * @param name
-	 * @param description
-	 * @return
-	 * @throws ClientException
-	 */
-	@Override
-	public ISoftware addProjectSoftware(String projectId, String type, String name, String version, String description) throws ClientException {
-		checkClient(this.projectSoftwareClient);
-		checkProjectId(projectId);
-
-		// if (file == null || !file.exists()) {
-		// throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "Software file cannot be found.", null);
-		// }
-
-		ISoftware software = null;
-
-		IProject project = getProject(projectId);
-		if (project != null) {
-			SoftwareDTO newSoftwareRequest = new SoftwareDTO();
-			newSoftwareRequest.setType(type);
-			newSoftwareRequest.setName(name);
-			newSoftwareRequest.setVersion(version);
-			newSoftwareRequest.setDescription(description);
-
-			// if (file != null) {
-			// long length = file.length();
-			// Date lastModified = new Date(file.lastModified());
-			// newSoftwareRequest.setLength(length);
-			// newSoftwareRequest.setLastModified(lastModified);
-			// }
-
-			SoftwareDTO newSoftwareDTO = this.projectSoftwareClient.addProjectSoftware(projectId, newSoftwareRequest);
-			if (newSoftwareDTO != null) {
-				software = ManagementFactory.createSoftware(this, project, newSoftwareDTO);
-			}
-		}
-		return software;
-	}
-
-	/**
-	 * Delete Software from a Project.
-	 * 
-	 * @param projectId
-	 * @param softwareId
-	 * @return
-	 * @throws ClientException
-	 */
-	public boolean deleteProjectSoftware(String projectId, String softwareId) throws ClientException {
-		checkClient(this.projectSoftwareClient);
-		checkProjectId(projectId);
-		checkSoftwareId(softwareId);
-
-		StatusDTO status = this.projectSoftwareClient.deleteProjectSoftware(projectId, softwareId);
-		return (status != null && status.success()) ? true : false;
-	}
-
-	/**
-	 * Delete Software from a Project.
-	 * 
-	 * @param softwareId
-	 * @return
-	 * @throws ClientException
-	 */
-	public boolean deleteProjectSoftware(String softwareId) throws ClientException {
-		checkClient(this.projectSoftwareClient);
-		checkSoftwareId(softwareId);
-
-		String projectId = null;
-		int matchedSoftwareCounts = 0;
-		List<IProject> projects = getProjects();
-		for (IProject project : projects) {
-			String currProjectId = project.getId();
-
-			List<SoftwareDTO> softwareDTOs = this.projectSoftwareClient.getProjectSoftware(currProjectId);
-			for (SoftwareDTO softwareDTO : softwareDTOs) {
-				String currSoftwareId = softwareDTO.getId();
-
-				if (softwareId.equals(currSoftwareId)) {
-					if (projectId == null) {
-						projectId = currProjectId;
-					}
-					matchedSoftwareCounts++;
-				}
-			}
-		}
-		if (matchedSoftwareCounts > 1) {
-			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Software with specified softwareId are found.");
-		}
-
-		if (projectId != null) {
-			return deleteProjectSoftware(projectId, softwareId);
-		}
-		return false;
+		return projectId;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -921,6 +876,28 @@ public class ManagementImpl implements Management {
 	}
 
 	@Override
+	public IProjectNode getProjectNode(String projectHomeId, String projectNodeId) throws ClientException {
+		checkClient(this.projectNodeClient);
+		checkProjectHomeId(projectHomeId);
+		checkProjectNodeId(projectNodeId);
+
+		IProjectNode projectNode = null;
+
+		String projectId = getContainerProjectIdOfProjectHome(projectHomeId);
+		if (projectId != null) {
+			IProject project = getProject(projectId);
+			IProjectHome projectHome = getProjectHome(projectId, projectHomeId);
+			if (project != null && projectHome != null) {
+				ProjectNodeDTO projectNodeDTO = this.projectNodeClient.getProjectNode(projectId, projectHomeId, projectNodeId);
+				if (projectNodeDTO != null) {
+					projectNode = ManagementFactory.createProjectNode(this, project, projectHome, projectNodeDTO);
+				}
+			}
+		}
+		return projectNode;
+	}
+
+	@Override
 	public IProjectNode getProjectNode(String projectNodeId) throws ClientException {
 		checkClient(this.projectHomeClient);
 		checkClient(this.projectNodeClient);
@@ -963,17 +940,6 @@ public class ManagementImpl implements Management {
 		return projectNode;
 	}
 
-	/**
-	 * Add a ProjectNode to a ProjectHome.
-	 * 
-	 * @param projectId
-	 * @param projectHomeId
-	 * @param projectNodeId
-	 * @param name
-	 * @param description
-	 * @return
-	 * @throws ClientException
-	 */
 	@Override
 	public IProjectNode addProjectNode(String projectId, String projectHomeId, String projectNodeId, String name, String description) throws ClientException {
 		checkClient(this.projectNodeClient);
@@ -999,15 +965,16 @@ public class ManagementImpl implements Management {
 		return projectNode;
 	}
 
-	/**
-	 * Delete a ProjectNode from a ProjectHome.
-	 * 
-	 * @param projectId
-	 * @param projectHomeId
-	 * @param projectNodeId
-	 * @return
-	 * @throws ClientException
-	 */
+	@Override
+	public boolean updateProjectNode(String projectId, String projectHomeId, ProjectNodeDTO updateProjectNodeRequest) throws ClientException {
+		checkClient(this.projectNodeClient);
+		checkProjectId(projectId);
+		checkProjectHomeId(projectHomeId);
+
+		StatusDTO status = this.projectNodeClient.updateProjectNode(projectId, projectHomeId, updateProjectNodeRequest);
+		return (status != null && status.success()) ? true : false;
+	}
+
 	@Override
 	public boolean deleteProjectNode(String projectId, String projectHomeId, String projectNodeId) throws ClientException {
 		checkClient(this.projectNodeClient);
@@ -1019,52 +986,242 @@ public class ManagementImpl implements Management {
 		return (status != null && status.success()) ? true : false;
 	}
 
+	@Override
+	public boolean deleteProjectNode(String projectHomeId, String projectNodeId) throws ClientException {
+		checkClient(this.projectNodeClient);
+		checkProjectHomeId(projectHomeId);
+		checkProjectNodeId(projectNodeId);
+
+		String projectId = getContainerProjectIdOfProjectHome(projectHomeId);
+		if (projectId == null || projectId.trim().isEmpty()) {
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "projectId cannot be found.", null);
+		}
+
+		StatusDTO status = this.projectNodeClient.deleteProjectNode(projectId, projectHomeId, projectNodeId);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public List<ISoftware> getProjectNodeSoftware(String projectId, String projectHomeId, String projectNodeId) throws ClientException {
+		checkClient(this.projectNodeClient);
+		checkProjectId(projectId);
+		checkProjectHomeId(projectHomeId);
+		checkProjectNodeId(projectNodeId);
+
+		List<ISoftware> softwareList = new ArrayList<ISoftware>();
+
+		IProject project = getProject(projectId);
+		if (project != null) {
+			List<SoftwareDTO> softwareDTOs = this.projectNodeClient.getProjectNodeSoftware(projectId, projectHomeId, projectNodeId);
+			for (SoftwareDTO softwareDTO : softwareDTOs) {
+				ISoftware software = ManagementFactory.createSoftware(this, project, softwareDTO);
+				softwareList.add(software);
+			}
+		}
+		return softwareList;
+	}
+
+	@Override
+	public boolean installProjectNodeSoftware(String projectId, String projectHomeId, String projectNodeId, String softwareId) throws ClientException {
+		checkClient(this.projectNodeClient);
+		checkProjectId(projectId);
+		checkProjectHomeId(projectHomeId);
+		checkProjectNodeId(projectNodeId);
+		checkSoftwareId(softwareId);
+
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("softwareId", softwareId);
+		Action action = new Action("install_project_node_software", parameters);
+
+		StatusDTO status = this.projectNodeClient.sendAction(projectId, projectHomeId, projectNodeId, action);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public boolean uninstallProjectNodeSoftware(String projectId, String projectHomeId, String projectNodeId, String softwareId) throws ClientException {
+		checkClient(this.projectNodeClient);
+		checkProjectId(projectId);
+		checkProjectHomeId(projectHomeId);
+		checkProjectNodeId(projectNodeId);
+		checkSoftwareId(softwareId);
+
+		Map<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("softwareId", softwareId);
+		Action action = new Action("uninstall_project_node_software", parameters);
+
+		StatusDTO status = this.projectNodeClient.sendAction(projectId, projectHomeId, projectNodeId, action);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectSoftware
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public List<ISoftware> getProjectSoftwareList(String projectId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+
+		List<ISoftware> softwareList = new ArrayList<ISoftware>();
+
+		IProject project = getProject(projectId);
+		if (project != null) {
+			List<SoftwareDTO> softwareDTOs = this.projectSoftwareClient.getProjectSoftware(projectId);
+			for (SoftwareDTO softwareDTO : softwareDTOs) {
+				ISoftware software = ManagementFactory.createSoftware(this, project, softwareDTO);
+				softwareList.add(software);
+			}
+		}
+		return softwareList;
+	}
+
+	@Override
+	public ISoftware getProjectSoftware(String projectId, String softwareId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+		checkSoftwareId(softwareId);
+
+		ISoftware software = null;
+		IProject project = getProject(projectId);
+		if (project != null) {
+			SoftwareDTO softwareDTO = this.projectSoftwareClient.getProjectSoftware(projectId, softwareId);
+			if (softwareDTO != null) {
+				software = ManagementFactory.createSoftware(this, project, softwareDTO);
+			}
+		}
+		return software;
+	}
+
+	@Override
+	public ISoftware getProjectSoftware(String softwareId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectHomeId(softwareId);
+
+		ISoftware software = null;
+		String projectId = getContainerProjectIdOfProjectSoftware(softwareId);
+		if (projectId != null) {
+			software = getProjectSoftware(projectId, softwareId);
+		}
+		return software;
+	}
+
+	@Override
+	public ISoftware addProjectSoftware(String projectId, String type, String name, String version, String description) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+
+		ISoftware software = null;
+
+		IProject project = getProject(projectId);
+		if (project != null) {
+			SoftwareDTO newSoftwareRequest = new SoftwareDTO();
+			newSoftwareRequest.setType(type);
+			newSoftwareRequest.setName(name);
+			newSoftwareRequest.setVersion(version);
+			newSoftwareRequest.setDescription(description);
+
+			SoftwareDTO newSoftwareDTO = this.projectSoftwareClient.addProjectSoftware(projectId, newSoftwareRequest);
+			if (newSoftwareDTO != null) {
+				software = ManagementFactory.createSoftware(this, project, newSoftwareDTO);
+			}
+		}
+		return software;
+	}
+
 	/**
-	 * Delete a ProjectNode from a ProjectHome.
+	 * Update Software in a Project.
 	 * 
-	 * @param projectNodeId
+	 * @param projectId
+	 * @param updateSoftwareRequest
 	 * @return
 	 * @throws ClientException
 	 */
-	@Override
-	public boolean deleteProjectNode(String projectNodeId) throws ClientException {
-		checkClient(this.projectHomeClient);
-		checkClient(this.projectNodeClient);
-		checkProjectNodeId(projectNodeId);
+	public boolean updateProjectSoftware(String projectId, SoftwareDTO updateSoftwareRequest) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
 
+		StatusDTO status = this.projectSoftwareClient.updateProjectSoftware(projectId, updateSoftwareRequest);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public boolean deleteProjectSoftware(String projectId, String softwareId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+		checkSoftwareId(softwareId);
+
+		StatusDTO status = this.projectSoftwareClient.deleteProjectSoftware(projectId, softwareId);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public boolean deleteProjectSoftware(String softwareId) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkSoftwareId(softwareId);
+
+		String projectId = getContainerProjectIdOfProjectSoftware(softwareId);
+		if (projectId != null) {
+			return deleteProjectSoftware(projectId, softwareId);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean uploadProjectSoftwareFile(String projectId, String softwareId, File srcFile) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+		checkSoftwareId(softwareId);
+
+		StatusDTO status = this.projectSoftwareClient.uploadProjectSoftwareFile(projectId, softwareId, srcFile);
+		return (status != null && status.success()) ? true : false;
+	}
+
+	@Override
+	public boolean downloadProjectSoftwareToFile(String projectId, String softwareId, File destFile) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+		checkSoftwareId(softwareId);
+
+		return this.projectSoftwareClient.downloadProjectSoftwareToFile(projectId, softwareId, destFile);
+	}
+
+	@Override
+	public boolean downloadProjectSoftwareToOutputStream(String projectId, String softwareId, OutputStream output) throws ClientException {
+		checkClient(this.projectSoftwareClient);
+		checkProjectId(projectId);
+		checkSoftwareId(softwareId);
+
+		return this.projectSoftwareClient.downloadProjectSoftwareToOutputStream(projectId, softwareId, output);
+	}
+
+	/**
+	 * 
+	 * @param softwareId
+	 * @return
+	 * @throws ClientException
+	 */
+	protected String getContainerProjectIdOfProjectSoftware(String softwareId) throws ClientException {
 		String projectId = null;
-		String projectHomeId = null;
-		int matchedNodeCounts = 0;
+		int matchedSoftwareCounts = 0;
 		List<IProject> projects = getProjects();
 		for (IProject project : projects) {
 			String currProjectId = project.getId();
 
-			List<ProjectHomeDTO> projectHomeDTOs = this.projectHomeClient.getProjectHomes(currProjectId);
-			for (ProjectHomeDTO projectHomeDTO : projectHomeDTOs) {
-				String currProjectHomeId = projectHomeDTO.getId();
+			List<SoftwareDTO> softwareDTOs = this.projectSoftwareClient.getProjectSoftware(currProjectId);
+			for (SoftwareDTO softwareDTO : softwareDTOs) {
+				String currSoftwareId = softwareDTO.getId();
 
-				List<ProjectNodeDTO> projectNodeDTOs = this.projectNodeClient.getProjectNodes(currProjectId, currProjectHomeId);
-				for (ProjectNodeDTO projectNodeDTO : projectNodeDTOs) {
-					String currProjectNodeId = projectNodeDTO.getId();
-
-					if (projectNodeId.equals(currProjectNodeId)) {
-						if (projectHomeId == null) {
-							projectId = currProjectId;
-							projectHomeId = currProjectHomeId;
-						}
-						matchedNodeCounts++;
+				if (softwareId.equals(currSoftwareId)) {
+					if (projectId == null) {
+						projectId = currProjectId;
 					}
+					matchedSoftwareCounts++;
 				}
 			}
 		}
-		if (matchedNodeCounts > 1) {
-			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Nodes with specified projectNodeId are found.");
+		if (matchedSoftwareCounts > 1) {
+			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Software with specified softwareId are found.");
 		}
-
-		if (projectId != null && projectHomeId != null) {
-			return deleteProjectNode(projectId, projectHomeId, projectNodeId);
-		}
-		return false;
+		return projectId;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -1077,7 +1234,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkClient(MachineClient machineClient) throws ClientException {
 		if (machineClient == null) {
-			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MachineClient is not found.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MachineClient is not found.", null);
 		}
 	}
 
@@ -1088,7 +1245,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkClient(HomeClient homeClient) throws ClientException {
 		if (homeClient == null) {
-			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "HomeClient is not found.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "HomeClient is not found.", null);
 		}
 	}
 
@@ -1099,7 +1256,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkClient(MetaSectorClient metaSectorClient) throws ClientException {
 		if (metaSectorClient == null) {
-			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MetaSectorClient is not found.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MetaSectorClient is not found.", null);
 		}
 	}
 
@@ -1110,7 +1267,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkClient(MetaSpaceClient metaSpaceClient) throws ClientException {
 		if (metaSpaceClient == null) {
-			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MetaSpaceClient is not found.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MetaSpaceClient is not found.", null);
 		}
 	}
 
@@ -1121,7 +1278,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkClient(ProjectClient projectClient) throws ClientException {
 		if (projectClient == null) {
-			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectClient is not found.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectClient is not found.", null);
 		}
 	}
 
@@ -1133,7 +1290,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkClient(ProjectHomeClient projectHomeClient) throws ClientException {
 		if (projectHomeClient == null) {
-			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectHomeClient is not found.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectHomeClient is not found.", null);
 		}
 	}
 
@@ -1144,7 +1301,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkClient(ProjectNodeClient projectNodeClient) throws ClientException {
 		if (projectNodeClient == null) {
-			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectNodeClient is not found.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectNodeClient is not found.", null);
 		}
 	}
 
@@ -1155,7 +1312,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkClient(ProjectSoftwareClient projectSoftwareClient) throws ClientException {
 		if (projectSoftwareClient == null) {
-			throw new ClientException(MgmConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectSoftwareClient is not found.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectSoftwareClient is not found.", null);
 		}
 	}
 
@@ -1169,7 +1326,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkMachineId(String machineId) throws ClientException {
 		if (machineId == null || machineId.trim().isEmpty()) {
-			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "machineId is empty.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "machineId is empty.", null);
 		}
 	}
 
@@ -1180,7 +1337,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkHomeId(String homeId) throws ClientException {
 		if (homeId == null || homeId.trim().isEmpty()) {
-			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "homeId is empty.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "homeId is empty.", null);
 		}
 	}
 
@@ -1191,7 +1348,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkMetaSectorId(String metaSectorId) throws ClientException {
 		if (metaSectorId == null || metaSectorId.trim().isEmpty()) {
-			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "metaSectorId is empty.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "metaSectorId is empty.", null);
 		}
 	}
 
@@ -1202,7 +1359,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkMetaSpaceId(String metaSpaceId) throws ClientException {
 		if (metaSpaceId == null || metaSpaceId.trim().isEmpty()) {
-			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "metaSpaceId is empty.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "metaSpaceId is empty.", null);
 		}
 	}
 
@@ -1213,7 +1370,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkProjectId(String projectId) throws ClientException {
 		if (projectId == null || projectId.trim().isEmpty()) {
-			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "projectId is empty.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "projectId is empty.", null);
 		}
 	}
 
@@ -1224,7 +1381,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkProjectHomeId(String projectHomeId) throws ClientException {
 		if (projectHomeId == null || projectHomeId.trim().isEmpty()) {
-			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "projectHomeId is empty.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "projectHomeId is empty.", null);
 		}
 	}
 
@@ -1235,7 +1392,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkProjectNodeId(String projectNodeId) throws ClientException {
 		if (projectNodeId == null || projectNodeId.trim().isEmpty()) {
-			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "projectNodeId is empty.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "projectNodeId is empty.", null);
 		}
 	}
 
@@ -1246,7 +1403,7 @@ public class ManagementImpl implements Management {
 	 */
 	protected void checkSoftwareId(String softwareId) throws ClientException {
 		if (softwareId == null || softwareId.trim().isEmpty()) {
-			throw new ClientException(MgmConstants.ERROR_CODE_ENTITY_EMPTY_ID, "softwareId is empty.", null);
+			throw new ClientException(ManagementConstants.ERROR_CODE_ENTITY_EMPTY_ID, "softwareId is empty.", null);
 		}
 	}
 

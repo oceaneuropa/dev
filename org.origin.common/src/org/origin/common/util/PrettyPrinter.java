@@ -33,8 +33,18 @@ public class PrettyPrinter {
 	 * @param titles
 	 * @param rows
 	 */
-	public static void prettyPrint(String[] titles, String[]... rows) {
-		prettyPrint(DEFAULT_PRINTER, "(no records)", true, titles, rows);
+	public static void prettyPrint(String[] titles, String[][] rows) {
+		prettyPrint(DEFAULT_PRINTER, "(no records)", true, titles, rows, rows.length);
+	}
+
+	/**
+	 * 
+	 * @param titles
+	 * @param rows
+	 * @param numOfRecords
+	 */
+	public static void prettyPrint(String[] titles, String[][] rows, int numOfRecords) {
+		prettyPrint(DEFAULT_PRINTER, "(no records)", true, titles, rows, numOfRecords);
 	}
 
 	/**
@@ -45,7 +55,7 @@ public class PrettyPrinter {
 	 * @param titles
 	 * @param rows
 	 */
-	public static void prettyPrint(Printer printer, String defaultContent, boolean printRowCount, String[] titles, String[]... rows) {
+	public static void prettyPrint(Printer printer, String defaultContent, boolean printRowCount, String[] titles, String[][] rows, int numOfRecords) {
 		if (printer == null) {
 			printer = DEFAULT_PRINTER;
 		}
@@ -134,7 +144,8 @@ public class PrettyPrinter {
 		lines.add(line_title_separater);
 
 		// rows
-		int rowCount = rows.length;
+		// int rowCount = rows.length;
+		int rowCount = numOfRecords;
 		if (rowCount == 0) {
 			// no rows. use default content
 			String line_row = getRowText(defaultContent, defaultMaxLength);
@@ -163,9 +174,9 @@ public class PrettyPrinter {
 			StringBuilder rowCountLine = new StringBuilder();
 			rowCountLine.append("(").append(rowCount);
 			if (rowCount <= 1) {
-				rowCountLine.append(" row)");
+				rowCountLine.append(" record)");
 			} else {
-				rowCountLine.append(" rows)");
+				rowCountLine.append(" records)");
 			}
 			lines.add(rowCountLine.toString());
 		}

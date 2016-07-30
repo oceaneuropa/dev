@@ -123,22 +123,22 @@ public class ProjectClient extends AbstractClient {
 	}
 
 	/**
-	 * Update Project information.
+	 * Update a Project.
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/projects (Body parameter: ProjectDTO)
 	 * 
-	 * @param project
+	 * @param updateProjectRequest
 	 *            Body parameter for updating the Project.
 	 * 
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateProject(ProjectDTO project) throws ClientException {
+	public StatusDTO updateProject(ProjectDTO updateProjectRequest) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
 			Builder builder = getRootPath().path("projects").request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).put(Entity.json(new GenericEntity<ProjectDTO>(project) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<ProjectDTO>(updateProjectRequest) {
 			}));
 			checkResponse(response);
 

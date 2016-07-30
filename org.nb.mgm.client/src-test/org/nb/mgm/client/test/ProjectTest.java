@@ -12,7 +12,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.DateUtil;
@@ -20,7 +20,7 @@ import org.origin.common.util.DateUtil;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ProjectTest {
 
-	protected Management management;
+	protected ManagementClient management;
 
 	public ProjectTest() {
 		this.management = getManagement();
@@ -30,7 +30,7 @@ public class ProjectTest {
 		this.management = getManagement();
 	}
 
-	protected Management getManagement() {
+	protected ManagementClient getManagement() {
 		return ManagementFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
 	}
 

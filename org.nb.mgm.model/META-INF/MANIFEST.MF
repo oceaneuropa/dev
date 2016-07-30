@@ -8,4 +8,5 @@ Export-Package: org.nb.mgm.exception,
  org.nb.mgm.model.dto,
  org.nb.mgm.model.query,
  org.nb.mgm.model.runtime
-Import-Package: org.origin.common.rest.model
+Import-Package: com.fasterxml.jackson.annotation,
+ org.origin.common.rest.model

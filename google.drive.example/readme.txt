@@ -29,10 +29,15 @@ Work with Folders				https://developers.google.com/drive/v3/web/folder
 Download Files					https://developers.google.com/drive/v3/web/manage-uploads
 Upload Files					https://developers.google.com/drive/v3/web/manage-downloads#using_altmedia
 
-Examples:
-1. Google Drive QuickStart example:
-   https://developers.google.com/drive/v3/web/quickstart/java#prerequisites
-
+https://console.developers.google.com/iam-admin/iam/project?project=nebulartest1
+https://developers.google.com/drive/v3/web/quickstart/java
+https://developers.google.com/identity/protocols/OAuth2
+https://developers.google.com/drive/v3/web/about-auth
+https://developers.google.com/drive/v3/reference/files/create
+https://developers.google.com/drive/v3/web/manage-uploads
+https://developers.google.com/drive/v3/web/integrate-open
+https://developers.google.com/drive/v3/web/manage-downloads
+https://developers.google.com/drive/v2/reference/files/delete
 
 // ------------------------------------------------------------------------------------------------
 // Management

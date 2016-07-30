@@ -14,7 +14,7 @@ import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.IMetaSector;
 import org.nb.mgm.client.api.IMetaSpace;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.StringUtil;
@@ -35,7 +35,7 @@ public class ManagementCommand {
 	protected static Logger logger = LoggerFactory.getLogger(ManagementCommand.class);
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<?> registration;
-	protected Management mgm;
+	protected ManagementClient mgm;
 
 	/**
 	 * 
@@ -186,7 +186,7 @@ public class ManagementCommand {
 	 * @param mgm
 	 * @throws ClientException
 	 */
-	protected void listMachines(Management mgm) throws ClientException {
+	protected void listMachines(ManagementClient mgm) throws ClientException {
 		List<IMachine> machines = mgm.getMachines();
 		String[][] rows = new String[machines.size()][MACHINE_TITLES.length];
 		int rowIndex = 0;
@@ -203,7 +203,7 @@ public class ManagementCommand {
 	 * @param machineId
 	 * @throws ClientException
 	 */
-	protected void listHomes(Management mgm, String machineId) throws ClientException {
+	protected void listHomes(ManagementClient mgm, String machineId) throws ClientException {
 		IMachine machine = mgm.getMachine(machineId);
 		if (machine == null) {
 			System.out.println(MessageFormat.format("Machine with id=''{0}'' does not exist.", new Object[] { machineId }));
@@ -225,7 +225,7 @@ public class ManagementCommand {
 	 * @param mgm
 	 * @throws ClientException
 	 */
-	protected void listMetaSectors(Management mgm) throws ClientException {
+	protected void listMetaSectors(ManagementClient mgm) throws ClientException {
 		List<IMetaSector> metaSectors = this.mgm.getMetaSectors();
 		String[][] rows = new String[metaSectors.size()][META_SECTOR_TITLES.length];
 		int rowIndex = 0;
@@ -242,7 +242,7 @@ public class ManagementCommand {
 	 * @param metaSectorId
 	 * @throws ClientException
 	 */
-	protected void listMetaSpaces(Management mgm, String metaSectorId) throws ClientException {
+	protected void listMetaSpaces(ManagementClient mgm, String metaSectorId) throws ClientException {
 		IMetaSector metaSector = mgm.getMetaSector(metaSectorId);
 		if (metaSector == null) {
 			System.out.println(MessageFormat.format("MetaSector with id=''{0}'' does not exist.", new Object[] { metaSectorId }));
@@ -367,7 +367,7 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void createMachine(Management mgm, String name, String ipaddress, String description) throws ClientException {
+	protected void createMachine(ManagementClient mgm, String name, String ipaddress, String description) throws ClientException {
 		IMachine newMachine = mgm.addMachine(name, ipaddress, description);
 		if (newMachine != null) {
 			System.out.println("New Machine is created. ");
@@ -386,7 +386,7 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void createHome(Management mgm, String machineid, String name, String description) throws ClientException {
+	protected void createHome(ManagementClient mgm, String machineid, String name, String description) throws ClientException {
 		IHome newHome = mgm.addHome(machineid, name, description);
 		if (newHome != null) {
 			System.out.println("New Home is created. ");
@@ -403,7 +403,7 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void createMetaSector(Management mgm, String name, String description) throws ClientException {
+	protected void createMetaSector(ManagementClient mgm, String name, String description) throws ClientException {
 		IMetaSector newMetaSector = mgm.addMetaSector(name, description);
 		if (newMetaSector != null) {
 			System.out.println("New MetaSector is created. ");
@@ -421,7 +421,7 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void createMetaSpace(Management mgm, String metasectorid, String name, String description) throws ClientException {
+	protected void createMetaSpace(ManagementClient mgm, String metasectorid, String name, String description) throws ClientException {
 		IMetaSpace newMetaSpace = mgm.addMetaSpace(metasectorid, name, description);
 		if (newMetaSpace != null) {
 			System.out.println("New MetaSpace is created. ");
@@ -539,7 +539,7 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void updateMachine(Management mgm, String machineId, String name, String ipaddress, String description) throws ClientException {
+	protected void updateMachine(ManagementClient mgm, String machineId, String name, String ipaddress, String description) throws ClientException {
 		IMachine machine = mgm.getMachine(machineId);
 		if (machine == null) {
 			System.out.println(MessageFormat.format("Machine with id=''{0}'' is not found.", new Object[] { machineId }));
@@ -582,7 +582,7 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void updateHome(Management mgm, String homeId, String name, String url, String description) throws ClientException {
+	protected void updateHome(ManagementClient mgm, String homeId, String name, String url, String description) throws ClientException {
 		IHome home = mgm.getHome(homeId);
 		if (home == null) {
 			System.out.println(MessageFormat.format("Home with id=''{0}'' is not found.", new Object[] { homeId }));
@@ -619,7 +619,7 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void updateMetaSector(Management mgm, String metaSectorId, String name, String description) throws ClientException {
+	protected void updateMetaSector(ManagementClient mgm, String metaSectorId, String name, String description) throws ClientException {
 		IMetaSector metaSector = mgm.getMetaSector(metaSectorId);
 		if (metaSector == null) {
 			System.out.println(MessageFormat.format("MetaSector with id=''{0}'' is not found.", new Object[] { metaSectorId }));
@@ -656,7 +656,7 @@ public class ManagementCommand {
 	 * @param description
 	 * @throws ClientException
 	 */
-	protected void updateMetaSpace(Management mgm, String metaSpaceId, String name, String description) throws ClientException {
+	protected void updateMetaSpace(ManagementClient mgm, String metaSpaceId, String name, String description) throws ClientException {
 		IMetaSpace metaSpace = mgm.getMetaSpace(metaSpaceId);
 		if (metaSpace == null) {
 			System.out.println(MessageFormat.format("MetaSpace with id=''{0}'' is not found.", new Object[] { metaSpaceId }));
@@ -766,7 +766,7 @@ public class ManagementCommand {
 	 * @param machineIds
 	 * @throws ClientException
 	 */
-	protected void deleteMachines(Management mgm, String[] machineIds) throws ClientException {
+	protected void deleteMachines(ManagementClient mgm, String[] machineIds) throws ClientException {
 		for (String machineId : machineIds) {
 			boolean succeed = mgm.removeMachine(machineId);
 			if (succeed) {
@@ -784,7 +784,7 @@ public class ManagementCommand {
 	 * @param homeIds
 	 * @throws ClientException
 	 */
-	protected void deleteHomes(Management mgm, String[] homeIds) throws ClientException {
+	protected void deleteHomes(ManagementClient mgm, String[] homeIds) throws ClientException {
 		for (int i = 0; i < homeIds.length; i++) {
 			String homeId = homeIds[i];
 			boolean succeed = mgm.removeHome(homeId);
@@ -803,7 +803,7 @@ public class ManagementCommand {
 	 * @param metaSectorIds
 	 * @throws ClientException
 	 */
-	protected void deleteMetaSectors(Management mgm, String[] metaSectorIds) throws ClientException {
+	protected void deleteMetaSectors(ManagementClient mgm, String[] metaSectorIds) throws ClientException {
 		for (String metaSectorId : metaSectorIds) {
 			boolean succeed = mgm.deleteMetaSector(metaSectorId);
 			if (succeed) {
@@ -821,7 +821,7 @@ public class ManagementCommand {
 	 * @param metaSpaceIds
 	 * @throws ClientException
 	 */
-	protected void deleteMetaSpaces(Management mgm, String[] metaSpaceIds) throws ClientException {
+	protected void deleteMetaSpaces(ManagementClient mgm, String[] metaSpaceIds) throws ClientException {
 		for (int i = 0; i < metaSpaceIds.length; i++) {
 			String metaSpaceId = metaSpaceIds[i];
 			boolean succeed = mgm.deleteMetaSpace(metaSpaceId);

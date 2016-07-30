@@ -2,7 +2,7 @@ package org.nb.mgm.client.api;
 
 import org.nb.mgm.client.api.impl.HomeImpl;
 import org.nb.mgm.client.api.impl.MachineImpl;
-import org.nb.mgm.client.api.impl.ManagementImpl;
+import org.nb.mgm.client.api.impl.ManagementClientImpl;
 import org.nb.mgm.client.api.impl.MetaSectorImpl;
 import org.nb.mgm.client.api.impl.MetaSpaceImpl;
 import org.nb.mgm.client.api.impl.ProjectHomeImpl;
@@ -28,8 +28,8 @@ public class ManagementFactory {
 	 * @param password
 	 * @return
 	 */
-	public static Management createManagement(String url, String username, String password) {
-		return new ManagementImpl(url, "mgm/v1", username, password);
+	public static ManagementClient createManagement(String url, String username, String password) {
+		return new ManagementClientImpl(url, "mgm/v1", username, password);
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class ManagementFactory {
 	 * @param machineDTO
 	 * @return
 	 */
-	public static IMachine createMachine(Management management, MachineDTO machineDTO) {
+	public static IMachine createMachine(ManagementClient management, MachineDTO machineDTO) {
 		return new MachineImpl(management, machineDTO);
 	}
 
@@ -51,7 +51,7 @@ public class ManagementFactory {
 	 * @param homeDTO
 	 * @return
 	 */
-	public static IHome createHome(Management management, IMachine machine, HomeDTO homeDTO) {
+	public static IHome createHome(ManagementClient management, IMachine machine, HomeDTO homeDTO) {
 		return new HomeImpl(management, machine, homeDTO);
 	}
 
@@ -62,7 +62,7 @@ public class ManagementFactory {
 	 * @param metaSectorDTO
 	 * @return
 	 */
-	public static IMetaSector createMetaSector(Management management, MetaSectorDTO metaSectorDTO) {
+	public static IMetaSector createMetaSector(ManagementClient management, MetaSectorDTO metaSectorDTO) {
 		return new MetaSectorImpl(management, metaSectorDTO);
 	}
 
@@ -74,7 +74,7 @@ public class ManagementFactory {
 	 * @param metaSpaceDTO
 	 * @return
 	 */
-	public static IMetaSpace createMetaSpace(Management management, IMetaSector metaSector, MetaSpaceDTO metaSpaceDTO) {
+	public static IMetaSpace createMetaSpace(ManagementClient management, IMetaSector metaSector, MetaSpaceDTO metaSpaceDTO) {
 		return new MetaSpaceImpl(management, metaSector, metaSpaceDTO);
 	}
 
@@ -85,7 +85,7 @@ public class ManagementFactory {
 	 * @param projectDTO
 	 * @return
 	 */
-	public static IProject createProject(Management management, ProjectDTO projectDTO) {
+	public static IProject createProject(ManagementClient management, ProjectDTO projectDTO) {
 		return new ProjectImpl(management, projectDTO);
 	}
 
@@ -97,7 +97,7 @@ public class ManagementFactory {
 	 * @param projectHomeDTO
 	 * @return
 	 */
-	public static IProjectHome createProjectHome(Management management, IProject project, ProjectHomeDTO projectHomeDTO) {
+	public static IProjectHome createProjectHome(ManagementClient management, IProject project, ProjectHomeDTO projectHomeDTO) {
 		return new ProjectHomeImpl(management, project, projectHomeDTO);
 	}
 
@@ -110,7 +110,7 @@ public class ManagementFactory {
 	 * @param projectNodeDTO
 	 * @return
 	 */
-	public static IProjectNode createProjectNode(Management management, IProject project, IProjectHome projectHome, ProjectNodeDTO projectNodeDTO) {
+	public static IProjectNode createProjectNode(ManagementClient management, IProject project, IProjectHome projectHome, ProjectNodeDTO projectNodeDTO) {
 		return new ProjectNodeImpl(management, project, projectHome, projectNodeDTO);
 	}
 
@@ -122,7 +122,7 @@ public class ManagementFactory {
 	 * @param softwareDTO
 	 * @return
 	 */
-	public static ISoftware createSoftware(Management management, IProject project, SoftwareDTO softwareDTO) {
+	public static ISoftware createSoftware(ManagementClient management, IProject project, SoftwareDTO softwareDTO) {
 		return new SoftwareImpl(management, project, softwareDTO);
 	}
 

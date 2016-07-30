@@ -2,19 +2,18 @@ package org.nb.mgm.client.api.impl;
 
 import java.util.List;
 
+import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
 import org.nb.mgm.client.api.IProjectNode;
-import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.ws.ProjectHomeClient;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.model.StatusDTO;
 
 public class ProjectHomeImpl implements IProjectHome {
 
-	private Management management;
+	private ManagementClient management;
 	private IProject project;
 	private ProjectHomeDTO projectHomeDTO;
 
@@ -27,7 +26,7 @@ public class ProjectHomeImpl implements IProjectHome {
 	 * @param project
 	 * @param projectHomeDTO
 	 */
-	public ProjectHomeImpl(Management management, IProject project, ProjectHomeDTO projectHomeDTO) {
+	public ProjectHomeImpl(ManagementClient management, IProject project, ProjectHomeDTO projectHomeDTO) {
 		this.management = management;
 		this.project = project;
 		this.projectHomeDTO = projectHomeDTO;
@@ -37,7 +36,7 @@ public class ProjectHomeImpl implements IProjectHome {
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public Management getManagement() {
+	public ManagementClient getManagement() {
 		return this.management;
 	}
 
@@ -64,13 +63,8 @@ public class ProjectHomeImpl implements IProjectHome {
 		checkManagement(this.management);
 		checkProject(this.project);
 
-		ProjectHomeClient projectHomeClient = this.management.getAdapter(ProjectHomeClient.class);
-		checkClient(projectHomeClient);
-
 		String projectId = this.project.getId();
-
-		StatusDTO status = projectHomeClient.updateProjectHome(projectId, this.projectHomeDTO);
-		return (status != null && status.success()) ? true : false;
+		return this.management.updateProjectHome(projectId, this.projectHomeDTO);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -118,6 +112,24 @@ public class ProjectHomeImpl implements IProjectHome {
 	}
 
 	// ------------------------------------------------------------------------------------------
+	// ProjectHome
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public IHome getDeploymentHome() throws ClientException {
+		return this.management.getProjectDeploymentHome(getId());
+	}
+
+	@Override
+	public boolean setDeploymentHome(String homeId) throws ClientException {
+		return this.management.setProjectDeploymentHome(getId(), homeId);
+	}
+
+	@Override
+	public boolean removeDeploymentHome(String homeId) throws ClientException {
+		return this.management.removeProjectDeploymentHome(getId(), homeId);
+	}
+
+	// ------------------------------------------------------------------------------------------
 	// ProjectNode
 	// ------------------------------------------------------------------------------------------
 	@Override
@@ -161,20 +173,24 @@ public class ProjectHomeImpl implements IProjectHome {
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// Check WS Client
+	// Check Management Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(ProjectHomeClient projectHomeClient) throws ClientException {
-		if (projectHomeClient == null) {
-			throw new ClientException(401, "ProjectHomeClient is not found.", null);
-		}
-	}
-
-	protected void checkManagement(Management management) throws ClientException {
+	/**
+	 * 
+	 * @param management
+	 * @throws ClientException
+	 */
+	protected void checkManagement(ManagementClient management) throws ClientException {
 		if (management == null) {
 			throw new ClientException(401, "management is null.", null);
 		}
 	}
 
+	/**
+	 * 
+	 * @param project
+	 * @throws ClientException
+	 */
 	protected void checkProject(IProject project) throws ClientException {
 		if (project == null) {
 			throw new ClientException(401, "project is null.", null);

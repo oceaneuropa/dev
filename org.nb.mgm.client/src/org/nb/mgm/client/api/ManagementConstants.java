@@ -1,6 +1,6 @@
 package org.nb.mgm.client.api;
 
-public class MgmConstants {
+public class ManagementConstants {
 
 	// System errors are belong 1000
 	public static final int ERROR_CODE_WS_CLIENT_NOT_FOUND = 401;

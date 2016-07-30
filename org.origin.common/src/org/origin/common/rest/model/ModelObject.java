@@ -81,4 +81,39 @@ public class ModelObject {
 		this.description = description;
 	}
 
+	/**
+	 * 
+	 * @param attributeName
+	 * @return
+	 */
+	public boolean hasAttribute(String attributeName) {
+		if ("id".equals(attributeName) && this.id != null) {
+			return true;
+		}
+		if ("name".equals(attributeName) && this.name != null) {
+			return true;
+		}
+		if ("description".equals(attributeName) && this.description != null) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param attributeName
+	 * @return
+	 */
+	public Object getAttribute(String attributeName) {
+		Object value = null;
+		if ("id".equals(attributeName)) {
+			value = this.id;
+		} else if ("name".equals(attributeName)) {
+			value = this.name;
+		} else if ("description".equals(attributeName)) {
+			value = this.description;
+		}
+		return value;
+	}
+
 }

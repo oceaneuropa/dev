@@ -12,7 +12,7 @@ public interface ISoftware extends IAdaptable {
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
-	public Management getManagement();
+	public ManagementClient getManagement();
 
 	public IProject getProject();
 

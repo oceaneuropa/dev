@@ -1,16 +1,16 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.query.MetaSpaceQuery;
 import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.Home;
@@ -47,7 +47,7 @@ public class MetaSpaceHandler {
 	 * @param metaSectorId
 	 * @return
 	 */
-	public List<MetaSpace> getMetaSpaces(String metaSectorId) throws MgmException {
+	public List<MetaSpace> getMetaSpaces(String metaSectorId) throws ManagementException {
 		return getMetaSpaces(metaSectorId, null);
 	}
 
@@ -58,11 +58,11 @@ public class MetaSpaceHandler {
 	 * @param query
 	 * @return
 	 */
-	public List<MetaSpace> getMetaSpaces(String metaSectorId, MetaSpaceQuery query) throws MgmException {
+	public List<MetaSpace> getMetaSpaces(String metaSectorId, MetaSpaceQuery query) throws ManagementException {
 		// Container MetaSector must exist
 		MetaSector metaSector = this.mgmService.getMetaSector(metaSectorId);
 		if (metaSector == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSector cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSector cannot be found.", null);
 		}
 
 		// Get all MetaSpaces in the MetaSector
@@ -105,12 +105,12 @@ public class MetaSpaceHandler {
 	 * @param metaSpaceId
 	 * @return
 	 */
-	public MetaSpace getMetaSpace(String metaSpaceId) throws MgmException {
+	public MetaSpace getMetaSpace(String metaSpaceId) throws ManagementException {
 		MetaSpace resultMetaSpace = null;
 
 		// Throw exception - empty Id
 		if (metaSpaceId == null || metaSpaceId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSpace Id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSpace Id cannot be empty.", null);
 		}
 
 		// Iterate though all MetaSectors and then all MetaSpaces in each MetaSector. Find the MetaSpace with matching Id.
@@ -138,13 +138,13 @@ public class MetaSpaceHandler {
 	 * 
 	 * @param metaSectorId
 	 * @param metaSpace
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void addMetaSpace(String metaSectorId, MetaSpace metaSpace) throws MgmException {
+	public void addMetaSpace(String metaSectorId, MetaSpace metaSpace) throws ManagementException {
 		// Container MetaSector must exist
 		MetaSector metaSector = this.mgmService.getMetaSector(metaSectorId);
 		if (metaSector == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSector cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSector cannot be found.", null);
 		}
 
 		// Generate unique MetaSpace Id
@@ -154,7 +154,7 @@ public class MetaSpaceHandler {
 
 		// Throw exception - empty MetaSpace name
 		if (metaSpace.getName() == null || metaSpace.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSpace name cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSpace name cannot be empty.", null);
 		}
 
 		// Throw exception - MetaSpace with same Id exists
@@ -163,7 +163,7 @@ public class MetaSpaceHandler {
 			MetaSpace currMetaSpace = metaSpaceItor.next();
 
 			if (metaSpace.getId().equals(currMetaSpace.getId())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "MetaSpace with same Id already exists.", null);
+				throw new ManagementException(ERROR_CODE_ENTITY_EXIST, "MetaSpace with same Id already exists.", null);
 			}
 			// if (metaSpace.getName().equals(currMetaSpace.getName())) {
 			// throw new MgmException(ERROR_CODE_META_SPACE_EXIST, "MetaSpace with same name already exists.", null);
@@ -201,12 +201,12 @@ public class MetaSpaceHandler {
 	 * Update MetaSpace information.
 	 * 
 	 * @param metaSpace
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateMetaSpace(MetaSpace metaSpace) throws MgmException {
+	public void updateMetaSpace(MetaSpace metaSpace) throws ManagementException {
 		// Throw exception - empty MetaSpace
 		if (metaSpace == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSpace cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSpace cannot be empty.", null);
 		}
 
 		// Find MetaSpace by Id
@@ -231,12 +231,12 @@ public class MetaSpaceHandler {
 	 * Delete a MetaSpace from a MetaSector.
 	 * 
 	 * @param metaSpaceId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void deleteMetaSpace(String metaSpaceId) throws MgmException {
+	public void deleteMetaSpace(String metaSpaceId) throws ManagementException {
 		// Throw exception - empty Id
 		if (metaSpaceId == null || metaSpaceId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSpace Id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "MetaSpace Id cannot be empty.", null);
 		}
 
 		// Find MetaSpace by Id
@@ -244,7 +244,7 @@ public class MetaSpaceHandler {
 
 		// Throw exception - MetaSpace not found
 		if (metaSpaceToDelete == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSpace cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "MetaSpace cannot be found.", null);
 		}
 
 		// Check whether a MetaSpace can be deleted.
@@ -259,9 +259,9 @@ public class MetaSpaceHandler {
 	 * Check whether a MetaSpace can be deleted.
 	 * 
 	 * @param metaSpaceId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void checkDelete(String metaSpaceId) throws MgmException {
+	public void checkDelete(String metaSpaceId) throws ManagementException {
 		// 1. Throw exception - Cannot delete MetaSpace, if there are Homes which join the MetaSpace.
 		boolean foundHomeJoinedThisMetaSpace = false;
 		for (Machine currMachine : this.mgmService.getMachines()) {
@@ -281,7 +281,7 @@ public class MetaSpaceHandler {
 			}
 		}
 		if (foundHomeJoinedThisMetaSpace) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "MetaSpace cannot be deleted. Please remove Homes which joined this MetaSpace first.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "MetaSpace cannot be deleted. Please remove Homes which joined this MetaSpace first.", null);
 		}
 	}
 

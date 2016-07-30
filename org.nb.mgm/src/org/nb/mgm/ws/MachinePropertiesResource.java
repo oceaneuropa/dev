@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.json.JSONUtil;
@@ -40,12 +40,6 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 @Path("/{machineId}/properties")
 @Produces(MediaType.APPLICATION_JSON)
 public class MachinePropertiesResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * Get Machine properties.
@@ -75,7 +69,7 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 			}
 			properties = mgm.getMachineProperties(machineId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -122,7 +116,7 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 			succeed = mgm.setMachineProperties(machineId, properties);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -184,7 +178,7 @@ public class MachinePropertiesResource extends AbstractApplicationResource {
 
 			succeed = mgm.removeMachineProperties(machineId, propertyNames);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

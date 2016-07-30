@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.ProjectDTO;
 import org.nb.mgm.model.dto.SoftwareDTO;
@@ -40,12 +40,6 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 @Path("/projects/{projectId}/software")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectSoftwareResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * Get Project Software lists.
@@ -87,7 +81,7 @@ public class ProjectSoftwareResource extends AbstractApplicationResource {
 				softwareDTOs.add(softwareDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -137,7 +131,7 @@ public class ProjectSoftwareResource extends AbstractApplicationResource {
 			// Set container ProjectDTO
 			softwareDTO.setProject(projectDTO);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -208,13 +202,10 @@ public class ProjectSoftwareResource extends AbstractApplicationResource {
 			// Set container ProjectDTO
 			newSoftwareDTO.setProject(projectDTO);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		// Save changes
-		handleSave(mgm);
 
 		return Response.ok().entity(newSoftwareDTO).build();
 	}
@@ -271,13 +262,10 @@ public class ProjectSoftwareResource extends AbstractApplicationResource {
 			// Update Software
 			mgm.updateProjectSoftware(projectId, updateSoftwareRequest);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		// Save changes
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Project Software is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
@@ -317,13 +305,10 @@ public class ProjectSoftwareResource extends AbstractApplicationResource {
 			// Delete Software from Project
 			mgm.deleteProjectSoftware(projectId, softwareId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		// Save changes
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "Project Software is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();

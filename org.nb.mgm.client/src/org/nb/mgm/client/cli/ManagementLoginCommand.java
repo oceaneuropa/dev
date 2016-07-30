@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.osgi.framework.BundleContext;
@@ -12,7 +12,7 @@ import org.osgi.framework.BundleContext;
 public class ManagementLoginCommand {
 
 	protected BundleContext bundleContext;
-	protected Management management;
+	protected ManagementClient management;
 
 	/**
 	 * 
@@ -71,13 +71,13 @@ public class ManagementLoginCommand {
 			// return;
 		}
 
-		Management oldManagement = this.management;
-		Management newManagement = ManagementFactory.createManagement(url, username, password);
+		ManagementClient oldManagement = this.management;
+		ManagementClient newManagement = ManagementFactory.createManagement(url, username, password);
 		if (newManagement != null) {
 			if (oldManagement != null) {
 				OSGiServiceUtil.unregister(oldManagement);
 			}
-			OSGiServiceUtil.register(this.bundleContext, Management.class.getName(), newManagement);
+			OSGiServiceUtil.register(this.bundleContext, ManagementClient.class.getName(), newManagement);
 			this.management = newManagement;
 
 			System.out.println("Login successfully.");
@@ -99,7 +99,7 @@ public class ManagementLoginCommand {
 			return;
 		}
 
-		OSGiServiceUtil.unregister(Management.class.getName(), this.management);
+		OSGiServiceUtil.unregister(ManagementClient.class.getName(), this.management);
 		this.management = null;
 		System.out.println("Logout successfully.");
 	}

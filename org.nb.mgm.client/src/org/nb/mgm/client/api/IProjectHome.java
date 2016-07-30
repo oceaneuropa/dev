@@ -10,7 +10,7 @@ public interface IProjectHome extends IAdaptable {
 	// ------------------------------------------------------------------------------------------
 	// Parent
 	// ------------------------------------------------------------------------------------------
-	public Management getManagement();
+	public ManagementClient getManagement();
 
 	public IProject getProject();
 
@@ -35,6 +35,36 @@ public interface IProjectHome extends IAdaptable {
 	public String getDescription();
 
 	public void setDescription(String description) throws ClientException;
+
+	// ------------------------------------------------------------------------------------------
+	// ProjectHome
+	// ------------------------------------------------------------------------------------------
+	/**
+	 * Get deployment Home.
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
+	public IHome getDeploymentHome() throws ClientException;
+
+	/**
+	 * Set deployment Home.
+	 * 
+	 * @param home
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean setDeploymentHome(String homeId) throws ClientException;
+
+	/**
+	 * Remove deployment Home.
+	 * 
+	 * @param projectHomeId
+	 * @param homeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean removeDeploymentHome(String homeId) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// ProjectNode

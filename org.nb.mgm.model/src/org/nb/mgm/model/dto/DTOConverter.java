@@ -1,6 +1,6 @@
 package org.nb.mgm.model.dto;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.runtime.Artifact;
 import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
@@ -27,7 +27,7 @@ public class DTOConverter {
 	 * @param e
 	 * @return
 	 */
-	public ErrorDTO toDTO(MgmException e) {
+	public ErrorDTO toDTO(ManagementException e) {
 		if (e == null) {
 			return null;
 		}

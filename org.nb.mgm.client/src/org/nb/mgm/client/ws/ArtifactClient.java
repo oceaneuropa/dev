@@ -17,20 +17,15 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-/**
- * Artifact web service client
+/*
+ * Artifact resource client
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts?filter={filter}
- * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts/{artifactId}
- * 
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts (Body parameter: ArtifactDTO)
- * 
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts (Body parameter: ArtifactDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts (Body parameter: ArtifactDTO)
- * 
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts/{artifactId}
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts/{artifactId}
  * 
  */
 public class ArtifactClient extends AbstractClient {
@@ -44,7 +39,7 @@ public class ArtifactClient extends AbstractClient {
 	}
 
 	/**
-	 * Get all Artifacts in a MetaSector.
+	 * Get Artifacts in a MetaSector.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts
 	 * 
@@ -75,7 +70,7 @@ public class ArtifactClient extends AbstractClient {
 	}
 
 	/**
-	 * Get all Artifacts in a MetaSector by filter.
+	 * Get Artifacts in a MetaSector.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts?filter={filter}
 	 * 
@@ -107,7 +102,7 @@ public class ArtifactClient extends AbstractClient {
 	}
 
 	/**
-	 * Get Artifact by metaSector Id and artifact Id.
+	 * Get an Artifact in a MetaSector.
 	 * 
 	 * Request URL (GET): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts/{artifactId}
 	 * 
@@ -135,7 +130,7 @@ public class ArtifactClient extends AbstractClient {
 	}
 
 	/**
-	 * Add a Artifact to a MetaSector.
+	 * Add an Artifact to a MetaSector.
 	 * 
 	 * Request URL (POST): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts
 	 * 
@@ -165,23 +160,23 @@ public class ArtifactClient extends AbstractClient {
 	}
 
 	/**
-	 * Update Artifact information.
+	 * Update an Artifact.
 	 * 
 	 * Request URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{metaSectorId}/artifacts
 	 * 
 	 * @param metaSectorId
-	 * @param artifact
+	 * @param updateArtifactRequest
 	 *            Body parameter for updating the Artifact.
 	 * 
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateArtifact(String metaSectorId, ArtifactDTO artifact) throws ClientException {
+	public StatusDTO updateArtifact(String metaSectorId, ArtifactDTO updateArtifactRequest) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
 			Builder builder = getRootPath().path(metaSectorId).path("artifacts").request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).put(Entity.json(new GenericEntity<ArtifactDTO>(artifact) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<ArtifactDTO>(updateArtifactRequest) {
 			}));
 			checkResponse(response);
 

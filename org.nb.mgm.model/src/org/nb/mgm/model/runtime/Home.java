@@ -102,17 +102,23 @@ public class Home extends ModelObject {
 	}
 
 	public static class HomeProxy extends Home {
-
-		public HomeProxy() {
+		/**
+		 * 
+		 * @param homeId
+		 */
+		public HomeProxy(String homeId) {
 			super();
+			setId(homeId);
 		}
 
 		/**
 		 * 
 		 * @param machine
+		 * @param homeId
 		 */
-		public HomeProxy(Machine machine) {
+		public HomeProxy(Machine machine, String homeId) {
 			super(machine);
+			setId(homeId);
 		}
 
 		@Override

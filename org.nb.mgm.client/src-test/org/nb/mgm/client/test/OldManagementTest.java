@@ -6,14 +6,14 @@ import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.IMetaSector;
 import org.nb.mgm.client.api.IMetaSpace;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 
 public class OldManagementTest {
 
 	public static void main(String[] args) {
-		Management mgm = ManagementFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
+		ManagementClient mgm = ManagementFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
 
 		// addMachine(mgm);
 		// addMetaSector(mgm);
@@ -24,7 +24,7 @@ public class OldManagementTest {
 		getMetaSector(mgm);
 	}
 
-	public static void addMachine(Management mgm) {
+	public static void addMachine(ManagementClient mgm) {
 		try {
 			for (int i = 0; i < 3; i++) {
 				IMachine newMachine = mgm.addMachine("m" + i, "127.0.0." + i, "machine" + i);
@@ -44,7 +44,7 @@ public class OldManagementTest {
 		}
 	}
 
-	public static void getMachines(Management mgm) {
+	public static void getMachines(ManagementClient mgm) {
 		System.out.println();
 		try {
 			List<IMachine> machines = mgm.getMachines();
@@ -66,7 +66,7 @@ public class OldManagementTest {
 		}
 	}
 
-	public static void addMetaSector(Management mgm) {
+	public static void addMetaSector(ManagementClient mgm) {
 		try {
 			for (int i = 1; i <= 3; i++) {
 				IMetaSector newMetaSector = mgm.addMetaSector("sector" + i, "meta sector" + i);
@@ -86,7 +86,7 @@ public class OldManagementTest {
 		}
 	}
 
-	public static void getMetaSector(Management mgm) {
+	public static void getMetaSector(ManagementClient mgm) {
 		try {
 			List<IMetaSector> metaSectors = mgm.getMetaSectors();
 			// System.out.println("metaSectors.size() = " + metaSectors.size());

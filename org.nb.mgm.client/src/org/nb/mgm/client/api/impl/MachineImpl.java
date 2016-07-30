@@ -8,16 +8,14 @@ import java.util.Properties;
 
 import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
-import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.ws.MachineClient;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.model.StatusDTO;
 
 public class MachineImpl implements IMachine {
 
-	private Management management;
+	private ManagementClient management;
 	private MachineDTO machineDTO;
 
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
@@ -28,7 +26,7 @@ public class MachineImpl implements IMachine {
 	 * @param management
 	 * @param machineDTO
 	 */
-	public MachineImpl(Management management, MachineDTO machineDTO) {
+	public MachineImpl(ManagementClient management, MachineDTO machineDTO) {
 		this.management = management;
 		this.machineDTO = machineDTO;
 	}
@@ -37,7 +35,7 @@ public class MachineImpl implements IMachine {
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public Management getManagement() {
+	public ManagementClient getManagement() {
 		return management;
 	}
 
@@ -56,11 +54,8 @@ public class MachineImpl implements IMachine {
 
 	@Override
 	public boolean update() throws ClientException {
-		MachineClient machineClient = this.management.getAdapter(MachineClient.class);
-		checkClient(machineClient);
-
-		StatusDTO status = machineClient.updateMachine(this.machineDTO);
-		return (status != null && status.success()) ? true : false;
+		checkManagement(this.management);
+		return this.management.updateMachine(this.machineDTO);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -191,16 +186,9 @@ public class MachineImpl implements IMachine {
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public Map<String, Object> getProperties() throws ClientException {
+		checkManagement(this.management);
 		String machineId = this.machineDTO.getId();
-
-		MachineClient machineClient = this.management.getAdapter(MachineClient.class);
-		checkClient(machineClient);
-
-		Map<String, Object> properties = machineClient.getProperties(machineId, true);
-		if (properties == null) {
-			properties = new HashMap<String, Object>();
-		}
-		return properties;
+		return this.management.getMachineProperties(machineId, true);
 	}
 
 	@Override
@@ -212,13 +200,9 @@ public class MachineImpl implements IMachine {
 
 	@Override
 	public boolean setProperties(Map<String, Object> properties) throws ClientException {
+		checkManagement(this.management);
 		String machineId = this.machineDTO.getId();
-
-		MachineClient machineClient = this.management.getAdapter(MachineClient.class);
-		checkClient(machineClient);
-
-		StatusDTO status = machineClient.setProperties(machineId, properties);
-		return (status != null && status.success()) ? true : false;
+		return this.management.setMachineProperties(machineId, properties);
 	}
 
 	@Override
@@ -230,21 +214,21 @@ public class MachineImpl implements IMachine {
 
 	@Override
 	public boolean removeProperties(List<String> propertyNames) throws ClientException {
+		checkManagement(this.management);
 		String machineId = this.machineDTO.getId();
-
-		MachineClient machineClient = this.management.getAdapter(MachineClient.class);
-		checkClient(machineClient);
-
-		StatusDTO status = machineClient.removeProperties(machineId, propertyNames);
-		return (status != null && status.success()) ? true : false;
+		return this.management.removeMachineProperties(machineId, propertyNames);
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// Check WS Client
+	// Check Management Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(MachineClient machineClient) throws ClientException {
-		if (machineClient == null) {
-			throw new ClientException(401, "MachineClient is not found.", null);
+	/**
+	 * @param management
+	 * @throws ClientException
+	 */
+	protected void checkManagement(ManagementClient management) throws ClientException {
+		if (management == null) {
+			throw new ClientException(401, "management is null.", null);
 		}
 	}
 

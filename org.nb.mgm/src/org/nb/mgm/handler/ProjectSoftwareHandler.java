@@ -1,8 +1,8 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.service.ManagementService;
@@ -40,9 +40,9 @@ public class ProjectSoftwareHandler {
 	 * 
 	 * @param projectId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public List<Software> getProjectSoftware(String projectId) throws MgmException {
+	public List<Software> getProjectSoftware(String projectId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 
@@ -64,9 +64,9 @@ public class ProjectSoftwareHandler {
 	 * @param projectId
 	 * @param softwareId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Software getProjectSoftware(String projectId, String softwareId) throws MgmException {
+	public Software getProjectSoftware(String projectId, String softwareId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkSoftwareId(softwareId);
@@ -95,9 +95,9 @@ public class ProjectSoftwareHandler {
 	 * @param projectId
 	 * @param softwareId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public InputStream getProjectSoftwareContent(String projectId, String softwareId) throws MgmException {
+	public InputStream getProjectSoftwareContent(String projectId, String softwareId) throws ManagementException {
 		InputStream is = null;
 		Software software = getProjectSoftware(projectId, softwareId);
 		if (software != null) {
@@ -110,7 +110,7 @@ public class ProjectSoftwareHandler {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new MgmException("500", "Cannot create InputStream from " + softwareFile.getAbsolutePath() + ".", e);
+					throw new ManagementException("500", "Cannot create InputStream from " + softwareFile.getAbsolutePath() + ".", e);
 				}
 			}
 		}
@@ -127,9 +127,9 @@ public class ProjectSoftwareHandler {
 	 * @param lastModified
 	 * @param input
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean setProjectSoftwareContent(String projectId, String softwareId, String fileName, long length, Date lastModified, InputStream input) throws MgmException {
+	public boolean setProjectSoftwareContent(String projectId, String softwareId, String fileName, long length, Date lastModified, InputStream input) throws ManagementException {
 		Software software = getProjectSoftware(projectId, softwareId);
 		if (software != null) {
 			if (fileName == null) {
@@ -171,7 +171,7 @@ public class ProjectSoftwareHandler {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-				throw new MgmException("500", "Cannot copy InputStream to " + softwareFile.getAbsolutePath() + ".", e);
+				throw new ManagementException("500", "Cannot copy InputStream to " + softwareFile.getAbsolutePath() + ".", e);
 			}
 		}
 		return false;
@@ -182,9 +182,9 @@ public class ProjectSoftwareHandler {
 	 * 
 	 * @param projectId
 	 * @param newSoftwareRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Software addProjectSoftware(String projectId, Software newSoftwareRequest) throws MgmException {
+	public Software addProjectSoftware(String projectId, Software newSoftwareRequest) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 
@@ -202,7 +202,7 @@ public class ProjectSoftwareHandler {
 
 		// Throw exception - empty Software name
 		if (newSoftwareRequest.getName() == null || newSoftwareRequest.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Software name cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Software name cannot be empty.", null);
 		}
 
 		if (newSoftwareRequest.getVersion() == null || newSoftwareRequest.getVersion().isEmpty()) {
@@ -214,11 +214,11 @@ public class ProjectSoftwareHandler {
 			Software currSoftware = softwareItor.next();
 
 			if (newSoftwareRequest.getId().equals(currSoftware.getId())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Software with same Id already exists.", null);
+				throw new ManagementException(ERROR_CODE_ENTITY_EXIST, "Software with same Id already exists.", null);
 			}
 
 			if (newSoftwareRequest.getName().equals(currSoftware.getName()) && newSoftwareRequest.getVersion().equals(currSoftware.getVersion())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Software with same name and same version already exists.", null);
+				throw new ManagementException(ERROR_CODE_ENTITY_EXIST, "Software with same name and same version already exists.", null);
 			}
 		}
 
@@ -232,9 +232,9 @@ public class ProjectSoftwareHandler {
 	 * 
 	 * @param projectId
 	 * @param updateSoftwareRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateProjectSoftware(String projectId, Software updateSoftwareRequest) throws MgmException {
+	public void updateProjectSoftware(String projectId, Software updateSoftwareRequest) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 
@@ -288,9 +288,9 @@ public class ProjectSoftwareHandler {
 	 * @param projectId
 	 * @param softwareId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public boolean deleteProjectSoftware(String projectId, String softwareId) throws MgmException {
+	public boolean deleteProjectSoftware(String projectId, String softwareId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkSoftwareId(softwareId);
@@ -307,33 +307,33 @@ public class ProjectSoftwareHandler {
 		return project.deleteSoftware(softwareToDelete);
 	}
 
-	protected void checkProjectId(String projectId) throws MgmException {
+	protected void checkProjectId(String projectId) throws ManagementException {
 		if (projectId == null || projectId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectId cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectId cannot be empty.", null);
 		}
 	}
 
-	protected void checkSoftwareId(String softwareId) throws MgmException {
+	protected void checkSoftwareId(String softwareId) throws ManagementException {
 		if (softwareId == null || softwareId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "softwareId cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "softwareId cannot be empty.", null);
 		}
 	}
 
-	protected void checkSoftware(Software software) throws MgmException {
+	protected void checkSoftware(Software software) throws ManagementException {
 		if (software == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Software cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Software cannot be empty.", null);
 		}
 	}
 
-	protected void checkSoftwareNotFound(Software software) throws MgmException {
+	protected void checkSoftwareNotFound(Software software) throws ManagementException {
 		if (software == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Software cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Software cannot be found.", null);
 		}
 	}
 
-	protected void checkContainerProject(Project project) throws MgmException {
+	protected void checkContainerProject(Project project) throws ManagementException {
 		if (project == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Conatiner Project cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Conatiner Project cannot be found.", null);
 		}
 	}
 

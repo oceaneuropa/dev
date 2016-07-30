@@ -1,15 +1,16 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.service.ManagementService;
@@ -32,9 +33,9 @@ public class ProjectHomeHandler {
 	 * 
 	 * @param projectId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public List<ProjectHome> getProjectHomes(String projectId) throws MgmException {
+	public List<ProjectHome> getProjectHomes(String projectId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 
@@ -57,7 +58,7 @@ public class ProjectHomeHandler {
 	 * @param projectHomeId
 	 * @return
 	 */
-	public ProjectHome getProjectHome(String projectId, String projectHomeId) throws MgmException {
+	public ProjectHome getProjectHome(String projectId, String projectHomeId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
@@ -86,7 +87,7 @@ public class ProjectHomeHandler {
 	 * @param projectId
 	 * @param newProjectHomeRequest
 	 */
-	public ProjectHome addProjectHome(String projectId, ProjectHome newProjectHomeRequest) throws MgmException {
+	public ProjectHome addProjectHome(String projectId, ProjectHome newProjectHomeRequest) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 
@@ -115,7 +116,7 @@ public class ProjectHomeHandler {
 			ProjectHome currProjectHome = projectHomeItor.next();
 
 			if (newProjectHomeRequest.getId().equals(currProjectHome.getId())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "ProjectHome with same Id already exists.", null);
+				throw new ManagementException(ERROR_CODE_ENTITY_EXIST, "ProjectHome with same Id already exists.", null);
 			}
 			// if (projectHome.getName().equals(currProjectHome.getName())) {
 			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "ProjectHome with same name already exists.", null);
@@ -157,7 +158,7 @@ public class ProjectHomeHandler {
 	 * @param projectId
 	 * @param updateProjectHomeRequest
 	 */
-	public void updateProjectHome(String projectId, ProjectHome updateProjectHomeRequest) throws MgmException {
+	public void updateProjectHome(String projectId, ProjectHome updateProjectHomeRequest) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 
@@ -191,7 +192,7 @@ public class ProjectHomeHandler {
 	 * @param projectId
 	 * @param projectHomeId
 	 */
-	public boolean deleteProjectHome(String projectId, String projectHomeId) throws MgmException {
+	public boolean deleteProjectHome(String projectId, String projectHomeId) throws ManagementException {
 		// Throw exception - empty Id
 		checkProjectId(projectId);
 		checkProjectHomeId(projectHomeId);
@@ -208,33 +209,93 @@ public class ProjectHomeHandler {
 		return project.deleteHome(projectHomeToDelete);
 	}
 
-	protected void checkProjectId(String projectId) throws MgmException {
+	/**
+	 * Set deployment Home.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param homeId
+	 * @return
+	 */
+	public boolean setDeploymentHome(String projectId, String projectHomeId, String homeId) throws ManagementException {
+		// Find Project
+		Project project = this.mgmService.getProject(projectId);
+		checkContainerProject(project);
+
+		// Find ProjectHome
+		ProjectHome projectHome = getProjectHome(projectId, projectHomeId);
+		checkProjectHomeNotFound(projectHome);
+
+		// Find Home.
+		Home home = this.mgmService.getHome(homeId);
+		checkHomeNotFound(home);
+
+		projectHome.setDeploymentHome(home);
+		return true;
+	}
+
+	/**
+	 * Remove deployment Home.
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param homeId
+	 * @return
+	 */
+	public boolean removeDeploymentHome(String projectId, String projectHomeId, String homeId) throws ManagementException {
+		// Find Project
+		Project project = this.mgmService.getProject(projectId);
+		checkContainerProject(project);
+
+		// Find ProjectHome
+		ProjectHome projectHome = getProjectHome(projectId, projectHomeId);
+		checkProjectHomeNotFound(projectHome);
+
+		// Find Home.
+		Home home = this.mgmService.getHome(homeId);
+		checkHomeNotFound(home);
+
+		if (home == null || !homeId.equals(home.getId())) {
+			return false;
+		}
+
+		projectHome.setDeploymentHome(null);
+		return true;
+	}
+
+	protected void checkProjectId(String projectId) throws ManagementException {
 		if (projectId == null || projectId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectId cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectId cannot be empty.", null);
 		}
 	}
 
-	protected void checkProjectHomeId(String projectHomeId) throws MgmException {
+	protected void checkProjectHomeId(String projectHomeId) throws ManagementException {
 		if (projectHomeId == null || projectHomeId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectHomeId cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "projectHomeId cannot be empty.", null);
 		}
 	}
 
-	protected void checkProjectHome(ProjectHome projectHome) throws MgmException {
+	protected void checkProjectHome(ProjectHome projectHome) throws ManagementException {
 		if (projectHome == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "ProjectHome cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "ProjectHome cannot be empty.", null);
 		}
 	}
 
-	protected void checkProjectHomeNotFound(ProjectHome projectHome) throws MgmException {
+	protected void checkProjectHomeNotFound(ProjectHome projectHome) throws ManagementException {
 		if (projectHome == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "ProjectHome cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "ProjectHome cannot be found.", null);
 		}
 	}
 
-	protected void checkContainerProject(Project project) throws MgmException {
+	protected void checkContainerProject(Project project) throws ManagementException {
 		if (project == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Conatiner Project cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Conatiner Project cannot be found.", null);
+		}
+	}
+
+	protected void checkHomeNotFound(Home home) throws ManagementException {
+		if (home == null) {
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Home cannot be found.", null);
 		}
 	}
 

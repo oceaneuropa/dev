@@ -31,7 +31,8 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
 /*
- * Project Software resource client.
+ * ProjectSoftware resource client.
+ * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/software
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/software/{softwareId}
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/software (Body parameter: SoftwareDTO)
@@ -252,7 +253,7 @@ public class ProjectSoftwareClient extends AbstractClient {
 	}
 
 	/**
-	 * Download Software from Project.
+	 * Download Software file from Project to local file.
 	 * 
 	 * @param sourceFilePath
 	 * @param destFile
@@ -260,7 +261,7 @@ public class ProjectSoftwareClient extends AbstractClient {
 	 * @throws ClientException
 	 * @throws IOException
 	 */
-	public boolean downloadProjectSoftawreToFile(String projectId, String softwareId, File destFile) throws ClientException {
+	public boolean downloadProjectSoftwareToFile(String projectId, String softwareId, File destFile) throws ClientException {
 		// Check dest
 		if (destFile.exists() && destFile.isDirectory()) {
 			// throw new IOException("File '" + destFile.getAbsolutePath() + "' exists but is a directory.");
@@ -294,7 +295,7 @@ public class ProjectSoftwareClient extends AbstractClient {
 	}
 
 	/**
-	 * Download Software from Project.
+	 * Download Software file from Project to local directory.
 	 * 
 	 * @param sourceFilePath
 	 * @param output
@@ -302,7 +303,7 @@ public class ProjectSoftwareClient extends AbstractClient {
 	 * @throws ClientException
 	 * @throws IOException
 	 */
-	public boolean downloadProjectSoftawreToOutputStream(String projectId, String softwareId, OutputStream output) throws ClientException {
+	public boolean downloadProjectSoftwareToOutputStream(String projectId, String softwareId, OutputStream output) throws ClientException {
 		InputStream input = null;
 		try {
 			WebTarget target = getRootPath().path("projects").path(projectId).path("software").path(softwareId).path("content");

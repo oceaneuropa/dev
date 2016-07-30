@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.dto.ArtifactDTO;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.MetaSectorDTO;
@@ -45,12 +45,6 @@ import org.origin.common.util.Util;
 @Path("{metaSectorId}/metaspaces")
 @Produces(MediaType.APPLICATION_JSON)
 public class MetaSpaceResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * Get MetaSpaces in a MetaSector by query parameters.
@@ -119,7 +113,7 @@ public class MetaSpaceResource extends AbstractApplicationResource {
 				}
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -177,7 +171,7 @@ public class MetaSpaceResource extends AbstractApplicationResource {
 			}
 			metaSpaceDTO.setDeployedArtifacts(deployedArtifactDTOs);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -232,12 +226,10 @@ public class MetaSpaceResource extends AbstractApplicationResource {
 			if (Util.compare(name, newMetaSpace.getName()) != 0) {
 				metaSpaceDTO.setName(newMetaSpace.getName());
 			}
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		return Response.ok().entity(metaSpaceDTO).build();
 	}
@@ -279,12 +271,10 @@ public class MetaSpaceResource extends AbstractApplicationResource {
 			// 4. Update MetaSpace.
 			mgm.updateMetaSpace(metaSpace);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSpace is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
@@ -315,12 +305,10 @@ public class MetaSpaceResource extends AbstractApplicationResource {
 		try {
 			mgm.deleteMetaSpace(metaSpaceId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSpace is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();

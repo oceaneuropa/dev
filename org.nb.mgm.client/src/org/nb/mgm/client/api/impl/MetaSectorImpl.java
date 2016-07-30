@@ -5,15 +5,14 @@ import java.util.Properties;
 
 import org.nb.mgm.client.api.IMetaSector;
 import org.nb.mgm.client.api.IMetaSpace;
-import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.ws.MetaSectorClient;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.model.dto.MetaSectorDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
 
 public class MetaSectorImpl implements IMetaSector {
 
-	private Management management;
+	private ManagementClient management;
 	private MetaSectorDTO metaSectorDTO;
 
 	private AdaptorSupport adaptorSupport = new AdaptorSupport();
@@ -24,7 +23,7 @@ public class MetaSectorImpl implements IMetaSector {
 	 * @param management
 	 * @param metaSectorDTO
 	 */
-	public MetaSectorImpl(Management management, MetaSectorDTO metaSectorDTO) {
+	public MetaSectorImpl(ManagementClient management, MetaSectorDTO metaSectorDTO) {
 		this.management = management;
 		this.metaSectorDTO = metaSectorDTO;
 	}
@@ -33,7 +32,7 @@ public class MetaSectorImpl implements IMetaSector {
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public Management getManagement() {
+	public ManagementClient getManagement() {
 		return management;
 	}
 
@@ -51,13 +50,9 @@ public class MetaSectorImpl implements IMetaSector {
 	}
 
 	@Override
-	public void update() throws ClientException {
-		if (this.management != null) {
-			MetaSectorClient metaSectorClient = this.management.getAdapter(MetaSectorClient.class);
-			checkClient(metaSectorClient);
-
-			metaSectorClient.updateMetaSector(this.metaSectorDTO);
-		}
+	public boolean update() throws ClientException {
+		checkManagement(this.management);
+		return this.management.updateMetaSector(this.metaSectorDTO);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -128,6 +123,7 @@ public class MetaSectorImpl implements IMetaSector {
 	 */
 	@Override
 	public List<IMetaSpace> getMetaSpaces(Properties properties) throws ClientException {
+		checkManagement(this.management);
 		return this.management.getMetaSpaces(getId(), properties);
 	}
 
@@ -140,6 +136,7 @@ public class MetaSectorImpl implements IMetaSector {
 	 */
 	@Override
 	public IMetaSpace getMetaSpace(String metaSpaceId) throws ClientException {
+		checkManagement(this.management);
 		return this.management.getMetaSpace(getId(), metaSpaceId);
 	}
 
@@ -152,6 +149,7 @@ public class MetaSectorImpl implements IMetaSector {
 	 */
 	@Override
 	public IMetaSpace addMetaSpace(String name, String description) throws ClientException {
+		checkManagement(this.management);
 		return this.management.addMetaSpace(getId(), name, description);
 	}
 
@@ -164,15 +162,20 @@ public class MetaSectorImpl implements IMetaSector {
 	 */
 	@Override
 	public boolean deleteMetaSpace(String metaSpaceId) throws ClientException {
+		checkManagement(this.management);
 		return this.management.deleteMetaSpace(getId(), metaSpaceId);
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// Check WS Client
+	// Check Management Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(MetaSectorClient metaSectorClient) throws ClientException {
-		if (metaSectorClient == null) {
-			throw new ClientException(401, "MetaSectorClient is not found.", null);
+	/**
+	 * @param management
+	 * @throws ClientException
+	 */
+	protected void checkManagement(ManagementClient management) throws ClientException {
+		if (management == null) {
+			throw new ClientException(401, "management is null.", null);
 		}
 	}
 

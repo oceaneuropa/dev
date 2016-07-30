@@ -11,11 +11,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.ProjectDTO;
@@ -37,16 +39,13 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes (Body parameter: ProjectHomeDTO)
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}
  * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/hasAttribute?attribute={attibuteName}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/attribute?attribute={attributeName}
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/action (Body parameter: Action)
  */
 @Path("/projects/{projectId}/homes")
 @Produces(MediaType.APPLICATION_JSON)
 public class ProjectHomeResource extends AbstractApplicationResource {
-
-	protected void handleSave(ManagementService mgm) {
-		if (!mgm.isAutoSave()) {
-			mgm.save();
-		}
-	}
 
 	/**
 	 * Get ProjectHomes.
@@ -66,7 +65,6 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 		}
 
 		ManagementService mgm = getService(ManagementService.class);
-
 		List<ProjectHomeDTO> projectHomeDTOs = new ArrayList<ProjectHomeDTO>();
 		try {
 			// Find Project. Create ProjectDTO.
@@ -87,7 +85,7 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 				projectHomeDTO.setProject(projectDTO);
 
 				// Set remote HomeDTO (if configured)
-				Home remoteHome = projectHome.getRemoteHome();
+				Home remoteHome = projectHome.getDeploymentHome();
 				if (remoteHome != null) {
 					HomeDTO remoteHomeDTO = DTOConverter.getInstance().toDTO(remoteHome);
 					projectHomeDTO.setRemoteHome(remoteHomeDTO);
@@ -96,7 +94,7 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 				projectHomeDTOs.add(projectHomeDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -126,7 +124,6 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 		}
 
 		ManagementService mgm = getService(ManagementService.class);
-
 		ProjectHomeDTO projectHomeDTO = null;
 		try {
 			// Find Project. Create ProjectDTO.
@@ -149,13 +146,13 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 			projectHomeDTO.setProject(projectDTO);
 
 			// Set remote HomeDTO (if configured)
-			Home remoteHome = projectHome.getRemoteHome();
+			Home remoteHome = projectHome.getDeploymentHome();
 			if (remoteHome != null) {
 				HomeDTO remoteHomeDTO = DTOConverter.getInstance().toDTO(remoteHome);
 				projectHomeDTO.setRemoteHome(remoteHomeDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -186,7 +183,6 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 		}
 
 		ManagementService mgm = getService(ManagementService.class);
-
 		ProjectHomeDTO newProjectHomeDTO = null;
 		try {
 			// Find Project. Create ProjectDTO.
@@ -219,19 +215,16 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 			newProjectHomeDTO.setProject(projectDTO);
 
 			// Set remote HomeDTO (if configured)
-			Home remoteHome = newProjectHome.getRemoteHome();
+			Home remoteHome = newProjectHome.getDeploymentHome();
 			if (remoteHome != null) {
 				HomeDTO remoteHomeDTO = DTOConverter.getInstance().toDTO(remoteHome);
 				newProjectHomeDTO.setRemoteHome(remoteHomeDTO);
 			}
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		// Save changes
-		handleSave(mgm);
 
 		return Response.ok().entity(newProjectHomeDTO).build();
 	}
@@ -258,7 +251,6 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 		}
 
 		ManagementService mgm = getService(ManagementService.class);
-
 		try {
 			// Find Project
 			Project project = mgm.getProject(projectId);
@@ -269,24 +261,21 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 
 			// Create update ProjectHome request
 			ProjectHome updateProjectHomeRequest = new ProjectHome();
-			String id = projectHomeDTO.getId();
+			String projectHomeId = projectHomeDTO.getId();
 			String name = projectHomeDTO.getName();
 			String description = projectHomeDTO.getDescription();
 
-			updateProjectHomeRequest.setId(id);
+			updateProjectHomeRequest.setId(projectHomeId);
 			updateProjectHomeRequest.setName(name);
 			updateProjectHomeRequest.setDescription(description);
 
 			// Update ProjectHome
 			mgm.updateProjectHome(projectId, updateProjectHomeRequest);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
-		// Save changes
-		handleSave(mgm);
 
 		StatusDTO statusDTO = new StatusDTO("200", "success", "ProjectHome is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
@@ -316,7 +305,6 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 		}
 
 		ManagementService mgm = getService(ManagementService.class);
-
 		try {
 			// Find Project
 			Project project = mgm.getProject(projectId);
@@ -328,16 +316,198 @@ public class ProjectHomeResource extends AbstractApplicationResource {
 			// Delete ProjectHome from Project
 			mgm.deleteProjectHome(projectId, projectHomeId);
 
-		} catch (MgmException e) {
+		} catch (ManagementException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		// Save changes
-		handleSave(mgm);
-
 		StatusDTO statusDTO = new StatusDTO("200", "success", "ProjectHome is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();
+	}
+
+	/**
+	 * Check whether ProjectHome has specified attribute.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/hasAttribute?attribute={attributeName}
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param attributeName
+	 * @return
+	 */
+	@GET
+	@Path("{projectHomeId}/hasAttribute")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response hasAttribute(@PathParam("projectId") String projectId, @PathParam("projectHomeId") String projectHomeId, @QueryParam("attribute") String attributeName) {
+		// Validate parameters.
+		if (projectId == null || projectId.isEmpty()) {
+			ErrorDTO nullProjectIdError = new ErrorDTO("projectId is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullProjectIdError).build();
+		}
+		if (projectHomeId == null || projectHomeId.isEmpty()) {
+			ErrorDTO nullProjectHomeIdError = new ErrorDTO("projectHomeId is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullProjectHomeIdError).build();
+		}
+		if (attributeName == null || attributeName.isEmpty()) {
+			ErrorDTO nullAttributeError = new ErrorDTO("attribute name is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullAttributeError).build();
+		}
+
+		ManagementService mgm = getService(ManagementService.class);
+		try {
+			// Find ProjectHome.
+			ProjectHome projectHome = mgm.getProjectHome(projectId, projectHomeId);
+			if (projectHome == null) {
+				ErrorDTO projectHomeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "ProjectHome cannot be found.");
+				return Response.status(Status.NOT_FOUND).entity(projectHomeNotFoundError).build();
+			}
+
+			// Check has attribute
+			Boolean hasAttribute = projectHome.hasAttribute(attributeName);
+			return Response.ok().entity(hasAttribute).build();
+
+		} catch (ManagementException e) {
+			ErrorDTO error = handleError(e, e.getCode(), true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		}
+	}
+
+	/**
+	 * Get ProjectHome attribute.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/attribute?attribute={attributeName}
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param attributeName
+	 * @return
+	 */
+	@GET
+	@Path("{projectHomeId}/attribute")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAttribute(@PathParam("projectId") String projectId, @PathParam("projectHomeId") String projectHomeId, @QueryParam("attribute") String attributeName) {
+		// Validate parameters.
+		if (projectId == null || projectId.isEmpty()) {
+			ErrorDTO nullProjectIdError = new ErrorDTO("projectId is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullProjectIdError).build();
+		}
+		if (projectHomeId == null || projectHomeId.isEmpty()) {
+			ErrorDTO nullProjectHomeIdError = new ErrorDTO("projectHomeId is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullProjectHomeIdError).build();
+		}
+		if (attributeName == null || attributeName.isEmpty()) {
+			ErrorDTO nullAttributeError = new ErrorDTO("attribute name is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullAttributeError).build();
+		}
+
+		ManagementService mgm = getService(ManagementService.class);
+		try {
+			// Find ProjectHome.
+			ProjectHome projectHome = mgm.getProjectHome(projectId, projectHomeId);
+			if (projectHome == null) {
+				ErrorDTO projectHomeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "ProjectHome cannot be found.");
+				return Response.status(Status.NOT_FOUND).entity(projectHomeNotFoundError).build();
+			}
+
+			// Get attribute
+			Object attrValue = projectHome.getAttribute(attributeName);
+			if (attrValue != null) {
+				return Response.ok().entity(attrValue).build();
+			}
+			// no attribute value is retrieved --- return empty value
+			return Response.ok().build();
+
+		} catch (ManagementException e) {
+			ErrorDTO error = handleError(e, e.getCode(), true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		}
+	}
+
+	/**
+	 * On ProjectHome Action.
+	 * 
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/action (Body: Action)
+	 * 
+	 * @param projectId
+	 * @param projectHomeId
+	 * @param action
+	 * @return
+	 */
+	@POST
+	@Path("{projectHomeId}/action")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response onAction(@PathParam("projectId") String projectId, @PathParam("projectHomeId") String projectHomeId, Action action) {
+		// Validate parameters
+		if (projectId == null || projectId.isEmpty()) {
+			ErrorDTO nullProjectIdError = new ErrorDTO("projectId is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullProjectIdError).build();
+		}
+		if (projectHomeId == null || projectHomeId.isEmpty()) {
+			ErrorDTO nullProjectHomeIdError = new ErrorDTO("projectHomeId is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullProjectHomeIdError).build();
+		}
+		if (action == null) {
+			ErrorDTO nullActionError = new ErrorDTO("action is empty.");
+			return Response.status(Status.BAD_REQUEST).entity(nullActionError).build();
+		}
+
+		ManagementService mgm = getService(ManagementService.class);
+		try {
+			// Find Project
+			Project project = mgm.getProject(projectId);
+			if (project == null) {
+				ErrorDTO projectNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "Project cannot be found.");
+				return Response.status(Status.NOT_FOUND).entity(projectNotFoundError).build();
+			}
+
+			// Find ProjectHome.
+			ProjectHome projectHome = mgm.getProjectHome(projectId, projectHomeId);
+			if (projectHome == null) {
+				ErrorDTO projectHomeNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "ProjectHome cannot be found.");
+				return Response.status(Status.NOT_FOUND).entity(projectHomeNotFoundError).build();
+			}
+
+			String actionName = action.getName();
+
+			boolean isActionSupported = false;
+			boolean succeed = false;
+			if ("set_project_deployment_home".equals(actionName)) {
+				isActionSupported = true;
+				String homeId = (String) action.getParameter("homeId");
+				if (homeId == null || homeId.isEmpty()) {
+					ErrorDTO homeIdNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "homeId parameter cannot be found.");
+					return Response.status(Status.NOT_FOUND).entity(homeIdNotFoundError).build();
+				}
+
+				succeed = mgm.setProjectDeploymentHome(projectId, projectHomeId, homeId);
+
+			} else if ("remove_project_deployment_home".equals(actionName)) {
+				isActionSupported = true;
+				String homeId = (String) action.getParameter("homeId");
+				if (homeId == null || homeId.isEmpty()) {
+					ErrorDTO homeIdNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "homeId parameter cannot be found.");
+					return Response.status(Status.NOT_FOUND).entity(homeIdNotFoundError).build();
+				}
+
+				succeed = mgm.removeProjectDeploymentHome(projectId, projectHomeId, homeId);
+			}
+
+			if (!isActionSupported) {
+				StatusDTO statusDTO = new StatusDTO("401", "failed", "Action is not supported.");
+				return Response.ok().entity(statusDTO).build();
+			}
+			if (!succeed) {
+				StatusDTO statusDTO = new StatusDTO("401", "failed", "Failed to process the Action.");
+				return Response.ok().entity(statusDTO).build();
+			}
+
+			StatusDTO statusDTO = new StatusDTO("200", "success", "Action is processed successfully.");
+			return Response.ok().entity(statusDTO).build();
+
+		} catch (ManagementException e) {
+			ErrorDTO error = handleError(e, e.getCode(), true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		}
 	}
 
 }

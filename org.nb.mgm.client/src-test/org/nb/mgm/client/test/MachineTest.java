@@ -15,14 +15,14 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.nb.mgm.client.api.IMachine;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.rest.client.ClientException;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MachineTest {
 
-	protected Management management;
+	protected ManagementClient management;
 
 	public MachineTest() {
 		this.management = getManagement();
@@ -32,7 +32,7 @@ public class MachineTest {
 		this.management = getManagement();
 	}
 
-	protected Management getManagement() {
+	protected ManagementClient getManagement() {
 		return ManagementFactory.createManagement("http://127.0.0.1:9090", "admin", "123");
 	}
 

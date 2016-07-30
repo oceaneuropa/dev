@@ -6,16 +6,14 @@ import java.util.Date;
 
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.ISoftware;
-import org.nb.mgm.client.api.Management;
-import org.nb.mgm.client.ws.ProjectSoftwareClient;
+import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.model.dto.SoftwareDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.model.StatusDTO;
 
 public class SoftwareImpl implements ISoftware {
 
-	private Management management;
+	private ManagementClient management;
 	private IProject project;
 	private SoftwareDTO softwareDTO;
 
@@ -28,7 +26,7 @@ public class SoftwareImpl implements ISoftware {
 	 * @param project
 	 * @param softwareDTO
 	 */
-	public SoftwareImpl(Management management, IProject project, SoftwareDTO softwareDTO) {
+	public SoftwareImpl(ManagementClient management, IProject project, SoftwareDTO softwareDTO) {
 		this.management = management;
 		this.project = project;
 		this.softwareDTO = softwareDTO;
@@ -38,7 +36,7 @@ public class SoftwareImpl implements ISoftware {
 	// Parent
 	// ------------------------------------------------------------------------------------------
 	@Override
-	public Management getManagement() {
+	public ManagementClient getManagement() {
 		return this.management;
 	}
 
@@ -63,17 +61,10 @@ public class SoftwareImpl implements ISoftware {
 	@Override
 	public boolean update() throws ClientException {
 		checkManagement(this.management);
+		checkProject(project);
 
-		if (this.project != null) {
-			ProjectSoftwareClient projectSoftwareClient = this.management.getAdapter(ProjectSoftwareClient.class);
-			checkClient(projectSoftwareClient);
-
-			String projectId = this.project.getId();
-
-			StatusDTO status = projectSoftwareClient.updateProjectSoftware(projectId, this.softwareDTO);
-			return (status != null && status.success()) ? true : false;
-		}
-		return false;
+		String projectId = this.project.getId();
+		return this.management.updateProjectSoftware(projectId, this.softwareDTO);
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -239,65 +230,53 @@ public class SoftwareImpl implements ISoftware {
 
 	@Override
 	public boolean uploadSoftware(File srcFile) throws ClientException {
-		if (this.project != null) {
-			// This Software is for Project.
-			ProjectSoftwareClient projectSoftwareClient = this.management.getAdapter(ProjectSoftwareClient.class);
-			checkClient(projectSoftwareClient);
+		checkManagement(this.management);
+		checkProject(project);
 
-			String projectId = this.project.getId();
-			String softwareId = getId();
-
-			StatusDTO status = projectSoftwareClient.uploadProjectSoftwareFile(projectId, softwareId, srcFile);
-			return (status != null && status.success()) ? true : false;
-		}
-		return false;
+		String projectId = this.project.getId();
+		String softwareId = getId();
+		return this.management.uploadProjectSoftwareFile(projectId, softwareId, srcFile);
 	}
 
 	@Override
 	public boolean downloadSoftware(File destFile) throws ClientException {
-		if (this.project != null) {
-			// This Software is for Project.
-			ProjectSoftwareClient projectSoftwareClient = this.management.getAdapter(ProjectSoftwareClient.class);
-			checkClient(projectSoftwareClient);
+		checkManagement(this.management);
+		checkProject(project);
 
-			String projectId = this.project.getId();
-			String softwareId = getId();
-
-			return projectSoftwareClient.downloadProjectSoftawreToFile(projectId, softwareId, destFile);
-		}
-		return false;
+		String projectId = this.project.getId();
+		String softwareId = getId();
+		return this.management.downloadProjectSoftwareToFile(projectId, softwareId, destFile);
 	}
 
 	@Override
 	public boolean downloadSoftware(OutputStream output) throws ClientException {
-		if (this.project != null) {
-			// This Software is for Project.
-			ProjectSoftwareClient projectSoftwareClient = this.management.getAdapter(ProjectSoftwareClient.class);
-			checkClient(projectSoftwareClient);
+		checkManagement(this.management);
+		checkProject(project);
 
-			String projectId = this.project.getId();
-			String softwareId = getId();
-
-			return projectSoftwareClient.downloadProjectSoftawreToOutputStream(projectId, softwareId, output);
-		}
-		return false;
+		String projectId = this.project.getId();
+		String softwareId = getId();
+		return this.management.downloadProjectSoftwareToOutputStream(projectId, softwareId, output);
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// Check WS Client
+	// Check Management Client
 	// ------------------------------------------------------------------------------------------
-	protected void checkClient(ProjectSoftwareClient projectSoftwareClient) throws ClientException {
-		if (projectSoftwareClient == null) {
-			throw new ClientException(401, "ProjectSoftwareClient is not found.", null);
-		}
-	}
-
-	protected void checkManagement(Management management) throws ClientException {
+	/**
+	 * 
+	 * @param management
+	 * @throws ClientException
+	 */
+	protected void checkManagement(ManagementClient management) throws ClientException {
 		if (management == null) {
 			throw new ClientException(401, "management is null.", null);
 		}
 	}
 
+	/**
+	 * 
+	 * @param project
+	 * @throws ClientException
+	 */
 	protected void checkProject(IProject project) throws ClientException {
 		if (project == null) {
 			throw new ClientException(401, "project is null.", null);

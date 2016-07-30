@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.nb.mgm.client.api.IHome;
+import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.IProject;
 import org.nb.mgm.client.api.IProjectHome;
-import org.nb.mgm.client.api.Management;
+import org.nb.mgm.client.api.ManagementClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -21,13 +23,13 @@ import org.osgi.framework.ServiceRegistration;
 
 public class ProjectHomeCommand implements Annotated {
 
-	protected static String[] PROJECT_HOME_TITLES = new String[] { "Project", "ID", "Name", "Description" };
+	protected static String[] PROJECT_HOME_TITLES = new String[] { "Project", "ID", "Name", "Description", "Deployment" };
 
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<?> registration;
 
 	@Dependency
-	protected Management management;
+	protected ManagementClient management;
 
 	/**
 	 * 
@@ -42,7 +44,7 @@ public class ProjectHomeCommand implements Annotated {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "nb");
-		props.put("osgi.command.function", new String[] { "lprojecthomes", "createprojecthome", "updateprojecthome", "deleteprojecthome" });
+		props.put("osgi.command.function", new String[] { "lprojecthomes", "createprojecthome", "updateprojecthome", "deleteprojecthome", "setdeploymenthome", "removedeploymenthome" });
 		this.registration = this.bundleContext.registerService(ProjectHomeCommand.class.getName(), this, props);
 
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
@@ -100,17 +102,27 @@ public class ProjectHomeCommand implements Annotated {
 
 		String[][] rows = new String[projectHomes.size()][PROJECT_HOME_TITLES.length];
 		int rowIndex = 0;
-		String prevProjectId = null;
+		// String prevProjectId = null;
 		for (IProjectHome projectHome : projectHomes) {
 			IProject project = projectHome.getProject();
 			String currProjectId = project.getId();
-			String projectText = project.getName() + " (" + currProjectId + ")";
-			if (prevProjectId != null && prevProjectId.equals(currProjectId)) {
-				projectText = "";
-			}
-			rows[rowIndex++] = new String[] { projectText, projectHome.getId(), projectHome.getName(), projectHome.getDescription() };
 
-			prevProjectId = currProjectId;
+			IHome home = projectHome.getDeploymentHome();
+			String deploymentHomeText = "";
+			if (home != null) {
+				IMachine machine = home.getMachine();
+				// deploymentHomeText = "[" + machine.getName() + "]/" + home.getName() + " (" + home.getId() + ")";
+				deploymentHomeText = "[" + machine.getName() + "]/" + home.getName();
+			}
+
+			String projectHomeId = projectHome.getId();
+			String projectHomeName = projectHome.getName();
+			String projectHomeDesc = projectHome.getDescription();
+			// String projectHomeText = "[" + currProjectId + "]/" + projectHomeName;
+			String projectHomeText = projectHomeName;
+
+			rows[rowIndex++] = new String[] { currProjectId, projectHomeId, projectHomeText, projectHomeDesc, deploymentHomeText };
+			// prevProjectId = currProjectId;
 		}
 
 		PrettyPrinter.prettyPrint(PROJECT_HOME_TITLES, rows);
@@ -252,7 +264,6 @@ public class ProjectHomeCommand implements Annotated {
 	@Descriptor("Delete ProjectHome from Project")
 	public void deleteprojecthome( //
 			// Parameters
-			@Descriptor("Project ID") @Parameter(names = { "-projectid", "--projectId" }, absentValue = "") String projectId, // optional
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
 	) {
 		if (this.management == null) {
@@ -267,15 +278,7 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			boolean succeed = false;
-			if ("".equals(projectId)) {
-				// projectId is not specified
-				succeed = this.management.deleteProjectHome(projectHomeId);
-			} else {
-				// projectId is specified
-				succeed = this.management.deleteProjectHome(projectId, projectHomeId);
-			}
-
+			boolean succeed = this.management.deleteProjectHome(projectHomeId);
 			if (succeed) {
 				System.out.println("ProjectHome is deleted. ");
 			} else {
@@ -284,6 +287,116 @@ public class ProjectHomeCommand implements Annotated {
 
 		} catch (ClientException e) {
 			System.out.println("Failed to delete ProjectHome. " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Set ProjectHome's Deployment Home.
+	 * 
+	 * @param projectHomeId
+	 * @param homeId
+	 */
+	@Descriptor("Set Deployment Home")
+	public void setdeploymenthome( //
+			// Parameters
+			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId, // required
+			@Descriptor("Home ID") @Parameter(names = { "-homeid", "--homeId" }, absentValue = "") String homeId // required
+	) {
+		if (this.management == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			// projectHomeId is required
+			if ("".equals(projectHomeId)) {
+				System.out.println("Please specify -projecthomeid parameter.");
+				return;
+			}
+			// homeId is required
+			if ("".equals(homeId)) {
+				System.out.println("Please specify -homeid parameter.");
+				return;
+			}
+
+			IProjectHome projectHome = this.management.getProjectHome(projectHomeId);
+			if (projectHome == null) {
+				System.out.println("ProjectHome is not found.");
+				return;
+			}
+
+			IHome home = this.management.getHome(homeId);
+			if (home == null) {
+				System.out.println("Home is not found.");
+				return;
+			}
+
+			boolean succeed = projectHome.setDeploymentHome(homeId);
+			if (succeed) {
+				System.out.println("Deployment Home is set.");
+			} else {
+				System.out.println("Failed to set deployment Home.");
+			}
+		} catch (ClientException e) {
+			System.out.println("Failed to set deployment Home. " + e.getMessage());
+		}
+	}
+
+	/**
+	 * Remove ProjectHome's Deployment Home.
+	 * 
+	 * @param projectHomeId
+	 * @param homeId
+	 */
+	@Descriptor("Remove Deployment Home")
+	public void removedeploymenthome( //
+			// Parameters
+			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId, // required
+			@Descriptor("Home ID") @Parameter(names = { "-homeid", "--homeId" }, absentValue = "") String homeId // required
+	) {
+		if (this.management == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			// projectHomeId is required
+			if ("".equals(projectHomeId)) {
+				System.out.println("Please specify -projecthomeid parameter.");
+				return;
+			}
+			// homeId is required
+			if ("".equals(homeId)) {
+				System.out.println("Please specify -homeid parameter.");
+				return;
+			}
+
+			IProjectHome projectHome = this.management.getProjectHome(projectHomeId);
+			if (projectHome == null) {
+				System.out.println("ProjectHome is not found.");
+				return;
+			}
+
+			IHome home = this.management.getHome(homeId);
+			if (home == null) {
+				System.out.println("Home is not found.");
+				return;
+			}
+
+			IHome deploymentHome = projectHome.getDeploymentHome();
+			if (deploymentHome == null || !deploymentHome.getId().equals(home.getId())) {
+				System.out.println("ProjectHome is not configured with specified deployment Home.");
+				return;
+			}
+
+			boolean succeed = projectHome.removeDeploymentHome(homeId);
+			if (succeed) {
+				System.out.println("Deployment Home is removed.");
+			} else {
+				System.out.println("Failed to remove deployment Home.");
+			}
+		} catch (ClientException e) {
+			System.out.println("Failed to remove deployment Home. " + e.getMessage());
 		}
 	}
 

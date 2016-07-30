@@ -474,13 +474,6 @@ public class LocalJsonWriter {
 			projectHomeJSON.put("description", description);
 		}
 
-		// "homeId" attribute
-		Home home = projectHome.getRemoteHome();
-		if (home != null) {
-			String homeId = home.getId();
-			projectHomeJSON.put("homeId", homeId);
-		}
-
 		// "properties" attribute
 		// Map<String, Object> properties = homeConfig.getProperties();
 		// String propertiesString = JSONUtil.toJsonString(properties);
@@ -502,6 +495,18 @@ public class LocalJsonWriter {
 			}
 		}
 		projectHomeJSON.put("nodeConfigs", nodeConfigsArray);
+
+		// "deploymentHome" attribute
+		Home home = projectHome.getDeploymentHome();
+		if (home != null) {
+			String homeId = home.getId();
+
+			JSONObject deploymentHomeJSON = new JSONObject();
+			{
+				deploymentHomeJSON.put("homeId", homeId);
+			}
+			projectHomeJSON.put("deploymentHome", deploymentHomeJSON);
+		}
 
 		return projectHomeJSON;
 	}
@@ -617,6 +622,23 @@ public class LocalJsonWriter {
 		if (propertiesString != null) {
 			projectNodeJSON.put("properties", propertiesString);
 		}
+
+		// "installedSoftware" attribute
+		JSONArray softwareArray = new JSONArray();
+		{
+			int softwareIndex = 0;
+			for (Iterator<Software> softwareItor = projectNode.getInstalledSoftware().iterator(); softwareItor.hasNext();) {
+				Software software = softwareItor.next();
+				String softwareId = software.getId();
+
+				JSONObject softwareJSON = new JSONObject();
+				{
+					softwareJSON.put("softwareId", softwareId);
+				}
+				softwareArray.put(softwareIndex++, softwareJSON);
+			}
+		}
+		projectNodeJSON.put("installedSoftware", softwareArray);
 
 		return projectNodeJSON;
 	}

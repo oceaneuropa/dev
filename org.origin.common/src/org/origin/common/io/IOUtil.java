@@ -3,6 +3,7 @@ package org.origin.common.io;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -68,6 +69,29 @@ public class IOUtil {
 	// ------------------------------------------------------------------------------------
 	// Read
 	// ------------------------------------------------------------------------------------
+	/**
+	 * Gets the contents of a File as a byte[].
+	 * 
+	 * This method buffers the input internally, so there is no need to use a BufferedInputStream.
+	 *
+	 * @param file
+	 *            the File to read from
+	 * @return the requested byte array
+	 * @throws NullPointerException
+	 *             if the input is null
+	 * @throws IOException
+	 *             if an I/O error occurs
+	 */
+	public static byte[] toByteArray(File file) throws IOException {
+		FileInputStream input = null;
+		try {
+			input = new FileInputStream(file);
+			return org.apache.commons.io.IOUtils.toByteArray(input);
+		} finally {
+			closeQuietly(input, true);
+		}
+	}
+
 	/**
 	 * Gets the contents of an InputStream as a byte[].
 	 * 

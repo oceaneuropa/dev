@@ -1,9 +1,9 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
-import static org.nb.mgm.service.MgmConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.nb.mgm.exception.MgmException;
+import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.query.MachineQuery;
 import org.nb.mgm.model.runtime.ClusterRoot;
 import org.nb.mgm.model.runtime.Machine;
@@ -44,7 +44,7 @@ public class MachineHandler {
 	 * 
 	 * @return
 	 */
-	public List<Machine> getMachines() throws MgmException {
+	public List<Machine> getMachines() throws ManagementException {
 		return getMachines(null);
 	}
 
@@ -54,7 +54,7 @@ public class MachineHandler {
 	 * @param query
 	 * @return
 	 */
-	public List<Machine> getMachines(MachineQuery query) throws MgmException {
+	public List<Machine> getMachines(MachineQuery query) throws ManagementException {
 		List<Machine> matchedMachines = new ArrayList<Machine>();
 
 		ClusterRoot root = getRoot();
@@ -95,14 +95,14 @@ public class MachineHandler {
 	 * 
 	 * @param machineId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Machine getMachine(String machineId) throws MgmException {
+	public Machine getMachine(String machineId) throws ManagementException {
 		Machine resultMachine = null;
 
 		// Throw exception - empty Id
 		if (machineId == null || machineId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
 		}
 
 		// Find Machine by Id
@@ -122,12 +122,12 @@ public class MachineHandler {
 	 * Add a Machine.
 	 * 
 	 * @param newMachineRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Machine addMachine(Machine newMachineRequest) throws MgmException {
+	public Machine addMachine(Machine newMachineRequest) throws ManagementException {
 		// Throw exception - empty Machine
 		if (newMachineRequest == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
 		}
 
 		// Generate unique Machine Id
@@ -137,12 +137,12 @@ public class MachineHandler {
 
 		// Throw exception - empty Machine name
 		if (newMachineRequest.getName() == null || newMachineRequest.getName().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine name cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine name cannot be empty.", null);
 		}
 
 		// Throw exception - empty Machine IP address
 		if (newMachineRequest.getIpAddress() == null || newMachineRequest.getIpAddress().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine IP address cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine IP address cannot be empty.", null);
 		}
 
 		// Throw exception - Machine with same Id or IP address exists
@@ -150,7 +150,7 @@ public class MachineHandler {
 		for (Iterator<Machine> machineItor = root.getMachines().iterator(); machineItor.hasNext();) {
 			Machine currMachine = machineItor.next();
 			if (newMachineRequest.getId().equals(currMachine.getId())) {
-				throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Machine with same Id already exists.", null);
+				throw new ManagementException(ERROR_CODE_ENTITY_EXIST, "Machine with same Id already exists.", null);
 			}
 			// if (machine.getName().equals(currMachine.getName())) {
 			// throw new MgmException(ERROR_CODE_ENTITY_EXIST, "Machine with same name already exists.", null);
@@ -193,12 +193,12 @@ public class MachineHandler {
 	 * Update Machine.
 	 * 
 	 * @param updateMachineRequest
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void updateMachine(Machine updateMachineRequest) throws MgmException {
+	public void updateMachine(Machine updateMachineRequest) throws ManagementException {
 		// Throw exception - empty Machine
 		if (updateMachineRequest == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine cannot be empty.", null);
 		}
 
 		// Find Machine by Id
@@ -206,7 +206,7 @@ public class MachineHandler {
 
 		// Throw exception - Machine not found
 		if (machineToUpdate == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
 		}
 
 		// No need to update when they are the same object.
@@ -232,12 +232,12 @@ public class MachineHandler {
 	 * Delete a Machine.
 	 * 
 	 * @param machineId
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void deleteMachine(String machineId) throws MgmException {
+	public void deleteMachine(String machineId) throws ManagementException {
 		// Throw exception - empty Id
 		if (machineId == null || machineId.isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_PARAMETER, "Machine Id cannot be empty.", null);
 		}
 
 		// Find Machine by Id
@@ -245,12 +245,12 @@ public class MachineHandler {
 
 		// Throw exception - Machine not found
 		if (machineToDelete == null) {
-			throw new MgmException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_NOT_FOUND, "Machine cannot be found.", null);
 		}
 
 		// Throw exception - Machine contains Homes
 		if (!machineToDelete.getHomes().isEmpty()) {
-			throw new MgmException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Machine cannot be deleted. Please delete Homes in the Machine first.", null);
+			throw new ManagementException(ERROR_CODE_ENTITY_ILLEGAL_STATES, "Machine cannot be deleted. Please delete Homes in the Machine first.", null);
 		}
 
 		// Delete Machine from cluster root.
@@ -263,9 +263,9 @@ public class MachineHandler {
 	 * 
 	 * @param machineId
 	 * @return
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public Map<String, Object> getProperties(String machineId) throws MgmException {
+	public Map<String, Object> getProperties(String machineId) throws ManagementException {
 		Map<String, Object> properties = null;
 		Machine machine = getMachine(machineId);
 		if (machine != null) {
@@ -279,9 +279,9 @@ public class MachineHandler {
 	 * 
 	 * @param machineId
 	 * @param properties
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void setProperties(String machineId, Map<String, Object> properties) throws MgmException {
+	public void setProperties(String machineId, Map<String, Object> properties) throws ManagementException {
 		Machine machine = getMachine(machineId);
 		if (machine != null) {
 			machine.setProperties(properties);
@@ -293,9 +293,9 @@ public class MachineHandler {
 	 * 
 	 * @param machineId
 	 * @param propNames
-	 * @throws MgmException
+	 * @throws ManagementException
 	 */
-	public void removeProperties(String machineId, List<String> propNames) throws MgmException {
+	public void removeProperties(String machineId, List<String> propNames) throws ManagementException {
 		Machine machine = getMachine(machineId);
 		if (machine != null) {
 			machine.removeProperties(propNames);
