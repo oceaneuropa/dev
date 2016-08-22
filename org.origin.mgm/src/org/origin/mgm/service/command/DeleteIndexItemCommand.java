@@ -7,7 +7,9 @@ import javax.xml.namespace.QName;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
+import org.origin.common.command.impl.CommandResult;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.runtime.Status;
 import org.origin.common.util.ExceptionUtil;
 
 public class DeleteIndexItemCommand extends AbstractCommand {
@@ -23,12 +25,12 @@ public class DeleteIndexItemCommand extends AbstractCommand {
 	 * @param qName
 	 */
 	public DeleteIndexItemCommand() {
-		this.indexProviderId = indexProviderId;
-		this.qName = qName;
+		// this.indexProviderId = indexProviderId;
+		// this.qName = qName;
 	}
 
 	@Override
-	public void execute(CommandContext context) throws CommandException {
+	public CommandResult execute(CommandContext context) throws CommandException {
 		Connection conn = context.getAdapter(Connection.class);
 		ExceptionUtil.checkNotNull(conn, null, null);
 		try {
@@ -36,11 +38,12 @@ public class DeleteIndexItemCommand extends AbstractCommand {
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
+		return new CommandResult(this, Status.OK_STATUS);
 	}
 
 	@Override
-	public void undo(CommandContext context) throws CommandException {
-
+	public CommandResult undo(CommandContext context) throws CommandException {
+		return new CommandResult(this, Status.OK_STATUS);
 	}
 
 }

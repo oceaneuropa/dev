@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.nb.home.client.api.HomeAgent;
+import org.nb.home.client.api.HomeAgentFactory;
 import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.IMetaSector;
@@ -21,14 +23,14 @@ import org.nb.mgm.client.api.ISoftware;
 import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.client.api.ManagementConstants;
 import org.nb.mgm.client.api.ManagementFactory;
-import org.nb.mgm.client.ws.HomeClient;
-import org.nb.mgm.client.ws.MachineClient;
-import org.nb.mgm.client.ws.MetaSectorClient;
-import org.nb.mgm.client.ws.MetaSpaceClient;
-import org.nb.mgm.client.ws.ProjectClient;
-import org.nb.mgm.client.ws.ProjectHomeClient;
-import org.nb.mgm.client.ws.ProjectNodeClient;
-import org.nb.mgm.client.ws.ProjectSoftwareClient;
+import org.nb.mgm.client.ws.HomeWSClient;
+import org.nb.mgm.client.ws.MachineWSClient;
+import org.nb.mgm.client.ws.MetaSectorWSClient;
+import org.nb.mgm.client.ws.MetaSpaceWSClient;
+import org.nb.mgm.client.ws.ProjectHomeWSClient;
+import org.nb.mgm.client.ws.ProjectNodeWSClient;
+import org.nb.mgm.client.ws.ProjectSoftwareWSClient;
+import org.nb.mgm.client.ws.ProjectWSClient;
 import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
@@ -45,18 +47,19 @@ import org.origin.common.rest.model.StatusDTO;
 
 public class ManagementClientImpl implements ManagementClient {
 
-	private ClientConfiguration clientConfig;
+	protected ClientConfiguration clientConfig;
 
-	private MachineClient machineClient;
-	private HomeClient homeClient;
-	private MetaSectorClient metaSectorClient;
-	private MetaSpaceClient metaSpaceClient;
-	private ProjectClient projectClient;
-	private ProjectHomeClient projectHomeClient;
-	private ProjectNodeClient projectNodeClient;
-	private ProjectSoftwareClient projectSoftwareClient;
+	protected MachineWSClient machineClient;
+	protected HomeWSClient homeClient;
+	protected MetaSectorWSClient metaSectorClient;
+	protected MetaSpaceWSClient metaSpaceClient;
+	protected ProjectWSClient projectClient;
+	protected ProjectHomeWSClient projectHomeClient;
+	protected ProjectNodeWSClient projectNodeClient;
+	protected ProjectSoftwareWSClient projectSoftwareClient;
+	protected Map<String, HomeAgent> homeAgentMap;
 
-	private AdaptorSupport adaptorSupport = new AdaptorSupport();
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -69,14 +72,16 @@ public class ManagementClientImpl implements ManagementClient {
 		this.clientConfig = ClientConfiguration.get(url, contextRoot, username);
 		this.clientConfig.setPassword(password);
 
-		this.machineClient = new MachineClient(this.clientConfig);
-		this.homeClient = new HomeClient(this.clientConfig);
-		this.metaSectorClient = new MetaSectorClient(this.clientConfig);
-		this.metaSpaceClient = new MetaSpaceClient(this.clientConfig);
-		this.projectClient = new ProjectClient(this.clientConfig);
-		this.projectHomeClient = new ProjectHomeClient(this.clientConfig);
-		this.projectNodeClient = new ProjectNodeClient(this.clientConfig);
-		this.projectSoftwareClient = new ProjectSoftwareClient(this.clientConfig);
+		this.machineClient = new MachineWSClient(this.clientConfig);
+		this.homeClient = new HomeWSClient(this.clientConfig);
+		this.metaSectorClient = new MetaSectorWSClient(this.clientConfig);
+		this.metaSpaceClient = new MetaSpaceWSClient(this.clientConfig);
+		this.projectClient = new ProjectWSClient(this.clientConfig);
+		this.projectHomeClient = new ProjectHomeWSClient(this.clientConfig);
+		this.projectNodeClient = new ProjectNodeWSClient(this.clientConfig);
+		this.projectSoftwareClient = new ProjectSoftwareWSClient(this.clientConfig);
+
+		this.homeAgentMap = new HashMap<String, HomeAgent>();
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -351,6 +356,78 @@ public class ManagementClientImpl implements ManagementClient {
 			throw new ClientException(ERROR_CODE_ENTITY_MULTIPLE_ENTITIES_FOUND, "Multiple Homes with specified homeId are found.");
 		}
 		return machineId;
+	}
+
+	// @Override
+	// public void connect(IHome home) throws ClientException {
+	// HomeAgent homeAgent = getHomeAgent(home);
+	// if (homeAgent.isConnected()) {
+	// System.err.println("Home [" + home.getName() + "] has already been connected.");
+	// return;
+	// }
+	//
+	// homeAgent.connect();
+	// }
+	//
+	// @Override
+	// public void disconnect(IHome home) throws ClientException {
+	// HomeAgent homeAgent = getHomeAgent(home);
+	// if (!homeAgent.isConnected()) {
+	// System.err.println("Home [" + home.getName() + "] has readly been disconnected.");
+	// return;
+	// }
+	// homeAgent.disconnect();
+	// }
+	//
+	// @Override
+	// public boolean isConnected(IHome home) throws ClientException {
+	// HomeAgent homeAgent = getHomeAgent(home);
+	// return homeAgent.isConnected();
+	// }
+	//
+	// @Override
+	// public boolean isHomeAgentActive(IHome home) throws ClientException {
+	// HomeAgent homeAgent = getHomeAgent(home);
+	// return homeAgent.isHomeAgentActive();
+	// }
+
+	/**
+	 * 
+	 * @param projectHomeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public HomeAgent getHomeAgent(String projectHomeId) throws ClientException {
+		HomeAgent agent = null;
+		IProjectHome projectHome = getProjectHome(projectHomeId);
+		if (projectHome == null) {
+			throw new ClientException(500, "ProjectHome is not found.");
+		}
+		IHome home = projectHome.getDeploymentHome();
+		if (home == null) {
+			throw new ClientException(500, String.format("ProjectHome [%s] is not configured with deployment Home.", projectHome.getName()));
+		}
+		agent = getHomeAgent(home);
+		return agent;
+	}
+
+	/**
+	 * 
+	 * @param home
+	 * @return
+	 */
+	public synchronized HomeAgent getHomeAgent(IHome home) throws ClientException {
+		ClientConfiguration clientConfig = home.getClientConfiguration();
+		if (clientConfig == null) {
+			throw new ClientException(500, String.format("Home [%s] does not have properties for client configuration.", home.getName()));
+		}
+		String configId = clientConfig.getId();
+		HomeAgent homeAgent = this.homeAgentMap.get(configId);
+		if (homeAgent == null) {
+			homeAgent = HomeAgentFactory.createHomeAgent(this, clientConfig);
+			this.homeAgentMap.put(configId, homeAgent);
+		}
+		return homeAgent;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -1232,7 +1309,7 @@ public class ManagementClientImpl implements ManagementClient {
 	 * @param machineClient
 	 * @throws ClientException
 	 */
-	protected void checkClient(MachineClient machineClient) throws ClientException {
+	protected void checkClient(MachineWSClient machineClient) throws ClientException {
 		if (machineClient == null) {
 			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MachineClient is not found.", null);
 		}
@@ -1243,7 +1320,7 @@ public class ManagementClientImpl implements ManagementClient {
 	 * @param homeClient
 	 * @throws ClientException
 	 */
-	protected void checkClient(HomeClient homeClient) throws ClientException {
+	protected void checkClient(HomeWSClient homeClient) throws ClientException {
 		if (homeClient == null) {
 			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "HomeClient is not found.", null);
 		}
@@ -1254,7 +1331,7 @@ public class ManagementClientImpl implements ManagementClient {
 	 * @param metaSectorClient
 	 * @throws ClientException
 	 */
-	protected void checkClient(MetaSectorClient metaSectorClient) throws ClientException {
+	protected void checkClient(MetaSectorWSClient metaSectorClient) throws ClientException {
 		if (metaSectorClient == null) {
 			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MetaSectorClient is not found.", null);
 		}
@@ -1265,7 +1342,7 @@ public class ManagementClientImpl implements ManagementClient {
 	 * @param metaSpaceClient
 	 * @throws ClientException
 	 */
-	protected void checkClient(MetaSpaceClient metaSpaceClient) throws ClientException {
+	protected void checkClient(MetaSpaceWSClient metaSpaceClient) throws ClientException {
 		if (metaSpaceClient == null) {
 			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "MetaSpaceClient is not found.", null);
 		}
@@ -1276,7 +1353,7 @@ public class ManagementClientImpl implements ManagementClient {
 	 * @param projectClient
 	 * @throws ClientException
 	 */
-	protected void checkClient(ProjectClient projectClient) throws ClientException {
+	protected void checkClient(ProjectWSClient projectClient) throws ClientException {
 		if (projectClient == null) {
 			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectClient is not found.", null);
 		}
@@ -1288,7 +1365,7 @@ public class ManagementClientImpl implements ManagementClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	protected void checkClient(ProjectHomeClient projectHomeClient) throws ClientException {
+	protected void checkClient(ProjectHomeWSClient projectHomeClient) throws ClientException {
 		if (projectHomeClient == null) {
 			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectHomeClient is not found.", null);
 		}
@@ -1299,7 +1376,7 @@ public class ManagementClientImpl implements ManagementClient {
 	 * @param projectNodeClient
 	 * @throws ClientException
 	 */
-	protected void checkClient(ProjectNodeClient projectNodeClient) throws ClientException {
+	protected void checkClient(ProjectNodeWSClient projectNodeClient) throws ClientException {
 		if (projectNodeClient == null) {
 			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectNodeClient is not found.", null);
 		}
@@ -1310,7 +1387,7 @@ public class ManagementClientImpl implements ManagementClient {
 	 * @param projectSoftwareClient
 	 * @throws ClientException
 	 */
-	protected void checkClient(ProjectSoftwareClient projectSoftwareClient) throws ClientException {
+	protected void checkClient(ProjectSoftwareWSClient projectSoftwareClient) throws ClientException {
 		if (projectSoftwareClient == null) {
 			throw new ClientException(ManagementConstants.ERROR_CODE_WS_CLIENT_NOT_FOUND, "ProjectSoftwareClient is not found.", null);
 		}
@@ -1411,28 +1488,28 @@ public class ManagementClientImpl implements ManagementClient {
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		if (MachineClient.class.equals(adapter)) {
+		if (MachineWSClient.class.equals(adapter)) {
 			return (T) this.machineClient;
 
-		} else if (HomeClient.class.equals(adapter)) {
+		} else if (HomeWSClient.class.equals(adapter)) {
 			return (T) this.homeClient;
 
-		} else if (MetaSectorClient.class.equals(adapter)) {
+		} else if (MetaSectorWSClient.class.equals(adapter)) {
 			return (T) this.metaSectorClient;
 
-		} else if (MetaSpaceClient.class.equals(adapter)) {
+		} else if (MetaSpaceWSClient.class.equals(adapter)) {
 			return (T) this.metaSpaceClient;
 
-		} else if (ProjectClient.class.equals(adapter)) {
+		} else if (ProjectWSClient.class.equals(adapter)) {
 			return (T) this.projectClient;
 
-		} else if (ProjectHomeClient.class.equals(adapter)) {
+		} else if (ProjectHomeWSClient.class.equals(adapter)) {
 			return (T) this.projectHomeClient;
 
-		} else if (ProjectNodeClient.class.equals(adapter)) {
+		} else if (ProjectNodeWSClient.class.equals(adapter)) {
 			return (T) this.projectNodeClient;
 
-		} else if (ProjectSoftwareClient.class.equals(adapter)) {
+		} else if (ProjectSoftwareWSClient.class.equals(adapter)) {
 			return (T) this.projectSoftwareClient;
 		}
 

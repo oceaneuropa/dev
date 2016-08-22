@@ -4,15 +4,15 @@ import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.nb.home.client.api.HomeFactory;
-import org.nb.home.client.api.IHomeControl;
+import org.nb.home.client.api.HomeAgentFactory;
+import org.nb.home.client.api.HomeAgent;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.osgi.framework.BundleContext;
 
 public class HomeLoginCommand {
 
 	protected BundleContext bundleContext;
-	protected IHomeControl homeControl;
+	protected HomeAgent homeControl;
 
 	/**
 	 * 
@@ -71,8 +71,8 @@ public class HomeLoginCommand {
 			// return;
 		}
 
-		IHomeControl oldHomeControl = this.homeControl;
-		IHomeControl newHomeControl = HomeFactory.createHomeControl(url, username, password);
+		HomeAgent oldHomeControl = this.homeControl;
+		HomeAgent newHomeControl = HomeAgentFactory.createHomeAgent(url, username, password);
 
 		int ping = 0;
 		if (newHomeControl != null) {
@@ -86,7 +86,7 @@ public class HomeLoginCommand {
 			if (oldHomeControl != null) {
 				OSGiServiceUtil.unregister(oldHomeControl);
 			}
-			OSGiServiceUtil.register(this.bundleContext, IHomeControl.class.getName(), newHomeControl);
+			OSGiServiceUtil.register(this.bundleContext, HomeAgent.class.getName(), newHomeControl);
 			this.homeControl = newHomeControl;
 
 			System.out.println("Login successfully.");
@@ -108,7 +108,7 @@ public class HomeLoginCommand {
 			return;
 		}
 
-		OSGiServiceUtil.unregister(IHomeControl.class.getName(), this.homeControl);
+		OSGiServiceUtil.unregister(HomeAgent.class.getName(), this.homeControl);
 		this.homeControl = null;
 		System.out.println("Logout successfully.");
 	}

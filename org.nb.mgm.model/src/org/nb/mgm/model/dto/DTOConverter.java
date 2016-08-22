@@ -1,12 +1,11 @@
 package org.nb.mgm.model.dto;
 
-import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.exception.ManagementException;
 import org.nb.mgm.model.runtime.Artifact;
 import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.model.runtime.MetaSpace;
-import org.nb.mgm.model.runtime.Namespace;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
@@ -22,7 +21,7 @@ public class DTOConverter {
 	}
 
 	/**
-	 * Convert MgmException object to Error DTO.
+	 * Convert ManagementException object to Error DTO.
 	 * 
 	 * @param e
 	 * @return
@@ -49,24 +48,24 @@ public class DTOConverter {
 		return dto;
 	}
 
-	/**
-	 * Convert Namespace runtime model to Namespace DTO.
-	 * 
-	 * @param namespace
-	 * @return
-	 */
-	public NamespaceDTO toDTO(Namespace namespace) {
-		if (namespace == null) {
-			return null;
-		}
-		NamespaceDTO dto = new NamespaceDTO();
-
-		dto.setId(namespace.getId());
-		dto.setName(namespace.getName());
-		dto.setDescription(namespace.getDescription());
-
-		return dto;
-	}
+	// /**
+	// * Convert Namespace runtime model to Namespace DTO.
+	// *
+	// * @param namespace
+	// * @return
+	// */
+	// public NamespaceDTO toDTO(Namespace namespace) {
+	// if (namespace == null) {
+	// return null;
+	// }
+	// NamespaceDTO dto = new NamespaceDTO();
+	//
+	// dto.setId(namespace.getId());
+	// dto.setName(namespace.getName());
+	// dto.setDescription(namespace.getDescription());
+	//
+	// return dto;
+	// }
 
 	/**
 	 * Convert Machine runtime model to Machine DTO.

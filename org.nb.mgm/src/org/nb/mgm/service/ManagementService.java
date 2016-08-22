@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.exception.ManagementException;
 import org.nb.mgm.model.query.ArtifactQuery;
 import org.nb.mgm.model.query.HomeQuery;
 import org.nb.mgm.model.query.MachineQuery;

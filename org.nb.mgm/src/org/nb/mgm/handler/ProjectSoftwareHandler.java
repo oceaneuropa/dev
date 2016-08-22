@@ -1,8 +1,8 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.model.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.model.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.model.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +16,7 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.exception.ManagementException;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.service.ManagementService;

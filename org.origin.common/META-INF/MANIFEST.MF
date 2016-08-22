@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.origin.common
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.origin.common.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Import-Package: com.fasterxml.jackson.databind,
+Import-Package: com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.databind,
  com.mysql.jdbc,
  javax.servlet;version="3.1.0",
  javax.ws.rs,
@@ -42,9 +43,13 @@ Export-Package: org.origin.common,
  org.origin.common.jdbc,
  org.origin.common.json,
  org.origin.common.osgi,
+ org.origin.common.resource,
  org.origin.common.rest,
+ org.origin.common.rest.agent,
  org.origin.common.rest.client,
  org.origin.common.rest.model,
  org.origin.common.rest.server,
- org.origin.common.util
+ org.origin.common.runtime,
+ org.origin.common.util,
+ org.origin.common.workingcopy
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"

@@ -1,6 +1,6 @@
 package org.nb.mgm.service.impl;
 
-import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_EMPTY_CLUSTER_ROOT;
+import static org.nb.mgm.model.ManagementConstants.ERROR_CODE_EMPTY_CLUSTER_ROOT;
 
 import java.io.InputStream;
 import java.util.Date;
@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.handler.ArtifactHandler;
 import org.nb.mgm.handler.HomeHandler;
 import org.nb.mgm.handler.MachineHandler;
@@ -20,6 +19,7 @@ import org.nb.mgm.handler.ProjectHandler;
 import org.nb.mgm.handler.ProjectHomeHandler;
 import org.nb.mgm.handler.ProjectNodeHandler;
 import org.nb.mgm.handler.ProjectSoftwareHandler;
+import org.nb.mgm.model.exception.ManagementException;
 import org.nb.mgm.model.query.ArtifactQuery;
 import org.nb.mgm.model.query.HomeQuery;
 import org.nb.mgm.model.query.MachineQuery;
@@ -35,8 +35,8 @@ import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;
 import org.nb.mgm.model.runtime.Software;
-import org.nb.mgm.persistence.MgmPersistenceAdapter;
-import org.nb.mgm.persistence.MgmPersistenceFactory;
+import org.nb.mgm.model.util.ManagementPersistenceAdapter;
+import org.nb.mgm.model.util.ManagementPersistenceFactory;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -48,10 +48,11 @@ public class ManagementServiceImpl implements ManagementService {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected BundleContext bundleContext;
+	protected Map<Object, Object> props;
 	protected ServiceRegistration<?> serviceReg;
 
 	// adapter for loading/saving root data model
-	protected MgmPersistenceAdapter persistenceAdapter;
+	protected ManagementPersistenceAdapter persistenceAdapter;
 
 	// root data model
 	protected ClusterRoot root;
@@ -80,8 +81,6 @@ public class ManagementServiceImpl implements ManagementService {
 
 	protected boolean autoSave = false;
 
-	protected Map<Object, Object> props;
-
 	/**
 	 * 
 	 * @param bundleContext
@@ -89,38 +88,25 @@ public class ManagementServiceImpl implements ManagementService {
 	public ManagementServiceImpl(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 
-		// load properties
+		// Load properties
 		this.props = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_TYPE);
-		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
-		PropertyUtil.loadProperty(this.bundleContext, props, MgmPersistenceAdapter.PERSISTENCE_AUTOSAVE);
+		PropertyUtil.loadProperty(this.bundleContext, props, ManagementPersistenceAdapter.PERSISTENCE_TYPE);
+		PropertyUtil.loadProperty(this.bundleContext, props, ManagementPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
+		PropertyUtil.loadProperty(this.bundleContext, props, ManagementPersistenceAdapter.PERSISTENCE_AUTOSAVE);
 
-		// get persistence
-		this.persistenceAdapter = MgmPersistenceFactory.createInstance(props);
-	}
+		// Get persistence adapter
+		this.persistenceAdapter = ManagementPersistenceFactory.newInstance(props);
 
-	public String getPersistenceType() {
-		String persistenceType = null;
-		if (this.props.get(MgmPersistenceAdapter.PERSISTENCE_TYPE) instanceof String) {
-			persistenceType = (String) this.props.get(MgmPersistenceAdapter.PERSISTENCE_TYPE);
-		}
-		return persistenceType;
-	}
-
-	public String getLocalDirPath() {
-		String localDirPath = null;
-		if (this.props.get(MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR) instanceof String) {
-			localDirPath = (String) this.props.get(MgmPersistenceAdapter.PERSISTENCE_LOCAL_DIR);
-		}
-		return localDirPath;
-	}
-
-	/**
-	 * 
-	 * @param persistenceAdapter
-	 */
-	public void setPersistenceAdapter(MgmPersistenceAdapter persistenceAdapter) {
-		this.persistenceAdapter = persistenceAdapter;
+		// Create the handlers
+		this.machineHandler = new MachineHandler(this);
+		this.homeHandler = new HomeHandler(this);
+		this.metaSectorHandler = new MetaSectorHandler(this);
+		this.metaSpaceHandler = new MetaSpaceHandler(this);
+		this.artifactHandler = new ArtifactHandler(this);
+		this.projectHandler = new ProjectHandler(this);
+		this.projectHomeHandler = new ProjectHomeHandler(this);
+		this.projectNodeHandler = new ProjectNodeHandler(this);
+		this.projectSoftwareHandler = new ProjectSoftwareHandler(this);
 	}
 
 	/**
@@ -135,18 +121,7 @@ public class ManagementServiceImpl implements ManagementService {
 			throw new ManagementException(ERROR_CODE_EMPTY_CLUSTER_ROOT, "Cluster cannot be loaded.", null);
 		}
 
-		// 2. create the data handlers
-		this.machineHandler = new MachineHandler(this);
-		this.homeHandler = new HomeHandler(this);
-		this.metaSectorHandler = new MetaSectorHandler(this);
-		this.metaSpaceHandler = new MetaSpaceHandler(this);
-		this.artifactHandler = new ArtifactHandler(this);
-		this.projectHandler = new ProjectHandler(this);
-		this.projectHomeHandler = new ProjectHomeHandler(this);
-		this.projectNodeHandler = new ProjectNodeHandler(this);
-		this.projectSoftwareHandler = new ProjectSoftwareHandler(this);
-
-		// 3. Register as a service
+		// 2. Register ManagementService
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceReg = this.bundleContext.registerService(ManagementService.class, this, props);
 	}
@@ -157,11 +132,18 @@ public class ManagementServiceImpl implements ManagementService {
 	 * @throws ManagementException
 	 */
 	public void stop() throws ManagementException {
-		// Unregister the service
+		// Unregister ManagementService
 		if (this.serviceReg != null) {
 			this.serviceReg.unregister();
 			this.serviceReg = null;
 		}
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// Load/Save
+	// ------------------------------------------------------------------------------------------
+	public ClusterRoot getRoot() {
+		return this.root;
 	}
 
 	public boolean isAutoSave() {
@@ -174,13 +156,6 @@ public class ManagementServiceImpl implements ManagementService {
 
 	public void save() {
 		this.persistenceAdapter.save(this.root);
-	}
-
-	// ------------------------------------------------------------------------------------------
-	// Root
-	// ------------------------------------------------------------------------------------------
-	public ClusterRoot getRoot() {
-		return this.root;
 	}
 
 	// ------------------------------------------------------------------------------------------

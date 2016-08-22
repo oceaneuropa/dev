@@ -12,7 +12,7 @@ import com.osgi.example1.fs.client.api.FileRefInputStream;
 import com.osgi.example1.fs.client.api.FileRefOutputStream;
 import com.osgi.example1.fs.client.api.FileSystem;
 import com.osgi.example1.fs.client.api.FileSystemConfiguration;
-import com.osgi.example1.fs.client.ws.FileSystemClient;
+import com.osgi.example1.fs.client.ws.FileSystemWSClient;
 import com.osgi.example1.fs.common.Path;
 
 public class FileSystemImpl extends FileSystem {
@@ -34,7 +34,7 @@ public class FileSystemImpl extends FileSystem {
 		return this.config;
 	}
 
-	protected FileSystemClient getFsClient() {
+	protected FileSystemWSClient getFsClient() {
 		return this.config.getFileSystemClient();
 	}
 

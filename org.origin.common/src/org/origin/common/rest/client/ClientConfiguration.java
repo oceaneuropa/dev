@@ -163,6 +163,11 @@ public class ClientConfiguration {
 		this.contextRoot = contextRoot;
 	}
 
+	public String getId() {
+		String id = this.url + "::" + this.contextRoot + "::" + this.username;
+		return id;
+	}
+
 	public String getUrl() {
 		return url;
 	}

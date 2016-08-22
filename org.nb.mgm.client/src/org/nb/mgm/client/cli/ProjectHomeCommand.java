@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.nb.home.client.api.HomeAgent;
 import org.nb.mgm.client.api.IHome;
 import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.IProject;
@@ -44,7 +45,20 @@ public class ProjectHomeCommand implements Annotated {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "nb");
-		props.put("osgi.command.function", new String[] { "lprojecthomes", "createprojecthome", "updateprojecthome", "deleteprojecthome", "setdeploymenthome", "removedeploymenthome" });
+		props.put("osgi.command.function",
+				new String[] { //
+						"lprojecthomes", //
+						"createprojecthome", //
+						"updateprojecthome", //
+						"deleteprojecthome", //
+						"setdeploymenthome", //
+						"removedeploymenthome", //
+						"agent_connect", //
+						"agent_disconnect", //
+						"agent_status", //
+						"agent_create_project_home", //
+						"agent_delete_project_home", //
+		});
 		this.registration = this.bundleContext.registerService(ProjectHomeCommand.class.getName(), this, props);
 
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
@@ -397,6 +411,178 @@ public class ProjectHomeCommand implements Annotated {
 			}
 		} catch (ClientException e) {
 			System.out.println("Failed to remove deployment Home. " + e.getMessage());
+		}
+	}
+
+	@Descriptor("Connect to home agent")
+	public void agent_connect( //
+			// Parameters
+			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
+	) {
+		if (this.management == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			// projectHomeId is required
+			if ("".equals(projectHomeId)) {
+				System.out.println("Please specify -projecthomeid parameter.");
+				return;
+			}
+
+			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			if (agent.isConnected()) {
+				System.out.println("Already connected.");
+				return;
+			}
+
+			boolean succeed = agent.connect();
+			if (succeed) {
+				System.out.println("Connected.");
+			} else {
+				System.out.println("Connect unsuccessfully");
+			}
+
+		} catch (ClientException e) {
+			System.out.println("Failed to connect. " + e.getMessage());
+		}
+	}
+
+	@Descriptor("Disconnect from home agent")
+	public void agent_disconnect( //
+			// Parameters
+			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
+	) {
+		if (this.management == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			// projectHomeId is required
+			if ("".equals(projectHomeId)) {
+				System.out.println("Please specify -projecthomeid parameter.");
+				return;
+			}
+
+			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			if (!agent.isConnected()) {
+				System.out.println("Already disconnected.");
+				return;
+			}
+
+			agent.disconnect();
+			System.out.println("Disconnected.");
+
+		} catch (ClientException e) {
+			System.out.println("Failed to disconnect. " + e.getMessage());
+		}
+	}
+
+	@Descriptor("Check status of home agent")
+	public void agent_status( //
+			// Parameters
+			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
+	) {
+		if (this.management == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			// projectHomeId is required
+			if ("".equals(projectHomeId)) {
+				System.out.println("Please specify -projecthomeid parameter.");
+				return;
+			}
+
+			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			if (!agent.isConnected()) {
+				System.out.println("Connection is not open.");
+				return;
+			}
+
+			boolean isActive = agent.isActive();
+			if (isActive) {
+				System.out.println("Connection is active.");
+			} else {
+				System.out.println("Connection is not active.");
+			}
+
+		} catch (ClientException e) {
+			System.out.println("Failed to get status. " + e.getMessage());
+		}
+	}
+
+	@Descriptor("Create project home on agent")
+	public void agent_create_project_home( //
+			// Parameters
+			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
+	) {
+		if (this.management == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			// projectHomeId is required
+			if ("".equals(projectHomeId)) {
+				System.out.println("Please specify -projecthomeid parameter.");
+				return;
+			}
+
+			IProjectHome projectHome = this.management.getProjectHome(projectHomeId);
+			if (projectHome == null) {
+				System.out.println("ProjectHome is not found.");
+				return;
+			}
+
+			// String projectId = projectHome.getProject().getId();
+
+			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			if (!agent.isConnected()) {
+				System.out.println("Connection is not open.");
+				return;
+			}
+
+			agent.buildProject(projectHomeId);
+
+		} catch (ClientException e) {
+			System.out.println("Failed to create project on agent. " + e.getMessage());
+		}
+	}
+
+	@Descriptor("Delete project home from agent")
+	public void agent_delete_project_home( //
+			// Parameters
+			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
+	) {
+		if (this.management == null) {
+			System.out.println("Please login first.");
+			return;
+		}
+
+		try {
+			// projectHomeId is required
+			if ("".equals(projectHomeId)) {
+				System.out.println("Please specify -projecthomeid parameter.");
+				return;
+			}
+
+			IProjectHome projectHome = this.management.getProjectHome(projectHomeId);
+			if (projectHome == null) {
+				System.out.println("ProjectHome is not found.");
+				return;
+			}
+
+			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			if (!agent.isConnected()) {
+				System.out.println("Connection is not open.");
+				return;
+			}
+		} catch (ClientException e) {
+			System.out.println("Failed to delete project on agent. " + e.getMessage());
 		}
 	}
 

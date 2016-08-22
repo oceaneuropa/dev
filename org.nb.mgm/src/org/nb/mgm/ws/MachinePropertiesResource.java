@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.exception.ManagementException;
 import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.json.JSONUtil;

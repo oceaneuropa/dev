@@ -6,6 +6,8 @@ import java.util.Map;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
+import org.origin.common.command.impl.CommandResult;
+import org.origin.common.runtime.Status;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.service.IndexServiceConstants;
@@ -44,7 +46,7 @@ public class RevisionCommand extends AbstractCommand {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void execute(CommandContext context) throws CommandException {
+	public CommandResult execute(CommandContext context) throws CommandException {
 		if (IndexServiceConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
 			Integer indexItemId = (Integer) this.arguments.get("indexItemId");
 			String indexProviderId = (String) this.arguments.get("indexProviderId");
@@ -93,11 +95,13 @@ public class RevisionCommand extends AbstractCommand {
 		} else {
 			System.out.println("SyncIndexItemCommand.execute() Unsupported command: " + this.command);
 		}
+
+		return new CommandResult(this, Status.OK_STATUS);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void undo(CommandContext context) throws CommandException {
+	public CommandResult undo(CommandContext context) throws CommandException {
 		if (IndexServiceConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
 			Integer indexItemId = (Integer) this.undoArguments.get("indexItemId");
 			String indexProviderId = (String) this.undoArguments.get("indexProviderId");
@@ -146,6 +150,8 @@ public class RevisionCommand extends AbstractCommand {
 		} else {
 			System.out.println("RevisionCommand.undo() Unsupported command: " + this.command);
 		}
+
+		return new CommandResult(this, Status.OK_STATUS);
 	}
 
 }

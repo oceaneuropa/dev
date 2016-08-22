@@ -34,6 +34,7 @@ public class HomeApplication extends AbstractApplication {
 	 * Registry this HomeApplication as a web service. Called when Activator is started.
 	 */
 	public void start() {
+		super.start();
 		logger.info("HomeApplication.start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -45,6 +46,7 @@ public class HomeApplication extends AbstractApplication {
 	 * Unregister the HomeApplication web service. Called when Activator is stopped.
 	 */
 	public void stop() {
+		super.stop();
 		logger.info("HomeApplication.stop()");
 
 		if (this.serviceRegistration != null) {
@@ -58,8 +60,7 @@ public class HomeApplication extends AbstractApplication {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 
 		// resources
-		classes.add(HomeApiResource.class);
-		classes.add(SectorResource.class);
+		classes.add(HomeAgentResource.class);
 
 		// resolvers
 		classes.add(HomeServiceResolver.class);

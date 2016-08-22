@@ -11,14 +11,14 @@ import org.junit.runners.MethodSorters;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
-import com.osgi.example1.fs.client.ws.FileSystemClient;
+import com.osgi.example1.fs.client.ws.FileSystemWSClient;
 import com.osgi.example1.fs.client.ws.FileSystemUtil;
 import com.osgi.example1.fs.common.Path;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FsClientTestWin {
 
-	protected FileSystemClient fsClient;
+	protected FileSystemWSClient fsClient;
 
 	public FsClientTestWin() {
 		this.fsClient = getClient();
@@ -28,9 +28,9 @@ public class FsClientTestWin {
 		this.fsClient = getClient();
 	}
 
-	protected FileSystemClient getClient() {
+	protected FileSystemWSClient getClient() {
 		ClientConfiguration config = ClientConfiguration.get("http://127.0.0.1:9090", "/fs/v1", "root", "admin");
-		return new FileSystemClient(config);
+		return new FileSystemWSClient(config);
 	}
 
 	@Test

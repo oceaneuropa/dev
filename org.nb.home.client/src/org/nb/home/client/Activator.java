@@ -1,6 +1,6 @@
 package org.nb.home.client;
 
-import org.nb.home.client.cli.HomeControlCommand;
+import org.nb.home.client.cli.HomeAgentCommand;
 import org.nb.home.client.cli.HomeLoginCommand;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -14,7 +14,7 @@ public class Activator implements BundleActivator {
 	}
 
 	protected HomeLoginCommand homeLoginCommand;
-	protected HomeControlCommand homeControlCommand;
+	protected HomeAgentCommand homeControlCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -25,7 +25,7 @@ public class Activator implements BundleActivator {
 		this.homeLoginCommand.start();
 
 		// Start HomeControlCommand
-		this.homeControlCommand = new HomeControlCommand(bundleContext);
+		this.homeControlCommand = new HomeAgentCommand(bundleContext);
 		this.homeControlCommand.start();
 	}
 

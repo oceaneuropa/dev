@@ -11,10 +11,22 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class StatusDTO {
 
+	/**
+	 * 
+	 * @param message
+	 * @return
+	 */
 	public static StatusDTO success(String message) {
 		return new StatusDTO("200", "success", message);
 	}
 
+	/**
+	 * 
+	 * @param code
+	 * @param status
+	 * @param message
+	 * @return
+	 */
 	public static StatusDTO status(String code, String status, String message) {
 		return new StatusDTO(code, status, message);
 	}

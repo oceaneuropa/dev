@@ -2,6 +2,7 @@ package org.origin.common;
 
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyConfigurator;
+import org.origin.common.command.IEditingDomain;
 import org.origin.common.deploy.WSDeployer;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.osgi.PropertiesConfigCommand;
@@ -12,12 +13,27 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
+	// The plug-in ID
+	public static final String PLUGIN_ID = "org.origin.common"; //$NON-NLS-1$
+	// The shared instance
+	protected static Activator plugin;
+
 	private static BundleContext context;
 
-	static BundleContext getContext() {
+	public static BundleContext getContext() {
 		return context;
 	}
 
+	/**
+	 * Returns the shared instance
+	 * 
+	 * @return the shared instance
+	 */
+	public static Activator getDefault() {
+		return plugin;
+	}
+
+	protected IEditingDomain editingDomain;
 	protected DependencyConfigurator dependencyConfigurator;
 	protected WSDeployer wsDeployer;
 	protected PropertiesConfigServiceFactory propertiesConfigFactory;
@@ -29,7 +45,7 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Printer.pl("org.origin.common.Activator.start()");
 
-		Activator.context = bundleContext;
+		this.editingDomain = IEditingDomain.getEditingDomain(PLUGIN_ID);
 
 		this.dependencyConfigurator = new DependencyConfigurator(bundleContext);
 		this.dependencyConfigurator.start();
@@ -42,11 +58,16 @@ public class Activator implements BundleActivator {
 
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), propertiesConfigFactory);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), propertiesConfigCommand);
+
+		Activator.context = bundleContext;
+		Activator.plugin = this;
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		Printer.pl("org.origin.common.Activator.stop()");
+		Activator.plugin = null;
+		Activator.context = null;
 
 		if (this.dependencyConfigurator != null) {
 			this.dependencyConfigurator.stop();
@@ -70,7 +91,12 @@ public class Activator implements BundleActivator {
 			this.propertiesConfigFactory = null;
 		}
 
-		Activator.context = null;
+		this.editingDomain = null;
+		IEditingDomain.disposeEditingDomain(PLUGIN_ID);
+	}
+
+	public IEditingDomain getEditingDomain() {
+		return this.editingDomain;
 	}
 
 }

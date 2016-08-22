@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response.Status.Family;
 
 import org.origin.common.rest.model.ErrorDTO;
 
-public abstract class AbstractClient {
+public abstract class AbstractClient implements IClient {
 
 	protected ClientConfiguration config;
 	protected Client client;

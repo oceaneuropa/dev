@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response.Status;
 import org.apache.commons.io.FilenameUtils;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
-import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.exception.ManagementException;
 import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.io.IOUtil;

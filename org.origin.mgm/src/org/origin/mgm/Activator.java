@@ -3,7 +3,7 @@ package org.origin.mgm;
 import java.nio.file.Path;
 import java.util.Properties;
 
-import org.origin.common.env.HomeUtil;
+import org.origin.common.env.SetupUtil;
 import org.origin.common.util.Printer;
 import org.origin.mgm.service.IndexService;
 import org.origin.mgm.service.impl.DatabaseIndexServiceConfiguration;
@@ -37,9 +37,9 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 
 		// Get ORIGIN_HOME system property and load {ORIGIN_HOME}/config.ini file into Properties.
-		Path originHome = HomeUtil.getOriginHome(bundleContext);
+		Path originHome = SetupUtil.getOriginHome(bundleContext);
 		Path configIniPath = originHome.resolve("config.ini");
-		Properties configProperties = HomeUtil.getProperties(originHome, "config.ini");
+		Properties configProperties = SetupUtil.getProperties(originHome, "config.ini");
 		System.out.println("originHome = " + originHome);
 		System.out.println(configIniPath + " properties:");
 		Printer.pl(configProperties);

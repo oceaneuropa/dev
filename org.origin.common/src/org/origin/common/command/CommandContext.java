@@ -1,11 +1,23 @@
 package org.origin.common.command;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.adapter.IAdaptable;
 
 public class CommandContext implements IAdaptable {
 
+	protected Map<String, Object> map = new HashMap<String, Object>();
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
+
+	public void put(String key, Object value) {
+		this.map.put(key, value);
+	}
+
+	public Object get(String key) {
+		return this.map.get(key);
+	}
 
 	/** implement IAdaptable interface */
 	@Override

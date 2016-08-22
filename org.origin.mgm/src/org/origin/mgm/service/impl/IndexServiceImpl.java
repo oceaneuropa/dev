@@ -19,11 +19,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
-import org.origin.common.command.CommandStack;
-import org.origin.common.command.EditingDomain;
+import org.origin.common.command.ICommandStack;
+import org.origin.common.command.IEditingDomain;
+import org.origin.common.command.ICommand;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -80,7 +80,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	protected List<IndexItem> cachedIndexItems = new ArrayList<IndexItem>();
 	protected Integer cachedRevisionId = 0;
 
-	protected CommandStack revisionCommandStack;
+	protected ICommandStack revisionCommandStack;
 	protected boolean debug = true;
 
 	/**
@@ -174,7 +174,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		}
 
 		// Initialize the command stack
-		this.revisionCommandStack = EditingDomain.getEditingDomain(IndexServiceConstants.EDITING_DOMAIN).getCommandStack(this);
+		this.revisionCommandStack = IEditingDomain.getEditingDomain(IndexServiceConstants.EDITING_DOMAIN).getCommandStack(this);
 
 		// Synchronize once when the index service is started, so that the cachedIndexItems and cachedRevisionId can be initialized.
 		try {
@@ -220,7 +220,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		}
 
 		// dispose the command stack
-		EditingDomain.getEditingDomain(IndexServiceConstants.EDITING_DOMAIN).disposeCommandStack(this);
+		IEditingDomain.getEditingDomain(IndexServiceConstants.EDITING_DOMAIN).disposeCommandStack(this);
 		this.revisionCommandStack = null;
 	}
 
@@ -580,7 +580,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 					break;
 				}
 
-				AbstractCommand command = this.revisionCommandStack.peekUndoCommand();
+				ICommand command = this.revisionCommandStack.peekUndoCommand();
 
 				if (!(command instanceof RevisionCommand)) {
 					throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, "Cannot revert a non-revision command '" + command.getClass().getName() + "'. A non-revision command is not expected in the command stack.");

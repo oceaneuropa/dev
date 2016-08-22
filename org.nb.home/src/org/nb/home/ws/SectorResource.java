@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.Providers;
 
-import org.nb.home.service.HomeService;
+import org.nb.home.service.HomeAgentService;
 import org.origin.common.rest.model.StatusDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,8 +30,8 @@ public class SectorResource {
 	@Context
 	protected Providers providers;
 
-	protected HomeService getHomeService() {
-		HomeService homeService = this.providers.getContextResolver(HomeService.class, MediaType.APPLICATION_JSON_TYPE).getContext(HomeService.class);
+	protected HomeAgentService getHomeService() {
+		HomeAgentService homeService = this.providers.getContextResolver(HomeAgentService.class, MediaType.APPLICATION_JSON_TYPE).getContext(HomeAgentService.class);
 		if (homeService == null) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);
 		}
@@ -41,9 +41,7 @@ public class SectorResource {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response createSector(String sectorName) {
-		HomeService homeService = getHomeService();
-
-		homeService.createSectorFolder(sectorName);
+		HomeAgentService homeService = getHomeService();
 
 		return Response.ok().entity(StatusDTO.success("Sector is created successfully.")).build();
 	}
@@ -51,7 +49,7 @@ public class SectorResource {
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deleteSector(String sectorName) {
-		HomeService homeService = getHomeService();
+		HomeAgentService homeService = getHomeService();
 
 		return Response.ok().entity(StatusDTO.success("Sector is deleted successfully.")).build();
 	}

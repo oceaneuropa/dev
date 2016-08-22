@@ -16,13 +16,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.nb.mgm.exception.ManagementException;
 import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.DTOConverter;
 import org.nb.mgm.model.dto.ProjectDTO;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
 import org.nb.mgm.model.dto.ProjectNodeDTO;
 import org.nb.mgm.model.dto.SoftwareDTO;
+import org.nb.mgm.model.exception.ManagementException;
 import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.model.runtime.ProjectNode;

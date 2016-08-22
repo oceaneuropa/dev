@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -44,13 +45,25 @@ public class JSONUtil {
 	 */
 	public static JSONObject load(File file) throws IOException {
 		JSONObject jsonObject = null;
-		InputStream is = null;
+		if (file != null && file.exists()) {
+			jsonObject = load(new FileInputStream(file), true);
+		}
+		return jsonObject;
+	}
+
+	/**
+	 * Load JSONObject from an input stream.
+	 * 
+	 * @param inputStream
+	 * @param closeInputStream
+	 * @return
+	 * @throws IOException
+	 */
+	public static JSONObject load(InputStream inputStream, boolean closeInputStream) throws IOException {
+		JSONObject jsonObject = null;
 		try {
-			if (file != null && file.exists()) {
-				is = new FileInputStream(file);
-			}
-			if (is != null) {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+			if (inputStream != null) {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 				StringBuffer buffer = new StringBuffer();
 
 				String line = null;
@@ -66,11 +79,13 @@ public class JSONUtil {
 			e.printStackTrace();
 			throw e;
 		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+			if (closeInputStream) {
+				if (inputStream != null) {
+					try {
+						inputStream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -80,43 +95,55 @@ public class JSONUtil {
 	/**
 	 * Save JSONObject to a File.
 	 * 
-	 * @param file
 	 * @param jsonObject
+	 * @param file
 	 * @throws IOException
 	 */
-	public static void save(File file, JSONObject jsonObject) throws IOException {
-		String stringContent = jsonObject.toString(4);
+	public static void save(JSONObject jsonObject, File file) throws IOException {
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+		save(jsonObject, new FileOutputStream(file), true);
+	}
 
-		ByteArrayInputStream is = null;
-		FileOutputStream fos = null;
-
-		byte[] bytes = stringContent.getBytes(getDefaultCharset());
-		is = new ByteArrayInputStream(bytes);
-
+	/**
+	 * Save JSONObject to an output stream.
+	 * 
+	 * @param jsonObject
+	 * @param outputStream
+	 * @param closeOutputStream
+	 * @throws IOException
+	 */
+	public static void save(JSONObject jsonObject, OutputStream outputStream, boolean closeOutputStream) throws IOException {
+		ByteArrayInputStream inputStream = null;
 		try {
-			if (is != null) {
-				if (!file.exists()) {
-					file.createNewFile();
-				}
-				fos = new FileOutputStream(file);
-				fos.write(bytes);
-				fos.flush();
+			String stringContent = jsonObject.toString(4);
+
+			byte[] bytes = stringContent.getBytes(getDefaultCharset());
+			inputStream = new ByteArrayInputStream(bytes);
+
+			if (inputStream != null) {
+				outputStream.write(bytes);
+				outputStream.flush();
 			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw e;
+
 		} finally {
-			if (fos != null) {
-				try {
-					fos.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+			if (closeOutputStream) {
+				if (outputStream != null) {
+					try {
+						outputStream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-			if (is != null) {
+			if (inputStream != null) {
 				try {
-					is.close();
+					inputStream.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

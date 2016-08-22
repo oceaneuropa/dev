@@ -16,8 +16,10 @@ import java.util.concurrent.ScheduledFuture;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
+import org.origin.common.command.impl.CommandResult;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.runtime.Status;
 import org.origin.common.util.ExceptionUtil;
 import org.origin.mgm.model.vo.IndexItemDataVO;
 import org.origin.mgm.model.vo.IndexItemRequestVO;
@@ -105,7 +107,7 @@ public class CreateIndexItemCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void execute(CommandContext context) throws CommandException {
+	public CommandResult execute(CommandContext context) throws CommandException {
 		final ScheduledFuture<?>[] requestUpdaterHandle = new ScheduledFuture<?>[1];
 
 		final Connection conn = context.getAdapter(Connection.class);
@@ -252,6 +254,8 @@ public class CreateIndexItemCommand extends AbstractCommand {
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
+
+		return new CommandResult(this, Status.OK_STATUS);
 	}
 
 	/**
@@ -271,8 +275,8 @@ public class CreateIndexItemCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void undo(CommandContext context) throws CommandException {
-
+	public CommandResult undo(CommandContext context) throws CommandException {
+		return new CommandResult(this, Status.OK_STATUS);
 	}
 
 }

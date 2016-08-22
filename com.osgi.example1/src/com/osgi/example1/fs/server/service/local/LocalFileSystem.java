@@ -8,6 +8,7 @@ import java.util.Hashtable;
 
 import org.apache.commons.io.FileUtils;
 import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.io.FileUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -161,7 +162,7 @@ public class LocalFileSystem implements FileSystem {
 		}
 
 		// Copy input stream to file.
-		FileUtils.copyInputStreamToFile(inputStream, destFile);
+		FileUtil.copyInputStreamToFile(inputStream, destFile);
 
 		return destFilePath;
 	}

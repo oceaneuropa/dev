@@ -37,7 +37,7 @@ public interface IProjectHome extends IAdaptable {
 	public void setDescription(String description) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
-	// ProjectHome
+	// Deployment Home
 	// ------------------------------------------------------------------------------------------
 	/**
 	 * Get deployment Home.
@@ -65,6 +65,36 @@ public interface IProjectHome extends IAdaptable {
 	 * @throws ClientException
 	 */
 	public boolean removeDeploymentHome(String homeId) throws ClientException;
+
+//	/**
+//	 * Connect to deployment Home.
+//	 * 
+//	 * @return
+//	 */
+//	public boolean connect() throws ClientException;
+//
+//	/**
+//	 * Disconnect from deployment Home.
+//	 * 
+//	 * @return
+//	 */
+//	public boolean disconnect() throws ClientException;
+//
+//	/**
+//	 * Check whether a deployment Home has been connected.
+//	 * 
+//	 * @return
+//	 * @throws ClientException
+//	 */
+//	public boolean isConnected() throws ClientException;
+//
+//	/**
+//	 * Check whether the connection to a remote home is active.
+//	 * 
+//	 * @return
+//	 * @throws ClientException
+//	 */
+//	public boolean isHomeAgentActive() throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// ProjectNode

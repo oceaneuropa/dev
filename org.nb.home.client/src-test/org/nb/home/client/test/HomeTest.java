@@ -4,13 +4,13 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.nb.home.client.api.HomeFactory;
-import org.nb.home.client.api.IHomeControl;
+import org.nb.home.client.api.HomeAgentFactory;
+import org.nb.home.client.api.HomeAgent;
 import org.origin.common.rest.client.ClientException;
 
 public class HomeTest {
 
-	protected IHomeControl homeMgm;
+	protected HomeAgent homeMgm;
 
 	public HomeTest() {
 		this.homeMgm = getHomeControl();
@@ -20,8 +20,8 @@ public class HomeTest {
 		this.homeMgm = getHomeControl();
 	}
 
-	protected IHomeControl getHomeControl() {
-		return HomeFactory.createHomeControl("http://127.0.0.1:9090", "admin", "123");
+	protected HomeAgent getHomeControl() {
+		return HomeAgentFactory.createHomeAgent("http://127.0.0.1:9090", "admin", "123");
 	}
 
 	@Test

@@ -1,9 +1,9 @@
 package org.nb.mgm.handler;
 
-import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
-import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
-import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
-import static org.nb.mgm.service.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
+import static org.nb.mgm.model.ManagementConstants.ERROR_CODE_ENTITY_EXIST;
+import static org.nb.mgm.model.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_PARAMETER;
+import static org.nb.mgm.model.ManagementConstants.ERROR_CODE_ENTITY_ILLEGAL_STATES;
+import static org.nb.mgm.model.ManagementConstants.ERROR_CODE_ENTITY_NOT_FOUND;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.nb.mgm.exception.ManagementException;
+import org.nb.mgm.model.exception.ManagementException;
 import org.nb.mgm.model.query.HomeQuery;
 import org.nb.mgm.model.runtime.Home;
 import org.nb.mgm.model.runtime.Machine;

@@ -4,9 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.adapter.IAdaptable;
+import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.ClientConfigurationAware;
 import org.origin.common.rest.client.ClientException;
 
-public interface IHome extends IAdaptable {
+public interface IHome extends IAdaptable, ClientConfigurationAware {
+
+	// ------------------------------------------------------------------------------------------
+	// ClientConfiguration
+	// ------------------------------------------------------------------------------------------
+	public ClientConfiguration getClientConfiguration() throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// Parent

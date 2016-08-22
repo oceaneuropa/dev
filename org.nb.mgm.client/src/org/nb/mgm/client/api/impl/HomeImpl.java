@@ -10,16 +10,17 @@ import org.nb.mgm.client.api.IMachine;
 import org.nb.mgm.client.api.ManagementClient;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
 public class HomeImpl implements IHome {
 
-	private ManagementClient management;
-	private IMachine machine;
-	private HomeDTO homeDTO;
+	protected ManagementClient management;
+	protected IMachine machine;
+	protected HomeDTO homeDTO;
 
-	private AdaptorSupport adaptorSupport = new AdaptorSupport();
-	private boolean autoUpdate = false;
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
+	protected boolean autoUpdate = false;
 
 	/**
 	 * 
@@ -31,6 +32,28 @@ public class HomeImpl implements IHome {
 		this.management = management;
 		this.machine = machine;
 		this.homeDTO = homeDTO;
+	}
+
+	// ------------------------------------------------------------------------------------------
+	// ClientConfiguration
+	// ------------------------------------------------------------------------------------------
+	@Override
+	public ClientConfiguration getClientConfiguration() throws ClientException {
+		ClientConfiguration clientConfig = null;
+		Map<String, Object> properties = getProperties();
+		if (properties != null) {
+			String url = (String) properties.get("url");
+			String contextroot = (String) properties.get("contextroot");
+			String username = (String) properties.get("username");
+			String password = (String) properties.get("password");
+			if (contextroot == null || contextroot.isEmpty()) {
+				contextroot = "home/v1";
+			}
+			if (url != null && !url.isEmpty()) {
+				clientConfig = ClientConfiguration.get(url, contextroot, username, password);
+			}
+		}
+		return clientConfig;
 	}
 
 	// ------------------------------------------------------------------------------------------
@@ -188,6 +211,13 @@ public class HomeImpl implements IHome {
 	public <T> T getAdapter(Class<T> adapter) {
 		if (HomeDTO.class.equals(adapter)) {
 			return (T) this.homeDTO;
+		}
+		if (ClientConfiguration.class.isAssignableFrom(adapter)) {
+			try {
+				return (T) getClientConfiguration();
+			} catch (ClientException e) {
+				e.printStackTrace();
+			}
 		}
 		T result = this.adaptorSupport.getAdapter(adapter);
 		if (result != null) {

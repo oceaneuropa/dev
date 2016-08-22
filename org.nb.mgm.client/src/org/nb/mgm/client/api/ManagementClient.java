@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.nb.home.client.api.HomeAgent;
 import org.nb.mgm.model.dto.HomeDTO;
 import org.nb.mgm.model.dto.MachineDTO;
 import org.nb.mgm.model.dto.MetaSectorDTO;
@@ -221,6 +222,58 @@ public interface ManagementClient extends IAdaptable {
 	 * @throws ClientException
 	 */
 	public boolean removeHomeProperties(String machineId, String homeId, List<String> propertyNames) throws ClientException;
+
+	// /**
+	// * Connect to a remote home.
+	// *
+	// * @param home
+	// * @return
+	// * @throws ClientException
+	// */
+	// public void connect(IHome home) throws ClientException;
+	//
+	// /**
+	// * Disconnect from a remote home.
+	// *
+	// * @param home
+	// * @return
+	// * @throws ClientException
+	// */
+	// public void disconnect(IHome home) throws ClientException;
+	//
+	// /**
+	// * Check whether the AdminClient is connected to a remote home.
+	// *
+	// * @param home
+	// * @return
+	// * @throws ClientException
+	// */
+	// public boolean isConnected(IHome home) throws ClientException;
+	//
+	// /**
+	// * Check whether the connection to a remote home is active.
+	// *
+	// * @param home
+	// * @return
+	// * @throws ClientException
+	// */
+	// public boolean isHomeAgentActive(IHome home) throws ClientException;
+
+	/**
+	 * 
+	 * @param projectHomeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public HomeAgent getHomeAgent(String projectHomeId) throws ClientException;
+
+	/**
+	 * 
+	 * @param home
+	 * @return
+	 * @throws ClientException
+	 */
+	public HomeAgent getHomeAgent(IHome home) throws ClientException;
 
 	// ------------------------------------------------------------------------------------------
 	// MetaSector

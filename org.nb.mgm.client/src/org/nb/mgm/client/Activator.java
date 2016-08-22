@@ -1,5 +1,7 @@
 package org.nb.mgm.client;
 
+import org.nb.home.client.cli.HomeAgentCommand;
+import org.nb.home.client.cli.HomeLoginCommand;
 import org.nb.mgm.client.cli.HomeCommand;
 import org.nb.mgm.client.cli.MachineCommand;
 import org.nb.mgm.client.cli.ManagementCommand;
@@ -23,6 +25,9 @@ public class Activator implements BundleActivator {
 	protected ProjectHomeCommand projectHomeCommand;
 	protected ProjectNodeCommand projectNodeCommand;
 	protected ProjectSoftwareCommand projectSoftwareCommand;
+
+	protected HomeLoginCommand homeLoginCommand;
+	protected HomeAgentCommand homeControlCommand;
 
 	static BundleContext getContext() {
 		return context;
@@ -63,6 +68,14 @@ public class Activator implements BundleActivator {
 		// Start ProjectSoftware command
 		this.projectSoftwareCommand = new ProjectSoftwareCommand(bundleContext);
 		this.projectSoftwareCommand.start();
+
+		// Start HomeLoginCommand
+		this.homeLoginCommand = new HomeLoginCommand(bundleContext);
+		this.homeLoginCommand.start();
+
+		// Start HomeControlCommand
+		this.homeControlCommand = new HomeAgentCommand(bundleContext);
+		this.homeControlCommand.start();
 	}
 
 	@Override
@@ -115,6 +128,18 @@ public class Activator implements BundleActivator {
 		if (this.projectSoftwareCommand != null) {
 			this.projectSoftwareCommand.stop();
 			this.projectSoftwareCommand = null;
+		}
+
+		// Stop HomeLoginCommand
+		if (this.homeLoginCommand != null) {
+			this.homeLoginCommand.stop();
+			this.homeLoginCommand = null;
+		}
+
+		// Stop HomeControlCommand
+		if (this.homeControlCommand != null) {
+			this.homeControlCommand.stop();
+			this.homeControlCommand = null;
 		}
 	}
 

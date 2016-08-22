@@ -19,7 +19,7 @@ public class FileSystemUtil {
 	 * @param level
 	 * @throws ClientException
 	 */
-	public static void walkFolders(FileSystemClient fsClient, Path path, int level) throws ClientException {
+	public static void walkFolders(FileSystemWSClient fsClient, Path path, int level) throws ClientException {
 		FileMetadata fileMetaData = fsClient.getFileMetadata(path);
 		System.out.println(getSpaces(level) + fileMetaData.getName() + " (" + fileMetaData.getPath() + ")");
 

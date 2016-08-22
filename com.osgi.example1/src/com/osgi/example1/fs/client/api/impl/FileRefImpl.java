@@ -8,7 +8,7 @@ import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.api.FileRef;
 import com.osgi.example1.fs.client.api.FileSystem;
-import com.osgi.example1.fs.client.ws.FileSystemClient;
+import com.osgi.example1.fs.client.ws.FileSystemWSClient;
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
 
@@ -64,7 +64,7 @@ public class FileRefImpl extends FileRef {
 		return this.fs;
 	}
 
-	protected FileSystemClient getFsClient() {
+	protected FileSystemWSClient getFsClient() {
 		return this.fs.getConfiguration().getFileSystemClient();
 	}
 

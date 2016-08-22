@@ -112,7 +112,7 @@ public class ProjectHomeImpl implements IProjectHome {
 	}
 
 	// ------------------------------------------------------------------------------------------
-	// ProjectHome
+	// Deployment Home
 	// ------------------------------------------------------------------------------------------
 	@Override
 	public IHome getDeploymentHome() throws ClientException {
@@ -127,6 +127,51 @@ public class ProjectHomeImpl implements IProjectHome {
 	@Override
 	public boolean removeDeploymentHome(String homeId) throws ClientException {
 		return this.management.removeProjectDeploymentHome(getId(), homeId);
+	}
+
+//	@Override
+//	public boolean connect() throws ClientException {
+//		IHome home = getDeploymentHome();
+//		checkDeploymentHome(home);
+//
+//		this.management.connect(home);
+//		return this.management.isConnected(home);
+//	}
+//
+//	@Override
+//	public boolean disconnect() throws ClientException {
+//		IHome home = getDeploymentHome();
+//		checkDeploymentHome(home);
+//
+//		this.management.disconnect(home);
+//		return this.management.isConnected(home) ? false : true;
+//	}
+//
+//	@Override
+//	public boolean isConnected() throws ClientException {
+//		IHome home = getDeploymentHome();
+//		checkDeploymentHome(home);
+//
+//		return this.management.isConnected(home);
+//	}
+//
+//	@Override
+//	public boolean isHomeAgentActive() throws ClientException {
+//		IHome home = getDeploymentHome();
+//		checkDeploymentHome(home);
+//
+//		return this.management.isHomeAgentActive(home);
+//	}
+
+	/**
+	 * 
+	 * @param home
+	 * @throws ClientException
+	 */
+	protected void checkDeploymentHome(IHome home) throws ClientException {
+		if (home == null) {
+			throw new ClientException(500, "ProjectHome is not configured with deployment home.");
+		}
 	}
 
 	// ------------------------------------------------------------------------------------------

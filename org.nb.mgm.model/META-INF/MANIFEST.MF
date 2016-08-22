@@ -4,9 +4,14 @@ Bundle-Name: Management Model
 Bundle-SymbolicName: org.nb.mgm.model
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.nb.mgm.exception,
+Export-Package: org.nb.mgm.model,
  org.nb.mgm.model.dto,
+ org.nb.mgm.model.exception,
  org.nb.mgm.model.query,
- org.nb.mgm.model.runtime
+ org.nb.mgm.model.runtime,
+ org.nb.mgm.model.util
 Import-Package: com.fasterxml.jackson.annotation,
- org.origin.common.rest.model
+ org.json;version="2015.11.23",
+ org.origin.common.json,
+ org.origin.common.rest.model,
+ org.origin.common.util
