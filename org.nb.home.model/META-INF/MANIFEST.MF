@@ -12,6 +12,7 @@ Import-Package: org.json;version="2015.11.23",
  org.origin.common.rest.agent,
  org.origin.common.rest.model,
  org.origin.common.workingcopy,
+ org.origin.core.workspace,
  org.osgi.framework;version="1.8.0"
 Export-Package: org.nb.home.model,
  org.nb.home.model.dto,

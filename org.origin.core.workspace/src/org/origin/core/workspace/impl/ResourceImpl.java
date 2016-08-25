@@ -6,18 +6,31 @@ import org.origin.common.adapter.AdaptorSupport;
 import org.origin.core.workspace.IContainer;
 import org.origin.core.workspace.IProject;
 import org.origin.core.workspace.IResource;
-import org.origin.core.workspace.Workspace;
+import org.origin.core.workspace.IWorkspace;
 
 public abstract class ResourceImpl implements IResource {
 
 	protected static IProject[] EMPTY_PROJECTS = new IProject[0];
 	protected static IResource[] EMPTY_MEMBERS = new IResource[0];
 
-	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
-	protected Workspace workspace;
-	protected IContainer parent;
 	protected File file;
+	protected IWorkspace workspace;
+	protected IContainer parent;
 
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
+
+	public ResourceImpl() {
+	}
+
+	/**
+	 * 
+	 * @param file
+	 */
+	public ResourceImpl(File file) {
+		this.file = file;
+	}
+
+	@Override
 	public File getFile() {
 		return file;
 	}
@@ -27,7 +40,14 @@ public abstract class ResourceImpl implements IResource {
 	}
 
 	@Override
-	public Workspace getWorkspace() {
+	public void delete() {
+		if (exists()) {
+			getFile().delete();
+		}
+	}
+
+	@Override
+	public IWorkspace getWorkspace() {
 		if (this.workspace != null) {
 			return this.workspace;
 		}
@@ -38,11 +58,11 @@ public abstract class ResourceImpl implements IResource {
 		return null;
 	}
 
-	public void setWorkspace(Workspace workspace) {
+	public void setWorkspace(IWorkspace workspace) {
 		this.workspace = workspace;
 	}
 
-	protected void checkWorkspace(Workspace workspace) {
+	protected void checkWorkspace(IWorkspace workspace) {
 		if (workspace == null) {
 			throw new RuntimeException("Workspace object is not available.");
 		}
@@ -88,8 +108,8 @@ public abstract class ResourceImpl implements IResource {
 		if (result != null) {
 			return result;
 		}
-		if (Workspace.class.isAssignableFrom(adapter)) {
-			Workspace workspace = getWorkspace();
+		if (IWorkspace.class.isAssignableFrom(adapter)) {
+			IWorkspace workspace = getWorkspace();
 			if (workspace != null) {
 				return (T) workspace;
 			}

@@ -3,11 +3,16 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core Resources
 Bundle-SymbolicName: org.origin.core.workspace
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.origin.core.workspace.ResourcesPlugin
+Bundle-Activator: org.origin.core.workspace.WorkspacePlugin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Import-Package: org.json;version="2015.11.23",
  org.origin.common.adapter,
+ org.origin.common.env,
  org.origin.common.json,
  org.origin.common.resource,
+ org.origin.common.runtime,
+ org.origin.common.util,
  org.origin.common.workingcopy,
  org.osgi.framework;version="1.3.0"
+Export-Package: org.origin.core.workspace,
+ org.origin.core.workspace.nature

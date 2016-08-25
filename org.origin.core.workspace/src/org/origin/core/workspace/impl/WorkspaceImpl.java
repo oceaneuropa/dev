@@ -1,39 +1,51 @@
 package org.origin.core.workspace.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.origin.core.workspace.IContainer;
 import org.origin.core.workspace.IProject;
+import org.origin.core.workspace.IProjectDescription;
 import org.origin.core.workspace.IResource;
-import org.origin.core.workspace.Workspace;
-import org.origin.core.workspace.WorkspaceRoot;
+import org.origin.core.workspace.IWorkspace;
+import org.origin.core.workspace.IWorkspaceDescription;
+import org.origin.core.workspace.WorkspaceConstants;
 
-public class WorkspaceImpl implements Workspace {
+public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 
 	public static String MSG1 = "file is null";
 	public static String MSG2 = "File '%s' exists, but is not a directory.";
 
-	protected File workspaceDir;
-	protected WorkspaceRootImpl root;
-
 	/**
 	 * 
 	 * @param workspaceDir
+	 * @return
 	 */
-	public WorkspaceImpl(File workspaceDir) {
-		this.workspaceDir = workspaceDir;
-
-		this.root = new WorkspaceRootImpl();
-		this.root.setWorkspace(this);
-		this.root.setFile(workspaceDir);
+	public static File getWorkspaceDescriptionFile(File workspaceDir) {
+		return new File(workspaceDir, WorkspaceConstants.METADATA_FOLDER + File.pathSeparator + WorkspaceConstants.WORKSPACE_JSON);
 	}
 
-	public File getWorkspaceDir() {
-		return this.workspaceDir;
+	protected IWorkspaceDescription workspaceDescription;
+
+	/**
+	 * Store a table of project handles that have been requested from this root. This maps project id string to project handle.
+	 */
+	protected Map<String, IProject> projectHandlesMap = Collections.synchronizedMap(new LinkedHashMap<String, IProject>());
+
+	public WorkspaceImpl() {
 	}
 
-	public WorkspaceRoot getRoot() {
-		return this.root;
+	/**
+	 * 
+	 * @param file
+	 */
+	public WorkspaceImpl(File file) {
+		super(file);
 	}
 
 	@Override
@@ -43,30 +55,148 @@ public class WorkspaceImpl implements Workspace {
 		IResource resource = null;
 
 		if (file.isDirectory()) {
-			if (container instanceof WorkspaceRoot) {
-				ProjectImpl newProject = new ProjectImpl();
+			if (container instanceof IWorkspace) {
+				ProjectImpl newProject = new ProjectImpl(file);
 				newProject.setWorkspace(this);
-				newProject.setFile(file);
 
 			} else if (container instanceof IProject) {
-				FolderImpl newFolder = new FolderImpl();
+				FolderImpl newFolder = new FolderImpl(file);
 				newFolder.setWorkspace(this);
-				newFolder.setFile(file);
 				resource = newFolder;
 			}
 
 		} else {
-			FileImpl newFile = new FileImpl();
+			FileImpl newFile = new FileImpl(file);
 			newFile.setWorkspace(this);
-			newFile.setFile(file);
 			resource = newFile;
 		}
 
 		if (resource != null) {
-			resource.adapt(Workspace.class, this);
+			resource.adapt(IWorkspace.class, this);
 			resource.adapt(File.class, file);
 		}
 		return resource;
+	}
+
+	@Override
+	public int getType() {
+		return IResource.WORKSPACE;
+	}
+
+	@Override
+	public File getDescriptionFile() {
+		return getWorkspaceDescriptionFile(this.file);
+	}
+
+	@Override
+	public IContainer getParent() {
+		// root doesn't have container
+		return null;
+	}
+
+	@Override
+	public IProject getProject() {
+		// root doesn't have container project
+		return null;
+	}
+
+	public File getWorkspaceDir() {
+		return this.file;
+	}
+
+	/**
+	 * Create a {workspace} folder and serialize the workspace description to {workspace}/.metadata/.workspace.json file.
+	 */
+	@Override
+	public void create(IWorkspaceDescription workspaceDescription) {
+
+	}
+
+	@Override
+	public void load() throws IOException {
+
+	}
+
+	@Override
+	public void save() throws IOException {
+
+	}
+
+	@Override
+	public IWorkspaceDescription getDescription() {
+		return null;
+	}
+
+	@Override
+	public void setDescription(IWorkspaceDescription description) {
+
+	}
+
+	@Override
+	public void delete() {
+
+	}
+
+	@Override
+	public synchronized IProject[] getProjects() {
+		if (this.file == null || !this.file.exists() || !this.file.isDirectory()) {
+			return EMPTY_PROJECTS;
+		}
+
+		IWorkspace workspace = getWorkspace();
+		checkWorkspace(workspace);
+
+		this.projectHandlesMap.clear();
+
+		List<IProject> projects = new ArrayList<IProject>();
+		File[] memberFiles = this.file.listFiles();
+		if (memberFiles != null) {
+			for (File memberFile : memberFiles) {
+				if (memberFile.isDirectory()) {
+					IProjectDescription projectDesc = ProjectImpl.loadProjectDescription(memberFile);
+					if (projectDesc != null) {
+						ProjectImpl project = new ProjectImpl(memberFile);
+						project.setDescription(projectDesc);
+						projects.add(project);
+						this.projectHandlesMap.put(project.getName(), project);
+					}
+				}
+			}
+		}
+
+		return projects.toArray(new IProject[projects.size()]);
+	}
+
+	@Override
+	public synchronized IProject getProject(String projectName) {
+		if (this.file == null || !this.file.exists() || !this.file.isDirectory()) {
+			return null;
+		}
+
+		IWorkspace workspace = getWorkspace();
+		checkWorkspace(workspace);
+
+		IProject project = this.projectHandlesMap.get(projectName);
+		if (project == null) {
+			File projectDir = new File(this.file, projectName);
+
+			// not a directory. projectId is invalid.
+			if (!projectDir.isDirectory()) {
+				return null;
+			}
+
+			if (projectDir.exists()) {
+				IProjectDescription projectDesc = ProjectImpl.loadProjectDescription(projectDir);
+				if (projectDesc != null) {
+					ProjectImpl newProject = new ProjectImpl(projectDir);
+					newProject.setDescription(projectDesc);
+
+					this.projectHandlesMap.put(projectName, project);
+				}
+			}
+		}
+
+		return project;
 	}
 
 }

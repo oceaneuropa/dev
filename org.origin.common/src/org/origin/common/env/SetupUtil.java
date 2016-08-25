@@ -99,14 +99,13 @@ public class SetupUtil {
 		}
 
 		if (originHomeStr == null) {
-			System.err.println("HomeUtil.getOriginHome() cannot find property value for '" + propName + "'.");
+			System.err.println("HomeUtil.getOriginHome() ORIGIN_HOME is not set.");
 			return null;
 		}
 
 		Path originHomePath = Paths.get(originHomeStr).toAbsolutePath();
-
 		if (!Files.exists(originHomePath)) {
-			throw new RuntimeException("Path '" + originHomePath + "' does not exist.");
+			throw new RuntimeException(String.format("Directory '%s' does not exist.", originHomePath));
 		}
 
 		return originHomePath;

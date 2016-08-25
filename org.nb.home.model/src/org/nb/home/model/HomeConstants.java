@@ -14,10 +14,10 @@ public class HomeConstants {
 	/** autosave */
 	public static final String PERSISTENCE_AUTOSAVE = "agent.persistence.autosave";
 
-	public static String DOT_META_DATA_FOLDER = ".metadata";
-	public static String WORKSPACE_JSON = "workspace.json";
-
-	public static String META_INF_FOLDER = "META-INF";
-	public static String PROJECT_JSON = "project.json";
+	// public static String DOT_META_DATA_FOLDER = ".metadata";
+	// public static String WORKSPACE_JSON = "workspace.json";
+	//
+	// public static String META_INF_FOLDER = "META-INF";
+	// public static String PROJECT_JSON = "project.json";
 
 }

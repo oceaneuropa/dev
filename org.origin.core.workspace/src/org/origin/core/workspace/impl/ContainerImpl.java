@@ -7,9 +7,20 @@ import java.util.List;
 
 import org.origin.core.workspace.IContainer;
 import org.origin.core.workspace.IResource;
-import org.origin.core.workspace.Workspace;
+import org.origin.core.workspace.IWorkspace;
 
 public abstract class ContainerImpl extends ResourceImpl implements IContainer {
+
+	public ContainerImpl() {
+	}
+
+	/**
+	 * 
+	 * @param file
+	 */
+	public ContainerImpl(File file) {
+		super(file);
+	}
 
 	@Override
 	public IResource[] members() throws IOException {
@@ -17,7 +28,7 @@ public abstract class ContainerImpl extends ResourceImpl implements IContainer {
 			return EMPTY_MEMBERS;
 		}
 
-		Workspace workspace = getWorkspace();
+		IWorkspace workspace = getWorkspace();
 		checkWorkspace(workspace);
 
 		List<IResource> resources = new ArrayList<IResource>();

@@ -4,6 +4,9 @@ import org.nb.home.model.resource.ProjectResourceFactory;
 import org.nb.home.model.resource.WorkspaceResourceFactory;
 import org.nb.home.service.HomeAgentService;
 import org.nb.home.service.impl.HomeAgentServiceImpl;
+import org.nb.home.util.HomeNodeNature;
+import org.nb.home.util.HomeProjectNature;
+import org.nb.home.util.HomeWorkspaceNature;
 import org.nb.home.ws.HomeApplication;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -34,15 +37,20 @@ public class Activator implements BundleActivator {
 		// SystemPropertyUtil.printSystemProperties();
 		// SystemPropertyUtil.printSystemEnvironmentVariables();
 
-		// 1. Register cache factory
+		// 1. Register nature providers
+		HomeWorkspaceNature.register();
+		HomeProjectNature.register();
+		HomeNodeNature.register();
+
+		// 2. Register cache factory
 		WorkspaceResourceFactory.register();
 		ProjectResourceFactory.register();
 
-		// 2. Start Home management service
+		// 3. Start Home management service
 		Activator.homeService = new HomeAgentServiceImpl(bundleContext);
 		Activator.homeService.start();
 
-		// 3. Start HomeApplication
+		// 4. Start HomeApplication
 		this.homeApplication = new HomeApplication(bundleContext, "/home/v1");
 		this.homeApplication.start();
 	}
@@ -66,6 +74,11 @@ public class Activator implements BundleActivator {
 		// 3. Unregister cache factory
 		WorkspaceResourceFactory.unregister();
 		ProjectResourceFactory.unregister();
+
+		// 4. Unregister nature providers
+		HomeWorkspaceNature.unregister();
+		HomeProjectNature.unregister();
+		HomeNodeNature.unregister();
 
 		Activator.context = null;
 	}

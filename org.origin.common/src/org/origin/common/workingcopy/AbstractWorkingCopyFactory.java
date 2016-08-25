@@ -36,20 +36,20 @@ public abstract class AbstractWorkingCopyFactory<RES extends Resource, ELEMENT> 
 	@SuppressWarnings("unchecked")
 	@Override
 	public final synchronized WorkingCopy<ELEMENT> getWorkingCopy(File file) {
-		WorkingCopy<ELEMENT> wc = this.workingCopyMap.get(file);
-		if (wc == null) {
-			WorkingCopy<ELEMENT> newWC = createWorkingCopy(file);
-			if (newWC instanceof AbstractWorkingCopy) {
-				((AbstractWorkingCopy<RES, ELEMENT>) newWC).setFactory(this);
+		WorkingCopy<ELEMENT> workingCopy = this.workingCopyMap.get(file);
+		if (workingCopy == null) {
+			WorkingCopy<ELEMENT> newWorkingCopy = createWorkingCopy(file);
+			if (newWorkingCopy instanceof AbstractWorkingCopy) {
+				((AbstractWorkingCopy<RES, ELEMENT>) newWorkingCopy).setFactory(this);
 			} else {
-				newWC.adapt(WorkingCopyFactory.class, this);
+				newWorkingCopy.adapt(WorkingCopyFactory.class, this);
 			}
-			if (newWC != null) {
-				wc = newWC;
-				this.workingCopyMap.put(file, wc);
+			if (newWorkingCopy != null) {
+				workingCopy = newWorkingCopy;
+				this.workingCopyMap.put(file, workingCopy);
 			}
 		}
-		return wc;
+		return workingCopy;
 	}
 
 	/**

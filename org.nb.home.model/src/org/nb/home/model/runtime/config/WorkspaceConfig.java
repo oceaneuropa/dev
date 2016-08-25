@@ -3,9 +3,9 @@ package org.nb.home.model.runtime.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.origin.common.resource.AbstractResourceObject;
+import org.origin.common.resource.RObjectImpl;
 
-public class WorkspaceConfig extends AbstractResourceObject {
+public class WorkspaceConfig extends RObjectImpl {
 
 	protected String name;
 	protected String managementId;

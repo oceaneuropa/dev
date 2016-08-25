@@ -1,7 +1,10 @@
 package org.origin.common.workingcopy;
 
 import java.io.File;
+import java.net.URI;
 
+import org.origin.common.resource.RObject;
+import org.origin.common.resource.Resource;
 import org.origin.common.resource.ResourceFactory;
 import org.origin.common.resource.ResourceFactoryRegistry;
 
@@ -90,6 +93,27 @@ public class WorkingCopyUtil {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Get the working copy of a RObject (a resource object).
+	 * 
+	 * @param rObject
+	 * @return
+	 */
+	public synchronized static WorkingCopy<?> getWorkingCopy(RObject rObject) {
+		WorkingCopy<?> workingCopy = null;
+		if (rObject != null) {
+			Resource resource = rObject.eResource();
+			if (resource != null) {
+				URI uri = resource.getURI();
+				if (uri != null) {
+					File file = new File(uri);
+					workingCopy = getWorkingCopy(file);
+				}
+			}
+		}
+		return workingCopy;
 	}
 
 	/**

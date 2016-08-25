@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.nb.home.model.HomeConstants;
 import org.origin.common.env.SetupUtil;
+import org.origin.core.workspace.WorkspaceConstants;
 
 public class HomeSetupUtil {
 
@@ -59,8 +60,8 @@ public class HomeSetupUtil {
 	 * @return
 	 */
 	public static File getWorkspaceConfigFile(File workspaceDirectory) {
-		File metadataDir = new File(workspaceDirectory, HomeConstants.DOT_META_DATA_FOLDER);
-		return new File(metadataDir, HomeConstants.WORKSPACE_JSON);
+		File metadataDir = new File(workspaceDirectory, WorkspaceConstants.METADATA_FOLDER);
+		return new File(metadataDir, WorkspaceConstants.WORKSPACE_JSON);
 	}
 
 }
