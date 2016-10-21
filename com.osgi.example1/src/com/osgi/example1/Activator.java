@@ -61,7 +61,7 @@ public class Activator implements BundleActivator {
 
 	protected FileSystem getDatabaseFileSystem(BundleContext bundleContext) {
 		// Properties properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
-		Properties properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
+		Properties properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin"); //"admin"
 		DatabaseFileSystemConfiguration config = new DatabaseFileSystemConfiguration(properties);
 		return new DatabaseFileSystem(config);
 	}

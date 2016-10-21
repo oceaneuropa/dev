@@ -8,13 +8,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.origin.common.workingcopy.WorkingCopy;
+import org.origin.common.workingcopy.WorkingCopyUtil;
 import org.origin.core.workspace.IContainer;
 import org.origin.core.workspace.IProject;
-import org.origin.core.workspace.IProjectDescription;
 import org.origin.core.workspace.IResource;
 import org.origin.core.workspace.IWorkspace;
 import org.origin.core.workspace.IWorkspaceDescription;
 import org.origin.core.workspace.WorkspaceConstants;
+import org.origin.core.workspace.internal.resource.WorkspaceDescriptionResource;
+import org.origin.core.workspace.nature.WorkspaceNature;
 
 public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 
@@ -30,17 +33,34 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 		return new File(workspaceDir, WorkspaceConstants.METADATA_FOLDER + File.pathSeparator + WorkspaceConstants.WORKSPACE_JSON);
 	}
 
-	protected IWorkspaceDescription workspaceDescription;
+	/**
+	 * 
+	 * @param workspaceDir
+	 * @return
+	 */
+	public static IWorkspaceDescription loadWorkspaceDescription(File workspaceDir) {
+		IWorkspaceDescription projectDesc = null;
+		if (workspaceDir != null && workspaceDir.isDirectory()) {
+			File workspaceDescFile = getWorkspaceDescriptionFile(workspaceDir);
+			if (workspaceDescFile != null && workspaceDescFile.exists()) {
+				WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(workspaceDescFile);
+				if (workingCopy != null) {
+					projectDesc = workingCopy.getRootElement(IWorkspaceDescription.class);
+				}
+			}
+		}
+		return projectDesc;
+	}
+
+	protected IWorkspaceDescription workspaceDesc;
 
 	/**
 	 * Store a table of project handles that have been requested from this root. This maps project id string to project handle.
 	 */
 	protected Map<String, IProject> projectHandlesMap = Collections.synchronizedMap(new LinkedHashMap<String, IProject>());
 
-	public WorkspaceImpl() {
-	}
-
 	/**
+	 * New instance for a workspace handle.
 	 * 
 	 * @param file
 	 */
@@ -100,36 +120,107 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 		return null;
 	}
 
-	public File getWorkspaceDir() {
-		return this.file;
-	}
-
 	/**
-	 * Create a {workspace} folder and serialize the workspace description to {workspace}/.metadata/.workspace.json file.
+	 * Create new workspace from the workspace handle.
+	 * 
+	 * 1. Create a {workspace} folder.
+	 * 
+	 * 2. Serialize the workspace description to {workspace}/.metadata/workspace.json file.
+	 * 
+	 * 3. Load natures and configure natures.
 	 */
 	@Override
-	public void create(IWorkspaceDescription workspaceDescription) {
+	public void create(IWorkspaceDescription workspaceDesc) {
+		if (workspaceDesc == null) {
+			workspaceDesc = new WorkspaceDescriptionImpl();
+		}
 
+		// 1. Create workspace dir
+		if (!this.file.exists()) {
+			this.file.mkdirs();
+		}
+
+		// 2. Save description file and load description from working copy.
+		File workspaceDescFile = getWorkspaceDescriptionFile(this.file);
+		WorkspaceDescriptionResource workspaceDescResource = new WorkspaceDescriptionResource(workspaceDescFile.toURI());
+		workspaceDescResource.getContents().add(workspaceDesc);
+		try {
+			workspaceDescResource.save(workspaceDescFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		this.workspaceDesc = loadWorkspaceDescription(this.file);
+		assert (this.workspaceDesc != null) : "Cannot load workspace description.";
+
+		// 3. Load natures and configure natures.
+		// do nature.load()
+		// do nature.configure()
+		for (String natureId : this.workspaceDesc.getNatureIds()) {
+			getNatureHandler().loadNature(natureId, WorkspaceNature.class);
+			getNatureHandler().configureNature(natureId, WorkspaceNature.class);
+		}
 	}
 
 	@Override
 	public void load() throws IOException {
+		this.workspaceDesc = loadWorkspaceDescription(this.file);
 
+		if (this.workspaceDesc != null) {
+			// do nature.load()
+			for (String natureId : this.workspaceDesc.getNatureIds()) {
+				getNatureHandler().loadNature(natureId, WorkspaceNature.class);
+			}
+		}
 	}
 
 	@Override
 	public void save() throws IOException {
+		if (this.workspaceDesc != null) {
+			// do nature.save()
+			for (String natureId : this.workspaceDesc.getNatureIds()) {
+				getNatureHandler().saveNature(natureId, WorkspaceNature.class);
+			}
 
+			// save workspace description
+			WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(this.workspaceDesc);
+			if (workingCopy != null) {
+				workingCopy.save();
+			}
+		}
 	}
 
 	@Override
 	public IWorkspaceDescription getDescription() {
-		return null;
+		return this.workspaceDesc;
 	}
 
 	@Override
-	public void setDescription(IWorkspaceDescription description) {
+	public void setDescription(IWorkspaceDescription workspaceDesc) {
+		assert (workspaceDesc != null) : "workspaceDesc is null";
 
+		// 1. configure natures
+		// (1) for added natures: nature.configure(); nature.load();
+		// (2) for removed natures: nature.deconfigure();
+		getNatureHandler().configureNatures(this.workspaceDesc, workspaceDesc, WorkspaceNature.class);
+
+		// 2. keep reference to the new description
+		this.workspaceDesc = workspaceDesc;
+
+		// 3. save description file and all natures
+		try {
+			// do nature.save()
+			for (String natureId : this.workspaceDesc.getNatureIds()) {
+				getNatureHandler().saveNature(natureId, WorkspaceNature.class);
+			}
+
+			// save workspace description
+			WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(this.workspaceDesc);
+			if (workingCopy != null) {
+				workingCopy.save();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -149,16 +240,20 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 		this.projectHandlesMap.clear();
 
 		List<IProject> projects = new ArrayList<IProject>();
-		File[] memberFiles = this.file.listFiles();
-		if (memberFiles != null) {
-			for (File memberFile : memberFiles) {
-				if (memberFile.isDirectory()) {
-					IProjectDescription projectDesc = ProjectImpl.loadProjectDescription(memberFile);
-					if (projectDesc != null) {
-						ProjectImpl project = new ProjectImpl(memberFile);
-						project.setDescription(projectDesc);
-						projects.add(project);
-						this.projectHandlesMap.put(project.getName(), project);
+		File[] files = this.file.listFiles();
+		if (files != null) {
+			for (File file : files) {
+				if (file.isDirectory()) {
+					ProjectImpl project = new ProjectImpl(file);
+					File projectDescFile = project.getDescriptionFile();
+					if (projectDescFile != null && projectDescFile.exists()) {
+						try {
+							project.load();
+							projects.add(project);
+							this.projectHandlesMap.put(project.getName(), project);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -180,18 +275,16 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 		if (project == null) {
 			File projectDir = new File(this.file, projectName);
 
-			// not a directory. projectId is invalid.
-			if (!projectDir.isDirectory()) {
-				return null;
-			}
-
-			if (projectDir.exists()) {
-				IProjectDescription projectDesc = ProjectImpl.loadProjectDescription(projectDir);
-				if (projectDesc != null) {
-					ProjectImpl newProject = new ProjectImpl(projectDir);
-					newProject.setDescription(projectDesc);
-
-					this.projectHandlesMap.put(projectName, project);
+			if (projectDir.isDirectory()) {
+				project = new ProjectImpl(projectDir);
+				File projectDescFile = project.getDescriptionFile();
+				if (projectDescFile != null && projectDescFile.isFile()) {
+					try {
+						project.load();
+						this.projectHandlesMap.put(projectName, project);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

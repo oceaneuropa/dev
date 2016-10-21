@@ -5,11 +5,17 @@ public class StringUtil {
 	public static char[] HEX_CHARS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 	public static String EMPTY_STRING = "";
 
+	/**
+	 * 
+	 * @param value1
+	 * @param value2
+	 * @return
+	 */
 	public static boolean equals(String value1, String value2) {
-		if ((value1 != null && value1.equals(value2)) || (value2 != null && value2.equals(value1))) {
+		if (value1 == null && value2 == null) {
 			return true;
 		}
-		if (value1 == null && value2 == null) {
+		if ((value1 != null && value1.equals(value2)) || (value2 != null && value2.equals(value1))) {
 			return true;
 		}
 		return false;

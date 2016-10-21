@@ -46,12 +46,12 @@ public class HomeProjectNature implements ProjectNature, ProjectNatureProvider {
 	}
 
 	@Override
-	public void save() {
+	public void configure() {
 
 	}
 
 	@Override
-	public void configure() {
+	public void save() {
 
 	}
 

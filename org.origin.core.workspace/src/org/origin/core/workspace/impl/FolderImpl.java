@@ -10,10 +10,7 @@ import org.origin.core.workspace.IResource;
 
 public class FolderImpl extends ContainerImpl implements IFolder {
 
-	protected IFolderDescription description;
-
-	public FolderImpl() {
-	}
+	protected IFolderDescription folderDesc;
 
 	/**
 	 * 
@@ -48,17 +45,17 @@ public class FolderImpl extends ContainerImpl implements IFolder {
 
 	@Override
 	public void create(IFolderDescription description) {
-		this.description = description;
+		this.folderDesc = description;
 	}
 
 	@Override
 	public IFolderDescription getDescription() {
-		return this.description;
+		return this.folderDesc;
 	}
 
 	@Override
 	public void setDescription(IFolderDescription description) {
-		this.description = description;
+		this.folderDesc = description;
 	}
 
 	/**

@@ -32,7 +32,7 @@ public class ManagementApplication extends AbstractApplication {
 	}
 
 	/**
-	 * Registry this MgmApplication as a web service. Called when Activator is started.
+	 * Registry this ManagementApplication as a web service. Called when Activator is started.
 	 */
 	public void start() {
 		logger.debug("ManagementApplication.start()");
@@ -43,7 +43,7 @@ public class ManagementApplication extends AbstractApplication {
 	}
 
 	/**
-	 * Unregister the MgmApplication web service. Called when Activator is stopped.
+	 * Unregister the ManagementApplication web service. Called when Activator is stopped.
 	 */
 	public void stop() {
 		logger.debug("ManagementApplication.stop()");

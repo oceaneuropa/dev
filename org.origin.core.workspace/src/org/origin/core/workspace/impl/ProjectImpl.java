@@ -3,7 +3,6 @@ package org.origin.core.workspace.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.origin.common.workingcopy.WorkingCopy;
@@ -12,7 +11,6 @@ import org.origin.core.workspace.IProject;
 import org.origin.core.workspace.IProjectDescription;
 import org.origin.core.workspace.IResource;
 import org.origin.core.workspace.WorkspaceConstants;
-import org.origin.core.workspace.nature.NatureRegistry;
 import org.origin.core.workspace.nature.ProjectNature;
 
 public class ProjectImpl extends ContainerImpl implements IProject {
@@ -46,10 +44,6 @@ public class ProjectImpl extends ContainerImpl implements IProject {
 	}
 
 	protected IProjectDescription projectDesc;
-	protected Map<String, ProjectNature> natureMap = new LinkedHashMap<String, ProjectNature>();
-
-	public ProjectImpl() {
-	}
 
 	/**
 	 * 
@@ -57,6 +51,16 @@ public class ProjectImpl extends ContainerImpl implements IProject {
 	 */
 	public ProjectImpl(File file) {
 		super(file);
+	}
+
+	/**
+	 * 
+	 * @param file
+	 * @param projectDesc
+	 */
+	public ProjectImpl(File file, IProjectDescription projectDesc) {
+		super(file);
+		this.projectDesc = projectDesc;
 	}
 
 	@Override
@@ -71,14 +75,19 @@ public class ProjectImpl extends ContainerImpl implements IProject {
 
 	@Override
 	public void load() throws IOException {
+		// load project description
 		this.projectDesc = loadProjectDescription(this.file);
 
 		// project natures to load extended configurations from the project.
 		if (this.projectDesc != null) {
 			for (String natureId : this.projectDesc.getNatureIds()) {
-				ProjectNature nature = getProjectNature(natureId);
+				ProjectNature nature = getNatureHandler().getNature(natureId, ProjectNature.class);
 				if (nature != null) {
-					nature.load();
+					try {
+						nature.load();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -89,12 +98,17 @@ public class ProjectImpl extends ContainerImpl implements IProject {
 		if (this.projectDesc != null) {
 			// project natures to save extended configurations to the project.
 			for (String natureId : this.projectDesc.getNatureIds()) {
-				ProjectNature nature = getProjectNature(natureId);
+				ProjectNature nature = getNatureHandler().getNature(natureId, ProjectNature.class);
 				if (nature != null) {
-					nature.save();
+					try {
+						nature.save();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 
+			// save project description
 			WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(this.projectDesc);
 			if (workingCopy != null) {
 				workingCopy.save();
@@ -108,24 +122,6 @@ public class ProjectImpl extends ContainerImpl implements IProject {
 			// }
 			// }
 		}
-	}
-
-	/**
-	 * Called by load() and save() methods to get/create ProjectNature by natureId.
-	 * 
-	 * @param natureId
-	 * @return
-	 */
-	protected synchronized ProjectNature getProjectNature(String natureId) {
-		ProjectNature nature = this.natureMap.get(natureId);
-		if (nature == null || this != nature.getResource()) {
-			nature = NatureRegistry.INSTANCE.createNature(natureId, ProjectNature.class);
-			if (nature != null) {
-				nature.setResource(this);
-				this.natureMap.put(natureId, nature);
-			}
-		}
-		return nature;
 	}
 
 	@Override

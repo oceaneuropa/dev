@@ -10,7 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 public class DatabaseUtil {
@@ -91,6 +94,55 @@ public class DatabaseUtil {
 	}
 
 	/**
+	 * 
+	 * @param properties
+	 * @return
+	 * @throws SQLException
+	 */
+	public static String getDatabase(Properties properties) throws SQLException {
+		String database = null;
+		Connection conn = null;
+		try {
+			database = getDatabase(conn);
+		} finally {
+			closeQuietly(conn, true);
+		}
+		return database;
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+	public static String getDatabase(Connection conn) throws SQLException {
+		String database = null;
+		if (conn != null) {
+			DatabaseMetaData metaData = conn.getMetaData();
+			if (metaData != null) {
+				String productName = metaData.getDatabaseProductName();
+				if (productName != null) {
+					if (productName.toLowerCase().contains("mysql")) {
+						database = DatabaseTableAware.MYSQL;
+					} else if (productName.toLowerCase().contains("postgresql")) {
+						database = DatabaseTableAware.POSTGRESQL;
+					} else if (productName.toLowerCase().contains("oracle")) {
+						database = DatabaseTableAware.ORACLE;
+					} else if (productName.toLowerCase().contains("db2")) {
+						database = DatabaseTableAware.DB2;
+					} else if (productName.toLowerCase().contains("sqlserver")) {
+						database = DatabaseTableAware.SQLSERVER;
+					} else {
+						System.out.println("### ### Unsupported database product name: '" + productName + "'.");
+					}
+				}
+			}
+		}
+		return database;
+	}
+
+	/**
 	 * Initialize database table if not exists.
 	 * 
 	 * @param conn
@@ -99,26 +151,7 @@ public class DatabaseUtil {
 	 * @throws SQLException
 	 */
 	public static boolean initialize(Connection conn, DatabaseTableAware tableAware) throws SQLException {
-		String database = null;
-		DatabaseMetaData metaData = conn.getMetaData();
-		if (metaData != null) {
-			String productName = metaData.getDatabaseProductName();
-			if (productName != null) {
-				if (productName.toLowerCase().contains("mysql")) {
-					database = DatabaseTableAware.MYSQL;
-				} else if (productName.toLowerCase().contains("postgresql")) {
-					database = DatabaseTableAware.POSTGRESQL;
-				} else if (productName.toLowerCase().contains("oracle")) {
-					database = DatabaseTableAware.ORACLE;
-				} else if (productName.toLowerCase().contains("db2")) {
-					database = DatabaseTableAware.DB2;
-				} else if (productName.toLowerCase().contains("sqlserver")) {
-					database = DatabaseTableAware.SQLSERVER;
-				} else {
-					System.out.println("### ### Unsupported database product name: '" + productName + "'.");
-				}
-			}
-		}
+		String database = getDatabase(conn);
 		database = checkDB(database);
 
 		if (tableExist(conn, tableAware.getTableName())) {
@@ -186,22 +219,22 @@ public class DatabaseUtil {
 
 	/**
 	 * 
-	 * @param db
+	 * @param database
 	 * @return
 	 */
-	protected static String checkDB(String db) {
-		if (db == null || db.trim().isEmpty()) {
+	protected static String checkDB(String database) {
+		if (database == null || database.trim().isEmpty()) {
 			return DatabaseTableAware.MYSQL;
 		}
-		if (!DatabaseTableAware.MYSQL.equalsIgnoreCase(db) //
-				&& !DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(db) //
-				&& !DatabaseTableAware.ORACLE.equalsIgnoreCase(db) //
-				&& !DatabaseTableAware.DB2.equalsIgnoreCase(db) //
-				&& !DatabaseTableAware.SQLSERVER.equalsIgnoreCase(db) //
+		if (!DatabaseTableAware.MYSQL.equalsIgnoreCase(database) //
+				&& !DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database) //
+				&& !DatabaseTableAware.ORACLE.equalsIgnoreCase(database) //
+				&& !DatabaseTableAware.DB2.equalsIgnoreCase(database) //
+				&& !DatabaseTableAware.SQLSERVER.equalsIgnoreCase(database) //
 		) {
 			return DatabaseTableAware.MYSQL;
 		}
-		return db;
+		return database;
 	}
 
 	/**
@@ -397,6 +430,42 @@ public class DatabaseUtil {
 	}
 
 	/**
+	 * 
+	 * @param conn
+	 * @param tableName
+	 * @param pkName
+	 * @param pkValue
+	 * @param columnToValueMap
+	 * @return
+	 * @throws SQLException
+	 */
+	public static boolean update(Connection conn, String tableName, String pkName, String pkValue, Map<String, Object> columnToValueMap) throws SQLException {
+		StringBuilder columnsToSet = new StringBuilder();
+		List<Object> valuesToUpdate = new ArrayList<Object>();
+
+		int index = 0;
+		for (Iterator<Entry<String, Object>> entryItor = columnToValueMap.entrySet().iterator(); entryItor.hasNext();) {
+			Entry<String, Object> entry = entryItor.next();
+			String columnName = entry.getKey();
+			Object valueToUpdate = entry.getValue();
+
+			if (index > 0) {
+				columnsToSet.append(",");
+			}
+			columnsToSet.append(columnName + "=?");
+			valuesToUpdate.add(valueToUpdate);
+
+			index++;
+		}
+
+		valuesToUpdate.add(pkValue);
+		Object[] valuesArray = valuesToUpdate.toArray(new Object[valuesToUpdate.size()]);
+
+		String updateSQL = "UPDATE " + tableName + " SET " + columnsToSet.toString() + " WHERE " + pkName + "=?";
+		return DatabaseUtil.update(conn, updateSQL, valuesArray, 1);
+	}
+
+	/**
 	 * Execute SQL to insert/update/delete one item in database.
 	 * 
 	 * INSERT INTO table_name (column1,column2,column3,...) VALUES (value1,value2,value3,...);
@@ -528,6 +597,42 @@ public class DatabaseUtil {
 					e.printStackTrace();
 				}
 			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param querySQL
+	 * @param appendANDPrefix
+	 * @param columnName
+	 * @param whereOperator
+	 * @param params
+	 * @param paramValue
+	 */
+	public static void prepareWhereClauseForColumn(String querySQL, boolean appendANDPrefix, String columnName, String whereOperator, List<Object> params, Object paramValue) {
+		if (appendANDPrefix) {
+			querySQL += " AND";
+		}
+
+		if (SQLWhereOperator.isEqual(whereOperator)) {
+			querySQL += " " + columnName + "=?";
+			params.add(paramValue);
+
+		} else if (SQLWhereOperator.isNotEqual(whereOperator)) {
+			querySQL += " " + columnName + "<>?";
+			params.add(paramValue);
+
+		} else if (SQLWhereOperator.isLike(whereOperator)) {
+			querySQL += " " + columnName + " LIKE ?";
+			params.add("%" + paramValue + "%");
+
+		} else if (SQLWhereOperator.isIn(whereOperator)) {
+			querySQL += " " + columnName + " IN ?";
+			params.add(paramValue);
+
+		} else {
+			querySQL += " " + columnName + "=?";
+			params.add(paramValue);
 		}
 	}
 

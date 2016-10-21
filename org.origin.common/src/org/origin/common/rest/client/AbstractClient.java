@@ -11,6 +11,9 @@ import javax.ws.rs.core.Response.Status.Family;
 
 import org.origin.common.rest.model.ErrorDTO;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public abstract class AbstractClient implements IClient {
 
 	protected ClientConfiguration config;
@@ -27,6 +30,17 @@ public abstract class AbstractClient implements IClient {
 
 	public ClientConfiguration getClientConfiguration() {
 		return config;
+	}
+
+	/**
+	 * 
+	 * @param failOnUnknownProperties
+	 * @return
+	 */
+	protected ObjectMapper createObjectMapper(boolean failOnUnknownProperties) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, failOnUnknownProperties);
+		return mapper;
 	}
 
 	/**
@@ -97,6 +111,11 @@ public abstract class AbstractClient implements IClient {
 	 */
 	public void close() {
 		this.client.close();
+	}
+
+	@Override
+	public int ping() throws ClientException {
+		return -1;
 	}
 
 }

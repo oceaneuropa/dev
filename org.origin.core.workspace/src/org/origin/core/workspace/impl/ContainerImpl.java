@@ -32,10 +32,10 @@ public abstract class ContainerImpl extends ResourceImpl implements IContainer {
 		checkWorkspace(workspace);
 
 		List<IResource> resources = new ArrayList<IResource>();
-		File[] memberFiles = this.file.listFiles();
-		if (memberFiles != null) {
-			for (File memberFile : memberFiles) {
-				IResource resource = workspace.createResource(this, memberFile);
+		File[] files = this.file.listFiles();
+		if (files != null) {
+			for (File currFile : files) {
+				IResource resource = workspace.createResource(this, currFile);
 				if (resource != null) {
 					resources.add(resource);
 				}

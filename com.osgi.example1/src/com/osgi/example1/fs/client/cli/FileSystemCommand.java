@@ -2,10 +2,12 @@ package com.osgi.example1.fs.client.cli;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.origin.common.io.ZipUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -159,14 +161,25 @@ public class FileSystemCommand {
 		}
 	}
 
-	/**
+	/*
 	 * Upload file or directory from local file system to the file system.
 	 * 
-	 * @param localPathString
-	 *            local file or directory path
-	 * @param fsPathString
-	 *            file system path
+	 * fslogin -url http://127.0.0.1:9090
+	 * 
+	 * fslfiles -r -p 'Users'
+	 * 
+	 * fsdelete -p '/Users/yayang/Downloads/apache/myfolder.zip'
+	 * 
+	 * fsupload -s '/Users/yayang/Downloads/apache/myfolder' -d '/Users/yayang/Downloads/apache/' -z
+	 * 
+	 * fsdownload -s '/Users/yayang/Downloads/apache/myfolder.zip' -d '/Users/yayang/Downloads/test_target'
+	 * 
+	 * @param localPathString local file or directory path
+	 * 
+	 * @param fsPathString file system path
+	 * 
 	 * @param includeSourceDir
+	 * 
 	 * @throws Exception
 	 */
 	@Descriptor("Upload file or directory to the file system")
@@ -174,7 +187,10 @@ public class FileSystemCommand {
 			// Parameters
 			@Descriptor("Local path") @Parameter(absentValue = "", names = { "-s", "--src" }) String localPathString, //
 			@Descriptor("File system path") @Parameter(absentValue = "", names = { "-d", "--dest" }) String fsPathString, //
-			@Descriptor("When uploading a directory, whether to include the source directory.") @Parameter(absentValue = "true", names = { "-includesourcedir", "--includesourcedir" }) boolean includeSourceDir //
+
+			// Options
+			@Descriptor("When uploading a directory, whether to include the source directory.") @Parameter(absentValue = "true", names = { "-includesourcedir", "--includesourcedir" }) boolean includeSourceDir, //
+			@Descriptor("zip the file or dir") @Parameter(names = { "-z", "--zip" }, absentValue = "false", presentValue = "true") boolean zipIt //
 	) throws Exception {
 		if (fs == null) {
 			printOutLoginMessage();
@@ -207,45 +223,73 @@ public class FileSystemCommand {
 
 		boolean succeed = false;
 
-		if (localFile.isFile()) {
-			boolean uploadToDirectory = false;
-			if (destFile.path().isRoot()) {
-				uploadToDirectory = true;
-			}
-			if (!destFile.exists()) {
+		if (zipIt) {
+			// zip the file or dir on the fly and upload the input stream of the zip
+			InputStream input = ZipUtil.getZipInputStream(localFile);
+
+			boolean isDestDir = false;
+			if (destFile.path().isRoot() || destFile.isDirectory()) {
+				isDestDir = true;
+			} else if (!destFile.exists()) {
 				// target path doesn't exist --- check last segment of the path to decide whether it is a dir or not.
 				String lastSegment = destFile.path().getLastSegment();
-				// Note that if source file name doesn't have file extension and source file name matches the dest path last segment, the dest path is
-				// considered as file.
-				if (!lastSegment.contains(".") && !localFile.getName().equals(lastSegment)) {
-					uploadToDirectory = true;
+				// if dest file name doesn't have file extension, the dest path is considered as dir.
+				if (!lastSegment.contains(".")) {
+					isDestDir = true;
 				}
-			} else {
-				if (destFile.isDirectory()) {
-					uploadToDirectory = true;
-				}
+			}
+			if (isDestDir) {
+				String zipFileName = localFile.getName() + ".zip";
+				destFile = FileRef.newInstance(fs, destFile, zipFileName);
 			}
 
-			if (uploadToDirectory) {
-				// upload local file to fs directory
-				succeed = fs.uploadFileToFsDirectory(localFile, destFile);
-			} else {
-				// upload local file to fs file
-				succeed = fs.uploadFileToFsFile(localFile, destFile);
-			}
+			// upload input stream file to fs file
+			succeed = fs.uploadInputStreamToFsFile(input, destFile);
+
+			System.out.println("'" + localFile.getAbsolutePath() + "' is uploaded to '" + destFile.getPath() + "' " + (succeed ? "successfully" : "unsuccessfully"));
+
 		} else {
-			// fs dest path must be a directory
-			if (destFile.exists() && !destFile.isDirectory()) {
-				// upload local directory to fs file --- wrong
-				System.out.println("Target path '" + destFile.getPath() + "' exists but is not a directory.");
-				return;
+			if (localFile.isFile()) {
+				boolean uploadToDirectory = false;
+				if (destFile.path().isRoot()) {
+					uploadToDirectory = true;
+				}
+				if (!destFile.exists()) {
+					// target path doesn't exist --- check last segment of the path to decide whether it is a dir or not.
+					String lastSegment = destFile.path().getLastSegment();
+					// Note that if source file name doesn't have file extension and source file name matches the dest path last segment, the dest
+					// path is
+					// considered as file.
+					if (!lastSegment.contains(".") && !localFile.getName().equals(lastSegment)) {
+						uploadToDirectory = true;
+					}
+				} else {
+					if (destFile.isDirectory()) {
+						uploadToDirectory = true;
+					}
+				}
+
+				if (uploadToDirectory) {
+					// upload local file to fs directory
+					succeed = fs.uploadFileToFsDirectory(localFile, destFile);
+				} else {
+					// upload local file to fs file
+					succeed = fs.uploadFileToFsFile(localFile, destFile);
+				}
+			} else {
+				// fs dest path must be a directory
+				if (destFile.exists() && !destFile.isDirectory()) {
+					// upload local directory to fs file --- wrong
+					System.out.println("Target path '" + destFile.getPath() + "' exists but is not a directory.");
+					return;
+				}
+
+				// upload local directory to fs directory
+				succeed = fs.uploadDirectoryToFsDirectory(localFile, destFile, includeSourceDir);
 			}
 
-			// upload local directory to fs directory
-			succeed = fs.uploadDirectoryToFsDirectory(localFile, destFile, includeSourceDir);
+			System.out.println("'" + localFile.getAbsolutePath() + "' is uploaded to '" + destFile.getPath() + "' " + (succeed ? "successfully" : "unsuccessfully"));
 		}
-
-		System.out.println("Source '" + localFile.getAbsolutePath() + "' is uploaded to target '" + destFile.getPath() + "' " + (succeed ? "successfully" : "unsuccessfully"));
 	}
 
 	/**
@@ -305,7 +349,7 @@ public class FileSystemCommand {
 			}
 		}
 
-		System.out.println("Source '" + fileRef.getPath() + "' is downloaded to target '" + localFile.getAbsolutePath() + "' " + (succeed ? "successfully" : "unsuccessfully"));
+		System.out.println("'" + fileRef.getPath() + "' is downloaded to '" + localFile.getAbsolutePath() + "' " + (succeed ? "successfully" : "unsuccessfully"));
 	}
 
 	/**

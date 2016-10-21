@@ -36,7 +36,7 @@ public class ZipUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public InputStream getZipInputStream(final File directory) throws IOException {
+	public static InputStream getZipInputStream(final File directory) throws IOException {
 		final PipedOutputStream pos = new PipedOutputStream();
 		final PipedInputStream pis = new PipedInputStream(pos);
 

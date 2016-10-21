@@ -6,9 +6,6 @@ import org.origin.core.workspace.IResource;
 
 public class FileImpl extends ResourceImpl {
 
-	public FileImpl() {
-	}
-
 	/**
 	 * 
 	 * @param file

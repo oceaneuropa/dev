@@ -30,6 +30,19 @@ public abstract class ResourceImpl implements IResource {
 		this.file = file;
 	}
 
+	// --------------------------------------------------------------------------------------------------------------
+	// Life Cycle
+	// --------------------------------------------------------------------------------------------------------------
+	@Override
+	public void delete() {
+		if (exists()) {
+			getFile().delete();
+		}
+	}
+
+	// --------------------------------------------------------------------------------------------------------------
+	// Containers and Contents
+	// --------------------------------------------------------------------------------------------------------------
 	@Override
 	public File getFile() {
 		return file;
@@ -37,13 +50,6 @@ public abstract class ResourceImpl implements IResource {
 
 	public void setFile(File file) {
 		this.file = file;
-	}
-
-	@Override
-	public void delete() {
-		if (exists()) {
-			getFile().delete();
-		}
 	}
 
 	@Override
@@ -101,6 +107,29 @@ public abstract class ResourceImpl implements IResource {
 		return this.file != null ? this.file.exists() : false;
 	}
 
+	// --------------------------------------------------------------------------------------------------------------
+	// Natures
+	// --------------------------------------------------------------------------------------------------------------
+	protected ResourceNatureHandler natureHandler;
+
+	protected ResourceNatureHandler createNatureHandler() {
+		return new ResourceNatureHandler();
+	}
+
+	public synchronized ResourceNatureHandler getNatureHandler() {
+		if (this.natureHandler != null) {
+			this.natureHandler = createNatureHandler();
+		}
+		return this.natureHandler;
+	}
+
+	public void setNatureHandler(ResourceNatureHandler natureHandler) {
+		this.natureHandler = natureHandler;
+	}
+
+	// --------------------------------------------------------------------------------------------------------------
+	// Adapter
+	// --------------------------------------------------------------------------------------------------------------
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {

@@ -46,12 +46,12 @@ public class HomeWorkspaceNature implements WorkspaceNature, WorkspaceNatureProv
 	}
 
 	@Override
-	public void save() {
+	public void configure() {
 
 	}
 
 	@Override
-	public void configure() {
+	public void save() {
 
 	}
 

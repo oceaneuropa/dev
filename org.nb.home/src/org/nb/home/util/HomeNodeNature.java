@@ -46,12 +46,12 @@ public class HomeNodeNature implements FolderNature, FolderNatureProvider {
 	}
 
 	@Override
-	public void save() {
+	public void configure() {
 
 	}
 
 	@Override
-	public void configure() {
+	public void save() {
 
 	}
 
