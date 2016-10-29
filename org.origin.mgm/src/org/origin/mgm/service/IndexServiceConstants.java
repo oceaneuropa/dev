@@ -11,7 +11,7 @@ public class IndexServiceConstants {
 	// constants for the values related to the index service.
 	public static final String EDITING_DOMAIN = "indexservice"; // editing domain name for editing index services
 	public static final String INDEX_PROVIDER_ID = "indexservice.index.provider"; // index provider id for index services
-	public static final String NAMESPACE = "index.service"; // namespace of index item for index services
+	public static final String TYPE_SERVICE = "service"; // type of index item for index services
 	public static final int DEFAULT_HEARTBEAT_EXPIRE_TIME = 30; // if no heartbeat for the last 30 seconds, the node is considered as not active.
 
 	// constants for configuration property names
@@ -30,7 +30,7 @@ public class IndexServiceConstants {
 	// constants for index item attribute names
 	public static final String IDX_INDEX_ITEM_ID = "indexItemId";
 	public static final String IDX_INDEX_PROVIDER_ID = "indexProviderId";
-	public static final String IDX_NAMESPACE = "namespace";
+	public static final String IDX_TYPE = "type";
 	public static final String IDX_NAME = "name";
 	public static final String IDX_PROPERTIES = "properties";
 	public static final String IDX_CREATE_TIME = "createTime";

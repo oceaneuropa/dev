@@ -24,7 +24,6 @@ public class DTOConverter {
 		}
 
 		ErrorDTO dto = new ErrorDTO();
-
 		dto.setCode(e.getCode());
 		dto.setMessage(e.getMessage());
 
@@ -50,9 +49,11 @@ public class DTOConverter {
 		if (indexItem == null) {
 			return null;
 		}
-		IndexItemDTO dto = new IndexItemDTO();
 
-		dto.setNamespace(indexItem.getNamespace());
+		IndexItemDTO dto = new IndexItemDTO();
+		dto.setIndexItemId(indexItem.getIndexItemId());
+		dto.setIndexProviderId(indexItem.getIndexProviderId());
+		dto.setType(indexItem.getType());
 		dto.setName(indexItem.getName());
 		dto.setProperties(indexItem.getProperties());
 

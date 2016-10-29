@@ -21,9 +21,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
+import org.origin.common.command.ICommand;
 import org.origin.common.command.ICommandStack;
 import org.origin.common.command.IEditingDomain;
-import org.origin.common.command.ICommand;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -33,6 +33,7 @@ import org.origin.common.util.DateUtil;
 import org.origin.common.util.IntegerComparator;
 import org.origin.common.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
+import org.origin.mgm.client.api.IndexServiceFactory;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.model.vo.IndexItemDataVO;
@@ -240,7 +241,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 			IndexItem matchedIndexItem = null;
 			List<IndexItem> cachedIndexItems = getIndexItems();
 			for (IndexItem cachedIndexItem : cachedIndexItems) {
-				if (IndexServiceConstants.INDEX_PROVIDER_ID.equals(cachedIndexItem.getIndexProviderId()) && IndexServiceConstants.NAMESPACE.equals(cachedIndexItem.getNamespace())) {
+				if (IndexServiceConstants.INDEX_PROVIDER_ID.equals(cachedIndexItem.getIndexProviderId()) && IndexServiceConstants.TYPE_SERVICE.equals(cachedIndexItem.getType())) {
 					if (name != null && name.equals(cachedIndexItem.getName())) {
 						matchedIndexItem = cachedIndexItem;
 						break;
@@ -257,7 +258,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 				properties.put(IndexServiceConstants.IDX_PROP_USERNAME, username);
 				properties.put(IndexServiceConstants.IDX_PROP_PASSWORD, password);
 
-				addIndexItem(IndexServiceConstants.INDEX_PROVIDER_ID, IndexServiceConstants.NAMESPACE, name, properties);
+				addIndexItem(IndexServiceConstants.INDEX_PROVIDER_ID, IndexServiceConstants.TYPE_SERVICE, name, properties);
 			}
 		} catch (IndexServiceException e) {
 			e.printStackTrace();
@@ -338,7 +339,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		try {
 			String serviceName = getServiceName();
 
-			List<IndexItem> indexItems = getIndexItemsByNamespace(IndexServiceConstants.NAMESPACE);
+			List<IndexItem> indexItems = getIndexItems(null, IndexServiceConstants.TYPE_SERVICE);
 
 			for (IndexItem indexItem : indexItems) {
 				String currName = indexItem.getName();
@@ -365,7 +366,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 				}
 
 				org.origin.mgm.client.api.IndexServiceConfiguration config = contextRoot == null ? new org.origin.mgm.client.api.IndexServiceConfiguration(url, username, password) : new org.origin.mgm.client.api.IndexServiceConfiguration(url, contextRoot, username, password);
-				final org.origin.mgm.client.api.IndexService indexService = org.origin.mgm.client.api.IndexService.newInstance(config);
+				final org.origin.mgm.client.api.IndexService indexService = IndexServiceFactory.getInstance().createIndexService(config);
 				try {
 					indexService.sendCommand("sync", null);
 				} catch (IOException e) {
@@ -828,7 +829,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	}
 
 	@Override
-	public List<IndexItem> getIndexItemsByIndexProvider(String indexProviderId) throws IndexServiceException {
+	public List<IndexItem> getIndexItems(String indexProviderId) throws IndexServiceException {
 		this.indexItemsRWLock.readLock().lock();
 		try {
 			List<IndexItem> indexItems = new ArrayList<IndexItem>();
@@ -844,12 +845,12 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	}
 
 	@Override
-	public List<IndexItem> getIndexItemsByNamespace(String namespace) throws IndexServiceException {
+	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IndexServiceException {
 		this.indexItemsRWLock.readLock().lock();
 		try {
 			List<IndexItem> indexItems = new ArrayList<IndexItem>();
 			for (IndexItem indexItem : this.cachedIndexItems) {
-				if (namespace != null && namespace.equals(indexItem.getNamespace())) {
+				if (indexItem.getIndexProviderId().equals(indexProviderId) && indexItem.getType().equals(type)) {
 					indexItems.add(indexItem);
 				}
 			}
@@ -860,16 +861,34 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	}
 
 	@Override
-	public List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IndexServiceException {
+	public IndexItem getIndexItem(Integer indexItemId) throws IndexServiceException {
 		this.indexItemsRWLock.readLock().lock();
 		try {
-			List<IndexItem> indexItems = new ArrayList<IndexItem>();
+			IndexItem result = null;
 			for (IndexItem indexItem : this.cachedIndexItems) {
-				if (indexItem.getIndexProviderId().equals(indexProviderId) && indexItem.getNamespace().equals(namespace)) {
-					indexItems.add(indexItem);
+				if (indexItem.getIndexItemId().equals(indexItemId)) {
+					result = indexItem;
+					break;
 				}
 			}
-			return indexItems;
+			return result;
+		} finally {
+			this.indexItemsRWLock.readLock().unlock();
+		}
+	}
+
+	@Override
+	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IndexServiceException {
+		this.indexItemsRWLock.readLock().lock();
+		try {
+			IndexItem result = null;
+			for (IndexItem indexItem : this.cachedIndexItems) {
+				if (indexItem.getIndexProviderId().equals(indexProviderId) && indexItem.getType().equals(type) && indexItem.getName().equals(name)) {
+					result = indexItem;
+					break;
+				}
+			}
+			return result;
 		} finally {
 			this.indexItemsRWLock.readLock().unlock();
 		}
@@ -1077,7 +1096,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		try {
 			String serviceName = getServiceName();
 
-			List<IndexItem> indexItems = getIndexItemsByNamespace(IndexServiceConstants.NAMESPACE);
+			List<IndexItem> indexItems = getIndexItems(null, IndexServiceConstants.TYPE_SERVICE);
 			for (IndexItem indexItem : indexItems) {
 				String currName = indexItem.getName();
 				String url = (String) indexItem.getProperty(IndexServiceConstants.IDX_PROP_URL);
@@ -1103,7 +1122,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 				}
 
 				org.origin.mgm.client.api.IndexServiceConfiguration config = contextRoot == null ? new org.origin.mgm.client.api.IndexServiceConfiguration(url, username, password) : new org.origin.mgm.client.api.IndexServiceConfiguration(url, contextRoot, username, password);
-				final org.origin.mgm.client.api.IndexService indexService = org.origin.mgm.client.api.IndexService.newInstance(config);
+				final org.origin.mgm.client.api.IndexService indexService = IndexServiceFactory.getInstance().createIndexService(config);
 				try {
 					indexService.sendCommand("sync", null);
 				} catch (IOException e) {
@@ -1116,7 +1135,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 	}
 
 	@Override
-	public boolean addIndexItem(String indexProviderId, String namespace, String name, Map<String, Object> properties) throws IndexServiceException {
+	public boolean addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IndexServiceException {
 		boolean succeed = false;
 
 		// -------------------------------------------------------------------------------------------------------
@@ -1125,7 +1144,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 		String requestCommand = IndexServiceConstants.CMD_CREATE_INDEX_ITEM;
 		Map<String, Object> requestArguments = new HashMap<String, Object>();
 		requestArguments.put(IndexServiceConstants.IDX_INDEX_PROVIDER_ID, indexProviderId);
-		requestArguments.put(IndexServiceConstants.IDX_NAMESPACE, namespace);
+		requestArguments.put(IndexServiceConstants.IDX_TYPE, type);
 		requestArguments.put(IndexServiceConstants.IDX_NAME, name);
 		requestArguments.put(IndexServiceConstants.IDX_PROPERTIES, properties);
 
@@ -1140,7 +1159,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 			// -------------------------------------------------------------------------------------------------------
 			// Step 2. Create index item record in database.
 			// -------------------------------------------------------------------------------------------------------
-			newIndexItemVO = getDatabaseHelper().createIndexItemInDatabase(this, indexProviderId, namespace, name, JSONUtil.toJsonString(properties));
+			newIndexItemVO = getDatabaseHelper().createIndexItemInDatabase(this, indexProviderId, type, name, JSONUtil.toJsonString(properties));
 
 			if (newIndexItemVO != null) {
 				Integer indexItemId = newIndexItemVO.getIndexItemId();
@@ -1157,7 +1176,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 				Map<String, Object> commandArguments = new HashMap<String, Object>();
 				commandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
 				commandArguments.put(IndexServiceConstants.IDX_INDEX_PROVIDER_ID, indexProviderId);
-				commandArguments.put(IndexServiceConstants.IDX_NAMESPACE, namespace);
+				commandArguments.put(IndexServiceConstants.IDX_TYPE, type);
 				commandArguments.put(IndexServiceConstants.IDX_NAME, name);
 				commandArguments.put(IndexServiceConstants.IDX_PROPERTIES, newProperties);
 				commandArguments.put(IndexServiceConstants.IDX_CREATE_TIME, createTime);
@@ -1231,7 +1250,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 			return false;
 		}
 		String indexProviderId = indexItemVO.getIndexProviderId();
-		String namespace = indexItemVO.getNamespace();
+		String type = indexItemVO.getType();
 		String name = indexItemVO.getName();
 		String propertiesString = indexItemVO.getPropertiesString();
 		Date createTime = indexItemVO.getCreateTime();
@@ -1266,7 +1285,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
 				undoCommandArguments.put(IndexServiceConstants.IDX_INDEX_ITEM_ID, indexItemId);
 				undoCommandArguments.put(IndexServiceConstants.IDX_INDEX_PROVIDER_ID, indexProviderId);
-				undoCommandArguments.put(IndexServiceConstants.IDX_NAMESPACE, namespace);
+				undoCommandArguments.put(IndexServiceConstants.IDX_TYPE, type);
 				undoCommandArguments.put(IndexServiceConstants.IDX_NAME, name);
 				undoCommandArguments.put(IndexServiceConstants.IDX_PROPERTIES, properties);
 				undoCommandArguments.put(IndexServiceConstants.IDX_CREATE_TIME, createTime);
@@ -1649,7 +1668,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 		Integer indexItemId1 = indexItemSnapshot.getIndexItemId();
 		String indexProviderId1 = indexItemSnapshot.getIndexProviderId();
-		String namespace1 = indexItemSnapshot.getNamespace();
+		String type1 = indexItemSnapshot.getType();
 		String name1 = indexItemSnapshot.getName();
 		Map<String, Object> properties1 = indexItemSnapshot.getProperties();
 		Date createTime1 = indexItemSnapshot.getCreateTime();
@@ -1657,7 +1676,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 		Integer indexItemId2 = indexItemFromDatabase.getIndexItemId();
 		String indexProviderId2 = indexItemFromDatabase.getIndexProviderId();
-		String namespace2 = indexItemFromDatabase.getNamespace();
+		String type2 = indexItemFromDatabase.getType();
 		String name2 = indexItemFromDatabase.getName();
 		Map<String, Object> properties2 = indexItemFromDatabase.getProperties();
 		Date createTime2 = indexItemFromDatabase.getCreateTime();
@@ -1665,13 +1684,13 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 		boolean matchIndexItemId = CompareUtil.equals(indexItemId1, indexItemId2, false);
 		boolean matchIndexProviderId = CompareUtil.equals(indexProviderId1, indexProviderId2, true);
-		boolean matchNamespace = CompareUtil.equals(namespace1, namespace2, true);
+		boolean matchType = CompareUtil.equals(type1, type2, true);
 		boolean matchName = CompareUtil.equals(name1, name2, true);
 		boolean matchProperties = CompareUtil.equals(properties1, properties2, true);
 		boolean matchCreateTime = CompareUtil.equals(createTime1, createTime2, true);
 		boolean matchLastUpdateTime = CompareUtil.equals(lastUpdateTime1, lastUpdateTime2, true);
 
-		if (matchIndexItemId && matchIndexProviderId && matchNamespace && matchName && matchProperties && matchCreateTime && matchLastUpdateTime) {
+		if (matchIndexItemId && matchIndexProviderId && matchType && matchName && matchProperties && matchCreateTime && matchLastUpdateTime) {
 			return true;
 		}
 		return false;
@@ -1702,7 +1721,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 		Integer indexItemId1 = cachedIndexItem.getIndexItemId();
 		String indexProviderId1 = cachedIndexItem.getIndexProviderId();
-		String namespace1 = cachedIndexItem.getNamespace();
+		String type1 = cachedIndexItem.getType();
 		String name1 = cachedIndexItem.getName();
 		Map<String, Object> properties1 = cachedIndexItem.getProperties();
 		Date createTime1 = cachedIndexItem.getCreateTime();
@@ -1710,7 +1729,7 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 
 		Integer indexItemId2 = indexItemFromDatabase.getIndexItemId();
 		String indexProviderId2 = indexItemFromDatabase.getIndexProviderId();
-		String namespace2 = indexItemFromDatabase.getNamespace();
+		String type2 = indexItemFromDatabase.getType();
 		String name2 = indexItemFromDatabase.getName();
 		Map<String, Object> properties2 = indexItemFromDatabase.getProperties();
 		Date createTime2 = indexItemFromDatabase.getCreateTime();
@@ -1727,9 +1746,9 @@ public class IndexServiceImpl implements IndexService, IndexServiceUpdatable, Co
 			isUpdated = true;
 		}
 
-		boolean matchNamespace = CompareUtil.equals(namespace1, namespace2, true);
-		if (!matchNamespace) {
-			cachedIndexItem.setNamespace(namespace2);
+		boolean matchType = CompareUtil.equals(type1, type2, true);
+		if (!matchType) {
+			cachedIndexItem.setType(type2);
 			isUpdated = true;
 		}
 

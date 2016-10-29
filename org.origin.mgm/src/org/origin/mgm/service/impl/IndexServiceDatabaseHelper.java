@@ -243,7 +243,7 @@ public class IndexServiceDatabaseHelper {
 	private IndexItem toIndexItem(IndexItemDataVO indexItemVO) {
 		Integer indexItemId = indexItemVO.getIndexItemId();
 		String indexProviderId = indexItemVO.getIndexProviderId();
-		String namespace = indexItemVO.getNamespace();
+		String type = indexItemVO.getType();
 		String name = indexItemVO.getName();
 		String propertiesString = indexItemVO.getPropertiesString();
 		Date createTime = indexItemVO.getCreateTime();
@@ -251,7 +251,7 @@ public class IndexServiceDatabaseHelper {
 
 		Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 
-		IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, namespace, name, properties, createTime, lastUpdateTime);
+		IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, type, name, properties, createTime, lastUpdateTime);
 		return indexItem;
 	}
 
@@ -260,18 +260,18 @@ public class IndexServiceDatabaseHelper {
 	 * 
 	 * @param connAware
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @param name
 	 * @param propertiesString
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public IndexItemDataVO createIndexItemInDatabase(ConnectionAware connAware, String indexProviderId, String namespace, String name, String propertiesString) throws IndexServiceException {
+	public IndexItemDataVO createIndexItemInDatabase(ConnectionAware connAware, String indexProviderId, String type, String name, String propertiesString) throws IndexServiceException {
 		IndexItemDataVO newIndexItemVO = null;
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
-			newIndexItemVO = this.dataTableHandler.insert(conn, indexProviderId, namespace, name, propertiesString, new Date(), null);
+			newIndexItemVO = this.dataTableHandler.insert(conn, indexProviderId, type, name, propertiesString, new Date(), null);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

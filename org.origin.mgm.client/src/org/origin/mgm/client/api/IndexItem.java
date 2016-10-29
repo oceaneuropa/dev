@@ -14,7 +14,7 @@ public interface IndexItem {
 	 * 
 	 * @return
 	 */
-	public String getNamespace();
+	public String getType();
 
 	/**
 	 * 

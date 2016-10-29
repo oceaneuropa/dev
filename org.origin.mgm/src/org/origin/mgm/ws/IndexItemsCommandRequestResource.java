@@ -18,7 +18,7 @@ import org.origin.mgm.model.dto.IndexItemCommandRequestDTO;
 import org.origin.mgm.service.IndexService;
 
 /**
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems/commandRequest
+ * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems/commandRequest (Body parameter: IndexItemCommandRequestDTO)
  * 
  */
 @javax.ws.rs.Path("/indexitems/commandRequest")

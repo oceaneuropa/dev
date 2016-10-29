@@ -16,7 +16,7 @@ public interface IndexService {
 	public IndexServiceConfiguration getConfiguration();
 
 	/**
-	 * Get all index items with any namespace and created by any index provider.
+	 * Get all index items with any type and created by any index provider.
 	 * 
 	 * @return
 	 * @throws IndexServiceException
@@ -30,43 +30,55 @@ public interface IndexService {
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public List<IndexItem> getIndexItemsByIndexProvider(String indexProviderId) throws IndexServiceException;
+	public List<IndexItem> getIndexItems(String indexProviderId) throws IndexServiceException;
 
 	/**
-	 * Get index items with specified namespace.
-	 * 
-	 * @param namespace
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	public List<IndexItem> getIndexItemsByNamespace(String namespace) throws IndexServiceException;
-
-	/**
-	 * Get index items with specified namespace and created by specified indexer provider.
+	 * Get index items with specified type and created by specified indexer provider.
 	 * 
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public List<IndexItem> getIndexItems(String indexProviderId, String namespace) throws IndexServiceException;
+	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IndexServiceException;
+
+	/**
+	 * Get index item.
+	 * 
+	 * @param indexItemId
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	public IndexItem getIndexItem(Integer indexItemId) throws IndexServiceException;
+
+	/**
+	 * Get index item.
+	 * 
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IndexServiceException;
 
 	/**
 	 * Add an index item.
 	 * 
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @param name
 	 * @param properties
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public boolean addIndexItem(String indexProviderId, String namespace, String name, Map<String, Object> properties) throws IndexServiceException;
+	public boolean addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IndexServiceException;
 
 	/**
 	 * Remove an index item.
 	 * 
 	 * @param indexItemId
+	 * @return
 	 * @throws IndexServiceException
 	 */
 	public boolean removeIndexItem(Integer indexItemId) throws IndexServiceException;

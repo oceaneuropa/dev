@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.origin.common.rest.model.Pingable;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.TimeUtil;
 

@@ -4,84 +4,72 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.origin.common.adapter.AdaptorSupport;
-import org.origin.common.adapter.IAdaptable;
-import org.origin.mgm.client.api.impl.IndexProviderImpl;
-
 /*
  * Used by index provider to create/update/delete index items.
  * 
- * Note: 
+ * Note:
  * indexProviderId should never appear in the method parameters, since the IndexProvider already holds a indexProviderId when created.
  * 
+ * Example:
+ * 
+ * IndexService: "component.indexservice.indexer"
+ * 
+ * AppStore: "component.appstore.indexer"
+ * 
+ * ConfigRegisry: "component.configregistry.indexer"
+ * 
+ * FileSystem: "component.filesystem.indexer"
+ * 
  */
-public abstract class IndexProvider implements IAdaptable {
+public interface IndexProvider extends IndexService {
 
 	/**
+	 * Get updatable index items.
 	 * 
 	 * @param indexProviderId
-	 * @param config
 	 * @return
 	 */
-	public static IndexProvider newInstance(String indexProviderId, IndexServiceConfiguration config) {
-		return new IndexProviderImpl(indexProviderId, config);
-	}
-
-	private AdaptorSupport adaptorSupport = new AdaptorSupport();
+	public List<IndexItemUpdatable> getUpdatableIndexItems(String indexProviderId) throws IOException;
 
 	/**
-	 * Get remote index service server configuration
+	 * Get updatable index items.
 	 * 
+	 * @param indexProviderId
+	 * @param type
 	 * @return
 	 */
-	public abstract IndexServiceConfiguration getConfiguration();
-
-	/**
-	 * Get index provider id.
-	 * 
-	 * @return
-	 */
-	public abstract String getIndexProviderId();
-
-	/**
-	 * Get all index items created by this index provider.
-	 * 
-	 * @return
-	 */
-	public abstract List<IndexItemConfigurable> getIndexItems() throws IOException;
-
-	/**
-	 * Get index items created by this index provider with specified namespace.
-	 * 
-	 * @param namespace
-	 * @return
-	 */
-	public abstract List<IndexItemConfigurable> getIndexItems(String namespace) throws IOException;
+	public List<IndexItemUpdatable> getUpdatableIndexItems(String indexProviderId, String type) throws IOException;
 
 	/**
 	 * Add an index item.
 	 * 
-	 * @param namespace
+	 * @param indexProviderId
+	 * @param type
 	 * @param name
 	 * @param properties
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract IndexItemConfigurable addIndexItem(String namespace, String name, Map<String, Object> properties) throws IOException;
+	public IndexItemUpdatable addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException;
 
-	/** implement IAdaptable interface */
-	@Override
-	public <T> T getAdapter(Class<T> adapter) {
-		T result = this.adaptorSupport.getAdapter(adapter);
-		if (result != null) {
-			return result;
-		}
-		return null;
-	}
+	/**
+	 * Remove an index item.
+	 * 
+	 * @param indexItemId
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean removeIndexItem(Integer indexItemId) throws IOException;
 
-	@Override
-	public <T> void adapt(Class<T> clazz, T object) {
-		this.adaptorSupport.adapt(clazz, object);
-	}
+	/**
+	 * Remove an index item.
+	 * 
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean removeIndexItem(String indexProviderId, String type, String name) throws IOException;
 
 }

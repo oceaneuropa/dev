@@ -12,6 +12,7 @@ import org.junit.runners.MethodSorters;
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexService;
 import org.origin.mgm.client.api.IndexServiceConfiguration;
+import org.origin.mgm.client.api.IndexServiceFactory;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IndexServiceTestWin {
@@ -28,7 +29,7 @@ public class IndexServiceTestWin {
 
 	protected IndexService getIndexService() {
 		IndexServiceConfiguration config = new IndexServiceConfiguration("http://127.0.0.1:9090", "admin", "123");
-		return IndexService.newInstance(config);
+		return IndexServiceFactory.getInstance().createIndexService(config);
 	}
 
 	@Test
@@ -46,27 +47,12 @@ public class IndexServiceTestWin {
 	}
 
 	@Test
-	public void test002_getIndexItemsWithNamespace() {
-		System.out.println("--- --- --- test002_getIndexItemsWithNamespace() --- --- ---");
-		String namespace = "drive";
-		try {
-			List<IndexItem> indexItems = indexService.getIndexItemsByNamespace(namespace);
-			for (IndexItem indexItem : indexItems) {
-				System.out.println(indexItem.toString());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println();
-	}
-
-	@Test
-	public void test003_getIndexItemsWithIndexProviderIdAndNamespace() {
-		System.out.println("--- --- --- test003_getIndexItemsWithIndexProviderIdAndNamespace() --- --- ---");
+	public void test003_getIndexItemsWithIndexProviderIdAndType() {
+		System.out.println("--- --- --- test003_getIndexItemsWithIndexProviderIdAndType() --- --- ---");
 		String indexProviderId = "driver.index.provider";
-		String namespace = "drive";
+		String type = "drive";
 		try {
-			List<IndexItem> indexItems = indexService.getIndexItems(indexProviderId, namespace);
+			List<IndexItem> indexItems = indexService.getIndexItems(indexProviderId, type);
 			for (IndexItem indexItem : indexItems) {
 				System.out.println(indexItem.toString());
 			}

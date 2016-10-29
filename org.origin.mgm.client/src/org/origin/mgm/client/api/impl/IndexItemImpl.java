@@ -1,5 +1,6 @@
 package org.origin.mgm.client.api.impl;
 
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.origin.mgm.client.api.IndexItem;
@@ -10,21 +11,24 @@ public class IndexItemImpl implements IndexItem {
 
 	protected IndexServiceConfiguration config;
 	protected String indexProviderId;
-	protected String namespace;
+	protected String type;
 	protected String name;
+	protected Map<String, Object> properties;
 
 	/**
 	 * 
 	 * @param config
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @param name
+	 * @param properties
 	 */
-	public IndexItemImpl(IndexServiceConfiguration config, String indexProviderId, String namespace, String name) {
+	public IndexItemImpl(IndexServiceConfiguration config, String indexProviderId, String type, String name, Map<String, Object> properties) {
 		this.config = config;
 		this.indexProviderId = indexProviderId;
-		this.namespace = namespace;
+		this.type = type;
 		this.name = name;
+		this.properties = properties;
 	}
 
 	protected IndexServiceClient getClient() {
@@ -36,19 +40,22 @@ public class IndexItemImpl implements IndexItem {
 		return this.indexProviderId;
 	}
 
-	public String getNamespace() {
-		return namespace;
+	@Override
+	public String getType() {
+		return type;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
 	@Override
-	public Map<String, Object> getProperties() {
-		// TODO:
-		// Call web service client
-		return null;
+	public synchronized Map<String, Object> getProperties() {
+		if (this.properties == null) {
+			this.properties = new Hashtable<String, Object>();
+		}
+		return this.properties;
 	}
 
 }

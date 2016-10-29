@@ -103,7 +103,7 @@ public class IndexItemDataTableHandlerTestMac {
 		try {
 			Map<String, Object> properties1 = new HashMap<String, Object>();
 			properties1.put("indexProviderId", indexProviderId);
-			properties1.put("namespace", "tns1");
+			properties1.put("type", "tns1");
 			properties1.put("name", "name1");
 			properties1.put("p1", "v1");
 			properties1.put("p2", "v2");
@@ -114,7 +114,7 @@ public class IndexItemDataTableHandlerTestMac {
 
 			Map<String, Object> properties2 = new HashMap<String, Object>();
 			properties2.put("indexProviderId", indexProviderId);
-			properties2.put("namespace", "tns1");
+			properties2.put("type", "tns1");
 			properties2.put("name", "name1");
 			properties2.put("p3", "v3");
 			properties2.put("p4", "v4");

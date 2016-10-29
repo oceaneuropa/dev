@@ -7,10 +7,11 @@ import javax.xml.bind.annotation.XmlElement;
 import org.origin.common.json.JSONUtil;
 
 public class IndexItemCommandRequestDTO {
+
 	@XmlElement
 	protected String command;
 	@XmlElement
-	protected Map<String, Object> parameters;
+	protected Map<String, Object> params;
 
 	@XmlElement
 	public String getCommand() {
@@ -23,17 +24,16 @@ public class IndexItemCommandRequestDTO {
 
 	@XmlElement
 	public Map<String, Object> getParameters() {
-		return parameters;
+		return params;
 	}
 
-	public void setParameters(Map<String, Object> parameters) {
-		this.parameters = parameters;
+	public void setParameters(Map<String, Object> params) {
+		this.params = params;
 	}
 
 	@Override
 	public String toString() {
-		String parametersString = JSONUtil.toJsonString(this.parameters);
-
+		String parametersString = JSONUtil.toJsonString(this.params);
 		StringBuilder sb = new StringBuilder();
 		sb.append("IndexItemCommandRequestDTO (");
 		sb.append("command").append(this.command);

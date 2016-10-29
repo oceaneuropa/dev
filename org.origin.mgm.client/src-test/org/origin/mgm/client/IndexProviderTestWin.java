@@ -7,35 +7,35 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.origin.mgm.client.api.IndexItem;
-import org.origin.mgm.client.api.IndexItemConfigurable;
+import org.origin.mgm.client.api.IndexItemUpdatable;
 import org.origin.mgm.client.api.IndexProvider;
+import org.origin.mgm.client.api.IndexProviderFactory;
 import org.origin.mgm.client.api.IndexServiceConfiguration;
 
 public class IndexProviderTestWin {
 
-	protected IndexProvider indexService;
+	protected IndexProvider indexProvider;
 
 	public IndexProviderTestWin() {
-		this.indexService = getIndexProvider();
+		this.indexProvider = getIndexProvider();
 	}
 
 	protected void setUp() {
-		this.indexService = getIndexProvider();
+		this.indexProvider = getIndexProvider();
 	}
 
 	protected IndexProvider getIndexProvider() {
 		IndexServiceConfiguration config = new IndexServiceConfiguration("http://127.0.0.1:9090", "admin", "123");
 		String indexProviderId = "filesystem.index.provider";
-		return IndexProvider.newInstance(indexProviderId, config);
+		return IndexProviderFactory.getInstance().createIndexProvider(config);
 	}
 
 	@Test
 	public void test001_getIndexItems() {
 		System.out.println("--- --- --- getIndexItems() --- --- ---");
 		try {
-			List<IndexItemConfigurable> indexItems = indexService.getIndexItems();
-			for (IndexItemConfigurable indexItem : indexItems) {
+			List<IndexItemUpdatable> indexItems = indexProvider.getUpdatableIndexItems("filesystem.");
+			for (IndexItemUpdatable indexItem : indexItems) {
 				System.out.println(indexItem.toString());
 			}
 		} catch (IOException e) {

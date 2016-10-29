@@ -106,7 +106,7 @@ public class IndexItemRevisionTableHandlerTestMac {
 			// ---------------------------------------------------------------------------------------------------------------------------------------------------
 			Map<String, Object> arguments1 = new HashMap<String, Object>();
 			arguments1.put("indexProviderId", indexProviderId);
-			arguments1.put("namespace", "tns1");
+			arguments1.put("type", "tns1");
 			arguments1.put("name", "name1");
 			arguments1.put("p1", "v1");
 			arguments1.put("p2", "v2");
@@ -121,7 +121,7 @@ public class IndexItemRevisionTableHandlerTestMac {
 			// ---------------------------------------------------------------------------------------------------------------------------------------------------
 			Map<String, Object> arguments2 = new HashMap<String, Object>();
 			arguments2.put("indexProviderId", indexProviderId);
-			arguments2.put("namespace", "tns1");
+			arguments2.put("type", "tns1");
 			arguments2.put("name", "name2");
 			arguments2.put("p3", "v3");
 			arguments2.put("p4", "v4");

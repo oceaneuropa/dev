@@ -57,7 +57,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	protected IndexItemDataVO createVO(ResultSet rs) throws SQLException {
 		Integer indexItemId = rs.getInt("indexItemId");
 		String indexProviderId = rs.getString("indexProviderId");
-		String namespace = rs.getString("namespace");
+		String type = rs.getString("type");
 		String name = rs.getString("name");
 		String propertiesString = rs.getString("properties");
 		String createTimeString = rs.getString("createTime");
@@ -66,7 +66,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		Date createTime = createTimeString != null ? DateUtil.toDate(createTimeString, DateUtil.getCommonDateFormats()) : null;
 		Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
 
-		return new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTime, lastUpdateTime);
+		return new IndexItemDataVO(indexItemId, indexProviderId, type, name, propertiesString, createTime, lastUpdateTime);
 	}
 
 	protected DateFormat getDateFormat() {
@@ -89,7 +89,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	indexItemId int NOT NULL AUTO_INCREMENT,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";
-			sql += "	namespace varchar(500) NOT NULL,";
+			sql += "	type varchar(500) NOT NULL,";
 			sql += "	name varchar(500) NOT NULL,";
 			sql += "	properties varchar(20000) DEFAULT NULL,";
 			sql += "	createTime varchar(50) DEFAULT NULL,";
@@ -101,7 +101,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 			sql += "CREATE TABLE IF NOT EXISTS " + getTableName() + " (";
 			sql += "	indexItemId serial NOT NULL,";
 			sql += "	indexProviderId varchar(500) NOT NULL,";
-			sql += "	namespace varchar(500) NOT NULL,";
+			sql += "	type varchar(500) NOT NULL,";
 			sql += "	name varchar(500) NOT NULL,";
 			sql += "	properties varchar(20000) DEFAULT NULL,";
 			sql += "	createTime varchar(50) DEFAULT NULL,";
@@ -131,33 +131,21 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> getIndexItemsByIndexProviderId(Connection conn, String indexProviderId) throws SQLException {
+	public List<IndexItemDataVO> getIndexItems(Connection conn, String indexProviderId) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? ORDER BY " + getPKName() + " ASC ", new Object[] { indexProviderId }, this.rsListHandler);
 	}
 
 	/**
-	 * Get a list of index items by namespace.
-	 * 
-	 * @param conn
-	 * @param namespace
-	 * @return
-	 * @throws SQLException
-	 */
-	public List<IndexItemDataVO> getIndexItemsByNamespace(Connection conn, String namespace) throws SQLException {
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE namespace=? ORDER BY " + getPKName() + " ASC ", new Object[] { namespace }, this.rsListHandler);
-	}
-
-	/**
-	 * Get a list of index items by indexProviderId and namespace.
+	 * Get a list of index items by indexProviderId and type.
 	 * 
 	 * @param conn
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> getIndexItemsByIndexProviderIdAndNamespace(Connection conn, String indexProviderId, String namespace) throws SQLException {
-		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? AND namespace=? ORDER BY " + getPKName() + " ASC ", new Object[] { indexProviderId, namespace }, this.rsListHandler);
+	public List<IndexItemDataVO> getIndexItems(Connection conn, String indexProviderId, String type) throws SQLException {
+		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? AND type=? ORDER BY " + getPKName() + " ASC ", new Object[] { indexProviderId, type }, this.rsListHandler);
 	}
 
 	/**
@@ -197,7 +185,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * 
 	 * @param conn
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @param name
 	 * @param propertiesString
 	 * @param createTime
@@ -205,7 +193,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public IndexItemDataVO insert(Connection conn, String indexProviderId, String namespace, String name, String propertiesString, Date createTime, Date lastUpdateTime) throws SQLException {
+	public IndexItemDataVO insert(Connection conn, String indexProviderId, String type, String name, String propertiesString, Date createTime, Date lastUpdateTime) throws SQLException {
 		IndexItemDataVO newIndexItemVO = null;
 
 		if (lastUpdateTime == null) {
@@ -214,9 +202,9 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		String createTimeString = DateUtil.toString(createTime, getDateFormat());
 		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
 
-		Integer indexItemId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, namespace, name, properties, createTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, namespace, name, propertiesString, createTimeString, lastUpdateTimeString });
+		Integer indexItemId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, type, name, properties, createTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, type, name, propertiesString, createTimeString, lastUpdateTimeString });
 		if (indexItemId > 0) {
-			newIndexItemVO = new IndexItemDataVO(indexItemId, indexProviderId, namespace, name, propertiesString, createTime, lastUpdateTime);
+			newIndexItemVO = new IndexItemDataVO(indexItemId, indexProviderId, type, name, propertiesString, createTime, lastUpdateTime);
 		}
 		return newIndexItemVO;
 	}

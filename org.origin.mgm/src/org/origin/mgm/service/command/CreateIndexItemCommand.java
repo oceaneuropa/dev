@@ -45,14 +45,14 @@ public class CreateIndexItemCommand extends AbstractCommand {
 	public static CreateIndexItemCommand parseCommand(Map<String, Object> arguments) {
 		CreateIndexItemCommand command = null;
 		try {
-			String indexProviderId = (String) arguments.get("indexproviderid");
-			String namespace = (String) arguments.get("namespace");
+			String indexProviderId = (String) arguments.get("indexProviderId");
+			String type = (String) arguments.get("type");
 			String name = (String) arguments.get("name");
 			ExceptionUtil.checkNotNullAndNotEmpty(indexProviderId, IllegalArgumentException.class, null, null);
-			ExceptionUtil.checkNotNullAndNotEmpty(namespace, IllegalArgumentException.class, null, null);
+			ExceptionUtil.checkNotNullAndNotEmpty(type, IllegalArgumentException.class, null, null);
 			ExceptionUtil.checkNotNullAndNotEmpty(name, IllegalArgumentException.class, null, null);
 
-			command = new CreateIndexItemCommand(indexProviderId, namespace, name);
+			command = new CreateIndexItemCommand(indexProviderId, type, name);
 
 		} catch (Exception e) {
 			throw new IllegalArgumentException(e.getMessage());
@@ -61,7 +61,7 @@ public class CreateIndexItemCommand extends AbstractCommand {
 	}
 
 	protected String indexProviderId;
-	protected String namespace;
+	protected String type;
 	protected String name;
 	protected Map<String, Object> properties;
 
@@ -77,23 +77,23 @@ public class CreateIndexItemCommand extends AbstractCommand {
 	/**
 	 * 
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @param name
 	 */
-	public CreateIndexItemCommand(String indexProviderId, String namespace, String name) {
-		this(indexProviderId, namespace, name, null);
+	public CreateIndexItemCommand(String indexProviderId, String type, String name) {
+		this(indexProviderId, type, name, null);
 	}
 
 	/**
 	 * 
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @param name
 	 * @param properties
 	 */
-	public CreateIndexItemCommand(String indexProviderId, String namespace, String name, Map<String, Object> properties) {
+	public CreateIndexItemCommand(String indexProviderId, String type, String name, Map<String, Object> properties) {
 		this.indexProviderId = indexProviderId;
-		this.namespace = namespace;
+		this.type = type;
 		this.name = name;
 		this.properties = properties;
 		if (this.properties == null) {
@@ -118,7 +118,7 @@ public class CreateIndexItemCommand extends AbstractCommand {
 			// -------------------------------------------------------------------------------------------------------
 			Map<String, Object> arguments = new HashMap<String, Object>();
 			arguments.put("indexProviderId", this.indexProviderId);
-			arguments.put("namespace", this.namespace);
+			arguments.put("type", this.type);
 			arguments.put("name", this.name);
 			String argumentsString = JSONUtil.toJsonString(arguments);
 

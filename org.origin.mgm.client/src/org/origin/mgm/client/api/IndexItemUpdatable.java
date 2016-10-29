@@ -2,14 +2,14 @@ package org.origin.mgm.client.api;
 
 import java.util.Map;
 
-public interface IndexItemConfigurable extends IndexItem {
+public interface IndexItemUpdatable extends IndexItem {
 
 	/**
 	 * Update all properties of the index item.
 	 * 
 	 * @param properties
 	 */
-	public void update(Map<String, Object> properties);
+	public boolean setProperties(Map<String, Object> properties);
 
 	/**
 	 * Set the property of an index item.
@@ -17,7 +17,7 @@ public interface IndexItemConfigurable extends IndexItem {
 	 * @param propName
 	 * @param propValue
 	 */
-	public void setProperty(String propName, Object propValue);
+	public boolean setProperty(String propName, Object propValue);
 
 	/**
 	 * Set the property of an index item.
@@ -26,7 +26,7 @@ public interface IndexItemConfigurable extends IndexItem {
 	 * @param propValue
 	 * @param isVolatile
 	 */
-	public void setProperty(String propName, Object propValue, boolean isVolatile);
+	public boolean setProperty(String propName, Object propValue, boolean isVolatile);
 
 	/**
 	 * Remove the property of an index item
@@ -35,11 +35,11 @@ public interface IndexItemConfigurable extends IndexItem {
 	 * @param name
 	 * @param propName
 	 */
-	public void removeProperty(String propName);
+	public boolean removeProperty(String propName);
 
 	/**
 	 * Delete the index item.
 	 */
-	public void delete();
+	public boolean delete();
 
 }

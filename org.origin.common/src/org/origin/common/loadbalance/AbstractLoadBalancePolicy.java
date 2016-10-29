@@ -1,85 +1,63 @@
 package org.origin.common.loadbalance;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+public abstract class AbstractLoadBalancePolicy<S> implements LoadBalancePolicy<S>, LoadBalanceServiceListener<S> {
 
-public abstract class AbstractLoadBalancePolicy<RES extends LoadBalanceableResource> implements LoadBalancePolicy<RES> {
+	protected LoadBalancer<S> lb;
 
-	// protected List<RES> resources = new ArrayList<RES>();
-	protected Map<String, RES> resourceMap = new LinkedHashMap<String, RES>();
+	public AbstractLoadBalancePolicy() {
+	}
 
-	/**
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	public boolean contains(RES resource) {
-		if (resource != null) {
-			String resourceId = resource.getLoadBalanceId();
-			if (resourceId != null) {
-				for (RES res : this.resourceMap.values()) {
-					if (resourceId.equals(res.getLoadBalanceId())) {
-						return true;
-					}
-				}
-			}
+	protected LoadBalancer<S> checkLoadBalancer() {
+		if (this.lb == null) {
+			throw new IllegalStateException("LoadBalancer is not set.");
 		}
-		return false;
+		return this.lb;
+	}
+
+	/** LoadBalancePolicy */
+	@Override
+	public void init(LoadBalancer<S> lb) {
+		if (lb == null) {
+			throw new IllegalArgumentException("LoadBalancer is null.");
+		}
+		if (this.lb != null) {
+			dispose(this.lb);
+		}
+
+		this.lb = lb;
+		this.lb.addServiceListener(this);
 	}
 
 	@Override
-	public void setResources(List<RES> resources) {
-		this.resourceMap.clear();
-		if (resources != null) {
-			for (RES res : resources) {
-				this.resourceMap.put(res.getLoadBalanceId(), res);
-			}
-		}
-	}
-
-	@Override
-	public List<RES> getResources() {
-		List<RES> resources = new ArrayList<RES>();
-		for (RES res : this.resourceMap.values()) {
-			resources.add(res);
-		}
-		return resources;
+	public LoadBalancer<S> getLoadBalancer() {
+		return this.lb;
 	}
 
 	/**
-	 * 
-	 * @param resource
-	 */
-	public void addResource(RES resource) {
-		if (resource != null) {
-			String resourceId = resource.getLoadBalanceId();
-			if (resourceId != null) {
-				this.resourceMap.put(resourceId, resource);
-			}
-		}
-	}
-
-	/**
-	 * 
-	 * @param resource
-	 */
-	public void removeResource(RES resource) {
-		if (resource != null) {
-			String resourceId = resource.getLoadBalanceId();
-			if (resourceId != null) {
-				this.resourceMap.remove(resourceId);
-			}
-		}
-	}
-
-	/**
-	 * Get the next load balance resource.
+	 * Get the next load balance service.
 	 * 
 	 * @return
 	 */
 	@Override
-	public abstract RES next();
+	public abstract LoadBalanceService<S> next();
+
+	@Override
+	public void dispose(LoadBalancer<S> lb) {
+		if (this.lb == lb) {
+			this.lb.removeServiceListener(this);
+		}
+		this.lb = null;
+	}
+
+	/** LoadBalanceServiceListener */
+	@Override
+	public void serviceAdded(LoadBalanceService<S> service) {
+
+	}
+
+	@Override
+	public void serviceRemoved(LoadBalanceService<S> service) {
+
+	}
 
 }

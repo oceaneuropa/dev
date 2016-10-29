@@ -13,33 +13,9 @@ public class IndexItem {
 
 	public static final String DEFAULT_TYPE = XMLConstants.DEFAULT_NS_PREFIX;
 
-	// /**
-	// *
-	// * @param namespace
-	// * @param name
-	// * @return
-	// */
-	// public static QName getQName(String namespace, String name) {
-	// if (name == null || name.trim().isEmpty()) {
-	// throw new IllegalArgumentException("name is null.");
-	// }
-	// namespace = namespace != null ? namespace : DEFAULT_TYPE;
-	// return new QName(namespace, name);
-	// }
-	//
-	// /**
-	// *
-	// * @param namespace
-	// * @param name
-	// * @return
-	// */
-	// public static String getFullName(String namespace, String name) {
-	// return getQName(namespace, name).toString();
-	// }
-
 	protected Integer indexItemId;
 	protected String indexProviderId;
-	protected String namespace;
+	protected String type;
 	protected String name;
 	protected Map<String, Object> properties = new HashMap<String, Object>(); // properties that are persisted
 	protected Map<String, Object> runtimeProperties = new HashMap<String, Object>(); // properties that exists only at runtime and not persisted
@@ -50,7 +26,7 @@ public class IndexItem {
 	}
 
 	public IndexItem clone() {
-		IndexItem clone = new IndexItem(this.indexItemId, this.indexProviderId, this.namespace, this.name, this.properties, this.createTime, this.lastUpdateTime);
+		IndexItem clone = new IndexItem(this.indexItemId, this.indexProviderId, this.type, this.name, this.properties, this.createTime, this.lastUpdateTime);
 		clone.setRuntimeProperties(this.runtimeProperties);
 		return clone;
 	}
@@ -59,13 +35,13 @@ public class IndexItem {
 	 * 
 	 * @param indexItemId
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @param name
 	 * @param properties
 	 * @param createTime
 	 * @param lastUpdateTime
 	 */
-	public IndexItem(Integer indexItemId, String indexProviderId, String namespace, String name, Map<String, Object> properties, Date createTime, Date lastUpdateTime) {
+	public IndexItem(Integer indexItemId, String indexProviderId, String type, String name, Map<String, Object> properties, Date createTime, Date lastUpdateTime) {
 		if (indexItemId == null) {
 			throw new IllegalArgumentException("indexItemId is null.");
 		}
@@ -74,7 +50,7 @@ public class IndexItem {
 		}
 		this.indexItemId = indexItemId;
 		this.indexProviderId = indexProviderId;
-		this.namespace = namespace != null ? namespace : DEFAULT_TYPE;
+		this.type = type != null ? type : DEFAULT_TYPE;
 		this.name = name;
 		this.properties = properties;
 		this.createTime = createTime;
@@ -97,12 +73,12 @@ public class IndexItem {
 		this.indexProviderId = indexProviderId;
 	}
 
-	public String getNamespace() {
-		return namespace;
+	public String getType() {
+		return type;
 	}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getName() {
@@ -183,7 +159,7 @@ public class IndexItem {
 		sb.append("IndexItem(");
 		sb.append("indexItemId=").append(this.indexItemId);
 		sb.append(", indexProviderId=").append(this.indexProviderId);
-		sb.append(", namespace=").append(this.namespace);
+		sb.append(", type=").append(this.type);
 		sb.append(", name=").append(this.name);
 		sb.append(", properties=").append(propertiesString);
 		sb.append(", runtimeProperties=").append(runtimePropertiesString);

@@ -51,6 +51,7 @@ Export-Package: org.origin.common,
  org.origin.common.rest.model,
  org.origin.common.rest.server,
  org.origin.common.runtime,
+ org.origin.common.thread,
  org.origin.common.util,
  org.origin.common.workingcopy
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"

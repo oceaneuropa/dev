@@ -20,8 +20,8 @@ public class IndexItemQuery {
 		return type;
 	}
 
-	public void setType(String namespace) {
-		this.type = namespace;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getName() {

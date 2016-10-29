@@ -6,88 +6,67 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.rest.client.ClientException;
-import org.origin.mgm.client.api.IndexItemConfigurable;
+import org.origin.common.rest.model.StatusDTO;
+import org.origin.mgm.client.api.IndexItemUpdatable;
 import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.api.IndexServiceConfiguration;
-import org.origin.mgm.client.ws.IndexServiceClient;
 import org.origin.mgm.model.dto.IndexItemDTO;
 
-public class IndexProviderImpl extends IndexProvider {
+public class IndexProviderImpl extends IndexServiceImpl implements IndexProvider {
 
 	protected IndexServiceConfiguration config;
-	protected String indexProviderId;
 
 	/**
 	 * 
 	 * @param indexProviderId
 	 * @param config
 	 */
-	public IndexProviderImpl(String indexProviderId, IndexServiceConfiguration config) {
-		this.indexProviderId = indexProviderId;
-		this.config = config;
+	public IndexProviderImpl(IndexServiceConfiguration config) {
+		super(config);
 	}
 
 	@Override
-	public IndexServiceConfiguration getConfiguration() {
-		return this.config;
-	}
-
-	@Override
-	public String getIndexProviderId() {
-		return this.indexProviderId;
-	}
-
-	protected IndexServiceClient getClient() {
-		return this.config.getIndexServiceClient();
+	public List<IndexItemUpdatable> getUpdatableIndexItems(String indexProviderId) throws IOException {
+		return doUpdatableGetIndexItems(indexProviderId, null);
 	}
 
 	/**
-	 * Get all index items created by this index provider.
+	 * Get index items created by this index provider with specified type.
 	 * 
+	 * @param type
 	 * @return
 	 */
 	@Override
-	public List<IndexItemConfigurable> getIndexItems() throws IOException {
-		return doGetIndexItems(this.indexProviderId, null);
-	}
-
-	/**
-	 * Get index items created by this index provider with specified namespace.
-	 * 
-	 * @param namespace
-	 * @return
-	 */
-	@Override
-	public List<IndexItemConfigurable> getIndexItems(String namespace) throws IOException {
-		return doGetIndexItems(this.indexProviderId, namespace);
+	public List<IndexItemUpdatable> getUpdatableIndexItems(String indexProviderId, String type) throws IOException {
+		return doUpdatableGetIndexItems(indexProviderId, type);
 	}
 
 	/**
 	 * 
 	 * @param indexProviderId
-	 * @param namespace
+	 * @param type
 	 * @return
 	 * @throws IOException
 	 */
-	protected List<IndexItemConfigurable> doGetIndexItems(String indexProviderId, String namespace) throws IOException {
-		List<IndexItemConfigurable> indexItemConfigurables = new ArrayList<IndexItemConfigurable>();
+	protected List<IndexItemUpdatable> doUpdatableGetIndexItems(String indexProviderId, String type) throws IOException {
+		List<IndexItemUpdatable> indexItemConfigurables = new ArrayList<IndexItemUpdatable>();
 		try {
-			List<IndexItemDTO> indexItemDTOs = getClient().getIndexItems(indexProviderId, namespace);
+			List<IndexItemDTO> indexItemDTOs = getClient().getIndexItems(indexProviderId, type);
 			for (IndexItemDTO indexItemDTO : indexItemDTOs) {
 				String currIndexProviderId = indexItemDTO.getIndexProviderId();
-				String currNamespace = indexItemDTO.getNamespace();
+				String currType = indexItemDTO.getType();
 				String currName = indexItemDTO.getName();
+				Map<String, Object> currProperties = indexItemDTO.getProperties();
 
 				if (indexProviderId != null && !indexProviderId.equals(currIndexProviderId)) {
 					System.err.println("IndexItemDTO '" + indexItemDTO.toString() + "' has a different indexProviderId ('" + currIndexProviderId + "') than the specified indexProviderId ('" + indexProviderId + "').");
 				}
-
-				if (namespace != null && !namespace.equals(currNamespace)) {
-					System.err.println("IndexItemDTO '" + indexItemDTO.toString() + "' has a different namespace ('" + currNamespace + "') than the specified namespace  ('" + namespace + "').");
+				if (type != null && !type.equals(currType)) {
+					System.err.println("IndexItemDTO '" + indexItemDTO.toString() + "' has a different type ('" + currType + "') than the specified type  ('" + type + "').");
 				}
 
-				IndexItemConfigurable indexItemConfigurable = new IndexItemConfigurableImpl(this.config, currIndexProviderId, currNamespace, currName);
-				indexItemConfigurables.add(indexItemConfigurable);
+				IndexItemUpdatable indexItemUpdatable = new IndexItemUpdatableImpl(this.config, currIndexProviderId, currType, currName, currProperties);
+				indexItemConfigurables.add(indexItemUpdatable);
 			}
 		} catch (ClientException e) {
 			e.printStackTrace();
@@ -97,35 +76,50 @@ public class IndexProviderImpl extends IndexProvider {
 	}
 
 	@Override
-	public IndexItemConfigurable addIndexItem(String namespace, String name, Map<String, Object> properties) throws IOException {
-		IndexItemDTO newIndexItemDTO = null;
+	public IndexItemUpdatable addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
+		IndexItemUpdatable newIndexItemUpdatable = null;
 		try {
-			newIndexItemDTO = getClient().addIndexItem(this.indexProviderId, namespace, name, properties);
+			IndexItemDTO newIndexItemDTO = getClient().addIndexItem(indexProviderId, type, name, properties);
+			if (newIndexItemDTO != null) {
+
+				String currIndexProviderId = newIndexItemDTO.getIndexProviderId();
+				String currType = newIndexItemDTO.getType();
+				String currName = newIndexItemDTO.getName();
+				Map<String, Object> currProperties = newIndexItemDTO.getProperties();
+
+				newIndexItemUpdatable = new IndexItemUpdatableImpl(this.config, currIndexProviderId, currType, currName, currProperties);
+			}
 		} catch (ClientException e) {
 			e.printStackTrace();
 			throw new IOException(e);
 		}
+		return newIndexItemUpdatable;
+	}
 
-		if (newIndexItemDTO == null) {
-			throw new IOException("Cannot get new index item response (IndexItemDTO) from web service call for adding new index item.");
+	@Override
+	public boolean removeIndexItem(Integer indexItemId) throws IOException {
+		try {
+			StatusDTO status = getClient().removeIndexItem(indexItemId);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
 		}
+		return false;
+	}
 
-		String currIndexProviderId = newIndexItemDTO.getIndexProviderId();
-		String currNamespace = newIndexItemDTO.getNamespace();
-		String currName = newIndexItemDTO.getName();
-
-		if (this.indexProviderId != null && !indexProviderId.equals(currIndexProviderId)) {
-			System.err.println("The new IndexItemDTO '" + newIndexItemDTO.toString() + "' has a different indexProviderId ('" + currIndexProviderId + "') than the specified indexProviderId ('" + this.indexProviderId + "').");
+	@Override
+	public boolean removeIndexItem(String indexProviderId, String type, String name) throws IOException {
+		try {
+			StatusDTO status = getClient().removeIndexItem(indexProviderId, type, name);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
 		}
-		if (namespace != null && !namespace.equals(currNamespace)) {
-			System.err.println("The new IndexItemDTO '" + newIndexItemDTO.toString() + "' has a different namespace ('" + currNamespace + "') than the specified namespace  ('" + namespace + "').");
-		}
-		if (name != null && !name.equals(currName)) {
-			System.err.println("The new IndexItemDTO '" + newIndexItemDTO.toString() + "' has a different name ('" + currName + "') than the specified name  ('" + name + "').");
-		}
-
-		IndexItemConfigurable indexItemConfigurable = new IndexItemConfigurableImpl(this.config, currIndexProviderId, currNamespace, currName);
-		return indexItemConfigurable;
+		return false;
 	}
 
 }

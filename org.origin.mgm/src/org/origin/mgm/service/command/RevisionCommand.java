@@ -50,7 +50,7 @@ public class RevisionCommand extends AbstractCommand {
 		if (IndexServiceConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
 			Integer indexItemId = (Integer) this.arguments.get("indexItemId");
 			String indexProviderId = (String) this.arguments.get("indexProviderId");
-			String namespace = (String) this.arguments.get("namespace");
+			String type = (String) this.arguments.get("type");
 			String name = (String) this.arguments.get("name");
 			Map<String, Object> properties = (Map<String, Object>) this.arguments.get("properties");
 			Date createTime = (Date) this.arguments.get("createTime");
@@ -60,7 +60,7 @@ public class RevisionCommand extends AbstractCommand {
 			// Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 
 			try {
-				IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, namespace, name, properties, createTime, lastUpdateTime);
+				IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, type, name, properties, createTime, lastUpdateTime);
 				this.indexServiceUpdatable.addCachedIndexItem(indexItem);
 			} catch (IndexServiceException e) {
 				e.printStackTrace();
@@ -105,7 +105,7 @@ public class RevisionCommand extends AbstractCommand {
 		if (IndexServiceConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
 			Integer indexItemId = (Integer) this.undoArguments.get("indexItemId");
 			String indexProviderId = (String) this.undoArguments.get("indexProviderId");
-			String namespace = (String) this.undoArguments.get("namespace");
+			String type = (String) this.undoArguments.get("type");
 			String name = (String) this.undoArguments.get("name");
 			Map<String, Object> properties = (Map<String, Object>) this.undoArguments.get("properties");
 			Date createTime = (Date) this.undoArguments.get("createTime");
@@ -114,7 +114,7 @@ public class RevisionCommand extends AbstractCommand {
 			// String propertiesString = (String) undoArguments.get("properties");
 			// Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 
-			IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, namespace, name, properties, createTime, lastUpdateTime);
+			IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, type, name, properties, createTime, lastUpdateTime);
 			try {
 				this.indexServiceUpdatable.addCachedIndexItem(indexItem);
 			} catch (IndexServiceException e) {

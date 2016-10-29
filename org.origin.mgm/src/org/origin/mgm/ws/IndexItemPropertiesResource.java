@@ -149,9 +149,8 @@ public class IndexItemPropertiesResource extends AbstractApplicationResource {
 	 * 
 	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexitemid}/properties?propertynames={propertyNamesString}
 	 * 
-	 * @param namespace
-	 * @param name
-	 * @param propName
+	 * @param indexitemid
+	 * @param propertyNamesString
 	 * @return
 	 */
 	@DELETE

@@ -11,13 +11,24 @@ import org.origin.common.json.JSONUtil;
 public class IndexItemDTO {
 
 	@XmlElement
+	protected Integer indexItemId;
+	@XmlElement
 	protected String indexProviderId;
 	@XmlElement
-	protected String namespace;
+	protected String type;
 	@XmlElement
 	protected String name;
 	@XmlElement
 	protected Map<String, Object> properties;
+
+	@XmlElement
+	public Integer getIndexItemId() {
+		return indexItemId;
+	}
+
+	public void setIndexItemId(Integer indexItemId) {
+		this.indexItemId = indexItemId;
+	}
 
 	@XmlElement
 	public String getIndexProviderId() {
@@ -29,12 +40,12 @@ public class IndexItemDTO {
 	}
 
 	@XmlElement
-	public String getNamespace() {
-		return namespace;
+	public String getType() {
+		return type;
 	}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	@XmlElement
@@ -62,7 +73,7 @@ public class IndexItemDTO {
 		StringBuilder sb = new StringBuilder();
 		sb.append("IndexItemDTO (");
 		sb.append("indexProviderId='").append(this.indexProviderId).append("'");
-		sb.append(", namespace=").append(this.namespace);
+		sb.append(", type=").append(this.type);
 		sb.append(", name=").append(this.name);
 		sb.append(", properties=").append(propertiesString);
 		sb.append(")");

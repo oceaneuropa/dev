@@ -1,54 +1,44 @@
 package org.origin.common.loadbalance;
 
-import java.util.List;
-
 /**
+ * 
+ * 
  * https://devcentral.f5.com/articles/intro-to-load-balancing-for-developers-ndash-the-algorithms
+ * 
+ * https://f5.com/resources/white-papers/load-balancing-101-nuts-and-bolts
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
- * @param <RES>
+ * @param <S>
  */
-public interface LoadBalancePolicy<RES extends LoadBalanceableResource> {
+public interface LoadBalancePolicy<S> {
 
 	/**
+	 * Initialize the load balance policy.
 	 * 
-	 * @param resource
-	 * @return
+	 * @param lb
 	 */
-	public boolean contains(RES resource);
+	void init(LoadBalancer<S> lb);
 
 	/**
-	 * 
-	 * @return
-	 */
-	public List<RES> getResources();
-
-	/**
-	 * 
-	 * @param resources
-	 */
-	public void setResources(List<RES> resources);
-
-	/**
-	 * Add a resource.
-	 * 
-	 * @param resource
-	 */
-	public void addResource(RES resource);
-
-	/**
-	 * Remove a resource.
-	 * 
-	 * @param resource
-	 */
-	public void removeResource(RES resource);
-
-	/**
-	 * Get the next load balance resource.
+	 * Get the load balancer.
 	 * 
 	 * @return
 	 */
-	public RES next();
+	LoadBalancer<S> getLoadBalancer();
+
+	/**
+	 * Get the next load balance service.
+	 * 
+	 * @return
+	 */
+	LoadBalanceService<S> next();
+
+	/**
+	 * Dispose the load balance policy.
+	 * 
+	 * @param lb
+	 */
+	void dispose(LoadBalancer<S> lb);
 
 }
