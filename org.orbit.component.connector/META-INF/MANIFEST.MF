@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Component Connector
+Bundle-SymbolicName: org.orbit.component.connector
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.orbit.component.connector.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: com.fasterxml.jackson.databind,
+ javax.ws.rs.client;version="2.0.0",
+ javax.ws.rs.core;version="2.0.0",
+ org.glassfish.jersey.media.multipart,
+ org.glassfish.jersey.media.multipart.file,
+ org.orbit.component.api.appstore,
+ org.orbit.component.api.configregistry,
+ org.orbit.component.model.appstore.dto,
+ org.origin.common.io,
+ org.origin.common.loadbalance,
+ org.origin.common.rest.client,
+ org.origin.common.rest.model,
+ org.origin.common.util,
+ org.origin.mgm.client.api,
+ org.origin.mgm.client.loadbalance,
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy

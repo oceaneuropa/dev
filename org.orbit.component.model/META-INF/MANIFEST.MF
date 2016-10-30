@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Component Model
+Bundle-SymbolicName: org.orbit.component.model
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.orbit.component.model.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.orbit.component.api.appstore,
+ org.orbit.component.api.configregistry,
+ org.origin.common.jdbc,
+ org.origin.common.rest.model,
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: org.orbit.component.model,
+ org.orbit.component.model.appstore,
+ org.orbit.component.model.appstore.dto,
+ org.orbit.component.model.appstore.exception,
+ org.orbit.component.model.appstore.runtime,
+ org.orbit.component.model.configregistry.dto,
+ org.orbit.component.model.configregistry.exception,
+ org.orbit.component.model.configregistry.runtime
