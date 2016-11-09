@@ -3,8 +3,12 @@ package org.orbit.component.connector;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.connector.appstore.DistributedAppStoreManager;
+import org.orbit.component.connector.appstore.AppStoreManagerImpl;
+import org.orbit.component.connector.configregistry.ConfigRegistryManagerImpl;
 import org.origin.common.util.PropertyUtil;
+import org.origin.mgm.client.OriginConstants;
+import org.origin.mgm.client.api.IndexServiceUtil;
+import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -16,24 +20,31 @@ public class Activator implements BundleActivator {
 		return context;
 	}
 
-	protected DistributedAppStoreManager appStoreManager;
+	protected IndexServiceLoadBalancer indexServiceLoadBalancer;
+
+	protected AppStoreManagerImpl appStoreManager;
+	protected ConfigRegistryManagerImpl configRegistryManager;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 
 		// -----------------------------------------------------------------------------
-		// Global index service
+		// IndexProvider
 		// -----------------------------------------------------------------------------
-		Map<Object, Object> props = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, props, "indexservice.url");
+		// load properties from accessing index service
+		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OriginConstants.COMPONENT_INDEX_SERVICE_URL_PROP);
+		this.indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(indexProviderProps);
 
 		// -----------------------------------------------------------------------------
-		// AppStore connector
+		// Start service managers
 		// -----------------------------------------------------------------------------
-		// Register AppStoreManager service
-		this.appStoreManager = new DistributedAppStoreManager(bundleContext, props);
+		this.appStoreManager = new AppStoreManagerImpl(bundleContext, this.indexServiceLoadBalancer);
 		this.appStoreManager.start();
+
+		this.configRegistryManager = new ConfigRegistryManagerImpl(bundleContext, this.indexServiceLoadBalancer);
+		this.configRegistryManager.start();
 	}
 
 	@Override
@@ -41,12 +52,16 @@ public class Activator implements BundleActivator {
 		Activator.context = null;
 
 		// -----------------------------------------------------------------------------
-		// AppStore connector
+		// Stop service managers
 		// -----------------------------------------------------------------------------
-		// Unregister AppStoreManager service
 		if (this.appStoreManager != null) {
 			this.appStoreManager.stop();
 			this.appStoreManager = null;
+		}
+
+		if (this.configRegistryManager != null) {
+			this.configRegistryManager.stop();
+			this.configRegistryManager = null;
 		}
 	}
 

@@ -5,11 +5,12 @@ import java.util.Map;
 
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexServiceConfiguration;
-import org.origin.mgm.client.ws.IndexServiceClient;
+import org.origin.mgm.client.ws.IndexServiceWSClient;
 
 public class IndexItemImpl implements IndexItem {
 
 	protected IndexServiceConfiguration config;
+	protected Integer indexItemId;
 	protected String indexProviderId;
 	protected String type;
 	protected String name;
@@ -18,21 +19,28 @@ public class IndexItemImpl implements IndexItem {
 	/**
 	 * 
 	 * @param config
+	 * @param indexItemId
 	 * @param indexProviderId
 	 * @param type
 	 * @param name
 	 * @param properties
 	 */
-	public IndexItemImpl(IndexServiceConfiguration config, String indexProviderId, String type, String name, Map<String, Object> properties) {
+	public IndexItemImpl(IndexServiceConfiguration config, Integer indexItemId, String indexProviderId, String type, String name, Map<String, Object> properties) {
 		this.config = config;
+		this.indexItemId = indexItemId;
 		this.indexProviderId = indexProviderId;
 		this.type = type;
 		this.name = name;
 		this.properties = properties;
 	}
 
-	protected IndexServiceClient getClient() {
-		return this.config.getIndexServiceClient();
+	protected IndexServiceWSClient getClient() {
+		return this.config.getClient();
+	}
+
+	@Override
+	public Integer getIndexItemId() {
+		return this.indexItemId;
 	}
 
 	@Override

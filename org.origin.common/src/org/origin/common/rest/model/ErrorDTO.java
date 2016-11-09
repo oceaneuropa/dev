@@ -10,47 +10,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ErrorDTO {
 
-	public static ErrorDTO newInstance(String message) {
-		return new ErrorDTO(message);
-	}
-
-	public static ErrorDTO newInstance(String code, String message) {
-		return new ErrorDTO(code, message);
-	}
-
-	public static ErrorDTO newInstance(String code, String message, String exception) {
-		return new ErrorDTO(code, message, exception);
-	}
-
-	/**
-	 * Convert Exception to Error DTO.
-	 * 
-	 * @param e
-	 * @param errorCode
-	 * @return
-	 */
-	public static ErrorDTO toDTO(Exception e, String errorCode) {
-		if (e == null) {
-			return null;
-		}
-
-		ErrorDTO dto = new ErrorDTO();
-
-		dto.setCode(errorCode);
-		dto.setMessage(e.getMessage());
-
-		if (e.getCause() != null) {
-			String causeName = e.getCause().getClass().getName();
-			String causeMessage = e.getCause().getMessage();
-			dto.setException(causeName + " " + causeMessage);
-		} else {
-			String causeName = e.getClass().getName();
-			dto.setException(causeName);
-		}
-
-		return dto;
-	}
-
 	@XmlElement
 	protected String code;
 	@XmlElement

@@ -1,10 +1,11 @@
 package org.origin.mgm.client.api;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.origin.common.rest.client.ClientConfiguration;
-import org.origin.mgm.client.ws.IndexServiceClient;
+import org.origin.mgm.client.ws.IndexServiceWSClient;
 
 public class IndexServiceConfiguration {
 
@@ -13,37 +14,46 @@ public class IndexServiceConfiguration {
 	protected String username;
 	protected String password;
 
-	protected Map<ClientConfiguration, IndexServiceClient> clientMap = new HashMap<ClientConfiguration, IndexServiceClient>();
+	protected Map<ClientConfiguration, IndexServiceWSClient> clientMap = new HashMap<ClientConfiguration, IndexServiceWSClient>();
 
 	/**
 	 * 
-	 * @param url
-	 * @param username
-	 * @param password
+	 * @param fullUrl
+	 *            full URL string with context root.
 	 */
-	public IndexServiceConfiguration(String url, String username, String password) {
-		this(url, "/indexservice/v1", username, password);
+	public IndexServiceConfiguration(String fullUrl) {
+		try {
+			URI uri = URI.create(fullUrl);
+			if (uri != null) {
+				String path = uri.getPath();
+				if (path != null && !path.isEmpty()) {
+					this.url = fullUrl.substring(0, fullUrl.indexOf(path));
+					this.contextRoot = path;
+				} else {
+					this.url = fullUrl;
+					this.contextRoot = null;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * 
 	 * @param url
 	 * @param contextRoot
-	 * @param username
-	 * @param password
 	 */
-	public IndexServiceConfiguration(String url, String contextRoot, String username, String password) {
+	public IndexServiceConfiguration(String url, String contextRoot) {
 		this.url = url;
 		this.contextRoot = contextRoot;
-		this.username = username;
-		this.password = password;
 	}
 
-	public synchronized IndexServiceClient getIndexServiceClient() {
-		ClientConfiguration config = ClientConfiguration.get(url, contextRoot, username, password);
-		IndexServiceClient fsClient = this.clientMap.get(config);
+	public synchronized IndexServiceWSClient getClient() {
+		ClientConfiguration config = ClientConfiguration.get(this.url, this.contextRoot, this.username, this.password);
+		IndexServiceWSClient fsClient = this.clientMap.get(config);
 		if (fsClient == null) {
-			fsClient = new IndexServiceClient(config);
+			fsClient = new IndexServiceWSClient(config);
 			this.clientMap.put(config, fsClient);
 		}
 		return fsClient;

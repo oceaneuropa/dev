@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexService;
 import org.origin.mgm.client.api.IndexServiceConfiguration;
-import org.origin.mgm.client.ws.IndexServiceClient;
+import org.origin.mgm.client.ws.IndexServiceWSClient;
 import org.origin.mgm.model.dto.IndexItemDTO;
 
 public class IndexServiceImpl implements IndexService {
@@ -27,8 +28,8 @@ public class IndexServiceImpl implements IndexService {
 		this.config = config;
 	}
 
-	protected IndexServiceClient getClient() {
-		return this.config.getIndexServiceClient();
+	protected IndexServiceWSClient getClient() {
+		return this.config.getClient();
 	}
 
 	@Override
@@ -73,19 +74,18 @@ public class IndexServiceImpl implements IndexService {
 		try {
 			List<IndexItemDTO> indexItemDTOs = getClient().getIndexItems(indexProviderId, type);
 			for (IndexItemDTO indexItemDTO : indexItemDTOs) {
+				Integer currIndexItemId = indexItemDTO.getIndexItemId();
 				String currIndexProviderId = indexItemDTO.getIndexProviderId();
 				String currType = indexItemDTO.getType();
 				String currName = indexItemDTO.getName();
-				Map<String, Object> currProperties = indexItemDTO.getProperties();
 
-				if (indexProviderId != null && !indexProviderId.equals(currIndexProviderId)) {
-					System.err.println("IndexItemDTO '" + indexItemDTO.toString() + "' has a different indexProviderId ('" + currIndexProviderId + "') than the specified indexProviderId ('" + indexProviderId + "').");
-				}
-				if (type != null && !type.equals(currType)) {
-					System.err.println("IndexItemDTO '" + indexItemDTO.toString() + "' has a different type ('" + currType + "') than the specified type  ('" + type + "').");
-				}
+				// Map<String, Object> currProperties = indexItemDTO.getProperties();
+				String propertiesString = indexItemDTO.getPropertiesString();
+				Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
 
-				IndexItemImpl indexItem = new IndexItemImpl(this.config, currIndexProviderId, currType, currName, currProperties);
+				checkIndexItem(null, indexProviderId, type, null, indexItemDTO);
+
+				IndexItemImpl indexItem = new IndexItemImpl(this.config, currIndexItemId, currIndexProviderId, currType, currName, currProperties);
 				indexItems.add(indexItem);
 			}
 		} catch (ClientException e) {
@@ -93,6 +93,80 @@ public class IndexServiceImpl implements IndexService {
 			throw new IOException(e);
 		}
 		return indexItems;
+	}
+
+	// @Override
+	public boolean hasIndexItem(String indexProviderId, String type, String name) throws IOException {
+		// try {
+		// return getClient().indexItemExists(indexProviderId, type, name);
+		// } catch (ClientException e) {
+		// e.printStackTrace();
+		// throw new IOException(e);
+		// }
+		return false;
+	}
+
+	// @Override
+	public boolean hasIndexItem(Integer indexItemId) throws IOException {
+		// try {
+		// return getClient().indexItemExists(indexItemId);
+		// } catch (ClientException e) {
+		// e.printStackTrace();
+		// throw new IOException(e);
+		// }
+		return false;
+	}
+
+	@Override
+	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IOException {
+		IndexItem indexItem = null;
+		try {
+			IndexItemDTO indexItemDTO = getClient().getIndexItem(indexProviderId, type, name);
+			if (indexItemDTO != null) {
+				Integer currIndexItemId = indexItemDTO.getIndexItemId();
+				String currIndexProviderId = indexItemDTO.getIndexProviderId();
+				String currType = indexItemDTO.getType();
+				String currName = indexItemDTO.getName();
+
+				// Map<String, Object> currProperties = indexItemDTO.getProperties();
+				String propertiesString = indexItemDTO.getPropertiesString();
+				Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
+
+				checkIndexItem(null, indexProviderId, type, name, indexItemDTO);
+
+				indexItem = new IndexItemImpl(this.config, currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
+			throw new IOException(e);
+		}
+		return indexItem;
+	}
+
+	@Override
+	public IndexItem getIndexItem(Integer indexItemId) throws IOException {
+		IndexItem indexItem = null;
+		try {
+			IndexItemDTO indexItemDTO = getClient().getIndexItem(indexItemId);
+			if (indexItemDTO != null) {
+				Integer currIndexItemId = indexItemDTO.getIndexItemId();
+				String currIndexProviderId = indexItemDTO.getIndexProviderId();
+				String currType = indexItemDTO.getType();
+				String currName = indexItemDTO.getName();
+
+				// Map<String, Object> currProperties = indexItemDTO.getProperties();
+				String propertiesString = indexItemDTO.getPropertiesString();
+				Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
+
+				checkIndexItem(indexItemId, null, null, null, indexItemDTO);
+
+				indexItem = new IndexItemImpl(this.config, currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+			}
+		} catch (ClientException e) {
+			e.printStackTrace();
+			throw new IOException(e);
+		}
+		return indexItem;
 	}
 
 	@Override
@@ -104,6 +178,33 @@ public class IndexServiceImpl implements IndexService {
 		} catch (ClientException e) {
 			e.printStackTrace();
 			throw new IOException(e);
+		}
+	}
+
+	/**
+	 * @param indexItemId
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @param indexItemDTO
+	 */
+	protected void checkIndexItem(Integer indexItemId, String indexProviderId, String type, String name, IndexItemDTO indexItemDTO) {
+		Integer currIndexItemId = indexItemDTO.getIndexItemId();
+		String currIndexProviderId = indexItemDTO.getIndexProviderId();
+		String currType = indexItemDTO.getType();
+		String currName = indexItemDTO.getName();
+
+		if (indexItemId != null && currIndexItemId != null && indexItemId.intValue() != currIndexItemId.intValue()) {
+			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different indexItemId ('" + currIndexItemId + "') than the specified indexItemId ('" + indexItemId + "').");
+		}
+		if (indexProviderId != null && !indexProviderId.equals(currIndexProviderId)) {
+			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different indexProviderId ('" + currIndexProviderId + "') than the specified indexProviderId ('" + indexProviderId + "').");
+		}
+		if (type != null && !type.equals(currType)) {
+			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different type ('" + currType + "') than the specified type  ('" + type + "').");
+		}
+		if (name != null && !name.equals(currName)) {
+			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different name ('" + currName + "') than the specified name  ('" + name + "').");
 		}
 	}
 

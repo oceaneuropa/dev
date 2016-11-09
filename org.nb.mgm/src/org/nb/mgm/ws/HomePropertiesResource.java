@@ -126,13 +126,13 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = null;
 		if (succeed) {
-			statusDTO = new StatusDTO("200", "success", MessageFormat.format("Home (id={0}) properties are set successfully.", new Object[] { homeId }));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("Home (id={0}) properties are set successfully.", new Object[] { homeId }));
+			return Response.ok().entity(statusDTO).build();
 		} else {
-			statusDTO = new StatusDTO("200", "fail", MessageFormat.format("Home (id={0}) properties are not set.", new Object[] { homeId }));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, MessageFormat.format("Home (id={0}) properties are not set.", new Object[] { homeId }));
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 		}
-		return Response.ok().entity(statusDTO).build();
 	}
 
 	/**
@@ -154,8 +154,7 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 	/**
 	 * Delete Home properties.
 	 * 
-	 * URL (DELETE):
-	 * {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -191,13 +190,13 @@ public class HomePropertiesResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = null;
 		if (succeed) {
-			statusDTO = new StatusDTO("200", "success", MessageFormat.format("Home (id={0}) properties are removed successfully.", new Object[] { homeId }));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("Home (id={0}) properties are removed successfully.", new Object[] { homeId }));
+			return Response.ok().entity(statusDTO).build();
 		} else {
-			statusDTO = new StatusDTO("200", "fail", MessageFormat.format("Home (id={0}) properties are not removed.", new Object[] { homeId }));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, MessageFormat.format("Home (id={0}) properties are not removed.", new Object[] { homeId }));
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 		}
-		return Response.ok().entity(statusDTO).build();
 	}
 
 }

@@ -276,7 +276,7 @@ public class MetaSpaceResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSpace is updated successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "MetaSpace is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 
@@ -310,7 +310,7 @@ public class MetaSpaceResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSpace is deleted successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "MetaSpace is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 

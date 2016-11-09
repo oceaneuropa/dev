@@ -10,10 +10,10 @@ import java.util.concurrent.ScheduledFuture;
 
 import org.origin.common.util.PropertiesAware;
 import org.origin.common.util.PropertyUtil;
+import org.origin.mgm.OriginConstants;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.service.IndexService;
-import org.origin.mgm.service.IndexServiceConstants;
 
 public class IndexServicePrinter {
 
@@ -105,15 +105,15 @@ public class IndexServicePrinter {
 	}
 
 	protected String getServiceName() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_SERVICE_NAME, null);
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_NAME_PROP, null);
 	}
 
 	protected String getServiceUrl() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_SERVICE_URL, null);
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_URL_PROP, null);
 	}
 
 	protected String getServiceContextRoot() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), IndexServiceConstants.CONFIG_SERVICE_CONTEXT_ROOT, null);
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT_PROP, null);
 	}
 
 	/**
@@ -123,28 +123,25 @@ public class IndexServicePrinter {
 		String name = getServiceName();
 		String url = getServiceUrl();
 		String contextRoot = getServiceContextRoot();
-		// String username = getNodeUsername();
-		// String password = getNodePassword();
 
-		System.out.println("Profile:");
+		System.out.println("IndexService Profile:");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("node=" + name);
-		System.out.println("url=" + url);
-		System.out.println("contextRoot=" + contextRoot);
-		// System.out.println("username=" + username);
-		// System.out.println("password=" + password);
+		System.out.println("Name: " + name);
+		System.out.println("URL: " + url);
+		System.out.println("Context Root: " + contextRoot);
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println();
 	}
 
 	public void printIndexItems() throws IndexServiceException {
 		List<IndexItem> indexItems = indexService.getIndexItems();
-		System.out.println("Cached index items:");
+		System.out.println("Cached data (" + indexItems.size() + "):");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
 		for (IndexItem indexItem : indexItems) {
 			System.out.println(indexItem);
 		}
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("Number of index items: " + indexItems.size());
+		System.out.println();
 	}
 
 }

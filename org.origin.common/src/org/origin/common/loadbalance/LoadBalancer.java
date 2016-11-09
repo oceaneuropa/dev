@@ -1,7 +1,6 @@
 package org.origin.common.loadbalance;
 
-import java.util.Comparator;
-import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -15,12 +14,10 @@ import java.util.List;
  */
 public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 
-	// behaves like Controls with LayoutData (represented as properties in a LB service)
 	protected List<LoadBalanceService<S>> services;
-	// behaves like Layout
 	protected LoadBalancePolicy<S> policy;
 
-	protected LoadBalanceServiceListenerSupport<S> serviceListenerSupport = new LoadBalanceServiceListenerSupport<S>();
+	protected LoadBalanceServiceListenerSupport<S> listenerSupport = new LoadBalanceServiceListenerSupport<S>();
 
 	/**
 	 * 
@@ -33,13 +30,29 @@ public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 		this.services = services;
 	}
 
-	/**
-	 * Get services.
-	 * 
-	 * @return
-	 */
 	public List<LoadBalanceService<S>> getServices() {
 		return services;
+	}
+
+	/**
+	 * Get service by id.
+	 * 
+	 * @param serviceId
+	 * @return
+	 */
+	public LoadBalanceService<S> getService(String serviceId) {
+		if (serviceId == null) {
+			throw new IllegalArgumentException("serviceId is null");
+		}
+		LoadBalanceService<S> result = null;
+		for (Iterator<LoadBalanceService<S>> itor = this.services.iterator(); itor.hasNext();) {
+			LoadBalanceService<S> currService = itor.next();
+			if (serviceId.equals(currService.getId())) {
+				result = currService;
+				break;
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -48,15 +61,21 @@ public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 	 * @param service
 	 * @return
 	 */
-	public boolean addService(LoadBalanceService<S> service) {
-		if (service != null && !this.services.contains(service)) {
-			boolean succeed = this.services.add(service);
-			if (succeed) {
-				notifyServiceAdded(service);
+	public synchronized boolean addService(LoadBalanceService<S> service) {
+		boolean succeed = false;
+		if (service != null) {
+			// remove existing lb service with same id, if found.
+			LoadBalanceService<S> existingService = getService(service.getId());
+			if (existingService != null) {
+				this.services.remove(existingService);
 			}
-			return succeed;
+
+			// add the new lb service to the list
+			if (!this.services.contains(service)) {
+				succeed = this.services.add(service);
+			}
 		}
-		return false;
+		return succeed;
 	}
 
 	/**
@@ -65,15 +84,22 @@ public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 	 * @param service
 	 * @return
 	 */
-	public boolean removeService(LoadBalanceService<S> service) {
-		if (service != null && this.services.contains(service)) {
-			boolean succeed = this.services.remove(service);
-			if (succeed) {
-				notifyServiceRemoved(service);
+	public synchronized boolean removeService(LoadBalanceService<S> service) {
+		boolean succeed = false;
+		if (service != null) {
+			String serviceId = service.getId();
+
+			for (Iterator<LoadBalanceService<S>> itor = this.services.iterator(); itor.hasNext();) {
+				LoadBalanceService<S> currService = itor.next();
+
+				// remove lb service of same instance or same id
+				if (currService == service || currService.getId().equals(serviceId)) {
+					itor.remove();
+					succeed = true;
+				}
 			}
-			return succeed;
 		}
-		return false;
+		return succeed;
 	}
 
 	/**
@@ -110,30 +136,6 @@ public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 	}
 
 	/**
-	 * Start monitoring on each LoadBalanceService.
-	 * 
-	 * Weights are based on continuous monitoring of the servers and are therefore continually changing
-	 * 
-	 */
-	public void start() {
-		// Each load balance service to start monitoring its referenced remote service.
-		for (LoadBalanceService<S> service : this.services) {
-			service.start();
-		}
-	}
-
-	/**
-	 * Stop monitoring on each LoadBalanceService.
-	 * 
-	 */
-	public void stop() {
-		// Each load balance service to stop monitoring its referenced remote service.
-		for (LoadBalanceService<S> service : this.services) {
-			service.stop();
-		}
-	}
-
-	/**
 	 * Return the next service.
 	 * 
 	 * @return
@@ -143,86 +145,36 @@ public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 			throw new IllegalStateException("Load balance policy is not set.");
 		}
 		if (this.services.isEmpty()) {
-			System.out.println(getClass().getSimpleName() + ".getNext() services is empty.");
 			return null;
 		}
 		if (this.services.size() == 1) {
 			return this.services.get(0);
 		}
-
-		int size = this.services.size();
-
 		return this.policy.next();
 	}
 
 	/** LoadBalanceServiceListener support */
 	@Override
 	public LoadBalanceServiceListener<S>[] getServiceListeners() {
-		return this.serviceListenerSupport.getServiceListeners();
+		return this.listenerSupport.getServiceListeners();
 	}
 
 	@Override
 	public boolean addServiceListener(LoadBalanceServiceListener<S> listener) {
-		return this.serviceListenerSupport.addServiceListener(listener);
+		return this.listenerSupport.addServiceListener(listener);
 	}
 
 	@Override
 	public boolean removeServiceListener(LoadBalanceServiceListener<S> listener) {
-		return this.serviceListenerSupport.removeServiceListener(listener);
+		return this.listenerSupport.removeServiceListener(listener);
 	}
 
 	protected void notifyServiceAdded(LoadBalanceService<S> service) {
-		this.serviceListenerSupport.notifyServiceAdded(service);
+		this.listenerSupport.notifyServiceAdded(service);
 	}
 
 	protected void notifyServiceRemoved(LoadBalanceService<S> service) {
-		this.serviceListenerSupport.notifyServiceRemoved(service);
-	}
-
-	public static LoadBalanceServicePingComparator PING_COMPARATOR = new LoadBalanceServicePingComparator();
-
-	public static class LoadBalanceServicePingComparator implements Comparator<LoadBalanceService<?>> {
-		@Override
-		public int compare(LoadBalanceService<?> lbService1, LoadBalanceService<?> lbService2) {
-			Date pingDate1 = (Date) (lbService1.hasProperty("last_ping_time") ? lbService1.getProperty("last_ping_time") : null);
-			Date pingDate2 = (Date) (lbService2.hasProperty("last_ping_time") ? lbService1.getProperty("last_ping_time") : null);
-			if (pingDate1 == null && pingDate2 == null) {
-				return 0;
-			}
-			if (pingDate1 != null && pingDate2 == null) {
-				return -1;
-			}
-			if (pingDate1 == null && pingDate2 != null) {
-				return 1;
-			}
-			return pingDate1.compareTo(pingDate2);
-		}
+		this.listenerSupport.notifyServiceRemoved(service);
 	}
 
 }
-
-/// **
-// *
-// * @param timeout
-// * @return
-// */
-// public S getService(int timeout) {
-// S service = getNext();
-// if (timeout <= 0) {
-// return service;
-// }
-// long totalWaitingTime = 0;
-// while (service == null) {
-// try {
-// Thread.sleep(500);
-// } catch (InterruptedException e) {
-// e.printStackTrace();
-// }
-// totalWaitingTime += 500;
-// if (totalWaitingTime > timeout) {
-// break;
-// }
-// service = getNext();
-// }
-// return service;
-// }

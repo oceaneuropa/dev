@@ -8,6 +8,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * 
+ * @see org.apache.activemq.transport.AbstractInactivityMonitor
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public class ThreadPoolTimer {
 
 	// monitor every 10 seconds
@@ -33,6 +40,14 @@ public class ThreadPoolTimer {
 	/**
 	 * 
 	 * @param name
+	 */
+	public ThreadPoolTimer(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * 
+	 * @param name
 	 * @param runnable
 	 */
 	public ThreadPoolTimer(String name, Runnable runnable) {
@@ -40,6 +55,14 @@ public class ThreadPoolTimer {
 			throw new IllegalArgumentException("runnable is null");
 		}
 		this.name = name;
+		this.runnable = runnable;
+	}
+
+	public Runnable getRunnable() {
+		return runnable;
+	}
+
+	public void setRunnable(Runnable runnable) {
 		this.runnable = runnable;
 	}
 
@@ -144,7 +167,7 @@ public class ThreadPoolTimer {
 						long elapsed = (now - lastExecTime);
 
 						if (lastExecTime != 0) {
-							System.out.println(toString() + " " + elapsed + " ms elapsed since last running.");
+							// System.out.println(toString() + " " + elapsed + " ms elapsed since last running.");
 						}
 
 						// If less than 20% of the interval time elapsed since last monitoring, abort this round of monitoring.
@@ -153,6 +176,7 @@ public class ThreadPoolTimer {
 							return;
 						}
 
+						System.out.println(toString() + " run.");
 						threadPoolExecutor.execute(new Runnable() {
 							@Override
 							public void run() {
@@ -170,7 +194,7 @@ public class ThreadPoolTimer {
 
 				@Override
 				public String toString() {
-					return name + " TimerTask";
+					return name;
 				}
 			};
 			// task (monitorTimerTask)

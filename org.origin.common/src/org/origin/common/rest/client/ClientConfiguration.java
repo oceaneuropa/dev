@@ -110,6 +110,14 @@ public class ClientConfiguration {
 	/**
 	 * 
 	 * @param url
+	 */
+	public ClientConfiguration(String url) {
+		this(url, null);
+	}
+
+	/**
+	 * 
+	 * @param url
 	 * @param contextRoot
 	 */
 	public ClientConfiguration(String url, String contextRoot) {
@@ -132,34 +140,18 @@ public class ClientConfiguration {
 			this.scheme = scheme;
 			this.host = uri.getHost();
 			this.port = uri.getPort();
+
+			String path = uri.getPath();
+			if (contextRoot == null) {
+				if (path != null) {
+					contextRoot = path;
+				}
+			}
+
 			if (this.port < 0) {
 				this.port = DEFAULT_PORT;
 			}
 		}
-		this.contextRoot = contextRoot;
-	}
-
-	/**
-	 * 
-	 * @param scheme
-	 * @param host
-	 * @param port
-	 * @param contextRoot
-	 */
-	public ClientConfiguration(String scheme, String host, int port, String contextRoot) {
-		if (scheme == null || scheme.isEmpty() || (!"http".equals(scheme) && !"https".equals(scheme))) {
-			scheme = "http";
-		}
-		if (host == null || host.isEmpty()) {
-			throw new IllegalArgumentException("host is empty.");
-		}
-		if (this.port < 0) {
-			this.port = DEFAULT_PORT;
-		}
-		this.url = scheme + "://" + host + ":" + port;
-		this.scheme = scheme;
-		this.host = host;
-		this.port = port;
 		this.contextRoot = contextRoot;
 	}
 
@@ -311,4 +303,32 @@ public class ClientConfiguration {
 		return builder;
 	}
 
+	public static void main(String[] args) {
+		ClientConfiguration config = new ClientConfiguration("http://127.0.0.1:10001/orbit/v1", null);
+	}
+
 }
+
+/// **
+// *
+// * @param scheme
+// * @param host
+// * @param port
+// * @param contextRoot
+// */
+// public ClientConfiguration(String scheme, String host, int port, String contextRoot) {
+// if (scheme == null || scheme.isEmpty() || (!"http".equals(scheme) && !"https".equals(scheme))) {
+// scheme = "http";
+// }
+// if (host == null || host.isEmpty()) {
+// throw new IllegalArgumentException("host is empty.");
+// }
+// if (this.port < 0) {
+// this.port = DEFAULT_PORT;
+// }
+// this.url = scheme + "://" + host + ":" + port;
+// this.scheme = scheme;
+// this.host = host;
+// this.port = port;
+// this.contextRoot = contextRoot;
+// }

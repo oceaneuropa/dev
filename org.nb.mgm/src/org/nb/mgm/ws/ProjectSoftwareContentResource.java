@@ -88,7 +88,7 @@ public class ProjectSoftwareContentResource extends AbstractApplicationResource 
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		} catch (IOException e) {
-			ErrorDTO error = handleError(e, "500", true);
+			ErrorDTO error = handleError(e, StatusDTO.RESP_500, true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		} finally {
 			IOUtil.closeQuietly(input, true);
@@ -140,9 +140,11 @@ public class ProjectSoftwareContentResource extends AbstractApplicationResource 
 
 			boolean succeed = mgm.setProjectSoftwareContent(projectId, softwareId, fileName, length, lastModified, uploadedInputStream);
 			if (succeed) {
-				return Response.ok().entity(StatusDTO.status("200", "success", "File is uplaoded.")).build();
+				StatusDTO status = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "File is uplaoded.");
+				return Response.ok().entity(status).build();
 			} else {
-				return Response.ok().entity(StatusDTO.status("201", "failed", "File is not uplaoded.")).build();
+				StatusDTO status = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "File is not uplaoded.");
+				return Response.status(Status.NOT_MODIFIED).entity(status).build();
 			}
 
 		} catch (ManagementException e) {

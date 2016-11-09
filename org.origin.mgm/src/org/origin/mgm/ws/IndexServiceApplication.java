@@ -9,7 +9,6 @@ import javax.ws.rs.core.Application;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
-import org.origin.common.rest.server.PingableResource;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,9 +56,9 @@ public class IndexServiceApplication extends AbstractApplication {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 
 		// resources
-		classes.add(PingableResource.class);
+		classes.add(IndexServiceResource.class);
 		classes.add(IndexItemsResource.class);
-		classes.add(IndexItemsCommandRequestResource.class);
+		classes.add(IndexItemResource.class);
 
 		// resolvers
 		classes.add(IndexServiceResolver.class);

@@ -321,7 +321,7 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "ProjectNode is updated successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ProjectNode is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 
@@ -377,15 +377,14 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "ProjectNode is deleted successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "ProjectNode is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 
 	/**
 	 * Check whether ProjectNode has specified attribute.
 	 * 
-	 * URL (GET):
-	 * {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/hasAttribute?attribute={attributeName}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/hasAttribute?attribute={attributeName}
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -437,8 +436,7 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 	/**
 	 * Get ProjectNode attribute.
 	 * 
-	 * URL (GET):
-	 * {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/attribute?attribute={attributeName}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/attribute?attribute={attributeName}
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -494,8 +492,7 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 	/**
 	 * On ProjectNode Action.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/action (Body parameter:
-	 * Action)
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/action (Body parameter: Action)
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -560,15 +557,15 @@ public class ProjectNodeResource extends AbstractApplicationResource {
 			}
 
 			if (!isActionSupported) {
-				StatusDTO statusDTO = new StatusDTO("401", "failed", "Action is not supported.");
-				return Response.ok().entity(statusDTO).build();
+				StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_400, StatusDTO.FAILED, "Action is not supported.");
+				return Response.status(Status.BAD_REQUEST).entity(statusDTO).build();
 			}
 			if (!succeed) {
-				StatusDTO statusDTO = new StatusDTO("401", "failed", "Failed to process the Action.");
-				return Response.ok().entity(statusDTO).build();
+				StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Failed to process the Action.");
+				return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 			}
 
-			StatusDTO statusDTO = new StatusDTO("200", "success", "Action is processed successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Action is processed successfully.");
 			return Response.ok().entity(statusDTO).build();
 
 		} catch (ManagementException e) {

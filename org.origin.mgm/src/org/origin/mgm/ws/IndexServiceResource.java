@@ -3,7 +3,9 @@ package org.origin.mgm.ws;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -18,27 +20,54 @@ import org.origin.mgm.model.dto.IndexItemCommandRequestDTO;
 import org.origin.mgm.service.IndexService;
 
 /**
- * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems/commandRequest (Body parameter: IndexItemCommandRequestDTO)
+ * IndexService resource
+ * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/ping
+ * 
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexservice/commandrequest (Body parameter: IndexItemCommandRequestDTO)
  * 
  */
-@javax.ws.rs.Path("/indexitems/commandRequest")
+@Path("/indexservice")
 @Produces(MediaType.APPLICATION_JSON)
-public class IndexItemsCommandRequestResource extends AbstractApplicationResource {
+public class IndexServiceResource extends AbstractApplicationResource {
 
 	protected boolean debug = true;
 
 	/**
+	 * Ping the index service.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/ping
+	 * 
+	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/ping
+	 * 
+	 * @return
+	 */
+	@Path("ping")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response ping() {
+		IndexService indexService = getService(IndexService.class);
+		if (indexService == null) {
+			return Response.status(Status.SERVICE_UNAVAILABLE).entity(String.valueOf(0)).build();
+		}
+		return Response.ok().entity(String.valueOf(1)).build();
+	}
+
+	/**
 	 * Post an command request to the index service.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems/commandRequest
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexservice/commandrequest (Body parameter: IndexItemCommandRequestDTO)
+	 * 
+	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/commandrequest (Body parameter: IndexItemCommandRequestDTO)
 	 * 
 	 * @param action
 	 * @param parameters
 	 * @return
 	 */
+	@Path("commandrequest")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response commandRequest(IndexItemCommandRequestDTO commandRequestDTOs) {
+	public Response onCommandRequest(IndexItemCommandRequestDTO commandRequestDTOs) {
 		if (commandRequestDTOs == null) {
 			ErrorDTO nullBody = new ErrorDTO("Body parameter (IndexItemCommandRequestDTO) is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullBody).build();
@@ -49,7 +78,7 @@ public class IndexItemsCommandRequestResource extends AbstractApplicationResourc
 		String parametersString = JSONUtil.toJsonString(parameters);
 
 		if (debug) {
-			System.out.println("IndexItemsActionResource.commandRequest()");
+			System.out.println("IndexServiceResource.onCommandRequest()");
 			System.out.println("\tcommand=" + command);
 			System.out.println("\tparameters=" + parametersString);
 		}
@@ -60,13 +89,13 @@ public class IndexItemsCommandRequestResource extends AbstractApplicationResourc
 			succeed = ((CommandRequestHandler) indexService).performCommand(command, parameters);
 		}
 
-		StatusDTO statusDTO = null;
 		if (succeed) {
-			statusDTO = new StatusDTO("200", "success", "Command '" + command + "' is executed successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Command '" + command + "' is executed successfully.");
+			return Response.ok().entity(statusDTO).build();
 		} else {
-			statusDTO = new StatusDTO("200", "fail", "Command '" + command + "' is not executed.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Command '" + command + "' is not executed.");
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 		}
-		return Response.ok().entity(statusDTO).build();
 	}
 
 }

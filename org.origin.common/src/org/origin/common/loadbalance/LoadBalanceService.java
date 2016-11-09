@@ -29,16 +29,6 @@ public interface LoadBalanceService<S> {
 	public String getId();
 
 	/**
-	 * Start monitoring the status of the service.
-	 */
-	public void start();
-
-	/**
-	 * Stop monitoring the status of the service.
-	 */
-	public void stop();
-
-	/**
 	 * 
 	 * @return
 	 */

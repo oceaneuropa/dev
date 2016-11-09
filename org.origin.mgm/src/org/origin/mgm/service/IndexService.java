@@ -100,7 +100,7 @@ public interface IndexService {
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public Map<String, ?> getProperties(Integer indexItemId) throws IndexServiceException;
+	public Map<String, Object> getProperties(Integer indexItemId) throws IndexServiceException;
 
 	/**
 	 * Get the property value of an index item.
@@ -110,7 +110,7 @@ public interface IndexService {
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public Map<String, ?> getProperty(Integer indexItemId, String propName) throws IndexServiceException;
+	public Map<String, Object> getProperty(Integer indexItemId, String propName) throws IndexServiceException;
 
 	/**
 	 * Set the properties of an index item.
@@ -119,7 +119,7 @@ public interface IndexService {
 	 * @param properties
 	 * @throws IndexServiceException
 	 */
-	public boolean setProperty(Integer indexItemId, Map<String, Object> properties) throws IndexServiceException;
+	public boolean setProperties(Integer indexItemId, Map<String, Object> properties) throws IndexServiceException;
 
 	/**
 	 * Remove the properties of an index item.

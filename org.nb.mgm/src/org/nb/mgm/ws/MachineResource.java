@@ -220,7 +220,7 @@ public class MachineResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "Machine is updated successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Machine is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 
@@ -250,7 +250,7 @@ public class MachineResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "Machine is removed successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Machine is removed successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 

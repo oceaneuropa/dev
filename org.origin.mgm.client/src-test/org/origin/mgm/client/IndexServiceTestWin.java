@@ -28,7 +28,7 @@ public class IndexServiceTestWin {
 	}
 
 	protected IndexService getIndexService() {
-		IndexServiceConfiguration config = new IndexServiceConfiguration("http://127.0.0.1:9090", "admin", "123");
+		IndexServiceConfiguration config = new IndexServiceConfiguration("http://127.0.0.1:9090/orbit/v1");
 		return IndexServiceFactory.getInstance().createIndexService(config);
 	}
 

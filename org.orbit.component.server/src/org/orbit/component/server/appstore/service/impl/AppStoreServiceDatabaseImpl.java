@@ -1,4 +1,4 @@
-package org.orbit.component.server.appstore.service;
+package org.orbit.component.server.appstore.service.impl;
 
 import java.io.InputStream;
 import java.sql.Connection;
@@ -11,9 +11,12 @@ import java.util.Properties;
 import org.orbit.component.model.appstore.exception.AppStoreException;
 import org.orbit.component.model.appstore.runtime.AppManifestRTO;
 import org.orbit.component.model.appstore.runtime.AppQueryRTO;
+import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.appstore.handler.AppCategoryTableHandler;
 import org.orbit.component.server.appstore.handler.AppMetadataTableHandler;
+import org.orbit.component.server.appstore.service.AppStoreService;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.rest.model.StatusDTO;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -82,10 +85,10 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	 * @return
 	 */
 	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = (String) this.props.get("appstore.jdbc.driver");
-		String url = (String) this.props.get("appstore.jdbc.url");
-		String username = (String) this.props.get("appstore.jdbc.username");
-		String password = (String) this.props.get("appstore.jdbc.password");
+		String driver = (String) this.props.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER_PROP);
+		String url = (String) this.props.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_URL_PROP);
+		String username = (String) this.props.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME_PROP);
+		String password = (String) this.props.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD_PROP);
 		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
@@ -122,7 +125,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	 */
 	protected void handleSQLException(SQLException e) throws AppStoreException {
 		e.printStackTrace();
-		throw new AppStoreException("500", e.getMessage(), e);
+		throw new AppStoreException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	@Override
@@ -185,7 +188,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 		Connection conn = getConnection();
 
 		if (appExists(createAppRequest.getAppId())) {
-			throw new AppStoreException("500", "App already exists.");
+			throw new AppStoreException(StatusDTO.RESP_500, "App already exists.");
 		}
 
 		try {

@@ -16,6 +16,7 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.model.ModelConverter;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 
@@ -30,18 +31,18 @@ public class FileContentResource extends AbstractApplicationResource {
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })
 	public Response getFileContent(@QueryParam(value = "path") String pathString) {
 		if (pathString == null) {
-			return Response.status(Status.BAD_REQUEST).entity(ErrorDTO.newInstance("File path is null.")).build();
+			return Response.status(Status.BAD_REQUEST).entity(new ErrorDTO("File path is null.")).build();
 		}
 		Path path = new Path(pathString);
 		FileSystem fs = getService(FileSystem.class);
 
 		boolean exists = fs.exists(path);
 		if (!exists) {
-			return Response.status(Status.NOT_FOUND).entity(ErrorDTO.newInstance("Path '" + path.getPathString() + "' does not exist.")).build();
+			return Response.status(Status.NOT_FOUND).entity(new ErrorDTO("Path '" + path.getPathString() + "' does not exist.")).build();
 		}
 		boolean isDirectory = fs.isDirectory(path);
 		if (isDirectory) {
-			return Response.status(Status.BAD_REQUEST).entity(ErrorDTO.newInstance("Path '" + path.getPathString() + "' exists but is a directory.")).build();
+			return Response.status(Status.BAD_REQUEST).entity(new ErrorDTO("Path '" + path.getPathString() + "' exists but is a directory.")).build();
 		}
 
 		String fileName = path.getLastSegment();
@@ -54,7 +55,7 @@ public class FileContentResource extends AbstractApplicationResource {
 				bytes = IOUtil.toByteArray(input);
 			}
 		} catch (IOException e) {
-			ErrorDTO error = handleError(e, "500", true);
+			ErrorDTO error = handleError(e, StatusDTO.RESP_500, true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		} finally {
 			IOUtil.closeQuietly(input, true);
@@ -74,22 +75,22 @@ public class FileContentResource extends AbstractApplicationResource {
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 
 		if (pathString == null) {
-			return Response.status(Status.BAD_REQUEST).entity(ErrorDTO.newInstance("File path is null.")).build();
+			return Response.status(Status.BAD_REQUEST).entity(new ErrorDTO("File path is null.")).build();
 		}
 		Path path = new Path(pathString);
 		FileSystem fs = getService(FileSystem.class);
 
 		try {
 			if (fs.exists(path) && fs.isDirectory(path)) {
-				return Response.status(Status.BAD_REQUEST).entity(ErrorDTO.newInstance("Path '" + path.getPathString() + "' exists but is a directory.")).build();
+				return Response.status(Status.BAD_REQUEST).entity(new ErrorDTO("Path '" + path.getPathString() + "' exists but is a directory.")).build();
 			}
 
 			fs.copyInputStreamToFsFile(uploadedInputStream, path);
 
-			return Response.ok().entity(StatusDTO.status("200", "success", "File is uplaoded to path '" + pathString + "'.")).build();
+			return Response.ok().entity(new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "File is uplaoded to path '" + pathString + "'.")).build();
 
 		} catch (IOException e) {
-			ErrorDTO error = handleError(e, "500", true);
+			ErrorDTO error = handleError(e, StatusDTO.RESP_500, true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		} finally {
 			IOUtil.closeQuietly(uploadedInputStream, true);

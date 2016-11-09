@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.origin.mgm.client.api.IndexItemUpdatable;
+import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.api.IndexProviderFactory;
 import org.origin.mgm.client.api.IndexServiceConfiguration;
@@ -25,7 +25,7 @@ public class IndexProviderTestWin {
 	}
 
 	protected IndexProvider getIndexProvider() {
-		IndexServiceConfiguration config = new IndexServiceConfiguration("http://127.0.0.1:9090", "admin", "123");
+		IndexServiceConfiguration config = new IndexServiceConfiguration("http://127.0.0.1:9090/orbit/v1");
 		String indexProviderId = "filesystem.index.provider";
 		return IndexProviderFactory.getInstance().createIndexProvider(config);
 	}
@@ -34,8 +34,8 @@ public class IndexProviderTestWin {
 	public void test001_getIndexItems() {
 		System.out.println("--- --- --- getIndexItems() --- --- ---");
 		try {
-			List<IndexItemUpdatable> indexItems = indexProvider.getUpdatableIndexItems("filesystem.");
-			for (IndexItemUpdatable indexItem : indexItems) {
+			List<IndexItem> indexItems = indexProvider.getIndexItems("filesystem.");
+			for (IndexItem indexItem : indexItems) {
 				System.out.println(indexItem.toString());
 			}
 		} catch (IOException e) {

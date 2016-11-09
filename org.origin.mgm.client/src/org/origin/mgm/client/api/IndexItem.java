@@ -8,6 +8,12 @@ public interface IndexItem {
 	 * 
 	 * @return
 	 */
+	public Integer getIndexItemId();
+
+	/**
+	 * 
+	 * @return
+	 */
 	public String getIndexProviderId();
 
 	/**

@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.rest.model.StatusDTO;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.model.vo.IndexItemDataVO;
@@ -22,7 +23,6 @@ import org.origin.mgm.model.vo.IndexItemRevisionVO;
 import org.origin.mgm.persistence.IndexItemDataTableHandler;
 import org.origin.mgm.persistence.IndexItemRequestTableHandler;
 import org.origin.mgm.persistence.IndexItemRevisionTableHandler;
-import org.origin.mgm.service.IndexServiceConstants;
 
 /**
  * Helper class that provides methods for accessing request, index items and revision data from database.
@@ -59,7 +59,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when getting active pending requests from database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting active pending requests from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -85,12 +85,12 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when creating a request for creating an index item in database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating a request for creating an index item in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		if (newRequestVO == null) {
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, "Cannot create request for creating an index item in database.");
+			throw new IndexServiceException(StatusDTO.RESP_500, "Cannot create request for creating an index item in database.");
 		}
 		return newRequestVO;
 	}
@@ -137,7 +137,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when updating a request as completed in database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating a request as completed in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -166,7 +166,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when updating a request as cancelled in database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating a request as cancelled in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -194,7 +194,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when loading index items from database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when loading index items from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -228,7 +228,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when loading index item (indexItemid=" + indexItemId + ") from database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when loading index item (indexItemid=" + indexItemId + ") from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -275,12 +275,12 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when creating an index item in database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating an index item in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		if (newIndexItemVO == null) {
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, "Cannot create index item in database.");
+			throw new IndexServiceException(StatusDTO.RESP_500, "Cannot create index item in database.");
 		}
 		return newIndexItemVO;
 	}
@@ -300,7 +300,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when deleting an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when deleting an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -324,7 +324,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when updating the properties of an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating the properties of an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -351,7 +351,7 @@ public class IndexServiceDatabaseHelper {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when getting latest revision id from database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting latest revision id from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -379,7 +379,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when getting revisions from database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting revisions from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -415,12 +415,12 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, e.getClass().getName() + " occurs when creating a revision in database. Message: " + e.getMessage());
+			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating a revision in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		if (newRevisionVO == null) {
-			throw new IndexServiceException(IndexServiceConstants.INTERNAL_ERROR, "Cannot create revision in database.");
+			throw new IndexServiceException(StatusDTO.RESP_500, "Cannot create revision in database.");
 		}
 		return newRevisionVO;
 	}

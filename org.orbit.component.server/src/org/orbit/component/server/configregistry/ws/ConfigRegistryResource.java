@@ -26,27 +26,12 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 /*
  * Config registry resource.
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{userId}/properties?path={path}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/configregistry/{userid}/properties?path={path}
  * 
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{userId}/properties?path={path} (Body parameter: PropertiesDTO)
- * 
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?namespace={namespace}&categoryId={categoryId}
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/exists
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}
- * 
- * Download an app.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/content
- * 
- * Upload an app.
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/content (FormData: InputStream and FormDataContentDisposition)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/configregistry/{userid}/properties?path={path} (Body parameter: PropertiesDTO)
  * 
  */
-@Path("/configregistry/{userId}")
+@Path("/configregistry/{userid}")
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigRegistryResource extends AbstractApplicationResource {
 
@@ -65,7 +50,7 @@ public class ConfigRegistryResource extends AbstractApplicationResource {
 	@GET
 	@Path("properties")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProperties(@PathParam("userId") String userId, @QueryParam("path") String path) {
+	public Response getProperties(@PathParam("userid") String userId, @QueryParam("path") String path) {
 		ConfigRegistryService service = getService(ConfigRegistryService.class);
 
 		Map<String, String> properties = null;
@@ -88,14 +73,12 @@ public class ConfigRegistryResource extends AbstractApplicationResource {
 	 * 
 	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{userId}/{root}/{path}/properties (Body parameter: PropertiesDTO)
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
-	 * 
 	 * @param newAppRequestDTO
 	 * @return
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setProperties(@PathParam("userId") String userId, @QueryParam("path") String path, SetPropertiesDTO propertiesDTO) {
+	public Response setProperties(@PathParam("userid") String userId, @QueryParam("path") String path, SetPropertiesDTO propertiesDTO) {
 		if (propertiesDTO == null) {
 			ErrorDTO nullPropertiesError = new ErrorDTO("propertiesDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullPropertiesError).build();

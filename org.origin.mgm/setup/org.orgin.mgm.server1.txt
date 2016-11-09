@@ -1,0 +1,31 @@
+eclipse.ignoreApp=true
+osgi.noShutdown=true
+org.osgi.service.http.port=10001
+
+NB_HOME=/Users/yayang/cluster
+cluster.persistence.local.dir=/Users/yayang/cluster/data
+cluster.home.dir=/Users/yayang/cluster/home1
+
+ORIGIN_HOME=/Users/yayang/origin
+orbit.service.http.host=127.0.0.1
+orbit.service.http.port=10001
+orbit.service.http.contextroot=/orbit/v1
+
+component.indexservice.name=IndexServiceInstance1
+component.indexservice.jdbc.driver=org.postgresql.Driver
+component.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
+component.indexservice.jdbc.username=postgres
+component.indexservice.jdbc.password=admin
+
+
+# -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 
+# -DNB_HOME=/Users/yayang/cluster -Dcluster.persistence.local.dir=/Users/yayang/cluster/data -Dcluster.home.dir=/Users/yayang/cluster/home1
+# -DORIGIN_HOME=/Users/yayang/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=10001 -Dorbit.service.http.contextroot=/orbit/v1
+# -Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver -Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.indexservice.jdbc.username=postgres -Dcomponent.indexservice.jdbc.password=admin
+
+
+backup0:
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=9090 -Dcluster.persistence.local.dir=/Users/yayang/cluster/data -Dcluster.home.dir=/Users/yayang/cluster/home1 -DNB_HOME=/Users/yayang/cluster
+
+backup1:
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/yayang/cluster -Dcluster.persistence.local.dir=/Users/yayang/cluster/data -Dcluster.home.dir=/Users/yayang/cluster/home1 -DORIGIN_HOME=/Users/yayang/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=10001 -Dorbit.service.http.contextroot=/orbit/v1 -Dcomponent.indexservice.name=IndexServiceInstance1 -Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver -Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.indexservice.jdbc.username=postgres -Dcomponent.indexservice.jdbc.password=admin

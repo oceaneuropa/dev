@@ -21,6 +21,7 @@ import org.nb.mgm.model.runtime.Project;
 import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.io.FileUtil;
+import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.Util;
 
 public class ProjectSoftwareHandler {
@@ -110,7 +111,7 @@ public class ProjectSoftwareHandler {
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new ManagementException("500", "Cannot create InputStream from " + softwareFile.getAbsolutePath() + ".", e);
+					throw new ManagementException(StatusDTO.RESP_500, "Cannot create InputStream from " + softwareFile.getAbsolutePath() + ".", e);
 				}
 			}
 		}
@@ -171,7 +172,7 @@ public class ProjectSoftwareHandler {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-				throw new ManagementException("500", "Cannot copy InputStream to " + softwareFile.getAbsolutePath() + ".", e);
+				throw new ManagementException(StatusDTO.RESP_500, "Cannot copy InputStream to " + softwareFile.getAbsolutePath() + ".", e);
 			}
 		}
 		return false;

@@ -8,9 +8,9 @@ import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.impl.CommandResult;
 import org.origin.common.runtime.Status;
+import org.origin.mgm.OriginConstants;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
-import org.origin.mgm.service.IndexServiceConstants;
 import org.origin.mgm.service.IndexServiceUpdatable;
 
 public class RevisionCommand extends AbstractCommand {
@@ -47,7 +47,7 @@ public class RevisionCommand extends AbstractCommand {
 	@SuppressWarnings("unchecked")
 	@Override
 	public CommandResult execute(CommandContext context) throws CommandException {
-		if (IndexServiceConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
+		if (OriginConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
 			Integer indexItemId = (Integer) this.arguments.get("indexItemId");
 			String indexProviderId = (String) this.arguments.get("indexProviderId");
 			String type = (String) this.arguments.get("type");
@@ -67,7 +67,7 @@ public class RevisionCommand extends AbstractCommand {
 				throw new CommandException(e);
 			}
 
-		} else if (IndexServiceConstants.CMD_DELETE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
+		} else if (OriginConstants.CMD_DELETE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
 			Integer indexItemId = (Integer) this.arguments.get("indexItemId");
 
 			try {
@@ -77,7 +77,7 @@ public class RevisionCommand extends AbstractCommand {
 				throw new CommandException(e);
 			}
 
-		} else if (IndexServiceConstants.CMD_UPDATE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
+		} else if (OriginConstants.CMD_UPDATE_INDEX_ITEM.equalsIgnoreCase(this.command)) {
 			Integer indexItemId = (Integer) this.arguments.get("indexItemId");
 			Map<String, Object> properties = (Map<String, Object>) this.arguments.get("properties");
 			Date lastUpdateTime = (Date) this.arguments.get("lastUpdateTime");
@@ -102,7 +102,7 @@ public class RevisionCommand extends AbstractCommand {
 	@SuppressWarnings("unchecked")
 	@Override
 	public CommandResult undo(CommandContext context) throws CommandException {
-		if (IndexServiceConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
+		if (OriginConstants.CMD_CREATE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
 			Integer indexItemId = (Integer) this.undoArguments.get("indexItemId");
 			String indexProviderId = (String) this.undoArguments.get("indexProviderId");
 			String type = (String) this.undoArguments.get("type");
@@ -122,7 +122,7 @@ public class RevisionCommand extends AbstractCommand {
 				throw new CommandException(e);
 			}
 
-		} else if (IndexServiceConstants.CMD_DELETE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
+		} else if (OriginConstants.CMD_DELETE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
 			Integer indexItemId = (Integer) this.undoArguments.get("indexItemId");
 
 			try {
@@ -132,7 +132,7 @@ public class RevisionCommand extends AbstractCommand {
 				throw new CommandException(e);
 			}
 
-		} else if (IndexServiceConstants.CMD_UPDATE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
+		} else if (OriginConstants.CMD_UPDATE_INDEX_ITEM.equalsIgnoreCase(this.undoCommand)) {
 			Integer indexItemId = (Integer) this.undoArguments.get("indexItemId");
 			Map<String, Object> properties = (Map<String, Object>) this.arguments.get("properties");
 			Date lastUpdateTime = (Date) this.undoArguments.get("lastUpdateTime");

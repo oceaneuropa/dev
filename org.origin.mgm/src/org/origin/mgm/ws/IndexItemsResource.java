@@ -1,21 +1,20 @@
 package org.origin.mgm.ws;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
@@ -27,48 +26,58 @@ import org.origin.mgm.service.IndexService;
 
 /**
  * Index items resource
+ *
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems?indexproviderid={indexproviderid}&type={type}
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexproviderid={indexproviderid}&type={type}
- *
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems (Body parameter: IndexItemDTO)
- *
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/indexitems (Body parameter: IndexItemDTO)
- *
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexitemid={indexitemid}
- *
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexproviderid={indexproviderid}&type={type}&name={name}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/exists?indexproviderid={indexproviderid}&type={type}&name={name}
+ * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/single?indexproviderid={indexproviderid}&type={type}&name={name}
+ * 
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems (Body parameter: IndexItemDTO)
  * 
  */
-@javax.ws.rs.Path("/indexitems")
+@Path("/indexservice/indexitems")
 @Produces(MediaType.APPLICATION_JSON)
 public class IndexItemsResource extends AbstractApplicationResource {
 
 	/**
 	 * Get index items.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexproviderid={indexproviderid}&type={type}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems?indexproviderid={indexproviderid}&type={type}
+	 * 
+	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems?indexproviderid=''&type=''
 	 * 
 	 * @param indexProviderId
 	 * @param type
+	 * @param name
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getIndexItems(@QueryParam("indexproviderid") String indexProviderId, @QueryParam("type") String type) {
+	public Response getIndexItems(@QueryParam("indexproviderid") String indexProviderId, @QueryParam("type") String type, @QueryParam("name") String name) {
 		List<IndexItemDTO> indexItemDTOs = new ArrayList<IndexItemDTO>();
 
 		IndexService indexService = getService(IndexService.class);
 		try {
 			List<IndexItem> indexItems = null;
-			if (indexProviderId != null || type != null) {
+
+			if (indexProviderId != null && type != null && name != null) {
+				IndexItem indexItem = indexService.getIndexItem(indexProviderId, type, name);
+				if (indexItem != null) {
+					indexItems = new ArrayList<IndexItem>();
+					indexItems.add(indexItem);
+				}
+			} else if (indexProviderId != null || type != null) {
 				indexItems = indexService.getIndexItems(indexProviderId, type);
 			} else {
 				indexItems = indexService.getIndexItems();
 			}
 
-			for (IndexItem indexItem : indexItems) {
-				IndexItemDTO indexItemDTO = DTOConverter.getInstance().toDTO(indexItem);
-				indexItemDTOs.add(indexItemDTO);
+			if (indexItems != null) {
+				for (IndexItem indexItem : indexItems) {
+					IndexItemDTO indexItemDTO = DTOConverter.getInstance().toDTO(indexItem);
+					indexItemDTOs.add(indexItemDTO);
+				}
 			}
 
 		} catch (IndexServiceException e) {
@@ -80,72 +89,101 @@ public class IndexItemsResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Add an index item.
+	 * Check whether an index item exists.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexitems
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/exists?indexproviderid={indexproviderid}&type={type}&name={name}
 	 * 
-	 * Body parameter: IndexItemDTO
+	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/exists?indexproviderid=''&type=''&name=''
 	 * 
-	 * @param indexItemDTO
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @param indexitemid
 	 * @return
 	 */
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addIndexItem(IndexItemDTO indexItemDTO) {
-		if (indexItemDTO == null) {
-			ErrorDTO nullBody = new ErrorDTO("indexItemDTO is null.");
-			return Response.status(Status.BAD_REQUEST).entity(nullBody).build();
+	@Path("exists")
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response exists(@QueryParam("indexproviderid") String indexProviderId, @QueryParam("type") String type, @QueryParam("name") String name) {
+		IndexService indexService = getService(IndexService.class);
+		try {
+			IndexItem indexItem = indexService.getIndexItem(indexProviderId, type, name);
+			Boolean exists = (indexItem != null) ? Boolean.TRUE : Boolean.FALSE;
+			return Response.ok().entity(exists).build();
+
+		} catch (IndexServiceException e) {
+			ErrorDTO error = handleError(e, e.getCode(), true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
+	}
+
+	/**
+	 * Get an index item.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/single?indexproviderid={indexproviderid}&type={type}&name={name}
+	 * 
+	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/single?indexproviderid=''&type=''&name=''
+	 * 
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @return
+	 */
+	@GET
+	@Path("single")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getIndexItem(@QueryParam("indexproviderid") String indexProviderId, @QueryParam("type") String type, @QueryParam("name") String name) {
+		IndexItemDTO indexItemDTO = null;
 
 		IndexService indexService = getService(IndexService.class);
 		try {
-			String indexProviderId = indexItemDTO.getIndexProviderId();
-			String type = indexItemDTO.getType();
-			String name = indexItemDTO.getName();
-			Map<String, Object> properties = indexItemDTO.getProperties();
-
-			indexService.addIndexItem(indexProviderId, type, name, properties);
+			// get an index item by indexProviderId, type and name
+			IndexItem indexItem = indexService.getIndexItem(indexProviderId, type, name);
+			if (indexItem != null) {
+				indexItemDTO = DTOConverter.getInstance().toDTO(indexItem);
+			}
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
+		if (indexItemDTO == null) {
+			return Response.status(Status.NOT_FOUND).build();
+		}
 		return Response.ok().entity(indexItemDTO).build();
 	}
 
 	/**
-	 * Update an index item.
+	 * Add an index item.
 	 * 
-	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/indexitems (Body parameter: IndexItemDTO)
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems (Body parameter: IndexItemDTO)
 	 * 
-	 * @param indexItemDTO
+	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems (Body parameter: IndexItemDTO)
+	 * 
+	 * @param newIndexItemRequest
 	 * @return
 	 */
-	@PUT
+	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateIndexItem(IndexItemDTO indexItemDTO) {
-		if (indexItemDTO == null) {
-			ErrorDTO nullDTOError = new ErrorDTO("indexItemDTO is null.");
-			return Response.status(Status.BAD_REQUEST).entity(nullDTOError).build();
+	public Response addIndexItem(IndexItemDTO newIndexItemRequest) {
+		if (newIndexItemRequest == null) {
+			ErrorDTO nullBody = new ErrorDTO("indexItemDTO is null.");
+			return Response.status(Status.BAD_REQUEST).entity(nullBody).build();
 		}
 
 		boolean succeed = false;
 		IndexService indexService = getService(IndexService.class);
 		try {
-			Integer indexItemId = indexItemDTO.getIndexItemId();
-			if (indexItemId <= 0) {
-				String indexProviderId = indexItemDTO.getIndexProviderId();
-				String type = indexItemDTO.getType();
-				String name = indexItemDTO.getName();
-				IndexItem indexItem = indexService.getIndexItem(indexProviderId, type, name);
-				if (indexItem != null) {
-					indexItemId = indexItem.getIndexItemId();
-				}
-			}
+			String indexProviderId = newIndexItemRequest.getIndexProviderId();
+			String type = newIndexItemRequest.getType();
+			String name = newIndexItemRequest.getName();
 
-			Map<String, Object> properties = indexItemDTO.getProperties();
-			succeed = indexService.setProperty(indexItemId, properties);
+			// Map<String, Object> properties = newIndexItemRequest.getProperties();
+			String propertiesString = newIndexItemRequest.getPropertiesString();
+			Map<String, Object> properties = JSONUtil.toProperties(propertiesString);
+
+			succeed = indexService.addIndexItem(indexProviderId, type, name, properties);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -153,57 +191,12 @@ public class IndexItemsResource extends AbstractApplicationResource {
 		}
 
 		if (succeed) {
-			StatusDTO statusDTO = new StatusDTO("200", "success", "IndexItem properties are updated successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Index item is added.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
-			StatusDTO statusDTO = new StatusDTO("200", "not changed", "IndexItem properties are not updated.");
-			return Response.ok().entity(statusDTO).build();
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Index item is not added.");
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 		}
-	}
-
-	/**
-	 * Remove an index item.
-	 * 
-	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexitemid={indexitemid}
-	 *
-	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexitems?indexproviderid={indexproviderid}&type={type}&name={name}
-	 * 
-	 * @param indexItemId
-	 * @return
-	 */
-	@DELETE
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response removeIndexItem(@QueryParam("indexitemid") Integer indexItemId, @QueryParam("indexproviderid") String indexProviderId, @QueryParam("type") String type, @QueryParam("name") String name) {
-		if (indexItemId == null) {
-			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId is null.");
-			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
-		}
-
-		IndexService indexService = getService(IndexService.class);
-		boolean succeed = false;
-		try {
-			// if indexItemId is not specified, use combination of indexProviderId, type and name to find the IndexItem and its indexItemId
-			if (indexItemId <= 0 && indexProviderId != null && !indexProviderId.isEmpty() && type != null && !type.isEmpty() && name != null && !name.isEmpty()) {
-				IndexItem indexItem = indexService.getIndexItem(indexProviderId, type, name);
-				if (indexItem != null) {
-					indexItemId = indexItem.getIndexItemId();
-				}
-			}
-			// delete IndexItem by indexItemId
-			succeed = indexService.removeIndexItem(indexItemId);
-
-		} catch (IndexServiceException e) {
-			ErrorDTO error = handleError(e, e.getCode(), true);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-		}
-
-		StatusDTO statusDTO = null;
-		if (succeed) {
-			statusDTO = new StatusDTO("200", "success", MessageFormat.format("IndexItem (indexItemId={0}) is removed successfully.", new Object[] { indexItemId }));
-		} else {
-			statusDTO = new StatusDTO("200", "fail", MessageFormat.format("IndexItem (indexItemId={0}) is not removed.", new Object[] { indexItemId }));
-		}
-		return Response.ok().entity(statusDTO).build();
 	}
 
 }

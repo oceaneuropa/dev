@@ -43,7 +43,7 @@ public class SectorResource {
 	public Response createSector(String sectorName) {
 		HomeAgentService homeService = getHomeService();
 
-		return Response.ok().entity(StatusDTO.success("Sector is created successfully.")).build();
+		return Response.ok().entity(new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Sector is created successfully.")).build();
 	}
 
 	@DELETE
@@ -51,7 +51,7 @@ public class SectorResource {
 	public Response deleteSector(String sectorName) {
 		HomeAgentService homeService = getHomeService();
 
-		return Response.ok().entity(StatusDTO.success("Sector is deleted successfully.")).build();
+		return Response.ok().entity(new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Sector is deleted successfully.")).build();
 	}
 
 }

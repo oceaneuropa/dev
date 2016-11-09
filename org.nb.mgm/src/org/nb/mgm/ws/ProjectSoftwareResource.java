@@ -267,7 +267,7 @@ public class ProjectSoftwareResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "Project Software is updated successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Project Software is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 
@@ -310,7 +310,7 @@ public class ProjectSoftwareResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "Project Software is deleted successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Project Software is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 

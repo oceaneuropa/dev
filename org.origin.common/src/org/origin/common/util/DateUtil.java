@@ -1,7 +1,6 @@
 package org.origin.common.util;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -53,7 +52,7 @@ public class DateUtil {
 				if (date != null) {
 					break;
 				}
-			} catch (ParseException e) {
+			} catch (Exception e) {
 				// e.printStackTrace();
 			}
 		}

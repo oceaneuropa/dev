@@ -24,23 +24,6 @@ import java.util.Map;
 public interface IndexProvider extends IndexService {
 
 	/**
-	 * Get updatable index items.
-	 * 
-	 * @param indexProviderId
-	 * @return
-	 */
-	public List<IndexItemUpdatable> getUpdatableIndexItems(String indexProviderId) throws IOException;
-
-	/**
-	 * Get updatable index items.
-	 * 
-	 * @param indexProviderId
-	 * @param type
-	 * @return
-	 */
-	public List<IndexItemUpdatable> getUpdatableIndexItems(String indexProviderId, String type) throws IOException;
-
-	/**
 	 * Add an index item.
 	 * 
 	 * @param indexProviderId
@@ -50,7 +33,7 @@ public interface IndexProvider extends IndexService {
 	 * @return
 	 * @throws IOException
 	 */
-	public IndexItemUpdatable addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException;
+	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException;
 
 	/**
 	 * Remove an index item.
@@ -62,14 +45,35 @@ public interface IndexProvider extends IndexService {
 	public boolean removeIndexItem(Integer indexItemId) throws IOException;
 
 	/**
-	 * Remove an index item.
+	 * Set properties.
 	 * 
-	 * @param indexProviderId
-	 * @param type
-	 * @param name
+	 * @param indexItemId
+	 * @param properties
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean removeIndexItem(String indexProviderId, String type, String name) throws IOException;
+	public boolean setProperties(Integer indexItemId, Map<String, Object> properties) throws IOException;
+
+	/**
+	 * Set property.
+	 * 
+	 * @param indexItemId
+	 * @param propName
+	 * @param propValue
+	 * @param propType
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean setProperty(Integer indexItemId, String propName, Object propValue, String propType) throws IOException;
+
+	/**
+	 * Remove property.
+	 * 
+	 * @param indexItemId
+	 * @param propertyNames
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean removeProperties(Integer indexItemId, List<String> propertyNames) throws IOException;
 
 }

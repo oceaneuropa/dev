@@ -248,13 +248,13 @@ public class AppStoreResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = null;
 		if (succeed) {
-			statusDTO = new StatusDTO("200", "success", "App is updated successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "App is updated successfully.");
+			return Response.ok().entity(statusDTO).build();
 		} else {
-			statusDTO = new StatusDTO("200", "unsuccess", "App is not update.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "App is not update.");
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 		}
-		return Response.ok().entity(statusDTO).build();
 	}
 
 	/**
@@ -284,13 +284,13 @@ public class AppStoreResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = null;
 		if (succeed) {
-			statusDTO = new StatusDTO("200", "success", "App is deleted successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "App is deleted successfully.");
+			return Response.ok().entity(statusDTO).build();
 		} else {
-			statusDTO = new StatusDTO("200", "unsuccess", "App is not deleted.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "App is not deleted.");
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 		}
-		return Response.ok().entity(statusDTO).build();
 	}
 
 	/**
@@ -336,13 +336,13 @@ public class AppStoreResource extends AbstractApplicationResource {
 			IOUtil.closeQuietly(uploadedInputStream, true);
 		}
 
-		StatusDTO statusDTO = null;
 		if (succeed) {
-			statusDTO = new StatusDTO("200", "success", String.format("App '%s' is successfully uploaded.", fileName));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, String.format("App '%s' is successfully uploaded.", fileName));
+			return Response.ok().entity(statusDTO).build();
 		} else {
-			statusDTO = new StatusDTO("200", "unsuccess", String.format("App '%s' is not uploaded.", fileName));
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, String.format("App '%s' is not uploaded.", fileName));
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 		}
-		return Response.ok().entity(statusDTO).build();
 	}
 
 	/**

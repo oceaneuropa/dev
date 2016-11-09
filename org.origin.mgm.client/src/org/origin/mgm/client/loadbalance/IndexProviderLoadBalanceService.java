@@ -1,5 +1,17 @@
 package org.origin.mgm.client.loadbalance;
 
-public class IndexProviderLoadBalanceService {
+import org.origin.common.loadbalance.AbstractLoadBalanceService;
+import org.origin.mgm.client.api.IndexProvider;
+
+public class IndexProviderLoadBalanceService extends AbstractLoadBalanceService<IndexProvider> {
+
+	/**
+	 * 
+	 * @param indexProvider
+	 */
+	public IndexProviderLoadBalanceService(IndexProvider indexProvider) {
+		super(indexProvider);
+		setId(indexProvider.getConfiguration().getUrl()); // use IndexProvider URL as its id
+	}
 
 }

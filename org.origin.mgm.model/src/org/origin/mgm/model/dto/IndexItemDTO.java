@@ -18,8 +18,13 @@ public class IndexItemDTO {
 	protected String type;
 	@XmlElement
 	protected String name;
+	// @XmlElement
+	// protected Map<String, Object> properties;
 	@XmlElement
-	protected Map<String, Object> properties;
+	protected String propertiesString;
+
+	public IndexItemDTO() {
+	}
 
 	@XmlElement
 	public Integer getIndexItemId() {
@@ -58,26 +63,39 @@ public class IndexItemDTO {
 	}
 
 	@XmlElement
-	public Map<String, Object> getProperties() {
-		return properties;
+	public String getPropertiesString() {
+		return propertiesString;
+	}
+
+	public void setPropertiesString(String propertiesString) {
+		this.propertiesString = propertiesString;
 	}
 
 	public void setProperties(Map<String, Object> properties) {
-		this.properties = properties;
+		this.propertiesString = JSONUtil.toJsonString(properties);
 	}
 
-	@Override
-	public String toString() {
-		String propertiesString = JSONUtil.toJsonString(this.properties);
+	// @XmlElement
+	// public Map<String, Object> getProperties() {
+	// return properties;
+	// }
+	//
+	// public void setProperties(Map<String, Object> properties) {
+	// this.properties = properties;
+	// }
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("IndexItemDTO (");
-		sb.append("indexProviderId='").append(this.indexProviderId).append("'");
-		sb.append(", type=").append(this.type);
-		sb.append(", name=").append(this.name);
-		sb.append(", properties=").append(propertiesString);
-		sb.append(")");
-		return sb.toString();
-	}
+	// @Override
+	// public String toString() {
+	// String propertiesString = JSONUtil.toJsonString(this.properties);
+	//
+	// StringBuilder sb = new StringBuilder();
+	// sb.append("IndexItemDTO (");
+	// sb.append("indexProviderId='").append(this.indexProviderId).append("'");
+	// sb.append(", type=").append(this.type);
+	// sb.append(", name=").append(this.name);
+	// sb.append(", properties=").append(propertiesString);
+	// sb.append(")");
+	// return sb.toString();
+	// }
 
 }

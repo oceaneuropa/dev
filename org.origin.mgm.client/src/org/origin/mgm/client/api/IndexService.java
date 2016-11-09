@@ -7,7 +7,7 @@ import java.util.Map;
 import org.origin.common.adapter.IAdaptable;
 
 /**
- * Used by client to search index items.
+ * Used by client to query index items.
  *
  */
 public interface IndexService extends IAdaptable {
@@ -17,21 +17,21 @@ public interface IndexService extends IAdaptable {
 	 * 
 	 * @return
 	 */
-	public abstract IndexServiceConfiguration getConfiguration();
+	public IndexServiceConfiguration getConfiguration();
 
 	/**
 	 * Ping the index service. Use integer as return value to allow more status of the server.
 	 * 
 	 * @return result larger than 0 means service is available. result equals or smaller than 0 means service is not available.
 	 */
-	public abstract int ping();
+	public int ping();
 
 	/**
 	 * Get all index items.
 	 * 
 	 * @return
 	 */
-	public abstract List<IndexItem> getIndexItems() throws IOException;
+	public List<IndexItem> getIndexItems() throws IOException;
 
 	/**
 	 * Get all index items created by specified indexer provider.
@@ -40,7 +40,7 @@ public interface IndexService extends IAdaptable {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract List<IndexItem> getIndexItems(String indexProviderId) throws IOException;
+	public List<IndexItem> getIndexItems(String indexProviderId) throws IOException;
 
 	/**
 	 * Get index items created by specified indexer provider and with specified type.
@@ -50,7 +50,47 @@ public interface IndexService extends IAdaptable {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract List<IndexItem> getIndexItems(String indexProviderId, String type) throws IOException;
+	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IOException;
+
+	/**
+	 * Whether whether an index item exists.
+	 * 
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @return
+	 * @throws IOException
+	 */
+	// public boolean hasIndexItem(String indexProviderId, String type, String name) throws IOException;
+
+	/**
+	 * Whether whether an index item exists.
+	 * 
+	 * @param indexItemId
+	 * @return
+	 * @throws IOException
+	 */
+	// public boolean hasIndexItem(Integer indexItemId) throws IOException;
+
+	/**
+	 * Get an index item.
+	 * 
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @return
+	 * @throws IOException
+	 */
+	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IOException;
+
+	/**
+	 * Get an index item.
+	 * 
+	 * @param indexItemId
+	 * @return
+	 * @throws IOException
+	 */
+	public IndexItem getIndexItem(Integer indexItemId) throws IOException;
 
 	/**
 	 * Execute an action with optional parameters.
@@ -60,6 +100,6 @@ public interface IndexService extends IAdaptable {
 	 * @return
 	 * @throws IOException
 	 */
-	public abstract boolean sendCommand(String action, Map<String, Object> params) throws IOException;
+	public boolean sendCommand(String action, Map<String, Object> params) throws IOException;
 
 }

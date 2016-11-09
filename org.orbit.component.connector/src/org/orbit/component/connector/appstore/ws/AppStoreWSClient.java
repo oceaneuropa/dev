@@ -37,19 +37,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Apps resource client.
  * 
  * App metadata.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps?namespace={namespace}&categoryId={categoryId}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps?namespace={namespace}&categoryid={categoryid}
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/query (Body parameter: AppQueryDTO)
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}/exists
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}/exists
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps (Body parameter: AppManifestDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/appstore/apps (Body parameter: AppManifestDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}
  *
  * Upload an app.
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}/content (FormData: InputStream and FormDataContentDisposition)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}/content (FormData: InputStream and FormDataContentDisposition)
  * 
  * Download an app.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}/content
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}/content
  * 
  */
 public class AppStoreWSClient extends AbstractClient {
@@ -65,7 +65,7 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Get apps.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps?namespace={namespace}&categoryId={categoryId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps?namespace={namespace}&categoryid={categoryid}
 	 * 
 	 * @param namespace
 	 * @param categoryId
@@ -120,6 +120,7 @@ public class AppStoreWSClient extends AbstractClient {
 
 			apps = response.readEntity(new GenericType<List<AppManifestDTO>>() {
 			});
+
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
@@ -134,7 +135,7 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Get an app.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}
 	 * 
 	 * @param appId
 	 * @return
@@ -160,7 +161,7 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Get an app.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}
 	 * 
 	 * @param appId
 	 * @return
@@ -251,7 +252,7 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Upload an app file.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}/content (FormData: InputStream and FormDataContentDisposition)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}/content (FormData: InputStream and FormDataContentDisposition)
 	 * 
 	 * @param appId
 	 * @param file
@@ -299,7 +300,7 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Download app file.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}/content
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}/content
 	 * 
 	 * @param appId
 	 * @param output
@@ -330,7 +331,7 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Delete an app.
 	 * 
-	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appid}
 	 * 
 	 * @param appId
 	 * 

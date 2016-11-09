@@ -296,7 +296,7 @@ public class ArtifactResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "Artifact is updated successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Artifact is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 
@@ -333,7 +333,7 @@ public class ArtifactResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "Artifact is deleted successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Artifact is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 

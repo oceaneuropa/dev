@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.configregistry.handler.ConfigRegistryPathTableHandler;
 import org.orbit.component.server.configregistry.handler.ConfigRegistryPropertyTableHandler;
 import org.orbit.component.server.configregistry.service.ConfigRegistry;
@@ -72,10 +73,10 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 	 * @return
 	 */
 	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = (String) this.props.get("configregistry.jdbc.driver");
-		String url = (String) this.props.get("configregistry.jdbc.url");
-		String username = (String) this.props.get("configregistry.jdbc.username");
-		String password = (String) this.props.get("configregistry.jdbc.password");
+		String driver = (String) this.props.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER_PROP);
+		String url = (String) this.props.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL_PROP);
+		String username = (String) this.props.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME_PROP);
+		String password = (String) this.props.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD_PROP);
 		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 

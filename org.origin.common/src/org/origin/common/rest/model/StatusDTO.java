@@ -11,25 +11,30 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 public class StatusDTO {
 
-	/**
-	 * 
-	 * @param message
-	 * @return
-	 */
-	public static StatusDTO success(String message) {
-		return new StatusDTO("200", "success", message);
-	}
+	// @see https://httpstatuses.com/
+	@XmlTransient
+	public static final String RESP_200 = "200"; // OK
+	@XmlTransient
+	public static final String RESP_201 = "201"; // Created
+	@XmlTransient
+	public static final String RESP_304 = "304"; // Not Modified
+	@XmlTransient
+	public static final String RESP_400 = "400"; // Bad Request
+	@XmlTransient
+	public static final String RESP_404 = "404"; // Not Found
+	@XmlTransient
+	public static final String RESP_500 = "500"; // Internal Server Error
+	@XmlTransient
+	public static final String RESP_501 = "501"; // Not Implemented
+	@XmlTransient
+	public static final String RESP_502 = "502"; // Bad Gateway
+	@XmlTransient
+	public static final String RESP_503 = "503"; // Service Unavailable
 
-	/**
-	 * 
-	 * @param code
-	 * @param status
-	 * @param message
-	 * @return
-	 */
-	public static StatusDTO status(String code, String status, String message) {
-		return new StatusDTO(code, status, message);
-	}
+	@XmlTransient
+	public static final String SUCCESS = "success";
+	@XmlTransient
+	public static final String FAILED = "failed";
 
 	@XmlElement
 	protected String code;
@@ -82,7 +87,7 @@ public class StatusDTO {
 
 	@XmlTransient
 	public boolean success() {
-		return ("success".equalsIgnoreCase(this.status)) ? true : false;
+		return (SUCCESS.equalsIgnoreCase(this.status)) ? true : false;
 	}
 
 }

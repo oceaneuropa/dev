@@ -15,6 +15,7 @@ import org.orbit.component.server.configregistry.handler.ConfigRegistryPathTable
 import org.orbit.component.server.configregistry.handler.ConfigRegistryPropertyTableHandler;
 import org.orbit.component.server.configregistry.service.ConfigRegistry;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.rest.model.StatusDTO;
 
 /**
  * Database implementation of a ConfigRegistry.
@@ -58,7 +59,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	protected void handleException(Exception e) throws ConfigRegistryException {
-		throw new ConfigRegistryException("500", e.getMessage(), e);
+		throw new ConfigRegistryException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	// ---------------------------------------------------------------------------------------------------------

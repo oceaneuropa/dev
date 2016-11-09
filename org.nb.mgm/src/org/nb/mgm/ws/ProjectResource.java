@@ -189,7 +189,7 @@ public class ProjectResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "Project is updated successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Project is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 
@@ -220,13 +220,13 @@ public class ProjectResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = null;
 		if (succeed) {
-			statusDTO = new StatusDTO("200", "success", "Project is deleted successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Project is deleted successfully.");
+			return Response.ok().entity(statusDTO).build();
 		} else {
-			statusDTO = new StatusDTO("200", "failed", "Project is not deleted successfully.");
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Project is not deleted successfully.");
+			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
 		}
-		return Response.ok().entity(statusDTO).build();
 	}
 
 }

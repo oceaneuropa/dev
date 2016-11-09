@@ -214,7 +214,7 @@ public class MetaSectorResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSector is updated successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "MetaSector is updated successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 
@@ -244,7 +244,7 @@ public class MetaSectorResource extends AbstractApplicationResource {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		StatusDTO statusDTO = new StatusDTO("200", "success", "MetaSector is deleted successfully.");
+		StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "MetaSector is deleted successfully.");
 		return Response.ok().entity(statusDTO).build();
 	}
 

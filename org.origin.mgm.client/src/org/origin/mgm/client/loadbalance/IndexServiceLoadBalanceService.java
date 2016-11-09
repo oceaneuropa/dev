@@ -1,7 +1,5 @@
 package org.origin.mgm.client.loadbalance;
 
-import java.util.Date;
-
 import org.origin.common.loadbalance.AbstractLoadBalanceService;
 import org.origin.mgm.client.api.IndexService;
 
@@ -19,20 +17,7 @@ public class IndexServiceLoadBalanceService extends AbstractLoadBalanceService<I
 	 */
 	public IndexServiceLoadBalanceService(IndexService indexService) {
 		super(indexService);
-		// use IndexService URL as its id
-		setId(indexService.getConfiguration().getUrl());
-	}
-
-	/**
-	 * Monitor the IndexService.
-	 * 
-	 * @param indexService
-	 */
-	@Override
-	protected void monitor(IndexService indexService) {
-		int result = indexService.ping();
-		setProperty("ping", result);
-		setProperty("last_ping_time", new Date());
+		setId(indexService.getConfiguration().getUrl()); // use IndexService URL as its id
 	}
 
 }
