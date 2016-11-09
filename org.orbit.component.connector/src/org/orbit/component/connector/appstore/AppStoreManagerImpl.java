@@ -2,10 +2,12 @@ package org.orbit.component.connector.appstore;
 
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.orbit.component.api.appstore.AppStore;
 import org.orbit.component.api.appstore.AppStoreManager;
+import org.origin.common.loadbalance.LoadBalanceService;
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 import org.osgi.framework.BundleContext;
@@ -19,7 +21,7 @@ public class AppStoreManagerImpl implements AppStoreManager {
 	protected ServiceRegistration<?> serviceRegistration;
 	protected AppStoreIndexItemsMonitor indexItemsMonitor;
 
-	protected AppStoreLoadBalancer appStoreLoadBalander;
+	protected AppStoreLoadBalancer appStoreLoadBalancer;
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
 
 	/**
@@ -103,13 +105,24 @@ public class AppStoreManagerImpl implements AppStoreManager {
 	public synchronized AppStore getAppStore() {
 		checkStarted();
 
-		if (appStoreLoadBalander == null) {
-			List<IndexItem> indexItems = this.indexItemsMonitor.getIndexItems();
+		AppStore appStore = null;
+
+		List<IndexItem> indexItems = this.indexItemsMonitor.getIndexItems();
+		if (appStoreLoadBalancer == null) {
+			for (IndexItem indexItem : indexItems) {
+				Map<String, Object> props = indexItem.getProperties();
+
+			}
+
 		} else {
 
 		}
 
-		return null;
+		LoadBalanceService<AppStore> appStoreService = appStoreLoadBalancer.getNext();
+		if (appStoreService != null) {
+			appStore = appStoreService.getService();
+		}
+		return appStore;
 	}
 
 }
