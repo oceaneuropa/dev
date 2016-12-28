@@ -19,4 +19,9 @@ public class AppStoreIndexItemsMonitor extends IndexItemsMonitor {
 		return indexService.getIndexItems(OrbitConstants.APP_STORE_INDEXER_ID, OrbitConstants.APP_STORE_TYPE);
 	}
 
+	@Override
+	protected void indexItemsUpdated(List<IndexItem> indexItems) {
+
+	}
+
 }

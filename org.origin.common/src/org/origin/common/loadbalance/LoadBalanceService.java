@@ -43,6 +43,12 @@ public interface LoadBalanceService<S> {
 
 	/**
 	 * 
+	 * @param properties
+	 */
+	public void setProperties(Map<String, Object> properties);
+
+	/**
+	 * 
 	 * @param key
 	 * @param value
 	 */

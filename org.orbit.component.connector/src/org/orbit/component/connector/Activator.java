@@ -21,7 +21,6 @@ public class Activator implements BundleActivator {
 	}
 
 	protected IndexServiceLoadBalancer indexServiceLoadBalancer;
-
 	protected AppStoreManagerImpl appStoreManager;
 	protected ConfigRegistryManagerImpl configRegistryManager;
 
@@ -40,10 +39,14 @@ public class Activator implements BundleActivator {
 		// -----------------------------------------------------------------------------
 		// Start service managers
 		// -----------------------------------------------------------------------------
-		this.appStoreManager = new AppStoreManagerImpl(bundleContext, this.indexServiceLoadBalancer);
+		this.appStoreManager = new AppStoreManagerImpl();
+		this.appStoreManager.setBundleContext(bundleContext);
+		this.appStoreManager.setIndexServiceLoadBalancer(this.indexServiceLoadBalancer);
 		this.appStoreManager.start();
 
-		this.configRegistryManager = new ConfigRegistryManagerImpl(bundleContext, this.indexServiceLoadBalancer);
+		this.configRegistryManager = new ConfigRegistryManagerImpl();
+		this.configRegistryManager.setBundleContext(bundleContext);
+		this.configRegistryManager.setIndexServiceLoadBalancer(this.indexServiceLoadBalancer);
 		this.configRegistryManager.start();
 	}
 

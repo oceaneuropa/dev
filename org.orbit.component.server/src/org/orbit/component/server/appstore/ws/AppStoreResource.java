@@ -38,22 +38,22 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  * Apps resource.
  * 
  * App metadata.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps?namespace={namespace}&categoryId={categoryId}
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/query (Body parameter: AppQueryDTO)
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}/exists
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps (Body parameter: AppManifestDTO)
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/appstore/apps (Body parameter: AppManifestDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?namespace={namespace}&categoryId={categoryId}
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/exists
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
+ * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}
  * 
  * Download an app.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}/content
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/content
  * 
  * Upload an app.
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/appstore/apps/{appId}/content (FormData: InputStream and FormDataContentDisposition)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/content (FormData: InputStream and FormDataContentDisposition)
  * 
  */
-@Path("/appstore/apps")
+@Path("/apps")
 @Produces(MediaType.APPLICATION_JSON)
 public class AppStoreResource extends AbstractApplicationResource {
 

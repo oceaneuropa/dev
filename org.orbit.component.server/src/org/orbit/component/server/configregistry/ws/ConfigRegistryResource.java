@@ -26,12 +26,12 @@ import org.origin.common.rest.server.AbstractApplicationResource;
 /*
  * Config registry resource.
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/configregistry/{userid}/properties?path={path}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{userid}/properties?path={path}
  * 
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/configregistry/{userid}/properties?path={path} (Body parameter: PropertiesDTO)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{userid}/properties?path={path} (Body parameter: PropertiesDTO)
  * 
  */
-@Path("/configregistry/{userid}")
+@Path("/{userid}")
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigRegistryResource extends AbstractApplicationResource {
 

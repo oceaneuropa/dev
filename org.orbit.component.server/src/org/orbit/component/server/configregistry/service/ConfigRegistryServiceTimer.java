@@ -15,25 +15,25 @@ import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 
 public class ConfigRegistryServiceTimer extends ThreadPoolTimer {
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-	protected String serverURL;
+	protected String hostURL;
 	protected String contextRoot;
 	protected String componentName;
+	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 
 	/**
 	 * 
-	 * @param indexProviderLoadBalancer
-	 * @param myServerURL
+	 * @param hostURL
 	 * @param contextRoot
 	 * @param componentName
+	 * @param indexProviderLoadBalancer
 	 */
-	public ConfigRegistryServiceTimer(IndexProviderLoadBalancer indexProviderLoadBalancer, String myServerURL, String contextRoot, String componentName) {
+	public ConfigRegistryServiceTimer(String hostURL, String contextRoot, String componentName, IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		super("ConfigRegistry Service Timer");
 
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-		this.serverURL = myServerURL;
+		this.hostURL = hostURL;
 		this.contextRoot = contextRoot;
 		this.componentName = componentName;
+		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 
 		Runnable runnable = new Runnable() {
 			@Override
@@ -55,7 +55,7 @@ public class ConfigRegistryServiceTimer extends ThreadPoolTimer {
 					if (indexItem == null) {
 						// create new index item
 						Map<String, Object> props = new Hashtable<String, Object>();
-						props.put(OrbitConstants.INDEX_ITEM_URL_PROP, this.serverURL);
+						props.put(OrbitConstants.INDEX_ITEM_URL_PROP, this.hostURL);
 						props.put(OrbitConstants.INDEX_ITEM_CONTEXT_ROOT_PROP, this.contextRoot);
 						props.put(OrbitConstants.INDEX_ITEM_LAST_HEARTBEAT_TIME_PROP, new Date());
 
@@ -65,6 +65,8 @@ public class ConfigRegistryServiceTimer extends ThreadPoolTimer {
 						// update existing index item
 						Integer indexItemId = indexItem.getIndexItemId();
 						Map<String, Object> props = new Hashtable<String, Object>();
+						props.put(OrbitConstants.INDEX_ITEM_URL_PROP, this.hostURL);
+						props.put(OrbitConstants.INDEX_ITEM_CONTEXT_ROOT_PROP, this.contextRoot);
 						props.put(OrbitConstants.INDEX_ITEM_LAST_HEARTBEAT_TIME_PROP, new Date());
 
 						indexProvider.setProperties(indexItemId, props);

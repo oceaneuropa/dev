@@ -6,11 +6,9 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.server.appstore.service.AppStoreService;
-import org.orbit.component.server.appstore.service.AppStoreServiceTimer;
 import org.orbit.component.server.appstore.service.impl.AppStoreServiceDatabaseImpl;
 import org.orbit.component.server.appstore.ws.AppStoreApplication;
 import org.orbit.component.server.configregistry.service.ConfigRegistryService;
-import org.orbit.component.server.configregistry.service.ConfigRegistryServiceTimer;
 import org.orbit.component.server.configregistry.service.impl.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.server.configregistry.ws.ConfigRegistryApplication;
 import org.origin.common.util.PropertyUtil;
@@ -38,16 +36,14 @@ public class Activator implements BundleActivator {
 	}
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-
-	protected AppStoreApplication appStoreApplication;
-	protected AppStoreServiceTimer appStoreServiceTimer;
-
-	protected ConfigRegistryApplication configRegistryApplication;
-	protected ConfigRegistryServiceTimer configRegistryServiceTimer;
+	protected AppStoreApplication appStoreApp;
+	protected ConfigRegistryApplication configRegistryApp;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.bundleContext = bundleContext;
+
+		System.out.println("org.orbit.component.server.Activator.start()");
 
 		// -----------------------------------------------------------------------------
 		// Common properties
@@ -78,17 +74,9 @@ public class Activator implements BundleActivator {
 			port = "80";
 		}
 
-		// get http context root
-		String contextRoot = (String) commonProps.get(OrbitConstants.ORBIT_HTTP_CONTEXTROOT_PROP);
-		if (contextRoot == null || contextRoot.isEmpty()) {
-			contextRoot = OrbitConstants.ORBIT_DEFAULT_CONTEXT_ROOT;
-		}
-		if (!contextRoot.startsWith("/")) {
-			contextRoot = "/" + contextRoot;
-		}
-
-		// current server URL
-		final String serverURL = "http://" + host + ":" + port;
+		// current host URL
+		String hostURL = "http://" + host + ":" + port;
+		System.out.println("hostURL = " + hostURL);
 
 		// -----------------------------------------------------------------------------
 		// IndexProvider
@@ -104,12 +92,24 @@ public class Activator implements BundleActivator {
 		// 1. AppStore
 		Map<Object, Object> appStoreProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, appStoreProps, OrbitConstants.COMPONENT_APP_STORE_NAME_PROP);
+		PropertyUtil.loadProperty(bundleContext, appStoreProps, OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT_PROP);
 		PropertyUtil.loadProperty(bundleContext, appStoreProps, OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER_PROP);
 		PropertyUtil.loadProperty(bundleContext, appStoreProps, OrbitConstants.COMPONENT_APP_STORE_JDBC_URL_PROP);
 		PropertyUtil.loadProperty(bundleContext, appStoreProps, OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME_PROP);
 		PropertyUtil.loadProperty(bundleContext, appStoreProps, OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD_PROP);
 
 		String appStoreName = (String) appStoreProps.get(OrbitConstants.COMPONENT_APP_STORE_NAME_PROP);
+		String appStoreContextRoot = (String) appStoreProps.get(OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT_PROP);
+		String appStoreJdbcDriver = (String) appStoreProps.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER_PROP);
+		String appStoreJdbcURL = (String) appStoreProps.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_URL_PROP);
+		String appStoreJdbcUsername = (String) appStoreProps.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME_PROP);
+		String appStoreJdbcPassword = (String) appStoreProps.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD_PROP);
+		System.out.println("appStoreName = " + appStoreName);
+		System.out.println("appStoreContextRoot = " + appStoreContextRoot);
+		System.out.println("appStoreJdbcDriver = " + appStoreJdbcDriver);
+		System.out.println("appStoreJdbcURL = " + appStoreJdbcURL);
+		System.out.println("appStoreJdbcUsername = " + appStoreJdbcUsername);
+		System.out.println("appStoreJdbcPassword = " + appStoreJdbcPassword);
 
 		AppStoreServiceDatabaseImpl appStoreService = new AppStoreServiceDatabaseImpl(appStoreProps);
 		appStoreService.initializeTables();
@@ -119,12 +119,24 @@ public class Activator implements BundleActivator {
 		// 2. ConfigRegistry
 		Map<Object, Object> configRegistryProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configRegistryProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME_PROP);
+		PropertyUtil.loadProperty(bundleContext, configRegistryProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT_PROP);
 		PropertyUtil.loadProperty(bundleContext, configRegistryProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER_PROP);
 		PropertyUtil.loadProperty(bundleContext, configRegistryProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL_PROP);
 		PropertyUtil.loadProperty(bundleContext, configRegistryProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME_PROP);
 		PropertyUtil.loadProperty(bundleContext, configRegistryProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD_PROP);
 
 		String configRegistryName = (String) configRegistryProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME_PROP);
+		String configRegistryContextRoot = (String) configRegistryProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT_PROP);
+		String configRegistryJdbcDriver = (String) configRegistryProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER_PROP);
+		String configRegistryJdbcURL = (String) configRegistryProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL_PROP);
+		String configRegistryJdbcUsername = (String) configRegistryProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME_PROP);
+		String configRegistryJdbcPassword = (String) configRegistryProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD_PROP);
+		System.out.println("configRegistryName = " + configRegistryName);
+		System.out.println("configRegistryContextRoot = " + configRegistryContextRoot);
+		System.out.println("configRegistryJdbcDriver = " + configRegistryJdbcDriver);
+		System.out.println("configRegistryJdbcURL = " + configRegistryJdbcURL);
+		System.out.println("configRegistryJdbcUsername = " + configRegistryJdbcUsername);
+		System.out.println("configRegistryJdbcPassword = " + configRegistryJdbcPassword);
 
 		ConfigRegistryServiceDatabaseImpl configRegistryService = new ConfigRegistryServiceDatabaseImpl(configRegistryProps);
 		configRegistryService.initializeTables();
@@ -132,26 +144,25 @@ public class Activator implements BundleActivator {
 		Activator.configRegistryService = configRegistryService;
 
 		// -----------------------------------------------------------------------------
-		// Start web services
+		// Start web applications
 		// -----------------------------------------------------------------------------
 		// 1. AppStore
-		this.appStoreApplication = new AppStoreApplication(bundleContext, contextRoot);
-		this.appStoreApplication.start();
+		this.appStoreApp = new AppStoreApplication();
+		this.appStoreApp.setBundleContext(bundleContext);
+		this.appStoreApp.setHostURL(hostURL);
+		this.appStoreApp.setContextRoot(appStoreContextRoot);
+		this.appStoreApp.setComponentName(appStoreName);
+		this.appStoreApp.setIndexProviderLoadBalancer(this.indexProviderLoadBalancer);
+		this.appStoreApp.start();
 
 		// 2. ConfigRegistry
-		this.configRegistryApplication = new ConfigRegistryApplication(bundleContext, contextRoot);
-		this.configRegistryApplication.start();
-
-		// -----------------------------------------------------------------------------
-		// Start Timers
-		// -----------------------------------------------------------------------------
-		// 1. AppStore
-		this.appStoreServiceTimer = new AppStoreServiceTimer(this.indexProviderLoadBalancer, serverURL, contextRoot, appStoreName);
-		this.appStoreServiceTimer.start();
-
-		// 2. ConfigRegistry
-		this.configRegistryServiceTimer = new ConfigRegistryServiceTimer(this.indexProviderLoadBalancer, serverURL, contextRoot, configRegistryName);
-		this.configRegistryServiceTimer.start();
+		this.configRegistryApp = new ConfigRegistryApplication();
+		this.configRegistryApp.setBundleContext(bundleContext);
+		this.configRegistryApp.setHostURL(hostURL);
+		this.configRegistryApp.setContextRoot(configRegistryContextRoot);
+		this.configRegistryApp.setComponentName(configRegistryName);
+		this.configRegistryApp.setIndexProviderLoadBalancer(this.indexProviderLoadBalancer);
+		this.configRegistryApp.start();
 	}
 
 	@Override
@@ -159,33 +170,18 @@ public class Activator implements BundleActivator {
 		Activator.bundleContext = null;
 
 		// -----------------------------------------------------------------------------
-		// Stop Timers
+		// Stop web applications
 		// -----------------------------------------------------------------------------
 		// 1. AppStore
-		if (this.appStoreServiceTimer != null) {
-			this.appStoreServiceTimer.stop();
-			this.appStoreServiceTimer = null;
+		if (this.appStoreApp != null) {
+			this.appStoreApp.stop();
+			this.appStoreApp = null;
 		}
 
 		// 2. ConfigRegistry
-		if (this.configRegistryServiceTimer != null) {
-			this.configRegistryServiceTimer.stop();
-			this.configRegistryServiceTimer = null;
-		}
-
-		// -----------------------------------------------------------------------------
-		// Stop web services
-		// -----------------------------------------------------------------------------
-		// 1. AppStore
-		if (this.appStoreApplication != null) {
-			this.appStoreApplication.stop();
-			this.appStoreApplication = null;
-		}
-
-		// 2. ConfigRegistry
-		if (this.configRegistryApplication != null) {
-			this.configRegistryApplication.stop();
-			this.configRegistryApplication = null;
+		if (this.configRegistryApp != null) {
+			this.configRegistryApp.stop();
+			this.configRegistryApp = null;
 		}
 
 		// -----------------------------------------------------------------------------
@@ -231,4 +227,19 @@ public class Activator implements BundleActivator {
 // }
 // if (!appStoreContextRoot.startsWith("/")) {
 // appStoreContextRoot = "/" + appStoreContextRoot;
+// }
+
+// get http context root
+// String contextRoot = (String) commonProps.get(OrbitConstants.ORBIT_HTTP_CONTEXTROOT_PROP);
+// if (contextRoot == null || contextRoot.isEmpty()) {
+// contextRoot = OrbitConstants.ORBIT_DEFAULT_CONTEXT_ROOT;
+// }
+// if (!contextRoot.startsWith("/")) {
+// contextRoot = "/" + contextRoot;
+// }
+// if (appStoreContextRoot == null || appStoreContextRoot.isEmpty()) {
+// appStoreContextRoot = "/orbit/v1/appstore";
+// }
+// if (configContextRoot == null || configContextRoot.isEmpty()) {
+// configContextRoot = "/orbit/v1/configregistry";
 // }

@@ -955,7 +955,7 @@ public class IndexServiceDatabaseImpl implements IndexService, IndexServiceUpdat
 	@Override
 	public Map<String, Object> getProperties(Integer indexItemId) throws IndexServiceException {
 		if (debug) {
-			System.out.println(getClassName() + ".getProperties(" + indexItemId + ")");
+			System.out.println(getClassName() + ".getProperties(indexItemId=" + indexItemId + ")");
 		}
 		if (indexItemId == null) {
 			throw new IllegalArgumentException("indexItemId is null.");

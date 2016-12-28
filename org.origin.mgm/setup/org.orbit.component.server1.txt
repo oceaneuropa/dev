@@ -10,14 +10,14 @@ orbit.service.http.contextroot=/orbit/v1
 component.indexservice.url=http://127.0.0.1:10001/orbit/v1
 
 component.appstore.name=AppStoreInstance1
-component.appstore.contextroot=/orbit/v1
+component.appstore.contextroot=/orbit/v1/appstore
 component.appstore.jdbc.driver=org.postgresql.Driver
 component.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
 component.appstore.jdbc.username=postgres
 component.appstore.jdbc.password=admin
 
 component.configregistry.name=ConfigRegistryInstance1
-component.configregistry.contextroot=/orbit/v1
+component.configregistry.contextroot=/orbit/v1/configregistry
 component.configregistry.jdbc.driver=org.postgresql.Driver
 component.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
 component.configregistry.jdbc.username=postgres

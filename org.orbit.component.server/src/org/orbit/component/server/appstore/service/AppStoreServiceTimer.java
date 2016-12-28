@@ -15,24 +15,25 @@ import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 
 public class AppStoreServiceTimer extends ThreadPoolTimer {
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-	protected String serverURL;
+	protected String hostURL;
 	protected String contextRoot;
 	protected String componentName;
+	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 
 	/**
 	 * 
-	 * @param serverURL
+	 * @param hostURL
 	 * @param contextRoot
 	 * @param componentName
+	 * @param indexProviderLoadBalancer
 	 */
-	public AppStoreServiceTimer(IndexProviderLoadBalancer indexProviderLoadBalancer, String serverURL, String contextRoot, String componentName) {
+	public AppStoreServiceTimer(String hostURL, String contextRoot, String componentName, IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		super("AppStore Service Timer");
 
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
-		this.serverURL = serverURL;
+		this.hostURL = hostURL;
 		this.contextRoot = contextRoot;
 		this.componentName = componentName;
+		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 
 		Runnable runnable = new Runnable() {
 			@Override
@@ -45,16 +46,22 @@ public class AppStoreServiceTimer extends ThreadPoolTimer {
 
 	protected void updateIndexItem() {
 		AppStoreService appStoreService = Activator.getAppStoreService();
+		if (appStoreService == null) {
+			// AppStoreService is down. Do not update index item.
+			return;
+		}
+
 		LoadBalanceService<IndexProvider> lbServices = this.indexProviderLoadBalancer.getNext();
-		if (appStoreService != null && lbServices != null) {
+		if (lbServices != null) {
 			IndexProvider indexProvider = lbServices.getService();
 			if (indexProvider != null) {
 				try {
 					IndexItem indexItem = indexProvider.getIndexItem(OrbitConstants.APP_STORE_INDEXER_ID, OrbitConstants.APP_STORE_TYPE, this.componentName);
 					if (indexItem == null) {
 						// create new index item
+						// create index item with "url", "context_root", "last_heartbeat_time" attributes
 						Map<String, Object> props = new Hashtable<String, Object>();
-						props.put(OrbitConstants.INDEX_ITEM_URL_PROP, this.serverURL);
+						props.put(OrbitConstants.INDEX_ITEM_URL_PROP, this.hostURL);
 						props.put(OrbitConstants.INDEX_ITEM_CONTEXT_ROOT_PROP, this.contextRoot);
 						props.put(OrbitConstants.INDEX_ITEM_LAST_HEARTBEAT_TIME_PROP, new Date());
 
@@ -62,8 +69,11 @@ public class AppStoreServiceTimer extends ThreadPoolTimer {
 
 					} else {
 						// update existing index item
+						// update index item with "url", "context_root", "last_heartbeat_time" attributes
 						Integer indexItemId = indexItem.getIndexItemId();
 						Map<String, Object> props = new Hashtable<String, Object>();
+						props.put(OrbitConstants.INDEX_ITEM_URL_PROP, this.hostURL);
+						props.put(OrbitConstants.INDEX_ITEM_CONTEXT_ROOT_PROP, this.contextRoot);
 						props.put(OrbitConstants.INDEX_ITEM_LAST_HEARTBEAT_TIME_PROP, new Date());
 
 						indexProvider.setProperties(indexItemId, props);

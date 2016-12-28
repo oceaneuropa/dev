@@ -30,13 +30,15 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 		super(name);
 		this.indexServiceLoadBalancer = indexServiceLoadBalancer;
 
-		Runnable runnable = new Runnable() {
+		setRunnable(new Runnable() {
 			@Override
 			public void run() {
-				syncIndexItems();
+				boolean performed = syncIndexItems();
+				if (performed) {
+					indexItemsUpdated(IndexItemsMonitor.this.cachedIndexItems);
+				}
 			}
-		};
-		setRunnable(runnable);
+		});
 	}
 
 	public IndexServiceLoadBalancer getIndexServiceLoadBalancer() {
@@ -47,14 +49,14 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 		this.indexServiceLoadBalancer = indexServiceLoadBalancer;
 	}
 
-	public List<IndexItem> getIndexItems() {
+	public List<IndexItem> getCachedIndexItems() {
 		return this.cachedIndexItems;
 	}
 
-	protected synchronized void syncIndexItems() {
-		List<IndexItem> newIndexItems = null;
-		boolean retrieved = false;
+	protected synchronized boolean syncIndexItems() {
+		boolean performed = false;
 
+		List<IndexItem> newIndexItems = null;
 		LoadBalanceService<IndexService> lbServices = null;
 		if (this.indexServiceLoadBalancer != null) {
 			lbServices = this.indexServiceLoadBalancer.getNext();
@@ -63,7 +65,7 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 				if (indexService != null) {
 					try {
 						newIndexItems = getIndexItems(indexService);
-						retrieved = true;
+						performed = true;
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -71,7 +73,7 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 			}
 		}
 
-		if (retrieved) {
+		if (performed) {
 			// update cached index items
 			if (newIndexItems != null) {
 				this.cachedIndexItems = newIndexItems;
@@ -79,10 +81,28 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 				this.cachedIndexItems.clear();
 			}
 		} else {
-			// ignore updating the cached index items
+			// ignore updating the cached index items when the action of getting index items doesn't happen.
+			// e.g. indexing service is down due to network changes or or connection failure or server hardware failure.
+			// when that happens, the cachedIndexItems remains the value it has
 		}
+
+		return performed;
 	}
 
+	/**
+	 * Called when trying to update index items.
+	 * 
+	 * @param indexService
+	 * @return
+	 * @throws IOException
+	 */
 	protected abstract List<IndexItem> getIndexItems(IndexService indexService) throws IOException;
+
+	/**
+	 * Called when index items are updated.
+	 * 
+	 * @param indexItems
+	 */
+	protected abstract void indexItemsUpdated(List<IndexItem> indexItems);
 
 }

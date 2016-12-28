@@ -3,8 +3,8 @@ package org.orbit.component.connector.configregistry;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.orbit.component.api.configregistry.ConfigRegistryManager;
 import org.orbit.component.api.configregistry.ConfigRegistry;
+import org.orbit.component.api.configregistry.ConfigRegistryManager;
 import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -19,13 +19,22 @@ public class ConfigRegistryManagerImpl implements ConfigRegistryManager {
 
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
 
-	/**
-	 * 
-	 * @param bundleContext
-	 * @param indexServiceLoadBalancer
-	 */
-	public ConfigRegistryManagerImpl(BundleContext bundleContext, IndexServiceLoadBalancer indexServiceLoadBalancer) {
+	public ConfigRegistryManagerImpl() {
+	}
+
+	public BundleContext getBundleContext() {
+		return bundleContext;
+	}
+
+	public void setBundleContext(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
+	}
+
+	public IndexServiceLoadBalancer getIndexServiceLoadBalancer() {
+		return indexServiceLoadBalancer;
+	}
+
+	public void setIndexServiceLoadBalancer(IndexServiceLoadBalancer indexServiceLoadBalancer) {
 		this.indexServiceLoadBalancer = indexServiceLoadBalancer;
 	}
 
@@ -77,22 +86,24 @@ public class ConfigRegistryManagerImpl implements ConfigRegistryManager {
 	 * 
 	 */
 	public synchronized void stop() {
-		if (this.isStarted.compareAndSet(true, false)) {
-			// -----------------------------------------------------------------------------
-			// Unregister service
-			// -----------------------------------------------------------------------------
-			if (this.serviceRegistration != null) {
-				this.serviceRegistration.unregister();
-				this.serviceRegistration = null;
-			}
+		if (!this.isStarted.compareAndSet(true, false)) {
+			return;
+		}
 
-			// -----------------------------------------------------------------------------
-			// Stop monitor
-			// -----------------------------------------------------------------------------
-			if (this.indexItemsMonitor != null) {
-				this.indexItemsMonitor.stop();
-				this.indexItemsMonitor = null;
-			}
+		// -----------------------------------------------------------------------------
+		// Unregister service
+		// -----------------------------------------------------------------------------
+		if (this.serviceRegistration != null) {
+			this.serviceRegistration.unregister();
+			this.serviceRegistration = null;
+		}
+
+		// -----------------------------------------------------------------------------
+		// Stop monitor
+		// -----------------------------------------------------------------------------
+		if (this.indexItemsMonitor != null) {
+			this.indexItemsMonitor.stop();
+			this.indexItemsMonitor = null;
 		}
 	}
 

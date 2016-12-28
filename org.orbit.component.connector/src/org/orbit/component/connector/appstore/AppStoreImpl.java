@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.orbit.component.api.appstore.AppManifest;
@@ -30,7 +31,7 @@ public class AppStoreImpl implements AppStore {
 
 	protected static final AppManifest[] EMPTY_APPS = new AppManifest[0];
 
-	protected Properties properties;
+	protected Map<String, Object> properties;
 	protected AppStoreWSClient client;
 
 	protected String loadBalanceId;
@@ -40,7 +41,7 @@ public class AppStoreImpl implements AppStore {
 	 * 
 	 * @param properties
 	 */
-	public AppStoreImpl(Properties properties) {
+	public AppStoreImpl(Map<String, Object> properties) {
 		this.properties = properties;
 		this.loadBalanceId = AppStoreUtil.getLoadBalanceId(this.properties);
 		initClient();
@@ -55,8 +56,8 @@ public class AppStoreImpl implements AppStore {
 	 * 
 	 * @return
 	 */
-	public Properties getProperties() {
-		return properties;
+	public Map<String, Object> getProperties() {
+		return this.properties;
 	}
 
 	/**
@@ -64,7 +65,7 @@ public class AppStoreImpl implements AppStore {
 	 * 
 	 * @param properties
 	 */
-	public void update(Properties properties) {
+	public void update(Map<String, Object> properties) {
 		this.properties = properties;
 		this.loadBalanceId = AppStoreUtil.getLoadBalanceId(this.properties);
 		initClient();

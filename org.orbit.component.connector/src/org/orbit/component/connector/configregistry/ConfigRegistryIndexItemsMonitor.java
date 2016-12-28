@@ -19,4 +19,9 @@ public class ConfigRegistryIndexItemsMonitor extends IndexItemsMonitor {
 		return indexService.getIndexItems(OrbitConstants.CONFIG_REGISTRY_INDEXER_ID, OrbitConstants.CONFIG_REGISTRY_TYPE);
 	}
 
+	@Override
+	protected void indexItemsUpdated(List<IndexItem> indexItems) {
+
+	}
+
 }

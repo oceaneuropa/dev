@@ -22,6 +22,19 @@ public abstract class AbstractLoadBalanceService<S> implements LoadBalanceServic
 		this.service = service;
 	}
 
+	/**
+	 * 
+	 * @param service
+	 */
+	public AbstractLoadBalanceService(S service, Map<String, Object> properties) {
+		if (service == null) {
+			throw new IllegalArgumentException("service is null.");
+		}
+		this.id = UUID.randomUUID().toString();
+		this.service = service;
+		this.properties = properties;
+	}
+
 	@Override
 	public void setId(String id) {
 		this.id = id;
@@ -50,6 +63,11 @@ public abstract class AbstractLoadBalanceService<S> implements LoadBalanceServic
 	@Override
 	public synchronized boolean hasProperty(String key) {
 		return this.properties.containsKey(key);
+	}
+
+	@Override
+	public synchronized void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
 	}
 
 	@Override

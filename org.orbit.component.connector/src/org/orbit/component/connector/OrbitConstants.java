@@ -24,6 +24,7 @@ public class OrbitConstants {
 	// IndexItem
 	// ----------------------------------------------------------------------------------------
 	// constants for index item property names
+	public static String INDEX_ITEM_ID_PROP = "index_item_id";
 	public static String INDEX_ITEM_URL_PROP = "url";
 	public static String INDEX_ITEM_CONTEXT_ROOT_PROP = "context_root";
 	public static String INDEX_ITEM_LAST_HEARTBEAT_TIME_PROP = "last_heartbeat_time";
@@ -43,6 +44,12 @@ public class OrbitConstants {
 	public static String APP_STORE_INDEXER_ID = "component.appstore.indexer"; // index provider id for AppStore
 	public static String APP_STORE_TYPE = "AppStore"; // type of index item for AppStore
 
+	// Properties for app store web service client
+	public static String APPSTORE_NAME = "appstore.name";
+	public static String APPSTORE_URL = "appstore.url";
+	public static String APPSTORE_CONTEXT_ROOT = "appstore.context_root";
+	public static String APPSTORE_LAST_HEARTBEAT_TIME = "appstore.last_heartbeat_time";
+
 	// ----------------------------------------------------------------------------------------
 	// ConfigRegistry
 	// ----------------------------------------------------------------------------------------
@@ -57,5 +64,11 @@ public class OrbitConstants {
 	// values for indexing
 	public static String CONFIG_REGISTRY_INDEXER_ID = "component.configregistry.indexer"; // index provider id for ConfigRegistry
 	public static String CONFIG_REGISTRY_TYPE = "ConfigRegistry"; // type of index item for ConfigRegistry
+
+	// Properties for config registry web service client
+	public static String CONFIG_REGISTRY_NAME = "configregistry.name";
+	public static String CONFIG_REGISTRY_URL = "configregistry.url";
+	public static String CONFIG_REGISTRY_CONTEXT_ROOT = "configregistry.context_root";
+	public static String CONFIG_REGISTRY_LAST_HEARTBEAT_TIME = "configregistry.last_heartbeat_time";
 
 }
