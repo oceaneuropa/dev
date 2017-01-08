@@ -1,0 +1,9 @@
+http://chart.finance.yahoo.com/table.csv?s=BAC&a=10&b=8&c=2015&d=11&e=28&f=2016&g=d&ignore=.csv
+-s stock symbol. e.g. 'BAC'
+-a start month
+-b start day
+-c start year
+-d end month
+-e end day
+-f end year
+-g Frequency. e.g. 'd' is daily. 'w' is weekly. 'm' is monthly.
