@@ -1,21 +1,21 @@
 package org.origin.core.workspace.internal.resource;
 
 import java.io.File;
+import java.net.URI;
 
 import org.origin.common.resource.ResourceFactory;
 import org.origin.common.resource.ResourceFactoryRegistry;
 import org.origin.common.workingcopy.AbstractWorkingCopyFactory;
 import org.origin.common.workingcopy.WorkingCopy;
-import org.origin.core.workspace.IFolderDescription;
 import org.origin.core.workspace.WorkspaceConstants;
 
-public class FolderDescriptionResourceFactory extends AbstractWorkingCopyFactory<FolderDescriptionResource, IFolderDescription> {
+public class FolderDescriptionResourceFactory extends AbstractWorkingCopyFactory<FolderDescriptionResource> {
 
 	public static final String FACTORY_NAME = "FolderDescriptionResourceFactory";
 	public static FolderDescriptionResourceFactory INSTANCE = new FolderDescriptionResourceFactory();
 
 	/**
-	 * Register the folder description resource factory.
+	 * Register resource factory.
 	 * 
 	 */
 	public static void register() {
@@ -26,7 +26,7 @@ public class FolderDescriptionResourceFactory extends AbstractWorkingCopyFactory
 	}
 
 	/**
-	 * Unregister the folder description resource factory.
+	 * Unregister resource factory.
 	 * 
 	 */
 	public static void unregister() {
@@ -42,34 +42,24 @@ public class FolderDescriptionResourceFactory extends AbstractWorkingCopyFactory
 	}
 
 	@Override
-	public boolean isSupported(File file) {
-		if (file != null && file.isFile()) {
-			File parent = file.getParentFile();
-			String fileName = file.getName();
-			if (parent != null && parent.isDirectory() && WorkspaceConstants.METADATA_FOLDER.equals(parent.getName()) && fileName.endsWith(WorkspaceConstants.DOT_FOLDER_JSON)) {
-				try {
-					// FolderDescriptionResource resource = new FolderDescriptionResource(file.toURI());
-					// resource.load(file);
-					// if (resource.getFolderDescription() != null) {
-					// return true;
-					// }
-					return true;
-				} catch (Exception e) {
-					// ignore
-				}
-			}
+	public boolean isSupported(URI uri) {
+		File file = new File(uri);
+		File parent = file.getParentFile();
+		String fileName = file.getName();
+		if (parent != null && parent.isDirectory() && WorkspaceConstants.METADATA_FOLDER.equals(parent.getName()) && fileName.endsWith(WorkspaceConstants.DOT_FOLDER_JSON)) {
+			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public FolderDescriptionResource createResource(File file) {
-		return new FolderDescriptionResource(file.toURI());
+	public FolderDescriptionResource createResource(URI uri) {
+		return new FolderDescriptionResource(uri);
 	}
 
 	@Override
-	protected WorkingCopy<IFolderDescription> createWorkingCopy(File file) {
-		return new FolderDescriptionWorkingCopy(file);
+	protected WorkingCopy createWorkingCopy(URI uri) {
+		return new FolderDescriptionWorkingCopy(uri);
 	}
 
 }

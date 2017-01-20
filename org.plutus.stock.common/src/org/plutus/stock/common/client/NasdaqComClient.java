@@ -16,9 +16,7 @@ import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.plutus.stock.common.model.StockCategory;
-import org.plutus.stock.common.model.StockCompany;
-import org.plutus.stock.common.util.Comparators;
+import org.plutus.stock.model.dto.StockCompany;
 
 /**
  * nasdaq.com web service client to retrieve stock company data.

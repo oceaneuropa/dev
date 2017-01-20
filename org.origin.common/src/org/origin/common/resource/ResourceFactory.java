@@ -1,23 +1,23 @@
 package org.origin.common.resource;
 
-import java.io.File;
+import java.net.URI;
 
 public interface ResourceFactory<RES extends Resource> {
 
 	/**
-	 * Check whether a file is supported by a resource factory.
+	 * Check whether a URI is supported by a resource factory.
 	 * 
-	 * @param file
+	 * @param uri
 	 * @return
 	 */
-	public boolean isSupported(File file);
+	boolean isSupported(URI uri);
 
 	/**
-	 * Create a resource for a file.
+	 * Create a resource for a URI.
 	 * 
-	 * @param file
+	 * @param uri
 	 * @return
 	 */
-	public RES createResource(File file);
+	RES createResource(URI uri);
 
 }

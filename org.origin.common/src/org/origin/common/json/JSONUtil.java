@@ -115,17 +115,11 @@ public class JSONUtil {
 	 * @throws IOException
 	 */
 	public static void save(JSONObject jsonObject, OutputStream outputStream, boolean closeOutputStream) throws IOException {
-		ByteArrayInputStream inputStream = null;
 		try {
 			String stringContent = jsonObject.toString(4);
 
 			byte[] bytes = stringContent.getBytes(getDefaultCharset());
-			inputStream = new ByteArrayInputStream(bytes);
-
-			if (inputStream != null) {
-				outputStream.write(bytes);
-				outputStream.flush();
-			}
+			outputStream.write(bytes);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -139,13 +133,6 @@ public class JSONUtil {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-				}
-			}
-			if (inputStream != null) {
-				try {
-					inputStream.close();
-				} catch (IOException e) {
-					e.printStackTrace();
 				}
 			}
 		}

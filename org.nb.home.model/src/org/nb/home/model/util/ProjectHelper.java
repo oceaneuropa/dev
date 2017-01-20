@@ -1,6 +1,7 @@
 package org.nb.home.model.util;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.nb.home.model.resource.ProjectResourceFactory;
 import org.nb.home.model.resource.ProjectWorkingCopy;
@@ -15,13 +16,14 @@ public class ProjectHelper {
 	 * 
 	 * @param projectConfigFile
 	 * @return
+	 * @throws IOException
 	 */
-	public ProjectConfig getProject(File projectConfigFile) {
+	public ProjectConfig getProject(File projectConfigFile) throws IOException {
 		ProjectConfig project = null;
 		if (projectConfigFile != null && projectConfigFile.exists()) {
 			ProjectWorkingCopy wc = WorkingCopyUtil.getWorkingCopy(projectConfigFile, ProjectResourceFactory.class, ProjectWorkingCopy.class);
 			if (wc != null) {
-				project = wc.getRootElement();
+				project = wc.getRootElement(ProjectConfig.class);
 			}
 		}
 		return project;

@@ -5,10 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 
-import org.origin.common.resource.AbstractResource;
+import org.origin.common.resource.impl.ResourceImpl;
 import org.origin.core.workspace.IProjectDescription;
 
-public class ProjectDescriptionResource extends AbstractResource {
+public class ProjectDescriptionResource extends ResourceImpl {
 
 	/**
 	 * 

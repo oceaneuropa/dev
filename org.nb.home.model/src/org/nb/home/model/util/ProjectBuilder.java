@@ -23,7 +23,7 @@ public class ProjectBuilder {
 			projectConfig.setProjectId(projectId);
 			resource.getContents().add(projectConfig);
 		}
-		resource.save(projectConfigFile);
+		resource.save();
 	}
 
 }

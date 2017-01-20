@@ -16,10 +16,10 @@ import org.junit.runners.MethodSorters;
 import org.origin.common.rest.client.ClientException;
 import org.plutus.stock.common.client.NasdaqComClient;
 import org.plutus.stock.common.client.NasdaqComHelper;
-import org.plutus.stock.common.model.StockCategory;
-import org.plutus.stock.common.model.StockCompany;
-import org.plutus.stock.common.model.StockSector;
 import org.plutus.stock.common.util.Comparators;
+import org.plutus.stock.model.dto.StockCategory;
+import org.plutus.stock.model.dto.StockCompany;
+import org.plutus.stock.model.dto.StockSector;
 
 /**
  * 

@@ -1,21 +1,21 @@
 package org.origin.core.workspace.internal.resource;
 
 import java.io.File;
+import java.net.URI;
 
 import org.origin.common.resource.ResourceFactory;
 import org.origin.common.resource.ResourceFactoryRegistry;
 import org.origin.common.workingcopy.AbstractWorkingCopyFactory;
 import org.origin.common.workingcopy.WorkingCopy;
-import org.origin.core.workspace.IWorkspaceDescription;
 import org.origin.core.workspace.WorkspaceConstants;
 
-public class WorkspaceDescriptionResourceFactory extends AbstractWorkingCopyFactory<WorkspaceDescriptionResource, IWorkspaceDescription> {
+public class WorkspaceDescriptionResourceFactory extends AbstractWorkingCopyFactory<WorkspaceDescriptionResource> {
 
 	public static final String FACTORY_NAME = "WorkspaceDescriptionResourceFactory";
 	public static WorkspaceDescriptionResourceFactory INSTANCE = new WorkspaceDescriptionResourceFactory();
 
 	/**
-	 * Register the workspace description resource factory.
+	 * Register resource factory.
 	 * 
 	 */
 	public static void register() {
@@ -26,7 +26,7 @@ public class WorkspaceDescriptionResourceFactory extends AbstractWorkingCopyFact
 	}
 
 	/**
-	 * Unregister the workspace description resource factory.
+	 * Unregister resource factory.
 	 * 
 	 */
 	public static void unregister() {
@@ -42,34 +42,24 @@ public class WorkspaceDescriptionResourceFactory extends AbstractWorkingCopyFact
 	}
 
 	@Override
-	public boolean isSupported(File file) {
-		if (file != null && file.isFile()) {
-			File parent = file.getParentFile();
-			String fileName = file.getName();
-			if (parent != null && parent.isDirectory() && WorkspaceConstants.METADATA_FOLDER.equals(parent.getName()) && WorkspaceConstants.WORKSPACE_JSON.equals(fileName)) {
-				try {
-					// WorkspaceDescriptionResource resource = new WorkspaceDescriptionResource(file.toURI());
-					// resource.load(file);
-					// if (resource.getWorkspaceDescription() != null) {
-					// return true;
-					// }
-					return true;
-				} catch (Exception e) {
-					// ignore
-				}
-			}
+	public boolean isSupported(URI uri) {
+		File file = new File(uri);
+		File parent = file.getParentFile();
+		String fileName = file.getName();
+		if (parent != null && parent.isDirectory() && WorkspaceConstants.METADATA_FOLDER.equals(parent.getName()) && WorkspaceConstants.WORKSPACE_JSON.equals(fileName)) {
+			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public WorkspaceDescriptionResource createResource(File file) {
-		return new WorkspaceDescriptionResource(file.toURI());
+	public WorkspaceDescriptionResource createResource(URI uri) {
+		return new WorkspaceDescriptionResource(uri);
 	}
 
 	@Override
-	protected WorkingCopy<IWorkspaceDescription> createWorkingCopy(File file) {
-		return new WorkspaceDescriptionWorkingCopy(file);
+	protected WorkingCopy createWorkingCopy(URI uri) {
+		return new WorkspaceDescriptionWorkingCopy(uri);
 	}
 
 }

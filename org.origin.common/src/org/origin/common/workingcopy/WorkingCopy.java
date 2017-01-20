@@ -1,48 +1,81 @@
 package org.origin.common.workingcopy;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.util.List;
 
 import org.origin.common.adapter.IAdaptable;
+import org.origin.common.resource.Resource;
 
-public interface WorkingCopy<ELEMENT> extends IAdaptable {
+public interface WorkingCopy extends IAdaptable {
 
 	/**
-	 * Get the file object.
+	 * Get resource URI.
 	 * 
 	 * @return
 	 */
-	public File getFile();
+	URI getURI();
 
 	/**
-	 * Check whether the cache is loaded.
+	 * Set working copy factory.
+	 * 
+	 * @param factory
+	 */
+	void setFactory(WorkingCopyFactory factory);
+
+	/**
+	 * Get working copy factory.
 	 * 
 	 * @return
 	 */
-	public boolean isLoaded();
+	WorkingCopyFactory getFactory();
 
+	// -----------------------------------------------------------------------------
+	// Resource instance
+	// -----------------------------------------------------------------------------
 	/**
-	 * Reload the cache.
-	 * 
-	 * @throws IOException
-	 */
-	public void reload() throws IOException;
-
-	/**
-	 * Save the file.
-	 * 
-	 * @throws IOException
-	 */
-	public void save() throws IOException;
-
-	/**
-	 * Get root element of the resource.
+	 * Get the resource.
 	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	public ELEMENT getRootElement();
+	Resource getResource() throws IOException;
 
+	// -----------------------------------------------------------------------------
+	// Load
+	// -----------------------------------------------------------------------------
+	/**
+	 * Check whether the working copy is loaded.
+	 * 
+	 * @return
+	 */
+	boolean isLoaded();
+
+	/**
+	 * Reload the working copy.
+	 * 
+	 * @throws IOException
+	 */
+	void reload() throws IOException;
+
+	/**
+	 * Unload the working copy.
+	 */
+	void unload();
+
+	// -----------------------------------------------------------------------------
+	// Save
+	// -----------------------------------------------------------------------------
+	/**
+	 * Save the working copy.
+	 * 
+	 * @throws IOException
+	 */
+	void save() throws IOException;
+
+	// -----------------------------------------------------------------------------
+	// Root content
+	// -----------------------------------------------------------------------------
 	/**
 	 * Get root element of the resource.
 	 * 
@@ -51,6 +84,23 @@ public interface WorkingCopy<ELEMENT> extends IAdaptable {
 	 * @return
 	 * @throws IOException
 	 */
-	public <T> T getRootElement(Class<T> elementClass);
+	<T> T getRootElement(Class<T> elementClass) throws IOException;
+
+	/**
+	 * Get the contents.
+	 *
+	 * @return
+	 * @throws IOException
+	 */
+	List<Object> getContents() throws IOException;
+
+	/**
+	 * Get the contents of specified class.
+	 * 
+	 * @param elementClass
+	 * @return
+	 * @throws IOException
+	 */
+	<T> List<T> getContents(Class<T> elementClass) throws IOException;
 
 }

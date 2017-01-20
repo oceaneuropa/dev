@@ -1,9 +1,11 @@
-package org.origin.common.resource;
+package org.origin.common.resource.impl;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.resource.RObject;
+import org.origin.common.resource.Resource;
 
 public abstract class RObjectImpl implements RObject, Cloneable {
 
@@ -33,6 +35,10 @@ public abstract class RObjectImpl implements RObject, Cloneable {
 
 	public void setContainer(RObject container) {
 		this.container = container;
+
+		// Now the resource of this RObject is determined by the resource of the container.
+		// The resource referenced by this RObject may become stale and so should be removed.
+		this.resource = null;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -40,8 +46,12 @@ public abstract class RObjectImpl implements RObject, Cloneable {
 	public Object clone() {
 		try {
 			RObjectImpl clone = (RObjectImpl) super.clone();
-			clone.setResource(this.eResource());
-			clone.setContainer(this.eContainer());
+
+			if (this.eContainer() != null) {
+				clone.setContainer(this.eContainer());
+			} else {
+				clone.setResource(this.eResource());
+			}
 
 			for (Iterator<Entry<Class<?>, Object>> itor = this.adaptorSupport.iterator(); itor.hasNext();) {
 				Entry<Class<?>, Object> entry = itor.next();

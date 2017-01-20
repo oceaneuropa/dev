@@ -3,6 +3,7 @@ package org.origin.common.resource;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.origin.common.resource.impl.URIConverterImpl;
 import org.origin.common.runtime.ActivationAware;
 
 public class ResourceFactoryRegistry {
@@ -12,6 +13,29 @@ public class ResourceFactoryRegistry {
 	private Map<String, ResourceFactory<?>> factoriesMap = new LinkedHashMap<String, ResourceFactory<?>>();
 
 	private ResourceFactoryRegistry() {
+	}
+
+	protected URIConverter defaultURIConverter;
+
+	/**
+	 * Set default URIConverter.
+	 * 
+	 * @param defaultURIConverter
+	 */
+	public synchronized void setDefaultURIConverter(URIConverter defaultURIConverter) {
+		this.defaultURIConverter = defaultURIConverter;
+	}
+
+	/**
+	 * Get default URIConverter.
+	 * 
+	 * @return
+	 */
+	public synchronized URIConverter getDefaultURIConverter() {
+		if (this.defaultURIConverter == null) {
+			this.defaultURIConverter = new URIConverterImpl();
+		}
+		return this.defaultURIConverter;
 	}
 
 	/**

@@ -3,10 +3,12 @@ package org.plutus.stock.common.util;
 import java.util.Comparator;
 import java.util.Date;
 
-import org.plutus.stock.common.model.StockCategory;
-import org.plutus.stock.common.model.StockCompany;
-import org.plutus.stock.common.model.StockSector;
-import org.plutus.stock.common.model.YahooFinanceStockData;
+import org.plutus.stock.model.dto.StockCategory;
+import org.plutus.stock.model.dto.StockCompany;
+import org.plutus.stock.model.dto.StockSector;
+import org.plutus.stock.model.dto.YahooFinanceStockData;
+import org.plutus.stock.model.runtime.StockData;
+import org.plutus.stock.model.runtime.StockStat;
 
 public class Comparators {
 
@@ -34,74 +36,6 @@ public class Comparators {
 
 		protected boolean desc() {
 			return SORT_DESC.equalsIgnoreCase(sort);
-		}
-	}
-
-	/**
-	 * Compare YahooFinanceStockData objects
-	 *
-	 */
-	public static class StockDataComparator extends BaseComparator<YahooFinanceStockData> {
-		public static StockDataComparator ASC = new StockDataComparator(SORT_ASC);
-		public static StockDataComparator DESC = new StockDataComparator(SORT_DESC);
-
-		public StockDataComparator() {
-			this(SORT_ASC);
-		}
-
-		public StockDataComparator(String sort) {
-			this.sort = check(sort);
-		}
-
-		@Override
-		public int compare(YahooFinanceStockData o1, YahooFinanceStockData o2) {
-			if (desc()) {
-				YahooFinanceStockData tmp = o1;
-				o1 = o2;
-				o2 = tmp;
-			}
-
-			Date date1 = o1.getDate();
-			Date date2 = o2.getDate();
-
-			return date1.compareTo(date2);
-		}
-	}
-
-	/**
-	 * Compare StockCompanyData objects
-	 *
-	 */
-	public static class StockCompanyComparator extends BaseComparator<StockCompany> {
-		public static StockCompanyComparator ASC = new StockCompanyComparator(SORT_ASC);
-		public static StockCompanyComparator DESC = new StockCompanyComparator(SORT_DESC);
-
-		public StockCompanyComparator() {
-			this(SORT_ASC);
-		}
-
-		public StockCompanyComparator(String sort) {
-			this.sort = check(sort);
-		}
-
-		@Override
-		public int compare(StockCompany o1, StockCompany o2) {
-			if (desc()) {
-				StockCompany tmp = o1;
-				o1 = o2;
-				o2 = tmp;
-			}
-
-			String symbol1 = o1.getSymbol();
-			if (symbol1 == null) {
-				symbol1 = "";
-			}
-			String symbol2 = o2.getSymbol();
-			if (symbol2 == null) {
-				symbol2 = "";
-			}
-
-			return symbol1.compareTo(symbol2);
 		}
 	}
 
@@ -296,6 +230,130 @@ public class Comparators {
 			} else {
 				return sector1.compareTo(sector2);
 			}
+		}
+	}
+
+	/**
+	 * Compare StockCompanyData objects
+	 *
+	 */
+	public static class StockCompanyComparator extends BaseComparator<StockCompany> {
+		public static StockCompanyComparator ASC = new StockCompanyComparator(SORT_ASC);
+		public static StockCompanyComparator DESC = new StockCompanyComparator(SORT_DESC);
+
+		public StockCompanyComparator() {
+			this(SORT_ASC);
+		}
+
+		public StockCompanyComparator(String sort) {
+			this.sort = check(sort);
+		}
+
+		@Override
+		public int compare(StockCompany o1, StockCompany o2) {
+			if (desc()) {
+				StockCompany tmp = o1;
+				o1 = o2;
+				o2 = tmp;
+			}
+
+			String symbol1 = o1.getSymbol();
+			if (symbol1 == null) {
+				symbol1 = "";
+			}
+			String symbol2 = o2.getSymbol();
+			if (symbol2 == null) {
+				symbol2 = "";
+			}
+
+			return symbol1.compareTo(symbol2);
+		}
+	}
+
+	/**
+	 * Compare YahooFinanceStockData objects
+	 *
+	 */
+	public static class YahooStockDataComparator extends BaseComparator<YahooFinanceStockData> {
+		public static YahooStockDataComparator ASC = new YahooStockDataComparator(SORT_ASC);
+		public static YahooStockDataComparator DESC = new YahooStockDataComparator(SORT_DESC);
+
+		public YahooStockDataComparator() {
+			this(SORT_ASC);
+		}
+
+		public YahooStockDataComparator(String sort) {
+			this.sort = check(sort);
+		}
+
+		@Override
+		public int compare(YahooFinanceStockData o1, YahooFinanceStockData o2) {
+			if (desc()) {
+				YahooFinanceStockData tmp = o1;
+				o1 = o2;
+				o2 = tmp;
+			}
+			Date date1 = o1.getDate();
+			Date date2 = o2.getDate();
+			return date1.compareTo(date2);
+		}
+	}
+
+	/**
+	 * Compare StockData objects
+	 *
+	 */
+	public static class StockDataComparator extends BaseComparator<StockData> {
+		public static StockDataComparator ASC = new StockDataComparator(SORT_ASC);
+		public static StockDataComparator DESC = new StockDataComparator(SORT_DESC);
+
+		public StockDataComparator() {
+			this(SORT_ASC);
+		}
+
+		public StockDataComparator(String sort) {
+			this.sort = check(sort);
+		}
+
+		@Override
+		public int compare(StockData o1, StockData o2) {
+			if (desc()) {
+				StockData tmp = o1;
+				o1 = o2;
+				o2 = tmp;
+			}
+			Date date1 = o1.getDate();
+			Date date2 = o2.getDate();
+			return date1.compareTo(date2);
+		}
+	}
+
+	/**
+	 * Compare StockStat objects
+	 *
+	 */
+	public static class StockStatComparator extends BaseComparator<StockStat> {
+		public static StockStatComparator ASC = new StockStatComparator(SORT_ASC);
+		public static StockStatComparator DESC = new StockStatComparator(SORT_DESC);
+
+		public StockStatComparator() {
+			this(SORT_ASC);
+		}
+
+		public StockStatComparator(String sort) {
+			this.sort = check(sort);
+		}
+
+		@Override
+		public int compare(StockStat o1, StockStat o2) {
+			if (desc()) {
+				StockStat tmp = o1;
+				o1 = o2;
+				o2 = tmp;
+			}
+			Date date1 = o1.getDate();
+			Date date2 = o2.getDate();
+			return date1.compareTo(date2);
 		}
 	}
 

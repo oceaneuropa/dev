@@ -1,10 +1,10 @@
 package org.origin.common.workingcopy;
 
-import java.io.File;
+import java.net.URI;
 
 import org.origin.common.runtime.ActivationAware;
 
-public interface WorkingCopyFactory<ELEMENT> extends ActivationAware {
+public interface WorkingCopyFactory extends ActivationAware {
 
 	/**
 	 * Get factory name.
@@ -26,35 +26,35 @@ public interface WorkingCopyFactory<ELEMENT> extends ActivationAware {
 	public void deactivate();
 
 	/**
-	 * Check whether a file is supported by the factory.
+	 * Check whether a URI is supported by the factory.
 	 * 
-	 * @param file
+	 * @param uri
 	 * @return
 	 */
-	public boolean isSupported(File file);
+	public boolean isSupported(URI uri);
 
 	/**
-	 * Check whether the factory contains a cache of the file.
+	 * Check whether the factory contains a cache of the URI.
 	 * 
-	 * @param file
+	 * @param uri
 	 * @return
 	 */
-	public boolean hasWorkingCopy(File file);
+	public boolean hasWorkingCopy(URI uri);
 
 	/**
-	 * Get the cache of a file.
+	 * Get the cache of a URI.
 	 * 
-	 * @param file
+	 * @param uri
 	 * @return
 	 */
-	public WorkingCopy<ELEMENT> getWorkingCopy(File file);
+	public WorkingCopy getWorkingCopy(URI uri);
 
 	/**
-	 * Remove the cache of a file.
+	 * Remove the cache of a URI.
 	 * 
-	 * @param file
+	 * @param uri
 	 * @return
 	 */
-	public WorkingCopy<ELEMENT> removeWorkingCopy(File file);
+	public WorkingCopy removeWorkingCopy(URI uri);
 
 }

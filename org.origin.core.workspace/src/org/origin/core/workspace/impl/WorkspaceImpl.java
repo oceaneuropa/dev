@@ -37,13 +37,14 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 	 * 
 	 * @param workspaceDir
 	 * @return
+	 * @throws IOException
 	 */
-	public static IWorkspaceDescription loadWorkspaceDescription(File workspaceDir) {
+	public static IWorkspaceDescription loadWorkspaceDescription(File workspaceDir) throws IOException {
 		IWorkspaceDescription projectDesc = null;
 		if (workspaceDir != null && workspaceDir.isDirectory()) {
 			File workspaceDescFile = getWorkspaceDescriptionFile(workspaceDir);
 			if (workspaceDescFile != null && workspaceDescFile.exists()) {
-				WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(workspaceDescFile);
+				WorkingCopy workingCopy = WorkingCopyUtil.getWorkingCopy(workspaceDescFile);
 				if (workingCopy != null) {
 					projectDesc = workingCopy.getRootElement(IWorkspaceDescription.class);
 				}
@@ -128,9 +129,11 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 	 * 2. Serialize the workspace description to {workspace}/.metadata/workspace.json file.
 	 * 
 	 * 3. Load natures and configure natures.
+	 * 
+	 * @throws IOException
 	 */
 	@Override
-	public void create(IWorkspaceDescription workspaceDesc) {
+	public void create(IWorkspaceDescription workspaceDesc) throws IOException {
 		if (workspaceDesc == null) {
 			workspaceDesc = new WorkspaceDescriptionImpl();
 		}
@@ -145,7 +148,7 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 		WorkspaceDescriptionResource workspaceDescResource = new WorkspaceDescriptionResource(workspaceDescFile.toURI());
 		workspaceDescResource.getContents().add(workspaceDesc);
 		try {
-			workspaceDescResource.save(workspaceDescFile);
+			workspaceDescResource.save();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -182,7 +185,7 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 			}
 
 			// save workspace description
-			WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(this.workspaceDesc);
+			WorkingCopy workingCopy = WorkingCopyUtil.getWorkingCopy(this.workspaceDesc);
 			if (workingCopy != null) {
 				workingCopy.save();
 			}
@@ -214,7 +217,7 @@ public class WorkspaceImpl extends ContainerImpl implements IWorkspace {
 			}
 
 			// save workspace description
-			WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(this.workspaceDesc);
+			WorkingCopy workingCopy = WorkingCopyUtil.getWorkingCopy(this.workspaceDesc);
 			if (workingCopy != null) {
 				workingCopy.save();
 			}

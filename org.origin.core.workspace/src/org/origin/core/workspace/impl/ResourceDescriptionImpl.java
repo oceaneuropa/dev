@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.origin.common.resource.RObjectImpl;
+import org.origin.common.resource.impl.RObjectImpl;
 import org.origin.core.workspace.IResourceDescription;
 
 public abstract class ResourceDescriptionImpl extends RObjectImpl implements IResourceDescription {

@@ -19,7 +19,7 @@ import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.DateUtil;
-import org.plutus.stock.common.model.YahooFinanceStockData;
+import org.plutus.stock.model.dto.YahooFinanceStockData;
 
 /**
  * YahooFinance web service client to retrieve stock data.
@@ -41,7 +41,7 @@ public class YahooFinanceClient extends AbstractClient {
 
 	// log
 	protected boolean info = true;
-	protected boolean debug = false;
+	protected boolean debug = true;
 
 	/**
 	 * 
@@ -166,7 +166,8 @@ public class YahooFinanceClient extends AbstractClient {
 			URI uri = target.getUri();
 			if (this.debug) {
 				try {
-					System.out.println("uri = " + uri.toURL().toExternalForm());
+					System.out.println("    uri = " + uri.toURL().toExternalForm());
+					System.out.println();
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}
@@ -177,6 +178,7 @@ public class YahooFinanceClient extends AbstractClient {
 			checkResponse(response);
 
 			String responseString = response.readEntity(String.class);
+
 			// if (this.debug) {
 			// System.out.println("responseString = " + responseString);
 			// }

@@ -14,7 +14,46 @@ public interface Resource extends IAdaptable {
 	 * 
 	 * @return
 	 */
-	public URI getURI();
+	URI getURI();
+
+	/**
+	 * Get URIConverter.
+	 * 
+	 * @return
+	 */
+	URIConverter getURIConverter();
+
+	/**
+	 * Set URIConverter.
+	 * 
+	 * @param uriConverter
+	 */
+	void setURIConverter(URIConverter uriConverter);
+
+	/**
+	 * Check whether URI exists.
+	 * 
+	 * @param uri
+	 * @return
+	 * @throws IOException
+	 */
+	boolean exists() throws IOException;
+
+	/**
+	 * Create new resource.
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	boolean createNewResource() throws IOException;
+
+	/**
+	 * Load resource from URI.
+	 * 
+	 * @param uri
+	 * @throws IOException
+	 */
+	void load() throws IOException;
 
 	/**
 	 * Load resource from input stream.
@@ -22,7 +61,15 @@ public interface Resource extends IAdaptable {
 	 * @param input
 	 * @throws IOException
 	 */
-	public void load(InputStream input) throws IOException;
+	void load(InputStream input) throws IOException;
+
+	/**
+	 * Save resource to URI.
+	 * 
+	 * @param uri
+	 * @throws IOException
+	 */
+	void save() throws IOException;
 
 	/**
 	 * Save resource to output stream.
@@ -30,25 +77,34 @@ public interface Resource extends IAdaptable {
 	 * @param output
 	 * @throws IOException
 	 */
-	public void save(OutputStream output) throws IOException;
+	void save(OutputStream output) throws IOException;
+
+	/**
+	 * Delete the resource.
+	 * 
+	 * @param uri
+	 * @return
+	 * @throws IOException
+	 */
+	boolean delete() throws IOException;
 
 	/**
 	 * Check whether resource's contents are empty.
 	 * 
 	 * @return
 	 */
-	public boolean isEmpty();
+	boolean isEmpty();
 
 	/**
 	 * Get the contents of the resource.
 	 * 
 	 * @return
 	 */
-	public List<Object> getContents();
+	List<Object> getContents();
 
 	/**
 	 * Clear the contents of the resource.
 	 */
-	public void clear();
+	void clear();
 
 }

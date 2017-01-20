@@ -1,23 +1,22 @@
 package org.origin.common.workingcopy;
 
-import java.io.File;
+import java.net.URI;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.origin.common.resource.AbstractResourceFactory;
 import org.origin.common.resource.Resource;
 import org.origin.common.resource.ResourceFactory;
+import org.origin.common.resource.impl.ResourceFactoryImpl;
 
 /**
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  * @param <RES>
- * @param <ELEMENT>
  */
-public abstract class AbstractWorkingCopyFactory<RES extends Resource, ELEMENT> extends AbstractResourceFactory<RES> implements ResourceFactory<RES>, WorkingCopyFactory<ELEMENT> {
+public abstract class AbstractWorkingCopyFactory<RES extends Resource> extends ResourceFactoryImpl<RES> implements ResourceFactory<RES>, WorkingCopyFactory {
 
-	protected Map<File, WorkingCopy<ELEMENT>> workingCopyMap = new LinkedHashMap<File, WorkingCopy<ELEMENT>>();
+	protected Map<URI, WorkingCopy> workingCopyMap = new LinkedHashMap<URI, WorkingCopy>();
 
 	@Override
 	public void activate() {
@@ -28,41 +27,41 @@ public abstract class AbstractWorkingCopyFactory<RES extends Resource, ELEMENT> 
 	}
 
 	@Override
-	public synchronized boolean hasWorkingCopy(File file) {
-		WorkingCopy<ELEMENT> wc = this.workingCopyMap.get(file);
+	public synchronized boolean hasWorkingCopy(URI uri) {
+		WorkingCopy wc = this.workingCopyMap.get(uri);
 		return wc != null ? true : false;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public final synchronized WorkingCopy<ELEMENT> getWorkingCopy(File file) {
-		WorkingCopy<ELEMENT> workingCopy = this.workingCopyMap.get(file);
+	public final synchronized WorkingCopy getWorkingCopy(URI uri) {
+		WorkingCopy workingCopy = this.workingCopyMap.get(uri);
 		if (workingCopy == null) {
-			WorkingCopy<ELEMENT> newWorkingCopy = createWorkingCopy(file);
+			WorkingCopy newWorkingCopy = createWorkingCopy(uri);
 			if (newWorkingCopy instanceof AbstractWorkingCopy) {
-				((AbstractWorkingCopy<RES, ELEMENT>) newWorkingCopy).setFactory(this);
+				((AbstractWorkingCopy<RES>) newWorkingCopy).setFactory(this);
 			} else {
 				newWorkingCopy.adapt(WorkingCopyFactory.class, this);
 			}
 			if (newWorkingCopy != null) {
 				workingCopy = newWorkingCopy;
-				this.workingCopyMap.put(file, workingCopy);
+				this.workingCopyMap.put(uri, workingCopy);
 			}
 		}
 		return workingCopy;
 	}
 
 	/**
-	 * Create the working copy for a file.
+	 * Create the working copy for a URI.
 	 * 
-	 * @param file
+	 * @param uri
 	 * @return
 	 */
-	protected abstract WorkingCopy<ELEMENT> createWorkingCopy(File file);
+	protected abstract WorkingCopy createWorkingCopy(URI uri);
 
 	@Override
-	public synchronized WorkingCopy<ELEMENT> removeWorkingCopy(File file) {
-		return this.workingCopyMap.remove(file);
+	public synchronized WorkingCopy removeWorkingCopy(URI uri) {
+		return this.workingCopyMap.remove(uri);
 	}
 
 }

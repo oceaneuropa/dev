@@ -1,6 +1,7 @@
 package org.nb.home.model.util;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.nb.home.model.runtime.config.ProjectConfig;
 import org.origin.common.workingcopy.WorkingCopy;
@@ -123,11 +124,12 @@ public class TestProjectHelper {
 	 * 
 	 * @param projectConfigFile
 	 * @return
+	 * @throws IOException 
 	 */
-	public ProjectConfig getProjectConfig(File projectConfigFile) {
+	public ProjectConfig getProjectConfig(File projectConfigFile) throws IOException {
 		ProjectConfig projectConfig = null;
 		if (projectConfigFile != null && projectConfigFile.exists() && projectConfigFile.isFile()) {
-			WorkingCopy<?> wc = WorkingCopyUtil.getWorkingCopy(projectConfigFile);
+			WorkingCopy wc = WorkingCopyUtil.getWorkingCopy(projectConfigFile);
 			if (wc != null) {
 				projectConfig = wc.getRootElement(ProjectConfig.class);
 			}
@@ -140,10 +142,11 @@ public class TestProjectHelper {
 	 * @param projectConfigFile
 	 * @param projectId
 	 * @return
+	 * @throws IOException 
 	 */
-	public boolean projectExists(File projectConfigFile, String projectId) {
+	public boolean projectExists(File projectConfigFile, String projectId) throws IOException {
 		if (projectId != null && projectConfigFile != null && projectConfigFile.exists() && projectConfigFile.isFile()) {
-			WorkingCopy<?> wc = WorkingCopyUtil.getWorkingCopy(projectConfigFile);
+			WorkingCopy wc = WorkingCopyUtil.getWorkingCopy(projectConfigFile);
 			if (wc != null) {
 				ProjectConfig projectConfig = wc.getRootElement(ProjectConfig.class);
 				if (projectConfig != null && projectId.equals(projectConfig.getProjectId())) {

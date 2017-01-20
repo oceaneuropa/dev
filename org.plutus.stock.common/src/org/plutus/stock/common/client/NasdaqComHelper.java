@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.rest.client.ClientException;
-import org.plutus.stock.common.model.StockCategory;
-import org.plutus.stock.common.model.StockCompany;
-import org.plutus.stock.common.model.StockSector;
 import org.plutus.stock.common.util.Comparators;
+import org.plutus.stock.model.dto.StockCategory;
+import org.plutus.stock.model.dto.StockCompany;
+import org.plutus.stock.model.dto.StockSector;
 
 public class NasdaqComHelper {
 
@@ -108,7 +108,7 @@ public class NasdaqComHelper {
 
 		for (String sector : sectors) {
 			StockSector sectorObj = sectorsMap.get(sector);
-			sectorObj.sortIndustries();
+			sectorObj.sortIndustries(Comparators.IndustryComparator.ASC);
 			stockSectors.add(sectorObj);
 		}
 

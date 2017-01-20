@@ -4,10 +4,10 @@ import org.origin.common.adapter.IAdaptable;
 
 public interface RObject extends IAdaptable {
 
-	public Resource eResource();
+	Resource eResource();
 
-	public RObject eContainer();
+	RObject eContainer();
 
-	public void setContainer(RObject parent);
+	void setContainer(RObject parent);
 
 }

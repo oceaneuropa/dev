@@ -3,7 +3,7 @@ package org.nb.home.model.runtime.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.origin.common.resource.RObjectImpl;
+import org.origin.common.resource.impl.RObjectImpl;
 
 public class WorkspaceConfig extends RObjectImpl {
 

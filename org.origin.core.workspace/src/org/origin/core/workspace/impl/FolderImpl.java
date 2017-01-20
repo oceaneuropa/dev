@@ -1,6 +1,7 @@
 package org.origin.core.workspace.impl;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.origin.common.workingcopy.WorkingCopy;
 import org.origin.common.workingcopy.WorkingCopyUtil;
@@ -71,13 +72,14 @@ public class FolderImpl extends ContainerImpl implements IFolder {
 	 * 
 	 * @param folderDir
 	 * @return
+	 * @throws IOException 
 	 */
-	protected IFolderDescription loadFolderDescription(File folderDir) {
+	protected IFolderDescription loadFolderDescription(File folderDir) throws IOException {
 		IFolderDescription projectDesc = null;
 		if (folderDir != null && folderDir.isDirectory()) {
 			File folderDescriptionFile = getDescriptionFile(folderDir);
 			if (folderDescriptionFile.exists()) {
-				WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(folderDescriptionFile);
+				WorkingCopy workingCopy = WorkingCopyUtil.getWorkingCopy(folderDescriptionFile);
 				if (workingCopy != null) {
 					projectDesc = workingCopy.getRootElement(IFolderDescription.class);
 				}

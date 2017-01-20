@@ -6,9 +6,9 @@ import java.io.OutputStream;
 import java.net.URI;
 
 import org.nb.home.model.runtime.config.ProjectConfig;
-import org.origin.common.resource.AbstractResource;
+import org.origin.common.resource.impl.ResourceImpl;
 
-public class ProjectResource extends AbstractResource {
+public class ProjectResource extends ResourceImpl {
 
 	/**
 	 * 

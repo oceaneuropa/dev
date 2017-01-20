@@ -1,6 +1,7 @@
 package org.origin.core.workspace;
 
 import java.io.File;
+import java.io.IOException;
 
 public interface IWorkspace extends IContainer {
 
@@ -17,8 +18,9 @@ public interface IWorkspace extends IContainer {
 	 * Create a workspace.
 	 * 
 	 * @param description
+	 * @throws IOException
 	 */
-	public void create(IWorkspaceDescription description);
+	public void create(IWorkspaceDescription description) throws IOException;
 
 	/**
 	 * Get workspace description.

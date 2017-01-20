@@ -28,13 +28,14 @@ public class ProjectImpl extends ContainerImpl implements IProject {
 	 * 
 	 * @param projectDir
 	 * @return
+	 * @throws IOException 
 	 */
-	public static IProjectDescription loadProjectDescription(File projectDir) {
+	public static IProjectDescription loadProjectDescription(File projectDir) throws IOException {
 		IProjectDescription projectDesc = null;
 		if (projectDir != null && projectDir.isDirectory()) {
 			File projectDescFile = getProjectDescriptionFile(projectDir);
 			if (projectDescFile != null && projectDescFile.exists()) {
-				WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(projectDescFile);
+				WorkingCopy workingCopy = WorkingCopyUtil.getWorkingCopy(projectDescFile);
 				if (workingCopy != null) {
 					projectDesc = workingCopy.getRootElement(IProjectDescription.class);
 				}
@@ -109,7 +110,7 @@ public class ProjectImpl extends ContainerImpl implements IProject {
 			}
 
 			// save project description
-			WorkingCopy<?> workingCopy = WorkingCopyUtil.getWorkingCopy(this.projectDesc);
+			WorkingCopy workingCopy = WorkingCopyUtil.getWorkingCopy(this.projectDesc);
 			if (workingCopy != null) {
 				workingCopy.save();
 			}

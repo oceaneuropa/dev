@@ -1,23 +1,27 @@
 package org.origin.core.workspace.internal.resource;
 
-import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
 import org.origin.common.workingcopy.AbstractWorkingCopy;
 import org.origin.core.workspace.IFolderDescription;
 
-public class FolderDescriptionWorkingCopy extends AbstractWorkingCopy<FolderDescriptionResource, IFolderDescription> {
+public class FolderDescriptionWorkingCopy extends AbstractWorkingCopy<FolderDescriptionResource> {
 
 	/**
 	 * 
-	 * @param file
+	 * @param uri
 	 */
-	public FolderDescriptionWorkingCopy(File file) {
-		super(file);
+	public FolderDescriptionWorkingCopy(URI uri) {
+		super(uri);
 	}
 
 	@Override
-	protected IFolderDescription getRootElement(FolderDescriptionResource resource) {
-		return resource.getFolderDescription();
+	protected <T> T getRootElement(FolderDescriptionResource resource, Class<T> elementClass) throws IOException {
+		if (IFolderDescription.class.isAssignableFrom(elementClass)) {
+			return (T) resource.getFolderDescription();
+		}
+		return super.getRootElement(elementClass);
 	}
 
 }

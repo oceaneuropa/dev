@@ -1,14 +1,14 @@
 package org.nb.home.model.resource;
 
 import java.io.File;
+import java.net.URI;
 
-import org.nb.home.model.runtime.config.WorkspaceConfig;
 import org.origin.common.resource.ResourceFactory;
 import org.origin.common.resource.ResourceFactoryRegistry;
 import org.origin.common.workingcopy.AbstractWorkingCopyFactory;
 import org.origin.common.workingcopy.WorkingCopy;
 
-public class WorkspaceResourceFactory extends AbstractWorkingCopyFactory<WorkspaceResource, WorkspaceConfig> {
+public class WorkspaceResourceFactory extends AbstractWorkingCopyFactory<WorkspaceResource> {
 
 	public static final String FACTORY_NAME = "WorkspaceResourceFactory";
 	public static WorkspaceResourceFactory INSTANCE = new WorkspaceResourceFactory();
@@ -44,31 +44,24 @@ public class WorkspaceResourceFactory extends AbstractWorkingCopyFactory<Workspa
 	}
 
 	@Override
-	public boolean isSupported(File file) {
+	public boolean isSupported(URI uri) {
+		File file = new File(uri);
 		File parent = file.getParentFile();
 		String fileName = file.getName();
 		if (parent != null && parent.isDirectory() && ".metadata".equals(parent.getName()) && "workspace.json".equals(fileName)) {
-			try {
-				WorkspaceResource resource = new WorkspaceResource(file.toURI());
-				resource.load(file);
-				if (resource.getWorkspace() != null) {
-					return true;
-				}
-			} catch (Exception e) {
-				// ignore
-			}
+			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public WorkspaceResource createResource(File file) {
-		return new WorkspaceResource(file.toURI());
+	public WorkspaceResource createResource(URI uri) {
+		return new WorkspaceResource(uri);
 	}
 
 	@Override
-	protected WorkingCopy<WorkspaceConfig> createWorkingCopy(File file) {
-		return new WorkspaceWorkingCopy(file);
+	protected WorkingCopy createWorkingCopy(URI uri) {
+		return new WorkspaceWorkingCopy(uri);
 	}
 
 }

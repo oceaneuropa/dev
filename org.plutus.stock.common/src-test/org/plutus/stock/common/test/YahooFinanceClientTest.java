@@ -13,8 +13,8 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.origin.common.rest.client.ClientException;
 import org.plutus.stock.common.client.YahooFinanceClient;
-import org.plutus.stock.common.model.YahooFinanceStockData;
 import org.plutus.stock.common.util.Comparators;
+import org.plutus.stock.model.dto.YahooFinanceStockData;
 
 /**
  * 
@@ -44,19 +44,19 @@ public class YahooFinanceClientTest {
 		System.out.println("--- --- --- test001_listStockData_BAC() --- --- ---");
 
 		Calendar startDate = Calendar.getInstance();
-		startDate.set(2016, 0, 8);
+		startDate.set(2016, 11, 8);
 
 		Calendar endDate = Calendar.getInstance();
-		endDate.set(2016, 11, 28);
+		endDate.set(2016, 11, 18);
 
 		try {
-			List<YahooFinanceStockData> stockDataList = this.yahooFinanceClient.getStockData("BAC", startDate, endDate, YahooFinanceClient.TYPE_DAILY, YahooFinanceClient.IGNORE_CSV, Comparators.StockDataComparator.ASC);
+			List<YahooFinanceStockData> stockDataList = this.yahooFinanceClient.getStockData("BAC", startDate, endDate, YahooFinanceClient.TYPE_DAILY, YahooFinanceClient.IGNORE_CSV, Comparators.YahooStockDataComparator.ASC);
 
-			System.out.println("BAC stockDataList.size() = " + stockDataList.size());
-
-			for (YahooFinanceStockData stockData : stockDataList) {
-				System.out.println(stockData.toString());
-			}
+			// System.out.println("BAC stockDataList.size() = " + stockDataList.size());
+			//
+			// for (YahooFinanceStockData stockData : stockDataList) {
+			// System.out.println(stockData.toString());
+			// }
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}
@@ -64,7 +64,7 @@ public class YahooFinanceClientTest {
 		System.out.println();
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void test002_listStockData_BABA() throws IOException {
 		System.out.println("--- --- --- test002_listStockData_BABA() --- --- ---");
@@ -76,7 +76,7 @@ public class YahooFinanceClientTest {
 		endDate.set(2016, 11, 28);
 
 		try {
-			List<YahooFinanceStockData> stockDataList = this.yahooFinanceClient.getStockData("BABA", startDate, endDate, YahooFinanceClient.TYPE_DAILY, YahooFinanceClient.IGNORE_CSV, Comparators.StockDataComparator.ASC);
+			List<YahooFinanceStockData> stockDataList = this.yahooFinanceClient.getStockData("BABA", startDate, endDate, YahooFinanceClient.TYPE_DAILY, YahooFinanceClient.IGNORE_CSV, Comparators.YahooStockDataComparator.ASC);
 			System.out.println("BABA stockDataList.size() = " + stockDataList.size());
 
 			for (YahooFinanceStockData stockData : stockDataList) {

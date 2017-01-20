@@ -6,9 +6,9 @@ import java.io.OutputStream;
 import java.net.URI;
 
 import org.nb.home.model.runtime.config.WorkspaceConfig;
-import org.origin.common.resource.AbstractResource;
+import org.origin.common.resource.impl.ResourceImpl;
 
-public class WorkspaceResource extends AbstractResource {
+public class WorkspaceResource extends ResourceImpl {
 
 	/**
 	 * 

@@ -1,20 +1,20 @@
 package org.nb.home.model.resource;
 
 import java.io.File;
+import java.net.URI;
 
-import org.nb.home.model.runtime.config.ProjectConfig;
 import org.origin.common.resource.ResourceFactory;
 import org.origin.common.resource.ResourceFactoryRegistry;
 import org.origin.common.workingcopy.AbstractWorkingCopyFactory;
 import org.origin.common.workingcopy.WorkingCopy;
 
-public class ProjectResourceFactory extends AbstractWorkingCopyFactory<ProjectResource, ProjectConfig> {
+public class ProjectResourceFactory extends AbstractWorkingCopyFactory<ProjectResource> {
 
 	public static final String FACTORY_NAME = "ProjectResourceFactory";
 	public static ProjectResourceFactory INSTANCE = new ProjectResourceFactory();
 
 	/**
-	 * Register the project resource factory.
+	 * Register resource factory.
 	 * 
 	 */
 	public static void register() {
@@ -25,7 +25,7 @@ public class ProjectResourceFactory extends AbstractWorkingCopyFactory<ProjectRe
 	}
 
 	/**
-	 * Unregister the project resource factory.
+	 * Unregister resource factory.
 	 * 
 	 */
 	public static void unregister() {
@@ -44,31 +44,24 @@ public class ProjectResourceFactory extends AbstractWorkingCopyFactory<ProjectRe
 	}
 
 	@Override
-	public boolean isSupported(File file) {
+	public boolean isSupported(URI uri) {
+		File file = new File(uri);
 		File parent = file.getParentFile();
 		String fileName = file.getName();
 		if (parent != null && parent.isDirectory() && "META-INF".equals(parent.getName()) && "project.json".equals(fileName)) {
-			try {
-				ProjectResource resource = new ProjectResource(file.toURI());
-				resource.load(file);
-				if (resource.getProject() != null) {
-					return true;
-				}
-			} catch (Exception e) {
-				// ignore
-			}
+			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public ProjectResource createResource(File file) {
-		return new ProjectResource(file.toURI());
+	public ProjectResource createResource(URI uri) {
+		return new ProjectResource(uri);
 	}
 
 	@Override
-	protected WorkingCopy<ProjectConfig> createWorkingCopy(File file) {
-		return new ProjectWorkingCopy(file);
+	protected WorkingCopy createWorkingCopy(URI uri) {
+		return new ProjectWorkingCopy(uri);
 	}
 
 }
