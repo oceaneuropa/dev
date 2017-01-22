@@ -41,7 +41,7 @@ public class YahooFinanceClient extends AbstractClient {
 
 	// log
 	protected boolean info = true;
-	protected boolean debug = true;
+	protected boolean debug = false;
 
 	/**
 	 * 

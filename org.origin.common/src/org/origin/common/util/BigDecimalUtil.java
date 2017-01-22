@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 public class BigDecimalUtil {
 
 	public static BigDecimal toBigDecimal(int i) {
-		return toBigDecimal(i, 2, RoundingMode.CEILING);
+		return toBigDecimal(i, 0, RoundingMode.CEILING);
 	}
 
 	public static BigDecimal toBigDecimal(int i, int scale, RoundingMode roundingMode) {
@@ -16,7 +16,7 @@ public class BigDecimalUtil {
 	}
 
 	public static BigDecimal toBigDecimal(long l) {
-		return toBigDecimal(l, 2, RoundingMode.CEILING);
+		return toBigDecimal(l, 0, RoundingMode.CEILING);
 	}
 
 	public static BigDecimal toBigDecimal(long l, int scale, RoundingMode roundingMode) {

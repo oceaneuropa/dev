@@ -1,2 +1,23 @@
 Turnover Ratio (TRO)
 http://www.rightline.net/education/TRO.html
+
+
+yahoo finance special tags & names
+(1) http://www.jarloo.com/yahoo_finance/
+(2) https://greenido.wordpress.com/2009/12/22/work-like-a-pro-with-yahoo-finance-hidden-api/
+(3) http://msexcelvancouver.com/blog/how-to-call-the-free-yahoo-finance-api-to-get-stock-data-excel-vba/
+(4) http://wern-ancheta.com/blog/2015/04/05/getting-started-with-the-yahoo-finance-api/
+
+
+Example1
+----------------------------------------------------------------------------------------
+http://finance.yahoo.com/d/quotes.csv?s=GE+PTR+MSFT&f=snd1l1yr
+----------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------------------------
+s		 n									 d1				 l1		 y		 r
+----------------------------------------------------------------------------------------
+"GE"	,"General Electric Company Common"	,"1/20/2017"	,30.53	,3.07	,26.25
+"PTR"	,"PetroChina Company Limited Comm"	,"1/20/2017"	,79.09	,0.87	,158.18
+"MSFT"	,"Microsoft Corporation"			,"1/20/2017"	,62.74	,2.50	,30.05
+----------------------------------------------------------------------------------------

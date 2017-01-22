@@ -33,38 +33,44 @@ public class StockDataTest {
 
 	protected void setUp() {
 		// set stock_home
-		System.setProperty(SetupUtil.STOCK_HOME, "/Users/yayang/Downloads/stock_home");
+		// System.setProperty(SetupUtil.STOCK_HOME, "/Users/yayang/Downloads/stock_home");
+		System.setProperty(SetupUtil.STOCK_HOME, "/Users/jessylxj/dev/stock_home");
 
 		// registry working copy factory
 		StockDataResourceFactory.register();
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void test001_importStockData_BAC() throws IOException {
 		System.out.println("--- --- --- test001_importStockData_BAC() --- --- ---");
 
 		Calendar startDate = Calendar.getInstance();
-		startDate.set(2016, 11, 10);
-
+		startDate.set(2016, 11, 01);
 		Calendar endDate = Calendar.getInstance();
-		endDate.set(2016, 11, 18);
-
+		endDate.set(2016, 11, 28);
 		StockDataBuilder.INSTANCE.syncStockData("BAC", startDate, endDate);
+
+		// download all BAC data
+		StockDataBuilder.INSTANCE.syncStockData("BAC");
 	}
 
+	@Ignore
 	@Test
-	public void test002_getStockData_BAC() throws IOException {
+	public void test002_getStockData_BAC() {
 		System.out.println("--- --- --- test002_getStockData_BAC() --- --- ---");
+		try {
+			List<StockData> stockDataList = StockDataHelper.INSTANCE.getStockData("BAC", Comparators.StockDataComparator.ASC);
+			if (stockDataList != null) {
+				File file = StockDataHelper.INSTANCE.getStockDataFile(stockDataList);
+				System.out.println("file is " + file);
 
-		List<StockData> stockDataList = StockDataHelper.INSTANCE.getStockData("BAC", Comparators.StockDataComparator.ASC);
-		if (stockDataList != null) {
-			File file = StockDataHelper.INSTANCE.getStockDataFile(stockDataList);
-			System.out.println("file is " + file);
-
-			for (StockData stockData : stockDataList) {
-				System.out.println(stockData.toString());
+				for (StockData stockData : stockDataList) {
+					System.out.println(stockData.toString());
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
