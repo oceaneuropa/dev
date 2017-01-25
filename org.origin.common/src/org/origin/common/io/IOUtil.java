@@ -18,8 +18,6 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 
-import javax.ws.rs.core.Response;
-
 public class IOUtil {
 	/**
 	 * Represents the end-of-file (or stream).
@@ -32,22 +30,27 @@ public class IOUtil {
 	 * The Unix directory separator character.
 	 */
 	public static final char DIR_SEPARATOR_UNIX = '/';
+
 	/**
 	 * The Windows directory separator character.
 	 */
 	public static final char DIR_SEPARATOR_WINDOWS = '\\';
+
 	/**
 	 * The system directory separator character.
 	 */
 	public static final char DIR_SEPARATOR = File.separatorChar;
+
 	/**
 	 * The Unix line separator string.
 	 */
 	public static final String LINE_SEPARATOR_UNIX = "\n";
+
 	/**
 	 * The Windows line separator string.
 	 */
 	public static final String LINE_SEPARATOR_WINDOWS = "\r\n";
+
 	/**
 	 * The system line separator string.
 	 */
@@ -206,8 +209,7 @@ public class IOUtil {
 	// Write
 	// ------------------------------------------------------------------------------------
 	/**
-	 * Writes the toString() value of each item in a collection to an OutputStream line by line, using the specified character encoding and the
-	 * specified line ending.
+	 * Writes the toString() value of each item in a collection to an OutputStream line by line, using the specified character encoding and the specified line ending.
 	 * 
 	 * Character encoding names can be found at http://www.iana.org/assignments/character-sets.
 	 *
@@ -349,8 +351,8 @@ public class IOUtil {
 	 * 
 	 * This method buffers the input internally, so there is no need to use a BufferedInputStream.
 	 * 
-	 * Large streams (over 2GB) will return a bytes copied value of -1 after the copy has completed since the correct number of bytes cannot be
-	 * returned as an int. For large streams use the copyLarge(InputStream, OutputStream) method.
+	 * Large streams (over 2GB) will return a bytes copied value of -1 after the copy has completed since the correct number of bytes cannot be returned as an int. For large streams use the
+	 * copyLarge(InputStream, OutputStream) method.
 	 *
 	 * @param input
 	 *            the InputStream to read from
@@ -390,8 +392,8 @@ public class IOUtil {
 	 * 
 	 * This method buffers the input internally, so there is no need to use a BufferedReader.
 	 * 
-	 * Large streams (over 2GB) will return a chars copied value of -1 after the copy has completed since the correct number of chars cannot be
-	 * returned as an int. For large streams use the copyLarge(Reader, Writer) method.
+	 * Large streams (over 2GB) will return a chars copied value of -1 after the copy has completed since the correct number of chars cannot be returned as an int. For large streams use the
+	 * copyLarge(Reader, Writer) method.
 	 *
 	 * @param input
 	 *            the Reader to read from
@@ -491,8 +493,7 @@ public class IOUtil {
 	 * @param closeable
 	 *            a Closeable to be closed.
 	 * @param printStackTrace
-	 *            if printStackTrace is false, any exceptions will be ignored. if printStackTrace is true, if any exceptions occurs, it will be
-	 *            printed out.
+	 *            if printStackTrace is false, any exceptions will be ignored. if printStackTrace is true, if any exceptions occurs, it will be printed out.
 	 */
 	public static void closeQuietly(Closeable closeable, boolean printStackTrace) {
 		try {
@@ -512,8 +513,7 @@ public class IOUtil {
 	 * Close the Closeable objects and <b>ignore</b> any {@link IOException} or null pointers. Must only be used for cleanup in exception handlers.
 	 * 
 	 * @param printStackTrace
-	 *            if printStackTrace is false, any exceptions will be ignored. if printStackTrace is true, if any exceptions occurs, it will be
-	 *            printed out.
+	 *            if printStackTrace is false, any exceptions will be ignored. if printStackTrace is true, if any exceptions occurs, it will be printed out.
 	 * @param closeable
 	 *            a Closeable to be closed.
 	 */
@@ -529,27 +529,6 @@ public class IOUtil {
 						// ignore
 					}
 				}
-			}
-		}
-	}
-
-	/**
-	 * Close the Closeable objects and <b>ignore</b> any {@link IOException} or null pointers. Must only be used for cleanup in exception handlers.
-	 * 
-	 * @param response
-	 *            Close javax.ws.rs.core.Response.
-	 * @param printStackTrace
-	 */
-	public static void closeQuietly(Response response, boolean printStackTrace) {
-		try {
-			if (response != null) {
-				response.close();
-			}
-		} catch (Exception ioe) {
-			if (printStackTrace) {
-				ioe.printStackTrace();
-			} else {
-				// ignore
 			}
 		}
 	}

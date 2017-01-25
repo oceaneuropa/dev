@@ -10,6 +10,7 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 
@@ -38,8 +39,8 @@ public class FileUtil {
 	/**
 	 * Copies a file to a new location preserving the file date.
 	 * 
-	 * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is
-	 * created if it does not exist. If the destination file exists, then this method will overwrite it.
+	 * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is created if it does not exist. If the destination
+	 * file exists, then this method will overwrite it.
 	 * 
 	 * Note: This method tries to preserve the file's last modified date/times.
 	 *
@@ -62,8 +63,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Copies bytes array to a file destination. The directories up to destination will be created if they don't already exist. destination will be
-	 * overwritten if it already exists. The source stream is closed.
+	 * Copies bytes array to a file destination. The directories up to destination will be created if they don't already exist. destination will be overwritten if it already exists. The source stream
+	 * is closed.
 	 * 
 	 * @param bytes
 	 * @param destination
@@ -82,8 +83,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Copies bytes from an InputStream source to a file destination. The directories up to destination will be created if they don't already exist.
-	 * destination will be overwritten if it already exists. The source stream is closed.
+	 * Copies bytes from an InputStream source to a file destination. The directories up to destination will be created if they don't already exist. destination will be overwritten if it already
+	 * exists. The source stream is closed.
 	 *
 	 * @param source
 	 *            the InputStream to copy bytes from, must not be null.
@@ -109,8 +110,8 @@ public class FileUtil {
 	/**
 	 * Copies a file to a directory preserving the file date.
 	 * 
-	 * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination
-	 * directory is created if it does not exist. If the destination file exists, then this method will overwrite it.
+	 * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination directory is created if it does not exist. If the
+	 * destination file exists, then this method will overwrite it.
 	 * 
 	 * Note: This method tries to preserve the file's last modified date/times.
 	 *
@@ -135,8 +136,7 @@ public class FileUtil {
 	 * 
 	 * This method copies the source directory and all its contents to a directory of the same name in the specified destination directory.
 	 * 
-	 * The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source with the
-	 * destination, with the source taking precedence.
+	 * The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source with the destination, with the source taking precedence.
 	 * 
 	 * Note: This method tries to preserve the files' last modified date/times.
 	 *
@@ -198,8 +198,7 @@ public class FileUtil {
 	 */
 	public static void replaceFile(File src, File target) throws IOException {
 		/*
-		 * renameTo() has two limitations on Windows platform. src.renameTo(target) fails if 1) If target already exists OR 2) If target is already
-		 * open for reading/writing.
+		 * renameTo() has two limitations on Windows platform. src.renameTo(target) fails if 1) If target already exists OR 2) If target is already open for reading/writing.
 		 */
 		if (!src.renameTo(target)) {
 			int retries = 5;
@@ -220,8 +219,7 @@ public class FileUtil {
 	// Checksum
 	// ------------------------------------------------------------------------------------
 	/**
-	 * Compute a checksum for the file or directory that consists of the name, length and the last modified date for a file and its children in case
-	 * of a directory.
+	 * Compute a checksum for the file or directory that consists of the name, length and the last modified date for a file and its children in case of a directory.
 	 *
 	 * @param file
 	 *            the file or directory
@@ -278,8 +276,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Computes the checksum of a file using the specified checksum object. Multiple files may be checked using one <code>Checksum</code> instance if
-	 * desired simply by reusing the same checksum object. For example:
+	 * Computes the checksum of a file using the specified checksum object. Multiple files may be checked using one <code>Checksum</code> instance if desired simply by reusing the same checksum
+	 * object. For example:
 	 * 
 	 * <pre>
 	 * long csum = FileUtil.checksum(file, new CRC32()).getValue();
@@ -323,7 +321,7 @@ public class FileUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public String getHash(File file) throws IOException {
+	public static String getHash(File file) throws IOException {
 		if (file == null) {
 			return null;
 		}
@@ -352,7 +350,7 @@ public class FileUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public String getHash(byte[] bytes) throws IOException {
+	public static String getHash(byte[] bytes) throws IOException {
 		String hash = null;
 		if (bytes != null) {
 			ByteArrayInputStream bis = null;
@@ -375,8 +373,52 @@ public class FileUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public String getHash(InputStream is) throws IOException {
+	public static String getHash(InputStream is) throws IOException {
 		return org.apache.commons.codec.digest.DigestUtils.shaHex(is);
+	}
+
+	/**
+	 * Gets the extension of a filename.
+	 * <p>
+	 * This method returns the textual part of the filename after the last dot. There must be no directory separator after the dot.
+	 * 
+	 * <pre>
+	 * foo.txt      --&gt; "txt"
+	 * a/b/c.jpg    --&gt; "jpg"
+	 * a/b.txt/c    --&gt; ""
+	 * a/b/c        --&gt; ""
+	 * </pre>
+	 * <p>
+	 * The output will be the same irrespective of the machine that the code is running on.
+	 *
+	 * @param filename
+	 *            the filename to retrieve the extension of.
+	 * @return the extension of the file or an empty string if none exists or {@code null} if the filename is {@code null}.
+	 */
+	public static String getExtension(String filename) {
+		return FilenameUtils.getExtension(filename);
+	}
+
+	/**
+	 * Gets the name minus the path from a full filename.
+	 * <p>
+	 * This method will handle a file in either Unix or Windows format. The text after the last forward or backslash is returned.
+	 * 
+	 * <pre>
+	 * a/b/c.txt --&gt; c.txt
+	 * a.txt     --&gt; a.txt
+	 * a/b/c     --&gt; c
+	 * a/b/c/    --&gt; ""
+	 * </pre>
+	 * <p>
+	 * The output will be the same irrespective of the machine that the code is running on.
+	 *
+	 * @param filename
+	 *            the filename to query, null returns null
+	 * @return the name of the file without the path, or an empty string if none exists. Null bytes inside string will be removed
+	 */
+	public static String getName(String filename) {
+		return FilenameUtils.getName(filename);
 	}
 
 }

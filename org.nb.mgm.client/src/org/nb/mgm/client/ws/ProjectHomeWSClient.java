@@ -13,10 +13,10 @@ import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
-import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
 
 /*
@@ -70,7 +70,7 @@ public class ProjectHomeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		if (projectHomeDTOs == null) {
 			projectHomeDTOs = Collections.emptyList();
@@ -101,7 +101,7 @@ public class ProjectHomeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return projectHomeDTO;
 	}
@@ -131,7 +131,7 @@ public class ProjectHomeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return newProjectHomeDTO;
 	}
@@ -161,7 +161,7 @@ public class ProjectHomeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -190,7 +190,7 @@ public class ProjectHomeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -275,7 +275,7 @@ public class ProjectHomeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

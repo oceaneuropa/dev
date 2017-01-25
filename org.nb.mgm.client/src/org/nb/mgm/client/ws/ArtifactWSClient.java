@@ -11,10 +11,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.ArtifactDTO;
-import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
 
 /*
@@ -66,7 +66,7 @@ public class ArtifactWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		if (artifacts == null) {
 			artifacts = Collections.emptyList();
@@ -98,7 +98,7 @@ public class ArtifactWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		if (artifacts == null) {
 			artifacts = Collections.emptyList();
@@ -129,7 +129,7 @@ public class ArtifactWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return artifact;
 	}
@@ -159,7 +159,7 @@ public class ArtifactWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return newArtifact;
 	}
@@ -189,7 +189,7 @@ public class ArtifactWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -217,7 +217,7 @@ public class ArtifactWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

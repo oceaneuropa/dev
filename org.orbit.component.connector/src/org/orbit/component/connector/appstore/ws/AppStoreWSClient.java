@@ -29,6 +29,7 @@ import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -92,7 +93,7 @@ public class AppStoreWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		if (apps == null) {
 			apps = Collections.emptyList();
@@ -124,7 +125,7 @@ public class AppStoreWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		if (apps == null) {
 			apps = Collections.emptyList();
@@ -153,7 +154,7 @@ public class AppStoreWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return app;
 	}
@@ -188,7 +189,7 @@ public class AppStoreWSClient extends AbstractClient {
 		} catch (ClientException | IOException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return false;
 	}
@@ -215,7 +216,7 @@ public class AppStoreWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return newApp;
 	}
@@ -244,7 +245,7 @@ public class AppStoreWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -350,7 +351,7 @@ public class AppStoreWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

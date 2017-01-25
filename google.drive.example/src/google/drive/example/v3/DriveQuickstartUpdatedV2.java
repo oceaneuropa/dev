@@ -1,13 +1,16 @@
 package google.drive.example.v3;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.google.api.client.auth.oauth2.Credential;
-import com.google.api.client.auth.oauth2.Credential.AccessMethod;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
@@ -16,13 +19,10 @@ import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.Clock;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.DriveScopes;
-import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
 
 import google.drive.example.v3.util.GoogleDriveUtil;
 
@@ -40,99 +40,139 @@ import google.drive.example.v3.util.GoogleDriveUtil;
  * Client ID: 717580645461-bo64j8vkjbb70020901ujoo5nts3lvkh.apps.googleusercontent.com
  * 
  */
-public class DriveQuickstartUpdated {
+public class DriveQuickstartUpdatedV2 {
+
 	/** Application name. */
 	private static final String APPLICATION_NAME = "Drive API Java Quickstart";
-
-	/** Directory to store user credentials for this application. */
-	private static final java.io.File DATA_STORE_DIR = new java.io.File(System.getProperty("user.home"), ".credentials/drive-java-quickstart.json");
-
-	/** Global instance of the {@link FileDataStoreFactory}. */
-	private static FileDataStoreFactory DATA_STORE_FACTORY;
-
-	/** Global instance of the JSON factory. */
-	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-
-	/** Global instance of the HTTP transport. */
-	private static HttpTransport HTTP_TRANSPORT;
 
 	/**
 	 * Global instance of the scopes required by this quickstart.
 	 *
 	 * If modifying these scopes, delete your previously saved credentials at ~/.credentials/drive-java-quickstart.json
 	 */
-	// private static final List<String> SCOPES = Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY, DriveScopes.DRIVE, DriveScopes.DRIVE_APPDATA,
-	// DriveScopes.DRIVE_FILE);
-	private static final List<String> SCOPES = Arrays.asList(DriveScopes.DRIVE, DriveScopes.DRIVE_APPDATA, DriveScopes.DRIVE_FILE);
+	public static final List<String> READ_ONLY_SCOPES = Arrays.asList(DriveScopes.DRIVE_METADATA_READONLY, DriveScopes.DRIVE, DriveScopes.DRIVE_APPDATA, DriveScopes.DRIVE_FILE);
+	public static final List<String> READ_WRITE_SCOPES = Arrays.asList(DriveScopes.DRIVE, DriveScopes.DRIVE_APPDATA, DriveScopes.DRIVE_FILE);
 
-	static {
+	// file to store user credentials
+	protected File dataStoreFile;
+	// client secret file
+	protected File clientSecretFile;
+	protected List<String> scopes;
+	protected HttpTransport httpTransport;
+	protected JsonFactory jsonFactory;
+	protected FileDataStoreFactory dataStoreFactory;
+
+	/**
+	 * 
+	 * @param dataStoreFile
+	 * @param clientSecretFile
+	 * @param scopes
+	 */
+	public DriveQuickstartUpdatedV2(File dataStoreFile, File clientSecretFile, List<String> scopes) {
+		this.dataStoreFile = dataStoreFile;
+		this.clientSecretFile = clientSecretFile;
+		this.scopes = scopes;
 		try {
-			HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-			DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
-		} catch (Throwable t) {
-			t.printStackTrace();
-			System.exit(1);
+			this.httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+			this.jsonFactory = JacksonFactory.getDefaultInstance();
+
+			this.dataStoreFactory = new FileDataStoreFactory(dataStoreFile);
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Creates an authorized Credential object.
 	 * 
-	 * @return an authorized Credential object.
+	 * @return
 	 * @throws IOException
 	 */
-	public static Credential authorize() throws IOException {
-		// Load client secrets.
-		// InputStream in = DriveQuickstart.class.getResourceAsStream("/client_secret.json"); // load from "/bin/client_secret.json"
-		InputStream in = DriveQuickstartUpdated.class.getResourceAsStream("/google/drive/example/v3/client_secret.json");
-		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+	public Credential authorize() throws IOException {
+		InputStream in = null;
+		try {
+			// Load client secrets.
+			in = new FileInputStream(this.clientSecretFile);
+			GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(this.jsonFactory, new InputStreamReader(in));
 
-		// Build flow and trigger user authorization request.
-		GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES).setDataStoreFactory(DATA_STORE_FACTORY).setAccessType("offline").build();
-		Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
-		System.out.println("Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
-		return credential;
+			// Build flow and trigger user authorization request.
+			GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(this.httpTransport, jsonFactory, clientSecrets, this.scopes).setDataStoreFactory(this.dataStoreFactory).setAccessType("offline").build();
+			Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
+			System.out.println("Credentials saved to " + dataStoreFile.getAbsolutePath());
+			return credential;
+
+		} finally {
+			if (in != null) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 	/**
-	 * Build and return an authorized Drive client service.
 	 * 
-	 * @return an authorized Drive client service
+	 * @return
 	 * @throws IOException
 	 */
-	public static Drive getDriveService() throws IOException {
+	public Drive getDrive() throws IOException {
 		Credential credential = authorize();
-		GoogleDriveUtil.print(credential);
-		return new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(APPLICATION_NAME).build();
+		return new Drive.Builder(this.httpTransport, this.jsonFactory, credential).setApplicationName(APPLICATION_NAME).build();
 	}
 
-	public static void main(String[] args) throws IOException {
-		// Build a new authorized API client service.
-		Drive driveService = getDriveService();
-		// MyClass.printFileS(service);
-
-		// ------------------------------------------------------------------------------------------------
-		// List all files
-		// ------------------------------------------------------------------------------------------------
-		// Print the names and IDs for up to 10 files.
-		// FileList result = service.files().list().setFields("nextPageToken, files(id, name)").execute();
-		// List<File> files = result.getItems();
-		FileList result = driveService.files().list().setPageSize(1000).execute();
-
-		List<File> files = result.getFiles();
-		if (files == null || files.size() == 0) {
-			System.out.println("No files found.");
-			return;
+	/**
+	 * 
+	 * @param driver
+	 * @return
+	 * @throws IOException
+	 */
+	public List<com.google.api.services.drive.model.File> getFiles(Drive driver) throws IOException {
+		List<com.google.api.services.drive.model.File> files = new ArrayList<com.google.api.services.drive.model.File>();
+		com.google.api.services.drive.model.FileList fileListObj = driver.files().list().setPageSize(1000).execute();
+		if (fileListObj != null) {
+			List<com.google.api.services.drive.model.File> fileList = fileListObj.getFiles();
+			if (fileList != null) {
+				for (com.google.api.services.drive.model.File file : fileList) {
+					files.add(file);
+				}
+			}
 		}
+		return files;
+	}
+
+	/**
+	 * 
+	 * @param args
+	 * @throws IOException
+	 */
+	public static void main(String[] args) throws IOException {
+		String user_home = System.getProperty("user.home");
+		System.out.println("user.home = " + user_home);
+
+		// file to store user credentials
+		File dataStoreFile = new File(System.getProperty("user.home"), ".credentials/drive-java-quickstart.json");
+		// URL url1 = DriveQuickstartUpdatedV2.class.getResource("drive-java-quickstart.json");
+		// File dataStoreFile = new File(url1.getPath());
+
+		// client secret file
+		URL url2 = DriveQuickstartUpdatedV2.class.getResource("client_secret.json");
+		File clientSecretFile = new File(url2.getPath());
+
+		DriveQuickstartUpdatedV2 client = new DriveQuickstartUpdatedV2(dataStoreFile, clientSecretFile, READ_WRITE_SCOPES);
+		Drive driver = client.getDrive();
+		List<com.google.api.services.drive.model.File> files = client.getFiles(driver);
 
 		System.out.println("Files: " + files.size());
-		for (File file : files) {
+		for (com.google.api.services.drive.model.File file : files) {
 			if (!GoogleDriveUtil.isFolder(file)) {
 				// continue;
 			}
 			if (!GoogleDriveUtil.isTextPlain(file)) {
 				// continue;
 			}
+
 			// System.out.printf("%s (%s)\n", file.getTitle(), file.getId());
 			String id = file.getId();
 			String name = file.getName();
@@ -140,8 +180,8 @@ public class DriveQuickstartUpdated {
 			String desc = file.getDescription();
 			String prettyStr = file.toPrettyString();
 			String mimeType = file.getMimeType();
-			System.out.printf("%s (%s)\n", name, mimeType);
-			// System.out.printf(prettyStr);
+			// System.out.printf("%s (%s)\n", name, mimeType);
+			System.out.println(prettyStr);
 		}
 
 		// ------------------------------------------------------------------------------------------------

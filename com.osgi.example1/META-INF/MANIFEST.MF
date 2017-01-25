@@ -34,7 +34,8 @@ Import-Package: com.fasterxml.jackson.databind,
  org.slf4j;version="1.7.10"
 Service-Component: OSGI-INF/BundleHandler.xml,
  OSGI-INF/sample.xml
-Export-Package: com.osgi.example1
+Export-Package: com.osgi.example1,
+ com.osgi.example1.fs.common.vo
 Bundle-ClassPath: .,
  lib/commons-io-2.5.jar,
  lib/org.apache.commons.codec_1.6.0.v201305230611.jar,

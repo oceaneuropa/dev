@@ -14,10 +14,10 @@ import javax.ws.rs.core.Response;
 import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.ProjectNodeDTO;
 import org.nb.mgm.model.dto.SoftwareDTO;
-import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
 
 /*
@@ -73,7 +73,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		if (projectNodeDTOs == null) {
 			projectNodeDTOs = Collections.emptyList();
@@ -105,7 +105,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return projectNodeDTO;
 	}
@@ -136,7 +136,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return newProjectNodeDTO;
 	}
@@ -167,7 +167,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -198,7 +198,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -206,8 +206,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 	/**
 	 * Get ProjectNode attribute
 	 * 
-	 * URL (GET):
-	 * {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/hasAttribute?attribute={attributeName}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/hasAttribute?attribute={attributeName}
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -235,8 +234,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 	/**
 	 * Get ProjectNode attribute
 	 * 
-	 * URL (GET):
-	 * {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/attribute?attribute={attributeName}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/attribute?attribute={attributeName}
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -265,8 +263,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 	/**
 	 * Send an Action to a ProjectNode.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/action (Body parameter:
-	 * Action)
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/nodes/{projectNodeId}/action (Body parameter: Action)
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -289,7 +286,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -318,7 +315,7 @@ public class ProjectNodeWSClient extends AbstractClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			IOUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(response, true);
 		}
 		if (softwareDTOs == null) {
 			softwareDTOs = Collections.emptyList();
