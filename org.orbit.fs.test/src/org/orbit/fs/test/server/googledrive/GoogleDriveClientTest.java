@@ -91,7 +91,13 @@ public class GoogleDriveClientTest {
 
 			for (String filePath : filePaths) {
 				File file = this.client.getFile(filePath);
-				System.out.println((file == null) ? "file '" + filePath + "' is null." : GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
+				System.out.println((file == null) ? "file '" + filePath + "' is null." : "file     is " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
+
+				if (file != null) {
+					String fileId = file.getId();
+					File fileById = this.client.getFileById(fileId);
+					System.out.println((fileById == null) ? "fileById '" + fileId + "' is null." : "fileById is " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(fileById));
+				}
 			}
 
 		} catch (Exception e) {

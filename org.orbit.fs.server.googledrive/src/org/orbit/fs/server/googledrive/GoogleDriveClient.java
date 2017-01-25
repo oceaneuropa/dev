@@ -25,6 +25,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.Drive.Files.Get;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
 
@@ -150,7 +151,7 @@ public class GoogleDriveClient {
 	 * @throws IOException
 	 */
 	public List<File> getAllFiles(Comparator<File> comparator) throws IOException {
-		return doGetFiles(null, comparator);
+		return queryFiles(null, comparator);
 	}
 
 	/**
@@ -162,7 +163,7 @@ public class GoogleDriveClient {
 	 * @throws IOException
 	 */
 	public List<File> getRootFiles(Comparator<File> comparator) throws IOException {
-		return doGetFiles("'root' in parents and trashed = false", comparator);
+		return queryFiles("'root' in parents and trashed = false", comparator);
 	}
 
 	/**
@@ -186,7 +187,7 @@ public class GoogleDriveClient {
 	 * @throws IOException
 	 */
 	public List<File> getFiles(String parentId, Comparator<File> comparator) throws IOException {
-		return doGetFiles("'" + parentId + "' in parents and trashed = false", comparator);
+		return queryFiles("'" + parentId + "' in parents and trashed = false", comparator);
 	}
 
 	/**
@@ -197,10 +198,43 @@ public class GoogleDriveClient {
 	 * @throws IOException
 	 */
 	public List<File> getTrashedFiles(Comparator<File> comparator) throws IOException {
-		return doGetFiles("trashed = true", comparator);
+		return queryFiles("trashed = true", comparator);
 	}
 
 	/**
+	 * 
+	 * @param file
+	 * @return
+	 */
+	public File getParentFile(File file) {
+		List<String> parents = file.getParents();
+		if (parents != null) {
+
+		}
+		for (String parent : parents) {
+			System.out.println("parent = " + parent);
+		}
+		return null;
+	}
+
+	/**
+	 * Get file by file id.
+	 * 
+	 * @param fileId
+	 * @return
+	 * @throws IOException
+	 */
+	public File getFileById(String fileId) throws IOException {
+		File file = null;
+		Get get = getDrive().files().get(fileId);
+		if (get != null) {
+			file = get.execute();
+		}
+		return file;
+	}
+
+	/**
+	 * Get file by file full path string.
 	 * 
 	 * @param filePath
 	 * @return
@@ -215,11 +249,11 @@ public class GoogleDriveClient {
 
 		if (!matchesFiles.isEmpty()) {
 			String fileName = new FilePath(filePath).getLastSegment();
-			List<String> candidateMetaTypes = GoogleDriveHelper.INSTANCE.getCandidateMetaTypes(fileName);
+			List<String> candidateMimeTypes = GoogleDriveHelper.INSTANCE.getCandidateMimeTypes(fileName);
 
 			for (File matchesFile : matchesFiles) {
-				String metaType = matchesFile.getMimeType();
-				if (candidateMetaTypes.contains(metaType)) {
+				String mimeType = matchesFile.getMimeType();
+				if (candidateMimeTypes.contains(mimeType)) {
 					file = matchesFile;
 					break;
 				}
@@ -262,7 +296,7 @@ public class GoogleDriveClient {
 				}
 				query += " and trashed = false";
 
-				List<File> subFiles = doGetFiles(query, comparator);
+				List<File> subFiles = queryFiles(query, comparator);
 
 				// file cannot be found at current segment. no need search any more.
 				if (subFiles == null || subFiles.isEmpty()) {
@@ -304,7 +338,7 @@ public class GoogleDriveClient {
 	 * @return
 	 * @throws IOException
 	 */
-	public List<File> doGetFiles(String query, Comparator<File> comparator) throws IOException {
+	public List<File> queryFiles(String query, Comparator<File> comparator) throws IOException {
 		List<File> files = new ArrayList<File>();
 
 		Drive.Files.List list = getDrive().files().list();
