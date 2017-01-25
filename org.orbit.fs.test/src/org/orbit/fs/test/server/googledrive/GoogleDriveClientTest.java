@@ -1,6 +1,7 @@
 package org.orbit.fs.test.server.googledrive;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.FixMethodOrder;
@@ -46,6 +47,7 @@ public class GoogleDriveClientTest {
 		this.client = new GoogleDriveClient(config);
 	}
 
+	@Ignore
 	@Test
 	public void test001_listFiles() {
 		System.out.println("--- --- --- test001_listFiles() --- --- ---");
@@ -76,6 +78,28 @@ public class GoogleDriveClientTest {
 		System.out.println();
 	}
 
+	@Test
+	public void test002_getFile() {
+		System.out.println("--- --- --- test002_getFile() --- --- ---");
+		try {
+			List<String> filePaths = new ArrayList<String>();
+			filePaths.add("dir1/test1/readme1.doc");
+			filePaths.add("dir1/test2/readme2.doc");
+			filePaths.add("dir1/test3/readme3.doc");
+			filePaths.add("dir2/Errors_1.0.0.json");
+			filePaths.add("TestCase.zip");
+
+			for (String filePath : filePaths) {
+				File file = this.client.getFile(filePath);
+				System.out.println((file == null) ? "file '" + filePath + "' is null." : GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println();
+	}
+
 	@Ignore
 	@Test
 	public void test010_createDirectory() {
@@ -89,11 +113,12 @@ public class GoogleDriveClientTest {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test020_moveFileToDirectory() {
 		System.out.println("--- --- --- test020_moveFileToDirectory() --- --- ---");
 		try {
-			this.client.createDirectory("Invoices");
+			// this.client.createDirectory("Invoices");
 
 		} catch (Exception e) {
 			e.printStackTrace();

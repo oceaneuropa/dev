@@ -1,6 +1,7 @@
 package org.orbit.fs.server.googledrive.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -16,6 +17,92 @@ import com.google.api.services.drive.model.File;
 public class GoogleDriveHelper {
 
 	public static GoogleDriveHelper INSTANCE = new GoogleDriveHelper();
+
+	public static List<String> TEXT_PLAIN_FILE_EXTENSIONS = new ArrayList<String>();
+	public static List<String> TEXT_XML_FILE_EXTENSIONS = new ArrayList<String>();
+	public static List<String> JSON_FILE_EXTENSIONS = new ArrayList<String>();
+	public static List<String> JPEG_FILE_EXTENSIONS = new ArrayList<String>();
+	public static List<String> PDF_FILE_EXTENSIONS = new ArrayList<String>();
+	public static List<String> ZIP_FILE_EXTENSIONS = new ArrayList<String>();
+	public static List<String> DOC_FILE_EXTENSIONS = new ArrayList<String>();
+
+	static {
+		TEXT_PLAIN_FILE_EXTENSIONS.add("txt");
+		TEXT_PLAIN_FILE_EXTENSIONS.add("log");
+		TEXT_PLAIN_FILE_EXTENSIONS.add("properties");
+
+		TEXT_XML_FILE_EXTENSIONS.add("xml");
+		TEXT_XML_FILE_EXTENSIONS.add("xsd");
+		TEXT_XML_FILE_EXTENSIONS.add("wsdl");
+
+		JSON_FILE_EXTENSIONS.add("json");
+
+		JPEG_FILE_EXTENSIONS.add("jpeg");
+
+		PDF_FILE_EXTENSIONS.add("pdf");
+
+		ZIP_FILE_EXTENSIONS.add("zip");
+
+		DOC_FILE_EXTENSIONS.add("doc");
+		DOC_FILE_EXTENSIONS.add("docx");
+	}
+
+	/**
+	 * Get potential metatypes from file extension.
+	 * 
+	 * @param fileName
+	 * @return
+	 */
+	public List<String> getCandidateMetaTypes(String fileName) {
+		List<String> candidateMetaTypes = new ArrayList<String>();
+		int index = fileName.lastIndexOf(".");
+		if (index < 0 || index == fileName.length() - 1) {
+			// no file extension - consider it as a directory/google doc/google spreadsheet
+			candidateMetaTypes.add(GoogleDriveMimeTypes.FOLDER);
+			candidateMetaTypes.add(GoogleDriveMimeTypes.GOOGLE_DOC);
+			candidateMetaTypes.add(GoogleDriveMimeTypes.GOOGLE_SPREADSHEET);
+
+		} else {
+			String fileExtension = fileName.substring(index + 1);
+			fileExtension = fileExtension.toLowerCase();
+			if (TEXT_PLAIN_FILE_EXTENSIONS.contains(fileExtension)) {
+				// txt file
+				candidateMetaTypes.add(GoogleDriveMimeTypes.TEXT_PLAIN);
+
+			} else if (TEXT_XML_FILE_EXTENSIONS.contains(fileExtension)) {
+				// xml file
+				candidateMetaTypes.add(GoogleDriveMimeTypes.TEXT_XML);
+
+			} else if (JPEG_FILE_EXTENSIONS.contains(fileExtension)) {
+				// jpeg file
+				candidateMetaTypes.add(GoogleDriveMimeTypes.JPEG);
+
+			} else if (JSON_FILE_EXTENSIONS.contains(fileExtension)) {
+				// json file
+				candidateMetaTypes.add(GoogleDriveMimeTypes.JSON);
+
+			} else if (PDF_FILE_EXTENSIONS.contains(fileExtension)) {
+				// pdf file
+				candidateMetaTypes.add(GoogleDriveMimeTypes.PDF);
+
+			} else if (ZIP_FILE_EXTENSIONS.contains(fileExtension)) {
+				// zip file
+				candidateMetaTypes.add(GoogleDriveMimeTypes.ZIP);
+
+			} else if (DOC_FILE_EXTENSIONS.contains(fileExtension)) {
+				// doc file
+				candidateMetaTypes.add(GoogleDriveMimeTypes.GOOGLE_DOC);
+
+			} else {
+				// consider it as google doc/google spreadsheet for now.
+				candidateMetaTypes.add(GoogleDriveMimeTypes.GOOGLE_DOC);
+				candidateMetaTypes.add(GoogleDriveMimeTypes.GOOGLE_SPREADSHEET);
+
+				System.out.println("### ### ### ### " + getClass().getSimpleName() + ".getCandidateMetaTypes() file extension is not supported: " + fileExtension);
+			}
+		}
+		return candidateMetaTypes;
+	}
 
 	/**
 	 * 
@@ -95,7 +182,7 @@ public class GoogleDriveHelper {
 	 * @return
 	 */
 	public boolean isGoogleSpreadsheet(File file) {
-		return GoogleDriveMimeTypes.GOOGLE_SPREAD_SHEET.equals(file.getMimeType()) ? true : false;
+		return GoogleDriveMimeTypes.GOOGLE_SPREADSHEET.equals(file.getMimeType()) ? true : false;
 	}
 
 	/**

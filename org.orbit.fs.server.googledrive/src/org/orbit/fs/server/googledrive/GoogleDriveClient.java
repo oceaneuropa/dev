@@ -200,17 +200,92 @@ public class GoogleDriveClient {
 		return doGetFiles("trashed = true", comparator);
 	}
 
-	public File getFileById(String fileId) throws IOException {
+	/**
+	 * 
+	 * @param filePath
+	 * @return
+	 * @throws IOException
+	 */
+	public File getFile(String filePath) throws IOException {
 		File file = null;
-		List<File> files = doGetFiles("trashed = true", Comparators.GoogleFileComparator.ASC);
+
+		FilePath path = new FilePath(filePath);
+		List<File> matchesFiles = new ArrayList<File>();
+		collectFile(null, path, matchesFiles);
+
+		if (!matchesFiles.isEmpty()) {
+			String fileName = new FilePath(filePath).getLastSegment();
+			List<String> candidateMetaTypes = GoogleDriveHelper.INSTANCE.getCandidateMetaTypes(fileName);
+
+			for (File matchesFile : matchesFiles) {
+				String metaType = matchesFile.getMimeType();
+				if (candidateMetaTypes.contains(metaType)) {
+					file = matchesFile;
+					break;
+				}
+			}
+			// still not found one. return the first one.
+			if (file == null) {
+				file = matchesFiles.get(0);
+			}
+		}
 		return file;
 	}
 
-	public File getFile(String filePath) {
-		File file = null;
-		FilePath path = new FilePath(filePath);
-		String[] pathSegments = path.getSegments();
-		return file;
+	/**
+	 * 
+	 * @param parentFile
+	 * @param path
+	 * @param matchesFiles
+	 * @throws IOException
+	 */
+	protected void collectFile(File parentFile, FilePath path, List<File> matchesFiles) throws IOException {
+		Comparator<File> comparator = Comparators.GoogleFileComparator.ASC;
+
+		String[] segments = path.getSegments();
+		if (segments != null && segments.length > 0) {
+			int len = segments.length;
+
+			String parentId = "root";
+			if (parentFile != null) {
+				parentId = parentFile.getId();
+			}
+
+			for (int i = 0; i < len; i++) {
+				// boolean isFirst = (i == 0) ? true : false;
+				boolean isLast = (i == len - 1) ? true : false;
+				String segment = segments[i];
+
+				String query = "'" + parentId + "' in parents and name = '" + segment + "'";
+				if (!isLast) {
+					query += " and mimeType = '" + GoogleDriveMimeTypes.FOLDER + "'";
+				}
+				query += " and trashed = false";
+
+				List<File> subFiles = doGetFiles(query, comparator);
+
+				// file cannot be found at current segment. no need search any more.
+				if (subFiles == null || subFiles.isEmpty()) {
+					return;
+				}
+
+				if (isLast) {
+					// reach the end of the segment. subFiles are the target files.
+					for (File subFile : subFiles) {
+						if (!matchesFiles.contains(subFile)) {
+							matchesFiles.add(subFile);
+						}
+					}
+				} else {
+					// not last segment - current file is a directory.
+					// look into each matching sub folders to look for target files.
+					FilePath subPath = path.getPath(i + 1);
+					for (File subFolder : subFiles) {
+						collectFile(subFolder, subPath, matchesFiles);
+					}
+				}
+			}
+		}
 	}
 
 	/**

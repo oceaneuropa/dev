@@ -10,7 +10,7 @@ public class GoogleDriveMimeTypes {
 	public static final String PDF = "application/pdf";
 	public static final String ZIP = "application/zip";
 	public static final String GOOGLE_DOC = "application/vnd.google-apps.document";
-	public static final String GOOGLE_SPREAD_SHEET = "application/vnd.google-apps.spreadsheet";
+	public static final String GOOGLE_SPREADSHEET = "application/vnd.google-apps.spreadsheet";
 	public static final String OCTET_STREAM = "application/octet-stream";
 
 }
