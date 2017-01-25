@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: File System Model
+Bundle-SymbolicName: org.orbit.fs.model
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.orbit.fs.model.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.origin.common.util,
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: org.orbit.fs.model,
+ org.orbit.fs.model.vo
+Require-Bundle: org.orbit.fs.api
