@@ -51,15 +51,9 @@ public class Comparators {
 
 		@Override
 		public int compare(File f1, File f2) {
-			if (desc()) {
-				File tmp = f1;
-				f1 = f2;
-				f2 = tmp;
-			}
-
+			// folders are shown before files
 			boolean isDir1 = GoogleDriveHelper.INSTANCE.isDirectory(f1);
 			boolean isDir2 = GoogleDriveHelper.INSTANCE.isDirectory(f2);
-
 			if (isDir1 && !isDir2) {
 				return -1;
 			}
@@ -67,9 +61,14 @@ public class Comparators {
 				return 1;
 			}
 
+			// compare file names asc or desc
 			String name1 = f1.getName();
 			String name2 = f2.getName();
-
+			if (desc()) {
+				String tmp = name1;
+				name1 = name2;
+				name2 = tmp;
+			}
 			return name1.compareTo(name2);
 		}
 	}

@@ -2,11 +2,12 @@ package org.orbit.fs.server.googledrive.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-import org.orbit.fs.server.googledrive.GoogleDriveClient;
+import org.orbit.fs.server.googledrive.GoogleDriveClientV3;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.auth.oauth2.Credential.AccessMethod;
@@ -228,7 +229,13 @@ public class GoogleDriveHelper {
 	 * @return
 	 */
 	public String getSimpleFileName1(File file) {
+		String fileId = file.getId();
 		String name = file.getName();
+
+		String parentIds = null;
+		if (file.getParents() != null) {
+			parentIds = Arrays.toString(file.getParents().toArray());
+		}
 
 		boolean isDir = isDirectory(file);
 		boolean trashed = false;
@@ -246,10 +253,17 @@ public class GoogleDriveHelper {
 		}
 		suffix = suffix.trim();
 
-		if (suffix.isEmpty()) {
-			return name;
+		// if (parentIds != null) {
+		// name = "parentIds: " + parentIds + " id: " + fileId + " " + name;
+		// }
+
+		// if (fileId != null) {
+		// name = "(" + fileId + ")" + name;
+		// }
+		if (!suffix.isEmpty()) {
+			name = name + " (" + suffix + ")";
 		}
-		return name + " (" + suffix + ")";
+		return name;
 	}
 
 	/**
@@ -325,29 +339,31 @@ public class GoogleDriveHelper {
 	 * 
 	 * @param client
 	 * @param file
+	 * @param fields
 	 * @param comparator
 	 * @throws IOException
 	 */
-	public void walkthrough(GoogleDriveClient client, File file, Comparator<File> comparator) throws IOException {
-		walkthrough(client, file, comparator, 0);
+	public void walkthrough(GoogleDriveClientV3 client, File file, String fields, Comparator<File> comparator) throws IOException {
+		walkthrough(client, file, fields, comparator, 0);
 	}
 
 	/**
 	 * 
 	 * @param client
 	 * @param file
+	 * @param fields
 	 * @param comparator
 	 * @param level
 	 * @throws IOException
 	 */
-	public void walkthrough(GoogleDriveClient client, File file, Comparator<File> comparator, int level) throws IOException {
+	public void walkthrough(GoogleDriveClientV3 client, File file, String fields, Comparator<File> comparator, int level) throws IOException {
 		System.out.println(getSpaces(level) + getSimpleFileName1(file));
 
 		if (isDirectory(file)) {
 			int deeperLevel = level + 1;
-			List<File> subFiles = client.getFiles(file, comparator);
+			List<File> subFiles = client.getFiles(file.getId(), fields, comparator);
 			for (File subFile : subFiles) {
-				walkthrough(client, subFile, comparator, deeperLevel);
+				walkthrough(client, subFile, fields, comparator, deeperLevel);
 			}
 		}
 	}
