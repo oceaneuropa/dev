@@ -21,7 +21,7 @@ public class GoogleDriveHelper {
 	public static GoogleDriveHelper INSTANCE = new GoogleDriveHelper();
 
 	/**
-	 * Get potential metatypes from file extension.
+	 * Get candidate mime types from file extension.
 	 * 
 	 * @param fileName
 	 * @return

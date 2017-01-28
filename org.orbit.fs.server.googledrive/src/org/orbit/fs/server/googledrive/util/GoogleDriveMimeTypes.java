@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * Mime types
+ * 
  * @see https://developers.google.com/drive/v3/web/manage-downloads
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
@@ -52,6 +53,11 @@ public class GoogleDriveMimeTypes {
 
 	public static final Map<String, List<String>> MimeType_To_FileExtensions_Map = new LinkedHashMap<String, List<String>>();
 
+	/**
+	 * 
+	 * @param mimeType
+	 * @param fileExtensions
+	 */
 	protected static void put(String mimeType, String... fileExtensions) {
 		List<String> fileExtensionList = new ArrayList<String>();
 		for (String fileExtension : fileExtensions) {

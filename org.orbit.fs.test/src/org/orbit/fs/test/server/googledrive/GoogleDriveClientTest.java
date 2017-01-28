@@ -53,7 +53,7 @@ public class GoogleDriveClientTest {
 		}
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void test001_listFiles() {
 		System.out.println("--- --- --- test001_listFiles() --- --- ---");
@@ -93,37 +93,52 @@ public class GoogleDriveClientTest {
 		try {
 			String fields = GoogleDriveClientV3.FILE_FIELDS_SIMPLE;
 
-			String driveFolderId = this.client.getDriveFolderId();
+			boolean test1 = false;
+			if (test1) {
+				String driveFolderId = this.client.getDriveFolderId();
 
-			List<String> filePaths = new ArrayList<String>();
-			filePaths.add("dir1/test1");
-			filePaths.add("dir1/test1/readme1.doc");
-			filePaths.add("dir1/test2/readme2.doc");
-			filePaths.add("dir1/test3/readme3.doc");
-			filePaths.add("dir2/Errors_1.0.0.json");
-			filePaths.add("TestCase.zip");
+				List<String> filePaths = new ArrayList<String>();
+				filePaths.add("dir1/test1");
+				filePaths.add("dir1/test1/readme1.doc");
+				filePaths.add("dir1/test2/readme2.doc");
+				filePaths.add("dir1/test3/readme3.doc");
+				filePaths.add("dir2/Errors_1.0.0.json");
+				filePaths.add("TestCase.zip");
 
-			for (String filePath : filePaths) {
-				// System.out.println("filePath = " + filePath);
+				for (String filePath : filePaths) {
+					// System.out.println("filePath = " + filePath);
+					File file = this.client.getFileByFullPath(filePath, fields);
+					// System.out.println((file == null) ? "file '" + filePath + "' is not found." : "file = " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
+					if (file != null) {
+						String fileId = file.getId();
+						// get file by id
+						// File fileById = this.client.getFileById(fileId, fields);
+						// System.out.println((fileById == null) ? "fileById '" + fileId + "' is null." : "fileById is " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(fileById));
 
-				File file = this.client.getFileByFullPath(filePath, fields);
-				// System.out.println((file == null) ? "file '" + filePath + "' is not found." : "file = " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
+						// get full path of the file
+						String filePath2 = this.client.getFullPathById(driveFolderId, fileId);
 
-				if (file != null) {
-					String fileId = file.getId();
+						String message = "file = " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file) + " (path: " + filePath2 + ")";
+						System.out.println(message);
+					} else {
+						System.out.println("file '" + filePath + "' is not found.");
+					}
+				}
+			}
 
-					// get file by id
-					// File fileById = this.client.getFileById(fileId, fields);
-					// System.out.println((fileById == null) ? "fileById '" + fileId + "' is null." : "fileById is " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(fileById));
+			boolean test2 = true;
+			if (test2) {
+				File dir = this.client.getFileByFullPath("dir1/test1", fields);
+				if (dir != null) {
+					String folderId = dir.getId();
+					File file = this.client.getFileByName(folderId, "readme1.doc", fields);
+					if (file != null) {
+						// String filePath = this.client.getFullPathById(file.getId());
+						// String message = "file = " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file) + " (path: " + filePath + ")";
+						// System.out.println(message);
 
-					// get full path of the file
-					String filePath2 = this.client.getFullPathById(driveFolderId, fileId);
-
-					String message = "file = " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file) + " (path: " + filePath2 + ")";
-					System.out.println(message);
-
-				} else {
-					System.out.println("file '" + filePath + "' is not found.");
+						System.out.println(GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
+					}
 				}
 			}
 
@@ -133,7 +148,7 @@ public class GoogleDriveClientTest {
 		System.out.println();
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void test010_createDirectory() {
 		System.out.println("--- --- --- test010_createDirectory() --- --- ---");
@@ -165,24 +180,102 @@ public class GoogleDriveClientTest {
 	public void test020_moveFileToDirectory() {
 		System.out.println("--- --- --- test020_moveFileToDirectory() --- --- ---");
 		try {
-			String fields = GoogleDriveClientV3.FILE_FIELDS_SIMPLE;
+			// 1. move file from one folder to another folder
+			boolean test1 = false;
+			if (test1) {
+				File file = this.client.getFileByFullPath("Book1.xsd", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				File dir = this.client.getFileByFullPath("dir1", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				// File dir = this.client.getFile("dir2");
 
-			File file = this.client.getFileByFullPath("dir1/Book1.xsd", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
-			File dir = this.client.getFileByFullPath("dir2", fields);
-			// File dir = this.client.getFile("dir2");
+				if (file != null && dir != null) {
+					System.out.println("file: " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
+					System.out.println("dir: " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(dir));
 
-			if (file != null && dir != null) {
-				System.out.println("file: " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
-				System.out.println("dir: " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(dir));
+					File movedFile = this.client.moveToFolder(file.getId(), dir.getId());
+					System.out.println("moved to: " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(movedFile));
+				}
+			}
 
-				File movedFile = this.client.move(file.getId(), dir.getId());
-				System.out.println("moved to: " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(movedFile));
+			// 2. move file from a folder to root
+			boolean test2 = false;
+			if (test2) {
+				File file = this.client.getFileByFullPath("dir2/Book1.xsd", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				String driveFolderId = this.client.getDriveFolderId();
+
+				if (file != null && driveFolderId != null) {
+					System.out.println("file: " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(file));
+
+					File movedFile = this.client.moveToFolder(file.getId(), driveFolderId);
+					System.out.println("moved to: " + GoogleDriveHelper.INSTANCE.getSimpleFileName3(movedFile));
+				}
+			}
+
+			// 3. move a folder to another folder
+			boolean test3 = true;
+			if (test3) {
+				File dir = this.client.getFileByFullPath("dir2/test3", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				File dir2 = this.client.getFileByFullPath("dir1", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+
+				if (dir != null && dir != null) {
+					File movedFile = this.client.moveToFolder(dir.getId(), dir2.getId());
+					if (movedFile != null) {
+						System.out.println("moved to: " + this.client.getFullPathById(movedFile.getId()));
+					}
+				}
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println();
+	}
+
+	@Test
+	public void test030_upload() {
+		System.out.println("--- --- --- test030_upload() --- --- ---");
+		try {
+			// 1. upload a local file to a google drive directory
+			boolean test1 = true;
+			if (test1) {
+				java.io.File localFile = new java.io.File("/Users/yayang/Downloads/google_drive_test/phone/iPhone.pdf");
+				File dir = this.client.getFileByFullPath("dir2", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				if (dir != null) {
+					File uploadedFile = this.client.copyLocalFileToGdfsDirectory(localFile, dir.getId(), null);
+
+					if (uploadedFile != null) {
+						System.out.println("file is uploaded");
+						System.out.println(uploadedFile.toPrettyString());
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println();
+	}
+
+	@Ignore
+	@Test
+	public void test040_download() {
+		System.out.println("--- --- --- test040_download() --- --- ---");
+
+		// 1. download google drive file to a local directory.
+		boolean test1 = false;
+		if (test1) {
+
+		}
+
+		// 2. download google drive file to a local file.
+		boolean test2 = false;
+		if (test2) {
+
+		}
+
+		// 3. download google drive folder to a local directory.
+		boolean test3 = false;
+		if (test3) {
+
+		}
 	}
 
 	/**

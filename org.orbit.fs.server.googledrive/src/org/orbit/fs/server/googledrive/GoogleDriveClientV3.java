@@ -20,6 +20,7 @@ import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.FileContent;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
@@ -33,24 +34,32 @@ import com.google.api.services.drive.model.FileList;
 
 /*
  * Jar download
- * @see https://mvnrepository.com/artifact/com.google.apis
+ * https://mvnrepository.com/artifact/com.google.apis
  * 
- * Aboout Fields and query
+ * About Fields and query
  * https://developers.google.com/drive/v3/web/search-parameters
  * 
- * Online API doc
- * https://developers.google.com/apis-explorer/#p/drive/v3/
- * 
  * Java API doc
- * @see https://developers.google.com/resources/api-libraries/documentation/drive/v3/java/latest/com/google/api/services/drive/model/File.html
- * @see https://developers.google.com/resources/api-libraries/documentation/drive/v3/java/latest/com/google/api/services/drive/Drive.Files.Create.html
- * @see https://developers.google.com/resources/api-libraries/documentation/drive/v3/java/latest/com/google/api/services/drive/Drive.Files.List.html
+ * https://developers.google.com/resources/api-libraries/documentation/drive/v3/java/latest/com/google/api/services/drive/model/File.html
+ * https://developers.google.com/resources/api-libraries/documentation/drive/v3/java/latest/com/google/api/services/drive/Drive.Files.Create.html
+ * https://developers.google.com/resources/api-libraries/documentation/drive/v3/java/latest/com/google/api/services/drive/Drive.Files.List.html
+ * 
+ * REST API doc
+ * https://developers.google.com/drive/v3/reference/files
+ * 
+ * REST API explorer
+ * https://developers.google.com/apis-explorer/#p/drive/v3/
  * 
  * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class GoogleDriveClientV3 {
 
+	// Drive.Files.Get fields:
+	// appProperties,capabilities,contentHints,createdTime,description,explicitlyTrashed,fileExtension,folderColorRgb,fullFileExtension,hasThumbnail,headRevisionId,iconLink,id,imageMediaMetadata,isAppAuthorized,kind,lastModifyingUser,md5Checksum,mimeType,modifiedByMe,modifiedByMeTime,modifiedTime,name,originalFilename,ownedByMe,owners,parents,permissions,properties,quotaBytesUsed,shared,sharedWithMeTime,sharingUser,size,spaces,starred,thumbnailLink,thumbnailVersion,trashed,version,videoMediaMetadata,viewedByMe,viewedByMeTime,viewersCanCopyContent,webContentLink,webViewLink,writersCanShare
+	// @see https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.get
+	public static final String FILE_FIELDS_ID = "id";
+	public static final String FILE_FIELDS_ID_PARENTS = "id,parents";
 	public static final String FILE_FIELDS_SIMPLE = "id,parents,name,mimeType,trashed";
 	public static final String FILE_FIELDS_ALL = "appProperties,capabilities,contentHints,createdTime,description,explicitlyTrashed,fileExtension,folderColorRgb,fullFileExtension,hasThumbnail,headRevisionId,iconLink,id,imageMediaMetadata,isAppAuthorized,kind,lastModifyingUser,md5Checksum,mimeType,modifiedByMe,modifiedByMeTime,modifiedTime,name,originalFilename,ownedByMe,owners,parents,permissions,properties,quotaBytesUsed,shared,sharedWithMeTime,sharingUser,size,spaces,starred,thumbnailLink,thumbnailVersion,trashed,version,videoMediaMetadata,viewedByMe,viewedByMeTime,viewersCanCopyContent,webContentLink,webViewLink,writersCanShare";
 
@@ -275,6 +284,24 @@ public class GoogleDriveClientV3 {
 	}
 
 	/**
+	 * Get file by folder id and file name.
+	 * 
+	 * @param folderId
+	 * @param name
+	 * @param fields
+	 * @return
+	 * @throws IOException
+	 */
+	public File getFileByName(String folderId, String name, String fields) throws IOException {
+		File file = null;
+		List<File> subFiles = queryFiles("'" + folderId + "' in parents and name = '" + name + "'", fields, Comparators.GoogleFileComparator.ASC);
+		if (subFiles != null && !subFiles.isEmpty()) {
+			file = subFiles.get(0);
+		}
+		return file;
+	}
+
+	/**
 	 * Get file by file full path string.
 	 * 
 	 * @param fullPath
@@ -283,6 +310,14 @@ public class GoogleDriveClientV3 {
 	 * @throws IOException
 	 */
 	public File getFileByFullPath(String fullPath, String fields) throws IOException {
+		if ("/".equals(fullPath)) {
+			String driveFolderId = getDriveFolderId();
+			if (driveFolderId != null) {
+				File driveFolder = this.getFileById(driveFolderId, fields);
+				return driveFolder;
+			}
+		}
+
 		File file = null;
 
 		FilePath path = new FilePath(fullPath);
@@ -392,7 +427,6 @@ public class GoogleDriveClientV3 {
 
 		// Drive.Files.List's fields are files,kind,nextPageToken
 		// see https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.list for available fields
-
 		FileList fileList = list.execute();
 		if (fileList != null) {
 			List<File> files = fileList.getFiles();
@@ -484,6 +518,18 @@ public class GoogleDriveClientV3 {
 	 * @throws IOException
 	 */
 	public File createDirectory(String folderId, String name) throws IOException {
+		File existingDir = getFileByName(folderId, name, FILE_FIELDS_SIMPLE);
+		if (existingDir != null) {
+			if (GoogleDriveHelper.INSTANCE.isDirectory(existingDir)) {
+				// dir exists and is a folder - return the folder
+				return existingDir;
+
+			} else {
+				// dir exists but is not a folder - throw exception
+				throw new IOException("Local directory '" + existingDir.getName() + "' exists but is not a directory.");
+			}
+		}
+
 		Drive drive = getDrive();
 
 		File fileMetadata = new File();
@@ -510,7 +556,9 @@ public class GoogleDriveClientV3 {
 	}
 
 	/**
-	 * Move a file to a directory.
+	 * Move file between folders.
+	 * 
+	 * @see https://developers.google.com/drive/v3/web/folder
 	 * 
 	 * @param fileId
 	 *            file to be moved
@@ -519,7 +567,7 @@ public class GoogleDriveClientV3 {
 	 * @return
 	 * @throws IOException
 	 */
-	public File move(String fileId, String targetFolderId) throws IOException {
+	public File moveToFolder(String fileId, String targetFolderId) throws IOException {
 		Drive drive = getDrive();
 
 		StringBuilder parentIdsToRemove = new StringBuilder();
@@ -540,6 +588,220 @@ public class GoogleDriveClientV3 {
 		// update.setFields("id, parents");
 		File movedFile = update.execute();
 		return movedFile;
+	}
+
+	public File moveToTrash(String fileId) throws IOException {
+		Drive drive = getDrive();
+
+		Update update = drive.files().update(fileId, null);
+		// update.setRemoveParents(parentIdsToRemove.toString());
+		// update.setAddParents(targetFolderId);
+		// update.setFields("id, parents");
+		File movedFile = update.execute();
+		return movedFile;
+	}
+
+	// Example code1 - from https://developers.google.com/drive/v3/web/folder
+	// String folderId = "0BwwA4oUTeiV1TGRPeTVjaWRDY1E";
+	// File fileMetadata = new File();
+	// fileMetadata.setName("photo.jpg");
+	// fileMetadata.setParents(Collections.singletonList(folderId));
+	// java.io.File filePath = new java.io.File("files/photo.jpg");
+	// FileContent mediaContent = new FileContent("image/jpeg", filePath);
+	// File file = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
+	// System.out.println("File ID: " + file.getId());
+
+	// Example code2 - https://developers.google.com/drive/v3/web/manage-uploads
+	// File fileMetadata = new File();
+	// fileMetadata.setName("My Report");
+	// fileMetadata.setMimeType("application/vnd.google-apps.spreadsheet");
+	// java.io.File filePath = new java.io.File("files/report.csv");
+	// FileContent mediaContent = new FileContent("text/csv", filePath);
+	// File file = driveService.files().create(fileMetadata, mediaContent).setFields("id").execute();
+	// System.out.println("File ID: " + file.getId());
+
+	/**
+	 * Upload a local directory to a google drive folder.
+	 * 
+	 * @param localFile
+	 * @param folderId
+	 * @param includingSourceDir
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean copyLocalDirectoryToGdfsDirectory(java.io.File localFile, String folderId, boolean includingSourceDir) throws IOException {
+		if (localFile == null) {
+			throw new IllegalArgumentException("Local file is null.");
+		}
+		if (!localFile.exists()) {
+			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' does not exists.");
+		}
+		if (!localFile.isDirectory()) {
+			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' is not a directory.");
+		}
+		if (folderId == null) {
+			throw new IllegalArgumentException("folderId is null.");
+		}
+
+		List<java.io.File> encounteredFiles = new ArrayList<java.io.File>();
+
+		if (includingSourceDir) {
+			// copy the local folder into gdfs directory
+			boolean succeed = doCopyLocalDirectoryToGdfsDirectory(localFile, folderId, encounteredFiles);
+			if (!succeed) {
+				return false;
+			}
+
+		} else {
+			// copy the sub files in the local folder to gdfs directory
+			java.io.File[] subFiles = localFile.listFiles();
+			for (java.io.File subFile : subFiles) {
+				boolean succeed = doCopyLocalDirectoryToGdfsDirectory(subFile, folderId, encounteredFiles);
+				if (!succeed) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Upload a local file to a google drive folder.
+	 * 
+	 * @param localFile
+	 * @param folderId
+	 * @param mimeType
+	 * @return
+	 * @throws IOException
+	 */
+	public File copyLocalFileToGdfsDirectory(java.io.File localFile, String folderId, String mimeType) throws IOException {
+		if (localFile == null) {
+			throw new IllegalArgumentException("Local file is null.");
+		}
+		if (!localFile.exists()) {
+			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' does not exists.");
+		}
+		if (!localFile.isFile()) {
+			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' is not a file.");
+		}
+		if (folderId == null) {
+			throw new IllegalArgumentException("folderId is null.");
+		}
+
+		return doCopyLocalFileToGdfsDirectory(localFile, folderId, mimeType);
+	}
+
+	/**
+	 * 
+	 * @param localFile
+	 * @param folderId
+	 * @param encounteredLocalFiles
+	 * @return
+	 * @throws IOException
+	 */
+	protected boolean doCopyLocalDirectoryToGdfsDirectory(java.io.File localFile, String folderId, List<java.io.File> encounteredLocalFiles) throws IOException {
+		if (encounteredLocalFiles.contains(localFile)) {
+			return true;
+		}
+		encounteredLocalFiles.add(localFile);
+
+		if (localFile.isDirectory()) {
+			// Create a dir in the gdfs dir and copy the local sub files to that dir
+			File targetDir = createDirectory(folderId, localFile.getName());
+			if (targetDir == null) {
+				// Cannot create folder in folderId.
+				throw new IOException("Cannot create '" + localFile.getName() + "' directory in '" + getFullPathById(folderId) + "'.");
+			}
+			String newFolderId = targetDir.getId();
+
+			java.io.File[] subFiles = localFile.listFiles();
+			for (java.io.File subFile : subFiles) {
+				boolean succeed = doCopyLocalDirectoryToGdfsDirectory(subFile, newFolderId, encounteredLocalFiles);
+				if (!succeed) {
+					return false;
+				}
+			}
+
+		} else if (localFile.isFile()) {
+			// Copy the file into the gdfs dir
+			File uploadedFile = doCopyLocalFileToGdfsDirectory(localFile, folderId, null);
+			if (uploadedFile == null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param localFile
+	 * @param folderId
+	 * @param mimeType
+	 * @return
+	 * @throws IOException
+	 */
+	protected File doCopyLocalFileToGdfsDirectory(java.io.File localFile, String folderId, String mimeType) throws IOException {
+		// derive mime type from file extension
+		// if (mimeType == null) {
+		// List<String> candidateMimeTypes = GoogleDriveHelper.INSTANCE.getCandidateMimeTypes(localFile.getName());
+		// if (candidateMimeTypes != null && !candidateMimeTypes.isEmpty()) {
+		// mimeType = candidateMimeTypes.get(0);
+		// }
+		// }
+
+		String fileName = localFile.getName();
+
+		File existingFile = getFileByName(folderId, fileName, FILE_FIELDS_SIMPLE);
+		if (existingFile != null) {
+			// Delete existing file
+			if (debug) {
+				System.out.println("File already exists: " + existingFile.getId() + " " + this.getFullPathById(existingFile.getId()));
+			}
+			delete(existingFile.getId(), true);
+		}
+
+		File fileMetadata = new File();
+		fileMetadata.setName(fileName);
+		fileMetadata.setParents(Collections.singletonList(folderId));
+		fileMetadata.setMimeType(mimeType);
+
+		FileContent fileContent = new FileContent(mimeType, localFile);
+		File uploadedFile = getDrive().files().create(fileMetadata, fileContent).setFields(FILE_FIELDS_SIMPLE).execute();
+
+		if (debug) {
+			System.out.println("Uploaded File: " + uploadedFile.getId() + " " + this.getFullPathById(uploadedFile.getId()));
+		}
+		return uploadedFile;
+	}
+
+	/**
+	 * Delete a file/directory.
+	 * 
+	 * @param fileId
+	 * @param permanently
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean delete(String fileId, boolean permanently) throws IOException {
+		Drive drive = getDrive();
+		File file = getFileById(fileId, FILE_FIELDS_ID_PARENTS);
+		if (file != null) {
+			if (permanently) {
+				// Permanently deletes a file owned by the user without moving it to the trash.
+				// If the target is a folder, all descendants owned by the user are also deleted.
+				drive.files().delete(fileId).execute();
+
+				if (debug) {
+					System.out.println("file is permanently deleted: " + fileId);
+				}
+				return true;
+
+			} else {
+
+			}
+		}
+		return false;
 	}
 
 }
