@@ -1,6 +1,7 @@
 package org.orbit.fs.server.googledrive;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,8 +12,10 @@ import java.util.List;
 
 import org.orbit.fs.api.FilePath;
 import org.orbit.fs.server.googledrive.util.Comparators;
+import org.orbit.fs.server.googledrive.util.GoogleDriveConstants;
 import org.orbit.fs.server.googledrive.util.GoogleDriveHelper;
 import org.orbit.fs.server.googledrive.util.GoogleDriveMimeTypes;
+import org.origin.common.io.IOUtil;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -54,14 +57,6 @@ import com.google.api.services.drive.model.FileList;
  *
  */
 public class GoogleDriveClientV3 {
-
-	// Drive.Files.Get fields:
-	// appProperties,capabilities,contentHints,createdTime,description,explicitlyTrashed,fileExtension,folderColorRgb,fullFileExtension,hasThumbnail,headRevisionId,iconLink,id,imageMediaMetadata,isAppAuthorized,kind,lastModifyingUser,md5Checksum,mimeType,modifiedByMe,modifiedByMeTime,modifiedTime,name,originalFilename,ownedByMe,owners,parents,permissions,properties,quotaBytesUsed,shared,sharedWithMeTime,sharingUser,size,spaces,starred,thumbnailLink,thumbnailVersion,trashed,version,videoMediaMetadata,viewedByMe,viewedByMeTime,viewersCanCopyContent,webContentLink,webViewLink,writersCanShare
-	// @see https://developers.google.com/apis-explorer/#p/drive/v3/drive.files.get
-	public static final String FILE_FIELDS_ID = "id";
-	public static final String FILE_FIELDS_ID_PARENTS = "id,parents";
-	public static final String FILE_FIELDS_SIMPLE = "id,parents,name,mimeType,trashed";
-	public static final String FILE_FIELDS_ALL = "appProperties,capabilities,contentHints,createdTime,description,explicitlyTrashed,fileExtension,folderColorRgb,fullFileExtension,hasThumbnail,headRevisionId,iconLink,id,imageMediaMetadata,isAppAuthorized,kind,lastModifyingUser,md5Checksum,mimeType,modifiedByMe,modifiedByMeTime,modifiedTime,name,originalFilename,ownedByMe,owners,parents,permissions,properties,quotaBytesUsed,shared,sharedWithMeTime,sharingUser,size,spaces,starred,thumbnailLink,thumbnailVersion,trashed,version,videoMediaMetadata,viewedByMe,viewedByMeTime,viewersCanCopyContent,webContentLink,webViewLink,writersCanShare";
 
 	protected GoogleDriveFSConfig config;
 	// file to store user credentials
@@ -177,7 +172,7 @@ public class GoogleDriveClientV3 {
 	 */
 	public String getDriveFolderId() throws IOException {
 		String driveFolderId = null;
-		List<File> subFiles = getFiles(null, FILE_FIELDS_SIMPLE, null);
+		List<File> subFiles = getFiles(null, GoogleDriveConstants.FILE_FIELDS_SIMPLE, null);
 		if (subFiles != null) {
 			for (File subFile : subFiles) {
 				List<String> parentIds = subFile.getParents();
@@ -251,7 +246,7 @@ public class GoogleDriveClientV3 {
 		List<String> parents = file.getParents();
 		if (parents != null) {
 			for (String parentId : parents) {
-				File currParentFile = getFileById(parentId, FILE_FIELDS_SIMPLE);
+				File currParentFile = getFileById(parentId, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 				if (currParentFile != null && !parentFiles.contains(currParentFile)) {
 					parentFiles.add(currParentFile);
 				}
@@ -294,7 +289,7 @@ public class GoogleDriveClientV3 {
 	 */
 	public File getFileByName(String folderId, String name, String fields) throws IOException {
 		File file = null;
-		List<File> subFiles = queryFiles("'" + folderId + "' in parents and name = '" + name + "'", fields, Comparators.GoogleFileComparator.ASC);
+		List<File> subFiles = queryFiles("'" + folderId + "' in parents and name = '" + name + "' and trashed = false", fields, Comparators.GoogleFileComparator.ASC);
 		if (subFiles != null && !subFiles.isEmpty()) {
 			file = subFiles.get(0);
 		}
@@ -467,7 +462,7 @@ public class GoogleDriveClientV3 {
 	public String getFullPathById(String driveFolderId, String fileId) throws IOException {
 		String path = null;
 
-		String fields = FILE_FIELDS_SIMPLE;
+		String fields = GoogleDriveConstants.FILE_FIELDS_SIMPLE;
 
 		File file = getFileById(fileId, fields);
 		if (file != null) {
@@ -518,7 +513,7 @@ public class GoogleDriveClientV3 {
 	 * @throws IOException
 	 */
 	public File createDirectory(String folderId, String name) throws IOException {
-		File existingDir = getFileByName(folderId, name, FILE_FIELDS_SIMPLE);
+		File existingDir = getFileByName(folderId, name, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 		if (existingDir != null) {
 			if (GoogleDriveHelper.INSTANCE.isDirectory(existingDir)) {
 				// dir exists and is a folder - return the folder
@@ -526,7 +521,7 @@ public class GoogleDriveClientV3 {
 
 			} else {
 				// dir exists but is not a folder - throw exception
-				throw new IOException("Local directory '" + existingDir.getName() + "' exists but is not a directory.");
+				throw new IOException("File '" + existingDir.getName() + "' exists but is not a directory.");
 			}
 		}
 
@@ -549,7 +544,7 @@ public class GoogleDriveClientV3 {
 
 		File createdDir = create.execute();
 		if (debug) {
-			System.out.println("Folder ID: " + createdDir.getId());
+			System.out.println("Directory '" + createdDir.getName() + "' is created.");
 		}
 
 		return createdDir;
@@ -572,7 +567,7 @@ public class GoogleDriveClientV3 {
 
 		StringBuilder parentIdsToRemove = new StringBuilder();
 		// File fileWithParents = drive.files().get(fileId).setFields("parents").execute();
-		File fileWithParents = getFileById(fileId, FILE_FIELDS_SIMPLE);
+		File fileWithParents = getFileById(fileId, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 		List<String> existingParentIds = fileWithParents.getParents();
 		if (existingParentIds != null) {
 			for (String parent : existingParentIds) {
@@ -601,71 +596,6 @@ public class GoogleDriveClientV3 {
 		return movedFile;
 	}
 
-	// Example code1 - from https://developers.google.com/drive/v3/web/folder
-	// String folderId = "0BwwA4oUTeiV1TGRPeTVjaWRDY1E";
-	// File fileMetadata = new File();
-	// fileMetadata.setName("photo.jpg");
-	// fileMetadata.setParents(Collections.singletonList(folderId));
-	// java.io.File filePath = new java.io.File("files/photo.jpg");
-	// FileContent mediaContent = new FileContent("image/jpeg", filePath);
-	// File file = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
-	// System.out.println("File ID: " + file.getId());
-
-	// Example code2 - https://developers.google.com/drive/v3/web/manage-uploads
-	// File fileMetadata = new File();
-	// fileMetadata.setName("My Report");
-	// fileMetadata.setMimeType("application/vnd.google-apps.spreadsheet");
-	// java.io.File filePath = new java.io.File("files/report.csv");
-	// FileContent mediaContent = new FileContent("text/csv", filePath);
-	// File file = driveService.files().create(fileMetadata, mediaContent).setFields("id").execute();
-	// System.out.println("File ID: " + file.getId());
-
-	/**
-	 * Upload a local directory to a google drive folder.
-	 * 
-	 * @param localFile
-	 * @param folderId
-	 * @param includingSourceDir
-	 * @return
-	 * @throws IOException
-	 */
-	public boolean copyLocalDirectoryToGdfsDirectory(java.io.File localFile, String folderId, boolean includingSourceDir) throws IOException {
-		if (localFile == null) {
-			throw new IllegalArgumentException("Local file is null.");
-		}
-		if (!localFile.exists()) {
-			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' does not exists.");
-		}
-		if (!localFile.isDirectory()) {
-			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' is not a directory.");
-		}
-		if (folderId == null) {
-			throw new IllegalArgumentException("folderId is null.");
-		}
-
-		List<java.io.File> encounteredFiles = new ArrayList<java.io.File>();
-
-		if (includingSourceDir) {
-			// copy the local folder into gdfs directory
-			boolean succeed = doCopyLocalDirectoryToGdfsDirectory(localFile, folderId, encounteredFiles);
-			if (!succeed) {
-				return false;
-			}
-
-		} else {
-			// copy the sub files in the local folder to gdfs directory
-			java.io.File[] subFiles = localFile.listFiles();
-			for (java.io.File subFile : subFiles) {
-				boolean succeed = doCopyLocalDirectoryToGdfsDirectory(subFile, folderId, encounteredFiles);
-				if (!succeed) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
 	/**
 	 * Upload a local file to a google drive folder.
 	 * 
@@ -675,7 +605,35 @@ public class GoogleDriveClientV3 {
 	 * @return
 	 * @throws IOException
 	 */
-	public File copyLocalFileToGdfsDirectory(java.io.File localFile, String folderId, String mimeType) throws IOException {
+	public File uploadFileToGdfsDirectory(java.io.File localFile, String folderId, String mimeType) throws IOException {
+		// Example code1 - from https://developers.google.com/drive/v3/web/folder
+		// String folderId = "0BwwA4oUTeiV1TGRPeTVjaWRDY1E";
+		// File fileMetadata = new File();
+		// fileMetadata.setName("photo.jpg");
+		// fileMetadata.setParents(Collections.singletonList(folderId));
+		// java.io.File filePath = new java.io.File("files/photo.jpg");
+		// FileContent mediaContent = new FileContent("image/jpeg", filePath);
+		// File file = driveService.files().create(fileMetadata, mediaContent).setFields("id, parents").execute();
+		// System.out.println("File ID: " + file.getId());
+
+		// Example code2 - https://developers.google.com/drive/v3/web/manage-uploads
+		// File fileMetadata = new File();
+		// fileMetadata.setName("My Report");
+		// fileMetadata.setMimeType("application/vnd.google-apps.spreadsheet");
+		// java.io.File filePath = new java.io.File("files/report.csv");
+		// FileContent mediaContent = new FileContent("text/csv", filePath);
+		// File file = driveService.files().create(fileMetadata, mediaContent).setFields("id").execute();
+		// System.out.println("File ID: " + file.getId());
+
+		// derive mime type from file extension
+		// if (mimeType == null) {
+		// List<String> candidateMimeTypes = GoogleDriveHelper.INSTANCE.getCandidateMimeTypes(localFile.getName());
+		// if (candidateMimeTypes != null && !candidateMimeTypes.isEmpty()) {
+		// mimeType = candidateMimeTypes.get(0);
+		// }
+		// }
+
+		// Check source file
 		if (localFile == null) {
 			throw new IllegalArgumentException("Local file is null.");
 		}
@@ -685,78 +643,23 @@ public class GoogleDriveClientV3 {
 		if (!localFile.isFile()) {
 			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' is not a file.");
 		}
+
+		// Check target directory
 		if (folderId == null) {
 			throw new IllegalArgumentException("folderId is null.");
 		}
 
-		return doCopyLocalFileToGdfsDirectory(localFile, folderId, mimeType);
-	}
-
-	/**
-	 * 
-	 * @param localFile
-	 * @param folderId
-	 * @param encounteredLocalFiles
-	 * @return
-	 * @throws IOException
-	 */
-	protected boolean doCopyLocalDirectoryToGdfsDirectory(java.io.File localFile, String folderId, List<java.io.File> encounteredLocalFiles) throws IOException {
-		if (encounteredLocalFiles.contains(localFile)) {
-			return true;
+		if (debug) {
+			System.out.println("Upload file '" + localFile.getAbsolutePath() + "'...");
 		}
-		encounteredLocalFiles.add(localFile);
-
-		if (localFile.isDirectory()) {
-			// Create a dir in the gdfs dir and copy the local sub files to that dir
-			File targetDir = createDirectory(folderId, localFile.getName());
-			if (targetDir == null) {
-				// Cannot create folder in folderId.
-				throw new IOException("Cannot create '" + localFile.getName() + "' directory in '" + getFullPathById(folderId) + "'.");
-			}
-			String newFolderId = targetDir.getId();
-
-			java.io.File[] subFiles = localFile.listFiles();
-			for (java.io.File subFile : subFiles) {
-				boolean succeed = doCopyLocalDirectoryToGdfsDirectory(subFile, newFolderId, encounteredLocalFiles);
-				if (!succeed) {
-					return false;
-				}
-			}
-
-		} else if (localFile.isFile()) {
-			// Copy the file into the gdfs dir
-			File uploadedFile = doCopyLocalFileToGdfsDirectory(localFile, folderId, null);
-			if (uploadedFile == null) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * 
-	 * @param localFile
-	 * @param folderId
-	 * @param mimeType
-	 * @return
-	 * @throws IOException
-	 */
-	protected File doCopyLocalFileToGdfsDirectory(java.io.File localFile, String folderId, String mimeType) throws IOException {
-		// derive mime type from file extension
-		// if (mimeType == null) {
-		// List<String> candidateMimeTypes = GoogleDriveHelper.INSTANCE.getCandidateMimeTypes(localFile.getName());
-		// if (candidateMimeTypes != null && !candidateMimeTypes.isEmpty()) {
-		// mimeType = candidateMimeTypes.get(0);
-		// }
-		// }
 
 		String fileName = localFile.getName();
 
-		File existingFile = getFileByName(folderId, fileName, FILE_FIELDS_SIMPLE);
-		if (existingFile != null) {
+		File existingFile = getFileByName(folderId, fileName, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+		if (existingFile != null && !existingFile.getTrashed()) {
 			// Delete existing file
 			if (debug) {
-				System.out.println("File already exists: " + existingFile.getId() + " " + this.getFullPathById(existingFile.getId()));
+				System.out.println("File '" + existingFile.getName() + "' already exists.");
 			}
 			delete(existingFile.getId(), true);
 		}
@@ -767,12 +670,287 @@ public class GoogleDriveClientV3 {
 		fileMetadata.setMimeType(mimeType);
 
 		FileContent fileContent = new FileContent(mimeType, localFile);
-		File uploadedFile = getDrive().files().create(fileMetadata, fileContent).setFields(FILE_FIELDS_SIMPLE).execute();
+		File uploadedFile = getDrive().files().create(fileMetadata, fileContent).setFields(GoogleDriveConstants.FILE_FIELDS_SIMPLE).execute();
 
 		if (debug) {
-			System.out.println("Uploaded File: " + uploadedFile.getId() + " " + this.getFullPathById(uploadedFile.getId()));
+			System.out.println("File '" + uploadedFile.getName() + "' is uploaded.");
 		}
 		return uploadedFile;
+	}
+
+	/**
+	 * Upload a local directory to a google drive folder.
+	 * 
+	 * @param localFile
+	 * @param folderId
+	 * @param includingSourceDir
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean uploadDirectoryToGdfsDirectory(java.io.File localFile, String folderId, boolean includingSourceDir) throws IOException {
+		// check source file
+		if (localFile == null) {
+			throw new IllegalArgumentException("Local file is null.");
+		}
+		if (!localFile.exists()) {
+			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' does not exists.");
+		}
+		if (!localFile.isDirectory()) {
+			throw new IllegalArgumentException("Local file '" + localFile.getAbsolutePath() + "' is not a directory.");
+		}
+
+		// check target directory
+		if (folderId == null) {
+			throw new IllegalArgumentException("folderId is null.");
+		}
+
+		List<java.io.File> encounteredLocalFiles = new ArrayList<java.io.File>();
+		if (includingSourceDir) {
+			// Copy the local folder into gdfs directory
+			boolean succeed = doUploadDirectoryToGdfsDirectory(localFile, folderId, encounteredLocalFiles);
+			if (!succeed) {
+				return false;
+			}
+
+		} else {
+			// Copy the sub files in the local folder to gdfs directory
+			java.io.File[] subFiles = localFile.listFiles();
+			for (java.io.File subFile : subFiles) {
+				boolean succeed = doUploadDirectoryToGdfsDirectory(subFile, folderId, encounteredLocalFiles);
+				if (!succeed) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param localFile
+	 * @param folderId
+	 * @param encounteredLocalFiles
+	 * @return
+	 * @throws IOException
+	 */
+	protected boolean doUploadDirectoryToGdfsDirectory(java.io.File localFile, String folderId, List<java.io.File> encounteredLocalFiles) throws IOException {
+		if (encounteredLocalFiles.contains(localFile)) {
+			return true;
+		}
+		encounteredLocalFiles.add(localFile);
+
+		if (localFile.isDirectory()) {
+			// Create a dir in the gdfs dir and copy the local sub files to that dir
+			String folderName = localFile.getName();
+
+			File targetDir = this.getFileByName(folderId, folderName, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+			if (targetDir == null) {
+				targetDir = createDirectory(folderId, folderName);
+				if (targetDir == null) {
+					throw new IOException("Cannot create '" + folderName + "' directory in '" + getFullPathById(folderId) + "'.");
+				}
+			} else {
+				if (!GoogleDriveHelper.INSTANCE.isDirectory(targetDir)) {
+					throw new IOException("Target '" + targetDir.getName() + "' exists, but is not a directory.");
+				}
+			}
+
+			String newFolderId = targetDir.getId();
+			java.io.File[] subFiles = localFile.listFiles();
+			for (java.io.File subFile : subFiles) {
+				boolean succeed = doUploadDirectoryToGdfsDirectory(subFile, newFolderId, encounteredLocalFiles);
+				if (!succeed) {
+					return false;
+				}
+			}
+
+		} else if (localFile.isFile()) {
+			// Copy the file into the gdfs dir
+			File uploadedFile = uploadFileToGdfsDirectory(localFile, folderId, null);
+			if (uploadedFile == null) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param fileId
+	 * @param localDir
+	 * @throws IOException
+	 */
+	public void downloadGdfsFileToDirectory(String fileId, java.io.File localDir) throws IOException {
+		// check source file
+		if (fileId == null) {
+			throw new IllegalArgumentException("fileId is null.");
+		}
+		File file = getFileById(fileId, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+		if (file == null) {
+			throw new IllegalArgumentException("File is not found. Id is '" + fileId + "'.");
+		}
+		downloadGdfsFileToDirectory(file, localDir);
+	}
+
+	/**
+	 * 
+	 * @param file
+	 * @param localDir
+	 * @throws IOException
+	 */
+	public void downloadGdfsFileToDirectory(File file, java.io.File localDir) throws IOException {
+		// @see https://developers.google.com/drive/v3/web/manage-downloads
+
+		// Example code1:
+		// String fileId = "0BwwA4oUTeiV1UVNwOHItT0xfa2M";
+		// OutputStream outputStream = new ByteArrayOutputStream();
+		// driveService.files().get(fileId).executeMediaAndDownloadTo(outputStream);
+
+		// Example code2:
+		// String fileId = "1ZdR3L3qP4Bkq8noWLJHSr_iBau0DNT4Kli4SxNc2YEo";
+		// OutputStream outputStream = new ByteArrayOutputStream();
+		// driveService.files().export(fileId, "application/pdf").executeMediaAndDownloadTo(outputStream);
+
+		// check source file
+		if (file == null) {
+			throw new IllegalArgumentException("file is null.");
+		}
+		if (GoogleDriveHelper.INSTANCE.isDirectory(file)) {
+			throw new IllegalArgumentException("File '" + file.getName() + "' exists, but is not a file.");
+		}
+
+		// check target directory
+		if (localDir == null) {
+			throw new IllegalArgumentException("localDir is null.");
+		}
+		if (!localDir.exists()) {
+			localDir.mkdirs();
+			if (!localDir.exists()) {
+				throw new IOException("Cannot create '" + localDir.getAbsolutePath() + "' directory.");
+			}
+		} else {
+			if (!localDir.isDirectory()) {
+				throw new IllegalArgumentException("Target '" + localDir.getName() + "' exists, but is not a directory.");
+			}
+		}
+
+		// check target file
+		java.io.File targetFile = new java.io.File(localDir, file.getName());
+		if (targetFile.exists() && targetFile.isDirectory()) {
+			throw new IOException("Target '" + targetFile.getAbsolutePath() + "' exists, but is a directory.");
+		}
+
+		FileOutputStream outputStream = null;
+		try {
+			outputStream = new FileOutputStream(targetFile);
+			getDrive().files().export(file.getId(), null).executeMediaAndDownloadTo(outputStream);
+		} finally {
+			IOUtil.closeQuietly(outputStream, true);
+		}
+	}
+
+	/**
+	 * 
+	 * @param fileId
+	 * @param localDir
+	 * @param includingSourceDir
+	 * @throws IOException
+	 */
+	public void downloadGdfsDirectoryToDirectory(String fileId, java.io.File localDir, boolean includingSourceDir) throws IOException {
+		// Check source directory
+		if (fileId == null) {
+			throw new IllegalArgumentException("fileId is null.");
+		}
+		File dir = getFileById(fileId, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+		if (dir == null) {
+			throw new IllegalArgumentException("Directory is not found. Id is '" + fileId + "'.");
+		}
+		downloadGdfsDirectoryToDirectory(dir, localDir, includingSourceDir);
+	}
+
+	/**
+	 * 
+	 * @param dir
+	 * @param localDir
+	 * @param includingSourceDir
+	 * @throws IOException
+	 */
+	public void downloadGdfsDirectoryToDirectory(File dir, java.io.File localDir, boolean includingSourceDir) throws IOException {
+		// Check source directory
+		if (dir == null) {
+			throw new IllegalArgumentException("dir is null.");
+		}
+		if (!GoogleDriveHelper.INSTANCE.isDirectory(dir)) {
+			throw new IllegalArgumentException("File '" + dir.getName() + "' exists, but is not a directory.");
+		}
+
+		// Check target directory
+		if (localDir == null) {
+			throw new IllegalArgumentException("localDir is null.");
+		}
+		if (!localDir.exists()) {
+			localDir.mkdirs();
+			if (!localDir.exists()) {
+				throw new IOException("Cannot create '" + localDir.getAbsolutePath() + "' directory.");
+			}
+		} else {
+			if (!localDir.isDirectory()) {
+				throw new IllegalArgumentException("Target '" + localDir.getName() + "' exists, but is not a directory.");
+			}
+		}
+
+		List<String> encounteredGdfsFileIds = new ArrayList<String>();
+
+		if (includingSourceDir) {
+			// Copy the gdfs dir into local directory
+			doDownloadGdfsDirectoryToDirectory(dir, localDir, encounteredGdfsFileIds);
+
+		} else {
+			// Copy the sub files in the gdfs dir to local directory
+			List<File> subFiles = getFiles(dir.getId(), GoogleDriveConstants.FILE_FIELDS_SIMPLE, Comparators.GoogleFileComparator.ASC);
+			for (File subFile : subFiles) {
+				doDownloadGdfsDirectoryToDirectory(subFile, localDir, encounteredGdfsFileIds);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param file
+	 * @param localDir
+	 * @param encounteredGdfsFileIds
+	 * @throws IOException
+	 */
+	protected void doDownloadGdfsDirectoryToDirectory(File file, java.io.File localDir, List<String> encounteredGdfsFileIds) throws IOException {
+		if (file == null || encounteredGdfsFileIds.contains(file.getId())) {
+			return;
+		}
+		encounteredGdfsFileIds.add(file.getId());
+
+		if (GoogleDriveHelper.INSTANCE.isDirectory(file)) {
+			// Create a dir in the local dir and copy the gdfs sub files to that dir
+			String folderName = file.getName();
+			java.io.File newLocalDir = new java.io.File(localDir, folderName);
+			if (!newLocalDir.exists()) {
+				newLocalDir.mkdirs();
+				if (!newLocalDir.exists()) {
+					throw new IOException("Cannot create '" + folderName + "' directory in '" + localDir.getAbsolutePath() + "'.");
+				}
+			} else {
+				if (!newLocalDir.isDirectory()) {
+					throw new IOException("Target '" + newLocalDir.getAbsolutePath() + "' exists, but is not a directory.");
+				}
+			}
+
+			List<File> subFiles = getFiles(file.getId(), GoogleDriveConstants.FILE_FIELDS_SIMPLE, Comparators.GoogleFileComparator.ASC);
+			for (File subFile : subFiles) {
+				doDownloadGdfsDirectoryToDirectory(subFile, newLocalDir, encounteredGdfsFileIds);
+			}
+
+		} else {
+			// Copy gdfs file into the local dir
+			downloadGdfsFileToDirectory(file, localDir);
+		}
 	}
 
 	/**
@@ -785,7 +963,7 @@ public class GoogleDriveClientV3 {
 	 */
 	public boolean delete(String fileId, boolean permanently) throws IOException {
 		Drive drive = getDrive();
-		File file = getFileById(fileId, FILE_FIELDS_ID_PARENTS);
+		File file = getFileById(fileId, GoogleDriveConstants.FILE_FIELDS_ID_PARENTS);
 		if (file != null) {
 			if (permanently) {
 				// Permanently deletes a file owned by the user without moving it to the trash.
@@ -793,12 +971,12 @@ public class GoogleDriveClientV3 {
 				drive.files().delete(fileId).execute();
 
 				if (debug) {
-					System.out.println("file is permanently deleted: " + fileId);
+					System.out.println("File is permanently deleted: " + fileId);
 				}
 				return true;
 
 			} else {
-
+				// TODO: move file to trash. don't know how to do that yet.
 			}
 		}
 		return false;

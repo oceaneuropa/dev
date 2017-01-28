@@ -10,6 +10,7 @@ Import-Package: com.google.api.services.drive.model,
  org.orbit.fs.model,
  org.orbit.fs.server.service,
  org.origin.common.adapter,
+ org.origin.common.io,
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

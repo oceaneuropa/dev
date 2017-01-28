@@ -58,7 +58,7 @@ public class GoogleDriveClientTest {
 	public void test001_listFiles() {
 		System.out.println("--- --- --- test001_listFiles() --- --- ---");
 		try {
-			String fields = GoogleDriveClientV3.FILE_FIELDS_SIMPLE;
+			String fields = GoogleDriveConstants.FILE_FIELDS_SIMPLE;
 
 			Comparators.GoogleFileComparator comparator = Comparators.GoogleFileComparator.ASC;
 
@@ -91,7 +91,7 @@ public class GoogleDriveClientTest {
 	public void test002_getFile() {
 		System.out.println("--- --- --- test002_getFile() --- --- ---");
 		try {
-			String fields = GoogleDriveClientV3.FILE_FIELDS_SIMPLE;
+			String fields = GoogleDriveConstants.FILE_FIELDS_SIMPLE;
 
 			boolean test1 = false;
 			if (test1) {
@@ -183,8 +183,8 @@ public class GoogleDriveClientTest {
 			// 1. move file from one folder to another folder
 			boolean test1 = false;
 			if (test1) {
-				File file = this.client.getFileByFullPath("Book1.xsd", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
-				File dir = this.client.getFileByFullPath("dir1", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				File file = this.client.getFileByFullPath("Book1.xsd", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+				File dir = this.client.getFileByFullPath("dir1", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 				// File dir = this.client.getFile("dir2");
 
 				if (file != null && dir != null) {
@@ -199,7 +199,7 @@ public class GoogleDriveClientTest {
 			// 2. move file from a folder to root
 			boolean test2 = false;
 			if (test2) {
-				File file = this.client.getFileByFullPath("dir2/Book1.xsd", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				File file = this.client.getFileByFullPath("dir2/Book1.xsd", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 				String driveFolderId = this.client.getDriveFolderId();
 
 				if (file != null && driveFolderId != null) {
@@ -213,8 +213,8 @@ public class GoogleDriveClientTest {
 			// 3. move a folder to another folder
 			boolean test3 = true;
 			if (test3) {
-				File dir = this.client.getFileByFullPath("dir2/test3", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
-				File dir2 = this.client.getFileByFullPath("dir1", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				File dir = this.client.getFileByFullPath("dir2/test3", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+				File dir2 = this.client.getFileByFullPath("dir1", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 
 				if (dir != null && dir != null) {
 					File movedFile = this.client.moveToFolder(dir.getId(), dir2.getId());
@@ -234,13 +234,15 @@ public class GoogleDriveClientTest {
 	public void test030_upload() {
 		System.out.println("--- --- --- test030_upload() --- --- ---");
 		try {
-			// 1. upload a local file to a google drive directory
-			boolean test1 = true;
+			Comparators.GoogleFileComparator comparator = Comparators.GoogleFileComparator.ASC;
+
+			// 1. Upload a local file to a google drive directory
+			boolean test1 = false;
 			if (test1) {
 				java.io.File localFile = new java.io.File("/Users/yayang/Downloads/google_drive_test/phone/iPhone.pdf");
-				File dir = this.client.getFileByFullPath("dir2", GoogleDriveClientV3.FILE_FIELDS_SIMPLE);
+				File dir = this.client.getFileByFullPath("dir2", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 				if (dir != null) {
-					File uploadedFile = this.client.copyLocalFileToGdfsDirectory(localFile, dir.getId(), null);
+					File uploadedFile = this.client.uploadFileToGdfsDirectory(localFile, dir.getId(), null);
 
 					if (uploadedFile != null) {
 						System.out.println("file is uploaded");
@@ -248,6 +250,26 @@ public class GoogleDriveClientTest {
 					}
 				}
 			}
+
+			// 2. Upload a local folder to a gdfs directory
+			boolean test2 = true;
+			if (test2) {
+				java.io.File localDir = new java.io.File("/Users/yayang/Downloads/google_drive_test/phone");
+
+				File dir = this.client.getFileByFullPath("dir2", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+				if (dir != null) {
+					boolean succeed = this.client.uploadDirectoryToGdfsDirectory(localDir, dir.getId(), true);
+					if (succeed) {
+						System.out.println("Directory is uploaded");
+
+						File uploadedFolder = this.client.getFileByName(dir.getId(), localDir.getName(), GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+						if (uploadedFolder != null) {
+							GoogleDriveHelper.INSTANCE.walkthrough(this.client, uploadedFolder, GoogleDriveConstants.FILE_FIELDS_SIMPLE, comparator);
+						}
+					}
+				}
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
