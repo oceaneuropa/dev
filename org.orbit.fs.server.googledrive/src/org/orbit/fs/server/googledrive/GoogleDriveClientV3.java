@@ -656,11 +656,18 @@ public class GoogleDriveClientV3 {
 		String fileName = localFile.getName();
 
 		File existingFile = getFileByName(folderId, fileName, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
-		if (existingFile != null && !existingFile.getTrashed()) {
-			// Delete existing file
+		if (existingFile == null) {
+			// target file not exists
+		} else {
+			// target file exists
 			if (debug) {
 				System.out.println("File '" + existingFile.getName() + "' already exists.");
 			}
+			if (GoogleDriveHelper.INSTANCE.isDirectory(existingFile)) {
+				throw new IOException("Target '" + existingFile.getName() + "' exists, but is a directory.");
+			}
+
+			// delete existing gdfs target file
 			delete(existingFile.getId(), true);
 		}
 
@@ -743,7 +750,7 @@ public class GoogleDriveClientV3 {
 			// Create a dir in the gdfs dir and copy the local sub files to that dir
 			String folderName = localFile.getName();
 
-			File targetDir = this.getFileByName(folderId, folderName, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+			File targetDir = getFileByName(folderId, folderName, GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 			if (targetDir == null) {
 				targetDir = createDirectory(folderId, folderName);
 				if (targetDir == null) {
@@ -780,7 +787,7 @@ public class GoogleDriveClientV3 {
 	 * @param localDir
 	 * @throws IOException
 	 */
-	public void downloadGdfsFileToDirectory(String fileId, java.io.File localDir) throws IOException {
+	public boolean downloadGdfsFileToDirectory(String fileId, java.io.File localDir) throws IOException {
 		// check source file
 		if (fileId == null) {
 			throw new IllegalArgumentException("fileId is null.");
@@ -789,7 +796,7 @@ public class GoogleDriveClientV3 {
 		if (file == null) {
 			throw new IllegalArgumentException("File is not found. Id is '" + fileId + "'.");
 		}
-		downloadGdfsFileToDirectory(file, localDir);
+		return downloadGdfsFileToDirectory(file, localDir);
 	}
 
 	/**
@@ -798,7 +805,7 @@ public class GoogleDriveClientV3 {
 	 * @param localDir
 	 * @throws IOException
 	 */
-	public void downloadGdfsFileToDirectory(File file, java.io.File localDir) throws IOException {
+	public boolean downloadGdfsFileToDirectory(File file, java.io.File localDir) throws IOException {
 		// @see https://developers.google.com/drive/v3/web/manage-downloads
 
 		// Example code1:
@@ -836,17 +843,34 @@ public class GoogleDriveClientV3 {
 
 		// check target file
 		java.io.File targetFile = new java.io.File(localDir, file.getName());
-		if (targetFile.exists() && targetFile.isDirectory()) {
-			throw new IOException("Target '" + targetFile.getAbsolutePath() + "' exists, but is a directory.");
+		if (!targetFile.exists()) {
+			// target file not exists
+		} else {
+			// target file exists
+			if (debug) {
+				System.out.println("File '" + targetFile.getAbsolutePath() + "' already exists.");
+			}
+			if (targetFile.isDirectory()) {
+				throw new IOException("Target '" + targetFile.getAbsolutePath() + "' exists, but is a directory.");
+			}
 		}
 
 		FileOutputStream outputStream = null;
 		try {
 			outputStream = new FileOutputStream(targetFile);
-			getDrive().files().export(file.getId(), null).executeMediaAndDownloadTo(outputStream);
+			getDrive().files().get(file.getId()).executeMediaAndDownloadTo(outputStream);
+			// "Export only supports Google Docs."
+			// getDrive().files().export(file.getId(), file.getMimeType()).executeMediaAndDownloadTo(outputStream);
+
+			if (debug) {
+				System.out.println("File '" + file.getName() + "' is downloaded into '" + targetFile.getAbsolutePath() + "'.");
+			}
+
 		} finally {
 			IOUtil.closeQuietly(outputStream, true);
 		}
+
+		return true;
 	}
 
 	/**
@@ -856,7 +880,7 @@ public class GoogleDriveClientV3 {
 	 * @param includingSourceDir
 	 * @throws IOException
 	 */
-	public void downloadGdfsDirectoryToDirectory(String fileId, java.io.File localDir, boolean includingSourceDir) throws IOException {
+	public boolean downloadGdfsDirectoryToDirectory(String fileId, java.io.File localDir, boolean includingSourceDir) throws IOException {
 		// Check source directory
 		if (fileId == null) {
 			throw new IllegalArgumentException("fileId is null.");
@@ -865,7 +889,7 @@ public class GoogleDriveClientV3 {
 		if (dir == null) {
 			throw new IllegalArgumentException("Directory is not found. Id is '" + fileId + "'.");
 		}
-		downloadGdfsDirectoryToDirectory(dir, localDir, includingSourceDir);
+		return downloadGdfsDirectoryToDirectory(dir, localDir, includingSourceDir);
 	}
 
 	/**
@@ -875,7 +899,7 @@ public class GoogleDriveClientV3 {
 	 * @param includingSourceDir
 	 * @throws IOException
 	 */
-	public void downloadGdfsDirectoryToDirectory(File dir, java.io.File localDir, boolean includingSourceDir) throws IOException {
+	public boolean downloadGdfsDirectoryToDirectory(File dir, java.io.File localDir, boolean includingSourceDir) throws IOException {
 		// Check source directory
 		if (dir == null) {
 			throw new IllegalArgumentException("dir is null.");
@@ -912,6 +936,8 @@ public class GoogleDriveClientV3 {
 				doDownloadGdfsDirectoryToDirectory(subFile, localDir, encounteredGdfsFileIds);
 			}
 		}
+
+		return true;
 	}
 
 	/**

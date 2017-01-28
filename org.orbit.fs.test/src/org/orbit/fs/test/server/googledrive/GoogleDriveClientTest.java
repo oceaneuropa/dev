@@ -230,12 +230,11 @@ public class GoogleDriveClientTest {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test030_upload() {
 		System.out.println("--- --- --- test030_upload() --- --- ---");
 		try {
-			Comparators.GoogleFileComparator comparator = Comparators.GoogleFileComparator.ASC;
-
 			// 1. Upload a local file to a google drive directory
 			boolean test1 = false;
 			if (test1) {
@@ -264,7 +263,7 @@ public class GoogleDriveClientTest {
 
 						File uploadedFolder = this.client.getFileByName(dir.getId(), localDir.getName(), GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 						if (uploadedFolder != null) {
-							GoogleDriveHelper.INSTANCE.walkthrough(this.client, uploadedFolder, GoogleDriveConstants.FILE_FIELDS_SIMPLE, comparator);
+							GoogleDriveHelper.INSTANCE.walkthrough(this.client, uploadedFolder, GoogleDriveConstants.FILE_FIELDS_SIMPLE, Comparators.GoogleFileComparator.ASC);
 						}
 					}
 				}
@@ -276,28 +275,41 @@ public class GoogleDriveClientTest {
 		System.out.println();
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void test040_download() {
 		System.out.println("--- --- --- test040_download() --- --- ---");
+		try {
+			// 1. download google drive file to a local directory.
+			boolean test1 = false;
+			if (test1) {
+				File file = this.client.getFileByFullPath("dir2/phone/iPhone.pdf", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+				java.io.File localDir = new java.io.File("/Users/yayang/Downloads/google_drive_test/download");
+				if (file != null) {
+					boolean succeed = this.client.downloadGdfsFileToDirectory(file, localDir);
+					if (succeed) {
+						System.out.println("File '" + file.getName() + "' is downloaded to '" + localDir.getAbsolutePath() + "'.");
+					}
+				}
+			}
 
-		// 1. download google drive file to a local directory.
-		boolean test1 = false;
-		if (test1) {
+			// 2. download google drive folder to a local directory.
+			boolean test3 = true;
+			if (test3) {
+				File dir = this.client.getFileByFullPath("dir2/phone", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
+				java.io.File localDir = new java.io.File("/Users/yayang/Downloads/google_drive_test/download");
+				if (dir != null) {
+					boolean succeed = this.client.downloadGdfsDirectoryToDirectory(dir, localDir, true);
+					if (succeed) {
+						System.out.println("Directory '" + dir.getName() + "' is downloaded to '" + localDir.getAbsolutePath() + "'.");
+					}
+				}
+			}
 
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		// 2. download google drive file to a local file.
-		boolean test2 = false;
-		if (test2) {
-
-		}
-
-		// 3. download google drive folder to a local directory.
-		boolean test3 = false;
-		if (test3) {
-
-		}
+		System.out.println();
 	}
 
 	/**
