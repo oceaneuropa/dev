@@ -14,6 +14,7 @@ public class DateUtil {
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	public static SimpleDateFormat SIMPLE_DATE_FORMAT3 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	public static SimpleDateFormat YEAR_MONTH_DAY_FORMAT1 = new SimpleDateFormat("yyyy-MM-dd");
+	public static SimpleDateFormat MONTH_DAY_YEAR_FORMAT1 = new SimpleDateFormat("MM/dd/yyyy");
 
 	public static SimpleDateFormat[] COMMON_DATE_FORMATS;
 

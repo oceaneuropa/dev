@@ -1,4 +1,4 @@
-package org.nb.mgm.client.cli;
+package org.nb.mgm.client.cli.other;
 
 import java.text.MessageFormat;
 import java.util.Arrays;

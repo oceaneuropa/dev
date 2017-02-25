@@ -1,7 +1,12 @@
+VM Arguments:
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -DORIGIN_HOME=/Users/yayang/origin -Dorg.osgi.service.http.port=9090
+
+
 Project osgi.iot.contest.sdk
 http://www.programcreek.com/java-api-examples/index.php?source_dir=osgi.iot.contest.sdk-master/osgi.enroute.gogo.extra.provider/src/osgi/enroute/gogo/extra/provider/ExtraImpl.java
 https://github.com/osgi/osgi.iot.contest.sdk.git
 http://enroute.osgi.org/trains/200-architecture.html
+
 
 Karaf
 http://grepcode.com/file/repo1.maven.org/maven2/org.ow2.chameleon.fuchsia.tools/fuchsia-gogo-shell/0.0.3/org/ow2/chameleon/fuchsia/tools/shell/util/FuchsiaGogoUtil.java#FuchsiaGogoUtil.getArgumentValue%28java.lang.String%2Cjava.lang.String%5B%5D%29
@@ -82,4 +87,89 @@ mgm:delete -metaspace 05b8cbdc-4c32-4f51-a91a-42062802d920,adbe132f-9183-41cf-98
 
 
 
+Login (ManagementLoginCommand)
+------------------------------------------------------------------------------------------------------
+login -url http://127.0.0.1:9090
+------------------------------------------------------------------------------------------------------
 
+Machine (MachineCommand)
+------------------------------------------------------------------------------------------------------
+lmachines
+// show all machines
+
+addmachine -name Machine10 -ip 127.0.0.10 -desc 'description of Machine10'
+New Machine is added. 
+
+updatemachine -machineid 0298f2f3-9319-4974-a253-afba47789d23 -name Machine10New -ip 127.0.0.11 -desc 'description of Machine10New'
+Machine is updated. 
+
+removemachine -machineid 0298f2f3-9319-4974-a253-afba47789d23
+Machine is removed.
+------------------------------------------------------------------------------------------------------
+
+Home (HomeCommand)
+------------------------------------------------------------------------------------------------------
+lhomes
+// show all homes
+
+addhome -machineid c1a9977d-4e78-4758-b889-a532afeefb04 -name Home901 -desc 'Description of Home901'
+New Home is added.
+
+updatehome -homeid a7b96aba-c93b-4b23-b534-f5044870b77e -name Home901New -desc 'Description of Home901New'
+Home is updated.
+
+lhomeproperties
+// show home properties
+
+sethomeproperty -homeid a7b96aba-c93b-4b23-b534-f5044870b77e -pname port -pvalue 9091 -ptype string
+Home property is set.
+
+sethomeproperty -homeid a7b96aba-c93b-4b23-b534-f5044870b77e -pname url -pvalue http://127.0.0.1:9090 -ptype string
+Home property is set.
+
+removehomeproperty -homeid a7b96aba-c93b-4b23-b534-f5044870b77e -pname p1
+Home property is removed.
+
+removehome -homeid a7b96aba-c93b-4b23-b534-f5044870b77e
+Home is removed.
+------------------------------------------------------------------------------------------------------
+
+Project (ProjectCommand)
+------------------------------------------------------------------------------------------------------
+lprojects
+// show projects
+
+createproject -projectid com.eclipse.project5 -name 'Eclipse Project 5' -desc 'Another test project 5'
+New Project is created.
+
+updateproject -projectid com.eclipse.project5 -name 'Eclipse Project 5New' -desc 'Another test project 5New'
+Project is updated.
+
+deleteproject -projectid com.eclipse.project5
+Project is deleted.
+------------------------------------------------------------------------------------------------------
+
+Project Home (ProjectHomeCommand)
+------------------------------------------------------------------------------------------------------
+lprojecthomes
+// show homes under projects
+
+createprojecthome -projectid project5 -name 'HomeConfig1' -desc 'Description of Home Config 1'
+createprojecthome -projectid project5 -name 'HomeConfig2' -desc 'Description of Home Config 2'
+New ProjectHome is created.
+
+updateprojecthome -projecthomeid 904064cc-6bb3-4959-b292-e1f98ac45534 -name HomeConfig1New -desc 'Description of Home Config 1New'
+updateprojecthome -projecthomeid 9c99b7be-3c56-42f1-b3a2-a0abff384877 -name HomeConfig2New -desc 'Description of Home Config 2New'
+ProjectHome is updated.
+
+deleteprojecthome -projecthomeid 648280a1-e303-4f5d-a452-5a98efa8a2c5
+ProjectHome is deleted.
+
+setdeploymenthome -projecthomeid 904064cc-6bb3-4959-b292-e1f98ac45534 -homeid 545cac85-87c9-4921-9f74-9e544baee55a
+setdeploymenthome -projecthomeid 9c99b7be-3c56-42f1-b3a2-a0abff384877 -homeid 882a4e4c-65b9-4da3-a1e6-7d658f729bb7
+Deployment Home is set.
+
+removedeploymenthome -projecthomeid 904064cc-6bb3-4959-b292-e1f98ac45534 -homeid 545cac85-87c9-4921-9f74-9e544baee55a
+removedeploymenthome -projecthomeid 9c99b7be-3c56-42f1-b3a2-a0abff384877 -homeid 882a4e4c-65b9-4da3-a1e6-7d658f729bb7
+Deployment Home is removed.
+------------------------------------------------------------------------------------------------------

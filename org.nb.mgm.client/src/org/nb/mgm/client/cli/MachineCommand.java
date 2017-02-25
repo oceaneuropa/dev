@@ -26,7 +26,7 @@ public class MachineCommand implements Annotated {
 	protected BundleContext bundleContext;
 
 	@Dependency
-	protected ManagementClient management;
+	protected ManagementClient mgmClient;
 
 	/**
 	 * 
@@ -74,14 +74,14 @@ public class MachineCommand implements Annotated {
 			// Options
 			@Descriptor("List with detailed information of each Machine") @Parameter(names = { "-all", "--all" }, absentValue = "false", presentValue = "true") boolean all //
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
 
 		all = true;
 
-		List<IMachine> machines = this.management.getMachines(null);
+		List<IMachine> machines = this.mgmClient.getMachines(null);
 		if (all) {
 			List<String[]> items = new ArrayList<String[]>();
 			for (IMachine machine : machines) {
@@ -150,7 +150,7 @@ public class MachineCommand implements Annotated {
 			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ipAddress" }, absentValue = "") String ipAddress, // required
 			@Descriptor("Machine Description") @Parameter(names = { "-desc", "--description" }, absentValue = "") String description // optional
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -168,7 +168,7 @@ public class MachineCommand implements Annotated {
 				return;
 			}
 
-			IMachine newMachine = this.management.addMachine(name, ipAddress, description);
+			IMachine newMachine = this.mgmClient.addMachine(name, ipAddress, description);
 			if (newMachine != null) {
 				System.out.println("New Machine is added. ");
 			} else {
@@ -195,7 +195,7 @@ public class MachineCommand implements Annotated {
 			@Descriptor("New Machine name") @Parameter(names = { "-ip", "--ipAddress" }, absentValue = "null") String newIpAddress, // optional
 			@Descriptor("New Machine description") @Parameter(names = { "-desc", "--description" }, absentValue = "null") String newMachineDescription // optional
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -207,7 +207,7 @@ public class MachineCommand implements Annotated {
 		}
 
 		try {
-			IMachine machine = this.management.getMachine(machineId);
+			IMachine machine = this.mgmClient.getMachine(machineId);
 			if (machine == null) {
 				System.out.println("Machine is not found.");
 				return;
@@ -255,7 +255,7 @@ public class MachineCommand implements Annotated {
 			// Parameters
 			@Descriptor("Machine ID") @Parameter(names = { "-machineid", "--machineId" }, absentValue = "") String machineId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -267,7 +267,7 @@ public class MachineCommand implements Annotated {
 				return;
 			}
 
-			boolean succeed = this.management.removeMachine(machineId);
+			boolean succeed = this.mgmClient.removeMachine(machineId);
 			if (succeed) {
 				System.out.println("Machine is removed. ");
 			} else {

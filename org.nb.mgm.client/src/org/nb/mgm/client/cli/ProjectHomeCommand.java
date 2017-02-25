@@ -30,7 +30,7 @@ public class ProjectHomeCommand implements Annotated {
 	protected ServiceRegistration<?> registration;
 
 	@Dependency
-	protected ManagementClient management;
+	protected ManagementClient mgmClient;
 
 	/**
 	 * 
@@ -96,14 +96,14 @@ public class ProjectHomeCommand implements Annotated {
 			// parameters
 			@Descriptor("Project ID") @Parameter(names = { "-projectid", "--projectId" }, absentValue = "") String projectId // optional
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
 
 		List<IProjectHome> projectHomes = new ArrayList<IProjectHome>();
 
-		List<IProject> projects = this.management.getProjects();
+		List<IProject> projects = this.mgmClient.getProjects();
 		for (IProject project : projects) {
 			String currProjectId = project.getId();
 			if ("".equals(projectId) || currProjectId.equals(projectId)) {
@@ -158,7 +158,7 @@ public class ProjectHomeCommand implements Annotated {
 			@Descriptor("ProjectHome Name") @Parameter(names = { "-name", "--name" }, absentValue = "") String name, // required
 			@Descriptor("ProjectHome Description") @Parameter(names = { "-desc", "--description" }, absentValue = "") String description // optional
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -176,7 +176,7 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			IProject project = this.management.getProject(projectId);
+			IProject project = this.mgmClient.getProject(projectId);
 			if (project == null) {
 				System.out.println("Project cannot be found.");
 				return;
@@ -212,7 +212,7 @@ public class ProjectHomeCommand implements Annotated {
 			@Descriptor("New ProjectHome name") @Parameter(names = { "-name", "--name" }, absentValue = "null") String newProjectHomeName, // optional
 			@Descriptor("New ProjectHome description") @Parameter(names = { "-desc", "--description" }, absentValue = "null") String newProjectHomeDescription // optional
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -232,9 +232,9 @@ public class ProjectHomeCommand implements Annotated {
 		try {
 			IProjectHome projectHome = null;
 			if ("".equals(projectId)) {
-				projectHome = this.management.getProjectHome(projectHomeId);
+				projectHome = this.mgmClient.getProjectHome(projectHomeId);
 			} else {
-				projectHome = this.management.getProjectHome(projectId, projectHomeId);
+				projectHome = this.mgmClient.getProjectHome(projectId, projectHomeId);
 			}
 			if (projectHome == null) {
 				System.out.println("ProjectHome is not found.");
@@ -270,7 +270,7 @@ public class ProjectHomeCommand implements Annotated {
 	/**
 	 * Delete a ProjectHome.
 	 * 
-	 * Command: deleteprojecthome -projectid <projectId> -projecthomeid <projectHomeId>
+	 * Command: deleteprojecthome [-projectid <projectId>] -projecthomeid <projectHomeId>
 	 * 
 	 * @param projectId
 	 * @param projectHomeId
@@ -280,7 +280,7 @@ public class ProjectHomeCommand implements Annotated {
 			// Parameters
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -292,7 +292,7 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			boolean succeed = this.management.deleteProjectHome(projectHomeId);
+			boolean succeed = this.mgmClient.deleteProjectHome(projectHomeId);
 			if (succeed) {
 				System.out.println("ProjectHome is deleted. ");
 			} else {
@@ -307,6 +307,8 @@ public class ProjectHomeCommand implements Annotated {
 	/**
 	 * Set ProjectHome's Deployment Home.
 	 * 
+	 * Command: setdeploymenthome -projecthomeid <projectHomeId> -homeid <homeId>
+	 * 
 	 * @param projectHomeId
 	 * @param homeId
 	 */
@@ -316,7 +318,7 @@ public class ProjectHomeCommand implements Annotated {
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId, // required
 			@Descriptor("Home ID") @Parameter(names = { "-homeid", "--homeId" }, absentValue = "") String homeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -333,13 +335,13 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			IProjectHome projectHome = this.management.getProjectHome(projectHomeId);
+			IProjectHome projectHome = this.mgmClient.getProjectHome(projectHomeId);
 			if (projectHome == null) {
 				System.out.println("ProjectHome is not found.");
 				return;
 			}
 
-			IHome home = this.management.getHome(homeId);
+			IHome home = this.mgmClient.getHome(homeId);
 			if (home == null) {
 				System.out.println("Home is not found.");
 				return;
@@ -359,6 +361,8 @@ public class ProjectHomeCommand implements Annotated {
 	/**
 	 * Remove ProjectHome's Deployment Home.
 	 * 
+	 * Command: removedeploymenthome -projecthomeid <projectHomeId> -homeid <homeId>
+	 * 
 	 * @param projectHomeId
 	 * @param homeId
 	 */
@@ -368,7 +372,7 @@ public class ProjectHomeCommand implements Annotated {
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId, // required
 			@Descriptor("Home ID") @Parameter(names = { "-homeid", "--homeId" }, absentValue = "") String homeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -385,13 +389,13 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			IProjectHome projectHome = this.management.getProjectHome(projectHomeId);
+			IProjectHome projectHome = this.mgmClient.getProjectHome(projectHomeId);
 			if (projectHome == null) {
 				System.out.println("ProjectHome is not found.");
 				return;
 			}
 
-			IHome home = this.management.getHome(homeId);
+			IHome home = this.mgmClient.getHome(homeId);
 			if (home == null) {
 				System.out.println("Home is not found.");
 				return;
@@ -419,7 +423,7 @@ public class ProjectHomeCommand implements Annotated {
 			// Parameters
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -431,7 +435,7 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			HomeAgent agent = this.mgmClient.getHomeAgent(projectHomeId);
 			if (agent.isConnected()) {
 				System.out.println("Already connected.");
 				return;
@@ -454,7 +458,7 @@ public class ProjectHomeCommand implements Annotated {
 			// Parameters
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -466,7 +470,7 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			HomeAgent agent = this.mgmClient.getHomeAgent(projectHomeId);
 			if (!agent.isConnected()) {
 				System.out.println("Already disconnected.");
 				return;
@@ -485,7 +489,7 @@ public class ProjectHomeCommand implements Annotated {
 			// Parameters
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -497,7 +501,7 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			HomeAgent agent = this.mgmClient.getHomeAgent(projectHomeId);
 			if (!agent.isConnected()) {
 				System.out.println("Connection is not open.");
 				return;
@@ -520,7 +524,7 @@ public class ProjectHomeCommand implements Annotated {
 			// Parameters
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -532,7 +536,7 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			IProjectHome projectHome = this.management.getProjectHome(projectHomeId);
+			IProjectHome projectHome = this.mgmClient.getProjectHome(projectHomeId);
 			if (projectHome == null) {
 				System.out.println("ProjectHome is not found.");
 				return;
@@ -540,7 +544,7 @@ public class ProjectHomeCommand implements Annotated {
 
 			// String projectId = projectHome.getProject().getId();
 
-			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			HomeAgent agent = this.mgmClient.getHomeAgent(projectHomeId);
 			if (!agent.isConnected()) {
 				System.out.println("Connection is not open.");
 				return;
@@ -558,7 +562,7 @@ public class ProjectHomeCommand implements Annotated {
 			// Parameters
 			@Descriptor("ProjectHome ID") @Parameter(names = { "-projecthomeid", "--projectHomeId" }, absentValue = "") String projectHomeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -570,13 +574,13 @@ public class ProjectHomeCommand implements Annotated {
 				return;
 			}
 
-			IProjectHome projectHome = this.management.getProjectHome(projectHomeId);
+			IProjectHome projectHome = this.mgmClient.getProjectHome(projectHomeId);
 			if (projectHome == null) {
 				System.out.println("ProjectHome is not found.");
 				return;
 			}
 
-			HomeAgent agent = this.management.getHomeAgent(projectHomeId);
+			HomeAgent agent = this.mgmClient.getHomeAgent(projectHomeId);
 			if (!agent.isConnected()) {
 				System.out.println("Connection is not open.");
 				return;

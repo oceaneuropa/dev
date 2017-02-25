@@ -9,16 +9,16 @@ import org.nb.mgm.client.api.ManagementFactory;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.osgi.framework.BundleContext;
 
-public class ManagementLoginCommand {
+public class LoginCommand {
 
 	protected BundleContext bundleContext;
-	protected ManagementClient management;
+	protected ManagementClient mgmClient;
 
 	/**
 	 * 
 	 * @param bundleContext
 	 */
-	public ManagementLoginCommand(BundleContext bundleContext) {
+	public LoginCommand(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
@@ -28,13 +28,13 @@ public class ManagementLoginCommand {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "nb");
 		props.put("osgi.command.function", new String[] { "login", "logout" });
-		OSGiServiceUtil.register(this.bundleContext, ManagementLoginCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, LoginCommand.class.getName(), this, props);
 	}
 
 	public void stop() {
 		System.out.println("LoginCommand.stop()");
 
-		OSGiServiceUtil.unregister(ManagementLoginCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(LoginCommand.class.getName(), this);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class ManagementLoginCommand {
 			@Descriptor("username") @Parameter(names = { "-u", "--username" }, absentValue = "") String username, //
 			@Descriptor("password") @Parameter(names = { "-p", "--password" }, absentValue = "") String password //
 	) {
-		if (this.management != null) {
+		if (this.mgmClient != null) {
 			System.out.println("Login already.");
 			return;
 		}
@@ -71,14 +71,14 @@ public class ManagementLoginCommand {
 			// return;
 		}
 
-		ManagementClient oldManagement = this.management;
+		ManagementClient oldManagement = this.mgmClient;
 		ManagementClient newManagement = ManagementFactory.createManagement(url, username, password);
 		if (newManagement != null) {
 			if (oldManagement != null) {
 				OSGiServiceUtil.unregister(oldManagement);
 			}
 			OSGiServiceUtil.register(this.bundleContext, ManagementClient.class.getName(), newManagement);
-			this.management = newManagement;
+			this.mgmClient = newManagement;
 
 			System.out.println("Login successfully.");
 		} else {
@@ -94,13 +94,13 @@ public class ManagementLoginCommand {
 	 */
 	@Descriptor("logout")
 	public void logout() {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Logout already.");
 			return;
 		}
 
-		OSGiServiceUtil.unregister(ManagementClient.class.getName(), this.management);
-		this.management = null;
+		OSGiServiceUtil.unregister(ManagementClient.class.getName(), this.mgmClient);
+		this.mgmClient = null;
 		System.out.println("Logout successfully.");
 	}
 

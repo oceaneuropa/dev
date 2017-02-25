@@ -21,7 +21,7 @@ import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 
-public class HomeCommand implements Annotated {
+public class MachineHomeCommand implements Annotated {
 
 	protected static String[] HOME_TITLES = new String[] { "ID", "Name", "Description" };
 	protected static String[] HOME_TITLES_ALL = new String[] { "Machine", "ID", "Name", "Description", "Properties" };
@@ -31,13 +31,13 @@ public class HomeCommand implements Annotated {
 	protected BundleContext bundleContext;
 
 	@Dependency
-	protected ManagementClient management;
+	protected ManagementClient mgmClient;
 
 	/**
 	 * 
 	 * @param bundleContext
 	 */
-	public HomeCommand(BundleContext bundleContext) {
+	public MachineHomeCommand(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
@@ -47,14 +47,14 @@ public class HomeCommand implements Annotated {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "nb");
 		props.put("osgi.command.function", new String[] { "lhomes", "addhome", "updatehome", "removehome", "lhomeproperties", "sethomeproperty", "removehomeproperty" });
-		OSGiServiceUtil.register(this.bundleContext, HomeCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, MachineHomeCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
 	public void stop() {
 		System.out.println("HomeCommand.stop()");
 
-		OSGiServiceUtil.unregister(HomeCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(MachineHomeCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
@@ -83,7 +83,7 @@ public class HomeCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineid", "--machineId" }, absentValue = "") String machineId, // optional
 			@Descriptor("Home ID") @Parameter(names = { "-homeid", "--homeId" }, absentValue = "") String homeId // optional
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -92,7 +92,7 @@ public class HomeCommand implements Annotated {
 
 		List<IHome> homes = new ArrayList<IHome>();
 
-		List<IMachine> machines = this.management.getMachines();
+		List<IMachine> machines = this.mgmClient.getMachines();
 		for (IMachine machine : machines) {
 			String currMachineId = machine.getId();
 			if ("".equals(machineId) || currMachineId.equals(machineId)) {
@@ -201,7 +201,7 @@ public class HomeCommand implements Annotated {
 			@Descriptor("Home Name") @Parameter(names = { "-name", "--name" }, absentValue = "") String name, // required
 			@Descriptor("Home Description") @Parameter(names = { "-desc", "--description" }, absentValue = "") String description // optional
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -218,7 +218,7 @@ public class HomeCommand implements Annotated {
 			return;
 		}
 
-		IMachine machine = this.management.getMachine(machineId);
+		IMachine machine = this.mgmClient.getMachine(machineId);
 		if (machine == null) {
 			System.out.println("Machine cannot be found.");
 			return;
@@ -235,7 +235,7 @@ public class HomeCommand implements Annotated {
 	/**
 	 * Update Home information.
 	 * 
-	 * Command: updatehome -machineid <machineId> -homeid <homeId> -name <newHomeName> -desc <newHomeDescription>
+	 * Command: updatehome [-machineid <machineId>] -homeid <homeId> -name <newHomeName> -desc <newHomeDescription>
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -250,7 +250,7 @@ public class HomeCommand implements Annotated {
 			@Descriptor("New Home name") @Parameter(names = { "-name", "--name" }, absentValue = "null") String newHomeName, // optional
 			@Descriptor("New Home description") @Parameter(names = { "-desc", "--description" }, absentValue = "null") String newHomeDescription // optional
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -269,9 +269,9 @@ public class HomeCommand implements Annotated {
 
 		IHome home = null;
 		if ("".equals(machineId)) {
-			home = this.management.getHome(homeId);
+			home = this.mgmClient.getHome(homeId);
 		} else {
-			home = this.management.getHome(machineId, homeId);
+			home = this.mgmClient.getHome(machineId, homeId);
 		}
 		if (home == null) {
 			System.out.println("Home is not found.");
@@ -303,7 +303,7 @@ public class HomeCommand implements Annotated {
 	/**
 	 * Remove a Home.
 	 * 
-	 * Command: removehome -machineid <machineId> -homeid <homeId>
+	 * Command: removehome [-machineid <machineId>] -homeid <homeId>
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -314,7 +314,7 @@ public class HomeCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineid", "--machineId" }, absentValue = "") String machineId, // optional
 			@Descriptor("Home ID") @Parameter(names = { "-homeid", "--homeId" }, absentValue = "") String homeId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -329,10 +329,10 @@ public class HomeCommand implements Annotated {
 			boolean succeed = false;
 			if ("".equals(machineId)) {
 				// machineId is not specified
-				succeed = this.management.removeHome(homeId);
+				succeed = this.mgmClient.removeHome(homeId);
 			} else {
 				// machineId is specified
-				succeed = this.management.removeHome(machineId, homeId);
+				succeed = this.mgmClient.removeHome(machineId, homeId);
 			}
 
 			if (succeed) {
@@ -359,14 +359,14 @@ public class HomeCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineid", "--machineId" }, absentValue = "") String machineId, // optional
 			@Descriptor("Home ID") @Parameter(names = { "-homeid", "--homeId" }, absentValue = "") String homeId // optional
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
 
 		List<IHome> homes = new ArrayList<IHome>();
 
-		List<IMachine> machines = this.management.getMachines();
+		List<IMachine> machines = this.mgmClient.getMachines();
 		for (IMachine machine : machines) {
 			String currMachineId = machine.getId();
 			if ("".equals(machineId) || currMachineId.equals(machineId)) {
@@ -445,7 +445,7 @@ public class HomeCommand implements Annotated {
 	/**
 	 * Set Home property
 	 * 
-	 * Command: sethomeproperty -machineid <machineId> -homeid <homeId> -pname <propertyName> -pvalue <propertyValue> -ptype <propertyType>
+	 * Command: sethomeproperty [-machineid <machineId>] -homeid <homeId> -pname <propertyName> -pvalue <propertyValue> -ptype <propertyType>
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -464,7 +464,7 @@ public class HomeCommand implements Annotated {
 			@Descriptor("Property Value") @Parameter(names = { "-pvalue", "--propertyValue" }, absentValue = "") String propertyValue, // optional
 			@Descriptor("Property Type") @Parameter(names = { "-ptype", "--propertyType" }, absentValue = "string") String propertyType // optional
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -483,9 +483,9 @@ public class HomeCommand implements Annotated {
 
 		IHome home = null;
 		if ("".equals(machineId)) {
-			home = this.management.getHome(homeId);
+			home = this.mgmClient.getHome(homeId);
 		} else {
-			home = this.management.getHome(machineId, homeId);
+			home = this.mgmClient.getHome(machineId, homeId);
 		}
 		if (home == null) {
 			System.out.println("Home is not found.");
@@ -504,7 +504,7 @@ public class HomeCommand implements Annotated {
 	/**
 	 * Remove Home property
 	 * 
-	 * Command: removehomeproperty -machineid <machineId> -homeid <homeId> -pname <propertyName>
+	 * Command: removehomeproperty [-machineid <machineId>] -homeid <homeId> -pname <propertyName>
 	 * 
 	 * @param machineId
 	 * @param homeId
@@ -518,7 +518,7 @@ public class HomeCommand implements Annotated {
 			@Descriptor("Home ID") @Parameter(names = { "-homeid", "--homeId" }, absentValue = "") String homeId, // required
 			@Descriptor("Property Name") @Parameter(names = { "-pname", "--propertyName" }, absentValue = "") String propertyName // required
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -537,9 +537,9 @@ public class HomeCommand implements Annotated {
 
 		IHome home = null;
 		if ("".equals(machineId)) {
-			home = this.management.getHome(homeId);
+			home = this.mgmClient.getHome(homeId);
 		} else {
-			home = this.management.getHome(machineId, homeId);
+			home = this.mgmClient.getHome(machineId, homeId);
 		}
 		if (home == null) {
 			System.out.println("Home is not found.");

@@ -2,14 +2,14 @@ package org.nb.mgm.client;
 
 import org.nb.home.client.cli.HomeAgentCommand;
 import org.nb.home.client.cli.HomeLoginCommand;
-import org.nb.mgm.client.cli.HomeCommand;
+import org.nb.mgm.client.cli.MachineHomeCommand;
 import org.nb.mgm.client.cli.MachineCommand;
-import org.nb.mgm.client.cli.ManagementCommand;
-import org.nb.mgm.client.cli.ManagementLoginCommand;
+import org.nb.mgm.client.cli.LoginCommand;
 import org.nb.mgm.client.cli.ProjectCommand;
 import org.nb.mgm.client.cli.ProjectHomeCommand;
 import org.nb.mgm.client.cli.ProjectNodeCommand;
 import org.nb.mgm.client.cli.ProjectSoftwareCommand;
+import org.nb.mgm.client.cli.other.ManagementCommand;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -18,9 +18,9 @@ public class Activator implements BundleActivator {
 	private static BundleContext context;
 
 	protected ManagementCommand mgmCommand;
-	protected ManagementLoginCommand loginCommand;
+	protected LoginCommand loginCommand;
 	protected MachineCommand machineCommand;
-	protected HomeCommand homeCommand;
+	protected MachineHomeCommand homeCommand;
 	protected ProjectCommand projectCommand;
 	protected ProjectHomeCommand projectHomeCommand;
 	protected ProjectNodeCommand projectNodeCommand;
@@ -42,7 +42,7 @@ public class Activator implements BundleActivator {
 		this.mgmCommand.start();
 
 		// Start Login command
-		this.loginCommand = new ManagementLoginCommand(bundleContext);
+		this.loginCommand = new LoginCommand(bundleContext);
 		this.loginCommand.start();
 
 		// Start Machine command
@@ -50,7 +50,7 @@ public class Activator implements BundleActivator {
 		this.machineCommand.start();
 
 		// Start Home command
-		this.homeCommand = new HomeCommand(bundleContext);
+		this.homeCommand = new MachineHomeCommand(bundleContext);
 		this.homeCommand.start();
 
 		// Start Project command

@@ -29,7 +29,7 @@ public class ProjectCommand implements Annotated {
 	protected ServiceRegistration<?> registration;
 
 	@Dependency
-	protected ManagementClient management;
+	protected ManagementClient mgmClient;
 
 	/**
 	 * 
@@ -84,14 +84,14 @@ public class ProjectCommand implements Annotated {
 			// Options
 			@Descriptor("List with detailed information of each Project") @Parameter(names = { "-all", "--all" }, absentValue = "false", presentValue = "true") boolean all //
 	) throws ClientException {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
 
 		all = true;
 
-		List<IProject> projects = this.management.getProjects();
+		List<IProject> projects = this.mgmClient.getProjects();
 		if (all) {
 			List<String[]> items = new ArrayList<String[]>();
 			for (IProject project : projects) {
@@ -166,7 +166,7 @@ public class ProjectCommand implements Annotated {
 	/**
 	 * Create a Project.
 	 * 
-	 * Command: createproject -id <projectId> -name <projectName> -desc <projectDescription>
+	 * Command: createproject -projectid <projectId> -name <projectName> -desc <projectDescription>
 	 * 
 	 * @param projectId
 	 * @param name
@@ -179,7 +179,7 @@ public class ProjectCommand implements Annotated {
 			@Descriptor("Project Name") @Parameter(names = { "-name", "--name" }, absentValue = "") String name, // required
 			@Descriptor("Project Description") @Parameter(names = { "-desc", "--description" }, absentValue = "") String description // optional
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -197,7 +197,7 @@ public class ProjectCommand implements Annotated {
 				return;
 			}
 
-			IProject newProject = this.management.addProject(projectId, name, description);
+			IProject newProject = this.mgmClient.addProject(projectId, name, description);
 			if (newProject != null) {
 				System.out.println("New Project is created. ");
 			} else {
@@ -223,7 +223,7 @@ public class ProjectCommand implements Annotated {
 			@Descriptor("New project name") @Parameter(names = { "-name", "--name" }, absentValue = "null") String newProjectName, // optional
 			@Descriptor("New project description") @Parameter(names = { "-desc", "--description" }, absentValue = "null") String newProjectDescription // optional
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -235,7 +235,7 @@ public class ProjectCommand implements Annotated {
 		}
 
 		try {
-			IProject project = this.management.getProject(projectId);
+			IProject project = this.mgmClient.getProject(projectId);
 			if (project == null) {
 				System.out.println("Project is not found.");
 				return;
@@ -279,7 +279,7 @@ public class ProjectCommand implements Annotated {
 			// Parameters
 			@Descriptor("Project ID") @Parameter(names = { "-projectid", "--projectId" }, absentValue = "") String projectId // required
 	) {
-		if (this.management == null) {
+		if (this.mgmClient == null) {
 			System.out.println("Please login first.");
 			return;
 		}
@@ -291,7 +291,7 @@ public class ProjectCommand implements Annotated {
 				return;
 			}
 
-			boolean succeed = this.management.deleteProject(projectId);
+			boolean succeed = this.mgmClient.deleteProject(projectId);
 			if (succeed) {
 				System.out.println("Project is deleted. ");
 			} else {
