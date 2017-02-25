@@ -50,8 +50,8 @@ public class DrawReader {
 	 * @return
 	 */
 	protected Draw convertToDraw(String line) {
-		String[] segments = line.split(" ");
-		if (segments == null || segments.length < 8) {
+		String[] segments = line.split("\\s+");
+		if (segments == null || segments.length < 7) {
 			System.err.println("convertToDraw() invalid line: " + line);
 			return null;
 		}
@@ -74,7 +74,21 @@ public class DrawReader {
 			int num5 = Integer.parseInt(num5Str);
 			int pb = Integer.parseInt(pbStr);
 
-			Draw draw = new Draw(date, num1, num2, num3, num4, num5, pb);
+			List<Integer> nums = new ArrayList<Integer>();
+			nums.add(num1);
+			nums.add(num2);
+			nums.add(num3);
+			nums.add(num4);
+			nums.add(num5);
+			Collections.sort(nums);
+
+			int newNum1 = nums.get(0);
+			int newNum2 = nums.get(1);
+			int newNum3 = nums.get(2);
+			int newNum4 = nums.get(3);
+			int newNum5 = nums.get(4);
+
+			Draw draw = new Draw(date, newNum1, newNum2, newNum3, newNum4, newNum5, pb);
 			return draw;
 
 		} catch (Exception e) {

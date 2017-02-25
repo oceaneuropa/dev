@@ -2,6 +2,8 @@ package org.plutus.lottery.powerball;
 
 import java.util.Date;
 
+import org.origin.common.util.DateUtil;
+
 public class Draw {
 
 	protected Date date;
@@ -104,24 +106,31 @@ public class Draw {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
+
 		Draw other = (Draw) obj;
 		if (date == null) {
-			if (other.date != null)
+			if (other.date != null) {
 				return false;
-		} else if (!date.equals(other.date))
+			}
+		} else if (!date.equals(other.date)) {
 			return false;
+		}
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Draw [date=" + date + ", num1=" + num1 + ", num2=" + num2 + ", num3=" + num3 + ", num4=" + num4 + ", num5=" + num5 + ", pb=" + pb + "]";
+		String dateStr = date != null ? DateUtil.toString(date, DateUtil.MONTH_DAY_YEAR_FORMAT1) : "null";
+		return "Draw [date=" + dateStr + ", num1=" + num1 + ", num2=" + num2 + ", num3=" + num3 + ", num4=" + num4 + ", num5=" + num5 + ", pb=" + pb + "]";
 	}
 
 }
