@@ -51,4 +51,43 @@ public class BigDecimalUtil {
 		return result;
 	}
 
+	/**
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static double rounding(double value) {
+		return rounding(value, 2);
+	}
+
+	/**
+	 * 
+	 * @param value
+	 * @param scale
+	 * @return
+	 */
+	public static double rounding(double value, int scale) {
+		return toBigDecimal(value, scale, RoundingMode.HALF_UP).doubleValue();
+	}
+
+	/**
+	 * 
+	 * @param value
+	 * @param scale
+	 * @return
+	 */
+	public static float rounding(float value) {
+		return rounding(value, 2);
+	}
+
+	/**
+	 * 
+	 * @param value
+	 * @param scale
+	 * @return
+	 */
+	public static float rounding(float value, int scale) {
+		return toBigDecimal(value, scale, RoundingMode.HALF_UP).floatValue();
+	}
+
 }

@@ -14,6 +14,8 @@ public class Draw {
 	protected int num5;
 	protected int pb;
 
+	protected DrawStat stat;
+
 	/**
 	 * 
 	 */
@@ -44,8 +46,25 @@ public class Draw {
 		return date;
 	}
 
+	public String getDateString() {
+		String dateStr = this.date != null ? DateUtil.toString(this.date, DateUtil.MONTH_DAY_YEAR_FORMAT1) : "null";
+		return dateStr;
+	}
+
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getNumsString(boolean includePb) {
+		if (includePb) {
+			return addSpace(num1) + num1 + ", " + addSpace(num2) + num2 + ", " + addSpace(num3) + num3 + ", " + addSpace(num4) + num4 + ", " + addSpace(num5) + num5 + "  " + addSpace(pb) + pb;
+		} else {
+			return addSpace(num1) + num1 + ", " + addSpace(num2) + num2 + ", " + addSpace(num3) + num3 + ", " + addSpace(num4) + num4 + ", " + addSpace(num5) + num5;
+		}
+	}
+
+	protected String addSpace(int num) {
+		return num < 10 ? " " : "";
 	}
 
 	public int getNum1() {
@@ -96,6 +115,17 @@ public class Draw {
 		this.pb = pb;
 	}
 
+	public synchronized DrawStat getStat() {
+		if (this.stat == null) {
+			this.stat = new DrawStat();
+		}
+		return this.stat;
+	}
+
+	public synchronized void setStat(DrawStat stat) {
+		this.stat = stat;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -129,7 +159,7 @@ public class Draw {
 
 	@Override
 	public String toString() {
-		String dateStr = date != null ? DateUtil.toString(date, DateUtil.MONTH_DAY_YEAR_FORMAT1) : "null";
+		String dateStr = getDateString();
 		return "Draw [date=" + dateStr + ", num1=" + num1 + ", num2=" + num2 + ", num3=" + num3 + ", num4=" + num4 + ", num5=" + num5 + ", pb=" + pb + "]";
 	}
 

@@ -1,5 +1,7 @@
 package org.plutus.lottery.powerball;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -9,8 +11,31 @@ import java.util.List;
 
 import org.origin.common.io.IOUtil;
 import org.origin.common.util.DateUtil;
+import org.plutus.lottery.common.Comparators;
 
 public class DrawReader {
+
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static List<Draw> read(File file) throws IOException {
+		List<Draw> draws = null;
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(file);
+			DrawReader reader = new DrawReader();
+			draws = reader.read(fis);
+		} finally {
+			IOUtil.closeQuietly(fis, true);
+		}
+		if (draws == null) {
+			draws = Collections.emptyList();
+		}
+		return draws;
+	}
 
 	public DrawReader() {
 	}

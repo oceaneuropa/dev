@@ -1,8 +1,10 @@
-package org.plutus.lottery.powerball;
+package org.plutus.lottery.common;
 
 import java.util.Date;
 
 import org.origin.common.util.BaseComparator;
+import org.plutus.lottery.powerball.Draw;
+import org.plutus.lottery.powerball.StatUpdater;
 
 public class Comparators {
 
@@ -46,6 +48,33 @@ public class Comparators {
 					return date1.compareTo(date2);
 				}
 			}
+		}
+	}
+
+	public static class StatUpdaterComparator extends BaseComparator<StatUpdater> {
+		public static StatUpdaterComparator ASC = new StatUpdaterComparator(SORT_ASC);
+		public static StatUpdaterComparator DESC = new StatUpdaterComparator(SORT_DESC);
+
+		public StatUpdaterComparator() {
+			this(SORT_ASC);
+		}
+
+		public StatUpdaterComparator(String sort) {
+			this.sort = check(sort);
+		}
+
+		@Override
+		public int compare(StatUpdater o1, StatUpdater o2) {
+			if (desc()) {
+				StatUpdater tmp = o1;
+				o1 = o2;
+				o2 = tmp;
+			}
+
+			int priority1 = o1.getPriority();
+			int priority2 = o2.getPriority();
+
+			return priority1 - priority2;
 		}
 	}
 
