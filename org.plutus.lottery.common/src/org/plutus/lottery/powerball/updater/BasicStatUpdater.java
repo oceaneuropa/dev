@@ -43,27 +43,18 @@ public class BasicStatUpdater implements StatUpdater {
 			int n5 = draw.getNum5();
 
 			// ----------------------------------------------------
-			// 最大值 中值
+			// 最小值 最大值 中值
 			// ----------------------------------------------------
 			int min = n1;
 			int mid = n3;
 			int max = n5;
-			stat.set(DrawStat.PROP_MIN, min);
-			stat.set(DrawStat.PROP_MID, mid);
-			stat.set(DrawStat.PROP_MAX, max);
 
 			// ----------------------------------------------------
 			// 加和 均值
 			// ----------------------------------------------------
 			int sum = StatUtil.sum(n1, n2, n3, n4, n5);
-			// int avg = (int) (sum / 5);
 			int avg = (int) StatUtil.avg(2, n1, n2, n3, n4, n5);
-			int avgToMidPercent = StatUtil.normalizeByPercenaget(avg, mid);
-
-			stat.set(DrawStat.PROP_SUM, sum);
-			stat.set(DrawStat.PROP_AVG, avg);
-			stat.set(DrawStat.PROP_AVG_VS_MID_BY_PERCENTAGE, avgToMidPercent);
-			stat.set(DrawStat.PROP_AVG_VS_MID_BY_PERCENTAGE_ZERO_BASED, avgToMidPercent - 100);
+			int avgToMidPercent = StatUtil.normalizeByPercentage(avg, mid, 100);
 
 			// ----------------------------------------------------
 			// 奇数个数 偶数个数
@@ -95,8 +86,6 @@ public class BasicStatUpdater implements StatUpdater {
 			} else {
 				oddCount++;
 			}
-			stat.set(DrawStat.PROP_ODD_COUNT, oddCount);
-			stat.set(DrawStat.PROP_EVEN_COUNT, evenCount);
 
 			// ----------------------------------------------------
 			// 间距均值
@@ -106,7 +95,20 @@ public class BasicStatUpdater implements StatUpdater {
 			int dist3 = n4 - n3;
 			int dist4 = n5 - n4;
 			int dist_avg = (int) StatUtil.avg(2, dist1, dist2, dist3, dist4);
-			stat.set(DrawStat.PROP_DISTANCE_AVG, dist_avg);
+
+			// ----------------------------------------------------
+			// 保存统计结果
+			// ----------------------------------------------------
+			stat.set(DrawStat.PROP_MIN, min);
+			stat.set(DrawStat.PROP_MID, mid);
+			stat.set(DrawStat.PROP_MAX, max);
+			stat.set(DrawStat.PROP_SUM, sum);
+			stat.set(DrawStat.PROP_AVG, avg);
+			stat.set(DrawStat.PROP_AVG_VS_MID_BY_PERCENTAGE, avgToMidPercent);
+			stat.set(DrawStat.PROP_AVG_VS_MID_BY_PERCENTAGE_ZERO_BASED, avgToMidPercent - 100);
+			stat.set(DrawStat.PROP_ODD_COUNT, oddCount);
+			stat.set(DrawStat.PROP_EVEN_COUNT, evenCount);
+			stat.set(DrawStat.PROP_DIST_AVG, dist_avg);
 		}
 	}
 

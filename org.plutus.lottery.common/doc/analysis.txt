@@ -3,3 +3,5 @@
 Balance Analysis
 	Balance Level Analysis
 		Use it to determine if a combination is good to play by its balance of odd-even, low-high numbers and the range of the sum of the numbers.
+
+https://zh.wikipedia.org/wiki/正态分布

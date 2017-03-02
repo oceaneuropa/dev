@@ -38,12 +38,13 @@ public class StatUtil {
 	 * 
 	 * @param subNum
 	 * @param baseNum
+	 * @param multiplyWith
 	 * @return
 	 */
-	public static int normalizeByPercenaget(int subNum, int baseNum) {
+	public static int normalizeByPercentage(int subNum, int baseNum, int multiplyWith) {
 		double ratio = (double) subNum / (double) baseNum;
 		double ratioWithScale2 = BigDecimalUtil.rounding(ratio);
-		return (int) (ratioWithScale2 * 100);
+		return (int) (ratioWithScale2 * multiplyWith);
 	}
 
 }
