@@ -6,6 +6,8 @@ import org.origin.common.util.DateUtil;
 
 public class Draw {
 
+	// 1 based index
+	protected int index;
 	protected Date date;
 	protected int num1;
 	protected int num2;
@@ -42,6 +44,14 @@ public class Draw {
 		this.pb = pb;
 	}
 
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	public int getIndex() {
+		return this.index;
+	}
+
 	public Date getDate() {
 		return date;
 	}
@@ -53,18 +63,6 @@ public class Draw {
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public String getNumsString(boolean includePb) {
-		if (includePb) {
-			return addSpace(num1) + num1 + ", " + addSpace(num2) + num2 + ", " + addSpace(num3) + num3 + ", " + addSpace(num4) + num4 + ", " + addSpace(num5) + num5 + "  " + addSpace(pb) + pb;
-		} else {
-			return addSpace(num1) + num1 + ", " + addSpace(num2) + num2 + ", " + addSpace(num3) + num3 + ", " + addSpace(num4) + num4 + ", " + addSpace(num5) + num5;
-		}
-	}
-
-	protected String addSpace(int num) {
-		return num < 10 ? " " : "";
 	}
 
 	public int getNum1() {
@@ -115,6 +113,26 @@ public class Draw {
 		this.pb = pb;
 	}
 
+	public int[] getNumberArray(boolean includePb) {
+		if (includePb) {
+			return new int[] { this.num1, this.num2, this.num3, this.num4, this.num5, this.pb };
+		} else {
+			return new int[] { this.num1, this.num2, this.num3, this.num4, this.num5 };
+		}
+	}
+
+	public String getNumsString(boolean includePb) {
+		if (includePb) {
+			return addSpace(num1) + num1 + ", " + addSpace(num2) + num2 + ", " + addSpace(num3) + num3 + ", " + addSpace(num4) + num4 + ", " + addSpace(num5) + num5 + "  " + addSpace(pb) + pb;
+		} else {
+			return addSpace(num1) + num1 + ", " + addSpace(num2) + num2 + ", " + addSpace(num3) + num3 + ", " + addSpace(num4) + num4 + ", " + addSpace(num5) + num5;
+		}
+	}
+
+	private String addSpace(int num) {
+		return num < 10 ? " " : "";
+	}
+
 	public synchronized DrawStat getStat() {
 		if (this.stat == null) {
 			this.stat = new DrawStat();
@@ -160,7 +178,8 @@ public class Draw {
 	@Override
 	public String toString() {
 		String dateStr = getDateString();
-		return "Draw [date=" + dateStr + ", num1=" + num1 + ", num2=" + num2 + ", num3=" + num3 + ", num4=" + num4 + ", num5=" + num5 + ", pb=" + pb + "]";
+		String numStr = num1 + " " + num2 + " " + num3 + " " + num4 + " " + num5;
+		return "#" + index + " (" + dateStr + ") " + numStr + " [" + pb + "]";
 	}
 
 }

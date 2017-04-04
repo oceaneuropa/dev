@@ -2,7 +2,11 @@ package org.origin.common.util;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class DateUtil {
 
@@ -84,6 +88,33 @@ public class DateUtil {
 			throw new IllegalArgumentException("format is null.");
 		}
 		return format.format(date);
+	}
+
+	/**
+	 * 
+	 * @param firstDate
+	 * @param laterDate
+	 * @return
+	 */
+	public static long getDaysBetween(Date firstDate, Date laterDate) {
+		Calendar laterCalendar = new GregorianCalendar();
+		laterCalendar.setTime(laterDate);
+		int year2 = laterCalendar.get(Calendar.YEAR);
+		int month2 = laterCalendar.get(Calendar.MONTH) + 1;
+		int day2 = laterCalendar.get(Calendar.DAY_OF_MONTH);
+
+		Calendar firstCalendar = new GregorianCalendar();
+		firstCalendar.setTime(firstDate);
+		int year1 = firstCalendar.get(Calendar.YEAR);
+		int month1 = firstCalendar.get(Calendar.MONTH) + 1;
+		int day1 = firstCalendar.get(Calendar.DAY_OF_MONTH);
+
+		LocalDate laterLocalDate = LocalDate.of(year2, month2, day2);
+		LocalDate firstLocalDate = LocalDate.of(year1, month1, day1);
+
+		long daysBetween = ChronoUnit.DAYS.between(firstLocalDate, laterLocalDate);
+
+		return daysBetween;
 	}
 
 }

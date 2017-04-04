@@ -66,6 +66,14 @@ public class DrawReader {
 			Collections.sort(draws, Comparators.DrawComparator.ASC);
 		}
 
+		// set 1 based index to draws.
+		// first draw's index is 1
+		// latest draw's index is the size of all draws
+		for (int i = 0; i < draws.size(); i++) {
+			Draw draw = draws.get(i);
+			draw.setIndex(i + 1);
+		}
+
 		return draws;
 	}
 

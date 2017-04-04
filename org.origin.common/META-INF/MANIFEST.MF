@@ -56,4 +56,5 @@ Export-Package: org.origin.common,
  org.origin.common.thread,
  org.origin.common.util,
  org.origin.common.workingcopy
-Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"
+Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
+ lib.org.junit;bundle-version="1.0.0"

@@ -1,5 +1,8 @@
 package org.origin.common.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class StringUtil {
 
 	public static char[] HEX_CHARS = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
@@ -82,6 +85,53 @@ public class StringUtil {
 			}
 		}
 		return src;
+	}
+
+	public static void main(String[] args) {
+		List<String> partNamesList = new ArrayList<String>();
+		// partNamesList.add("item");
+		// partNamesList.add("item1");
+		// partNamesList.add("item2");
+		partNamesList.add("a");
+		partNamesList.add("");
+		// partNamesList.add("c");
+
+		// String partNamesStr = "";
+		// int i = 0;
+		// for (Iterator<String> partItor = partNamesList.iterator(); partItor.hasNext();) {
+		// String partName = partItor.next();
+		// if (i > 0) {
+		// partNamesStr += ",";
+		// }
+		// partNamesStr += partName;
+		// i++;
+		// }
+
+		String partNamesStr = "";
+		for (int i = 0; i < partNamesList.size(); i++) {
+			String partName = partNamesList.get(i);
+			if (i > 0) {
+				partNamesStr += ",";
+			}
+			partNamesStr += partName;
+		}
+
+		System.out.println("partNamesStr = " + partNamesStr);
+
+		String[] partNames = null;
+		if (partNamesStr != null && !partNamesStr.isEmpty()) {
+			partNames = partNamesStr.split(",");
+		}
+
+		if (partNames == null) {
+			System.out.println("partNames is null");
+
+		} else {
+			System.out.println("partNames.length = " + partNames.length);
+			for (String partName : partNames) {
+				System.out.println("partName = " + partName);
+			}
+		}
 	}
 
 }

@@ -1,4 +1,4 @@
-package org.plutus.lottery.powerball.updater;
+package org.plutus.lottery.powerball.analysis;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,46 +7,67 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.origin.common.util.BigDecimalUtil;
+import org.origin.common.util.StatUtil;
+import org.plutus.lottery.powerball.Analysis;
+import org.plutus.lottery.powerball.AnalysisContext;
+import org.plutus.lottery.powerball.AnalysisRegistry;
 import org.plutus.lottery.powerball.Draw;
 import org.plutus.lottery.powerball.DrawStat;
-import org.plutus.lottery.powerball.StatUpdater;
-import org.plutus.lottery.powerball.StatUpdaterRegistry;
 
-public class NormalDistributionUpdater implements StatUpdater {
+public class A22_SumAnalysis implements Analysis {
 
-	public static String UPDATER_ID = "NormalDistribution";
+	public static String ANALYSIS_ID = "SumAnalysis";
 
-	public static NormalDistributionUpdater INSTANCE = new NormalDistributionUpdater();
-
-	public static void register() {
-		StatUpdaterRegistry.getInstance().add(INSTANCE);
-	}
-
-	public static void unregister() {
-		StatUpdaterRegistry.getInstance().remove(UPDATER_ID);
-	}
+	public static A22_SumAnalysis INSTANCE = new A22_SumAnalysis();
 
 	@Override
 	public String getId() {
-		return UPDATER_ID;
+		return ANALYSIS_ID;
 	}
 
 	@Override
 	public int getPriority() {
-		return 2;
+		return 3;
 	}
 
 	@Override
-	public void update(DrawStat globalStat, List<Draw> draws) {
+	public void start() {
+		AnalysisRegistry.getInstance().add(this);
+	}
+
+	@Override
+	public void stop() {
+		AnalysisRegistry.getInstance().remove(this);
+	}
+
+	@Override
+	public void run(AnalysisContext context) {
+		DrawStat globalStat = context.getGlobalStat();
+		List<Draw> draws = context.getDraws();
+
+		for (Draw draw : draws) {
+			DrawStat stat = draw.getStat();
+			int n1 = draw.getNum1();
+			int n2 = draw.getNum2();
+			int n3 = draw.getNum3();
+			int n4 = draw.getNum4();
+			int n5 = draw.getNum5();
+
+			// ----------------------------------------------------
+			// 加和
+			// ----------------------------------------------------
+			long sum = StatUtil.sum(n1, n2, n3, n4, n5);
+			stat.put(DrawStat.PROP_SUM, sum);
+		}
 
 		// ----------------------------------------------------
 		// 总和值与其出现次数的Map
 		// ----------------------------------------------------
-		Map<Integer, Integer> sumToCountMap = new TreeMap<Integer, Integer>();
+		Map<Long, Integer> sumToCountMap = new TreeMap<Long, Integer>();
 		for (Draw draw : draws) {
 			DrawStat stat = draw.getStat();
 
-			Integer sum = stat.get(DrawStat.PROP_SUM, Integer.class);
+			Long sum = stat.get(DrawStat.PROP_SUM, Long.class);
 			Integer count = sumToCountMap.get(sum);
 			if (count == null) {
 				count = new Integer(1);
@@ -59,9 +80,9 @@ public class NormalDistributionUpdater implements StatUpdater {
 		// ----------------------------------------------------
 		// 不重复的总和值列表
 		// ----------------------------------------------------
-		List<Integer> sumList = new ArrayList<Integer>();
-		for (Iterator<Integer> sumItor = sumToCountMap.keySet().iterator(); sumItor.hasNext();) {
-			Integer sum = sumItor.next();
+		List<Long> sumList = new ArrayList<Long>();
+		for (Iterator<Long> sumItor = sumToCountMap.keySet().iterator(); sumItor.hasNext();) {
+			Long sum = sumItor.next();
 			sumList.add(sum);
 		}
 
@@ -70,16 +91,16 @@ public class NormalDistributionUpdater implements StatUpdater {
 		// 所有总和的全部重复次数
 		// ----------------------------------------------------
 		int sumTotalCount = 0;
-		Map<Integer, List<Integer>> countToSumListMap = new TreeMap<Integer, List<Integer>>();
-		for (Iterator<Integer> sumItor = sumToCountMap.keySet().iterator(); sumItor.hasNext();) {
-			Integer sum = sumItor.next();
+		Map<Integer, List<Long>> countToSumListMap = new TreeMap<Integer, List<Long>>();
+		for (Iterator<Long> sumItor = sumToCountMap.keySet().iterator(); sumItor.hasNext();) {
+			Long sum = sumItor.next();
 			Integer count = sumToCountMap.get(sum);
 
 			sumTotalCount += count;
 
-			List<Integer> currSumList = countToSumListMap.get(count);
+			List<Long> currSumList = countToSumListMap.get(count);
 			if (currSumList == null) {
-				currSumList = new ArrayList<Integer>();
+				currSumList = new ArrayList<Long>();
 				currSumList.add(sum);
 				countToSumListMap.put(count, currSumList);
 			} else {
@@ -192,25 +213,25 @@ public class NormalDistributionUpdater implements StatUpdater {
 		// ----------------------------------------------------
 		// 保存统计结果
 		// ----------------------------------------------------
-		globalStat.set(DrawStat.PROP_SUM_LIST, sumList);
-		globalStat.set(DrawStat.PROP_SUM_TO_COUNT_MAP, sumToCountMap);
-		globalStat.set(DrawStat.PROP_COUNT_TO_SUM_LIST_MAP, countToSumListMap);
-		globalStat.set(DrawStat.PROP_SUM_TOTAL_COUNT, new Integer(sumTotalCount));
+		globalStat.put(DrawStat.PROP_SUM_LIST, sumList);
+		globalStat.put(DrawStat.PROP_SUM_TO_COUNT_MAP, sumToCountMap);
+		globalStat.put(DrawStat.PROP_COUNT_TO_SUM_LIST_MAP, countToSumListMap);
+		globalStat.put(DrawStat.PROP_SUM_TOTAL_COUNT, new Integer(sumTotalCount));
 
-		globalStat.set(DrawStat.PROP_SUM_MID_INDEX, sumMidIndex);
-		globalStat.set(DrawStat.PROP_SUM_UP___10_PERCENT_INDEX, sumUp__10PercentIndex);
-		globalStat.set(DrawStat.PROP_SUM_DOWN_10_PERCENT_INDEX, sumDown10PercentIndex);
-		globalStat.set(DrawStat.PROP_SUM_UP___20_PERCENT_INDEX, sumUp__20PercentIndex);
-		globalStat.set(DrawStat.PROP_SUM_DOWN_20_PERCENT_INDEX, sumDown20PercentIndex);
-		globalStat.set(DrawStat.PROP_SUM_UP___30_PERCENT_INDEX, sumUp__30PercentIndex);
-		globalStat.set(DrawStat.PROP_SUM_DOWN_30_PERCENT_INDEX, sumDown30PercentIndex);
-		globalStat.set(DrawStat.PROP_SUM_UP___34_PERCENT_INDEX, sumUp__34PercentIndex);
-		globalStat.set(DrawStat.PROP_SUM_DOWN_34_PERCENT_INDEX, sumDown34PercentIndex);
+		globalStat.put(DrawStat.PROP_SUM_MID_INDEX, sumMidIndex);
+		globalStat.put(DrawStat.PROP_SUM_UP___10_PERCENT_INDEX, sumUp__10PercentIndex);
+		globalStat.put(DrawStat.PROP_SUM_DOWN_10_PERCENT_INDEX, sumDown10PercentIndex);
+		globalStat.put(DrawStat.PROP_SUM_UP___20_PERCENT_INDEX, sumUp__20PercentIndex);
+		globalStat.put(DrawStat.PROP_SUM_DOWN_20_PERCENT_INDEX, sumDown20PercentIndex);
+		globalStat.put(DrawStat.PROP_SUM_UP___30_PERCENT_INDEX, sumUp__30PercentIndex);
+		globalStat.put(DrawStat.PROP_SUM_DOWN_30_PERCENT_INDEX, sumDown30PercentIndex);
+		globalStat.put(DrawStat.PROP_SUM_UP___34_PERCENT_INDEX, sumUp__34PercentIndex);
+		globalStat.put(DrawStat.PROP_SUM_DOWN_34_PERCENT_INDEX, sumDown34PercentIndex);
 
-		globalStat.set(DrawStat.PROP_DIST_AVG_LIST, distAvgList);
-		globalStat.set(DrawStat.PROP_DIST_AVG_TO_COUNT_MAP, distAvgToCountMap);
-		globalStat.set(DrawStat.PROP_COUNT_TO_DIST_AVG_LIST_MAP, countToDistAvgListMap);
-		globalStat.set(DrawStat.PROP_DIST_AVG_TOTAL_COUNT, new Integer(distAvgTotalCount));
+		globalStat.put(DrawStat.PROP_DIST_AVG_LIST, distAvgList);
+		globalStat.put(DrawStat.PROP_DIST_AVG_TO_COUNT_MAP, distAvgToCountMap);
+		globalStat.put(DrawStat.PROP_COUNT_TO_DIST_AVG_LIST_MAP, countToDistAvgListMap);
+		globalStat.put(DrawStat.PROP_DIST_AVG_TOTAL_COUNT, new Integer(distAvgTotalCount));
 	}
 
 }

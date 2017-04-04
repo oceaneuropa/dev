@@ -4,7 +4,9 @@ import java.util.Date;
 
 import org.origin.common.util.BaseComparator;
 import org.plutus.lottery.powerball.Draw;
-import org.plutus.lottery.powerball.StatUpdater;
+import org.plutus.lottery.powerball.Analysis;
+import org.plutus.lottery.powerball.report.CombinationReport;
+import org.plutus.lottery.powerball.report.NumberReport;
 
 public class Comparators {
 
@@ -51,22 +53,22 @@ public class Comparators {
 		}
 	}
 
-	public static class StatUpdaterComparator extends BaseComparator<StatUpdater> {
-		public static StatUpdaterComparator ASC = new StatUpdaterComparator(SORT_ASC);
-		public static StatUpdaterComparator DESC = new StatUpdaterComparator(SORT_DESC);
+	public static class StatAnalysisComparator extends BaseComparator<Analysis> {
+		public static StatAnalysisComparator ASC = new StatAnalysisComparator(SORT_ASC);
+		public static StatAnalysisComparator DESC = new StatAnalysisComparator(SORT_DESC);
 
-		public StatUpdaterComparator() {
+		public StatAnalysisComparator() {
 			this(SORT_ASC);
 		}
 
-		public StatUpdaterComparator(String sort) {
+		public StatAnalysisComparator(String sort) {
 			this.sort = check(sort);
 		}
 
 		@Override
-		public int compare(StatUpdater o1, StatUpdater o2) {
+		public int compare(Analysis o1, Analysis o2) {
 			if (desc()) {
-				StatUpdater tmp = o1;
+				Analysis tmp = o1;
 				o1 = o2;
 				o2 = tmp;
 			}
@@ -75,6 +77,66 @@ public class Comparators {
 			int priority2 = o2.getPriority();
 
 			return priority1 - priority2;
+		}
+	}
+
+	public static class NumberReportCountComparator extends BaseComparator<NumberReport> {
+		public static NumberReportCountComparator ASC = new NumberReportCountComparator(SORT_ASC);
+		public static NumberReportCountComparator DESC = new NumberReportCountComparator(SORT_DESC);
+
+		public NumberReportCountComparator() {
+			this(SORT_ASC);
+		}
+
+		public NumberReportCountComparator(String sort) {
+			this.sort = check(sort);
+		}
+
+		@Override
+		public int compare(NumberReport r1, NumberReport r2) {
+			if (desc()) {
+				NumberReport tmp = r1;
+				r1 = r2;
+				r2 = tmp;
+			}
+
+			int count1 = r1.getCount();
+			int count2 = r2.getCount();
+
+			return count1 - count2;
+		}
+	}
+
+	public static class CombinationReportComparator extends BaseComparator<CombinationReport> {
+		public static CombinationReportComparator ASC = new CombinationReportComparator(SORT_ASC);
+		public static CombinationReportComparator DESC = new CombinationReportComparator(SORT_DESC);
+
+		public CombinationReportComparator() {
+			this(SORT_ASC);
+		}
+
+		public CombinationReportComparator(String sort) {
+			this.sort = check(sort);
+		}
+
+		@Override
+		public int compare(CombinationReport r1, CombinationReport r2) {
+			if (desc()) {
+				CombinationReport tmp = r1;
+				r1 = r2;
+				r2 = tmp;
+			}
+
+			int count1 = r1.getCount();
+			int count2 = r2.getCount();
+
+			if (count1 != count2) {
+				return count1 - count2;
+			}
+
+			String key1 = r1.getCombinationKey();
+			String key2 = r2.getCombinationKey();
+			return key1.compareTo(key2);
 		}
 	}
 
