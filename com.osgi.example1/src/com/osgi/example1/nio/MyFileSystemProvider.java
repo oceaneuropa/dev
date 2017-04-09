@@ -43,7 +43,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 	protected static final String SCHEME = "file";
 	protected static URI fileSchemeURI = URI.create("file:///");
 
-	protected FileSystemProvider delegate;
+	protected FileSystemProvider delegateProvider;
 	protected Map<URI, FileSystem> fsMap = new HashMap<URI, FileSystem>();
 
 	/**
@@ -54,7 +54,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 		if (debug) {
 			Printer.println(MessageFormat.format("new MyFileSystemProvider() defaultProvider = {0}", new Object[] { defaultProvider }));
 		}
-		this.delegate = defaultProvider;
+		this.delegateProvider = defaultProvider;
 	}
 
 	@Override
@@ -67,7 +67,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public FileSystem newFileSystem(URI uri, Map<String, ?> env) throws IOException {
-		FileSystem fileSystem = this.delegate.newFileSystem(uri, env);
+		FileSystem fileSystem = this.delegateProvider.newFileSystem(uri, env);
 		FileSystem myFileSystem = MyFileSystem.wrap(this, fileSystem);
 		this.fsMap.put(uri, myFileSystem);
 		if (debug) {
@@ -78,7 +78,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public FileSystem getFileSystem(URI uri) {
-		FileSystem fileSystem = this.delegate.getFileSystem(uri);
+		FileSystem fileSystem = this.delegateProvider.getFileSystem(uri);
 		FileSystem myFileSystem = this.fsMap.get(uri);
 		if (myFileSystem == null) {
 			myFileSystem = MyFileSystem.wrap(this, fileSystem);
@@ -92,7 +92,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public Path getPath(URI uri) {
-		Path path = this.delegate.getPath(uri);
+		Path path = this.delegateProvider.getPath(uri);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystemProvider.getPath() uri = ''{0}'' returns Path [{1}]", uri, path));
 		}
@@ -101,7 +101,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public SeekableByteChannel newByteChannel(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs) throws IOException {
-		SeekableByteChannel channel = this.delegate.newByteChannel(unwrap(path), options, attrs);
+		SeekableByteChannel channel = this.delegateProvider.newByteChannel(unwrap(path), options, attrs);
 		SeekableByteChannel newChannel = MySeekableByteChannel.wrap(channel);
 		if (debug) {
 			String optionsStr = (options != null) ? Arrays.toString(options.toArray(new Object[options.size()])) : "null";
@@ -113,7 +113,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public DirectoryStream<Path> newDirectoryStream(Path dir, Filter<? super Path> filter) throws IOException {
-		final DirectoryStream<Path> dirStream = this.delegate.newDirectoryStream(unwrap(dir), filter);
+		final DirectoryStream<Path> dirStream = this.delegateProvider.newDirectoryStream(unwrap(dir), filter);
 
 		DirectoryStream<Path> newDirStream = new DirectoryStream<Path>() {
 			@Override
@@ -149,7 +149,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public void createDirectory(Path dir, FileAttribute<?>... attrs) throws IOException {
-		this.delegate.createDirectory(unwrap(dir), attrs);
+		this.delegateProvider.createDirectory(unwrap(dir), attrs);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystemProvider.createDirectory() path = ''{0}''", new Object[] { dir }));
 		}
@@ -157,7 +157,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public void delete(Path path) throws IOException {
-		this.delegate.delete(unwrap(path));
+		this.delegateProvider.delete(unwrap(path));
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystemProvider.delete() path = ''{0}''", new Object[] { path }));
 		}
@@ -165,15 +165,15 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public void copy(Path source, Path target, CopyOption... options) throws IOException {
-		this.delegate.copy(unwrap(source), unwrap(target), options);
+		this.delegateProvider.copy(unwrap(source), unwrap(target), options);
 		if (debug) {
-			Printer.println(MessageFormat.format("MyFileSystemProvider.delete() source = ''{0}'', target = ''{1}''", new Object[] { source, target }));
+			Printer.println(MessageFormat.format("MyFileSystemProvider.copy() source = ''{0}'', target = ''{1}''", new Object[] { source, target }));
 		}
 	}
 
 	@Override
 	public void move(Path source, Path target, CopyOption... options) throws IOException {
-		this.delegate.move(unwrap(source), unwrap(target), options);
+		this.delegateProvider.move(unwrap(source), unwrap(target), options);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystemProvider.move() source = ''{0}'', target = ''{1}''", new Object[] { source, target }));
 		}
@@ -181,7 +181,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public boolean isSameFile(Path path, Path path2) throws IOException {
-		boolean isSameFile = this.delegate.isSameFile(unwrap(path), unwrap(path2));
+		boolean isSameFile = this.delegateProvider.isSameFile(unwrap(path), unwrap(path2));
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystemProvider.isSameFile() path = ''{0}'', path2 = ''{1}'' returns [{2}]", new Object[] { path, path2, isSameFile }));
 		}
@@ -190,7 +190,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public boolean isHidden(Path path) throws IOException {
-		boolean isHidden = this.delegate.isHidden(unwrap(path));
+		boolean isHidden = this.delegateProvider.isHidden(unwrap(path));
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystemProvider.isHidden() path = ''{0}'' returns [{1}]", new Object[] { path, isHidden }));
 		}
@@ -199,7 +199,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public FileStore getFileStore(Path path) throws IOException {
-		FileStore fileStore = this.delegate.getFileStore(unwrap(path));
+		FileStore fileStore = this.delegateProvider.getFileStore(unwrap(path));
 		FileStore myFileStore = MyFileStore.wrap(fileStore);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystemProvider.getFileStore() path = ''{0}'' returns FileStore [{1}]", new Object[] { path, myFileStore }));
@@ -209,7 +209,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public void checkAccess(Path path, AccessMode... modes) throws IOException {
-		this.delegate.checkAccess(unwrap(path), modes);
+		this.delegateProvider.checkAccess(unwrap(path), modes);
 		if (debug) {
 			String modesStr = (modes != null) ? Arrays.toString(modes) : "null";
 			Printer.println(MessageFormat.format("MyFileSystemProvider.checkAccess() path = ''{0}'', accessModes = {1}", new Object[] { path, modesStr }));
@@ -218,7 +218,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public <V extends FileAttributeView> V getFileAttributeView(Path path, Class<V> type, LinkOption... options) {
-		V attrView = this.delegate.getFileAttributeView(unwrap(path), type, options);
+		V attrView = this.delegateProvider.getFileAttributeView(unwrap(path), type, options);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystemProvider.checkAccess() path = ''{0}'' returns FileAttributeView [{1}]", new Object[] { path, attrView }));
 		}
@@ -227,7 +227,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public <A extends BasicFileAttributes> A readAttributes(Path path, Class<A> type, LinkOption... options) throws IOException {
-		A attr = this.delegate.readAttributes(unwrap(path), type, options);
+		A attr = this.delegateProvider.readAttributes(unwrap(path), type, options);
 		if (debug) {
 			String optionsStr = (options != null) ? Arrays.toString(options) : "null";
 			Printer.println(MessageFormat.format("MyFileSystemProvider.readAttributes() path = ''{0}'', options = {1} returns BasicFileAttributes [{2}]", new Object[] { path, optionsStr, attr }));
@@ -237,7 +237,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public Map<String, Object> readAttributes(Path path, String attributes, LinkOption... options) throws IOException {
-		Map<String, Object> attrs = this.delegate.readAttributes(unwrap(path), attributes, options);
+		Map<String, Object> attrs = this.delegateProvider.readAttributes(unwrap(path), attributes, options);
 		if (debug) {
 			String optionsStr = (options != null) ? Arrays.toString(options) : "null";
 			Printer.println(MessageFormat.format("MyFileSystemProvider.readAttributes() path = ''{0}'', attributes = ''{1}'', options = {2} returns Map [{3}]", new Object[] { path, attributes, optionsStr, attrs }));
@@ -247,7 +247,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 
 	@Override
 	public void setAttribute(Path path, String attribute, Object value, LinkOption... options) throws IOException {
-		this.delegate.setAttribute(unwrap(path), attribute, value, options);
+		this.delegateProvider.setAttribute(unwrap(path), attribute, value, options);
 		if (debug) {
 			String optionsStr = (options != null) ? Arrays.toString(options) : "null";
 			Printer.println(MessageFormat.format("MyFileSystemProvider.setAttribute() path = ''{0}'', attributes = ''{1}'', value = {2}, options = {3}", new Object[] { path, attribute, value, optionsStr }));

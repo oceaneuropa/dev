@@ -33,7 +33,7 @@ public class MyFileSystem extends FileSystem {
 	}
 
 	public static FileSystem _unwrap(FileSystem fs) {
-		FileSystem resultFs = (fs instanceof MyFileSystem) ? ((MyFileSystem) fs).delegate : fs;
+		FileSystem resultFs = (fs instanceof MyFileSystem) ? ((MyFileSystem) fs).delegateFS : fs;
 		// if (debug) {
 		// Printer.println(MessageFormat.format("MyFileSystem.unwrap(FileSystem) fs = ''{0}'' returns FileSystem [{1}]", new Object[] { fs, resultFs }));
 		// }
@@ -49,19 +49,19 @@ public class MyFileSystem extends FileSystem {
 	}
 
 	protected final FileSystemProvider provider;
-	protected final FileSystem delegate;
+	protected final FileSystem delegateFS;
 
 	/**
 	 * 
 	 * @param provider
-	 * @param delegate
+	 * @param fs
 	 */
-	public MyFileSystem(FileSystemProvider provider, FileSystem delegate) {
+	public MyFileSystem(FileSystemProvider provider, FileSystem fs) {
 		if (debug) {
-			Printer.println(MessageFormat.format("new MyFileSystem() provider = {0}, delegate = {1}", new Object[] { provider, delegate }));
+			Printer.println(MessageFormat.format("new MyFileSystem() provider = {0}, delegate = {1}", new Object[] { provider, fs }));
 		}
 		this.provider = provider;
-		this.delegate = delegate;
+		this.delegateFS = fs;
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class MyFileSystem extends FileSystem {
 
 	@Override
 	public void close() throws IOException {
-		this.delegate.close();
+		this.delegateFS.close();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.close()", new Object[] {}));
 		}
@@ -82,7 +82,7 @@ public class MyFileSystem extends FileSystem {
 
 	@Override
 	public boolean isOpen() {
-		boolean isOpen = this.delegate.isOpen();
+		boolean isOpen = this.delegateFS.isOpen();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.isOpen() returns {0}", new Object[] { isOpen }));
 		}
@@ -91,7 +91,7 @@ public class MyFileSystem extends FileSystem {
 
 	@Override
 	public boolean isReadOnly() {
-		boolean isReadOnly = this.delegate.isReadOnly();
+		boolean isReadOnly = this.delegateFS.isReadOnly();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.isReadOnly() returns {0}", new Object[] { isReadOnly }));
 		}
@@ -100,7 +100,7 @@ public class MyFileSystem extends FileSystem {
 
 	@Override
 	public String getSeparator() {
-		String separator = this.delegate.getSeparator();
+		String separator = this.delegateFS.getSeparator();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.getSeparator() returns {0}", new Object[] { separator }));
 		}
@@ -109,7 +109,7 @@ public class MyFileSystem extends FileSystem {
 
 	@Override
 	public Iterable<Path> getRootDirectories() {
-		final Iterable<Path> roots = this.delegate.getRootDirectories();
+		final Iterable<Path> roots = this.delegateFS.getRootDirectories();
 		Iterable<Path> itorable = new Iterable<Path>() {
 			@Override
 			public Iterator<Path> iterator() {
@@ -142,7 +142,7 @@ public class MyFileSystem extends FileSystem {
 	@Override
 	public Iterable<FileStore> getFileStores() {
 		// assume that unwrapped objects aren't exposed
-		Iterable<FileStore> iterable = this.delegate.getFileStores();
+		Iterable<FileStore> iterable = this.delegateFS.getFileStores();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.getFileStores() returns [{0}]", new Object[] { iterable }));
 		}
@@ -152,7 +152,7 @@ public class MyFileSystem extends FileSystem {
 	@Override
 	public Set<String> supportedFileAttributeViews() {
 		// assume that unwrapped objects aren't exposed
-		Set<String> set = this.delegate.supportedFileAttributeViews();
+		Set<String> set = this.delegateFS.supportedFileAttributeViews();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.supportedFileAttributeViews() returns {0}", new Object[] { (set != null ? set.toString() : "null") }));
 		}
@@ -162,7 +162,7 @@ public class MyFileSystem extends FileSystem {
 	@Override
 	public Path getPath(String first, String... more) {
 		// Path path = new PassThroughPath(this, delegate.getPath(first, more));
-		Path path = wrap(this, this.delegate.getPath(first, more));
+		Path path = wrap(this, this.delegateFS.getPath(first, more));
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.getPath() first = {0}, more = {1} returns Path [{2}]", new Object[] { first, (more != null ? Arrays.toString(more) : "null"), path }));
 		}
@@ -171,7 +171,7 @@ public class MyFileSystem extends FileSystem {
 
 	@Override
 	public PathMatcher getPathMatcher(String syntaxAndPattern) {
-		final PathMatcher matcher = this.delegate.getPathMatcher(syntaxAndPattern);
+		final PathMatcher matcher = this.delegateFS.getPathMatcher(syntaxAndPattern);
 		PathMatcher newMatcher = new PathMatcher() {
 			@Override
 			public boolean matches(Path path) {
@@ -187,7 +187,7 @@ public class MyFileSystem extends FileSystem {
 	@Override
 	public UserPrincipalLookupService getUserPrincipalLookupService() {
 		// assume that unwrapped objects aren't exposed
-		UserPrincipalLookupService service = this.delegate.getUserPrincipalLookupService();
+		UserPrincipalLookupService service = this.delegateFS.getUserPrincipalLookupService();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.getUserPrincipalLookupService() returns UserPrincipalLookupService [{0}]", new Object[] { service }));
 		}
@@ -198,7 +198,7 @@ public class MyFileSystem extends FileSystem {
 	public WatchService newWatchService() throws IOException {
 		// to keep it simple
 		// throw new UnsupportedOperationException();
-		WatchService service = this.delegate.newWatchService();
+		WatchService service = this.delegateFS.newWatchService();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyFileSystem.newWatchService() returns WatchService [{0}]", new Object[] { service }));
 		}

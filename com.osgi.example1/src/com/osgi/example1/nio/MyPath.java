@@ -26,7 +26,7 @@ public class MyPath implements Path {
 	}
 
 	public static Path unwrap(Path path) {
-		Path resultPath = (path instanceof MyPath) ? ((MyPath) path).delegate : path;
+		Path resultPath = (path instanceof MyPath) ? ((MyPath) path).delegatePath : path;
 		// if (debug) {
 		// Printer.println(MessageFormat.format("MyPath.unwrap(Path) path = ''{0}'' returns Path ''{1}''", new Object[] { path, resultPath }));
 		// }
@@ -34,7 +34,7 @@ public class MyPath implements Path {
 	}
 
 	public final FileSystem fs;
-	public final Path delegate;
+	public final Path delegatePath;
 
 	/**
 	 * 
@@ -46,7 +46,7 @@ public class MyPath implements Path {
 			Printer.println(MessageFormat.format("new MyPath(FileSystem, Path) fs = {0}, path = ''{1}''", new Object[] { fs, path }));
 		}
 		this.fs = fs;
-		this.delegate = path;
+		this.delegatePath = path;
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class MyPath implements Path {
 
 	@Override
 	public boolean isAbsolute() {
-		boolean isAbsolute = this.delegate.isAbsolute();
+		boolean isAbsolute = this.delegatePath.isAbsolute();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.isAbsolute() returns [{0}]", new Object[] { isAbsolute }));
 		}
@@ -68,7 +68,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path getRoot() {
-		Path root = this.delegate.getRoot();
+		Path root = this.delegatePath.getRoot();
 		Path newRoot = wrap(this.fs, root);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.getRoot() returns [{0}]", new Object[] { newRoot }));
@@ -78,7 +78,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path getParent() {
-		Path parent = this.delegate.getParent();
+		Path parent = this.delegatePath.getParent();
 		Path newParent = wrap(this.fs, parent);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.getParent() returns [{0}]", new Object[] { newParent }));
@@ -88,7 +88,7 @@ public class MyPath implements Path {
 
 	@Override
 	public int getNameCount() {
-		int nameCount = this.delegate.getNameCount();
+		int nameCount = this.delegatePath.getNameCount();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.getNameCount() returns [{0}]", new Object[] { nameCount }));
 		}
@@ -97,7 +97,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path getFileName() {
-		Path fileName = this.delegate.getFileName();
+		Path fileName = this.delegatePath.getFileName();
 		Path newFileName = wrap(this.fs, fileName);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.getFileName() returns [{0}]", new Object[] { newFileName }));
@@ -107,7 +107,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path getName(int index) {
-		Path name = this.delegate.getName(index);
+		Path name = this.delegatePath.getName(index);
 		Path newName = wrap(this.fs, name);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.getName(int) index = {0} returns [{1}]", new Object[] { index, newName }));
@@ -117,7 +117,7 @@ public class MyPath implements Path {
 
 	@Override
 	public boolean startsWith(Path other) {
-		boolean startsWith = this.delegate.startsWith(unwrap(other));
+		boolean startsWith = this.delegatePath.startsWith(unwrap(other));
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.startsWith(Path) other = {0} returns [{1}]", new Object[] { other, startsWith }));
 		}
@@ -126,7 +126,7 @@ public class MyPath implements Path {
 
 	@Override
 	public boolean startsWith(String other) {
-		boolean startsWith = this.delegate.startsWith(other);
+		boolean startsWith = this.delegatePath.startsWith(other);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.startsWith(String) other = {0} returns [{1}]", new Object[] { other, startsWith }));
 		}
@@ -135,7 +135,7 @@ public class MyPath implements Path {
 
 	@Override
 	public boolean endsWith(Path other) {
-		boolean endsWith = this.delegate.endsWith(unwrap(other));
+		boolean endsWith = this.delegatePath.endsWith(unwrap(other));
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.endsWith(Path) other = {0} returns [{1}]", new Object[] { other, endsWith }));
 		}
@@ -144,7 +144,7 @@ public class MyPath implements Path {
 
 	@Override
 	public boolean endsWith(String other) {
-		boolean endsWith = this.delegate.endsWith(other);
+		boolean endsWith = this.delegatePath.endsWith(other);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.endsWith(String) other = {0} returns [{1}]", new Object[] { other, endsWith }));
 		}
@@ -153,7 +153,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path normalize() {
-		Path normalizedPath = this.delegate.normalize();
+		Path normalizedPath = this.delegatePath.normalize();
 		Path newNormalizedPath = wrap(this.fs, normalizedPath);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.normalize() returns [{0}]", new Object[] { newNormalizedPath }));
@@ -163,7 +163,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path resolve(Path other) {
-		Path resolvedPath = this.delegate.resolve(unwrap(other));
+		Path resolvedPath = this.delegatePath.resolve(unwrap(other));
 		Path newResolvedPath = wrap(this.fs, resolvedPath);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.resolve(Path) other = {0} returns [{1}]", new Object[] { other, newResolvedPath }));
@@ -173,7 +173,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path resolve(String other) {
-		Path resolvedPath = this.delegate.resolve(other);
+		Path resolvedPath = this.delegatePath.resolve(other);
 		Path newResolvedPath = wrap(this.fs, resolvedPath);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.resolve(String) other = {0} returns [{1}]", new Object[] { other, newResolvedPath }));
@@ -183,7 +183,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path resolveSibling(Path other) {
-		Path siblingPath = this.delegate.resolveSibling(unwrap(other));
+		Path siblingPath = this.delegatePath.resolveSibling(unwrap(other));
 		Path newSiblingPath = wrap(this.fs, siblingPath);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.resolveSibling(Path) other = {0} returns [{1}]", new Object[] { other, newSiblingPath }));
@@ -193,7 +193,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path resolveSibling(String other) {
-		Path siblingPath = delegate.resolveSibling(other);
+		Path siblingPath = delegatePath.resolveSibling(other);
 		Path newSiblingPath = wrap(this.fs, siblingPath);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.resolveSibling(String) other = {0} returns [{1}]", new Object[] { other, newSiblingPath }));
@@ -203,7 +203,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path relativize(Path other) {
-		Path relativizedPath = this.delegate.relativize(unwrap(other));
+		Path relativizedPath = this.delegatePath.relativize(unwrap(other));
 		Path newRelativizedPath = wrap(this.fs, relativizedPath);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.relativize(Path) other = {0} returns [{1}]", new Object[] { other, newRelativizedPath }));
@@ -213,7 +213,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path toAbsolutePath() {
-		Path absolutePath = this.delegate.toAbsolutePath();
+		Path absolutePath = this.delegatePath.toAbsolutePath();
 		Path newAbsolutePath = wrap(this.fs, absolutePath);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.toAbsolutePath() returns [{0}]", new Object[] { newAbsolutePath }));
@@ -223,7 +223,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path toRealPath(LinkOption... options) throws IOException {
-		Path realPath = this.delegate.toRealPath(options);
+		Path realPath = this.delegatePath.toRealPath(options);
 		Path newRealPath = wrap(this.fs, realPath);
 		if (debug) {
 			String optionsStr = (options != null) ? Arrays.toString(options) : "null";
@@ -234,7 +234,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Path subpath(int beginIndex, int endIndex) {
-		Path subpath = this.delegate.subpath(beginIndex, endIndex);
+		Path subpath = this.delegatePath.subpath(beginIndex, endIndex);
 		Path newSubpath = wrap(this.fs, subpath);
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.subpath(int, int) beginIndex = {0}, endIndex = {1} returns [{2}]", new Object[] { beginIndex, endIndex, newSubpath }));
@@ -244,7 +244,7 @@ public class MyPath implements Path {
 
 	@Override
 	public URI toUri() {
-		URI uri = this.delegate.toUri();
+		URI uri = this.delegatePath.toUri();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.toUri() returns [{0}]", new Object[] { uri }));
 		}
@@ -253,7 +253,7 @@ public class MyPath implements Path {
 
 	@Override
 	public File toFile() {
-		File ioFile = this.delegate.toFile();
+		File ioFile = this.delegatePath.toFile();
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.toFile() returns [{0}]", new Object[] { ioFile }));
 		}
@@ -262,7 +262,7 @@ public class MyPath implements Path {
 
 	@Override
 	public Iterator<Path> iterator() {
-		final Iterator<Path> itor = this.delegate.iterator();
+		final Iterator<Path> itor = this.delegatePath.iterator();
 		Iterator<Path> newItor = new Iterator<Path>() {
 			@Override
 			public boolean hasNext() {
@@ -289,7 +289,7 @@ public class MyPath implements Path {
 	@Override
 	public WatchKey register(WatchService watcher, WatchEvent.Kind<?>[] events, WatchEvent.Modifier... modifiers) throws IOException {
 		// throw new UnsupportedOperationException();
-		WatchKey watchKey = delegate.register(watcher, events, modifiers);
+		WatchKey watchKey = delegatePath.register(watcher, events, modifiers);
 		WatchKey newWatchKey = MyWatchKey.wrap(watchKey);
 		if (debug) {
 			String eventsStr = (events != null) ? Arrays.toString(events) : "null";
@@ -302,7 +302,7 @@ public class MyPath implements Path {
 	@Override
 	public WatchKey register(WatchService watcher, WatchEvent.Kind<?>... events) throws IOException {
 		// throw new UnsupportedOperationException();
-		WatchKey watchKey = delegate.register(watcher, events);
+		WatchKey watchKey = delegatePath.register(watcher, events);
 		WatchKey newWatchKey = MyWatchKey.wrap(watchKey);
 		if (debug) {
 			String eventsStr = (events != null) ? Arrays.toString(events) : "null";
@@ -313,7 +313,7 @@ public class MyPath implements Path {
 
 	@Override
 	public int compareTo(Path other) {
-		int compareTo = delegate.compareTo(unwrap(other));
+		int compareTo = delegatePath.compareTo(unwrap(other));
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.compareTo(Path) other = {0} returns [{1}]", new Object[] { other, compareTo }));
 		}
@@ -324,7 +324,7 @@ public class MyPath implements Path {
 	public boolean equals(Object other) {
 		boolean equals = false;
 		if (other instanceof Path) {
-			equals = this.delegate.equals(unwrap((Path) other));
+			equals = this.delegatePath.equals(unwrap((Path) other));
 		}
 		if (debug) {
 			Printer.println(MessageFormat.format("MyPath.equals(Object) other = {0} returns [{1}]", new Object[] { other, equals }));
@@ -334,7 +334,7 @@ public class MyPath implements Path {
 
 	@Override
 	public int hashCode() {
-		int hashCode = this.delegate.hashCode();
+		int hashCode = this.delegatePath.hashCode();
 		if (debug) {
 			// Printer.println(MessageFormat.format("MyPath.hashCode() returns [{0}]", new Object[] { hashCode }));
 		}
@@ -343,7 +343,7 @@ public class MyPath implements Path {
 
 	@Override
 	public String toString() {
-		String toString = this.delegate.toString();
+		String toString = this.delegatePath.toString();
 		if (debug) {
 			// Printer.println(MessageFormat.format("MyPath.toString() returns [{0}]", new Object[] { toString }));
 		}

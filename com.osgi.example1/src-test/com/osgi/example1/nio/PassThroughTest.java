@@ -2,11 +2,15 @@ package com.osgi.example1.nio;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.nio.file.spi.FileSystemProvider;
 import java.text.MessageFormat;
 import java.util.Iterator;
@@ -19,6 +23,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
+import org.origin.common.io.IOUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PassThroughTest {
@@ -96,18 +101,18 @@ public class PassThroughTest {
 	 * @see http://stackoverflow.com/questions/16581724/how-to-use-nio-to-write-inputstream-to-file
 	 * 
 	 */
-	// @Ignore
-	@Test
+	@Ignore
+	// @Test
 	public void test003() {
+		System.out.println("--- --- test003() --- --- ");
+
 		FileInputStream is = null;
 		try {
-			System.out.println("--- --- test003() --- --- ");
-
 			// Files.list(Paths.get(".")).forEach(System.out::println);
-
 			File file = new File("test.txt");
 			is = new FileInputStream(file);
 
+			// Path path1 = Paths.get("test.txt");
 			Path path2 = Paths.get("test2.txt");
 			if (Files.exists(path2)) {
 				Files.delete(path2);
@@ -123,6 +128,69 @@ public class PassThroughTest {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+		}
+
+		System.out.println();
+	}
+
+	@Ignore
+	// @Test
+	public void test004() {
+		System.out.println("--- --- test004() --- --- ");
+
+		FileOutputStream out = null;
+		try {
+			Path path2 = Paths.get("test2.txt");
+
+			File file3 = new File("test3.txt");
+			Path path3 = file3.toPath();
+			out = new FileOutputStream(file3);
+
+			if (Files.exists(path3)) {
+				Files.delete(path3);
+			}
+			Files.copy(path2, out);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			try {
+				out.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		System.out.println();
+	}
+
+	/**
+	 * @see https://docs.oracle.com/javase/tutorial/essential/io/file.html
+	 * @see http://stackoverflow.com/questions/19794101/how-to-overwrite-file-via-java-nio-writer
+	 */
+	// @Ignore
+	@Test
+	public void test005() {
+		System.out.println("--- --- test005() --- --- ");
+
+		InputStream in = null;
+		OutputStream out = null;
+		try {
+			Path path2 = Paths.get("test2.txt");
+			Path path3 = Paths.get("test3.txt");
+
+			in = Files.newInputStream(path2);
+			out = Files.newOutputStream(path3, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+
+			MyFiles.copy(in, out);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		} finally {
+			IOUtil.closeQuietly(out, true);
+			IOUtil.closeQuietly(in, true);
 		}
 
 		System.out.println();
