@@ -16,9 +16,10 @@ public class MySeekableByteChannel implements SeekableByteChannel {
 	 */
 	public static SeekableByteChannel wrap(SeekableByteChannel channel) {
 		SeekableByteChannel resultChannel = (channel != null) ? ((channel instanceof MySeekableByteChannel) ? channel : new MySeekableByteChannel(channel)) : null;
-		if (debug) {
-			Printer.println(MessageFormat.format("MySeekableByteChannel.wrap(SeekableByteChannel) channel = ''{0}'' returns SeekableByteChannel [{1}]", new Object[] { channel, resultChannel }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("MySeekableByteChannel.wrap(SeekableByteChannel) channel = ''{0}'' returns SeekableByteChannel [{1}]", new
+		// Object[] { channel, resultChannel }));
+		// }
 		return resultChannel;
 	}
 
@@ -27,11 +28,12 @@ public class MySeekableByteChannel implements SeekableByteChannel {
 	 * @param channel
 	 * @return
 	 */
-	public static SeekableByteChannel unwrap(SeekableByteChannel channel) {
+	public static SeekableByteChannel _unwrap(SeekableByteChannel channel) {
 		SeekableByteChannel resultChannel = (channel instanceof MySeekableByteChannel) ? ((MySeekableByteChannel) channel).delegate : channel;
-		if (debug) {
-			Printer.println(MessageFormat.format("MySeekableByteChannel.unwrap(SeekableByteChannel) channel = ''{0}'' returns SeekableByteChannel [{1}]", new Object[] { channel, resultChannel }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("MySeekableByteChannel.unwrap(SeekableByteChannel) channel = ''{0}'' returns SeekableByteChannel [{1}]", new
+		// Object[] { channel, resultChannel }));
+		// }
 		return resultChannel;
 	}
 
@@ -43,7 +45,7 @@ public class MySeekableByteChannel implements SeekableByteChannel {
 	 */
 	public MySeekableByteChannel(SeekableByteChannel channel) {
 		if (debug) {
-			Printer.println(MessageFormat.format("MySeekableByteChannel(SeekableByteChannel) channel = {0}", new Object[] { channel }));
+			Printer.println(MessageFormat.format("new MySeekableByteChannel(SeekableByteChannel) channel = {0}", new Object[] { channel }));
 		}
 		this.delegate = channel;
 	}
@@ -93,7 +95,9 @@ public class MySeekableByteChannel implements SeekableByteChannel {
 	public int read(ByteBuffer dst) throws IOException {
 		// The number of bytes read, possibly zero, or -1 if the channel has reached end-of-stream
 		int read = this.delegate.read(dst);
-
+		if (debug) {
+			Printer.println(MessageFormat.format("MySeekableByteChannel.read(ByteBuffer) dst = {0} returns int [{1}]", new Object[] { dst, read }));
+		}
 		return read;
 	}
 
@@ -117,7 +121,9 @@ public class MySeekableByteChannel implements SeekableByteChannel {
 	public int write(ByteBuffer src) throws IOException {
 		// The number of bytes written, possibly zero
 		int write = this.delegate.write(src);
-
+		if (debug) {
+			Printer.println(MessageFormat.format("MySeekableByteChannel.write(ByteBuffer) src = {0} returns int [{1}]", new Object[] { src, write }));
+		}
 		return write;
 	}
 
@@ -125,7 +131,9 @@ public class MySeekableByteChannel implements SeekableByteChannel {
 	public SeekableByteChannel position(long newPosition) throws IOException {
 		SeekableByteChannel channel = this.delegate.position(newPosition);
 		SeekableByteChannel newChannel = wrap(channel);
-
+		if (debug) {
+			Printer.println(MessageFormat.format("MySeekableByteChannel.position(long) newPosition = {0} returns SeekableByteChannel [{1}]", new Object[] { newPosition, newChannel }));
+		}
 		return newChannel;
 	}
 
@@ -133,7 +141,9 @@ public class MySeekableByteChannel implements SeekableByteChannel {
 	public SeekableByteChannel truncate(long size) throws IOException {
 		SeekableByteChannel channel = this.delegate.truncate(size);
 		SeekableByteChannel newChannel = wrap(channel);
-
+		if (debug) {
+			Printer.println(MessageFormat.format("MySeekableByteChannel.truncate(long) size = {0} returns SeekableByteChannel [{1}]", new Object[] { size, newChannel }));
+		}
 		return newChannel;
 	}
 

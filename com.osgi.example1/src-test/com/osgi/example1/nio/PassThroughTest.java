@@ -108,7 +108,11 @@ public class PassThroughTest {
 			File file = new File("test.txt");
 			is = new FileInputStream(file);
 
-			Files.copy(is, Paths.get("test2.txt"));
+			Path path2 = Paths.get("test2.txt");
+			if (Files.exists(path2)) {
+				Files.delete(path2);
+			}
+			Files.copy(is, path2);
 
 		} catch (Exception e) {
 			e.printStackTrace();

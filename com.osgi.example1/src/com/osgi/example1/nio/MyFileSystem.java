@@ -25,17 +25,18 @@ public class MyFileSystem extends FileSystem {
 
 	public static FileSystem wrap(FileSystemProvider provider, FileSystem fs) {
 		FileSystem resultFs = (fs != null) ? ((fs instanceof MyFileSystem) ? fs : new MyFileSystem(provider, fs)) : null;
-		if (debug) {
-			Printer.println(MessageFormat.format("MyFileSystem.wrap(FileSystemProvider, FileSystem) provider = ''{0}'', provider = ''{1}'' returns FileSystem [{2}]", new Object[] { provider, fs, resultFs }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("MyFileSystem.wrap(FileSystemProvider, FileSystem) provider = ''{0}'', provider = ''{1}'' returns FileSystem
+		// [{2}]", new Object[] { provider, fs, resultFs }));
+		// }
 		return resultFs;
 	}
 
-	public static FileSystem unwrap(FileSystem fs) {
+	public static FileSystem _unwrap(FileSystem fs) {
 		FileSystem resultFs = (fs instanceof MyFileSystem) ? ((MyFileSystem) fs).delegate : fs;
-		if (debug) {
-			Printer.println(MessageFormat.format("MyFileSystem.unwrap(FileSystem) fs = ''{0}'' returns FileSystem [{1}]", new Object[] { fs, resultFs }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("MyFileSystem.unwrap(FileSystem) fs = ''{0}'' returns FileSystem [{1}]", new Object[] { fs, resultFs }));
+		// }
 		return resultFs;
 	}
 
@@ -57,7 +58,7 @@ public class MyFileSystem extends FileSystem {
 	 */
 	public MyFileSystem(FileSystemProvider provider, FileSystem delegate) {
 		if (debug) {
-			Printer.println(MessageFormat.format("MyFileSystem() provider = {0}, delegate = {1}", new Object[] { provider, delegate }));
+			Printer.println(MessageFormat.format("new MyFileSystem() provider = {0}, delegate = {1}", new Object[] { provider, delegate }));
 		}
 		this.provider = provider;
 		this.delegate = delegate;

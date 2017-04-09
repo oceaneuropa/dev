@@ -52,7 +52,7 @@ public class MyFileSystemProvider extends FileSystemProvider {
 	 */
 	public MyFileSystemProvider(FileSystemProvider defaultProvider) {
 		if (debug) {
-			Printer.println(MessageFormat.format("MyFileSystemProvider() defaultProvider = {0}", new Object[] { defaultProvider }));
+			Printer.println(MessageFormat.format("new MyFileSystemProvider() defaultProvider = {0}", new Object[] { defaultProvider }));
 		}
 		this.delegate = defaultProvider;
 	}

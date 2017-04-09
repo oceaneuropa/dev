@@ -20,9 +20,10 @@ public class MyWatchable implements Watchable {
 	 */
 	public static Watchable wrap(Watchable watchable) {
 		Watchable resultWatchable = (watchable != null) ? ((watchable instanceof MyWatchable) ? watchable : new MyWatchable(watchable)) : null;
-		if (debug) {
-			Printer.println(MessageFormat.format("MyWatchKey.wrap(WatchKey) watchKey = ''{0}'' returns WatchKey [{1}]", new Object[] { watchable, resultWatchable }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("MyWatchKey.wrap(WatchKey) watchKey = ''{0}'' returns WatchKey [{1}]", new Object[] { watchable, resultWatchable
+		// }));
+		// }
 		return resultWatchable;
 	}
 
@@ -31,11 +32,12 @@ public class MyWatchable implements Watchable {
 	 * @param watchable
 	 * @return
 	 */
-	public static Watchable unwrap(Watchable watchable) {
+	public static Watchable _unwrap(Watchable watchable) {
 		Watchable resultWatchable = (watchable instanceof MyWatchable) ? ((MyWatchable) watchable).delegate : watchable;
-		if (debug) {
-			Printer.println(MessageFormat.format("MyWatchKey.unwrap(WatchKey) watchKey = ''{0}'' returns WatchKey [{1}]", new Object[] { watchable, resultWatchable }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("MyWatchKey.unwrap(WatchKey) watchKey = ''{0}'' returns WatchKey [{1}]", new Object[] { watchable,
+		// resultWatchable }));
+		// }
 		return resultWatchable;
 	}
 
@@ -43,7 +45,7 @@ public class MyWatchable implements Watchable {
 
 	public MyWatchable(Watchable watchable) {
 		if (debug) {
-			Printer.println(MessageFormat.format("MyWatchable(Watchable) watchable = {0}", new Object[] { watchable }));
+			Printer.println(MessageFormat.format("new MyWatchable(Watchable) watchable = {0}", new Object[] { watchable }));
 		}
 		this.delegate = watchable;
 	}

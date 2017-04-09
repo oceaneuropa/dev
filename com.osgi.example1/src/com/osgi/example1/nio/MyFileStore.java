@@ -12,17 +12,19 @@ public class MyFileStore extends FileStore {
 
 	public static FileStore wrap(FileStore fileStore) {
 		FileStore resultFileStore = (fileStore != null) ? ((fileStore instanceof MyFileStore) ? fileStore : new MyFileStore(fileStore)) : fileStore;
-		if (debug) {
-			Printer.println(MessageFormat.format("FileStore.wrap(FileStore) fileStore = ''{0}'' returns FileStore ''{1}''", new Object[] { fileStore, resultFileStore }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("FileStore.wrap(FileStore) fileStore = ''{0}'' returns FileStore ''{1}''", new Object[] { fileStore,
+		// resultFileStore }));
+		// }
 		return resultFileStore;
 	}
 
-	public static FileStore unwrap(FileStore fileStore) {
+	public static FileStore _unwrap(FileStore fileStore) {
 		FileStore resultFileStore = (fileStore instanceof MyFileStore) ? ((MyFileStore) fileStore).delegate : fileStore;
-		if (debug) {
-			Printer.println(MessageFormat.format("FileStore.unwrap(FileStore) fileStore = ''{0}'' returns FileStore ''{1}''", new Object[] { fileStore, resultFileStore }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("FileStore.unwrap(FileStore) fileStore = ''{0}'' returns FileStore ''{1}''", new Object[] { fileStore,
+		// resultFileStore }));
+		// }
 		return resultFileStore;
 	}
 
@@ -34,7 +36,7 @@ public class MyFileStore extends FileStore {
 	 */
 	public MyFileStore(FileStore fileStore) {
 		if (debug) {
-			Printer.println(MessageFormat.format("MyFileStore(FileStore) fileStore = {0}", new Object[] { fileStore }));
+			Printer.println(MessageFormat.format("new MyFileStore(FileStore) fileStore = {0}", new Object[] { fileStore }));
 		}
 		this.delegate = fileStore;
 	}

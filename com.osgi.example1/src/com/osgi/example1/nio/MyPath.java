@@ -19,17 +19,17 @@ public class MyPath implements Path {
 
 	public static Path wrap(FileSystem fs, Path path) {
 		Path resultPath = (path != null) ? ((path instanceof MyPath) ? path : new MyPath(fs, path)) : path;
-		if (debug) {
-			Printer.println(MessageFormat.format("MyPath.wrap(FileSystem, Path) path = ''{0}'' returns Path ''{1}''", new Object[] { path, resultPath }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("MyPath.wrap(FileSystem, Path) path = ''{0}'' returns Path ''{1}''", new Object[] { path, resultPath }));
+		// }
 		return resultPath;
 	}
 
 	public static Path unwrap(Path path) {
 		Path resultPath = (path instanceof MyPath) ? ((MyPath) path).delegate : path;
-		if (debug) {
-			Printer.println(MessageFormat.format("MyPath.unwrap(Path) path = ''{0}'' returns Path ''{1}''", new Object[] { path, resultPath }));
-		}
+		// if (debug) {
+		// Printer.println(MessageFormat.format("MyPath.unwrap(Path) path = ''{0}'' returns Path ''{1}''", new Object[] { path, resultPath }));
+		// }
 		return resultPath;
 	}
 
@@ -43,7 +43,7 @@ public class MyPath implements Path {
 	 */
 	public MyPath(FileSystem fs, Path path) {
 		if (debug) {
-			Printer.println(MessageFormat.format("MyPath(FileSystem, Path) fs = {0}, path = ''{1}''", new Object[] { fs, path }));
+			Printer.println(MessageFormat.format("new MyPath(FileSystem, Path) fs = {0}, path = ''{1}''", new Object[] { fs, path }));
 		}
 		this.fs = fs;
 		this.delegate = path;
