@@ -28,9 +28,10 @@ import java.util.Set;
 
 public class PassThroughProvider extends FileSystemProvider {
 
-	private static final String SCHEME = "pass";
-	private static volatile PassThroughFileSystem delegate;
 	protected static boolean debug = true;
+
+	private static final String SCHEME = "pass";
+	private static volatile MyFileSystem delegate;
 
 	/**
 	 * Creates a new "pass through" file system. Useful for test environments where the provider might not be deployed.
@@ -48,7 +49,7 @@ public class PassThroughProvider extends FileSystemProvider {
 	}
 
 	public static Path unwrap(Path wrapper) {
-		return PassThroughPath.unwrap(wrapper);
+		return MyPath.unwrap(wrapper);
 	}
 
 	public PassThroughProvider() {
@@ -78,7 +79,7 @@ public class PassThroughProvider extends FileSystemProvider {
 		synchronized (PassThroughProvider.class) {
 			if (delegate != null)
 				throw new FileSystemAlreadyExistsException();
-			PassThroughFileSystem result = new PassThroughFileSystem(this, FileSystems.getDefault());
+			MyFileSystem result = new MyFileSystem(this, FileSystems.getDefault());
 			delegate = result;
 			return result;
 		}
@@ -99,7 +100,7 @@ public class PassThroughProvider extends FileSystemProvider {
 		if (delegate == null)
 			throw new FileSystemNotFoundException();
 		uri = URI.create(delegate.provider().getScheme() + ":" + uri.getSchemeSpecificPart());
-		return new PassThroughPath(delegate, delegate.provider().getPath(uri));
+		return new MyPath(delegate, delegate.provider().getPath(uri));
 	}
 
 	@Override
@@ -140,7 +141,7 @@ public class PassThroughProvider extends FileSystemProvider {
 	@Override
 	public Path readSymbolicLink(Path link) throws IOException {
 		Path target = Files.readSymbolicLink(unwrap(link));
-		return new PassThroughPath(delegate, target);
+		return new MyPath(delegate, target);
 	}
 
 	@Override
@@ -166,7 +167,7 @@ public class PassThroughProvider extends FileSystemProvider {
 
 					@Override
 					public Path next() {
-						return new PassThroughPath(delegate, itr.next());
+						return new MyPath(delegate, itr.next());
 					}
 
 					@Override
