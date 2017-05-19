@@ -38,25 +38,28 @@ public interface IndexProvider extends IndexService {
 	/**
 	 * Remove an index item.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean removeIndexItem(Integer indexItemId) throws IOException;
+	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
 
 	/**
 	 * Set properties.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param properties
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean setProperties(Integer indexItemId, Map<String, Object> properties) throws IOException;
+	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException;
 
 	/**
 	 * Set property.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param propName
 	 * @param propValue
@@ -64,16 +67,17 @@ public interface IndexProvider extends IndexService {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean setProperty(Integer indexItemId, String propName, Object propValue, String propType) throws IOException;
+	public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException;
 
 	/**
 	 * Remove property.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param propertyNames
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean removeProperties(Integer indexItemId, List<String> propertyNames) throws IOException;
+	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException;
 
 }

@@ -5,13 +5,27 @@ Bundle-SymbolicName: org.orbit.component.api
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.component.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.origin.common.jdbc,
+Import-Package: org.origin.common.annotation,
+ org.origin.common.jdbc,
  org.origin.common.loadbalance,
+ org.origin.common.osgi,
  org.origin.common.rest.client,
  org.origin.common.util,
+ org.origin.mgm.client.connector,
  org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.component.api,
- org.orbit.component.api.appstore,
- org.orbit.component.api.configregistry
+ org.orbit.component.api.tier1.account,
+ org.orbit.component.api.tier1.account.request,
+ org.orbit.component.api.tier1.config,
+ org.orbit.component.api.tier1.session,
+ org.orbit.component.api.tier2.appstore,
+ org.orbit.component.api.tier2.appstore.request,
+ org.orbit.component.api.tier3.domain,
+ org.orbit.component.api.tier3.domain.request,
+ org.orbit.component.api.tier3.transferagent,
+ org.orbit.component.api.tier3.transferagent.request,
+ org.orbit.component.cli.tier1,
+ org.orbit.component.cli.tier2
+Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"

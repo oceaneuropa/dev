@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class Printer {
 
@@ -20,13 +21,25 @@ public class Printer {
 	 * 
 	 * @param props
 	 */
-	public static void pl(Map<Object, Object> props) {
+	public static void pl(Map<?, ?> props) {
 		System.out.println("------------------------------------------------------------------------");
 		if (props == null) {
 			System.out.println("null");
+
 		} else {
-			for (Entry<Object, Object> entry : props.entrySet()) {
-				System.out.println(entry.getKey() + " = " + entry.getValue());
+			Map<Object, Object> treeMap = new TreeMap<Object, Object>();
+			for (Entry<?, ?> entry : props.entrySet()) {
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+				treeMap.put(key, value);
+			}
+			props = treeMap;
+
+			for (Entry<?, ?> entry : props.entrySet()) {
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+				String type = value.getClass().getSimpleName();
+				System.out.println(key + " = " + entry.getValue() + " (" + type + ")");
 			}
 		}
 		System.out.println("------------------------------------------------------------------------");

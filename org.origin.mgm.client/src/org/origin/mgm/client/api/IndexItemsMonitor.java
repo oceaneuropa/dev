@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.origin.common.loadbalance.LoadBalanceService;
 import org.origin.common.thread.ThreadPoolTimer;
-import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 
 public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 
-	protected IndexServiceLoadBalancer indexServiceLoadBalancer;
+	protected IndexService indexService;
 	protected List<IndexItem> cachedIndexItems = new ArrayList<IndexItem>();
 
 	/**
@@ -24,11 +22,11 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 	/**
 	 * 
 	 * @param name
-	 * @param indexServiceLoadBalancer
+	 * @param indexService
 	 */
-	public IndexItemsMonitor(String name, IndexServiceLoadBalancer indexServiceLoadBalancer) {
+	public IndexItemsMonitor(String name, IndexService indexService) {
 		super(name);
-		this.indexServiceLoadBalancer = indexServiceLoadBalancer;
+		this.indexService = indexService;
 
 		setRunnable(new Runnable() {
 			@Override
@@ -41,15 +39,7 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 		});
 	}
 
-	public IndexServiceLoadBalancer getIndexServiceLoadBalancer() {
-		return indexServiceLoadBalancer;
-	}
-
-	public void setIndexServiceLoadBalancer(IndexServiceLoadBalancer indexServiceLoadBalancer) {
-		this.indexServiceLoadBalancer = indexServiceLoadBalancer;
-	}
-
-	public List<IndexItem> getCachedIndexItems() {
+	public List<IndexItem> getLoadedIndexItems() {
 		return this.cachedIndexItems;
 	}
 
@@ -57,19 +47,12 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 		boolean performed = false;
 
 		List<IndexItem> newIndexItems = null;
-		LoadBalanceService<IndexService> lbServices = null;
-		if (this.indexServiceLoadBalancer != null) {
-			lbServices = this.indexServiceLoadBalancer.getNext();
-			if (lbServices != null) {
-				IndexService indexService = lbServices.getService();
-				if (indexService != null) {
-					try {
-						newIndexItems = getIndexItems(indexService);
-						performed = true;
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
+		if (indexService != null) {
+			try {
+				newIndexItems = getIndexItems(indexService);
+				performed = true;
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 

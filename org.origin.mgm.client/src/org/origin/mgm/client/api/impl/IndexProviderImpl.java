@@ -50,9 +50,9 @@ public class IndexProviderImpl extends IndexServiceImpl implements IndexProvider
 	}
 
 	@Override
-	public boolean removeIndexItem(Integer indexItemId) throws IOException {
+	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
 		try {
-			StatusDTO status = getClient().removeIndexItem(indexItemId);
+			StatusDTO status = getClient().removeIndexItem(indexProviderId, indexItemId);
 			if (status != null && status.success()) {
 				return true;
 			}
@@ -64,9 +64,9 @@ public class IndexProviderImpl extends IndexServiceImpl implements IndexProvider
 	}
 
 	@Override
-	public boolean setProperties(Integer indexItemId, Map<String, Object> properties) throws IOException {
+	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
 		try {
-			StatusDTO status = getClient().setProperties(indexItemId, properties);
+			StatusDTO status = getClient().setProperties(indexProviderId, indexItemId, properties);
 			if (status != null && status.success()) {
 				return true;
 			}
@@ -78,9 +78,9 @@ public class IndexProviderImpl extends IndexServiceImpl implements IndexProvider
 	}
 
 	@Override
-	public boolean setProperty(Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
+	public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
 		try {
-			StatusDTO status = getClient().setProperty(indexItemId, propName, propValue, propType);
+			StatusDTO status = getClient().setProperty(indexProviderId, indexItemId, propName, propValue, propType);
 			if (status != null && status.success()) {
 				return true;
 			}
@@ -92,9 +92,9 @@ public class IndexProviderImpl extends IndexServiceImpl implements IndexProvider
 	}
 
 	@Override
-	public boolean removeProperties(Integer indexItemId, List<String> propertyNames) throws IOException {
+	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
 		try {
-			StatusDTO status = getClient().removeProperties(indexItemId, propertyNames);
+			StatusDTO status = getClient().removeProperties(indexProviderId, indexItemId, propertyNames);
 			if (status != null && status.success()) {
 				return true;
 			}

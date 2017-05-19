@@ -2,7 +2,6 @@ package org.origin.mgm.service.impl;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -11,8 +10,6 @@ import java.util.concurrent.ScheduledFuture;
 import org.origin.common.util.PropertiesAware;
 import org.origin.common.util.PropertyUtil;
 import org.origin.mgm.OriginConstants;
-import org.origin.mgm.exception.IndexServiceException;
-import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.service.IndexService;
 
 public class IndexServicePrinter {
@@ -20,8 +17,8 @@ public class IndexServicePrinter {
 	public static final String PROP_INITIAL_DELAY = "index.service.printer.initialDelay";
 	public static final String PROP_PERIOD = "index.service.printer.period";
 
-	public static final int DEFAULT_INITIAL_DELAY = 11;
-	public static final int DEFAULT_PERIOD = 11;
+	public static final int DEFAULT_INITIAL_DELAY = 10;
+	public static final int DEFAULT_PERIOD = 60;
 
 	protected IndexService indexService;
 
@@ -78,8 +75,8 @@ public class IndexServicePrinter {
 			public void run() {
 				try {
 					printProfile();
-					printIndexItems();
-				} catch (IndexServiceException e) {
+					// printIndexItems();
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
@@ -98,31 +95,31 @@ public class IndexServicePrinter {
 
 	protected Map<?, ?> getIndexServiceConfigProperties() {
 		Map<?, ?> properties = null;
-		if (this.indexService.getConfiguration() instanceof PropertiesAware) {
-			properties = ((PropertiesAware) this.indexService.getConfiguration()).getProperties();
+		if (this.indexService instanceof PropertiesAware) {
+			properties = ((PropertiesAware) this.indexService).getProperties();
 		}
 		return properties;
 	}
 
-	protected String getServiceName() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_NAME_PROP, null);
+	protected String getName() {
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_NAME, null);
 	}
 
-	protected String getServiceUrl() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_URL_PROP, null);
+	protected String getHostUrl() {
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_HOST_URL, null);
 	}
 
-	protected String getServiceContextRoot() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT_PROP, null);
+	protected String getContextRoot() {
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), OriginConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, null);
 	}
 
 	/**
 	 * Print out the profile of this index service node.
 	 */
 	public void printProfile() {
-		String name = getServiceName();
-		String url = getServiceUrl();
-		String contextRoot = getServiceContextRoot();
+		String name = getName();
+		String url = getHostUrl();
+		String contextRoot = getContextRoot();
 
 		System.out.println("IndexService Profile:");
 		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
@@ -133,15 +130,15 @@ public class IndexServicePrinter {
 		System.out.println();
 	}
 
-	public void printIndexItems() throws IndexServiceException {
-		List<IndexItem> indexItems = indexService.getIndexItems();
-		System.out.println("Cached data (" + indexItems.size() + "):");
-		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
-		for (IndexItem indexItem : indexItems) {
-			System.out.println(indexItem);
-		}
-		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.println();
-	}
+//	public void printIndexItems() throws IndexServiceException {
+//		List<IndexItem> indexItems = indexService.getIndexItems();
+//		System.out.println("Cached data (" + indexItems.size() + "):");
+//		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
+//		for (IndexItem indexItem : indexItems) {
+//			System.out.println(indexItem);
+//		}
+//		System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
+//		System.out.println();
+//	}
 
 }

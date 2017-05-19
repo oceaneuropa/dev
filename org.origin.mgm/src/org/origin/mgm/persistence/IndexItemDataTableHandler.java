@@ -12,7 +12,7 @@ import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.util.DateUtil;
-import org.origin.mgm.model.vo.IndexItemDataVO;
+import org.origin.mgm.model.vo.IndexItemVO;
 
 /*
  * CRUD methods for the IndexItemData table.
@@ -25,20 +25,20 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 
 	public static IndexItemDataTableHandler INSTANCE = new IndexItemDataTableHandler();
 
-	protected ResultSetListHandler<IndexItemDataVO> rsListHandler;
-	protected AbstractResultSetHandler<IndexItemDataVO> rsSingleHandler;
+	protected ResultSetListHandler<IndexItemVO> rsListHandler;
+	protected AbstractResultSetHandler<IndexItemVO> rsSingleHandler;
 
 	public IndexItemDataTableHandler() {
-		this.rsListHandler = new ResultSetListHandler<IndexItemDataVO>() {
+		this.rsListHandler = new ResultSetListHandler<IndexItemVO>() {
 			@Override
-			protected IndexItemDataVO handleRow(ResultSet rs) throws SQLException {
+			protected IndexItemVO handleRow(ResultSet rs) throws SQLException {
 				return createVO(rs);
 			}
 		};
 
-		this.rsSingleHandler = new AbstractResultSetHandler<IndexItemDataVO>() {
+		this.rsSingleHandler = new AbstractResultSetHandler<IndexItemVO>() {
 			@Override
-			public IndexItemDataVO handle(ResultSet rs) throws SQLException {
+			public IndexItemVO handle(ResultSet rs) throws SQLException {
 				if (rs.next()) {
 					return createVO(rs);
 				}
@@ -48,13 +48,13 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Create a IndexItemDataVO from a ResultSet.
+	 * Create a IndexItemVO from a ResultSet.
 	 * 
 	 * @param rs
 	 * @return
 	 * @throws SQLException
 	 */
-	protected IndexItemDataVO createVO(ResultSet rs) throws SQLException {
+	protected IndexItemVO createVO(ResultSet rs) throws SQLException {
 		Integer indexItemId = rs.getInt("indexItemId");
 		String indexProviderId = rs.getString("indexProviderId");
 		String type = rs.getString("type");
@@ -66,7 +66,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 		Date createTime = createTimeString != null ? DateUtil.toDate(createTimeString, DateUtil.getCommonDateFormats()) : null;
 		Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
 
-		return new IndexItemDataVO(indexItemId, indexProviderId, type, name, propertiesString, createTime, lastUpdateTime);
+		return new IndexItemVO(indexItemId, indexProviderId, type, name, propertiesString, createTime, lastUpdateTime);
 	}
 
 	protected DateFormat getDateFormat() {
@@ -119,7 +119,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> getIndexItems(Connection conn) throws SQLException {
+	public List<IndexItemVO> getIndexItems(Connection conn) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " ORDER BY " + getPKName() + " ASC", null, this.rsListHandler);
 	}
 
@@ -131,7 +131,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> getIndexItems(Connection conn, String indexProviderId) throws SQLException {
+	public List<IndexItemVO> getIndexItems(Connection conn, String indexProviderId) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? ORDER BY " + getPKName() + " ASC ", new Object[] { indexProviderId }, this.rsListHandler);
 	}
 
@@ -144,7 +144,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<IndexItemDataVO> getIndexItems(Connection conn, String indexProviderId, String type) throws SQLException {
+	public List<IndexItemVO> getIndexItems(Connection conn, String indexProviderId, String type) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE indexProviderId=? AND type=? ORDER BY " + getPKName() + " ASC ", new Object[] { indexProviderId, type }, this.rsListHandler);
 	}
 
@@ -156,7 +156,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public IndexItemDataVO getIndexItem(Connection conn, Integer indexItemId) throws SQLException {
+	public IndexItemVO getIndexItem(Connection conn, Integer indexItemId) throws SQLException {
 		return DatabaseUtil.query(conn, "SELECT * FROM " + getTableName() + " WHERE " + getPKName() + "=?", new Object[] { indexItemId }, this.rsSingleHandler);
 	}
 
@@ -193,8 +193,8 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public IndexItemDataVO insert(Connection conn, String indexProviderId, String type, String name, String propertiesString, Date createTime, Date lastUpdateTime) throws SQLException {
-		IndexItemDataVO newIndexItemVO = null;
+	public IndexItemVO insert(Connection conn, String indexProviderId, String type, String name, String propertiesString, Date createTime, Date lastUpdateTime) throws SQLException {
+		IndexItemVO newIndexItemVO = null;
 
 		if (lastUpdateTime == null) {
 			lastUpdateTime = createTime;
@@ -204,7 +204,7 @@ public class IndexItemDataTableHandler implements DatabaseTableAware {
 
 		Integer indexItemId = DatabaseUtil.insert(conn, "INSERT INTO " + getTableName() + " (indexProviderId, type, name, properties, createTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?)", new Object[] { indexProviderId, type, name, propertiesString, createTimeString, lastUpdateTimeString });
 		if (indexItemId > 0) {
-			newIndexItemVO = new IndexItemDataVO(indexItemId, indexProviderId, type, name, propertiesString, createTime, lastUpdateTime);
+			newIndexItemVO = new IndexItemVO(indexItemId, indexProviderId, type, name, propertiesString, createTime, lastUpdateTime);
 		}
 		return newIndexItemVO;
 	}

@@ -1,7 +1,13 @@
 package org.origin.common.loadbalance;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.origin.common.loadbalance.listener.LoadBalanceServiceListener;
+import org.origin.common.loadbalance.listener.LoadBalanceServiceListenerProvider;
+import org.origin.common.loadbalance.listener.LoadBalanceServiceListenerSupport;
+import org.origin.common.loadbalance.policy.LoadBalancePolicy;
 
 /**
  * https://devcentral.f5.com/articles/intro-to-load-balancing-for-developers-ndash-the-algorithms
@@ -14,41 +20,44 @@ import java.util.List;
  */
 public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 
-	protected List<LoadBalanceService<S>> services;
+	protected List<LoadBalanceResource<S>> resources;
 	protected LoadBalancePolicy<S> policy;
-
 	protected LoadBalanceServiceListenerSupport<S> listenerSupport = new LoadBalanceServiceListenerSupport<S>();
 
+	public LoadBalancer() {
+		this.resources = new ArrayList<LoadBalanceResource<S>>();
+	}
+
 	/**
 	 * 
-	 * @param services
+	 * @param resources
 	 */
-	public LoadBalancer(List<LoadBalanceService<S>> services) {
-		if (services == null) {
-			throw new IllegalArgumentException("services is null");
+	public LoadBalancer(List<LoadBalanceResource<S>> resources) {
+		this.resources = resources;
+		if (this.resources == null) {
+			this.resources = new ArrayList<LoadBalanceResource<S>>();
 		}
-		this.services = services;
 	}
 
-	public List<LoadBalanceService<S>> getServices() {
-		return services;
+	public List<LoadBalanceResource<S>> getResources() {
+		return this.resources;
 	}
 
 	/**
-	 * Get service by id.
+	 * Get a resource.
 	 * 
-	 * @param serviceId
+	 * @param resourceId
 	 * @return
 	 */
-	public LoadBalanceService<S> getService(String serviceId) {
-		if (serviceId == null) {
-			throw new IllegalArgumentException("serviceId is null");
+	public LoadBalanceResource<S> getResource(String resourceId) {
+		if (resourceId == null) {
+			throw new IllegalArgumentException("resourceId is null");
 		}
-		LoadBalanceService<S> result = null;
-		for (Iterator<LoadBalanceService<S>> itor = this.services.iterator(); itor.hasNext();) {
-			LoadBalanceService<S> currService = itor.next();
-			if (serviceId.equals(currService.getId())) {
-				result = currService;
+		LoadBalanceResource<S> result = null;
+		for (Iterator<LoadBalanceResource<S>> itor = this.resources.iterator(); itor.hasNext();) {
+			LoadBalanceResource<S> currResource = itor.next();
+			if (resourceId.equals(currResource.getId())) {
+				result = currResource;
 				break;
 			}
 		}
@@ -56,44 +65,52 @@ public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 	}
 
 	/**
-	 * Add a service to the LoadBalancer
 	 * 
-	 * @param service
 	 * @return
 	 */
-	public synchronized boolean addService(LoadBalanceService<S> service) {
+	public boolean isEmpty() {
+		return (this.resources.isEmpty()) ? true : false;
+	}
+
+	/**
+	 * Add a resource to the LoadBalancer
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	public synchronized boolean addResource(LoadBalanceResource<S> resource) {
 		boolean succeed = false;
-		if (service != null) {
+		if (resource != null) {
 			// remove existing lb service with same id, if found.
-			LoadBalanceService<S> existingService = getService(service.getId());
-			if (existingService != null) {
-				this.services.remove(existingService);
+			LoadBalanceResource<S> existingResource = getResource(resource.getId());
+			if (existingResource != null) {
+				this.resources.remove(existingResource);
 			}
 
 			// add the new lb service to the list
-			if (!this.services.contains(service)) {
-				succeed = this.services.add(service);
+			if (!this.resources.contains(resource)) {
+				succeed = this.resources.add(resource);
 			}
 		}
 		return succeed;
 	}
 
 	/**
-	 * Remove a service from the LoadBalancer.
+	 * Remove a resource from the LoadBalancer.
 	 * 
-	 * @param service
+	 * @param resource
 	 * @return
 	 */
-	public synchronized boolean removeService(LoadBalanceService<S> service) {
+	public synchronized boolean removeResource(LoadBalanceResource<S> resource) {
 		boolean succeed = false;
-		if (service != null) {
-			String serviceId = service.getId();
+		if (resource != null) {
+			String serviceId = resource.getId();
 
-			for (Iterator<LoadBalanceService<S>> itor = this.services.iterator(); itor.hasNext();) {
-				LoadBalanceService<S> currService = itor.next();
+			for (Iterator<LoadBalanceResource<S>> itor = this.resources.iterator(); itor.hasNext();) {
+				LoadBalanceResource<S> currService = itor.next();
 
 				// remove lb service of same instance or same id
-				if (currService == service || currService.getId().equals(serviceId)) {
+				if (currService == resource || currService.getId().equals(serviceId)) {
 					itor.remove();
 					succeed = true;
 				}
@@ -140,15 +157,15 @@ public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 	 * 
 	 * @return
 	 */
-	public synchronized LoadBalanceService<S> getNext() {
+	public synchronized LoadBalanceResource<S> getNext() {
 		if (this.policy == null) {
 			throw new IllegalStateException("Load balance policy is not set.");
 		}
-		if (this.services.isEmpty()) {
+		if (this.resources.isEmpty()) {
 			return null;
 		}
-		if (this.services.size() == 1) {
-			return this.services.get(0);
+		if (this.resources.size() == 1) {
+			return this.resources.get(0);
 		}
 		return this.policy.next();
 	}
@@ -169,11 +186,11 @@ public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {
 		return this.listenerSupport.removeServiceListener(listener);
 	}
 
-	protected void notifyServiceAdded(LoadBalanceService<S> service) {
+	protected void notifyServiceAdded(LoadBalanceResource<S> service) {
 		this.listenerSupport.notifyServiceAdded(service);
 	}
 
-	protected void notifyServiceRemoved(LoadBalanceService<S> service) {
+	protected void notifyServiceRemoved(LoadBalanceResource<S> service) {
 		this.listenerSupport.notifyServiceRemoved(service);
 	}
 

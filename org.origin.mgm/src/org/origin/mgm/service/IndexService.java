@@ -5,23 +5,31 @@ import java.util.Map;
 
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
+import org.osgi.framework.BundleContext;
 
 public interface IndexService {
 
-	/**
-	 * Get the index service configuration.
-	 * 
-	 * @return
-	 */
-	public IndexServiceConfiguration getConfiguration();
+	public void start(BundleContext bundleContext);
+
+	public void stop(BundleContext bundleContext);
 
 	/**
-	 * Get all index items with any type and created by any index provider.
 	 * 
 	 * @return
-	 * @throws IndexServiceException
 	 */
-	public List<IndexItem> getIndexItems() throws IndexServiceException;
+	public String getName();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getHostURL();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public String getContextRoot();
 
 	/**
 	 * Get index items with specified indexProviderId.
@@ -45,15 +53,6 @@ public interface IndexService {
 	/**
 	 * Get index item.
 	 * 
-	 * @param indexItemId
-	 * @return
-	 * @throws IndexServiceException
-	 */
-	public IndexItem getIndexItem(Integer indexItemId) throws IndexServiceException;
-
-	/**
-	 * Get index item.
-	 * 
 	 * @param indexProviderId
 	 * @param type
 	 * @param name
@@ -61,6 +60,15 @@ public interface IndexService {
 	 * @throws IndexServiceException
 	 */
 	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IndexServiceException;
+
+	/**
+	 * Get index item.
+	 * 
+	 * @param indexItemId
+	 * @return
+	 * @throws IndexServiceException
+	 */
+	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IndexServiceException;
 
 	/**
 	 * Add an index item.
@@ -72,77 +80,91 @@ public interface IndexService {
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public boolean addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IndexServiceException;
+	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IndexServiceException;
 
 	/**
 	 * Remove an index item.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public boolean removeIndexItem(Integer indexItemId) throws IndexServiceException;
+	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IndexServiceException;
 
 	/**
 	 * Check whether a property of an index item exists.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param propName
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public boolean hasProperty(Integer indexItemId, String propName) throws IndexServiceException;
+	public boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws IndexServiceException;
 
 	/**
 	 * Get the values of all properties of an index item.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public Map<String, Object> getProperties(Integer indexItemId) throws IndexServiceException;
+	public Map<String, Object> getProperties(String indexProviderId, Integer indexItemId) throws IndexServiceException;
 
 	/**
 	 * Get the property value of an index item.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param propName
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public Map<String, Object> getProperty(Integer indexItemId, String propName) throws IndexServiceException;
+	public Object getProperty(String indexProviderId, Integer indexItemId, String propName) throws IndexServiceException;
 
 	/**
 	 * Set the properties of an index item.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param properties
+	 * @return
 	 * @throws IndexServiceException
 	 */
-	public boolean setProperties(Integer indexItemId, Map<String, Object> properties) throws IndexServiceException;
+	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IndexServiceException;
 
 	/**
 	 * Remove the properties of an index item.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param propNames
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public boolean removeProperty(Integer indexItemId, List<String> propNames) throws IndexServiceException;
-
-	/**
-	 * Add a IndexServiceListener.
-	 * 
-	 * @param listener
-	 */
-	public void addListener(IndexServiceListener listener);
-
-	/**
-	 * Remove a IndexServiceListener.
-	 * 
-	 * @param listener
-	 */
-	public void removeListener(IndexServiceListener listener);
+	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws IndexServiceException;
 
 }
+
+/// **
+// * Get the index service configuration.
+// *
+// * @return
+// */
+// public IndexServiceConfiguration getConfiguration();
+
+// /**
+// * Add a IndexServiceListener.
+// *
+// * @param listener
+// */
+// public void addListener(IndexServiceListener listener);
+
+// /**
+// * Remove a IndexServiceListener.
+// *
+// * @param listener
+// */
+// public void removeListener(IndexServiceListener listener);

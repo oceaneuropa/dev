@@ -5,12 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.origin.common.loadbalance.LoadBalanceService;
-import org.origin.common.loadbalance.RoundRobinLoadBalancePolicy;
+import org.origin.common.loadbalance.LoadBalanceResource;
+import org.origin.common.loadbalance.LoadBalanceResourceImpl;
+import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
 import org.origin.mgm.client.OriginConstants;
-import org.origin.mgm.client.loadbalance.IndexProviderLoadBalanceService;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
-import org.origin.mgm.client.loadbalance.IndexServiceLoadBalanceService;
 import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 
 public class IndexServiceUtil {
@@ -57,16 +56,17 @@ public class IndexServiceUtil {
 	 * @return
 	 */
 	public static IndexServiceLoadBalancer getIndexServiceLoadBalancer(Map<Object, Object> props) {
-		List<LoadBalanceService<IndexService>> lbServices = new ArrayList<LoadBalanceService<IndexService>>();
+		List<LoadBalanceResource<IndexService>> resources = new ArrayList<LoadBalanceResource<IndexService>>();
 
 		List<URL> urls = getIndexServiceURLs(props);
 		for (URL url : urls) {
 			IndexServiceConfiguration config = new IndexServiceConfiguration(url.toExternalForm());
 			IndexService indexService = IndexServiceFactory.getInstance().createIndexService(config);
-			lbServices.add(new IndexServiceLoadBalanceService(indexService));
+			String resourceId = indexService.getConfiguration().getUrl();
+			resources.add(new LoadBalanceResourceImpl<IndexService>(indexService, resourceId));
 		}
 
-		IndexServiceLoadBalancer loadBalancer = new IndexServiceLoadBalancer(lbServices);
+		IndexServiceLoadBalancer loadBalancer = new IndexServiceLoadBalancer(resources);
 		loadBalancer.setPolicy(new RoundRobinLoadBalancePolicy<IndexService>());
 
 		return loadBalancer;
@@ -78,16 +78,17 @@ public class IndexServiceUtil {
 	 * @return
 	 */
 	public static IndexProviderLoadBalancer getIndexProviderLoadBalancer(Map<Object, Object> props) {
-		List<LoadBalanceService<IndexProvider>> lbServices = new ArrayList<LoadBalanceService<IndexProvider>>();
+		List<LoadBalanceResource<IndexProvider>> resources = new ArrayList<LoadBalanceResource<IndexProvider>>();
 
 		List<URL> urls = getIndexServiceURLs(props);
 		for (URL url : urls) {
 			IndexServiceConfiguration config = new IndexServiceConfiguration(url.toExternalForm());
 			IndexProvider indexProvider = IndexProviderFactory.getInstance().createIndexProvider(config);
-			lbServices.add(new IndexProviderLoadBalanceService(indexProvider));
+			String resourceId = indexProvider.getConfiguration().getUrl();
+			resources.add(new LoadBalanceResourceImpl<IndexProvider>(indexProvider, resourceId));
 		}
 
-		IndexProviderLoadBalancer loadBalancer = new IndexProviderLoadBalancer(lbServices);
+		IndexProviderLoadBalancer loadBalancer = new IndexProviderLoadBalancer(resources);
 		loadBalancer.setPolicy(new RoundRobinLoadBalancePolicy<IndexProvider>());
 
 		return loadBalancer;

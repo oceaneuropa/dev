@@ -23,6 +23,7 @@ import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
 import org.origin.common.util.DateUtil;
+import org.origin.common.util.StringUtil;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.dto.DTOConverter;
 import org.origin.mgm.model.dto.IndexItemDTO;
@@ -31,30 +32,27 @@ import org.origin.mgm.model.dto.IndexItemSetPropertyRequestDTO;
 import org.origin.mgm.model.runtime.IndexItem;
 import org.origin.mgm.service.IndexService;
 
-/**
+/*
  * IndexItem resource
  * 
+ * {contextRoot} example:
+ * /orbit/v1/indexservice/
+ * 
  * IndexItem:
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/exists
+ *     Not being used:
+ *     URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/exists
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}
+ * IndexItem Properties:
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/properties
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/properties (Body parameter: IndexItemSetPropertiesRequestDTO)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/property (Body parameter: IndexItemSetPropertyRequestDTO)
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/properties?propertynames={propertynames}
  * 
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}
- * 
- * 
- * Properties:
- * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/properties
- *
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/properties (Body parameter: IndexItemSetPropertiesRequestDTO)
- * 
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/property (Body parameter: IndexItemSetPropertyRequestDTO)
- *
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/properties?propertynames={propertynames}
- *
  */
-@Path("/indexservice/indexitems/{indexitemid}")
+@Path("/indexitems/{indexproviderid}/{indexitemid}")
 @Produces(MediaType.APPLICATION_JSON)
 public class IndexItemResource extends AbstractApplicationResource {
 
@@ -73,52 +71,17 @@ public class IndexItemResource extends AbstractApplicationResource {
 	}
 
 	/**
-	 * Check whether an index item exists.
-	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/exists
-	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/100001/exists
-	 * 
-	 * @param indexProviderId
-	 * @param type
-	 * @param name
-	 * @param indexitemid
-	 * @return
-	 */
-	@Path("exists")
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response exists(@PathParam("indexitemid") Integer indexItemId) {
-		if (indexItemId == null || indexItemId <= 0) {
-			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId path parameter is invalid.");
-			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
-		}
-
-		IndexService indexService = getService(IndexService.class);
-		try {
-			IndexItem indexItem = indexService.getIndexItem(indexItemId);
-			Boolean exists = (indexItem != null) ? Boolean.TRUE : Boolean.FALSE;
-			return Response.ok().entity(exists).build();
-
-		} catch (IndexServiceException e) {
-			ErrorDTO error = handleError(e, e.getCode(), true);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-		}
-	}
-
-	/**
 	 * Get an index item.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}
 	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/100001
-	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getIndexItem(@PathParam("indexitemid") Integer indexItemId) {
+	public Response getIndexItem(@PathParam("indexproviderid") String indexProviderId, @PathParam("indexitemid") Integer indexItemId) {
 		if (indexItemId == null || indexItemId <= 0) {
 			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId path parameter is invalid.");
 			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
@@ -127,7 +90,7 @@ public class IndexItemResource extends AbstractApplicationResource {
 		IndexItemDTO indexItemDTO = null;
 		IndexService indexService = getService(IndexService.class);
 		try {
-			IndexItem indexItem = indexService.getIndexItem(indexItemId);
+			IndexItem indexItem = indexService.getIndexItem(indexProviderId, indexItemId);
 			if (indexItem != null) {
 				indexItemDTO = DTOConverter.getInstance().toDTO(indexItem);
 			}
@@ -146,16 +109,15 @@ public class IndexItemResource extends AbstractApplicationResource {
 	/**
 	 * Remove an index item.
 	 * 
-	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}
 	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/100001
-	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @return
 	 */
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response removeIndexItem(@PathParam("indexitemid") Integer indexItemId) {
+	public Response removeIndexItem(@PathParam("indexproviderid") String indexProviderId, @PathParam("indexitemid") Integer indexItemId) {
 		if (indexItemId == null || indexItemId <= 0) {
 			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId path parameter is invalid.");
 			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
@@ -165,7 +127,7 @@ public class IndexItemResource extends AbstractApplicationResource {
 		boolean succeed = false;
 		try {
 			// delete IndexItem by indexItemId
-			succeed = indexService.removeIndexItem(indexItemId);
+			succeed = indexService.removeIndexItem(indexProviderId, indexItemId);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -181,21 +143,49 @@ public class IndexItemResource extends AbstractApplicationResource {
 		}
 	}
 
+	// /**
+	// * Check whether an index item exists.
+	// *
+	// * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/exists
+	// *
+	// * @param indexProviderId
+	// * @param indexitemid
+	// * @return
+	// */
+	// @Path("exists")
+	// @GET
+	// @Produces(MediaType.APPLICATION_JSON)
+	// public Response exists(@PathParam("indexproviderid") String indexProviderId, @PathParam("indexitemid") Integer indexItemId) {
+	// if (indexItemId == null || indexItemId <= 0) {
+	// ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId path parameter is invalid.");
+	// return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
+	// }
+	//
+	// IndexService indexService = getService(IndexService.class);
+	// try {
+	// IndexItem indexItem = indexService.getIndexItem(indexProviderId, indexItemId);
+	// Boolean exists = (indexItem != null) ? Boolean.TRUE : Boolean.FALSE;
+	// return Response.ok().entity(exists).build();
+	//
+	// } catch (IndexServiceException e) {
+	// ErrorDTO error = handleError(e, e.getCode(), true);
+	// return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+	// }
+	// }
+
 	/**
 	 * Get properties.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/properties
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/properties
 	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/100001/properties
-	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
-	 * @param name
 	 * @return
 	 */
 	@Path("properties")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProperties(@PathParam("indexitemid") Integer indexItemId) {
+	public Response getProperties(@PathParam("indexproviderid") String indexProviderId, @PathParam("indexitemid") Integer indexItemId) {
 		if (indexItemId == null || indexItemId <= 0) {
 			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId path parameter is invalid.");
 			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
@@ -204,7 +194,7 @@ public class IndexItemResource extends AbstractApplicationResource {
 		Map<String, ?> properties = null;
 		IndexService indexService = getService(IndexService.class);
 		try {
-			properties = indexService.getProperties(indexItemId);
+			properties = indexService.getProperties(indexProviderId, indexItemId);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e);
@@ -219,10 +209,10 @@ public class IndexItemResource extends AbstractApplicationResource {
 	/**
 	 * Set properties.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/properties (Body parameter: IndexItemSetPropertiesRequestDTO)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/properties (Body parameter:
+	 * IndexItemSetPropertiesRequestDTO)
 	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/100001/properties (Body parameter: IndexItemSetPropertiesRequestDTO)
-	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param setPropertiesRequest
 	 * @return
@@ -230,7 +220,7 @@ public class IndexItemResource extends AbstractApplicationResource {
 	@Path("properties")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setProperties(@PathParam("indexitemid") Integer indexItemId, IndexItemSetPropertiesRequestDTO setPropertiesRequest) {
+	public Response setProperties(@PathParam("indexproviderid") String indexProviderId, @PathParam("indexitemid") Integer indexItemId, IndexItemSetPropertiesRequestDTO setPropertiesRequest) {
 		if (indexItemId == null || indexItemId <= 0) {
 			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId path parameter is invalid.");
 			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
@@ -250,10 +240,10 @@ public class IndexItemResource extends AbstractApplicationResource {
 			Map<String, Object> propertiesToSet = JSONUtil.toProperties(propertiesString);
 
 			// merge the add properties to existing properties
-			Map<String, Object> existingProperties = (Map<String, Object>) indexService.getProperties(indexItemId);
+			Map<String, Object> existingProperties = (Map<String, Object>) indexService.getProperties(indexProviderId, indexItemId);
 			existingProperties.putAll(propertiesToSet);
 
-			succeed = indexService.setProperties(indexItemId, existingProperties);
+			succeed = indexService.setProperties(indexProviderId, indexItemId, existingProperties);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e);
@@ -272,10 +262,9 @@ public class IndexItemResource extends AbstractApplicationResource {
 	/**
 	 * Set property.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/property (Body parameter: IndexItemSetPropertyRequestDTO)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/property (Body parameter: IndexItemSetPropertyRequestDTO)
 	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/100001/property (Body parameter: IndexItemSetPropertyRequestDTO)
-	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param setPropertyRequest
 	 * @return
@@ -283,7 +272,7 @@ public class IndexItemResource extends AbstractApplicationResource {
 	@Path("property")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setProperty(@PathParam("indexitemid") Integer indexItemId, IndexItemSetPropertyRequestDTO setPropertyRequest) {
+	public Response setProperty(@PathParam("indexproviderid") String indexProviderId, @PathParam("indexitemid") Integer indexItemId, IndexItemSetPropertyRequestDTO setPropertyRequest) {
 		if (indexItemId == null || indexItemId <= 0) {
 			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId path parameter is invalid.");
 			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
@@ -332,7 +321,7 @@ public class IndexItemResource extends AbstractApplicationResource {
 		IndexService indexService = getService(IndexService.class);
 		try {
 			// merge the add properties to existing properties
-			Map<String, Object> properties = (Map<String, Object>) indexService.getProperties(indexItemId);
+			Map<String, Object> properties = (Map<String, Object>) indexService.getProperties(indexProviderId, indexItemId);
 
 			if (isString) {
 				String stringValue = propValue instanceof String ? (String) propValue : propValue.toString();
@@ -363,7 +352,7 @@ public class IndexItemResource extends AbstractApplicationResource {
 				properties.put(propName, dateValue);
 			}
 
-			succeed = indexService.setProperties(indexItemId, properties);
+			succeed = indexService.setProperties(indexProviderId, indexItemId, properties);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e);
@@ -382,19 +371,17 @@ public class IndexItemResource extends AbstractApplicationResource {
 	/**
 	 * Remove properties.
 	 * 
-	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/indexservice/indexitems/{indexitemid}/properties?propertynames={propertynames}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}/properties?propertynames={propertynames}
 	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/indexitems/100001/properties?propertynames=''
-	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param propertyNamesString
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	@Path("properties")
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response removeProperty(@PathParam("indexitemid") Integer indexItemId, @QueryParam("propertynames") String propertyNamesString) {
+	public Response removeProperty(@PathParam("indexproviderid") String indexProviderId, @PathParam("indexitemid") Integer indexItemId, @QueryParam("propertynames") String propertyNamesString) {
 		if (indexItemId == null || indexItemId <= 0) {
 			ErrorDTO nullIndexItemIdError = new ErrorDTO("indexItemId path parameter is invalid.");
 			return Response.status(Status.BAD_REQUEST).entity(nullIndexItemIdError).build();
@@ -408,8 +395,11 @@ public class IndexItemResource extends AbstractApplicationResource {
 		boolean succeed = false;
 		IndexService indexService = getService(IndexService.class);
 		try {
-			List<?> propNames = JSONUtil.toList(propertyNamesString, true);
-			indexService.removeProperty(indexItemId, (List<String>) propNames);
+			// List<?> propNames = JSONUtil.toList(propertyNamesString, true);
+			// List<String> propNames = Arrays.asList(propertyNamesString);
+			List<String> propNames = StringUtil.toList(propertyNamesString);
+
+			indexService.removeProperty(indexProviderId, indexItemId, (List<String>) propNames);
 
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e);
@@ -419,9 +409,11 @@ public class IndexItemResource extends AbstractApplicationResource {
 		if (succeed) {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, MessageFormat.format("IndexItem (indexItemId={0}) properties are removed successfully.", new Object[] { indexItemId }));
 			return Response.ok().entity(statusDTO).build();
+
 		} else {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, MessageFormat.format("IndexItem (indexItemId={0}) properties are not removed.", new Object[] { indexItemId }));
-			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.FAILED, MessageFormat.format("IndexItem (indexItemId={0}) properties are not removed.", new Object[] { indexItemId }));
+			// return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
+			return Response.ok().entity(statusDTO).build();
 		}
 	}
 

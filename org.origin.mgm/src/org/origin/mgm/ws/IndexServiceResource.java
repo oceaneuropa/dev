@@ -19,15 +19,17 @@ import org.origin.common.util.CommandRequestHandler;
 import org.origin.mgm.model.dto.IndexItemCommandRequestDTO;
 import org.origin.mgm.service.IndexService;
 
-/**
+/*
  * IndexService resource
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/ping
+ * {contextRoot} example:
+ * /orbit/v1/indexservice/
  * 
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexservice/commandrequest (Body parameter: IndexItemCommandRequestDTO)
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/commandrequest (Body parameter: IndexItemCommandRequestDTO)
  * 
  */
-@Path("/indexservice")
+@Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class IndexServiceResource extends AbstractApplicationResource {
 
@@ -36,9 +38,7 @@ public class IndexServiceResource extends AbstractApplicationResource {
 	/**
 	 * Ping the index service.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexservice/ping
-	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/ping
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
 	 * 
 	 * @return
 	 */
@@ -56,9 +56,7 @@ public class IndexServiceResource extends AbstractApplicationResource {
 	/**
 	 * Post an command request to the index service.
 	 * 
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/indexservice/commandrequest (Body parameter: IndexItemCommandRequestDTO)
-	 * 
-	 * e.g. http://10.98.200.137:9090/orbit/v1/indexservice/commandrequest (Body parameter: IndexItemCommandRequestDTO)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/commandrequest (Body parameter: IndexItemCommandRequestDTO)
 	 * 
 	 * @param action
 	 * @param parameters

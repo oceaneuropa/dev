@@ -20,7 +20,7 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
-import org.origin.mgm.model.vo.IndexItemDataVO;
+import org.origin.mgm.model.vo.IndexItemVO;
 import org.origin.mgm.persistence.IndexItemDataTableHandler;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -49,9 +49,9 @@ public class IndexItemDataTableHandlerTestMac {
 
 		Connection conn = getConnection();
 		try {
-			List<IndexItemDataVO> vos = this.dataTableHandler.getIndexItems(conn);
+			List<IndexItemVO> vos = this.dataTableHandler.getIndexItems(conn);
 			System.out.println("vos.size()=" + vos.size());
-			for (IndexItemDataVO vo : vos) {
+			for (IndexItemVO vo : vos) {
 				System.out.println(vo.toString());
 
 				String propertiesString = vo.getPropertiesString();
@@ -75,9 +75,9 @@ public class IndexItemDataTableHandlerTestMac {
 
 		Connection conn = getConnection();
 		try {
-			List<IndexItemDataVO> vos = this.dataTableHandler.getIndexItems(conn);
+			List<IndexItemVO> vos = this.dataTableHandler.getIndexItems(conn);
 			System.out.println("vos.size()=" + vos.size());
-			for (IndexItemDataVO vo : vos) {
+			for (IndexItemVO vo : vos) {
 				Integer indexItemId = vo.getIndexItemId();
 				boolean succeed = this.dataTableHandler.delete(conn, indexItemId);
 
@@ -110,7 +110,7 @@ public class IndexItemDataTableHandlerTestMac {
 			properties1.put("L1", new Long(10000));
 			properties1.put("F2", new Float(10.01));
 			String propertiess1String = JSONUtil.toJsonString(properties1);
-			IndexItemDataVO vo1 = this.dataTableHandler.insert(conn, indexProviderId, "tns1", "name1", propertiess1String, new Date(), null);
+			IndexItemVO vo1 = this.dataTableHandler.insert(conn, indexProviderId, "tns1", "name1", propertiess1String, new Date(), null);
 
 			Map<String, Object> properties2 = new HashMap<String, Object>();
 			properties2.put("indexProviderId", indexProviderId);
@@ -121,7 +121,7 @@ public class IndexItemDataTableHandlerTestMac {
 			properties2.put("L3", new Long(20000));
 			properties2.put("F4", new Float(20.01));
 			String propertiess2String = JSONUtil.toJsonString(properties2);
-			IndexItemDataVO vo2 = this.dataTableHandler.insert(conn, indexProviderId, "tns1", "name2", propertiess2String, new Date(), null);
+			IndexItemVO vo2 = this.dataTableHandler.insert(conn, indexProviderId, "tns1", "name2", propertiess2String, new Date(), null);
 
 			System.out.println("vo1 = " + vo1);
 			System.out.println("vo2 = " + vo2);
@@ -236,8 +236,8 @@ public class IndexItemDataTableHandlerTestMac {
 			// handler.updateProperties(conn, "indexservice", "node5", contentString5);
 			// handler.updateProperties(conn, "indexservice", "node6", contentString6);
 
-			List<IndexItemDataVO> indexItemVOs = handler.getIndexItems(conn);
-			for (IndexItemDataVO indexItemVO : indexItemVOs) {
+			List<IndexItemVO> indexItemVOs = handler.getIndexItems(conn);
+			for (IndexItemVO indexItemVO : indexItemVOs) {
 				System.out.println("=============================================================================================");
 				System.out.println(indexItemVO);
 

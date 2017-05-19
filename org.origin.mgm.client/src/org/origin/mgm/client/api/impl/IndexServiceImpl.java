@@ -144,10 +144,10 @@ public class IndexServiceImpl implements IndexService {
 	}
 
 	@Override
-	public IndexItem getIndexItem(Integer indexItemId) throws IOException {
+	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
 		IndexItem indexItem = null;
 		try {
-			IndexItemDTO indexItemDTO = getClient().getIndexItem(indexItemId);
+			IndexItemDTO indexItemDTO = getClient().getIndexItem(indexProviderId, indexItemId);
 			if (indexItemDTO != null) {
 				Integer currIndexItemId = indexItemDTO.getIndexItemId();
 				String currIndexProviderId = indexItemDTO.getIndexProviderId();

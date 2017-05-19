@@ -3,10 +3,10 @@ package org.origin.mgm.client.loadbalance;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.origin.common.loadbalance.AbstractLoadBalanceService;
+import org.origin.common.loadbalance.LoadBalanceResourceImpl;
 import org.origin.mgm.client.api.IndexItem;
 
-public class IndexItemAwareLoadBalanceService<S> extends AbstractLoadBalanceService<S> {
+public class IndexItemAwareLoadBalanceService<S> extends LoadBalanceResourceImpl<S> {
 
 	protected IndexItem indexItem;
 
@@ -21,7 +21,7 @@ public class IndexItemAwareLoadBalanceService<S> extends AbstractLoadBalanceServ
 			throw new IllegalArgumentException("indexItem is null.");
 		}
 		this.indexItem = indexItem;
-		this.setId(String.valueOf(this.indexItem.getIndexItemId()));
+		this.setId(this.indexItem.getIndexItemId().toString());
 	}
 
 	public IndexItem getIndexItem() {

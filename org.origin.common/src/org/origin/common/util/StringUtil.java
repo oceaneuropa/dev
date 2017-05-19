@@ -25,6 +25,44 @@ public class StringUtil {
 	}
 
 	/**
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public static String toString(List<String> list) {
+		String listString = null;
+		if (list != null && !list.isEmpty()) {
+			listString = "";
+			for (int i = 0; i < list.size(); i++) {
+				String str = list.get(i);
+				if (i > 0) {
+					listString += ",";
+				}
+				listString += str;
+			}
+		}
+		return listString;
+	}
+
+	/**
+	 * 
+	 * @param listString
+	 * @return
+	 */
+	public static List<String> toList(String listString) {
+		List<String> list = new ArrayList<String>();
+		if (listString != null && !listString.isEmpty()) {
+			String[] strArray = listString.split(",");
+			if (strArray != null) {
+				for (String str : strArray) {
+					list.add(str);
+				}
+			}
+		}
+		return list;
+	}
+
+	/**
 	 * Returns a string representation of the byte array as a series of hexadecimal characters.
 	 *
 	 * @see com.google.gwt.util.tools.shared.StringUtils

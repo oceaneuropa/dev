@@ -58,6 +58,10 @@ public class ThreadPoolTimer {
 		this.runnable = runnable;
 	}
 
+	public String getName() {
+		return this.name;
+	}
+
 	public Runnable getRunnable() {
 		return runnable;
 	}
@@ -106,7 +110,8 @@ public class ThreadPoolTimer {
 		// maximumPoolSize (10)
 		// --- max number of pooled threads
 		// keepAliveTime (20 seconds)
-		// --- when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before terminating.
+		// --- when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before
+		// terminating.
 		// workQueue (SynchronousQueue)
 		// --- the queue to use for holding tasks before they are executed. This queue will hold only the Runnable tasks submitted by the execute method.
 		// threadFactory (ThreadFactory)
@@ -171,7 +176,8 @@ public class ThreadPoolTimer {
 						}
 
 						// If less than 20% of the interval time elapsed since last monitoring, abort this round of monitoring.
-						// Perhaps the timer executed previous timer task late and then executes this timer task on time, which causes the time elapsed between two rounds of monitoring to be small.
+						// Perhaps the timer executed previous timer task late and then executes this timer task on time, which causes the time elapsed between
+						// two rounds of monitoring to be small.
 						if (elapsed < (timerInterval * 2 / 10)) {
 							return;
 						}

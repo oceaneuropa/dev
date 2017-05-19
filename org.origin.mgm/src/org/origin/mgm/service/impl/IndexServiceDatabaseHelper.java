@@ -17,7 +17,7 @@ import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
-import org.origin.mgm.model.vo.IndexItemDataVO;
+import org.origin.mgm.model.vo.IndexItemVO;
 import org.origin.mgm.model.vo.IndexItemRequestVO;
 import org.origin.mgm.model.vo.IndexItemRevisionVO;
 import org.origin.mgm.persistence.IndexItemDataTableHandler;
@@ -186,7 +186,7 @@ public class IndexServiceDatabaseHelper {
 
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 
-		List<IndexItemDataVO> indexItemVOs = null;
+		List<IndexItemVO> indexItemVOs = null;
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -200,7 +200,7 @@ public class IndexServiceDatabaseHelper {
 		}
 
 		if (indexItemVOs != null) {
-			for (IndexItemDataVO indexItemVO : indexItemVOs) {
+			for (IndexItemVO indexItemVO : indexItemVOs) {
 				IndexItem indexItem = toIndexItem(indexItemVO);
 				indexItems.add(indexItem);
 			}
@@ -219,8 +219,8 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public IndexItemDataVO getIndexItemFromDatabase(ConnectionAware connAware, Integer indexItemId) throws IndexServiceException {
-		IndexItemDataVO indexItemVO = null;
+	public IndexItemVO getIndexItemFromDatabase(ConnectionAware connAware, Integer indexItemId) throws IndexServiceException {
+		IndexItemVO indexItemVO = null;
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -240,7 +240,7 @@ public class IndexServiceDatabaseHelper {
 	 * @param indexItemVO
 	 * @return
 	 */
-	private IndexItem toIndexItem(IndexItemDataVO indexItemVO) {
+	public IndexItem toIndexItem(IndexItemVO indexItemVO) {
 		Integer indexItemId = indexItemVO.getIndexItemId();
 		String indexProviderId = indexItemVO.getIndexProviderId();
 		String type = indexItemVO.getType();
@@ -266,8 +266,8 @@ public class IndexServiceDatabaseHelper {
 	 * @return
 	 * @throws IndexServiceException
 	 */
-	public IndexItemDataVO createIndexItemInDatabase(ConnectionAware connAware, String indexProviderId, String type, String name, String propertiesString) throws IndexServiceException {
-		IndexItemDataVO newIndexItemVO = null;
+	public IndexItemVO createIndexItemInDatabase(ConnectionAware connAware, String indexProviderId, String type, String name, String propertiesString) throws IndexServiceException {
+		IndexItemVO newIndexItemVO = null;
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();

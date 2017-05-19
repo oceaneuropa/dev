@@ -6,6 +6,7 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 
@@ -14,6 +15,13 @@ import org.origin.common.rest.model.ErrorDTO;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/*
+ * Ping the service.
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
+ * 
+ * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ *
+ */
 public abstract class AbstractClient implements IClient {
 
 	protected ClientConfiguration config;
@@ -113,9 +121,46 @@ public abstract class AbstractClient implements IClient {
 		this.client.close();
 	}
 
-	@Override
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean doPing() {
+		try {
+			int ping = ping();
+			if (ping > 0) {
+				return true;
+			}
+		} catch (ClientException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+
+	/**
+	 * Ping the service.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
+	 * 
+	 * @return
+	 * @throws ClientException
+	 */
 	public int ping() throws ClientException {
-		return -1;
+		int result = 0;
+		Response response = null;
+		try {
+			Builder builder = getRootPath().path("ping").request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			result = response.readEntity(Integer.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ClientUtil.closeQuietly(response, true);
+		}
+		return result;
 	}
 
 }

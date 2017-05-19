@@ -86,11 +86,12 @@ public interface IndexService extends IAdaptable {
 	/**
 	 * Get an index item.
 	 * 
+	 * @param indexProviderId
 	 * @param indexItemId
 	 * @return
 	 * @throws IOException
 	 */
-	public IndexItem getIndexItem(Integer indexItemId) throws IOException;
+	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
 
 	/**
 	 * Execute an action with optional parameters.

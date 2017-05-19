@@ -28,10 +28,10 @@ public class IndexServiceDatabaseConfiguration extends IndexServiceConfiguration
 
 	@Override
 	public Connection getConnection() {
-		String driver = (String) this.props.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER_PROP);
-		String url = (String) this.props.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_URL_PROP);
-		String username = (String) this.props.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME_PROP);
-		String password = (String) this.props.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD_PROP);
+		String driver = (String) this.props.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
+		String url = (String) this.props.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
+		String username = (String) this.props.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
+		String password = (String) this.props.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
 
 		Properties properties = DatabaseUtil.getProperties(driver, url, username, password);
 		return DatabaseUtil.getConnection(properties);

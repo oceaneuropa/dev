@@ -21,7 +21,7 @@ import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.runtime.Status;
 import org.origin.common.util.ExceptionUtil;
-import org.origin.mgm.model.vo.IndexItemDataVO;
+import org.origin.mgm.model.vo.IndexItemVO;
 import org.origin.mgm.model.vo.IndexItemRequestVO;
 import org.origin.mgm.persistence.IndexItemDataTableHandler;
 import org.origin.mgm.persistence.IndexItemRequestTableHandler;
@@ -70,7 +70,7 @@ public class CreateIndexItemCommand extends AbstractCommand {
 	protected IndexItemRevisionTableHandler revisionTableHandler = IndexItemRevisionTableHandler.INSTANCE;
 
 	protected IndexItemRequestVO newRequestVO;
-	protected IndexItemDataVO newIndexItemVO;
+	protected IndexItemVO newIndexItemVO;
 
 	protected ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
