@@ -1,8 +1,6 @@
 package org.orbit.fs.model.vo;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class FileContentVO {

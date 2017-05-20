@@ -8,8 +8,6 @@ import org.origin.common.util.DateUtil;
  * Columns:
  * 
  * Date,Open,High,Low,Close,Volume,Adj Close
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class YahooFinanceStockData {

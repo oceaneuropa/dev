@@ -13,8 +13,6 @@ import javax.annotation.Resource;
  * 
  * @see org.kaazing.k3po.driver.internal.netty.channel.Utils
  * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
- * 
  */
 public class AnnotationUtil {
 

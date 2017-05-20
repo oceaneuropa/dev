@@ -7,15 +7,13 @@ import java.util.Map;
 
 import org.orbit.component.server.Activator;
 import org.orbit.component.server.OrbitConstants;
-import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.thread.ServiceIndexTimer;
+import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexProvider;
 
 /**
  * AppStore service timer to update index item for the service.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class AppStoreServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, AppStoreService> implements ServiceIndexTimer<IndexProvider, AppStoreService> {

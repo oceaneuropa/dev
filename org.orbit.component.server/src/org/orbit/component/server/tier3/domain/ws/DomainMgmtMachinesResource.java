@@ -56,7 +56,7 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 
 		List<MachineConfigDTO> machinesDTOs = new ArrayList<MachineConfigDTO>();
 		try {
-			List<MachineConfigRTO> machines = domainMgmtService.getMachines();
+			List<MachineConfigRTO> machines = domainMgmtService.getMachineConfigs();
 			if (machines != null) {
 				for (MachineConfigRTO machine : machines) {
 					MachineConfigDTO machineDTO = ModelConverter.getInstance().toDTO(machine);
@@ -86,10 +86,10 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 
 		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
 		try {
-			MachineConfigRTO machine = domainMgmtService.getMachine(machineId);
+			MachineConfigRTO machine = domainMgmtService.getMachineConfig(machineId);
 			if (machine == null) {
-				ErrorDTO machineNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Machine with id '%s' cannot be found.", machineId));
-				return Response.status(Status.NOT_FOUND).entity(machineNotFoundError).build();
+				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Machine with id '%s' cannot be found.", machineId));
+				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
 			machineDTO = ModelConverter.getInstance().toDTO(machine);
 
@@ -122,16 +122,16 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 		try {
 			String machineId = addMachineRequestDTO.getId();
 			if (machineId == null || machineId.isEmpty()) {
-				ErrorDTO emptyMachineIdError = new ErrorDTO("machine Id is empty.");
-				return Response.status(Status.BAD_REQUEST).entity(emptyMachineIdError).build();
+				ErrorDTO emptyIdError = new ErrorDTO("machine Id is empty.");
+				return Response.status(Status.BAD_REQUEST).entity(emptyIdError).build();
 			}
-			if (domainMgmtService.machineExists(machineId)) {
-				ErrorDTO machineExistsError = new ErrorDTO(String.format("Machine with Id '%s' already exists.", machineId));
-				return Response.status(Status.BAD_REQUEST).entity(machineExistsError).build();
+			if (domainMgmtService.machineConfigExists(machineId)) {
+				ErrorDTO alreadyExistsError = new ErrorDTO(String.format("Machine with Id '%s' already exists.", machineId));
+				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
 			MachineConfigRTO addMachineRequest = ModelConverter.getInstance().toRTO(addMachineRequestDTO);
-			succeed = domainMgmtService.addMachine(addMachineRequest);
+			succeed = domainMgmtService.addMachineConfig(addMachineRequest);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -166,7 +166,7 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
 		try {
 			MachineConfigRTO updateMachineRequest = ModelConverter.getInstance().toRTO(updateMachineRequestDTO);
-			succeed = domainMgmtService.updateMachine(updateMachineRequest);
+			succeed = domainMgmtService.updateMachineConfig(updateMachineRequest);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -195,14 +195,14 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response removeMachine(@PathParam("machineId") String machineId) {
 		if (machineId == null || machineId.isEmpty()) {
-			ErrorDTO nullMachineIdError = new ErrorDTO("machineId is null.");
-			return Response.status(Status.BAD_REQUEST).entity(nullMachineIdError).build();
+			ErrorDTO emptyIdError = new ErrorDTO("machineId is null.");
+			return Response.status(Status.BAD_REQUEST).entity(emptyIdError).build();
 		}
 
 		boolean succeed = false;
 		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
 		try {
-			succeed = domainMgmtService.removeMachine(machineId);
+			succeed = domainMgmtService.deleteMachineConfig(machineId);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

@@ -13,8 +13,6 @@ import org.origin.common.io.IOUtil;
  * <p>
  * The client of this input stream can read the content of a file from it, while the download keeps downloading the file from a remote server and writing data to it (through a output that is connected
  * to the input).
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class FileRefInputStream extends PipedInputStream {

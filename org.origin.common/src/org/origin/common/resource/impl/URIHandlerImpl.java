@@ -16,8 +16,6 @@ import org.origin.common.resource.URIHandler;
 /**
  * @see org.eclipse.emf.ecore.resource.URIHandler
  * @see org.eclipse.emf.ecore.resource.impl.URIHandlerImpl
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class URIHandlerImpl implements URIHandler {

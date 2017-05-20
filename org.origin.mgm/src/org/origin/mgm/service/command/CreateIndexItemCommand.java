@@ -28,8 +28,6 @@ import org.origin.mgm.persistence.IndexItemRequestTableHandler;
 import org.origin.mgm.persistence.IndexItemRevisionTableHandler;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class CreateIndexItemCommand extends AbstractCommand {

@@ -9,10 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * 
  * @see org.apache.activemq.transport.AbstractInactivityMonitor
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class ThreadPoolTimer {

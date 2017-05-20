@@ -12,8 +12,6 @@ import org.origin.common.rest.client.ClientUtil;
 
 /**
  * YahooFinance web service client to retrieve stock data.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class JIRAWebServiceClient extends AbstractClient {

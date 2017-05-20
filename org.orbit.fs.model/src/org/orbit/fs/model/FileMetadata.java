@@ -6,8 +6,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * DTO for File meta data.
  *
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
- *
  */
 @XmlRootElement
 public class FileMetadata {

@@ -9,8 +9,6 @@ import java.lang.annotation.Target;
 /**
  * Method annotated with DependencyFullfilled is expected to have no parameters.
  *
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
- *
  */
 @Retention(RUNTIME)
 @Target(METHOD)

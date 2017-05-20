@@ -35,8 +35,6 @@ import org.origin.common.rest.model.StatusDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class FileSystemWSClient extends AbstractClient {

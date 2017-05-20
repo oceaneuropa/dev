@@ -2,18 +2,18 @@ package org.orbit.component.api.tier3.domain.request;
 
 public class AddTransferAgentRequest {
 
-	protected String agentId;
+	protected String transferAgentId;
 	protected String name;
 	protected String TAHome;
 	protected String hostURL;
 	protected String contextRoot;
 
-	public String getAgentId() {
-		return this.agentId;
+	public String getTransferAgentId() {
+		return transferAgentId;
 	}
 
-	public void setAgentId(String agentId) {
-		this.agentId = agentId;
+	public void setTransferAgentId(String transferAgentId) {
+		this.transferAgentId = transferAgentId;
 	}
 
 	public String getName() {

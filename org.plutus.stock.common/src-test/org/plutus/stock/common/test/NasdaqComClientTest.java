@@ -22,8 +22,6 @@ import org.plutus.stock.model.dto.StockCompany;
 import org.plutus.stock.model.dto.StockSector;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

@@ -25,8 +25,6 @@ import org.osgi.service.event.EventAdmin;
  *      EquinoxCommandProvider.java#exit() for how to read confirm message : Really want to stop Equinox? (y/n; default=y) y
  * 
  * @see source code from org.eclipse.equinox.console.source_1.0.0.v20120522-1841.jar
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class PropertiesConfigCommand implements Annotated {

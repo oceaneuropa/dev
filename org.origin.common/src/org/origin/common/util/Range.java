@@ -3,8 +3,6 @@ package org.origin.common.util;
 import java.text.MessageFormat;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  * @param <E>
  */

@@ -8,17 +8,15 @@ import java.io.OutputStream;
 /**
  * http://stackoverflow.com/questions/12113343/reading-directly-from-google-drive-in-java
  * 
- * Please I need to read the content of a file stored in Google Drive programmatically. I'm looking forward to some sort of InputStream is = <drive_stuff>.read(fileID); Any help? I'll also appreciate
- * if I can write back to a file using some sort of
+ * Please I need to read the content of a file stored in Google Drive programmatically. I'm looking forward to some sort of InputStream is =
+ * <drive_stuff>.read(fileID); Any help? I'll also appreciate if I can write back to a file using some sort of
  * 
  * OutputStream dos = new DriveOutputStream(driveFileID);
  * 
  * dos.write(data);
  * 
- * If this sort of convenient approach is too much for what Drive can offer, please I'll like to have suggestions on how I can read/write to Drive directly from java.io.InputStream / OutputStream /
- * Reader / Writer without creating temporary local file copies of the data I want to ship to drive.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ * If this sort of convenient approach is too much for what Drive can offer, please I'll like to have suggestions on how I can read/write to Drive directly from
+ * java.io.InputStream / OutputStream / Reader / Writer without creating temporary local file copies of the data I want to ship to drive.
  *
  */
 public interface FileSystem {

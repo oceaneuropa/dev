@@ -47,8 +47,6 @@ package org.orbit.component.api.tier1.session;
  * </OAuth>
  * ----------------------------------------------------------------------
  * (Accept: application/xml)
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class OAuth2Response {

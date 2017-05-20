@@ -18,8 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /*
  * Ping the service.
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public abstract class AbstractClient implements IClient {

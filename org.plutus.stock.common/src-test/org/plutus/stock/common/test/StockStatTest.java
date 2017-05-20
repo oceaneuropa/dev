@@ -22,8 +22,6 @@ import org.plutus.stock.resource.StockDataResourceFactory;
 import org.plutus.stock.resource.StockStatResourceFactory;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

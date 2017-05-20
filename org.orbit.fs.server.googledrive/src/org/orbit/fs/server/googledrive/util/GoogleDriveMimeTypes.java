@@ -9,11 +9,8 @@ import java.util.Map;
  * Mime types
  * 
  * @see https://developers.google.com/drive/v3/web/manage-downloads
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
-
 public class GoogleDriveMimeTypes {
 
 	// Directories

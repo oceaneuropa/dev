@@ -1,4 +1,4 @@
-package org.orbit.component.server.tier1.account.service.impl;
+package org.orbit.component.server.tier1.account.handler;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,8 +17,6 @@ import org.origin.common.util.DateUtil;
 
 /**
  * @see IndexItemRequestTableHandler
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class UserAccountTableHandler implements DatabaseTableAware {

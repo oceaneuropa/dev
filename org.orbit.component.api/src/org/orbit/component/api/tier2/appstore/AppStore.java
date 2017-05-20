@@ -11,8 +11,6 @@ import org.origin.common.rest.client.ClientException;
 
 /**
  * App store client interface.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public interface AppStore {

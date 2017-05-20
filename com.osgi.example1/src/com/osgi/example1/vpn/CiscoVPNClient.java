@@ -2,8 +2,6 @@ package com.osgi.example1.vpn;
 
 /**
  * @see http://stackoverflow.com/questions/22855195/vpn-connect-using-java
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class CiscoVPNClient {

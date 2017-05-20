@@ -28,8 +28,6 @@ import org.origin.common.util.StringUtil;
 /**
  * App store client connector implementation.
  * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
- * 
  */
 public class AppStoreImpl implements AppStore {
 

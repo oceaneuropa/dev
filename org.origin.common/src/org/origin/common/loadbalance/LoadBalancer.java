@@ -13,9 +13,6 @@ import org.origin.common.loadbalance.policy.LoadBalancePolicy;
  * https://devcentral.f5.com/articles/intro-to-load-balancing-for-developers-ndash-the-algorithms
  * 
  * https://f5.com/resources/white-papers/load-balancing-101-nuts-and-bolts
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
- * @param <S>
  *
  */
 public class LoadBalancer<S> implements LoadBalanceServiceListenerProvider<S> {

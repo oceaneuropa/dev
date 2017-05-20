@@ -14,8 +14,6 @@ import org.origin.mgm.client.api.IndexProvider;
 
 /**
  * UserRegistry service timer to update index item for the service.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class UserRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, UserRegistryService> implements ServiceIndexTimer<IndexProvider, UserRegistryService> {

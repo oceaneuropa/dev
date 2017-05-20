@@ -7,8 +7,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 @Retention(RUNTIME)

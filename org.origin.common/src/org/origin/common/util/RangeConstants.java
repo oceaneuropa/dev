@@ -19,8 +19,6 @@ package org.origin.common.util;
  * <p>
  * e.g. [1, 2] is denoted as ¢1_2¢
  * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
- * 
  */
 public class RangeConstants {
 

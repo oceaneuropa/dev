@@ -2,8 +2,6 @@ package org.origin.common.jdbc;
 
 /**
  * @see http://www.w3schools.com/sql/sql_where.asp
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class SQLWhereOperator {

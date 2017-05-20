@@ -7,6 +7,13 @@ package org.orbit.component.api.tier3.domain;
 public interface TransferAgentConfig {
 
 	/**
+	 * Get Machine Id.
+	 * 
+	 * @return
+	 */
+	public String getMachineId();
+
+	/**
 	 * Get TransferAgent Id.
 	 * 
 	 * @return

@@ -4,8 +4,6 @@ package org.plutus.stock.model.dto;
  * Columns:
  * 
  * "Symbol","Name","LastSale","MarketCap","ADR TSO","IPOyear","Sector","Industry","Summary Quote",
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class StockCompany {

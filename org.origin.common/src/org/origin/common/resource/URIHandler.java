@@ -9,8 +9,6 @@ import java.util.Map;
 /**
  * @see org.eclipse.emf.ecore.resource.URIHandler
  * @see org.eclipse.emf.ecore.resource.impl.URIHandlerImpl
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public interface URIHandler {

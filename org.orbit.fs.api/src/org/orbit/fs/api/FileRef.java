@@ -5,8 +5,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public abstract class FileRef {

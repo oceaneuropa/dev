@@ -23,8 +23,6 @@ import org.plutus.stock.model.dto.YahooFinanceStockData;
 
 /**
  * YahooFinance web service client to retrieve stock data.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class YahooFinanceClient extends AbstractClient {

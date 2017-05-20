@@ -9,8 +9,6 @@ import org.orbit.fs.model.FileMetadata;
 import org.origin.common.rest.client.ClientException;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class FileSystemWSClientHelper {

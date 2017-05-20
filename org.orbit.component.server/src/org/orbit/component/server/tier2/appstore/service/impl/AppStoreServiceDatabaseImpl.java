@@ -13,6 +13,8 @@ import org.orbit.component.model.tier2.appstore.AppManifestRTO;
 import org.orbit.component.model.tier2.appstore.AppQueryRTO;
 import org.orbit.component.model.tier2.appstore.AppStoreException;
 import org.orbit.component.server.OrbitConstants;
+import org.orbit.component.server.tier2.appstore.handler.AppCategoryTableHandler;
+import org.orbit.component.server.tier2.appstore.handler.AppMetadataTableHandler;
 import org.orbit.component.server.tier2.appstore.service.AppStoreService;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;

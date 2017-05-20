@@ -34,8 +34,6 @@ Example:
 */
 /**
  * Write stock stat from input stream and store the contents in StockStatResource.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class StockStatReader {

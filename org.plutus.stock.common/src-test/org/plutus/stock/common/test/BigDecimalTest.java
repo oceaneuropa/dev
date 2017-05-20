@@ -12,8 +12,6 @@ import org.junit.runners.MethodSorters;
 import org.origin.common.util.BigDecimalUtil;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

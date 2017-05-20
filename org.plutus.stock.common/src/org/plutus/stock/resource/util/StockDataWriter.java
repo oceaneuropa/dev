@@ -45,8 +45,6 @@ Example:
 
 /**
  * Read stock data from StockDataResource and save it to output stream.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class StockDataWriter {

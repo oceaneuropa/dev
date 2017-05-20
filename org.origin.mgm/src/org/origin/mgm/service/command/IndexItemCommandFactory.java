@@ -53,8 +53,6 @@ import org.origin.common.command.AbstractCommand;
  * 1005			delete_index_item 		{indexItemId=1}																																	create_index_item		{indexitemid=1, indexproviderid="origin.index.provider", type="tns1", name="name1", properties={p1=v1b, p2=v2b}, lastUpdateTime="05-20-2016 14:05:05"}		{currentTime}
  * 1006			delete_index_item 		{indexItemId=2}																																	create_index_item		{indexitemid=2, indexproviderid="origin.index.provider", type="tns1", name="name2", properties={p3=v3b, p4=v4b}, lastUpdateTime="05-20-2016 14:06:05"}		{currentTime}
  * --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class IndexItemCommandFactory {

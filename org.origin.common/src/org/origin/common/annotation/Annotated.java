@@ -5,8 +5,6 @@ package org.origin.common.annotation;
  * with @DependencyFullfilled or @DependencyUnfullfilled should implement the Annotated interface. Then when bundle activator is started, register the
  * class instance as Annotated service. When bundle activator is stopped, unregister Annotated service.
  * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
- *
  */
 public interface Annotated {
 

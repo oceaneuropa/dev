@@ -9,8 +9,6 @@ import org.origin.common.resource.ResourceFactory;
 import org.origin.common.resource.impl.ResourceFactoryImpl;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  * @param <RES>
  */

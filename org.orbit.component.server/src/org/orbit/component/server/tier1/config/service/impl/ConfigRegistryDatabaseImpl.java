@@ -17,8 +17,6 @@ import org.origin.common.rest.model.StatusDTO;
 
 /**
  * Database implementation of a ConfigRegistry.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class ConfigRegistryDatabaseImpl implements ConfigRegistry {

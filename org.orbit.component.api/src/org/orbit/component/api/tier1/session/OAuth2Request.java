@@ -4,9 +4,6 @@ package org.orbit.component.api.tier1.session;
  * doc:
  * https://developer.github.com/v3/oauth/
  * https://www.digitalocean.com/community/tutorials/how-to-use-oauth-authentication-with-digitalocean-as-a-user-or-developer
- * 
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class OAuth2Request {

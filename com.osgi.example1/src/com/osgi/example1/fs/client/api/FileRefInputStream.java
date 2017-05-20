@@ -10,10 +10,8 @@ import org.origin.common.io.IOUtil;
  * A file ref input stream that downloads the content of a file on the fly.
  * 
  * <p>
- * The client of this input stream can read the content of a file from it, while the download keeps downloading the file from a remote server and
- * writing data to it (through a output that is connected to the input).
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ * The client of this input stream can read the content of a file from it, while the download keeps downloading the file from a remote server and writing data
+ * to it (through a output that is connected to the input).
  *
  */
 public class FileRefInputStream extends PipedInputStream {

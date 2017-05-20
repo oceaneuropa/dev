@@ -10,10 +10,8 @@ import org.origin.common.io.IOUtil;
  * A file ref output stream that uploads the content of a file on the fly.
  * 
  * <p>
- * The client of this output stream can write the content of a file to it, while the upload keeps reading data from it (through a input that is
- * connected to the output) and uploading the data to remote server.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
+ * The client of this output stream can write the content of a file to it, while the upload keeps reading data from it (through a input that is connected to the
+ * output) and uploading the data to remote server.
  * 
  */
 public class FileRefOutputStream extends PipedOutputStream {

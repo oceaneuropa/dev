@@ -10,8 +10,6 @@ import java.util.Map;
 /**
  * @see org.eclipse.emf.ecore.resource.URIConverter
  * @see org.eclipse.emf.ecore.resource.impl.ExtensibleURIConverterImpl
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public interface URIConverter {

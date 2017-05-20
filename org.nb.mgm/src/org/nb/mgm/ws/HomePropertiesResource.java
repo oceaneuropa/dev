@@ -36,8 +36,6 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  * 
  * @see http://stackoverflow.com/questions/13750010/jersey-client-how-to-add-a-list-as-query-parameter
  * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
- * 
  */
 @Path("/{machineId}/homes/{homeId}/properties")
 @Produces(MediaType.APPLICATION_JSON)

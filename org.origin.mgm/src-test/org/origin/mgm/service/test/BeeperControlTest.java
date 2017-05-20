@@ -12,10 +12,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 
 /**
- * 
  * @see https://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ScheduledExecutorService.html
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class BeeperControlTest {

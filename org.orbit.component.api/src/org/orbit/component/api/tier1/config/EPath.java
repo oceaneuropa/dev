@@ -4,8 +4,6 @@ import org.origin.common.util.StringUtil;
 
 /**
  * Note: This class MUST be in-sync with org.orbit.component.model.configregistry.runtime.EPath class.
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class EPath implements Comparable<EPath> {

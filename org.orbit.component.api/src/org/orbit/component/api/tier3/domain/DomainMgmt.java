@@ -6,7 +6,6 @@ import org.orbit.component.api.tier3.domain.request.AddMachineRequest;
 import org.orbit.component.api.tier3.domain.request.AddTransferAgentRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateMachineRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateTransferAgentRequest;
-import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.origin.common.rest.client.ClientException;
 
 public interface DomainMgmt {
@@ -51,6 +50,8 @@ public interface DomainMgmt {
 	// ------------------------------------------------------
 	public MachineConfig[] getMachines() throws ClientException;
 
+	public MachineConfig addMachine(String machineId) throws ClientException;
+
 	public boolean addMachine(AddMachineRequest addMachineRequest) throws ClientException;
 
 	public boolean updateMachine(UpdateMachineRequest updateMachineRequest) throws ClientException;
@@ -70,23 +71,25 @@ public interface DomainMgmt {
 	// ------------------------------------------------------
 	public TransferAgentConfig[] getTransferAgents(String machineId) throws ClientException;
 
+	public TransferAgentConfig getTransferAgent(String machineId, String transferAgentId) throws ClientException;
+
 	public boolean addTransferAgent(String machineId, AddTransferAgentRequest addTransferAgentRequest) throws ClientException;
 
 	public boolean updateTransferAgent(String machineId, UpdateTransferAgentRequest updateTransferAgentRequest) throws ClientException;
 
-	public boolean removeTransferAgent(String machineId, String agentId) throws ClientException;
+	public boolean removeTransferAgent(String machineId, String transferAgentId) throws ClientException;
 
-	public Map<String, Object> getTransferAgentProperties(String machineId, String agentId);
+	public Map<String, Object> getTransferAgentProperties(String machineId, String transferAgentId);
 
-	public boolean setTransferAgentProperty(String machineId, String agentId, String name, Object value);
+	public boolean setTransferAgentProperty(String machineId, String transferAgentId, String name, Object value);
 
-	public Object getTransferAgentProperty(String machineId, String agentId, String name);
+	public Object getTransferAgentProperty(String machineId, String transferAgentId, String name);
 
-	public boolean removeTransferAgentProperty(String machineId, String agentId, String name);
+	public boolean removeTransferAgentProperty(String machineId, String transferAgentId, String name);
 
 	// ------------------------------------------------------
 	// TransferAgent life cycle
 	// ------------------------------------------------------
-	public TransferAgent getTransferAgent(String machineId, String agentId);
+	// public TransferAgent getTransferAgent(String machineId, String transferAgentId);
 
 }

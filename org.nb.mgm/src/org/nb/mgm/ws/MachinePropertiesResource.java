@@ -33,8 +33,6 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties (Body parameter "properties": string)
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 @Path("/{machineId}/properties")

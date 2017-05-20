@@ -52,8 +52,6 @@ import com.google.api.services.drive.model.FileList;
  * 
  * REST API explorer
  * https://developers.google.com/apis-explorer/#p/drive/v3/
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class GoogleDriveClientV3 {
@@ -506,7 +504,8 @@ public class GoogleDriveClientV3 {
 	/**
 	 * Create a root folder.
 	 * 
-	 * @see http://www.programcreek.com/java-api-examples/index.php?source_dir=mytracks-master/MyTracks/src/com/google/android/apps/mytracks/io/sync/SyncUtils.java
+	 * @see http://www.programcreek.com/java-api-examples/index.php?source_dir=mytracks-master/MyTracks/src/com/google/android/apps/mytracks/io/sync/SyncUtils.
+	 *      java
 	 * 
 	 * @param drive
 	 * @param name

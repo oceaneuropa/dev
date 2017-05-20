@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.orbit.component.model.tier1.account.UserAccountRTO;
 import org.orbit.component.model.tier1.account.UserRegistryException;
 import org.orbit.component.server.OrbitConstants;
+import org.orbit.component.server.tier1.account.handler.UserAccountTableHandler;
 import org.orbit.component.server.tier1.account.service.UserRegistryService;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;

@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
-import org.orbit.component.api.tier1.account.request.UpdateUserAccountRequest;
 import org.orbit.component.api.tier3.domain.DomainMgmt;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.TransferAgentConfig;
@@ -14,10 +12,9 @@ import org.orbit.component.api.tier3.domain.request.AddMachineRequest;
 import org.orbit.component.api.tier3.domain.request.AddTransferAgentRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateMachineRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateTransferAgentRequest;
-import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
+import org.orbit.component.model.tier3.domain.TransferAgentConfigDTO;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
@@ -123,7 +120,7 @@ public class DomainMgmtImpl implements DomainMgmt {
 		try {
 			List<MachineConfigDTO> machineDTOs = this.client.getMachines();
 			for (MachineConfigDTO machineDTO : machineDTOs) {
-				machines.add(toMachineImpl(machineDTO));
+				machines.add(toMachine(machineDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -132,13 +129,29 @@ public class DomainMgmtImpl implements DomainMgmt {
 	}
 
 	@Override
+	public MachineConfig addMachine(String machineId) throws ClientException {
+		checkMachineId(machineId);
+
+		MachineConfig machine = null;
+		try {
+			MachineConfigDTO machineDTO = this.client.getMachine(machineId);
+			if (machineDTO != null) {
+				machine = toMachine(machineDTO);
+			}
+		} catch (ClientException e) {
+			throw e;
+		}
+		return machine;
+	}
+
+	@Override
 	public boolean addMachine(AddMachineRequest addMachineRequest) throws ClientException {
 		String machineId = addMachineRequest.getMachineId();
 		checkMachineId(machineId);
 
 		try {
-			UserAccountDTO createUserAccountRequestDTO = toDTO(createUserAccountRequest);
-			StatusDTO status = this.client.registerUserAccount(createUserAccountRequestDTO);
+			MachineConfigDTO addMachineRequestDTO = toDTO(addMachineRequest);
+			StatusDTO status = this.client.addMachine(addMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
 			}
@@ -149,12 +162,34 @@ public class DomainMgmtImpl implements DomainMgmt {
 	}
 
 	@Override
-	public boolean updateMachine(UpdateMachineRequest request) throws ClientException {
+	public boolean updateMachine(UpdateMachineRequest updateMachineRequest) throws ClientException {
+		String machineId = updateMachineRequest.getMachineId();
+		checkMachineId(machineId);
+
+		try {
+			MachineConfigDTO updateMachineRequestDTO = toDTO(updateMachineRequest);
+			StatusDTO status = this.client.updateMachine(updateMachineRequestDTO);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			throw e;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean removeMachine(String machineId) throws ClientException {
+		checkMachineId(machineId);
+
+		try {
+			StatusDTO status = this.client.removeMachine(machineId);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			throw e;
+		}
 		return false;
 	}
 
@@ -181,53 +216,129 @@ public class DomainMgmtImpl implements DomainMgmt {
 	// ------------------------------------------------------
 	// TransferAgent management
 	// ------------------------------------------------------
+	/**
+	 * 
+	 * @param machineId
+	 * @throws ClientException
+	 */
+	protected void checkTransferAgentId(String transferAgentId) throws ClientException {
+		if (transferAgentId == null || transferAgentId.isEmpty()) {
+			throw new ClientException(400, "transferAgentId is empty.");
+		}
+	}
+
 	@Override
 	public TransferAgentConfig[] getTransferAgents(String machineId) throws ClientException {
+		checkMachineId(machineId);
+
+		List<TransferAgentConfig> transferAgents = new ArrayList<TransferAgentConfig>();
+		try {
+			List<TransferAgentConfigDTO> transferAgentDTOs = this.client.getTransferAgents(machineId);
+			for (TransferAgentConfigDTO transferAgentDTO : transferAgentDTOs) {
+				transferAgents.add(toTransferAgent(machineId, transferAgentDTO));
+			}
+		} catch (ClientException e) {
+			throw e;
+		}
+		return transferAgents.toArray(new TransferAgentConfig[transferAgents.size()]);
+	}
+
+	@Override
+	public TransferAgentConfig getTransferAgent(String machineId, String transferAgentId) throws ClientException {
+		checkMachineId(machineId);
+		checkTransferAgentId(transferAgentId);
+
+		TransferAgentConfig transferAgent = null;
+		try {
+			TransferAgentConfigDTO transferAgentDTO = this.client.getTransferAgent(machineId, transferAgentId);
+			if (transferAgentDTO != null) {
+				transferAgent = toTransferAgent(machineId, transferAgentDTO);
+			}
+		} catch (ClientException e) {
+			throw e;
+		}
+		return transferAgent;
+	}
+
+	@Override
+	public boolean addTransferAgent(String machineId, AddTransferAgentRequest addTransferAgentRequest) throws ClientException {
+		checkMachineId(machineId);
+		String transferAgentId = addTransferAgentRequest.getTransferAgentId();
+		checkTransferAgentId(transferAgentId);
+
+		try {
+			TransferAgentConfigDTO addTransferAgentRequestDTO = toDTO(addTransferAgentRequest);
+			StatusDTO status = this.client.addTransferAgent(machineId, addTransferAgentRequestDTO);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			throw e;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateTransferAgent(String machineId, UpdateTransferAgentRequest updateTransferAgentRequest) throws ClientException {
+		checkMachineId(machineId);
+		String transferAgentId = updateTransferAgentRequest.getTransferAgentId();
+		checkTransferAgentId(transferAgentId);
+
+		try {
+			TransferAgentConfigDTO updateTransferAgentRequestDTO = toDTO(updateTransferAgentRequest);
+			StatusDTO status = this.client.updateTransferAgent(machineId, updateTransferAgentRequestDTO);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			throw e;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean removeTransferAgent(String machineId, String transferAgentId) throws ClientException {
+		checkMachineId(machineId);
+		checkTransferAgentId(transferAgentId);
+
+		try {
+			StatusDTO status = this.client.removeTransferAgent(machineId, transferAgentId);
+			if (status != null && status.success()) {
+				return true;
+			}
+		} catch (ClientException e) {
+			throw e;
+		}
+		return false;
+	}
+
+	@Override
+	public Map<String, Object> getTransferAgentProperties(String machineId, String transferAgentId) {
 		return null;
 	}
 
 	@Override
-	public boolean addTransferAgent(String machineId, AddTransferAgentRequest request) throws ClientException {
+	public boolean setTransferAgentProperty(String machineId, String transferAgentId, String name, Object value) {
 		return false;
 	}
 
 	@Override
-	public boolean updateTransferAgent(String machineId, UpdateTransferAgentRequest request) throws ClientException {
-		return false;
-	}
-
-	@Override
-	public boolean removeTransferAgent(String machineId, String agentId) throws ClientException {
-		return false;
-	}
-
-	@Override
-	public Map<String, Object> getTransferAgentProperties(String machineId, String agentId) {
+	public Object getTransferAgentProperty(String machineId, String transferAgentId, String name) {
 		return null;
 	}
 
 	@Override
-	public boolean setTransferAgentProperty(String machineId, String agentId, String name, Object value) {
-		return false;
-	}
-
-	@Override
-	public Object getTransferAgentProperty(String machineId, String agentId, String name) {
-		return null;
-	}
-
-	@Override
-	public boolean removeTransferAgentProperty(String machineId, String agentId, String name) {
+	public boolean removeTransferAgentProperty(String machineId, String transferAgentId, String name) {
 		return false;
 	}
 
 	// ------------------------------------------------------
 	// TransferAgent life cycle
 	// ------------------------------------------------------
-	@Override
-	public TransferAgent getTransferAgent(String machineId, String agentId) {
-		return null;
-	}
+	// @Override
+	// public TransferAgent getTransferAgent(String machineId, String transferAgentId) {
+	// return null;
+	// }
 
 	// ------------------------------------------------------------------------------------------------
 	// Helper methods
@@ -249,34 +360,45 @@ public class DomainMgmtImpl implements DomainMgmt {
 	 * @param machineDTO
 	 * @return
 	 */
-	protected MachineConfig toMachineImpl(MachineConfigDTO machineDTO) {
+	protected MachineConfig toMachine(MachineConfigDTO machineDTO) {
 		MachineConfigImpl impl = new MachineConfigImpl();
 		impl.setId(machineDTO.getId());
 		impl.setName(machineDTO.getName());
 		impl.setIpAddress(machineDTO.getIpAddress());
-		return null;
+		return impl;
 	}
 
 	/**
-	 * Convert AddMachineRequest to DTO.
+	 * 
+	 * @param machineId
+	 * @param transferAgentDTO
+	 * @return
+	 */
+	protected TransferAgentConfig toTransferAgent(String machineId, TransferAgentConfigDTO transferAgentDTO) {
+		TransferAgentConfigImpl impl = new TransferAgentConfigImpl();
+		impl.setMachineId(machineId);
+		impl.setId(transferAgentDTO.getId());
+		impl.setName(transferAgentDTO.getName());
+		impl.setTAHome(transferAgentDTO.getTAHome());
+		impl.setHostURL(transferAgentDTO.getHostURL());
+		impl.setContextRoot(transferAgentDTO.getContextRoot());
+		return impl;
+	}
+
+	/**
 	 * 
 	 * @param addMachineRequest
 	 * @return
 	 */
 	protected MachineConfigDTO toDTO(AddMachineRequest addMachineRequest) {
 		MachineConfigDTO addMachineRequestDTO = new MachineConfigDTO();
-		addMachineRequestDTO.setUserId(addMachineRequest.getId());
-		addMachineRequestDTO.setPassword(addMachineRequest.getName());
-		addMachineRequestDTO.setEmail(createUserAccountRequest.getEmail());
-		addMachineRequestDTO.setFirstName(createUserAccountRequest.getFirstName());
-		addMachineRequestDTO.setLastName(createUserAccountRequest.getLastName());
-		addMachineRequestDTO.setPhone(createUserAccountRequest.getPhone());
+		addMachineRequestDTO.setId(addMachineRequest.getMachineId());
+		addMachineRequestDTO.setName(addMachineRequest.getName());
+		addMachineRequestDTO.setIpAddress(addMachineRequest.getIpAddress());
 		return addMachineRequestDTO;
 	}
 
-	
 	/**
-	 * Convert UpdateMachineRequest to DTO.
 	 * 
 	 * @param updateMachineRequest
 	 * @return
@@ -285,11 +407,38 @@ public class DomainMgmtImpl implements DomainMgmt {
 		MachineConfigDTO updateMachineRequestDTO = new MachineConfigDTO();
 		updateMachineRequestDTO.setId(updateMachineRequest.getMachineId());
 		updateMachineRequestDTO.setName(updateMachineRequest.getName());
-		updateMachineRequestDTO.setEmail(updateUserAccountRequest.getEmail());
-		updateMachineRequestDTO.setFirstName(updateUserAccountRequest.getFirstName());
-		updateMachineRequestDTO.setLastName(updateUserAccountRequest.getLastName());
-		updateMachineRequestDTO.setPhone(updateUserAccountRequest.getPhone());
+		updateMachineRequestDTO.setIpAddress(updateMachineRequest.getIpAddress());
 		return updateMachineRequestDTO;
+	}
+
+	/**
+	 * 
+	 * @param addTransferAgentRequest
+	 * @return
+	 */
+	protected TransferAgentConfigDTO toDTO(AddTransferAgentRequest addTransferAgentRequest) {
+		TransferAgentConfigDTO addTransferAgentRequestDTO = new TransferAgentConfigDTO();
+		addTransferAgentRequestDTO.setId(addTransferAgentRequest.getTransferAgentId());
+		addTransferAgentRequestDTO.setName(addTransferAgentRequest.getName());
+		addTransferAgentRequestDTO.setTAHome(addTransferAgentRequest.getTAHome());
+		addTransferAgentRequestDTO.setHostURL(addTransferAgentRequest.getHostURL());
+		addTransferAgentRequestDTO.setContextRoot(addTransferAgentRequest.getContextRoot());
+		return addTransferAgentRequestDTO;
+	}
+
+	/**
+	 * 
+	 * @param updateTransferAgentRequest
+	 * @return
+	 */
+	protected TransferAgentConfigDTO toDTO(UpdateTransferAgentRequest updateTransferAgentRequest) {
+		TransferAgentConfigDTO updateTransferAgentRequestDTO = new TransferAgentConfigDTO();
+		updateTransferAgentRequestDTO.setId(updateTransferAgentRequest.getTransferAgentId());
+		updateTransferAgentRequestDTO.setName(updateTransferAgentRequest.getName());
+		updateTransferAgentRequestDTO.setTAHome(updateTransferAgentRequest.getTAHome());
+		updateTransferAgentRequestDTO.setHostURL(updateTransferAgentRequest.getHostURL());
+		updateTransferAgentRequestDTO.setContextRoot(updateTransferAgentRequest.getContextRoot());
+		return updateTransferAgentRequestDTO;
 	}
 
 }

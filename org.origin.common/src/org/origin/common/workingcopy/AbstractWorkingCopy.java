@@ -10,8 +10,6 @@ import org.origin.common.resource.Resource;
 import org.origin.common.resource.ResourceFactory;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  * @param <RES>
  */

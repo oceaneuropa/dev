@@ -17,8 +17,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @see https://www.ibm.com/support/knowledgecenter/en/SSHRKX_8.0.0/plan/plan_ureg.html
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class UserRegistryWSApplication extends AbstractApplication {

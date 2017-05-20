@@ -7,8 +7,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import org.origin.common.util.StringUtil;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 @XmlRootElement

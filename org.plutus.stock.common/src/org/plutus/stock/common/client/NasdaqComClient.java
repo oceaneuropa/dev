@@ -22,8 +22,6 @@ import org.plutus.stock.model.dto.StockCompany;
  * nasdaq.com web service client to retrieve stock company data.
  * 
  * URL: http://www.nasdaq.com/screening/company-list.aspx
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 public class NasdaqComClient extends AbstractClient {

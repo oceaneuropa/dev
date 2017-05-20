@@ -20,8 +20,6 @@ import org.plutus.stock.model.runtime.StockData;
 import org.plutus.stock.resource.StockDataResourceFactory;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

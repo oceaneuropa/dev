@@ -17,8 +17,6 @@ import org.plutus.stock.common.util.Comparators;
 import org.plutus.stock.model.dto.YahooFinanceStockData;
 
 /**
- * 
- * @author <a href="mailto:yangyang4j@gmail.com">Yang Yang</a>
  *
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
