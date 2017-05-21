@@ -11,12 +11,10 @@ import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
 import org.osgi.framework.ServiceRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OAuth2WSApplication extends AbstractApplication {
 
-	protected static Logger logger = LoggerFactory.getLogger(OAuth2WSApplication.class);
+	// protected static Logger logger = LoggerFactory.getLogger(OAuth2WSApplication.class);
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
@@ -35,7 +33,7 @@ public class OAuth2WSApplication extends AbstractApplication {
 
 	@Override
 	public void start() {
-		logger.debug("OAuth2WSApplication.start()");
+		System.out.println(getClass().getSimpleName() + ".start()");
 		if (this.isStarted.get()) {
 			return;
 		}
@@ -54,7 +52,7 @@ public class OAuth2WSApplication extends AbstractApplication {
 
 	@Override
 	public void stop() {
-		logger.debug("OAuth2WSApplication.stop()");
+		System.out.println(getClass().getSimpleName() + ".stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}

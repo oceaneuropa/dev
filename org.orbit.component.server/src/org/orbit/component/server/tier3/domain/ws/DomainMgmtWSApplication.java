@@ -12,12 +12,10 @@ import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
 import org.osgi.framework.ServiceRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DomainMgmtWSApplication extends AbstractApplication {
 
-	protected static Logger logger = LoggerFactory.getLogger(DomainMgmtWSApplication.class);
+	// protected static Logger logger = LoggerFactory.getLogger(DomainMgmtWSApplication.class);
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
@@ -36,7 +34,7 @@ public class DomainMgmtWSApplication extends AbstractApplication {
 
 	@Override
 	public void start() {
-		logger.debug("DomainMgmtWSApplication.start()");
+		System.out.println(getClass().getSimpleName() + ".start()");
 		if (this.isStarted.get()) {
 			return;
 		}
@@ -55,7 +53,7 @@ public class DomainMgmtWSApplication extends AbstractApplication {
 
 	@Override
 	public void stop() {
-		logger.debug("DomainMgmtWSApplication.stop()");
+		System.out.println(getClass().getSimpleName() + ".stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}

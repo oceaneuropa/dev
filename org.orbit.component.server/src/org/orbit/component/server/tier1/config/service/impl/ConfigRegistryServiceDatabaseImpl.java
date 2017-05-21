@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.orbit.component.server.OrbitConstants;
+import org.orbit.component.server.tier1.config.handler.ConfigRegistryPathTableHandler;
+import org.orbit.component.server.tier1.config.handler.ConfigRegistryPropertyTableHandler;
 import org.orbit.component.server.tier1.config.service.ConfigRegistry;
 import org.orbit.component.server.tier1.config.service.ConfigRegistryService;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -88,6 +90,9 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 		String jdbcUsername = (String) configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME);
 		String jdbcPassword = (String) configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD);
 
+		System.out.println();
+		System.out.println("Config properties:");
+		System.out.println("-----------------------------------------------------");
 		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
 		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME + " = " + name);
 		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL + " = " + hostURL);
@@ -96,6 +101,8 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL + " = " + jdbcURL);
 		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME + " = " + jdbcUsername);
 		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD + " = " + jdbcPassword);
+		System.out.println("-----------------------------------------------------");
+		System.out.println();
 
 		this.configProps = configProps;
 		this.databaseProperties = getConnectionProperties(this.configProps);

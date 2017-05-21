@@ -61,7 +61,9 @@ public abstract class AbstractClient implements IClient {
 				try {
 					error = response.readEntity(ErrorDTO.class);
 				} catch (Exception e) {
-					e.printStackTrace();
+					// e.printStackTrace();
+					System.err.println(getClass().getSimpleName() + ".checkResponse(Response) Exception [" + e.getClass().getSimpleName() + "] " + e.getMessage());
+					throw new ClientException(500, e.getMessage(), null);
 				}
 				if (error != null) {
 					throw new ClientException(response.getStatus(), error.getMessage(), null);
@@ -129,8 +131,8 @@ public abstract class AbstractClient implements IClient {
 			if (ping > 0) {
 				return true;
 			}
-		} catch (ClientException e) {
-			System.out.println(e.getMessage());
+		} catch (Exception e) {
+			// System.out.println(e.getMessage());
 		}
 		return false;
 	}

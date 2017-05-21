@@ -1,4 +1,4 @@
-package org.orbit.component.server.tier1.config.service.impl;
+package org.orbit.component.server.tier1.config.handler;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

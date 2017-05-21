@@ -192,9 +192,6 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.instance = null;
-		Activator.context = null;
-
 		// --------------------------------------------------------------------------------
 		// Stop CLI commands
 		// --------------------------------------------------------------------------------
@@ -248,6 +245,9 @@ public class Activator implements BundleActivator {
 			this.oauth2ConnectorTracker.close();
 			this.oauth2ConnectorTracker = null;
 		}
+
+		Activator.instance = null;
+		Activator.context = null;
 	}
 
 	public UserRegistryConnector getUserRegistryConnector() {

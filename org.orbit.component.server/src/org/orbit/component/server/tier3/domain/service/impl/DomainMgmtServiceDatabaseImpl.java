@@ -91,6 +91,9 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 		String jdbcUsername = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
 		String jdbcPassword = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
 
+		System.out.println();
+		System.out.println("Config properties:");
+		System.out.println("-----------------------------------------------------");
 		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
 		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME + " = " + name);
 		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL + " = " + hostURL);
@@ -99,6 +102,8 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL + " = " + jdbcURL);
 		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME + " = " + jdbcUsername);
 		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD + " = " + jdbcPassword);
+		System.out.println("-----------------------------------------------------");
+		System.out.println();
 
 		this.configProps = configProps;
 		this.databaseProperties = getConnectionProperties(this.configProps);
