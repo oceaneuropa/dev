@@ -44,7 +44,7 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 			sb.append("    TAHome varchar(500),");
 			sb.append("    hostURL varchar(500),");
 			sb.append("    contextRoot varchar(500),");
-			sb.append("    PRIMARY KEY (userId)");
+			sb.append("    PRIMARY KEY (id)");
 			sb.append(");");
 		}
 

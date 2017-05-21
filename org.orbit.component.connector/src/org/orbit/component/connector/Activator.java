@@ -7,6 +7,7 @@ import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.session.OAuth2ConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
+import org.orbit.component.connector.tier3.domain.DomainMgmtConnectorImpl;
 import org.origin.common.util.PropertyUtil;
 import org.origin.mgm.client.OriginConstants;
 import org.origin.mgm.client.api.IndexServiceUtil;
@@ -24,10 +25,13 @@ public class Activator implements BundleActivator {
 
 	protected IndexServiceLoadBalancer indexServiceLoadBalancer;
 
-	protected AppStoreConnectorImpl appStoreConnector;
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
 	protected OAuth2ConnectorImpl oauth2Connector;
+
+	protected AppStoreConnectorImpl appStoreConnector;
+
+	protected DomainMgmtConnectorImpl domainMgmtConnector;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -42,11 +46,8 @@ public class Activator implements BundleActivator {
 		this.indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(indexProviderProps);
 
 		// -----------------------------------------------------------------------------
-		// Start connectors
+		// Start tier1 service connectors
 		// -----------------------------------------------------------------------------
-		this.appStoreConnector = new AppStoreConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.appStoreConnector.start(bundleContext);
-
 		this.configRegistryConnector = new ConfigRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.configRegistryConnector.start(bundleContext);
 
@@ -55,6 +56,18 @@ public class Activator implements BundleActivator {
 
 		this.oauth2Connector = new OAuth2ConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.oauth2Connector.start(bundleContext);
+
+		// -----------------------------------------------------------------------------
+		// Start tier2 service connectors
+		// -----------------------------------------------------------------------------
+		this.appStoreConnector = new AppStoreConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.appStoreConnector.start(bundleContext);
+
+		// -----------------------------------------------------------------------------
+		// Start tier3 service connectors
+		// -----------------------------------------------------------------------------
+		this.domainMgmtConnector = new DomainMgmtConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.domainMgmtConnector.start(bundleContext);
 	}
 
 	@Override
@@ -62,21 +75,32 @@ public class Activator implements BundleActivator {
 		Activator.context = null;
 
 		// -----------------------------------------------------------------------------
-		// Stop connectors
+		// Stop tier3 service connectors
+		// -----------------------------------------------------------------------------
+		if (this.domainMgmtConnector != null) {
+			this.domainMgmtConnector.stop();
+			this.domainMgmtConnector = null;
+		}
+
+		// -----------------------------------------------------------------------------
+		// Stop tier2 service connectors
 		// -----------------------------------------------------------------------------
 		if (this.appStoreConnector != null) {
 			this.appStoreConnector.stop();
 			this.appStoreConnector = null;
 		}
 
-		if (this.configRegistryConnector != null) {
-			this.configRegistryConnector.stop();
-			this.configRegistryConnector = null;
-		}
-
+		// -----------------------------------------------------------------------------
+		// Stop tier1 service connectors
+		// -----------------------------------------------------------------------------
 		if (this.userRegistryConnector != null) {
 			this.userRegistryConnector.stop();
 			this.userRegistryConnector = null;
+		}
+
+		if (this.configRegistryConnector != null) {
+			this.configRegistryConnector.stop();
+			this.configRegistryConnector = null;
 		}
 
 		if (this.oauth2Connector != null) {

@@ -4,7 +4,9 @@ import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
+import org.orbit.component.api.tier3.domain.DomainMgmtConnector;
 import org.orbit.component.cli.tier2.AppStoreCommand;
+import org.orbit.component.cli.tier3.DomainMgmtCommand;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -24,13 +26,17 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
-	protected ServiceTracker<AppStoreConnector, AppStoreConnector> appStoreConnectorTracker;
-	protected ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector> configRegistryConnectorTracker;
 	protected ServiceTracker<UserRegistryConnector, UserRegistryConnector> userRegistryConnectorTracker;
+	protected ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector> configRegistryConnectorTracker;
 	protected ServiceTracker<OAuth2Connector, OAuth2Connector> oauth2ConnectorTracker;
+
+	protected ServiceTracker<AppStoreConnector, AppStoreConnector> appStoreConnectorTracker;
+
+	protected ServiceTracker<DomainMgmtConnector, DomainMgmtConnector> domainMgmtConnectorTracker;
 
 	protected boolean debug = true;
 	protected AppStoreCommand appStoreCommand;
+	protected DomainMgmtCommand domainMgmtCommand;
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
@@ -38,66 +44,14 @@ public class Activator implements BundleActivator {
 		Activator.instance = this;
 
 		// --------------------------------------------------------------------------------
-		// Start service connectors
+		// Start tier1 service connectors
 		// --------------------------------------------------------------------------------
-		// Start ServiceTracker for tracking AppStoreConnector service
-		this.appStoreConnectorTracker = new ServiceTracker<AppStoreConnector, AppStoreConnector>(bundleContext, AppStoreConnector.class, new ServiceTrackerCustomizer<AppStoreConnector, AppStoreConnector>() {
-			@Override
-			public AppStoreConnector addingService(ServiceReference<AppStoreConnector> reference) {
-				if (debug) {
-					System.out.println("org.orbit.component.api.Activator AppStoreConnector service is added.");
-				}
-				return bundleContext.getService(reference);
-			}
-
-			@Override
-			public void modifiedService(ServiceReference<AppStoreConnector> reference, AppStoreConnector appStoreManager) {
-				if (debug) {
-					System.out.println("org.orbit.component.api.Activator AppStoreConnector service is modified.");
-				}
-			}
-
-			@Override
-			public void removedService(ServiceReference<AppStoreConnector> reference, AppStoreConnector appStoreManager) {
-				if (debug) {
-					System.out.println("org.orbit.component.api.Activator AppStoreConnector service is removed.");
-				}
-			}
-		});
-		this.appStoreConnectorTracker.open();
-
-		// Start ServiceTracker for tracking ConfigRegistryConnector service
-		this.configRegistryConnectorTracker = new ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector>(bundleContext, ConfigRegistryConnector.class, new ServiceTrackerCustomizer<ConfigRegistryConnector, ConfigRegistryConnector>() {
-			@Override
-			public ConfigRegistryConnector addingService(ServiceReference<ConfigRegistryConnector> reference) {
-				if (debug) {
-					System.out.println("org.orbit.component.api.Activator ConfigRegistryConnector service is added.");
-				}
-				return bundleContext.getService(reference);
-			}
-
-			@Override
-			public void modifiedService(ServiceReference<ConfigRegistryConnector> reference, ConfigRegistryConnector appStoreManager) {
-				if (debug) {
-					System.out.println("org.orbit.component.api.Activator ConfigRegistryConnector service is modified.");
-				}
-			}
-
-			@Override
-			public void removedService(ServiceReference<ConfigRegistryConnector> reference, ConfigRegistryConnector appStoreManager) {
-				if (debug) {
-					System.out.println("org.orbit.component.api.Activator ConfigRegistryConnector service is removed.");
-				}
-			}
-		});
-		this.configRegistryConnectorTracker.open();
-
 		// Start ServiceTracker for tracking UserRegistryConnector service
 		this.userRegistryConnectorTracker = new ServiceTracker<UserRegistryConnector, UserRegistryConnector>(bundleContext, UserRegistryConnector.class, new ServiceTrackerCustomizer<UserRegistryConnector, UserRegistryConnector>() {
 			@Override
 			public UserRegistryConnector addingService(ServiceReference<UserRegistryConnector> reference) {
 				if (debug) {
-					System.out.println("org.orbit.component.api.Activator UserRegistryConnector service is added.");
+					System.out.println(getClass().getName() + " UserRegistryConnector service is added.");
 				}
 				return bundleContext.getService(reference);
 			}
@@ -105,24 +59,50 @@ public class Activator implements BundleActivator {
 			@Override
 			public void modifiedService(ServiceReference<UserRegistryConnector> reference, UserRegistryConnector arg1) {
 				if (debug) {
-					System.out.println("org.orbit.component.api.Activator UserRegistryConnector service is modified.");
+					System.out.println(getClass().getName() + " UserRegistryConnector service is modified.");
 				}
 			}
 
 			@Override
 			public void removedService(ServiceReference<UserRegistryConnector> reference, UserRegistryConnector arg1) {
 				if (debug) {
-					System.out.println("org.orbit.component.api.Activator UserRegistryConnector service is removed.");
+					System.out.println(getClass().getName() + " UserRegistryConnector service is removed.");
 				}
 			}
 		});
+
+		// Start ServiceTracker for tracking ConfigRegistryConnector service
+		this.configRegistryConnectorTracker = new ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector>(bundleContext, ConfigRegistryConnector.class, new ServiceTrackerCustomizer<ConfigRegistryConnector, ConfigRegistryConnector>() {
+			@Override
+			public ConfigRegistryConnector addingService(ServiceReference<ConfigRegistryConnector> reference) {
+				if (debug) {
+					System.out.println(getClass().getName() + " ConfigRegistryConnector service is added.");
+				}
+				return bundleContext.getService(reference);
+			}
+
+			@Override
+			public void modifiedService(ServiceReference<ConfigRegistryConnector> reference, ConfigRegistryConnector appStoreManager) {
+				if (debug) {
+					System.out.println(getClass().getName() + " ConfigRegistryConnector service is modified.");
+				}
+			}
+
+			@Override
+			public void removedService(ServiceReference<ConfigRegistryConnector> reference, ConfigRegistryConnector appStoreManager) {
+				if (debug) {
+					System.out.println(getClass().getName() + " ConfigRegistryConnector service is removed.");
+				}
+			}
+		});
+		this.configRegistryConnectorTracker.open();
 
 		// Start ServiceTracker for tracking OAuth2Connector service
 		this.oauth2ConnectorTracker = new ServiceTracker<OAuth2Connector, OAuth2Connector>(bundleContext, OAuth2Connector.class, new ServiceTrackerCustomizer<OAuth2Connector, OAuth2Connector>() {
 			@Override
 			public OAuth2Connector addingService(ServiceReference<OAuth2Connector> reference) {
 				if (debug) {
-					System.out.println("org.orbit.component.api.Activator OAuth2Connector service is added.");
+					System.out.println(getClass().getName() + " OAuth2Connector service is added.");
 				}
 				return bundleContext.getService(reference);
 			}
@@ -130,14 +110,70 @@ public class Activator implements BundleActivator {
 			@Override
 			public void modifiedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
 				if (debug) {
-					System.out.println("org.orbit.component.api.Activator OAuth2Connector service is modified.");
+					System.out.println(getClass().getName() + " OAuth2Connector service is modified.");
 				}
 			}
 
 			@Override
 			public void removedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
 				if (debug) {
-					System.out.println("org.orbit.component.api.Activator OAuth2Connector service is removed.");
+					System.out.println(getClass().getName() + " OAuth2Connector service is removed.");
+				}
+			}
+		});
+
+		// --------------------------------------------------------------------------------
+		// Start tier2 service connectors
+		// --------------------------------------------------------------------------------
+		// Start ServiceTracker for tracking AppStoreConnector service
+		this.appStoreConnectorTracker = new ServiceTracker<AppStoreConnector, AppStoreConnector>(bundleContext, AppStoreConnector.class, new ServiceTrackerCustomizer<AppStoreConnector, AppStoreConnector>() {
+			@Override
+			public AppStoreConnector addingService(ServiceReference<AppStoreConnector> reference) {
+				if (debug) {
+					System.out.println(getClass().getName() + " AppStoreConnector service is added.");
+				}
+				return bundleContext.getService(reference);
+			}
+
+			@Override
+			public void modifiedService(ServiceReference<AppStoreConnector> reference, AppStoreConnector appStoreManager) {
+				if (debug) {
+					System.out.println(getClass().getName() + " AppStoreConnector service is modified.");
+				}
+			}
+
+			@Override
+			public void removedService(ServiceReference<AppStoreConnector> reference, AppStoreConnector appStoreManager) {
+				if (debug) {
+					System.out.println(getClass().getName() + " AppStoreConnector service is removed.");
+				}
+			}
+		});
+		this.appStoreConnectorTracker.open();
+
+		// --------------------------------------------------------------------------------
+		// Start tier3 service connectors
+		// --------------------------------------------------------------------------------
+		this.domainMgmtConnectorTracker = new ServiceTracker<DomainMgmtConnector, DomainMgmtConnector>(bundleContext, DomainMgmtConnector.class, new ServiceTrackerCustomizer<DomainMgmtConnector, DomainMgmtConnector>() {
+			@Override
+			public DomainMgmtConnector addingService(ServiceReference<DomainMgmtConnector> reference) {
+				if (debug) {
+					System.out.println(getClass().getName() + " DomainMgmtConnector service is added.");
+				}
+				return bundleContext.getService(reference);
+			}
+
+			@Override
+			public void modifiedService(ServiceReference<DomainMgmtConnector> reference, DomainMgmtConnector arg1) {
+				if (debug) {
+					System.out.println(getClass().getName() + " DomainMgmtConnector service is modified.");
+				}
+			}
+
+			@Override
+			public void removedService(ServiceReference<DomainMgmtConnector> reference, DomainMgmtConnector arg1) {
+				if (debug) {
+					System.out.println(getClass().getName() + " DomainMgmtConnector service is removed.");
 				}
 			}
 		});
@@ -148,6 +184,10 @@ public class Activator implements BundleActivator {
 		// Start AppStore command
 		this.appStoreCommand = new AppStoreCommand(bundleContext);
 		this.appStoreCommand.start();
+
+		// Start DomainManagement command
+		this.domainMgmtCommand = new DomainMgmtCommand(bundleContext);
+		this.domainMgmtCommand.start();
 	}
 
 	@Override
@@ -164,64 +204,90 @@ public class Activator implements BundleActivator {
 			this.appStoreCommand = null;
 		}
 
+		// Stop DomainManagement command
+		if (this.domainMgmtCommand != null) {
+			this.domainMgmtCommand.stop();
+			this.domainMgmtCommand = null;
+		}
+
 		// --------------------------------------------------------------------------------
-		// Stop service connectors
+		// Stop tier3 service connectors
 		// --------------------------------------------------------------------------------
-		// Stop ServiceTracker for tracking AppStoreConnector service
+		// Stop DomainMgmtConnector ServiceTracker
+		if (this.domainMgmtConnectorTracker != null) {
+			this.domainMgmtConnectorTracker.close();
+			this.domainMgmtConnectorTracker = null;
+		}
+
+		// --------------------------------------------------------------------------------
+		// Stop tier2 service connectors
+		// --------------------------------------------------------------------------------
+		// Stop AppStoreConnector ServiceTracker
 		if (this.appStoreConnectorTracker != null) {
 			this.appStoreConnectorTracker.close();
 			this.appStoreConnectorTracker = null;
 		}
 
-		// Stop ServiceTracker for tracking ConfigRegistryConnector service
+		// --------------------------------------------------------------------------------
+		// Stop tier1 service connectors
+		// --------------------------------------------------------------------------------
+		// Stop ConfigRegistryConnector ServiceTracker
 		if (this.configRegistryConnectorTracker != null) {
 			this.configRegistryConnectorTracker.close();
 			this.configRegistryConnectorTracker = null;
 		}
 
-		// Stop ServiceTracker for tracking UserRegistryConnector service
+		// Stop UserRegistryConnector ServiceTracker
 		if (this.userRegistryConnectorTracker != null) {
 			this.userRegistryConnectorTracker.close();
 			this.userRegistryConnectorTracker = null;
 		}
 
-		// Stop ServiceTracker for tracking OAuth2Connector service
+		// Stop OAuth2Connector ServiceTracker
 		if (this.oauth2ConnectorTracker != null) {
 			this.oauth2ConnectorTracker.close();
 			this.oauth2ConnectorTracker = null;
 		}
 	}
 
-	public AppStoreConnector getAppStoreConnector() {
-		AppStoreConnector appStoreConnector = null;
-		if (this.appStoreConnectorTracker != null) {
-			appStoreConnector = this.appStoreConnectorTracker.getService();
+	public UserRegistryConnector getUserRegistryConnector() {
+		UserRegistryConnector connector = null;
+		if (this.userRegistryConnectorTracker != null) {
+			connector = this.userRegistryConnectorTracker.getService();
 		}
-		return appStoreConnector;
+		return connector;
 	}
 
 	public ConfigRegistryConnector getConfigRegistryConnector() {
-		ConfigRegistryConnector configRegistryConnector = null;
+		ConfigRegistryConnector connector = null;
 		if (this.configRegistryConnectorTracker != null) {
-			configRegistryConnector = this.configRegistryConnectorTracker.getService();
+			connector = this.configRegistryConnectorTracker.getService();
 		}
-		return configRegistryConnector;
-	}
-
-	public UserRegistryConnector getUserRegistryConnector() {
-		UserRegistryConnector userRegistryConnector = null;
-		if (this.userRegistryConnectorTracker != null) {
-			userRegistryConnector = this.userRegistryConnectorTracker.getService();
-		}
-		return userRegistryConnector;
+		return connector;
 	}
 
 	public OAuth2Connector getOAuth2Connector() {
-		OAuth2Connector oauth2Connector = null;
+		OAuth2Connector connector = null;
 		if (this.oauth2ConnectorTracker != null) {
-			oauth2Connector = this.oauth2ConnectorTracker.getService();
+			connector = this.oauth2ConnectorTracker.getService();
 		}
-		return oauth2Connector;
+		return connector;
+	}
+
+	public AppStoreConnector getAppStoreConnector() {
+		AppStoreConnector connector = null;
+		if (this.appStoreConnectorTracker != null) {
+			connector = this.appStoreConnectorTracker.getService();
+		}
+		return connector;
+	}
+
+	public DomainMgmtConnector getDomainMgmtConnector() {
+		DomainMgmtConnector connector = null;
+		if (this.domainMgmtConnectorTracker != null) {
+			connector = this.domainMgmtConnectorTracker.getService();
+		}
+		return connector;
 	}
 
 }

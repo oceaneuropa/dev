@@ -8,6 +8,8 @@ import org.orbit.component.api.tier1.session.OAuth2;
 import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
+import org.orbit.component.api.tier3.domain.DomainMgmt;
+import org.orbit.component.api.tier3.domain.DomainMgmtConnector;
 
 public class Orbit {
 
@@ -17,40 +19,49 @@ public class Orbit {
 		return INSTANCE;
 	}
 
-	public AppStore getAppStore() {
-		AppStore appStore = null;
-		AppStoreConnector appStoreConnector = Activator.getInstance().getAppStoreConnector();
-		if (appStoreConnector != null) {
-			appStore = appStoreConnector.getService();
-		}
-		return appStore;
-	}
-
-	public ConfigRegistry getConfigRegistry() {
-		ConfigRegistry configRegistry = null;
-		ConfigRegistryConnector configRegistryConnector = Activator.getInstance().getConfigRegistryConnector();
-		if (configRegistryConnector != null) {
-			configRegistry = configRegistryConnector.getService();
-		}
-		return configRegistry;
-	}
-
 	public UserRegistry getUserRegistry() {
 		UserRegistry userRegistry = null;
-		UserRegistryConnector userRegistryConnector = Activator.getInstance().getUserRegistryConnector();
-		if (userRegistryConnector != null) {
-			userRegistry = userRegistryConnector.getService();
+		UserRegistryConnector connector = Activator.getInstance().getUserRegistryConnector();
+		if (connector != null) {
+			userRegistry = connector.getService();
 		}
 		return userRegistry;
 	}
 
+	public ConfigRegistry getConfigRegistry() {
+		ConfigRegistry configRegistry = null;
+		ConfigRegistryConnector connector = Activator.getInstance().getConfigRegistryConnector();
+		if (connector != null) {
+			configRegistry = connector.getService();
+		}
+		return configRegistry;
+	}
+
 	public OAuth2 getOAuth2() {
 		OAuth2 oauth2 = null;
-		OAuth2Connector oauth2Connector = Activator.getInstance().getOAuth2Connector();
-		if (oauth2Connector != null) {
-			oauth2 = oauth2Connector.getService();
+		OAuth2Connector connector = Activator.getInstance().getOAuth2Connector();
+		if (connector != null) {
+			oauth2 = connector.getService();
 		}
 		return oauth2;
+	}
+
+	public AppStore getAppStore() {
+		AppStore appStore = null;
+		AppStoreConnector connector = Activator.getInstance().getAppStoreConnector();
+		if (connector != null) {
+			appStore = connector.getService();
+		}
+		return appStore;
+	}
+
+	public DomainMgmt getDomainMamt() {
+		DomainMgmt domainMgmt = null;
+		DomainMgmtConnector connector = Activator.getInstance().getDomainMgmtConnector();
+		if (connector != null) {
+			domainMgmt = connector.getService();
+		}
+		return domainMgmt;
 	}
 
 }

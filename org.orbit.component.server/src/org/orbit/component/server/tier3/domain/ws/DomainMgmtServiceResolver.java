@@ -9,7 +9,7 @@ public class DomainMgmtServiceResolver implements ContextResolver<DomainMgmtServ
 
 	@Override
 	public DomainMgmtService getContext(Class<?> clazz) {
-		return Activator.getDomainManagementService();
+		return Activator.getDomainMgmtService();
 	}
 
 }

@@ -30,10 +30,15 @@ public class Activator implements BundleActivator {
 
 	protected static BundleContext bundleContext;
 
-	protected static AppStoreServiceDatabaseImpl appStoreService;
+	// tier1 services
 	protected static ConfigRegistryServiceDatabaseImpl configRegistryService;
-	protected static UserRegistryServiceDatabaseImpl userRegistryService;
 	protected static OAuth2ServiceDatabaseImpl oauth2Service;
+	protected static UserRegistryServiceDatabaseImpl userRegistryService;
+
+	// tier2 services
+	protected static AppStoreServiceDatabaseImpl appStoreService;
+
+	// tier3 services
 	protected static DomainMgmtServiceDatabaseImpl domainMgmtService;
 
 	public static BundleContext getBundleContext() {
@@ -56,34 +61,64 @@ public class Activator implements BundleActivator {
 		return appStoreService;
 	}
 
-	public static DomainMgmtService getDomainManagementService() {
+	public static DomainMgmtService getDomainMgmtService() {
 		return domainMgmtService;
 	}
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 
-	// tier1
+	// tier1 web applications
 	protected UserRegistryWSApplication userRegistryApp;
 	protected OAuth2WSApplication oauth2App;
 	protected ConfigRegistryWSApplication configRegistryApp;
 
-	// tier2
+	// tier2 web applications
 	protected AppStoreWSApplication appStoreApp;
 
-	// tier3
+	// tier3 web applications
 	protected DomainMgmtWSApplication domainMgmtApp;
 
-	protected boolean runUserRegistry = true;
-	protected boolean runOAuth2Service = true;
-	protected boolean runConfigRegistry = true;
-	protected boolean runAppStore = true;
-	protected boolean runDomainMgmtService = true;
+	protected boolean runUserRegistry;
+	protected boolean runOAuth2Service;
+	protected boolean runConfigRegistry;
+	protected boolean runAppStore;
+	protected boolean runDomainMgmtService;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		System.out.println(getClass().getName() + ".start()");
 
 		Activator.bundleContext = bundleContext;
+
+		// -----------------------------------------------------------------------------
+		// Auto-start services (temporary solution)
+		// -----------------------------------------------------------------------------
+		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_OAUTH2_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
+		if (configProps.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_NAME)) {
+			this.runUserRegistry = true;
+		}
+		if (configProps.containsKey(OrbitConstants.COMPONENT_OAUTH2_NAME)) {
+			this.runOAuth2Service = true;
+		}
+		if (configProps.containsKey(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME)) {
+			this.runConfigRegistry = true;
+		}
+		if (configProps.containsKey(OrbitConstants.COMPONENT_APP_STORE_NAME)) {
+			this.runAppStore = true;
+		}
+		if (configProps.containsKey(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME)) {
+			this.runDomainMgmtService = true;
+		}
+		System.out.println("Start user registry service: " + (this.runUserRegistry ? "yes" : "no"));
+		System.out.println("Start oauth2 service: " + (this.runOAuth2Service ? "yes" : "no"));
+		System.out.println("Start config registry service: " + (this.runConfigRegistry ? "yes" : "no"));
+		System.out.println("Start app store service: " + (this.runAppStore ? "yes" : "no"));
+		System.out.println("Start domain management service: " + (this.runDomainMgmtService ? "yes" : "no"));
 
 		// -----------------------------------------------------------------------------
 		// Get load balancer for IndexProvider
@@ -94,37 +129,43 @@ public class Activator implements BundleActivator {
 		this.indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(indexProviderProps);
 
 		// -----------------------------------------------------------------------------
-		// Start services
+		// Start tier1 services
 		// -----------------------------------------------------------------------------
-		// 1. Start UserRegistry service
+		// Start UserRegistry service
 		if (runUserRegistry) {
 			UserRegistryServiceDatabaseImpl userRegistryService = new UserRegistryServiceDatabaseImpl();
 			userRegistryService.start(bundleContext);
 			Activator.userRegistryService = userRegistryService;
 		}
 
-		// 2. Start OAuth2 service
+		// Start OAuth2 service
 		if (runOAuth2Service) {
 			OAuth2ServiceDatabaseImpl oauth2Service = new OAuth2ServiceDatabaseImpl();
 			oauth2Service.start(bundleContext);
 			Activator.oauth2Service = oauth2Service;
 		}
 
-		// 3. Start ConfigRegistry service
+		// Start ConfigRegistry service
 		if (runConfigRegistry) {
 			ConfigRegistryServiceDatabaseImpl configRegistryService = new ConfigRegistryServiceDatabaseImpl();
 			configRegistryService.start(bundleContext);
 			Activator.configRegistryService = configRegistryService;
 		}
 
-		// 4. Start AppStore service
+		// -----------------------------------------------------------------------------
+		// Start tier2 services
+		// -----------------------------------------------------------------------------
+		// Start AppStore service
 		if (runAppStore) {
 			AppStoreServiceDatabaseImpl appStoreService = new AppStoreServiceDatabaseImpl();
 			appStoreService.start(bundleContext);
 			Activator.appStoreService = appStoreService;
 		}
 
-		// 5. Start DomainManagement service
+		// -----------------------------------------------------------------------------
+		// Start tier3 services
+		// -----------------------------------------------------------------------------
+		// Start DomainManagement service
 		if (runDomainMgmtService) {
 			DomainMgmtServiceDatabaseImpl domainMgmtService = new DomainMgmtServiceDatabaseImpl();
 			domainMgmtService.start(bundleContext);
@@ -132,9 +173,9 @@ public class Activator implements BundleActivator {
 		}
 
 		// -----------------------------------------------------------------------------
-		// Start web applications
+		// Start tier1 web applications
 		// -----------------------------------------------------------------------------
-		// 1. Start UserRegistry web application
+		// Start UserRegistry web application
 		if (runUserRegistry) {
 			this.userRegistryApp = new UserRegistryWSApplication();
 			this.userRegistryApp.setBundleContext(bundleContext);
@@ -143,7 +184,7 @@ public class Activator implements BundleActivator {
 			this.userRegistryApp.start();
 		}
 
-		// 2. Start OAuth2 web application
+		// Start OAuth2 web application
 		if (runOAuth2Service) {
 			this.oauth2App = new OAuth2WSApplication();
 			this.oauth2App.setBundleContext(bundleContext);
@@ -152,7 +193,7 @@ public class Activator implements BundleActivator {
 			this.oauth2App.start();
 		}
 
-		// 3. Start ConfigRegistry web application
+		// Start ConfigRegistry web application
 		if (runConfigRegistry) {
 			this.configRegistryApp = new ConfigRegistryWSApplication();
 			this.configRegistryApp.setBundleContext(bundleContext);
@@ -161,7 +202,10 @@ public class Activator implements BundleActivator {
 			this.configRegistryApp.start();
 		}
 
-		// 4. Start AppStore web application
+		// -----------------------------------------------------------------------------
+		// Start tier2 web applications
+		// -----------------------------------------------------------------------------
+		// Start AppStore web application
 		if (runAppStore) {
 			this.appStoreApp = new AppStoreWSApplication();
 			this.appStoreApp.setBundleContext(bundleContext);
@@ -170,11 +214,14 @@ public class Activator implements BundleActivator {
 			this.appStoreApp.start();
 		}
 
-		// 5. Start DomainManagement web application
+		// -----------------------------------------------------------------------------
+		// Start tier3 web applications
+		// -----------------------------------------------------------------------------
+		// Start DomainManagement web application
 		if (runDomainMgmtService) {
 			this.domainMgmtApp = new DomainMgmtWSApplication();
 			this.domainMgmtApp.setBundleContext(bundleContext);
-			this.domainMgmtApp.setContextRoot(domainMgmtApp.getContextRoot());
+			this.domainMgmtApp.setContextRoot(domainMgmtService.getContextRoot());
 			this.domainMgmtApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
 			this.domainMgmtApp.start();
 		}
@@ -187,41 +234,9 @@ public class Activator implements BundleActivator {
 		Activator.bundleContext = null;
 
 		// -----------------------------------------------------------------------------
-		// Stop web applications
+		// Stop tier 3 web applications
 		// -----------------------------------------------------------------------------
-		// 1. Stop UserRegistry web application
-		if (runUserRegistry) {
-			if (this.userRegistryApp != null) {
-				this.userRegistryApp.stop();
-				this.userRegistryApp = null;
-			}
-		}
-
-		// 2. Stop OAuth2 web application
-		if (runOAuth2Service) {
-			if (this.oauth2App != null) {
-				this.oauth2App.stop();
-				this.oauth2App = null;
-			}
-		}
-
-		// 3. Stop ConfigRegistry web application
-		if (runConfigRegistry) {
-			if (this.configRegistryApp != null) {
-				this.configRegistryApp.stop();
-				this.configRegistryApp = null;
-			}
-		}
-
-		// 4. Stop AppStore web application
-		if (runAppStore) {
-			if (this.appStoreApp != null) {
-				this.appStoreApp.stop();
-				this.appStoreApp = null;
-			}
-		}
-
-		// 5. Stop DomainManagement web application
+		// Stop DomainManagement web application
 		if (runDomainMgmtService) {
 			if (this.domainMgmtApp != null) {
 				this.domainMgmtApp.stop();
@@ -230,33 +245,58 @@ public class Activator implements BundleActivator {
 		}
 
 		// -----------------------------------------------------------------------------
-		// Stop services
+		// Stop tier 2 web applications
 		// -----------------------------------------------------------------------------
-		// 1. Stop UserRegistry service
-		if (runUserRegistry) {
-			if (Activator.userRegistryService != null) {
-				Activator.userRegistryService.stop();
-				Activator.userRegistryService = null;
+		// Stop AppStore web application
+		if (runAppStore) {
+			if (this.appStoreApp != null) {
+				this.appStoreApp.stop();
+				this.appStoreApp = null;
 			}
 		}
 
-		// 2. Stop OAuth2 service
-		if (runOAuth2Service) {
-			if (Activator.oauth2Service != null) {
-				Activator.oauth2Service.stop();
-				Activator.oauth2Service = null;
-			}
-		}
-
-		// 3. Stop ConfigRegistry service
+		// -----------------------------------------------------------------------------
+		// Stop tier 1 web applications
+		// -----------------------------------------------------------------------------
+		// Stop ConfigRegistry web application
 		if (runConfigRegistry) {
-			if (Activator.configRegistryService != null) {
-				Activator.configRegistryService.stop();
-				Activator.configRegistryService = null;
+			if (this.configRegistryApp != null) {
+				this.configRegistryApp.stop();
+				this.configRegistryApp = null;
 			}
 		}
 
-		// 4. Stop AppStore service
+		// Stop OAuth2 web application
+		if (runOAuth2Service) {
+			if (this.oauth2App != null) {
+				this.oauth2App.stop();
+				this.oauth2App = null;
+			}
+		}
+
+		// Stop UserRegistry web application
+		if (runUserRegistry) {
+			if (this.userRegistryApp != null) {
+				this.userRegistryApp.stop();
+				this.userRegistryApp = null;
+			}
+		}
+
+		// -----------------------------------------------------------------------------
+		// Stop tier 3 services
+		// -----------------------------------------------------------------------------
+		// Stop DomainManagement service
+		if (runDomainMgmtService) {
+			if (Activator.domainMgmtService != null) {
+				Activator.domainMgmtService.stop();
+				Activator.domainMgmtService = null;
+			}
+		}
+
+		// -----------------------------------------------------------------------------
+		// Stop tier 2 services
+		// -----------------------------------------------------------------------------
+		// Stop AppStore service
 		if (runAppStore) {
 			if (Activator.appStoreService != null) {
 				Activator.appStoreService.stop();
@@ -264,11 +304,30 @@ public class Activator implements BundleActivator {
 			}
 		}
 
-		// 5. Stop DomainManagement service
-		if (runDomainMgmtService) {
-			if (Activator.domainMgmtService != null) {
-				Activator.domainMgmtService.stop();
-				Activator.domainMgmtService = null;
+		// -----------------------------------------------------------------------------
+		// Stop tier 1 services
+		// -----------------------------------------------------------------------------
+		// Stop ConfigRegistry service
+		if (runConfigRegistry) {
+			if (Activator.configRegistryService != null) {
+				Activator.configRegistryService.stop();
+				Activator.configRegistryService = null;
+			}
+		}
+
+		// Stop OAuth2 service
+		if (runOAuth2Service) {
+			if (Activator.oauth2Service != null) {
+				Activator.oauth2Service.stop();
+				Activator.oauth2Service = null;
+			}
+		}
+
+		// Stop UserRegistry service
+		if (runUserRegistry) {
+			if (Activator.userRegistryService != null) {
+				Activator.userRegistryService.stop();
+				Activator.userRegistryService = null;
 			}
 		}
 	}

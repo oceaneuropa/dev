@@ -26,7 +26,7 @@ public abstract class AbstractApplication extends Application implements DeployC
 	}
 
 	public String getContextRoot() {
-		return contextRoot;
+		return this.contextRoot;
 	}
 
 	public void setContextRoot(String contextRoot) {
@@ -34,7 +34,7 @@ public abstract class AbstractApplication extends Application implements DeployC
 	}
 
 	public BundleContext getBundleContext() {
-		return bundleContext;
+		return this.bundleContext;
 	}
 
 	public void setBundleContext(BundleContext bundleContext) {

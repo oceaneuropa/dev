@@ -9,26 +9,36 @@ orbit.service.http.contextroot=/orbit/v1/indexservice
 
 component.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
 
-component.appstore.name=AppStoreInstance2
-component.appstore.contextroot=/orbit/v1/appstore
-component.appstore.jdbc.driver=org.postgresql.Driver
-component.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
-component.appstore.jdbc.username=postgres
-component.appstore.jdbc.password=admin
+// tier 1 service configurations
+component.userregistry.name=UserRegistryInstance2
+component.userregistry.context_root=/orbit/v1/userregistry
+component.userregistry.jdbc.driver=org.postgresql.Driver
+component.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
+component.userregistry.jdbc.username=postgres
+component.userregistry.jdbc.password=admin
 
 component.configregistry.name=ConfigRegistryInstance2
-component.configregistry.contextroot=/orbit/v1/configregistry
+component.configregistry.context_root=/orbit/v1/configregistry
 component.configregistry.jdbc.driver=org.postgresql.Driver
 component.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
 component.configregistry.jdbc.username=postgres
 component.configregistry.jdbc.password=admin
 
-component.userregistry.name=UserRegistryInstance2
-component.userregistry.contextroot=/orbit/v1/userregistry
-component.userregistry.jdbc.driver=org.postgresql.Driver
-component.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
-component.userregistry.jdbc.username=postgres
-component.userregistry.jdbc.password=admin
+// tier 2 service configurations
+component.appstore.name=AppStoreInstance2
+component.appstore.context_root=/orbit/v1/appstore
+component.appstore.jdbc.driver=org.postgresql.Driver
+component.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
+component.appstore.jdbc.username=postgres
+component.appstore.jdbc.password=admin
+
+// tier 3 service configurations
+component.domain_mgmt.name=DomainMgmtInstance2
+component.domain_mgmt.context_root=/orbit/v1/domain
+component.domain_mgmt.jdbc.driver=org.postgresql.Driver
+component.domain_mgmt.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
+component.domain_mgmt.jdbc.username=postgres
+component.domain_mgmt.jdbc.password=admin
 
 backup0:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=9090 -Dcluster.persistence.local.dir=/Users/yayang/cluster/data -Dcluster.home.dir=/Users/yayang/cluster/home1 -DNB_HOME=/Users/yayang/cluster
@@ -52,6 +62,7 @@ backup3:
 -DORIGIN_HOME=/Users/yayang/origin 
 -Dorbit.host.url=http://127.0.0.1:11002 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
--Dcomponent.appstore.name=AppStoreInstance2 -Dcomponent.appstore.context_root=/orbit/v1/appstore -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver -Dcomponent.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.appstore.jdbc.username=postgres -Dcomponent.appstore.jdbc.password=admin 
+-Dcomponent.userregistry.name=UserRegistryInstance2 -Dcomponent.userregistry.context_root=/orbit/v1/userregistry -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.userregistry.jdbc.username=postgres -Dcomponent.userregistry.jdbc.password=admin 
 -Dcomponent.configregistry.name=ConfigRegistryInstance2 -Dcomponent.configregistry.context_root=/orbit/v1/configregistry -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.configregistry.jdbc.username=postgres -Dcomponent.configregistry.jdbc.password=admin
--Dcomponent.userregistry.name=UserRegistryInstance2 -Dcomponent.userregistry.context_root=/orbit/v1/userregistry -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.userregistry.jdbc.username=postgres -Dcomponent.userregistry.jdbc.password=admin
+-Dcomponent.appstore.name=AppStoreInstance2 -Dcomponent.appstore.context_root=/orbit/v1/appstore -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver -Dcomponent.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.appstore.jdbc.username=postgres -Dcomponent.appstore.jdbc.password=admin
+-Dcomponent.domain_mgmt.name=DomainMgmtInstance2 -Dcomponent.domain_mgmt.context_root=/orbit/v1/domain -Dcomponent.domain_mgmt.jdbc.driver=org.postgresql.Driver -Dcomponent.domain_mgmt.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.domain_mgmt.jdbc.username=postgres -Dcomponent.domain_mgmt.jdbc.password=admin
