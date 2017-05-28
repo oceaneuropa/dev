@@ -1,54 +1,37 @@
-package org.orbit.component.model.tier3.domain;
+package org.orbit.component.api.tier3.domain.request;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+public class NodeUpdateRequest {
 
-/**
- * Design time object for TransferAgent configuration.
- *
- */
-@XmlRootElement
-public class TransferAgentConfigDTO {
-
-	@XmlElement
-	protected String id;
-	@XmlElement
+	protected String nodeId;
 	protected String name;
-	@XmlElement
 	protected String home;
-	@XmlElement
 	protected String hostURL;
-	@XmlElement
 	protected String contextRoot;
 
-	@XmlElement
-	public String getId() {
-		return id;
+	public String getNodeId() {
+		return nodeId;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setNodeId(String nodeId) {
+		this.nodeId = nodeId;
 	}
 
-	@XmlElement
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	@XmlElement
 	public String getHome() {
-		return home;
+		return this.home;
 	}
 
 	public void setHome(String home) {
 		this.home = home;
 	}
 
-	@XmlElement
 	public String getHostURL() {
 		return hostURL;
 	}
@@ -57,7 +40,6 @@ public class TransferAgentConfigDTO {
 		this.hostURL = hostURL;
 	}
 
-	@XmlElement
 	public String getContextRoot() {
 		return contextRoot;
 	}

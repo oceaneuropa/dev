@@ -74,9 +74,32 @@ public class ModelConverter {
 
 		dto.setId(transferAgentConfig.getId());
 		dto.setName(transferAgentConfig.getName());
-		dto.setTAHome(transferAgentConfig.getTAHome());
+		dto.setHome(transferAgentConfig.getHome());
 		dto.setHostURL(transferAgentConfig.getHostURL());
 		dto.setContextRoot(transferAgentConfig.getContextRoot());
+
+		return dto;
+	}
+
+	/**
+	 * Convert NodeConfigRTO to NodeConfigDTO.
+	 * 
+	 * @param nodeConfig
+	 * @return
+	 */
+	public NodeConfigDTO toDTO(NodeConfigRTO nodeConfig) {
+		if (nodeConfig == null) {
+			return null;
+		}
+		NodeConfigDTO dto = new NodeConfigDTO();
+
+		dto.setId(nodeConfig.getId());
+		dto.setMachineId(nodeConfig.getMachineId());
+		dto.setTransferAgentId(nodeConfig.getTransferAgentId());
+		dto.setName(nodeConfig.getName());
+		dto.setHome(nodeConfig.getHome());
+		dto.setHostURL(nodeConfig.getHostURL());
+		dto.setContextRoot(nodeConfig.getContextRoot());
 
 		return dto;
 	}
@@ -104,7 +127,7 @@ public class ModelConverter {
 	}
 
 	/**
-	 * Convert TransferAgentConfigRTO to TransferAgentConfigDTO.
+	 * Convert TransferAgentConfigDTO to TransferAgentConfigRTO.
 	 * 
 	 * @param transferAgentConfigDTO
 	 * @return
@@ -117,11 +140,34 @@ public class ModelConverter {
 
 		transferAgentConfig.setId(transferAgentConfigDTO.getId());
 		transferAgentConfig.setName(transferAgentConfigDTO.getName());
-		transferAgentConfig.setTAHome(transferAgentConfigDTO.getTAHome());
+		transferAgentConfig.setHome(transferAgentConfigDTO.getHome());
 		transferAgentConfig.setHostURL(transferAgentConfigDTO.getHostURL());
 		transferAgentConfig.setContextRoot(transferAgentConfigDTO.getContextRoot());
 
 		return transferAgentConfig;
+	}
+
+	/**
+	 * Convert NodeConfigDTO to NodeConfigRTO.
+	 * 
+	 * @param nodeConfigDTO
+	 * @return
+	 */
+	public NodeConfigRTO toRTO(NodeConfigDTO nodeConfigDTO) {
+		if (nodeConfigDTO == null) {
+			return null;
+		}
+		NodeConfigRTO nodeConfig = new NodeConfigRTO();
+
+		nodeConfig.setId(nodeConfigDTO.getId());
+		nodeConfig.setMachineId(nodeConfigDTO.getMachineId());
+		nodeConfig.setTransferAgentId(nodeConfigDTO.getTransferAgentId());
+		nodeConfig.setName(nodeConfigDTO.getName());
+		nodeConfig.setHome(nodeConfigDTO.getHome());
+		nodeConfig.setHostURL(nodeConfigDTO.getHostURL());
+		nodeConfig.setContextRoot(nodeConfigDTO.getContextRoot());
+
+		return nodeConfig;
 	}
 
 }

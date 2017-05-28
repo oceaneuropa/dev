@@ -10,9 +10,11 @@ import java.util.Properties;
 
 import org.orbit.component.model.tier3.domain.DomainMgmtException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
 import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.tier3.domain.handler.MachineConfigTableHandler;
+import org.orbit.component.server.tier3.domain.handler.NodeConfigTableHandler;
 import org.orbit.component.server.tier3.domain.handler.TransferAgentConfigTableHandler;
 import org.orbit.component.server.tier3.domain.service.DomainMgmtService;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -29,6 +31,7 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 
 	protected MachineConfigTableHandler machineConfigTableHandler = MachineConfigTableHandler.INSTANCE;
 	protected TransferAgentConfigTableHandler transferAgentConfigTableHandler = TransferAgentConfigTableHandler.INSTANCE;
+	protected NodeConfigTableHandler nodeConfigTableHandler = NodeConfigTableHandler.INSTANCE;
 
 	public DomainMgmtServiceDatabaseImpl() {
 	}
@@ -195,6 +198,17 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 	protected void checkTransferAgentId(String transferAgentId) throws DomainMgmtException {
 		if (transferAgentId == null || transferAgentId.isEmpty()) {
 			throw new DomainMgmtException("400", "transferAgentId is empty.");
+		}
+	}
+
+	/**
+	 * 
+	 * @param nodeId
+	 * @throws DomainMgmtException
+	 */
+	protected void checkNodeId(String nodeId) throws DomainMgmtException {
+		if (nodeId == null || nodeId.isEmpty()) {
+			throw new DomainMgmtException("400", "nodeId is empty.");
 		}
 	}
 
@@ -384,7 +398,7 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 	public boolean addTransferAgentConfig(String machineId, TransferAgentConfigRTO addTransferAgentRequest) throws DomainMgmtException {
 		String id = addTransferAgentRequest.getId();
 		String name = addTransferAgentRequest.getName();
-		String TAHome = addTransferAgentRequest.getTAHome();
+		String home = addTransferAgentRequest.getHome();
 		String hostURL = addTransferAgentRequest.getHostURL();
 		String contextRoot = addTransferAgentRequest.getContextRoot();
 
@@ -393,7 +407,7 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 
 		Connection conn = getConnection();
 		try {
-			TransferAgentConfigRTO newTransferAgentConfig = this.transferAgentConfigTableHandler.addTransferAgentConfig(conn, machineId, id, name, TAHome, hostURL, contextRoot);
+			TransferAgentConfigRTO newTransferAgentConfig = this.transferAgentConfigTableHandler.addTransferAgentConfig(conn, machineId, id, name, home, hostURL, contextRoot);
 			if (newTransferAgentConfig != null) {
 				return true;
 			}
@@ -409,7 +423,7 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 	public boolean updateTransferAgentConfig(String machineId, TransferAgentConfigRTO updateTransferAgentRequest) throws DomainMgmtException {
 		String id = updateTransferAgentRequest.getId();
 		String newName = updateTransferAgentRequest.getName();
-		String newTAHome = updateTransferAgentRequest.getTAHome();
+		String newHome = updateTransferAgentRequest.getHome();
 		String newHostURL = updateTransferAgentRequest.getHostURL();
 		String newContextRoot = updateTransferAgentRequest.getContextRoot();
 
@@ -426,7 +440,7 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 			}
 
 			String oldName = transferAgentConfig.getName();
-			String oldTAHome = transferAgentConfig.getTAHome();
+			String oldHome = transferAgentConfig.getHome();
 			String oldHostURL = transferAgentConfig.getHostURL();
 			String oldContextRoot = transferAgentConfig.getContextRoot();
 
@@ -440,10 +454,10 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 				}
 			}
 
-			if (newTAHome != null) {
-				boolean needToUpdate = (!newTAHome.equals(oldTAHome)) ? true : false;
+			if (newHome != null) {
+				boolean needToUpdate = (!newHome.equals(oldHome)) ? true : false;
 				if (needToUpdate) {
-					boolean succeed = this.transferAgentConfigTableHandler.updateTAHome(conn, machineId, id, newTAHome);
+					boolean succeed = this.transferAgentConfigTableHandler.updateHome(conn, machineId, id, newHome);
 					if (succeed) {
 						isUpdated = true;
 					}
@@ -487,6 +501,177 @@ public class DomainMgmtServiceDatabaseImpl implements DomainMgmtService {
 		Connection conn = getConnection();
 		try {
 			return this.transferAgentConfigTableHandler.deleteTransferAgentConfig(conn, machineId, transferAgentId);
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return false;
+	}
+
+	// ------------------------------------------------------
+	// Node management
+	// ------------------------------------------------------
+	@Override
+	public List<NodeConfigRTO> getNodeConfigs(String machineId, String transferAgentId) throws DomainMgmtException {
+		checkMachineId(machineId);
+		checkTransferAgentId(transferAgentId);
+
+		Connection conn = getConnection();
+		try {
+			return this.nodeConfigTableHandler.getNodeConfigs(conn, machineId, transferAgentId);
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return null;
+	}
+
+	@Override
+	public NodeConfigRTO getNodeConfig(String machineId, String transferAgentId, String nodeId) throws DomainMgmtException {
+		checkMachineId(machineId);
+		checkTransferAgentId(transferAgentId);
+		checkNodeId(nodeId);
+
+		Connection conn = getConnection();
+		try {
+			return this.nodeConfigTableHandler.getNodeConfig(conn, machineId, transferAgentId, nodeId);
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return null;
+	}
+
+	@Override
+	public boolean nodeConfigExists(String machineId, String transferAgentId, String nodeId) throws DomainMgmtException {
+		checkMachineId(machineId);
+		checkTransferAgentId(transferAgentId);
+		checkNodeId(nodeId);
+
+		Connection conn = getConnection();
+		try {
+			return this.nodeConfigTableHandler.nodeConfigExists(conn, machineId, transferAgentId, nodeId);
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean addNodeConfig(String machineId, String transferAgentId, NodeConfigRTO addNodeRequest) throws DomainMgmtException {
+		String id = addNodeRequest.getId();
+		String name = addNodeRequest.getName();
+		String home = addNodeRequest.getHome();
+		String hostURL = addNodeRequest.getHostURL();
+		String contextRoot = addNodeRequest.getContextRoot();
+
+		checkMachineId(machineId);
+		checkTransferAgentId(transferAgentId);
+		checkNodeId(id);
+
+		Connection conn = getConnection();
+		try {
+			NodeConfigRTO newNodeConfig = this.nodeConfigTableHandler.addNodeConfig(conn, machineId, transferAgentId, id, name, home, hostURL, contextRoot);
+			if (newNodeConfig != null) {
+				return true;
+			}
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateNodeConfig(String machineId, String transferAgentId, NodeConfigRTO updateNodeRequest) throws DomainMgmtException {
+		String id = updateNodeRequest.getId();
+		String newName = updateNodeRequest.getName();
+		String newHome = updateNodeRequest.getHome();
+		String newHostURL = updateNodeRequest.getHostURL();
+		String newContextRoot = updateNodeRequest.getContextRoot();
+
+		checkMachineId(machineId);
+		checkTransferAgentId(transferAgentId);
+		checkNodeId(id);
+
+		boolean isUpdated = false;
+
+		Connection conn = getConnection();
+		try {
+			NodeConfigRTO nodeConfig = this.nodeConfigTableHandler.getNodeConfig(conn, machineId, transferAgentId, id);
+			if (nodeConfig == null) {
+				throw new DomainMgmtException("404", "NodeAgent with id '" + id + "' is not found.");
+			}
+
+			String oldName = nodeConfig.getName();
+			String oldHome = nodeConfig.getHome();
+			String oldHostURL = nodeConfig.getHostURL();
+			String oldContextRoot = nodeConfig.getContextRoot();
+
+			if (newName != null) {
+				boolean needToUpdate = (!newName.equals(oldName)) ? true : false;
+				if (needToUpdate) {
+					boolean succeed = this.nodeConfigTableHandler.updateName(conn, machineId, transferAgentId, id, newName);
+					if (succeed) {
+						isUpdated = true;
+					}
+				}
+			}
+
+			if (newHome != null) {
+				boolean needToUpdate = (!newHome.equals(oldHome)) ? true : false;
+				if (needToUpdate) {
+					boolean succeed = this.nodeConfigTableHandler.updateHome(conn, machineId, transferAgentId, id, newHome);
+					if (succeed) {
+						isUpdated = true;
+					}
+				}
+			}
+
+			if (newHostURL != null) {
+				boolean needToUpdate = (!newHostURL.equals(oldHostURL)) ? true : false;
+				if (needToUpdate) {
+					boolean succeed = this.nodeConfigTableHandler.updateHostURL(conn, machineId, transferAgentId, id, newHostURL);
+					if (succeed) {
+						isUpdated = true;
+					}
+				}
+			}
+
+			if (newContextRoot != null) {
+				boolean needToUpdate = (!newContextRoot.equals(oldContextRoot)) ? true : false;
+				if (needToUpdate) {
+					boolean succeed = this.nodeConfigTableHandler.updateContextRoot(conn, machineId, transferAgentId, id, newContextRoot);
+					if (succeed) {
+						isUpdated = true;
+					}
+				}
+			}
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+
+		return isUpdated;
+	}
+
+	@Override
+	public boolean deleteNodeConfig(String machineId, String transferAgentId, String nodeId) throws DomainMgmtException {
+		checkMachineId(machineId);
+		checkTransferAgentId(transferAgentId);
+		checkNodeId(nodeId);
+
+		Connection conn = getConnection();
+		try {
+			return this.nodeConfigTableHandler.deleteNodeConfig(conn, machineId, transferAgentId, nodeId);
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {

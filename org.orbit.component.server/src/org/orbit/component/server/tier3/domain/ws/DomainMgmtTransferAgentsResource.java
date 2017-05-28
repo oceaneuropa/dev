@@ -55,20 +55,20 @@ public class DomainMgmtTransferAgentsResource extends AbstractApplicationResourc
 	public Response getTransferAgents(@PathParam("machineId") String machineId) {
 		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
 
-		List<TransferAgentConfigDTO> transferAgentDTOs = new ArrayList<TransferAgentConfigDTO>();
+		List<TransferAgentConfigDTO> transferAgentConfigDTOs = new ArrayList<TransferAgentConfigDTO>();
 		try {
-			List<TransferAgentConfigRTO> transferAgents = domainMgmtService.getTransferAgentConfigs(machineId);
-			if (transferAgents != null) {
-				for (TransferAgentConfigRTO transferAgent : transferAgents) {
-					TransferAgentConfigDTO transferAgentDTO = ModelConverter.getInstance().toDTO(transferAgent);
-					transferAgentDTOs.add(transferAgentDTO);
+			List<TransferAgentConfigRTO> transferAgentConfigs = domainMgmtService.getTransferAgentConfigs(machineId);
+			if (transferAgentConfigs != null) {
+				for (TransferAgentConfigRTO transferAgentConfig : transferAgentConfigs) {
+					TransferAgentConfigDTO transferAgentConfigDTO = ModelConverter.getInstance().toDTO(transferAgentConfig);
+					transferAgentConfigDTOs.add(transferAgentConfigDTO);
 				}
 			}
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-		return Response.ok().entity(transferAgentDTOs).build();
+		return Response.ok().entity(transferAgentConfigDTOs).build();
 	}
 
 	/**
@@ -83,23 +83,23 @@ public class DomainMgmtTransferAgentsResource extends AbstractApplicationResourc
 	@Path("{transferAgentId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTransferAgent(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId) {
-		TransferAgentConfigDTO transferAgentDTO = null;
+		TransferAgentConfigDTO transferAgentConfigDTO = null;
 
 		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
 		try {
-			TransferAgentConfigRTO transferAgent = domainMgmtService.getTransferAgentConfig(machineId, transferAgentId);
-			if (transferAgent == null) {
+			TransferAgentConfigRTO transferAgentConfig = domainMgmtService.getTransferAgentConfig(machineId, transferAgentId);
+			if (transferAgentConfig == null) {
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("TransferAgent with id '%s' cannot be found.", transferAgentId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
-			transferAgentDTO = ModelConverter.getInstance().toDTO(transferAgent);
+			transferAgentConfigDTO = ModelConverter.getInstance().toDTO(transferAgentConfig);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		return Response.ok().entity(transferAgentDTO).build();
+		return Response.ok().entity(transferAgentConfigDTO).build();
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class DomainMgmtTransferAgentsResource extends AbstractApplicationResourc
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents (Body parameter: TransferAgentConfigDTO)
 	 * 
 	 * @param machineId
-	 * @param updateMachineRequestDTO
+	 * @param updateTransferAgentRequestDTO
 	 * @return
 	 */
 	@PUT

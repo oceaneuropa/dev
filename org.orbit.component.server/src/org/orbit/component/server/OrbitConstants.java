@@ -119,6 +119,19 @@ public class OrbitConstants {
 	public static String DOMAIN_MANAGEMENT_CONTEXT_ROOT = "domain_mgmt.context_root";
 	public static String DOMAIN_MANAGEMENT_NAME = "domain_mgmt.name";
 
+	// ----------------------------------------------------------------------------------------
+	// TransferAgent
+	// ----------------------------------------------------------------------------------------
+	// index item values
+	public static String TRANSFER_AGENT_INDEXER_ID = "component.transfer_agent.indexer"; // index provider id for TransferAgent service
+	public static String TRANSFER_AGENT_TYPE = "TransferAgent"; // type of index item for TransferAgent service
+
+	// index item properties
+	public static String TRANSFER_AGENT_NAME = "transfer_agent.name";
+	public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
+	public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
+	public static String TRANSFER_AGENT_HOME = "transfer_agent.home";
+
 }
 
 // property names

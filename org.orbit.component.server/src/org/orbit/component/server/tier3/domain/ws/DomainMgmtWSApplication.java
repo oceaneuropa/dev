@@ -47,8 +47,10 @@ public class DomainMgmtWSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start timer for indexing the service
-		this.serviceIndexTimer = new DomainMgmtServiceTimer(this.indexProvider);
-		this.serviceIndexTimer.start();
+		if (this.indexProvider != null) {
+			this.serviceIndexTimer = new DomainMgmtServiceTimer(this.indexProvider);
+			this.serviceIndexTimer.start();
+		}
 	}
 
 	@Override
@@ -81,6 +83,7 @@ public class DomainMgmtWSApplication extends AbstractApplication {
 		classes.add(DomainMgmtServiceResource.class);
 		classes.add(DomainMgmtMachinesResource.class);
 		classes.add(DomainMgmtTransferAgentsResource.class);
+		classes.add(DomainMgmtNodesResource.class);
 
 		// resolvers
 		classes.add(DomainMgmtServiceResolver.class);

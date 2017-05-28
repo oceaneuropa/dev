@@ -1,10 +1,10 @@
 package org.orbit.component.api.tier3.domain.request;
 
-public class AddTransferAgentRequest {
+public class TransferAgentUpdateRequest {
 
 	protected String transferAgentId;
 	protected String name;
-	protected String TAHome;
+	protected String home;
 	protected String hostURL;
 	protected String contextRoot;
 
@@ -24,12 +24,12 @@ public class AddTransferAgentRequest {
 		this.name = name;
 	}
 
-	public String getTAHome() {
-		return this.TAHome;
+	public String getHome() {
+		return this.home;
 	}
 
-	public void setTAHome(String tAHome) {
-		this.TAHome = tAHome;
+	public void setHome(String home) {
+		this.home = home;
 	}
 
 	public String getHostURL() {

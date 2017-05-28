@@ -1,10 +1,6 @@
 package org.orbit.component.api.tier3.domain;
 
-/**
- * TransferAgent configuration
- * 
- */
-public interface TransferAgentConfig {
+public interface NodeConfig {
 
 	/**
 	 * Get Machine Id.
@@ -18,31 +14,38 @@ public interface TransferAgentConfig {
 	 * 
 	 * @return
 	 */
+	public String getTransferAgentId();
+
+	/**
+	 * Get Node Id.
+	 * 
+	 * @return
+	 */
 	public String getId();
 
 	/**
-	 * Get TransferAgent name.
+	 * Get Node name.
 	 * 
 	 * @return
 	 */
 	public String getName();
 
 	/**
-	 * Get TransferAgent home.
+	 * Get Node home.
 	 * 
 	 * @return
 	 */
 	public String getHome();
 
 	/**
-	 * Get TransferAgent host URL.
+	 * Get Node host URL.
 	 * 
 	 * @return
 	 */
 	public String getHostURL();
 
 	/**
-	 * Get TransferAgent context root.
+	 * Get Node context root.
 	 * 
 	 * @return
 	 */

@@ -9,10 +9,45 @@ import org.origin.common.rest.client.ClientException;
 
 public interface TransferAgent {
 
+	/**
+	 * Get service name.
+	 * 
+	 * @return
+	 */
+	String getName();
+
+	/**
+	 * Get service URL.
+	 * 
+	 * @return
+	 */
+	String getURL();
+
+	/**
+	 * Get configuration properties.
+	 * 
+	 * @return
+	 */
+	Map<String, Object> getProperties();
+
+	/**
+	 * Update configuration properties.
+	 * 
+	 * @param properties
+	 */
+	void update(Map<String, Object> properties);
+
+	/**
+	 * Ping the service.
+	 * 
+	 * @return
+	 */
+	public boolean ping();
+
 	// ------------------------------------------------------
 	// Node management
 	// ------------------------------------------------------
-	public NodeConfig[] getNodes() throws ClientException;
+	public NodeConfig[] getNodeConfigs() throws ClientException;
 
 	public NodeConfig createNode(CreateNodeRequest request) throws ClientException;
 

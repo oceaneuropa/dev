@@ -54,20 +54,20 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 	public Response getMachines() {
 		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
 
-		List<MachineConfigDTO> machinesDTOs = new ArrayList<MachineConfigDTO>();
+		List<MachineConfigDTO> machineConfigDTOs = new ArrayList<MachineConfigDTO>();
 		try {
-			List<MachineConfigRTO> machines = domainMgmtService.getMachineConfigs();
-			if (machines != null) {
-				for (MachineConfigRTO machine : machines) {
-					MachineConfigDTO machineDTO = ModelConverter.getInstance().toDTO(machine);
-					machinesDTOs.add(machineDTO);
+			List<MachineConfigRTO> machineConfigs = domainMgmtService.getMachineConfigs();
+			if (machineConfigs != null) {
+				for (MachineConfigRTO machineConfig : machineConfigs) {
+					MachineConfigDTO machineConfigDTO = ModelConverter.getInstance().toDTO(machineConfig);
+					machineConfigDTOs.add(machineConfigDTO);
 				}
 			}
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-		return Response.ok().entity(machinesDTOs).build();
+		return Response.ok().entity(machineConfigDTOs).build();
 	}
 
 	/**
@@ -82,23 +82,23 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 	@Path("{machineId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMachine(@PathParam("machineId") String machineId) {
-		MachineConfigDTO machineDTO = null;
+		MachineConfigDTO machineConfigDTO = null;
 
 		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
 		try {
-			MachineConfigRTO machine = domainMgmtService.getMachineConfig(machineId);
-			if (machine == null) {
+			MachineConfigRTO machineConfig = domainMgmtService.getMachineConfig(machineId);
+			if (machineConfig == null) {
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Machine with id '%s' cannot be found.", machineId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
-			machineDTO = ModelConverter.getInstance().toDTO(machine);
+			machineConfigDTO = ModelConverter.getInstance().toDTO(machineConfig);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
-		return Response.ok().entity(machineDTO).build();
+		return Response.ok().entity(machineConfigDTO).build();
 	}
 
 	/**

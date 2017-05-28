@@ -1,27 +1,18 @@
 package org.orbit.component.connector.tier3.domain;
 
-import org.orbit.component.api.tier3.domain.TransferAgentConfig;
+import org.orbit.component.api.tier3.domain.NodeConfig;
 
-public class TransferAgentConfigImpl implements TransferAgentConfig {
+public class NodeConfigImpl implements NodeConfig {
 
-	protected String machineId;
 	protected String id;
+	protected String machineId;
+	protected String transferAgentId;
 	protected String name;
 	protected String home;
 	protected String hostURL;
 	protected String contextRoot;
 
-	public TransferAgentConfigImpl() {
-	}
-
-	public String getMachineId() {
-		return machineId;
-	}
-
-	public void setMachineId(String machineId) {
-		this.machineId = machineId;
-	}
-
+	@Override
 	public String getId() {
 		return id;
 	}
@@ -30,6 +21,25 @@ public class TransferAgentConfigImpl implements TransferAgentConfig {
 		this.id = id;
 	}
 
+	@Override
+	public String getMachineId() {
+		return machineId;
+	}
+
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
+	}
+
+	@Override
+	public String getTransferAgentId() {
+		return transferAgentId;
+	}
+
+	public void setTransferAgentId(String transferAgentId) {
+		this.transferAgentId = transferAgentId;
+	}
+
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -38,6 +48,7 @@ public class TransferAgentConfigImpl implements TransferAgentConfig {
 		this.name = name;
 	}
 
+	@Override
 	public String getHome() {
 		return home;
 	}
@@ -46,6 +57,7 @@ public class TransferAgentConfigImpl implements TransferAgentConfig {
 		this.home = home;
 	}
 
+	@Override
 	public String getHostURL() {
 		return hostURL;
 	}
@@ -54,6 +66,7 @@ public class TransferAgentConfigImpl implements TransferAgentConfig {
 		this.hostURL = hostURL;
 	}
 
+	@Override
 	public String getContextRoot() {
 		return contextRoot;
 	}
@@ -64,7 +77,7 @@ public class TransferAgentConfigImpl implements TransferAgentConfig {
 
 	@Override
 	public String toString() {
-		return "TransferAgentConfigImpl [id=" + id + ", name=" + name + ", home=" + home + ", hostURL=" + hostURL + ", contextRoot=" + contextRoot + "]";
+		return "NodeConfigRTO [id=" + id + ", machineId=" + machineId + ", transferAgentId=" + transferAgentId + ", name=" + name + ", home=" + home + ", hostURL=" + hostURL + ", contextRoot=" + contextRoot + "]";
 	}
 
 }

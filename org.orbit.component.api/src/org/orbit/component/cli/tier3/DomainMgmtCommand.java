@@ -109,4 +109,14 @@ public class DomainMgmtCommand implements Annotated {
 		}
 	}
 
+	public void lmachines() throws ClientException {
+		DomainMgmt domainMgmt = this.domainMgmtConnector.getService();
+		if (domainMgmt == null) {
+			System.out.println("DomainMgmt service is null.");
+			return;
+		}
+		
+		domainMgmt.getMachineConfigs();
+	}
+
 }

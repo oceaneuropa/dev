@@ -30,7 +30,7 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 			sb.append("    id varchar(500) NOT NULL,");
 			sb.append("    machineId varchar(500) NOT NULL,");
 			sb.append("    name varchar(500),");
-			sb.append("    TAHome varchar(500),");
+			sb.append("    home varchar(500),");
 			sb.append("    hostURL varchar(500),");
 			sb.append("    contextRoot varchar(500),");
 			sb.append("    PRIMARY KEY (id)");
@@ -41,7 +41,7 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 			sb.append("    id varchar(500) NOT NULL,");
 			sb.append("    machineId varchar(500) NOT NULL,");
 			sb.append("    name varchar(500),");
-			sb.append("    TAHome varchar(500),");
+			sb.append("    home varchar(500),");
 			sb.append("    hostURL varchar(500),");
 			sb.append("    contextRoot varchar(500),");
 			sb.append("    PRIMARY KEY (id)");
@@ -61,11 +61,11 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	protected static TransferAgentConfigRTO toRTO(ResultSet rs) throws SQLException {
 		String id = rs.getString("id");
 		String name = rs.getString("name");
-		String TAHome = rs.getString("TAHome");
+		String home = rs.getString("home");
 		String hostURL = rs.getString("hostURL");
 		String contextRoot = rs.getString("contextRoot");
 
-		return new TransferAgentConfigRTO(id, name, TAHome, hostURL, contextRoot);
+		return new TransferAgentConfigRTO(id, name, home, hostURL, contextRoot);
 	}
 
 	/**
@@ -130,15 +130,15 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	 * @param machineId
 	 * @param id
 	 * @param name
-	 * @param TAHome
+	 * @param home
 	 * @param hostURL
 	 * @param contextRoot
 	 * @return
 	 * @throws SQLException
 	 */
-	public TransferAgentConfigRTO addTransferAgentConfig(Connection conn, String machineId, String id, String name, String TAHome, String hostURL, String contextRoot) throws SQLException {
-		String insertSQL = "INSERT INTO " + getTableName() + " (id, machineId, name, TAHome, hostURL, contextRoot) VALUES (?, ?, ?, ?, ?, ?)";
-		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { machineId, id, name, TAHome, hostURL, contextRoot }, 1);
+	public TransferAgentConfigRTO addTransferAgentConfig(Connection conn, String machineId, String id, String name, String home, String hostURL, String contextRoot) throws SQLException {
+		String insertSQL = "INSERT INTO " + getTableName() + " (id, machineId, name, home, hostURL, contextRoot) VALUES (?, ?, ?, ?, ?, ?)";
+		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { id, machineId, name, home, hostURL, contextRoot }, 1);
 		if (succeed) {
 			return getTransferAgentConfig(conn, machineId, id);
 		}
@@ -163,12 +163,12 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	 * @param conn
 	 * @param machineId
 	 * @param id
-	 * @param TAHome
+	 * @param home
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updateTAHome(Connection conn, String machineId, String id, String TAHome) throws SQLException {
-		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET TAHome=? WHERE machineId=? AND id=?", new Object[] { TAHome, machineId, id }, 1);
+	public boolean updateHome(Connection conn, String machineId, String id, String home) throws SQLException {
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET home=? WHERE machineId=? AND id=?", new Object[] { home, machineId, id }, 1);
 	}
 
 	/**

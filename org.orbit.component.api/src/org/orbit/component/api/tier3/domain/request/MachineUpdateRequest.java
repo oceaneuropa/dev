@@ -1,6 +1,6 @@
 package org.orbit.component.api.tier3.domain.request;
 
-public class AddMachineRequest {
+public class MachineUpdateRequest {
 
 	protected String machineId;
 	protected String name;

@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
+import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigDTO;
 import org.origin.common.rest.client.AbstractClient;
 import org.origin.common.rest.client.ClientConfiguration;
@@ -39,11 +40,19 @@ import org.origin.common.rest.model.StatusDTO;
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents (Body parameter: TransferAgentConfigDTO)
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}
  * 
+ * Nodes
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
+ * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+ * 
  */
 public class DomainMgmtWSClient extends AbstractClient {
 
 	public static String PATH_MACHINES = "machines";
 	public static String PATH_TRANSFER_AGENTS = "transferagents";
+	public static String PATH_NODES = "nodes";
 
 	/**
 	 * 
@@ -329,6 +338,157 @@ public class DomainMgmtWSClient extends AbstractClient {
 		Response response = null;
 		try {
 			Builder builder = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).delete();
+			checkResponse(response);
+
+			status = response.readEntity(StatusDTO.class);
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ClientUtil.closeQuietly(response, true);
+		}
+		return status;
+	}
+
+	// ------------------------------------------------------
+	// Node management
+	// ------------------------------------------------------
+	/**
+	 * Get node configurations.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes
+	 * 
+	 * @param machineId
+	 * @param transferAgentId
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<NodeConfigDTO> getNodes(String machineId, String transferAgentId) throws ClientException {
+		List<NodeConfigDTO> nodeConfigs = null;
+		Response response = null;
+		try {
+			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			nodeConfigs = response.readEntity(new GenericType<List<NodeConfigDTO>>() {
+			});
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ClientUtil.closeQuietly(response, true);
+		}
+		if (nodeConfigs == null) {
+			nodeConfigs = Collections.emptyList();
+		}
+		return nodeConfigs;
+	}
+
+	/**
+	 * Get a node configuration.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+	 * 
+	 * @param machineId
+	 * @param transferAgentId
+	 * @param nodeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public NodeConfigDTO getNode(String machineId, String transferAgentId, String nodeId) throws ClientException {
+		NodeConfigDTO nodeConfigDTO = null;
+		Response response = null;
+		try {
+			Builder builder = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES).path(nodeId).request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			nodeConfigDTO = response.readEntity(NodeConfigDTO.class);
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ClientUtil.closeQuietly(response, true);
+		}
+		return nodeConfigDTO;
+	}
+
+	/**
+	 * Add a node configuration.
+	 * 
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
+	 * 
+	 * @param machineId
+	 * @param transferAgentId
+	 * @param addNodeRequestDTO
+	 *            Body parameter for adding a node.
+	 * @return
+	 * @throws ClientException
+	 */
+	public StatusDTO addNode(String machineId, String transferAgentId, NodeConfigDTO addNodeRequestDTO) throws ClientException {
+		StatusDTO status = null;
+		Response response = null;
+		try {
+			Builder builder = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES).request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<NodeConfigDTO>(addNodeRequestDTO) {
+			}));
+			checkResponse(response);
+
+			status = response.readEntity(StatusDTO.class);
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ClientUtil.closeQuietly(response, true);
+		}
+		return status;
+	}
+
+	/**
+	 * Update a node configuration.
+	 * 
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
+	 * 
+	 * @param machineId
+	 * @param transferAgentId
+	 * @param updateNodeRequestDTO
+	 *            Body parameter for updating a node.
+	 * @return Update status
+	 * @throws ClientException
+	 */
+	public StatusDTO updateNode(String machineId, String transferAgentId, NodeConfigDTO updateNodeRequestDTO) throws ClientException {
+		StatusDTO status = null;
+		Response response = null;
+		try {
+			Builder builder = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES).request(MediaType.APPLICATION_JSON);
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<NodeConfigDTO>(updateNodeRequestDTO) {
+			}));
+			checkResponse(response);
+
+			status = response.readEntity(StatusDTO.class);
+		} catch (ClientException e) {
+			handleException(e);
+		} finally {
+			ClientUtil.closeQuietly(response, true);
+		}
+		return status;
+	}
+
+	/**
+	 * Remove a node configuration.
+	 * 
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+	 * 
+	 * @param machineId
+	 * @param transferAgentId
+	 * @param nodeId
+	 * @return
+	 * @throws ClientException
+	 */
+	public StatusDTO removeNode(String machineId, String transferAgentId, String nodeId) throws ClientException {
+		StatusDTO status = null;
+		Response response = null;
+		try {
+			Builder builder = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES).path(nodeId).request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
