@@ -72,6 +72,23 @@ public class IndexServiceDatabaseSimpleImpl implements IndexService {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	protected <T> T getProperty(Object key, Class<T> valueClass) {
+		// Config properties from bundle context or from system/env properties takes precedence over properties defined in config.ini file.
+		Object object = this.configProps.get(key);
+		if (object != null && valueClass.isAssignableFrom(object.getClass())) {
+			return (T) object;
+		}
+		// If config properties cannot be found, read from config.ini file
+		if (String.class.equals(valueClass)) {
+			String value = this.configIniProps.getProperty(key.toString());
+			if (value != null) {
+				return (T) value;
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * 
 	 * @param props
@@ -111,26 +128,10 @@ public class IndexServiceDatabaseSimpleImpl implements IndexService {
 	 * @return
 	 */
 	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = (String) this.configProps.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
-		if (driver == null) {
-			driver = this.configIniProps.getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
-		}
-
-		String url = (String) this.configProps.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
-		if (url == null) {
-			url = this.configIniProps.getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
-		}
-
-		String username = (String) this.configProps.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
-		if (username == null) {
-			username = this.configIniProps.getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
-		}
-
-		String password = (String) this.configProps.get(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
-		if (password == null) {
-			password = this.configIniProps.getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
-		}
-
+		String driver = getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER, String.class);
+		String url = getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_URL, String.class);
+		String username = getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME, String.class);
+		String password = getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD, String.class);
 		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
@@ -140,33 +141,15 @@ public class IndexServiceDatabaseSimpleImpl implements IndexService {
 
 	@Override
 	public String getName() {
-		// bundle context and system config
-		String name = (String) this.configProps.get(OriginConstants.COMPONENT_INDEX_SERVICE_NAME);
-		if (name != null) {
-			return name;
-		}
-
-		// config.ini config
-		String configIniName = this.configIniProps.getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_NAME);
-		if (configIniName != null) {
-			return configIniName;
-		}
-
-		return null;
+		String name = getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_NAME, String.class);
+		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		// bundle context and system config
-		String hostURL = (String) this.configProps.get(OriginConstants.COMPONENT_INDEX_SERVICE_HOST_URL);
+		String hostURL = getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_HOST_URL, String.class);
 		if (hostURL != null) {
 			return hostURL;
-		}
-
-		// config.ini config
-		String configIniHostURL = this.configIniProps.getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_HOST_URL);
-		if (configIniHostURL != null) {
-			return configIniHostURL;
 		}
 
 		// default global config
@@ -180,19 +163,8 @@ public class IndexServiceDatabaseSimpleImpl implements IndexService {
 
 	@Override
 	public String getContextRoot() {
-		// bundle context and system config
-		String contextRoot = (String) this.configProps.get(OriginConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT);
-		if (contextRoot != null) {
-			return contextRoot;
-		}
-
-		// config.ini config
-		String configIniContextRoot = this.configIniProps.getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT);
-		if (configIniContextRoot != null) {
-			return configIniContextRoot;
-		}
-
-		return null;
+		String contextRoot = getProperty(OriginConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, String.class);
+		return contextRoot;
 	}
 
 	/**

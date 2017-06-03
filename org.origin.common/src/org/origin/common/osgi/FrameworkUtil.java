@@ -27,7 +27,7 @@ public class FrameworkUtil {
 		}
 
 		try {
-			ServiceLoader<FrameworkFactory> loader = ServiceLoader.load(org.osgi.framework.launch.FrameworkFactory.class);
+			ServiceLoader<FrameworkFactory> loader = ServiceLoader.load(FrameworkFactory.class);
 			FrameworkFactory factory = loader.iterator().next();
 
 			// Create framework

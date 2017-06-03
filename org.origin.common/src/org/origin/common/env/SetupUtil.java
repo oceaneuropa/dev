@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.origin.common.io.IOUtil;
+import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 
 public class SetupUtil {
@@ -61,7 +62,7 @@ public class SetupUtil {
 		String homePathStr = (String) props.get(homePropName);
 
 		if (homePathStr == null) {
-			System.err.println("SetupUtil.getHomePath() cannot find property value for '" + homePropName + "'.");
+			System.err.println(SetupUtil.class.getSimpleName() + ".getHomePath() cannot find property value for '" + homePropName + "'.");
 			return null;
 		}
 
@@ -99,7 +100,7 @@ public class SetupUtil {
 		}
 
 		if (originHomeStr == null) {
-			System.err.println("HomeUtil.getOriginHome() ORIGIN_HOME is not set.");
+			System.err.println(SetupUtil.class.getSimpleName() + ".getOriginHome() ORIGIN_HOME is not set.");
 			return null;
 		}
 

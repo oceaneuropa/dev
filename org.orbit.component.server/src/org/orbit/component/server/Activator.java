@@ -62,11 +62,11 @@ public class Activator implements BundleActivator {
 
 	protected OrbitServicesMgmtCommand servicesMgmtCommand;
 
-	protected UserRegistryWSApplication userRegistryApp;
-	protected OAuth2WSApplication oauth2App;
-	protected ConfigRegistryWSApplication configRegistryApp;
-	protected AppStoreWSApplication appStoreApp;
-	protected DomainMgmtWSApplication domainMgmtApp;
+	protected UserRegistryWSApplication userRegistryWebApp;
+	protected OAuth2WSApplication oauth2WebApp;
+	protected ConfigRegistryWSApplication configRegistryWebApp;
+	protected AppStoreWSApplication appStoreWebApp;
+	protected DomainMgmtWSApplication domainMgmtWebApp;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -339,77 +339,77 @@ public class Activator implements BundleActivator {
 	}
 
 	protected void startUserRegistryWebService(UserRegistryService userRegistryService) {
-		this.userRegistryApp = new UserRegistryWSApplication();
-		this.userRegistryApp.setBundleContext(bundleContext);
-		this.userRegistryApp.setContextRoot(userRegistryService.getContextRoot());
-		this.userRegistryApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.userRegistryApp.start();
+		this.userRegistryWebApp = new UserRegistryWSApplication();
+		this.userRegistryWebApp.setBundleContext(bundleContext);
+		this.userRegistryWebApp.setContextRoot(userRegistryService.getContextRoot());
+		this.userRegistryWebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
+		this.userRegistryWebApp.start();
 	}
 
 	protected void stopUserRegistryWebService() {
-		if (this.userRegistryApp != null) {
-			this.userRegistryApp.stop();
-			this.userRegistryApp = null;
+		if (this.userRegistryWebApp != null) {
+			this.userRegistryWebApp.stop();
+			this.userRegistryWebApp = null;
 		}
 	}
 
 	protected void startOauth2WebService(OAuth2Service oauth2Service) {
-		this.oauth2App = new OAuth2WSApplication();
-		this.oauth2App.setBundleContext(bundleContext);
-		this.oauth2App.setContextRoot(oauth2Service.getContextRoot());
-		this.oauth2App.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.oauth2App.start();
+		this.oauth2WebApp = new OAuth2WSApplication();
+		this.oauth2WebApp.setBundleContext(bundleContext);
+		this.oauth2WebApp.setContextRoot(oauth2Service.getContextRoot());
+		this.oauth2WebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
+		this.oauth2WebApp.start();
 	}
 
 	protected void stopOauth2WebService() {
-		if (this.oauth2App != null) {
-			this.oauth2App.stop();
-			this.oauth2App = null;
+		if (this.oauth2WebApp != null) {
+			this.oauth2WebApp.stop();
+			this.oauth2WebApp = null;
 		}
 	}
 
 	protected void startConfigRegistryWebService(ConfigRegistryService configRegistryService) {
-		this.configRegistryApp = new ConfigRegistryWSApplication();
-		this.configRegistryApp.setBundleContext(bundleContext);
-		this.configRegistryApp.setContextRoot(configRegistryService.getContextRoot());
-		this.configRegistryApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.configRegistryApp.start();
+		this.configRegistryWebApp = new ConfigRegistryWSApplication();
+		this.configRegistryWebApp.setBundleContext(bundleContext);
+		this.configRegistryWebApp.setContextRoot(configRegistryService.getContextRoot());
+		this.configRegistryWebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
+		this.configRegistryWebApp.start();
 	}
 
 	protected void stopConfigRegistryWebService() {
-		if (this.configRegistryApp != null) {
-			this.configRegistryApp.stop();
-			this.configRegistryApp = null;
+		if (this.configRegistryWebApp != null) {
+			this.configRegistryWebApp.stop();
+			this.configRegistryWebApp = null;
 		}
 	}
 
 	protected void startAppStoreWebService(AppStoreService appStoreService) {
-		this.appStoreApp = new AppStoreWSApplication();
-		this.appStoreApp.setBundleContext(bundleContext);
-		this.appStoreApp.setContextRoot(appStoreService.getContextRoot());
-		this.appStoreApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.appStoreApp.start();
+		this.appStoreWebApp = new AppStoreWSApplication();
+		this.appStoreWebApp.setBundleContext(bundleContext);
+		this.appStoreWebApp.setContextRoot(appStoreService.getContextRoot());
+		this.appStoreWebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
+		this.appStoreWebApp.start();
 	}
 
 	protected void stopAppStoreWebService() {
-		if (this.appStoreApp != null) {
-			this.appStoreApp.stop();
-			this.appStoreApp = null;
+		if (this.appStoreWebApp != null) {
+			this.appStoreWebApp.stop();
+			this.appStoreWebApp = null;
 		}
 	}
 
 	protected void startDomainMgmtWebService(DomainMgmtService domainMgmtService) {
-		this.domainMgmtApp = new DomainMgmtWSApplication();
-		this.domainMgmtApp.setBundleContext(bundleContext);
-		this.domainMgmtApp.setContextRoot(domainMgmtService.getContextRoot());
-		this.domainMgmtApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.domainMgmtApp.start();
+		this.domainMgmtWebApp = new DomainMgmtWSApplication();
+		this.domainMgmtWebApp.setBundleContext(bundleContext);
+		this.domainMgmtWebApp.setContextRoot(domainMgmtService.getContextRoot());
+		this.domainMgmtWebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
+		this.domainMgmtWebApp.start();
 	}
 
 	protected void stopDomainMgmtWebService() {
-		if (this.domainMgmtApp != null) {
-			this.domainMgmtApp.stop();
-			this.domainMgmtApp = null;
+		if (this.domainMgmtWebApp != null) {
+			this.domainMgmtWebApp.stop();
+			this.domainMgmtWebApp = null;
 		}
 	}
 

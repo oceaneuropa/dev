@@ -1,0 +1,27 @@
+Example1 (all defined as properties):
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
+-DNODE_HOME=/Users/yayang/origin/ta1/nodes/node11
+-Dorbit.host.url=http://127.0.0.1:12001 
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+-Dcomponent.node.name=Node11
+-Dcomponent.node.context_root=/orbit/v1/node
+-Dcomponent.node.jdbc.driver=org.postgresql.Driver
+-Dcomponent.node.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
+-Dcomponent.node.jdbc.username=postgres
+-Dcomponent.node.jdbc.password=admin
+
+Example2 (using config.ini):
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
+-DNODE_HOME=/Users/yayang/origin/ta1/nodes/node11
+
+config.ini
+------------------------------------------------------------------------------------
+orbit.host.url=http://127.0.0.1:12001 
+component.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+component.node.name=Node11
+component.node.context_root=/orbit/v1/node
+component.node.jdbc.driver=org.postgresql.Driver
+component.node.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
+component.node.jdbc.username=postgres
+component.node.jdbc.password=admin
+------------------------------------------------------------------------------------
