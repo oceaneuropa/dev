@@ -23,6 +23,7 @@ import org.origin.common.io.FileUtil;
 import org.origin.common.io.IOUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.Constants;
@@ -35,6 +36,8 @@ import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.FrameworkWiring;
 
 public class BundleUtil {
+
+	// private static final String MANIFEST_FILE_KEY = "META-INF/MANIFEST.MF";
 
 	private static final String CHECKSUM_SUFFIX = ".checksum";
 
@@ -103,6 +106,16 @@ public class BundleUtil {
 			IOUtil.closeQuietly(jarIs, true);
 		}
 		return manifest;
+	}
+
+	public static String getBundleId(Manifest manifest) {
+		String bundleId = manifest.getMainAttributes().getValue(new Attributes.Name("Bundle-SymbolicName"));
+		return bundleId;
+	}
+
+	public static String getBundleVersion(Manifest manifest) {
+		String bundleVersion = manifest.getMainAttributes().getValue(new Attributes.Name("Bundle-Version"));
+		return bundleVersion;
 	}
 
 	// ------------------------------------------------------------------------------------
@@ -403,6 +416,191 @@ public class BundleUtil {
 			IOUtil.closeQuietly(dataIs, true);
 			IOUtil.closeQuietly(fis, true);
 		}
+	}
+
+	public static boolean isBundleInstalled(Bundle bundle) {
+		if ((Bundle.INSTALLED & bundle.getState()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleResolved(Bundle bundle) {
+		if ((Bundle.RESOLVED & bundle.getState()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleStarting(Bundle bundle) {
+		if ((Bundle.STARTING & bundle.getState()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleActive(Bundle bundle) {
+		if ((Bundle.ACTIVE & bundle.getState()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleStopping(Bundle bundle) {
+		if ((Bundle.STOPPING & bundle.getState()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleUninstalled(Bundle bundle) {
+		if ((Bundle.UNINSTALLED & bundle.getState()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleInstalledEvent(BundleEvent event) {
+		if ((BundleEvent.INSTALLED & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleUpdatedEvent(BundleEvent event) {
+		if ((BundleEvent.UPDATED & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleResolvedEvent(BundleEvent event) {
+		if ((BundleEvent.RESOLVED & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleStartingEvent(BundleEvent event) {
+		if ((BundleEvent.STARTING & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleStartedEvent(BundleEvent event) {
+		if ((BundleEvent.STARTED & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleStoppingEvent(BundleEvent event) {
+		if ((BundleEvent.STOPPING & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleStoppedEvent(BundleEvent event) {
+		if ((BundleEvent.STOPPED & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleUnresolvedEvent(BundleEvent event) {
+		if ((BundleEvent.UNRESOLVED & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleUninstalledEvent(BundleEvent event) {
+		if ((BundleEvent.UNINSTALLED & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isBundleLazyActivationEvent(BundleEvent event) {
+		if ((BundleEvent.LAZY_ACTIVATION & event.getType()) != 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static void debugBundle(Bundle bundle) {
+		long id = bundle.getBundleId();
+		String name = bundle.getSymbolicName();
+		String version = bundle.getVersion().toString();
+		String location = bundle.getLocation();
+		int state = bundle.getState();
+
+		String stateName = null;
+		if (Bundle.INSTALLED == state) { // 2
+			stateName = "Bundle.INSTALLED";
+
+		} else if (Bundle.RESOLVED == state) { // 4
+			stateName = "Bundle.RESOLVED";
+
+		} else if (Bundle.STARTING == state) { // 8
+			stateName = "Bundle.STARTING";
+
+		} else if (Bundle.ACTIVE == state) { // 32
+			stateName = "Bundle.ACTIVE";
+
+		} else if (Bundle.STOPPING == state) { // 16
+			stateName = "Bundle.STOPPING";
+
+		} else if (Bundle.UNINSTALLED == state) { // 1
+			stateName = "Bundle.UNINSTALLED";
+
+		} else {
+			stateName = "unknown";
+		}
+
+		System.out.println("(" + id + ") " + name + "_" + version + " " + stateName + " (" + state + ") (" + location + ")");
+	}
+
+	public static void debugBundleEvent(BundleEvent event) {
+		int eventType = event.getType();
+		String eventName = null;
+		if (BundleEvent.INSTALLED == eventType) { // 1
+			eventName = "BundleEvent.INSTALLED";
+
+		} else if (BundleEvent.UPDATED == eventType) { // 8
+			eventName = "BundleEvent.UPDATED";
+
+		} else if (BundleEvent.RESOLVED == eventType) { // 32
+			eventName = "BundleEvent.RESOLVED";
+
+		} else if (BundleEvent.STARTING == eventType) { // 128
+			eventName = "BundleEvent.STARTING";
+
+		} else if (BundleEvent.STARTED == eventType) { // 2
+			eventName = "BundleEvent.STARTED";
+
+		} else if (BundleEvent.STOPPING == eventType) { // 256
+			eventName = "BundleEvent.STOPPING";
+
+		} else if (BundleEvent.STOPPED == eventType) { // 4
+			eventName = "BundleEvent.STOPPED";
+
+		} else if (BundleEvent.UNRESOLVED == eventType) { // 64
+			eventName = "BundleEvent.UNRESOLVED";
+
+		} else if (BundleEvent.UNINSTALLED == eventType) { // 16
+			eventName = "BundleEvent.UNINSTALLED";
+
+		} else if (BundleEvent.LAZY_ACTIVATION == eventType) { // 512
+			eventName = "BundleEvent.LAZY_ACTIVATION";
+
+		} else {
+			eventName = "unknown";
+		}
+
+		System.out.println(eventName + " (" + eventType + ")");
 	}
 
 }

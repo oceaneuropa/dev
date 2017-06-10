@@ -21,14 +21,18 @@ public class NodeOSImpl implements NodeOS {
 	public static final String NODE_OS_VERSION = "1.0.0";
 
 	protected BundleContext bundleContext;
+
+	// properties
 	protected Properties configIniProps;
 	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 
-	protected AppsManagerImpl appsManager;
-
+	// runtime flag
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
+
+	// apps
+	protected AppsManager appsManager;
 
 	/**
 	 * 
@@ -38,80 +42,42 @@ public class NodeOSImpl implements NodeOS {
 	public NodeOSImpl(BundleContext bundleContext, Properties configIniProps) {
 		this.bundleContext = bundleContext;
 		this.configIniProps = configIniProps;
-
-		this.appsManager = new AppsManagerImpl();
-	}
-
-	public synchronized boolean isStarted() {
-		return this.isStarted.get() ? true : false;
-	}
-
-	public void checkStarted() {
-		if (!isStarted()) {
-			throw new IllegalStateException(getClass().getSimpleName() + " is not started.");
-		}
+		this.appsManager = new AppsManagerImpl(bundleContext);
 	}
 
 	@Override
-	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
-
-		if (isStarted()) {
-			System.out.println("NodeOS (" + getOSName() + ":" + getOSVersion() + ") '" + getName() + "' is already started.");
-			return;
-		}
-		this.isStarted.set(true);
-
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_NAME);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_HOST_URL);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_JDBC_DRIVER);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_JDBC_URL);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_JDBC_USERNAME);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_JDBC_PASSWORD);
-
-		updateProperties(configProps);
-
-		// Register NodeOS
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		this.serviceRegistry = this.bundleContext.registerService(NodeOS.class, this, props);
+	public String getOSName() {
+		return NODE_OS_NAME;
 	}
 
 	@Override
-	public void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
-		if (!this.isStarted.compareAndSet(true, false)) {
-			return;
-		}
-
-		// Unregister NodeOS
-		if (this.serviceRegistry != null) {
-			this.serviceRegistry.unregister();
-			this.serviceRegistry = null;
-		}
+	public String getOSVersion() {
+		return NODE_OS_VERSION;
 	}
 
-	protected String getProperty(Object key) {
-		return getProperty(key, String.class);
+	@Override
+	public String getName() {
+		String name = getProperty(Constants.COMPONENT_NODE_NAME);
+		return name;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected <T> T getProperty(Object key, Class<T> valueClass) {
-		// Config properties from bundle context or from system/env properties takes precedence over properties defined in config.ini file.
-		Object object = this.configProps.get(key);
-		if (object != null && valueClass.isAssignableFrom(object.getClass())) {
-			return (T) object;
+	@Override
+	public String getHostURL() {
+		String hostURL = getProperty(Constants.COMPONENT_NODE_HOST_URL);
+		if (hostURL != null) {
+			return hostURL;
 		}
-		// If config properties cannot be found, read from config.ini file
-		if (String.class.equals(valueClass)) {
-			String value = this.configIniProps.getProperty(key.toString());
-			if (value != null) {
-				return (T) value;
-			}
+		String globalHostURL = getProperty(Constants.ORBIT_HOST_URL);
+		if (globalHostURL != null) {
+			return globalHostURL;
 		}
 		return null;
+	}
+
+	@Override
+	public String getContextRoot() {
+		String contextRoot = getProperty(Constants.COMPONENT_NODE_CONTEXT_ROOT);
+		return contextRoot;
 	}
 
 	@Override
@@ -161,39 +127,85 @@ public class NodeOSImpl implements NodeOS {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
-	@Override
-	public String getOSName() {
-		return NODE_OS_NAME;
+	protected String getProperty(Object key) {
+		return getProperty(key, String.class);
 	}
 
-	@Override
-	public String getOSVersion() {
-		return NODE_OS_VERSION;
-	}
-
-	@Override
-	public String getName() {
-		String name = getProperty(Constants.COMPONENT_NODE_NAME);
-		return name;
-	}
-
-	@Override
-	public String getHostURL() {
-		String hostURL = getProperty(Constants.COMPONENT_NODE_HOST_URL);
-		if (hostURL != null) {
-			return hostURL;
+	@SuppressWarnings("unchecked")
+	protected <T> T getProperty(Object key, Class<T> valueClass) {
+		// Config properties from bundle context or from system/env properties takes precedence over properties defined in config.ini file.
+		Object object = this.configProps.get(key);
+		if (object != null && valueClass.isAssignableFrom(object.getClass())) {
+			return (T) object;
 		}
-		String globalHostURL = getProperty(Constants.ORBIT_HOST_URL);
-		if (globalHostURL != null) {
-			return globalHostURL;
+		// If config properties cannot be found, read from config.ini file
+		if (String.class.equals(valueClass)) {
+			String value = this.configIniProps.getProperty(key.toString());
+			if (value != null) {
+				return (T) value;
+			}
 		}
 		return null;
 	}
 
 	@Override
-	public String getContextRoot() {
-		String contextRoot = getProperty(Constants.COMPONENT_NODE_CONTEXT_ROOT);
-		return contextRoot;
+	public synchronized void start() {
+		System.out.println(getClass().getSimpleName() + ".start()");
+		if (isStarted()) {
+			System.out.println("NodeOS (" + getOSName() + ":" + getOSVersion() + ") '" + getName() + "' is already started.");
+			return;
+		}
+		this.isStarted.set(true);
+
+		// load properties
+		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_NAME);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_HOST_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_JDBC_DRIVER);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_JDBC_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_JDBC_USERNAME);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.COMPONENT_NODE_JDBC_PASSWORD);
+		updateProperties(configProps);
+
+		// start app manager
+		this.appsManager.start();
+
+		// start OS service
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		this.serviceRegistry = this.bundleContext.registerService(NodeOS.class, this, props);
+	}
+
+	@Override
+	public synchronized boolean isStarted() {
+		return this.isStarted.get() ? true : false;
+	}
+
+	protected void checkStarted() {
+		if (!isStarted()) {
+			throw new IllegalStateException(getClass().getSimpleName() + " is not started.");
+		}
+	}
+
+	@Override
+	public synchronized void stop() {
+		System.out.println(getClass().getSimpleName() + ".stop()");
+		if (!this.isStarted.compareAndSet(true, false)) {
+			return;
+		}
+
+		// stop OS service
+		if (this.serviceRegistry != null) {
+			this.serviceRegistry.unregister();
+			this.serviceRegistry = null;
+		}
+
+		// stop apps manager
+		if (this.appsManager != null) {
+			this.appsManager.stop();
+			this.appsManager = null;
+		}
 	}
 
 	@Override
@@ -202,6 +214,48 @@ public class NodeOSImpl implements NodeOS {
 	}
 
 }
+
+// protected List<AppHandler> appHandlers = new ArrayList<AppHandler>();
+//
+// /**
+// *
+// * @param appFolder
+// */
+// public void loadApp(File appFolder) {
+// AppManifest appManifest = AppUtil.getManifestFromAppFolder(appFolder);
+// if (appManifest != null) {
+// AppHandler appHandler = new AppHandler(this, appFolder, appManifest);
+// appHandler.open(this.bundleContext);
+// this.appHandlers.add(appHandler);
+// }
+// }
+
+//// load existing bundles
+// Bundle[] bundles = this.bundleContext.getBundles();
+//// start tracking bundles
+// this.bundleTracker = new BundleTracker<Bundle>(this.bundleContext, Bundle.RESOLVED | Bundle.STARTING | Bundle.ACTIVE | Bundle.STOPPING, new
+//// BundleTrackerCustomizer<Bundle>() {
+// @Override
+// public Bundle addingBundle(Bundle bundle, BundleEvent event) {
+// return bundle;
+// }
+//
+// @Override
+// public void modifiedBundle(Bundle bundle, BundleEvent event, Bundle bundle2) {
+//
+// }
+//
+// @Override
+// public void removedBundle(Bundle bundle, BundleEvent event, Bundle bundle2) {
+//
+// }
+// });
+
+// private BundleTracker<Bundle> bundleTracker;
+// if (this.bundleTracker != null) {
+// this.bundleTracker.close();
+// this.bundleTracker = null;
+// }
 
 // protected Framework framework;
 

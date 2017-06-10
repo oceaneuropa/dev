@@ -1,5 +1,6 @@
 package org.orbit.os.server.util;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -49,10 +50,18 @@ public class SetupUtil {
 	 * Get {TA_HOME}/apps/ path.
 	 * 
 	 * @param taHome
+	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getAppsPath(Path taHome) {
+	public static Path getAppsPath(Path taHome, boolean createIfNotExist) {
 		Path appsPath = taHome.resolve("apps");
+		if (!Files.exists(appsPath) && createIfNotExist) {
+			try {
+				appsPath = Files.createDirectory(appsPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return appsPath;
 	}
 
@@ -60,10 +69,18 @@ public class SetupUtil {
 	 * Get {TA_HOME}/nodes/ path.
 	 * 
 	 * @param taHome
+	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getNodesPath(Path taHome) {
+	public static Path getNodesPath(Path taHome, boolean createIfNotExist) {
 		Path nodesPath = taHome.resolve("nodes");
+		if (!Files.exists(nodesPath) && createIfNotExist) {
+			try {
+				nodesPath = Files.createDirectory(nodesPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return nodesPath;
 	}
 
@@ -71,10 +88,18 @@ public class SetupUtil {
 	 * Get {TA_HOME}/system/ path.
 	 * 
 	 * @param taHome
+	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getSystemPath(Path taHome) {
+	public static Path getSystemPath(Path taHome, boolean createIfNotExist) {
 		Path systemPath = taHome.resolve("system");
+		if (!Files.exists(systemPath) && createIfNotExist) {
+			try {
+				systemPath = Files.createDirectory(systemPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		return systemPath;
 	}
 
@@ -108,6 +133,25 @@ public class SetupUtil {
 			throw new RuntimeException(String.format("Directory '%s' does not exist.", nodeHome));
 		}
 		return nodeHome;
+	}
+
+	/**
+	 * Get {NODE_HOME}/apps/ path.
+	 * 
+	 * @param nodeHome
+	 * @param createIfNotExist
+	 * @return
+	 */
+	public static Path getNodeAppsPath(Path nodeHome, boolean createIfNotExist) {
+		Path appsPath = nodeHome.resolve("apps");
+		if (!Files.exists(appsPath) && createIfNotExist) {
+			try {
+				appsPath = Files.createDirectory(appsPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return appsPath;
 	}
 
 	/**

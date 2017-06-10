@@ -1,16 +1,23 @@
 package org.orbit.os.server.service;
 
-import java.io.File;
-import java.util.List;
-
-import org.orbit.app.Manifest;
+import org.orbit.app.AppManifest;
 
 public interface AppsManager {
 
-	public List<Manifest> getAppManifests();
+	void start();
 
-	public Manifest installApp(File appZipFile);
+	void stop();
 
-	public boolean uninstallApp(String appId, String appVersion);
+	AppManifest[] getInstalledApps();
+
+	boolean addApp(AppManifest appManifest);
+
+	boolean removeApp(String appId, String appVersion);
+
+	boolean appExists(String appId, String appVersion);
+
+	public AppHandler[] getAppHandlers();
+
+	public AppHandler getAppHandler(String appId, String appVersion);
 
 }

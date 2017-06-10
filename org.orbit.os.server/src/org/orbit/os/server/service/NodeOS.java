@@ -18,6 +18,8 @@ public interface NodeOS {
 
 	void start();
 
+	boolean isStarted();
+
 	void stop();
 
 	AppsManager getAppsManager();

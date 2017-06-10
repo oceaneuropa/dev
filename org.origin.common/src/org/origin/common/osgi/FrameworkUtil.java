@@ -1,19 +1,30 @@
 package org.origin.common.osgi;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URLClassLoader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.TreeMap;
 
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkEvent;
 import org.osgi.framework.FrameworkListener;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.launch.Framework;
 import org.osgi.framework.launch.FrameworkFactory;
 import org.osgi.framework.startlevel.FrameworkStartLevel;
+import org.osgi.service.packageadmin.PackageAdmin;
+import org.osgi.service.startlevel.StartLevel;
 
+/*
+ * http://www.eclipse.org/concierge/documentation.php
+ * https://github.com/eclipse/concierge
+ */
 public class FrameworkUtil {
 
 	/**
@@ -152,6 +163,43 @@ public class FrameworkUtil {
 				}
 			}
 		}
+	}
+
+	/**
+	 * http://www.javased.com/index.php?source_dir=jbosgi-framework/itest/src/test/java/org/jboss/test/osgi/framework/launch/AbstractFrameworkLaunchTest.java
+	 * 
+	 * @param cleanOnFirstInit
+	 * @return
+	 */
+	public Map<String, Object> getFrameworkInitProperties(File bundleStorageDir, boolean cleanOnFirstInit) {
+		Map<String, Object> props = new HashMap<String, Object>();
+		props.put(Constants.FRAMEWORK_STORAGE, bundleStorageDir.getAbsolutePath());
+		if (cleanOnFirstInit == true) {
+			props.put(Constants.FRAMEWORK_STORAGE_CLEAN, Constants.FRAMEWORK_STORAGE_CLEAN_ONFIRSTINIT);
+		}
+		return props;
+	}
+
+	protected File getBundleStorageDir() {
+		String archivesdir = System.getProperty("test.archive.directory", "test-libs");
+		File targetdir = new File(archivesdir).getParentFile().getAbsoluteFile();
+		return new File(targetdir + File.separator + "test-osgi-store").getAbsoluteFile();
+	}
+
+	protected BundleContext getBundleContext(Framework framework) {
+		return framework.getBundleContext();
+	}
+
+	protected PackageAdmin getPackageAdmin(Framework framework) throws BundleException {
+		BundleContext context = getBundleContext(framework);
+		ServiceReference sref = context.getServiceReference(PackageAdmin.class.getName());
+		return (PackageAdmin) context.getService(sref);
+	}
+
+	protected StartLevel getStartLevel(Framework framework) throws BundleException {
+		BundleContext context = getBundleContext(framework);
+		ServiceReference sref = context.getServiceReference(StartLevel.class.getName());
+		return (StartLevel) context.getService(sref);
 	}
 
 }

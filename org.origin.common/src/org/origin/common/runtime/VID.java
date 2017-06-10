@@ -9,6 +9,14 @@ public class VID {
 	protected String id;
 	protected String version;
 
+	public VID() {
+	}
+
+	public VID(String id, String version) {
+		this.id = id;
+		this.version = version;
+	}
+
 	public String getId() {
 		return id;
 	}
