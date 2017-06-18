@@ -38,8 +38,8 @@ import org.osgi.framework.wiring.FrameworkWiring;
 public class BundleUtil {
 
 	// private static final String MANIFEST_FILE_KEY = "META-INF/MANIFEST.MF";
-
-	private static final String CHECKSUM_SUFFIX = ".checksum";
+	protected static final String CHECKSUM_SUFFIX = ".checksum";
+	protected static boolean debug = false;
 
 	/**
 	 * Get current BundleContext.
@@ -169,54 +169,60 @@ public class BundleUtil {
 	protected static Bundle installOrUpdateBundle(BundleContext bundleContext, String bundleLocation, BufferedInputStream inputStream, long checksum, int startLevel, AtomicBoolean modified) throws IOException, BundleException {
 		inputStream.mark(256 * 1024);
 
-		Manifest manifest = getManifest(inputStream);
-		if (manifest == null) {
-			throw new BundleException("The bundle " + bundleLocation + " does not have a META-INF/MANIFEST.MF! " + "Make sure, META-INF and MANIFEST.MF are the first 2 entries in your JAR!");
-		}
+		JarInputStream jarIs = null;
+		try {
+			jarIs = new JarInputStream(inputStream);
+			Manifest manifest = jarIs.getManifest();
+			if (manifest == null) {
+				throw new BundleException("The bundle " + bundleLocation + " does not have a META-INF/MANIFEST.MF! " + "Make sure, META-INF and MANIFEST.MF are the first 2 entries in your JAR!");
+			}
+			inputStream.reset();
 
-		String bundleSymName = manifest.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
-		String bundleVersion = manifest.getMainAttributes().getValue(Constants.BUNDLE_VERSION);
+			String newBundleName = manifest.getMainAttributes().getValue(Constants.BUNDLE_SYMBOLICNAME);
+			String newBundleVersionStr = manifest.getMainAttributes().getValue(Constants.BUNDLE_VERSION);
+			Version newBundleVersion = newBundleVersionStr != null ? Version.parseVersion(newBundleVersionStr) : Version.emptyVersion;
 
-		Version version = bundleVersion == null ? Version.emptyVersion : Version.parseVersion(bundleVersion);
+			Bundle[] osgiBundles = bundleContext.getBundles();
+			for (Bundle osgiBundle : osgiBundles) {
+				String currBundleName = osgiBundle.getSymbolicName();
+				String currBundleVersionStr = osgiBundle.getHeaders().get(Constants.BUNDLE_VERSION);
+				Version currBundleVersion = currBundleVersionStr != null ? Version.parseVersion(newBundleVersionStr) : Version.emptyVersion;
 
-		Bundle[] bundles = bundleContext.getBundles();
-		for (Bundle bundle : bundles) {
-			if (bundle.getSymbolicName() != null && bundle.getSymbolicName().equals(bundleSymName)) {
-				bundleVersion = bundle.getHeaders().get(Constants.BUNDLE_VERSION);
-				Version currVersion = bundleVersion == null ? Version.emptyVersion : Version.parseVersion(bundleVersion);
+				if (currBundleName != null && currBundleName.equals(newBundleName) && newBundleVersion.equals(currBundleVersion)) {
+					long currBundleChecksum = loadChecksum(osgiBundle, bundleContext);
 
-				if (version.equals(currVersion)) {
-					inputStream.reset();
+					if (currBundleChecksum != checksum) {
+						System.out.println("A bundle with the same symbolic name (" + newBundleName + ") and version (" + newBundleVersionStr + ") is already installed.  Updating this bundle instead.");
+						stopBundle(osgiBundle);
 
-					if (loadChecksum(bundle, bundleContext) != checksum) {
-						System.out.println("A bundle with the same symbolic name (" + bundleSymName + ") and version (" + bundleVersion + ") is already installed.  Updating this bundle instead.");
-						stopBundle(bundle);
-
-						storeChecksum(bundle, checksum, bundleContext);
-						updateBundle(bundle, inputStream);
+						storeChecksum(osgiBundle, checksum, bundleContext);
+						updateBundle(osgiBundle, inputStream);
 
 						modified.set(true);
 					}
 
-					return bundle;
+					return osgiBundle;
 				}
 			}
+
+			if (debug) {
+				System.out.println("Installing bundle " + newBundleName + " (" + newBundleVersion + ")");
+			}
+
+			Bundle bundle = bundleContext.installBundle(bundleLocation, inputStream);
+			storeChecksum(bundle, checksum, bundleContext);
+
+			modified.set(true);
+
+			// Set default start level at install time, the user can override it if he wants
+			if (startLevel > 0) {
+				bundle.adapt(BundleStartLevel.class).setStartLevel(startLevel);
+			}
+			return bundle;
+
+		} finally {
+			IOUtil.closeQuietly(jarIs, true);
 		}
-		inputStream.reset();
-
-		System.out.println("Installing bundle " + bundleSymName + " / " + version);
-
-		Bundle bundle = bundleContext.installBundle(bundleLocation, inputStream);
-		storeChecksum(bundle, checksum, bundleContext);
-
-		modified.set(true);
-
-		// Set default start level at install time, the user can override it if he wants
-		if (startLevel > 0) {
-			bundle.adapt(BundleStartLevel.class).setStartLevel(startLevel);
-		}
-
-		return bundle;
 	}
 
 	/**
@@ -528,79 +534,6 @@ public class BundleUtil {
 			return true;
 		}
 		return false;
-	}
-
-	public static void debugBundle(Bundle bundle) {
-		long id = bundle.getBundleId();
-		String name = bundle.getSymbolicName();
-		String version = bundle.getVersion().toString();
-		String location = bundle.getLocation();
-		int state = bundle.getState();
-
-		String stateName = null;
-		if (Bundle.INSTALLED == state) { // 2
-			stateName = "Bundle.INSTALLED";
-
-		} else if (Bundle.RESOLVED == state) { // 4
-			stateName = "Bundle.RESOLVED";
-
-		} else if (Bundle.STARTING == state) { // 8
-			stateName = "Bundle.STARTING";
-
-		} else if (Bundle.ACTIVE == state) { // 32
-			stateName = "Bundle.ACTIVE";
-
-		} else if (Bundle.STOPPING == state) { // 16
-			stateName = "Bundle.STOPPING";
-
-		} else if (Bundle.UNINSTALLED == state) { // 1
-			stateName = "Bundle.UNINSTALLED";
-
-		} else {
-			stateName = "unknown";
-		}
-
-		System.out.println("(" + id + ") " + name + "_" + version + " " + stateName + " (" + state + ") (" + location + ")");
-	}
-
-	public static void debugBundleEvent(BundleEvent event) {
-		int eventType = event.getType();
-		String eventName = null;
-		if (BundleEvent.INSTALLED == eventType) { // 1
-			eventName = "BundleEvent.INSTALLED";
-
-		} else if (BundleEvent.UPDATED == eventType) { // 8
-			eventName = "BundleEvent.UPDATED";
-
-		} else if (BundleEvent.RESOLVED == eventType) { // 32
-			eventName = "BundleEvent.RESOLVED";
-
-		} else if (BundleEvent.STARTING == eventType) { // 128
-			eventName = "BundleEvent.STARTING";
-
-		} else if (BundleEvent.STARTED == eventType) { // 2
-			eventName = "BundleEvent.STARTED";
-
-		} else if (BundleEvent.STOPPING == eventType) { // 256
-			eventName = "BundleEvent.STOPPING";
-
-		} else if (BundleEvent.STOPPED == eventType) { // 4
-			eventName = "BundleEvent.STOPPED";
-
-		} else if (BundleEvent.UNRESOLVED == eventType) { // 64
-			eventName = "BundleEvent.UNRESOLVED";
-
-		} else if (BundleEvent.UNINSTALLED == eventType) { // 16
-			eventName = "BundleEvent.UNINSTALLED";
-
-		} else if (BundleEvent.LAZY_ACTIVATION == eventType) { // 512
-			eventName = "BundleEvent.LAZY_ACTIVATION";
-
-		} else {
-			eventName = "unknown";
-		}
-
-		System.out.println(eventName + " (" + eventType + ")");
 	}
 
 }

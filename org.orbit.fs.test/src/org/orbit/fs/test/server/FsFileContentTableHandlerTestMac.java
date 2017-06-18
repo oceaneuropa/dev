@@ -61,12 +61,11 @@ public class FsFileContentTableHandlerTestMac {
 		FileInputStream is5 = null;
 		FileInputStream is6 = null;
 		try {
-			File file1 = new File("/Users/yayang/Downloads/test/source/readme1.txt");
-			File file2 = new File("/Users/yayang/Downloads/test/source/readme2.txt");
-			File file3 = new File("/Users/yayang/Downloads/test/source/readme3.txt");
-			File file4 = new File("/Users/yayang/Downloads/test/source/apache-tomcat-8.0.30.tar.gz");
-			File file5 = new File("/Users/yayang/Downloads/test/source/BW6 Refactoring.docx");
-			File file6 = new File("/Users/yayang/Downloads/test/source/commons-io-2.5-src.zip");
+			File file1 = new File("/Users/oceaneuropa/Downloads/test/source/readme1.txt");
+			File file2 = new File("/Users/oceaneuropa/Downloads/test/source/readme2.txt");
+			File file3 = new File("/Users/oceaneuropa/Downloads/test/source/readme3.txt");
+			File file4 = new File("/Users/oceaneuropa/Downloads/test/source/apache-tomcat-8.0.30.tar.gz");
+			File file6 = new File("/Users/oceaneuropa/Downloads/test/source/commons-io-2.5-src.zip");
 
 			// long length1 = file1.length();
 			// long length2 = file2.length();
@@ -87,9 +86,6 @@ public class FsFileContentTableHandlerTestMac {
 			is4 = new FileInputStream(file4);
 			boolean succeed4 = DatabaseFSUtil.writeFileContentPostgres(conn, 4, is4);
 
-			is5 = new FileInputStream(file5);
-			boolean succeed5 = DatabaseFSUtil.writeFileContentPostgres(conn, 5, is5);
-
 			is6 = new FileInputStream(file6);
 			boolean succeed6 = DatabaseFSUtil.writeFileContentPostgres(conn, 6, is6);
 
@@ -97,7 +93,6 @@ public class FsFileContentTableHandlerTestMac {
 			System.out.println("succeed2 = " + succeed2);
 			System.out.println("succeed3 = " + succeed3);
 			System.out.println("succeed4 = " + succeed4);
-			System.out.println("succeed5 = " + succeed5);
 			System.out.println("succeed6 = " + succeed6);
 
 		} catch (SQLException e) {
@@ -123,32 +118,28 @@ public class FsFileContentTableHandlerTestMac {
 
 		Connection conn = getConnection();
 		try {
-			File file1 = new File("/Users/yayang/Downloads/test/target/readme1.txt");
-			File file2 = new File("/Users/yayang/Downloads/test/target/readme2.txt");
-			File file3 = new File("/Users/yayang/Downloads/test/target/readme3.txt");
-			File file4 = new File("/Users/yayang/Downloads/test/target/apache-tomcat-8.0.30.tar.gz");
-			File file5 = new File("/Users/yayang/Downloads/test/target/BW6 Refactoring.docx");
-			File file6 = new File("/Users/yayang/Downloads/test/target/commons-io-2.5-src.zip");
+			File file1 = new File("/Users/oceaneuropa/Downloads/test/target/readme1.txt");
+			File file2 = new File("/Users/oceaneuropa/Downloads/test/target/readme2.txt");
+			File file3 = new File("/Users/oceaneuropa/Downloads/test/target/readme3.txt");
+			File file4 = new File("/Users/oceaneuropa/Downloads/test/target/apache-tomcat-8.0.30.tar.gz");
+			File file6 = new File("/Users/oceaneuropa/Downloads/test/target/commons-io-2.5-src.zip");
 
 			byte[] bytes1 = DatabaseFSUtil.readFileContentPostgres(conn, 1);
 			byte[] bytes2 = DatabaseFSUtil.readFileContentPostgres(conn, 2);
 			byte[] bytes3 = DatabaseFSUtil.readFileContentPostgres(conn, 3);
 			byte[] bytes4 = DatabaseFSUtil.readFileContentPostgres(conn, 4);
-			byte[] bytes5 = DatabaseFSUtil.readFileContentPostgres(conn, 5);
 			byte[] bytes6 = DatabaseFSUtil.readFileContentPostgres(conn, 6);
 
 			FileUtil.copyBytesToFile(bytes1, file1);
 			FileUtil.copyBytesToFile(bytes2, file2);
 			FileUtil.copyBytesToFile(bytes3, file3);
 			FileUtil.copyBytesToFile(bytes4, file4);
-			FileUtil.copyBytesToFile(bytes5, file5);
 			FileUtil.copyBytesToFile(bytes6, file6);
 
 			System.out.println(file1.getAbsolutePath() + " (exists=" + (file1.exists() ? "true" : "false") + ") (length=" + file1.length() + ")");
 			System.out.println(file2.getAbsolutePath() + " (exists=" + (file2.exists() ? "true" : "false") + ") (length=" + file2.length() + ")");
 			System.out.println(file3.getAbsolutePath() + " (exists=" + (file3.exists() ? "true" : "false") + ") (length=" + file3.length() + ")");
 			System.out.println(file4.getAbsolutePath() + " (exists=" + (file4.exists() ? "true" : "false") + ") (length=" + file4.length() + ")");
-			System.out.println(file5.getAbsolutePath() + " (exists=" + (file5.exists() ? "true" : "false") + ") (length=" + file5.length() + ")");
 			System.out.println(file6.getAbsolutePath() + " (exists=" + (file6.exists() ? "true" : "false") + ") (length=" + file6.length() + ")");
 
 		} catch (SQLException e) {

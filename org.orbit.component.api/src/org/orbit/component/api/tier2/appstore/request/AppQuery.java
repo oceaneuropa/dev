@@ -5,24 +5,22 @@ import org.origin.common.jdbc.SQLWhereOperator;
 public class AppQuery {
 
 	protected String appId;
-	protected String namespace;
-	protected String categoryId;
 	protected String name;
 	protected String version;
+	protected String type;
 	protected String description;
 
 	protected String appId_oper = SQLWhereOperator.EQUAL;
-	protected String namespace_oper = SQLWhereOperator.EQUAL;
-	protected String categoryId_oper = SQLWhereOperator.EQUAL;
 	protected String name_oper = SQLWhereOperator.LIKE;
 	protected String version_oper = SQLWhereOperator.EQUAL;
+	protected String type_oper = SQLWhereOperator.EQUAL;
 	protected String description_oper = SQLWhereOperator.LIKE;
 
 	// ----------------------------------------------------------------------
 	// Set/Get
 	// ----------------------------------------------------------------------
 	public String getAppId() {
-		return appId;
+		return this.appId;
 	}
 
 	public void setAppIdEqual(String appId) {
@@ -45,56 +43,8 @@ public class AppQuery {
 		this.appId_oper = SQLWhereOperator.IN;
 	}
 
-	public String getNamespace() {
-		return namespace;
-	}
-
-	public void setNamespaceEqual(String namespace) {
-		this.namespace = namespace;
-		this.namespace_oper = SQLWhereOperator.EQUAL;
-	}
-
-	public void setNamespaceNotEqual(String namespace) {
-		this.namespace = namespace;
-		this.namespace_oper = SQLWhereOperator.NOT_EQUAL;
-	}
-
-	public void setNamespaceLike(String namespace) {
-		this.namespace = namespace;
-		this.namespace_oper = SQLWhereOperator.LIKE;
-	}
-
-	public void setNamespaceIn(String namespace) {
-		this.namespace = namespace;
-		this.namespace_oper = SQLWhereOperator.IN;
-	}
-
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryIdEqual(String categoryId) {
-		this.categoryId = categoryId;
-		this.categoryId_oper = SQLWhereOperator.EQUAL;
-	}
-
-	public void setCategoryIdNotEqual(String categoryId) {
-		this.categoryId = categoryId;
-		this.categoryId_oper = SQLWhereOperator.NOT_EQUAL;
-	}
-
-	public void setCategoryIdLike(String categoryId) {
-		this.categoryId = categoryId;
-		this.categoryId_oper = SQLWhereOperator.LIKE;
-	}
-
-	public void setCategoryIdIn(String categoryId) {
-		this.categoryId = categoryId;
-		this.categoryId_oper = SQLWhereOperator.IN;
-	}
-
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setNameEqual(String name) {
@@ -118,7 +68,7 @@ public class AppQuery {
 	}
 
 	public String getVersion() {
-		return version;
+		return this.version;
 	}
 
 	public void setVersionEqual(String version) {
@@ -141,8 +91,32 @@ public class AppQuery {
 		this.version_oper = SQLWhereOperator.IN;
 	}
 
+	public String getType() {
+		return this.type;
+	}
+
+	public void setTypeEqual(String type) {
+		this.type = type;
+		this.type_oper = SQLWhereOperator.EQUAL;
+	}
+
+	public void setTypeNotEqual(String type) {
+		this.type = type;
+		this.type_oper = SQLWhereOperator.NOT_EQUAL;
+	}
+
+	public void setTypeLike(String type) {
+		this.type = type;
+		this.type_oper = SQLWhereOperator.LIKE;
+	}
+
+	public void setTypeIn(String type) {
+		this.type = type;
+		this.type_oper = SQLWhereOperator.IN;
+	}
+
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescriptionEqual(String description) {
@@ -169,27 +143,23 @@ public class AppQuery {
 	// Where operator
 	// ----------------------------------------------------------------------
 	public String getAppId_oper() {
-		return appId_oper;
-	}
-
-	public String getNamespace_oper() {
-		return namespace_oper;
-	}
-
-	public String getCategoryId_oper() {
-		return categoryId_oper;
+		return this.appId_oper;
 	}
 
 	public String getName_oper() {
-		return name_oper;
+		return this.name_oper;
 	}
 
 	public String getVersion_oper() {
-		return version_oper;
+		return this.version_oper;
+	}
+
+	public String getType_oper() {
+		return this.type_oper;
 	}
 
 	public String getDescription_oper() {
-		return description_oper;
+		return this.description_oper;
 	}
 
 }

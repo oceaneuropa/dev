@@ -13,9 +13,7 @@ public class AppManifestDTO {
 	@XmlElement
 	protected String appId;
 	@XmlElement
-	protected String namespace;
-	@XmlElement
-	protected String categoryId;
+	protected String type;
 	@XmlElement
 	protected String name;
 	@XmlElement
@@ -39,7 +37,7 @@ public class AppManifestDTO {
 
 	@XmlElement
 	public String getAppId() {
-		return appId;
+		return this.appId;
 	}
 
 	public void setAppId(String appId) {
@@ -47,26 +45,17 @@ public class AppManifestDTO {
 	}
 
 	@XmlElement
-	public String getNamespace() {
-		return namespace;
+	public String getType() {
+		return this.type;
 	}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	@XmlElement
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	@XmlElement
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -75,7 +64,7 @@ public class AppManifestDTO {
 
 	@XmlElement
 	public String getVersion() {
-		return version;
+		return this.version;
 	}
 
 	public void setVersion(String version) {
@@ -84,7 +73,7 @@ public class AppManifestDTO {
 
 	@XmlElement
 	public int getPriority() {
-		return priority;
+		return this.priority;
 	}
 
 	public void setPriority(int priority) {
@@ -93,7 +82,7 @@ public class AppManifestDTO {
 
 	@XmlElement
 	public String getAppManifest() {
-		return appManifest;
+		return this.appManifest;
 	}
 
 	public void setAppManifest(String appManifest) {
@@ -102,7 +91,7 @@ public class AppManifestDTO {
 
 	@XmlElement
 	public String getFileName() {
-		return fileName;
+		return this.fileName;
 	}
 
 	public void setFileName(String fileName) {
@@ -111,7 +100,7 @@ public class AppManifestDTO {
 
 	@XmlElement
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
@@ -120,7 +109,7 @@ public class AppManifestDTO {
 
 	@XmlElement
 	public long getDateCreated() {
-		return dateCreated;
+		return this.dateCreated;
 	}
 
 	public void setDateCreated(long dateCreated) {
@@ -129,7 +118,7 @@ public class AppManifestDTO {
 
 	@XmlElement
 	public long getDateModified() {
-		return dateModified;
+		return this.dateModified;
 	}
 
 	public void setDateModified(long dateModified) {

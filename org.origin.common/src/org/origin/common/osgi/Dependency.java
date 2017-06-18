@@ -125,4 +125,16 @@ public class Dependency {
 		}
 	}
 
+	public void reset() {
+		// No more not notification to listeners listening on this Dependency change event.
+		this.listeners.clear();
+
+		// No more data
+		this.data = null;
+		this.dataMap.clear();
+
+		// Reset to the default unresolved state
+		this.state = Dependency.STATE.UNRESOLVED;
+	}
+
 }

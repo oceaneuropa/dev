@@ -3,10 +3,9 @@ package org.orbit.component.api.tier2.appstore.request;
 public class CreateAppRequest {
 
 	protected String appId;
-	protected String namespace;
-	protected String categoryId;
 	protected String name;
 	protected String version;
+	protected String type;
 	protected int priority = 1000;
 	protected String manifest;
 	protected String fileName;
@@ -20,24 +19,8 @@ public class CreateAppRequest {
 		this.appId = appId;
 	}
 
-	public String getNamespace() {
-		return namespace;
-	}
-
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
-	}
-
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -45,15 +28,23 @@ public class CreateAppRequest {
 	}
 
 	public String getVersion() {
-		return version;
+		return this.version;
 	}
 
 	public void setVersion(String version) {
 		this.version = version;
 	}
 
+	public String getType() {
+		return this.type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public int getPriority() {
-		return priority;
+		return this.priority;
 	}
 
 	public void setPriority(int priority) {
@@ -61,7 +52,7 @@ public class CreateAppRequest {
 	}
 
 	public String getManifest() {
-		return manifest;
+		return this.manifest;
 	}
 
 	public void setManifest(String manifest) {
@@ -69,7 +60,7 @@ public class CreateAppRequest {
 	}
 
 	public String getFileName() {
-		return fileName;
+		return this.fileName;
 	}
 
 	public void setFileName(String fileName) {
@@ -77,7 +68,7 @@ public class CreateAppRequest {
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {

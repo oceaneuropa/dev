@@ -227,8 +227,8 @@ public class DatabaseFileSystemTestMac {
 	public void test007_localFileToFsFile() throws IOException {
 		System.out.println("--- --- --- test007_localFileToFsFile() --- --- ---");
 
-		File localFile1 = new File("/Users/yayang/Downloads/apache/commons-io-2.4.jar");
-		File localFile2 = new File("/Users/yayang/Downloads/apache/commons-io-2.5-bin.zip");
+		File localFile1 = new File("/Users/oceaneuropa/Downloads/apache/commons-io-2.4.jar");
+		File localFile2 = new File("/Users/oceaneuropa/Downloads/apache/commons-io-2.5-bin.zip");
 
 		Path destDirPath = new Path("/test/dir2");
 
@@ -248,8 +248,8 @@ public class DatabaseFileSystemTestMac {
 	public void test008_localFileToFsDir() throws IOException {
 		System.out.println("--- --- --- test008_localFileToFsDir() --- --- ---");
 
-		File localFile1 = new File("/Users/yayang/Downloads/apache/hadoop/hadoop-common-2.7.1-sources.jar");
-		File localFile2 = new File("/Users/yayang/Downloads/apache/hadoop/hadoop-common-2.7.1.jar");
+		File localFile1 = new File("/Users/oceaneuropa/Downloads/apache/hadoop/hadoop-common-2.7.1-sources.jar");
+		File localFile2 = new File("/Users/oceaneuropa/Downloads/apache/hadoop/hadoop-common-2.7.1.jar");
 
 		Path destDirPath = new Path("/test/dir3");
 		fs.copyFileToFsDirectory(localFile1, destDirPath);
@@ -267,7 +267,7 @@ public class DatabaseFileSystemTestMac {
 	public void test009_inputStreamToFsDir() throws IOException {
 		System.out.println("--- --- --- test009_inputStreamToFsDir() --- --- ---");
 
-		// String dirPath = "/Users/yayang/Downloads/apache/myfolder";
+		// String dirPath = "/Users/oceaneuropa/Downloads/apache/myfolder";
 		// String zipPath = dirPath + ".zip";
 		// Path filePath = new Path(zipPath);
 		// if (fs.exists(filePath)) {
@@ -281,7 +281,7 @@ public class DatabaseFileSystemTestMac {
 	public void test020_localDirToFsDir1() throws IOException {
 		System.out.println("--- --- --- test020_localDirToFsDir1() --- --- ---");
 
-		File localDir = new File("/Users/yayang/Downloads/testdir");
+		File localDir = new File("/Users/oceaneuropa/Downloads/testdir");
 		Path destDirPath = new Path("/test/dir4");
 		fs.copyDirectoryToFsDirectory(localDir, destDirPath, true);
 
@@ -298,7 +298,7 @@ public class DatabaseFileSystemTestMac {
 	public void test021_localDirToFsDir2() throws IOException {
 		System.out.println("--- --- --- test021_localDirToFsDir2() --- --- ---");
 
-		File localDir = new File("/Users/yayang/Downloads/testdir");
+		File localDir = new File("/Users/oceaneuropa/Downloads/testdir");
 		Path destDirPath = new Path("/test/dir5");
 		fs.copyDirectoryToFsDirectory(localDir, destDirPath, false);
 
@@ -315,7 +315,7 @@ public class DatabaseFileSystemTestMac {
 	public void test030_fsDirToLocalDir() throws IOException {
 		System.out.println("--- --- --- test030_fsDirToLocalDir() --- --- ---");
 
-		File localDir = new File("/Users/yayang/Downloads/test_target");
+		File localDir = new File("/Users/oceaneuropa/Downloads/test_target");
 
 		Path[] paths = fs.listRoots();
 		for (Path path : paths) {
@@ -330,9 +330,9 @@ public class DatabaseFileSystemTestMac {
 	public void test031_fsFileToLocalFile() throws IOException {
 		System.out.println("--- --- --- test030_fsDirToLocalDir() --- --- ---");
 
-		File localDir = new File("/Users/yayang/Downloads/test_target");
+		File localDir = new File("/Users/oceaneuropa/Downloads/test_target");
 
-		Path fsPath = new Path("/Users/yayang/Downloads/apache/myfolder.zip");
+		Path fsPath = new Path("/Users/oceaneuropa/Downloads/apache/myfolder.zip");
 		FileSystemUtil.copyFsFileToLocalDirectory(fs, fsPath, localDir);
 
 		System.out.println();

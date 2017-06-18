@@ -7,10 +7,9 @@ import org.orbit.component.api.tier2.appstore.AppManifest;
 public class AppManifestImpl implements AppManifest {
 
 	protected String appId;
-	protected String namespace;
-	protected String categoryId;
 	protected String name;
 	protected String version;
+	protected String type;
 	protected int priority;
 	protected String manifestString;
 	protected String fileName;
@@ -31,24 +30,6 @@ public class AppManifestImpl implements AppManifest {
 	}
 
 	@Override
-	public String getNamespace() {
-		return namespace;
-	}
-
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	@Override
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
-	}
-
-	@Override
 	public String getName() {
 		return name;
 	}
@@ -64,6 +45,15 @@ public class AppManifestImpl implements AppManifest {
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	@Override
+	public String getType() {
+		return this.type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	@Override
@@ -143,10 +133,9 @@ public class AppManifestImpl implements AppManifest {
 		StringBuilder sb = new StringBuilder();
 		sb.append("AppManifest(");
 		sb.append("appId=").append(this.appId);
-		sb.append(", namespace=").append(this.namespace);
-		sb.append(", categoryId=").append(this.categoryId);
 		sb.append(", name=").append(this.name);
 		sb.append(", version=").append(this.version);
+		sb.append(", type=").append(this.type);
 		sb.append(", priority=").append(this.priority);
 		sb.append(", manifest=").append(this.manifestString);
 		sb.append(", fileName=").append(this.fileName);

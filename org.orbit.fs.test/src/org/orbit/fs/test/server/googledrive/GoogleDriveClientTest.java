@@ -238,7 +238,7 @@ public class GoogleDriveClientTest {
 			// 1. Upload a local file to a google drive directory
 			boolean test1 = false;
 			if (test1) {
-				java.io.File localFile = new java.io.File("/Users/yayang/Downloads/google_drive_test/phone/iPhone.pdf");
+				java.io.File localFile = new java.io.File("/Users/oceaneuropa/Downloads/google_drive_test/phone/iPhone.pdf");
 				File dir = this.client.getFileByFullPath("dir2", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 				if (dir != null) {
 					File uploadedFile = this.client.uploadFileToGdfsDirectory(localFile, dir.getId(), null);
@@ -253,7 +253,7 @@ public class GoogleDriveClientTest {
 			// 2. Upload a local folder to a gdfs directory
 			boolean test2 = true;
 			if (test2) {
-				java.io.File localDir = new java.io.File("/Users/yayang/Downloads/google_drive_test/phone");
+				java.io.File localDir = new java.io.File("/Users/oceaneuropa/Downloads/google_drive_test/phone");
 
 				File dir = this.client.getFileByFullPath("dir2", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
 				if (dir != null) {
@@ -284,7 +284,7 @@ public class GoogleDriveClientTest {
 			boolean test1 = false;
 			if (test1) {
 				File file = this.client.getFileByFullPath("dir2/phone/iPhone.pdf", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
-				java.io.File localDir = new java.io.File("/Users/yayang/Downloads/google_drive_test/download");
+				java.io.File localDir = new java.io.File("/Users/oceaneuropa/Downloads/google_drive_test/download");
 				if (file != null) {
 					boolean succeed = this.client.downloadGdfsFileToDirectory(file, localDir);
 					if (succeed) {
@@ -297,7 +297,7 @@ public class GoogleDriveClientTest {
 			boolean test3 = true;
 			if (test3) {
 				File dir = this.client.getFileByFullPath("dir2/phone", GoogleDriveConstants.FILE_FIELDS_SIMPLE);
-				java.io.File localDir = new java.io.File("/Users/yayang/Downloads/google_drive_test/download");
+				java.io.File localDir = new java.io.File("/Users/oceaneuropa/Downloads/google_drive_test/download");
 				if (dir != null) {
 					boolean succeed = this.client.downloadGdfsDirectoryToDirectory(dir, localDir, true);
 					if (succeed) {

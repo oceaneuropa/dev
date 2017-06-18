@@ -15,9 +15,7 @@ public class AppQueryDTO {
 	@XmlElement
 	protected String appId;
 	@XmlElement
-	protected String namespace;
-	@XmlElement
-	protected String categoryId;
+	protected String type;
 	@XmlElement
 	protected String name;
 	@XmlElement
@@ -30,7 +28,7 @@ public class AppQueryDTO {
 	@XmlElement
 	protected String namespace_oper;
 	@XmlElement
-	protected String categoryId_oper;
+	protected String type_oper;
 	@XmlElement
 	protected String name_oper;
 	@XmlElement
@@ -46,7 +44,7 @@ public class AppQueryDTO {
 	// ----------------------------------------------------------------------
 	@XmlElement
 	public String getAppId() {
-		return appId;
+		return this.appId;
 	}
 
 	public void setAppId(String appId) {
@@ -54,26 +52,17 @@ public class AppQueryDTO {
 	}
 
 	@XmlElement
-	public String getNamespace() {
-		return namespace;
+	public String getType() {
+		return this.type;
 	}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	@XmlElement
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	@XmlElement
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -82,7 +71,7 @@ public class AppQueryDTO {
 
 	@XmlElement
 	public String getVersion() {
-		return version;
+		return this.version;
 	}
 
 	public void setVersion(String version) {
@@ -91,7 +80,7 @@ public class AppQueryDTO {
 
 	@XmlElement
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
@@ -103,7 +92,7 @@ public class AppQueryDTO {
 	// ----------------------------------------------------------------------
 	@XmlElement
 	public String getAppId_oper() {
-		return appId_oper;
+		return this.appId_oper;
 	}
 
 	public void setAppId_oper(String appId_oper) {
@@ -111,26 +100,17 @@ public class AppQueryDTO {
 	}
 
 	@XmlElement
-	public String getNamespace_oper() {
-		return namespace_oper;
+	public String getType_oper() {
+		return this.type_oper;
 	}
 
-	public void setNamespace_oper(String namespace_oper) {
-		this.namespace_oper = SQLWhereOperator.isEqual(namespace_oper) ? null : namespace_oper;
-	}
-
-	@XmlElement
-	public String getCategoryId_oper() {
-		return categoryId_oper;
-	}
-
-	public void setCategoryId_oper(String categoryId_oper) {
-		this.categoryId_oper = SQLWhereOperator.isEqual(categoryId_oper) ? null : categoryId_oper;
+	public void setType_oper(String type_oper) {
+		this.type_oper = SQLWhereOperator.isEqual(type_oper) ? null : type_oper;
 	}
 
 	@XmlElement
 	public String getName_oper() {
-		return name_oper;
+		return this.name_oper;
 	}
 
 	public void setName_oper(String name_oper) {
@@ -139,7 +119,7 @@ public class AppQueryDTO {
 
 	@XmlElement
 	public String getVersion_oper() {
-		return version_oper;
+		return this.version_oper;
 	}
 
 	public void setVersion_oper(String version_oper) {
@@ -148,7 +128,7 @@ public class AppQueryDTO {
 
 	@XmlElement
 	public String getDescription_oper() {
-		return description_oper;
+		return this.description_oper;
 	}
 
 	public void setDescription_oper(String description_oper) {

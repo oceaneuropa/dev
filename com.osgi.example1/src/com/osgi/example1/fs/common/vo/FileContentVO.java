@@ -2,8 +2,8 @@ package com.osgi.example1.fs.common.vo;
 
 public class FileContentVO {
 
-	protected int fileId;
 	protected int fileContentId;
+	protected int fileId;
 
 	public FileContentVO() {
 	}

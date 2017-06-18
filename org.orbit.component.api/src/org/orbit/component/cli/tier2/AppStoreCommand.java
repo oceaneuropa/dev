@@ -117,20 +117,19 @@ public class AppStoreCommand implements Annotated {
 
 		for (AppManifest appManifest : appManifests) {
 			String appId = appManifest.getAppId();
-			String categoryId = appManifest.getCategoryId();
-			String namespace = appManifest.getNamespace();
 			String name = appManifest.getName();
 			String version = appManifest.getVersion();
+			String type = appManifest.getType();
 			String fileName = appManifest.getFileName();
 
-			String text = String.format("%10s|%10s|%10s|%10s|%10s|%10s|", appId, categoryId, namespace, name, version, fileName);
+			String text = String.format("%10s|%10s|%10s|%10s|%10s|", appId, name, version, type, fileName);
 			System.out.println(text);
 		}
 	}
 
 	public static void main(String[] args) {
 		// @see https://dzone.com/articles/java-string-format-examples
-		String text = String.format("|%20s|%20s|%20s|%20s|%20s|%20s|", "appId", "categoryId", "namespace", "name", "version", "fileName");
+		String text = String.format("|%20s|%20s|%20s|%20s|%20s|", "appId", "name", "version", "type", "fileName");
 		System.out.println(text);
 	}
 

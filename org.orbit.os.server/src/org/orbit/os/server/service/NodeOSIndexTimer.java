@@ -20,6 +20,7 @@ public class NodeOSIndexTimer extends ServiceIndexTimerImpl<IndexProvider, NodeO
 	 */
 	public NodeOSIndexTimer(IndexProvider indexProvider) {
 		super("NodeOS Index Timer", indexProvider);
+		setDebug(false);
 	}
 
 	@Override

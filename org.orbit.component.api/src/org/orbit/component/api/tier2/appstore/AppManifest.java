@@ -4,29 +4,12 @@ import java.util.Date;
 
 public interface AppManifest {
 
-	public static String CATEGORY_TEXT_EDITOR = "text_editor";
-	public static String CATEGORY_DIAGRAM_EDITOR = "diagram_editor";
-
 	/**
 	 * Get app id.
 	 * 
 	 * @return
 	 */
 	String getAppId();
-
-	/**
-	 * Get app namespace.
-	 * 
-	 * @return
-	 */
-	String getNamespace();
-
-	/**
-	 * Get app categoryId.
-	 * 
-	 * @return
-	 */
-	String getCategoryId();
 
 	/**
 	 * Get app name.
@@ -41,6 +24,13 @@ public interface AppManifest {
 	 * @return
 	 */
 	String getVersion();
+
+	/**
+	 * Get app type.
+	 * 
+	 * @return
+	 */
+	String getType();
 
 	/**
 	 * 

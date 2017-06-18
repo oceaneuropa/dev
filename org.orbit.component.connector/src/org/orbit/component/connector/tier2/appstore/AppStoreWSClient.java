@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -41,19 +42,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * /orbit/v1/appstore
  * 
  * App metadata.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?namespace={namespace}&categoryid={categoryid}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?type={type}
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}/exists
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/exists
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}
- *
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
+ * 
  * Upload an app.
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}/content (FormData: InputStream and FormDataContentDisposition)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
  * 
  * Download an app.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}/content
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content
  * 
  */
 public class AppStoreWSClient extends AbstractClient {
@@ -69,23 +70,19 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Get apps.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?namespace={namespace}&categoryid={categoryid}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?type={type}
 	 * 
-	 * @param namespace
-	 * @param categoryId
+	 * @param type
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<AppManifestDTO> getApps(String namespace, String categoryId) throws ClientException {
+	public List<AppManifestDTO> getApps(String type) throws ClientException {
 		List<AppManifestDTO> apps = null;
 		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("apps");
-			if (categoryId != null) {
-				target = target.queryParam("namespace", namespace);
-			}
-			if (categoryId != null) {
-				target = target.queryParam("categoryId", categoryId);
+			if (type != null) {
+				target = target.queryParam("type", type);
 			}
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
@@ -93,6 +90,7 @@ public class AppStoreWSClient extends AbstractClient {
 
 			apps = response.readEntity(new GenericType<List<AppManifestDTO>>() {
 			});
+
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
@@ -139,21 +137,23 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Get an app.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws ClientException
 	 */
-	public AppManifestDTO getApp(String appId) throws ClientException {
+	public AppManifestDTO getApp(String appId, String appVersion) throws ClientException {
 		AppManifestDTO app = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps").path(appId).request(MediaType.APPLICATION_JSON);
+			Builder builder = getRootPath().path("apps").path(appId).path(appVersion).request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(response);
 
 			app = response.readEntity(AppManifestDTO.class);
+
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
@@ -165,16 +165,17 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Check whether an app exists.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean appExists(String appId) throws ClientException {
+	public boolean appExists(String appId, String appVersion) throws ClientException {
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps").path(appId).path("exists").request(MediaType.APPLICATION_JSON);
+			Builder builder = getRootPath().path("apps").path(appId).path(appVersion).path("exists").request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(response);
 
@@ -216,6 +217,7 @@ public class AppStoreWSClient extends AbstractClient {
 			checkResponse(response);
 
 			newApp = response.readEntity(AppManifestDTO.class);
+
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
@@ -245,6 +247,7 @@ public class AppStoreWSClient extends AbstractClient {
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
+
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
@@ -256,20 +259,22 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Upload an app file.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}/content (FormData: InputStream and FormDataContentDisposition)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
 	 * 
 	 * @param appId
-	 * @param file
+	 * @param appVersion
+	 * @param filePath
 	 * @return
 	 * @throws ClientException
 	 * @throws IOException
 	 */
-	public StatusDTO uploadApp(String appId, File file) throws ClientException {
+	public StatusDTO uploadAppArchive(String appId, String appVersion, Path filePath) throws ClientException {
+		File file = filePath.toFile();
 		if (file == null || !file.exists()) {
 			throw new ClientException(401, "File doesn't exist.");
 		}
 		if (!file.isFile()) {
-			throw new ClientException(401, "File is not a file.");
+			throw new ClientException(401, "File " + file.getAbsolutePath() + " is not a single file.");
 		}
 
 		try {
@@ -286,7 +291,7 @@ public class AppStoreWSClient extends AbstractClient {
 				multipart.bodyPart(filePart);
 			}
 
-			WebTarget target = getRootPath().path("apps").path(appId).path("content");
+			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion).path("content");
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(Entity.entity(multipart, multipart.getMediaType()));
 			checkResponse(response);
@@ -304,17 +309,18 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Download app file.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}/content
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @param output
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean downloadApp(String appId, OutputStream output) throws ClientException {
+	public boolean downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException {
 		InputStream input = null;
 		try {
-			WebTarget target = getRootPath().path("apps").path(appId).path("content");
+			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion).path("content");
 			Builder builder = target.request(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
 			Response response = updateHeaders(builder).get();
 			checkResponse(response);
@@ -324,6 +330,7 @@ public class AppStoreWSClient extends AbstractClient {
 			if (input != null) {
 				IOUtil.copy(input, output);
 			}
+
 		} catch (ClientException | IOException e) {
 			handleException(e);
 		} finally {
@@ -335,22 +342,24 @@ public class AppStoreWSClient extends AbstractClient {
 	/**
 	 * Delete an app.
 	 * 
-	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appid}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * 
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO deleteApp(String appId) throws ClientException {
+	public StatusDTO deleteApp(String appId, String appVersion) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps").path(appId).request(MediaType.APPLICATION_JSON);
+			Builder builder = getRootPath().path("apps").path(appId).path(appVersion).request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
 			checkResponse(response);
 
 			status = response.readEntity(StatusDTO.class);
+
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {

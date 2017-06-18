@@ -65,7 +65,7 @@ public class TestDir {
 	public static void main(String[] args) {
 		try {
 			// String filePath = "\\\\server.local\\files\\20130220";
-			String filePath = "/Users/yayang";
+			String filePath = "/Users/oceaneuropa";
 			int maxFiles = 10;
 			System.out.println("TEST BIG DIR");
 			nioRun(filePath, maxFiles);

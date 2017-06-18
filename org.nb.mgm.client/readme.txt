@@ -1,5 +1,5 @@
 VM Arguments:
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -DORIGIN_HOME=/Users/yayang/origin -Dorg.osgi.service.http.port=9090
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -DORIGIN_HOME=/Users/oceaneuropa/origin -Dorg.osgi.service.http.port=9090
 
 
 Project osgi.iot.contest.sdk

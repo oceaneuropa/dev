@@ -1,7 +1,7 @@
 package org.orbit.component.api.tier2.appstore;
 
-import java.io.File;
 import java.io.OutputStream;
+import java.nio.file.Path;
 import java.util.Map;
 
 import org.orbit.component.api.tier2.appstore.request.AppQuery;
@@ -63,19 +63,21 @@ public interface AppStore {
 	 * Get an app manifest.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws ClientException
 	 */
-	AppManifest getApp(String appId) throws ClientException;
+	AppManifest getApp(String appId, String appVersion) throws ClientException;
 
 	/**
 	 * Check whether an app exists.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws ClientException
 	 */
-	boolean exists(String appId) throws ClientException;
+	boolean exists(String appId, String appVersion) throws ClientException;
 
 	/**
 	 * Add a new app.
@@ -90,11 +92,11 @@ public interface AppStore {
 	 * Add a new app and upload the file.
 	 * 
 	 * @param createAppRequest
-	 * @param file
+	 * @param filePath
 	 * @return
 	 * @throws ClientException
 	 */
-	boolean create(CreateAppRequest createAppRequest, File file) throws ClientException;
+	boolean create(CreateAppRequest createAppRequest, Path filePath) throws ClientException;
 
 	/**
 	 * Update an app.
@@ -106,39 +108,33 @@ public interface AppStore {
 	boolean update(UpdateAppRequest updateAppRequest) throws ClientException;
 
 	/**
-	 * Upload file to an existing app.
-	 * 
-	 * @param appId
-	 * @param file
-	 * @return
-	 * @throws ClientException
-	 */
-	boolean upload(String appId, File file) throws ClientException;
-
-	/**
-	 * Download an app.
-	 * 
-	 * @param appId
-	 * @param file
-	 * @throws ClientException
-	 */
-	void download(String appId, File file) throws ClientException;
-
-	/**
-	 * Download an app.
-	 * 
-	 * @param appId
-	 * @param output
-	 * @throws ClientException
-	 */
-	void download(String appId, OutputStream output) throws ClientException;
-
-	/**
 	 * Delete an app.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @throws ClientException
 	 */
-	boolean delete(String appId) throws ClientException;
+	boolean delete(String appId, String appVersion) throws ClientException;
+
+	/**
+	 * Upload app archive.
+	 * 
+	 * @param appId
+	 * @param appVersion
+	 * @param filePath
+	 * @return
+	 * @throws ClientException
+	 */
+	boolean uploadAppArchive(String appId, String appVersion, Path filePath) throws ClientException;
+
+	/**
+	 * Download app archive.
+	 * 
+	 * @param appId
+	 * @param appVersion
+	 * @param output
+	 * @throws ClientException
+	 */
+	void downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException;
 
 }

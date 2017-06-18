@@ -2,11 +2,11 @@ package org.orbit.component.model.tier2.appstore;
 
 public class AppManifestRTO {
 
+	protected int id;
 	protected String appId;
-	protected String namespace;
-	protected String categoryId;
+	protected String appVersion;
 	protected String name;
-	protected String version;
+	protected String type;
 	protected int priority;
 	protected String appManifest;
 	protected String fileName;
@@ -19,29 +19,28 @@ public class AppManifestRTO {
 
 	/**
 	 * 
+	 * @param id
 	 * @param appId
-	 * @param namespace
-	 * @param categoryId
+	 * @param appVersion
 	 * @param name
-	 * @param version
+	 * @param type
 	 * @param priority
 	 * @param appManifest
 	 * @param description
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public AppManifestRTO(String appId, String namespace, String categoryId, String name, String version, int priority, String appManifest, String description, long dateCreated, long dateModified) {
+	public AppManifestRTO(int id, String appId, String appVersion, String name, String type, int priority, String appManifest, String description, long dateCreated, long dateModified) {
 		assert (appId != null) : "appId is null";
-		assert (namespace != null) : "namespace is null";
-		assert (categoryId != null) : "categoryId is null";
+		assert (appVersion != null) : "appVersion is null";
 		assert (name != null) : "appName is null";
-		assert (version != null) : "appVersion is null";
+		assert (type != null) : "type is null";
 
+		this.id = id;
 		this.appId = appId;
-		this.namespace = namespace;
-		this.categoryId = categoryId;
+		this.appVersion = appVersion;
 		this.name = name;
-		this.version = version;
+		this.type = type;
 		this.priority = priority;
 		this.appManifest = appManifest;
 		this.description = description;
@@ -49,48 +48,48 @@ public class AppManifestRTO {
 		this.dateModified = dateModified;
 	}
 
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public String getAppId() {
-		return appId;
+		return this.appId;
 	}
 
 	public void setAppId(String appId) {
 		this.appId = appId;
 	}
 
-	public String getNamespace() {
-		return namespace;
+	public String getAppVersion() {
+		return this.appVersion;
 	}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String appName) {
 		this.name = appName;
 	}
 
-	public String getVersion() {
-		return version;
+	public String getType() {
+		return this.type;
 	}
 
-	public void setVersion(String appVersion) {
-		this.version = appVersion;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public int getPriority() {
-		return priority;
+		return this.priority;
 	}
 
 	public void setPriority(int priority) {
@@ -98,7 +97,7 @@ public class AppManifestRTO {
 	}
 
 	public String getAppManifest() {
-		return appManifest;
+		return this.appManifest;
 	}
 
 	public void setAppManifest(String appManifest) {
@@ -106,7 +105,7 @@ public class AppManifestRTO {
 	}
 
 	public String getFileName() {
-		return fileName;
+		return this.fileName;
 	}
 
 	public void setFileName(String fileName) {
@@ -114,7 +113,7 @@ public class AppManifestRTO {
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
@@ -122,7 +121,7 @@ public class AppManifestRTO {
 	}
 
 	public long getDateCreated() {
-		return dateCreated;
+		return this.dateCreated;
 	}
 
 	public void setDateCreated(long dateCreated) {
@@ -130,7 +129,7 @@ public class AppManifestRTO {
 	}
 
 	public long getDateModified() {
-		return dateModified;
+		return this.dateModified;
 	}
 
 	public void setDateModified(long dateModified) {
@@ -138,32 +137,45 @@ public class AppManifestRTO {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (obj == null || !(obj instanceof AppManifestRTO)) {
-			return false;
-		}
-		AppManifestRTO other = (AppManifestRTO) obj;
-		String otherAppId = other.getAppId();
-		if (this.appId.equals(otherAppId)) {
-			return true;
-		}
-		return false;
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((appId == null) ? 0 : appId.hashCode());
+		result = prime * result + ((appVersion == null) ? 0 : appVersion.hashCode());
+		return result;
 	}
 
 	@Override
-	public int hashCode() {
-		return this.appId.hashCode();
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AppManifestRTO other = (AppManifestRTO) obj;
+		if (appId == null) {
+			if (other.appId != null)
+				return false;
+		} else if (!appId.equals(other.appId))
+			return false;
+		if (appVersion == null) {
+			if (other.appVersion != null)
+				return false;
+		} else if (!appVersion.equals(other.appVersion))
+			return false;
+		return true;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("AppManifestRTO(");
+		sb.append("id=").append(this.id);
 		sb.append("appId=").append(this.appId);
-		sb.append(", namespace=").append(this.namespace);
-		sb.append(", categoryId=").append(this.categoryId);
+		sb.append("appVersion=").append(this.appVersion);
 		sb.append(", name=").append(this.name);
-		sb.append(", version=").append(this.version);
+		sb.append(", type=").append(this.type);
 		sb.append(", priority=").append(this.priority);
 		sb.append(", appManifest=").append(this.appManifest);
 		sb.append(", fileName=").append(this.fileName);

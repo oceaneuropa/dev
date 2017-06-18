@@ -2,17 +2,21 @@ package org.orbit.os.server.service;
 
 import java.util.Map;
 
+import org.orbit.os.server.app.AppsManager;
+
 public interface NodeOS {
 
-	public String getOSName();
+	String getOSName();
 
-	public String getOSVersion();
+	String getOSVersion();
 
-	public String getName();
+	String getName();
 
-	public String getHostURL();
+	String getLabel();
 
-	public String getContextRoot();
+	String getHostURL();
+
+	String getContextRoot();
 
 	void updateProperties(Map<Object, Object> configProps);
 

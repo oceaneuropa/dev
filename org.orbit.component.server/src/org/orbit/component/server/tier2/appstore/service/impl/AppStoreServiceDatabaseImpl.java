@@ -195,12 +195,11 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public List<AppManifestRTO> getApps(String namespace, String categoryId) throws AppStoreException {
+	public List<AppManifestRTO> getApps(String type) throws AppStoreException {
 		Connection conn = getConnection();
 		try {
 			AppQueryRTO query = new AppQueryRTO();
-			query.setNamespace(namespace);
-			query.setCategoryId(categoryId);
+			query.setType(type);
 			return this.appTableHandler.getApps(conn, query);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -224,10 +223,10 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public boolean appExists(String appId) throws AppStoreException {
+	public boolean appExists(String appId, String appVersion) throws AppStoreException {
 		Connection conn = getConnection();
 		try {
-			return this.appTableHandler.appExists(conn, appId);
+			return this.appTableHandler.appExists(conn, appId, appVersion);
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -237,10 +236,10 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public AppManifestRTO getApp(String appId) throws AppStoreException {
+	public AppManifestRTO getApp(String appId, String appVersion) throws AppStoreException {
 		Connection conn = getConnection();
 		try {
-			return this.appTableHandler.getApp(conn, appId);
+			return this.appTableHandler.getApp(conn, appId, appVersion);
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -253,7 +252,9 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	public AppManifestRTO addApp(AppManifestRTO createAppRequest) throws AppStoreException {
 		Connection conn = getConnection();
 
-		if (appExists(createAppRequest.getAppId())) {
+		String appId = createAppRequest.getAppId();
+		String appVersion = createAppRequest.getAppVersion();
+		if (appExists(appId, appVersion)) {
 			throw new AppStoreException(StatusDTO.RESP_500, "App already exists.");
 		}
 
@@ -281,10 +282,10 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public boolean deleteApp(String appId) throws AppStoreException {
+	public boolean deleteApp(String appId, String appVersion) throws AppStoreException {
 		Connection conn = getConnection();
 		try {
-			return this.appTableHandler.delete(conn, appId);
+			return this.appTableHandler.delete(conn, appId, appVersion);
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -294,10 +295,10 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public byte[] downloadApp(String appId) throws AppStoreException {
+	public byte[] downloadApp(String appId, String appVersion) throws AppStoreException {
 		Connection conn = getConnection();
 		try {
-			return this.appTableHandler.getAppContent(conn, appId);
+			return this.appTableHandler.getAppContent(conn, appId, appVersion);
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -307,10 +308,10 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public InputStream downloadAppInputStream(String appId) throws AppStoreException {
+	public InputStream downloadAppInputStream(String appId, String appVersion) throws AppStoreException {
 		Connection conn = getConnection();
 		try {
-			return this.appTableHandler.getAppContentInputStream(conn, appId);
+			return this.appTableHandler.getAppContentInputStream(conn, appId, appVersion);
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -320,12 +321,12 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public boolean uploadApp(String appId, String fileName, InputStream fileInputStream) throws AppStoreException {
+	public boolean uploadApp(String appId, String appVersion, String fileName, InputStream fileInputStream) throws AppStoreException {
 		Connection conn = getConnection();
 		try {
-			boolean succeed = this.appTableHandler.setAppContent(conn, appId, fileInputStream);
+			boolean succeed = this.appTableHandler.setAppContent(conn, appId, appVersion, fileInputStream);
 			if (succeed) {
-				this.appTableHandler.updateFileName(conn, appId, fileName);
+				this.appTableHandler.updateFileName(conn, appId, appVersion, fileName);
 			}
 			return succeed;
 		} catch (SQLException e) {

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -41,19 +40,19 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  * /orbit/v1/appstore
  * 
  * App metadata.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?namespace={namespace}&categoryId={categoryId}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?type={type}
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/exists
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/exists
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}
- * 
- * Download an app.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/content
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
  * 
  * Upload an app.
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/content (FormData: InputStream and FormDataContentDisposition)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
+ * 
+ * Download an app.
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content
  * 
  */
 @Path("/apps")
@@ -63,20 +62,19 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 	/**
 	 * Get apps.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?namespace={namespace}&categoryId={categoryId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?type={type}
 	 * 
-	 * @param namespace
-	 * @param categoryId
+	 * @param type
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getApps(@QueryParam("namespace") String namespace, @QueryParam("categoryId") String categoryId) {
+	public Response getApps(@QueryParam("type") String type) {
 		AppStoreService appStoreService = getService(AppStoreService.class);
 
 		List<AppManifestDTO> appDTOs = new ArrayList<AppManifestDTO>();
 		try {
-			List<AppManifestRTO> apps = appStoreService.getApps(namespace, categoryId);
+			List<AppManifestRTO> apps = appStoreService.getApps(type);
 			if (apps != null) {
 				for (AppManifestRTO app : apps) {
 					AppManifestDTO appDTO = ModelConverter.getInstance().toDTO(app);
@@ -124,20 +122,21 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 	/**
 	 * Get an app.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 */
 	@GET
-	@Path("{appId}")
+	@Path("{appId}/{appVersion}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getApp(@PathParam("appId") String appId) {
+	public Response getApp(@PathParam("appId") String appId, @PathParam("appVersion") String appVersion) {
 		AppManifestDTO appDTO = null;
 
 		AppStoreService appStoreService = getService(AppStoreService.class);
 		try {
-			AppManifestRTO app = appStoreService.getApp(appId);
+			AppManifestRTO app = appStoreService.getApp(appId, appVersion);
 			if (app == null) {
 				ErrorDTO appNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("App cannot be found for '%s'.", appId));
 				return Response.status(Status.NOT_FOUND).entity(appNotFoundError).build();
@@ -155,19 +154,20 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 	/**
 	 * Check whether an app exists.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/exists
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/exists
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 */
 	@GET
-	@Path("{appId}/exists")
+	@Path("{appId}/{appVersion}/exists")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response appExists(@PathParam("appId") String appId) {
+	public Response appExists(@PathParam("appId") String appId, @PathParam("appVersion") String appVersion) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		AppStoreService appStoreService = getService(AppStoreService.class);
 		try {
-			boolean exists = appStoreService.appExists(appId);
+			boolean exists = appStoreService.appExists(appId, appVersion);
 			result.put("exists", exists);
 
 		} catch (AppStoreException e) {
@@ -198,12 +198,10 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 		AppStoreService appStoreService = getService(AppStoreService.class);
 		try {
 			String appId = newAppRequestDTO.getAppId();
-			if (appId == null || appId.isEmpty()) {
-				appId = UUID.randomUUID().toString();
-				newAppRequestDTO.setAppId(appId);
-			}
-			if (appStoreService.appExists(appId)) {
-				ErrorDTO appExistsError = new ErrorDTO(String.format("App '%s' already exists.", appId));
+			String appVersion = newAppRequestDTO.getVersion();
+
+			if (appStoreService.appExists(appId, appVersion)) {
+				ErrorDTO appExistsError = new ErrorDTO(String.format("App '%s' already exists.", appVersion));
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
 			}
 
@@ -263,15 +261,16 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 	/**
 	 * Delete an app.
 	 * 
-	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 */
 	@DELETE
-	@Path("/{appId}")
+	@Path("/{appId}/{appVersion}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteApp(@PathParam(value = "appId") String appId) {
+	public Response deleteApp(@PathParam(value = "appId") String appId, @PathParam(value = "appVersion") String appVersion) {
 		if (appId == null || appId.isEmpty()) {
 			ErrorDTO nullAppIdError = new ErrorDTO("appId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullAppIdError).build();
@@ -280,7 +279,7 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 		boolean succeed = false;
 		AppStoreService appStoreService = getService(AppStoreService.class);
 		try {
-			succeed = appStoreService.deleteApp(appId);
+			succeed = appStoreService.deleteApp(appId, appVersion);
 
 		} catch (AppStoreException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -299,18 +298,20 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 	/**
 	 * Upload an app.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/content (FormData: InputStream and FormDataContentDisposition)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @param uploadedInputStream
 	 * @param fileDetail
 	 * @return
 	 */
 	@POST
-	@Path("/{appId}/content")
+	@Path("/{appId}/{appVersion}/content")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public Response uploadApp( //
 			@PathParam(value = "appId") String appId, //
+			@PathParam(value = "appVersion") String appVersion, //
 			@FormDataParam("file") InputStream uploadedInputStream, //
 			@FormDataParam("file") FormDataContentDisposition fileDetail) {
 
@@ -318,19 +319,23 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 			ErrorDTO nullAppIdError = new ErrorDTO("appId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullAppIdError).build();
 		}
+		if (appVersion == null || appVersion.isEmpty()) {
+			ErrorDTO nullAppVersionError = new ErrorDTO("appVersion is null.");
+			return Response.status(Status.BAD_REQUEST).entity(nullAppVersionError).build();
+		}
 
 		boolean succeed = false;
 
 		String fileName = fileDetail.getFileName();
 		AppStoreService appStoreService = getService(AppStoreService.class);
 		try {
-			AppManifestRTO app = appStoreService.getApp(appId);
+			AppManifestRTO app = appStoreService.getApp(appId, appVersion);
 			if (app == null) {
 				ErrorDTO appExistsError = new ErrorDTO("App does not exists.");
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
 			}
 
-			succeed = appStoreService.uploadApp(appId, fileName, uploadedInputStream);
+			succeed = appStoreService.uploadApp(appId, appVersion, fileName, uploadedInputStream);
 
 		} catch (AppStoreException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -351,26 +356,32 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 	/**
 	 * Download an app.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/content
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 */
 	@GET
-	@Path("/{appId}/content")
+	@Path("/{appId}/{appVersion}/content")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })
-	public Response downloadApp(@PathParam(value = "appId") String appId) {
+	public Response downloadApp(@PathParam(value = "appId") String appId, @PathParam(value = "appVersion") String appVersion) {
 		if (appId == null || appId.isEmpty()) {
 			ErrorDTO nullAppIdError = new ErrorDTO("appId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullAppIdError).build();
 		}
+		// When download, if version is not specified, use latest version.
+		// if (appVersion == null || appVersion.isEmpty()) {
+		// ErrorDTO nullAppVersionError = new ErrorDTO("appVersion is null.");
+		// return Response.status(Status.BAD_REQUEST).entity(nullAppVersionError).build();
+		// }
 
 		byte[] fileContentBytes = null;
 		String fileName = null;
 
 		AppStoreService appStoreService = getService(AppStoreService.class);
 		try {
-			AppManifestRTO app = appStoreService.getApp(appId);
+			AppManifestRTO app = appStoreService.getApp(appId, appVersion);
 			if (app == null) {
 				ErrorDTO appExistsError = new ErrorDTO("App does not exists.");
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
@@ -378,7 +389,7 @@ public class AppStoreAppsResource extends AbstractApplicationResource {
 
 			fileName = app.getFileName();
 
-			fileContentBytes = appStoreService.downloadApp(appId);
+			fileContentBytes = appStoreService.downloadApp(appId, appVersion);
 
 		} catch (AppStoreException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

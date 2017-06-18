@@ -3,17 +3,15 @@ package org.orbit.component.model.tier2.appstore;
 public class AppQueryRTO {
 
 	protected String appId;
-	protected String namespace;
-	protected String categoryId;
+	protected String appVersion;
 	protected String name;
-	protected String version;
+	protected String type;
 	protected String description;
 
 	protected String appId_oper;
-	protected String namespace_oper;
-	protected String categoryId_oper;
+	protected String appVersion_oper;
 	protected String name_oper;
-	protected String version_oper;
+	protected String type_oper;
 	protected String description_oper;
 
 	public AppQueryRTO() {
@@ -21,10 +19,9 @@ public class AppQueryRTO {
 
 	public boolean isEmpty() {
 		if (this.appId == null //
-				&& this.namespace == null //
-				&& this.categoryId == null //
+				&& this.appVersion == null //
 				&& this.name == null //
-				&& this.version == null //
+				&& this.type == null //
 				&& this.description == null //
 		) {
 			return true;
@@ -36,47 +33,39 @@ public class AppQueryRTO {
 	// Set/Get
 	// ----------------------------------------------------------------------
 	public String getAppId() {
-		return appId;
+		return this.appId;
 	}
 
 	public void setAppId(String appId) {
 		this.appId = appId;
 	}
 
-	public String getNamespace() {
-		return namespace;
+	public String getAppVersion() {
+		return this.appVersion;
 	}
 
-	public void setNamespace(String namespace) {
-		this.namespace = namespace;
-	}
-
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	public String getVersion() {
-		return version;
+	public String getType() {
+		return this.type;
 	}
 
-	public void setVersion(String version) {
-		this.version = version;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
@@ -94,20 +83,12 @@ public class AppQueryRTO {
 		this.appId_oper = appId_oper;
 	}
 
-	public String getNamespace_oper() {
-		return namespace_oper;
+	public String getAppVersion_oper() {
+		return appVersion_oper;
 	}
 
-	public void setNamespace_oper(String namespace_oper) {
-		this.namespace_oper = namespace_oper;
-	}
-
-	public String getCategoryId_oper() {
-		return categoryId_oper;
-	}
-
-	public void setCategoryId_oper(String categoryId_oper) {
-		this.categoryId_oper = categoryId_oper;
+	public void setAppVersion_oper(String appVersion_oper) {
+		this.appVersion_oper = appVersion_oper;
 	}
 
 	public String getName_oper() {
@@ -118,12 +99,12 @@ public class AppQueryRTO {
 		this.name_oper = name_oper;
 	}
 
-	public String getVersion_oper() {
-		return version_oper;
+	public String getType_oper() {
+		return type_oper;
 	}
 
-	public void setVersion_oper(String version_oper) {
-		this.version_oper = version_oper;
+	public void setType_oper(String type_oper) {
+		this.type_oper = type_oper;
 	}
 
 	public String getDescription_oper() {

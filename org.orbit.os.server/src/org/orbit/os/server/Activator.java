@@ -7,7 +7,6 @@ import java.util.Properties;
 
 import org.orbit.os.server.cli.NodeOSCommand;
 import org.orbit.os.server.service.NodeOS;
-import org.orbit.os.server.util.NodeAppInstaller;
 import org.orbit.os.server.util.SetupUtil;
 import org.orbit.os.server.ws.NodeOSWSApplication;
 import org.origin.common.util.PropertyUtil;
@@ -102,16 +101,15 @@ public class Activator implements BundleActivator {
 			@Override
 			public NodeOS addingService(ServiceReference<NodeOS> reference) {
 				NodeOS nodeOS = bundleContext.getService(reference);
-				System.out.println("NodeOS [" + nodeOS + "] is added.");
+				System.out.println(nodeOS.getLabel() + " is added.");
 
-				NodeAppInstaller.getInstance().start();
 				startNodeOSWebService(nodeOS);
 				return nodeOS;
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<NodeOS> reference, NodeOS nodeOS) {
-				System.out.println("NodeOS [" + nodeOS + "] is modified.");
+				System.out.println(nodeOS.getLabel() + " is modified.");
 
 				stopNodeOSWebService();
 				startNodeOSWebService(nodeOS);
@@ -119,10 +117,9 @@ public class Activator implements BundleActivator {
 
 			@Override
 			public void removedService(ServiceReference<NodeOS> reference, NodeOS nodeOS) {
-				System.out.println("NodeOS [" + nodeOS + "] is removed.");
+				System.out.println(nodeOS.getLabel() + " is removed.");
 
 				stopNodeOSWebService();
-				NodeAppInstaller.getInstance().stop();
 			}
 		});
 		nodeOSTracker.open();
@@ -152,12 +149,12 @@ public class Activator implements BundleActivator {
 
 	protected void startNodeOSCommand(BundleContext bundleContext) {
 		this.nodeOSCommand = new NodeOSCommand();
-		this.nodeOSCommand.start(bundleContext);
+		this.nodeOSCommand.activate(bundleContext);
 	}
 
 	protected void stopNodeOSCommand(BundleContext bundleContext) {
 		if (this.nodeOSCommand != null) {
-			this.nodeOSCommand.stop(bundleContext);
+			this.nodeOSCommand.deactivate(bundleContext);
 			this.nodeOSCommand = null;
 		}
 	}

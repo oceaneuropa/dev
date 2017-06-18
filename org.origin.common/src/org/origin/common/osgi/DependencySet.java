@@ -2,6 +2,7 @@ package org.origin.common.osgi;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +33,7 @@ public class DependencySet {
 
 	protected DependencySet.STATE state = DependencySet.STATE.NOT_ALL_RESOLVED;
 	protected DependencyListener dependencyListener;
-	protected Map<Class<?>, List<Dependency>> dependenciesMap;
+	protected Map<Class<?>, List<Dependency>> dependenciesMap = new LinkedHashMap<Class<?>, List<Dependency>>();
 	protected List<Dependency> unresolvedDependencies = new ArrayList<Dependency>();
 	protected Object data;
 	protected Map<Object, Object> dataMap = new HashMap<Object, Object>();
@@ -187,6 +188,32 @@ public class DependencySet {
 		for (DependencySetListener listener : this.listeners) {
 			listener.onDependencySetChange(event);
 		}
+	}
+
+	public void reset() {
+		// Clear dependency set listeners. No more not notification to listeners listening on this DependencySet change event.
+		this.listeners.clear();
+
+		// Stop listening to the Dependency change event of each added Dependency.
+		for (Class<?> type : this.dependenciesMap.keySet()) {
+			List<Dependency> currDependencies = this.dependenciesMap.get(type);
+			if (currDependencies != null) {
+				for (Dependency currDependency : currDependencies) {
+					currDependency.removeListener(this.dependencyListener);
+				}
+			}
+		}
+
+		// Clear dependencies
+		this.dependenciesMap.clear();
+		this.unresolvedDependencies.clear();
+
+		// Clear data
+		this.data = null;
+		this.dataMap.clear();
+
+		// Reset to the default not_all_resolved state
+		this.state = DependencySet.STATE.NOT_ALL_RESOLVED;
 	}
 
 }

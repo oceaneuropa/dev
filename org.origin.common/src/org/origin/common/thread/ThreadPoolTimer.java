@@ -20,17 +20,15 @@ public class ThreadPoolTimer {
 	protected static int DEFAULT_MAX_POOL_SIZE = 10;
 	protected static int DEFAULT_KEEP_ALIVE_SECONDS = 20;
 
+	protected boolean debug = true;
 	protected String name;
 	protected Runnable runnable;
-
 	protected ThreadPoolExecutor threadPoolExecutor;
 	protected int minPoolSize = DEFAULT_MIN_POOL_SIZE;
 	protected int maxPoolSize = DEFAULT_MAX_POOL_SIZE;
 	protected int keepAliveSeconds = DEFAULT_KEEP_ALIVE_SECONDS;
-
 	protected Timer timer;
 	protected long timerInterval = DEFAULT_TIMER_INTERVAL_TIME_MILLS;
-
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
 	protected long lastExecTime;
 
@@ -53,6 +51,14 @@ public class ThreadPoolTimer {
 		}
 		this.name = name;
 		this.runnable = runnable;
+	}
+
+	public boolean isDebug() {
+		return debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	public String getName() {
@@ -179,7 +185,10 @@ public class ThreadPoolTimer {
 							return;
 						}
 
-						System.out.println(toString() + " run.");
+						if (debug) {
+							System.out.println(toString() + " run.");
+						}
+
 						threadPoolExecutor.execute(new Runnable() {
 							@Override
 							public void run() {

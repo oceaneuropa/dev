@@ -53,8 +53,27 @@ public class SetupUtil {
 	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getAppsPath(Path taHome, boolean createIfNotExist) {
+	public static Path getTAAppsPath(Path taHome, boolean createIfNotExist) {
 		Path appsPath = taHome.resolve("apps");
+		if (!Files.exists(appsPath) && createIfNotExist) {
+			try {
+				appsPath = Files.createDirectory(appsPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return appsPath;
+	}
+
+	/**
+	 * Get {TA_HOME}/apps/ path.
+	 * 
+	 * @param taHome
+	 * @param createIfNotExist
+	 * @return
+	 */
+	public static Path getTADownloadsPath(Path taHome, boolean createIfNotExist) {
+		Path appsPath = taHome.resolve("downloads");
 		if (!Files.exists(appsPath) && createIfNotExist) {
 			try {
 				appsPath = Files.createDirectory(appsPath);
@@ -72,7 +91,7 @@ public class SetupUtil {
 	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getNodesPath(Path taHome, boolean createIfNotExist) {
+	public static Path getTANodesPath(Path taHome, boolean createIfNotExist) {
 		Path nodesPath = taHome.resolve("nodes");
 		if (!Files.exists(nodesPath) && createIfNotExist) {
 			try {
@@ -91,7 +110,7 @@ public class SetupUtil {
 	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getSystemPath(Path taHome, boolean createIfNotExist) {
+	public static Path getTASystemPath(Path taHome, boolean createIfNotExist) {
 		Path systemPath = taHome.resolve("system");
 		if (!Files.exists(systemPath) && createIfNotExist) {
 			try {

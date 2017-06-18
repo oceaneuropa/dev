@@ -54,10 +54,9 @@ public class ModelConverter {
 		AppManifestDTO dto = new AppManifestDTO();
 
 		dto.setAppId(app.getAppId());
-		dto.setNamespace(app.getNamespace());
-		dto.setCategoryId(app.getCategoryId());
 		dto.setName(app.getName());
-		dto.setVersion(app.getVersion());
+		dto.setVersion(app.getAppVersion());
+		dto.setType(app.getType());
 		dto.setPriority(app.getPriority());
 		dto.setAppManifest(app.getAppManifest());
 		dto.setDescription(app.getDescription());
@@ -83,10 +82,9 @@ public class ModelConverter {
 		AppManifestRTO app = new AppManifestRTO();
 
 		app.setAppId(appDTO.getAppId());
-		app.setNamespace(appDTO.getNamespace());
-		app.setCategoryId(appDTO.getCategoryId());
 		app.setName(appDTO.getName());
-		app.setVersion(appDTO.getVersion());
+		app.setAppVersion(appDTO.getVersion());
+		app.setType(appDTO.getType());
 		app.setPriority(appDTO.getPriority());
 		app.setAppManifest(appDTO.getAppManifest());
 		app.setDescription(appDTO.getDescription());
@@ -110,18 +108,16 @@ public class ModelConverter {
 
 		// Set/Get
 		query.setAppId(queryDTO.getAppId());
-		query.setNamespace(queryDTO.getNamespace());
-		query.setCategoryId(queryDTO.getCategoryId());
 		query.setName(queryDTO.getName());
-		query.setVersion(queryDTO.getVersion());
+		query.setAppVersion(queryDTO.getVersion());
+		query.setType(queryDTO.getType());
 		query.setDescription(queryDTO.getDescription());
 
 		// Where operator
 		query.setAppId_oper(queryDTO.getAppId_oper());
-		query.setNamespace_oper(queryDTO.getNamespace_oper());
-		query.setCategoryId_oper(queryDTO.getCategoryId_oper());
 		query.setName_oper(queryDTO.getName_oper());
-		query.setVersion_oper(queryDTO.getVersion_oper());
+		query.setAppVersion_oper(queryDTO.getVersion_oper());
+		query.setType_oper(queryDTO.getType_oper());
 		query.setDescription_oper(queryDTO.getDescription_oper());
 
 		return query;

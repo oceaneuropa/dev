@@ -1,15 +1,15 @@
-package org.orbit.os.server.service;
+package org.orbit.os.server.app;
 
-import org.origin.common.osgi.BundleUtil;
 import org.origin.common.osgi.Dependency;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleException;
 
 public class AppBundle {
 
 	public enum RUNTIME_STATE {
-		STARTED("STARTED"), //
-		STOPPED("STOPPED");
+		STARTED("STARTED"), // app bundle is started
+		START_FAILED("START_FAILED"), // app bundle start failed
+		STOPPED("STOPPED"), // app bundle is stopped
+		STOP_FAILED("STOP_FAILED"), // app bundle stop failed
+		DAMAGED("DAMAGED"); // osgi bundle is not physically available
 
 		protected String state;
 
@@ -21,17 +21,31 @@ public class AppBundle {
 			return ("STARTED").equalsIgnoreCase(this.state) ? true : false;
 		}
 
+		public boolean isStartFailed() {
+			return ("START_FAILED").equalsIgnoreCase(this.state) ? true : false;
+		}
+
 		public boolean isStopped() {
 			return ("STOPPED").equalsIgnoreCase(this.state) ? true : false;
 		}
+
+		public boolean isStopFailed() {
+			return ("STOP_FAILED").equalsIgnoreCase(this.state) ? true : false;
+		}
+
+		public boolean isDamaged() {
+			return ("DAMAGED").equalsIgnoreCase(this.state) ? true : false;
+		}
 	}
 
-	protected boolean debug = true;
+	protected boolean debug = false;
+	protected boolean isApplication;
+	protected boolean isModule;
 	protected AppBundle.RUNTIME_STATE runtimeState = AppBundle.RUNTIME_STATE.STOPPED;
 	protected String bundleName;
 	protected String bundleVersion;
 	protected Dependency dependency;
-	protected Bundle bundle;
+	protected Object bundle;
 
 	/**
 	 * 
@@ -41,6 +55,22 @@ public class AppBundle {
 	public AppBundle(String bundleName, String bundleVersion) {
 		this.bundleName = bundleName;
 		this.bundleVersion = bundleVersion;
+	}
+
+	public boolean isApplication() {
+		return isApplication;
+	}
+
+	public void setIsApplication(boolean isApplication) {
+		this.isApplication = isApplication;
+	}
+
+	public boolean isModule() {
+		return isModule;
+	}
+
+	public void setIsModule(boolean isModule) {
+		this.isModule = isModule;
 	}
 
 	public AppBundle.RUNTIME_STATE getRuntimeState() {
@@ -71,82 +101,35 @@ public class AppBundle {
 		return (this.bundle != null) ? true : false;
 	}
 
-	public Bundle getBundle() {
-		return this.bundle;
+	@SuppressWarnings("unchecked")
+	public <T> T getBundle(Class<T> bundleType) {
+		if (this.bundle != null && bundleType.isAssignableFrom(this.bundle.getClass())) {
+			return (T) this.bundle;
+		}
+		return null;
 	}
 
-	public void setBundle(Bundle bundle) {
+	public <T> void setBundle(T bundle) {
 		if (debug) {
 			System.out.println(getClass().getName() + ".setBundle()");
-			BundleUtil.debugBundle(bundle);
 		}
 
-		Bundle oldBundle = this.bundle;
+		Object oldBundle = this.bundle;
 		this.bundle = bundle;
 
 		// Let the dependency to hold a reference to the Bundle.
 		this.dependency.setData(this.bundle);
 
 		if ((oldBundle == null && this.bundle != null) || (oldBundle != null && !oldBundle.equals(this.bundle))) {
-			// AppBundle's referencing to the Bundle is changed.
+			// AppBundle's referencing to OSGi Bundle is changed.
 			// Notify dependency as either resolved (Bundle is available) or unresolved (Bundle is null).
 			Dependency.STATE newState = isReady() ? Dependency.STATE.RESOLVED : Dependency.STATE.UNRESOLVED;
 			this.dependency.setState(newState);
 		}
 	}
 
-	/**
-	 * Start app bundle.
-	 * 
-	 * @throws AppException
-	 */
-	public void start() throws AppException {
-		if (debug) {
-			System.out.println(getClass().getName() + ".start()");
-		}
-		if (!isReady()) {
-			String text = "AppBundle " + this.bundleName + "(" + this.bundleVersion + ")";
-			throw new AppException(text + " is not ready.");
-		}
-		try {
-			this.bundle.start(Bundle.START_TRANSIENT);
-
-		} catch (BundleException e) {
-			e.printStackTrace();
-			throw new AppException(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * Stop app bundle.
-	 * 
-	 * https://stackoverflow.com/questions/36940647/what-are-the-available-options-for-org-osgi-framework-bundle-stopint
-	 * 
-	 * Bundle.STOP_TRANSIENT: Does not modify the autostart flag of the bundle
-	 */
-	public void stop() throws AppException {
-		if (debug) {
-			System.out.println(getClass().getName() + ".stop()");
-		}
-		if (!isReady()) {
-			String text = "AppBundle " + this.bundleName + "(" + this.bundleVersion + ")";
-			throw new AppException(text + " is not ready.");
-		}
-
-		if (this.bundle != null) {
-			try {
-				// Stop the bundle only when it is either starting or is started.
-				if (BundleUtil.isBundleStarting(this.bundle) || BundleUtil.isBundleActive(this.bundle)) {
-					// Modifies the autostart flag of the bundle, too, so the Bundle might not be started after a framework restart.
-					// Bundle will not auto start next time when stopped this way.
-					this.bundle.stop();
-				}
-
-			} catch (BundleException e) {
-				e.printStackTrace();
-				throw new AppException(e.getMessage(), e);
-			}
-		}
+	public String getSimpleName() {
+		return "AppBundle " + this.bundleName + " (" + this.bundleVersion + ")";
 	}
 
 	@Override

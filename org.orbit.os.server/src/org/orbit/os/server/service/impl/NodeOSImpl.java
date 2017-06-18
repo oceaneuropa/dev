@@ -8,7 +8,9 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.orbit.os.server.Constants;
-import org.orbit.os.server.service.AppsManager;
+import org.orbit.os.server.app.AppException;
+import org.orbit.os.server.app.AppsManager;
+import org.orbit.os.server.app.impl.v2.AppsManagerImplV2;
 import org.orbit.os.server.service.NodeOS;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.util.PropertyUtil;
@@ -20,19 +22,14 @@ public class NodeOSImpl implements NodeOS {
 	public static final String NODE_OS_NAME = "NodeOS";
 	public static final String NODE_OS_VERSION = "1.0.0";
 
+	protected boolean debug = true;
 	protected BundleContext bundleContext;
-
-	// properties
 	protected Properties configIniProps;
 	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
-
-	// runtime flag
-	protected AtomicBoolean isStarted = new AtomicBoolean(false);
-
-	// apps
 	protected AppsManager appsManager;
+	protected AtomicBoolean isStarted = new AtomicBoolean(false);
 
 	/**
 	 * 
@@ -42,7 +39,7 @@ public class NodeOSImpl implements NodeOS {
 	public NodeOSImpl(BundleContext bundleContext, Properties configIniProps) {
 		this.bundleContext = bundleContext;
 		this.configIniProps = configIniProps;
-		this.appsManager = new AppsManagerImpl(bundleContext);
+		this.appsManager = new AppsManagerImplV2(bundleContext);
 	}
 
 	@Override
@@ -59,6 +56,11 @@ public class NodeOSImpl implements NodeOS {
 	public String getName() {
 		String name = getProperty(Constants.COMPONENT_NODE_NAME);
 		return name;
+	}
+
+	@Override
+	public String getLabel() {
+		return "(" + getOSName() + "-" + getOSVersion() + ") '" + getName();
 	}
 
 	@Override
@@ -82,7 +84,9 @@ public class NodeOSImpl implements NodeOS {
 
 	@Override
 	public synchronized void updateProperties(Map<Object, Object> configProps) {
-		System.out.println(getClass().getSimpleName() + ".updateProperties()");
+		if (debug) {
+			System.out.println(getClass().getSimpleName() + ".updateProperties()");
+		}
 
 		if (configProps == null) {
 			configProps = new HashMap<Object, Object>();
@@ -150,9 +154,13 @@ public class NodeOSImpl implements NodeOS {
 
 	@Override
 	public synchronized void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		if (debug) {
+			System.out.println(getClass().getSimpleName() + ".start()");
+		}
 		if (isStarted()) {
-			System.out.println("NodeOS (" + getOSName() + ":" + getOSVersion() + ") '" + getName() + "' is already started.");
+			if (debug) {
+				System.out.println(getLabel() + "' is already started.");
+			}
 			return;
 		}
 		this.isStarted.set(true);
@@ -170,7 +178,11 @@ public class NodeOSImpl implements NodeOS {
 		updateProperties(configProps);
 
 		// start app manager
-		this.appsManager.start();
+		try {
+			this.appsManager.start();
+		} catch (AppException e) {
+			e.printStackTrace();
+		}
 
 		// start OS service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -190,20 +202,26 @@ public class NodeOSImpl implements NodeOS {
 
 	@Override
 	public synchronized void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
+		if (debug) {
+			System.out.println(getClass().getSimpleName() + ".stop()");
+		}
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}
 
-		// stop OS service
+		// Stop OS service
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();
 			this.serviceRegistry = null;
 		}
 
-		// stop apps manager
+		// Stop apps manager
 		if (this.appsManager != null) {
-			this.appsManager.stop();
+			try {
+				this.appsManager.stop();
+			} catch (AppException e) {
+				e.printStackTrace();
+			}
 			this.appsManager = null;
 		}
 	}

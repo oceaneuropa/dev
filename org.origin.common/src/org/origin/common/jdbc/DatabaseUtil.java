@@ -466,6 +466,43 @@ public class DatabaseUtil {
 	}
 
 	/**
+	 * 
+	 * @param conn
+	 * @param tableName
+	 * @param pkName
+	 * @param pkValue
+	 * @param columnToValueMap
+	 * @return
+	 * @throws SQLException
+	 */
+	public static boolean update(Connection conn, String tableName, String pkName, String pkValue, String pkName2, String pkValue2, Map<String, Object> columnToValueMap) throws SQLException {
+		StringBuilder columnsToSet = new StringBuilder();
+		List<Object> valuesToUpdate = new ArrayList<Object>();
+
+		int index = 0;
+		for (Iterator<Entry<String, Object>> entryItor = columnToValueMap.entrySet().iterator(); entryItor.hasNext();) {
+			Entry<String, Object> entry = entryItor.next();
+			String columnName = entry.getKey();
+			Object valueToUpdate = entry.getValue();
+
+			if (index > 0) {
+				columnsToSet.append(",");
+			}
+			columnsToSet.append(columnName + "=?");
+			valuesToUpdate.add(valueToUpdate);
+
+			index++;
+		}
+
+		valuesToUpdate.add(pkValue);
+		valuesToUpdate.add(pkValue2);
+		Object[] valuesArray = valuesToUpdate.toArray(new Object[valuesToUpdate.size()]);
+
+		String updateSQL = "UPDATE " + tableName + " SET " + columnsToSet.toString() + " WHERE " + pkName + "=? AND " + pkName2 + "=?";
+		return DatabaseUtil.update(conn, updateSQL, valuesArray, 1);
+	}
+
+	/**
 	 * Execute SQL to insert/update/delete one item in database.
 	 * 
 	 * INSERT INTO table_name (column1,column2,column3,...) VALUES (value1,value2,value3,...);

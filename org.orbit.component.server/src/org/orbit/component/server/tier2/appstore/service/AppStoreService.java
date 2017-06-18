@@ -30,12 +30,11 @@ public interface AppStoreService {
 	/**
 	 * Get apps.
 	 * 
-	 * @param namespace
-	 * @param categoryId
+	 * @param type
 	 * @return
 	 * @throws AppStoreException
 	 */
-	List<AppManifestRTO> getApps(String namespace, String categoryId) throws AppStoreException;
+	List<AppManifestRTO> getApps(String type) throws AppStoreException;
 
 	/**
 	 * Get apps.
@@ -50,19 +49,21 @@ public interface AppStoreService {
 	 * Get an app.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws AppStoreException
 	 */
-	AppManifestRTO getApp(String appId) throws AppStoreException;
+	AppManifestRTO getApp(String appId, String appVersion) throws AppStoreException;
 
 	/**
 	 * Check whether an app exists.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws AppStoreException
 	 */
-	boolean appExists(String appId) throws AppStoreException;
+	boolean appExists(String appId, String appVersion) throws AppStoreException;
 
 	/**
 	 * Add an app.
@@ -86,37 +87,41 @@ public interface AppStoreService {
 	 * Delete an app.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws AppStoreException
 	 */
-	boolean deleteApp(String appId) throws AppStoreException;
+	boolean deleteApp(String appId, String appVersion) throws AppStoreException;
 
 	/**
 	 * Download app.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws AppStoreException
 	 */
-	byte[] downloadApp(String appId) throws AppStoreException;
+	byte[] downloadApp(String appId, String appVersion) throws AppStoreException;
 
 	/**
 	 * Download app input stream.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @return
 	 * @throws AppStoreException
 	 */
-	InputStream downloadAppInputStream(String appId) throws AppStoreException;
+	InputStream downloadAppInputStream(String appId, String appVersion) throws AppStoreException;
 
 	/**
 	 * Upload app.
 	 * 
 	 * @param appId
+	 * @param appVersion
 	 * @param fileName
 	 * @param fileInputStream
 	 * @throws AppStoreException
 	 */
-	boolean uploadApp(String appId, String fileName, InputStream fileInputStream) throws AppStoreException;
+	boolean uploadApp(String appId, String appVersion, String fileName, InputStream fileInputStream) throws AppStoreException;
 
 }

@@ -197,7 +197,7 @@ public class GoogleDriveTest {
 			File fileMetadata1 = new File();
 			fileMetadata1.setName("readme1.txt");
 			fileMetadata1.setMimeType(GoogleDriveMimeTypes.TEXT_PLAIN);
-			java.io.File srcFile1 = new java.io.File("/Users/yayang/Downloads/test_software/readme1.txt");
+			java.io.File srcFile1 = new java.io.File("/Users/oceaneuropa/Downloads/test_software/readme1.txt");
 			FileContent mediaContent1 = new FileContent(GoogleDriveMimeTypes.TEXT_PLAIN, srcFile1);
 			File gdFile1 = this.driveService.files().create(fileMetadata1, mediaContent1).setFields("id").execute();
 			// System.out.println("File ID: " + gdFile1.getId());
@@ -207,7 +207,7 @@ public class GoogleDriveTest {
 			File fileMetadata2 = new File();
 			fileMetadata2.setName("Book.xsd");
 			fileMetadata2.setMimeType(GoogleDriveMimeTypes.TEXT_PLAIN);
-			java.io.File srcFile2 = new java.io.File("/Users/yayang/Downloads/test_software/Book.xsd");
+			java.io.File srcFile2 = new java.io.File("/Users/oceaneuropa/Downloads/test_software/Book.xsd");
 			FileContent mediaContent2 = new FileContent(GoogleDriveMimeTypes.TEXT_XML, srcFile2);
 			File gdFile2 = this.driveService.files().create(fileMetadata2, mediaContent2).setFields("id").execute();
 			// System.out.println("File ID: " + gdFile2.getId());
@@ -217,7 +217,7 @@ public class GoogleDriveTest {
 			File fileMetadata3 = new File();
 			fileMetadata3.setName("uber.wsdl.zip");
 			fileMetadata3.setMimeType(GoogleDriveMimeTypes.TEXT_PLAIN);
-			java.io.File srcFile3 = new java.io.File("/Users/yayang/Downloads/test_software/uber.wsdl.zip");
+			java.io.File srcFile3 = new java.io.File("/Users/oceaneuropa/Downloads/test_software/uber.wsdl.zip");
 			FileContent mediaContent3 = new FileContent(GoogleDriveMimeTypes.OCTET_STREAM, srcFile3);
 			File gdFile3 = this.driveService.files().create(fileMetadata3, mediaContent3).setFields("id").execute();
 			// System.out.println("File ID: " + gdFile3.getId());
@@ -248,21 +248,21 @@ public class GoogleDriveTest {
 
 			// Download text file
 			String fileId1 = "0B6KJ1gH-MjKgMHlfZnJRSTNLclU";
-			java.io.File targetFile1 = new java.io.File("/Users/yayang/Downloads/test_software2/readme1.txt");
+			java.io.File targetFile1 = new java.io.File("/Users/oceaneuropa/Downloads/test_software2/readme1.txt");
 			output1 = new FileOutputStream(targetFile1);
 			this.driveService.files().get(fileId1).executeMediaAndDownloadTo(output1);
 			System.out.printf("%s is downloaded.\n", targetFile1);
 
 			// Download xsd file
 			String fileId2 = "0B6KJ1gH-MjKgcXp0bm84VGVvak0";
-			java.io.File targetFile2 = new java.io.File("/Users/yayang/Downloads/test_software2/Book.xsd");
+			java.io.File targetFile2 = new java.io.File("/Users/oceaneuropa/Downloads/test_software2/Book.xsd");
 			output2 = new FileOutputStream(targetFile2);
 			this.driveService.files().get(fileId2).executeMediaAndDownloadTo(output2);
 			System.out.printf("%s is downloaded.\n", targetFile2);
 
 			// Download zip file
 			String fileId3 = "0B6KJ1gH-MjKgUUhrQV9RbUxoN3c";
-			java.io.File targetFile3 = new java.io.File("/Users/yayang/Downloads/test_software2/uber.wsdl.zip");
+			java.io.File targetFile3 = new java.io.File("/Users/oceaneuropa/Downloads/test_software2/uber.wsdl.zip");
 			output3 = new FileOutputStream(targetFile3);
 			this.driveService.files().get(fileId3).executeMediaAndDownloadTo(output3);
 			System.out.printf("%s is downloaded.\n", targetFile3);
@@ -297,14 +297,14 @@ public class GoogleDriveTest {
 
 			// Export google document to local PDF file
 			String fileId1 = "1aJYS4JCIUNn0R2wZc39zzxMSKK-Lb6vlJqu2G4H3cgI";
-			java.io.File targetFile1 = new java.io.File("/Users/yayang/Downloads/test_software2/TestGoogDoc.pdf");
+			java.io.File targetFile1 = new java.io.File("/Users/oceaneuropa/Downloads/test_software2/TestGoogDoc.pdf");
 			output1 = new FileOutputStream(targetFile1);
 			this.driveService.files().export(fileId1, GoogleDriveMimeTypes.PDF).executeMediaAndDownloadTo(output1);
 			System.out.printf("%s is exported.\n", targetFile1);
 
 			// Export google spreadsheet to local PDF file
 			String fileId2 = "1t3PAzSmJv68vpkCWsFbQjFU2oAytMb8BY5pdo9Wn5eY";
-			java.io.File targetFile2 = new java.io.File("/Users/yayang/Downloads/test_software2/PowerBall.pdf");
+			java.io.File targetFile2 = new java.io.File("/Users/oceaneuropa/Downloads/test_software2/PowerBall.pdf");
 			output2 = new FileOutputStream(targetFile2);
 			this.driveService.files().export(fileId2, GoogleDriveMimeTypes.PDF).executeMediaAndDownloadTo(output2);
 			System.out.printf("%s is exported.\n", targetFile2);

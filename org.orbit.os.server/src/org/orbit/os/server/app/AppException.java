@@ -1,4 +1,4 @@
-package org.orbit.os.server.service;
+package org.orbit.os.server.app;
 
 public class AppException extends Exception {
 
