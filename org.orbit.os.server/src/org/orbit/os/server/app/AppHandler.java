@@ -36,8 +36,6 @@ public interface AppHandler {
 
 	void deactivate() throws AppException;
 
-	boolean isAppStarted();
-
 	void startApp() throws AppException;
 
 	void stopApp() throws AppException;

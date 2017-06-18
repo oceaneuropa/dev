@@ -148,9 +148,7 @@ public class AppHandlerImplV2 implements AppHandler {
 		}
 
 		// 1. Stop app bundles
-		if (isAppStarted()) {
-			stopApp();
-		}
+		stopApp();
 
 		// 2. Dispose App.
 		disposeApp();
@@ -473,30 +471,17 @@ public class AppHandlerImplV2 implements AppHandler {
 	}
 
 	@Override
-	public boolean isAppStarted() {
-		if (this.app != null && this.app.getRuntimeState().isStarted()) {
-			return true;
-		}
-		return false;
-	}
-
-	protected void checkAppStarted() {
-		if (!isAppStarted()) {
-			throw new RuntimeException("App is not started.");
-		}
-	}
-
-	@Override
 	public synchronized void startApp() throws AppException {
 		if (debug) {
 			System.out.println(getClass().getSimpleName() + ".startApp()");
 		}
 		checkActivated();
 
-		if (isAppStarted()) {
+		if (this.app.getRuntimeState().isStarted()) {
 			if (debug) {
-				System.out.println(getAppManifest().getSimpleName() + " is ready started.");
+				System.out.println(getClass().getSimpleName() + ".startApp() " + getAppManifest().getSimpleName() + " is ready fully started.");
 			}
+			return;
 		}
 
 		// 1. Start OSGi bundle of the AppBundles.
@@ -525,13 +510,13 @@ public class AppHandlerImplV2 implements AppHandler {
 		if (hasDamagedAppBundle) {
 			this.app.setRuntimeState(App.RUNTIME_STATE.DAMAGED);
 			if (debug) {
-				System.out.println(this.app.getSimpleName() + " has damaged app bundle.");
+				System.out.println(getClass().getSimpleName() + ".startApp() " + this.app.getSimpleName() + " has damaged app bundle.");
 			}
 
 		} else if (hasFailedToStartAppBundle) {
 			this.app.setRuntimeState(App.RUNTIME_STATE.START_FAILED);
 			if (debug) {
-				System.out.println(this.app.getSimpleName() + " has app bundle(s) failed to start.");
+				System.out.println(getClass().getSimpleName() + ".startApp() " + this.app.getSimpleName() + " has app bundle(s) failed to start.");
 			}
 
 		} else {
@@ -546,13 +531,13 @@ public class AppHandlerImplV2 implements AppHandler {
 			if (hasUnstartedAppBundle) {
 				this.app.setRuntimeState(App.RUNTIME_STATE.START_IMPERFECT);
 				if (debug) {
-					System.out.println(this.app.getSimpleName() + " is imperfectly started.");
+					System.out.println(getClass().getSimpleName() + ".startApp() " + this.app.getSimpleName() + " is imperfectly started.");
 				}
 
 			} else {
 				this.app.setRuntimeState(App.RUNTIME_STATE.STARTED);
 				if (debug) {
-					System.out.println(this.app.getSimpleName() + " is fully started.");
+					System.out.println(getClass().getSimpleName() + ".startApp() " + this.app.getSimpleName() + " is fully started.");
 				}
 			}
 		}
@@ -565,10 +550,11 @@ public class AppHandlerImplV2 implements AppHandler {
 		}
 		checkActivated();
 
-		if (!isAppStarted()) {
+		if (this.app.getRuntimeState().isStopped()) {
 			if (debug) {
-				System.out.println(getAppManifest().getSimpleName() + " is ready stopped.");
+				System.out.println(getClass().getSimpleName() + ".stopApp() " + getAppManifest().getSimpleName() + " is ready fully stopped.");
 			}
+			return;
 		}
 
 		// 1. Stop the OSGi bundle of AppBundles.
@@ -597,13 +583,13 @@ public class AppHandlerImplV2 implements AppHandler {
 		if (hasDamagedAppBundle) {
 			this.app.setRuntimeState(App.RUNTIME_STATE.DAMAGED);
 			if (debug) {
-				System.out.println(this.app.getSimpleName() + " has damaged app bundle.");
+				System.out.println(getClass().getSimpleName() + ".stopApp() " + this.app.getSimpleName() + " has damaged app bundle.");
 			}
 
 		} else if (hasFailedToStopAppBundle) {
 			this.app.setRuntimeState(App.RUNTIME_STATE.STOP_FAILED);
 			if (debug) {
-				System.out.println(this.app.getSimpleName() + " has app bundle(s) failed to stop.");
+				System.out.println(getClass().getSimpleName() + ".stopApp() " + this.app.getSimpleName() + " has app bundle(s) failed to stop.");
 			}
 
 		} else {
@@ -618,13 +604,13 @@ public class AppHandlerImplV2 implements AppHandler {
 			if (hasUnstoppedAppBundle) {
 				this.app.setRuntimeState(App.RUNTIME_STATE.STOP_IMPERFECT);
 				if (debug) {
-					System.out.println(this.app.getSimpleName() + " is imperfectly stopped.");
+					System.out.println(getClass().getSimpleName() + ".stopApp() " + this.app.getSimpleName() + " is imperfectly stopped.");
 				}
 
 			} else {
 				this.app.setRuntimeState(App.RUNTIME_STATE.STOPPED);
 				if (debug) {
-					System.out.println(this.app.getSimpleName() + " is full stopped.");
+					System.out.println(getClass().getSimpleName() + ".stopApp() " + this.app.getSimpleName() + " is full stopped.");
 				}
 			}
 		}

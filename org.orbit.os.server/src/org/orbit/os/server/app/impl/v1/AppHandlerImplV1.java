@@ -426,7 +426,6 @@ public class AppHandlerImplV1 implements AppHandler {
 		}
 	}
 
-	@Override
 	public boolean isAppStarted() {
 		if (this.app != null && this.app.getRuntimeState().isStarted()) {
 			return true;
