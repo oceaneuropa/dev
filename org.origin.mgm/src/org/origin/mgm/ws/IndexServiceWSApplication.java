@@ -10,20 +10,21 @@ import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.Activator;
-import org.origin.mgm.service.IndexServiceIndexTimer;
+import org.origin.mgm.timer.IndexServiceIndexTimerV2;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IndexServiceApplication extends AbstractApplication {
+public class IndexServiceWSApplication extends AbstractApplication {
 
-	protected static Logger logger = LoggerFactory.getLogger(IndexServiceApplication.class);
+	protected static Logger logger = LoggerFactory.getLogger(IndexServiceWSApplication.class);
 
 	protected BundleContext bundleContext;
 	protected String contextRoot;
-	protected IndexServiceIndexTimer serviceIndexTimer;
+	// protected IndexServiceIndexTimer serviceIndexTimer;
+	protected IndexServiceIndexTimerV2 serviceIndexTimer;
 
-	public IndexServiceApplication() {
+	public IndexServiceWSApplication() {
 	}
 
 	public BundleContext getBundleContext() {
@@ -54,7 +55,7 @@ public class IndexServiceApplication extends AbstractApplication {
 		OSGiServiceUtil.register(this.bundleContext, Application.class, this, props);
 
 		// Start timer for indexing the service
-		this.serviceIndexTimer = new IndexServiceIndexTimer(Activator.getIndexService());
+		this.serviceIndexTimer = new IndexServiceIndexTimerV2(Activator.getIndexService());
 		this.serviceIndexTimer.start();
 	}
 

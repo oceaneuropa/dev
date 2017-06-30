@@ -1,4 +1,4 @@
-package org.orbit.component.server.tier1.config.ws;
+package org.orbit.component.server.tier1.config.timer;
 
 import java.io.IOException;
 import java.util.Date;

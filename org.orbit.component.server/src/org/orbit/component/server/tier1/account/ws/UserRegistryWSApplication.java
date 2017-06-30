@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.orbit.component.server.tier1.account.timer.UserRegistryServiceIndexTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
@@ -22,7 +23,8 @@ public class UserRegistryWSApplication extends AbstractApplication {
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	protected UserRegistryServiceIndexTimer serviceIndexTimer;
+	// protected UserRegistryServiceIndexTimer serviceIndexTimer;
+	protected UserRegistryServiceIndexTimerV2 serviceIndexTimer;
 
 	public UserRegistryWSApplication() {
 	}
@@ -50,7 +52,7 @@ public class UserRegistryWSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start a timer to update the indexing of the service
-		this.serviceIndexTimer = new UserRegistryServiceIndexTimer(this.indexProvider);
+		this.serviceIndexTimer = new UserRegistryServiceIndexTimerV2(this.indexProvider);
 		this.serviceIndexTimer.start();
 	}
 

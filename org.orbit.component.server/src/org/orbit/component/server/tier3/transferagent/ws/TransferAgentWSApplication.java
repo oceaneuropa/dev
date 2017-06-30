@@ -8,6 +8,7 @@ import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.orbit.component.server.tier3.transferagent.command.TransferAgentEditPolicyFactory;
+import org.orbit.component.server.tier3.transferagent.timer.TransferAgentServiceTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
@@ -17,7 +18,8 @@ public class TransferAgentWSApplication extends AbstractApplication {
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	protected TransferAgentServiceTimer serviceIndexTimer;
+	// protected TransferAgentServiceTimer serviceIndexTimer;
+	protected TransferAgentServiceTimerV2 serviceIndexTimer;
 
 	public TransferAgentWSApplication() {
 	}
@@ -49,7 +51,7 @@ public class TransferAgentWSApplication extends AbstractApplication {
 
 		// Start timer for indexing the service
 		if (this.indexProvider != null) {
-			this.serviceIndexTimer = new TransferAgentServiceTimer(this.indexProvider);
+			this.serviceIndexTimer = new TransferAgentServiceTimerV2(this.indexProvider);
 			this.serviceIndexTimer.start();
 		}
 	}

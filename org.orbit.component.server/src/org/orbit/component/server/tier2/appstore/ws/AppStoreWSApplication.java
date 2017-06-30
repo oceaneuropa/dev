@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.orbit.component.server.tier2.appstore.timer.AppStoreServiceIndexTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
@@ -22,7 +23,8 @@ public class AppStoreWSApplication extends AbstractApplication {
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	protected AppStoreServiceIndexTimer serviceIndexTimer;
+	// protected AppStoreServiceIndexTimer serviceIndexTimer;
+	protected AppStoreServiceIndexTimerV2 serviceIndexTimer;
 
 	public AppStoreWSApplication() {
 	}
@@ -50,7 +52,8 @@ public class AppStoreWSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start timer for indexing the service
-		this.serviceIndexTimer = new AppStoreServiceIndexTimer(this.indexProvider);
+		// this.serviceIndexTimer = new AppStoreServiceIndexTimer(this.indexProvider);
+		this.serviceIndexTimer = new AppStoreServiceIndexTimerV2(this.indexProvider);
 		this.serviceIndexTimer.start();
 	}
 

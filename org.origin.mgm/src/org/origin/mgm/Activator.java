@@ -7,7 +7,7 @@ import org.origin.common.env.SetupUtil;
 import org.origin.common.util.Printer;
 import org.origin.mgm.service.IndexService;
 import org.origin.mgm.service.impl2.IndexServiceDatabaseSimpleImpl;
-import org.origin.mgm.ws.IndexServiceApplication;
+import org.origin.mgm.ws.IndexServiceWSApplication;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ public class Activator implements BundleActivator {
 	}
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
-	protected IndexServiceApplication indexServiceApp;
+	protected IndexServiceWSApplication indexServiceApp;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -56,7 +56,7 @@ public class Activator implements BundleActivator {
 		// Start web applications
 		// -----------------------------------------------------------------------------
 		// 1. Start IndexService web application
-		this.indexServiceApp = new IndexServiceApplication();
+		this.indexServiceApp = new IndexServiceWSApplication();
 		this.indexServiceApp.setBundleContext(bundleContext);
 		this.indexServiceApp.setContextRoot(indexService.getContextRoot());
 		this.indexServiceApp.start();

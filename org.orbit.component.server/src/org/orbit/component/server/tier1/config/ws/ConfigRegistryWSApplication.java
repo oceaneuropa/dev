@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.orbit.component.server.tier1.config.timer.ConfigRegistryServiceIndexTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
@@ -17,7 +18,8 @@ public class ConfigRegistryWSApplication extends AbstractApplication {
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	protected ConfigRegistryServiceIndexTimer serviceIndexTimer;
+	// protected ConfigRegistryServiceIndexTimer serviceIndexTimer;
+	protected ConfigRegistryServiceIndexTimerV2 serviceIndexTimer;
 
 	public ConfigRegistryWSApplication() {
 	}
@@ -45,7 +47,7 @@ public class ConfigRegistryWSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start a timer to update the indexing of the service
-		this.serviceIndexTimer = new ConfigRegistryServiceIndexTimer(this.indexProvider);
+		this.serviceIndexTimer = new ConfigRegistryServiceIndexTimerV2(this.indexProvider);
 		this.serviceIndexTimer.start();
 	}
 

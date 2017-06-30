@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.orbit.component.server.tier1.session.timer.OAuth2ServiceIndexTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
@@ -17,7 +18,8 @@ public class OAuth2WSApplication extends AbstractApplication {
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	protected OAuth2ServiceIndexTimer serviceIndexTimer;
+	// protected OAuth2ServiceIndexTimer serviceIndexTimer;
+	protected OAuth2ServiceIndexTimerV2 serviceIndexTimer;
 
 	public OAuth2WSApplication() {
 	}
@@ -45,7 +47,7 @@ public class OAuth2WSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start timer for indexing the service
-		this.serviceIndexTimer = new OAuth2ServiceIndexTimer(this.indexProvider);
+		this.serviceIndexTimer = new OAuth2ServiceIndexTimerV2(this.indexProvider);
 		this.serviceIndexTimer.start();
 	}
 

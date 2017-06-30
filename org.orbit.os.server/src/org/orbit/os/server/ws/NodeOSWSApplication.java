@@ -7,6 +7,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.orbit.os.server.timer.NodeOSIndexTimerV2;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
 import org.osgi.framework.ServiceRegistration;
@@ -15,7 +16,8 @@ public class NodeOSWSApplication extends AbstractApplication {
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	protected NodeOSIndexTimer serviceIndexTimer;
+	// protected NodeOSIndexTimer serviceIndexTimer;
+	protected NodeOSIndexTimerV2 serviceIndexTimer;
 
 	public NodeOSWSApplication() {
 	}
@@ -43,7 +45,7 @@ public class NodeOSWSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start timer for indexing the service
-		this.serviceIndexTimer = new NodeOSIndexTimer(this.indexProvider);
+		this.serviceIndexTimer = new NodeOSIndexTimerV2(this.indexProvider);
 		this.serviceIndexTimer.start();
 	}
 

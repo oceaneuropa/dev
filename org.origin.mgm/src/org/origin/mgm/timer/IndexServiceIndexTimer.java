@@ -1,4 +1,4 @@
-package org.origin.mgm.service;
+package org.origin.mgm.timer;
 
 import java.io.IOException;
 import java.util.Date;
@@ -11,6 +11,7 @@ import org.origin.mgm.Activator;
 import org.origin.mgm.OriginConstants;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.runtime.IndexItem;
+import org.origin.mgm.service.IndexService;
 
 public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, IndexService> implements ServiceIndexTimer<IndexService, IndexService> {
 
