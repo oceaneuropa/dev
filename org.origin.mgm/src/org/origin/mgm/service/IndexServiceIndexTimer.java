@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.thread.ServiceIndexTimer;
+import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.mgm.Activator;
 import org.origin.mgm.OriginConstants;
 import org.origin.mgm.exception.IndexServiceException;
@@ -19,7 +19,8 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 	 * @param indexProvider
 	 */
 	public IndexServiceIndexTimer(IndexService indexProvider) {
-		super("IndexService Index Timer", indexProvider);
+		super("Index Timer [IndexService]", indexProvider);
+		setDebug(false);
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 				props.put(OriginConstants.INDEX_SERVICE_NAME, name);
 				props.put(OriginConstants.INDEX_SERVICE_HOST_URL, hostURL);
 				props.put(OriginConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
-				props.put(OriginConstants.LAST_HEARTBEAT_TIME, new Date());
+				props.put(OriginConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
 				indexProvider.addIndexItem(OriginConstants.INDEX_SERVICE_INDEXER_ID, OriginConstants.INDEX_SERVICE_TYPE, name, props);
 
@@ -49,7 +50,7 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 				// Update index item
 				Integer indexItemId = indexItem.getIndexItemId();
 				Map<String, Object> props = new Hashtable<String, Object>();
-				props.put(OriginConstants.LAST_HEARTBEAT_TIME, new Date());
+				props.put(OriginConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
 				indexProvider.setProperties(OriginConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, props);
 			}

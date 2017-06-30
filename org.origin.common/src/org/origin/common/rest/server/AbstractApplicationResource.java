@@ -26,7 +26,7 @@ public class AbstractApplicationResource implements IAdaptable {
 	@Context
 	protected UriInfo uriInfo;
 
-	protected <T> T getService(Class<T> serviceClass) {
+	public <T> T getService(Class<T> serviceClass) {
 		T service = this.providers.getContextResolver(serviceClass, MediaType.APPLICATION_JSON_TYPE).getContext(serviceClass);
 		if (service == null) {
 			throw new WebApplicationException(Status.SERVICE_UNAVAILABLE);

@@ -47,6 +47,34 @@ public class Printer {
 
 	/**
 	 * 
+	 * @param props
+	 */
+	public static void err_pl(Map<?, ?> props) {
+		System.err.println("------------------------------------------------------------------------");
+		if (props == null) {
+			System.err.println("null");
+
+		} else {
+			Map<Object, Object> treeMap = new TreeMap<Object, Object>();
+			for (Entry<?, ?> entry : props.entrySet()) {
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+				treeMap.put(key, value);
+			}
+			props = treeMap;
+
+			for (Entry<?, ?> entry : props.entrySet()) {
+				Object key = entry.getKey();
+				Object value = entry.getValue();
+				String type = value.getClass().getSimpleName();
+				System.err.println(key + " = " + entry.getValue() + " (" + type + ")");
+			}
+		}
+		System.err.println("------------------------------------------------------------------------");
+	}
+
+	/**
+	 * 
 	 * @param dict
 	 */
 	public static void pl(Dictionary<String, ?> dict) {

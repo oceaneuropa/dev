@@ -2,8 +2,10 @@ package org.origin.mgm.client.connector;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,6 +17,12 @@ import org.origin.common.loadbalance.LoadBalanceResourceImpl;
 import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.loadbalance.policy.LoadBalancePolicy;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
+import org.origin.common.rest.model.Pingable;
+import org.origin.common.thread.ThreadPoolTimer;
+import org.origin.common.util.DateUtil;
+import org.origin.common.util.Printer;
+import org.origin.common.util.Timer;
+import org.origin.mgm.client.OriginConstants;
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexItemsMonitor;
 import org.origin.mgm.client.api.IndexService;
@@ -23,17 +31,24 @@ import org.osgi.framework.ServiceRegistration;
 
 public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 
-	public static String INDEX_ITEM_ID = "index_item_id";
+	/* update index items every 15 seconds */
+	public static long INDEX_MONITOR_INTERVAL = 15 * Timer.SECOND;
 
+	/* a service is considered as expired (for heart beat) if last heart beat was more than 30 seconds ago */
+	public static long HEARTBEAT_EXPIRE_TIME = 30 * Timer.SECOND;
+
+	/* actively ping the service every 5 seconds */
+	public static long ACTIVE_PING_INTERVAL = 5 * Timer.SECOND;
+
+	protected boolean debug = true;
 	protected IndexService indexService;
-	protected Class<?> connectorInterface;
+	protected Class<?> connectorClass;
 	protected LoadBalancer<S> loadBalancer;
-
 	protected IndexItemsMonitor indexItemsMonitor;
 	protected ServiceRegistration<?> serviceRegistration;
-
 	protected ReadWriteLock rwLock = new ReentrantReadWriteLock();
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
+	protected Map<LoadBalanceResource<S>, PingMonitor> resourceToActivePingMonitorMap = new LinkedHashMap<LoadBalanceResource<S>, PingMonitor>();
 
 	/**
 	 * 
@@ -47,12 +62,20 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 	/**
 	 * 
 	 * @param indexService
-	 * @param connectorInterface
+	 * @param connectorClass
 	 */
-	public ServiceConnectorImpl(IndexService indexService, Class<?> connectorInterface) {
+	public ServiceConnectorImpl(IndexService indexService, Class<?> connectorClass) {
 		this.indexService = indexService;
 		this.loadBalancer = createLoadBalancer();
-		this.connectorInterface = connectorInterface;
+		this.connectorClass = connectorClass;
+	}
+
+	public boolean isDebug() {
+		return this.debug;
+	}
+
+	public void setDebug(boolean debug) {
+		this.debug = debug;
 	}
 
 	public IndexService getIndexService() {
@@ -63,12 +86,12 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		this.indexService = indexService;
 	}
 
-	public void setConnectorInterface(Class<?> connectorInterface) {
-		this.connectorInterface = connectorInterface;
+	public void setConnectorClass(Class<?> connectorClass) {
+		this.connectorClass = connectorClass;
 	}
 
-	protected Class<?> getConnectorInterface() {
-		return this.connectorInterface;
+	protected Class<?> getConnectorClass() {
+		return this.connectorClass;
 	}
 
 	protected LoadBalancer<S> createLoadBalancer() {
@@ -85,38 +108,6 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		return this.loadBalancer;
 	}
 
-	/**
-	 * Start the connector
-	 * 
-	 * 1. Start index items monitor.
-	 * 
-	 * 2. Register service.
-	 * 
-	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public synchronized void start(BundleContext bundleContext) {
-		if (this.isStarted.get()) {
-			return;
-		}
-		this.isStarted.set(true);
-
-		// -----------------------------------------------------------------------------
-		// Start Monitor
-		// -----------------------------------------------------------------------------
-		// Start monitor to periodically get index items for a service
-		this.indexItemsMonitor = createIndexItemsMonitor();
-		this.indexItemsMonitor.start();
-
-		// -----------------------------------------------------------------------------
-		// Register service
-		// -----------------------------------------------------------------------------
-		Class connectorInterface = getConnectorInterface();
-		if (connectorInterface != null) {
-			Hashtable<String, Object> props = new Hashtable<String, Object>();
-			this.serviceRegistration = bundleContext.registerService(connectorInterface, this, props);
-		}
-	}
-
 	public synchronized boolean isStarted() {
 		return this.isStarted.get() ? true : false;
 	}
@@ -128,11 +119,47 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 	}
 
 	/**
+	 * Start the connector
+	 * 
+	 */
+	@SuppressWarnings("unchecked")
+	public synchronized void start(BundleContext bundleContext) {
+		if (this.isStarted.get()) {
+			return;
+		}
+		this.isStarted.set(true);
+
+		// -----------------------------------------------------------------------------
+		// 1. Start Monitor
+		// -----------------------------------------------------------------------------
+		// Start monitor to periodically get index items for a service
+		this.indexItemsMonitor = new IndexItemsMonitor(getConnectorClass().getSimpleName() + " Monitor", this.indexService) {
+			@Override
+			protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
+				return ServiceConnectorImpl.this.getIndexItems(indexService);
+			}
+
+			@Override
+			protected void indexItemsUpdated(List<IndexItem> indexItems) {
+				updateLoadBalancer(getLoadBalancer(), indexItems);
+			}
+		};
+		this.indexItemsMonitor.setInterval(INDEX_MONITOR_INTERVAL);
+		this.indexItemsMonitor.start();
+
+		// -----------------------------------------------------------------------------
+		// 2. Register service
+		// -----------------------------------------------------------------------------
+		@SuppressWarnings("rawtypes")
+		Class connectorInterface = getConnectorClass();
+		if (connectorInterface != null) {
+			Hashtable<String, Object> props = new Hashtable<String, Object>();
+			this.serviceRegistration = bundleContext.registerService(connectorInterface, this, props);
+		}
+	}
+
+	/**
 	 * Stop the connector
-	 * 
-	 * 1. Unregister service.
-	 * 
-	 * 2. Stop index items monitor.
 	 * 
 	 */
 	public synchronized void stop() {
@@ -141,19 +168,19 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		}
 
 		// -----------------------------------------------------------------------------
-		// Stop monitor
-		// -----------------------------------------------------------------------------
-		if (this.indexItemsMonitor != null) {
-			this.indexItemsMonitor.stop();
-			this.indexItemsMonitor = null;
-		}
-
-		// -----------------------------------------------------------------------------
-		// Unregister service
+		// 1. Unregister service
 		// -----------------------------------------------------------------------------
 		if (this.serviceRegistration != null) {
 			this.serviceRegistration.unregister();
 			this.serviceRegistration = null;
+		}
+
+		// -----------------------------------------------------------------------------
+		// 2. Stop monitor
+		// -----------------------------------------------------------------------------
+		if (this.indexItemsMonitor != null) {
+			this.indexItemsMonitor.stop();
+			this.indexItemsMonitor = null;
 		}
 	}
 
@@ -168,30 +195,36 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		S service = null;
 		try {
 			this.rwLock.readLock().lock();
+
 			LoadBalanceResource<S> resource = this.loadBalancer.getNext();
 			if (resource != null) {
 				service = resource.getService();
+
+				if (isPingable(resource)) {
+					try {
+						((Pingable) service).ping();
+
+					} catch (Exception e) {
+						// ping failed
+						IndexItem indexItem = resource.getAdapter(IndexItem.class);
+						System.err.println(getClass().getSimpleName() + ".getService() ping [" + indexItem.getName() + "] failed: " + e.getMessage());
+						if (!hasActivePingMonitor(resource)) {
+							startActivePingMonitor(resource, ACTIVE_PING_INTERVAL);
+						}
+
+						// Current resource ping failed. Get next resource.
+						resource = this.loadBalancer.getNext();
+						if (resource != null) {
+							service = resource.getService();
+						}
+					}
+				}
 			}
+
 		} finally {
 			this.rwLock.readLock().unlock();
 		}
 		return service;
-	}
-
-	protected IndexItemsMonitor createIndexItemsMonitor() {
-		IndexItemsMonitor monitor = new IndexItemsMonitor(getConnectorInterface().getSimpleName() + " Monitor", this.indexService) {
-			@Override
-			protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
-				return ServiceConnectorImpl.this.getIndexItems(indexService);
-			}
-
-			@Override
-			protected void indexItemsUpdated(List<IndexItem> indexItems) {
-				updateLoadBalancer(getLoadBalancer(), indexItems);
-			}
-		};
-		monitor.setInterval(30 * 1000);
-		return monitor;
 	}
 
 	/**
@@ -205,96 +238,329 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 	/**
 	 * 
 	 * @param loadBalancer
-	 * @param mostRecentIndexItems
+	 * @param latestIndexItems
 	 */
-	protected synchronized void updateLoadBalancer(LoadBalancer<S> loadBalancer, List<IndexItem> mostRecentIndexItems) {
+	protected synchronized void updateLoadBalancer(LoadBalancer<S> loadBalancer, List<IndexItem> latestIndexItems) {
 		this.rwLock.writeLock().lock();
 
 		try {
-			List<LoadBalanceResource<S>> resources = loadBalancer.getResources();
+			List<LoadBalanceResource<S>> existingResources = loadBalancer.getResources();
 
 			Map<Integer, LoadBalanceResource<S>> existingResourcesMap = new HashMap<Integer, LoadBalanceResource<S>>();
-			for (LoadBalanceResource<S> resource : resources) {
-				Integer currIndexItemId = (Integer) resource.getProperty(INDEX_ITEM_ID);
+			for (LoadBalanceResource<S> resource : existingResources) {
+				Integer currIndexItemId = (Integer) resource.getProperty(OriginConstants.INDEX_ITEM_ID);
 				if (currIndexItemId == null) {
-					System.err.println(getConnectorInterface().getSimpleName() + " LoadBalanceResource's 'index_item_id' property is not available.");
+					System.err.println(getConnectorClass().getSimpleName() + " LoadBalanceResource's 'index_item_id' property is not available.");
 					continue;
 				}
 				existingResourcesMap.put(currIndexItemId, resource);
 			}
 
-			Map<Integer, IndexItem> mostRecentIndexItemsMap = new HashMap<Integer, IndexItem>();
-			for (IndexItem indexItem : mostRecentIndexItems) {
+			Map<Integer, IndexItem> latestIndexItemsMap = new HashMap<Integer, IndexItem>();
+			for (IndexItem indexItem : latestIndexItems) {
 				Integer indexItemId = indexItem.getIndexItemId();
-				mostRecentIndexItemsMap.put(indexItemId, indexItem);
+				latestIndexItemsMap.put(indexItemId, indexItem);
 			}
 
 			List<LoadBalanceResource<S>> resourcesToRemove = new ArrayList<LoadBalanceResource<S>>();
 			List<LoadBalanceResource<S>> newResources = new ArrayList<LoadBalanceResource<S>>();
 
-			for (LoadBalanceResource<S> resource : resources) {
-				Integer indexItemIdInResource = (Integer) resource.getProperty(INDEX_ITEM_ID);
-				if (indexItemIdInResource == null) {
-					System.err.println(getConnectorInterface().getSimpleName() + " LoadBalanceResource's 'index_item_id' property is not available.");
+			for (LoadBalanceResource<S> existingResource : existingResources) {
+				Integer resourceIndexItemId = (Integer) existingResource.getProperty(OriginConstants.INDEX_ITEM_ID);
+				if (resourceIndexItemId == null) {
+					System.err.println(getConnectorClass().getSimpleName() + " LoadBalanceResource's 'index_item_id' property is not available.");
 					continue;
 				}
 
-				if (mostRecentIndexItemsMap.containsKey(indexItemIdInResource)) {
-					// Corresponding index item of the resource is found
-					// (1)update the resource's properties using the index item's properties
-					// (e.g. service name, service URL, service context root and generic last heart beat time).
-					// (2) put the index item id to the resource's properties using "index_item_id" as prop name.
-					IndexItem indexItem = mostRecentIndexItemsMap.get(indexItemIdInResource);
-
-					Integer indexItemId = indexItem.getIndexItemId();
-					Map<String, Object> properties = indexItem.getProperties();
-
-					Map<String, Object> newProperties = new HashMap<String, Object>();
-					newProperties.put(INDEX_ITEM_ID, indexItemId);
-					newProperties.putAll(properties);
-
-					resource.setProperties(newProperties);
-					S service = resource.getService();
-					updateService(service, newProperties);
+				if (latestIndexItemsMap.containsKey(resourceIndexItemId)) {
+					// Update existing resource using the latest index item.
+					IndexItem latestIndexItem = latestIndexItemsMap.get(resourceIndexItemId);
+					updateResource(existingResource, latestIndexItem);
 
 				} else {
-					// Corresponding index item of the resource is not found
-					// (1) remove the resource.
-					resourcesToRemove.add(resource);
+					resourcesToRemove.add(existingResource);
 				}
 			}
 
-			for (IndexItem indexItem : mostRecentIndexItems) {
-				Integer indexItemId = indexItem.getIndexItemId();
+			for (IndexItem latestIndexItem : latestIndexItems) {
+				Integer indexItemId = latestIndexItem.getIndexItemId();
 
 				if (!existingResourcesMap.containsKey(indexItemId)) {
-					Map<String, Object> properties = indexItem.getProperties();
-
-					Map<String, Object> newProperties = new HashMap<String, Object>();
-					newProperties.put(INDEX_ITEM_ID, indexItemId);
-					newProperties.putAll(properties);
-
-					S newService = createService(newProperties);
-					if (newService != null) {
-						LoadBalanceResource<S> newResource = new LoadBalanceResourceImpl<S>(newService, newProperties);
+					LoadBalanceResource<S> newResource = createResource(latestIndexItem);
+					if (newResource != null) {
 						newResources.add(newResource);
 					}
 				}
 			}
 
-			if (!resourcesToRemove.isEmpty()) {
-				for (LoadBalanceResource<S> resourceToRemove : resourcesToRemove) {
-					this.loadBalancer.removeResource(resourceToRemove);
-				}
+			for (LoadBalanceResource<S> resourceToRemove : resourcesToRemove) {
+				removeResource(resourceToRemove);
 			}
 
-			if (!newResources.isEmpty()) {
-				for (LoadBalanceResource<S> newResource : newResources) {
-					this.loadBalancer.addResource(newResource);
-				}
+			for (LoadBalanceResource<S> newResource : newResources) {
+				addResource(newResource);
 			}
+
 		} finally {
 			this.rwLock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * 
+	 * @param latestIndexItem
+	 * @return
+	 */
+	protected LoadBalanceResource<S> createResource(IndexItem latestIndexItem) {
+		LoadBalanceResource<S> newResource = null;
+
+		Integer indexItemId = latestIndexItem.getIndexItemId();
+		Map<String, Object> properties = latestIndexItem.getProperties();
+
+		Map<String, Object> newProperties = new HashMap<String, Object>();
+		newProperties.put(OriginConstants.INDEX_ITEM_ID, indexItemId);
+		newProperties.putAll(properties);
+
+		S newService = createService(newProperties);
+		if (newService != null) {
+			newResource = new LoadBalanceResourceImpl<S>(newService, newProperties);
+			// keep a reference to the IndexItem
+			newResource.adapt(IndexItem.class, latestIndexItem);
+		}
+
+		return newResource;
+	}
+
+	/**
+	 * 
+	 * @param resource
+	 */
+	protected void addResource(LoadBalanceResource<S> resource) {
+		if (this.debug) {
+			IndexItem indexItem = resource.getAdapter(IndexItem.class);
+			Integer indexItemId = indexItem.getIndexItemId();
+			String indexProviderId = indexItem.getIndexProviderId();
+			String indexItemName = indexItem.getName();
+			String indexItemType = indexItem.getType();
+			System.out.println(getClass().getSimpleName() + ".addResource() IndexItem [" + indexItemId + " - " + indexItemName + " - " + indexItemType + " - " + indexProviderId + "]");
+		}
+
+		this.loadBalancer.addResource(resource);
+	}
+
+	/**
+	 * 
+	 * @param resource
+	 * @param latestIndexItem
+	 */
+	protected void updateResource(LoadBalanceResource<S> resource, IndexItem latestIndexItem) {
+		// 1. Get IndexItem attributes
+		Integer indexItemId = latestIndexItem.getIndexItemId();
+		String indexProviderId = latestIndexItem.getIndexProviderId();
+		String indexItemName = latestIndexItem.getName();
+		String indexItemType = latestIndexItem.getType();
+		Map<String, Object> properties = latestIndexItem.getProperties();
+
+		// 2. Set resource properties
+		Map<String, Object> newProperties = new HashMap<String, Object>();
+		// Put indexItemId as properties of the resource, so that when index items are updated, a resource can be associated with an updated index item.
+		newProperties.put(OriginConstants.INDEX_ITEM_ID, indexItemId);
+		newProperties.putAll(properties);
+
+		// update the resource's properties with the index item's properties
+		resource.setProperties(newProperties);
+		// keep a reference to the IndexItem
+		resource.adapt(IndexItem.class, latestIndexItem);
+
+		Date lastHeartBeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartBeatTime(resource);
+		if (this.debug) {
+			// CharSequence relativeTime = TimeUtil.getRelativeTime(lastHeartBeatTime.getTime());
+			System.out.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemId + " - " + indexProviderId + " - " + indexItemType + " - " + indexItemName + "] Last Heart Beat Time: " + DateUtil.toString(lastHeartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2));
+			// System.out.println("\tindexItemId=" + indexItemId);
+			// System.out.println("\tindexProviderId=" + indexProviderId);
+			// System.out.println("\tindexItemName=" + indexItemName);
+			// System.out.println("\tindexItemType=" + indexItemType);
+			// System.out.println("\tproperties:");
+			// Printer.pl(properties);
+
+			// Object value = properties.get(OriginConstants.LAST_HEARTBEAT_TIME);
+			// String type = (value != null) ? value.getClass().getSimpleName() : null;
+			// System.out.println("\t" + OriginConstants.LAST_HEARTBEAT_TIME + " = " + value + " (" + type + ")");
+			// System.out.println();
+
+			// System.out.println("\tLast Heart Beat Time: " + DateUtil.toString(lastHeartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2));
+			// System.out.println("\tCurrent Time: " + DateUtil.toString(new Date(), DateUtil.SIMPLE_DATE_FORMAT2));
+			// System.out.println("\tService heart beats: " + relativeTime);
+			// System.out.println();
+		}
+
+		// 3. Calculate heart beat expiration
+		// Check whether the esource's service has expired by checking last heart beat time. The default expiration time is 30 seconds.
+		boolean hasHeartBeatTime = ResourcePropertyHelper.INSTANCE.hasLastHeartBeatTime(resource);
+		if (!hasHeartBeatTime) {
+			System.err.println("### ### " + getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemName + " - " + indexItemType + " - " + indexProviderId + "] doesn't have 'last_heartbeat_time' property.");
+			System.err.println("### ### properties:");
+			Printer.err_pl(properties);
+			System.err.println("### ###");
+			System.err.println();
+		}
+
+		long seconds = (System.currentTimeMillis() - lastHeartBeatTime.getTime()) / 1000;
+		boolean isHeartBeatExpired = (seconds > 30) ? true : false;
+		if (isHeartBeatExpired) {
+			// expired
+			System.err.println("\tExpired (in " + seconds + " seconds)");
+			System.err.println();
+
+			resource.setProperty(OriginConstants.HEARTBEAT_EXPIRED, Boolean.TRUE);
+
+		} else {
+			// not expired
+			// System.out.println("\tNot expired (in " + seconds + " seconds)");
+			// System.out.println();
+
+			if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRED)) {
+				resource.removeProperty(OriginConstants.HEARTBEAT_EXPIRED);
+			}
+		}
+
+		// 4. Start active ping monitor if heart beat expired.
+		// Stop active ping monitor if heart beat not expired.
+		if (isPingable(resource)) {
+			if (isHeartBeatExpired) {
+				System.out.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemName + "] last heart beat expired.");
+
+				// (1) If expired, start an active ping monitor to actively ping the service with a even shorter period of time and to update the LAST_PING_TIME
+				// Default active ping interval is 5 seconds.
+				if (!hasActivePingMonitor(resource)) {
+					startActivePingMonitor(resource, ACTIVE_PING_INTERVAL);
+				}
+
+			} else {
+				// System.err.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemName + "] last heart beat not expired.");
+
+				// (2) If not expired, stop the active ping monitor (if available) to stop pinging the service.
+				if (hasActivePingMonitor(resource)) {
+					System.out.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemName + "] last heart beat not expired.");
+					stopActivePingMonitor(resource);
+				}
+			}
+		}
+
+		// 5. Update service properties
+		S service = resource.getService();
+		if (service != null) {
+			updateService(service, newProperties);
+		} else {
+			System.err.println("### ### " + getClass().getSimpleName() + ".updateResource() resource [" + indexItemName + " - " + indexItemType + " - " + indexProviderId + "] returns null service.");
+		}
+	}
+
+	/**
+	 * 
+	 * @param resource
+	 */
+	protected void removeResource(LoadBalanceResource<S> resource) {
+		if (this.debug) {
+			IndexItem indexItem = resource.getAdapter(IndexItem.class);
+			Integer indexItemId = indexItem.getIndexItemId();
+			String indexProviderId = indexItem.getIndexProviderId();
+			String indexItemName = indexItem.getName();
+			String indexItemType = indexItem.getType();
+			System.out.println(getClass().getSimpleName() + ".removeResource() IndexItem [" + indexItemId + " - " + indexItemName + " - " + indexItemType + " - " + indexProviderId + "]");
+		}
+
+		this.loadBalancer.removeResource(resource);
+	}
+
+	/**
+	 * Whether a service can ping is not something dynamic. The service can either be available or not available on server side. So it is not the service side
+	 * which updates the index item to say whether it is pingable. It is good enough for client to check whether the client of the service has a Pingable
+	 * interface.
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	protected boolean isPingable(LoadBalanceResource<S> resource) {
+		return (resource.getService() instanceof Pingable) ? true : false;
+	}
+
+	/**
+	 * 
+	 * @param resource
+	 * @return
+	 */
+	protected boolean hasActivePingMonitor(LoadBalanceResource<S> resource) {
+		synchronized (this.resourceToActivePingMonitorMap) {
+			return (this.resourceToActivePingMonitorMap.containsKey(resource)) ? true : false;
+		}
+	}
+
+	/**
+	 * When the remote resource is pingable, create a thread to periodically ping the service actively with shorter period.
+	 * 
+	 * @param resource
+	 * @param interval
+	 */
+	protected void startActivePingMonitor(LoadBalanceResource<S> resource, long interval) {
+		IndexItem indexItem = resource.getAdapter(IndexItem.class);
+		System.out.println(getClass().getSimpleName() + ".startActivePingMonitor() IndexItem [" + indexItem.getName() + "]");
+
+		String monitorName = (indexItem != null) ? indexItem.getName() : "";
+		monitorName = "Ping Monitor [" + monitorName + "]";
+		PingMonitor pingMonitor = new PingMonitor(monitorName, resource, interval) {
+			@Override
+			void pinged(LoadBalanceResource<S> resource, boolean succeed) {
+				updatePing(resource, succeed);
+			}
+		};
+		pingMonitor.start();
+
+		synchronized (this.resourceToActivePingMonitorMap) {
+			this.resourceToActivePingMonitorMap.put(resource, pingMonitor);
+		}
+	}
+
+	/**
+	 * Stop the thread for actively ping the service.
+	 * 
+	 * @param resource
+	 */
+	protected void stopActivePingMonitor(LoadBalanceResource<S> resource) {
+		IndexItem indexItem = resource.getAdapter(IndexItem.class);
+		System.out.println(getClass().getSimpleName() + ".stopActivePingMonitor() IndexItem [" + indexItem.getName() + "]");
+
+		PingMonitor pingMonitor = null;
+		synchronized (this.resourceToActivePingMonitorMap) {
+			pingMonitor = this.resourceToActivePingMonitorMap.remove(resource);
+		}
+		if (pingMonitor != null) {
+			pingMonitor.stop();
+		}
+	}
+
+	/**
+	 * 
+	 * @param resource
+	 * @param succeed
+	 */
+	protected void updatePing(LoadBalanceResource<S> resource, boolean succeed) {
+		Date nowTime = new Date();
+		if (succeed) {
+			// ping succeeded
+			resource.setProperty(OriginConstants.LAST_PING_TIME, nowTime);
+			resource.setProperty(OriginConstants.LAST_PING_SUCCEED, Boolean.TRUE);
+
+			// The service can be pinged right now.
+			// If the service heart beat was expired. The expiration can be lifted now.
+			if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRED)) {
+				resource.removeProperty(OriginConstants.HEARTBEAT_EXPIRED);
+			}
+
+		} else {
+			// ping failed
+			resource.setProperty(OriginConstants.LAST_PING_TIME, nowTime);
+			resource.setProperty(OriginConstants.LAST_PING_SUCCEED, Boolean.FALSE);
 		}
 	}
 
@@ -313,5 +579,67 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 	 * @param properties
 	 */
 	protected abstract void updateService(S service, Map<String, Object> properties);
+
+	public abstract class PingMonitor extends ThreadPoolTimer {
+
+		protected LoadBalanceResource<S> resource;
+
+		/**
+		 * 
+		 * @param name
+		 * @param resource
+		 */
+		public PingMonitor(String name, LoadBalanceResource<S> resource) {
+			this(name, resource, 0);
+		}
+
+		/**
+		 * 
+		 * @param name
+		 * @param resource
+		 * @param interval
+		 */
+		public PingMonitor(String name, LoadBalanceResource<S> resource, long interval) {
+			super(name);
+			setDebug(true);
+
+			this.resource = resource;
+
+			if (interval > 0) {
+				setInterval(interval);
+			}
+
+			setRunnable(new Runnable() {
+				@Override
+				public void run() {
+					ping();
+				}
+			});
+		}
+
+		protected void ping() {
+			S service = this.resource.getService();
+			if (service instanceof Pingable) {
+				boolean succeed = false;
+				try {
+					int ping = ((Pingable) service).ping();
+					if (ping > 0) {
+						succeed = true;
+					}
+				} catch (Exception e) {
+					IndexItem indexItem = resource.getAdapter(IndexItem.class);
+					System.err.println("PingMonitor.ping() ping [" + indexItem.getName() + "] failed. " + e.getMessage());
+				}
+				pinged(this.resource, succeed);
+			}
+		}
+
+		/**
+		 * 
+		 * @param resource
+		 * @param succeed
+		 */
+		abstract void pinged(LoadBalanceResource<S> resource, boolean succeed);
+	}
 
 }

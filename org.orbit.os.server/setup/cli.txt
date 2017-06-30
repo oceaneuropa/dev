@@ -16,7 +16,6 @@ install /Users/origin/ta1/apps/org.example.foo.editor_1.0.0/plugins/org.app.exam
 install /Users/origin/ta1/apps/org.example.foo.editor_1.0.0/plugins/org.app.example2_1.0.0.201706141406.jar
 ------------------------------------------------------------------------------------
 
-
 V2 commands
 ------------------------------------------------------------------------------------
 listapps

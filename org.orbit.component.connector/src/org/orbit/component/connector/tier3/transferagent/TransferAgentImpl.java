@@ -93,6 +93,9 @@ public class TransferAgentImpl implements TransferAgent {
 
 	@Override
 	public NodeConfig createNode(CreateNodeRequest request) throws ClientException {
+		org.orbit.component.model.tier3.transferagent.request.CreateNodeRequest createNodeRequest = new org.orbit.component.model.tier3.transferagent.request.CreateNodeRequest();
+		createNodeRequest.setNodeName("node1");
+		this.client.sendRequest(createNodeRequest);
 		return null;
 	}
 

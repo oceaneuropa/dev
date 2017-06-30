@@ -179,17 +179,23 @@ public class IndexServiceDatabaseSimpleImpl implements IndexService {
 
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId) throws IndexServiceException {
+		System.out.println(getClass().getName() + ".getIndexItems(String indexProviderId)");
+
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 		Connection conn = getConnection();
 		try {
 			IndexItemsSimpleTableHandler tableHandler = IndexItemsSimpleTableHandler.getInstance(conn, indexProviderId);
 			List<IndexItemVO> indexItemVOs = tableHandler.getIndexItems(conn);
+			System.out.println("======================================================================");
 			if (indexItemVOs != null) {
 				for (IndexItemVO indexItemVO : indexItemVOs) {
+					System.out.println(indexItemVO);
 					IndexItem indexItem = IndexServiceDatabaseHelper.INSTANCE.toIndexItem(indexItemVO);
 					indexItems.add(indexItem);
 				}
 			}
+			System.out.println("======================================================================");
+
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -200,17 +206,23 @@ public class IndexServiceDatabaseSimpleImpl implements IndexService {
 
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IndexServiceException {
+		// System.out.println(getClass().getName() + ".getIndexItems(String indexProviderId, String type)");
+
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 		Connection conn = getConnection();
 		try {
 			IndexItemsSimpleTableHandler tableHandler = IndexItemsSimpleTableHandler.getInstance(conn, indexProviderId);
 			List<IndexItemVO> indexItemVOs = tableHandler.getIndexItems(conn, type);
+			// System.out.println("======================================================================");
 			if (indexItemVOs != null) {
 				for (IndexItemVO indexItemVO : indexItemVOs) {
+					// System.out.println(indexItemVO);
 					IndexItem indexItem = IndexServiceDatabaseHelper.INSTANCE.toIndexItem(indexItemVO);
 					indexItems.add(indexItem);
 				}
 			}
+			// System.out.println("======================================================================");
+
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {

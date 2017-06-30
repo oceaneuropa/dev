@@ -29,10 +29,11 @@ public class Constants {
 	public static String NODE_TYPE = "Node"; // type of index item for Node
 
 	// index item properties
-	public static String NODE_HOST_URL = "node.host.url";
-	public static String NODE_CONTEXT_ROOT = "node.context_root";
-	public static String NODE_NAME = "node.name";
 	public static String NODE_OS_NAME = "node.os.name";
 	public static String NODE_OS_VERSION = "node.os.version";
+	public static String NODE_NAME = "node.name";
+	public static String NODE_HOST_URL = "node.host.url";
+	public static String NODE_CONTEXT_ROOT = "node.context_root";
+	public static String NODE_HOME = "node.home";
 
 }

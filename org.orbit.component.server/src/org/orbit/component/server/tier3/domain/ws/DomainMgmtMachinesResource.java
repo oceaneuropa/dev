@@ -19,7 +19,7 @@ import org.orbit.component.model.tier3.domain.DomainMgmtException;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
 import org.orbit.component.model.tier3.domain.ModelConverter;
-import org.orbit.component.server.tier3.domain.service.DomainMgmtService;
+import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
@@ -52,7 +52,7 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMachines() {
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 
 		List<MachineConfigDTO> machineConfigDTOs = new ArrayList<MachineConfigDTO>();
 		try {
@@ -84,7 +84,7 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 	public Response getMachine(@PathParam("machineId") String machineId) {
 		MachineConfigDTO machineConfigDTO = null;
 
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			MachineConfigRTO machineConfig = domainMgmtService.getMachineConfig(machineId);
 			if (machineConfig == null) {
@@ -118,7 +118,7 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			String machineId = addMachineRequestDTO.getId();
 			if (machineId == null || machineId.isEmpty()) {
@@ -163,7 +163,7 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			MachineConfigRTO updateMachineRequest = ModelConverter.getInstance().toRTO(updateMachineRequestDTO);
 			succeed = domainMgmtService.updateMachineConfig(updateMachineRequest);
@@ -200,7 +200,7 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			succeed = domainMgmtService.deleteMachineConfig(machineId);
 

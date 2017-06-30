@@ -20,7 +20,7 @@ public class ThreadPoolTimer {
 	protected static int DEFAULT_MAX_POOL_SIZE = 10;
 	protected static int DEFAULT_KEEP_ALIVE_SECONDS = 20;
 
-	protected boolean debug = true;
+	protected boolean debug = false;
 	protected String name;
 	protected Runnable runnable;
 	protected ThreadPoolExecutor threadPoolExecutor;
@@ -235,7 +235,14 @@ public class ThreadPoolTimer {
 				ThreadPoolUtils.shutdown(this.threadPoolExecutor);
 				this.threadPoolExecutor = null;
 			}
+
+			// 3. Dispose the resources
+			dispose();
 		}
+	}
+
+	public void dispose() {
+
 	}
 
 }

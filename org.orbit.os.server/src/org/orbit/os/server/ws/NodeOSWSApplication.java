@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.orbit.os.server.service.NodeOSIndexTimer;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
 import org.osgi.framework.ServiceRegistration;

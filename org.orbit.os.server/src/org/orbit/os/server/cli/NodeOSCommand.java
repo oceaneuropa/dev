@@ -8,13 +8,13 @@ import java.util.Properties;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.app.AppManifest;
-import org.orbit.os.server.Activator;
 import org.orbit.os.server.app.App;
 import org.orbit.os.server.app.AppBundle;
 import org.orbit.os.server.app.AppHandler;
 import org.orbit.os.server.app.AppsManager;
 import org.orbit.os.server.service.NodeOS;
 import org.orbit.os.server.service.impl.NodeOSImpl;
+import org.orbit.os.server.util.SetupUtil;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
@@ -42,7 +42,7 @@ public class NodeOSCommand implements Annotated {
 	 * 
 	 * @param bundleContext
 	 */
-	public void activate(BundleContext bundleContext) {
+	public void start(BundleContext bundleContext) {
 		if (debug) {
 			System.out.println(getClass().getSimpleName() + ".activate()");
 		}
@@ -67,7 +67,7 @@ public class NodeOSCommand implements Annotated {
 	 * 
 	 * @param bundleContext
 	 */
-	public void deactivate(BundleContext bundleContext) {
+	public void stop(BundleContext bundleContext) {
 		if (debug) {
 			System.out.println(getClass().getSimpleName() + ".deactivate()");
 		}
@@ -108,7 +108,7 @@ public class NodeOSCommand implements Annotated {
 		}
 
 		if (this.nodeOSImpl == null) {
-			Properties configIniProps = Activator.getNodeHomeConfigIniProperties();
+			Properties configIniProps = SetupUtil.getNodeHomeConfigIniProperties(this.bundleContext);
 			this.nodeOSImpl = new NodeOSImpl(this.bundleContext, configIniProps);
 		}
 		this.nodeOSImpl.start();

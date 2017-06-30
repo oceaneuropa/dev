@@ -2,7 +2,12 @@ package org.origin.common.thread;
 
 import java.io.IOException;
 
+import org.origin.common.util.Timer;
+
 public abstract class ServiceIndexTimerImpl<INDEX_PROVIDER, SERVICE> extends ThreadPoolTimer implements ServiceIndexTimer<INDEX_PROVIDER, SERVICE> {
+
+	/* update index items every 15 seconds */
+	public static long INDEXING_INTERVAL = 15 * Timer.SECOND;
 
 	protected INDEX_PROVIDER indexProvider;
 
@@ -18,7 +23,7 @@ public abstract class ServiceIndexTimerImpl<INDEX_PROVIDER, SERVICE> extends Thr
 		}
 		this.indexProvider = indexProvider;
 
-		setInterval(30 * 1000); // 30 seconds
+		setInterval(INDEXING_INTERVAL);
 
 		Runnable runnable = createRunnable();
 		setRunnable(runnable);
@@ -57,7 +62,7 @@ public abstract class ServiceIndexTimerImpl<INDEX_PROVIDER, SERVICE> extends Thr
 	}
 
 	public INDEX_PROVIDER getIndexProvider() {
-		return indexProvider;
+		return this.indexProvider;
 	}
 
 	public void setIndexProvider(INDEX_PROVIDER indexProvider) {
@@ -79,5 +84,32 @@ public abstract class ServiceIndexTimerImpl<INDEX_PROVIDER, SERVICE> extends Thr
 	 * @throws IOException
 	 */
 	public abstract void updateIndex(INDEX_PROVIDER indexProvider, SERVICE service) throws IOException;
+
+	/**
+	 * Delete the index item for the service.
+	 * 
+	 * @param indexProvider
+	 * @throws IOException
+	 */
+	public void removeIndex(INDEX_PROVIDER indexProvider) throws IOException {
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+
+		String name = getName();
+		INDEX_PROVIDER indexProvider = ServiceIndexTimerImpl.this.indexProvider;
+		// SERVICE service = getService();
+		if (indexProvider == null) {
+			System.err.println(name + " indexProvider is null.");
+			return;
+		}
+		try {
+			removeIndex(indexProvider);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 }

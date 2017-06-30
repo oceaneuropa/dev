@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 
 import org.origin.common.util.Printer;
@@ -66,7 +68,7 @@ public class SetupUtil {
 	}
 
 	/**
-	 * Get {TA_HOME}/apps/ path.
+	 * Get {TA_HOME}/downloads/ path.
 	 * 
 	 * @param taHome
 	 * @param createIfNotExist
@@ -192,12 +194,38 @@ public class SetupUtil {
 	 */
 	public static Properties getNodeHomeConfigIniProperties(BundleContext bundleContext) {
 		Path nodeHome = getNodeHome(bundleContext);
+		if (nodeHome == null) {
+			return new Properties();
+		}
 		Path configIniPath = getNodeConfigIniPath(nodeHome);
 		Properties configIniProps = org.origin.common.env.SetupUtil.getProperties(nodeHome, "config.ini");
 		System.out.println("nodeHome = " + nodeHome);
 		System.out.println(configIniPath + " properties:");
 		Printer.pl(configIniProps);
 		return configIniProps;
+	}
+
+	/**
+	 * Load {NODE_HOME}/config.ini properties into given props Map.
+	 * 
+	 * @param bundleContext
+	 * @param props
+	 */
+	public static void loadNodeConfigIniProperties(BundleContext bundleContext, Map<Object, Object> props) {
+		// load config.ini properties
+		Properties configIniProps = getNodeHomeConfigIniProperties(bundleContext);
+
+		if (configIniProps != null && !configIniProps.isEmpty()) {
+			@SuppressWarnings("unchecked")
+			Enumeration<String> enumr = ((Enumeration<String>) configIniProps.propertyNames());
+			while (enumr.hasMoreElements()) {
+				String propName = (String) enumr.nextElement();
+				String propValue = configIniProps.getProperty(propName);
+				if (propName != null && propValue != null) {
+					props.put(propName, propValue);
+				}
+			}
+		}
 	}
 
 }

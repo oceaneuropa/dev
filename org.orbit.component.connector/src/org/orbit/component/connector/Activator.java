@@ -28,9 +28,7 @@ public class Activator implements BundleActivator {
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
 	protected OAuth2ConnectorImpl oauth2Connector;
-
 	protected AppStoreConnectorImpl appStoreConnector;
-
 	protected DomainMgmtConnectorImpl domainMgmtConnector;
 
 	@Override
@@ -48,20 +46,20 @@ public class Activator implements BundleActivator {
 		// -----------------------------------------------------------------------------
 		// Start tier1 service connectors
 		// -----------------------------------------------------------------------------
-		this.configRegistryConnector = new ConfigRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.configRegistryConnector.start(bundleContext);
+		// this.configRegistryConnector = new ConfigRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		// this.configRegistryConnector.start(bundleContext);
 
-		this.userRegistryConnector = new UserRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.userRegistryConnector.start(bundleContext);
+		// this.userRegistryConnector = new UserRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		// this.userRegistryConnector.start(bundleContext);
 
-		this.oauth2Connector = new OAuth2ConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.oauth2Connector.start(bundleContext);
+		// this.oauth2Connector = new OAuth2ConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		// this.oauth2Connector.start(bundleContext);
 
 		// -----------------------------------------------------------------------------
 		// Start tier2 service connectors
 		// -----------------------------------------------------------------------------
-		this.appStoreConnector = new AppStoreConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.appStoreConnector.start(bundleContext);
+		// this.appStoreConnector = new AppStoreConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		// this.appStoreConnector.start(bundleContext);
 
 		// -----------------------------------------------------------------------------
 		// Start tier3 service connectors
@@ -85,28 +83,28 @@ public class Activator implements BundleActivator {
 		// -----------------------------------------------------------------------------
 		// Stop tier2 service connectors
 		// -----------------------------------------------------------------------------
-		if (this.appStoreConnector != null) {
-			this.appStoreConnector.stop();
-			this.appStoreConnector = null;
-		}
+		// if (this.appStoreConnector != null) {
+		// this.appStoreConnector.stop();
+		// this.appStoreConnector = null;
+		// }
 
 		// -----------------------------------------------------------------------------
 		// Stop tier1 service connectors
 		// -----------------------------------------------------------------------------
-		if (this.userRegistryConnector != null) {
-			this.userRegistryConnector.stop();
-			this.userRegistryConnector = null;
-		}
+		// if (this.userRegistryConnector != null) {
+		// this.userRegistryConnector.stop();
+		// this.userRegistryConnector = null;
+		// }
 
-		if (this.configRegistryConnector != null) {
-			this.configRegistryConnector.stop();
-			this.configRegistryConnector = null;
-		}
+		// if (this.configRegistryConnector != null) {
+		// this.configRegistryConnector.stop();
+		// this.configRegistryConnector = null;
+		// }
 
-		if (this.oauth2Connector != null) {
-			this.oauth2Connector.stop();
-			this.oauth2Connector = null;
-		}
+		// if (this.oauth2Connector != null) {
+		// this.oauth2Connector.stop();
+		// this.oauth2Connector = null;
+		// }
 	}
 
 }

@@ -4,9 +4,9 @@ import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
-import org.orbit.component.api.tier3.domain.DomainMgmtConnector;
+import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.cli.tier2.AppStoreCommand;
-import org.orbit.component.cli.tier3.DomainMgmtCommand;
+import org.orbit.component.cli.tier3.DomainManagementCommand;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -32,11 +32,11 @@ public class Activator implements BundleActivator {
 
 	protected ServiceTracker<AppStoreConnector, AppStoreConnector> appStoreConnectorTracker;
 
-	protected ServiceTracker<DomainMgmtConnector, DomainMgmtConnector> domainMgmtConnectorTracker;
+	protected ServiceTracker<DomainManagementConnector, DomainManagementConnector> domainMgmtConnectorTracker;
 
 	protected boolean debug = true;
 	protected AppStoreCommand appStoreCommand;
-	protected DomainMgmtCommand domainMgmtCommand;
+	protected DomainManagementCommand domainMgmtCommand;
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
@@ -154,9 +154,9 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Start tier3 service connectors
 		// --------------------------------------------------------------------------------
-		this.domainMgmtConnectorTracker = new ServiceTracker<DomainMgmtConnector, DomainMgmtConnector>(bundleContext, DomainMgmtConnector.class, new ServiceTrackerCustomizer<DomainMgmtConnector, DomainMgmtConnector>() {
+		this.domainMgmtConnectorTracker = new ServiceTracker<DomainManagementConnector, DomainManagementConnector>(bundleContext, DomainManagementConnector.class, new ServiceTrackerCustomizer<DomainManagementConnector, DomainManagementConnector>() {
 			@Override
-			public DomainMgmtConnector addingService(ServiceReference<DomainMgmtConnector> reference) {
+			public DomainManagementConnector addingService(ServiceReference<DomainManagementConnector> reference) {
 				if (debug) {
 					System.out.println(getClass().getName() + " DomainMgmtConnector service is added.");
 				}
@@ -164,14 +164,14 @@ public class Activator implements BundleActivator {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<DomainMgmtConnector> reference, DomainMgmtConnector arg1) {
+			public void modifiedService(ServiceReference<DomainManagementConnector> reference, DomainManagementConnector arg1) {
 				if (debug) {
 					System.out.println(getClass().getName() + " DomainMgmtConnector service is modified.");
 				}
 			}
 
 			@Override
-			public void removedService(ServiceReference<DomainMgmtConnector> reference, DomainMgmtConnector arg1) {
+			public void removedService(ServiceReference<DomainManagementConnector> reference, DomainManagementConnector arg1) {
 				if (debug) {
 					System.out.println(getClass().getName() + " DomainMgmtConnector service is removed.");
 				}
@@ -186,7 +186,7 @@ public class Activator implements BundleActivator {
 		this.appStoreCommand.start();
 
 		// Start DomainManagement command
-		this.domainMgmtCommand = new DomainMgmtCommand(bundleContext);
+		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
 		this.domainMgmtCommand.start();
 	}
 
@@ -282,8 +282,8 @@ public class Activator implements BundleActivator {
 		return connector;
 	}
 
-	public DomainMgmtConnector getDomainMgmtConnector() {
-		DomainMgmtConnector connector = null;
+	public DomainManagementConnector getDomainMgmtConnector() {
+		DomainManagementConnector connector = null;
 		if (this.domainMgmtConnectorTracker != null) {
 			connector = this.domainMgmtConnectorTracker.getService();
 		}

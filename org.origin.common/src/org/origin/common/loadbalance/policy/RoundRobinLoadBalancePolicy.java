@@ -13,20 +13,48 @@ public class RoundRobinLoadBalancePolicy<S> extends AbstractLoadBalancePolicy<S>
 	}
 
 	@Override
-	public LoadBalanceResource<S> next() {
+	public synchronized LoadBalanceResource<S> next() {
 		LoadBalancer<S> lb = checkLoadBalancer();
-		List<LoadBalanceResource<S>> services = lb.getResources();
-		if (services == null || services.isEmpty()) {
+		List<LoadBalanceResource<S>> resources = lb.getResources();
+		if (resources == null || resources.isEmpty()) {
 			return null;
 		}
-		if (services.size() == 1) {
-			return services.get(0);
+		if (resources.size() == 1) {
+			return resources.get(0);
 		}
 
-		if (this.index >= services.size()) {
+		if (this.index >= resources.size()) {
 			this.index = 0;
 		}
-		return services.get(index++);
+
+		int beginIndex = this.index;
+		int currIndex = beginIndex;
+
+		LoadBalanceResource<S> resource = resources.get(currIndex);
+		boolean isHeartBeatExpired = ResourcePropertyHelper.INSTANCE.isHeartBeatExpired(resource);
+		while (isHeartBeatExpired) {
+			resource = null;
+
+			currIndex++;
+			if (currIndex >= resources.size()) {
+				currIndex = 0;
+			}
+			if (currIndex == beginIndex) {
+				// already encountered the expired resource
+				break;
+
+			} else {
+				resource = resources.get(currIndex);
+				isHeartBeatExpired = ResourcePropertyHelper.INSTANCE.isHeartBeatExpired(resource);
+			}
+		}
+
+		this.index = currIndex + 1;
+		if (this.index >= resources.size()) {
+			this.index = 0;
+		}
+
+		return resource;
 	}
 
 }

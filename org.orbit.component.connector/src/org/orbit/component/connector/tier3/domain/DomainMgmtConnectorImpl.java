@@ -4,21 +4,21 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domain.DomainMgmt;
-import org.orbit.component.api.tier3.domain.DomainMgmtConnector;
+import org.orbit.component.api.tier3.domain.DomainManagement;
+import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexService;
 import org.origin.mgm.client.connector.ServiceConnectorImpl;
 
-public class DomainMgmtConnectorImpl extends ServiceConnectorImpl<DomainMgmt> implements DomainMgmtConnector {
+public class DomainMgmtConnectorImpl extends ServiceConnectorImpl<DomainManagement> implements DomainManagementConnector {
 
 	/**
 	 * 
 	 * @param indexService
 	 */
 	public DomainMgmtConnectorImpl(IndexService indexService) {
-		super(indexService, DomainMgmtConnector.class);
+		super(indexService, DomainManagementConnector.class);
 	}
 
 	@Override
@@ -27,13 +27,18 @@ public class DomainMgmtConnectorImpl extends ServiceConnectorImpl<DomainMgmt> im
 	}
 
 	@Override
-	protected DomainMgmt createService(Map<String, Object> properties) {
-		return new DomainMgmtImpl(properties);
+	protected DomainManagement createService(Map<String, Object> properties) {
+		return new DomainManagementImpl(properties);
 	}
 
 	@Override
-	protected void updateService(DomainMgmt domainManagement, Map<String, Object> properties) {
+	protected void updateService(DomainManagement domainManagement, Map<String, Object> properties) {
+		// System.out.println(getClass().getSimpleName() + ".updateService()");
 		domainManagement.update(properties);
+
+		// System.out.println("domainManagement is: " + domainManagement.getName() + " (" + domainManagement.getURL() + ")");
+		// System.out.println("New properties are:");
+		// Printer.pl(properties);
 	}
 
 }

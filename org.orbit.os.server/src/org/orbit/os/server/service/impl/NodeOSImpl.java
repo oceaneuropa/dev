@@ -12,6 +12,7 @@ import org.orbit.os.server.app.AppException;
 import org.orbit.os.server.app.AppsManager;
 import org.orbit.os.server.app.impl.v2.AppsManagerImplV2;
 import org.orbit.os.server.service.NodeOS;
+import org.orbit.os.server.util.SetupUtil;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -80,6 +81,11 @@ public class NodeOSImpl implements NodeOS {
 	public String getContextRoot() {
 		String contextRoot = getProperty(Constants.COMPONENT_NODE_CONTEXT_ROOT);
 		return contextRoot;
+	}
+
+	@Override
+	public String getHome() {
+		return SetupUtil.getNodeHome(this.bundleContext).toString();
 	}
 
 	@Override

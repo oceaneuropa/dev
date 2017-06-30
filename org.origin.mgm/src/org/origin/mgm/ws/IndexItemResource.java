@@ -239,6 +239,10 @@ public class IndexItemResource extends AbstractApplicationResource {
 			String propertiesString = setPropertiesRequest.getPropertiesString();
 			Map<String, Object> propertiesToSet = JSONUtil.toProperties(propertiesString);
 
+			// System.out.println(getClass().getSimpleName() + ".setProperties() " + indexProviderId);
+			// System.out.println(propertiesString);
+			// Printer.pl(propertiesToSet);
+
 			// merge the add properties to existing properties
 			Map<String, Object> existingProperties = (Map<String, Object>) indexService.getProperties(indexProviderId, indexItemId);
 			existingProperties.putAll(propertiesToSet);

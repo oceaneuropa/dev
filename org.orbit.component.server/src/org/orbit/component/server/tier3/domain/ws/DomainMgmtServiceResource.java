@@ -6,7 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.server.tier3.domain.service.DomainMgmtService;
+import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.server.AbstractApplicationResource;
 
 @Path("/")
@@ -17,7 +17,7 @@ public class DomainMgmtServiceResource extends AbstractApplicationResource {
 	@Path("ping")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ping() {
-		DomainMgmtService service = getService(DomainMgmtService.class);
+		DomainManagementService service = getService(DomainManagementService.class);
 		if (service != null) {
 			return Response.ok(1).build();
 		}

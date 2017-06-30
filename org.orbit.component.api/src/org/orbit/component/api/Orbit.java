@@ -8,8 +8,8 @@ import org.orbit.component.api.tier1.session.OAuth2;
 import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
-import org.orbit.component.api.tier3.domain.DomainMgmt;
-import org.orbit.component.api.tier3.domain.DomainMgmtConnector;
+import org.orbit.component.api.tier3.domain.DomainManagement;
+import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 
 public class Orbit {
 
@@ -55,9 +55,9 @@ public class Orbit {
 		return appStore;
 	}
 
-	public DomainMgmt getDomainMamt() {
-		DomainMgmt domainMgmt = null;
-		DomainMgmtConnector connector = Activator.getInstance().getDomainMgmtConnector();
+	public DomainManagement getDomainMamt() {
+		DomainManagement domainMgmt = null;
+		DomainManagementConnector connector = Activator.getInstance().getDomainMgmtConnector();
 		if (connector != null) {
 			domainMgmt = connector.getService();
 		}

@@ -19,7 +19,7 @@ import org.orbit.component.model.tier3.domain.DomainMgmtException;
 import org.orbit.component.model.tier3.domain.ModelConverter;
 import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.NodeConfigRTO;
-import org.orbit.component.server.tier3.domain.service.DomainMgmtService;
+import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
@@ -54,7 +54,7 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodes(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId) {
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 
 		List<NodeConfigDTO> nodeConfigDTOs = new ArrayList<NodeConfigDTO>();
 		try {
@@ -87,7 +87,7 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 	public Response getNode(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId, @PathParam("nodeId") String nodeId) {
 		NodeConfigDTO nodeConfigDTO = null;
 
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			NodeConfigRTO nodeConfig = domainMgmtService.getNodeConfig(machineId, transferAgentId, nodeId);
 			if (nodeConfig == null) {
@@ -123,7 +123,7 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			String nodeId = addNodeRequestDTO.getId();
 			if (nodeId == null || nodeId.isEmpty()) {
@@ -170,7 +170,7 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			NodeConfigRTO updateNodeRequest = ModelConverter.getInstance().toRTO(updateNodeRequestDTO);
 			succeed = domainMgmtService.updateNodeConfig(machineId, transferAgentId, updateNodeRequest);
@@ -209,7 +209,7 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainMgmtService domainMgmtService = getService(DomainMgmtService.class);
+		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			succeed = domainMgmtService.deleteNodeConfig(machineId, transferAgentId, nodeId);
 

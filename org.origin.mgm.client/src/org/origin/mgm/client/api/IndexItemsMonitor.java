@@ -47,10 +47,11 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 		boolean performed = false;
 
 		List<IndexItem> newIndexItems = null;
-		if (indexService != null) {
+		if (this.indexService != null) {
 			try {
 				newIndexItems = getIndexItems(indexService);
 				performed = true;
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -63,6 +64,7 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 			} else {
 				this.cachedIndexItems.clear();
 			}
+
 		} else {
 			// ignore updating the cached index items when the action of getting index items doesn't happen.
 			// e.g. indexing service is down due to network changes or or connection failure or server hardware failure.

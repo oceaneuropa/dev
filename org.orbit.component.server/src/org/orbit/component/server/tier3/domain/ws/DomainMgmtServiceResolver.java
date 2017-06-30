@@ -3,12 +3,12 @@ package org.orbit.component.server.tier3.domain.ws;
 import javax.ws.rs.ext.ContextResolver;
 
 import org.orbit.component.server.Activator;
-import org.orbit.component.server.tier3.domain.service.DomainMgmtService;
+import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 
-public class DomainMgmtServiceResolver implements ContextResolver<DomainMgmtService> {
+public class DomainMgmtServiceResolver implements ContextResolver<DomainManagementService> {
 
 	@Override
-	public DomainMgmtService getContext(Class<?> clazz) {
+	public DomainManagementService getContext(Class<?> clazz) {
 		return Activator.getDomainMgmtService();
 	}
 

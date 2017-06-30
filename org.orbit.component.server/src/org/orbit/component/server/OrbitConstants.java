@@ -13,6 +13,7 @@ public class OrbitConstants {
 
 	// global index item properties
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
+	public static String PINGABLE = "pingable";
 
 	// ----------------------------------------------------------------------------------------
 	// UserRegistry
@@ -31,9 +32,9 @@ public class OrbitConstants {
 	public static String USER_REGISTRY_TYPE = "UserRegistry"; // type of index item for UserRegistry
 
 	// index item properties
+	public static String USER_REGISTRY_NAME = "userregistry.name";
 	public static String USER_REGISTRY_HOST_URL = "userregistry.host.url";
 	public static String USER_REGISTRY_CONTEXT_ROOT = "userregistry.context_root";
-	public static String USER_REGISTRY_NAME = "userregistry.name";
 
 	// ----------------------------------------------------------------------------------------
 	// OAuth2
@@ -52,9 +53,9 @@ public class OrbitConstants {
 	public static String OAUTH2_TYPE = "OAuth2"; // type of index item for OAuth2 service
 
 	// index item properties
+	public static String OAUTH2_NAME = "oauth2.name";
 	public static String OAUTH2_HOST_URL = "oauth2.host.url";
 	public static String OAUTH2_CONTEXT_ROOT = "oauth2.context_root";
-	public static String OAUTH2_NAME = "oauth2.name";
 
 	// ----------------------------------------------------------------------------------------
 	// ConfigRegistry
@@ -73,9 +74,9 @@ public class OrbitConstants {
 	public static String CONFIG_REGISTRY_TYPE = "ConfigRegistry"; // type of index item for ConfigRegistry
 
 	// index item properties
+	public static String CONFIG_REGISTRY_NAME = "configregistry.name";
 	public static String CONFIG_REGISTRY_HOST_URL = "configregistry.host.url";
 	public static String CONFIG_REGISTRY_CONTEXT_ROOT = "configregistry.context_root";
-	public static String CONFIG_REGISTRY_NAME = "configregistry.name";
 
 	// ----------------------------------------------------------------------------------------
 	// AppStore
@@ -94,9 +95,9 @@ public class OrbitConstants {
 	public static String APP_STORE_TYPE = "AppStore"; // type of index item for AppStore
 
 	// index item properties
+	public static String APPSTORE_NAME = "appstore.name";
 	public static String APPSTORE_HOST_URL = "appstore.host.url";
 	public static String APPSTORE_CONTEXT_ROOT = "appstore.context_root";
-	public static String APPSTORE_NAME = "appstore.name";
 
 	// ----------------------------------------------------------------------------------------
 	// DomainManagement
@@ -115,13 +116,17 @@ public class OrbitConstants {
 	public static String DOMAIN_MANAGEMENT_TYPE = "DomainManagement"; // type of index item for DomainManagement service
 
 	// index item properties
+	public static String DOMAIN_MANAGEMENT_NAME = "domain_mgmt.name";
 	public static String DOMAIN_MANAGEMENT_HOST_URL = "domain_mgmt.host.url";
 	public static String DOMAIN_MANAGEMENT_CONTEXT_ROOT = "domain_mgmt.context_root";
-	public static String DOMAIN_MANAGEMENT_NAME = "domain_mgmt.name";
 
 	// ----------------------------------------------------------------------------------------
 	// TransferAgent
 	// ----------------------------------------------------------------------------------------
+	public static String COMPONENT_TRANSFER_AGENT_NAME = "component.transfer_agent.name";
+	public static String COMPONENT_TRANSFER_AGENT_HOST_URL = "component.transfer_agent.host.url";
+	public static String COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT = "component.transfer_agent.context_root";
+
 	// index item values
 	public static String TRANSFER_AGENT_INDEXER_ID = "component.transfer_agent.indexer"; // index provider id for TransferAgent service
 	public static String TRANSFER_AGENT_TYPE = "TransferAgent"; // type of index item for TransferAgent service

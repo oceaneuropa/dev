@@ -18,6 +18,8 @@ public interface NodeOS {
 
 	String getContextRoot();
 
+	String getHome();
+
 	void updateProperties(Map<Object, Object> configProps);
 
 	void start();

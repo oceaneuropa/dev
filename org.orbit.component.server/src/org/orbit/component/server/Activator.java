@@ -3,429 +3,275 @@ package org.orbit.component.server;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.cli.OrbitServicesMgmtCommand;
+import org.orbit.component.cli.ComponentServicesCommand;
 import org.orbit.component.server.tier1.account.service.UserRegistryService;
-import org.orbit.component.server.tier1.account.ws.UserRegistryWSApplication;
+import org.orbit.component.server.tier1.account.ws.UserRegistryServiceAdapter;
 import org.orbit.component.server.tier1.config.service.ConfigRegistryService;
-import org.orbit.component.server.tier1.config.ws.ConfigRegistryWSApplication;
+import org.orbit.component.server.tier1.config.ws.ConfigRegistryServiceAdapter;
 import org.orbit.component.server.tier1.session.service.OAuth2Service;
-import org.orbit.component.server.tier1.session.ws.OAuth2WSApplication;
+import org.orbit.component.server.tier1.session.ws.OAuth2ServiceAdapter;
 import org.orbit.component.server.tier2.appstore.service.AppStoreService;
-import org.orbit.component.server.tier2.appstore.ws.AppStoreWSApplication;
-import org.orbit.component.server.tier3.domain.service.DomainMgmtService;
-import org.orbit.component.server.tier3.domain.ws.DomainMgmtWSApplication;
+import org.orbit.component.server.tier2.appstore.ws.AppStoreServiceAdapter;
+import org.orbit.component.server.tier3.domain.service.DomainManagementService;
+import org.orbit.component.server.tier3.domain.ws.DomainMgmtServiceAdapter;
+import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
+import org.orbit.component.server.tier3.transferagent.util.SetupUtil;
+import org.orbit.component.server.tier3.transferagent.ws.TransferAgentServiceAdapter;
 import org.origin.common.util.PropertyUtil;
-import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.api.IndexServiceUtil;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 public class Activator implements BundleActivator {
 
 	protected static BundleContext bundleContext;
 
+	// tier1
+	protected static boolean hasUserRegistryComponent;
+	protected static boolean hasOauth2Component;
+	protected static boolean hasConfigRegistryComponent;
+	// tier2
+	protected static boolean hasAppStoreComponent;
+	// tier3
+	protected static boolean hasDomainMgmtComponent;
+	protected static boolean hasTransferAgentComponent;
+
+	// tier1
+	protected static UserRegistryServiceAdapter userRegistryServiceAdapter;
+	protected static OAuth2ServiceAdapter oauth2ServiceAdapter;
+	protected static ConfigRegistryServiceAdapter configRegistryServiceAdapter;
+	// tier2
+	protected static AppStoreServiceAdapter appStoreServiceAdapter;
+	// tier3
+	protected static DomainMgmtServiceAdapter domainMgmtServiceAdapter;
+	protected static TransferAgentServiceAdapter transferAgentServiceAdapter;
+
 	public static BundleContext getBundleContext() {
 		return bundleContext;
 	}
 
-	protected static ServiceTracker<UserRegistryService, UserRegistryService> userRegistryServiceTracker;
-	protected static ServiceTracker<OAuth2Service, OAuth2Service> oauth2ServiceTracker;
-	protected static ServiceTracker<ConfigRegistryService, ConfigRegistryService> configRegistryServiceTracker;
-	protected static ServiceTracker<AppStoreService, AppStoreService> appStoreServiceTracker;
-	protected static ServiceTracker<DomainMgmtService, DomainMgmtService> domainMgmtServiceTracker;
-
 	public static UserRegistryService getUserRegistryService() {
-		return (userRegistryServiceTracker != null) ? userRegistryServiceTracker.getService() : null;
+		return (userRegistryServiceAdapter != null) ? userRegistryServiceAdapter.getService() : null;
 	}
 
 	public static OAuth2Service getOAuth2Service() {
-		return (oauth2ServiceTracker != null) ? oauth2ServiceTracker.getService() : null;
+		return (oauth2ServiceAdapter != null) ? oauth2ServiceAdapter.getService() : null;
 	}
 
 	public static ConfigRegistryService getConfigRegistryService() {
-		return (configRegistryServiceTracker != null) ? configRegistryServiceTracker.getService() : null;
+		return (configRegistryServiceAdapter != null) ? configRegistryServiceAdapter.getService() : null;
 	}
 
 	public static AppStoreService getAppStoreService() {
-		return (appStoreServiceTracker != null) ? appStoreServiceTracker.getService() : null;
+		return (appStoreServiceAdapter != null) ? appStoreServiceAdapter.getService() : null;
 	}
 
-	public static DomainMgmtService getDomainMgmtService() {
-		return (domainMgmtServiceTracker != null) ? domainMgmtServiceTracker.getService() : null;
+	public static DomainManagementService getDomainMgmtService() {
+		return (domainMgmtServiceAdapter != null) ? domainMgmtServiceAdapter.getService() : null;
 	}
 
+	public static TransferAgentService getTransferAgentService() {
+		return (transferAgentServiceAdapter != null) ? transferAgentServiceAdapter.getService() : null;
+	}
+
+	protected boolean debug = true;
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-
-	protected OrbitServicesMgmtCommand servicesMgmtCommand;
-
-	protected UserRegistryWSApplication userRegistryWebApp;
-	protected OAuth2WSApplication oauth2WebApp;
-	protected ConfigRegistryWSApplication configRegistryWebApp;
-	protected AppStoreWSApplication appStoreWebApp;
-	protected DomainMgmtWSApplication domainMgmtWebApp;
+	protected ComponentServicesCommand servicesCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		System.out.println(getClass().getName() + ".start()");
+		if (debug) {
+			System.out.println(getClass().getName() + ".start()");
+		}
 
 		Activator.bundleContext = bundleContext;
 
 		// -----------------------------------------------------------------------------
-		// Get load balancer for IndexProvider
+		// Get IndexProvider load balancer
 		// -----------------------------------------------------------------------------
 		// load properties from accessing index service
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
+		SetupUtil.loadTAConfigIniProperties(bundleContext, indexProviderProps);
 		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OrbitConstants.COMPONENT_INDEX_SERVICE_URL);
 		this.indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(indexProviderProps);
 
 		// -----------------------------------------------------------------------------
-		// Open service trackers
+		// Get the available components
+		// -----------------------------------------------------------------------------
+		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+		SetupUtil.loadTAConfigIniProperties(bundleContext, configProps);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_OAUTH2_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
+
+		hasUserRegistryComponent = configProps.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_NAME) ? true : false;
+		hasOauth2Component = configProps.containsKey(OrbitConstants.COMPONENT_OAUTH2_NAME) ? true : false;
+		hasConfigRegistryComponent = configProps.containsKey(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME) ? true : false;
+		hasAppStoreComponent = configProps.containsKey(OrbitConstants.COMPONENT_APP_STORE_NAME) ? true : false;
+		hasDomainMgmtComponent = configProps.containsKey(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME) ? true : false;
+		hasTransferAgentComponent = configProps.containsKey(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME) ? true : false;
+
+		if (debug) {
+			System.out.println("hasUserRegistryComponent = " + hasUserRegistryComponent);
+			System.out.println("hasOauth2Component = " + hasOauth2Component);
+			System.out.println("hasConfigRegistryComponent = " + hasConfigRegistryComponent);
+			System.out.println("hasAppStoreComponent = " + hasAppStoreComponent);
+			System.out.println("hasDomainMgmtComponent = " + hasDomainMgmtComponent);
+			System.out.println("hasTransferAgentComponent = " + hasTransferAgentComponent);
+		}
+
+		// -----------------------------------------------------------------------------
+		// Start service adapters
 		// -----------------------------------------------------------------------------
 		// tier1
-		openUserRegistryServiceTracker(bundleContext);
-		openOAuth2ServiceTracker(bundleContext);
-		openConfigRegistryServiceTracker(bundleContext);
+		if (hasUserRegistryComponent) {
+			userRegistryServiceAdapter = new UserRegistryServiceAdapter(this.indexProviderLoadBalancer);
+			userRegistryServiceAdapter.start(bundleContext);
+		}
+		if (hasOauth2Component) {
+			oauth2ServiceAdapter = new OAuth2ServiceAdapter(this.indexProviderLoadBalancer);
+			oauth2ServiceAdapter.start(bundleContext);
+		}
+		if (hasConfigRegistryComponent) {
+			configRegistryServiceAdapter = new ConfigRegistryServiceAdapter(this.indexProviderLoadBalancer);
+			configRegistryServiceAdapter.start(bundleContext);
+		}
 		// tier2
-		openAppStoreServiceTracker(bundleContext);
+		if (hasAppStoreComponent) {
+			appStoreServiceAdapter = new AppStoreServiceAdapter(this.indexProviderLoadBalancer);
+			appStoreServiceAdapter.start(bundleContext);
+		}
 		// tier3
-		openDomainMgmtServiceTracker(bundleContext);
+		if (hasDomainMgmtComponent) {
+			domainMgmtServiceAdapter = new DomainMgmtServiceAdapter(this.indexProviderLoadBalancer);
+			domainMgmtServiceAdapter.start(bundleContext);
+		}
+		if (hasTransferAgentComponent) {
+			transferAgentServiceAdapter = new TransferAgentServiceAdapter(this.indexProviderLoadBalancer);
+			transferAgentServiceAdapter.start(bundleContext);
+		}
 
 		// --------------------------------------------------------------------------------
 		// Start CLI commands
 		// --------------------------------------------------------------------------------
-		startServicesMgmtCommand(bundleContext);
-		if (this.servicesMgmtCommand != null) {
-			this.servicesMgmtCommand.startservice(OrbitServicesMgmtCommand.USER_REGISTRY);
-			this.servicesMgmtCommand.startservice(OrbitServicesMgmtCommand.OAUTH2);
-			this.servicesMgmtCommand.startservice(OrbitServicesMgmtCommand.CONFIGR_EGISTRY);
-			this.servicesMgmtCommand.startservice(OrbitServicesMgmtCommand.APP_STORE);
-			this.servicesMgmtCommand.startservice(OrbitServicesMgmtCommand.DOMAIN_MGMT);
+		this.servicesCommand = new ComponentServicesCommand();
+		this.servicesCommand.start(bundleContext);
+		// tier1
+		if (hasUserRegistryComponent) {
+			this.servicesCommand.startservice(ComponentServicesCommand.USER_REGISTRY);
+		}
+		if (hasOauth2Component) {
+			this.servicesCommand.startservice(ComponentServicesCommand.OAUTH2);
+		}
+		if (hasConfigRegistryComponent) {
+			this.servicesCommand.startservice(ComponentServicesCommand.CONFIGR_EGISTRY);
+		}
+		// tier2
+		if (hasAppStoreComponent) {
+			this.servicesCommand.startservice(ComponentServicesCommand.APP_STORE);
+		}
+		// tier3
+		if (hasDomainMgmtComponent) {
+			this.servicesCommand.startservice(ComponentServicesCommand.DOMAIN);
+		}
+		if (hasTransferAgentComponent) {
+			this.servicesCommand.startservice(ComponentServicesCommand.TRANSFER_AGENT);
 		}
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		System.out.println(getClass().getName() + ".stop()");
+		if (debug) {
+			System.out.println(getClass().getName() + ".stop()");
+		}
 
 		// --------------------------------------------------------------------------------
 		// Stop CLI commands
 		// --------------------------------------------------------------------------------
-		if (this.servicesMgmtCommand != null) {
-			this.servicesMgmtCommand.stopservice(OrbitServicesMgmtCommand.DOMAIN_MGMT);
-			this.servicesMgmtCommand.stopservice(OrbitServicesMgmtCommand.APP_STORE);
-			this.servicesMgmtCommand.stopservice(OrbitServicesMgmtCommand.CONFIGR_EGISTRY);
-			this.servicesMgmtCommand.stopservice(OrbitServicesMgmtCommand.OAUTH2);
-			this.servicesMgmtCommand.stopservice(OrbitServicesMgmtCommand.USER_REGISTRY);
+		if (this.servicesCommand != null) {
+			// tier3
+			if (hasTransferAgentComponent) {
+				this.servicesCommand.stopservice(ComponentServicesCommand.TRANSFER_AGENT);
+			}
+			if (hasDomainMgmtComponent) {
+				this.servicesCommand.stopservice(ComponentServicesCommand.DOMAIN);
+			}
+			// tier2
+			if (hasAppStoreComponent) {
+				this.servicesCommand.stopservice(ComponentServicesCommand.APP_STORE);
+			}
+			// tier1
+			if (hasConfigRegistryComponent) {
+				this.servicesCommand.stopservice(ComponentServicesCommand.CONFIGR_EGISTRY);
+			}
+			if (hasOauth2Component) {
+				this.servicesCommand.stopservice(ComponentServicesCommand.OAUTH2);
+			}
+			if (hasUserRegistryComponent) {
+				this.servicesCommand.stopservice(ComponentServicesCommand.USER_REGISTRY);
+			}
+			this.servicesCommand.stop(bundleContext);
+			this.servicesCommand = null;
 		}
-		stopServicesMgmtCommand();
 
 		// -----------------------------------------------------------------------------
-		// Close service trackers
+		// Stop service adapters
 		// -----------------------------------------------------------------------------
 		// tier3
-		closeDomainMgmtServiceTracker();
+		if (hasTransferAgentComponent) {
+			if (transferAgentServiceAdapter != null) {
+				transferAgentServiceAdapter.stop(bundleContext);
+				transferAgentServiceAdapter = null;
+			}
+		}
+		if (hasDomainMgmtComponent) {
+			if (domainMgmtServiceAdapter != null) {
+				domainMgmtServiceAdapter.stop(bundleContext);
+				domainMgmtServiceAdapter = null;
+			}
+		}
 		// tier2
-		closeAppStoreServiceTracker();
+		if (hasAppStoreComponent) {
+			if (appStoreServiceAdapter != null) {
+				appStoreServiceAdapter.stop(bundleContext);
+				appStoreServiceAdapter = null;
+			}
+		}
 		// tier1
-		closeConfigRegistryServiceTracker();
-		closeOAuth2ServiceTracker();
-		closeUserRegistryServiceTracker();
+		if (hasConfigRegistryComponent) {
+			if (configRegistryServiceAdapter != null) {
+				configRegistryServiceAdapter.stop(bundleContext);
+				configRegistryServiceAdapter = null;
+			}
+		}
+		if (hasOauth2Component) {
+			if (oauth2ServiceAdapter != null) {
+				oauth2ServiceAdapter.stop(bundleContext);
+				oauth2ServiceAdapter = null;
+			}
+		}
+		if (hasUserRegistryComponent) {
+			if (userRegistryServiceAdapter != null) {
+				userRegistryServiceAdapter.stop(bundleContext);
+				userRegistryServiceAdapter = null;
+			}
+		}
 
 		Activator.bundleContext = null;
 	}
 
-	public IndexProvider createIndexProvider() {
-		if (this.indexProviderLoadBalancer == null) {
-			return null;
-		}
-		return this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
-	}
-
-	protected void startServicesMgmtCommand(BundleContext bundleContext) {
-		this.servicesMgmtCommand = new OrbitServicesMgmtCommand();
-		this.servicesMgmtCommand.start(bundleContext);
-	}
-
-	protected void stopServicesMgmtCommand() {
-		if (this.servicesMgmtCommand != null) {
-			this.servicesMgmtCommand.stop(bundleContext);
-			this.servicesMgmtCommand = null;
-		}
-	}
-
-	protected void openUserRegistryServiceTracker(final BundleContext bundleContext) {
-		userRegistryServiceTracker = new ServiceTracker<UserRegistryService, UserRegistryService>(bundleContext, UserRegistryService.class, new ServiceTrackerCustomizer<UserRegistryService, UserRegistryService>() {
-			@Override
-			public UserRegistryService addingService(ServiceReference<UserRegistryService> reference) {
-				UserRegistryService userRegistryService = bundleContext.getService(reference);
-				System.out.println("UserRegistryService [" + userRegistryService + "] is added.");
-
-				startUserRegistryWebService(userRegistryService);
-				return userRegistryService;
-			}
-
-			@Override
-			public void modifiedService(ServiceReference<UserRegistryService> reference, UserRegistryService userRegistryService) {
-				System.out.println("UserRegistryService [" + userRegistryService + "] is modified.");
-
-				stopUserRegistryWebService();
-				startUserRegistryWebService(userRegistryService);
-			}
-
-			@Override
-			public void removedService(ServiceReference<UserRegistryService> reference, UserRegistryService userRegistryService) {
-				System.out.println("UserRegistryService [" + userRegistryService + "] is removed.");
-
-				stopUserRegistryWebService();
-			}
-		});
-		userRegistryServiceTracker.open();
-	}
-
-	protected void closeUserRegistryServiceTracker() {
-		if (userRegistryServiceTracker != null) {
-			userRegistryServiceTracker.close();
-			userRegistryServiceTracker = null;
-		}
-	}
-
-	protected void openOAuth2ServiceTracker(final BundleContext bundleContext) {
-		oauth2ServiceTracker = new ServiceTracker<OAuth2Service, OAuth2Service>(bundleContext, OAuth2Service.class, new ServiceTrackerCustomizer<OAuth2Service, OAuth2Service>() {
-			@Override
-			public OAuth2Service addingService(ServiceReference<OAuth2Service> reference) {
-				OAuth2Service oauth2Service = bundleContext.getService(reference);
-				System.out.println("OAuth2Service [" + oauth2Service + "] is added.");
-
-				startOauth2WebService(oauth2Service);
-				return oauth2Service;
-			}
-
-			@Override
-			public void modifiedService(ServiceReference<OAuth2Service> reference, OAuth2Service oauth2Service) {
-				System.out.println("OAuth2Service [" + oauth2Service + "] is modified.");
-
-				stopOauth2WebService();
-				startOauth2WebService(oauth2Service);
-			}
-
-			@Override
-			public void removedService(ServiceReference<OAuth2Service> reference, OAuth2Service oauth2Service) {
-				System.out.println("OAuth2Service [" + oauth2Service + "] is removed.");
-
-				stopOauth2WebService();
-			}
-		});
-		oauth2ServiceTracker.open();
-	}
-
-	protected void closeOAuth2ServiceTracker() {
-		if (oauth2ServiceTracker != null) {
-			oauth2ServiceTracker.close();
-			oauth2ServiceTracker = null;
-		}
-	}
-
-	protected void openConfigRegistryServiceTracker(final BundleContext bundleContext) {
-		// Start ConfigRegistry service tracker
-		configRegistryServiceTracker = new ServiceTracker<ConfigRegistryService, ConfigRegistryService>(bundleContext, ConfigRegistryService.class, new ServiceTrackerCustomizer<ConfigRegistryService, ConfigRegistryService>() {
-			@Override
-			public ConfigRegistryService addingService(ServiceReference<ConfigRegistryService> reference) {
-				ConfigRegistryService configRegistryService = bundleContext.getService(reference);
-				System.out.println("ConfigRegistryService [" + configRegistryService + "] is added.");
-
-				startConfigRegistryWebService(configRegistryService);
-				return configRegistryService;
-			}
-
-			@Override
-			public void modifiedService(ServiceReference<ConfigRegistryService> reference, ConfigRegistryService configRegistryService) {
-				System.out.println("ConfigRegistryService [" + configRegistryService + "] is modified.");
-
-				stopConfigRegistryWebService();
-				startConfigRegistryWebService(configRegistryService);
-			}
-
-			@Override
-			public void removedService(ServiceReference<ConfigRegistryService> reference, ConfigRegistryService configRegistryService) {
-				System.out.println("ConfigRegistryService [" + configRegistryService + "] is removed.");
-
-				stopConfigRegistryWebService();
-			}
-		});
-		configRegistryServiceTracker.open();
-	}
-
-	protected void closeConfigRegistryServiceTracker() {
-		if (configRegistryServiceTracker != null) {
-			configRegistryServiceTracker.close();
-			configRegistryServiceTracker = null;
-		}
-	}
-
-	protected void openAppStoreServiceTracker(final BundleContext bundleContext) {
-		appStoreServiceTracker = new ServiceTracker<AppStoreService, AppStoreService>(bundleContext, AppStoreService.class, new ServiceTrackerCustomizer<AppStoreService, AppStoreService>() {
-			@Override
-			public AppStoreService addingService(ServiceReference<AppStoreService> reference) {
-				AppStoreService appStoreService = bundleContext.getService(reference);
-				System.out.println("AppStoreService [" + appStoreService + "] is added.");
-
-				startAppStoreWebService(appStoreService);
-				return appStoreService;
-			}
-
-			@Override
-			public void modifiedService(ServiceReference<AppStoreService> reference, AppStoreService appStoreService) {
-				System.out.println("AppStoreService [" + appStoreService + "] is modified.");
-
-				stopAppStoreWebService();
-				startAppStoreWebService(appStoreService);
-			}
-
-			@Override
-			public void removedService(ServiceReference<AppStoreService> reference, AppStoreService appStoreService) {
-				System.out.println("AppStoreService [" + appStoreService + "] is removed.");
-
-				stopAppStoreWebService();
-			}
-		});
-		appStoreServiceTracker.open();
-	}
-
-	protected void closeAppStoreServiceTracker() {
-		if (appStoreServiceTracker != null) {
-			appStoreServiceTracker.close();
-			appStoreServiceTracker = null;
-		}
-	}
-
-	protected void openDomainMgmtServiceTracker(final BundleContext bundleContext) {
-		domainMgmtServiceTracker = new ServiceTracker<DomainMgmtService, DomainMgmtService>(bundleContext, DomainMgmtService.class, new ServiceTrackerCustomizer<DomainMgmtService, DomainMgmtService>() {
-			@Override
-			public DomainMgmtService addingService(ServiceReference<DomainMgmtService> reference) {
-				DomainMgmtService domainMgmtService = bundleContext.getService(reference);
-				System.out.println("DomainMgmtService [" + domainMgmtService + "] is added.");
-
-				startDomainMgmtWebService(domainMgmtService);
-				return domainMgmtService;
-			}
-
-			@Override
-			public void modifiedService(ServiceReference<DomainMgmtService> reference, DomainMgmtService domainMgmtService) {
-				System.out.println("DomainMgmtService [" + domainMgmtService + "] is modified.");
-
-				stopDomainMgmtWebService();
-				startDomainMgmtWebService(domainMgmtService);
-			}
-
-			@Override
-			public void removedService(ServiceReference<DomainMgmtService> reference, DomainMgmtService domainMgmtService) {
-				System.out.println("DomainMgmtService [" + domainMgmtService + "] is removed.");
-
-				stopDomainMgmtWebService();
-			}
-		});
-		domainMgmtServiceTracker.open();
-	}
-
-	protected void closeDomainMgmtServiceTracker() {
-		if (domainMgmtServiceTracker != null) {
-			domainMgmtServiceTracker.close();
-			domainMgmtServiceTracker = null;
-		}
-	}
-
-	protected void startUserRegistryWebService(UserRegistryService userRegistryService) {
-		this.userRegistryWebApp = new UserRegistryWSApplication();
-		this.userRegistryWebApp.setBundleContext(bundleContext);
-		this.userRegistryWebApp.setContextRoot(userRegistryService.getContextRoot());
-		this.userRegistryWebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.userRegistryWebApp.start();
-	}
-
-	protected void stopUserRegistryWebService() {
-		if (this.userRegistryWebApp != null) {
-			this.userRegistryWebApp.stop();
-			this.userRegistryWebApp = null;
-		}
-	}
-
-	protected void startOauth2WebService(OAuth2Service oauth2Service) {
-		this.oauth2WebApp = new OAuth2WSApplication();
-		this.oauth2WebApp.setBundleContext(bundleContext);
-		this.oauth2WebApp.setContextRoot(oauth2Service.getContextRoot());
-		this.oauth2WebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.oauth2WebApp.start();
-	}
-
-	protected void stopOauth2WebService() {
-		if (this.oauth2WebApp != null) {
-			this.oauth2WebApp.stop();
-			this.oauth2WebApp = null;
-		}
-	}
-
-	protected void startConfigRegistryWebService(ConfigRegistryService configRegistryService) {
-		this.configRegistryWebApp = new ConfigRegistryWSApplication();
-		this.configRegistryWebApp.setBundleContext(bundleContext);
-		this.configRegistryWebApp.setContextRoot(configRegistryService.getContextRoot());
-		this.configRegistryWebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.configRegistryWebApp.start();
-	}
-
-	protected void stopConfigRegistryWebService() {
-		if (this.configRegistryWebApp != null) {
-			this.configRegistryWebApp.stop();
-			this.configRegistryWebApp = null;
-		}
-	}
-
-	protected void startAppStoreWebService(AppStoreService appStoreService) {
-		this.appStoreWebApp = new AppStoreWSApplication();
-		this.appStoreWebApp.setBundleContext(bundleContext);
-		this.appStoreWebApp.setContextRoot(appStoreService.getContextRoot());
-		this.appStoreWebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.appStoreWebApp.start();
-	}
-
-	protected void stopAppStoreWebService() {
-		if (this.appStoreWebApp != null) {
-			this.appStoreWebApp.stop();
-			this.appStoreWebApp = null;
-		}
-	}
-
-	protected void startDomainMgmtWebService(DomainMgmtService domainMgmtService) {
-		this.domainMgmtWebApp = new DomainMgmtWSApplication();
-		this.domainMgmtWebApp.setBundleContext(bundleContext);
-		this.domainMgmtWebApp.setContextRoot(domainMgmtService.getContextRoot());
-		this.domainMgmtWebApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		this.domainMgmtWebApp.start();
-	}
-
-	protected void stopDomainMgmtWebService() {
-		if (this.domainMgmtWebApp != null) {
-			this.domainMgmtWebApp.stop();
-			this.domainMgmtWebApp = null;
-		}
-	}
-
 }
 
-//// -----------------------------------------------------------------------------
-//// Stop web services
-//// -----------------------------------------------------------------------------
-//// tier3
-// stopDomainMgmtWebService();
-//// tier2
-// stopAppStoreWebService();
-//// tier1
-// stopConfigRegistryWebService();
-// stopOauth2WebService();
-// stopUserRegistryWebService();
+// public IndexProvider createIndexProvider() {
+// if (this.indexProviderLoadBalancer == null) {
+// return null;
+// }
+// return this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+// }
 
 // -----------------------------------------------------------------------------
 // Get common properties

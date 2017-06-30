@@ -114,7 +114,7 @@ public abstract class AbstractAgentResource extends AbstractApplicationResource 
 	public Response onRequest(Request request) {
 		Responses responses = new Responses();
 		if (request != null) {
-			responses.setRequestName(request.getLabel());
+			responses.setRequestName(request.getName());
 
 			ICommandStack commandStack = getEditingDomain().getCommandStack();
 			CommandContext context = new CommandContext();

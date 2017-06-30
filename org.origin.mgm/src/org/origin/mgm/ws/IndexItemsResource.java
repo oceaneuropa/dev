@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response.Status;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.util.Printer;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.dto.DTOConverter;
 import org.origin.mgm.model.dto.IndexItemDTO;
@@ -83,12 +84,29 @@ public class IndexItemsResource extends AbstractApplicationResource {
 				}
 			}
 
+			// System.out.println(getClass().getSimpleName() + ".getIndexItems()");
+			// System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+			// for (IndexItem indexItem : indexItems) {
+			// System.out.println(indexItem.getIndexItemId() + " - " + indexItem.getIndexProviderId() + " - " + indexItem.getType() + " - " +
+			// indexItem.getName());
+			// Printer.pl(indexItem.getProperties());
+			// System.out.println();
+			// }
+			// System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+
+			// System.out.println("-------------------------------------------------------------------------------------------");
 			if (indexItems != null) {
 				for (IndexItem indexItem : indexItems) {
 					IndexItemDTO indexItemDTO = DTOConverter.getInstance().toDTO(indexItem);
 					indexItemDTOs.add(indexItemDTO);
+					// System.out.println(indexItemDTO.getIndexItemId() + " - " + indexItemDTO.getIndexProviderId() + " - " + indexItemDTO.getType() + " - " +
+					// indexItemDTO.getName());
+					// System.out.println(indexItemDTO.getPropertiesString());
+					// System.out.println();
 				}
 			}
+			// System.out.println("-------------------------------------------------------------------------------------------");
+
 		} catch (IndexServiceException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
@@ -125,6 +143,10 @@ public class IndexItemsResource extends AbstractApplicationResource {
 			// Map<String, Object> properties = newIndexItemRequest.getProperties();
 			String propertiesString = newIndexItemRequest.getPropertiesString();
 			Map<String, Object> properties = JSONUtil.toProperties(propertiesString);
+
+			System.out.println(getClass().getSimpleName() + ".addIndexItem()");
+			System.out.println(propertiesString);
+			Printer.pl(properties);
 
 			IndexItem newIndexItem = indexService.addIndexItem(indexProviderId, type, name, properties);
 			if (newIndexItem != null) {

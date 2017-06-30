@@ -4,11 +4,14 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.UUID;
 
+import org.origin.common.adapter.AdaptorSupport;
+
 public class LoadBalanceResourceImpl<S> implements LoadBalanceResource<S> {
 
 	protected String id;
 	protected S service;
 	protected Map<String, Object> properties = new Hashtable<String, Object>();
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -92,8 +95,28 @@ public class LoadBalanceResourceImpl<S> implements LoadBalanceResource<S> {
 	}
 
 	@Override
+	public synchronized Object removeProperty(String key) {
+		return this.properties.remove(key);
+	}
+
+	@Override
 	public synchronized Object getProperty(String key) {
 		return this.properties.get(key);
+	}
+
+	/** implement IAdaptable interface */
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		T result = this.adaptorSupport.getAdapter(adapter);
+		if (result != null) {
+			return result;
+		}
+		return null;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
 	}
 
 }
