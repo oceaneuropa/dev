@@ -89,3 +89,20 @@ public class TransferAgentAdapter {
 	}
 
 }
+
+// try {
+// String FILTER_STRING = "(&(" + Constants.OBJECTCLASS + "=" + ServiceConnectorFactory.class.getName() + ")(type=" + TransferAgentConnector.class.getName() +
+// "))";
+// Filter filter = this.bundleContext.createFilter(FILTER_STRING);
+// this.connectorFactoryServiceTracker = new ServiceTracker<ServiceConnectorFactory<TransferAgentConnector>,
+// ServiceConnectorFactory<TransferAgentConnector>>(this.bundleContext, filter, null);
+// this.connectorFactoryServiceTracker.open();
+//
+// } catch (InvalidSyntaxException e) {
+// e.printStackTrace();
+// }
+
+// if (this.connectorFactoryServiceTracker != null) {
+// this.connectorFactoryServiceTracker.close();
+// this.connectorFactoryServiceTracker = null;
+// }

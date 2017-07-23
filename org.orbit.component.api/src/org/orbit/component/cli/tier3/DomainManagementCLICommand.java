@@ -13,10 +13,6 @@ import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.TransferAgentConfig;
-import org.orbit.component.api.tier3.domain.request.UpdateMachineConfigRequest;
-import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.api.tier3.transferagent.TransferAgentHelper;
-import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -34,13 +30,7 @@ import org.osgi.framework.BundleContext;
 
 public class DomainManagementCLICommand implements Annotated {
 
-	// Column names constants
-	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.host.url", "domain_mgmt.context_root", "domain_mgmt.name", "last_heartbeat_time", "heartbeat_expired" };
-	protected static String[] MACHINE_CONFIG_TITLES = new String[] { "ID", "Name", "IP Address" };
-	protected static String[] TRANSFER_AGENT_CONFIG_TITLES = new String[] { "Machine ID", "ID", "Name", "Home", "hostURL", "contextRoot" };
-	protected static String[] NODE_CONFIG_TITLES = new String[] { "Machine ID", "Transfer Agent ID", "ID", "Name", "Home", "hostURL", "contextRoot" };
-
-	// Service types
+	// Service type constants
 	public static final String USER_REGISTRY = "userregistry";
 	public static final String OAUTH2 = "oauth2";
 	public static final String CONFIGR_EGISTRY = "configregistry";
@@ -48,10 +38,18 @@ public class DomainManagementCLICommand implements Annotated {
 	public static final String DOMAIN = "domain";
 	public static final String TRANSFER_AGENT = "transferagent";
 
+	// Column names constants
+	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.host.url", "domain_mgmt.context_root", "domain_mgmt.name", "last_heartbeat_time", "heartbeat_expired" };
+	protected static String[] MACHINE_CONFIG_TITLES = new String[] { "ID", "Name", "IP Address" };
+	protected static String[] TRANSFER_AGENT_CONFIG_TITLES = new String[] { "Machine ID", "ID", "Name", "hostURL", "contextRoot" };
+	protected static String[] NODE_CONFIG_TITLES = new String[] { "Machine ID", "Transfer Agent ID", "ID", "Name", "hostURL", "contextRoot" };
+
 	protected BundleContext bundleContext;
 
 	@Dependency
 	protected DomainManagementConnector domainMgmtConnector;
+
+	protected boolean debug = true;
 
 	/**
 	 * 
@@ -62,7 +60,9 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	public void start() {
-		System.out.println("DomainManagementCLICommand.start()");
+		if (debug) {
+			System.out.println(getClass().getSimpleName() + ".start()");
+		}
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
@@ -72,7 +72,6 @@ public class DomainManagementCLICommand implements Annotated {
 						"lservices", //
 
 						// machine configurations
-						"_lmachines", "_addmachine", "_updatemachine", "_removemachine", //
 						"getmachines", "getmachine", "addmachine", "updatemachine", "removemachine", //
 
 						// transfer agent configurations
@@ -80,9 +79,6 @@ public class DomainManagementCLICommand implements Annotated {
 
 						// node configurations
 						"getnodes", "getnode", "addnode", "updatenode", "removenode", //
-
-						// TA live commands
-						"ta_ping", "ta_list_nodes", "ta_node_exist", "ta_create_node", "ta_delete_node", "ta_start_node", "ta_stop_node",//
 		});
 
 		OSGiServiceUtil.register(this.bundleContext, DomainManagementCLICommand.class.getName(), this, props);
@@ -90,7 +86,9 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	public void stop() {
-		System.out.println("DomainManagementCLICommand.stop()");
+		if (debug) {
+			System.out.println(getClass().getSimpleName() + ".stop()");
+		}
 
 		OSGiServiceUtil.unregister(DomainManagementCLICommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
@@ -98,12 +96,40 @@ public class DomainManagementCLICommand implements Annotated {
 
 	@DependencyFullfilled
 	public void domainMgmtConnectorSet() {
-		System.out.println("DomainMgmtConnector is set.");
+		if (debug) {
+			System.out.println(getClass().getSimpleName() + ".domainMgmtConnectorSet() Dependency on DomainMgmtConnector is set.");
+		}
 	}
 
 	@DependencyUnfullfilled
 	public void domainMgmtConnectorUnset() {
-		System.out.println("DomainMgmtConnector is unset.");
+		if (debug) {
+			System.out.println(getClass().getSimpleName() + ".domainMgmtConnectorSet() Dependency on DomainMgmtConnector is unset.");
+		}
+	}
+
+	protected List<LoadBalanceResource<DomainManagement>> getServiceResources() throws ClientException {
+		checkConnector();
+
+		LoadBalancer<DomainManagement> lb = this.domainMgmtConnector.getLoadBalancer();
+		if (lb == null) {
+			System.out.println("DomainManagement LoadBalancer is not available.");
+			return null;
+		}
+
+		List<LoadBalanceResource<DomainManagement>> resources = lb.getResources();
+		if (resources == null) {
+			System.out.println("DomainManagement LoadBalancer's resource is null.");
+			return null;
+		}
+		return resources;
+	}
+
+	protected DomainManagement getDomainManagement() throws ClientException {
+		DomainManagement domainMgmt = this.domainMgmtConnector.getService();
+		checkDomainManagement(domainMgmt);
+		print(domainMgmt);
+		return domainMgmt;
 	}
 
 	protected void checkConnector() throws ClientException {
@@ -113,10 +139,13 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	/**
-	 * 
-	 * @param domainMgmt
-	 */
+	protected void checkDomainManagement(DomainManagement domainMgmt) throws ClientException {
+		if (domainMgmt == null) {
+			System.err.println(getClass().getSimpleName() + ".checkDomainManagement() domainMgmt is not available.");
+			throw new ClientException(500, "domainMgmt is not available.");
+		}
+	}
+
 	protected void print(DomainManagement domainMgmt) {
 		if (domainMgmt == null) {
 			System.out.println("DomainManagement service is null.");
@@ -126,9 +155,19 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
+	// -----------------------------------------------------------------------------------------
+	// Service
+	// lservices
+	// -----------------------------------------------------------------------------------------
 	@Descriptor("List services")
 	public void lservices(@Descriptor("The service to list") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) throws ClientException {
-		// System.out.println("list services: " + service);
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tlservices");
+			System.out.println("parameters:");
+			System.out.println("\t-service = " + service);
+		}
+
 		if (USER_REGISTRY.equalsIgnoreCase(service)) {
 
 		} else if (OAUTH2.equalsIgnoreCase(service)) {
@@ -147,17 +186,12 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	public void listDomainServices() throws ClientException {
+	protected void listDomainServices() throws ClientException {
 		List<LoadBalanceResource<DomainManagement>> resources = getServiceResources();
 
-		// System.out.println("Number of services: " + resources.size());
 		String[][] rows = new String[resources.size()][DOMAIN_SERVICES_TITLES.length];
 		int rowIndex = 0;
 		for (LoadBalanceResource<DomainManagement> resource : resources) {
-			// String id = resource.getId();
-			// DomainManagement domainMgmt = resource.getService();
-			// String name = domainMgmt.getName();
-
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
 			String hostUrl = ResourcePropertyHelper.INSTANCE.getHostUrl(resource);
 			String contextRoot = ResourcePropertyHelper.INSTANCE.getContextRoot(resource);
@@ -165,186 +199,36 @@ public class DomainManagementCLICommand implements Annotated {
 			Date heartBeatTime = ResourcePropertyHelper.INSTANCE.getHeartbeatTime(resource);
 			boolean expired = ResourcePropertyHelper.INSTANCE.isHeartBeatExpired(resource);
 
-			// String url = domainMgmt.getURL();
-			// System.out.println(name + " (id = '" + id + "', url = '" + url + "')");
-			// System.out.println(name + " (url = '" + url + "')");
-			// System.out.println(name);
-			// Map<?, ?> properties = resource.getProperties();
-			// Printer.pl(properties);
-			// System.out.println("ping: " + domainMgmt.ping());
-			// System.out.println();
-
-			// System.out.println(indexItemId + " - " + hostUrl + " - " + contextRoot + " - " + name + " - " + DateUtil.toString(heartBeatTime,
-			// DateUtil.SIMPLE_DATE_FORMAT2));
-
 			rows[rowIndex++] = new String[] { indexItemId.toString(), hostUrl, contextRoot, name, DateUtil.toString(heartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2), expired ? "yes" : "no" };
 		}
 
 		PrettyPrinter.prettyPrint(DOMAIN_SERVICES_TITLES, rows, resources.size());
 	}
 
-	/**
-	 * 
-	 * @return
-	 * @throws ClientException
-	 */
-	protected List<LoadBalanceResource<DomainManagement>> getServiceResources() throws ClientException {
-		checkConnector();
-
-		LoadBalancer<DomainManagement> lb = this.domainMgmtConnector.getLoadBalancer();
-		if (lb == null) {
-			System.out.println("DomainManagement LoadBalancer is not available.");
-			return null;
-		}
-
-		List<LoadBalanceResource<DomainManagement>> resources = lb.getResources();
-		if (resources == null) {
-			System.out.println("DomainManagement LoadBalancer's resource is null.");
-			return null;
-		}
-		return resources;
-	}
-
-	// ----------------------------------------------------------------
-	// Machine configuration
-	// ----------------------------------------------------------------
-	@Descriptor("List machine configurations")
-	public void _lmachines() {
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			MachineConfig[] machineConfigs = domainMgmt.getMachineConfigs();
-			// System.out.println("Number of machines: " + machineConfigs.length);
-			String[][] rows = new String[machineConfigs.length][MACHINE_CONFIG_TITLES.length];
-			int rowIndex = 0;
-			for (MachineConfig machineConfig : machineConfigs) {
-				String machineId = machineConfig.getId();
-				String machineName = machineConfig.getName();
-				String ipAddress = machineConfig.getIpAddress();
-
-				rows[rowIndex++] = new String[] { machineId, machineName, ipAddress };
-			}
-			PrettyPrinter.prettyPrint(MACHINE_CONFIG_TITLES, rows, machineConfigs.length);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 * @param machineName
-	 * @param ipAddress
-	 */
-	@Descriptor("Add machine configuration")
-	public void _addmachine( //
-			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String machineId, //
-			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = "null") String machineName, //
-			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = "null") String ipAddress //
-	) {
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			AddMachineConfigRequest addMachineRequest = new AddMachineConfigRequest();
-			addMachineRequest.setMachineId(machineId);
-			addMachineRequest.setName(machineName);
-			addMachineRequest.setIpAddress(ipAddress);
-
-			boolean succeed = domainMgmt.addMachineConfig(addMachineRequest);
-			if (succeed) {
-				System.out.println("Machine is added.");
-			} else {
-				System.out.println("Machine is not added.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 * @param machineName
-	 * @param ipAddress
-	 */
-	@Descriptor("Update machine configuration")
-	public void _updatemachine( //
-			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String machineName, //
-			@Descriptor("IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = Parameter.UNSPECIFIED) String ipAddress //
-	) {
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			UpdateMachineConfigRequest updateMachineRequest = new UpdateMachineConfigRequest();
-			updateMachineRequest.setMachineId(machineId);
-
-			if (!Parameter.UNSPECIFIED.equals(machineName)) {
-				if ("null".equals(machineName)) {
-					machineName = null;
-				}
-				updateMachineRequest.setName(machineName);
-			}
-
-			if (!Parameter.UNSPECIFIED.equals(ipAddress)) {
-				if ("null".equals(ipAddress)) {
-					ipAddress = null;
-				}
-				updateMachineRequest.setIpAddress(ipAddress);
-			}
-
-			boolean succeed = domainMgmt.updateMachineConfig(updateMachineRequest);
-			if (succeed) {
-				System.out.println("Machine is updated.");
-			} else {
-				System.out.println("Machine is not updated.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 */
-	@Descriptor("Remmove machine configuration")
-	public void _removemachine( //
-			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String machineId //
-	) {
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			boolean succeed = domainMgmt.removeMachineConfig(machineId);
-			if (succeed) {
-				System.out.println("Machine is removed.");
-			} else {
-				System.out.println("Machine is not removed.");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	// ----------------------------------------------------------------
-	// Machine configuration
-	// ----------------------------------------------------------------
-	@Descriptor("Get machine configurations")
+	// -----------------------------------------------------------------------------------------
+	// Machine configs
+	// getmachines
+	// getmachine
+	// addmachine
+	// updatemachine
+	// removemachine
+	// -----------------------------------------------------------------------------------------
+	@Descriptor("Get machine configs")
 	public void getmachines() {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tgetmachines");
+			System.out.println("parameters:");
+			System.out.println("\tn/a");
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.GET_MACHINE_CONFIGS);
 			Responses responses = domainMgmt.sendRequest(request);
 
 			MachineConfig[] machineConfigs = domainMgmt.getResponseConverter().convertToMachineConfigs(responses);
-			// System.out.println("Number of machines: " + machineConfigs.length);
 			String[][] rows = new String[machineConfigs.length][MACHINE_CONFIG_TITLES.length];
 			int rowIndex = 0;
 			for (MachineConfig machineConfig : machineConfigs) {
@@ -361,20 +245,22 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 */
-	@Descriptor("Get machine configuration")
+	@Descriptor("Get machine config")
 	public void getmachine( //
-			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String machineId //
+			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tgetmachine");
+			System.out.println("parameters:");
+			System.out.println("\t-id = " + id);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.GET_MACHINE_CONFIG);
-			request.setParameter("machineId", machineId);
+			request.setParameter("machineId", id);
 
 			Responses responses = domainMgmt.sendRequest(request);
 			MachineConfig resultMachineConfig = domainMgmt.getResponseConverter().convertToMachineConfig(responses);
@@ -384,10 +270,10 @@ public class DomainManagementCLICommand implements Annotated {
 			int rowIndex = 0;
 			for (MachineConfig machineConfig : machineConfigs) {
 				String currMachineId = machineConfig.getId();
-				String machineName = machineConfig.getName();
-				String ipAddress = machineConfig.getIpAddress();
+				String name = machineConfig.getName();
+				String ip = machineConfig.getIpAddress();
 
-				rows[rowIndex++] = new String[] { currMachineId, machineName, ipAddress };
+				rows[rowIndex++] = new String[] { currMachineId, name, ip };
 			}
 			PrettyPrinter.prettyPrint(MACHINE_CONFIG_TITLES, rows, machineConfigs.length);
 
@@ -396,26 +282,28 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param machineName
-	 * @param ipAddress
-	 */
-	@Descriptor("Add machine configuration")
+	@Descriptor("Add machine config")
 	public void addmachine( //
-			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String machineId, //
-			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = "null") String machineName, //
-			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = "null") String ipAddress //
+			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id, //
+			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = "null") String name, //
+			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = "null") String ip //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\taddmachine");
+			System.out.println("parameters:");
+			System.out.println("\t-id = " + id);
+			System.out.println("\t-name = " + name);
+			System.out.println("\t-ip = " + ip);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.ADD_MACHINE_CONFIG);
-			request.setParameter("machineId", machineId);
-			request.setParameter("name", machineName);
-			request.setParameter("ipAddress", ipAddress);
+			request.setParameter("machineId", id);
+			request.setParameter("name", name);
+			request.setParameter("ipAddress", ip);
 
 			Responses responses = domainMgmt.sendRequest(request);
 			Response response = responses.getResponse(Response.class);
@@ -426,45 +314,48 @@ public class DomainManagementCLICommand implements Annotated {
 					response.getException().printStackTrace();
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param machineName
-	 * @param ipAddress
-	 */
-	@Descriptor("Update machine configuration")
+	@Descriptor("Update machine config")
 	public void updatemachine( //
-			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String machineName, //
-			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = Parameter.UNSPECIFIED) String ipAddress //
+			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
+			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
+			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = Parameter.UNSPECIFIED) String ip //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tupdatemachine");
+			System.out.println("parameters:");
+			System.out.println("\t-id = " + id);
+			System.out.println("\t-name = " + name);
+			System.out.println("\t-ip = " + ip);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.UPDATE_MACHINE_CONFIG);
-			request.setParameter("machineId", machineId);
+			request.setParameter("machineId", id);
 
 			List<String> fieldsToUpdate = new ArrayList<String>();
 
-			if (!Parameter.UNSPECIFIED.equals(machineName)) {
-				if ("null".equals(machineName)) {
-					machineName = null;
+			if (!Parameter.UNSPECIFIED.equals(name)) {
+				if ("null".equals(name)) {
+					name = null;
 				}
-				request.setParameter("name", machineName);
+				request.setParameter("name", name);
 				fieldsToUpdate.add("name");
 			}
 
-			if (!Parameter.UNSPECIFIED.equals(ipAddress)) {
-				if ("null".equals(ipAddress)) {
-					ipAddress = null;
+			if (!Parameter.UNSPECIFIED.equals(ip)) {
+				if ("null".equals(ip)) {
+					ip = null;
 				}
-				request.setParameter("ipAddress", ipAddress);
+				request.setParameter("ipAddress", ip);
 				fieldsToUpdate.add("ipAddress");
 			}
 
@@ -479,25 +370,28 @@ public class DomainManagementCLICommand implements Annotated {
 					response.getException().printStackTrace();
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 */
-	@Descriptor("Remove machine configuration")
+	@Descriptor("Remove machine config")
 	public void removemachine( //
-			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String machineId //
+			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tremovemachine");
+			System.out.println("parameters:");
+			System.out.println("\t-id = " + id);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.REMOVE_MACHINE_CONFIG);
-			request.setParameter("machineId", machineId);
+			request.setParameter("machineId", id);
 
 			Responses responses = domainMgmt.sendRequest(request);
 			Response response = responses.getResponse(Response.class);
@@ -508,25 +402,33 @@ public class DomainManagementCLICommand implements Annotated {
 					response.getException().printStackTrace();
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	// ----------------------------------------------------------------
-	// Transfer Agent configuration
+	// TA configs
+	// gettransferagents
+	// gettransferagent
+	// addtransferagent
+	// updatetransferagent
+	// removetransferagent
 	// ----------------------------------------------------------------
-	/**
-	 * 
-	 * @param machineId
-	 */
-	@Descriptor("Get transfer agent configurations")
+	@Descriptor("Get TA configs")
 	public void gettransferagents( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tgettransferagents");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.GET_TA_CONFIGS);
 			if (!Parameter.UNSPECIFIED.equals(machineId)) {
@@ -541,18 +443,16 @@ public class DomainManagementCLICommand implements Annotated {
 			Responses responses = domainMgmt.sendRequest(request);
 
 			TransferAgentConfig[] taConfigs = domainMgmt.getResponseConverter().convertToTransferAgentConfigs(responses);
-			// System.out.println("Number of transfer agents: " + taConfigs.length);
 			String[][] rows = new String[taConfigs.length][TRANSFER_AGENT_CONFIG_TITLES.length];
 			int rowIndex = 0;
 			for (TransferAgentConfig taConfig : taConfigs) {
 				String currMachineId = taConfig.getMachineId();
 				String id = taConfig.getId();
 				String name = taConfig.getName();
-				String home = taConfig.getHome();
 				String hostURL = taConfig.getHostURL();
 				String contextRoot = taConfig.getContextRoot();
 
-				rows[rowIndex++] = new String[] { currMachineId, id, name, home, hostURL, contextRoot };
+				rows[rowIndex++] = new String[] { currMachineId, id, name, hostURL, contextRoot };
 			}
 			PrettyPrinter.prettyPrint(TRANSFER_AGENT_CONFIG_TITLES, rows, taConfigs.length);
 
@@ -561,16 +461,19 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param id
-	 */
-	@Descriptor("Get transfer agent configuration")
+	@Descriptor("Get TA config")
 	public void gettransferagent( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = "null") String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tgettransferagent");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-id = " + id);
+		}
+
 		try {
 			if (Parameter.UNSPECIFIED.equals(machineId)) {
 				System.out.println("Please specify -machineId parameter");
@@ -581,8 +484,7 @@ public class DomainManagementCLICommand implements Annotated {
 				return;
 			}
 
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.GET_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -610,33 +512,32 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param id
-	 * @param name
-	 * @param home
-	 * @param hostURL
-	 * @param contextRoot
-	 */
-	@Descriptor("Add transfer agent configuration")
+	@Descriptor("Add TA configuration")
 	public void addtransferagent( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
 			@Descriptor("Transfer Agent Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
-			@Descriptor("Transfer Agent Home") @Parameter(names = { "-home", "--home" }, absentValue = Parameter.UNSPECIFIED) String home, //
 			@Descriptor("Transfer Agent host URL") @Parameter(names = { "-hostURL", "--hostURL" }, absentValue = Parameter.UNSPECIFIED) String hostURL, //
 			@Descriptor("Transfer Agent context root") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\taddtransferagent");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-id = " + id);
+			System.out.println("\t-name = " + name);
+			System.out.println("\t-hostURLd = " + hostURL);
+			System.out.println("\t-contextRoot = " + contextRoot);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.ADD_TA_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("id", id);
 			request.setParameter("name", name);
-			request.setParameter("home", home);
 			request.setParameter("hostURL", hostURL);
 			request.setParameter("contextRoot", contextRoot);
 
@@ -649,32 +550,33 @@ public class DomainManagementCLICommand implements Annotated {
 					response.getException().printStackTrace();
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param id
-	 * @param name
-	 * @param home
-	 * @param hostURL
-	 * @param contextRoot
-	 */
-	@Descriptor("Update transfer agent configuration")
+	@Descriptor("Update TA configuration")
 	public void updatetransferagent( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
 			@Descriptor("Transfer Agent Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
-			@Descriptor("Transfer Agent Home") @Parameter(names = { "-home", "--home" }, absentValue = Parameter.UNSPECIFIED) String home, //
 			@Descriptor("Transfer Agent host URL") @Parameter(names = { "-hostURL", "--hostURL" }, absentValue = Parameter.UNSPECIFIED) String hostURL, //
 			@Descriptor("Transfer Agent contextRoot") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tupdatetransferagent");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-id = " + id);
+			System.out.println("\t-name = " + name);
+			System.out.println("\t-hostURLd = " + hostURL);
+			System.out.println("\t-contextRoot = " + contextRoot);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.UPDATE_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -688,14 +590,6 @@ public class DomainManagementCLICommand implements Annotated {
 				}
 				request.setParameter("name", name);
 				fieldsToUpdate.add("name");
-			}
-
-			if (!Parameter.UNSPECIFIED.equals(home)) {
-				if ("null".equals(home)) {
-					home = null;
-				}
-				request.setParameter("home", home);
-				fieldsToUpdate.add("home");
 			}
 
 			if (!Parameter.UNSPECIFIED.equals(hostURL)) {
@@ -725,24 +619,27 @@ public class DomainManagementCLICommand implements Annotated {
 					response.getException().printStackTrace();
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param id
-	 */
-	@Descriptor("Remove transfer agent configuration")
+	@Descriptor("Remove TA configuration")
 	public void removetransferagent( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tremovetransferagent");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-id = " + id);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.REMOVE_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -757,24 +654,33 @@ public class DomainManagementCLICommand implements Annotated {
 					response.getException().printStackTrace();
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	// ----------------------------------------------------------------
-	// Node configuration
+	// Node configs
+	// getnodes
+	// getnode
+	// addnode
+	// updatenode
+	// removenode
 	// ----------------------------------------------------------------
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 */
-	@Descriptor("Get node configurations")
+	@Descriptor("Get node configs")
 	public void getnodes( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tgetnodes");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-transferAgentId = " + transferAgentId);
+		}
+
 		try {
 			if (Parameter.UNSPECIFIED.equals(machineId)) {
 				System.out.println("Please specify -machineId parameter");
@@ -785,8 +691,7 @@ public class DomainManagementCLICommand implements Annotated {
 				return;
 			}
 
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.GET_NODE_CONFIGS);
 			request.setParameter("machineId", machineId);
@@ -815,18 +720,21 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param id
-	 */
-	@Descriptor("Get node configuration")
+	@Descriptor("Get node config")
 	public void getnode( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = "null") String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tgetnode");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-transferAgentId = " + transferAgentId);
+			System.out.println("\t-id = " + id);
+		}
+
 		try {
 			if (Parameter.UNSPECIFIED.equals(machineId)) {
 				System.out.println("Please specify -machineId parameter");
@@ -841,8 +749,7 @@ public class DomainManagementCLICommand implements Annotated {
 				return;
 			}
 
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.GET_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -860,11 +767,10 @@ public class DomainManagementCLICommand implements Annotated {
 				String currTransferAgentId = nodeConfig.getTransferAgentId();
 				String currId = nodeConfig.getId();
 				String name = nodeConfig.getName();
-				String home = nodeConfig.getHome();
 				String hostURL = nodeConfig.getHostURL();
 				String contextRoot = nodeConfig.getContextRoot();
 
-				rows[rowIndex++] = new String[] { currMachineId, currTransferAgentId, currId, name, home, hostURL, contextRoot };
+				rows[rowIndex++] = new String[] { currMachineId, currTransferAgentId, currId, name, hostURL, contextRoot };
 			}
 			PrettyPrinter.prettyPrint(NODE_CONFIG_TITLES, rows, nodeConfigs.length);
 
@@ -873,36 +779,35 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param id
-	 * @param name
-	 * @param home
-	 * @param hostURL
-	 * @param contextRoot
-	 */
-	@Descriptor("Add node configuration")
+	@Descriptor("Add node config")
 	public void addnode( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
 			@Descriptor("Node Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
-			@Descriptor("Node Home") @Parameter(names = { "-home", "--home" }, absentValue = Parameter.UNSPECIFIED) String home, //
 			@Descriptor("Node host URL") @Parameter(names = { "-hostURL", "--hostURL" }, absentValue = Parameter.UNSPECIFIED) String hostURL, //
 			@Descriptor("Node context root") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\taddnode");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-transferAgentId = " + transferAgentId);
+			System.out.println("\t-id = " + id);
+			System.out.println("\t-name = " + name);
+			System.out.println("\t-hostURL = " + hostURL);
+			System.out.println("\t-contextRoot = " + contextRoot);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request addNodeConfigRequest = new Request(OrbitConstants.Requests.ADD_NODE_CONFIG);
 			addNodeConfigRequest.setParameter("machineId", machineId);
 			addNodeConfigRequest.setParameter("transferAgentId", transferAgentId);
 			addNodeConfigRequest.setParameter("id", id);
 			addNodeConfigRequest.setParameter("name", name);
-			addNodeConfigRequest.setParameter("home", home);
 			addNodeConfigRequest.setParameter("hostURL", hostURL);
 			addNodeConfigRequest.setParameter("contextRoot", contextRoot);
 
@@ -940,29 +845,29 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param id
-	 * @param name
-	 * @param home
-	 * @param hostURL
-	 * @param contextRoot
-	 */
-	@Descriptor("Update node configuration")
+	@Descriptor("Update node config")
 	public void updatenode( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
 			@Descriptor("Node Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
-			@Descriptor("Node Home") @Parameter(names = { "-home", "--home" }, absentValue = Parameter.UNSPECIFIED) String home, //
 			@Descriptor("Node host URL") @Parameter(names = { "-hostURL", "--hostURL" }, absentValue = Parameter.UNSPECIFIED) String hostURL, //
 			@Descriptor("Node contextRoot") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tupdatenode");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-transferAgentId = " + transferAgentId);
+			System.out.println("\t-id = " + id);
+			System.out.println("\t-name = " + name);
+			System.out.println("\t-hostURL = " + hostURL);
+			System.out.println("\t-contextRoot = " + contextRoot);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.UPDATE_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -977,14 +882,6 @@ public class DomainManagementCLICommand implements Annotated {
 				}
 				request.setParameter("name", name);
 				fieldsToUpdate.add("name");
-			}
-
-			if (!Parameter.UNSPECIFIED.equals(home)) {
-				if ("null".equals(home)) {
-					home = null;
-				}
-				request.setParameter("home", home);
-				fieldsToUpdate.add("home");
 			}
 
 			if (!Parameter.UNSPECIFIED.equals(hostURL)) {
@@ -1014,26 +911,29 @@ public class DomainManagementCLICommand implements Annotated {
 					response.getException().printStackTrace();
 				}
 			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param id
-	 */
-	@Descriptor("Remove node configuration")
+	@Descriptor("Remove node config")
 	public void removenode( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
+		if (debug) {
+			System.out.println("command:");
+			System.out.println("\tremovenodee");
+			System.out.println("parameters:");
+			System.out.println("\t-machineId = " + machineId);
+			System.out.println("\t-transferAgentId = " + transferAgentId);
+			System.out.println("\t-id = " + id);
+		}
+
 		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
+			DomainManagement domainMgmt = getDomainManagement();
 
 			Request request = new Request(OrbitConstants.Requests.REMOVE_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -1048,231 +948,6 @@ public class DomainManagementCLICommand implements Annotated {
 				if (response.getException() != null) {
 					response.getException().printStackTrace();
 				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	// ----------------------------------------------------------------
-	// ta live commands
-	// ----------------------------------------------------------------
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 */
-	@Descriptor("Ping TA")
-	public void ta_ping( //
-			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
-	) {
-		System.out.println("command: ta_ping");
-		System.out.println("parameters:");
-		System.out.println("\tmachineId = " + machineId);
-		System.out.println("\ttransferAgentId = " + transferAgentId);
-
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(domainMgmt, machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
-			}
-
-			boolean ping = transferAgent.ping();
-			System.out.println("ping = " + ping);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * List nodes.
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 */
-	@Descriptor("List nodes in TA file system")
-	public void ta_list_nodes( //
-			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
-	) {
-		System.out.println("command: ta_list_nodes");
-		System.out.println("parameters:");
-		System.out.println("\tmachineId = " + machineId);
-		System.out.println("\ttransferAgentId = " + transferAgentId);
-
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(domainMgmt, machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Check node exists
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param nodeId
-	 */
-	@Descriptor("Check node exists in TA file system")
-	public void ta_node_exist( //
-			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
-			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
-	) {
-		System.out.println("command: ta_node_exist");
-		System.out.println("parameters:");
-		System.out.println("\tmachineId = " + machineId);
-		System.out.println("\ttransferAgentId = " + transferAgentId);
-		System.out.println("\tnodeId = " + nodeId);
-
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(domainMgmt, machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param nodeId
-	 */
-	@Descriptor("Create node in TA file system")
-	public void ta_create_node( //
-			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
-			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
-	) {
-		System.out.println("command: ta_create_node");
-		System.out.println("parameters:");
-		System.out.println("\tmachineId = " + machineId);
-		System.out.println("\ttransferAgentId = " + transferAgentId);
-		System.out.println("\tnodeId = " + nodeId);
-
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(domainMgmt, machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param nodeId
-	 */
-	@Descriptor("Delete node in TA file system")
-	public void ta_delete_node( //
-			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
-			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
-	) {
-		System.out.println("command: ta_delete_node");
-		System.out.println("parameters:");
-		System.out.println("\tmachineId = " + machineId);
-		System.out.println("\ttransferAgentId = " + transferAgentId);
-		System.out.println("\tnodeId = " + nodeId);
-
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(domainMgmt, machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param nodeId
-	 */
-	@Descriptor("Start node in TA file system")
-	public void ta_start_node( //
-			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
-			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
-	) {
-		System.out.println("command: ta_start_node");
-		System.out.println("parameters:");
-		System.out.println("\tmachineId = " + machineId);
-		System.out.println("\ttransferAgentId = " + transferAgentId);
-		System.out.println("\tnodeId = " + nodeId);
-
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(domainMgmt, machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param nodeId
-	 */
-	@Descriptor("Stop node in TA file system")
-	public void ta_stop_node( //
-			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
-			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
-	) {
-		System.out.println("command: ta_stop_node");
-		System.out.println("parameters:");
-		System.out.println("\tmachineId = " + machineId);
-		System.out.println("\ttransferAgentId = " + transferAgentId);
-		System.out.println("\tnodeId = " + nodeId);
-
-		try {
-			DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-			print(domainMgmt);
-
-			TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(domainMgmt, machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
 			}
 
 		} catch (Exception e) {
