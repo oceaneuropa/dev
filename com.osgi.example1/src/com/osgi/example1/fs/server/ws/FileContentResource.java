@@ -18,14 +18,14 @@ import org.origin.common.io.IOUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.ModelConverter;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.server.service.FileSystem;
 
 @javax.ws.rs.Path("/content")
 @Produces(MediaType.APPLICATION_JSON)
-public class FileContentResource extends AbstractApplicationResource {
+public class FileContentResource extends AbstractWSApplicationResource {
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })

@@ -1,10 +1,10 @@
 package org.nb.drive.rest.client;
 
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
-public class DriveWSClient extends AbstractClient {
+public class DriveWSClient extends AbstractWSClient {
 
 	/**
 	 * 

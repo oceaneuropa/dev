@@ -31,7 +31,7 @@ import org.orbit.component.server.tier2.appstore.service.AppStoreService;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Apps resource.
@@ -57,7 +57,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/apps")
 @Produces(MediaType.APPLICATION_JSON)
-public class AppStoreAppsResource extends AbstractApplicationResource {
+public class AppStoreAppsResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get apps.

@@ -48,8 +48,21 @@ public class Status implements IStatus {
 	private Throwable exception;
 
 	/**
-	 * Simplified constructor of a new status object; assumes that code is <code>OK</code> and exception is <code>null</code>. The created status has
-	 * no children.
+	 * Simplified constructor of a new status object; assumes that code is <code>OK</code> and exception is <code>null</code>. The created status has no
+	 * children.
+	 *
+	 * @param severity
+	 *            one of OK, ERROR, INFO, WARNING, or CANCEL
+	 * @param message
+	 *            a human-readable message, localized to the current locale
+	 */
+	public Status(int severity, String message) {
+		this(severity, null, message);
+	}
+
+	/**
+	 * Simplified constructor of a new status object; assumes that code is <code>OK</code> and exception is <code>null</code>. The created status has no
+	 * children.
 	 *
 	 * @param severity
 	 *            one of OK, ERROR, INFO, WARNING, or CANCEL

@@ -5,22 +5,27 @@ import java.util.Map;
 
 public class Request {
 
-	protected String name;
+	protected String requestName;
 	protected Map<String, Object> parameters = new LinkedHashMap<String, Object>();
 
 	public Request() {
 	}
 
-	public Request(String name) {
-		this.name = name;
+	public Request(String requestName) {
+		this.requestName = requestName;
 	}
 
-	public String getName() {
-		return name;
+	public Request(String requestName, Map<String, Object> parameters) {
+		this.requestName = requestName;
+		this.parameters = parameters;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public String getRequestName() {
+		return this.requestName;
+	}
+
+	public void setRequestName(String requestName) {
+		this.requestName = requestName;
 	}
 
 	public Map<String, Object> getParameters() {

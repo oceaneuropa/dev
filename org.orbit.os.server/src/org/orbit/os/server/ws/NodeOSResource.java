@@ -7,11 +7,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.os.server.service.NodeOS;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class NodeOSResource extends AbstractApplicationResource {
+public class NodeOSResource extends AbstractWSApplicationResource {
 
 	@GET
 	@Path("ping")

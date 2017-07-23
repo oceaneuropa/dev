@@ -1,16 +1,16 @@
 package org.origin.common.rest.model;
 
-import java.util.Map;
-
 public class Response {
 
+	/** Constants for status */
 	public static String SUCCESS = "success";
 	public static String FAILURE = "failure";
 	public static String EXCEPTION = "exception";
 
 	protected String status;
 	protected String message;
-	protected Throwable throwable;
+	protected Throwable exception;
+	protected Object body;
 
 	public Response() {
 	}
@@ -29,33 +29,12 @@ public class Response {
 	 * 
 	 * @param status
 	 * @param message
-	 * @param throwable
+	 * @param exception
 	 */
-	public Response(String status, String message, Throwable throwable) {
+	public Response(String status, String message, Throwable exception) {
 		this.status = status;
 		this.message = message;
-		this.throwable = throwable;
-	}
-
-	/**
-	 * 
-	 * @param label
-	 * @param responses
-	 */
-	public Response(String label, Responses responses) {
-		Object response = responses.get(label);
-		if (response instanceof Map) {
-			Map<?, ?> responseMap = (Map<?, ?>) response;
-			if (responseMap.get("status") instanceof String) {
-				this.status = (String) responseMap.get("status");
-			}
-			if (responseMap.get("message") instanceof String) {
-				this.message = (String) responseMap.get("message");
-			}
-			if (responseMap.get("throwable") instanceof Throwable) {
-				this.throwable = (Throwable) responseMap.get("throwable");
-			}
-		}
+		this.exception = exception;
 	}
 
 	public String getStatus() {
@@ -74,16 +53,37 @@ public class Response {
 		this.message = message;
 	}
 
-	public Throwable getThrowable() {
-		return throwable;
+	public Throwable getException() {
+		return exception;
 	}
 
-	public void setThrowable(Throwable throwable) {
-		this.throwable = throwable;
+	public void setException(Throwable exception) {
+		this.exception = exception;
 	}
 
 	public boolean hasException() {
-		return (this.throwable != null) ? true : false;
+		return (this.exception != null) ? true : false;
+	}
+
+	public Object getBody() {
+		return body;
+	}
+
+	public void setBody(Object body) {
+		this.body = body;
+	}
+
+	@Override
+	public String toString() {
+		return "Response [status=" + status + ", message=" + message + ", exception=" + exception + "]";
+	}
+
+	public String getSimpleLabel() {
+		String label = "status=" + status + ", message=" + message;
+		if (exception != null) {
+			label += ", exception=" + exception.getMessage() + "]";
+		}
+		return label;
 	}
 
 }

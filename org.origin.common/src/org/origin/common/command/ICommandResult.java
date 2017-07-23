@@ -1,23 +1,15 @@
 package org.origin.common.command;
 
 import org.origin.common.adapter.IAdaptable;
-import org.origin.common.runtime.IStatus;
 
 public interface ICommandResult extends IAdaptable {
-
-	/**
-	 * Get the command that returns the command result.
-	 * 
-	 * @return
-	 */
-	public ICommand getCommand();
 
 	/**
 	 * Retrieves the status of the command that is executed, undone or redone.
 	 * 
 	 * @return The status.
 	 */
-	public IStatus getStatus();
+	public Object getResult();
 
 	/**
 	 * The value returned by the execute, undo or redo of a GMF operation.
@@ -34,3 +26,10 @@ public interface ICommandResult extends IAdaptable {
 	public boolean isCompositeResult();
 
 }
+
+/// **
+// * Get the command that returns the command result.
+// *
+// * @return
+// */
+// public ICommand getCommand();

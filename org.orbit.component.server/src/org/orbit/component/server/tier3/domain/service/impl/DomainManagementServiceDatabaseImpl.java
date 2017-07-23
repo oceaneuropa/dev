@@ -2,6 +2,7 @@ package org.orbit.component.server.tier3.domain.service.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.PropertyUtil;
+import org.origin.common.util.StringUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -133,6 +135,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 		try {
 			DatabaseUtil.initialize(conn, MachineConfigTableHandler.INSTANCE);
 			DatabaseUtil.initialize(conn, TransferAgentConfigTableHandler.INSTANCE);
+			DatabaseUtil.initialize(conn, NodeConfigTableHandler.INSTANCE);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -281,10 +285,13 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 	}
 
 	@Override
-	public boolean updateMachineConfig(MachineConfigRTO updateMachineRequest) throws DomainMgmtException {
+	public boolean updateMachineConfig(MachineConfigRTO updateMachineRequest, List<String> fieldsToUpdate) throws DomainMgmtException {
 		String id = updateMachineRequest.getId();
 		String newName = updateMachineRequest.getName();
 		String newIpAddress = updateMachineRequest.getIpAddress();
+		if (fieldsToUpdate == null) {
+			fieldsToUpdate = Collections.emptyList();
+		}
 
 		checkMachineId(id);
 
@@ -300,8 +307,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 			String oldName = machineConfig.getName();
 			String oldIpAddress = machineConfig.getIpAddress();
 
-			if (newName != null) {
-				boolean needToUpdate = (!newName.equals(oldName)) ? true : false;
+			if (fieldsToUpdate.contains("name")) {
+				boolean needToUpdate = (!StringUtil.equals(newName, oldName)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.machineConfigTableHandler.updateName(conn, id, newName);
 					if (succeed) {
@@ -310,8 +317,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 				}
 			}
 
-			if (newIpAddress != null) {
-				boolean needToUpdate = (!newIpAddress.equals(oldIpAddress)) ? true : false;
+			if (fieldsToUpdate.contains("ipAddress")) {
+				boolean needToUpdate = (!StringUtil.equals(newIpAddress, oldIpAddress)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.machineConfigTableHandler.updateIpAddress(conn, id, newIpAddress);
 					if (succeed) {
@@ -354,6 +361,7 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 		Connection conn = getConnection();
 		try {
 			return this.transferAgentConfigTableHandler.getTransferAgentConfigs(conn, machineId);
+
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -420,7 +428,7 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 	}
 
 	@Override
-	public boolean updateTransferAgentConfig(String machineId, TransferAgentConfigRTO updateTransferAgentRequest) throws DomainMgmtException {
+	public boolean updateTransferAgentConfig(String machineId, TransferAgentConfigRTO updateTransferAgentRequest, List<String> fieldsToUpdate) throws DomainMgmtException {
 		String id = updateTransferAgentRequest.getId();
 		String newName = updateTransferAgentRequest.getName();
 		String newHome = updateTransferAgentRequest.getHome();
@@ -444,8 +452,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 			String oldHostURL = transferAgentConfig.getHostURL();
 			String oldContextRoot = transferAgentConfig.getContextRoot();
 
-			if (newName != null) {
-				boolean needToUpdate = (!newName.equals(oldName)) ? true : false;
+			if (fieldsToUpdate.contains("name")) {
+				boolean needToUpdate = (!StringUtil.equals(newName, oldName)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.transferAgentConfigTableHandler.updateName(conn, machineId, id, newName);
 					if (succeed) {
@@ -454,8 +462,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 				}
 			}
 
-			if (newHome != null) {
-				boolean needToUpdate = (!newHome.equals(oldHome)) ? true : false;
+			if (fieldsToUpdate.contains("home")) {
+				boolean needToUpdate = (!StringUtil.equals(newHome, oldHome)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.transferAgentConfigTableHandler.updateHome(conn, machineId, id, newHome);
 					if (succeed) {
@@ -464,8 +472,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 				}
 			}
 
-			if (newHostURL != null) {
-				boolean needToUpdate = (!newHostURL.equals(oldHostURL)) ? true : false;
+			if (fieldsToUpdate.contains("hostURL")) {
+				boolean needToUpdate = (!StringUtil.equals(newHostURL, oldHostURL)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.transferAgentConfigTableHandler.updateHostURL(conn, machineId, id, newHostURL);
 					if (succeed) {
@@ -474,8 +482,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 				}
 			}
 
-			if (newContextRoot != null) {
-				boolean needToUpdate = (!newContextRoot.equals(oldContextRoot)) ? true : false;
+			if (fieldsToUpdate.contains("contextRoot")) {
+				boolean needToUpdate = (!StringUtil.equals(newContextRoot, oldContextRoot)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.transferAgentConfigTableHandler.updateContextRoot(conn, machineId, id, newContextRoot);
 					if (succeed) {
@@ -589,7 +597,7 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 	}
 
 	@Override
-	public boolean updateNodeConfig(String machineId, String transferAgentId, NodeConfigRTO updateNodeRequest) throws DomainMgmtException {
+	public boolean updateNodeConfig(String machineId, String transferAgentId, NodeConfigRTO updateNodeRequest, List<String> fieldsToUpdate) throws DomainMgmtException {
 		String id = updateNodeRequest.getId();
 		String newName = updateNodeRequest.getName();
 		String newHome = updateNodeRequest.getHome();
@@ -614,8 +622,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 			String oldHostURL = nodeConfig.getHostURL();
 			String oldContextRoot = nodeConfig.getContextRoot();
 
-			if (newName != null) {
-				boolean needToUpdate = (!newName.equals(oldName)) ? true : false;
+			if (fieldsToUpdate.contains("name")) {
+				boolean needToUpdate = (!StringUtil.equals(newName, oldName)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.nodeConfigTableHandler.updateName(conn, machineId, transferAgentId, id, newName);
 					if (succeed) {
@@ -624,8 +632,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 				}
 			}
 
-			if (newHome != null) {
-				boolean needToUpdate = (!newHome.equals(oldHome)) ? true : false;
+			if (fieldsToUpdate.contains("home")) {
+				boolean needToUpdate = (!StringUtil.equals(newHome, oldHome)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.nodeConfigTableHandler.updateHome(conn, machineId, transferAgentId, id, newHome);
 					if (succeed) {
@@ -634,8 +642,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 				}
 			}
 
-			if (newHostURL != null) {
-				boolean needToUpdate = (!newHostURL.equals(oldHostURL)) ? true : false;
+			if (fieldsToUpdate.contains("hostURL")) {
+				boolean needToUpdate = (!StringUtil.equals(newHostURL, oldHostURL)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.nodeConfigTableHandler.updateHostURL(conn, machineId, transferAgentId, id, newHostURL);
 					if (succeed) {
@@ -644,8 +652,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 				}
 			}
 
-			if (newContextRoot != null) {
-				boolean needToUpdate = (!newContextRoot.equals(oldContextRoot)) ? true : false;
+			if (fieldsToUpdate.contains("contextRoot")) {
+				boolean needToUpdate = (!StringUtil.equals(newContextRoot, oldContextRoot)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.nodeConfigTableHandler.updateContextRoot(conn, machineId, transferAgentId, id, newContextRoot);
 					if (succeed) {

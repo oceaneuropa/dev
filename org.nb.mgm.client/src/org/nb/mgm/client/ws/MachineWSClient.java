@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.MachineDTO;
 import org.origin.common.json.JSONUtil;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -37,7 +37,7 @@ import org.origin.common.util.PropertyUtil;
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/{machineId}/properties?propertyName={propertyName1}&propertyName={propertyName2}
  * 
  */
-public class MachineWSClient extends AbstractClient {
+public class MachineWSClient extends AbstractWSClient {
 
 	/**
 	 * 

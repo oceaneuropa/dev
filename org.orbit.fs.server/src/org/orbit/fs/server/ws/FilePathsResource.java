@@ -11,11 +11,11 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.fs.api.FilePath;
 import org.orbit.fs.server.service.FileSystemService;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 @javax.ws.rs.Path("/paths")
 @Produces(MediaType.APPLICATION_JSON)
-public class FilePathsResource extends AbstractApplicationResource {
+public class FilePathsResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get file paths with parent path.

@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.HomeDTO;
 import org.origin.common.json.JSONUtil;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -32,7 +32,7 @@ import org.origin.common.rest.model.StatusDTO;
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/{machineId}/homes/{homeId}
  * 
  */
-public class HomeWSClient extends AbstractClient {
+public class HomeWSClient extends AbstractWSClient {
 
 	/**
 	 * 

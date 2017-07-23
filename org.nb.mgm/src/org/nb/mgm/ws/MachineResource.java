@@ -27,7 +27,7 @@ import org.nb.mgm.model.runtime.Machine;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Machine resource.
@@ -41,7 +41,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/machines")
 @Produces(MediaType.APPLICATION_JSON)
-public class MachineResource extends AbstractApplicationResource {
+public class MachineResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get Machines.

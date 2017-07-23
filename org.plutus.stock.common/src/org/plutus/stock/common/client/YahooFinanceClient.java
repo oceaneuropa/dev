@@ -14,7 +14,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -25,7 +25,7 @@ import org.plutus.stock.model.dto.YahooFinanceStockData;
  * YahooFinance web service client to retrieve stock data.
  *
  */
-public class YahooFinanceClient extends AbstractClient {
+public class YahooFinanceClient extends AbstractWSClient {
 
 	// type constants
 	public static final String TYPE_DAILY = "d";

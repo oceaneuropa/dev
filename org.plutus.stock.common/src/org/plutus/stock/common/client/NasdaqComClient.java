@@ -12,7 +12,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -24,7 +24,7 @@ import org.plutus.stock.model.dto.StockCompany;
  * URL: http://www.nasdaq.com/screening/company-list.aspx
  *
  */
-public class NasdaqComClient extends AbstractClient {
+public class NasdaqComClient extends AbstractWSClient {
 
 	// stock exchange constants
 	public static final String EXCHANGE_NASDAQ = "NASDAQ";

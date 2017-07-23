@@ -28,14 +28,14 @@ public class TransferAgentImpl implements TransferAgent {
 	// ------------------------------------------------------------------------------------------------
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.DOMAIN_MANAGEMENT_NAME);
+		String name = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_NAME);
 		return name;
 	}
 
 	@Override
 	public String getURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.DOMAIN_MANAGEMENT_HOST_URL);
-		String contextRoot = (String) this.properties.get(OrbitConstants.DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
+		String contextRoot = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 
@@ -51,14 +51,14 @@ public class TransferAgentImpl implements TransferAgent {
 	 */
 	@Override
 	public void update(Map<String, Object> properties) {
-		String oldUrl = (String) this.properties.get(OrbitConstants.DOMAIN_MANAGEMENT_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(OrbitConstants.DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+		String oldUrl = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
+		String oldContextRoot = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
 
 		properties = checkProperties(properties);
 		this.properties.putAll(properties);
 
-		String newUrl = (String) properties.get(OrbitConstants.DOMAIN_MANAGEMENT_HOST_URL);
-		String newContextRoot = (String) properties.get(OrbitConstants.DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+		String newUrl = (String) properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
+		String newContextRoot = (String) properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
 
 		boolean reinitClient = false;
 		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {

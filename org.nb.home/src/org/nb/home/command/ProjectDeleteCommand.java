@@ -62,7 +62,7 @@ public class ProjectDeleteCommand extends AbstractCommand {
 			throw new CommandException(String.format(MSG4, this.projectId), e);
 		}
 
-		return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG5, this.projectId)));
+		return new CommandResult(new Status(IStatus.OK, null, String.format(MSG5, this.projectId)));
 	}
 
 }

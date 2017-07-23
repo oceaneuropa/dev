@@ -1,16 +1,15 @@
 package org.orbit.component.server.tier3.transferagent.ws;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.orbit.component.server.tier3.transferagent.editpolicy.TransferAgentEditPolicy;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.command.IEditingDomain;
-import org.origin.common.rest.agent.AbstractAgentResource;
-import org.origin.common.rest.model.Request;
+import org.origin.common.rest.agent.CommonWSApplicationResource;
 
 /**
  * @see HomeAgentResource
@@ -19,7 +18,7 @@ import org.origin.common.rest.model.Request;
  */
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class TransferAgentServiceResource extends AbstractAgentResource {
+public class TransferAgentServiceResource extends CommonWSApplicationResource {
 
 	@Override
 	protected IEditingDomain getEditingDomain() {
@@ -37,17 +36,24 @@ public class TransferAgentServiceResource extends AbstractAgentResource {
 		return Response.ok(0).build();
 	}
 
-	/**
-	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/request (body parameter: Request)
-	 * 
-	 * @param request
-	 * @return
-	 */
-	@POST
-	@Path("/request")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response onRequest(Request request) {
-		return super.onRequest(request);
+	@Override
+	protected void createEditPolicies() {
+		TransferAgentEditPolicy transferAgentEditPolicy = new TransferAgentEditPolicy();
+
+		installEditPolicy(transferAgentEditPolicy.getRole(), transferAgentEditPolicy);
 	}
 
 }
+
+// /**
+// * URL (POST): {scheme}://{host}:{port}/{contextRoot}/request (body parameter: Request)
+// *
+// * @param request
+// * @return
+// */
+// @POST
+// @Path("/request")
+// @Produces(MediaType.APPLICATION_JSON)
+// public Response onRequest(Request request) {
+// return super.onRequest(request);
+// }

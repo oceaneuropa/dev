@@ -1,13 +1,13 @@
 package org.nb.home.model.dto;
 
-import java.util.Map;
-
 import org.origin.common.rest.model.Response;
-import org.origin.common.rest.model.Responses;
 
 public class PingResponse extends Response {
 
 	protected Integer result;
+
+	public PingResponse() {
+	}
 
 	/**
 	 * 
@@ -28,21 +28,6 @@ public class PingResponse extends Response {
 	 */
 	public PingResponse(String status, String message, Throwable throwable) {
 		super(status, message, throwable);
-	}
-
-	/**
-	 * 
-	 * @param responses
-	 */
-	public PingResponse(Responses responses) {
-		super("ping", responses);
-		Object response = responses.get("ping");
-		if (response instanceof Map) {
-			Map<?, ?> responseMap = (Map<?, ?>) response;
-			if (responseMap.get("result") instanceof Integer) {
-				this.result = (Integer) ((Map<?, ?>) response).get("result");
-			}
-		}
 	}
 
 	public Integer getResult() {

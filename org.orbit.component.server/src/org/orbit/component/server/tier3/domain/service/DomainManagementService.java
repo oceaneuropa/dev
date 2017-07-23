@@ -9,11 +9,11 @@ import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
 
 public interface DomainManagementService {
 
+	String getName();
+
 	String getHostURL();
 
 	String getContextRoot();
-
-	String getName();
 
 	// ------------------------------------------------------
 	// Machine management
@@ -26,7 +26,7 @@ public interface DomainManagementService {
 
 	boolean addMachineConfig(MachineConfigRTO addMachineRequest) throws DomainMgmtException;
 
-	boolean updateMachineConfig(MachineConfigRTO updateMachineRequest) throws DomainMgmtException;
+	boolean updateMachineConfig(MachineConfigRTO updateMachineRequest, List<String> fieldsToUpdate) throws DomainMgmtException;
 
 	boolean deleteMachineConfig(String machineId) throws DomainMgmtException;
 
@@ -41,7 +41,7 @@ public interface DomainManagementService {
 
 	boolean addTransferAgentConfig(String machineId, TransferAgentConfigRTO addTransferAgentRequest) throws DomainMgmtException;
 
-	boolean updateTransferAgentConfig(String machineId, TransferAgentConfigRTO updateTransferAgentRequest) throws DomainMgmtException;
+	boolean updateTransferAgentConfig(String machineId, TransferAgentConfigRTO updateTransferAgentRequest, List<String> fieldsToUpdate) throws DomainMgmtException;
 
 	boolean deleteTransferAgentConfig(String machineId, String transferAgentId) throws DomainMgmtException;
 
@@ -56,7 +56,7 @@ public interface DomainManagementService {
 
 	boolean addNodeConfig(String machineId, String transferAgentId, NodeConfigRTO addNodeRequest) throws DomainMgmtException;
 
-	boolean updateNodeConfig(String machineId, String transferAgentId, NodeConfigRTO updateNodeRequest) throws DomainMgmtException;
+	boolean updateNodeConfig(String machineId, String transferAgentId, NodeConfigRTO updateNodeRequest, List<String> fieldsToUpdate) throws DomainMgmtException;
 
 	boolean deleteNodeConfig(String machineId, String transferAgentId, String nodeId) throws DomainMgmtException;
 

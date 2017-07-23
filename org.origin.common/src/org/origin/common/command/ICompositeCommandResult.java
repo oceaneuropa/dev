@@ -4,20 +4,6 @@ public interface ICompositeCommandResult extends ICommandResult {
 
 	/**
 	 * 
-	 * @param commandClass
-	 * @return
-	 */
-	public Object getReturnValue(Class<?> commandClass);
-
-	/**
-	 * 
-	 * @param commandClass
-	 * @return
-	 */
-	public Object[] getReturnValues(Class<?> commandClass);
-
-	/**
-	 * 
 	 * @param commandResult
 	 */
 	public void add(ICommandResult commandResult);
@@ -36,3 +22,17 @@ public interface ICompositeCommandResult extends ICommandResult {
 	public ICommandResult[] getCommandResults(boolean includingNestedResults);
 
 }
+
+/// **
+// *
+// * @param commandClass
+// * @return
+// */
+// public Object getReturnValue(Class<?> commandClass);
+//
+/// **
+// *
+// * @param commandClass
+// * @return
+// */
+// public Object[] getReturnValues(Class<?> commandClass);

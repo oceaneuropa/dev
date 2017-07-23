@@ -21,8 +21,8 @@ import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.runtime.Status;
 import org.origin.common.util.ExceptionUtil;
-import org.origin.mgm.model.vo.IndexItemVO;
 import org.origin.mgm.model.vo.IndexItemRequestVO;
+import org.origin.mgm.model.vo.IndexItemVO;
 import org.origin.mgm.persistence.IndexItemDataTableHandler;
 import org.origin.mgm.persistence.IndexItemRequestTableHandler;
 import org.origin.mgm.persistence.IndexItemRevisionTableHandler;
@@ -253,7 +253,7 @@ public class CreateIndexItemCommand extends AbstractCommand {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 
-		return new CommandResult(this, Status.OK_STATUS);
+		return new CommandResult(Status.OK_STATUS);
 	}
 
 	/**
@@ -274,7 +274,7 @@ public class CreateIndexItemCommand extends AbstractCommand {
 
 	@Override
 	public CommandResult undo(CommandContext context) throws CommandException {
-		return new CommandResult(this, Status.OK_STATUS);
+		return new CommandResult(Status.OK_STATUS);
 	}
 
 }

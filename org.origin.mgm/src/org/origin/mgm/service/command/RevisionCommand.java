@@ -96,7 +96,7 @@ public class RevisionCommand extends AbstractCommand {
 			System.out.println("SyncIndexItemCommand.execute() Unsupported command: " + this.command);
 		}
 
-		return new CommandResult(this, Status.OK_STATUS);
+		return new CommandResult(Status.OK_STATUS);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -151,7 +151,7 @@ public class RevisionCommand extends AbstractCommand {
 			System.out.println("RevisionCommand.undo() Unsupported command: " + this.command);
 		}
 
-		return new CommandResult(this, Status.OK_STATUS);
+		return new CommandResult(Status.OK_STATUS);
 	}
 
 }

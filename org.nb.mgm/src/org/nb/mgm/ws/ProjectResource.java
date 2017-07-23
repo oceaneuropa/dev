@@ -24,7 +24,7 @@ import org.nb.mgm.model.runtime.ProjectHome;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Project resource.
@@ -38,7 +38,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/projects")
 @Produces(MediaType.APPLICATION_JSON)
-public class ProjectResource extends AbstractApplicationResource {
+public class ProjectResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get Projects

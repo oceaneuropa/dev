@@ -4,10 +4,10 @@ import org.origin.common.rest.model.Request;
 
 public class PingRequest extends Request {
 
-	public static final String NAME = "ping";
+	public static final String REQUEST_NAME = "ping";
 
 	public PingRequest() {
-		setName(NAME);
+		super(REQUEST_NAME);
 	}
 
 }

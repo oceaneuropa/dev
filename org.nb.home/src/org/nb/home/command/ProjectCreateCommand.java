@@ -130,7 +130,7 @@ public class ProjectCreateCommand extends AbstractCommand {
 		// }
 		// }
 
-		return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG7, this.projectId)));
+		return new CommandResult(new Status(IStatus.OK, null, String.format(MSG7, this.projectId)));
 	}
 
 }

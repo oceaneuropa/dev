@@ -1,5 +1,7 @@
 package org.orbit.component.model.tier3.domain;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -24,6 +26,9 @@ public class NodeConfigDTO {
 	protected String hostURL;
 	@XmlElement
 	protected String contextRoot;
+
+	@XmlElement
+	protected List<String> fieldsToUpdate;
 
 	@XmlElement
 	public String getId() {
@@ -86,6 +91,15 @@ public class NodeConfigDTO {
 
 	public void setContextRoot(String contextRoot) {
 		this.contextRoot = contextRoot;
+	}
+
+	@XmlElement
+	public List<String> getFieldsToUpdate() {
+		return this.fieldsToUpdate;
+	}
+
+	public void setFieldsToUpdate(List<String> fieldsToUpdate) {
+		this.fieldsToUpdate = fieldsToUpdate;
 	}
 
 }

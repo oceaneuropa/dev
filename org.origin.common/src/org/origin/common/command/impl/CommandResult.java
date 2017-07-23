@@ -1,21 +1,14 @@
 package org.origin.common.command.impl;
 
 import org.origin.common.adapter.AdaptorSupport;
-import org.origin.common.command.ICommand;
 import org.origin.common.command.ICommandResult;
-import org.origin.common.runtime.IStatus;
 
 public class CommandResult implements ICommandResult {
 
 	/**
-	 * The command that returns the command result.
-	 */
-	protected ICommand command;
-
-	/**
 	 * The status of this command.
 	 */
-	protected IStatus status;
+	protected Object result;
 
 	/**
 	 * The return value for this command, if applicable.
@@ -27,13 +20,12 @@ public class CommandResult implements ICommandResult {
 	 * 
 	 * @param command
 	 *            The command that returns the command result.
-	 * @param status
+	 * @param result
 	 *            The status for the command result.
 	 */
-	public CommandResult(ICommand command, IStatus status) {
-		assert null != status : "null status"; //$NON-NLS-1$
-		this.command = command;
-		this.status = status;
+	public CommandResult(Object result) {
+		assert null != result : "null status"; //$NON-NLS-1$
+		this.result = result;
 	}
 
 	/**
@@ -41,25 +33,15 @@ public class CommandResult implements ICommandResult {
 	 * 
 	 * @param command
 	 *            The command that returns the command result.
-	 * @param status
+	 * @param result
 	 *            The status for the new command result.
 	 * @param returnValue
 	 *            The return value for the new command result.
 	 */
-	public CommandResult(ICommand command, IStatus status, Object returnValue) {
-		assert null != status : "null status"; //$NON-NLS-1$
-		this.command = command;
-		this.status = status;
+	public CommandResult(Object result, Object returnValue) {
+		assert null != result : "null status"; //$NON-NLS-1$
+		this.result = result;
 		this.returnValue = returnValue;
-	}
-
-	/**
-	 * Get the command that returns the command result.
-	 * 
-	 * @return
-	 */
-	public ICommand getCommand() {
-		return this.command;
 	}
 
 	/**
@@ -67,8 +49,8 @@ public class CommandResult implements ICommandResult {
 	 * 
 	 * @return The status.
 	 */
-	public IStatus getStatus() {
-		return status;
+	public Object getResult() {
+		return this.result;
 	}
 
 	/**
@@ -77,7 +59,7 @@ public class CommandResult implements ICommandResult {
 	 * @return the return value; may be null
 	 */
 	public Object getReturnValue() {
-		return returnValue;
+		return this.returnValue;
 	}
 
 	@Override

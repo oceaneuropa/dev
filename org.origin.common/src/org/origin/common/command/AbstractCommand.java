@@ -5,26 +5,24 @@ package org.origin.common.command;
  */
 public abstract class AbstractCommand implements ICommand {
 
-	protected String label;
+	protected String name;
 	protected ICommandResult commandResult;
 	protected ICommandResult undoResult;
 
 	public AbstractCommand() {
+		this.name = getClass().getSimpleName();
 	}
 
-	public AbstractCommand(String label) {
-		this.label = label;
+	public AbstractCommand(String name) {
+		this.name = name;
 	}
 
-	// ----------------------------------------------------------------------------------------
-	// Label
-	// ----------------------------------------------------------------------------------------
 	@Override
-	public String getLabel() {
-		if (this.label == null) {
+	public String getName() {
+		if (this.name == null) {
 			return this.getClass().getName();
 		}
-		return this.label;
+		return this.name;
 	}
 
 	@Override

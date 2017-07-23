@@ -6,7 +6,8 @@ import javax.ws.rs.core.Response;
 
 import org.nb.home.model.dto.PingRequest;
 import org.nb.home.model.dto.PingResponse;
-import org.origin.common.rest.agent.AgentClient;
+import org.nb.home.model.dto.ResponseParser;
+import org.origin.common.rest.agent.CommonWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Responses;
@@ -19,7 +20,7 @@ import org.origin.common.rest.model.Responses;
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/request (body parameter: Request)
  * 
  */
-public class HomeAgentWSClient extends AgentClient {
+public class HomeAgentWSClient extends CommonWSClient {
 
 	/**
 	 * 
@@ -59,7 +60,7 @@ public class HomeAgentWSClient extends AgentClient {
 		try {
 			Responses responses = sendRequest(new PingRequest());
 			if (!responses.isEmpty()) {
-				PingResponse pingResponse = new PingResponse(responses);
+				PingResponse pingResponse = ResponseParser.getInstance().parse(responses);
 				pingResult = pingResponse.getResult();
 			}
 		} catch (ClientException e) {

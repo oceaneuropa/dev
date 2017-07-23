@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.Action;
 import org.nb.mgm.model.dto.ProjectHomeDTO;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -33,7 +33,7 @@ import org.origin.common.rest.model.StatusDTO;
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/homes/{projectHomeId}/action (Body parameter: Action)
  * 
  */
-public class ProjectHomeWSClient extends AbstractClient {
+public class ProjectHomeWSClient extends AbstractWSClient {
 
 	/**
 	 * 

@@ -7,11 +7,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.component.server.tier1.session.service.OAuth2Service;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class OAuth2ServiceResource extends AbstractApplicationResource {
+public class OAuth2ServiceResource extends AbstractWSApplicationResource {
 
 	@GET
 	@Path("ping")

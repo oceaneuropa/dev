@@ -9,14 +9,14 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 import com.osgi.example1.fs.common.Path;
 import com.osgi.example1.fs.server.service.FileSystem;
 
 @javax.ws.rs.Path("/paths")
 @Produces(MediaType.APPLICATION_JSON)
-public class FilePathsResource extends AbstractApplicationResource {
+public class FilePathsResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get file paths with parent path.

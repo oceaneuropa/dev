@@ -15,6 +15,10 @@ import org.origin.mgm.client.api.IndexProvider;
 
 public class TransferAgentServiceTimerV2 extends ServiceIndexTimerImplV2<IndexProvider, TransferAgentService, IndexItem> implements ServiceIndexTimerV2<IndexProvider, TransferAgentService, IndexItem> {
 
+	/**
+	 * 
+	 * @param indexProvider
+	 */
 	public TransferAgentServiceTimerV2(IndexProvider indexProvider) {
 		super("Index Timer [Transfer Agent Service]", indexProvider);
 	}

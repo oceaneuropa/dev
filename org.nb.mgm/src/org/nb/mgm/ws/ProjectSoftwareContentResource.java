@@ -23,7 +23,7 @@ import org.nb.mgm.service.ManagementService;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Project Software content resource.
@@ -34,7 +34,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/projects/{projectId}/software/{softwareId}/content")
 @Produces(MediaType.APPLICATION_JSON)
-public class ProjectSoftwareContentResource extends AbstractApplicationResource {
+public class ProjectSoftwareContentResource extends AbstractWSApplicationResource {
 
 	/**
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/software/{softwareId}/content

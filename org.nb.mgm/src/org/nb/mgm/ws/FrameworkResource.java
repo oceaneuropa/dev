@@ -6,10 +6,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 @Path("/")
-public class FrameworkResource extends AbstractApplicationResource {
+public class FrameworkResource extends AbstractWSApplicationResource {
 
 	@GET
 	@Path("/ping")

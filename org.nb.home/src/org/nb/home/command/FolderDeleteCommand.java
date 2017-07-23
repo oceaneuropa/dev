@@ -64,7 +64,7 @@ public class FolderDeleteCommand extends AbstractCommand {
 			if (throwExceptionWhenDirectoryIsFile()) {
 				throw new CommandException(String.format(MSG1, directoryPath));
 			}
-			return new CommandResult(this, new Status(IStatus.WARNING, null, String.format(MSG1, directoryPath)));
+			return new CommandResult(new Status(IStatus.WARNING, null, String.format(MSG1, directoryPath)));
 		}
 
 		// Directory not exists
@@ -72,7 +72,7 @@ public class FolderDeleteCommand extends AbstractCommand {
 			if (throwExceptionWhenDirectoryNotExists()) {
 				throw new CommandException(String.format(MSG2, directoryPath));
 			}
-			return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG2, directoryPath)));
+			return new CommandResult(new Status(IStatus.OK, null, String.format(MSG2, directoryPath)));
 		}
 
 		boolean succeed = this.directory.delete();
@@ -81,7 +81,7 @@ public class FolderDeleteCommand extends AbstractCommand {
 			throw new CommandException(String.format(MSG4, directoryPath));
 		}
 
-		return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG3, directoryPath)));
+		return new CommandResult(new Status(IStatus.OK, null, String.format(MSG3, directoryPath)));
 	}
 
 }

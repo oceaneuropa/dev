@@ -27,7 +27,7 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
 import org.origin.common.io.IOUtil;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -57,7 +57,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content
  * 
  */
-public class AppStoreWSClient extends AbstractClient {
+public class AppStoreWSClient extends AbstractWSClient {
 
 	/**
 	 * 

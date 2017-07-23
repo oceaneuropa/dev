@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.orbit.component.server.tier3.transferagent.command.TransferAgentEditPolicyFactory;
 import org.orbit.component.server.tier3.transferagent.timer.TransferAgentServiceTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
@@ -42,7 +41,7 @@ public class TransferAgentWSApplication extends AbstractApplication {
 		this.isStarted.set(true);
 
 		// Register TransferAgentEditPolicy for TransferAgentServiceResource
-		TransferAgentEditPolicyFactory.register();
+		// TransferAgentEditPolicyFactory.register();
 
 		// Register the service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -76,7 +75,7 @@ public class TransferAgentWSApplication extends AbstractApplication {
 		}
 
 		// Unregister TransferAgentEditPolicy for TransferAgentServiceResource
-		TransferAgentEditPolicyFactory.unregister();
+		// TransferAgentEditPolicyFactory.unregister();
 
 		super.stop();
 	}

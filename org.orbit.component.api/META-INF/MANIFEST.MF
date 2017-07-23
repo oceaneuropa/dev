@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.orbit.component.api
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.component.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.origin.common.annotation,
+Import-Package: org.orbit.component.model.tier3.domain.request,
+ org.origin.common.annotation,
  org.origin.common.jdbc,
  org.origin.common.loadbalance,
  org.origin.common.osgi,

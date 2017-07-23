@@ -4,14 +4,14 @@ import org.origin.common.command.IEditingDomain;
 
 public interface TransferAgentService {
 
+	public IEditingDomain getEditingDomain();
+
+	public String getName();
+
 	public String getHostURL();
 
 	public String getContextRoot();
 
-	public String getName();
-
 	public String getHome();
-
-	public IEditingDomain getEditingDomain();
 
 }

@@ -22,7 +22,7 @@ import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * DomainManagement TransferAgents resource.
@@ -40,7 +40,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/machines/{machineId}/transferagents")
 @Produces(MediaType.APPLICATION_JSON)
-public class DomainMgmtTransferAgentsResource extends AbstractApplicationResource {
+public class DomainMgmtTransferAgentsResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get transfer agent configurations.
@@ -169,7 +169,8 @@ public class DomainMgmtTransferAgentsResource extends AbstractApplicationResourc
 		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			TransferAgentConfigRTO updateTransferAgentRequest = ModelConverter.getInstance().toRTO(updateTransferAgentRequestDTO);
-			succeed = domainMgmtService.updateTransferAgentConfig(machineId, updateTransferAgentRequest);
+			List<String> fieldsToUpdate = updateTransferAgentRequestDTO.getFieldsToUpdate();
+			succeed = domainMgmtService.updateTransferAgentConfig(machineId, updateTransferAgentRequest, fieldsToUpdate);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.origin.common.json.JSONUtil;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -62,7 +62,7 @@ import org.origin.mgm.model.dto.IndexItemSetPropertyRequestDTO;
  * @see HomeAgentWSClient
  * @see AppStoreWSClient
  */
-public class IndexServiceWSClient extends AbstractClient {
+public class IndexServiceWSClient extends AbstractWSClient {
 
 	/**
 	 * 

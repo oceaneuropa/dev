@@ -2,14 +2,11 @@ package org.origin.common.command;
 
 public interface ICommand {
 
-	// ----------------------------------------------------------------------------------------
-	// Label
-	// ----------------------------------------------------------------------------------------
 	/**
 	 * 
 	 * @return
 	 */
-	public String getLabel();
+	public String getName();
 
 	/**
 	 * 

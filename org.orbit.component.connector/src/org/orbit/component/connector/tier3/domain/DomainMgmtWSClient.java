@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigDTO;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.agent.CommonWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -47,8 +47,10 @@ import org.origin.common.rest.model.StatusDTO;
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
  * 
+ * @see TransferAgentWSClient
+ * 
  */
-public class DomainMgmtWSClient extends AbstractClient {
+public class DomainMgmtWSClient extends CommonWSClient {
 
 	public static String PATH_MACHINES = "machines";
 	public static String PATH_TRANSFER_AGENTS = "transferagents";

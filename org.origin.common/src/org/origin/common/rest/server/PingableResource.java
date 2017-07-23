@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 
 @javax.ws.rs.Path("/ping")
 @Produces(MediaType.APPLICATION_JSON)
-public class PingableResource extends AbstractApplicationResource {
+public class PingableResource extends AbstractWSApplicationResource {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

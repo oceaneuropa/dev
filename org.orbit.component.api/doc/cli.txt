@@ -1,0 +1,204 @@
+////////////////////////////////////////////////////////////////////////
+// Machine configurations
+////////////////////////////////////////////////////////////////////////
+Add Machine
+------------------------------------------------------------------------
+_addmachine -id m001 -name machine001 -ip 192.168.0.1 
+_addmachine -id m002 -name machine002 -ip 192.168.0.2
+_addmachine -id m003 -name machine003 -ip 192.168.0.3
+------------------------------------------------------------------------
+
+Update Machine
+------------------------------------------------------------------------
+_updatemachine -id m001 -name machine001A -ip 192.168.0.11 
+_updatemachine -id m002 -name machine002B -ip 192.168.0.12
+_updatemachine -id m003 -name machine003C -ip 192.168.0.13
+
+_updatemachine -id m001 -name null -ip null
+_updatemachine -id m002 -name null -ip null
+_updatemachine -id m003 -name null -ip null
+
+_updatemachine -id m001 -ip 192.168.0.1 
+_updatemachine -id m002 -ip 192.168.0.2
+_updatemachine -id m003 -ip 192.168.0.3
+
+_updatemachine -id m001 -name machine001 -ip 192.168.0.1 
+_updatemachine -id m002 -name machine002 -ip 192.168.0.2
+_updatemachine -id m003 -name machine003 -ip 192.168.0.3
+------------------------------------------------------------------------
+
+Remove Machine
+------------------------------------------------------------------------
+_removemachine -id m001
+_removemachine -id m002
+_removemachine -id m003
+------------------------------------------------------------------------
+
+Add Machine
+------------------------------------------------------------------------
+addmachine -id m006 -name machine006 -ip 192.168.0.6
+addmachine -id m007 -name machine007 -ip 192.168.0.7
+------------------------------------------------------------------------
+
+Get Machines
+------------------------------------------------------------------------
+getmachines
+------------------------------------------------------------------------
+
+Get Machine
+------------------------------------------------------------------------
+getmachine -id m006
+getmachine -id m007
+getmachine -id m008
+------------------------------------------------------------------------
+
+Update Machine
+------------------------------------------------------------------------
+updatemachine -id m006 -name machine006A
+updatemachine -id m006 -ip 192.168.0.6A
+
+updatemachine -id m007 -name machine007C
+updatemachine -id m007 -ip 192.168.0.7C
+
+updatemachine -id m006 -name machine006B -ip 192.168.0.6B
+updatemachine -id m007 -name machine007D -ip 192.168.0.7D
+------------------------------------------------------------------------
+
+Remove Machine
+------------------------------------------------------------------------
+removemachine -id m006
+removemachine -id m007
+------------------------------------------------------------------------
+
+
+////////////////////////////////////////////////////////////////////////
+// Transfer Agent configurations
+////////////////////////////////////////////////////////////////////////
+Add Transfer Agent
+------------------------------------------------------------------------
+addtransferagent -machineId m001 -id ta101 -name transferAgent101 -home /Users/oceaneuropa/origin/ta1 -hostURL http://127.0.0.1:12001 -contextRoot /orbit/v1/ta
+addtransferagent -machineId m001 -id ta102 -name transferAgent102 -home /Users/oceaneuropa/origin/ta2 -hostURL http://127.0.0.1:12002 -contextRoot /orbit/v1/ta
+addtransferagent -machineId m002 -id ta201 -name transferAgent201 -home /Users/oceaneuropa/origin/ta3 -hostURL http://127.0.0.1:12003 -contextRoot /orbit/v1/ta
+addtransferagent -machineId m002 -id ta202 -name transferAgent202 -home /Users/oceaneuropa/origin/ta4 -hostURL http://127.0.0.1:12004 -contextRoot /orbit/v1/ta
+------------------------------------------------------------------------
+
+Get Transfer Agent
+------------------------------------------------------------------------
+gettransferagents
+gettransferagents -machineId m001
+gettransferagents -machineId m002
+------------------------------------------------------------------------
+
+Get Transfer Agent
+------------------------------------------------------------------------
+gettransferagent -machineId m001 -id ta101
+gettransferagent -machineId m001 -id ta102
+gettransferagent -machineId m002 -id ta201
+gettransferagent -machineId m002 -id ta202
+------------------------------------------------------------------------
+
+Update Transfer Agent
+------------------------------------------------------------------------
+updatetransferagent -machineId m001 -id ta101 -name transferAgent101A -home /users/home101A -hostURL http://192.168.0.1:9091A -contextRoot /taA
+updatetransferagent -machineId m001 -id ta102 -name transferAgent102B -home /users/home102B -hostURL http://192.168.0.1:9092B -contextRoot /taB
+
+updatetransferagent -machineId m001 -id ta101 -name transferAgent101C
+updatetransferagent -machineId m001 -id ta101 -home /users/home101C
+updatetransferagent -machineId m001 -id ta101 -hostURL http://192.168.0.1:9091C -contextRoot /taC
+
+updatetransferagent -machineId m001 -id ta101 -name null
+updatetransferagent -machineId m001 -id ta101 -home null
+updatetransferagent -machineId m001 -id ta101 -hostURL null -contextRoot null
+
+updatetransferagent -machineId m001 -id ta101 -name transferAgent101 -home /users/home101 -hostURL http://192.168.0.1:9091 -contextRoot /ta
+updatetransferagent -machineId m001 -id ta102 -name transferAgent102 -home /users/home102 -hostURL http://192.168.0.1:9092 -contextRoot /ta
+------------------------------------------------------------------------
+
+Remove Transfer Agent
+------------------------------------------------------------------------
+removetransferagent -machineId m001 -id ta101
+removetransferagent -machineId m001 -id ta102
+removetransferagent -machineId m002 -id ta201
+removetransferagent -machineId m002 -id ta202
+------------------------------------------------------------------------
+
+
+////////////////////////////////////////////////////////////////////////
+// Node configurations
+////////////////////////////////////////////////////////////////////////
+Add Node
+------------------------------------------------------------------------
+addnode -machineId m001 -transferAgentId ta101 -id node101 -name Node101 -home /Users/oceaneuropa/origin/ta1/nodes/node101 -hostURL http://127.0.0.1:13001 -contextRoot /node
+addnode -machineId m001 -transferAgentId ta101 -id node102 -name Node102 -home /Users/oceaneuropa/origin/ta1/nodes/node102 -hostURL http://127.0.0.1:13002 -contextRoot /node
+addnode -machineId m001 -transferAgentId ta102 -id node201 -name Node201 -home /Users/oceaneuropa/origin/ta1/nodes/node201 -hostURL http://127.0.0.1:13003 -contextRoot /node
+addnode -machineId m001 -transferAgentId ta102 -id node202 -name Node202 -home /Users/oceaneuropa/origin/ta1/nodes/node202 -hostURL http://127.0.0.1:13004 -contextRoot /node
+------------------------------------------------------------------------
+
+Get Nodes
+------------------------------------------------------------------------
+getnodes -machineId m001 -transferAgentId ta101
+getnodes -machineId m001 -transferAgentId ta102
+------------------------------------------------------------------------
+
+Get Node
+------------------------------------------------------------------------
+getnode -machineId m001 -transferAgentId ta101 -id node101
+getnode -machineId m001 -transferAgentId ta101 -id node102
+getnode -machineId m001 -transferAgentId ta102 -id node201
+getnode -machineId m001 -transferAgentId ta102 -id node202
+------------------------------------------------------------------------
+
+Update Node
+------------------------------------------------------------------------
+updatenode -machineId m001 -transferAgentId ta101 -id node101 -name Node101A -home /Users/oceaneuropa/origin/ta1/nodes/node101A -hostURL http://127.0.0.1:13001A -contextRoot /nodeA
+updatenode -machineId m001 -transferAgentId ta101 -id node102 -name Node102B -home /Users/oceaneuropa/origin/ta1/nodes/node102B -hostURL http://127.0.0.1:13002B -contextRoot /nodeB
+
+updatenode -machineId m001 -transferAgentId ta101 -id node101 -name Node101A -home /Users/oceaneuropa/origin/ta1/nodes/node101A
+updatenode -machineId m001 -transferAgentId ta101 -id node101 -hostURL http://127.0.0.1:13001A -contextRoot /nodeA
+
+updatenode -machineId m001 -transferAgentId ta101 -id node101 -name Node101 -home /Users/oceaneuropa/origin/ta1/nodes/node101 -hostURL http://127.0.0.1:13001 -contextRoot /node
+updatenode -machineId m001 -transferAgentId ta101 -id node102 -name Node102 -home /Users/oceaneuropa/origin/ta1/nodes/node102 -hostURL http://127.0.0.1:13002 -contextRoot /node
+------------------------------------------------------------------------
+
+Remove Node
+------------------------------------------------------------------------
+removenode -machineId m001 -transferAgentId ta101 -id node101
+removenode -machineId m001 -transferAgentId ta101 -id node102
+removenode -machineId m001 -transferAgentId ta102 -id node201
+removenode -machineId m001 -transferAgentId ta102 -id node202
+------------------------------------------------------------------------
+
+
+////////////////////////////////////////////////////////////////////////
+// Transfer Agent live command
+////////////////////////////////////////////////////////////////////////
+ping TA service
+------------------------------------------------------------------------
+ta_ping -machineId m001 -transferAgentId ta101
+------------------------------------------------------------------------
+
+check node exists on TA
+------------------------------------------------------------------------
+ta_node_exist -machineId m001 -transferAgentId ta101 -nodeId node101
+------------------------------------------------------------------------
+
+create node on TA
+------------------------------------------------------------------------
+ta_create_node -machineId m001 -transferAgentId ta101 -nodeId node101
+------------------------------------------------------------------------
+
+delete node from TA
+------------------------------------------------------------------------
+ta_delete_node -machineId m001 -transferAgentId ta101 -nodeId node101
+------------------------------------------------------------------------
+
+start node on TA
+------------------------------------------------------------------------
+ta_start_node -machineId m001 -transferAgentId ta101 -nodeId node101
+------------------------------------------------------------------------
+
+stop node on TA
+------------------------------------------------------------------------
+ta_stop_node -machineId m001 -transferAgentId ta101 -nodeId node101
+------------------------------------------------------------------------
+

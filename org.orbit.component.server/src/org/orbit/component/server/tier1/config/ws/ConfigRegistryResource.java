@@ -21,7 +21,7 @@ import org.orbit.component.model.tier1.config.SetPropertiesDTO;
 import org.orbit.component.server.tier1.config.service.ConfigRegistry;
 import org.orbit.component.server.tier1.config.service.ConfigRegistryService;
 import org.origin.common.rest.model.ErrorDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Config registry resource.
@@ -33,7 +33,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/{userid}")
 @Produces(MediaType.APPLICATION_JSON)
-public class ConfigRegistryResource extends AbstractApplicationResource {
+public class ConfigRegistryResource extends AbstractWSApplicationResource {
 
 	protected static final Properties EMPTY_PROPERTIES = new Properties();
 	protected static final Map<String, String> EMPTY_MAP = new LinkedHashMap<String, String>();

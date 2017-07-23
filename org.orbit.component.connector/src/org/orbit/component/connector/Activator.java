@@ -8,6 +8,7 @@ import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.session.OAuth2ConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
 import org.orbit.component.connector.tier3.domain.DomainMgmtConnectorImpl;
+import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorFactoryImpl;
 import org.origin.common.util.PropertyUtil;
 import org.origin.mgm.client.OriginConstants;
 import org.origin.mgm.client.api.IndexServiceUtil;
@@ -30,6 +31,7 @@ public class Activator implements BundleActivator {
 	protected OAuth2ConnectorImpl oauth2Connector;
 	protected AppStoreConnectorImpl appStoreConnector;
 	protected DomainMgmtConnectorImpl domainMgmtConnector;
+	protected TransferAgentConnectorFactoryImpl transferAgentConnectorFactory;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -66,6 +68,9 @@ public class Activator implements BundleActivator {
 		// -----------------------------------------------------------------------------
 		this.domainMgmtConnector = new DomainMgmtConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.domainMgmtConnector.start(bundleContext);
+
+		this.transferAgentConnectorFactory = new TransferAgentConnectorFactoryImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.transferAgentConnectorFactory.start(bundleContext);
 	}
 
 	@Override
@@ -78,6 +83,11 @@ public class Activator implements BundleActivator {
 		if (this.domainMgmtConnector != null) {
 			this.domainMgmtConnector.stop();
 			this.domainMgmtConnector = null;
+		}
+
+		if (this.transferAgentConnectorFactory != null) {
+			this.transferAgentConnectorFactory.stop(bundleContext);
+			this.transferAgentConnectorFactory = null;
 		}
 
 		// -----------------------------------------------------------------------------

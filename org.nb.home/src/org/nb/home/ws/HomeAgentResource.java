@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 import org.nb.home.model.exception.HomeException;
 import org.nb.home.service.HomeAgentService;
 import org.origin.common.command.IEditingDomain;
-import org.origin.common.rest.agent.AbstractAgentResource;
+import org.origin.common.rest.agent.CommonWSApplicationResource;
 
 /*
  * Home Agent resource.
@@ -24,7 +24,7 @@ import org.origin.common.rest.agent.AbstractAgentResource;
  */
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class HomeAgentResource extends AbstractAgentResource {
+public class HomeAgentResource extends CommonWSApplicationResource {
 
 	@Override
 	protected IEditingDomain getEditingDomain() {

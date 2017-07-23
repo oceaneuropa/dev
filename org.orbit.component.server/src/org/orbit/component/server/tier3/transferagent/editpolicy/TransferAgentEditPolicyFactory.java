@@ -1,7 +1,7 @@
-package org.orbit.component.server.tier3.transferagent.command;
+package org.orbit.component.server.tier3.transferagent.editpolicy;
 
 import org.orbit.component.server.tier3.transferagent.ws.TransferAgentServiceResource;
-import org.origin.common.rest.agent.AbstractEditPolicy;
+import org.origin.common.rest.agent.AbstractWSEditPolicy;
 import org.origin.common.rest.agent.EditPolicyFactory;
 import org.origin.common.rest.agent.EditPolicyFactoryRegistry;
 
@@ -22,7 +22,7 @@ public class TransferAgentEditPolicyFactory implements EditPolicyFactory {
 	}
 
 	@Override
-	public AbstractEditPolicy createEditPolicy() {
+	public AbstractWSEditPolicy createEditPolicy() {
 		return new TransferAgentEditPolicy();
 	}
 

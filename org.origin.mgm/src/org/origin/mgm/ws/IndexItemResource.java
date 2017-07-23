@@ -21,7 +21,7 @@ import javax.ws.rs.core.Response.Status;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.StringUtil;
 import org.origin.mgm.exception.IndexServiceException;
@@ -54,7 +54,7 @@ import org.origin.mgm.service.IndexService;
  */
 @Path("/indexitems/{indexproviderid}/{indexitemid}")
 @Produces(MediaType.APPLICATION_JSON)
-public class IndexItemResource extends AbstractApplicationResource {
+public class IndexItemResource extends AbstractWSApplicationResource {
 
 	protected boolean debug = true;
 

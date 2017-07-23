@@ -24,7 +24,7 @@ import org.nb.mgm.service.ManagementService;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Home properties resource.
@@ -39,7 +39,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/{machineId}/homes/{homeId}/properties")
 @Produces(MediaType.APPLICATION_JSON)
-public class HomePropertiesResource extends AbstractApplicationResource {
+public class HomePropertiesResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get Home properties.

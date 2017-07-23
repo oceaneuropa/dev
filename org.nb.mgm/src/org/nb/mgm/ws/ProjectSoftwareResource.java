@@ -25,7 +25,7 @@ import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Project Software resource.
@@ -39,7 +39,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/projects/{projectId}/software")
 @Produces(MediaType.APPLICATION_JSON)
-public class ProjectSoftwareResource extends AbstractApplicationResource {
+public class ProjectSoftwareResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get Project Software lists.

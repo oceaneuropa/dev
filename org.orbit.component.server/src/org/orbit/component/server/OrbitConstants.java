@@ -126,6 +126,11 @@ public class OrbitConstants {
 	public static String COMPONENT_TRANSFER_AGENT_NAME = "component.transfer_agent.name";
 	public static String COMPONENT_TRANSFER_AGENT_HOST_URL = "component.transfer_agent.host.url";
 	public static String COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT = "component.transfer_agent.context_root";
+	public static String COMPONENT_TRANSFER_AGENT_HOME = "component.transfer_agent.home";
+	public static String COMPONENT_TRANSFER_AGENT_JDBC_DRIVER = "component.transfer_agent.jdbc.driver";
+	public static String COMPONENT_TRANSFER_AGENT_JDBC_URL = "component.transfer_agent.jdbc.url";
+	public static String COMPONENT_TRANSFER_AGENT_JDBC_USERNAME = "component.transfer_agent.jdbc.username";
+	public static String COMPONENT_TRANSFER_AGENT_JDBC_PASSWORD = "component.transfer_agent.jdbc.password";
 
 	// index item values
 	public static String TRANSFER_AGENT_INDEXER_ID = "component.transfer_agent.indexer"; // index provider id for TransferAgent service
@@ -136,6 +141,30 @@ public class OrbitConstants {
 	public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
 	public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
 	public static String TRANSFER_AGENT_HOME = "transfer_agent.home";
+
+	// ----------------------------------------------------------------------------------------
+	// Requests
+	// ----------------------------------------------------------------------------------------
+	public static class Requests {
+		// Machine configurations
+		public static String GET_MACHINE_CONFIGS = "get_machine_configs";
+		public static String GET_MACHINE_CONFIG = "get_machine_config";
+		public static String ADD_MACHINE_CONFIG = "add_machine_config";
+		public static String UPDATE_MACHINE_CONFIG = "update_machine_config";
+		public static String REMOVE_MACHINE_CONFIG = "remove_machine_config";
+		// Transfer Agent configurations
+		public static String GET_TA_CONFIGS = "get_ta_configs";
+		public static String GET_TA_CONFIG = "get_ta_config";
+		public static String ADD_TA_CONFIG = "add_ta_config";
+		public static String UPDATE_TA_CONFIG = "update_ta_config";
+		public static String REMOVE_TA_CONFIG = "remove_ta_config";
+		// Node configurations
+		public static String GET_NODE_CONFIGS = "get_node_configs";
+		public static String GET_NODE_CONFIG = "get_node_config";
+		public static String ADD_NODE_CONFIG = "add_node_config";
+		public static String UPDATE_NODE_CONFIG = "update_node_config";
+		public static String REMOVE_NODE_CONFIG = "remove_node_config";
+	}
 
 }
 

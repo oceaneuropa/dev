@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
  *
  */
-public abstract class AbstractClient implements WSClient {
+public abstract class AbstractWSClient implements WSClient {
 
 	protected ClientConfiguration config;
 	protected Client client;
@@ -29,7 +29,7 @@ public abstract class AbstractClient implements WSClient {
 	 * 
 	 * @param config
 	 */
-	public AbstractClient(ClientConfiguration config) {
+	public AbstractWSClient(ClientConfiguration config) {
 		this.config = config;
 		this.client = config.createClient();
 	}

@@ -19,11 +19,11 @@ import org.orbit.fs.server.service.FileSystemService;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 @javax.ws.rs.Path("/content")
 @Produces(MediaType.APPLICATION_JSON)
-public class FileContentResource extends AbstractApplicationResource {
+public class FileContentResource extends AbstractWSApplicationResource {
 
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })

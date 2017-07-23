@@ -22,7 +22,7 @@ import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * DomainManagement TransferAgents resource.
@@ -40,7 +40,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/machines/{machineId}/transferagents/{transferAgentId}/nodes")
 @Produces(MediaType.APPLICATION_JSON)
-public class DomainMgmtNodesResource extends AbstractApplicationResource {
+public class DomainMgmtNodesResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get node configurations.
@@ -65,6 +65,7 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 					nodeConfigDTOs.add(nodeConfigDTO);
 				}
 			}
+
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
@@ -94,6 +95,7 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Node with id '%s' cannot be found.", transferAgentId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
+
 			nodeConfigDTO = ModelConverter.getInstance().toDTO(nodeConfig);
 
 		} catch (DomainMgmtException e) {
@@ -136,6 +138,7 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 			}
 
 			NodeConfigRTO addNodeRequest = ModelConverter.getInstance().toRTO(addNodeRequestDTO);
+
 			succeed = domainMgmtService.addNodeConfig(machineId, transferAgentId, addNodeRequest);
 
 		} catch (DomainMgmtException e) {
@@ -173,7 +176,9 @@ public class DomainMgmtNodesResource extends AbstractApplicationResource {
 		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			NodeConfigRTO updateNodeRequest = ModelConverter.getInstance().toRTO(updateNodeRequestDTO);
-			succeed = domainMgmtService.updateNodeConfig(machineId, transferAgentId, updateNodeRequest);
+			List<String> fieldsToUpdate = updateNodeRequestDTO.getFieldsToUpdate();
+
+			succeed = domainMgmtService.updateNodeConfig(machineId, transferAgentId, updateNodeRequest, fieldsToUpdate);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

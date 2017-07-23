@@ -65,7 +65,7 @@ public class FileDeleteCommand extends AbstractCommand {
 				throw new CommandException(String.format(MSG1, filePath));
 			}
 			// Ignore deleting file
-			return new CommandResult(this, new Status(IStatus.WARNING, null, String.format(MSG1, filePath)));
+			return new CommandResult(new Status(IStatus.WARNING, null, String.format(MSG1, filePath)));
 		}
 
 		// File exists
@@ -74,7 +74,7 @@ public class FileDeleteCommand extends AbstractCommand {
 				throw new CommandException(String.format(MSG2, filePath));
 			}
 			// Ignore deleting file
-			return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG2, filePath)));
+			return new CommandResult(new Status(IStatus.OK, null, String.format(MSG2, filePath)));
 		}
 
 		boolean succeed = this.file.delete();
@@ -83,7 +83,7 @@ public class FileDeleteCommand extends AbstractCommand {
 			throw new CommandException(String.format(MSG4, filePath));
 		}
 
-		return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG3, filePath)));
+		return new CommandResult(new Status(IStatus.OK, null, String.format(MSG3, filePath)));
 	}
 
 }

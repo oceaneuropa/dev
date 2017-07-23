@@ -164,7 +164,7 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateName(Connection conn, String machineId, String transferAgentId, String id, String name) throws SQLException {
-		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET name=? WHERE machineId=? AND transferAgentId=? AND id=?", new Object[] { name, machineId, id }, 1);
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET name=? WHERE machineId=? AND transferAgentId=? AND id=?", new Object[] { name, machineId, transferAgentId, id }, 1);
 	}
 
 	/**

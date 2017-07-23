@@ -26,7 +26,7 @@ import org.nb.mgm.model.runtime.MetaSector;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.util.Util;
 
 /*
@@ -42,7 +42,7 @@ import org.origin.common.util.Util;
  */
 @Path("{metaSectorId}/artifacts")
 @Produces(MediaType.APPLICATION_JSON)
-public class ArtifactResource extends AbstractApplicationResource {
+public class ArtifactResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get all Artifacts in a MetaSector.

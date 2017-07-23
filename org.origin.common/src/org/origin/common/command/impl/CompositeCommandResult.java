@@ -3,7 +3,6 @@ package org.origin.common.command.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.origin.common.command.ICommand;
 import org.origin.common.command.ICommandResult;
 import org.origin.common.command.ICompositeCommandResult;
 import org.origin.common.runtime.IStatus;
@@ -16,40 +15,16 @@ public class CompositeCommandResult extends CommandResult implements ICompositeC
 	protected List<ICommandResult> commandResults;
 
 	public CompositeCommandResult() {
-		super(null, Status.OK_STATUS);
+		super(Status.OK_STATUS);
 	}
 
 	@Override
-	public IStatus getStatus() {
+	public IStatus getResult() {
 		ICommandResult[] commandResults = getCommandResults(false);
 		for (ICommandResult commandResult : commandResults) {
-			IStatus currStatus = commandResult.getStatus();
+			// IStatus currStatus = commandResult.getResult();
 		}
 		return null;
-	}
-
-	@Override
-	public Object getReturnValue(Class<?> commandClass) {
-		Object returnValue = null;
-		Object[] returnValues = getReturnValues(commandClass);
-		if (returnValues != null && returnValues.length > 0) {
-			returnValue = returnValues[0];
-		}
-		return returnValue;
-	}
-
-	@Override
-	public Object[] getReturnValues(Class<?> commandClass) {
-		List<Object> list = new ArrayList<Object>();
-		ICommandResult[] commandResults = getCommandResults(true);
-		for (ICommandResult commandResult : commandResults) {
-			ICommand command = commandResult.getCommand();
-			Object returnValue = commandResult.getReturnValue();
-			if (command != null && commandClass.isAssignableFrom(command.getClass()) && returnValue != null) {
-				list.add(returnValue);
-			}
-		}
-		return list.toArray(new Object[list.size()]);
 	}
 
 	@Override
@@ -142,3 +117,27 @@ public class CompositeCommandResult extends CommandResult implements ICompositeC
 	}
 
 }
+
+// @Override
+// public Object getReturnValue(Class<?> commandClass) {
+// Object returnValue = null;
+// Object[] returnValues = getReturnValues(commandClass);
+// if (returnValues != null && returnValues.length > 0) {
+// returnValue = returnValues[0];
+// }
+// return returnValue;
+// }
+//
+// @Override
+// public Object[] getReturnValues(Class<?> commandClass) {
+// List<Object> list = new ArrayList<Object>();
+// ICommandResult[] commandResults = getCommandResults(true);
+// for (ICommandResult commandResult : commandResults) {
+// ICommand command = commandResult.getCommand();
+// Object returnValue = commandResult.getReturnValue();
+// if (command != null && commandClass.isAssignableFrom(command.getClass()) && returnValue != null) {
+// list.add(returnValue);
+// }
+// }
+// return list.toArray(new Object[list.size()]);
+// }

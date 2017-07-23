@@ -24,7 +24,7 @@ import org.orbit.component.model.tier1.account.UserRegistryException;
 import org.orbit.component.server.tier1.account.service.UserRegistryService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * User registry resource.
@@ -45,7 +45,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/useraccounts")
 @Produces(MediaType.APPLICATION_JSON)
-public class UserRegistryUserAccountsResource extends AbstractApplicationResource {
+public class UserRegistryUserAccountsResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get user accounts.

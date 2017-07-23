@@ -5,8 +5,10 @@ import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
-import org.orbit.component.cli.tier2.AppStoreCommand;
-import org.orbit.component.cli.tier3.DomainManagementCommand;
+import org.orbit.component.api.tier3.transferagent.TransferAgentAdapter;
+import org.orbit.component.cli.tier2.AppStoreCLICommand;
+import org.orbit.component.cli.tier3.DomainManagementCLICommand;
+import org.orbit.component.cli.tier3.TransferAgentCLICommand;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -26,17 +28,29 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
+	// --------------------------------------------------------------------------------
+	// tier1 connector service tracker
+	// --------------------------------------------------------------------------------
 	protected ServiceTracker<UserRegistryConnector, UserRegistryConnector> userRegistryConnectorTracker;
 	protected ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector> configRegistryConnectorTracker;
 	protected ServiceTracker<OAuth2Connector, OAuth2Connector> oauth2ConnectorTracker;
 
+	// --------------------------------------------------------------------------------
+	// tier2 connector service tracker
+	// --------------------------------------------------------------------------------
 	protected ServiceTracker<AppStoreConnector, AppStoreConnector> appStoreConnectorTracker;
 
+	// --------------------------------------------------------------------------------
+	// tier3 connector service tracker
+	// --------------------------------------------------------------------------------
 	protected ServiceTracker<DomainManagementConnector, DomainManagementConnector> domainMgmtConnectorTracker;
+	protected TransferAgentAdapter transferAgentAdapter;
+
+	protected AppStoreCLICommand appStoreCLICommand;
+	protected DomainManagementCLICommand domainMgmtCLICommand;
+	protected TransferAgentCLICommand taCLICommand;
 
 	protected boolean debug = true;
-	protected AppStoreCommand appStoreCommand;
-	protected DomainManagementCommand domainMgmtCommand;
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
@@ -178,16 +192,20 @@ public class Activator implements BundleActivator {
 			}
 		});
 
+		this.transferAgentAdapter = new TransferAgentAdapter();
+		this.transferAgentAdapter.start(bundleContext);
+
 		// --------------------------------------------------------------------------------
 		// Start CLI commands
 		// --------------------------------------------------------------------------------
-		// Start AppStore command
-		this.appStoreCommand = new AppStoreCommand(bundleContext);
-		this.appStoreCommand.start();
+		this.appStoreCLICommand = new AppStoreCLICommand(bundleContext);
+		this.appStoreCLICommand.start();
 
-		// Start DomainManagement command
-		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
-		this.domainMgmtCommand.start();
+		this.domainMgmtCLICommand = new DomainManagementCLICommand(bundleContext);
+		this.domainMgmtCLICommand.start();
+
+		this.taCLICommand = new TransferAgentCLICommand(bundleContext);
+		this.taCLICommand.start();
 	}
 
 	@Override
@@ -195,16 +213,19 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Stop CLI commands
 		// --------------------------------------------------------------------------------
-		// Stop AppStore command
-		if (this.appStoreCommand != null) {
-			this.appStoreCommand.stop();
-			this.appStoreCommand = null;
+		if (this.appStoreCLICommand != null) {
+			this.appStoreCLICommand.stop();
+			this.appStoreCLICommand = null;
 		}
 
-		// Stop DomainManagement command
-		if (this.domainMgmtCommand != null) {
-			this.domainMgmtCommand.stop();
-			this.domainMgmtCommand = null;
+		if (this.domainMgmtCLICommand != null) {
+			this.domainMgmtCLICommand.stop();
+			this.domainMgmtCLICommand = null;
+		}
+
+		if (this.taCLICommand != null) {
+			this.taCLICommand.stop();
+			this.taCLICommand = null;
 		}
 
 		// --------------------------------------------------------------------------------
@@ -214,6 +235,10 @@ public class Activator implements BundleActivator {
 		if (this.domainMgmtConnectorTracker != null) {
 			this.domainMgmtConnectorTracker.close();
 			this.domainMgmtConnectorTracker = null;
+		}
+		if (this.transferAgentAdapter != null) {
+			this.transferAgentAdapter.stop(bundleContext);
+			this.transferAgentAdapter = null;
 		}
 
 		// --------------------------------------------------------------------------------
@@ -288,6 +313,10 @@ public class Activator implements BundleActivator {
 			connector = this.domainMgmtConnectorTracker.getService();
 		}
 		return connector;
+	}
+
+	public TransferAgentAdapter getTransferAgentAdapter() {
+		return this.transferAgentAdapter;
 	}
 
 }

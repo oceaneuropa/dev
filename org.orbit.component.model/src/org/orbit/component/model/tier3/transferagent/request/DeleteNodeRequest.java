@@ -4,12 +4,12 @@ import org.origin.common.rest.model.Request;
 
 public class DeleteNodeRequest extends Request {
 
-	public static final String NAME = "delete_node";
+	public static final String REQUEST_NAME = "delete_node";
 
 	protected String nodeName;
 
 	public DeleteNodeRequest() {
-		super(NAME);
+		super(REQUEST_NAME);
 	}
 
 	public String getNodeName() {

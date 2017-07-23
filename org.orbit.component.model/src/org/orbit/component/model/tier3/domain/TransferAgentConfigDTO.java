@@ -1,5 +1,7 @@
 package org.orbit.component.model.tier3.domain;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -10,6 +12,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class TransferAgentConfigDTO {
 
+	@XmlElement
+	protected String machineId;
 	@XmlElement
 	protected String id;
 	@XmlElement
@@ -22,6 +26,18 @@ public class TransferAgentConfigDTO {
 	protected String contextRoot;
 
 	@XmlElement
+	protected List<String> fieldsToUpdate;
+
+	@XmlElement
+	public String getMachineId() {
+		return this.machineId;
+	}
+
+	public void setMachineId(String machineId) {
+		this.machineId = machineId;
+	}
+
+	@XmlElement
 	public String getId() {
 		return id;
 	}
@@ -32,7 +48,7 @@ public class TransferAgentConfigDTO {
 
 	@XmlElement
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -41,7 +57,7 @@ public class TransferAgentConfigDTO {
 
 	@XmlElement
 	public String getHome() {
-		return home;
+		return this.home;
 	}
 
 	public void setHome(String home) {
@@ -50,7 +66,7 @@ public class TransferAgentConfigDTO {
 
 	@XmlElement
 	public String getHostURL() {
-		return hostURL;
+		return this.hostURL;
 	}
 
 	public void setHostURL(String hostURL) {
@@ -59,11 +75,20 @@ public class TransferAgentConfigDTO {
 
 	@XmlElement
 	public String getContextRoot() {
-		return contextRoot;
+		return this.contextRoot;
 	}
 
 	public void setContextRoot(String contextRoot) {
 		this.contextRoot = contextRoot;
+	}
+
+	@XmlElement
+	public List<String> getFieldsToUpdate() {
+		return this.fieldsToUpdate;
+	}
+
+	public void setFieldsToUpdate(List<String> fieldsToUpdate) {
+		this.fieldsToUpdate = fieldsToUpdate;
 	}
 
 }

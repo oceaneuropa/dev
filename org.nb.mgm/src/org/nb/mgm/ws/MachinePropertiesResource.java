@@ -24,7 +24,7 @@ import org.nb.mgm.service.ManagementService;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Machine properties resource.
@@ -37,7 +37,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/{machineId}/properties")
 @Produces(MediaType.APPLICATION_JSON)
-public class MachinePropertiesResource extends AbstractApplicationResource {
+public class MachinePropertiesResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get Machine properties.

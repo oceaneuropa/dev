@@ -4,12 +4,12 @@ import org.origin.common.rest.model.Request;
 
 public class StopNodeRequest extends Request {
 
-	public static final String NAME = "stop_node";
+	public static final String REQUEST_NAME = "stop_node";
 
 	protected String nodeName;
 
 	public StopNodeRequest() {
-		super(NAME);
+		super(REQUEST_NAME);
 	}
 
 	public String getNodeName() {

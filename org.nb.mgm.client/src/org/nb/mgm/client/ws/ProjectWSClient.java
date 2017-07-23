@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.nb.mgm.model.dto.ProjectDTO;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -27,7 +27,7 @@ import org.origin.common.rest.model.StatusDTO;
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}
  * 
  */
-public class ProjectWSClient extends AbstractClient {
+public class ProjectWSClient extends AbstractWSClient {
 
 	/**
 	 * 

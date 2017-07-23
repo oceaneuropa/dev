@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.component.model.tier1.account.UserAccountDTO;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccounts/{userId}/activated
  * 
  */
-public class UserRegistryWSClient extends AbstractClient {
+public class UserRegistryWSClient extends AbstractWSClient {
 
 	public static String PATH_USERACCOUNTS = "useraccounts";
 

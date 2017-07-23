@@ -19,7 +19,6 @@ import org.origin.common.loadbalance.policy.LoadBalancePolicy;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
 import org.origin.common.rest.model.Pingable;
 import org.origin.common.thread.ThreadPoolTimer;
-import org.origin.common.util.DateUtil;
 import org.origin.common.util.Printer;
 import org.origin.common.util.Timer;
 import org.origin.mgm.client.OriginConstants;
@@ -375,7 +374,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		Date lastHeartBeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartBeatTime(resource);
 		if (this.debug) {
 			// CharSequence relativeTime = TimeUtil.getRelativeTime(lastHeartBeatTime.getTime());
-			System.out.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemId + " - " + indexProviderId + " - " + indexItemType + " - " + indexItemName + "] Last Heart Beat Time: " + DateUtil.toString(lastHeartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2));
+			// System.out.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemId + " - " + indexProviderId + " - " + indexItemType + " - " + indexItemName + "] Last Heart Beat Time: " + DateUtil.toString(lastHeartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2));
 			// System.out.println("\tindexItemId=" + indexItemId);
 			// System.out.println("\tindexProviderId=" + indexProviderId);
 			// System.out.println("\tindexItemName=" + indexItemName);

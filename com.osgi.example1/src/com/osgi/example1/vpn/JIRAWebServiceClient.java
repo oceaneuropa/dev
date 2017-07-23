@@ -5,7 +5,7 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -14,7 +14,7 @@ import org.origin.common.rest.client.ClientUtil;
  * YahooFinance web service client to retrieve stock data.
  *
  */
-public class JIRAWebServiceClient extends AbstractClient {
+public class JIRAWebServiceClient extends AbstractWSClient {
 
 	public JIRAWebServiceClient() {
 		super(ClientConfiguration.get("https://some.company.com:443", "browse/some-ticket", null));

@@ -101,16 +101,16 @@ public class FileCreateCommand extends AbstractCommand {
 				throw new CommandException(String.format(MSG1, filePath));
 			}
 			// Ignore creating new file
-			return new CommandResult(this, new Status(IStatus.WARNING, null, String.format(MSG1, filePath)));
+			return new CommandResult(new Status(IStatus.WARNING, null, String.format(MSG1, filePath)));
 		}
 
 		// File exists
 		if (this.file.exists()) {
 			if (throwExceptionWhenFileExists()) {
-				return new CommandResult(this, new Status(IStatus.ERROR, null, String.format(MSG2, filePath)));
+				return new CommandResult(new Status(IStatus.ERROR, null, String.format(MSG2, filePath)));
 			}
 			// Ignore creating new file
-			return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG2, filePath)));
+			return new CommandResult(new Status(IStatus.OK, null, String.format(MSG2, filePath)));
 		}
 
 		boolean succeed = false;
@@ -154,7 +154,7 @@ public class FileCreateCommand extends AbstractCommand {
 			}
 		}
 
-		return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG3, filePath)));
+		return new CommandResult(new Status(IStatus.OK, null, String.format(MSG3, filePath)));
 	}
 
 }

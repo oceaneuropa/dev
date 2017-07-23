@@ -2,27 +2,28 @@ package org.orbit.component.connector.tier3.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier3.domain.DomainManagement;
+import org.orbit.component.api.tier3.domain.DomainManagementResponseConverter;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.TransferAgentConfig;
-import org.orbit.component.api.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.api.tier3.domain.request.AddNodeConfigRequest;
 import org.orbit.component.api.tier3.domain.request.AddTransferAgentConfigRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateNodeConfigRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateTransferAgentConfigRequest;
-import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigDTO;
+import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.Responses;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.StringUtil;
 
@@ -30,19 +31,21 @@ public class DomainManagementImpl implements DomainManagement {
 
 	protected Map<String, Object> properties;
 	protected DomainMgmtWSClient client;
+	protected DomainManagementResponseConverterImpl responseConverter;
 
 	/**
 	 * 
 	 * @param properties
 	 */
 	public DomainManagementImpl(Map<String, Object> properties) {
+		this.responseConverter = new DomainManagementResponseConverterImpl(this);
 		this.properties = checkProperties(properties);
 		initClient();
 	}
 
-	// ------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------
 	// Configuration methods
-	// ------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(OrbitConstants.DOMAIN_MANAGEMENT_NAME);
@@ -98,17 +101,30 @@ public class DomainManagementImpl implements DomainManagement {
 		this.client = new DomainMgmtWSClient(clientConfig);
 	}
 
-	// ------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------
 	// Web service methods
-	// ------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------
 	@Override
 	public int ping() throws ClientException {
 		return this.client.ping();
 	}
 
-	// ------------------------------------------------------
+	// ---------------------------------------------------------
+	// Request/Response
+	// ---------------------------------------------------------
+	@Override
+	public Responses sendRequest(Request request) throws ClientException {
+		return this.client.sendRequest(request);
+	}
+
+	@Override
+	public DomainManagementResponseConverter getResponseConverter() {
+		return this.responseConverter;
+	}
+
+	// ---------------------------------------------------------
 	// Machine management
-	// ------------------------------------------------------
+	// ---------------------------------------------------------
 	/**
 	 * 
 	 * @param machineId
@@ -126,7 +142,7 @@ public class DomainManagementImpl implements DomainManagement {
 		try {
 			List<MachineConfigDTO> machineDTOs = this.client.getMachines();
 			for (MachineConfigDTO machineDTO : machineDTOs) {
-				machines.add(toMachine(machineDTO));
+				machines.add(DomainManagementConverter.INSTANCE.toMachineConfig(machineDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -142,7 +158,7 @@ public class DomainManagementImpl implements DomainManagement {
 		try {
 			MachineConfigDTO machineDTO = this.client.getMachine(machineId);
 			if (machineDTO != null) {
-				machine = toMachine(machineDTO);
+				machine = DomainManagementConverter.INSTANCE.toMachineConfig(machineDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -156,7 +172,7 @@ public class DomainManagementImpl implements DomainManagement {
 		checkMachineId(machineId);
 
 		try {
-			MachineConfigDTO addMachineRequestDTO = toDTO(addMachineRequest);
+			MachineConfigDTO addMachineRequestDTO = DomainManagementConverter.INSTANCE.toDTO(addMachineRequest);
 			StatusDTO status = this.client.addMachine(addMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -173,7 +189,7 @@ public class DomainManagementImpl implements DomainManagement {
 		checkMachineId(machineId);
 
 		try {
-			MachineConfigDTO updateMachineRequestDTO = toDTO(updateMachineRequest);
+			MachineConfigDTO updateMachineRequestDTO = DomainManagementConverter.INSTANCE.toDTO(updateMachineRequest);
 			StatusDTO status = this.client.updateMachine(updateMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -199,9 +215,9 @@ public class DomainManagementImpl implements DomainManagement {
 		return false;
 	}
 
-	// ------------------------------------------------------
+	// ---------------------------------------------------------
 	// TransferAgent management
-	// ------------------------------------------------------
+	// ---------------------------------------------------------
 	/**
 	 * 
 	 * @param transferAgentId
@@ -221,7 +237,7 @@ public class DomainManagementImpl implements DomainManagement {
 		try {
 			List<TransferAgentConfigDTO> transferAgentDTOs = this.client.getTransferAgents(machineId);
 			for (TransferAgentConfigDTO transferAgentDTO : transferAgentDTOs) {
-				transferAgents.add(toTransferAgent(machineId, transferAgentDTO));
+				transferAgents.add(DomainManagementConverter.INSTANCE.toTransferAgentConfig(machineId, transferAgentDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -238,7 +254,7 @@ public class DomainManagementImpl implements DomainManagement {
 		try {
 			TransferAgentConfigDTO transferAgentDTO = this.client.getTransferAgent(machineId, transferAgentId);
 			if (transferAgentDTO != null) {
-				transferAgent = toTransferAgent(machineId, transferAgentDTO);
+				transferAgent = DomainManagementConverter.INSTANCE.toTransferAgentConfig(machineId, transferAgentDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -253,7 +269,7 @@ public class DomainManagementImpl implements DomainManagement {
 		checkTransferAgentId(transferAgentId);
 
 		try {
-			TransferAgentConfigDTO addTransferAgentRequestDTO = toDTO(addTransferAgentRequest);
+			TransferAgentConfigDTO addTransferAgentRequestDTO = DomainManagementConverter.INSTANCE.toDTO(addTransferAgentRequest);
 			StatusDTO status = this.client.addTransferAgent(machineId, addTransferAgentRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -271,7 +287,7 @@ public class DomainManagementImpl implements DomainManagement {
 		checkTransferAgentId(transferAgentId);
 
 		try {
-			TransferAgentConfigDTO updateTransferAgentRequestDTO = toDTO(updateTransferAgentRequest);
+			TransferAgentConfigDTO updateTransferAgentRequestDTO = DomainManagementConverter.INSTANCE.toDTO(updateTransferAgentRequest);
 			StatusDTO status = this.client.updateTransferAgent(machineId, updateTransferAgentRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -298,9 +314,9 @@ public class DomainManagementImpl implements DomainManagement {
 		return false;
 	}
 
-	// ------------------------------------------------------
+	// ---------------------------------------------------------
 	// Node management
-	// ------------------------------------------------------
+	// ---------------------------------------------------------
 	/**
 	 * 
 	 * @param nodeId
@@ -321,7 +337,7 @@ public class DomainManagementImpl implements DomainManagement {
 		try {
 			List<NodeConfigDTO> nodeConfigDTOs = this.client.getNodes(machineId, transferAgentId);
 			for (NodeConfigDTO nodeConfigDTO : nodeConfigDTOs) {
-				nodeConfigs.add(toNode(machineId, transferAgentId, nodeConfigDTO));
+				nodeConfigs.add(DomainManagementConverter.INSTANCE.toNodeConfig(machineId, transferAgentId, nodeConfigDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -339,7 +355,7 @@ public class DomainManagementImpl implements DomainManagement {
 		try {
 			NodeConfigDTO nodeConfigDTO = this.client.getNode(machineId, transferAgentId, nodeId);
 			if (nodeConfigDTO != null) {
-				nodeConfig = toNode(machineId, transferAgentId, nodeConfigDTO);
+				nodeConfig = DomainManagementConverter.INSTANCE.toNodeConfig(machineId, transferAgentId, nodeConfigDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -355,7 +371,7 @@ public class DomainManagementImpl implements DomainManagement {
 		checkNodeId(nodeId);
 
 		try {
-			NodeConfigDTO addNodeRequestDTO = toDTO(addNodeRequest);
+			NodeConfigDTO addNodeRequestDTO = DomainManagementConverter.INSTANCE.toDTO(addNodeRequest);
 			StatusDTO status = this.client.addNode(machineId, transferAgentId, addNodeRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -374,7 +390,7 @@ public class DomainManagementImpl implements DomainManagement {
 		checkNodeId(nodeId);
 
 		try {
-			NodeConfigDTO updateNodeRequestDTO = toDTO(updateNodeRequest);
+			NodeConfigDTO updateNodeRequestDTO = DomainManagementConverter.INSTANCE.toDTO(updateNodeRequest);
 			StatusDTO status = this.client.updateNode(machineId, transferAgentId, updateNodeRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -402,29 +418,9 @@ public class DomainManagementImpl implements DomainManagement {
 		return false;
 	}
 
-	// ------------------------------------------------------
-	// Life cycle
-	// ------------------------------------------------------
-	protected Map<String, TransferAgent> transferAgentMap = new LinkedHashMap<String, TransferAgent>();
-
-	@Override
-	public TransferAgent getTransferAgent(String machineId, String transferAgentId) throws ClientException {
-		String key = machineId + "#" + transferAgentId;
-		TransferAgent transferAgent = transferAgentMap.get(key);
-		if (transferAgent == null) {
-			TransferAgentConfig transferAgentConfig = getTransferAgentConfig(machineId, transferAgentId);
-			String hostURL = transferAgentConfig.getHostURL();
-			String contextRoot = transferAgentConfig.getContextRoot();
-
-			// Map<String, Object> properties
-		}
-
-		return transferAgent;
-	}
-
-	// ------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------
 	// Helper methods
-	// ------------------------------------------------------------------------------------------------
+	// ---------------------------------------------------------
 	/**
 	 * Get web service client configuration.
 	 * 
@@ -437,139 +433,36 @@ public class DomainManagementImpl implements DomainManagement {
 		return ClientConfiguration.get(url, contextRoot, null, null);
 	}
 
-	/**
-	 * 
-	 * @param machineDTO
-	 * @return
-	 */
-	protected MachineConfig toMachine(MachineConfigDTO machineDTO) {
-		MachineConfigImpl impl = new MachineConfigImpl();
-		impl.setId(machineDTO.getId());
-		impl.setName(machineDTO.getName());
-		impl.setIpAddress(machineDTO.getIpAddress());
-		return impl;
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentDTO
-	 * @return
-	 */
-	protected TransferAgentConfig toTransferAgent(String machineId, TransferAgentConfigDTO transferAgentDTO) {
-		TransferAgentConfigImpl impl = new TransferAgentConfigImpl();
-		impl.setMachineId(machineId);
-		impl.setId(transferAgentDTO.getId());
-		impl.setName(transferAgentDTO.getName());
-		impl.setHome(transferAgentDTO.getHome());
-		impl.setHostURL(transferAgentDTO.getHostURL());
-		impl.setContextRoot(transferAgentDTO.getContextRoot());
-		return impl;
-	}
-
-	/**
-	 * 
-	 * @param machineId
-	 * @param transferAgentId
-	 * @param nodeConfigDTO
-	 * @return
-	 */
-	protected NodeConfig toNode(String machineId, String transferAgentId, NodeConfigDTO nodeConfigDTO) {
-		NodeConfigImpl impl = new NodeConfigImpl();
-		impl.setMachineId(machineId);
-		impl.setTransferAgentId(transferAgentId);
-		impl.setId(nodeConfigDTO.getId());
-		impl.setName(nodeConfigDTO.getName());
-		impl.setHome(nodeConfigDTO.getHome());
-		impl.setHostURL(nodeConfigDTO.getHostURL());
-		impl.setContextRoot(nodeConfigDTO.getContextRoot());
-		return impl;
-	}
-
-	/**
-	 * 
-	 * @param addMachineRequest
-	 * @return
-	 */
-	protected MachineConfigDTO toDTO(AddMachineConfigRequest addMachineRequest) {
-		MachineConfigDTO addMachineRequestDTO = new MachineConfigDTO();
-		addMachineRequestDTO.setId(addMachineRequest.getMachineId());
-		addMachineRequestDTO.setName(addMachineRequest.getName());
-		addMachineRequestDTO.setIpAddress(addMachineRequest.getIpAddress());
-		return addMachineRequestDTO;
-	}
-
-	/**
-	 * 
-	 * @param updateMachineRequest
-	 * @return
-	 */
-	protected MachineConfigDTO toDTO(UpdateMachineConfigRequest updateMachineRequest) {
-		MachineConfigDTO updateMachineRequestDTO = new MachineConfigDTO();
-		updateMachineRequestDTO.setId(updateMachineRequest.getMachineId());
-		updateMachineRequestDTO.setName(updateMachineRequest.getName());
-		updateMachineRequestDTO.setIpAddress(updateMachineRequest.getIpAddress());
-		return updateMachineRequestDTO;
-	}
-
-	/**
-	 * 
-	 * @param addTransferAgentRequest
-	 * @return
-	 */
-	protected TransferAgentConfigDTO toDTO(AddTransferAgentConfigRequest addTransferAgentRequest) {
-		TransferAgentConfigDTO addTransferAgentRequestDTO = new TransferAgentConfigDTO();
-		addTransferAgentRequestDTO.setId(addTransferAgentRequest.getTransferAgentId());
-		addTransferAgentRequestDTO.setName(addTransferAgentRequest.getName());
-		addTransferAgentRequestDTO.setHome(addTransferAgentRequest.getHome());
-		addTransferAgentRequestDTO.setHostURL(addTransferAgentRequest.getHostURL());
-		addTransferAgentRequestDTO.setContextRoot(addTransferAgentRequest.getContextRoot());
-		return addTransferAgentRequestDTO;
-	}
-
-	/**
-	 * 
-	 * @param updateTransferAgentRequest
-	 * @return
-	 */
-	protected TransferAgentConfigDTO toDTO(UpdateTransferAgentConfigRequest updateTransferAgentRequest) {
-		TransferAgentConfigDTO updateTransferAgentRequestDTO = new TransferAgentConfigDTO();
-		updateTransferAgentRequestDTO.setId(updateTransferAgentRequest.getTransferAgentId());
-		updateTransferAgentRequestDTO.setName(updateTransferAgentRequest.getName());
-		updateTransferAgentRequestDTO.setHome(updateTransferAgentRequest.getHome());
-		updateTransferAgentRequestDTO.setHostURL(updateTransferAgentRequest.getHostURL());
-		updateTransferAgentRequestDTO.setContextRoot(updateTransferAgentRequest.getContextRoot());
-		return updateTransferAgentRequestDTO;
-	}
-
-	/**
-	 * 
-	 * @param addNodeRequest
-	 * @return
-	 */
-	protected NodeConfigDTO toDTO(AddNodeConfigRequest addNodeRequest) {
-		NodeConfigDTO addNodeRequestDTO = new NodeConfigDTO();
-		addNodeRequestDTO.setId(addNodeRequest.getNodeId());
-		addNodeRequestDTO.setName(addNodeRequest.getName());
-		addNodeRequestDTO.setHome(addNodeRequest.getHome());
-		addNodeRequestDTO.setHostURL(addNodeRequest.getHostURL());
-		addNodeRequestDTO.setContextRoot(addNodeRequest.getContextRoot());
-		return addNodeRequestDTO;
-	}
-
-	/**
-	 * 
-	 * @param updateNodeRequest
-	 * @return
-	 */
-	protected NodeConfigDTO toDTO(UpdateNodeConfigRequest updateNodeRequest) {
-		NodeConfigDTO updateNodeRequestDTO = new NodeConfigDTO();
-		updateNodeRequestDTO.setId(updateNodeRequest.getNodeId());
-		updateNodeRequestDTO.setName(updateNodeRequest.getName());
-		updateNodeRequestDTO.setHome(updateNodeRequest.getHome());
-		updateNodeRequestDTO.setHostURL(updateNodeRequest.getHostURL());
-		updateNodeRequestDTO.setContextRoot(updateNodeRequest.getContextRoot());
-		return updateNodeRequestDTO;
-	}
-
 }
+
+// ------------------------------------------------------
+// Life cycle
+// ------------------------------------------------------
+// protected Map<String, TransferAgent> transferAgentMap = new LinkedHashMap<String, TransferAgent>();
+//
+// @Override
+// public TransferAgent getTransferAgent(TransferAgentConfig taConfig) throws ClientException {
+// String machineId = taConfig.getMachineId();
+// String transferAgentId = taConfig.getId();
+//
+// String key = machineId + "#" + transferAgentId;
+//
+// TransferAgent transferAgent = this.transferAgentMap.get(key);
+// if (transferAgent == null) {
+// String name = taConfig.getName();
+// String hostURL = taConfig.getHostURL();
+// String contextRoot = taConfig.getContextRoot();
+//
+// Map<String, Object> properties = new HashMap<String, Object>();
+// properties.put(OrbitConstants.TRANSFER_AGENT_MACHINE_ID, machineId);
+// properties.put(OrbitConstants.TRANSFER_AGENT_TRANSFER_AGENT_ID, transferAgentId);
+// properties.put(OrbitConstants.TRANSFER_AGENT_NAME, name);
+// properties.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, hostURL);
+// properties.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, contextRoot);
+//
+// transferAgent = new TransferAgentImpl(properties);
+// this.transferAgentMap.put(key, transferAgent);
+// }
+//
+// return transferAgent;
+// }

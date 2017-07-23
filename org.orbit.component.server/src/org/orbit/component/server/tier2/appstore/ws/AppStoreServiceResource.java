@@ -7,11 +7,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.component.server.tier2.appstore.service.AppStoreService;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class AppStoreServiceResource extends AbstractApplicationResource {
+public class AppStoreServiceResource extends AbstractWSApplicationResource {
 
 	@GET
 	@Path("ping")

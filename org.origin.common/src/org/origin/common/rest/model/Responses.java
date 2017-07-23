@@ -24,7 +24,7 @@ public class Responses {
 	 */
 	@XmlElement
 	public String getRequestName() {
-		return requestName;
+		return this.requestName;
 	}
 
 	/**
@@ -40,13 +40,17 @@ public class Responses {
 		return this.responseMap.isEmpty();
 	}
 
+	public void setResponse(Object value) {
+		setResponse("response", value);
+	}
+
 	/**
 	 * Set a response value.
 	 * 
 	 * @param key
 	 * @param value
 	 */
-	public void set(String key, Object value) {
+	public void setResponse(String key, Object value) {
 		if (value != null) {
 			this.responseMap.put(key, value);
 		} else {
@@ -61,8 +65,48 @@ public class Responses {
 	 * @return
 	 */
 	@XmlTransient
-	public Object get(String key) {
+	public Object getResponse() {
+		return this.responseMap.get("response");
+	}
+
+	/**
+	 * Get a response value.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	@XmlTransient
+	public Object getResponse(String key) {
 		return this.responseMap.get(key);
+	}
+
+	/**
+	 * Get a response value.
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	@XmlTransient
+	public <T> T getResponse(Class<T> clazz) {
+		return getResponse("response", clazz);
+	}
+
+	/**
+	 * Get a response value.
+	 * 
+	 * @param key
+	 * @param clazz
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@XmlTransient
+	public <T> T getResponse(String key, Class<T> clazz) {
+		T t = null;
+		Object object = this.responseMap.get(key);
+		if (object != null && clazz.isAssignableFrom(object.getClass())) {
+			t = (T) object;
+		}
+		return t;
 	}
 
 }

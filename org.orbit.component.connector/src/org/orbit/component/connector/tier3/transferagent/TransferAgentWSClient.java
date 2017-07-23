@@ -1,6 +1,6 @@
 package org.orbit.component.connector.tier3.transferagent;
 
-import org.origin.common.rest.agent.AgentClient;
+import org.origin.common.rest.agent.CommonWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
@@ -22,7 +22,7 @@ import org.origin.common.rest.model.Responses;
  * @see HomeAgentWSClient
  * 
  */
-public class TransferAgentWSClient extends AgentClient {
+public class TransferAgentWSClient extends CommonWSClient {
 
 	public static String PATH_NODES = "nodes";
 

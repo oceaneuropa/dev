@@ -38,12 +38,12 @@ public class DeleteIndexItemCommand extends AbstractCommand {
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
-		return new CommandResult(this, Status.OK_STATUS);
+		return new CommandResult(Status.OK_STATUS);
 	}
 
 	@Override
 	public CommandResult undo(CommandContext context) throws CommandException {
-		return new CommandResult(this, Status.OK_STATUS);
+		return new CommandResult(Status.OK_STATUS);
 	}
 
 }

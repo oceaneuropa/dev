@@ -15,35 +15,38 @@ import org.origin.common.Activator;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommand;
-import org.origin.common.command.ICommandResult;
 import org.origin.common.command.ICommandStack;
 import org.origin.common.command.IEditingDomain;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Responses;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /**
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/request (body parameter: Request)
  *
  */
-public abstract class AbstractAgentResource extends AbstractApplicationResource {
+public class CommonWSApplicationResource extends AbstractWSApplicationResource {
 
-	protected static AbstractEditPolicy[] EMPTY_EDIT_POLICIES = new AbstractEditPolicy[0];
+	protected static AbstractWSEditPolicy[] EMPTY_EDIT_POLICIES = new AbstractWSEditPolicy[0];
 
-	protected Map<String, AbstractEditPolicy> editPoliciesMap = new LinkedHashMap<String, AbstractEditPolicy>();
+	protected Map<String, AbstractWSEditPolicy> editPoliciesMap = new LinkedHashMap<String, AbstractWSEditPolicy>();
 
-	public AbstractAgentResource() {
+	public CommonWSApplicationResource() {
 		createDefaultEditPolicies();
 	}
 
 	protected void createDefaultEditPolicies() {
 		EditPolicyFactory[] factories = EditPolicyFactoryRegistry.INSTANCE.getFactories(getClass().getName());
 		for (EditPolicyFactory factory : factories) {
-			AbstractEditPolicy editPolicy = factory.createEditPolicy();
+			AbstractWSEditPolicy editPolicy = factory.createEditPolicy();
 			if (editPolicy != null) {
 				installEditPolicy(editPolicy.getRole(), editPolicy);
 			}
 		}
+		createEditPolicies();
+	}
+
+	protected void createEditPolicies() {
 	}
 
 	/**
@@ -61,7 +64,7 @@ public abstract class AbstractAgentResource extends AbstractApplicationResource 
 	 * @param role
 	 * @param editPolicy
 	 */
-	public void installEditPolicy(String role, AbstractEditPolicy editPolicy) {
+	public void installEditPolicy(String role, AbstractWSEditPolicy editPolicy) {
 		assert role != null : "role is null";
 
 		removeEditPolicy(role);
@@ -80,7 +83,7 @@ public abstract class AbstractAgentResource extends AbstractApplicationResource 
 	public void removeEditPolicy(String role) {
 		assert role != null : "role is null";
 
-		AbstractEditPolicy editPolicy = this.editPoliciesMap.get(role);
+		AbstractWSEditPolicy editPolicy = this.editPoliciesMap.get(role);
 		if (editPolicy != null) {
 			this.editPoliciesMap.remove(role);
 
@@ -89,15 +92,15 @@ public abstract class AbstractAgentResource extends AbstractApplicationResource 
 		}
 	}
 
-	public AbstractEditPolicy[] getEditPolicies() {
-		Collection<AbstractEditPolicy> editPolicies = this.editPoliciesMap.values();
+	public AbstractWSEditPolicy[] getEditPolicies() {
+		Collection<AbstractWSEditPolicy> editPolicies = this.editPoliciesMap.values();
 		if (editPolicies == null || editPolicies.isEmpty()) {
 			return EMPTY_EDIT_POLICIES;
 		}
-		return editPolicies.toArray(new AbstractEditPolicy[editPolicies.size()]);
+		return editPolicies.toArray(new AbstractWSEditPolicy[editPolicies.size()]);
 	}
 
-	public AbstractEditPolicy getEditPolicies(String role) {
+	public AbstractWSEditPolicy getEditPolicies(String role) {
 		assert role != null : "role is null";
 		return this.editPoliciesMap.get(role);
 	}
@@ -114,25 +117,30 @@ public abstract class AbstractAgentResource extends AbstractApplicationResource 
 	public Response onRequest(Request request) {
 		Responses responses = new Responses();
 		if (request != null) {
-			responses.setRequestName(request.getName());
+			responses.setRequestName(request.getRequestName());
 
 			ICommandStack commandStack = getEditingDomain().getCommandStack();
 			CommandContext context = new CommandContext();
+			context.adapt(Responses.class, responses);
 
+			// CompositeCommandResult commandResults = new CompositeCommandResult();
 			for (Iterator<String> editPolicyItor = this.editPoliciesMap.keySet().iterator(); editPolicyItor.hasNext();) {
 				String role = editPolicyItor.next();
-				AbstractEditPolicy editPolicy = this.editPoliciesMap.get(role);
-				if (editPolicy != null && editPolicy.understandsRequest(request)) {
+				AbstractWSEditPolicy editPolicy = this.editPoliciesMap.get(role);
+				if (editPolicy != null) {
 					ICommand command = editPolicy.getCommand(request);
 					if (command != null) {
 						try {
-							ICommandResult commandResult = commandStack.execute(context, command);
-							if (commandResult != null) {
-								editPolicy.createResponse(request, responses, commandResult);
-							}
+							commandStack.execute(context, command);
+							// commandResults.add(commandResult);
+							// ICommandResult commandResult = commandStack.execute(context, command);
+							// if (commandResult != null) {
+							// editPolicy.createResponse(request, responses, commandResult);
+							// }
 						} catch (CommandException e) {
 							e.printStackTrace();
-							editPolicy.createErrorResponse(request, responses, e);
+							// editPolicy.createErrorResponse(request, responses, e);
+							// responses.setResponse(request.getRequestName(), new org.origin.common.rest.model.Response("exception", e.getMessage(), e));
 						}
 					}
 				}

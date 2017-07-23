@@ -27,7 +27,7 @@ import org.orbit.fs.api.FilePath;
 import org.orbit.fs.model.FileMetadata;
 import org.origin.common.io.IOUtil;
 import org.origin.common.json.JSONUtil;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  *
  */
-public class FileSystemWSClient extends AbstractClient {
+public class FileSystemWSClient extends AbstractWSClient {
 
 	protected static List<FilePath> EMPTY_PATHS = new ArrayList<FilePath>();
 	protected static String ACTION_MKDIRS = "mkdirs";

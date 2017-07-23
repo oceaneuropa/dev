@@ -65,7 +65,7 @@ public class FolderCreateCommand extends AbstractCommand {
 				throw new CommandException(String.format(MSG1, directoryPath));
 			}
 			// Ignore creating directory
-			return new CommandResult(this, new Status(IStatus.WARNING, null, String.format(MSG1, directoryPath)));
+			return new CommandResult(new Status(IStatus.WARNING, null, String.format(MSG1, directoryPath)));
 		}
 
 		// Directory exists
@@ -74,7 +74,7 @@ public class FolderCreateCommand extends AbstractCommand {
 				throw new CommandException(String.format(MSG2, directoryPath));
 			}
 			// Ignore creating directory
-			return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG2, directoryPath)));
+			return new CommandResult(new Status(IStatus.OK, null, String.format(MSG2, directoryPath)));
 		}
 
 		boolean succeed = this.directory.mkdirs();
@@ -83,7 +83,7 @@ public class FolderCreateCommand extends AbstractCommand {
 			throw new CommandException(String.format(MSG4, directoryPath));
 		}
 
-		return new CommandResult(this, new Status(IStatus.OK, null, String.format(MSG3, directoryPath)));
+		return new CommandResult(new Status(IStatus.OK, null, String.format(MSG3, directoryPath)));
 	}
 
 }

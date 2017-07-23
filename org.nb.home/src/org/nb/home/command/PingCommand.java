@@ -27,7 +27,7 @@ public class PingCommand extends AbstractCommand {
 		try {
 			pingResult = this.homeService.ping();
 			System.out.println("PingCommand.execute() pingResult = " + pingResult);
-			return new CommandResult(this, Status.OK_STATUS, pingResult);
+			return new CommandResult(Status.OK_STATUS, pingResult);
 
 		} catch (HomeException e) {
 			e.printStackTrace();

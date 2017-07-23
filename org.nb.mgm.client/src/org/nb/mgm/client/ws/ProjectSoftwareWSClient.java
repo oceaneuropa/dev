@@ -25,7 +25,7 @@ import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.nb.mgm.model.dto.SoftwareDTO;
 import org.origin.common.io.IOUtil;
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
@@ -45,7 +45,7 @@ import org.origin.common.rest.model.StatusDTO;
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/projects/{projectId}/software/{softwareId}/content (FormDataParam: InputStream, FormDataContentDisposition)
  * 
  */
-public class ProjectSoftwareWSClient extends AbstractClient {
+public class ProjectSoftwareWSClient extends AbstractWSClient {
 
 	/**
 	 * 

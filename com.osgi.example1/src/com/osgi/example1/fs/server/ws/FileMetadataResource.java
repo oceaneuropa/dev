@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
@@ -22,7 +22,7 @@ import com.osgi.example1.fs.server.service.FileSystem;
 
 @javax.ws.rs.Path("/metadata")
 @Produces(MediaType.APPLICATION_JSON)
-public class FileMetadataResource extends AbstractApplicationResource {
+public class FileMetadataResource extends AbstractWSApplicationResource {
 
 	protected static String ACTION_MKDIRS = "mkdirs";
 	protected static String ACTION_CREATE_NEW_FILE = "createNewFile";

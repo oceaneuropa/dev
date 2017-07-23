@@ -2,15 +2,16 @@ package org.orbit.component.api.tier3.domain;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.api.tier3.domain.request.AddNodeConfigRequest;
 import org.orbit.component.api.tier3.domain.request.AddTransferAgentConfigRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateNodeConfigRequest;
 import org.orbit.component.api.tier3.domain.request.UpdateTransferAgentConfigRequest;
-import org.orbit.component.api.tier3.transferagent.TransferAgent;
+import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Pingable;
+import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.Responses;
 
 public interface DomainManagement extends Pingable {
 
@@ -50,48 +51,50 @@ public interface DomainManagement extends Pingable {
 	int ping() throws ClientException;
 
 	// ------------------------------------------------------
+	// Request/Response
+	// ------------------------------------------------------
+	public Responses sendRequest(Request request) throws ClientException;
+
+	DomainManagementResponseConverter getResponseConverter();
+
+	// ------------------------------------------------------
 	// Machine management
 	// ------------------------------------------------------
-	public MachineConfig[] getMachineConfigs() throws ClientException;
+	MachineConfig[] getMachineConfigs() throws ClientException;
 
-	public MachineConfig getMachineConfig(String machineId) throws ClientException;
+	MachineConfig getMachineConfig(String machineId) throws ClientException;
 
-	public boolean addMachineConfig(AddMachineConfigRequest addMachineRequest) throws ClientException;
+	boolean addMachineConfig(AddMachineConfigRequest addMachineRequest) throws ClientException;
 
-	public boolean updateMachineConfig(UpdateMachineConfigRequest updateMachineRequest) throws ClientException;
+	boolean updateMachineConfig(UpdateMachineConfigRequest updateMachineRequest) throws ClientException;
 
-	public boolean removeMachineConfig(String machineId) throws ClientException;
+	boolean removeMachineConfig(String machineId) throws ClientException;
 
 	// ------------------------------------------------------
 	// TransferAgent management
 	// ------------------------------------------------------
-	public TransferAgentConfig[] getTransferAgentConfigs(String machineId) throws ClientException;
+	TransferAgentConfig[] getTransferAgentConfigs(String machineId) throws ClientException;
 
-	public TransferAgentConfig getTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
+	TransferAgentConfig getTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
 
-	public boolean addTransferAgentConfig(String machineId, AddTransferAgentConfigRequest addTransferAgentRequest) throws ClientException;
+	boolean addTransferAgentConfig(String machineId, AddTransferAgentConfigRequest addTransferAgentRequest) throws ClientException;
 
-	public boolean updateTransferAgentConfig(String machineId, UpdateTransferAgentConfigRequest updateTransferAgentRequest) throws ClientException;
+	boolean updateTransferAgentConfig(String machineId, UpdateTransferAgentConfigRequest updateTransferAgentRequest) throws ClientException;
 
-	public boolean removeTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
+	boolean removeTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
 
 	// ------------------------------------------------------
 	// Node management
 	// ------------------------------------------------------
-	public NodeConfig[] getNodeConfigs(String machineId, String transferAgentId) throws ClientException;
+	NodeConfig[] getNodeConfigs(String machineId, String transferAgentId) throws ClientException;
 
-	public NodeConfig getNodeConfig(String machineId, String transferAgentId, String nodeId) throws ClientException;
+	NodeConfig getNodeConfig(String machineId, String transferAgentId, String nodeId) throws ClientException;
 
-	public boolean addNodeConfig(String machineId, String transferAgentId, AddNodeConfigRequest addNodeRequest) throws ClientException;
+	boolean addNodeConfig(String machineId, String transferAgentId, AddNodeConfigRequest addNodeRequest) throws ClientException;
 
-	public boolean updateNodeConfig(String machineId, String transferAgentId, UpdateNodeConfigRequest updateNodeRequest) throws ClientException;
+	boolean updateNodeConfig(String machineId, String transferAgentId, UpdateNodeConfigRequest updateNodeRequest) throws ClientException;
 
-	public boolean removeNodeConfig(String machineId, String transferAgentId, String nodeId) throws ClientException;
-
-	// ------------------------------------------------------
-	// Life cycle
-	// ------------------------------------------------------
-	public TransferAgent getTransferAgent(String machineId, String transferAgentId) throws ClientException;
+	boolean removeNodeConfig(String machineId, String transferAgentId, String nodeId) throws ClientException;
 
 }
 
@@ -104,3 +107,8 @@ public interface DomainManagement extends Pingable {
 // public boolean setTransferAgentConfigProperty(String machineId, String transferAgentId, String name, Object value) throws ClientException;
 // public Object getTransferAgentConfigProperty(String machineId, String transferAgentId, String name) throws ClientException;
 // public boolean removeTransferAgentConfigProperty(String machineId, String transferAgentId, String name) throws ClientException;
+
+// ------------------------------------------------------
+// Life cycle
+// ------------------------------------------------------
+// public TransferAgent getTransferAgent(TransferAgentConfig taConfig) throws ClientException;

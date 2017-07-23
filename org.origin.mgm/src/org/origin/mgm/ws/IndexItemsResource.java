@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.util.Printer;
 import org.origin.mgm.exception.IndexServiceException;
 import org.origin.mgm.model.dto.DTOConverter;
@@ -41,7 +41,7 @@ import org.origin.mgm.service.IndexService;
  */
 @Path("/indexitems/{indexproviderid}")
 @Produces(MediaType.APPLICATION_JSON)
-public class IndexItemsResource extends AbstractApplicationResource {
+public class IndexItemsResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get index items.

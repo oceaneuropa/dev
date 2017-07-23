@@ -17,11 +17,11 @@ import org.orbit.fs.model.FileMetadata;
 import org.orbit.fs.server.service.FileSystemService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 @javax.ws.rs.Path("/metadata")
 @Produces(MediaType.APPLICATION_JSON)
-public class FileMetadataResource extends AbstractApplicationResource {
+public class FileMetadataResource extends AbstractWSApplicationResource {
 
 	protected static String ACTION_MKDIRS = "mkdirs";
 	protected static String ACTION_CREATE_NEW_FILE = "createNewFile";

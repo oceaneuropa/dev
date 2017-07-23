@@ -30,7 +30,7 @@ import org.nb.mgm.model.runtime.Software;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * ProjectNode resource.
@@ -49,7 +49,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/projects/{projectId}/homes/{projectHomeId}/nodes")
 @Produces(MediaType.APPLICATION_JSON)
-public class ProjectNodeResource extends AbstractApplicationResource {
+public class ProjectNodeResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get ProjectNodes.

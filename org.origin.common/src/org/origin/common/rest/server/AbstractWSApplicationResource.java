@@ -14,7 +14,7 @@ import org.origin.common.rest.model.ModelConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbstractApplicationResource implements IAdaptable {
+public class AbstractWSApplicationResource implements IAdaptable {
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 

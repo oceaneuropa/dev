@@ -7,20 +7,21 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.origin.common.rest.client.AbstractClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ResponseConverter;
 import org.origin.common.rest.model.Responses;
 
-public abstract class AgentClient extends AbstractClient {
+public abstract class CommonWSClient extends AbstractWSClient {
 
 	/**
 	 * 
 	 * @param config
 	 */
-	public AgentClient(ClientConfiguration config) {
+	public CommonWSClient(ClientConfiguration config) {
 		super(config);
 	}
 
@@ -31,21 +32,27 @@ public abstract class AgentClient extends AbstractClient {
 	 * @throws ClientException
 	 */
 	public Responses sendRequest(Request request) throws ClientException {
-		Responses result = null;
-		Response response = null;
+		Responses responses = null;
+
+		Response wsResponse = null;
 		try {
 			Builder builder = fillRequestPath(getRootPath()).request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).post(Entity.json(new GenericEntity<Request>(request) {
+			wsResponse = updateHeaders(builder).post(Entity.json(new GenericEntity<Request>(request) {
 			}));
-			checkResponse(response);
+			checkResponse(wsResponse);
 
-			result = response.readEntity(Responses.class);
-		} catch (ClientException e) {
+			// result = response.readEntity(Responses.class);
+			String responsesString = wsResponse.readEntity(String.class);
+			if (responsesString != null) {
+				responses = ResponseConverter.parse(responsesString);
+			}
+
+		} catch (Exception e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ClientUtil.closeQuietly(wsResponse, true);
 		}
-		return result;
+		return responses;
 	}
 
 	/**

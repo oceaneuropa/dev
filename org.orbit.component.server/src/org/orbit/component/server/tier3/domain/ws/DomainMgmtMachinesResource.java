@@ -22,7 +22,7 @@ import org.orbit.component.model.tier3.domain.ModelConverter;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * DomainManagement Machines resource.
@@ -37,10 +37,12 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineConfigDTO)
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
  * 
+ * @see TransferAgentServiceResource
+ * 
  */
 @Path("/machines")
 @Produces(MediaType.APPLICATION_JSON)
-public class DomainMgmtMachinesResource extends AbstractApplicationResource {
+public class DomainMgmtMachinesResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get machine configurations.
@@ -166,7 +168,8 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
 			MachineConfigRTO updateMachineRequest = ModelConverter.getInstance().toRTO(updateMachineRequestDTO);
-			succeed = domainMgmtService.updateMachineConfig(updateMachineRequest);
+			List<String> fieldsToUpdate = updateMachineRequestDTO.getFieldsToUpdate();
+			succeed = domainMgmtService.updateMachineConfig(updateMachineRequest, fieldsToUpdate);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -177,8 +180,10 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.SUCCESS, "Machine is updated successfully.");
 			return Response.ok().entity(statusDTO).build();
 		} else {
-			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Machine is not updated.");
-			return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
+			// StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "Machine is not updated.");
+			// return Response.status(Status.NOT_MODIFIED).entity(statusDTO).build();
+			StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.FAILED, "Machine is not updated.");
+			return Response.ok().entity(statusDTO).build();
 		}
 	}
 
@@ -202,6 +207,10 @@ public class DomainMgmtMachinesResource extends AbstractApplicationResource {
 		boolean succeed = false;
 		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
 		try {
+			if (!domainMgmtService.machineConfigExists(machineId)) {
+				StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.FAILED, "Machine does not exist.");
+				return Response.ok().entity(statusDTO).build();
+			}
 			succeed = domainMgmtService.deleteMachineConfig(machineId);
 
 		} catch (DomainMgmtException e) {

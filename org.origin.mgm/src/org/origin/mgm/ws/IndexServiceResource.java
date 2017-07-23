@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.util.CommandRequestHandler;
 import org.origin.mgm.model.dto.IndexItemCommandRequestDTO;
 import org.origin.mgm.service.IndexService;
@@ -31,7 +31,7 @@ import org.origin.mgm.service.IndexService;
  */
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class IndexServiceResource extends AbstractApplicationResource {
+public class IndexServiceResource extends AbstractWSApplicationResource {
 
 	protected boolean debug = true;
 

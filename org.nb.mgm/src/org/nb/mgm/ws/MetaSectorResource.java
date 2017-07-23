@@ -27,7 +27,7 @@ import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.util.Util;
 
 /*
@@ -42,7 +42,7 @@ import org.origin.common.util.Util;
  */
 @Path("/metasectors")
 @Produces(MediaType.APPLICATION_JSON)
-public class MetaSectorResource extends AbstractApplicationResource {
+public class MetaSectorResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get MetaSectors by query parameters.

@@ -1,12 +1,13 @@
 package org.orbit.component.server.tier3.transferagent.service.impl;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
-import java.util.Properties;
 
 import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.command.IEditingDomain;
+import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -18,38 +19,67 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 
 	protected BundleContext bundleContext;
 	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
-	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected IEditingDomain editingDomain;
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public TransferAgentServiceImpl(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
 	@Override
+	public IEditingDomain getEditingDomain() {
+		return this.editingDomain;
+	}
+
+	@Override
+	public String getName() {
+		String name = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
+		return name;
+	}
+
+	@Override
 	public String getHostURL() {
+		String hostURL = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL);
+		if (hostURL != null) {
+			return hostURL;
+		}
+		String globalHostURL = (String) this.configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		if (globalHostURL != null) {
+			return globalHostURL;
+		}
 		return null;
 	}
 
 	@Override
 	public String getContextRoot() {
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		String name = (String) this.configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
-		return name;
+		String contextRoot = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT);
+		return contextRoot;
 	}
 
 	@Override
 	public String getHome() {
-		return null;
+		String home = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOME);
+		return home;
 	}
 
 	public void start() {
 		this.editingDomain = IEditingDomain.getEditingDomain(TransferAgentService.class.getName());
 
+		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_HOME);
+
+		updateProperties(configProps);
+
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		this.serviceRegistry = bundleContext.registerService(TransferAgentService.class, this, props);
 	}
 
 	public void stop() {
@@ -59,9 +89,35 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		}
 	}
 
-	@Override
-	public IEditingDomain getEditingDomain() {
-		return this.editingDomain;
+	/**
+	 * 
+	 * @param configProps
+	 */
+	public synchronized void updateProperties(Map<Object, Object> configProps) {
+		System.out.println(getClass().getSimpleName() + ".updateProperties()");
+
+		if (configProps == null) {
+			configProps = new HashMap<Object, Object>();
+		}
+
+		String globalHostURL = (String) configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		String name = (String) configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
+		String hostURL = (String) configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL);
+		String contextRoot = (String) configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT);
+		String home = (String) configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOME);
+
+		System.out.println();
+		System.out.println("Config properties:");
+		System.out.println("-----------------------------------------------------");
+		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		System.out.println(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME + " = " + name);
+		System.out.println(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL + " = " + hostURL);
+		System.out.println(OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT + " = " + contextRoot);
+		System.out.println(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOME + " = " + home);
+		System.out.println("-----------------------------------------------------");
+		System.out.println();
+
+		this.configProps = configProps;
 	}
 
 }

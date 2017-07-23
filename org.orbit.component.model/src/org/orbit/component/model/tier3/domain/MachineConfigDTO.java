@@ -1,5 +1,7 @@
 package org.orbit.component.model.tier3.domain;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -16,6 +18,9 @@ public class MachineConfigDTO {
 	protected String name;
 	@XmlElement
 	protected String ipAddress;
+
+	@XmlElement
+	protected List<String> fieldsToUpdate;
 
 	@XmlElement
 	public String getId() {
@@ -42,6 +47,14 @@ public class MachineConfigDTO {
 
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
+	}
+
+	public List<String> getFieldsToUpdate() {
+		return fieldsToUpdate;
+	}
+
+	public void setFieldsToUpdate(List<String> fieldsToUpdate) {
+		this.fieldsToUpdate = fieldsToUpdate;
 	}
 
 }

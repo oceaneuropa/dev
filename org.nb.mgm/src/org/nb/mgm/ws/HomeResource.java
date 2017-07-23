@@ -31,7 +31,7 @@ import org.nb.mgm.model.runtime.MetaSpace;
 import org.nb.mgm.service.ManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.rest.server.AbstractApplicationResource;
+import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
  * Home resource.
@@ -45,7 +45,7 @@ import org.origin.common.rest.server.AbstractApplicationResource;
  */
 @Path("/{machineId}/homes")
 @Produces(MediaType.APPLICATION_JSON)
-public class HomeResource extends AbstractApplicationResource {
+public class HomeResource extends AbstractWSApplicationResource {
 
 	/**
 	 * Get Homes in a Machine by query parameters.

@@ -7,6 +7,6 @@ public interface EditPolicyFactory {
 	 * 
 	 * @return
 	 */
-	public AbstractEditPolicy createEditPolicy();
+	public AbstractWSEditPolicy createEditPolicy();
 
 }
