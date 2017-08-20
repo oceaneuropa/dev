@@ -24,6 +24,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
+import org.origin.common.util.CLIHelper;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
@@ -45,6 +46,7 @@ public class DomainManagementCLICommand implements Annotated {
 	protected static String[] NODE_CONFIG_TITLES = new String[] { "Machine ID", "Transfer Agent ID", "ID", "Name", "hostURL", "contextRoot" };
 
 	protected BundleContext bundleContext;
+	protected String scheme = "orbit";
 
 	@Dependency
 	protected DomainManagementConnector domainMgmtConnector;
@@ -59,26 +61,30 @@ public class DomainManagementCLICommand implements Annotated {
 		this.bundleContext = bundleContext;
 	}
 
+	protected String getScheme() {
+		return this.scheme;
+	}
+
 	public void start() {
 		if (debug) {
 			System.out.println(getClass().getSimpleName() + ".start()");
 		}
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "orbit");
+		props.put("osgi.command.scope", getScheme());
 		props.put("osgi.command.function",
 				new String[] { //
 						// show available services
 						"lservices", //
 
 						// machine configurations
-						"getmachines", "getmachine", "addmachine", "updatemachine", "removemachine", //
+						"list_machines", "list_machine", "add_machine", "update_machine", "remove_machine", //
 
 						// transfer agent configurations
-						"gettransferagents", "gettransferagent", "addtransferagent", "updatetransferagent", "removetransferagent", //
+						"list_tas", "list_ta", "add_ta", "update_ta", "remove_ta", //
 
 						// node configurations
-						"getnodes", "getnode", "addnode", "updatenode", "removenode", //
+						"list_nodes", "list_node", "add_node", "update_node", "remove_node", //
 		});
 
 		OSGiServiceUtil.register(this.bundleContext, DomainManagementCLICommand.class.getName(), this, props);
@@ -162,10 +168,7 @@ public class DomainManagementCLICommand implements Annotated {
 	@Descriptor("List services")
 	public void lservices(@Descriptor("The service to list") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) throws ClientException {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tlservices");
-			System.out.println("parameters:");
-			System.out.println("\t-service = " + service);
+			CLIHelper.getInstance().printCommand(getScheme(), "lservices", new String[] { "-service", service });
 		}
 
 		if (USER_REGISTRY.equalsIgnoreCase(service)) {
@@ -207,19 +210,16 @@ public class DomainManagementCLICommand implements Annotated {
 
 	// -----------------------------------------------------------------------------------------
 	// Machine configs
-	// getmachines
-	// getmachine
-	// addmachine
-	// updatemachine
-	// removemachine
+	// list_machines
+	// list_machine
+	// add_machine
+	// update_machine
+	// remove_machine
 	// -----------------------------------------------------------------------------------------
-	@Descriptor("Get machine configs")
-	public void getmachines() {
+	@Descriptor("List machine configs")
+	public void list_machines() {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tgetmachines");
-			System.out.println("parameters:");
-			System.out.println("\tn/a");
+			CLIHelper.getInstance().printCommand(getScheme(), "list_machines", new String[] { "n/a", null });
 		}
 
 		try {
@@ -245,15 +245,12 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	@Descriptor("Get machine config")
-	public void getmachine( //
+	@Descriptor("List machine config")
+	public void list_machine( //
 			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tgetmachine");
-			System.out.println("parameters:");
-			System.out.println("\t-id = " + id);
+			CLIHelper.getInstance().printCommand(getScheme(), "list_machine", new String[] { "id", id });
 		}
 
 		try {
@@ -283,18 +280,13 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Add machine config")
-	public void addmachine( //
+	public void add_machine( //
 			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id, //
 			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = "null") String name, //
 			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = "null") String ip //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\taddmachine");
-			System.out.println("parameters:");
-			System.out.println("\t-id = " + id);
-			System.out.println("\t-name = " + name);
-			System.out.println("\t-ip = " + ip);
+			CLIHelper.getInstance().printCommand(getScheme(), "add_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
 		}
 
 		try {
@@ -321,18 +313,13 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Update machine config")
-	public void updatemachine( //
+	public void update_machine( //
 			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
 			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
 			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = Parameter.UNSPECIFIED) String ip //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tupdatemachine");
-			System.out.println("parameters:");
-			System.out.println("\t-id = " + id);
-			System.out.println("\t-name = " + name);
-			System.out.println("\t-ip = " + ip);
+			CLIHelper.getInstance().printCommand(getScheme(), "update_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
 		}
 
 		try {
@@ -377,14 +364,11 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Remove machine config")
-	public void removemachine( //
+	public void remove_machine( //
 			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tremovemachine");
-			System.out.println("parameters:");
-			System.out.println("\t-id = " + id);
+			CLIHelper.getInstance().printCommand(getScheme(), "remove_machine", new String[] { "id", id });
 		}
 
 		try {
@@ -410,21 +394,18 @@ public class DomainManagementCLICommand implements Annotated {
 
 	// ----------------------------------------------------------------
 	// TA configs
-	// gettransferagents
-	// gettransferagent
-	// addtransferagent
-	// updatetransferagent
-	// removetransferagent
+	// list_tas
+	// list_ta
+	// add_ta
+	// update_ta
+	// remove_ta
 	// ----------------------------------------------------------------
-	@Descriptor("Get TA configs")
-	public void gettransferagents( //
+	@Descriptor("List TA configs")
+	public void list_tas( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tgettransferagents");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
+			CLIHelper.getInstance().printCommand(getScheme(), "list_tas", new String[] { "machineId", machineId });
 		}
 
 		try {
@@ -461,17 +442,13 @@ public class DomainManagementCLICommand implements Annotated {
 		}
 	}
 
-	@Descriptor("Get TA config")
-	public void gettransferagent( //
+	@Descriptor("List TA config")
+	public void list_ta( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = "null") String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tgettransferagent");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-id = " + id);
+			CLIHelper.getInstance().printCommand(getScheme(), "list_ta", new String[] { "machineId", machineId }, new String[] { "id", id });
 		}
 
 		try {
@@ -513,7 +490,7 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Add TA configuration")
-	public void addtransferagent( //
+	public void add_ta( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
 			@Descriptor("Transfer Agent Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
@@ -521,14 +498,7 @@ public class DomainManagementCLICommand implements Annotated {
 			@Descriptor("Transfer Agent context root") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\taddtransferagent");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-id = " + id);
-			System.out.println("\t-name = " + name);
-			System.out.println("\t-hostURLd = " + hostURL);
-			System.out.println("\t-contextRoot = " + contextRoot);
+			CLIHelper.getInstance().printCommand(getScheme(), "add_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 		}
 
 		try {
@@ -557,7 +527,7 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Update TA configuration")
-	public void updatetransferagent( //
+	public void update_ta( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
 			@Descriptor("Transfer Agent Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
@@ -565,14 +535,7 @@ public class DomainManagementCLICommand implements Annotated {
 			@Descriptor("Transfer Agent contextRoot") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tupdatetransferagent");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-id = " + id);
-			System.out.println("\t-name = " + name);
-			System.out.println("\t-hostURLd = " + hostURL);
-			System.out.println("\t-contextRoot = " + contextRoot);
+			CLIHelper.getInstance().printCommand(getScheme(), "update_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 		}
 
 		try {
@@ -626,16 +589,12 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Remove TA configuration")
-	public void removetransferagent( //
+	public void remove_ta( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tremovetransferagent");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-id = " + id);
+			CLIHelper.getInstance().printCommand(getScheme(), "remove_ta", new String[] { "machineId", machineId }, new String[] { "id", id });
 		}
 
 		try {
@@ -662,23 +621,19 @@ public class DomainManagementCLICommand implements Annotated {
 
 	// ----------------------------------------------------------------
 	// Node configs
-	// getnodes
-	// getnode
-	// addnode
-	// updatenode
-	// removenode
+	// list_nodes
+	// list_node
+	// add_node
+	// update_node
+	// remove_node
 	// ----------------------------------------------------------------
-	@Descriptor("Get node configs")
-	public void getnodes( //
+	@Descriptor("List node configs")
+	public void list_nodes( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tgetnodes");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-transferAgentId = " + transferAgentId);
+			CLIHelper.getInstance().printCommand(getScheme(), "list_nodes", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
 		}
 
 		try {
@@ -721,18 +676,13 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Get node config")
-	public void getnode( //
+	public void list_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = "null") String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tgetnode");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-transferAgentId = " + transferAgentId);
-			System.out.println("\t-id = " + id);
+			CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id });
 		}
 
 		try {
@@ -780,7 +730,7 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Add node config")
-	public void addnode( //
+	public void add_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
@@ -789,15 +739,7 @@ public class DomainManagementCLICommand implements Annotated {
 			@Descriptor("Node context root") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\taddnode");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-transferAgentId = " + transferAgentId);
-			System.out.println("\t-id = " + id);
-			System.out.println("\t-name = " + name);
-			System.out.println("\t-hostURL = " + hostURL);
-			System.out.println("\t-contextRoot = " + contextRoot);
+			CLIHelper.getInstance().printCommand(getScheme(), "add_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 		}
 
 		try {
@@ -846,7 +788,7 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Update node config")
-	public void updatenode( //
+	public void update_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id, //
@@ -855,15 +797,7 @@ public class DomainManagementCLICommand implements Annotated {
 			@Descriptor("Node contextRoot") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tupdatenode");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-transferAgentId = " + transferAgentId);
-			System.out.println("\t-id = " + id);
-			System.out.println("\t-name = " + name);
-			System.out.println("\t-hostURL = " + hostURL);
-			System.out.println("\t-contextRoot = " + contextRoot);
+			CLIHelper.getInstance().printCommand(getScheme(), "update_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 		}
 
 		try {
@@ -918,18 +852,13 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@Descriptor("Remove node config")
-	public void removenode( //
+	public void remove_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
 		if (debug) {
-			System.out.println("command:");
-			System.out.println("\tremovenodee");
-			System.out.println("parameters:");
-			System.out.println("\t-machineId = " + machineId);
-			System.out.println("\t-transferAgentId = " + transferAgentId);
-			System.out.println("\t-id = " + id);
+			CLIHelper.getInstance().printCommand(getScheme(), "remove_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id });
 		}
 
 		try {

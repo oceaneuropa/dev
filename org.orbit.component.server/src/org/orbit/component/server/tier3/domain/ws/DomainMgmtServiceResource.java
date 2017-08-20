@@ -33,9 +33,9 @@ public class DomainMgmtServiceResource extends CommonWSApplicationResource {
 		TransferAgentConfigEditPolicy taConfigEditPolicy = new TransferAgentConfigEditPolicy();
 		NodeConfigEditPolicy nodeConfigEditPolicy = new NodeConfigEditPolicy();
 
-		installEditPolicy(machineConfigEditPolicy.getRole(), machineConfigEditPolicy);
-		installEditPolicy(taConfigEditPolicy.getRole(), taConfigEditPolicy);
-		installEditPolicy(nodeConfigEditPolicy.getRole(), nodeConfigEditPolicy);
+		installEditPolicy(machineConfigEditPolicy);
+		installEditPolicy(taConfigEditPolicy);
+		installEditPolicy(nodeConfigEditPolicy);
 	}
 
 }

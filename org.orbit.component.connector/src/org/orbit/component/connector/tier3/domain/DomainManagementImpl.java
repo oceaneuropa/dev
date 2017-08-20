@@ -38,7 +38,7 @@ public class DomainManagementImpl implements DomainManagement {
 	 * @param properties
 	 */
 	public DomainManagementImpl(Map<String, Object> properties) {
-		this.responseConverter = new DomainManagementResponseConverterImpl(this);
+		this.responseConverter = new DomainManagementResponseConverterImpl();
 		this.properties = checkProperties(properties);
 		initClient();
 	}

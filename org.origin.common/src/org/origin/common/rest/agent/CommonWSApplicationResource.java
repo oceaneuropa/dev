@@ -59,7 +59,16 @@ public class CommonWSApplicationResource extends AbstractWSApplicationResource {
 	}
 
 	/**
-	 * Install a EditPolicy to the AgentResource.
+	 * Install a EditPolicy to the ws resource.
+	 * 
+	 * @param editPolicy
+	 */
+	public void installEditPolicy(AbstractWSEditPolicy editPolicy) {
+		installEditPolicy(editPolicy.getRole(), editPolicy);
+	}
+
+	/**
+	 * Install a EditPolicy to the ws resource.
 	 * 
 	 * @param role
 	 * @param editPolicy

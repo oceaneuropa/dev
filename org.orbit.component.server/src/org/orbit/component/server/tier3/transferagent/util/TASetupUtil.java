@@ -11,7 +11,7 @@ import java.util.Properties;
 import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 
-public class SetupUtil {
+public class TASetupUtil {
 
 	public static final String PROP_TA_HOME = "TA_HOME";
 
@@ -24,7 +24,7 @@ public class SetupUtil {
 	 * @param bundleContext
 	 * @return
 	 */
-	public static Path getTAHome(BundleContext bundleContext) {
+	public static Path getHome(BundleContext bundleContext) {
 		String pathString = null;
 		if (bundleContext != null) {
 			pathString = bundleContext.getProperty(PROP_TA_HOME);
@@ -36,7 +36,7 @@ public class SetupUtil {
 			pathString = System.getenv(PROP_TA_HOME);
 		}
 		if (pathString == null) {
-			System.err.println(SetupUtil.class.getSimpleName() + ".getTAHome() " + PROP_TA_HOME + " is not set.");
+			System.err.println(TASetupUtil.class.getSimpleName() + ".getTAHome() " + PROP_TA_HOME + " is not set.");
 			return null;
 		}
 
@@ -54,7 +54,7 @@ public class SetupUtil {
 	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getTAAppsPath(Path taHome, boolean createIfNotExist) {
+	public static Path getAppsPath(Path taHome, boolean createIfNotExist) {
 		Path appsPath = taHome.resolve("apps");
 		if (!Files.exists(appsPath) && createIfNotExist) {
 			try {
@@ -73,7 +73,7 @@ public class SetupUtil {
 	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getTADownloadsPath(Path taHome, boolean createIfNotExist) {
+	public static Path getDownloadsPath(Path taHome, boolean createIfNotExist) {
 		Path appsPath = taHome.resolve("downloads");
 		if (!Files.exists(appsPath) && createIfNotExist) {
 			try {
@@ -86,13 +86,32 @@ public class SetupUtil {
 	}
 
 	/**
+	 * Get {TA_HOME}/nodespaces/ path.
+	 * 
+	 * @param taHome
+	 * @param createIfNotExist
+	 * @return
+	 */
+	public static Path getNodespacesPath(Path taHome, boolean createIfNotExist) {
+		Path nodespacesPath = taHome.resolve("nodespaces");
+		if (!Files.exists(nodespacesPath) && createIfNotExist) {
+			try {
+				nodespacesPath = Files.createDirectory(nodespacesPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return nodespacesPath;
+	}
+
+	/**
 	 * Get {TA_HOME}/nodes/ path.
 	 * 
 	 * @param taHome
 	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getTANodesPath(Path taHome, boolean createIfNotExist) {
+	public static Path getNodesPath(Path taHome, boolean createIfNotExist) {
 		Path nodesPath = taHome.resolve("nodes");
 		if (!Files.exists(nodesPath) && createIfNotExist) {
 			try {
@@ -111,7 +130,7 @@ public class SetupUtil {
 	 * @param createIfNotExist
 	 * @return
 	 */
-	public static Path getTASystemPath(Path taHome, boolean createIfNotExist) {
+	public static Path getSystemPath(Path taHome, boolean createIfNotExist) {
 		Path systemPath = taHome.resolve("system");
 		if (!Files.exists(systemPath) && createIfNotExist) {
 			try {
@@ -129,7 +148,7 @@ public class SetupUtil {
 	 * @param taHome
 	 * @return
 	 */
-	public static Path getTAConfigIniPath(Path taHome) {
+	public static Path getConfigIniPath(Path taHome) {
 		Path configIniPath = taHome.resolve("config.ini");
 		return configIniPath;
 	}
@@ -140,12 +159,12 @@ public class SetupUtil {
 	 * @param bundleContext
 	 * @return
 	 */
-	public static Properties getTAHomeConfigIniProperties(BundleContext bundleContext) {
-		Path taHome = getTAHome(bundleContext);
+	public static Properties getHomeConfigIniProperties(BundleContext bundleContext) {
+		Path taHome = getHome(bundleContext);
 		if (taHome == null) {
 			return new Properties();
 		}
-		Path configIniPath = getTAConfigIniPath(taHome);
+		Path configIniPath = getConfigIniPath(taHome);
 		Properties configIniProps = org.origin.common.env.SetupUtil.getProperties(taHome, "config.ini");
 		System.out.println("taHome = " + taHome);
 		System.out.println(configIniPath + " properties:");
@@ -159,9 +178,9 @@ public class SetupUtil {
 	 * @param bundleContext
 	 * @param props
 	 */
-	public static void loadTAConfigIniProperties(BundleContext bundleContext, Map<Object, Object> props) {
+	public static void loadConfigIniProperties(BundleContext bundleContext, Map<Object, Object> props) {
 		// load config.ini properties
-		Properties configIniProps = getTAHomeConfigIniProperties(bundleContext);
+		Properties configIniProps = getHomeConfigIniProperties(bundleContext);
 
 		if (configIniProps != null && !configIniProps.isEmpty()) {
 			@SuppressWarnings("unchecked")

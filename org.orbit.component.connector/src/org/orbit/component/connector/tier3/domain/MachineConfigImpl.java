@@ -10,7 +10,7 @@ public class MachineConfigImpl implements MachineConfig {
 
 	@Override
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(String id) {
@@ -19,7 +19,7 @@ public class MachineConfigImpl implements MachineConfig {
 
 	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -28,7 +28,7 @@ public class MachineConfigImpl implements MachineConfig {
 
 	@Override
 	public String getIpAddress() {
-		return ipAddress;
+		return this.ipAddress;
 	}
 
 	public void setIpAddress(String ipAddress) {

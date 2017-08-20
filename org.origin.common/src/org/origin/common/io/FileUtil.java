@@ -10,6 +10,7 @@ import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
@@ -39,8 +40,8 @@ public class FileUtil {
 	/**
 	 * Copies a file to a new location preserving the file date.
 	 * 
-	 * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is created if it does not exist. If the destination
-	 * file exists, then this method will overwrite it.
+	 * This method copies the contents of the specified source file to the specified destination file. The directory holding the destination file is created if
+	 * it does not exist. If the destination file exists, then this method will overwrite it.
 	 * 
 	 * Note: This method tries to preserve the file's last modified date/times.
 	 *
@@ -63,8 +64,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Copies bytes array to a file destination. The directories up to destination will be created if they don't already exist. destination will be overwritten if it already exists. The source stream
-	 * is closed.
+	 * Copies bytes array to a file destination. The directories up to destination will be created if they don't already exist. destination will be overwritten
+	 * if it already exists. The source stream is closed.
 	 * 
 	 * @param bytes
 	 * @param destination
@@ -83,8 +84,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Copies bytes from an InputStream source to a file destination. The directories up to destination will be created if they don't already exist. destination will be overwritten if it already
-	 * exists. The source stream is closed.
+	 * Copies bytes from an InputStream source to a file destination. The directories up to destination will be created if they don't already exist. destination
+	 * will be overwritten if it already exists. The source stream is closed.
 	 *
 	 * @param source
 	 *            the InputStream to copy bytes from, must not be null.
@@ -110,8 +111,8 @@ public class FileUtil {
 	/**
 	 * Copies a file to a directory preserving the file date.
 	 * 
-	 * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination directory is created if it does not exist. If the
-	 * destination file exists, then this method will overwrite it.
+	 * This method copies the contents of the specified source file to a file of the same name in the specified destination directory. The destination directory
+	 * is created if it does not exist. If the destination file exists, then this method will overwrite it.
 	 * 
 	 * Note: This method tries to preserve the file's last modified date/times.
 	 *
@@ -136,7 +137,8 @@ public class FileUtil {
 	 * 
 	 * This method copies the source directory and all its contents to a directory of the same name in the specified destination directory.
 	 * 
-	 * The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source with the destination, with the source taking precedence.
+	 * The destination directory is created if it does not exist. If the destination directory did exist, then this method merges the source with the
+	 * destination, with the source taking precedence.
 	 * 
 	 * Note: This method tries to preserve the files' last modified date/times.
 	 *
@@ -185,6 +187,17 @@ public class FileUtil {
 	}
 
 	/**
+	 * 
+	 * @param dir
+	 * @return
+	 * @throws IOException
+	 */
+	public static boolean deleteDirectory(File dir) throws IOException {
+		FileUtils.deleteDirectory(dir);
+		return true;
+	}
+
+	/**
 	 * Move the src file to the name specified by target.
 	 * 
 	 * @see org.apache.hadoop.fs.FileUtil
@@ -198,7 +211,8 @@ public class FileUtil {
 	 */
 	public static void replaceFile(File src, File target) throws IOException {
 		/*
-		 * renameTo() has two limitations on Windows platform. src.renameTo(target) fails if 1) If target already exists OR 2) If target is already open for reading/writing.
+		 * renameTo() has two limitations on Windows platform. src.renameTo(target) fails if 1) If target already exists OR 2) If target is already open for
+		 * reading/writing.
 		 */
 		if (!src.renameTo(target)) {
 			int retries = 5;
@@ -219,7 +233,8 @@ public class FileUtil {
 	// Checksum
 	// ------------------------------------------------------------------------------------
 	/**
-	 * Compute a checksum for the file or directory that consists of the name, length and the last modified date for a file and its children in case of a directory.
+	 * Compute a checksum for the file or directory that consists of the name, length and the last modified date for a file and its children in case of a
+	 * directory.
 	 *
 	 * @param file
 	 *            the file or directory
@@ -276,8 +291,8 @@ public class FileUtil {
 	}
 
 	/**
-	 * Computes the checksum of a file using the specified checksum object. Multiple files may be checked using one <code>Checksum</code> instance if desired simply by reusing the same checksum
-	 * object. For example:
+	 * Computes the checksum of a file using the specified checksum object. Multiple files may be checked using one <code>Checksum</code> instance if desired
+	 * simply by reusing the same checksum object. For example:
 	 * 
 	 * <pre>
 	 * long csum = FileUtil.checksum(file, new CRC32()).getValue();

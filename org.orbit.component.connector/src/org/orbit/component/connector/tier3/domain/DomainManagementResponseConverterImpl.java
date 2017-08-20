@@ -13,16 +13,6 @@ import org.origin.common.rest.model.Responses;
 
 public class DomainManagementResponseConverterImpl implements DomainManagementResponseConverter {
 
-	protected DomainManagementImpl domainManagementImpl;
-
-	/**
-	 * 
-	 * @param domainManagementImpl
-	 */
-	public DomainManagementResponseConverterImpl(DomainManagementImpl domainManagementImpl) {
-		this.domainManagementImpl = domainManagementImpl;
-	}
-
 	@Override
 	public MachineConfig[] convertToMachineConfigs(Responses responses) {
 		List<MachineConfig> machineConfigs = new ArrayList<MachineConfig>();

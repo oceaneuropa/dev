@@ -68,7 +68,7 @@ public class NodeConfigDTO {
 
 	@XmlElement
 	public String getHome() {
-		return home;
+		return this.home;
 	}
 
 	public void setHome(String home) {

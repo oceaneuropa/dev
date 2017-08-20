@@ -1,13 +1,18 @@
 package org.orbit.component.server.tier3.transferagent.service.impl;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
+import org.orbit.component.server.tier3.transferagent.util.TASetupUtil;
 import org.origin.common.command.IEditingDomain;
 import org.origin.common.util.PropertyUtil;
+import org.origin.core.resources.IRoot;
+import org.origin.core.resources.ResourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -21,6 +26,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected IEditingDomain editingDomain;
+	protected IRoot nodespaceRoot;
 
 	/**
 	 * 
@@ -70,6 +76,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		this.editingDomain = IEditingDomain.getEditingDomain(TransferAgentService.class.getName());
 
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+		TASetupUtil.loadConfigIniProperties(bundleContext, configProps);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL);
@@ -80,9 +87,19 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(TransferAgentService.class, this, props);
+
+		Path taHome = Paths.get(getHome()).toAbsolutePath();
+		Path nodespacesPath = TASetupUtil.getNodespacesPath(taHome, true);
+
+		this.nodespaceRoot = ResourceFactory.getInstance().createFsRoot(nodespacesPath.toFile());
 	}
 
 	public void stop() {
+		if (this.nodespaceRoot != null) {
+			this.nodespaceRoot.dispose();
+			this.nodespaceRoot = null;
+		}
+
 		if (this.editingDomain != null) {
 			IEditingDomain.disposeEditingDomain(TransferAgentService.class.getName());
 			this.editingDomain = null;
@@ -118,6 +135,11 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		System.out.println();
 
 		this.configProps = configProps;
+	}
+
+	@Override
+	public IRoot getNodespaceRoot() {
+		return this.nodespaceRoot;
 	}
 
 }

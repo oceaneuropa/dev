@@ -1,17 +1,20 @@
 package org.orbit.component.server.tier3.transferagent.service;
 
 import org.origin.common.command.IEditingDomain;
+import org.origin.core.resources.IRoot;
 
 public interface TransferAgentService {
 
-	public IEditingDomain getEditingDomain();
+	IEditingDomain getEditingDomain();
 
-	public String getName();
+	String getName();
 
-	public String getHostURL();
+	String getHostURL();
 
-	public String getContextRoot();
+	String getContextRoot();
 
-	public String getHome();
+	String getHome();
+
+	IRoot getNodespaceRoot();
 
 }

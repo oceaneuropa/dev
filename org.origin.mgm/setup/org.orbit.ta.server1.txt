@@ -26,5 +26,5 @@ VM arguments:
 -DORIGIN_HOME=/Users/oceaneuropa/origin 
 -Dorbit.host.url=http://127.0.0.1:12001 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
--Dcomponent.transfer_agent.name=TransferAgent101 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta -Dcomponent.transfer_agent.home=/Users/oceaneuropa/origin/ta1/nodes/node101
+-Dcomponent.transfer_agent.name=TransferAgent101 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta -Dcomponent.transfer_agent.home=/Users/oceaneuropa/origin/ta1
 

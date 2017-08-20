@@ -3,54 +3,45 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 ping
 -----------------------------------------------------------------------------------------------------
-ping -machineId m1 -transferAgentId ta1
+ta:ping -machineId m1 -transferAgentId ta11
 -----------------------------------------------------------------------------------------------------
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // Nodespaces
 // list_nodespaces
+// list_nodespace
 // nodespace_exist 
 // create_nodespace 
 // delete_nodespace 
-// is_nodespace_opened 
-// open_nodespace 
-// close_nodespace
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 list_nodespaces
 -----------------------------------------------------------------------------------------------------
-list_nodespaces -machineId m1 -transferAgentId ta1
+ta:list_nodespaces -machineId m1 -transferAgentId ta11
+-----------------------------------------------------------------------------------------------------
+
+list_nodespace
+-----------------------------------------------------------------------------------------------------
+ta:list_nodespace -machineId m1 -transferAgentId ta11 -nodespace nodespace1
 -----------------------------------------------------------------------------------------------------
 
 nodespace_exist
 -----------------------------------------------------------------------------------------------------
-nodespace_exist -machineId m1 -transferAgentId ta1 -nodespace nodespace1
+ta:nodespace_exist -machineId m1 -transferAgentId ta11 -nodespace nodespace1
+ta:nodespace_exist -machineId m1 -transferAgentId ta11 -nodespace nodespace3
 -----------------------------------------------------------------------------------------------------
 
 create_nodespace
 -----------------------------------------------------------------------------------------------------
-create_nodespace -machineId m1 -transferAgentId ta1 -nodespace nodespace1
+ta:create_nodespace -machineId m1 -transferAgentId ta11 -nodespace nodespace1
+ta:create_nodespace -machineId m1 -transferAgentId ta11 -nodespace nodespace3
 -----------------------------------------------------------------------------------------------------
 
 delete_nodespace
 -----------------------------------------------------------------------------------------------------
-delete_nodespace -machineId m1 -transferAgentId ta1 -nodespace nodespace1
------------------------------------------------------------------------------------------------------
-
-is_nodespace_opened
------------------------------------------------------------------------------------------------------
-is_nodespace_opened -machineId m1 -transferAgentId ta1 -nodespace nodespace1
------------------------------------------------------------------------------------------------------
-
-open_nodespace
------------------------------------------------------------------------------------------------------
-open_nodespace -machineId m1 -transferAgentId ta1 -nodespace nodespace1
------------------------------------------------------------------------------------------------------
-
-close_nodespace
------------------------------------------------------------------------------------------------------
-close_nodespace -machineId m1 -transferAgentId ta1 -nodespace nodespace1
+ta:delete_nodespace -machineId m1 -transferAgentId ta11 -nodespace nodespace1
+ta:delete_nodespace -machineId m1 -transferAgentId ta11 -nodespace nodespace3
 -----------------------------------------------------------------------------------------------------
 
 
@@ -67,36 +58,36 @@ close_nodespace -machineId m1 -transferAgentId ta1 -nodespace nodespace1
 
 list nodes
 -----------------------------------------------------------------------------------------------------
-list_nodes -machineId m1 -transferAgentId ta1 -nodespace
+ta:list_nodes -machineId m1 -transferAgentId ta11 -nodespace nodespace1
 -----------------------------------------------------------------------------------------------------
 
 check node exists
 -----------------------------------------------------------------------------------------------------
-node_exist -machineId m1 -transferAgentId ta1 -nodespace nodespace1 -nodeId node1
+ta:node_exist -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
 -----------------------------------------------------------------------------------------------------
 
 create node
 -----------------------------------------------------------------------------------------------------
-create_node -machineId m1 -transferAgentId ta1 -nodespace nodespace1 -nodeId node1
+ta:create_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
 -----------------------------------------------------------------------------------------------------
 
 delete node
 -----------------------------------------------------------------------------------------------------
-delete_node -machineId m1 -transferAgentId ta1 -nodespace nodespace1 -nodeId node1
+ta:delete_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
 -----------------------------------------------------------------------------------------------------
 
 check node started
 -----------------------------------------------------------------------------------------------------
-is_node_started -machineId m1 -transferAgentId ta1 -nodespace nodespace1 -nodeId node1
+ta:is_node_started -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
 -----------------------------------------------------------------------------------------------------
 
 start node
 -----------------------------------------------------------------------------------------------------
-start_node -machineId m1 -transferAgentId ta1 -nodespace nodespace1 -nodeId node1
+ta:start_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
 -----------------------------------------------------------------------------------------------------
 
 stop node
 -----------------------------------------------------------------------------------------------------
-stop_node -machineId m1 -transferAgentId ta1 -nodespace nodespace1 -nodeId node1
+ta:stop_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
 -----------------------------------------------------------------------------------------------------
 

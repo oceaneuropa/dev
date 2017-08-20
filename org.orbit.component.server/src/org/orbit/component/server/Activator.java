@@ -15,7 +15,7 @@ import org.orbit.component.server.tier2.appstore.ws.AppStoreServiceAdapter;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.orbit.component.server.tier3.domain.ws.DomainMgmtServiceAdapter;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
-import org.orbit.component.server.tier3.transferagent.util.SetupUtil;
+import org.orbit.component.server.tier3.transferagent.util.TASetupUtil;
 import org.orbit.component.server.tier3.transferagent.ws.TransferAgentServiceAdapter;
 import org.origin.common.util.PropertyUtil;
 import org.origin.mgm.client.api.IndexServiceUtil;
@@ -92,7 +92,7 @@ public class Activator implements BundleActivator {
 		// -----------------------------------------------------------------------------
 		// load properties from accessing index service
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		SetupUtil.loadTAConfigIniProperties(bundleContext, indexProviderProps);
+		TASetupUtil.loadConfigIniProperties(bundleContext, indexProviderProps);
 		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OrbitConstants.COMPONENT_INDEX_SERVICE_URL);
 		this.indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(indexProviderProps);
 
@@ -100,7 +100,7 @@ public class Activator implements BundleActivator {
 		// Get the available components
 		// -----------------------------------------------------------------------------
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		SetupUtil.loadTAConfigIniProperties(bundleContext, configProps);
+		TASetupUtil.loadConfigIniProperties(bundleContext, configProps);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_OAUTH2_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
