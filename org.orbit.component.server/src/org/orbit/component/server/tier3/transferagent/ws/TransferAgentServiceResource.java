@@ -47,16 +47,3 @@ public class TransferAgentServiceResource extends CommonWSApplicationResource {
 	}
 
 }
-
-// /**
-// * URL (POST): {scheme}://{host}:{port}/{contextRoot}/request (body parameter: Request)
-// *
-// * @param request
-// * @return
-// */
-// @POST
-// @Path("/request")
-// @Produces(MediaType.APPLICATION_JSON)
-// public Response onRequest(Request request) {
-// return super.onRequest(request);
-// }

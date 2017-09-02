@@ -7,7 +7,7 @@ import org.orbit.component.server.tier3.transferagent.command.NodeExistCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodeGetCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodeStartCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodeStopCommand;
-import org.orbit.component.server.tier3.transferagent.command.NodesGetCommand;
+import org.orbit.component.server.tier3.transferagent.command.NodeListCommand;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.command.ICommand;
 import org.origin.common.rest.agent.AbstractWSEditPolicy;
@@ -24,7 +24,7 @@ public class NodeEditPolicy extends AbstractWSEditPolicy {
 
 		String requestName = request.getRequestName();
 		if (OrbitConstants.Requests.GET_NODES.equals(requestName)) {
-			return new NodesGetCommand(service, request);
+			return new NodeListCommand(service, request);
 
 		} else if (OrbitConstants.Requests.GET_NODE.equals(requestName)) {
 			return new NodeGetCommand(service, request);

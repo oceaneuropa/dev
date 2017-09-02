@@ -7,6 +7,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domain.DomainManagement;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
+import org.orbit.component.api.tier3.transferagent.NodeInfo;
 import org.orbit.component.api.tier3.transferagent.NodespaceInfo;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.api.tier3.transferagent.TransferAgentHelper;
@@ -25,7 +26,8 @@ import org.osgi.framework.BundleContext;
 
 public class TransferAgentCLICommand implements Annotated {
 
-	protected static String[] NODESPACE_INFO_TITLES = new String[] { "Name" };
+	protected static String[] NODESPACE_TITLES = new String[] { "Name" };
+	protected static String[] NODE_TITLES = new String[] { "Name" };
 
 	protected BundleContext bundleContext;
 	protected String scheme = "ta";
@@ -201,14 +203,14 @@ public class TransferAgentCLICommand implements Annotated {
 
 			Responses responses = transferAgent.sendRequest(request);
 			NodespaceInfo[] nodespaceInfoResponses = transferAgent.getResponseConverter().convertToNodespaceInfos(responses);
-			String[][] rows = new String[nodespaceInfoResponses.length][NODESPACE_INFO_TITLES.length];
+			String[][] rows = new String[nodespaceInfoResponses.length][NODESPACE_TITLES.length];
 			int rowIndex = 0;
 			for (NodespaceInfo nodespaceInfo : nodespaceInfoResponses) {
 				String name = nodespaceInfo.getName();
 
 				rows[rowIndex++] = new String[] { name };
 			}
-			PrettyPrinter.prettyPrint(NODESPACE_INFO_TITLES, rows, nodespaceInfoResponses.length);
+			PrettyPrinter.prettyPrint(NODESPACE_TITLES, rows, nodespaceInfoResponses.length);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -235,14 +237,14 @@ public class TransferAgentCLICommand implements Annotated {
 			NodespaceInfo nodespaceInfoResponse = transferAgent.getResponseConverter().convertToNodespaceInfo(responses);
 
 			NodespaceInfo[] nodespaceInfos = (nodespaceInfoResponse != null) ? new NodespaceInfo[] { nodespaceInfoResponse } : new NodespaceInfo[] {};
-			String[][] rows = new String[nodespaceInfos.length][NODESPACE_INFO_TITLES.length];
+			String[][] rows = new String[nodespaceInfos.length][NODESPACE_TITLES.length];
 			int rowIndex = 0;
 			for (NodespaceInfo nodespaceInfo : nodespaceInfos) {
 				String name = nodespaceInfo.getName();
 
 				rows[rowIndex++] = new String[] { name };
 			}
-			PrettyPrinter.prettyPrint(NODESPACE_INFO_TITLES, rows, nodespaceInfos.length);
+			PrettyPrinter.prettyPrint(NODESPACE_TITLES, rows, nodespaceInfos.length);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -365,6 +367,56 @@ public class TransferAgentCLICommand implements Annotated {
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 
+			Request request = new Request(OrbitConstants.Requests.GET_NODES);
+			request.setParameter("nodespace", nodespace);
+			Responses responses = transferAgent.sendRequest(request);
+
+			NodeInfo[] nodeInfos = transferAgent.getResponseConverter().convertToNodeInfos(responses);
+
+			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
+			int rowIndex = 0;
+			for (NodeInfo nodeInfo : nodeInfos) {
+				String name = nodeInfo.getName();
+				rows[rowIndex++] = new String[] { name };
+			}
+			PrettyPrinter.prettyPrint(NODE_TITLES, rows, nodeInfos.length);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Descriptor("List node")
+	public void list_node( //
+			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
+			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
+			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
+	) {
+		if (debug) {
+			CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
+		}
+
+		try {
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+
+			Request request = new Request(OrbitConstants.Requests.GET_NODE);
+			request.setParameter("nodespace", nodespace);
+			request.setParameter("node", nodeId);
+
+			Responses responses = transferAgent.sendRequest(request);
+			NodeInfo nodeInfo = transferAgent.getResponseConverter().convertToNodeInfo(responses);
+
+			NodeInfo[] nodeInfos = (nodeInfo != null) ? new NodeInfo[] { nodeInfo } : new NodeInfo[] {};
+			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
+			int rowIndex = 0;
+			for (NodeInfo currNodeInfo : nodeInfos) {
+				String name = currNodeInfo.getName();
+
+				rows[rowIndex++] = new String[] { name };
+			}
+			PrettyPrinter.prettyPrint(NODE_TITLES, rows, nodeInfos.length);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -383,6 +435,20 @@ public class TransferAgentCLICommand implements Annotated {
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+
+			Request request = new Request(OrbitConstants.Requests.NODE_EXIST);
+			request.setParameter("nodespace", nodespace);
+			request.setParameter("node", nodeId);
+
+			Responses responses = transferAgent.sendRequest(request);
+			Response response = responses.getResponse(Response.class);
+			if (response != null) {
+				System.out.println(response.getSimpleLabel());
+
+				if (response.getException() != null) {
+					response.getException().printStackTrace();
+				}
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -403,6 +469,20 @@ public class TransferAgentCLICommand implements Annotated {
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 
+			Request request = new Request(OrbitConstants.Requests.CREATE_NODE);
+			request.setParameter("nodespace", nodespace);
+			request.setParameter("node", nodeId);
+
+			Responses responses = transferAgent.sendRequest(request);
+			Response response = responses.getResponse(Response.class);
+			if (response != null) {
+				System.out.println(response.getSimpleLabel());
+
+				if (response.getException() != null) {
+					response.getException().printStackTrace();
+				}
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -421,6 +501,20 @@ public class TransferAgentCLICommand implements Annotated {
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+
+			Request request = new Request(OrbitConstants.Requests.DELETE_NODE);
+			request.setParameter("nodespace", nodespace);
+			request.setParameter("node", nodeId);
+
+			Responses responses = transferAgent.sendRequest(request);
+			Response response = responses.getResponse(Response.class);
+			if (response != null) {
+				System.out.println(response.getSimpleLabel());
+
+				if (response.getException() != null) {
+					response.getException().printStackTrace();
+				}
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

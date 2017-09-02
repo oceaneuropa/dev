@@ -1,5 +1,10 @@
 package org.orbit.component.server.tier3.transferagent.command;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.orbit.component.model.tier3.transferagent.ModelConverter;
+import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -8,17 +13,18 @@ import org.origin.common.command.impl.CommandResult;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
+import org.origin.core.resources.IResource;
 import org.origin.core.resources.node.INode;
 import org.origin.core.resources.node.INodespace;
 
-public class NodeExistCommand extends AbstractTransferAgentCommand {
+public class NodeListCommand extends AbstractTransferAgentCommand {
 
 	/**
 	 * 
 	 * @param service
 	 * @param request
 	 */
-	public NodeExistCommand(TransferAgentService service, Request request) {
+	public NodeListCommand(TransferAgentService service, Request request) {
 		super(service, request);
 	}
 
@@ -26,9 +32,7 @@ public class NodeExistCommand extends AbstractTransferAgentCommand {
 	public ICommandResult execute(CommandContext context) throws CommandException {
 		System.out.println(getClass().getSimpleName() + ".execute()");
 		String nodespaceName = (String) this.request.getParameter("nodespace");
-		String nodeName = (String) this.request.getParameter("node");
 		System.out.println("    nodespaceName = " + nodespaceName);
-		System.out.println("    nodeName = " + nodeName);
 
 		Responses responses = context.getAdapter(Responses.class);
 		try {
@@ -40,13 +44,18 @@ public class NodeExistCommand extends AbstractTransferAgentCommand {
 				return new CommandResult(response);
 			}
 
-			boolean exist = false;
-			INode node = nodespace.findMember(nodeName, INode.class);
-			if (node != null) {
-				exist = true;
+			List<INodeDTO> nodeDTOs = new ArrayList<INodeDTO>();
+			IResource[] resources = nodespace.getMembers();
+			for (IResource resource : resources) {
+				if (resource instanceof INode) {
+					INode node = (INode) resource;
+					INodeDTO nodeDTO = ModelConverter.getInstance().toDTO(node);
+					nodeDTOs.add(nodeDTO);
+				}
 			}
 
-			Response response = exist ? new Response(Response.SUCCESS, "Node exists.") : new Response(Response.FAILURE, "Node does not exist.");
+			Response response = new Response(Response.SUCCESS, "Nodes are retrieved.");
+			response.setBody(nodeDTOs);
 			responses.setResponse(response);
 			return new CommandResult(response);
 

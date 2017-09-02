@@ -63,31 +63,32 @@ ta:list_nodes -machineId m1 -transferAgentId ta11 -nodespace nodespace1
 
 check node exists
 -----------------------------------------------------------------------------------------------------
-ta:node_exist -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
+ta:node_exist -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node11
+ta:node_exist -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node13
 -----------------------------------------------------------------------------------------------------
 
 create node
 -----------------------------------------------------------------------------------------------------
-ta:create_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
+ta:create_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node13
 -----------------------------------------------------------------------------------------------------
 
 delete node
 -----------------------------------------------------------------------------------------------------
-ta:delete_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
+ta:delete_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node13
 -----------------------------------------------------------------------------------------------------
 
 check node started
 -----------------------------------------------------------------------------------------------------
-ta:is_node_started -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
+ta:is_node_started -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node11
 -----------------------------------------------------------------------------------------------------
 
 start node
 -----------------------------------------------------------------------------------------------------
-ta:start_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
+ta:start_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node11
 -----------------------------------------------------------------------------------------------------
 
 stop node
 -----------------------------------------------------------------------------------------------------
-ta:stop_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node111
+ta:stop_node -machineId m1 -transferAgentId ta11 -nodespace nodespace1 -nodeId node11
 -----------------------------------------------------------------------------------------------------
 

@@ -5,7 +5,7 @@ import org.orbit.component.server.tier3.transferagent.command.NodespaceCreateCom
 import org.orbit.component.server.tier3.transferagent.command.NodespaceDeleteCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodespaceExistCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodespaceGetCommand;
-import org.orbit.component.server.tier3.transferagent.command.NodespacesGetCommand;
+import org.orbit.component.server.tier3.transferagent.command.NodespaceListCommand;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.command.ICommand;
 import org.origin.common.rest.agent.AbstractWSEditPolicy;
@@ -22,7 +22,7 @@ public class NodespaceEditPolicy extends AbstractWSEditPolicy {
 
 		String requestName = request.getRequestName();
 		if (OrbitConstants.Requests.GET_NODESPACES.equals(requestName)) {
-			return new NodespacesGetCommand(service, request);
+			return new NodespaceListCommand(service, request);
 
 		} else if (OrbitConstants.Requests.GET_NODESPACE.equals(requestName)) {
 			return new NodespaceGetCommand(service, request);
