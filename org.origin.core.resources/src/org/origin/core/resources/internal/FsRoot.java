@@ -1,0 +1,521 @@
+package org.origin.core.resources.internal;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.origin.common.io.FileUtil;
+import org.origin.common.io.IOUtil;
+import org.origin.core.resources.IFile;
+import org.origin.core.resources.IFolder;
+import org.origin.core.resources.IPath;
+import org.origin.core.resources.IResource;
+import org.origin.core.resources.IRoot;
+import org.origin.core.resources.ResourceFactory;
+
+public class FsRoot implements IRoot {
+
+	private File fsRootFolder;
+	private FolderImpl rootFolder;
+	private Map<IPath, IResource> fullpathToResourceTable = new TreeMap<IPath, IResource>();
+
+	/**
+	 * 
+	 * @param fsRootFolder
+	 */
+	public FsRoot(File fsRootFolder) {
+		this.fsRootFolder = fsRootFolder;
+		this.rootFolder = new FolderImpl(this, PathImpl.ROOT);
+	}
+
+	@Override
+	public IResource[] getRootMembers() {
+		return this.rootFolder.getMembers();
+	}
+
+	@Override
+	public IResource findRootMember(String name) {
+		return this.rootFolder.findMember(name);
+	}
+
+	@Override
+	public <RESOURCE extends IResource> RESOURCE findRootMember(String name, Class<RESOURCE> clazz) {
+		return this.rootFolder.findMember(name, clazz);
+	}
+
+	@Override
+	public IResource[] getMembers(IPath fullpath) {
+		List<IResource> members = new ArrayList<IResource>();
+
+		File fsFile = getUnderlyingFsFile(fullpath);
+		if (fsFile != null) {
+			File[] fsMemberFiles = fsFile.listFiles();
+
+			if (fsMemberFiles != null) {
+				synchronized (this.fullpathToResourceTable) {
+					for (File fsMemberFile : fsMemberFiles) {
+						IPath memberFullpath = fullpath.append(fsMemberFile.getName());
+
+						IResource iResource = this.fullpathToResourceTable.get(memberFullpath);
+						if (iResource != null) {
+							members.add(iResource);
+
+						} else {
+							if (fsMemberFile.isFile()) {
+								IFile iFile = ResourceFactory.getInstance().newFileInstance(this, memberFullpath);
+								if (iFile != null) {
+									this.fullpathToResourceTable.put(memberFullpath, iFile);
+									members.add(iFile);
+								}
+
+							} else if (fsMemberFile.isDirectory()) {
+								IFolder iFolder = ResourceFactory.getInstance().newFolderInstance(this, memberFullpath);
+								if (iFolder != null) {
+									this.fullpathToResourceTable.put(memberFullpath, iFolder);
+									members.add(iFolder);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return members.toArray(new IResource[members.size()]);
+	}
+
+	@Override
+	public IFolder getParent(IPath fullpath) throws IOException {
+		IPath parentFullpath = fullpath.getParent();
+		IFolder parent = getFolder(parentFullpath);
+		return parent;
+	}
+
+	@Override
+	public IFile getFile(IPath fullpath) throws IOException {
+		IFile result = null;
+
+		synchronized (this.fullpathToResourceTable) {
+			IResource iResource = this.fullpathToResourceTable.get(fullpath);
+			if (iResource != null) {
+				// IResource exists
+				if (iResource instanceof IFolder) {
+					File fsFile = getUnderlyingFsFile(fullpath);
+					if (fsFile.isDirectory()) {
+						throw new IOException(fullpath.getPathString() + " is a folder.");
+					} else {
+						// FS file doesn't exist, but was created as IFolder
+						this.fullpathToResourceTable.remove(fullpath);
+					}
+				} else if (iResource instanceof IFile) {
+					result = (IFile) iResource;
+				}
+			}
+
+			if (result == null) {
+				result = ResourceFactory.getInstance().newFileInstance(this, fullpath);
+				if (result != null) {
+					this.fullpathToResourceTable.put(fullpath, result);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public IFolder getFolder(IPath fullpath) throws IOException {
+		IFolder result = null;
+
+		synchronized (this.fullpathToResourceTable) {
+			IResource iResource = this.fullpathToResourceTable.get(fullpath);
+			if (iResource != null) {
+				if (iResource instanceof IFolder) {
+					result = (IFolder) iResource;
+
+				} else if (iResource instanceof IFile) {
+					File fsFile = getUnderlyingFsFile(fullpath);
+					if (fsFile.isFile()) {
+						throw new IOException(fullpath.getPathString() + " is a file.");
+
+					} else {
+						this.fullpathToResourceTable.remove(fullpath);
+					}
+				}
+			}
+
+			if (result == null) {
+				result = ResourceFactory.getInstance().newFolderInstance(this, fullpath);
+				if (result != null) {
+					this.fullpathToResourceTable.put(fullpath, result);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <FILE extends IFile> FILE getFile(IPath fullpath, Class<FILE> clazz) throws IOException {
+		FILE result = null;
+
+		synchronized (this.fullpathToResourceTable) {
+			IResource iResource = this.fullpathToResourceTable.get(fullpath);
+			if (iResource != null && clazz.isAssignableFrom(iResource.getClass())) {
+				result = (FILE) iResource;
+			}
+
+			if (result == null) {
+				result = ResourceFactory.getInstance().newFileInstance(this, fullpath, clazz);
+				if (result != null) {
+					this.fullpathToResourceTable.put(fullpath, result);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public <FOLDER extends IFolder> FOLDER getFolder(IPath fullpath, Class<FOLDER> clazz) throws IOException {
+		FOLDER result = null;
+
+		synchronized (this.fullpathToResourceTable) {
+			IResource iResource = this.fullpathToResourceTable.get(fullpath);
+			if (iResource != null && clazz.isAssignableFrom(iResource.getClass())) {
+				result = (FOLDER) iResource;
+			}
+
+			if (result == null) {
+				result = ResourceFactory.getInstance().newFolderInstance(this, fullpath, clazz);
+				if (result != null) {
+					this.fullpathToResourceTable.put(fullpath, result);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	@Override
+	public boolean delete(IPath fullpath) {
+		boolean isDeleted = false;
+
+		synchronized (this.fullpathToResourceTable) {
+			this.fullpathToResourceTable.remove(fullpath);
+		}
+
+		File fsFile = getUnderlyingFsFile(fullpath);
+		if (fsFile != null && fsFile.exists()) {
+			if (fsFile.isDirectory()) {
+				try {
+					isDeleted = FileUtil.deleteDirectory(fsFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else if (fsFile.isFile()) {
+				isDeleted = fsFile.delete();
+			}
+		}
+
+		return isDeleted;
+	}
+
+	@Override
+	public InputStream getInputStream(IPath fullpath) throws IOException {
+		InputStream input = null;
+		File fsFile = getUnderlyingFsFile(fullpath);
+		if (fsFile != null) {
+			input = new FileInputStream(fsFile);
+		}
+		return input;
+	}
+
+	@Override
+	public OutputStream getOutputStream(IPath fullpath) throws IOException {
+		OutputStream output = null;
+		File fsFile = getUnderlyingFsFile(fullpath);
+		if (fsFile != null) {
+			output = new FileOutputStream(fsFile);
+		}
+		return output;
+	}
+
+	@Override
+	public boolean underlyingResourceExists(IPath fullpath) {
+		File fsFile = getUnderlyingFsFile(fullpath);
+		if (fsFile != null) {
+			return fsFile.exists();
+		}
+		return false;
+	}
+
+	@Override
+	public Object getUnderlyingResource(IPath fullpath) {
+		return getUnderlyingFsFile(fullpath);
+	}
+
+	/**
+	 * 
+	 * @param fullpath
+	 * @return
+	 */
+	private File getUnderlyingFsFile(IPath fullpath) {
+		IPath fsRootAbsolutePath = new PathImpl(this.fsRootFolder.getAbsolutePath());
+		IPath fsFileAbsolutePath = fsRootAbsolutePath.append(fullpath);
+
+		String pathString = fsFileAbsolutePath.getPathString();
+		if (pathString != null && pathString.endsWith(PathImpl.SEPARATOR)) {
+			pathString = pathString.substring(0, pathString.length() - 1);
+		}
+		File fsFile = new File(pathString);
+		return fsFile;
+	}
+
+	@Override
+	public boolean createUnderlyingFile(IPath fullpath) throws IOException {
+		File fsFile = getUnderlyingFsFile(fullpath);
+		if (fsFile != null) {
+			if (fsFile.isDirectory()) {
+				throw new IOException(fullpath.getPathString() + " is a folder.");
+			}
+
+			if (!fsFile.exists()) {
+				return fsFile.createNewFile();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean createUnderlyingFile(IPath fullpath, InputStream input) throws IOException {
+		File fsFile = getUnderlyingFsFile(fullpath);
+		if (fsFile != null) {
+			if (fsFile.isDirectory()) {
+				throw new IOException(fullpath.getPathString() + " is a folder.");
+			}
+
+			// Create file in file system if not exist.
+			if (!fsFile.exists()) {
+				fsFile.createNewFile();
+			}
+
+			// Read from input stream and write it to the file.
+			FileOutputStream output = null;
+			try {
+				output = new FileOutputStream(fsFile);
+				IOUtil.copyLarge(input, output);
+
+			} finally {
+				IOUtil.closeQuietly(output, true);
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean createUnderlyingFolder(IPath fullpath) throws IOException {
+		File fsFile = getUnderlyingFsFile(fullpath);
+		if (fsFile != null) {
+			if (!fsFile.exists()) {
+				return fsFile.mkdirs();
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized void dispose() {
+		this.fullpathToResourceTable.clear();
+	}
+
+}
+
+/// **
+// *
+// * @param resource
+// * @return
+// */
+// private File getUnderlyingFile(IResource resource) {
+// File file = null;
+// if (resource != null) {
+// IPath fullPath = resource.getFullPath();
+// IPath absolutePath = new PathImpl(new PathImpl(this.rootFolder.getAbsolutePath()), fullPath);
+// file = new File(absolutePath.toString());
+// }
+// return file;
+// }
+
+// @Override
+// public IFile getFile(IFolder parent, IPath path) {
+// File file = getUnderlyingFile(parent);
+// if (file != null && path != null) {
+// File newFile = new File(file, path.toString());
+// return newFileInstance(parent, newFile);
+// }
+// return null;
+// }
+//
+// @Override
+// public IFolder getFolder(IFolder parent, IPath path) {
+// File file = getUnderlyingFile(parent);
+// if (file != null && path != null) {
+// File newFile = new File(file, path.toString());
+// return newFolderInstance((IFolder) parent, newFile);
+// }
+// return null;
+// }
+
+// @Override
+// public boolean exists(IFolder parent, IPath path) {
+// if (parent == null || path == null) {
+// File file = getUnderlyingFile(parent);
+// if (file != null) {
+// return file.exists();
+// }
+// }
+// return false;
+// }
+
+// @Override
+// @SuppressWarnings("unchecked")
+// public <RES> RES[] getRootMembers(Class<RES> clazz) {
+// List<RES> result = new ArrayList<RES>();
+// IResource[] members = getRootMembers();
+// for (IResource member : members) {
+// if (clazz.isAssignableFrom(member.getClass())) {
+// result.add((RES) member);
+// }
+// }
+// return (RES[]) result.toArray(new Object[result.size()]);
+// }
+//
+// @Override
+// @SuppressWarnings("unchecked")
+// public <RES> RES[] getMembers(IFolder parent, Class<RES> clazz) {
+// List<RES> result = new ArrayList<RES>();
+// IResource[] members = getMembers(parent);
+// for (IResource member : members) {
+// if (clazz.isAssignableFrom(member.getClass())) {
+// result.add((RES) member);
+// }
+// }
+// return (RES[]) result.toArray(new Object[result.size()]);
+// }
+
+// private synchronized IFile getFileInstance(IFolder parent, File file) {
+// IPath fullpath = new PathImpl(parent.getFullPath(), file.getName());
+// IResource resource = this.fullpathToResourceTable.get(fullpath);
+// if (resource instanceof IFile) {
+// return (IFile) resource;
+// }
+// return null;
+// }
+//
+// private synchronized IFolder getFolderInstance(IFolder parent, File file) {
+// IPath fullpath = new PathImpl(parent.getFullPath(), file.getName());
+// IResource resource = this.fullpathToResourceTable.get(fullpath);
+// if (resource instanceof IFolder) {
+// return (IFolder) resource;
+// }
+// return null;
+// }
+
+// private synchronized IFile newFileInstance(IPath fullpath) {
+// IFile newFile = null;
+// ResourceProvider[] providers = ResourceProviderRegistry.getInstance().getResourceProviders();
+// for (ResourceProvider provider : providers) {
+// if (provider.isSupported(this, fullpath)) {
+// newFile = provider.newFileInstance(this, fullpath);
+// if (newFile != null) {
+// break;
+// }
+// }
+// }
+//
+// // New IFile is not created by providers
+// // - Create default IFile
+// if (newFile == null) {
+// newFile = ResourceFactory.getInstance().createFile(this, fullpath);
+// }
+//
+// this.fullpathToResourceTable.put(fullpath, newFile);
+// return newFile;
+// }
+//
+// private synchronized IFolder newFolderInstance(IPath fullpath) {
+// IFolder newFolder = null;
+//
+// // Ask providers to create new IFolder
+// ResourceProvider[] providers = ResourceProviderRegistry.getInstance().getResourceProviders();
+// for (ResourceProvider provider : providers) {
+// if (provider.isSupported(this, fullpath)) {
+// newFolder = provider.newFolderInstance(this, fullpath);
+// if (newFolder != null) {
+// break;
+// }
+// }
+// }
+//
+// // New IFolder is not created by providers
+// // - Create default IFolder
+// if (newFolder == null) {
+// newFolder = ResourceFactory.getInstance().createFolder(this, fullpath);
+// }
+//
+// this.fullpathToResourceTable.put(fullpath, newFolder);
+// return newFolder;
+// }
+//
+// private synchronized <FILE extends IFile> FILE newFileInstance(IPath fullpath, Class<FILE> clazz) {
+// FILE newFILE = null;
+//
+// // Ask providers to create new FILE
+// ResourceProvider[] providers = ResourceProviderRegistry.getInstance().getResourceProviders();
+// for (ResourceProvider provider : providers) {
+// if (provider.isSupported(this, fullpath, clazz)) {
+// newFILE = provider.newFileInstance(this, fullpath, clazz);
+// if (newFILE != null) {
+// break;
+// }
+// }
+// }
+// if (newFILE == null) {
+// throw new RuntimeException("Class \"" + clazz.getName() + "\" is not supported by ResourceProviders for creating new file instance.");
+// }
+//
+// this.fullpathToResourceTable.put(fullpath, newFILE);
+//
+// return newFILE;
+// }
+//
+// private synchronized <FOLDER extends IFolder> FOLDER newFolderInstance(IPath fullpath, Class<FOLDER> clazz) {
+// FOLDER newFOLDER = null;
+//
+// // Ask providers to create new FOLDER
+// ResourceProvider[] providers = ResourceProviderRegistry.getInstance().getResourceProviders();
+// for (ResourceProvider provider : providers) {
+// if (provider.isSupported(this, fullpath, clazz)) {
+// newFOLDER = provider.newFolderInstance(this, fullpath, clazz);
+// if (newFOLDER != null) {
+// break;
+// }
+// }
+// }
+// if (newFOLDER == null) {
+// throw new RuntimeException("Class \"" + clazz.getName() + "\" is not supported by ResourceProviders for creating new folder instance.");
+// }
+//
+// this.fullpathToResourceTable.put(fullpath, newFOLDER);
+//
+// return newFOLDER;
+// }
