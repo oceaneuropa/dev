@@ -6,6 +6,7 @@ import org.orbit.component.model.tier3.domain.DomainMgmtException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
 import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
+import org.origin.core.resources.WorkspaceManager;
 
 public interface DomainManagementService {
 
@@ -44,6 +45,11 @@ public interface DomainManagementService {
 	boolean updateTransferAgentConfig(String machineId, TransferAgentConfigRTO updateTransferAgentRequest, List<String> fieldsToUpdate) throws DomainMgmtException;
 
 	boolean deleteTransferAgentConfig(String machineId, String transferAgentId) throws DomainMgmtException;
+
+	// ------------------------------------------------------
+	// Workspaces management
+	// ------------------------------------------------------
+	WorkspaceManager getWorkspaceManager();
 
 	// ------------------------------------------------------
 	// Node management

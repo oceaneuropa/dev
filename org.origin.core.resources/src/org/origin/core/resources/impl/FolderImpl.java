@@ -1,4 +1,4 @@
-package org.origin.core.resources.internal;
+package org.origin.core.resources.impl;
 
 import java.io.IOException;
 
@@ -6,22 +6,22 @@ import org.origin.core.resources.IFile;
 import org.origin.core.resources.IFolder;
 import org.origin.core.resources.IPath;
 import org.origin.core.resources.IResource;
-import org.origin.core.resources.IRoot;
+import org.origin.core.resources.IWorkspace;
 
 public class FolderImpl extends ResourceImpl implements IFolder {
 
 	/**
 	 * 
-	 * @param root
+	 * @param workspace
 	 * @param fullpath
 	 */
-	public FolderImpl(IRoot root, IPath fullpath) {
-		super(root, fullpath);
+	public FolderImpl(IWorkspace workspace, IPath fullpath) {
+		super(workspace, fullpath);
 	}
 
 	@Override
 	public IResource[] getMembers() {
-		IResource[] members = getRoot().getMembers(getFullPath());
+		IResource[] members = getWorkspace().getMembers(getFullPath());
 		if (members == null) {
 			members = new IResource[] {};
 		}
@@ -57,13 +57,13 @@ public class FolderImpl extends ResourceImpl implements IFolder {
 
 	@Override
 	public boolean create() throws IOException {
-		return getRoot().createUnderlyingFolder(getFullPath());
+		return getWorkspace().createUnderlyingFolder(getFullPath());
 	}
 
 	@Override
 	public boolean exists(IPath path) {
 		IPath fullpath = getFullPath().append(path);
-		boolean exists = getRoot().underlyingResourceExists(fullpath);
+		boolean exists = getWorkspace().underlyingResourceExists(fullpath);
 		return exists;
 	}
 
@@ -75,7 +75,7 @@ public class FolderImpl extends ResourceImpl implements IFolder {
 	@Override
 	public IFile getFile(IPath path) throws IOException {
 		IPath fullpath = getFullPath().append(path);
-		IFile file = getRoot().getFile(fullpath);
+		IFile file = getWorkspace().getFile(fullpath);
 		return file;
 	}
 
@@ -87,7 +87,7 @@ public class FolderImpl extends ResourceImpl implements IFolder {
 	@Override
 	public IFolder getFolder(IPath path) throws IOException {
 		IPath fullpath = getFullPath().append(path);
-		IFolder folder = getRoot().getFolder(fullpath);
+		IFolder folder = getWorkspace().getFolder(fullpath);
 		return folder;
 	}
 

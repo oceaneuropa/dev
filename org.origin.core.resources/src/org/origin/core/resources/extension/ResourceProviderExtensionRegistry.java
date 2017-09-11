@@ -1,13 +1,13 @@
-package org.origin.core.resources;
+package org.origin.core.resources.extension;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourceProviderRegistry {
+public class ResourceProviderExtensionRegistry {
 
-	private static ResourceProviderRegistry INSTANCE = new ResourceProviderRegistry();
+	private static ResourceProviderExtensionRegistry INSTANCE = new ResourceProviderExtensionRegistry();
 
-	public static ResourceProviderRegistry getInstance() {
+	public static ResourceProviderExtensionRegistry getInstance() {
 		return INSTANCE;
 	}
 

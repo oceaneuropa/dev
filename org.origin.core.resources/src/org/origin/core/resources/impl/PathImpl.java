@@ -1,4 +1,4 @@
-package org.origin.core.resources.internal;
+package org.origin.core.resources.impl;
 
 import org.origin.common.util.StringUtil;
 import org.origin.core.resources.IPath;

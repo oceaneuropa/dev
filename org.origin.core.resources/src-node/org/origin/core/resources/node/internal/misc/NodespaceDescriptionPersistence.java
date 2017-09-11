@@ -1,8 +1,11 @@
 package org.origin.core.resources.node.internal.misc;
 
-import java.io.File;
 import java.io.IOException;
 
+import org.origin.core.resources.Constants;
+import org.origin.core.resources.IFile;
+import org.origin.core.resources.IFolder;
+import org.origin.core.resources.node.INodespace;
 import org.origin.core.resources.node.NodespaceDescription;
 
 public class NodespaceDescriptionPersistence {
@@ -15,39 +18,82 @@ public class NodespaceDescriptionPersistence {
 
 	/**
 	 * 
-	 * @param nodespaceFolder
+	 * @param nodespace
 	 * @return
+	 * @throws IOException
 	 */
-	private File getNodespaceDescriptionFile(File nodespaceFolder) {
-		File dotMetadataDir = new File(nodespaceFolder, ".metadata");
-		return new File(dotMetadataDir, ".nodespace");
+	private IFile getNodespaceDescriptionFile(INodespace nodespace) throws IOException {
+		IFolder dotMetadataFolder = nodespace.getFolder(Constants.DOT_METADATA_FOLDER_NAME);
+		IFile dotNodespaceFile = dotMetadataFolder.getFile(Constants.DOT_NODESPACE_FILE_NAME);
+		return dotNodespaceFile;
 	}
 
 	/**
 	 * 
-	 * @param nodespaceFolder
+	 * @param nodespace
 	 * @return
 	 * @throws IOException
 	 */
-	public NodespaceDescription load(File nodespaceFolder) throws IOException {
-		File dotNodespaceFile = getNodespaceDescriptionFile(nodespaceFolder);
+	public NodespaceDescription load(INodespace nodespace) throws IOException {
+		IFile dotNodespaceFile = getNodespaceDescriptionFile(nodespace);
 		NodespaceDescriptionReader reader = new NodespaceDescriptionReader();
 		return reader.read(dotNodespaceFile);
 	}
 
 	/**
 	 * 
-	 * @param nodespaceFolder
-	 * @param nodespaceDesc
+	 * @param nodespace
+	 * @param desc
 	 * @throws IOException
 	 */
-	public void save(File nodespaceFolder, NodespaceDescription nodespaceDesc) throws IOException {
-		File dotNodespaceFile = getNodespaceDescriptionFile(nodespaceFolder);
-		if (!dotNodespaceFile.getParentFile().exists()) {
-			dotNodespaceFile.getParentFile().mkdirs();
+	public void save(INodespace nodespace, NodespaceDescription desc) throws IOException {
+		IFolder dotMetadataFolder = nodespace.getFolder(Constants.DOT_METADATA_FOLDER_NAME);
+		if (!dotMetadataFolder.exists()) {
+			dotMetadataFolder.create();
+		}
+		IFile dotNodespaceFile = getNodespaceDescriptionFile(nodespace);
+		if (!dotNodespaceFile.exists()) {
+			dotNodespaceFile.create();
 		}
 		NodespaceDescriptionWriter writer = new NodespaceDescriptionWriter();
-		writer.write(nodespaceDesc, dotNodespaceFile);
+		writer.write(desc, dotNodespaceFile);
 	}
 
 }
+
+/// **
+// *
+// * @param nodespaceFolder
+// * @return
+// */
+// private File getNodespaceDescriptionFile(File nodespaceFolder) {
+// File dotMetadataDir = new File(nodespaceFolder, Constants.DOT_METADATA_FOLDER_NAME);
+// return new File(dotMetadataDir, Constants.DOT_NODESPACE_FILE_NAME);
+// }
+
+/// **
+// *
+// * @param nodespaceFolder
+// * @return
+// * @throws IOException
+// */
+// public NodespaceDescription load(File nodespaceFolder) throws IOException {
+// File dotNodespaceFile = getNodespaceDescriptionFile(nodespaceFolder);
+// NodespaceDescriptionReader reader = new NodespaceDescriptionReader();
+// return reader.read(dotNodespaceFile);
+// }
+
+/// **
+// *
+// * @param nodespaceFolder
+// * @param nodespaceDesc
+// * @throws IOException
+// */
+// public void save(File nodespaceFolder, NodespaceDescription nodespaceDesc) throws IOException {
+// File dotNodespaceFile = getNodespaceDescriptionFile(nodespaceFolder);
+// if (!dotNodespaceFile.getParentFile().exists()) {
+// dotNodespaceFile.getParentFile().mkdirs();
+// }
+// NodespaceDescriptionWriter writer = new NodespaceDescriptionWriter();
+// writer.write(nodespaceDesc, dotNodespaceFile);
+// }

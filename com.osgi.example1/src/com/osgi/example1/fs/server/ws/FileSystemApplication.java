@@ -37,7 +37,7 @@ public class FileSystemApplication extends AbstractApplication {
 		// System.out.println("FileSystemApplication.start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(Constants.CONTEXT_ROOT, contextRoot);
+		props.put(Constants.CONTEXT_ROOT, this.contextRoot);
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 	}
 

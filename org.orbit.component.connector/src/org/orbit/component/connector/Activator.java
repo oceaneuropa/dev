@@ -75,8 +75,6 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
-
 		// -----------------------------------------------------------------------------
 		// Stop tier3 service connectors
 		// -----------------------------------------------------------------------------
@@ -115,6 +113,8 @@ public class Activator implements BundleActivator {
 		// this.oauth2Connector.stop();
 		// this.oauth2Connector = null;
 		// }
+
+		Activator.context = null;
 	}
 
 }

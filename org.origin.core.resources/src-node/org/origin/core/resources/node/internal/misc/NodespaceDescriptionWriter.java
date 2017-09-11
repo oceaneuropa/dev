@@ -1,6 +1,5 @@
 package org.origin.core.resources.node.internal.misc;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -19,25 +18,12 @@ public class NodespaceDescriptionWriter {
 
 	/**
 	 * 
-	 * @param nodespaceDesc
-	 * @param file
-	 * @throws IOException
-	 */
-	public void write(NodespaceDescription nodespaceDesc, File file) throws IOException {
-		JSONObject rootJSON = rootToJSON(nodespaceDesc);
-		if (rootJSON != null) {
-			JSONUtil.save(rootJSON, file);
-		}
-	}
-
-	/**
-	 * 
-	 * @param nodespaceDesc
+	 * @param desc
 	 * @param iFile
 	 * @throws IOException
 	 */
-	public void write(NodespaceDescription nodespaceDesc, IFile iFile) throws IOException {
-		JSONObject rootJSON = rootToJSON(nodespaceDesc);
+	public void write(NodespaceDescription desc, IFile iFile) throws IOException {
+		JSONObject rootJSON = rootToJSON(desc);
 		if (rootJSON != null) {
 			if (!iFile.exists()) {
 				iFile.create();
@@ -52,18 +38,18 @@ public class NodespaceDescriptionWriter {
 	/**
 	 * Convert NodespaceDescription to root JSONObject
 	 * 
-	 * @param nodespaceDesc
+	 * @param desc
 	 * @return
 	 */
-	protected JSONObject rootToJSON(NodespaceDescription nodespaceDesc) {
-		if (nodespaceDesc == null) {
+	protected JSONObject rootToJSON(NodespaceDescription desc) {
+		if (desc == null) {
 			return null;
 		}
 
 		JSONObject rootJSON = new JSONObject();
 
-		JSONObject nodespaceDescJSON = nodespaceDescriptionToJSON(nodespaceDesc);
-		rootJSON.put("NodespaceDescription", nodespaceDescJSON);
+		JSONObject descJSON = nodespaceDescriptionToJSON(desc);
+		rootJSON.put("NodespaceDescription", descJSON);
 
 		return rootJSON;
 	}
@@ -71,35 +57,48 @@ public class NodespaceDescriptionWriter {
 	/**
 	 * Convert NodespaceDescription to NodespaceDescription JSONObject.
 	 * 
-	 * @param nodespaceDesc
+	 * @param desc
 	 * @return
 	 */
-	protected JSONObject nodespaceDescriptionToJSON(NodespaceDescription nodespaceDesc) {
-		if (nodespaceDesc == null) {
+	protected JSONObject nodespaceDescriptionToJSON(NodespaceDescription desc) {
+		if (desc == null) {
 			return null;
 		}
-		JSONObject nodespaceDescJSON = new JSONObject();
+		JSONObject descJSON = new JSONObject();
 
 		// "version" attribute
-		String version = nodespaceDesc.getVersion();
+		String version = desc.getVersion();
 		if (version == null || version.isEmpty()) {
 			version = NodespaceDescription.DEFAULT_VERSION;
 		}
-		nodespaceDesc.setVersion(version);
+		desc.setVersion(version);
 
 		// "id" attribute
-		String id = nodespaceDesc.getId();
+		String id = desc.getId();
 		if (id != null) {
-			nodespaceDescJSON.put("id", id);
+			descJSON.put("id", id);
 		}
 
 		// "name" attribute
-		String name = nodespaceDesc.getName();
+		String name = desc.getName();
 		if (name != null) {
-			nodespaceDescJSON.put("name", name);
+			descJSON.put("name", name);
 		}
 
-		return nodespaceDescJSON;
+		return descJSON;
 	}
 
 }
+
+// /**
+// *
+// * @param desc
+// * @param file
+// * @throws IOException
+// */
+// public void write(NodespaceDescription desc, File file) throws IOException {
+// JSONObject rootJSON = rootToJSON(desc);
+// if (rootJSON != null) {
+// JSONUtil.save(rootJSON, file);
+// }
+// }

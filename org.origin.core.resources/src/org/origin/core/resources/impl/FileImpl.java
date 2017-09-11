@@ -1,4 +1,4 @@
-package org.origin.core.resources.internal;
+package org.origin.core.resources.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import org.origin.common.io.IOUtil;
 import org.origin.core.resources.IFile;
 import org.origin.core.resources.IPath;
-import org.origin.core.resources.IRoot;
+import org.origin.core.resources.IWorkspace;
 
 public class FileImpl extends ResourceImpl implements IFile {
 
@@ -17,28 +17,28 @@ public class FileImpl extends ResourceImpl implements IFile {
 	 * @param root
 	 * @param fullpath
 	 */
-	public FileImpl(IRoot root, IPath fullpath) {
+	public FileImpl(IWorkspace root, IPath fullpath) {
 		super(root, fullpath);
 	}
 
 	@Override
 	public boolean create() throws IOException {
-		return getRoot().createUnderlyingFile(getFullPath());
+		return getWorkspace().createUnderlyingFile(getFullPath());
 	}
 
 	@Override
 	public boolean create(InputStream input) throws IOException {
-		return getRoot().createUnderlyingFile(getFullPath(), input);
+		return getWorkspace().createUnderlyingFile(getFullPath(), input);
 	}
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		return getRoot().getInputStream(getFullPath());
+		return getWorkspace().getInputStream(getFullPath());
 	}
 
 	@Override
 	public OutputStream getOutputStream() throws IOException {
-		return getRoot().getOutputStream(getFullPath());
+		return getWorkspace().getOutputStream(getFullPath());
 	}
 
 	@Override

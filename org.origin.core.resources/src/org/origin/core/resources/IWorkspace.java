@@ -4,7 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public interface IRoot {
+public interface IWorkspace {
+
+	boolean create(WorkspaceDescription desc) throws IOException;
+
+	void setDescription(WorkspaceDescription desc) throws IOException;
+
+	WorkspaceDescription getDescription() throws IOException;
+
+	String getName();
+
+	public boolean exists();
 
 	IResource[] getRootMembers();
 
@@ -32,14 +42,16 @@ public interface IRoot {
 
 	boolean underlyingResourceExists(IPath fullpath);
 
-	Object getUnderlyingResource(IPath fullpath);
-
 	boolean createUnderlyingFile(IPath fullpath) throws IOException;
 
 	boolean createUnderlyingFile(IPath fullpath, InputStream input) throws IOException;
 
 	boolean createUnderlyingFolder(IPath fullpath) throws IOException;
 
+	boolean delete() throws IOException;
+
 	void dispose();
 
 }
+
+// Object getUnderlyingResource(IPath fullpath);

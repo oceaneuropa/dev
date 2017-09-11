@@ -86,6 +86,18 @@ public class TransferAgentImpl implements TransferAgent {
 		this.client = new TransferAgentWSClient(clientConfig);
 	}
 
+	/**
+	 * Get web service client configuration.
+	 * 
+	 * @param properties
+	 * @return
+	 */
+	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
+		String url = (String) properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
+		String contextRoot = (String) properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
+		return ClientConfiguration.get(url, contextRoot, null, null);
+	}
+
 	@Override
 	public boolean ping() {
 		return this.client.doPing();
@@ -101,31 +113,4 @@ public class TransferAgentImpl implements TransferAgent {
 		return this.responseConverter;
 	}
 
-	/**
-	 * Get web service client configuration.
-	 * 
-	 * @param properties
-	 * @return
-	 */
-	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
-		String url = (String) properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
-		return ClientConfiguration.get(url, contextRoot, null, null);
-	}
-
 }
-
-// @Override
-// public boolean startNode(String nodeId) throws ClientException {
-// return false;
-// }
-//
-// @Override
-// public boolean stopNode(StopNodeRequest request) throws ClientException {
-// return false;
-// }
-//
-// @Override
-// public boolean isNodeRunning(String nodeId) throws ClientException {
-// return false;
-// }

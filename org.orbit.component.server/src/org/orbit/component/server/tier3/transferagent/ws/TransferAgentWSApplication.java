@@ -10,6 +10,8 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.orbit.component.server.tier3.transferagent.timer.TransferAgentServiceTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
+import org.origin.core.resources.server.service.ResourceService;
+import org.origin.core.resources.server.ws.ResourceWSApplication;
 import org.origin.mgm.client.api.IndexProvider;
 import org.osgi.framework.ServiceRegistration;
 
@@ -19,6 +21,9 @@ public class TransferAgentWSApplication extends AbstractApplication {
 	protected ServiceRegistration<?> serviceRegistration;
 	// protected TransferAgentServiceTimer serviceIndexTimer;
 	protected TransferAgentServiceTimerV2 serviceIndexTimer;
+
+	protected ResourceWSApplication resourceWSApp1;
+	protected ResourceWSApplication resourceWSApp2;
 
 	public TransferAgentWSApplication() {
 	}
@@ -53,6 +58,21 @@ public class TransferAgentWSApplication extends AbstractApplication {
 			this.serviceIndexTimer = new TransferAgentServiceTimerV2(this.indexProvider);
 			this.serviceIndexTimer.start();
 		}
+
+		String contextRoot1 = this.contextRoot + "/root1"; // e.g. /orbit/v1/ta/root1
+		ResourceService resourceService1 = new ResourceService();
+		resourceService1.setName("root1");
+		resourceService1.setContextRoot(contextRoot1);
+		this.resourceWSApp1 = new ResourceWSApplication(this.bundleContext, resourceService1);
+
+		String contextRoot2 = this.contextRoot + "/root2"; // e.g. /orbit/v1/ta/root2
+		ResourceService resourceService2 = new ResourceService();
+		resourceService2.setName("root2");
+		resourceService2.setContextRoot(contextRoot2);
+		this.resourceWSApp2 = new ResourceWSApplication(this.bundleContext, resourceService2);
+
+		this.resourceWSApp1.start();
+		this.resourceWSApp2.start();
 	}
 
 	@Override
@@ -60,6 +80,15 @@ public class TransferAgentWSApplication extends AbstractApplication {
 		System.out.println(getClass().getSimpleName() + ".stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
+		}
+
+		if (this.resourceWSApp1 != null) {
+			this.resourceWSApp1.stop();
+			this.resourceWSApp1 = null;
+		}
+		if (this.resourceWSApp2 != null) {
+			this.resourceWSApp2.stop();
+			this.resourceWSApp2 = null;
 		}
 
 		// Start timer for indexing the service

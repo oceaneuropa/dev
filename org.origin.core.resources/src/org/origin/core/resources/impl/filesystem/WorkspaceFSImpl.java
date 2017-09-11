@@ -1,4 +1,4 @@
-package org.origin.core.resources.internal;
+package org.origin.core.resources.impl.filesystem;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,22 +17,93 @@ import org.origin.core.resources.IFile;
 import org.origin.core.resources.IFolder;
 import org.origin.core.resources.IPath;
 import org.origin.core.resources.IResource;
-import org.origin.core.resources.IRoot;
+import org.origin.core.resources.IWorkspace;
 import org.origin.core.resources.ResourceFactory;
+import org.origin.core.resources.WorkspaceDescription;
+import org.origin.core.resources.impl.FolderImpl;
+import org.origin.core.resources.impl.PathImpl;
+import org.origin.core.resources.impl.misc.WorkspaceDescriptionPersistence;
 
-public class FsRoot implements IRoot {
+public class WorkspaceFSImpl implements IWorkspace {
 
-	private File fsRootFolder;
+	private File workspaceFolder;
 	private FolderImpl rootFolder;
 	private Map<IPath, IResource> fullpathToResourceTable = new TreeMap<IPath, IResource>();
+	private WorkspaceDescription desc;
 
 	/**
-	 * 
-	 * @param fsRootFolder
+	 * Constructor for non-existing workspace.
 	 */
-	public FsRoot(File fsRootFolder) {
-		this.fsRootFolder = fsRootFolder;
+	public WorkspaceFSImpl() {
+	}
+
+	/**
+	 * Constructor for existing workspace.
+	 * 
+	 * @param workspaceFolder
+	 */
+	public WorkspaceFSImpl(File workspaceFolder) {
+		this.workspaceFolder = workspaceFolder;
 		this.rootFolder = new FolderImpl(this, PathImpl.ROOT);
+	}
+
+	@Override
+	public boolean create(WorkspaceDescription desc) throws IOException {
+		if (exists()) {
+			return false;
+		}
+
+		// 1. Create workspace folder
+		if (this.workspaceFolder == null) {
+			String folderName = desc.getName();
+			this.workspaceFolder = new File(folderName);
+			this.rootFolder = new FolderImpl(this, PathImpl.ROOT);
+		}
+		if (this.workspaceFolder.isFile()) {
+			throw new IOException(this.workspaceFolder.getAbsolutePath() + " already exists, but is not a directory.");
+		}
+		if (!this.workspaceFolder.exists()) {
+			this.workspaceFolder.mkdirs();
+		}
+
+		// 2. Create {workspace}/.metadata/.workspace file and save WorkspaceDescription to it
+		setDescription(desc);
+
+		return exists();
+	}
+
+	@Override
+	public void setDescription(WorkspaceDescription desc) throws IOException {
+		this.desc = desc;
+		WorkspaceDescriptionPersistence.getInstance().save(this, desc);
+	}
+
+	@Override
+	public WorkspaceDescription getDescription() throws IOException {
+		if (this.desc == null) {
+			this.desc = WorkspaceDescriptionPersistence.getInstance().load(this);
+		}
+		return this.desc;
+	}
+
+	@Override
+	public String getName() {
+		return this.workspaceFolder.getName();
+	}
+
+	@Override
+	public boolean exists() {
+		if (this.workspaceFolder != null && this.workspaceFolder.isDirectory()) {
+			try {
+				IFile dotWorkspaceFile = WorkspaceDescriptionPersistence.getInstance().getWorkspaceDescriptionFile(this);
+				if (dotWorkspaceFile != null && dotWorkspaceFile.exists()) {
+					return true;
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 
 	@Override
@@ -54,7 +125,7 @@ public class FsRoot implements IRoot {
 	public IResource[] getMembers(IPath fullpath) {
 		List<IResource> members = new ArrayList<IResource>();
 
-		File fsFile = getUnderlyingFsFile(fullpath);
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
 			File[] fsMemberFiles = fsFile.listFiles();
 
@@ -107,7 +178,7 @@ public class FsRoot implements IRoot {
 			if (iResource != null) {
 				// IResource exists
 				if (iResource instanceof IFolder) {
-					File fsFile = getUnderlyingFsFile(fullpath);
+					File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 					if (fsFile.isDirectory()) {
 						throw new IOException(fullpath.getPathString() + " is a folder.");
 					} else {
@@ -141,7 +212,7 @@ public class FsRoot implements IRoot {
 					result = (IFolder) iResource;
 
 				} else if (iResource instanceof IFile) {
-					File fsFile = getUnderlyingFsFile(fullpath);
+					File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 					if (fsFile.isFile()) {
 						throw new IOException(fullpath.getPathString() + " is a file.");
 
@@ -214,7 +285,7 @@ public class FsRoot implements IRoot {
 			this.fullpathToResourceTable.remove(fullpath);
 		}
 
-		File fsFile = getUnderlyingFsFile(fullpath);
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null && fsFile.exists()) {
 			if (fsFile.isDirectory()) {
 				try {
@@ -233,7 +304,7 @@ public class FsRoot implements IRoot {
 	@Override
 	public InputStream getInputStream(IPath fullpath) throws IOException {
 		InputStream input = null;
-		File fsFile = getUnderlyingFsFile(fullpath);
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
 			input = new FileInputStream(fsFile);
 		}
@@ -243,7 +314,7 @@ public class FsRoot implements IRoot {
 	@Override
 	public OutputStream getOutputStream(IPath fullpath) throws IOException {
 		OutputStream output = null;
-		File fsFile = getUnderlyingFsFile(fullpath);
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
 			output = new FileOutputStream(fsFile);
 		}
@@ -252,16 +323,11 @@ public class FsRoot implements IRoot {
 
 	@Override
 	public boolean underlyingResourceExists(IPath fullpath) {
-		File fsFile = getUnderlyingFsFile(fullpath);
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
 			return fsFile.exists();
 		}
 		return false;
-	}
-
-	@Override
-	public Object getUnderlyingResource(IPath fullpath) {
-		return getUnderlyingFsFile(fullpath);
 	}
 
 	/**
@@ -269,8 +335,8 @@ public class FsRoot implements IRoot {
 	 * @param fullpath
 	 * @return
 	 */
-	private File getUnderlyingFsFile(IPath fullpath) {
-		IPath fsRootAbsolutePath = new PathImpl(this.fsRootFolder.getAbsolutePath());
+	private File getUnderlyingFileFromFileSystem(IPath fullpath) {
+		IPath fsRootAbsolutePath = new PathImpl(this.workspaceFolder.getAbsolutePath());
 		IPath fsFileAbsolutePath = fsRootAbsolutePath.append(fullpath);
 
 		String pathString = fsFileAbsolutePath.getPathString();
@@ -283,7 +349,7 @@ public class FsRoot implements IRoot {
 
 	@Override
 	public boolean createUnderlyingFile(IPath fullpath) throws IOException {
-		File fsFile = getUnderlyingFsFile(fullpath);
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
 			if (fsFile.isDirectory()) {
 				throw new IOException(fullpath.getPathString() + " is a folder.");
@@ -298,7 +364,7 @@ public class FsRoot implements IRoot {
 
 	@Override
 	public boolean createUnderlyingFile(IPath fullpath, InputStream input) throws IOException {
-		File fsFile = getUnderlyingFsFile(fullpath);
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
 			if (fsFile.isDirectory()) {
 				throw new IOException(fullpath.getPathString() + " is a folder.");
@@ -324,11 +390,19 @@ public class FsRoot implements IRoot {
 
 	@Override
 	public boolean createUnderlyingFolder(IPath fullpath) throws IOException {
-		File fsFile = getUnderlyingFsFile(fullpath);
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
 			if (!fsFile.exists()) {
 				return fsFile.mkdirs();
 			}
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized boolean delete() throws IOException {
+		if (exists()) {
+			return FileUtil.deleteDirectory(this.workspaceFolder);
 		}
 		return false;
 	}
@@ -518,4 +592,9 @@ public class FsRoot implements IRoot {
 // this.fullpathToResourceTable.put(fullpath, newFOLDER);
 //
 // return newFOLDER;
+// }
+
+// @Override
+// public Object getUnderlyingResource(IPath fullpath) {
+// return getUnderlyingFsFile(fullpath);
 // }

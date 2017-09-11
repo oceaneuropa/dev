@@ -22,6 +22,7 @@ import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.StringUtil;
+import org.origin.core.resources.WorkspaceManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -515,6 +516,14 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return false;
+	}
+
+	// ------------------------------------------------------
+	// Workspaces management
+	// ------------------------------------------------------
+	@Override
+	public WorkspaceManager getWorkspaceManager() {
+		return null;
 	}
 
 	// ------------------------------------------------------

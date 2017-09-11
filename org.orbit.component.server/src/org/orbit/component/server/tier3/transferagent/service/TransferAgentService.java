@@ -1,7 +1,7 @@
 package org.orbit.component.server.tier3.transferagent.service;
 
 import org.origin.common.command.IEditingDomain;
-import org.origin.core.resources.IRoot;
+import org.origin.core.resources.IWorkspace;
 
 public interface TransferAgentService {
 
@@ -15,6 +15,6 @@ public interface TransferAgentService {
 
 	String getHome();
 
-	IRoot getNodespaceRoot();
+	IWorkspace getNodespaceRoot();
 
 }

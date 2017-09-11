@@ -1,4 +1,4 @@
-package org.origin.core.resources.internal;
+package org.origin.core.resources.impl;
 
 import java.io.IOException;
 
@@ -6,32 +6,32 @@ import org.origin.common.adapter.AdaptorSupport;
 import org.origin.core.resources.IFolder;
 import org.origin.core.resources.IPath;
 import org.origin.core.resources.IResource;
-import org.origin.core.resources.IRoot;
+import org.origin.core.resources.IWorkspace;
 
 public abstract class ResourceImpl implements IResource {
 
-	protected IRoot root;
+	protected IWorkspace workspace;
 	protected IPath fullpath;
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
-	 * @param root
+	 * @param workspace
 	 * @param fullpath
 	 */
-	public ResourceImpl(IRoot root, IPath fullpath) {
-		this.root = root;
+	public ResourceImpl(IWorkspace workspace, IPath fullpath) {
+		this.workspace = workspace;
 		this.fullpath = fullpath;
 	}
 
 	@Override
-	public IRoot getRoot() {
-		return this.root;
+	public IWorkspace getWorkspace() {
+		return this.workspace;
 	}
 
 	@Override
 	public IFolder getParent() throws IOException {
-		return getRoot().getParent(getFullPath());
+		return getWorkspace().getParent(getFullPath());
 	}
 
 	@Override
@@ -46,7 +46,7 @@ public abstract class ResourceImpl implements IResource {
 
 	@Override
 	public boolean exists() {
-		return getRoot().underlyingResourceExists(getFullPath());
+		return getWorkspace().underlyingResourceExists(getFullPath());
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public abstract class ResourceImpl implements IResource {
 
 	@Override
 	public boolean delete() {
-		return getRoot().delete(getFullPath());
+		return getWorkspace().delete(getFullPath());
 	}
 
 	@Override
@@ -68,8 +68,8 @@ public abstract class ResourceImpl implements IResource {
 	public <T> T getAdapter(Class<T> adapter) {
 		T result = this.adaptorSupport.getAdapter(adapter);
 		if (result == null) {
-			if (IRoot.class.isAssignableFrom(adapter)) {
-				result = (T) getRoot();
+			if (IWorkspace.class.isAssignableFrom(adapter)) {
+				result = (T) getWorkspace();
 			}
 		}
 		if (result == null) {

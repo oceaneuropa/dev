@@ -1,6 +1,6 @@
 package org.origin.core.resources;
 
-import org.origin.core.resources.internal.PathImpl;
+import org.origin.core.resources.impl.PathImpl;
 
 public interface IPath {
 

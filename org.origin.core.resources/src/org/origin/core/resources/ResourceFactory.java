@@ -2,9 +2,11 @@ package org.origin.core.resources;
 
 import java.io.File;
 
-import org.origin.core.resources.internal.FileImpl;
-import org.origin.core.resources.internal.FolderImpl;
-import org.origin.core.resources.internal.FsRoot;
+import org.origin.core.resources.extension.ResourceProvider;
+import org.origin.core.resources.extension.ResourceProviderExtensionRegistry;
+import org.origin.core.resources.impl.FileImpl;
+import org.origin.core.resources.impl.FolderImpl;
+import org.origin.core.resources.impl.filesystem.WorkspaceFSImpl;
 
 public class ResourceFactory {
 
@@ -22,8 +24,8 @@ public class ResourceFactory {
 	 * @param underlyingRootResource
 	 * @return
 	 */
-	public IRoot createFsRoot(File underlyingRootResource) {
-		return new FsRoot(underlyingRootResource);
+	public IWorkspace createFsRoot(File underlyingRootResource) {
+		return new WorkspaceFSImpl(underlyingRootResource);
 	}
 
 	/**
@@ -32,9 +34,9 @@ public class ResourceFactory {
 	 * @param fullpath
 	 * @return
 	 */
-	public IFile newFileInstance(IRoot root, IPath fullpath) {
+	public IFile newFileInstance(IWorkspace root, IPath fullpath) {
 		IFile newFile = null;
-		ResourceProvider[] providers = ResourceProviderRegistry.getInstance().getResourceProviders();
+		ResourceProvider[] providers = ResourceProviderExtensionRegistry.getInstance().getResourceProviders();
 		for (ResourceProvider provider : providers) {
 			if (provider.isSupported(root, fullpath)) {
 				newFile = provider.newFileInstance(root, fullpath);
@@ -45,7 +47,7 @@ public class ResourceFactory {
 		}
 
 		// New IFile is not created by providers
-		// - Create default IFile
+		// - Create IFile by default
 		if (newFile == null) {
 			newFile = createFile(root, fullpath);
 		}
@@ -59,11 +61,11 @@ public class ResourceFactory {
 	 * @param fullpath
 	 * @return
 	 */
-	public IFolder newFolderInstance(IRoot root, IPath fullpath) {
+	public IFolder newFolderInstance(IWorkspace root, IPath fullpath) {
 		IFolder newFolder = null;
 
 		// Ask providers to create new IFolder
-		ResourceProvider[] providers = ResourceProviderRegistry.getInstance().getResourceProviders();
+		ResourceProvider[] providers = ResourceProviderExtensionRegistry.getInstance().getResourceProviders();
 		for (ResourceProvider provider : providers) {
 			if (provider.isSupported(root, fullpath)) {
 				newFolder = provider.newFolderInstance(root, fullpath);
@@ -74,7 +76,7 @@ public class ResourceFactory {
 		}
 
 		// New IFolder is not created by providers
-		// - Create default IFolder
+		// - Create IFolder by default
 		if (newFolder == null) {
 			newFolder = createFolder(root, fullpath);
 		}
@@ -89,11 +91,11 @@ public class ResourceFactory {
 	 * @param clazz
 	 * @return
 	 */
-	public <FILE extends IFile> FILE newFileInstance(IRoot root, IPath fullpath, Class<FILE> clazz) {
+	public <FILE extends IFile> FILE newFileInstance(IWorkspace root, IPath fullpath, Class<FILE> clazz) {
 		FILE newFILE = null;
 
 		// Ask providers to create new FILE
-		ResourceProvider[] providers = ResourceProviderRegistry.getInstance().getResourceProviders();
+		ResourceProvider[] providers = ResourceProviderExtensionRegistry.getInstance().getResourceProviders();
 		for (ResourceProvider provider : providers) {
 			if (provider.isSupported(root, fullpath, clazz)) {
 				newFILE = provider.newFileInstance(root, fullpath, clazz);
@@ -116,11 +118,11 @@ public class ResourceFactory {
 	 * @param clazz
 	 * @return
 	 */
-	public <FOLDER extends IFolder> FOLDER newFolderInstance(IRoot root, IPath fullpath, Class<FOLDER> clazz) {
+	public <FOLDER extends IFolder> FOLDER newFolderInstance(IWorkspace root, IPath fullpath, Class<FOLDER> clazz) {
 		FOLDER newFOLDER = null;
 
 		// Ask providers to create new FOLDER
-		ResourceProvider[] providers = ResourceProviderRegistry.getInstance().getResourceProviders();
+		ResourceProvider[] providers = ResourceProviderExtensionRegistry.getInstance().getResourceProviders();
 		for (ResourceProvider provider : providers) {
 			if (provider.isSupported(root, fullpath, clazz)) {
 				newFOLDER = provider.newFolderInstance(root, fullpath, clazz);
@@ -142,7 +144,7 @@ public class ResourceFactory {
 	 * @param fullpath
 	 * @return
 	 */
-	public IFolder createFolder(IRoot root, IPath fullpath) {
+	public IFolder createFolder(IWorkspace root, IPath fullpath) {
 		return new FolderImpl(root, fullpath);
 	}
 
@@ -152,7 +154,7 @@ public class ResourceFactory {
 	 * @param fullpath
 	 * @return
 	 */
-	public IFile createFile(IRoot root, IPath fullpath) {
+	public IFile createFile(IWorkspace root, IPath fullpath) {
 		return new FileImpl(root, fullpath);
 	}
 

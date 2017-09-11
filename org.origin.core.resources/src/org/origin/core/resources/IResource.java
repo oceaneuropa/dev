@@ -6,7 +6,7 @@ import org.origin.common.adapter.IAdaptable;
 
 public interface IResource extends IAdaptable {
 
-	IRoot getRoot();
+	IWorkspace getWorkspace();
 
 	IFolder getParent() throws IOException;
 

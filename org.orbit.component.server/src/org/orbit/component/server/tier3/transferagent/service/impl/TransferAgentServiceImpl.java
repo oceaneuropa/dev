@@ -11,7 +11,7 @@ import org.orbit.component.server.tier3.transferagent.service.TransferAgentServi
 import org.orbit.component.server.tier3.transferagent.util.TASetupUtil;
 import org.origin.common.command.IEditingDomain;
 import org.origin.common.util.PropertyUtil;
-import org.origin.core.resources.IRoot;
+import org.origin.core.resources.IWorkspace;
 import org.origin.core.resources.ResourceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -26,7 +26,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected IEditingDomain editingDomain;
-	protected IRoot nodespaceRoot;
+	protected IWorkspace nodespaceRoot;
 
 	/**
 	 * 
@@ -138,7 +138,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	}
 
 	@Override
-	public IRoot getNodespaceRoot() {
+	public IWorkspace getNodespaceRoot() {
 		return this.nodespaceRoot;
 	}
 
