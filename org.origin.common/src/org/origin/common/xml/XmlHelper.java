@@ -1,5 +1,6 @@
 package org.origin.common.xml;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +11,92 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class XmlHelper {
 
 	public static XmlHelper INSTANCE = new XmlHelper();
+
+	/**
+	 * 
+	 * @param xmlString
+	 * @return
+	 */
+	public Map<String, String> getPrefixToNamespaceMap(String xmlString) {
+		Map<String, String> nsPrefixToNamespaceMap = null;
+		try {
+			if (xmlString != null && !xmlString.isEmpty()) {
+				XmlReader xmlReader = new XmlReader();
+				xmlReader.parse(xmlString);
+				nsPrefixToNamespaceMap = xmlReader.getNsPrefixToNamespaceMap();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (nsPrefixToNamespaceMap == null) {
+			nsPrefixToNamespaceMap = new HashMap<String, String>();
+		}
+		return nsPrefixToNamespaceMap;
+	}
+
+	/**
+	 * Get child DOM element by node name.
+	 * 
+	 * @param element
+	 * @param childNodeName
+	 * @return
+	 */
+	public Element getChildElementByNodeName(Element element, String childNodeName) {
+		Element childElement = null;
+		if (element != null && childNodeName != null) {
+			NodeList childList = element.getChildNodes();
+			if (childList != null) {
+				int size = childList.getLength();
+				for (int i = 0; i < size; i++) {
+					Node childNode = childList.item(i);
+					if (childNode instanceof Element) {
+						Element currChildElement = (Element) childNode;
+						String currChildNodeName = currChildElement.getNodeName();
+						if (childNodeName.equals(currChildNodeName)) {
+							childElement = currChildElement;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return childElement;
+	}
+
+	/**
+	 * Get child DOM element by local name.
+	 * 
+	 * @param element
+	 * @param childLocalName
+	 * @return
+	 */
+	public Element getChildElementByLocalName(Element element, String childLocalName) {
+		Element childElement = null;
+		if (element != null && childLocalName != null) {
+			NodeList childList = element.getChildNodes();
+			if (childList != null) {
+				int size = childList.getLength();
+				for (int i = 0; i < size; i++) {
+					Node childNode = childList.item(i);
+					if (childNode instanceof Element) {
+						Element currChildElement = (Element) childNode;
+						String currChildLocalName = currChildElement.getLocalName();
+						if (childLocalName.equals(currChildLocalName)) {
+							childElement = currChildElement;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return childElement;
+	}
 
 	/**
 	 * Update prefix in a DOM document.

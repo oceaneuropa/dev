@@ -1,5 +1,6 @@
 package org.origin.common.jdbc;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -671,6 +672,11 @@ public class DatabaseUtil {
 			querySQL += " " + columnName + "=?";
 			params.add(paramValue);
 		}
+	}
+
+	public static void handleSQLExceptionWithIOException(SQLException e) throws IOException {
+		e.printStackTrace();
+		throw new IOException(e.getMessage(), e);
 	}
 
 }

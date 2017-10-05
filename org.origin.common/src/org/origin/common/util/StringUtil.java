@@ -2,6 +2,7 @@ package org.origin.common.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class StringUtil {
 
@@ -170,6 +171,85 @@ public class StringUtil {
 				System.out.println("partName = " + partName);
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param allStrings
+	 * @param string
+	 * @param appendUniqueToAll
+	 * @return
+	 */
+	public static String getUniqueString(Set<String> allStrings, String string, boolean appendUniqueToAll) {
+		String uniqueString = string;
+
+		int endingNumberLength = getEndingNumberLength(string);
+
+		String baseString = string;
+		int endingNumber = 0;
+		if (endingNumberLength > 0) {
+			baseString = string.substring(0, (string.length() - endingNumberLength));
+			endingNumber = getEndingNumber(string, endingNumberLength);
+		}
+
+		while (allStrings.contains(uniqueString)) {
+			uniqueString = baseString + (++endingNumber);
+		}
+
+		if (appendUniqueToAll) {
+			if (uniqueString != null && !allStrings.contains(uniqueString)) {
+				allStrings.add(uniqueString);
+			}
+		}
+
+		return uniqueString;
+	}
+
+	/**
+	 * 
+	 * @param string
+	 * @return
+	 */
+	private static int getEndingNumberLength(String string) {
+		int stringLength = string.length();
+
+		int endingNumberLength = 0;
+		while (endingNumberLength < stringLength) {
+			try {
+				int nextEndingNumberLength = endingNumberLength + 1;
+				if (nextEndingNumberLength == stringLength) {
+					break;
+				}
+
+				String numberStr = string.substring(stringLength - nextEndingNumberLength);
+				Integer.parseInt(numberStr);
+				endingNumberLength = nextEndingNumberLength;
+
+			} catch (Exception e) {
+				break;
+			}
+		}
+
+		return endingNumberLength;
+	}
+
+	/**
+	 * 
+	 * @param string
+	 * @param endingNumberLength
+	 * @return
+	 */
+	private static int getEndingNumber(String string, int endingNumberLength) {
+		if (endingNumberLength > 0) {
+			try {
+				String numberStr = string.substring(string.length() - endingNumberLength);
+				return Integer.parseInt(numberStr);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return 0;
 	}
 
 }

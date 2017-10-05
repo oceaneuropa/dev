@@ -6,6 +6,9 @@ import java.io.OutputStream;
 
 public interface IWorkspace {
 
+	// ----------------------------------------------------------------
+	// Workspace
+	// ----------------------------------------------------------------
 	boolean create(WorkspaceDescription desc) throws IOException;
 
 	void setDescription(WorkspaceDescription desc) throws IOException;
@@ -16,6 +19,13 @@ public interface IWorkspace {
 
 	public boolean exists();
 
+	boolean delete() throws IOException;
+
+	void dispose();
+
+	// ----------------------------------------------------------------
+	// Workspace root
+	// ----------------------------------------------------------------
 	IResource[] getRootMembers();
 
 	IResource findRootMember(String name);
@@ -38,8 +48,6 @@ public interface IWorkspace {
 
 	OutputStream getOutputStream(IPath fullpath) throws IOException;
 
-	boolean delete(IPath fullpath);
-
 	boolean underlyingResourceExists(IPath fullpath);
 
 	boolean createUnderlyingFile(IPath fullpath) throws IOException;
@@ -48,10 +56,6 @@ public interface IWorkspace {
 
 	boolean createUnderlyingFolder(IPath fullpath) throws IOException;
 
-	boolean delete() throws IOException;
-
-	void dispose();
+	boolean deleteUnderlyingResource(IPath fullpath);
 
 }
-
-// Object getUnderlyingResource(IPath fullpath);

@@ -4,9 +4,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import org.orbit.fs.server.service.FileSystemServiceConfiguration;
+import org.orbit.fs.common.FileSystemConfiguration;
 
-public class GoogleDriveFSConfig extends FileSystemServiceConfiguration {
+public class GoogleDriveFSConfig extends FileSystemConfiguration {
 
 	// dir to store user credentials
 	protected File dataStoreDir;

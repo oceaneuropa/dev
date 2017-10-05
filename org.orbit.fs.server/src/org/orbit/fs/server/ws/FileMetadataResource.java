@@ -13,8 +13,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.fs.api.FilePath;
+import org.orbit.fs.common.FileSystem;
 import org.orbit.fs.model.FileMetadata;
-import org.orbit.fs.server.service.FileSystemService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -42,7 +42,7 @@ public class FileMetadataResource extends AbstractWSApplicationResource {
 			return Response.status(Status.BAD_REQUEST).entity(new ErrorDTO("File path is null.")).build();
 		}
 
-		FileSystemService fs = getService(FileSystemService.class);
+		FileSystem fs = getService(FileSystem.class);
 		FilePath path = new FilePath(pathString);
 
 		FileMetadata metadata = fs.getFileMetaData(path);
@@ -87,7 +87,7 @@ public class FileMetadataResource extends AbstractWSApplicationResource {
 			return Response.status(Status.BAD_REQUEST).entity(new ErrorDTO("Action '" + action + "' is not supported.")).build();
 		}
 
-		FileSystemService fs = getService(FileSystemService.class);
+		FileSystem fs = getService(FileSystem.class);
 		FilePath path = new FilePath(pathString);
 
 		if (ACTION_MKDIRS.equalsIgnoreCase(action)) {
@@ -137,7 +137,7 @@ public class FileMetadataResource extends AbstractWSApplicationResource {
 
 		try {
 			FilePath path = new FilePath(pathString);
-			FileSystemService fs = getService(FileSystemService.class);
+			FileSystem fs = getService(FileSystem.class);
 
 			if (!fs.exists(path)) {
 				StatusDTO status = new StatusDTO(StatusDTO.RESP_304, StatusDTO.FAILED, "File '" + pathString + "' does not exist.");

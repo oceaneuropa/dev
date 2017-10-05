@@ -18,7 +18,7 @@ import org.orbit.fs.api.FileSystemConfiguration;
 import org.orbit.fs.connector.FileRefInputStream;
 import org.orbit.fs.connector.FileRefOutputStream;
 import org.orbit.fs.connector.FileSystemConfigurationImpl;
-import org.orbit.fs.connector.FileSystemImpl;
+import org.orbit.fs.connector.FileSystemRefImpl;
 import org.orbit.fs.connector.ws.FileSystemWSClientHelper;
 import org.origin.common.io.FileUtil;
 import org.origin.common.io.IOUtil;
@@ -39,7 +39,7 @@ public class FsTestWin {
 	protected FileSystem getFileSystem() {
 		FileSystemConfiguration config = new FileSystemConfigurationImpl("http://127.0.0.1:9090", "/fs/v1", "root", "admin");
 		// FileSystemConfiguration config = new FileSystemConfiguration("http://10.0.0.130:9090", "/fs/v1", "root", "admin");
-		return FileSystemImpl.newInstance(config);
+		return FileSystemRefImpl.newInstance(config);
 	}
 
 	@Test

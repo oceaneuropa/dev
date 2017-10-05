@@ -10,7 +10,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.fs.api.FilePath;
-import org.orbit.fs.server.service.FileSystemService;
+import org.orbit.fs.common.FileSystem;
+import org.origin.common.resource.IPath;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 @javax.ws.rs.Path("/paths")
@@ -28,19 +29,19 @@ public class FilePathsResource extends AbstractWSApplicationResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response get(@QueryParam("parentPath") String parentPath) {
-		List<FilePath> resultPaths = new ArrayList<FilePath>();
+		List<IPath> resultPaths = new ArrayList<IPath>();
 
-		FileSystemService fs = getService(FileSystemService.class);
+		FileSystem fs = getService(FileSystem.class);
 		FilePath parent = (parentPath != null) ? new FilePath(parentPath) : null;
 
 		if (parent == null || parent.isEmpty() || parent.isRoot()) {
-			FilePath[] paths = fs.listRoots();
-			for (FilePath path : paths) {
+			IPath[] paths = fs.listRoots();
+			for (IPath path : paths) {
 				resultPaths.add(path);
 			}
 		} else {
-			FilePath[] paths = fs.listFiles(parent);
-			for (FilePath path : paths) {
+			IPath[] paths = fs.listFiles(parent);
+			for (IPath path : paths) {
 				resultPaths.add(path);
 			}
 		}

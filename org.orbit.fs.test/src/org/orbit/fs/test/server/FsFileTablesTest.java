@@ -9,28 +9,40 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.orbit.fs.server.service.database.FsFileContentTableHandler;
-import org.orbit.fs.server.service.database.FsFileMetadataTableHandler;
+import org.orbit.fs.common.database.DatabaseFileSystemHelper;
+import org.orbit.fs.common.database.FileContentTableHandler;
+import org.orbit.fs.common.database.FileMetadataTableHandler;
 import org.origin.common.jdbc.DatabaseUtil;
 
 public class FsFileTablesTest {
 
 	protected Properties properties;
-	protected FsFileMetadataTableHandler metaHandler = FsFileMetadataTableHandler.INSTANCE;
-	protected FsFileContentTableHandler contentHandler = FsFileContentTableHandler.INSTANCE;
+	protected DatabaseFileSystemHelper helper;
 
 	public FsFileTablesTest() {
-		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
-		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
+		init();
 	}
 
 	public void setUp() {
+		init();
+	}
+
+	protected void init() {
+		this.helper = new DatabaseFileSystemHelper();
 		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
 	protected Connection getConnection() {
 		return DatabaseUtil.getConnection(this.properties);
+	}
+
+	public FileMetadataTableHandler getFileMetadataHandler() {
+		return this.helper.getFileMetadataHandler();
+	}
+
+	public FileContentTableHandler getFileContentHandler() {
+		return this.helper.getFileContentHandler();
 	}
 
 	@Test
@@ -59,8 +71,8 @@ public class FsFileTablesTest {
 
 		Connection conn = DatabaseUtil.getConnection(properties);
 		try {
-			DatabaseUtil.initialize(conn, metaHandler);
-			DatabaseUtil.initialize(conn, contentHandler);
+			DatabaseUtil.initialize(conn, getFileMetadataHandler());
+			DatabaseUtil.initialize(conn, getFileContentHandler());
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {

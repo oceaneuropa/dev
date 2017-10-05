@@ -6,6 +6,7 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.fs.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.origin.common.adapter,
+ org.origin.common.resource,
  org.origin.common.util,
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy

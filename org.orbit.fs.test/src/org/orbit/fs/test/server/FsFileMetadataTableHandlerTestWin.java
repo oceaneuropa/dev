@@ -13,28 +13,42 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
+import org.orbit.fs.common.database.DatabaseFileSystemHelper;
+import org.orbit.fs.common.database.FileContentTableHandler;
+import org.orbit.fs.common.database.FileMetadataTableHandler;
 import org.orbit.fs.model.vo.FileMetadataVO;
-import org.orbit.fs.server.service.database.FsFileMetadataTableHandler;
 import org.origin.common.jdbc.DatabaseUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class FsFileMetadataTableHandlerTestWin {
 
 	protected Properties properties;
-	protected FsFileMetadataTableHandler metaHandler = FsFileMetadataTableHandler.INSTANCE;
+	protected DatabaseFileSystemHelper helper;
 
 	public FsFileMetadataTableHandlerTestWin() {
-		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
-		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
+		init();
 	}
 
 	public void setUp() {
+		init();
+	}
+
+	protected void init() {
+		this.helper = new DatabaseFileSystemHelper();
 		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
 	protected Connection getConnection() {
 		return DatabaseUtil.getConnection(this.properties);
+	}
+
+	public FileMetadataTableHandler getFileMetadataHandler() {
+		return this.helper.getFileMetadataHandler();
+	}
+
+	public FileContentTableHandler getFileContentHandler() {
+		return this.helper.getFileContentHandler();
 	}
 
 	@Test
@@ -47,7 +61,7 @@ public class FsFileMetadataTableHandlerTestWin {
 	protected void doSelect() {
 		Connection conn = getConnection();
 		try {
-			List<FileMetadataVO> vos = this.metaHandler.getAll(conn);
+			List<FileMetadataVO> vos = getFileMetadataHandler().getAll(conn);
 			System.out.println("vos.size()=" + vos.size());
 			for (FileMetadataVO vo : vos) {
 				System.out.println(vo.toString());
@@ -65,12 +79,12 @@ public class FsFileMetadataTableHandlerTestWin {
 		System.out.println("--- --- --- test002_insert() --- --- ---");
 		Connection conn = getConnection();
 		try {
-			this.metaHandler.insert(conn, -1, "DownloadAllNumbers.txt", false, 0);
-			this.metaHandler.insert(conn, -1, "ldiag.log", false, 0);
-			this.metaHandler.insert(conn, -1, "leaftexture.png", false, 0);
-			this.metaHandler.insert(conn, -1, "Monkey_Tower_Level_158.png", false, 0);
-			this.metaHandler.insert(conn, -1, "Song For The Sun.mp3", false, 0);
-			this.metaHandler.insert(conn, -1, "swagger_v01.rar", false, 0);
+			getFileMetadataHandler().insert(conn, -1, "DownloadAllNumbers.txt", false, 0);
+			getFileMetadataHandler().insert(conn, -1, "ldiag.log", false, 0);
+			getFileMetadataHandler().insert(conn, -1, "leaftexture.png", false, 0);
+			getFileMetadataHandler().insert(conn, -1, "Monkey_Tower_Level_158.png", false, 0);
+			getFileMetadataHandler().insert(conn, -1, "Song For The Sun.mp3", false, 0);
+			getFileMetadataHandler().insert(conn, -1, "swagger_v01.rar", false, 0);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -89,15 +103,15 @@ public class FsFileMetadataTableHandlerTestWin {
 		Connection conn = getConnection();
 		try {
 			// this.handler.updateParentId(conn, 1, 2);
-			this.metaHandler.updateName(conn, 1, "root1a.text");
-			this.metaHandler.updateIsDirectory(conn, 1, true);
-			this.metaHandler.updateIsHidden(conn, 1, true);
-			this.metaHandler.updateCanExecute(conn, 1, false);
-			this.metaHandler.updateCanRead(conn, 1, false);
-			this.metaHandler.updateCanWrite(conn, 1, false);
-			this.metaHandler.updateLength(conn, 1, 200);
-			this.metaHandler.updateLastModified(conn, 1, 2000);
-			this.metaHandler.updateInTrash(conn, 1, true);
+			getFileMetadataHandler().updateName(conn, 1, "root1a.text");
+			getFileMetadataHandler().updateIsDirectory(conn, 1, true);
+			getFileMetadataHandler().updateIsHidden(conn, 1, true);
+			getFileMetadataHandler().updateCanExecute(conn, 1, false);
+			getFileMetadataHandler().updateCanRead(conn, 1, false);
+			getFileMetadataHandler().updateCanWrite(conn, 1, false);
+			getFileMetadataHandler().updateLength(conn, 1, 200);
+			getFileMetadataHandler().updateLastModified(conn, 1, 2000);
+			getFileMetadataHandler().updateInTrash(conn, 1, true);
 
 		} catch (SQLException e) {
 			e.printStackTrace();

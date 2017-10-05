@@ -10,7 +10,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.fs.api.FileRef;
 import org.orbit.fs.api.FileSystem;
 import org.orbit.fs.connector.FileSystemConfigurationImpl;
-import org.orbit.fs.connector.FileSystemImpl;
+import org.orbit.fs.connector.FileSystemRefImpl;
 import org.orbit.fs.connector.ws.FileSystemWSClientHelper;
 import org.origin.common.io.ZipUtil;
 import org.osgi.framework.BundleContext;
@@ -67,7 +67,7 @@ public class FileSystemCommand {
 			@Descriptor("password") @Parameter(absentValue = "", names = { "-p", "--password" }) String password //
 	) throws Exception {
 		FileSystemConfigurationImpl config = new FileSystemConfigurationImpl(url, username, password);
-		this.fs = FileSystemImpl.newInstance(config);
+		this.fs = FileSystemRefImpl.newInstance(config);
 		if (this.fs != null) {
 			System.out.println("login to " + url + " successfully.");
 		}

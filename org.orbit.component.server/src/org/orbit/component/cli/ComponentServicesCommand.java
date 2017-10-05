@@ -112,7 +112,7 @@ public class ComponentServicesCommand {
 			stopAppStoreService();
 
 		} else if (DOMAIN.equalsIgnoreCase(service)) {
-			stopDomainMgmtService();
+			stopDomainMgmtService(this.bundleContext);
 
 		} else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
 			stopTransferAgentService();
@@ -180,9 +180,9 @@ public class ComponentServicesCommand {
 		this.domainMgmtService = domainMgmtService;
 	}
 
-	public void stopDomainMgmtService() {
+	public void stopDomainMgmtService(BundleContext bundleContext) {
 		if (this.domainMgmtService != null) {
-			this.domainMgmtService.stop();
+			this.domainMgmtService.stop(bundleContext);
 			this.domainMgmtService = null;
 		}
 	}

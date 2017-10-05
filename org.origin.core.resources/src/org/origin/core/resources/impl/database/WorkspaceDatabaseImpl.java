@@ -3,42 +3,50 @@ package org.origin.core.resources.impl.database;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.origin.common.jdbc.ConnectionAware;
 import org.origin.core.resources.IFile;
 import org.origin.core.resources.IFolder;
 import org.origin.core.resources.IPath;
 import org.origin.core.resources.IResource;
 import org.origin.core.resources.IWorkspace;
 import org.origin.core.resources.WorkspaceDescription;
-import org.origin.core.resources.impl.FolderImpl;
-import org.origin.core.resources.impl.PathImpl;
 
-public class WorkspaceDBImpl implements IWorkspace {
+public class WorkspaceDatabaseImpl implements IWorkspace {
 
-	private String id;
-	private String name;
-	private FolderImpl rootFolder;
+	protected String id;
+	protected ConnectionAware connectionAware;
+	protected int workspaceId;
 
 	/**
 	 * 
 	 * @param id
-	 * @param name
+	 * @param connectionAware
 	 */
-	public WorkspaceDBImpl(String name) {
-		this(name, name);
+	public WorkspaceDatabaseImpl(String id, ConnectionAware connectionAware) {
+		this.id = id;
+		this.connectionAware = connectionAware;
+		// this.workspacesTableHandler = new WorkspacesTableHandler(id);
 	}
 
 	/**
 	 * 
 	 * @param id
-	 * @param name
+	 * @param connectionAware
+	 * @param workspaceId
 	 */
-	public WorkspaceDBImpl(String id, String name) {
+	public WorkspaceDatabaseImpl(String id, ConnectionAware connectionAware, int workspaceId) {
 		this.id = id;
-		this.name = name;
-		this.rootFolder = new FolderImpl(this, PathImpl.ROOT);
+		this.connectionAware = connectionAware;
+		this.workspaceId = workspaceId;
+		// this.workspacesTableHandler = new WorkspacesTableHandler(id);
+	}
+
+	public Connection getConnection() {
+		return this.connectionAware.getConnection();
 	}
 
 	@Override
@@ -57,8 +65,21 @@ public class WorkspaceDBImpl implements IWorkspace {
 	}
 
 	@Override
+	public synchronized boolean delete() {
+		if (exists()) {
+
+		}
+		return false;
+	}
+
+	@Override
+	public void dispose() {
+
+	}
+
+	@Override
 	public String getName() {
-		return this.name;
+		return null;
 	}
 
 	@Override
@@ -68,17 +89,20 @@ public class WorkspaceDBImpl implements IWorkspace {
 
 	@Override
 	public IResource[] getRootMembers() {
-		return this.rootFolder.getMembers();
+		// return this.rootFolder.getMembers();
+		return null;
 	}
 
 	@Override
 	public IResource findRootMember(String name) {
-		return this.rootFolder.findMember(name);
+		// return this.rootFolder.findMember(name);
+		return null;
 	}
 
 	@Override
 	public <RESOURCE extends IResource> RESOURCE findRootMember(String name, Class<RESOURCE> clazz) {
-		return this.rootFolder.findMember(name, clazz);
+		// return this.rootFolder.findMember(name, clazz);
+		return null;
 	}
 
 	@Override
@@ -126,11 +150,6 @@ public class WorkspaceDBImpl implements IWorkspace {
 	}
 
 	@Override
-	public boolean delete(IPath fullpath) {
-		return false;
-	}
-
-	@Override
 	public boolean underlyingResourceExists(IPath fullpath) {
 		return false;
 	}
@@ -151,16 +170,8 @@ public class WorkspaceDBImpl implements IWorkspace {
 	}
 
 	@Override
-	public synchronized boolean delete() {
-		if (exists()) {
-
-		}
+	public boolean deleteUnderlyingResource(IPath fullpath) {
 		return false;
-	}
-
-	@Override
-	public void dispose() {
-
 	}
 
 }

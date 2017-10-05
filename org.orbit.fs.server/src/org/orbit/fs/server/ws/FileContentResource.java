@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.orbit.fs.api.FilePath;
-import org.orbit.fs.server.service.FileSystemService;
+import org.orbit.fs.common.FileSystem;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
@@ -32,7 +32,7 @@ public class FileContentResource extends AbstractWSApplicationResource {
 			return Response.status(Status.BAD_REQUEST).entity(new ErrorDTO("File path is null.")).build();
 		}
 		FilePath path = new FilePath(pathString);
-		FileSystemService fs = getService(FileSystemService.class);
+		FileSystem fs = getService(FileSystem.class);
 
 		boolean exists = fs.exists(path);
 		if (!exists) {
@@ -76,7 +76,7 @@ public class FileContentResource extends AbstractWSApplicationResource {
 			return Response.status(Status.BAD_REQUEST).entity(new ErrorDTO("File path is null.")).build();
 		}
 		FilePath path = new FilePath(pathString);
-		FileSystemService fs = getService(FileSystemService.class);
+		FileSystem fs = getService(FileSystem.class);
 
 		try {
 			if (fs.exists(path) && fs.isDirectory(path)) {

@@ -16,6 +16,7 @@ public class Constants {
 	// Node
 	// ----------------------------------------------------------------------------------------
 	// config properties
+	public static String COMPONENT_NODE_NAMESPACE = "component.node.namespace";
 	public static String COMPONENT_NODE_NAME = "component.node.name";
 	public static String COMPONENT_NODE_HOST_URL = "component.node.host.url";
 	public static String COMPONENT_NODE_CONTEXT_ROOT = "component.node.context_root";

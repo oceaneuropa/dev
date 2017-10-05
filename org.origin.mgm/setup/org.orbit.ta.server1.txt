@@ -28,3 +28,16 @@ VM arguments:
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Dcomponent.transfer_agent.name=TransferAgent101 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta -Dcomponent.transfer_agent.home=/Users/oceaneuropa/origin/ta1
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// v3
+///////////////////////////////////////////////////////////////////////////////////////////////////
+Program arguments:
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean
+
+VM arguments:
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
+-DORIGIN_HOME=/Users/oceaneuropa/origin 
+-Dorbit.host.url=http://127.0.0.1:12001 
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.transfer_agent.namespace=org.oceaneuropa -Dcomponent.transfer_agent.name=TransferAgent101 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta -Dcomponent.transfer_agent.home=/Users/oceaneuropa/origin/ta1
+

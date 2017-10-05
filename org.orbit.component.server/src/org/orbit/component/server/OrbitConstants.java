@@ -19,6 +19,7 @@ public class OrbitConstants {
 	// UserRegistry
 	// ----------------------------------------------------------------------------------------
 	// config properties
+	public static String COMPONENT_USER_REGISTRY_NAMESPACE = "component.userregistry.namespace";
 	public static String COMPONENT_USER_REGISTRY_NAME = "component.userregistry.name";
 	public static String COMPONENT_USER_REGISTRY_HOST_URL = "component.userregistry.host.url";
 	public static String COMPONENT_USER_REGISTRY_CONTEXT_ROOT = "component.userregistry.context_root";
@@ -40,6 +41,7 @@ public class OrbitConstants {
 	// OAuth2
 	// ----------------------------------------------------------------------------------------
 	// config properties
+	public static String COMPONENT_OAUTH2_NAMESPACE = "component.oauth2.namespace";
 	public static String COMPONENT_OAUTH2_NAME = "component.oauth2.name";
 	public static String COMPONENT_OAUTH2_HOST_URL = "component.oauth2.host.url";
 	public static String COMPONENT_OAUTH2_CONTEXT_ROOT = "component.oauth2.context_root";
@@ -61,6 +63,7 @@ public class OrbitConstants {
 	// ConfigRegistry
 	// ----------------------------------------------------------------------------------------
 	// config properties
+	public static String COMPONENT_CONFIG_REGISTRY_NAMESPACE = "component.configregistry.namespace";
 	public static String COMPONENT_CONFIG_REGISTRY_NAME = "component.configregistry.name";
 	public static String COMPONENT_CONFIG_REGISTRY_HOST_URL = "component.configregistry.host.url";
 	public static String COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT = "component.configregistry.context_root";
@@ -82,6 +85,7 @@ public class OrbitConstants {
 	// AppStore
 	// ----------------------------------------------------------------------------------------
 	// config properties
+	public static String COMPONENT_APP_STORE_NAMESPACE = "component.appstore.namespace";
 	public static String COMPONENT_APP_STORE_NAME = "component.appstore.name";
 	public static String COMPONENT_APP_STORE_HOST_URL = "component.appstore.host.url";
 	public static String COMPONENT_APP_STORE_CONTEXT_ROOT = "component.appstore.context_root";
@@ -103,6 +107,7 @@ public class OrbitConstants {
 	// DomainManagement
 	// ----------------------------------------------------------------------------------------
 	// config properties
+	public static String COMPONENT_DOMAIN_MANAGEMENT_NAMESPACE = "component.domain_mgmt.namespace";
 	public static String COMPONENT_DOMAIN_MANAGEMENT_NAME = "component.domain_mgmt.name";
 	public static String COMPONENT_DOMAIN_MANAGEMENT_HOST_URL = "component.domain_mgmt.host.url";
 	public static String COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT = "component.domain_mgmt.context_root";
@@ -123,6 +128,7 @@ public class OrbitConstants {
 	// ----------------------------------------------------------------------------------------
 	// TransferAgent
 	// ----------------------------------------------------------------------------------------
+	public static String COMPONENT_TRANSFER_AGENT_NAMESPACE = "component.transfer_agent.namespace";
 	public static String COMPONENT_TRANSFER_AGENT_NAME = "component.transfer_agent.name";
 	public static String COMPONENT_TRANSFER_AGENT_HOST_URL = "component.transfer_agent.host.url";
 	public static String COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT = "component.transfer_agent.context_root";

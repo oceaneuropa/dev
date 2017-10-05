@@ -83,7 +83,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_HOME);
 
-		updateProperties(configProps);
+		update(configProps);
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(TransferAgentService.class, this, props);
@@ -91,7 +91,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		Path taHome = Paths.get(getHome()).toAbsolutePath();
 		Path nodespacesPath = TASetupUtil.getNodespacesPath(taHome, true);
 
-		this.nodespaceRoot = ResourceFactory.getInstance().createFsRoot(nodespacesPath.toFile());
+		this.nodespaceRoot = ResourceFactory.getInstance().newWorkspaceInstanceForFileSystem(nodespacesPath.toFile());
 	}
 
 	public void stop() {
@@ -110,7 +110,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	 * 
 	 * @param configProps
 	 */
-	public synchronized void updateProperties(Map<Object, Object> configProps) {
+	public synchronized void update(Map<Object, Object> configProps) {
 		System.out.println(getClass().getSimpleName() + ".updateProperties()");
 
 		if (configProps == null) {

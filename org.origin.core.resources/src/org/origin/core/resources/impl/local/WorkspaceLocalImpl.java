@@ -1,4 +1,4 @@
-package org.origin.core.resources.impl.filesystem;
+package org.origin.core.resources.impl.local;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +24,7 @@ import org.origin.core.resources.impl.FolderImpl;
 import org.origin.core.resources.impl.PathImpl;
 import org.origin.core.resources.impl.misc.WorkspaceDescriptionPersistence;
 
-public class WorkspaceFSImpl implements IWorkspace {
+public class WorkspaceLocalImpl implements IWorkspace {
 
 	private File workspaceFolder;
 	private FolderImpl rootFolder;
@@ -34,7 +34,7 @@ public class WorkspaceFSImpl implements IWorkspace {
 	/**
 	 * Constructor for non-existing workspace.
 	 */
-	public WorkspaceFSImpl() {
+	public WorkspaceLocalImpl() {
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class WorkspaceFSImpl implements IWorkspace {
 	 * 
 	 * @param workspaceFolder
 	 */
-	public WorkspaceFSImpl(File workspaceFolder) {
+	public WorkspaceLocalImpl(File workspaceFolder) {
 		this.workspaceFolder = workspaceFolder;
 		this.rootFolder = new FolderImpl(this, PathImpl.ROOT);
 	}
@@ -53,7 +53,7 @@ public class WorkspaceFSImpl implements IWorkspace {
 			return false;
 		}
 
-		// 1. Create workspace folder
+		// 1. Create workspace folder in file system
 		if (this.workspaceFolder == null) {
 			String folderName = desc.getName();
 			this.workspaceFolder = new File(folderName);
@@ -104,6 +104,19 @@ public class WorkspaceFSImpl implements IWorkspace {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public synchronized boolean delete() throws IOException {
+		if (exists()) {
+			return FileUtil.deleteDirectory(this.workspaceFolder);
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized void dispose() {
+		this.fullpathToResourceTable.clear();
 	}
 
 	@Override
@@ -278,30 +291,6 @@ public class WorkspaceFSImpl implements IWorkspace {
 	}
 
 	@Override
-	public boolean delete(IPath fullpath) {
-		boolean isDeleted = false;
-
-		synchronized (this.fullpathToResourceTable) {
-			this.fullpathToResourceTable.remove(fullpath);
-		}
-
-		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
-		if (fsFile != null && fsFile.exists()) {
-			if (fsFile.isDirectory()) {
-				try {
-					isDeleted = FileUtil.deleteDirectory(fsFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			} else if (fsFile.isFile()) {
-				isDeleted = fsFile.delete();
-			}
-		}
-
-		return isDeleted;
-	}
-
-	@Override
 	public InputStream getInputStream(IPath fullpath) throws IOException {
 		InputStream input = null;
 		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
@@ -400,16 +389,27 @@ public class WorkspaceFSImpl implements IWorkspace {
 	}
 
 	@Override
-	public synchronized boolean delete() throws IOException {
-		if (exists()) {
-			return FileUtil.deleteDirectory(this.workspaceFolder);
-		}
-		return false;
-	}
+	public boolean deleteUnderlyingResource(IPath fullpath) {
+		boolean isDeleted = false;
 
-	@Override
-	public synchronized void dispose() {
-		this.fullpathToResourceTable.clear();
+		synchronized (this.fullpathToResourceTable) {
+			this.fullpathToResourceTable.remove(fullpath);
+		}
+
+		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
+		if (fsFile != null && fsFile.exists()) {
+			if (fsFile.isDirectory()) {
+				try {
+					isDeleted = FileUtil.deleteDirectory(fsFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} else if (fsFile.isFile()) {
+				isDeleted = fsFile.delete();
+			}
+		}
+
+		return isDeleted;
 	}
 
 }

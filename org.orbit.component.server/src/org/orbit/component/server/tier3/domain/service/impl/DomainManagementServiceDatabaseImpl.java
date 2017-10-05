@@ -1,5 +1,6 @@
 package org.orbit.component.server.tier3.domain.service.impl;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -18,23 +19,30 @@ import org.orbit.component.server.tier3.domain.handler.MachineConfigTableHandler
 import org.orbit.component.server.tier3.domain.handler.NodeConfigTableHandler;
 import org.orbit.component.server.tier3.domain.handler.TransferAgentConfigTableHandler;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
+import org.orbit.fs.common.Constants;
+import org.orbit.fs.common.FileSystem;
+import org.orbit.fs.common.database.DatabaseFileSystem;
+import org.orbit.fs.common.database.DatabaseFileSystemConfig;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.StringUtil;
-import org.origin.core.resources.WorkspaceManager;
+import org.origin.core.resources.IWorkspaceService;
+import org.origin.core.resources.WorkspaceServiceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class DomainManagementServiceDatabaseImpl implements DomainManagementService {
 
-	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
+	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
+	protected Properties workspaceProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 
 	protected MachineConfigTableHandler machineConfigTableHandler = MachineConfigTableHandler.INSTANCE;
 	protected TransferAgentConfigTableHandler transferAgentConfigTableHandler = TransferAgentConfigTableHandler.INSTANCE;
 	protected NodeConfigTableHandler nodeConfigTableHandler = NodeConfigTableHandler.INSTANCE;
+	protected IWorkspaceService workspaceService;
 
 	public DomainManagementServiceDatabaseImpl() {
 	}
@@ -48,6 +56,7 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAMESPACE);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
@@ -56,51 +65,73 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
 
-		updateProperties(configProps);
+		update(configProps);
 
-		initialize();
-
+		// Start service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(DomainManagementService.class, this, props);
+
+		// Start workspace service
+		DatabaseFileSystemConfig config = new DatabaseFileSystemConfig(this.databaseProperties);
+		FileSystem fileSystem = new DatabaseFileSystem(config);
+		this.workspaceService = WorkspaceServiceFactory.getInstance().createWorkspaceService(fileSystem);
+		try {
+			this.workspaceService.start(bundleContext);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * Stop service
 	 * 
 	 */
-	public void stop() {
+	public void stop(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".stop()");
 
+		// Stop service
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();
 			this.serviceRegistry = null;
+		}
+
+		// Stop workspace service
+		if (this.workspaceService != null) {
+			try {
+				this.workspaceService.stop(bundleContext);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			this.workspaceService = null;
 		}
 	}
 
 	/**
 	 * 
-	 * @param configProps
+	 * @param properties
 	 */
-	public synchronized void updateProperties(Map<Object, Object> configProps) {
+	public synchronized void update(Map<Object, Object> properties) {
 		System.out.println(getClass().getSimpleName() + ".updateProperties()");
-
-		if (configProps == null) {
-			configProps = new HashMap<Object, Object>();
+		if (properties == null) {
+			properties = new HashMap<Object, Object>();
 		}
+		this.properties = properties;
 
-		String globalHostURL = (String) configProps.get(OrbitConstants.ORBIT_HOST_URL);
-		String name = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
-		String hostURL = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
-		String contextRoot = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
-		String jdbcDriver = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER);
-		String jdbcURL = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL);
-		String jdbcUsername = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
-		String jdbcPassword = (String) configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
+		String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
+		String namespace = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAMESPACE);
+		String name = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
+		String hostURL = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
+		String contextRoot = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+		String jdbcDriver = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER);
+		String jdbcURL = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL);
+		String jdbcUsername = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
+		String jdbcPassword = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
 
 		System.out.println();
 		System.out.println("Config properties:");
 		System.out.println("-----------------------------------------------------");
 		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAMESPACE + " = " + namespace);
 		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME + " = " + name);
 		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL + " = " + hostURL);
 		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT + " = " + contextRoot);
@@ -111,27 +142,8 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 		System.out.println("-----------------------------------------------------");
 		System.out.println();
 
-		this.configProps = configProps;
-		this.databaseProperties = getConnectionProperties(this.configProps);
-	}
-
-	/**
-	 * 
-	 * @param props
-	 * @return
-	 */
-	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = (String) this.configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER);
-		String url = (String) this.configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL);
-		String username = (String) this.configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
-		String password = (String) this.configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
-		return DatabaseUtil.getProperties(driver, url, username, password);
-	}
-
-	/**
-	 * Initialize database tables.
-	 */
-	public void initialize() {
+		this.databaseProperties = DatabaseUtil.getProperties(jdbcDriver, jdbcURL, jdbcUsername, jdbcPassword);
+		// Initialize database tables.
 		Connection conn = DatabaseUtil.getConnection(this.databaseProperties);
 		try {
 			DatabaseUtil.initialize(conn, MachineConfigTableHandler.INSTANCE);
@@ -143,6 +155,12 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
+
+		String tableNamePrefix = namespace = namespace.replaceAll("\\.", "_");
+		this.workspaceProperties = new Properties();
+		this.workspaceProperties.putAll(this.databaseProperties);
+		this.workspaceProperties.put(Constants.METADATA_TABLE_NAME, tableNamePrefix + "_" + Constants.METADATA_TABLE_NAME_DEFAULT_VALUE);
+		this.workspaceProperties.put(Constants.CONTENT_TABLE_NAME, tableNamePrefix + "_" + Constants.CONTENT_TABLE_NAME_DEFAULT_VALUE);
 	}
 
 	protected Connection getConnection() {
@@ -150,18 +168,22 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 	}
 
 	@Override
+	public String getNamespace() {
+		return (String) this.properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAMESPACE);
+	}
+
+	@Override
 	public String getName() {
-		String name = (String) this.configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
-		return name;
+		return (String) this.properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
+		String hostURL = (String) this.properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(OrbitConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -170,18 +192,7 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = (String) this.configProps.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
-		return contextRoot;
-	}
-
-	/**
-	 * 
-	 * @param e
-	 * @throws DomainMgmtException
-	 */
-	protected void handleSQLException(SQLException e) throws DomainMgmtException {
-		e.printStackTrace();
-		throw new DomainMgmtException(StatusDTO.RESP_500, e.getMessage(), e);
+		return (String) this.properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
 	}
 
 	/**
@@ -215,6 +226,16 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 		if (nodeId == null || nodeId.isEmpty()) {
 			throw new DomainMgmtException("400", "nodeId is empty.");
 		}
+	}
+
+	/**
+	 * 
+	 * @param e
+	 * @throws DomainMgmtException
+	 */
+	protected void handleSQLException(SQLException e) throws DomainMgmtException {
+		e.printStackTrace();
+		throw new DomainMgmtException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	// ------------------------------------------------------
@@ -519,14 +540,6 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 	}
 
 	// ------------------------------------------------------
-	// Workspaces management
-	// ------------------------------------------------------
-	@Override
-	public WorkspaceManager getWorkspaceManager() {
-		return null;
-	}
-
-	// ------------------------------------------------------
 	// Node management
 	// ------------------------------------------------------
 	@Override
@@ -695,6 +708,14 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return false;
+	}
+
+	// ------------------------------------------------------
+	// Workspaces
+	// ------------------------------------------------------
+	@Override
+	public IWorkspaceService getWorkspaceService() {
+		return this.workspaceService;
 	}
 
 }

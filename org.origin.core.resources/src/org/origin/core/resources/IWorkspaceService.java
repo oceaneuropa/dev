@@ -5,20 +5,20 @@ import java.util.List;
 
 import org.osgi.framework.BundleContext;
 
-public interface WorkspaceManager {
+public interface IWorkspaceService {
 
-	void start(BundleContext context);
+	void start(BundleContext context) throws IOException;
 
-	void stop(BundleContext context);
+	void stop(BundleContext context) throws IOException;
 
 	List<String> getWorkspaces() throws IOException;
 
-	IWorkspace openWorkspace(String name, String password) throws IOException;
+	IWorkspace open(String name, String password) throws IOException;
 
-	IWorkspace createWorkspace(String name, String password) throws IOException;
+	IWorkspace create(String name, String password) throws IOException;
 
-	boolean changeWorkspacePassword(String name, String oldPassword, String newPassword) throws IOException;
+	boolean changePassword(String name, String oldPassword, String newPassword) throws IOException;
 
-	boolean deleteWorkspace(String name, String password) throws IOException;
+	boolean delete(String name, String password) throws IOException;
 
 }

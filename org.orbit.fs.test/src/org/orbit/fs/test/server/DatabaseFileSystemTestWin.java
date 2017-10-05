@@ -12,16 +12,17 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.orbit.fs.api.FilePath;
-import org.orbit.fs.server.service.FileSystemService;
-import org.orbit.fs.server.service.FileSystemServiceHelper;
-import org.orbit.fs.server.service.database.DatabaseFS;
-import org.orbit.fs.server.service.database.DatabaseFSConfig;
+import org.orbit.fs.common.FileSystem;
+import org.orbit.fs.common.FileSystemHelper;
+import org.orbit.fs.common.database.DatabaseFileSystem;
+import org.orbit.fs.common.database.DatabaseFileSystemConfig;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.resource.IPath;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DatabaseFileSystemTestWin {
 
-	protected FileSystemService fs;
+	protected FileSystem fs;
 
 	public DatabaseFileSystemTestWin() {
 		this.fs = getDatabaseFileSystem();
@@ -31,20 +32,21 @@ public class DatabaseFileSystemTestWin {
 		this.fs = getDatabaseFileSystem();
 	}
 
-	protected FileSystemService getDatabaseFileSystem() {
+	protected FileSystem getDatabaseFileSystem() {
 		Properties properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
 		// Properties properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
-		DatabaseFSConfig config = new DatabaseFSConfig(properties);
-		return new DatabaseFS(config);
+
+		DatabaseFileSystemConfig config = new DatabaseFileSystemConfig(properties);
+		return new DatabaseFileSystem(config);
 	}
 
 	@Test
 	public void test001_listRoots() throws IOException {
 		System.out.println("--- --- --- test001_listRoots() --- --- ---");
 
-		FilePath[] memberPaths = fs.listRoots();
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath[] memberPaths = fs.listRoots();
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -54,9 +56,9 @@ public class DatabaseFileSystemTestWin {
 	public void test002_createDir() throws IOException {
 		System.out.println("--- --- --- test002_createDir() --- --- ---");
 
-		FilePath path1 = new FilePath("/test/dir1");
-		FilePath path2 = new FilePath("/test/dir2");
-		FilePath path3 = new FilePath("/test/dir3");
+		IPath path1 = new FilePath("/test/dir1");
+		IPath path2 = new FilePath("/test/dir2");
+		IPath path3 = new FilePath("/test/dir3");
 		if (!fs.exists(path1)) {
 			fs.mkdirs(path1);
 		}
@@ -74,9 +76,9 @@ public class DatabaseFileSystemTestWin {
 	public void test003_createEmptyFiles() throws IOException {
 		System.out.println("--- --- --- test003_createEmptyFiles() --- --- ---");
 
-		FilePath path1 = new FilePath("/test/dir1/newFile1.txt");
-		FilePath path2 = new FilePath("/test/dir1/newFile2.txt");
-		FilePath path3 = new FilePath("/test/dir1/newFile3.txt");
+		IPath path1 = new FilePath("/test/dir1/newFile1.txt");
+		IPath path2 = new FilePath("/test/dir1/newFile2.txt");
+		IPath path3 = new FilePath("/test/dir1/newFile3.txt");
 
 		if (!fs.exists(path1)) {
 			fs.createNewFile(path1);
@@ -88,10 +90,10 @@ public class DatabaseFileSystemTestWin {
 			fs.createNewFile(path3);
 		}
 
-		FilePath destDir = new FilePath("/test/dir1");
-		FilePath[] memberPaths = fs.listFiles(destDir);
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath destDir = new FilePath("/test/dir1");
+		IPath[] memberPaths = fs.listFiles(destDir);
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -106,16 +108,16 @@ public class DatabaseFileSystemTestWin {
 		File localFile3 = new File("C:/downloads/test_source/dir2/karaf.rar");
 		File localFile4 = new File("C:/downloads/test_source/dir2/Ribbon.rar");
 
-		FilePath destDirPath = new FilePath("/test/dir2");
+		IPath destDirPath = new FilePath("/test/dir2");
 
 		fs.copyFileToFsFile(localFile1, new FilePath(destDirPath, localFile1.getName()));
 		fs.copyFileToFsFile(localFile2, new FilePath(destDirPath, localFile2.getName()));
 		fs.copyFileToFsDirectory(localFile3, destDirPath);
 		fs.copyFileToFsDirectory(localFile4, destDirPath);
 
-		FilePath[] memberPaths = fs.listFiles(destDirPath);
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath[] memberPaths = fs.listFiles(destDirPath);
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -129,17 +131,17 @@ public class DatabaseFileSystemTestWin {
 		File localDir2 = new File("C:/downloads/test_source/dir3/temp2");
 		File localDir3 = new File("C:/downloads/test_source/dir5/");
 
-		FilePath destDirPath1 = new FilePath("/test/dir3");
-		FilePath destDirPath2 = new FilePath("/test/dir3");
-		FilePath destDirPath3 = new FilePath("/test/");
+		IPath destDirPath1 = new FilePath("/test/dir3");
+		IPath destDirPath2 = new FilePath("/test/dir3");
+		IPath destDirPath3 = new FilePath("/test/");
 
 		fs.copyDirectoryToFsDirectory(localDir1, destDirPath1, true);
 		fs.copyDirectoryToFsDirectory(localDir2, destDirPath2, false);
 		fs.copyDirectoryToFsDirectory(localDir3, destDirPath3, true);
 
-		FilePath[] paths = fs.listFiles(destDirPath1);
-		for (FilePath path : paths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, path, 0);
+		IPath[] paths = fs.listFiles(destDirPath1);
+		for (IPath path : paths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, path, 0);
 		}
 
 		System.out.println();
@@ -152,9 +154,9 @@ public class DatabaseFileSystemTestWin {
 
 		File localDir = new File("C:/downloads/test_target");
 
-		FilePath[] paths = fs.listRoots();
-		for (FilePath path : paths) {
-			FileSystemServiceHelper.INSTANCE.copyFsFileToLocalDirectory(fs, path, localDir);
+		IPath[] paths = fs.listRoots();
+		for (IPath path : paths) {
+			FileSystemHelper.INSTANCE.copyFsFileToLocalDirectory(fs, path, localDir);
 		}
 
 		System.out.println();
@@ -165,8 +167,8 @@ public class DatabaseFileSystemTestWin {
 	public void test008_deleteFsFiles() throws IOException {
 		System.out.println("--- --- --- test008_deleteFsFiles() --- --- ---");
 
-		FilePath filePath1 = new FilePath("/test/dir5/webgl/webgl-tutorials.css");
-		FilePath filePath2 = new FilePath("/test/dir5/webgl/webgl-utils.js");
+		IPath filePath1 = new FilePath("/test/dir5/webgl/webgl-tutorials.css");
+		IPath filePath2 = new FilePath("/test/dir5/webgl/webgl-utils.js");
 
 		fs.delete(filePath1);
 		fs.delete(filePath2);
@@ -179,8 +181,8 @@ public class DatabaseFileSystemTestWin {
 	public void test009_deleteFsDirs() throws IOException {
 		System.out.println("--- --- --- test009_deleteFsDirs() --- --- ---");
 
-		FilePath dirPath1 = new FilePath("/test/dir5/01_Study");
-		FilePath dirPath2 = new FilePath("/test/dir5/06_Book");
+		IPath dirPath1 = new FilePath("/test/dir5/01_Study");
+		IPath dirPath2 = new FilePath("/test/dir5/06_Book");
 
 		fs.delete(dirPath1);
 		fs.delete(dirPath2);
@@ -194,9 +196,9 @@ public class DatabaseFileSystemTestWin {
 
 		File localDir = new File("C:/downloads/test_target");
 
-		FilePath[] paths = fs.listRoots();
-		for (FilePath path : paths) {
-			FileSystemServiceHelper.INSTANCE.copyFsFileToLocalDirectory(fs, path, localDir);
+		IPath[] paths = fs.listRoots();
+		for (IPath path : paths) {
+			FileSystemHelper.INSTANCE.copyFsFileToLocalDirectory(fs, path, localDir);
 		}
 
 		System.out.println();

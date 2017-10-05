@@ -11,11 +11,13 @@ Import-Package: javax.ws.rs;version="2.0.0",
  org.apache.commons.io,
  org.glassfish.jersey.media.multipart,
  org.orbit.fs.api,
+ org.orbit.fs.common,
  org.orbit.fs.model,
  org.orbit.fs.model.vo,
  org.origin.common.adapter,
  org.origin.common.io,
  org.origin.common.jdbc,
+ org.origin.common.resource,
  org.origin.common.rest,
  org.origin.common.rest.model,
  org.origin.common.rest.server,
@@ -23,6 +25,4 @@ Import-Package: javax.ws.rs;version="2.0.0",
  org.slf4j;version="1.7.10"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.fs.server,
- org.orbit.fs.server.service,
- org.orbit.fs.server.service.database,
- org.orbit.fs.server.service.local
+ org.orbit.fs.server.ws

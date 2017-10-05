@@ -1,4 +1,4 @@
-package org.origin.core.resources.impl.filesystem;
+package org.origin.core.resources.impl.local;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,12 +7,13 @@ import java.util.Collections;
 import java.util.List;
 
 import org.origin.core.resources.IWorkspace;
+import org.origin.core.resources.IWorkspaceService;
+import org.origin.core.resources.ResourceFactory;
 import org.origin.core.resources.WorkspaceDescription;
-import org.origin.core.resources.WorkspaceManager;
 import org.origin.core.resources.impl.misc.WorkspaceNameComparator;
 import org.osgi.framework.BundleContext;
 
-public class WorkspaceManagerFSImpl implements WorkspaceManager {
+public class WorkspaceServiceLocalImpl implements IWorkspaceService {
 
 	protected File workspacesFolder;
 	protected List<IWorkspace> workspaces = new ArrayList<IWorkspace>();
@@ -21,30 +22,30 @@ public class WorkspaceManagerFSImpl implements WorkspaceManager {
 	 * 
 	 * @param workspacesFolder
 	 */
-	public WorkspaceManagerFSImpl(File workspacesFolder) {
+	public WorkspaceServiceLocalImpl(File workspacesFolder) {
 		this.workspacesFolder = workspacesFolder;
 	}
 
 	@Override
-	public void start(BundleContext context) {
-		loadWorkspaces();
+	public void start(BundleContext context) throws IOException {
+		load();
 	}
 
 	@Override
-	public void stop(BundleContext context) {
+	public void stop(BundleContext context) throws IOException {
 		synchronized (this.workspaces) {
 			this.workspaces.clear();
 		}
 	}
 
-	protected void loadWorkspaces() {
+	protected void load() {
 		synchronized (this.workspaces) {
 			this.workspaces.clear();
 
 			File[] memberFiles = this.workspacesFolder.listFiles();
 			for (File memberFile : memberFiles) {
 				if (isWorkspace(memberFile)) {
-					IWorkspace workspace = loadWorkspace(memberFile);
+					IWorkspace workspace = ResourceFactory.getInstance().newWorkspaceInstanceForFileSystem(memberFile);
 					if (workspace != null) {
 						this.workspaces.add(workspace);
 					}
@@ -55,12 +56,17 @@ public class WorkspaceManagerFSImpl implements WorkspaceManager {
 		}
 	}
 
+	/**
+	 * 
+	 * @param file
+	 * @return
+	 */
 	protected boolean isWorkspace(File file) {
 		if (file != null && file.isDirectory()) {
 			File dotMetadataFolder = new File(file, ".metadata");
 			if (dotMetadataFolder.isDirectory()) {
 				File dotWorkspaceFile = new File(dotMetadataFolder, ".workspace");
-				if (dotWorkspaceFile.exists()) {
+				if (dotWorkspaceFile.isFile()) {
 					return true;
 				}
 			}
@@ -68,17 +74,11 @@ public class WorkspaceManagerFSImpl implements WorkspaceManager {
 		return false;
 	}
 
-	protected IWorkspace loadWorkspace(File file) {
-		IWorkspace workspace = new WorkspaceFSImpl(file);
-		return workspace;
-	}
-
-	@Override
-	public List<String> getWorkspaces() throws IOException {
-		List<String> workspaceNames = new ArrayList<String>();
-		return workspaceNames;
-	}
-
+	/**
+	 * 
+	 * @param name
+	 * @throws IOException
+	 */
 	protected void checkName(String name) throws IOException {
 		if (name == null || name.isEmpty()) {
 			throw new IOException("Workspace name is empyt.");
@@ -86,45 +86,56 @@ public class WorkspaceManagerFSImpl implements WorkspaceManager {
 	}
 
 	@Override
-	public IWorkspace openWorkspace(String name, String password) throws IOException {
-		checkName(name);
-
-		IWorkspace matchedWorkspace = null;
+	public List<String> getWorkspaces() throws IOException {
+		List<String> names = new ArrayList<String>();
 		synchronized (this.workspaces) {
 			for (IWorkspace workspace : this.workspaces) {
-				if (name.equals(workspace.getName())) {
-					matchedWorkspace = workspace;
+				names.add(workspace.getName());
+			}
+		}
+		return names;
+	}
+
+	@Override
+	public IWorkspace open(String name, String password) throws IOException {
+		checkName(name);
+
+		IWorkspace workspace = null;
+		synchronized (this.workspaces) {
+			for (IWorkspace currWorkspace : this.workspaces) {
+				if (name.equals(currWorkspace.getName())) {
+					workspace = currWorkspace;
 					break;
 				}
 			}
 		}
 
-		if (matchedWorkspace != null) {
-			boolean isPasswordRequired = false;
-			boolean matchPassword = false;
-			WorkspaceDescription desc = matchedWorkspace.getDescription();
-			if (desc != null && desc.getPassword() != null && !desc.getPassword().isEmpty()) {
-				isPasswordRequired = true;
-				if (desc.getPassword().equals(password)) {
-					matchPassword = true;
-				}
+		if (workspace == null) {
+			throw new IOException("Workspace does not exist.");
+		}
+
+		boolean isPasswordRequired = false;
+		boolean matchPassword = false;
+		WorkspaceDescription desc = workspace.getDescription();
+		if (desc != null && desc.getPassword() != null && !desc.getPassword().isEmpty()) {
+			isPasswordRequired = true;
+			if (desc.getPassword().equals(password)) {
+				matchPassword = true;
 			}
-			if (isPasswordRequired) {
-				if (matchPassword) {
-					return matchedWorkspace;
-				} else {
-					throw new IOException("Wrong password");
-				}
+		}
+		if (isPasswordRequired) {
+			if (matchPassword) {
+				return workspace;
 			} else {
-				return matchedWorkspace;
+				throw new IOException("Wrong password");
 			}
 		} else {
-			throw new IOException("Workspace does not exist.");
+			return workspace;
 		}
 	}
 
 	@Override
-	public IWorkspace createWorkspace(String name, String password) throws IOException {
+	public IWorkspace create(String name, String password) throws IOException {
 		checkName(name);
 
 		WorkspaceDescription desc = new WorkspaceDescription();
@@ -132,7 +143,7 @@ public class WorkspaceManagerFSImpl implements WorkspaceManager {
 		desc.setName(name);
 		desc.setPassword(password);
 
-		IWorkspace workspace = new WorkspaceFSImpl();
+		IWorkspace workspace = ResourceFactory.getInstance().newWorkspaceInstanceForFileSystem();
 		workspace.create(desc);
 
 		synchronized (this.workspaces) {
@@ -144,13 +155,12 @@ public class WorkspaceManagerFSImpl implements WorkspaceManager {
 	}
 
 	@Override
-	public boolean changeWorkspacePassword(String name, String oldPassword, String newPassword) throws IOException {
+	public boolean changePassword(String name, String oldPassword, String newPassword) throws IOException {
 		checkName(name);
 
-		IWorkspace matchedWorkspace = openWorkspace(name, oldPassword);
-		if (matchedWorkspace != null) {
-			WorkspaceDescription desc = matchedWorkspace.getDescription();
-
+		IWorkspace workspace = open(name, oldPassword);
+		if (workspace != null) {
+			WorkspaceDescription desc = workspace.getDescription();
 			if (desc == null) {
 				desc = new WorkspaceDescription();
 				desc.setId(name);
@@ -158,20 +168,20 @@ public class WorkspaceManagerFSImpl implements WorkspaceManager {
 			}
 			desc.setPassword(newPassword);
 
-			matchedWorkspace.setDescription(desc);
+			workspace.setDescription(desc);
 		}
 
 		return false;
 	}
 
 	@Override
-	public boolean deleteWorkspace(String name, String password) throws IOException {
+	public boolean delete(String name, String password) throws IOException {
 		checkName(name);
 
-		IWorkspace matchedWorkspace = openWorkspace(name, password);
-		if (matchedWorkspace != null) {
-			matchedWorkspace.dispose();
-			return matchedWorkspace.delete();
+		IWorkspace workspace = open(name, password);
+		if (workspace != null) {
+			workspace.dispose();
+			return workspace.delete();
 		}
 
 		return false;

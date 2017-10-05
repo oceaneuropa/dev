@@ -9,14 +9,15 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.orbit.fs.api.FilePath;
-import org.orbit.fs.server.service.FileSystemService;
-import org.orbit.fs.server.service.FileSystemServiceHelper;
-import org.orbit.fs.server.service.local.LocalFS;
-import org.orbit.fs.server.service.local.LocalFSConfig;
+import org.orbit.fs.common.FileSystem;
+import org.orbit.fs.common.FileSystemHelper;
+import org.orbit.fs.common.local.LocalFileSystem;
+import org.orbit.fs.common.local.LocalFileSystemConfig;
+import org.origin.common.resource.IPath;
 
 public class LocalFileSystemTestMac {
 
-	protected FileSystemService fs;
+	protected FileSystem fs;
 
 	public LocalFileSystemTestMac() {
 		this.fs = getLocalFileSystem();
@@ -26,12 +27,12 @@ public class LocalFileSystemTestMac {
 		this.fs = getLocalFileSystem();
 	}
 
-	protected FileSystemService getLocalFileSystem() {
+	protected FileSystem getLocalFileSystem() {
 		// File homeDirector = new File("/Users/oceaneuropa/Downloads/apache"); // For Mac
 		// File homeDirector = new File("/Users/oceaneuropa/Downloads/Swagger"); // For Mac
 		File homeDir = new File("/Users/oceaneuropa/Downloads/ear"); // For Mac
-		LocalFSConfig config = new LocalFSConfig(homeDir);
-		return new LocalFS(config);
+		LocalFileSystemConfig config = new LocalFileSystemConfig(homeDir);
+		return new LocalFileSystem(config);
 	}
 
 	@Ignore
@@ -39,12 +40,12 @@ public class LocalFileSystemTestMac {
 	public void testListRootFiles() throws IOException {
 		System.out.println("--- --- --- testListRootFiles() --- --- ---");
 
-		FilePath[] memberPaths = fs.listRoots();
-		for (FilePath memberPath : memberPaths) {
+		IPath[] memberPaths = fs.listRoots();
+		for (IPath memberPath : memberPaths) {
 			// FileMetaData fileMetaData = fs.getFileMetaData(rootPath);
 			// System.out.println("rootPath.getName() = " + rootPath.getName());
 			// System.out.println("\tfileMetaData " + fileMetaData.toString());
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -55,10 +56,10 @@ public class LocalFileSystemTestMac {
 	public void testListFiles() throws IOException {
 		System.out.println("--- --- --- testListFiles() --- --- ---");
 
-		FilePath testDir = new FilePath("/test");
-		FilePath[] memberPaths = fs.listFiles(testDir);
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath testDir = new FilePath("/test");
+		IPath[] memberPaths = fs.listFiles(testDir);
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -139,17 +140,17 @@ public class LocalFileSystemTestMac {
 		FilePath dirPath1 = new FilePath("/test/dirToDelete1");
 		System.out.println();
 		System.out.println(dirPath1.getPathString() + ":");
-		FilePath[] memberPaths1 = fs.listFiles(dirPath1);
-		for (FilePath memberPath : memberPaths1) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath[] memberPaths1 = fs.listFiles(dirPath1);
+		for (IPath memberPath : memberPaths1) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		FilePath dirPath2 = new FilePath("/test/dirToDelete2");
 		System.out.println();
 		System.out.println(dirPath2.getPathString() + ":");
-		FilePath[] memberPaths2 = fs.listFiles(dirPath2);
-		for (FilePath memberPath : memberPaths2) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath[] memberPaths2 = fs.listFiles(dirPath2);
+		for (IPath memberPath : memberPaths2) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -205,10 +206,10 @@ public class LocalFileSystemTestMac {
 			fs.createNewFile(path3);
 		}
 
-		FilePath destDir = new FilePath("/test/dir1");
-		FilePath[] memberPaths = fs.listFiles(destDir);
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath destDir = new FilePath("/test/dir1");
+		IPath[] memberPaths = fs.listFiles(destDir);
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -226,9 +227,9 @@ public class LocalFileSystemTestMac {
 		fs.copyFileToFsFile(localFile1, new FilePath(destDirPath, localFile1.getName()));
 		fs.copyFileToFsFile(localFile2, new FilePath(destDirPath, localFile2.getName()));
 
-		FilePath[] memberPaths = fs.listFiles(destDirPath);
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath[] memberPaths = fs.listFiles(destDirPath);
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -245,9 +246,9 @@ public class LocalFileSystemTestMac {
 		fs.copyFileToFsDirectory(localFile1, destDirPath);
 		fs.copyFileToFsDirectory(localFile2, destDirPath);
 
-		FilePath[] memberPaths = fs.listFiles(destDirPath);
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath[] memberPaths = fs.listFiles(destDirPath);
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -262,9 +263,9 @@ public class LocalFileSystemTestMac {
 		FilePath destDirPath = new FilePath("/test/dir4");
 		fs.copyDirectoryToFsDirectory(localDir, destDirPath, true);
 
-		FilePath[] memberPaths = fs.listFiles(destDirPath);
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath[] memberPaths = fs.listFiles(destDirPath);
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();
@@ -279,9 +280,9 @@ public class LocalFileSystemTestMac {
 		FilePath destDirPath = new FilePath("/test/dir5");
 		fs.copyDirectoryToFsDirectory(localDir, destDirPath, false);
 
-		FilePath[] memberPaths = fs.listFiles(destDirPath);
-		for (FilePath memberPath : memberPaths) {
-			FileSystemServiceHelper.INSTANCE.walkFolders(fs, memberPath, 0);
+		IPath[] memberPaths = fs.listFiles(destDirPath);
+		for (IPath memberPath : memberPaths) {
+			FileSystemHelper.INSTANCE.walkFolders(fs, memberPath, 0);
 		}
 
 		System.out.println();

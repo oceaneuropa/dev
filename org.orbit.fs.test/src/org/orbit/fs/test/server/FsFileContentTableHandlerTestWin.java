@@ -15,9 +15,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.orbit.fs.server.service.database.FsFileContentTableHandler;
-import org.orbit.fs.server.service.database.FsFileMetadataTableHandler;
-import org.orbit.fs.server.service.database.DatabaseFSUtil;
+import org.orbit.fs.common.database.DatabaseFileSystemHelper;
 import org.origin.common.io.FileUtil;
 import org.origin.common.io.IOUtil;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -26,15 +24,18 @@ import org.origin.common.jdbc.DatabaseUtil;
 public class FsFileContentTableHandlerTestWin {
 
 	protected Properties properties;
-	protected FsFileMetadataTableHandler metaHandler = FsFileMetadataTableHandler.INSTANCE;
-	protected FsFileContentTableHandler contentHandler = FsFileContentTableHandler.INSTANCE;
+	protected DatabaseFileSystemHelper helper;
 
 	public FsFileContentTableHandlerTestWin() {
-		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
-		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
+		init();
 	}
 
 	public void setUp() {
+		init();
+	}
+
+	protected void init() {
+		this.helper = new DatabaseFileSystemHelper();
 		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
@@ -76,22 +77,22 @@ public class FsFileContentTableHandlerTestWin {
 			// long length6 = file6.length();
 
 			is1 = new FileInputStream(file1);
-			boolean succeed1 = DatabaseFSUtil.writeFileContentPostgres(conn, 1, is1);
+			boolean succeed1 = this.helper.writeFileContentPostgres(conn, 1, is1);
 
 			is2 = new FileInputStream(file2);
-			boolean succeed2 = DatabaseFSUtil.writeFileContentPostgres(conn, 2, is2);
+			boolean succeed2 = this.helper.writeFileContentPostgres(conn, 2, is2);
 
 			is3 = new FileInputStream(file3);
-			boolean succeed3 = DatabaseFSUtil.writeFileContentPostgres(conn, 3, is3);
+			boolean succeed3 = this.helper.writeFileContentPostgres(conn, 3, is3);
 
 			is4 = new FileInputStream(file4);
-			boolean succeed4 = DatabaseFSUtil.writeFileContentPostgres(conn, 4, is4);
+			boolean succeed4 = this.helper.writeFileContentPostgres(conn, 4, is4);
 
 			is5 = new FileInputStream(file5);
-			boolean succeed5 = DatabaseFSUtil.writeFileContentPostgres(conn, 5, is5);
+			boolean succeed5 = this.helper.writeFileContentPostgres(conn, 5, is5);
 
 			is6 = new FileInputStream(file6);
-			boolean succeed6 = DatabaseFSUtil.writeFileContentPostgres(conn, 6, is6);
+			boolean succeed6 = this.helper.writeFileContentPostgres(conn, 6, is6);
 
 			System.out.println("succeed1 = " + succeed1);
 			System.out.println("succeed2 = " + succeed2);
@@ -150,22 +151,22 @@ public class FsFileContentTableHandlerTestWin {
 			long length6 = file6.length();
 
 			is1 = new FileInputStream(file1);
-			boolean succeed1 = DatabaseFSUtil.writeFileContentMySQL(conn, 1, is1, length1);
+			boolean succeed1 = this.helper.writeFileContentMySQL(conn, 1, is1, length1);
 
 			is2 = new FileInputStream(file2);
-			boolean succeed2 = DatabaseFSUtil.writeFileContentMySQL(conn, 2, is2, length2);
+			boolean succeed2 = this.helper.writeFileContentMySQL(conn, 2, is2, length2);
 
 			is3 = new FileInputStream(file3);
-			boolean succeed3 = DatabaseFSUtil.writeFileContentMySQL(conn, 3, is3, length3);
+			boolean succeed3 = this.helper.writeFileContentMySQL(conn, 3, is3, length3);
 
 			is4 = new FileInputStream(file4);
-			boolean succeed4 = DatabaseFSUtil.writeFileContentMySQL(conn, 4, is4, length4);
+			boolean succeed4 = this.helper.writeFileContentMySQL(conn, 4, is4, length4);
 
 			is5 = new FileInputStream(file5);
-			boolean succeed5 = DatabaseFSUtil.writeFileContentMySQL(conn, 5, is5, length5);
+			boolean succeed5 = this.helper.writeFileContentMySQL(conn, 5, is5, length5);
 
 			is6 = new FileInputStream(file6);
-			boolean succeed6 = DatabaseFSUtil.writeFileContentMySQL(conn, 6, is6, length6);
+			boolean succeed6 = this.helper.writeFileContentMySQL(conn, 6, is6, length6);
 
 			System.out.println("succeed1 = " + succeed1);
 			System.out.println("succeed2 = " + succeed2);
@@ -203,12 +204,12 @@ public class FsFileContentTableHandlerTestWin {
 			File file5 = new File("C:/downloads/test_target/Song For The Sun.mp3");
 			File file6 = new File("C:/downloads/test_target/swagger_v01.rar");
 
-			byte[] bytes1 = DatabaseFSUtil.readFileContentPostgres(conn, 1);
-			byte[] bytes2 = DatabaseFSUtil.readFileContentPostgres(conn, 2);
-			byte[] bytes3 = DatabaseFSUtil.readFileContentPostgres(conn, 3);
-			byte[] bytes4 = DatabaseFSUtil.readFileContentPostgres(conn, 4);
-			byte[] bytes5 = DatabaseFSUtil.readFileContentPostgres(conn, 5);
-			byte[] bytes6 = DatabaseFSUtil.readFileContentPostgres(conn, 6);
+			byte[] bytes1 = this.helper.readFileContentPostgres(conn, 1);
+			byte[] bytes2 = this.helper.readFileContentPostgres(conn, 2);
+			byte[] bytes3 = this.helper.readFileContentPostgres(conn, 3);
+			byte[] bytes4 = this.helper.readFileContentPostgres(conn, 4);
+			byte[] bytes5 = this.helper.readFileContentPostgres(conn, 5);
+			byte[] bytes6 = this.helper.readFileContentPostgres(conn, 6);
 
 			FileUtil.copyBytesToFile(bytes1, file1);
 			FileUtil.copyBytesToFile(bytes2, file2);
@@ -248,27 +249,27 @@ public class FsFileContentTableHandlerTestWin {
 			File file5 = new File("C:/downloads/test_target/Song For The Sun.mp3");
 			File file6 = new File("C:/downloads/test_target/swagger_v01.rar");
 
-			InputStream is1 = DatabaseFSUtil.readFileContentMySQL(conn, 1);
+			InputStream is1 = this.helper.readFileContentMySQL(conn, 1);
 			FileUtil.copyInputStreamToFile(is1, file1);
 			IOUtil.closeQuietly(is1, true);
 
-			InputStream is2 = DatabaseFSUtil.readFileContentMySQL(conn, 2);
+			InputStream is2 = this.helper.readFileContentMySQL(conn, 2);
 			FileUtil.copyInputStreamToFile(is2, file2);
 			IOUtil.closeQuietly(is2, true);
 
-			InputStream is3 = DatabaseFSUtil.readFileContentMySQL(conn, 3);
+			InputStream is3 = this.helper.readFileContentMySQL(conn, 3);
 			FileUtil.copyInputStreamToFile(is3, file3);
 			IOUtil.closeQuietly(is3, true);
 
-			InputStream is4 = DatabaseFSUtil.readFileContentMySQL(conn, 4);
+			InputStream is4 = this.helper.readFileContentMySQL(conn, 4);
 			FileUtil.copyInputStreamToFile(is4, file4);
 			IOUtil.closeQuietly(is4, true);
 
-			InputStream is5 = DatabaseFSUtil.readFileContentMySQL(conn, 5);
+			InputStream is5 = this.helper.readFileContentMySQL(conn, 5);
 			FileUtil.copyInputStreamToFile(is5, file5);
 			IOUtil.closeQuietly(is5, true);
 
-			InputStream is6 = DatabaseFSUtil.readFileContentMySQL(conn, 6);
+			InputStream is6 = this.helper.readFileContentMySQL(conn, 6);
 			FileUtil.copyInputStreamToFile(is6, file6);
 			IOUtil.closeQuietly(is6, true);
 

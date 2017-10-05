@@ -6,11 +6,15 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.origin.core.resources.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.json;version="2015.11.23",
+ org.orbit.fs.api,
+ org.orbit.fs.common,
  org.origin.common.adapter,
  org.origin.common.io,
  org.origin.common.jdbc,
  org.origin.common.json,
+ org.origin.common.resource,
  org.origin.common.util,
+ org.origin.core.workspace,
  org.origin.mgm.client.connector,
  org.osgi.framework;version="1.3.0"
 Export-Package: org.origin.core.resources,

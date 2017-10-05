@@ -4,15 +4,13 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.origin.common.resource.IPath;
 import org.origin.common.util.StringUtil;
 
-/**
- *
- */
 @XmlRootElement
-public class FilePath implements Comparable<FilePath> {
+public class FilePath implements IPath, Comparable<FilePath> {
 
-	public static final FilePath ROOT = new FilePath("/");
+	public static final IPath ROOT = new FilePath("/");
 
 	// path separator
 	public static final String SEPARATOR = "/";
@@ -39,16 +37,7 @@ public class FilePath implements Comparable<FilePath> {
 	 * @param parent
 	 * @param child
 	 */
-	public FilePath(String parent, String child) {
-		this(new FilePath(parent), new FilePath(child));
-	}
-
-	/**
-	 * 
-	 * @param parent
-	 * @param child
-	 */
-	public FilePath(FilePath parent, String child) {
+	public FilePath(IPath parent, String child) {
 		this(parent, new FilePath(child));
 	}
 
@@ -57,16 +46,7 @@ public class FilePath implements Comparable<FilePath> {
 	 * @param parent
 	 * @param child
 	 */
-	public FilePath(String parent, FilePath child) {
-		this(new FilePath(parent), child);
-	}
-
-	/**
-	 * 
-	 * @param parent
-	 * @param child
-	 */
-	public FilePath(FilePath parent, FilePath child) {
+	public FilePath(IPath parent, IPath child) {
 		String path1 = parent.getPathString();
 		String path2 = child.getPathString();
 
@@ -210,7 +190,7 @@ public class FilePath implements Comparable<FilePath> {
 	 */
 	@XmlTransient
 	public String getParentPathString() {
-		FilePath parentPath = getParent();
+		IPath parentPath = getParent();
 		if (parentPath != null) {
 			return parentPath.getPathString();
 		}
@@ -279,13 +259,26 @@ public class FilePath implements Comparable<FilePath> {
 		return null;
 	}
 
+	@Override
+	public String getFileExtension() {
+		String fileExtension = null;
+		String lastSegment = getLastSegment();
+		if (lastSegment != null) {
+			int index = lastSegment.lastIndexOf(".");
+			if (index >= 0 && index < (lastSegment.length() - 1)) {
+				fileExtension = lastSegment.substring(index + 1);
+			}
+		}
+		return fileExtension;
+	}
+
 	/**
 	 * Get the parent path of this path.
 	 * 
 	 * @return
 	 */
 	@XmlTransient
-	public FilePath getParent() {
+	public IPath getParent() {
 		if (pathString.length() == 0) {
 			// path is empty --- empty path --- doesn't have parent path.
 			return null;
@@ -303,6 +296,16 @@ public class FilePath implements Comparable<FilePath> {
 
 		// now the lastSeparatorIndex must be greater than 1.
 		return new FilePath(pathString.substring(0, lastSeparatorIndex));
+	}
+
+	@Override
+	public IPath append(String pathString) {
+		return new FilePath(this, pathString);
+	}
+
+	@Override
+	public IPath append(IPath path) {
+		return new FilePath(this, path);
 	}
 
 	@Override

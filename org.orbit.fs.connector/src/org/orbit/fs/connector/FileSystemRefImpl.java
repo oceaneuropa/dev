@@ -12,7 +12,7 @@ import org.orbit.fs.api.FileSystemConfiguration;
 import org.orbit.fs.connector.ws.FileSystemWSClient;
 import org.origin.common.rest.client.ClientException;
 
-public class FileSystemImpl implements FileSystem {
+public class FileSystemRefImpl implements FileSystem {
 
 	protected static final FileRef[] EMPTY_FILES = new FileRef[0];
 
@@ -22,7 +22,7 @@ public class FileSystemImpl implements FileSystem {
 	 * @return
 	 */
 	public static FileSystem newInstance(FileSystemConfiguration config) {
-		return new FileSystemImpl(config);
+		return new FileSystemRefImpl(config);
 	}
 
 	protected FileSystemConfiguration config;
@@ -32,7 +32,7 @@ public class FileSystemImpl implements FileSystem {
 	 * 
 	 * @param config
 	 */
-	public FileSystemImpl(FileSystemConfiguration config) {
+	public FileSystemRefImpl(FileSystemConfiguration config) {
 		this.config = config;
 	}
 

@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.orbit.fs.api.FilePath;
+import org.orbit.fs.common.FileSystemImpl;
 import org.orbit.fs.model.FileMetadata;
-import org.orbit.fs.server.service.FileSystemServiceImpl;
+import org.origin.common.resource.IPath;
 
-public class GoogleDriveFS extends FileSystemServiceImpl {
+public class GoogleDriveFS extends FileSystemImpl {
 
 	/**
 	 * 
@@ -19,67 +19,67 @@ public class GoogleDriveFS extends FileSystemServiceImpl {
 	}
 
 	@Override
-	public FileMetadata getFileMetaData(FilePath path) {
+	public FileMetadata getFileMetaData(IPath path) {
 		return null;
 	}
 
 	@Override
-	public FilePath[] listRoots() {
+	public IPath[] listRoots() {
 		return null;
 	}
 
 	@Override
-	public FilePath[] listFiles(FilePath parent) {
+	public IPath[] listFiles(IPath parent) {
 		return null;
 	}
 
 	@Override
-	public boolean exists(FilePath path) {
+	public boolean exists(IPath path) {
 		return false;
 	}
 
 	@Override
-	public boolean isDirectory(FilePath path) {
+	public boolean isDirectory(IPath path) {
 		return false;
 	}
 
 	@Override
-	public boolean mkdirs(FilePath path) throws IOException {
+	public boolean mkdirs(IPath path) throws IOException {
 		return false;
 	}
 
 	@Override
-	public boolean createNewFile(FilePath path) throws IOException {
+	public boolean createNewFile(IPath path) throws IOException {
 		return false;
 	}
 
 	@Override
-	public boolean delete(FilePath path) throws IOException {
+	public boolean delete(IPath path) throws IOException {
 		return false;
 	}
 
 	@Override
-	public InputStream getInputStream(FilePath path) throws IOException {
+	public InputStream getInputStream(IPath path) throws IOException {
 		return null;
 	}
 
 	@Override
-	public FilePath copyInputStreamToFsFile(InputStream inputStream, FilePath destFilePath) throws IOException {
+	public IPath copyInputStreamToFsFile(InputStream inputStream, IPath destFilePath) throws IOException {
 		return null;
 	}
 
 	@Override
-	public FilePath copyFileToFsFile(File localFile, FilePath destFilePath) throws IOException {
+	public IPath copyFileToFsFile(File localFile, IPath destFilePath) throws IOException {
 		return null;
 	}
 
 	@Override
-	public FilePath copyFileToFsDirectory(File localFile, FilePath destDirPath) throws IOException {
+	public IPath copyFileToFsDirectory(File localFile, IPath destDirPath) throws IOException {
 		return null;
 	}
 
 	@Override
-	public boolean copyDirectoryToFsDirectory(File localDir, FilePath destDirPath, boolean includingSourceDir) throws IOException {
+	public boolean copyDirectoryToFsDirectory(File localDir, IPath destDirPath, boolean includingSourceDir) throws IOException {
 		return false;
 	}
 

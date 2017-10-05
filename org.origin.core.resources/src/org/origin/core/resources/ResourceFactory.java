@@ -6,7 +6,8 @@ import org.origin.core.resources.extension.ResourceProvider;
 import org.origin.core.resources.extension.ResourceProviderExtensionRegistry;
 import org.origin.core.resources.impl.FileImpl;
 import org.origin.core.resources.impl.FolderImpl;
-import org.origin.core.resources.impl.filesystem.WorkspaceFSImpl;
+import org.origin.core.resources.impl.local.WorkspaceLocalImpl;
+import org.origin.core.resources.IWorkspace;
 
 public class ResourceFactory {
 
@@ -21,11 +22,19 @@ public class ResourceFactory {
 
 	/**
 	 * 
-	 * @param underlyingRootResource
+	 * @param workspaceFolder
 	 * @return
 	 */
-	public IWorkspace createFsRoot(File underlyingRootResource) {
-		return new WorkspaceFSImpl(underlyingRootResource);
+	public IWorkspace newWorkspaceInstanceForFileSystem(File workspaceFolder) {
+		return new WorkspaceLocalImpl(workspaceFolder);
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public IWorkspace newWorkspaceInstanceForFileSystem() {
+		return new WorkspaceLocalImpl();
 	}
 
 	/**

@@ -29,6 +29,7 @@ public class OriginConstants {
 	public static int DEFAULT_HEARTBEAT_EXPIRE_TIME = 30; // if no heartbeat for the last 30 seconds, the node is considered as not active.
 
 	// config properties
+	public static String COMPONENT_INDEX_SERVICE_NAMESPACE = "component.indexservice.namespace";
 	public static String COMPONENT_INDEX_SERVICE_NAME = "component.indexservice.name";
 	public static String COMPONENT_INDEX_SERVICE_HOST_URL = "component.indexservice.host.url";
 	public static String COMPONENT_INDEX_SERVICE_CONTEXT_ROOT = "component.indexservice.context_root";

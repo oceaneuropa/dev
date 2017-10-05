@@ -14,9 +14,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.orbit.fs.server.service.database.FsFileContentTableHandler;
-import org.orbit.fs.server.service.database.FsFileMetadataTableHandler;
-import org.orbit.fs.server.service.database.DatabaseFSUtil;
+import org.orbit.fs.common.database.DatabaseFileSystemHelper;
 import org.origin.common.io.FileUtil;
 import org.origin.common.io.IOUtil;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -25,15 +23,18 @@ import org.origin.common.jdbc.DatabaseUtil;
 public class FsFileContentTableHandlerTestMac {
 
 	protected Properties properties;
-	protected FsFileMetadataTableHandler metaHandler = FsFileMetadataTableHandler.INSTANCE;
-	protected FsFileContentTableHandler contentHandler = FsFileContentTableHandler.INSTANCE;
+	protected DatabaseFileSystemHelper helper;
 
 	public FsFileContentTableHandlerTestMac() {
-		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
-		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
+		init();
 	}
 
 	public void setUp() {
+		init();
+	}
+
+	protected void init() {
+		this.helper = new DatabaseFileSystemHelper();
 		this.properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
@@ -75,19 +76,19 @@ public class FsFileContentTableHandlerTestMac {
 			// long length6 = file6.length();
 
 			is1 = new FileInputStream(file1);
-			boolean succeed1 = DatabaseFSUtil.writeFileContentPostgres(conn, 1, is1);
+			boolean succeed1 = this.helper.writeFileContentPostgres(conn, 1, is1);
 
 			is2 = new FileInputStream(file2);
-			boolean succeed2 = DatabaseFSUtil.writeFileContentPostgres(conn, 2, is2);
+			boolean succeed2 = this.helper.writeFileContentPostgres(conn, 2, is2);
 
 			is3 = new FileInputStream(file3);
-			boolean succeed3 = DatabaseFSUtil.writeFileContentPostgres(conn, 3, is3);
+			boolean succeed3 = this.helper.writeFileContentPostgres(conn, 3, is3);
 
 			is4 = new FileInputStream(file4);
-			boolean succeed4 = DatabaseFSUtil.writeFileContentPostgres(conn, 4, is4);
+			boolean succeed4 = this.helper.writeFileContentPostgres(conn, 4, is4);
 
 			is6 = new FileInputStream(file6);
-			boolean succeed6 = DatabaseFSUtil.writeFileContentPostgres(conn, 6, is6);
+			boolean succeed6 = this.helper.writeFileContentPostgres(conn, 6, is6);
 
 			System.out.println("succeed1 = " + succeed1);
 			System.out.println("succeed2 = " + succeed2);
@@ -124,11 +125,11 @@ public class FsFileContentTableHandlerTestMac {
 			File file4 = new File("/Users/oceaneuropa/Downloads/test/target/apache-tomcat-8.0.30.tar.gz");
 			File file6 = new File("/Users/oceaneuropa/Downloads/test/target/commons-io-2.5-src.zip");
 
-			byte[] bytes1 = DatabaseFSUtil.readFileContentPostgres(conn, 1);
-			byte[] bytes2 = DatabaseFSUtil.readFileContentPostgres(conn, 2);
-			byte[] bytes3 = DatabaseFSUtil.readFileContentPostgres(conn, 3);
-			byte[] bytes4 = DatabaseFSUtil.readFileContentPostgres(conn, 4);
-			byte[] bytes6 = DatabaseFSUtil.readFileContentPostgres(conn, 6);
+			byte[] bytes1 = this.helper.readFileContentPostgres(conn, 1);
+			byte[] bytes2 = this.helper.readFileContentPostgres(conn, 2);
+			byte[] bytes3 = this.helper.readFileContentPostgres(conn, 3);
+			byte[] bytes4 = this.helper.readFileContentPostgres(conn, 4);
+			byte[] bytes6 = this.helper.readFileContentPostgres(conn, 6);
 
 			FileUtil.copyBytesToFile(bytes1, file1);
 			FileUtil.copyBytesToFile(bytes2, file2);

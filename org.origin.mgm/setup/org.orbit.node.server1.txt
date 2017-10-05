@@ -19,6 +19,7 @@ config.ini
 ------------------------------------------------------------------------------------
 orbit.host.url=http://127.0.0.1:12001 
 component.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+component.node.namespace=org.oceaneuropa
 component.node.name=Node11
 component.node.context_root=/orbit/v1/node
 component.node.jdbc.driver=org.postgresql.Driver

@@ -54,7 +54,7 @@ public abstract class ResourceImpl implements IResource {
 
 	@Override
 	public boolean delete() {
-		return getWorkspace().delete(getFullPath());
+		return getWorkspace().deleteUnderlyingResource(getFullPath());
 	}
 
 	@Override

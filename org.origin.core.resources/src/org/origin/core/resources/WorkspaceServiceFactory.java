@@ -1,21 +1,46 @@
 package org.origin.core.resources;
 
 import java.io.File;
+import java.util.Map;
 
-public class WorkspaceManagerFactory {
+import org.orbit.fs.common.FileSystem;
+import org.origin.core.resources.impl.database.WorkspaceServiceDatabaseImpl;
+import org.origin.core.resources.impl.filesystem.WorkspaceServiceFileSystemImpl;
+import org.origin.core.resources.impl.local.WorkspaceServiceLocalImpl;
 
-	private static WorkspaceManagerFactory INSTANCE = new WorkspaceManagerFactory();
+public class WorkspaceServiceFactory {
 
-	public static WorkspaceManagerFactory getInstance() {
+	private static WorkspaceServiceFactory INSTANCE = new WorkspaceServiceFactory();
+
+	public static WorkspaceServiceFactory getInstance() {
 		return INSTANCE;
 	}
 
-	public WorkspaceManager createWorkspaceManagerForDatabase(String id) {
-		return null;
+	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
+	public IWorkspaceService createWorkspaceService(Map<Object, Object> properties) {
+		return new WorkspaceServiceDatabaseImpl(properties);
 	}
 
-	public WorkspaceManager createWorkspaceManagerForFileSystem(File workspacesFolder) {
-		return null;
+	/**
+	 * 
+	 * @param fileSystem
+	 * @return
+	 */
+	public IWorkspaceService createWorkspaceService(FileSystem fileSystem) {
+		return new WorkspaceServiceFileSystemImpl(fileSystem);
+	}
+
+	/**
+	 * 
+	 * @param workspacesFolder
+	 * @return
+	 */
+	public IWorkspaceService createWorkspaceService(File workspacesFolder) {
+		return new WorkspaceServiceLocalImpl(workspacesFolder);
 	}
 
 }
