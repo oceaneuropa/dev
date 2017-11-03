@@ -7,6 +7,8 @@ public interface TransferAgentService {
 
 	IEditingDomain getEditingDomain();
 
+	String getNamespace();
+
 	String getName();
 
 	String getHostURL();

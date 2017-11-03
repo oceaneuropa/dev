@@ -1,4 +1,4 @@
-package org.orbit.component.server.tier2.appstore.timer;
+package org.orbit.component.server.tier2.appstore.ws;
 
 import java.io.IOException;
 import java.util.Date;

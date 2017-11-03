@@ -1,31 +1,49 @@
 package org.orbit.component.server.tier1.account.ws;
 
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.server.tier1.account.service.UserRegistryService;
 import org.origin.common.rest.Constants;
-import org.origin.common.rest.server.AbstractApplication;
+import org.origin.common.rest.server.AbstractResourceConfigApplication;
 import org.origin.mgm.client.api.IndexProvider;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 /**
  * @see https://www.ibm.com/support/knowledgecenter/en/SSHRKX_8.0.0/plan/plan_ureg.html
  *
  */
-public class UserRegistryWSApplication extends AbstractApplication {
+public class UserRegistryWSApplication extends AbstractResourceConfigApplication {
 
-	// protected static Logger logger = LoggerFactory.getLogger(UserRegistryWSApplication.class);
-
+	protected UserRegistryService service;
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	// protected UserRegistryServiceIndexTimer serviceIndexTimer;
 	protected UserRegistryServiceIndexTimerV2 serviceIndexTimer;
 
-	public UserRegistryWSApplication() {
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
+	public UserRegistryWSApplication(final BundleContext bundleContext, final UserRegistryService service) {
+		super(bundleContext, service.getContextRoot());
+		this.service = service;
+
+		register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(service).to(UserRegistryService.class);
+			}
+		});
+		register(UserRegistryServiceResource.class);
+		register(UserRegistryUserAccountsResource.class);
+	}
+
+	public UserRegistryService getUserRegistryService() {
+		return this.service;
 	}
 
 	public IndexProvider getIndexProvider() {
@@ -51,7 +69,7 @@ public class UserRegistryWSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start a timer to update the indexing of the service
-		this.serviceIndexTimer = new UserRegistryServiceIndexTimerV2(this.indexProvider);
+		this.serviceIndexTimer = new UserRegistryServiceIndexTimerV2(this.indexProvider, this.service);
 		this.serviceIndexTimer.start();
 	}
 
@@ -76,23 +94,26 @@ public class UserRegistryWSApplication extends AbstractApplication {
 		}
 	}
 
-	@Override
-	public Set<Class<?>> getClasses() {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-
-		// resources
-		classes.add(UserRegistryServiceResource.class);
-		classes.add(UserRegistryUserAccountsResource.class);
-
-		// resolvers
-		classes.add(UserRegistryServiceResolver.class);
-
-		// http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
-		// In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
-		// Add additional features such as support for Multipart.
-		classes.add(MultiPartFeature.class);
-
-		return classes;
-	}
-
 }
+
+// protected static Logger logger = LoggerFactory.getLogger(UserRegistryWSApplication.class);
+// protected UserRegistryServiceIndexTimer serviceIndexTimer;
+
+// @Override
+// public Set<Class<?>> getClasses() {
+// Set<Class<?>> classes = new HashSet<Class<?>>();
+//
+// // resources
+// classes.add(UserRegistryServiceResource.class);
+// classes.add(UserRegistryUserAccountsResource.class);
+//
+// // resolvers
+// classes.add(UserRegistryServiceResolver.class);
+//
+// // http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
+// // In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
+// // Add additional features such as support for Multipart.
+// classes.add(MultiPartFeature.class);
+//
+// return classes;
+// }

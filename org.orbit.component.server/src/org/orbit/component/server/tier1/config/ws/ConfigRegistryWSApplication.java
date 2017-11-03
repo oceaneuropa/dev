@@ -1,26 +1,45 @@
 package org.orbit.component.server.tier1.config.ws;
 
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.server.tier1.config.service.ConfigRegistryService;
 import org.origin.common.rest.Constants;
-import org.origin.common.rest.server.AbstractApplication;
+import org.origin.common.rest.server.AbstractResourceConfigApplication;
 import org.origin.mgm.client.api.IndexProvider;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class ConfigRegistryWSApplication extends AbstractApplication {
+public class ConfigRegistryWSApplication extends AbstractResourceConfigApplication {
 
-	// protected static Logger logger = LoggerFactory.getLogger(ConfigRegistryWSApplication.class);
-
+	protected ConfigRegistryService service;
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	// protected ConfigRegistryServiceIndexTimer serviceIndexTimer;
 	protected ConfigRegistryServiceIndexTimerV2 serviceIndexTimer;
 
-	public ConfigRegistryWSApplication() {
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
+	public ConfigRegistryWSApplication(final BundleContext bundleContext, final ConfigRegistryService service) {
+		super(bundleContext, service.getContextRoot());
+		this.service = service;
+
+		register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(service).to(ConfigRegistryService.class);
+			}
+		});
+		register(ConfigRegistryServiceResource.class);
+		register(ConfigRegistryResource.class);
+	}
+
+	public ConfigRegistryService getConfigRegistryService() {
+		return this.service;
 	}
 
 	public IndexProvider getIndexProvider() {
@@ -46,7 +65,7 @@ public class ConfigRegistryWSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start a timer to update the indexing of the service
-		this.serviceIndexTimer = new ConfigRegistryServiceIndexTimerV2(this.indexProvider);
+		this.serviceIndexTimer = new ConfigRegistryServiceIndexTimerV2(this.indexProvider, this.service);
 		this.serviceIndexTimer.start();
 	}
 
@@ -71,18 +90,21 @@ public class ConfigRegistryWSApplication extends AbstractApplication {
 		}
 	}
 
-	@Override
-	public Set<Class<?>> getClasses() {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-
-		// resources
-		classes.add(ConfigRegistryServiceResource.class);
-		classes.add(ConfigRegistryResource.class);
-
-		// resolvers
-		classes.add(ConfigRegistryServiceResolver.class);
-
-		return classes;
-	}
-
 }
+
+// protected static Logger logger = LoggerFactory.getLogger(ConfigRegistryWSApplication.class);
+// protected ConfigRegistryServiceIndexTimer serviceIndexTimer;
+
+// @Override
+// public Set<Class<?>> getClasses() {
+// Set<Class<?>> classes = new HashSet<Class<?>>();
+//
+// // resources
+// classes.add(ConfigRegistryServiceResource.class);
+// classes.add(ConfigRegistryResource.class);
+//
+// // resolvers
+// classes.add(ConfigRegistryServiceResolver.class);
+//
+// return classes;
+// }

@@ -57,7 +57,7 @@ public class AuthWSApplication extends AbstractResourceConfigApplication {
 
 		// Start timer for indexing the service
 		if (this.indexProvider != null) {
-			this.serviceIndexTimer = new AuthServiceIndexTimer(this.service, this.indexProvider);
+			this.serviceIndexTimer = new AuthServiceIndexTimer(this.indexProvider, this.service);
 			this.serviceIndexTimer.start();
 		}
 	}

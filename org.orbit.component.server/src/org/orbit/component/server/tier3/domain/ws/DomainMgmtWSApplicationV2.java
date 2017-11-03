@@ -6,7 +6,6 @@ import javax.ws.rs.core.Application;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
-import org.orbit.component.server.tier3.domain.timer.DomainMgmtServiceTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractResourceConfigApplication;
 import org.origin.mgm.client.api.IndexProvider;
@@ -41,6 +40,10 @@ public class DomainMgmtWSApplicationV2 extends AbstractResourceConfigApplication
 		register(DomainMgmtNodesResource.class);
 	}
 
+	public DomainManagementService getDomainManagementService() {
+		return this.service;
+	}
+
 	public IndexProvider getIndexProvider() {
 		return this.indexProvider;
 	}
@@ -65,7 +68,7 @@ public class DomainMgmtWSApplicationV2 extends AbstractResourceConfigApplication
 
 		// Start timer for indexing the service
 		if (this.indexProvider != null) {
-			this.serviceIndexTimer = new DomainMgmtServiceTimerV2(this.service, this.indexProvider);
+			this.serviceIndexTimer = new DomainMgmtServiceTimerV2(this.indexProvider, this.service);
 			// The web application knows its DomainMgmtServiceResource provides a ping method.
 			// So it tells the index timer that the web service can is pingable.
 			this.serviceIndexTimer.start();
@@ -94,25 +97,25 @@ public class DomainMgmtWSApplicationV2 extends AbstractResourceConfigApplication
 		super.stop();
 	}
 
-	// @Override
-	// public Set<Class<?>> getClasses() {
-	// Set<Class<?>> classes = new HashSet<Class<?>>();
-	//
-	// // resources
-	// classes.add(DomainMgmtServiceResource.class);
-	// classes.add(DomainMgmtMachinesResource.class);
-	// classes.add(DomainMgmtTransferAgentsResource.class);
-	// classes.add(DomainMgmtNodesResource.class);
-	//
-	// // resolvers
-	// classes.add(DomainMgmtServiceResolver.class);
-	//
-	// // http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
-	// // In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
-	// // Add additional features such as support for Multipart.
-	// classes.add(MultiPartFeature.class);
-	//
-	// return classes;
-	// }
-
 }
+
+// @Override
+// public Set<Class<?>> getClasses() {
+// Set<Class<?>> classes = new HashSet<Class<?>>();
+//
+// // resources
+// classes.add(DomainMgmtServiceResource.class);
+// classes.add(DomainMgmtMachinesResource.class);
+// classes.add(DomainMgmtTransferAgentsResource.class);
+// classes.add(DomainMgmtNodesResource.class);
+//
+// // resolvers
+// classes.add(DomainMgmtServiceResolver.class);
+//
+// // http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
+// // In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
+// // Add additional features such as support for Multipart.
+// classes.add(MultiPartFeature.class);
+//
+// return classes;
+// }

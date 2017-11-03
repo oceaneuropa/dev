@@ -87,7 +87,7 @@ public class ConfigRegistryServiceAdapter {
 	 * @param service
 	 */
 	protected void startWebService(BundleContext bundleContext, ConfigRegistryService service) {
-		this.webApp = new ConfigRegistryWSApplication();
+		this.webApp = new ConfigRegistryWSApplication(bundleContext, service);
 		this.webApp.setBundleContext(bundleContext);
 		this.webApp.setContextRoot(service.getContextRoot());
 		if (this.indexProviderLoadBalancer != null) {

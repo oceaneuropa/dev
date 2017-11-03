@@ -40,6 +40,9 @@ public class Activator implements BundleActivator {
 		Path originHome = SetupUtil.getOriginHome(bundleContext);
 		Path configIniPath = originHome.resolve("config.ini");
 		Properties configIniProps = SetupUtil.getProperties(originHome, "config.ini");
+		if (configIniProps == null) {
+			configIniProps = new Properties();
+		}
 		System.out.println("originHome = " + originHome);
 		System.out.println(configIniPath + " properties:");
 		Printer.pl(configIniProps);

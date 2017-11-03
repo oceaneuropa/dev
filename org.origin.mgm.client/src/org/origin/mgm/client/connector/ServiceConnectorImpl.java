@@ -19,6 +19,7 @@ import org.origin.common.loadbalance.policy.LoadBalancePolicy;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
 import org.origin.common.rest.model.Pingable;
 import org.origin.common.thread.ThreadPoolTimer;
+import org.origin.common.util.DateUtil;
 import org.origin.common.util.Printer;
 import org.origin.common.util.Timer;
 import org.origin.mgm.client.OriginConstants;
@@ -32,9 +33,6 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 
 	/* update index items every 15 seconds */
 	public static long INDEX_MONITOR_INTERVAL = 15 * Timer.SECOND;
-
-	/* a service is considered as expired (for heart beat) if last heart beat was more than 30 seconds ago */
-	public static long HEARTBEAT_EXPIRE_TIME = 30 * Timer.SECOND;
 
 	/* actively ping the service every 5 seconds */
 	public static long ACTIVE_PING_INTERVAL = 5 * Timer.SECOND;
@@ -371,10 +369,11 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		// keep a reference to the IndexItem
 		resource.adapt(IndexItem.class, latestIndexItem);
 
-		Date lastHeartBeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartBeatTime(resource);
+		Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartBeatTime(resource);
 		if (this.debug) {
 			// CharSequence relativeTime = TimeUtil.getRelativeTime(lastHeartBeatTime.getTime());
-			// System.out.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemId + " - " + indexProviderId + " - " + indexItemType + " - " + indexItemName + "] Last Heart Beat Time: " + DateUtil.toString(lastHeartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2));
+			// System.out.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemId + " - " + indexProviderId + " - " + indexItemType +
+			// " - " + indexItemName + "] Last Heart Beat Time: " + DateUtil.toString(lastHeartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2));
 			// System.out.println("\tindexItemId=" + indexItemId);
 			// System.out.println("\tindexProviderId=" + indexProviderId);
 			// System.out.println("\tindexItemName=" + indexItemName);
@@ -404,29 +403,41 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 			System.err.println();
 		}
 
-		long seconds = (System.currentTimeMillis() - lastHeartBeatTime.getTime()) / 1000;
-		boolean isHeartBeatExpired = (seconds > 30) ? true : false;
-		if (isHeartBeatExpired) {
-			// expired
-			System.err.println("\tExpired (in " + seconds + " seconds)");
-			System.err.println();
-
-			resource.setProperty(OriginConstants.HEARTBEAT_EXPIRED, Boolean.TRUE);
-
-		} else {
-			// not expired
-			// System.out.println("\tNot expired (in " + seconds + " seconds)");
-			// System.out.println();
-
-			if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRED)) {
-				resource.removeProperty(OriginConstants.HEARTBEAT_EXPIRED);
+		boolean isHeartbeatExpired = false;
+		if (lastHeartbeatTime != null) {
+			Date heartbeatExpireTime = DateUtil.addSeconds(lastHeartbeatTime, 30);
+			resource.setProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME, heartbeatExpireTime);
+			if (heartbeatExpireTime.before(new Date())) {
+				isHeartbeatExpired = true;
 			}
+		} else {
+			isHeartbeatExpired = true;
 		}
+
+		// long seconds = (System.currentTimeMillis() - lastHeartBeatTime.getTime()) / 1000;
+		// boolean isHeartBeatExpired = (seconds > 30) ? true : false;
+		// if (isHeartBeatExpired) {
+		// // expired
+		// System.err.println("\tExpired (in " + seconds + " seconds)");
+		// System.err.println();
+		//
+		//
+		// resource.setProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME, Boolean.TRUE);
+		//
+		// } else {
+		// // not expired
+		// // System.out.println("\tNot expired (in " + seconds + " seconds)");
+		// // System.out.println();
+		//
+		// if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME)) {
+		// resource.removeProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME);
+		// }
+		// }
 
 		// 4. Start active ping monitor if heart beat expired.
 		// Stop active ping monitor if heart beat not expired.
 		if (isPingable(resource)) {
-			if (isHeartBeatExpired) {
+			if (isHeartbeatExpired) {
 				System.out.println(getClass().getSimpleName() + ".updateResource() IndexItem [" + indexItemName + "] last heart beat expired.");
 
 				// (1) If expired, start an active ping monitor to actively ping the service with a even shorter period of time and to update the LAST_PING_TIME
@@ -552,8 +563,8 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 
 			// The service can be pinged right now.
 			// If the service heart beat was expired. The expiration can be lifted now.
-			if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRED)) {
-				resource.removeProperty(OriginConstants.HEARTBEAT_EXPIRED);
+			if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME)) {
+				resource.removeProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME);
 			}
 
 		} else {

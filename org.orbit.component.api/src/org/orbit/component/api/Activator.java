@@ -6,6 +6,7 @@ import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgentAdapter;
+import org.orbit.component.cli.SystemCommand;
 import org.orbit.component.cli.tier1.AuthCommand;
 import org.orbit.component.cli.tier2.AppStoreCLICommand;
 import org.orbit.component.cli.tier3.DomainManagementCLICommand;
@@ -48,6 +49,7 @@ public class Activator implements BundleActivator {
 	protected ServiceTracker<DomainManagementConnector, DomainManagementConnector> domainMgmtConnectorTracker;
 	protected TransferAgentAdapter transferAgentAdapter;
 
+	protected SystemCommand systemCommand;
 	protected AuthCommand authCommand;
 	protected AppStoreCLICommand appStoreCommand;
 	protected DomainManagementCLICommand domainMgmtCommand;
@@ -113,32 +115,6 @@ public class Activator implements BundleActivator {
 			}
 		});
 		this.configRegistryConnectorTracker.open();
-
-		// Start ServiceTracker for tracking OAuth2Connector service
-		// this.oauth2ConnectorTracker = new ServiceTracker<OAuth2Connector, OAuth2Connector>(bundleContext, OAuth2Connector.class, new
-		// ServiceTrackerCustomizer<OAuth2Connector, OAuth2Connector>() {
-		// @Override
-		// public OAuth2Connector addingService(ServiceReference<OAuth2Connector> reference) {
-		// if (debug) {
-		// System.out.println(getClass().getName() + " OAuth2Connector service is added.");
-		// }
-		// return bundleContext.getService(reference);
-		// }
-		//
-		// @Override
-		// public void modifiedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
-		// if (debug) {
-		// System.out.println(getClass().getName() + " OAuth2Connector service is modified.");
-		// }
-		// }
-		//
-		// @Override
-		// public void removedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
-		// if (debug) {
-		// System.out.println(getClass().getName() + " OAuth2Connector service is removed.");
-		// }
-		// }
-		// });
 
 		// Start ServiceTracker for tracking AuthConnector service
 		this.authConnectorTracker = new ServiceTracker<AuthConnector, AuthConnector>(bundleContext, AuthConnector.class, new ServiceTrackerCustomizer<AuthConnector, AuthConnector>() {
@@ -227,6 +203,9 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Start CLI commands
 		// --------------------------------------------------------------------------------
+		this.systemCommand = new SystemCommand(bundleContext);
+		this.systemCommand.start();
+
 		this.authCommand = new AuthCommand(bundleContext);
 		this.authCommand.start();
 
@@ -245,6 +224,11 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Stop CLI commands
 		// --------------------------------------------------------------------------------
+		if (this.systemCommand != null) {
+			this.systemCommand.stop();
+			this.systemCommand = null;
+		}
+
 		if (this.authCommand != null) {
 			this.authCommand.stop();
 			this.authCommand = null;
@@ -302,12 +286,6 @@ public class Activator implements BundleActivator {
 			this.userRegistryConnectorTracker = null;
 		}
 
-		// Stop OAuth2Connector ServiceTracker
-		// if (this.oauth2ConnectorTracker != null) {
-		// this.oauth2ConnectorTracker.close();
-		// this.oauth2ConnectorTracker = null;
-		// }
-
 		// Stop AuthConnector ServiceTracker
 		if (this.authConnectorTracker != null) {
 			this.authConnectorTracker.close();
@@ -333,14 +311,6 @@ public class Activator implements BundleActivator {
 		}
 		return connector;
 	}
-
-	// public OAuth2Connector getOAuth2Connector() {
-	// OAuth2Connector connector = null;
-	// if (this.oauth2ConnectorTracker != null) {
-	// connector = this.oauth2ConnectorTracker.getService();
-	// }
-	// return connector;
-	// }
 
 	public AuthConnector getAuthConnector() {
 		AuthConnector connector = null;
@@ -371,3 +341,43 @@ public class Activator implements BundleActivator {
 	}
 
 }
+
+// public OAuth2Connector getOAuth2Connector() {
+// OAuth2Connector connector = null;
+// if (this.oauth2ConnectorTracker != null) {
+// connector = this.oauth2ConnectorTracker.getService();
+// }
+// return connector;
+// }
+
+// Stop OAuth2Connector ServiceTracker
+// if (this.oauth2ConnectorTracker != null) {
+// this.oauth2ConnectorTracker.close();
+// this.oauth2ConnectorTracker = null;
+// }
+
+// Start ServiceTracker for tracking OAuth2Connector service
+// this.oauth2ConnectorTracker = new ServiceTracker<OAuth2Connector, OAuth2Connector>(bundleContext, OAuth2Connector.class, new
+// ServiceTrackerCustomizer<OAuth2Connector, OAuth2Connector>() {
+// @Override
+// public OAuth2Connector addingService(ServiceReference<OAuth2Connector> reference) {
+// if (debug) {
+// System.out.println(getClass().getName() + " OAuth2Connector service is added.");
+// }
+// return bundleContext.getService(reference);
+// }
+//
+// @Override
+// public void modifiedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
+// if (debug) {
+// System.out.println(getClass().getName() + " OAuth2Connector service is modified.");
+// }
+// }
+//
+// @Override
+// public void removedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
+// if (debug) {
+// System.out.println(getClass().getName() + " OAuth2Connector service is removed.");
+// }
+// }
+// });

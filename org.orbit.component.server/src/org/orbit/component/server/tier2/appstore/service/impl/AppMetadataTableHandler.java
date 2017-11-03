@@ -1,4 +1,4 @@
-package org.orbit.component.server.tier2.appstore.handler;
+package org.orbit.component.server.tier2.appstore.service.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

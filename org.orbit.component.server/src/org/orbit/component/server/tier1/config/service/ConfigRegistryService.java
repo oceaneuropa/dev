@@ -2,23 +2,13 @@ package org.orbit.component.server.tier1.config.service;
 
 public interface ConfigRegistryService {
 
-	/**
-	 * 
-	 * @return
-	 */
-	public String getHostURL();
+	String getNamespace();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public String getContextRoot();
+	String getName();
 
-	/**
-	 * 
-	 * @return
-	 */
-	public String getName();
+	String getHostURL();
+
+	String getContextRoot();
 
 	/**
 	 * 

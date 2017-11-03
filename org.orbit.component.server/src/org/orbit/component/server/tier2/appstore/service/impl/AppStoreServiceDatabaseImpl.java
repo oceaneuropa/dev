@@ -13,8 +13,6 @@ import org.orbit.component.model.tier2.appstore.AppManifestRTO;
 import org.orbit.component.model.tier2.appstore.AppQueryRTO;
 import org.orbit.component.model.tier2.appstore.AppStoreException;
 import org.orbit.component.server.OrbitConstants;
-import org.orbit.component.server.tier2.appstore.handler.AppCategoryTableHandler;
-import org.orbit.component.server.tier2.appstore.handler.AppMetadataTableHandler;
 import org.orbit.component.server.tier2.appstore.service.AppStoreService;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -43,6 +41,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_NAMESPACE);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
@@ -97,6 +96,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 		}
 
 		String globalHostURL = (String) configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		String namespace = (String) configProps.get(OrbitConstants.COMPONENT_APP_STORE_NAMESPACE);
 		String name = (String) configProps.get(OrbitConstants.COMPONENT_APP_STORE_NAME);
 		String hostURL = (String) configProps.get(OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
 		String contextRoot = (String) configProps.get(OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
@@ -109,6 +109,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 		System.out.println("Config properties:");
 		System.out.println("-----------------------------------------------------");
 		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		System.out.println(OrbitConstants.COMPONENT_APP_STORE_NAMESPACE + " = " + namespace);
 		System.out.println(OrbitConstants.COMPONENT_APP_STORE_NAME + " = " + name);
 		System.out.println(OrbitConstants.COMPONENT_APP_STORE_HOST_URL + " = " + hostURL);
 		System.out.println(OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT + " = " + contextRoot);
@@ -157,6 +158,12 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
+	}
+
+	@Override
+	public String getNamespace() {
+		String namespace = (String) this.configProps.get(OrbitConstants.COMPONENT_APP_STORE_NAMESPACE);
+		return namespace;
 	}
 
 	@Override

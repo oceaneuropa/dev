@@ -10,7 +10,7 @@ orbit.service.http.contextroot=/orbit/v1/indexservice
 component.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
 
 // tier 1 service configurations
-component.userregistry.namespace=org.example
+component.userregistry.namespace=group1
 component.userregistry.name=UserRegistryInstance2
 component.userregistry.context_root=/orbit/v1/userregistry
 component.userregistry.jdbc.driver=org.postgresql.Driver
@@ -18,11 +18,11 @@ component.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
 component.userregistry.jdbc.username=postgres
 component.userregistry.jdbc.password=admin
 
-component.auth.namespace=org.example
+component.auth.namespace=group1
 component.auth.name=AuthInstance2
 component.auth.context_root=/orbit/v1/auth
 
-component.configregistry.namespace=org.example
+component.configregistry.namespace=group1
 component.configregistry.name=ConfigRegistryInstance2
 component.configregistry.context_root=/orbit/v1/configregistry
 component.configregistry.jdbc.driver=org.postgresql.Driver
@@ -31,7 +31,7 @@ component.configregistry.jdbc.username=postgres
 component.configregistry.jdbc.password=admin
 
 // tier 2 service configurations
-component.appstore.namespace=org.example
+component.appstore.namespace=group1
 component.appstore.name=AppStoreInstance2
 component.appstore.context_root=/orbit/v1/appstore
 component.appstore.jdbc.driver=org.postgresql.Driver
@@ -40,7 +40,7 @@ component.appstore.jdbc.username=postgres
 component.appstore.jdbc.password=admin
 
 // tier 3 service configurations
-component.domain_mgmt.namespace=org.example
+component.domain_mgmt.namespace=group1
 component.domain_mgmt.name=DomainMgmtInstance2
 component.domain_mgmt.context_root=/orbit/v1/domain
 component.domain_mgmt.jdbc.driver=org.postgresql.Driver
@@ -80,10 +80,10 @@ backup4:
 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:11002 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
--Dcomponent.userregistry.namespace=org.example -Dcomponent.userregistry.name=UserRegistryInstance2 -Dcomponent.userregistry.context_root=/orbit/v1/userregistry -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.userregistry.jdbc.username=postgres -Dcomponent.userregistry.jdbc.password=admin 
--Dcomponent.configregistry.namespace=org.example -Dcomponent.configregistry.name=ConfigRegistryInstance2 -Dcomponent.configregistry.context_root=/orbit/v1/configregistry -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.configregistry.jdbc.username=postgres -Dcomponent.configregistry.jdbc.password=admin
--Dcomponent.appstore.namespace=org.example -Dcomponent.appstore.name=AppStoreInstance2 -Dcomponent.appstore.context_root=/orbit/v1/appstore -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver -Dcomponent.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.appstore.jdbc.username=postgres -Dcomponent.appstore.jdbc.password=admin
--Dcomponent.domain_mgmt.namespace=org.example -Dcomponent.domain_mgmt.name=DomainMgmtInstance2 -Dcomponent.domain_mgmt.context_root=/orbit/v1/domain -Dcomponent.domain_mgmt.jdbc.driver=org.postgresql.Driver -Dcomponent.domain_mgmt.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.domain_mgmt.jdbc.username=postgres -Dcomponent.domain_mgmt.jdbc.password=admin
+-Dcomponent.userregistry.namespace=group1 -Dcomponent.userregistry.name=UserRegistryInstance2 -Dcomponent.userregistry.context_root=/orbit/v1/userregistry -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.userregistry.jdbc.username=postgres -Dcomponent.userregistry.jdbc.password=admin 
+-Dcomponent.configregistry.namespace=group1 -Dcomponent.configregistry.name=ConfigRegistryInstance2 -Dcomponent.configregistry.context_root=/orbit/v1/configregistry -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.configregistry.jdbc.username=postgres -Dcomponent.configregistry.jdbc.password=admin
+-Dcomponent.appstore.namespace=group1 -Dcomponent.appstore.name=AppStoreInstance2 -Dcomponent.appstore.context_root=/orbit/v1/appstore -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver -Dcomponent.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.appstore.jdbc.username=postgres -Dcomponent.appstore.jdbc.password=admin
+-Dcomponent.domain_mgmt.namespace=group1 -Dcomponent.domain_mgmt.name=DomainMgmtInstance2 -Dcomponent.domain_mgmt.context_root=/orbit/v1/domain -Dcomponent.domain_mgmt.jdbc.driver=org.postgresql.Driver -Dcomponent.domain_mgmt.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.domain_mgmt.jdbc.username=postgres -Dcomponent.domain_mgmt.jdbc.password=admin
 
 backup5:
 ------------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ backup5:
 -Dorbit.host.url=http://127.0.0.1:11002 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 
--Dcomponent.appstore.namespace=org.appstore 
+-Dcomponent.appstore.namespace=group1 
 -Dcomponent.appstore.name=AppStore2 
 -Dcomponent.appstore.context_root=/orbit/v1/appstore 
 -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver 
@@ -100,7 +100,7 @@ backup5:
 -Dcomponent.appstore.jdbc.username=postgres 
 -Dcomponent.appstore.jdbc.password=Zion88419716 
 
--Dcomponent.configregistry.namespace=org.configregistry 
+-Dcomponent.configregistry.namespace=group1 
 -Dcomponent.configregistry.name=ConfigRegistry2 
 -Dcomponent.configregistry.context_root=/orbit/v1/configregistry 
 -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver 
@@ -108,7 +108,7 @@ backup5:
 -Dcomponent.configregistry.jdbc.username=postgres 
 -Dcomponent.configregistry.jdbc.password=Zion88419716 
 
--Dcomponent.userregistry.namespace=org.userregistry 
+-Dcomponent.userregistry.namespace=group1 
 -Dcomponent.userregistry.name=UserRegistry2 
 -Dcomponent.userregistry.context_root=/orbit/v1/userregistry 
 -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver 
@@ -116,11 +116,11 @@ backup5:
 -Dcomponent.userregistry.jdbc.username=postgres 
 -Dcomponent.userregistry.jdbc.password=Zion88419716 
 
--Dcomponent.auth.namespace=org.auth 
+-Dcomponent.auth.namespace=group1 
 -Dcomponent.auth.name=Auth2 
 -Dcomponent.auth.context_root=/orbit/v1/auth 
 
--Dcomponent.domain_mgmt.namespace=org.domain 
+-Dcomponent.domain_mgmt.namespace=group1 
 -Dcomponent.domain_mgmt.name=Domain2 
 -Dcomponent.domain_mgmt.context_root=/orbit/v1/domain 
 -Dcomponent.domain_mgmt.jdbc.driver=org.postgresql.Driver 

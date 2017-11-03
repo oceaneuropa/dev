@@ -39,6 +39,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAMESPACE);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT);
@@ -80,6 +81,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 		}
 
 		String globalHostURL = (String) configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		String namespace = (String) configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAMESPACE);
 		String name = (String) configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
 		String hostURL = (String) configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL);
 		String contextRoot = (String) configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT);
@@ -92,6 +94,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 		System.out.println("Config properties:");
 		System.out.println("-----------------------------------------------------");
 		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAMESPACE + " = " + namespace);
 		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME + " = " + name);
 		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL + " = " + hostURL);
 		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT + " = " + contextRoot);
@@ -144,6 +147,12 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
+	}
+
+	@Override
+	public String getNamespace() {
+		String namespace = (String) this.configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAMESPACE);
+		return namespace;
 	}
 
 	@Override

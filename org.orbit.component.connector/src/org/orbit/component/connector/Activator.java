@@ -28,7 +28,6 @@ public class Activator implements BundleActivator {
 
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
-	// protected OAuth2ConnectorImpl oauth2Connector;
 	protected AuthConnectorImpl authConnector;
 	protected AppStoreConnectorImpl appStoreConnector;
 	protected DomainMgmtConnectorImpl domainMgmtConnector;
@@ -55,17 +54,14 @@ public class Activator implements BundleActivator {
 		// this.userRegistryConnector = new UserRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		// this.userRegistryConnector.start(bundleContext);
 
-		// this.oauth2Connector = new OAuth2ConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		// this.oauth2Connector.start(bundleContext);
-
 		this.authConnector = new AuthConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.authConnector.start(bundleContext);
 
 		// -----------------------------------------------------------------------------
 		// Start tier2 service connectors
 		// -----------------------------------------------------------------------------
-		// this.appStoreConnector = new AppStoreConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		// this.appStoreConnector.start(bundleContext);
+		this.appStoreConnector = new AppStoreConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.appStoreConnector.start(bundleContext);
 
 		// -----------------------------------------------------------------------------
 		// Start tier3 service connectors
@@ -95,10 +91,10 @@ public class Activator implements BundleActivator {
 		// -----------------------------------------------------------------------------
 		// Stop tier2 service connectors
 		// -----------------------------------------------------------------------------
-		// if (this.appStoreConnector != null) {
-		// this.appStoreConnector.stop();
-		// this.appStoreConnector = null;
-		// }
+		if (this.appStoreConnector != null) {
+			this.appStoreConnector.stop();
+			this.appStoreConnector = null;
+		}
 
 		// -----------------------------------------------------------------------------
 		// Stop tier1 service connectors
@@ -113,11 +109,6 @@ public class Activator implements BundleActivator {
 		// this.configRegistryConnector = null;
 		// }
 
-		// if (this.oauth2Connector != null) {
-		// this.oauth2Connector.stop();
-		// this.oauth2Connector = null;
-		// }
-
 		if (this.authConnector != null) {
 			this.authConnector.stop();
 			this.authConnector = null;
@@ -127,3 +118,13 @@ public class Activator implements BundleActivator {
 	}
 
 }
+
+// protected OAuth2ConnectorImpl oauth2Connector;
+
+// this.oauth2Connector = new OAuth2ConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+// this.oauth2Connector.start(bundleContext);
+
+// if (this.oauth2Connector != null) {
+// this.oauth2Connector.stop();
+// this.oauth2Connector = null;
+// }

@@ -188,8 +188,8 @@ public class DomainManagementCLICommandOld implements Annotated {
 			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.name");
 			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.host.url");
 			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.context_root");
-			Date heartBeatTime = ResourcePropertyHelper.INSTANCE.getHeartbeatTime(resource);
-			boolean expired = ResourcePropertyHelper.INSTANCE.isHeartBeatExpired(resource);
+			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
+			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
 			// String url = domainMgmt.getURL();
 			// System.out.println(name + " (id = '" + id + "', url = '" + url + "')");
@@ -203,7 +203,7 @@ public class DomainManagementCLICommandOld implements Annotated {
 			// System.out.println(indexItemId + " - " + hostUrl + " - " + contextRoot + " - " + name + " - " + DateUtil.toString(heartBeatTime,
 			// DateUtil.SIMPLE_DATE_FORMAT2));
 
-			rows[rowIndex++] = new String[] { indexItemId.toString(), hostUrl, contextRoot, name, DateUtil.toString(heartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2), expired ? "yes" : "no" };
+			rows[rowIndex++] = new String[] { indexItemId.toString(), hostUrl, contextRoot, name, DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2), DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) };
 		}
 
 		PrettyPrinter.prettyPrint(DOMAIN_SERVICES_TITLES, rows, resources.size());

@@ -1,4 +1,4 @@
-package org.orbit.component.server.tier3.domain.timer;
+package org.orbit.component.server.tier3.domain.ws;
 
 import java.io.IOException;
 import java.util.Date;

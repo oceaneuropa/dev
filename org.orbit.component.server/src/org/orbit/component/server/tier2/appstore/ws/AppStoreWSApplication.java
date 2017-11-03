@@ -1,32 +1,49 @@
 package org.orbit.component.server.tier2.appstore.ws;
 
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.orbit.component.server.tier2.appstore.timer.AppStoreServiceIndexTimerV2;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.server.tier2.appstore.service.AppStoreService;
 import org.origin.common.rest.Constants;
-import org.origin.common.rest.server.AbstractApplication;
+import org.origin.common.rest.server.AbstractResourceConfigApplication;
 import org.origin.mgm.client.api.IndexProvider;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 /**
  * @see org.nb.mgm.ws.ManagementApplication
  * 
  */
-public class AppStoreWSApplication extends AbstractApplication {
+public class AppStoreWSApplication extends AbstractResourceConfigApplication {
 
-	// protected static Logger logger = LoggerFactory.getLogger(AppStoreWSApplication.class);
-
+	protected AppStoreService service;
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	// protected AppStoreServiceIndexTimer serviceIndexTimer;
 	protected AppStoreServiceIndexTimerV2 serviceIndexTimer;
 
-	public AppStoreWSApplication() {
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
+	public AppStoreWSApplication(final BundleContext bundleContext, final AppStoreService service) {
+		super(bundleContext, service.getContextRoot());
+		this.service = service;
+
+		register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(service).to(AppStoreService.class);
+			}
+		});
+		register(AppStoreServiceResource.class);
+		register(AppStoreAppsResource.class);
+	}
+
+	public AppStoreService getAppStoreService() {
+		return this.service;
 	}
 
 	public IndexProvider getIndexProvider() {
@@ -53,7 +70,7 @@ public class AppStoreWSApplication extends AbstractApplication {
 
 		// Start timer for indexing the service
 		// this.serviceIndexTimer = new AppStoreServiceIndexTimer(this.indexProvider);
-		this.serviceIndexTimer = new AppStoreServiceIndexTimerV2(this.indexProvider);
+		this.serviceIndexTimer = new AppStoreServiceIndexTimerV2(this.indexProvider, this.service);
 		this.serviceIndexTimer.start();
 	}
 
@@ -79,23 +96,23 @@ public class AppStoreWSApplication extends AbstractApplication {
 		super.stop();
 	}
 
-	@Override
-	public Set<Class<?>> getClasses() {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-
-		// resources
-		classes.add(AppStoreServiceResource.class);
-		classes.add(AppStoreAppsResource.class);
-
-		// resolvers
-		classes.add(AppStoreServiceResolver.class);
-
-		// http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
-		// In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
-		// Add additional features such as support for Multipart.
-		classes.add(MultiPartFeature.class);
-
-		return classes;
-	}
-
 }
+
+// @Override
+// public Set<Class<?>> getClasses() {
+// Set<Class<?>> classes = new HashSet<Class<?>>();
+//
+// // resources
+// classes.add(AppStoreServiceResource.class);
+// classes.add(AppStoreAppsResource.class);
+//
+// // resolvers
+// classes.add(AppStoreServiceResolver.class);
+//
+// // http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
+// // In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
+// // Add additional features such as support for Multipart.
+// classes.add(MultiPartFeature.class);
+//
+// return classes;
+// }

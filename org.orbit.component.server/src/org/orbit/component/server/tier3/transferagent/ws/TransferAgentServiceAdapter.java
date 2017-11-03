@@ -88,7 +88,7 @@ public class TransferAgentServiceAdapter {
 	 */
 	protected void startWebService(BundleContext bundleContext, TransferAgentService service) {
 		// Start web service
-		this.webApp = new TransferAgentWSApplication();
+		this.webApp = new TransferAgentWSApplication(bundleContext, service);
 		this.webApp.setBundleContext(bundleContext);
 		this.webApp.setContextRoot(service.getContextRoot());
 		if (this.indexProviderLoadBalancer != null) {

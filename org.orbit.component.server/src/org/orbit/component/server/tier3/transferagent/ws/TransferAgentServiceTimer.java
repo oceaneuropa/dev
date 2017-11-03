@@ -1,4 +1,4 @@
-package org.orbit.component.server.tier3.transferagent.timer;
+package org.orbit.component.server.tier3.transferagent.ws;
 
 import java.io.IOException;
 import java.util.Date;

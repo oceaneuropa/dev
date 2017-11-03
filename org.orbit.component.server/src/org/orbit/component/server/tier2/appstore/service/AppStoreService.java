@@ -9,22 +9,12 @@ import org.orbit.component.model.tier2.appstore.AppStoreException;
 
 public interface AppStoreService {
 
-	/**
-	 * 
-	 * @return
-	 */
+	public String getNamespace();
+
 	public String getName();
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getHostURL();
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getContextRoot();
 
 	/**

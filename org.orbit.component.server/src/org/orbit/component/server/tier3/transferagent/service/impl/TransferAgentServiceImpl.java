@@ -42,6 +42,12 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	}
 
 	@Override
+	public String getNamespace() {
+		String namespace = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAMESPACE);
+		return namespace;
+	}
+
+	@Override
 	public String getName() {
 		String name = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
 		return name;
@@ -78,6 +84,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		TASetupUtil.loadConfigIniProperties(bundleContext, configProps);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_NAMESPACE);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT);
@@ -118,6 +125,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		}
 
 		String globalHostURL = (String) configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		String namespace = (String) configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAMESPACE);
 		String name = (String) configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
 		String hostURL = (String) configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL);
 		String contextRoot = (String) configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT);
@@ -127,6 +135,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		System.out.println("Config properties:");
 		System.out.println("-----------------------------------------------------");
 		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		System.out.println(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAMESPACE + " = " + namespace);
 		System.out.println(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME + " = " + name);
 		System.out.println(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL + " = " + hostURL);
 		System.out.println(OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT + " = " + contextRoot);

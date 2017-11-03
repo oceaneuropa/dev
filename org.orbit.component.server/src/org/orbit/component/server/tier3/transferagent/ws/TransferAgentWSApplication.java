@@ -1,31 +1,49 @@
 package org.orbit.component.server.tier3.transferagent.ws;
 
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.orbit.component.server.tier3.transferagent.timer.TransferAgentServiceTimerV2;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.rest.Constants;
-import org.origin.common.rest.server.AbstractApplication;
+import org.origin.common.rest.server.AbstractResourceConfigApplication;
 import org.origin.core.resources.server.service.ResourceService;
 import org.origin.core.resources.server.ws.ResourceWSApplication;
 import org.origin.mgm.client.api.IndexProvider;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class TransferAgentWSApplication extends AbstractApplication {
+public class TransferAgentWSApplication extends AbstractResourceConfigApplication {
 
+	protected TransferAgentService service;
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	// protected TransferAgentServiceTimer serviceIndexTimer;
 	protected TransferAgentServiceTimerV2 serviceIndexTimer;
 
 	protected ResourceWSApplication resourceWSApp1;
 	protected ResourceWSApplication resourceWSApp2;
 
-	public TransferAgentWSApplication() {
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
+	public TransferAgentWSApplication(final BundleContext bundleContext, final TransferAgentService service) {
+		super(bundleContext, service.getContextRoot());
+		this.service = service;
+
+		register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(service).to(TransferAgentService.class);
+			}
+		});
+		register(TransferAgentServiceResource.class);
+	}
+
+	public TransferAgentService getTransferAgentService() {
+		return this.service;
 	}
 
 	public IndexProvider getIndexProvider() {
@@ -55,7 +73,7 @@ public class TransferAgentWSApplication extends AbstractApplication {
 
 		// Start timer for indexing the service
 		if (this.indexProvider != null) {
-			this.serviceIndexTimer = new TransferAgentServiceTimerV2(this.indexProvider);
+			this.serviceIndexTimer = new TransferAgentServiceTimerV2(this.indexProvider, this.service);
 			this.serviceIndexTimer.start();
 		}
 
@@ -109,22 +127,24 @@ public class TransferAgentWSApplication extends AbstractApplication {
 		super.stop();
 	}
 
-	@Override
-	public Set<Class<?>> getClasses() {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-
-		// resources
-		classes.add(TransferAgentServiceResource.class);
-
-		// resolvers
-		classes.add(TransferAgentResolver.class);
-
-		// http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
-		// In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
-		// Add additional features such as support for Multipart.
-		classes.add(MultiPartFeature.class);
-
-		return classes;
-	}
-
 }
+
+// protected TransferAgentServiceTimer serviceIndexTimer;
+
+// @Override
+// public Set<Class<?>> getClasses() {
+// Set<Class<?>> classes = new HashSet<Class<?>>();
+//
+// // resources
+// classes.add(TransferAgentServiceResource.class);
+//
+// // resolvers
+// classes.add(TransferAgentResolver.class);
+//
+// // http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
+// // In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
+// // Add additional features such as support for Multipart.
+// classes.add(MultiPartFeature.class);
+//
+// return classes;
+// }

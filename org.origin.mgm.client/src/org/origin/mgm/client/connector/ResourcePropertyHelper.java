@@ -53,16 +53,23 @@ public class ResourcePropertyHelper {
 	}
 
 	// ------------------------------------------------------------------------------------
-	// "heartbeat_expired" property
+	// "heartbeat_expire_time" property
 	// ------------------------------------------------------------------------------------
-	public <S> boolean isHeartBeatExpired(LoadBalanceResource<S> resource) {
-		if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRED)) {
-			Object value = resource.getProperty(OriginConstants.HEARTBEAT_EXPIRED);
-			if (value instanceof Boolean) {
-				return (Boolean) value;
+	public <S> Date getHeartBeatExpireTime(LoadBalanceResource<S> resource) {
+		Date heartBeatExpireTime = null;
+		if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME)) {
+			Object value = resource.getProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME);
+			if (value instanceof Date) {
+				heartBeatExpireTime = (Date) value;
+
+			} else if (value instanceof String) {
+				heartBeatExpireTime = DateUtil.toDate((String) value, DateUtil.getCommonDateFormats());
+
+			} else if (value instanceof Long) {
+				heartBeatExpireTime = DateUtil.toDate((Long) value);
 			}
 		}
-		return false;
+		return heartBeatExpireTime;
 	}
 
 	// ------------------------------------------------------------------------------------

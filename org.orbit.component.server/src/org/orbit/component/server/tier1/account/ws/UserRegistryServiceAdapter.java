@@ -87,7 +87,7 @@ public class UserRegistryServiceAdapter {
 	 * @param service
 	 */
 	protected void startWebService(BundleContext bundleContext, UserRegistryService service) {
-		this.webApp = new UserRegistryWSApplication();
+		this.webApp = new UserRegistryWSApplication(bundleContext, service);
 		this.webApp.setBundleContext(bundleContext);
 		this.webApp.setContextRoot(service.getContextRoot());
 		if (this.indexProviderLoadBalancer != null) {

@@ -86,7 +86,7 @@ public class AppStoreServiceAdapter {
 	 * @param service
 	 */
 	protected void startWebService(BundleContext bundleContext, AppStoreService service) {
-		this.webApp = new AppStoreWSApplication();
+		this.webApp = new AppStoreWSApplication(bundleContext, service);
 		this.webApp.setBundleContext(bundleContext);
 		this.webApp.setContextRoot(service.getContextRoot());
 		if (this.indexProviderLoadBalancer != null) {
