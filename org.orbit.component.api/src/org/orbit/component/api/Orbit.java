@@ -2,10 +2,10 @@ package org.orbit.component.api;
 
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.UserRegistryConnector;
+import org.orbit.component.api.tier1.auth.Auth;
+import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier1.config.ConfigRegistry;
 import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
-import org.orbit.component.api.tier1.session.OAuth2;
-import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagement;
@@ -37,13 +37,13 @@ public class Orbit {
 		return configRegistry;
 	}
 
-	public OAuth2 getOAuth2() {
-		OAuth2 oauth2 = null;
-		OAuth2Connector connector = Activator.getInstance().getOAuth2Connector();
+	public Auth getAuth() {
+		Auth auth = null;
+		AuthConnector connector = Activator.getInstance().getAuthConnector();
 		if (connector != null) {
-			oauth2 = connector.getService();
+			auth = connector.getService();
 		}
-		return oauth2;
+		return auth;
 	}
 
 	public AppStore getAppStore() {
@@ -65,3 +65,12 @@ public class Orbit {
 	}
 
 }
+
+// public OAuth2 getOAuth2() {
+// OAuth2 oauth2 = null;
+// OAuth2Connector connector = Activator.getInstance().getOAuth2Connector();
+// if (connector != null) {
+// oauth2 = connector.getService();
+// }
+// return oauth2;
+// }

@@ -59,11 +59,11 @@ public class ConfigAdminSupport {
 				// ------------------------------------------------------------------------------------------
 				// felix.fileinstall.bundles.new.start = true
 				// felix.fileinstall.debug = 2
-				// felix.fileinstall.dir = /Users/oceaneuropa/osgi/runspace
-				// felix.fileinstall.filename = file:/Users/oceaneuropa/osgi/runspace/org.apache.felix.fileinstall-runspace.cfg
+				// felix.fileinstall.dir = /Users/example/osgi/runspace
+				// felix.fileinstall.filename = file:/Users/example/osgi/runspace/org.apache.felix.fileinstall-runspace.cfg
 				// felix.fileinstall.filter = .*
 				// felix.fileinstall.poll = 3000
-				// felix.fileinstall.tmpdir = /Users/oceaneuropa/osgi/runspace_tmpdir
+				// felix.fileinstall.tmpdir = /Users/example/osgi/runspace_tmpdir
 				// service.factoryPid = org.apache.felix.fileinstall
 				// service.pid = org.apache.felix.fileinstall.687fa7e5-1c8c-4703-9d70-2f956d571c91
 				// ------------------------------------------------------------------------------------------

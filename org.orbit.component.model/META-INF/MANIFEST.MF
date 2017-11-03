@@ -17,6 +17,8 @@ Import-Package: org.json;version="2015.11.23",
 Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.component.model,
  org.orbit.component.model.tier1.account,
+ org.orbit.component.model.tier1.auth,
+ org.orbit.component.model.tier1.auth.dto,
  org.orbit.component.model.tier1.config,
  org.orbit.component.model.tier2.appstore,
  org.orbit.component.model.tier3.domain,

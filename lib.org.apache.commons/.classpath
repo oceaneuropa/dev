@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/commons-lang3-3.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-compress-1.11.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-dbutils-1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.5.jar" sourcepath="lib/commons-io-2.5-src.zip"/>

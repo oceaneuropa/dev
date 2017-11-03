@@ -1,6 +1,6 @@
 Example1 (all defined as properties):
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
--DNODE_HOME=/Users/oceaneuropa/origin/ta1/nodes/node11
+-DNODE_HOME=/Users/example/origin/ta1/nodes/node11
 -Dorbit.host.url=http://127.0.0.1:12001 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
 -Dcomponent.node.name=Node11
@@ -12,14 +12,14 @@ Example1 (all defined as properties):
 
 Example2 (using config.ini):
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
--DTA_HOME=/Users/oceaneuropa/origin/ta1
--DNODE_HOME=/Users/oceaneuropa/origin/ta1/nodes/node11
+-DTA_HOME=/Users/example/origin/ta1
+-DNODE_HOME=/Users/example/origin/ta1/nodes/node11
 
 config.ini
 ------------------------------------------------------------------------------------
 orbit.host.url=http://127.0.0.1:12001 
 component.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
-component.node.namespace=org.oceaneuropa
+component.node.namespace=org.example
 component.node.name=Node11
 component.node.context_root=/orbit/v1/node
 component.node.jdbc.driver=org.postgresql.Driver

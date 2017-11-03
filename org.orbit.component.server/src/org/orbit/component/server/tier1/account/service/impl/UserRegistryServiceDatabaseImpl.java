@@ -12,7 +12,6 @@ import java.util.Properties;
 import org.orbit.component.model.tier1.account.UserAccountRTO;
 import org.orbit.component.model.tier1.account.UserRegistryException;
 import org.orbit.component.server.OrbitConstants;
-import org.orbit.component.server.tier1.account.handler.UserAccountTableHandler;
 import org.orbit.component.server.tier1.account.service.UserRegistryService;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -48,9 +47,9 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_USERNAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_PASSWORD);
 
-		updateProperties(configProps);
+		update(configProps);
 
-		initialize();
+		init();
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(UserRegistryService.class, this, props);
@@ -73,7 +72,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 	 * 
 	 * @param configProps
 	 */
-	public synchronized void updateProperties(Map<Object, Object> configProps) {
+	public synchronized void update(Map<Object, Object> configProps) {
 		System.out.println(getClass().getSimpleName() + ".updateProperties()");
 
 		if (configProps == null) {
@@ -104,26 +103,18 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 		System.out.println();
 
 		this.configProps = configProps;
-		this.databaseProperties = getConnectionProperties(this.configProps);
-	}
 
-	/**
-	 * 
-	 * @param props
-	 * @return
-	 */
-	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
 		String driver = (String) this.configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_DRIVER);
 		String url = (String) this.configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_URL);
 		String username = (String) this.configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_USERNAME);
 		String password = (String) this.configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_PASSWORD);
-		return DatabaseUtil.getProperties(driver, url, username, password);
+		this.databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
 	/**
 	 * Initialize database tables.
 	 */
-	public void initialize() {
+	protected void init() {
 		Connection conn = DatabaseUtil.getConnection(this.databaseProperties);
 		try {
 			DatabaseUtil.initialize(conn, UserAccountTableHandler.INSTANCE);

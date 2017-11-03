@@ -38,7 +38,7 @@ public class ZipfsTest {
 
 		try {
 			Map<String, ?> env = Collections.emptyMap();
-			ZipFileSystem zfs = (ZipFileSystem) provider.newFileSystem(new URI("jar:file:/Users/oceaneuropa/dev/test/zipfs/tmp.zip!/tmp"), env);
+			ZipFileSystem zfs = (ZipFileSystem) provider.newFileSystem(new URI("jar:file:/Users/example/dev/test/zipfs/tmp.zip!/tmp"), env);
 			System.out.println("zfs is " + zfs);
 		} catch (Exception e) {
 			e.printStackTrace();

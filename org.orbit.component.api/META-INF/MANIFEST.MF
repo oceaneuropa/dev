@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.orbit.component.api
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.component.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.orbit.component.model.tier3.domain.request,
+Import-Package: org.orbit.component.model.tier1.auth,
+ org.orbit.component.model.tier3.domain.request,
  org.origin.common.annotation,
  org.origin.common.jdbc,
  org.origin.common.loadbalance,
@@ -20,6 +21,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.component.api,
  org.orbit.component.api.tier1.account,
  org.orbit.component.api.tier1.account.request,
+ org.orbit.component.api.tier1.auth,
  org.orbit.component.api.tier1.config,
  org.orbit.component.api.tier1.session,
  org.orbit.component.api.tier2.appstore,

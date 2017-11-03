@@ -67,7 +67,7 @@ public class Activator implements BundleActivator {
 	}
 
 	protected FileSystem getLocalFileSystem(BundleContext bundleContext) {
-		// File homeDirector = new File("/Users/oceaneuropa/Downloads/ear"); // For Mac
+		// File homeDirector = new File("/Users/example/Downloads/ear"); // For Mac
 		File homeDirector = new File("C:/downloads/test_source"); // For Win
 		LocalFileSystemConfiguration config = new LocalFileSystemConfiguration(homeDirector);
 		return new LocalFileSystem(config);

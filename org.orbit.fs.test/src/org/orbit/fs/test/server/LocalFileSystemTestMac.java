@@ -28,9 +28,9 @@ public class LocalFileSystemTestMac {
 	}
 
 	protected FileSystem getLocalFileSystem() {
-		// File homeDirector = new File("/Users/oceaneuropa/Downloads/apache"); // For Mac
-		// File homeDirector = new File("/Users/oceaneuropa/Downloads/Swagger"); // For Mac
-		File homeDir = new File("/Users/oceaneuropa/Downloads/ear"); // For Mac
+		// File homeDirector = new File("/Users/example/Downloads/apache"); // For Mac
+		// File homeDirector = new File("/Users/example/Downloads/Swagger"); // For Mac
+		File homeDir = new File("/Users/example/Downloads/ear"); // For Mac
 		LocalFileSystemConfig config = new LocalFileSystemConfig(homeDir);
 		return new LocalFileSystem(config);
 	}
@@ -219,8 +219,8 @@ public class LocalFileSystemTestMac {
 	public void testCopyFileToFile() throws IOException {
 		System.out.println("--- --- --- testCopyFileToFile() --- --- ---");
 
-		File localFile1 = new File("/Users/oceaneuropa/Downloads/apache/commons-io-2.4.jar");
-		File localFile2 = new File("/Users/oceaneuropa/Downloads/apache/commons-io-2.5-bin.zip");
+		File localFile1 = new File("/Users/example/Downloads/apache/commons-io-2.4.jar");
+		File localFile2 = new File("/Users/example/Downloads/apache/commons-io-2.5-bin.zip");
 
 		FilePath destDirPath = new FilePath("/test/dir2");
 
@@ -239,8 +239,8 @@ public class LocalFileSystemTestMac {
 	public void testCopyFileToDir() throws IOException {
 		System.out.println("--- --- --- testCopyFileToDir() --- --- ---");
 
-		File localFile1 = new File("/Users/oceaneuropa/Downloads/apache/hadoop/hadoop-common-2.7.1-sources.jar");
-		File localFile2 = new File("/Users/oceaneuropa/Downloads/apache/hadoop/hadoop-common-2.7.1.jar");
+		File localFile1 = new File("/Users/example/Downloads/apache/hadoop/hadoop-common-2.7.1-sources.jar");
+		File localFile2 = new File("/Users/example/Downloads/apache/hadoop/hadoop-common-2.7.1.jar");
 
 		FilePath destDirPath = new FilePath("/test/dir3");
 		fs.copyFileToFsDirectory(localFile1, destDirPath);
@@ -259,7 +259,7 @@ public class LocalFileSystemTestMac {
 	public void testCopyDirToDir1() throws IOException {
 		System.out.println("--- --- --- testCopyDirToDir1() --- --- ---");
 
-		File localDir = new File("/Users/oceaneuropa/Downloads/testdir");
+		File localDir = new File("/Users/example/Downloads/testdir");
 		FilePath destDirPath = new FilePath("/test/dir4");
 		fs.copyDirectoryToFsDirectory(localDir, destDirPath, true);
 
@@ -276,7 +276,7 @@ public class LocalFileSystemTestMac {
 	public void testCopyDirToDir2() throws IOException {
 		System.out.println("--- --- --- testCopyDirToDir2() --- --- ---");
 
-		File localDir = new File("/Users/oceaneuropa/Downloads/testdir");
+		File localDir = new File("/Users/example/Downloads/testdir");
 		FilePath destDirPath = new FilePath("/test/dir5");
 		fs.copyDirectoryToFsDirectory(localDir, destDirPath, false);
 

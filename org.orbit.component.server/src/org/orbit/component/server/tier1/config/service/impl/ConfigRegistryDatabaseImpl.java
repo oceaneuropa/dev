@@ -11,8 +11,6 @@ import org.orbit.component.model.tier1.config.ConfigRegistryException;
 import org.orbit.component.model.tier1.config.EPath;
 import org.orbit.component.model.tier1.config.RegistryPathVO;
 import org.orbit.component.model.tier1.config.RegistryPropertyVO;
-import org.orbit.component.server.tier1.config.handler.ConfigRegistryPathTableHandler;
-import org.orbit.component.server.tier1.config.handler.ConfigRegistryPropertyTableHandler;
 import org.orbit.component.server.tier1.config.service.ConfigRegistry;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;

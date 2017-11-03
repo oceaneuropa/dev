@@ -138,7 +138,7 @@ public class ProjectSoftwareCommand implements Annotated {
 	 * Command: addprojectsoftware -projectid <projectId> -type <softwareType> -name <softwareName> -desc <softwareDescription> -file <filePath>
 	 * 
 	 * e.g. addprojectsoftware -projectid Project1 -type os -name OSX -version 2.0.10 -desc 'OSX description' -file
-	 * '/Users/oceaneuropa/Downloads/test_software/uber.wsdl.zip'
+	 * '/Users/example/Downloads/test_software/uber.wsdl.zip'
 	 * 
 	 * @param projectId
 	 * @param name
@@ -359,9 +359,9 @@ public class ProjectSoftwareCommand implements Annotated {
 	 * Command: uploadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <filePath>
 	 * 
 	 * e.g. uploadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file
-	 * '/Users/oceaneuropa/Downloads/test_software/commons-io-2.5-bin.zip' uploadprojectsoftware -projectid Project2 -softwareid
-	 * ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/oceaneuropa/Downloads/test_software/japanese_issue.zip' uploadprojectsoftware -projectid Project1
-	 * -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/oceaneuropa/Downloads/test_software/uber.wsdl.zip'
+	 * '/Users/example/Downloads/test_software/commons-io-2.5-bin.zip' uploadprojectsoftware -projectid Project2 -softwareid
+	 * ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/example/Downloads/test_software/japanese_issue.zip' uploadprojectsoftware -projectid Project1
+	 * -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/example/Downloads/test_software/uber.wsdl.zip'
 	 * 
 	 * @param projectId
 	 * @param softwareId
@@ -424,13 +424,13 @@ public class ProjectSoftwareCommand implements Annotated {
 	 * Command: downloadprojectsoftware -projectid <projectId> -softwareid <softwareId> -file <filePath>
 	 * 
 	 * e.g. downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -file
-	 * '/Users/oceaneuropa/Downloads/test_software2/commons-io-2.5-bin.zip' downloadprojectsoftware -projectid Project2 -softwareid
-	 * ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/oceaneuropa/Downloads/test_software2/japanese_issue.zip' downloadprojectsoftware -projectid
-	 * Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/oceaneuropa/Downloads/test_software2/uber.wsdl.zip'
+	 * '/Users/example/Downloads/test_software2/commons-io-2.5-bin.zip' downloadprojectsoftware -projectid Project2 -softwareid
+	 * ef214a96-1047-4f51-8b5f-c2f4e39eed01 -file '/Users/example/Downloads/test_software2/japanese_issue.zip' downloadprojectsoftware -projectid
+	 * Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -file '/Users/example/Downloads/test_software2/uber.wsdl.zip'
 	 * 
-	 * e.g. downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -dir '/Users/oceaneuropa/Downloads/test_software2'
-	 * downloadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -dir '/Users/oceaneuropa/Downloads/test_software2'
-	 * downloadprojectsoftware -projectid Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -dir '/Users/oceaneuropa/Downloads/test_software2'
+	 * e.g. downloadprojectsoftware -projectid Project1 -softwareid 0c64a77b-21d5-43eb-a292-578920d7eafd -dir '/Users/example/Downloads/test_software2'
+	 * downloadprojectsoftware -projectid Project2 -softwareid ef214a96-1047-4f51-8b5f-c2f4e39eed01 -dir '/Users/example/Downloads/test_software2'
+	 * downloadprojectsoftware -projectid Project1 -softwareid 5de408fd-9597-4050-974d-2a3c9e3f8b60 -dir '/Users/example/Downloads/test_software2'
 	 * 
 	 * @param projectId
 	 * @param softwareId

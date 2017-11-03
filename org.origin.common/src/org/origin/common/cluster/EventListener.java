@@ -2,6 +2,11 @@ package org.origin.common.cluster;
 
 public interface EventListener {
 
-	void receivedEvent(EventContext context, Event event);
+	/**
+	 * 
+	 * @param context
+	 * @param event
+	 */
+	void onReceiveEvent(EventContext context, Event event);
 
 }

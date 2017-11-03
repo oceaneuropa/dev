@@ -6,7 +6,6 @@ import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
-import org.orbit.component.server.tier1.config.timer.ConfigRegistryServiceIndexTimerV2;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;

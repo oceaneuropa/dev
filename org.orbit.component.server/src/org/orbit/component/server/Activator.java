@@ -6,10 +6,11 @@ import java.util.Map;
 import org.orbit.component.cli.ComponentServicesCommand;
 import org.orbit.component.server.tier1.account.service.UserRegistryService;
 import org.orbit.component.server.tier1.account.ws.UserRegistryServiceAdapter;
+import org.orbit.component.server.tier1.auth.service.AuthService;
+import org.orbit.component.server.tier1.auth.ws.AuthServiceAdapter;
 import org.orbit.component.server.tier1.config.service.ConfigRegistryService;
 import org.orbit.component.server.tier1.config.ws.ConfigRegistryServiceAdapter;
 import org.orbit.component.server.tier1.session.service.OAuth2Service;
-import org.orbit.component.server.tier1.session.ws.OAuth2ServiceAdapter;
 import org.orbit.component.server.tier2.appstore.service.AppStoreService;
 import org.orbit.component.server.tier2.appstore.ws.AppStoreServiceAdapter;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
@@ -29,20 +30,26 @@ public class Activator implements BundleActivator {
 
 	// tier1
 	protected static boolean hasUserRegistryComponent;
-	protected static boolean hasOauth2Component;
+	// protected static boolean hasOauth2Component;
+	protected static boolean hasAuthComponent;
 	protected static boolean hasConfigRegistryComponent;
+
 	// tier2
 	protected static boolean hasAppStoreComponent;
+
 	// tier3
 	protected static boolean hasDomainMgmtComponent;
 	protected static boolean hasTransferAgentComponent;
 
 	// tier1
 	protected static UserRegistryServiceAdapter userRegistryServiceAdapter;
-	protected static OAuth2ServiceAdapter oauth2ServiceAdapter;
+	// protected static OAuth2ServiceAdapter oauth2ServiceAdapter;
+	protected static AuthServiceAdapter authServiceAdapter;
 	protected static ConfigRegistryServiceAdapter configRegistryServiceAdapter;
+
 	// tier2
 	protected static AppStoreServiceAdapter appStoreServiceAdapter;
+
 	// tier3
 	protected static DomainMgmtServiceAdapter domainMgmtServiceAdapter;
 	protected static TransferAgentServiceAdapter transferAgentServiceAdapter;
@@ -56,7 +63,12 @@ public class Activator implements BundleActivator {
 	}
 
 	public static OAuth2Service getOAuth2Service() {
-		return (oauth2ServiceAdapter != null) ? oauth2ServiceAdapter.getService() : null;
+		// return (oauth2ServiceAdapter != null) ? oauth2ServiceAdapter.getService() : null;
+		return null;
+	}
+
+	public static AuthService getAuthService() {
+		return (authServiceAdapter != null) ? authServiceAdapter.getService() : null;
 	}
 
 	public static ConfigRegistryService getConfigRegistryService() {
@@ -102,14 +114,16 @@ public class Activator implements BundleActivator {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		TASetupUtil.loadConfigIniProperties(bundleContext, configProps);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_OAUTH2_NAME);
+		// PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_OAUTH2_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
 
 		hasUserRegistryComponent = configProps.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_NAME) ? true : false;
-		hasOauth2Component = configProps.containsKey(OrbitConstants.COMPONENT_OAUTH2_NAME) ? true : false;
+		// hasOauth2Component = configProps.containsKey(OrbitConstants.COMPONENT_OAUTH2_NAME) ? true : false;
+		hasAuthComponent = configProps.containsKey(OrbitConstants.COMPONENT_AUTH_NAME) ? true : false;
 		hasConfigRegistryComponent = configProps.containsKey(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME) ? true : false;
 		hasAppStoreComponent = configProps.containsKey(OrbitConstants.COMPONENT_APP_STORE_NAME) ? true : false;
 		hasDomainMgmtComponent = configProps.containsKey(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME) ? true : false;
@@ -117,7 +131,8 @@ public class Activator implements BundleActivator {
 
 		if (debug) {
 			System.out.println("hasUserRegistryComponent = " + hasUserRegistryComponent);
-			System.out.println("hasOauth2Component = " + hasOauth2Component);
+			// System.out.println("hasOauth2Component = " + hasOauth2Component);
+			System.out.println("hasAuthComponent = " + hasAuthComponent);
 			System.out.println("hasConfigRegistryComponent = " + hasConfigRegistryComponent);
 			System.out.println("hasAppStoreComponent = " + hasAppStoreComponent);
 			System.out.println("hasDomainMgmtComponent = " + hasDomainMgmtComponent);
@@ -132,9 +147,13 @@ public class Activator implements BundleActivator {
 			userRegistryServiceAdapter = new UserRegistryServiceAdapter(this.indexProviderLoadBalancer);
 			userRegistryServiceAdapter.start(bundleContext);
 		}
-		if (hasOauth2Component) {
-			oauth2ServiceAdapter = new OAuth2ServiceAdapter(this.indexProviderLoadBalancer);
-			oauth2ServiceAdapter.start(bundleContext);
+		// if (hasOauth2Component) {
+		// oauth2ServiceAdapter = new OAuth2ServiceAdapter(this.indexProviderLoadBalancer);
+		// oauth2ServiceAdapter.start(bundleContext);
+		// }
+		if (hasAuthComponent) {
+			authServiceAdapter = new AuthServiceAdapter(this.indexProviderLoadBalancer);
+			authServiceAdapter.start(bundleContext);
 		}
 		if (hasConfigRegistryComponent) {
 			configRegistryServiceAdapter = new ConfigRegistryServiceAdapter(this.indexProviderLoadBalancer);
@@ -164,8 +183,11 @@ public class Activator implements BundleActivator {
 		if (hasUserRegistryComponent) {
 			this.servicesCommand.startservice(ComponentServicesCommand.USER_REGISTRY);
 		}
-		if (hasOauth2Component) {
-			this.servicesCommand.startservice(ComponentServicesCommand.OAUTH2);
+		// if (hasOauth2Component) {
+		// this.servicesCommand.startservice(ComponentServicesCommand.OAUTH2);
+		// }
+		if (hasAuthComponent) {
+			this.servicesCommand.startservice(ComponentServicesCommand.AUTH);
 		}
 		if (hasConfigRegistryComponent) {
 			this.servicesCommand.startservice(ComponentServicesCommand.CONFIGR_EGISTRY);
@@ -208,9 +230,12 @@ public class Activator implements BundleActivator {
 			if (hasConfigRegistryComponent) {
 				this.servicesCommand.stopservice(ComponentServicesCommand.CONFIGR_EGISTRY);
 			}
-			if (hasOauth2Component) {
-				this.servicesCommand.stopservice(ComponentServicesCommand.OAUTH2);
+			if (hasAuthComponent) {
+				this.servicesCommand.stopservice(ComponentServicesCommand.AUTH);
 			}
+			// if (hasOauth2Component) {
+			// this.servicesCommand.stopservice(ComponentServicesCommand.OAUTH2);
+			// }
 			if (hasUserRegistryComponent) {
 				this.servicesCommand.stopservice(ComponentServicesCommand.USER_REGISTRY);
 			}
@@ -248,12 +273,18 @@ public class Activator implements BundleActivator {
 				configRegistryServiceAdapter = null;
 			}
 		}
-		if (hasOauth2Component) {
-			if (oauth2ServiceAdapter != null) {
-				oauth2ServiceAdapter.stop(bundleContext);
-				oauth2ServiceAdapter = null;
+		if (hasAuthComponent) {
+			if (authServiceAdapter != null) {
+				authServiceAdapter.stop(bundleContext);
+				authServiceAdapter = null;
 			}
 		}
+		// if (hasOauth2Component) {
+		// if (oauth2ServiceAdapter != null) {
+		// oauth2ServiceAdapter.stop(bundleContext);
+		// oauth2ServiceAdapter = null;
+		// }
+		// }
 		if (hasUserRegistryComponent) {
 			if (userRegistryServiceAdapter != null) {
 				userRegistryServiceAdapter.stop(bundleContext);

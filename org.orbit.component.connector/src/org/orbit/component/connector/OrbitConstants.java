@@ -32,6 +32,18 @@ public class OrbitConstants {
 	public static String OAUTH2_CONTEXT_ROOT = "oauth2.context_root";
 
 	// ----------------------------------------------------------------------------------------
+	// Auth
+	// ----------------------------------------------------------------------------------------
+	// index item values
+	public static String AUTH_INDEXER_ID = "component.auth.indexer"; // index provider id for Auth service
+	public static String AUTH_TYPE = "Auth"; // type of index item for Auth service
+
+	// index item properties
+	public static String AUTH_NAME = "auth.name";
+	public static String AUTH_HOST_URL = "auth.host.url";
+	public static String AUTH_CONTEXT_ROOT = "auth.context_root";
+
+	// ----------------------------------------------------------------------------------------
 	// ConfigRegistry
 	// ----------------------------------------------------------------------------------------
 	// index item values

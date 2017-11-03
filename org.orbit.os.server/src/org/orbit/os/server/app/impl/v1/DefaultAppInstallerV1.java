@@ -288,8 +288,8 @@ public class DefaultAppInstallerV1 implements AppInstaller {
 	}
 
 	public static void main(String[] args) {
-		java.io.File taHomeDir = new java.io.File("/Users/oceaneuropa/origin/ta1");
-		java.io.File appArchiveDownloadFile = new java.io.File("/Users/oceaneuropa/origin/ta1/apps/abc.editor_1.0.0/abc.editor_1.0.0.app");
+		java.io.File taHomeDir = new java.io.File("/Users/example/origin/ta1");
+		java.io.File appArchiveDownloadFile = new java.io.File("/Users/example/origin/ta1/apps/abc.editor_1.0.0/abc.editor_1.0.0.app");
 
 		Path taHomePath = taHomeDir.toPath();
 		Path appArchiveDownloadPath = appArchiveDownloadFile.toPath();

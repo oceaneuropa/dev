@@ -6,8 +6,8 @@ import java.util.Hashtable;
 
 import javax.xml.namespace.QName;
 
-import org.apache.felix.service.command.Descriptor;
-import org.apache.felix.service.command.Parameter;
+//import org.apache.felix.service.command.Descriptor;
+//import org.apache.felix.service.command.Parameter;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -136,275 +136,275 @@ public class PropertiesConfigCommand implements Annotated {
 		return "(&(service.factoryPid=" + FACTORY_PID + ")(" + CONFIG_ID + "=" + qNameString + "))";
 	}
 
-	/**
-	 * List properties of all QNames.
-	 * 
-	 * @throws Exception
-	 */
-	@Descriptor("List properties of all QNames")
-	public void lprops( //
-			@Descriptor("fully qualified name") @Parameter(absentValue = "", names = { "-fn", "--fullname" }) String fullname, //
-			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
-			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName //
-	) throws Exception {
-		fullname = normalizeFullName(fullname);
-
-		String filter = null;
-		String qNameString = getQNameString(fullname, tns, localName);
-		if (qNameString != null) {
-			filter = getFilterString(qNameString);
-		} else {
-			filter = getFilterString();
-		}
-
-		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
-		if (configs == null || configs.length == 0) {
-			System.out.println("Configurations is empty.");
-		}
-		if (configs != null) {
-			for (Configuration config : configs) {
-				System.out.println(config);
-				Dictionary<String, Object> properties = config.getProperties();
-				if (properties != null) {
-					System.out.println("Properties: " + properties.toString());
-				}
-			}
-		}
-
-		System.out.println();
-	}
-
-	/**
-	 * Set the property of a QName.
-	 * 
-	 * @param fullname
-	 * @param tns
-	 * @param localName
-	 * @param propName
-	 * @param propValue
-	 * @param propType
-	 * @throws Exception
-	 */
-	@Descriptor("Set the property of a QNameS")
-	public void setprop( //
-			@Descriptor("fully qualified name") @Parameter(absentValue = "", names = { "-fn", "--fullname" }) String fullname, //
-			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
-			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName, //
-			@Descriptor("propName") @Parameter(absentValue = "", names = { "-pn", "--propertyname" }) String propName, //
-			@Descriptor("propValue") @Parameter(absentValue = "", names = { "-pv", "--propertyvalue" }) String propValue, //
-			@Descriptor("propType") @Parameter(absentValue = "string", names = { "-pt", "--propertytype" }) String propType //
-	) throws Exception {
-		fullname = normalizeFullName(fullname);
-
-		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
-			System.err.println("Please specify either full name (-fn or --fullname) or a combination of target namespace (-t or --tns) and local name (-n or --name).");
-			return;
-		}
-
-		if ("service.factoryPid".equalsIgnoreCase(propName) || "service.pid".equalsIgnoreCase(propName) || CONFIG_ID.equalsIgnoreCase(propName)) {
-			System.err.println("Property name '" + propName + "' is preserved and cannot be changed.");
-			return;
-		}
-
-		String qNameString = getQNameString(fullname, tns, localName);
-		String filter = getFilterString(qNameString);
-
-		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
-		Configuration config = null;
-		if (configs != null && configs.length > 0) {
-			config = configs[0];
-		}
-		boolean createNewConfig = false;
-		if (config == null) {
-			config = configAdmin.createFactoryConfiguration(PropertiesConfigServiceFactory.SERVICE_PID);
-			createNewConfig = true;
-			System.out.println("Configuration for '" + qNameString + "' is not found. New Configuration is created.");
-		} else {
-			System.out.println("Configuration for '" + qNameString + "' is found.");
-		}
-
-		Dictionary<String, Object> configProps = config.getProperties();
-		if (configProps == null) { // this check is necessary
-			configProps = new Hashtable<String, Object>();
-		}
-		if (createNewConfig) {
-			configProps.put(CONFIG_ID, qNameString);
-		}
-
-		Object propertyObject = null;
-		if ("string".equalsIgnoreCase(propType)) {
-			propertyObject = propValue;
-
-		} else if ("integer".equalsIgnoreCase(propType)) {
-			try {
-				propertyObject = Integer.parseInt(propValue);
-			} catch (Exception e) {
-				System.err.println("Cannot convert property value '" + propValue + "' to integer. " + e.getClass().getSimpleName() + ":" + e.getMessage());
-			}
-
-		} else if ("boolean".equalsIgnoreCase(propType)) {
-			try {
-				propertyObject = Boolean.parseBoolean(propValue);
-			} catch (Exception e) {
-				System.err.println("Cannot convert property value '" + propValue + "' to boolean. " + e.getClass().getSimpleName() + ":" + e.getMessage());
-			}
-
-		} else if ("long".equalsIgnoreCase(propType)) {
-			try {
-				propertyObject = Long.parseLong(propValue);
-			} catch (Exception e) {
-				System.err.println("Cannot convert property value '" + propValue + "' to long. " + e.getClass().getSimpleName() + ":" + e.getMessage());
-			}
-
-		} else if ("double".equalsIgnoreCase(propType)) {
-			try {
-				propertyObject = Double.parseDouble(propValue);
-			} catch (Exception e) {
-				System.err.println("Cannot convert property value '" + propValue + "' to double. " + e.getClass().getSimpleName() + ":" + e.getMessage());
-			}
-
-		} else if ("float".equalsIgnoreCase(propType)) {
-			try {
-				propertyObject = Float.parseFloat(propValue);
-			} catch (Exception e) {
-				System.err.println("Cannot convert property value '" + propValue + "' to float. " + e.getClass().getSimpleName() + ":" + e.getMessage());
-			}
-
-		} else if ("date".equalsIgnoreCase(propType)) {
-			try {
-				propertyObject = DateUtil.toDate(propValue, DateUtil.getCommonDateFormats());
-			} catch (Exception e) {
-				System.err.println("Cannot convert property value '" + propValue + "' to date. " + e.getClass().getSimpleName() + ":" + e.getMessage());
-				System.err.println("Supported date formats are: " + Arrays.toString(DateUtil.getCommonDateFormats()));
-			}
-
-		} else {
-			// treated as string type
-			System.err.println("Unsupported property type: '" + propType + "'.");
-			propertyObject = propValue;
-		}
-
-		// Property value string cannot be converted to corresponding type of value. Set property value using the property value string
-		if (propertyObject == null) {
-			System.err.println("Property value '" + propValue + "' cannot be converted to typed value. Set the property using the string value.");
-			propertyObject = propValue;
-		}
-
-		// Set property value to the Configuration
-		configProps.put(propName, propValue);
-
-		// Update the properties of the Configuration, which will notify corresponding managed service factory.
-		config.update(configProps);
-	}
-
-	/**
-	 * Remove property of a QName.
-	 * 
-	 * @param fullname
-	 * @param tns
-	 * @param localName
-	 * @param propName
-	 * @throws Exception
-	 */
-	@Descriptor("Remove property of a QName")
-	public void rmprop( //
-			@Descriptor("fully qualified name") @Parameter(absentValue = "", names = { "-fn", "--fullname" }) String fullname, //
-			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
-			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName, //
-			@Descriptor("propName") @Parameter(absentValue = "", names = { "-pn", "--propertyname" }) String propName //
-	) throws Exception {
-		fullname = normalizeFullName(fullname);
-
-		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
-			System.err.println("Please specify either full name (-fn or --fullname) or a combination of target namespace (-t or --tns) and local name (-n or --name).");
-			return;
-		}
-
-		if (propName.isEmpty()) {
-			System.err.println("Please specify the property name (-pn or --propertyname) to be removed.");
-			return;
-		}
-
-		String qNameString = getQNameString(fullname, tns, localName);
-		String filter = getFilterString(qNameString);
-
-		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
-		Configuration config = null;
-		if (configs != null && configs.length > 0) {
-			config = configs[0];
-		}
-		if (config == null) {
-			System.out.println("Configuration for '" + qNameString + "' is not found. ");
-			return;
-		}
-
-		System.out.println("Configuration for '" + qNameString + "' is found.");
-
-		Dictionary<String, Object> configProps = config.getProperties();
-		if (configProps != null) {
-			// Remove property from the properties map
-			configProps.remove(propName);
-
-			// Update the properties of the Configuration
-			config.update(configProps);
-		}
-	}
-
-	/**
-	 * Remove all properties of a QName.
-	 * 
-	 * @param fullname
-	 * @param tns
-	 * @param localName
-	 * @throws Exception
-	 */
-	@Descriptor("Remove all properties of a QName")
-	public void rmprops( //
-			@Descriptor("fully qualified name") @Parameter(absentValue = "", names = { "-fn", "--fullname" }) String fullname, //
-			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
-			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName //
-	) throws Exception {
-
-		fullname = normalizeFullName(fullname);
-
-		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
-			System.err.println("Please specify either full name (-fn or --fullname) or a combination of target namespace (-t or --tns) and local name (-n or --name).");
-			return;
-		}
-
-		String qNameString = getQNameString(fullname, tns, localName);
-		String filter = getFilterString(qNameString);
-
-		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
-		Configuration config = null;
-		if (configs != null && configs.length > 0) {
-			config = configs[0];
-		}
-		if (config == null) {
-			System.out.println("Configuration for '" + qNameString + "' is not found. ");
-			return;
-		}
-
-		System.out.println("Configuration for '" + qNameString + "' is found.");
-		config.delete();
-	}
-
-	/**
-	 * Remove all properties of all QNames.
-	 * 
-	 * @throws Exception
-	 */
-	@Descriptor("Remove all properties of all QNames")
-	public void rmallprops() throws Exception {
-		String filter = getFilterString();
-
-		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
-		if (configs != null) {
-			for (Configuration config : configs) {
-				config.delete();
-			}
-		}
-	}
+//	/**
+//	 * List properties of all QNames.
+//	 * 
+//	 * @throws Exception
+//	 */
+//	@Descriptor("List properties of all QNames")
+//	public void lprops( //
+//			@Descriptor("fully qualified name") @Parameter(absentValue = "", names = { "-fn", "--fullname" }) String fullname, //
+//			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
+//			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName //
+//	) throws Exception {
+//		fullname = normalizeFullName(fullname);
+//
+//		String filter = null;
+//		String qNameString = getQNameString(fullname, tns, localName);
+//		if (qNameString != null) {
+//			filter = getFilterString(qNameString);
+//		} else {
+//			filter = getFilterString();
+//		}
+//
+//		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
+//		if (configs == null || configs.length == 0) {
+//			System.out.println("Configurations is empty.");
+//		}
+//		if (configs != null) {
+//			for (Configuration config : configs) {
+//				System.out.println(config);
+//				Dictionary<String, Object> properties = config.getProperties();
+//				if (properties != null) {
+//					System.out.println("Properties: " + properties.toString());
+//				}
+//			}
+//		}
+//
+//		System.out.println();
+//	}
+//
+//	/**
+//	 * Set the property of a QName.
+//	 * 
+//	 * @param fullname
+//	 * @param tns
+//	 * @param localName
+//	 * @param propName
+//	 * @param propValue
+//	 * @param propType
+//	 * @throws Exception
+//	 */
+//	@Descriptor("Set the property of a QNameS")
+//	public void setprop( //
+//			@Descriptor("fully qualified name") @Parameter(absentValue = "", names = { "-fn", "--fullname" }) String fullname, //
+//			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
+//			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName, //
+//			@Descriptor("propName") @Parameter(absentValue = "", names = { "-pn", "--propertyname" }) String propName, //
+//			@Descriptor("propValue") @Parameter(absentValue = "", names = { "-pv", "--propertyvalue" }) String propValue, //
+//			@Descriptor("propType") @Parameter(absentValue = "string", names = { "-pt", "--propertytype" }) String propType //
+//	) throws Exception {
+//		fullname = normalizeFullName(fullname);
+//
+//		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
+//			System.err.println("Please specify either full name (-fn or --fullname) or a combination of target namespace (-t or --tns) and local name (-n or --name).");
+//			return;
+//		}
+//
+//		if ("service.factoryPid".equalsIgnoreCase(propName) || "service.pid".equalsIgnoreCase(propName) || CONFIG_ID.equalsIgnoreCase(propName)) {
+//			System.err.println("Property name '" + propName + "' is preserved and cannot be changed.");
+//			return;
+//		}
+//
+//		String qNameString = getQNameString(fullname, tns, localName);
+//		String filter = getFilterString(qNameString);
+//
+//		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
+//		Configuration config = null;
+//		if (configs != null && configs.length > 0) {
+//			config = configs[0];
+//		}
+//		boolean createNewConfig = false;
+//		if (config == null) {
+//			config = configAdmin.createFactoryConfiguration(PropertiesConfigServiceFactory.SERVICE_PID);
+//			createNewConfig = true;
+//			System.out.println("Configuration for '" + qNameString + "' is not found. New Configuration is created.");
+//		} else {
+//			System.out.println("Configuration for '" + qNameString + "' is found.");
+//		}
+//
+//		Dictionary<String, Object> configProps = config.getProperties();
+//		if (configProps == null) { // this check is necessary
+//			configProps = new Hashtable<String, Object>();
+//		}
+//		if (createNewConfig) {
+//			configProps.put(CONFIG_ID, qNameString);
+//		}
+//
+//		Object propertyObject = null;
+//		if ("string".equalsIgnoreCase(propType)) {
+//			propertyObject = propValue;
+//
+//		} else if ("integer".equalsIgnoreCase(propType)) {
+//			try {
+//				propertyObject = Integer.parseInt(propValue);
+//			} catch (Exception e) {
+//				System.err.println("Cannot convert property value '" + propValue + "' to integer. " + e.getClass().getSimpleName() + ":" + e.getMessage());
+//			}
+//
+//		} else if ("boolean".equalsIgnoreCase(propType)) {
+//			try {
+//				propertyObject = Boolean.parseBoolean(propValue);
+//			} catch (Exception e) {
+//				System.err.println("Cannot convert property value '" + propValue + "' to boolean. " + e.getClass().getSimpleName() + ":" + e.getMessage());
+//			}
+//
+//		} else if ("long".equalsIgnoreCase(propType)) {
+//			try {
+//				propertyObject = Long.parseLong(propValue);
+//			} catch (Exception e) {
+//				System.err.println("Cannot convert property value '" + propValue + "' to long. " + e.getClass().getSimpleName() + ":" + e.getMessage());
+//			}
+//
+//		} else if ("double".equalsIgnoreCase(propType)) {
+//			try {
+//				propertyObject = Double.parseDouble(propValue);
+//			} catch (Exception e) {
+//				System.err.println("Cannot convert property value '" + propValue + "' to double. " + e.getClass().getSimpleName() + ":" + e.getMessage());
+//			}
+//
+//		} else if ("float".equalsIgnoreCase(propType)) {
+//			try {
+//				propertyObject = Float.parseFloat(propValue);
+//			} catch (Exception e) {
+//				System.err.println("Cannot convert property value '" + propValue + "' to float. " + e.getClass().getSimpleName() + ":" + e.getMessage());
+//			}
+//
+//		} else if ("date".equalsIgnoreCase(propType)) {
+//			try {
+//				propertyObject = DateUtil.toDate(propValue, DateUtil.getCommonDateFormats());
+//			} catch (Exception e) {
+//				System.err.println("Cannot convert property value '" + propValue + "' to date. " + e.getClass().getSimpleName() + ":" + e.getMessage());
+//				System.err.println("Supported date formats are: " + Arrays.toString(DateUtil.getCommonDateFormats()));
+//			}
+//
+//		} else {
+//			// treated as string type
+//			System.err.println("Unsupported property type: '" + propType + "'.");
+//			propertyObject = propValue;
+//		}
+//
+//		// Property value string cannot be converted to corresponding type of value. Set property value using the property value string
+//		if (propertyObject == null) {
+//			System.err.println("Property value '" + propValue + "' cannot be converted to typed value. Set the property using the string value.");
+//			propertyObject = propValue;
+//		}
+//
+//		// Set property value to the Configuration
+//		configProps.put(propName, propValue);
+//
+//		// Update the properties of the Configuration, which will notify corresponding managed service factory.
+//		config.update(configProps);
+//	}
+//
+//	/**
+//	 * Remove property of a QName.
+//	 * 
+//	 * @param fullname
+//	 * @param tns
+//	 * @param localName
+//	 * @param propName
+//	 * @throws Exception
+//	 */
+//	@Descriptor("Remove property of a QName")
+//	public void rmprop( //
+//			@Descriptor("fully qualified name") @Parameter(absentValue = "", names = { "-fn", "--fullname" }) String fullname, //
+//			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
+//			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName, //
+//			@Descriptor("propName") @Parameter(absentValue = "", names = { "-pn", "--propertyname" }) String propName //
+//	) throws Exception {
+//		fullname = normalizeFullName(fullname);
+//
+//		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
+//			System.err.println("Please specify either full name (-fn or --fullname) or a combination of target namespace (-t or --tns) and local name (-n or --name).");
+//			return;
+//		}
+//
+//		if (propName.isEmpty()) {
+//			System.err.println("Please specify the property name (-pn or --propertyname) to be removed.");
+//			return;
+//		}
+//
+//		String qNameString = getQNameString(fullname, tns, localName);
+//		String filter = getFilterString(qNameString);
+//
+//		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
+//		Configuration config = null;
+//		if (configs != null && configs.length > 0) {
+//			config = configs[0];
+//		}
+//		if (config == null) {
+//			System.out.println("Configuration for '" + qNameString + "' is not found. ");
+//			return;
+//		}
+//
+//		System.out.println("Configuration for '" + qNameString + "' is found.");
+//
+//		Dictionary<String, Object> configProps = config.getProperties();
+//		if (configProps != null) {
+//			// Remove property from the properties map
+//			configProps.remove(propName);
+//
+//			// Update the properties of the Configuration
+//			config.update(configProps);
+//		}
+//	}
+//
+//	/**
+//	 * Remove all properties of a QName.
+//	 * 
+//	 * @param fullname
+//	 * @param tns
+//	 * @param localName
+//	 * @throws Exception
+//	 */
+//	@Descriptor("Remove all properties of a QName")
+//	public void rmprops( //
+//			@Descriptor("fully qualified name") @Parameter(absentValue = "", names = { "-fn", "--fullname" }) String fullname, //
+//			@Descriptor("target namespace") @Parameter(absentValue = "", names = { "-t", "--tns" }) String tns, //
+//			@Descriptor("local name") @Parameter(absentValue = "", names = { "-n", "--name" }) String localName //
+//	) throws Exception {
+//
+//		fullname = normalizeFullName(fullname);
+//
+//		if (fullname.isEmpty() && (tns.isEmpty() && localName.isEmpty())) {
+//			System.err.println("Please specify either full name (-fn or --fullname) or a combination of target namespace (-t or --tns) and local name (-n or --name).");
+//			return;
+//		}
+//
+//		String qNameString = getQNameString(fullname, tns, localName);
+//		String filter = getFilterString(qNameString);
+//
+//		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
+//		Configuration config = null;
+//		if (configs != null && configs.length > 0) {
+//			config = configs[0];
+//		}
+//		if (config == null) {
+//			System.out.println("Configuration for '" + qNameString + "' is not found. ");
+//			return;
+//		}
+//
+//		System.out.println("Configuration for '" + qNameString + "' is found.");
+//		config.delete();
+//	}
+//
+//	/**
+//	 * Remove all properties of all QNames.
+//	 * 
+//	 * @throws Exception
+//	 */
+//	@Descriptor("Remove all properties of all QNames")
+//	public void rmallprops() throws Exception {
+//		String filter = getFilterString();
+//
+//		Configuration[] configs = ConfigurationUtil.getFactoryConfiguration(configAdmin, filter);
+//		if (configs != null) {
+//			for (Configuration config : configs) {
+//				config.delete();
+//			}
+//		}
+//	}
 
 }
 

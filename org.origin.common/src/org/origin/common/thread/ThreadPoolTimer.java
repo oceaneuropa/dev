@@ -169,6 +169,9 @@ public class ThreadPoolTimer {
 			TimerTask timerTask = new TimerTask() {
 				@Override
 				public void run() {
+					if (!isStarted()) {
+						return;
+					}
 					long now = System.currentTimeMillis();
 					try {
 						// time elapsed since last running

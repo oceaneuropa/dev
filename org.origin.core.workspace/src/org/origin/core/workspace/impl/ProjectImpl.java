@@ -152,12 +152,12 @@ public class ProjectImpl extends ContainerImpl implements IProject {
 
 	public static void main(String[] args) {
 		Map<File, String> map = new HashMap<File, String>();
-		File file1 = new File("/Users/oceaneuropa/Downloads/abc.txt");
+		File file1 = new File("/Users/example/Downloads/abc.txt");
 		String value1 = "abc_txt";
 		map.put(file1, value1);
 
-		File file2 = new File("/Users/oceaneuropa/Downloads/abc.txt");
-		File file3 = new File("/Users/oceaneuropa/Downloads/abc.txt");
+		File file2 = new File("/Users/example/Downloads/abc.txt");
+		File file3 = new File("/Users/example/Downloads/abc.txt");
 
 		String value2 = map.get(file2);
 		String value3 = map.get(file3);

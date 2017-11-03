@@ -199,8 +199,8 @@ public class FsTestMac {
 	public void test004_uploadFiles() throws IOException {
 		System.out.println("--- --- --- test004_uploadFiles() --- --- ---");
 
-		File localFile1 = new File("/Users/oceaneuropa/Downloads/test_source1/invoke.timeout.zip");
-		File localFile2 = new File("/Users/oceaneuropa/Downloads/test_source1/japanese_issue.zip");
+		File localFile1 = new File("/Users/example/Downloads/test_source1/invoke.timeout.zip");
+		File localFile2 = new File("/Users/example/Downloads/test_source1/japanese_issue.zip");
 
 		// FileRef fileRef1 = FileRefImpl.newInstance(fs, fs.root(), localFile1.getName());
 		// FileRef fileRef2 = FileRefImpl.newInstance(fs, fs.root(), localFile2.getName());
@@ -221,8 +221,8 @@ public class FsTestMac {
 	public void test005_uploadUsingOutputStream() throws IOException {
 		System.out.println("--- --- --- test005_uploadUsingOutputStream() --- --- ---");
 
-		File localFile1 = new File("/Users/oceaneuropa/Downloads/test_source2/log_01.txt");
-		File localFile2 = new File("/Users/oceaneuropa/Downloads/test_source2/xsd-sourcedoc-2.10.0.zip");
+		File localFile1 = new File("/Users/example/Downloads/test_source2/log_01.txt");
+		File localFile2 = new File("/Users/example/Downloads/test_source2/xsd-sourcedoc-2.10.0.zip");
 
 		// FileRef fileRef1 = FileRefImpl.newInstance(fs, "/log_01.txt");
 		// FileRef fileRef2 = FileRefImpl.newInstance(fs, "/xsd-sourcedoc-2.10.0.zip");
@@ -261,9 +261,9 @@ public class FsTestMac {
 	public void test006_uploadDirectories() throws IOException {
 		System.out.println("--- --- --- test006_uploadDirectories() --- --- ---");
 
-		// File localDir = new File("/Users/oceaneuropa/Downloads/test_source1");
+		// File localDir = new File("/Users/example/Downloads/test_source1");
 		// FileRef dirRef = fs.root();
-		File localDir = new File("/Users/oceaneuropa/osgi");
+		File localDir = new File("/Users/example/osgi");
 		// FileRef dirRef = FileRefImpl.newInstance(fs, "/osgi");
 		FileRef dirRef = fs.getFile("/osgi");
 
@@ -287,7 +287,7 @@ public class FsTestMac {
 		FileRef fileRef3 = fs.getFile("/log_01.txt");
 		FileRef fileRef4 = fs.getFile("/xsd-sourcedoc-2.10.0.zip");
 
-		File localDir = new File("/Users/oceaneuropa/Downloads/test_target2/");
+		File localDir = new File("/Users/example/Downloads/test_target2/");
 		File localFile1 = new File(localDir, "invoke.timeout(A).zip");
 		File localFile2 = new File(localDir, "japanese_issue(A).zip");
 		File localFile3 = new File(localDir, "log_01(A).txt");
@@ -311,7 +311,7 @@ public class FsTestMac {
 	public void test008_downloadDirectories() throws IOException {
 		System.out.println("--- --- --- test008_downloadDirectories() --- --- ---");
 
-		File localDir = new File("/Users/oceaneuropa/Downloads/test_target1");
+		File localDir = new File("/Users/example/Downloads/test_target1");
 		FileRef[] fileRefs = FileRef.listRoots(fs);
 		for (FileRef fileRef : fileRefs) {
 			boolean succeed = false;
@@ -331,7 +331,7 @@ public class FsTestMac {
 	public void test009_downloadUsingInputStream() throws IOException {
 		System.out.println("--- --- --- test009_downloadUsingInputStream() --- --- ---");
 
-		File localDir = new File("/Users/oceaneuropa/Downloads/test_target2/");
+		File localDir = new File("/Users/example/Downloads/test_target2/");
 		File localFile1 = new File(localDir, "invoke.timeout(B).zip");
 		File localFile2 = new File(localDir, "japanese_issue(B).zip");
 		File localFile3 = new File(localDir, "log_01(B).txt");

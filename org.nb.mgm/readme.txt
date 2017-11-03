@@ -16,8 +16,8 @@ Program arguments:
 VM arguments:
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dnode.http.host=localhost -Dorg.osgi.service.http.port=9090 -Dnode.http.host=localhost -Dnode.http.port=9090 -Dcluster.persistence.local.dir=C:\cluster\data -Dcluster.home.dir=C:\cluster\home1
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dnode.http.host=localhost -Dorg.osgi.service.http.port=9090 -Dnode.http.host=localhost -Dnode.http.port=9090 -Dcluster.persistence.local.dir=/Users/oceaneuropa/cluster/data -Dcluster.home.dir=/Users/oceaneuropa/cluster/home1
--Declipse.ignoreApp=true -Dosgi.noShutdown=true                            -Dorg.osgi.service.http.port=9090                                                  -Dcluster.persistence.local.dir=/Users/oceaneuropa/cluster/data -Dcluster.home.dir=/Users/oceaneuropa/cluster/home1 -DNB_HOME=/Users/oceaneuropa/cluster
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dnode.http.host=localhost -Dorg.osgi.service.http.port=9090 -Dnode.http.host=localhost -Dnode.http.port=9090 -Dcluster.persistence.local.dir=/Users/example/cluster/data -Dcluster.home.dir=/Users/example/cluster/home1
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true                            -Dorg.osgi.service.http.port=9090                                                  -Dcluster.persistence.local.dir=/Users/example/cluster/data -Dcluster.home.dir=/Users/example/cluster/home1 -DNB_HOME=/Users/example/cluster
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 My Bundles:

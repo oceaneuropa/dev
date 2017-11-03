@@ -9,8 +9,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.orbit.component.server.OrbitConstants;
-import org.orbit.component.server.tier1.config.handler.ConfigRegistryPathTableHandler;
-import org.orbit.component.server.tier1.config.handler.ConfigRegistryPropertyTableHandler;
 import org.orbit.component.server.tier1.config.service.ConfigRegistry;
 import org.orbit.component.server.tier1.config.service.ConfigRegistryService;
 import org.origin.common.jdbc.DatabaseUtil;

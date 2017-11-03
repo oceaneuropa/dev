@@ -156,7 +156,7 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 
-		String tableNamePrefix = namespace = namespace.replaceAll("\\.", "_");
+		String tableNamePrefix = namespace.replaceAll("\\.", "_");
 		this.workspaceProperties = new Properties();
 		this.workspaceProperties.putAll(this.databaseProperties);
 		this.workspaceProperties.put(Constants.METADATA_TABLE_NAME, tableNamePrefix + "_" + Constants.METADATA_TABLE_NAME_DEFAULT_VALUE);

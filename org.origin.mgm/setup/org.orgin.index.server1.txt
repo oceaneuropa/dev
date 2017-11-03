@@ -2,16 +2,16 @@ eclipse.ignoreApp=true
 osgi.noShutdown=true
 org.osgi.service.http.port=10001
 
-NB_HOME=/Users/oceaneuropa/cluster
-cluster.persistence.local.dir=/Users/oceaneuropa/cluster/data
-cluster.home.dir=/Users/oceaneuropa/cluster/home1
+NB_HOME=/Users/example/cluster
+cluster.persistence.local.dir=/Users/example/cluster/data
+cluster.home.dir=/Users/example/cluster/home1
 
-ORIGIN_HOME=/Users/oceaneuropa/origin
+ORIGIN_HOME=/Users/example/origin
 orbit.service.http.host=127.0.0.1
 orbit.service.http.port=10001
 orbit.service.http.contextroot=/orbit/v1/
 
-component.indexservice.namespace=org.oceaneuropa
+component.indexservice.namespace=org.example
 component.indexservice.name=IndexServiceInstance1
 component.indexservice.jdbc.driver=org.postgresql.Driver
 component.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin
@@ -20,31 +20,47 @@ component.indexservice.jdbc.password=admin
 
 
 # -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 
-# -DNB_HOME=/Users/oceaneuropa/cluster -Dcluster.persistence.local.dir=/Users/oceaneuropa/cluster/data -Dcluster.home.dir=/Users/oceaneuropa/cluster/home1
-# -DORIGIN_HOME=/Users/oceaneuropa/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=10001 -Dorbit.service.http.contextroot=/orbit/v1
+# -DNB_HOME=/Users/example/cluster -Dcluster.persistence.local.dir=/Users/example/cluster/data -Dcluster.home.dir=/Users/example/cluster/home1
+# -DORIGIN_HOME=/Users/example/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=10001 -Dorbit.service.http.contextroot=/orbit/v1
 # -Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver -Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.indexservice.jdbc.username=postgres -Dcomponent.indexservice.jdbc.password=admin
 
 
 backup0:
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=9090 -Dcluster.persistence.local.dir=/Users/oceaneuropa/cluster/data -Dcluster.home.dir=/Users/oceaneuropa/cluster/home1 -DNB_HOME=/Users/oceaneuropa/cluster
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=9090 -Dcluster.persistence.local.dir=/Users/example/cluster/data -Dcluster.home.dir=/Users/example/cluster/home1 -DNB_HOME=/Users/example/cluster
 
 backup1:
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/oceaneuropa/cluster -Dcluster.persistence.local.dir=/Users/oceaneuropa/cluster/data -Dcluster.home.dir=/Users/oceaneuropa/cluster/home1 -DORIGIN_HOME=/Users/oceaneuropa/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=10001 -Dorbit.service.http.contextroot=/orbit/v1 
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/example/cluster -Dcluster.persistence.local.dir=/Users/example/cluster/data -Dcluster.home.dir=/Users/example/cluster/home1 -DORIGIN_HOME=/Users/example/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=10001 -Dorbit.service.http.contextroot=/orbit/v1 
 -Dcomponent.indexservice.name=IndexServiceInstance1 -Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver -Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.indexservice.jdbc.username=postgres -Dcomponent.indexservice.jdbc.password=admin
 
 backup2:
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/oceaneuropa/cluster -Dcluster.persistence.local.dir=/Users/oceaneuropa/cluster/data -Dcluster.home.dir=/Users/oceaneuropa/cluster/home1 -DORIGIN_HOME=/Users/oceaneuropa/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=10001 -Dorbit.service.http.contextroot=/orbit/v1 -Dorbit.host.url=http://127.0.0.1:10001 
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/example/cluster -Dcluster.persistence.local.dir=/Users/example/cluster/data -Dcluster.home.dir=/Users/example/cluster/home1 -DORIGIN_HOME=/Users/example/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=10001 -Dorbit.service.http.contextroot=/orbit/v1 -Dorbit.host.url=http://127.0.0.1:10001 
 -Dcomponent.indexservice.name=IndexServiceInstance1 -Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver -Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.indexservice.jdbc.username=postgres -Dcomponent.indexservice.jdbc.password=admin
 
 backup3:
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/oceaneuropa/cluster -Dcluster.persistence.local.dir=/Users/oceaneuropa/cluster/data -Dcluster.home.dir=/Users/oceaneuropa/cluster/home1 -DORIGIN_HOME=/Users/oceaneuropa/origin 
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/example/cluster -Dcluster.persistence.local.dir=/Users/example/cluster/data -Dcluster.home.dir=/Users/example/cluster/home1 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:10001 
 -Dcomponent.indexservice.name=IndexServiceInstance1 -Dcomponent.indexservice.context_root=/orbit/v1/indexservice 
 -Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver -Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.indexservice.jdbc.username=postgres -Dcomponent.indexservice.jdbc.password=admin
 
 backup4:
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/oceaneuropa/cluster -Dcluster.persistence.local.dir=/Users/oceaneuropa/cluster/data -Dcluster.home.dir=/Users/oceaneuropa/cluster/home1 -DORIGIN_HOME=/Users/oceaneuropa/origin 
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 -DNB_HOME=/Users/example/cluster -Dcluster.persistence.local.dir=/Users/example/cluster/data -Dcluster.home.dir=/Users/example/cluster/home1 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:10001 
--Dcomponent.indexservice.namespace=org.oceaneuropa -Dcomponent.indexservice.name=IndexServiceInstance1 -Dcomponent.indexservice.context_root=/orbit/v1/indexservice 
+-Dcomponent.indexservice.namespace=org.example -Dcomponent.indexservice.name=IndexServiceInstance1 -Dcomponent.indexservice.context_root=/orbit/v1/indexservice 
 -Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver -Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.indexservice.jdbc.username=postgres -Dcomponent.indexservice.jdbc.password=admin
 
+backup5:
+------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 
+-DNB_HOME=/Users/example/cluster 
+-Dcluster.persistence.local.dir=/Users/example/cluster/data 
+-Dcluster.home.dir=/Users/example/cluster/home1 
+-DORIGIN_HOME=/Users/example/origin 
+-Dorbit.host.url=http://127.0.0.1:10001 
+
+-Dcomponent.indexservice.name=IndexService1 
+-Dcomponent.indexservice.context_root=/orbit/v1/indexservice 
+-Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver 
+-Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
+-Dcomponent.indexservice.jdbc.username=postgres 
+-Dcomponent.indexservice.jdbc.password=admin 
+------------------------------------------------------------------------------------------------

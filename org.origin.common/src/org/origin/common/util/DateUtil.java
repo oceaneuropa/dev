@@ -7,6 +7,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.lang3.time.DateUtils;
 
 public class DateUtil {
 
@@ -92,19 +95,23 @@ public class DateUtil {
 
 	/**
 	 * 
-	 * @param firstDate
-	 * @param laterDate
+	 * @param startDate
+	 * @param endDate
 	 * @return
 	 */
-	public static long getDaysBetween(Date firstDate, Date laterDate) {
+	public static long getDaysBetween(Date startDate, Date endDate) {
+		if (startDate == null || endDate == null) {
+			return -1;
+		}
+
 		Calendar laterCalendar = new GregorianCalendar();
-		laterCalendar.setTime(laterDate);
+		laterCalendar.setTime(endDate);
 		int year2 = laterCalendar.get(Calendar.YEAR);
 		int month2 = laterCalendar.get(Calendar.MONTH) + 1;
 		int day2 = laterCalendar.get(Calendar.DAY_OF_MONTH);
 
 		Calendar firstCalendar = new GregorianCalendar();
-		firstCalendar.setTime(firstDate);
+		firstCalendar.setTime(startDate);
 		int year1 = firstCalendar.get(Calendar.YEAR);
 		int month1 = firstCalendar.get(Calendar.MONTH) + 1;
 		int day1 = firstCalendar.get(Calendar.DAY_OF_MONTH);
@@ -115,6 +122,81 @@ public class DateUtil {
 		long daysBetween = ChronoUnit.DAYS.between(firstLocalDate, laterLocalDate);
 
 		return daysBetween;
+	}
+
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static long getHoursBetween(Date startDate, Date endDate) {
+		if (startDate == null || endDate == null) {
+			return -1;
+		}
+		long duration = endDate.getTime() - startDate.getTime();
+		long diffInHours = TimeUnit.MILLISECONDS.toHours(duration);
+		return diffInHours;
+	}
+
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static long getMinutesBetween(Date startDate, Date endDate) {
+		if (startDate == null || endDate == null) {
+			return -1;
+		}
+		long duration = endDate.getTime() - startDate.getTime();
+		long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+		return diffInMinutes;
+	}
+
+	/**
+	 * 
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public static long getSecondsBetween(Date startDate, Date endDate) {
+		if (startDate == null || endDate == null) {
+			return -1;
+		}
+		long duration = endDate.getTime() - startDate.getTime();
+		long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
+		return diffInSeconds;
+	}
+
+	/**
+	 * 
+	 * @param date
+	 * @param amount
+	 * @return
+	 */
+	public static Date addHours(Date date, int amount) {
+		return DateUtils.addHours(date, amount);
+	}
+
+	/**
+	 * 
+	 * @param date
+	 * @param amount
+	 * @return
+	 */
+	public static Date addMinutes(Date date, int amount) {
+		return DateUtils.addMinutes(date, amount);
+	}
+
+	/**
+	 * 
+	 * @param date
+	 * @param amount
+	 * @return
+	 */
+	public static Date addSeconds(Date date, int amount) {
+		return DateUtils.addSeconds(date, amount);
 	}
 
 }

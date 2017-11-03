@@ -4,8 +4,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
+import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
-import org.orbit.component.connector.tier1.session.OAuth2ConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
 import org.orbit.component.connector.tier3.domain.DomainMgmtConnectorImpl;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorFactoryImpl;
@@ -28,7 +28,8 @@ public class Activator implements BundleActivator {
 
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
-	protected OAuth2ConnectorImpl oauth2Connector;
+	// protected OAuth2ConnectorImpl oauth2Connector;
+	protected AuthConnectorImpl authConnector;
 	protected AppStoreConnectorImpl appStoreConnector;
 	protected DomainMgmtConnectorImpl domainMgmtConnector;
 	protected TransferAgentConnectorFactoryImpl transferAgentConnectorFactory;
@@ -56,6 +57,9 @@ public class Activator implements BundleActivator {
 
 		// this.oauth2Connector = new OAuth2ConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		// this.oauth2Connector.start(bundleContext);
+
+		this.authConnector = new AuthConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.authConnector.start(bundleContext);
 
 		// -----------------------------------------------------------------------------
 		// Start tier2 service connectors
@@ -113,6 +117,11 @@ public class Activator implements BundleActivator {
 		// this.oauth2Connector.stop();
 		// this.oauth2Connector = null;
 		// }
+
+		if (this.authConnector != null) {
+			this.authConnector.stop();
+			this.authConnector = null;
+		}
 
 		Activator.context = null;
 	}

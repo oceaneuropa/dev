@@ -33,8 +33,8 @@ public class StockStatTest {
 
 	protected void setUp() {
 		// set stock_home
-		// System.setProperty(SetupUtil.STOCK_HOME, "/Users/oceaneuropa/Downloads/stock_home");
-		System.setProperty(SetupUtil.STOCK_HOME, "/Users/jessylxj/dev/stock_home");
+		// System.setProperty(SetupUtil.STOCK_HOME, "/Users/example/Downloads/stock_home");
+		System.setProperty(SetupUtil.STOCK_HOME, "/Users/example/dev/stock_home");
 
 		// registry working copy factory
 		StockDataResourceFactory.register();

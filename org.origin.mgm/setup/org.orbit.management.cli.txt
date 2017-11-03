@@ -4,3 +4,10 @@ Program arguments:
 VM arguments:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
 
+backup1:
+--------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true 
+-DORIGIN_HOME=/Users/example/origin 
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+--------------------------------------------------------------------------
+ 

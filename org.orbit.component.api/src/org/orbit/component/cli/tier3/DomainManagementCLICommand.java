@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.tier1.auth.Auth;
+import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier3.domain.DomainManagement;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.domain.MachineConfig;
@@ -33,7 +35,8 @@ public class DomainManagementCLICommand implements Annotated {
 
 	// Service type constants
 	public static final String USER_REGISTRY = "userregistry";
-	public static final String OAUTH2 = "oauth2";
+	// public static final String OAUTH2 = "oauth2";
+	public static final String AUTH = "auth";
 	public static final String CONFIGR_EGISTRY = "configregistry";
 	public static final String APP_STORE = "appstore";
 	public static final String DOMAIN = "domain";
@@ -41,6 +44,7 @@ public class DomainManagementCLICommand implements Annotated {
 
 	// Column names constants
 	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.host.url", "domain_mgmt.context_root", "domain_mgmt.name", "last_heartbeat_time", "heartbeat_expired" };
+	protected static String[] AUTH_SERVICES_TITLES = new String[] { "index_item_id", "auth.host.url", "auth.context_root", "auth.name", "last_heartbeat_time", "heartbeat_expired" };
 	protected static String[] MACHINE_CONFIG_TITLES = new String[] { "ID", "Name", "IP Address" };
 	protected static String[] TRANSFER_AGENT_CONFIG_TITLES = new String[] { "Machine ID", "ID", "Name", "hostURL", "contextRoot" };
 	protected static String[] NODE_CONFIG_TITLES = new String[] { "Machine ID", "Transfer Agent ID", "ID", "Name", "hostURL", "contextRoot" };
@@ -48,6 +52,8 @@ public class DomainManagementCLICommand implements Annotated {
 	protected BundleContext bundleContext;
 	protected String scheme = "orbit";
 
+	@Dependency
+	protected AuthConnector authConnector;
 	@Dependency
 	protected DomainManagementConnector domainMgmtConnector;
 
@@ -101,28 +107,61 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	@DependencyFullfilled
-	public void domainMgmtConnectorSet() {
+	public void connectorSet() {
 		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".domainMgmtConnectorSet() Dependency on DomainMgmtConnector is set.");
+			System.out.println(getClass().getSimpleName() + ".connectorSet()");
+			System.out.println("authConnector: " + authConnector);
+			System.out.println("domainMgmtConnector: " + domainMgmtConnector);
 		}
 	}
 
 	@DependencyUnfullfilled
-	public void domainMgmtConnectorUnset() {
+	public void connectorUnset() {
 		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".domainMgmtConnectorSet() Dependency on DomainMgmtConnector is unset.");
+			System.out.println(getClass().getSimpleName() + ".connectorSet()");
+			System.out.println("authConnector: " + authConnector);
+			System.out.println("domainMgmtConnector: " + domainMgmtConnector);
 		}
 	}
 
-	protected List<LoadBalanceResource<DomainManagement>> getServiceResources() throws ClientException {
-		checkConnector();
+	protected List<LoadBalanceResource<Auth>> getAuthResources() throws ClientException {
+		if (this.authConnector == null) {
+			System.out.println("AuthConnector is not available.");
+			throw new ClientException(500, "AuthConnector is not available.");
+		}
+		LoadBalancer<Auth> lb = this.authConnector.getLoadBalancer();
+		if (lb == null) {
+			System.out.println("AuthConnector LoadBalancer is not available.");
+			return null;
+		}
+		List<LoadBalanceResource<Auth>> resources = lb.getResources();
+		if (resources == null) {
+			System.out.println("AuthConnector LoadBalancer's resource is null.");
+			return null;
+		}
+		return resources;
+	}
 
+	protected Auth getAuth() throws ClientException {
+		Auth auth = this.authConnector.getService();
+		if (auth == null) {
+			System.err.println(getClass().getSimpleName() + ".getAuth() auth is not available.");
+			throw new ClientException(500, "auth is not available.");
+		}
+		System.out.println(auth.getName() + " (" + auth.getURL() + ")");
+		return auth;
+	}
+
+	protected List<LoadBalanceResource<DomainManagement>> getDomainManagementResources() throws ClientException {
+		if (this.domainMgmtConnector == null) {
+			System.out.println("DomainMgmtConnector is not available.");
+			throw new ClientException(500, "DomainMgmtConnector is not available.");
+		}
 		LoadBalancer<DomainManagement> lb = this.domainMgmtConnector.getLoadBalancer();
 		if (lb == null) {
 			System.out.println("DomainManagement LoadBalancer is not available.");
 			return null;
 		}
-
 		List<LoadBalanceResource<DomainManagement>> resources = lb.getResources();
 		if (resources == null) {
 			System.out.println("DomainManagement LoadBalancer's resource is null.");
@@ -133,32 +172,12 @@ public class DomainManagementCLICommand implements Annotated {
 
 	protected DomainManagement getDomainManagement() throws ClientException {
 		DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-		checkDomainManagement(domainMgmt);
-		print(domainMgmt);
-		return domainMgmt;
-	}
-
-	protected void checkConnector() throws ClientException {
-		if (this.domainMgmtConnector == null) {
-			System.out.println("DomainMgmtConnector is not available.");
-			throw new ClientException(500, "DomainMgmtConnector is not available.");
-		}
-	}
-
-	protected void checkDomainManagement(DomainManagement domainMgmt) throws ClientException {
 		if (domainMgmt == null) {
 			System.err.println(getClass().getSimpleName() + ".checkDomainManagement() domainMgmt is not available.");
 			throw new ClientException(500, "domainMgmt is not available.");
 		}
-	}
-
-	protected void print(DomainManagement domainMgmt) {
-		if (domainMgmt == null) {
-			System.out.println("DomainManagement service is null.");
-			return;
-		} else {
-			System.out.println(domainMgmt.getName() + " (" + domainMgmt.getURL() + ")");
-		}
+		System.out.println(domainMgmt.getName() + " (" + domainMgmt.getURL() + ")");
+		return domainMgmt;
 	}
 
 	// -----------------------------------------------------------------------------------------
@@ -173,7 +192,9 @@ public class DomainManagementCLICommand implements Annotated {
 
 		if (USER_REGISTRY.equalsIgnoreCase(service)) {
 
-		} else if (OAUTH2.equalsIgnoreCase(service)) {
+		} else if (AUTH.equalsIgnoreCase(service)) {
+			// } else if (OAUTH2.equalsIgnoreCase(service)) {
+			listAuthServices();
 
 		} else if (CONFIGR_EGISTRY.equalsIgnoreCase(service)) {
 
@@ -185,20 +206,44 @@ public class DomainManagementCLICommand implements Annotated {
 		} else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
 
 		} else {
-			System.err.println("###### Unsupported service name: " + service);
+			// System.err.println("###### Unsupported service name: " + service);
+			listAuthServices();
+			System.out.println();
+
+			listDomainServices();
+			System.out.println();
 		}
 	}
 
+	protected void listAuthServices() throws ClientException {
+		List<LoadBalanceResource<Auth>> resources = getAuthResources();
+
+		String[][] rows = new String[resources.size()][AUTH_SERVICES_TITLES.length];
+		int rowIndex = 0;
+		for (LoadBalanceResource<Auth> resource : resources) {
+			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "auth.name");
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "auth.host.url");
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "auth.context_root");
+			Date heartBeatTime = ResourcePropertyHelper.INSTANCE.getHeartbeatTime(resource);
+			boolean expired = ResourcePropertyHelper.INSTANCE.isHeartBeatExpired(resource);
+
+			rows[rowIndex++] = new String[] { indexItemId.toString(), hostUrl, contextRoot, name, DateUtil.toString(heartBeatTime, DateUtil.SIMPLE_DATE_FORMAT2), expired ? "yes" : "no" };
+		}
+
+		PrettyPrinter.prettyPrint(AUTH_SERVICES_TITLES, rows, resources.size());
+	}
+
 	protected void listDomainServices() throws ClientException {
-		List<LoadBalanceResource<DomainManagement>> resources = getServiceResources();
+		List<LoadBalanceResource<DomainManagement>> resources = getDomainManagementResources();
 
 		String[][] rows = new String[resources.size()][DOMAIN_SERVICES_TITLES.length];
 		int rowIndex = 0;
 		for (LoadBalanceResource<DomainManagement> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getHostUrl(resource);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getContextRoot(resource);
-			String name = ResourcePropertyHelper.INSTANCE.getName(resource);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.name");
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.host.url");
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.context_root");
 			Date heartBeatTime = ResourcePropertyHelper.INSTANCE.getHeartbeatTime(resource);
 			boolean expired = ResourcePropertyHelper.INSTANCE.isHeartBeatExpired(resource);
 

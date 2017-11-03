@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.orbit.component.server.tier3.domain.timer.DomainMgmtServiceTimerV2;
+import org.orbit.component.server.tier3.domain.timer.DomainMgmtServiceTimer;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.origin.mgm.client.api.IndexProvider;
@@ -19,8 +19,7 @@ public class DomainMgmtWSApplication extends AbstractApplication {
 
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	// protected DomainMgmtServiceTimer serviceIndexTimer;
-	protected DomainMgmtServiceTimerV2 serviceIndexTimer;
+	protected DomainMgmtServiceTimer serviceIndexTimer;
 
 	public DomainMgmtWSApplication() {
 	}
@@ -49,7 +48,7 @@ public class DomainMgmtWSApplication extends AbstractApplication {
 
 		// Start timer for indexing the service
 		if (this.indexProvider != null) {
-			this.serviceIndexTimer = new DomainMgmtServiceTimerV2(this.indexProvider);
+			this.serviceIndexTimer = new DomainMgmtServiceTimer(this.indexProvider);
 			// The web application knows its DomainMgmtServiceResource provides a ping method.
 			// So it tells the index timer that the web service can is pingable.
 			this.serviceIndexTimer.start();

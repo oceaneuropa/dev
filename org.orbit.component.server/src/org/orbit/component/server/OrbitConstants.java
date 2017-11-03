@@ -60,6 +60,28 @@ public class OrbitConstants {
 	public static String OAUTH2_CONTEXT_ROOT = "oauth2.context_root";
 
 	// ----------------------------------------------------------------------------------------
+	// Auth
+	// ----------------------------------------------------------------------------------------
+	// config properties
+	public static String COMPONENT_AUTH_NAMESPACE = "component.auth.namespace";
+	public static String COMPONENT_AUTH_NAME = "component.auth.name";
+	public static String COMPONENT_AUTH_HOST_URL = "component.auth.host.url";
+	public static String COMPONENT_AUTH_CONTEXT_ROOT = "component.auth.context_root";
+	// public static String COMPONENT_AUTH_JDBC_DRIVER = "component.auth.jdbc.driver";
+	// public static String COMPONENT_AUTH_JDBC_URL = "component.auth.jdbc.url";
+	// public static String COMPONENT_AUTH_JDBC_USERNAME = "component.auth.jdbc.username";
+	// public static String COMPONENT_AUTH_JDBC_PASSWORD = "component.auth.jdbc.password";
+
+	// index item values
+	public static String AUTH_INDEXER_ID = "component.auth.indexer"; // index provider id for auth service
+	public static String AUTH_TYPE = "Auth"; // type of index item for auth service
+
+	// index item properties
+	public static String AUTH_NAME = "auth.name";
+	public static String AUTH_HOST_URL = "auth.host.url";
+	public static String AUTH_CONTEXT_ROOT = "auth.context_root";
+
+	// ----------------------------------------------------------------------------------------
 	// ConfigRegistry
 	// ----------------------------------------------------------------------------------------
 	// config properties

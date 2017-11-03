@@ -2,6 +2,7 @@ package org.origin.common.util;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,36 @@ public class PrettyPrinter {
 	}
 
 	protected static DefaultPrinter DEFAULT_PRINTER = new DefaultPrinter();
+
+	/**
+	 * 
+	 * @param keyValuePairs
+	 */
+	public static void prettyPrintMap(Map<Object, Object> keyValuePairs) {
+		prettyPrintMap("Key", "Value", keyValuePairs);
+	}
+
+	/**
+	 * 
+	 * @param columnName1
+	 * @param columnName2
+	 * @param keyValuePairs
+	 */
+	public static void prettyPrintMap(String columnName1, String columnName2, Map<Object, Object> keyValuePairs) {
+		String[] titles = new String[] { columnName1, columnName2 };
+
+		String[][] rows = new String[keyValuePairs.size()][2];
+		int index = 0;
+		for (Iterator<Object> keyItor = keyValuePairs.keySet().iterator(); keyItor.hasNext();) {
+			Object key = keyItor.next();
+			Object value = keyValuePairs.get(key);
+			rows[index][0] = (key != null) ? key.toString() : "null";
+			rows[index][1] = (value != null) ? value.toString() : "null";
+			++index;
+		}
+
+		prettyPrint(titles, rows);
+	}
 
 	/**
 	 * 

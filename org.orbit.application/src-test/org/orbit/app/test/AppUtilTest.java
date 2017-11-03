@@ -22,14 +22,14 @@ public class AppUtilTest {
 	}
 
 	protected void setUp() {
-		this.appsFolder = new File("/Users/oceaneuropa/Downloads/zip");
+		this.appsFolder = new File("/Users/example/Downloads/zip");
 	}
 
 	@Test
 	public void test001_read_manifest_from_app() throws IOException {
 		System.out.println(getClass().getSimpleName() + ".test001_read_manifest_from_app()");
 
-		File appFile = new File("/Users/oceaneuropa/Downloads/zip/editor_1.0.0.app");
+		File appFile = new File("/Users/example/Downloads/zip/editor_1.0.0.app");
 		AppManifest manifest = AppUtil.extractAppManifest(appFile);
 		System.out.println("manifest = " + manifest);
 
@@ -40,7 +40,7 @@ public class AppUtilTest {
 	public void test002_unzip_app() throws IOException {
 		System.out.println(getClass().getSimpleName() + ".test002_unzip_app()");
 
-		File appFile = new File("/Users/oceaneuropa/Downloads/zip/editor_1.0.0.app");
+		File appFile = new File("/Users/example/Downloads/zip/editor_1.0.0.app");
 		AppUtil.extractToAppsFolder(this.appsFolder, appFile);
 
 		System.out.println();

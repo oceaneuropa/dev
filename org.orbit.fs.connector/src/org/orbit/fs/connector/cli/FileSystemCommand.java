@@ -172,11 +172,11 @@ public class FileSystemCommand {
 	 * 
 	 * fslfiles -r -p 'Users'
 	 * 
-	 * fsdelete -p '/Users/oceaneuropa/Downloads/apache/myfolder.zip'
+	 * fsdelete -p '/Users/example/Downloads/apache/myfolder.zip'
 	 * 
-	 * fsupload -s '/Users/oceaneuropa/Downloads/apache/myfolder' -d '/Users/oceaneuropa/Downloads/apache/' -z
+	 * fsupload -s '/Users/example/Downloads/apache/myfolder' -d '/Users/example/Downloads/apache/' -z
 	 * 
-	 * fsdownload -s '/Users/oceaneuropa/Downloads/apache/myfolder.zip' -d '/Users/oceaneuropa/Downloads/test_target'
+	 * fsdownload -s '/Users/example/Downloads/apache/myfolder.zip' -d '/Users/example/Downloads/test_target'
 	 * 
 	 * @param localPathString local file or directory path
 	 * 

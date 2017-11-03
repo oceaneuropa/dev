@@ -16,7 +16,7 @@ public class DomainMgmtServiceAdapter {
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<DomainManagementService, DomainManagementService> serviceTracker;
-	protected DomainMgmtWSApplication webApp;
+	protected DomainMgmtWSApplicationV2 webApp;
 
 	public DomainMgmtServiceAdapter() {
 	}
@@ -82,7 +82,7 @@ public class DomainMgmtServiceAdapter {
 	}
 
 	protected void startDomainMgmtWebService(BundleContext bundleContext, DomainManagementService service) {
-		this.webApp = new DomainMgmtWSApplication();
+		this.webApp = new DomainMgmtWSApplicationV2(bundleContext, service);
 		this.webApp.setBundleContext(bundleContext);
 		this.webApp.setContextRoot(service.getContextRoot());
 		if (this.indexProviderLoadBalancer != null) {

@@ -1,11 +1,12 @@
 package org.orbit.component.api;
 
 import org.orbit.component.api.tier1.account.UserRegistryConnector;
+import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
-import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgentAdapter;
+import org.orbit.component.cli.tier1.AuthCommand;
 import org.orbit.component.cli.tier2.AppStoreCLICommand;
 import org.orbit.component.cli.tier3.DomainManagementCLICommand;
 import org.orbit.component.cli.tier3.TransferAgentCLICommand;
@@ -33,7 +34,8 @@ public class Activator implements BundleActivator {
 	// --------------------------------------------------------------------------------
 	protected ServiceTracker<UserRegistryConnector, UserRegistryConnector> userRegistryConnectorTracker;
 	protected ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector> configRegistryConnectorTracker;
-	protected ServiceTracker<OAuth2Connector, OAuth2Connector> oauth2ConnectorTracker;
+	// protected ServiceTracker<OAuth2Connector, OAuth2Connector> oauth2ConnectorTracker;
+	protected ServiceTracker<AuthConnector, AuthConnector> authConnectorTracker;
 
 	// --------------------------------------------------------------------------------
 	// tier2 connector service tracker
@@ -46,9 +48,10 @@ public class Activator implements BundleActivator {
 	protected ServiceTracker<DomainManagementConnector, DomainManagementConnector> domainMgmtConnectorTracker;
 	protected TransferAgentAdapter transferAgentAdapter;
 
-	protected AppStoreCLICommand appStoreCLICommand;
-	protected DomainManagementCLICommand domainMgmtCLICommand;
-	protected TransferAgentCLICommand taCLICommand;
+	protected AuthCommand authCommand;
+	protected AppStoreCLICommand appStoreCommand;
+	protected DomainManagementCLICommand domainMgmtCommand;
+	protected TransferAgentCLICommand taCommand;
 
 	protected boolean debug = true;
 
@@ -112,26 +115,52 @@ public class Activator implements BundleActivator {
 		this.configRegistryConnectorTracker.open();
 
 		// Start ServiceTracker for tracking OAuth2Connector service
-		this.oauth2ConnectorTracker = new ServiceTracker<OAuth2Connector, OAuth2Connector>(bundleContext, OAuth2Connector.class, new ServiceTrackerCustomizer<OAuth2Connector, OAuth2Connector>() {
+		// this.oauth2ConnectorTracker = new ServiceTracker<OAuth2Connector, OAuth2Connector>(bundleContext, OAuth2Connector.class, new
+		// ServiceTrackerCustomizer<OAuth2Connector, OAuth2Connector>() {
+		// @Override
+		// public OAuth2Connector addingService(ServiceReference<OAuth2Connector> reference) {
+		// if (debug) {
+		// System.out.println(getClass().getName() + " OAuth2Connector service is added.");
+		// }
+		// return bundleContext.getService(reference);
+		// }
+		//
+		// @Override
+		// public void modifiedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
+		// if (debug) {
+		// System.out.println(getClass().getName() + " OAuth2Connector service is modified.");
+		// }
+		// }
+		//
+		// @Override
+		// public void removedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
+		// if (debug) {
+		// System.out.println(getClass().getName() + " OAuth2Connector service is removed.");
+		// }
+		// }
+		// });
+
+		// Start ServiceTracker for tracking AuthConnector service
+		this.authConnectorTracker = new ServiceTracker<AuthConnector, AuthConnector>(bundleContext, AuthConnector.class, new ServiceTrackerCustomizer<AuthConnector, AuthConnector>() {
 			@Override
-			public OAuth2Connector addingService(ServiceReference<OAuth2Connector> reference) {
+			public AuthConnector addingService(ServiceReference<AuthConnector> reference) {
 				if (debug) {
-					System.out.println(getClass().getName() + " OAuth2Connector service is added.");
+					System.out.println(getClass().getName() + " AuthConnector service is added.");
 				}
 				return bundleContext.getService(reference);
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
+			public void modifiedService(ServiceReference<AuthConnector> reference, AuthConnector arg1) {
 				if (debug) {
-					System.out.println(getClass().getName() + " OAuth2Connector service is modified.");
+					System.out.println(getClass().getName() + " AuthConnector service is modified.");
 				}
 			}
 
 			@Override
-			public void removedService(ServiceReference<OAuth2Connector> reference, OAuth2Connector arg1) {
+			public void removedService(ServiceReference<AuthConnector> reference, AuthConnector arg1) {
 				if (debug) {
-					System.out.println(getClass().getName() + " OAuth2Connector service is removed.");
+					System.out.println(getClass().getName() + " AuthConnector service is removed.");
 				}
 			}
 		});
@@ -198,14 +227,17 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Start CLI commands
 		// --------------------------------------------------------------------------------
-		this.appStoreCLICommand = new AppStoreCLICommand(bundleContext);
-		this.appStoreCLICommand.start();
+		this.authCommand = new AuthCommand(bundleContext);
+		this.authCommand.start();
 
-		this.domainMgmtCLICommand = new DomainManagementCLICommand(bundleContext);
-		this.domainMgmtCLICommand.start();
+		this.appStoreCommand = new AppStoreCLICommand(bundleContext);
+		this.appStoreCommand.start();
 
-		this.taCLICommand = new TransferAgentCLICommand(bundleContext);
-		this.taCLICommand.start();
+		this.domainMgmtCommand = new DomainManagementCLICommand(bundleContext);
+		this.domainMgmtCommand.start();
+
+		this.taCommand = new TransferAgentCLICommand(bundleContext);
+		this.taCommand.start();
 	}
 
 	@Override
@@ -213,19 +245,24 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Stop CLI commands
 		// --------------------------------------------------------------------------------
-		if (this.appStoreCLICommand != null) {
-			this.appStoreCLICommand.stop();
-			this.appStoreCLICommand = null;
+		if (this.authCommand != null) {
+			this.authCommand.stop();
+			this.authCommand = null;
 		}
 
-		if (this.domainMgmtCLICommand != null) {
-			this.domainMgmtCLICommand.stop();
-			this.domainMgmtCLICommand = null;
+		if (this.appStoreCommand != null) {
+			this.appStoreCommand.stop();
+			this.appStoreCommand = null;
 		}
 
-		if (this.taCLICommand != null) {
-			this.taCLICommand.stop();
-			this.taCLICommand = null;
+		if (this.domainMgmtCommand != null) {
+			this.domainMgmtCommand.stop();
+			this.domainMgmtCommand = null;
+		}
+
+		if (this.taCommand != null) {
+			this.taCommand.stop();
+			this.taCommand = null;
 		}
 
 		// --------------------------------------------------------------------------------
@@ -266,9 +303,15 @@ public class Activator implements BundleActivator {
 		}
 
 		// Stop OAuth2Connector ServiceTracker
-		if (this.oauth2ConnectorTracker != null) {
-			this.oauth2ConnectorTracker.close();
-			this.oauth2ConnectorTracker = null;
+		// if (this.oauth2ConnectorTracker != null) {
+		// this.oauth2ConnectorTracker.close();
+		// this.oauth2ConnectorTracker = null;
+		// }
+
+		// Stop AuthConnector ServiceTracker
+		if (this.authConnectorTracker != null) {
+			this.authConnectorTracker.close();
+			this.authConnectorTracker = null;
 		}
 
 		Activator.instance = null;
@@ -291,10 +334,18 @@ public class Activator implements BundleActivator {
 		return connector;
 	}
 
-	public OAuth2Connector getOAuth2Connector() {
-		OAuth2Connector connector = null;
-		if (this.oauth2ConnectorTracker != null) {
-			connector = this.oauth2ConnectorTracker.getService();
+	// public OAuth2Connector getOAuth2Connector() {
+	// OAuth2Connector connector = null;
+	// if (this.oauth2ConnectorTracker != null) {
+	// connector = this.oauth2ConnectorTracker.getService();
+	// }
+	// return connector;
+	// }
+
+	public AuthConnector getAuthConnector() {
+		AuthConnector connector = null;
+		if (this.authConnectorTracker != null) {
+			connector = this.authConnectorTracker.getService();
 		}
 		return connector;
 	}

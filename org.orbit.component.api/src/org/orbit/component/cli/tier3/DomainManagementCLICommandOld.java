@@ -185,9 +185,9 @@ public class DomainManagementCLICommandOld implements Annotated {
 			// String name = domainMgmt.getName();
 
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getHostUrl(resource);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getContextRoot(resource);
-			String name = ResourcePropertyHelper.INSTANCE.getName(resource);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.name");
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.host.url");
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.context_root");
 			Date heartBeatTime = ResourcePropertyHelper.INSTANCE.getHeartbeatTime(resource);
 			boolean expired = ResourcePropertyHelper.INSTANCE.isHeartBeatExpired(resource);
 

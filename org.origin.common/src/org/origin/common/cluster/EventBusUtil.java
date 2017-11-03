@@ -7,13 +7,13 @@ import org.origin.common.cluster.impl.jgroup.EventBusImpl;
 
 public class EventBusUtil {
 
-	public static String EVENT_BUS__JGROUP = "EVENT_BUS__JGROUP";
+	public static String TYPE_JGROUP = "TYPE_JGROUP";
 
 	private static Map<String, EventBus> eventBusMap = new HashMap<String, EventBus>();
 	private static EventBus defaultEventBus = new EventBusImpl();
 
 	public static EventBus getEventBus() {
-		return getEventBus(EVENT_BUS__JGROUP);
+		return getEventBus(TYPE_JGROUP);
 	}
 
 	/**
@@ -27,9 +27,9 @@ public class EventBusUtil {
 			synchronized (eventBusMap) {
 				eventBus = eventBusMap.get(type);
 				if (eventBus == null) {
-					if (EVENT_BUS__JGROUP.equals(type)) {
+					if (TYPE_JGROUP.equals(type)) {
 						eventBus = defaultEventBus;
-						eventBusMap.put(EVENT_BUS__JGROUP, eventBus);
+						eventBusMap.put(TYPE_JGROUP, eventBus);
 					}
 				}
 			}
@@ -38,35 +38,6 @@ public class EventBusUtil {
 			eventBus = defaultEventBus;
 		}
 		return eventBus;
-	}
-
-	/**
-	 * 
-	 * @param eventListener
-	 * @param clusterNames
-	 * @return
-	 */
-	public static boolean addEventListener(EventListener eventListener, String... clusterNames) {
-		return getEventBus().addEventListener(eventListener, clusterNames);
-	}
-
-	/**
-	 * 
-	 * @param eventListener
-	 * @param clusterNames
-	 * @return
-	 */
-	public static boolean removeEventListener(EventListener eventListener, String... clusterNames) {
-		return getEventBus().removeEventListener(eventListener, clusterNames);
-	}
-
-	/**
-	 * 
-	 * @param event
-	 * @param clusterNames
-	 */
-	public static void sendEvent(Event event, String... clusterNames) {
-		getEventBus().sendEvent(event, clusterNames);
 	}
 
 }

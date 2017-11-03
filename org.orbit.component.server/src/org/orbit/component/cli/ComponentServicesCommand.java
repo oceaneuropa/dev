@@ -5,8 +5,8 @@ import java.util.Hashtable;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.server.tier1.account.service.impl.UserRegistryServiceDatabaseImpl;
+import org.orbit.component.server.tier1.auth.service.impl.AuthServiceImpl;
 import org.orbit.component.server.tier1.config.service.impl.ConfigRegistryServiceDatabaseImpl;
-import org.orbit.component.server.tier1.session.service.impl.OAuth2ServiceDatabaseImpl;
 import org.orbit.component.server.tier2.appstore.service.impl.AppStoreServiceDatabaseImpl;
 import org.orbit.component.server.tier3.domain.service.impl.DomainManagementServiceDatabaseImpl;
 import org.orbit.component.server.tier3.transferagent.service.impl.TransferAgentServiceImpl;
@@ -17,7 +17,8 @@ public class ComponentServicesCommand {
 
 	// service types
 	public static final String USER_REGISTRY = "userregistry";
-	public static final String OAUTH2 = "oauth2";
+	// public static final String OAUTH2 = "oauth2";
+	public static final String AUTH = "auth";
 	public static final String CONFIGR_EGISTRY = "configregistry";
 	public static final String APP_STORE = "appstore";
 	public static final String DOMAIN = "domain";
@@ -26,7 +27,8 @@ public class ComponentServicesCommand {
 	protected BundleContext bundleContext;
 
 	protected ConfigRegistryServiceDatabaseImpl configRegistryService;
-	protected OAuth2ServiceDatabaseImpl oauth2Service;
+	protected AuthServiceImpl authService;
+	// protected OAuth2ServiceDatabaseImpl oauth2Service;
 	protected UserRegistryServiceDatabaseImpl userRegistryService;
 	protected AppStoreServiceDatabaseImpl appStoreService;
 	protected DomainManagementServiceDatabaseImpl domainMgmtService;
@@ -70,8 +72,11 @@ public class ComponentServicesCommand {
 		if (USER_REGISTRY.equalsIgnoreCase(service)) {
 			startUserRegistryService(this.bundleContext);
 
-		} else if (OAUTH2.equalsIgnoreCase(service)) {
-			startOAuth2Service(this.bundleContext);
+		} else if (AUTH.equalsIgnoreCase(service)) {
+			startAuthService(this.bundleContext);
+
+			// } else if (OAUTH2.equalsIgnoreCase(service)) {
+			// startOAuth2Service(this.bundleContext);
 
 		} else if (CONFIGR_EGISTRY.equalsIgnoreCase(service)) {
 			startConfigRegistryService(this.bundleContext);
@@ -102,8 +107,11 @@ public class ComponentServicesCommand {
 		if (USER_REGISTRY.equalsIgnoreCase(service)) {
 			stopUserRegistryService();
 
-		} else if (OAUTH2.equalsIgnoreCase(service)) {
-			stopOAuth2Service();
+			// } else if (OAUTH2.equalsIgnoreCase(service)) {
+			// stopOAuth2Service();
+
+		} else if (AUTH.equalsIgnoreCase(service)) {
+			stopAuthService(this.bundleContext);
 
 		} else if (CONFIGR_EGISTRY.equalsIgnoreCase(service)) {
 			stopConfigRegistryService();
@@ -135,18 +143,31 @@ public class ComponentServicesCommand {
 		}
 	}
 
-	public void startOAuth2Service(BundleContext bundleContext) {
-		OAuth2ServiceDatabaseImpl oauth2Service = new OAuth2ServiceDatabaseImpl();
-		oauth2Service.start(bundleContext);
-		this.oauth2Service = oauth2Service;
+	public void startAuthService(BundleContext bundleContext) {
+		AuthServiceImpl authService = new AuthServiceImpl();
+		authService.start(bundleContext);
+		this.authService = authService;
 	}
 
-	public void stopOAuth2Service() {
-		if (this.oauth2Service != null) {
-			this.oauth2Service.stop();
-			this.oauth2Service = null;
+	public void stopAuthService(BundleContext bundleContext) {
+		if (this.authService != null) {
+			this.authService.stop(bundleContext);
+			this.authService = null;
 		}
 	}
+
+	// public void startOAuth2Service(BundleContext bundleContext) {
+	// OAuth2ServiceDatabaseImpl oauth2Service = new OAuth2ServiceDatabaseImpl();
+	// oauth2Service.start(bundleContext);
+	// this.oauth2Service = oauth2Service;
+	// }
+	//
+	// public void stopOAuth2Service() {
+	// if (this.oauth2Service != null) {
+	// this.oauth2Service.stop();
+	// this.oauth2Service = null;
+	// }
+	// }
 
 	public void startConfigRegistryService(BundleContext bundleContext) {
 		ConfigRegistryServiceDatabaseImpl configRegistryService = new ConfigRegistryServiceDatabaseImpl();

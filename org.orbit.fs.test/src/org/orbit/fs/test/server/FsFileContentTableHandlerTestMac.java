@@ -62,11 +62,11 @@ public class FsFileContentTableHandlerTestMac {
 		FileInputStream is5 = null;
 		FileInputStream is6 = null;
 		try {
-			File file1 = new File("/Users/oceaneuropa/Downloads/test/source/readme1.txt");
-			File file2 = new File("/Users/oceaneuropa/Downloads/test/source/readme2.txt");
-			File file3 = new File("/Users/oceaneuropa/Downloads/test/source/readme3.txt");
-			File file4 = new File("/Users/oceaneuropa/Downloads/test/source/apache-tomcat-8.0.30.tar.gz");
-			File file6 = new File("/Users/oceaneuropa/Downloads/test/source/commons-io-2.5-src.zip");
+			File file1 = new File("/Users/example/Downloads/test/source/readme1.txt");
+			File file2 = new File("/Users/example/Downloads/test/source/readme2.txt");
+			File file3 = new File("/Users/example/Downloads/test/source/readme3.txt");
+			File file4 = new File("/Users/example/Downloads/test/source/apache-tomcat-8.0.30.tar.gz");
+			File file6 = new File("/Users/example/Downloads/test/source/commons-io-2.5-src.zip");
 
 			// long length1 = file1.length();
 			// long length2 = file2.length();
@@ -119,11 +119,11 @@ public class FsFileContentTableHandlerTestMac {
 
 		Connection conn = getConnection();
 		try {
-			File file1 = new File("/Users/oceaneuropa/Downloads/test/target/readme1.txt");
-			File file2 = new File("/Users/oceaneuropa/Downloads/test/target/readme2.txt");
-			File file3 = new File("/Users/oceaneuropa/Downloads/test/target/readme3.txt");
-			File file4 = new File("/Users/oceaneuropa/Downloads/test/target/apache-tomcat-8.0.30.tar.gz");
-			File file6 = new File("/Users/oceaneuropa/Downloads/test/target/commons-io-2.5-src.zip");
+			File file1 = new File("/Users/example/Downloads/test/target/readme1.txt");
+			File file2 = new File("/Users/example/Downloads/test/target/readme2.txt");
+			File file3 = new File("/Users/example/Downloads/test/target/readme3.txt");
+			File file4 = new File("/Users/example/Downloads/test/target/apache-tomcat-8.0.30.tar.gz");
+			File file6 = new File("/Users/example/Downloads/test/target/commons-io-2.5-src.zip");
 
 			byte[] bytes1 = this.helper.readFileContentPostgres(conn, 1);
 			byte[] bytes2 = this.helper.readFileContentPostgres(conn, 2);

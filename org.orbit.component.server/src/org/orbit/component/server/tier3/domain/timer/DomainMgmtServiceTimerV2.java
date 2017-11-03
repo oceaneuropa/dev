@@ -15,8 +15,13 @@ import org.origin.mgm.client.api.IndexProvider;
 
 public class DomainMgmtServiceTimerV2 extends ServiceIndexTimerImplV2<IndexProvider, DomainManagementService, IndexItem> implements ServiceIndexTimerV2<IndexProvider, DomainManagementService, IndexItem> {
 
-	public DomainMgmtServiceTimerV2(IndexProvider indexProvider) {
-		super("Index Timer [Domain Management Service]", indexProvider);
+	/**
+	 * 
+	 * @param service
+	 * @param indexProvider
+	 */
+	public DomainMgmtServiceTimerV2(DomainManagementService service, IndexProvider indexProvider) {
+		super("Index Timer [" + service.getName() + "]", indexProvider);
 		setDebug(true);
 	}
 
