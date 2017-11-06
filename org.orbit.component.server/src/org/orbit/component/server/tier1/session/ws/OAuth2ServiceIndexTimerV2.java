@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.server.Activator;
 import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.tier1.session.service.OAuth2Service;
 import org.origin.common.thread.ServiceIndexTimerImplV2;
@@ -15,13 +14,22 @@ import org.origin.mgm.client.api.IndexProvider;
 
 public class OAuth2ServiceIndexTimerV2 extends ServiceIndexTimerImplV2<IndexProvider, OAuth2Service, IndexItem> implements ServiceIndexTimerV2<IndexProvider, OAuth2Service, IndexItem> {
 
-	public OAuth2ServiceIndexTimerV2(IndexProvider indexProvider) {
-		super("Index Timer [OAuth2 Service]", indexProvider);
+	protected OAuth2Service service;
+
+	/**
+	 * 
+	 * @param indexProvider
+	 * @param service
+	 */
+	public OAuth2ServiceIndexTimerV2(IndexProvider indexProvider, OAuth2Service service) {
+		super("Index Timer [" + service.getName() + "]", indexProvider);
+		this.service = service;
 	}
 
 	@Override
 	public OAuth2Service getService() {
-		return Activator.getOAuth2Service();
+		// return Activator.getOAuth2Service();
+		return this.service;
 	}
 
 	@Override

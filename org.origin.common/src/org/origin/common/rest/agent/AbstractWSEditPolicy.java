@@ -52,7 +52,7 @@ public abstract class AbstractWSEditPolicy {
 	 * @param request
 	 * @return
 	 */
-	public abstract ICommand getCommand(Request request);
+	public abstract ICommand getCommand(CommonWSApplicationResource resource, Request request);
 
 }
 

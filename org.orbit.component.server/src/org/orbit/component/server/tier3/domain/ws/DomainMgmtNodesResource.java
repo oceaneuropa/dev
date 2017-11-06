@@ -3,6 +3,7 @@ package org.orbit.component.server.tier3.domain.ws;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -42,6 +43,16 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 @Produces(MediaType.APPLICATION_JSON)
 public class DomainMgmtNodesResource extends AbstractWSApplicationResource {
 
+	@Inject
+	public DomainManagementService service;
+
+	protected DomainManagementService getService() throws RuntimeException {
+		if (this.service == null) {
+			throw new RuntimeException("DomainManagementService is not available.");
+		}
+		return this.service;
+	}
+
 	/**
 	 * Get node configurations.
 	 * 
@@ -54,11 +65,12 @@ public class DomainMgmtNodesResource extends AbstractWSApplicationResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodes(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId) {
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 
 		List<NodeConfigDTO> nodeConfigDTOs = new ArrayList<NodeConfigDTO>();
 		try {
-			List<NodeConfigRTO> nodeConfigs = domainMgmtService.getNodeConfigs(machineId, transferAgentId);
+			List<NodeConfigRTO> nodeConfigs = service.getNodeConfigs(machineId, transferAgentId);
 			if (nodeConfigs != null) {
 				for (NodeConfigRTO nodeConfig : nodeConfigs) {
 					NodeConfigDTO nodeConfigDTO = ModelConverter.getInstance().toDTO(nodeConfig);
@@ -88,9 +100,10 @@ public class DomainMgmtNodesResource extends AbstractWSApplicationResource {
 	public Response getNode(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId, @PathParam("nodeId") String nodeId) {
 		NodeConfigDTO nodeConfigDTO = null;
 
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
-			NodeConfigRTO nodeConfig = domainMgmtService.getNodeConfig(machineId, transferAgentId, nodeId);
+			NodeConfigRTO nodeConfig = service.getNodeConfig(machineId, transferAgentId, nodeId);
 			if (nodeConfig == null) {
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Node with id '%s' cannot be found.", transferAgentId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
@@ -125,21 +138,22 @@ public class DomainMgmtNodesResource extends AbstractWSApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
 			String nodeId = addNodeRequestDTO.getId();
 			if (nodeId == null || nodeId.isEmpty()) {
 				ErrorDTO emptyIdError = new ErrorDTO("nodeId Id is empty.");
 				return Response.status(Status.BAD_REQUEST).entity(emptyIdError).build();
 			}
-			if (domainMgmtService.nodeConfigExists(machineId, transferAgentId, nodeId)) {
+			if (service.nodeConfigExists(machineId, transferAgentId, nodeId)) {
 				ErrorDTO alreadyExistsError = new ErrorDTO(String.format("Node with Id '%s' already exists.", nodeId));
 				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
 			NodeConfigRTO addNodeRequest = ModelConverter.getInstance().toRTO(addNodeRequestDTO);
 
-			succeed = domainMgmtService.addNodeConfig(machineId, transferAgentId, addNodeRequest);
+			succeed = service.addNodeConfig(machineId, transferAgentId, addNodeRequest);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -173,12 +187,13 @@ public class DomainMgmtNodesResource extends AbstractWSApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
 			NodeConfigRTO updateNodeRequest = ModelConverter.getInstance().toRTO(updateNodeRequestDTO);
 			List<String> fieldsToUpdate = updateNodeRequestDTO.getFieldsToUpdate();
 
-			succeed = domainMgmtService.updateNodeConfig(machineId, transferAgentId, updateNodeRequest, fieldsToUpdate);
+			succeed = service.updateNodeConfig(machineId, transferAgentId, updateNodeRequest, fieldsToUpdate);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -214,9 +229,10 @@ public class DomainMgmtNodesResource extends AbstractWSApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
-			succeed = domainMgmtService.deleteNodeConfig(machineId, transferAgentId, nodeId);
+			succeed = service.deleteNodeConfig(machineId, transferAgentId, nodeId);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

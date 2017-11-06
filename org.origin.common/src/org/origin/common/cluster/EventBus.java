@@ -10,7 +10,11 @@ public interface EventBus {
 	// --------------------------------------------
 	// Life cycle
 	// --------------------------------------------
-	void close(String clusterName) throws Exception;
+	void joinCluster(String clusterName) throws Exception;
+
+	void leaveCluster(String clusterName) throws Exception;
+
+	void closeCluster(String clusterName) throws Exception;
 
 	EventGroup getEventGroup(String clusterName);
 

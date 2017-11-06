@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -59,6 +60,16 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 @Produces(MediaType.APPLICATION_JSON)
 public class AppStoreAppsResource extends AbstractWSApplicationResource {
 
+	@Inject
+	public AppStoreService service;
+
+	protected AppStoreService getService() throws RuntimeException {
+		if (this.service == null) {
+			throw new RuntimeException("AppStoreService is not available.");
+		}
+		return this.service;
+	}
+
 	/**
 	 * Get apps.
 	 * 
@@ -70,11 +81,12 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getApps(@QueryParam("type") String type) {
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 
 		List<AppManifestDTO> appDTOs = new ArrayList<AppManifestDTO>();
 		try {
-			List<AppManifestRTO> apps = appStoreService.getApps(type);
+			List<AppManifestRTO> apps = service.getApps(type);
 			if (apps != null) {
 				for (AppManifestRTO app : apps) {
 					AppManifestDTO appDTO = ModelConverter.getInstance().toDTO(app);
@@ -100,12 +112,13 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 	@Path("query")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response getApps(AppQueryDTO queryDTO) {
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 
 		List<AppManifestDTO> appDTOs = new ArrayList<AppManifestDTO>();
 		try {
 			AppQueryRTO query = ModelConverter.getInstance().toRTO(queryDTO);
-			List<AppManifestRTO> apps = appStoreService.getApps(query);
+			List<AppManifestRTO> apps = service.getApps(query);
 			if (apps != null) {
 				for (AppManifestRTO app : apps) {
 					AppManifestDTO appDTO = ModelConverter.getInstance().toDTO(app);
@@ -134,9 +147,10 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 	public Response getApp(@PathParam("appId") String appId, @PathParam("appVersion") String appVersion) {
 		AppManifestDTO appDTO = null;
 
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 		try {
-			AppManifestRTO app = appStoreService.getApp(appId, appVersion);
+			AppManifestRTO app = service.getApp(appId, appVersion);
 			if (app == null) {
 				ErrorDTO appNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("App cannot be found for '%s'.", appId));
 				return Response.status(Status.NOT_FOUND).entity(appNotFoundError).build();
@@ -165,9 +179,10 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response appExists(@PathParam("appId") String appId, @PathParam("appVersion") String appVersion) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 		try {
-			boolean exists = appStoreService.appExists(appId, appVersion);
+			boolean exists = service.appExists(appId, appVersion);
 			result.put("exists", exists);
 
 		} catch (AppStoreException e) {
@@ -195,18 +210,19 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 
 		AppManifestDTO newAppDTO = null;
 
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 		try {
 			String appId = newAppRequestDTO.getAppId();
 			String appVersion = newAppRequestDTO.getVersion();
 
-			if (appStoreService.appExists(appId, appVersion)) {
+			if (service.appExists(appId, appVersion)) {
 				ErrorDTO appExistsError = new ErrorDTO(String.format("App '%s' already exists.", appVersion));
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
 			}
 
 			AppManifestRTO appToAdd = ModelConverter.getInstance().toRTO(newAppRequestDTO);
-			AppManifestRTO newApp = appStoreService.addApp(appToAdd);
+			AppManifestRTO newApp = service.addApp(appToAdd);
 			if (newApp == null) {
 				ErrorDTO newAppNotCreated = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "App is not added.");
 				return Response.status(Status.NOT_FOUND).entity(newAppNotCreated).build();
@@ -239,10 +255,11 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 		}
 
 		boolean succeed = false;
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 		try {
 			AppManifestRTO appToUpdate = ModelConverter.getInstance().toRTO(updateAppRequestDTO);
-			succeed = appStoreService.updateApp(appToUpdate);
+			succeed = service.updateApp(appToUpdate);
 
 		} catch (AppStoreException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -277,9 +294,10 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 		}
 
 		boolean succeed = false;
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 		try {
-			succeed = appStoreService.deleteApp(appId, appVersion);
+			succeed = service.deleteApp(appId, appVersion);
 
 		} catch (AppStoreException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -327,15 +345,16 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 		boolean succeed = false;
 
 		String fileName = fileDetail.getFileName();
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 		try {
-			AppManifestRTO app = appStoreService.getApp(appId, appVersion);
+			AppManifestRTO app = service.getApp(appId, appVersion);
 			if (app == null) {
 				ErrorDTO appExistsError = new ErrorDTO("App does not exists.");
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
 			}
 
-			succeed = appStoreService.uploadApp(appId, appVersion, fileName, uploadedInputStream);
+			succeed = service.uploadApp(appId, appVersion, fileName, uploadedInputStream);
 
 		} catch (AppStoreException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -379,9 +398,10 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 		byte[] fileContentBytes = null;
 		String fileName = null;
 
-		AppStoreService appStoreService = getService(AppStoreService.class);
+		// AppStoreService service = getService(AppStoreService.class);
+		AppStoreService service = getService();
 		try {
-			AppManifestRTO app = appStoreService.getApp(appId, appVersion);
+			AppManifestRTO app = service.getApp(appId, appVersion);
 			if (app == null) {
 				ErrorDTO appExistsError = new ErrorDTO("App does not exists.");
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
@@ -389,7 +409,7 @@ public class AppStoreAppsResource extends AbstractWSApplicationResource {
 
 			fileName = app.getFileName();
 
-			fileContentBytes = appStoreService.downloadApp(appId, appVersion);
+			fileContentBytes = service.downloadApp(appId, appVersion);
 
 		} catch (AppStoreException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

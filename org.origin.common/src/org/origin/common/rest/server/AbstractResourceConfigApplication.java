@@ -27,6 +27,13 @@ public class AbstractResourceConfigApplication extends ResourceConfig implements
 	public AbstractResourceConfigApplication(BundleContext bundleContext, String contextRoot) {
 		this.bundleContext = bundleContext;
 		this.contextRoot = contextRoot;
+
+		// if (!isEnabled(JacksonFeature.class)) {
+		// register(JacksonFeature.class);
+		// }
+		// if (!isEnabled(MultiPartFeature.class)) {
+		// register(MultiPartFeature.class);
+		// }
 	}
 
 	public synchronized boolean isStarted() {

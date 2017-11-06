@@ -1,5 +1,6 @@
 package org.orbit.component.server.tier3.domain.ws;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -16,11 +17,30 @@ import org.origin.common.rest.agent.CommonWSApplicationResource;
 @Produces(MediaType.APPLICATION_JSON)
 public class DomainMgmtServiceResource extends CommonWSApplicationResource {
 
+	@Inject
+	public DomainManagementService service;
+
+	protected DomainManagementService getService() throws RuntimeException {
+		if (this.service == null) {
+			throw new RuntimeException("DomainManagementService is not available.");
+		}
+		return this.service;
+	}
+
+	@Override
+	public <T> T getService(Class<T> serviceClass) {
+		if (DomainManagementService.class.isAssignableFrom(serviceClass)) {
+			return (T) getService();
+		}
+		return null;
+	}
+
 	@GET
 	@Path("ping")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ping() {
-		DomainManagementService service = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		if (service != null) {
 			return Response.ok(1).build();
 		}

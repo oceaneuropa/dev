@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -38,6 +39,16 @@ public class ConfigRegistryResource extends AbstractWSApplicationResource {
 	protected static final Properties EMPTY_PROPERTIES = new Properties();
 	protected static final Map<String, String> EMPTY_MAP = new LinkedHashMap<String, String>();
 
+	@Inject
+	public ConfigRegistryService service;
+
+	protected ConfigRegistryService getService() throws RuntimeException {
+		if (this.service == null) {
+			throw new RuntimeException("ConfigRegistryService is not available.");
+		}
+		return this.service;
+	}
+
 	/**
 	 * Get properties.
 	 * 
@@ -51,11 +62,12 @@ public class ConfigRegistryResource extends AbstractWSApplicationResource {
 	@Path("properties")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProperties(@PathParam("userid") String userId, @QueryParam("path") String path) {
-		ConfigRegistryService configRegistryService = getService(ConfigRegistryService.class);
+		// ConfigRegistryService service = getService(ConfigRegistryService.class);
+		ConfigRegistryService service = getService();
 
 		Map<String, String> properties = null;
 		try {
-			ConfigRegistry configRegistry = configRegistryService.getRegistry(userId);
+			ConfigRegistry configRegistry = service.getRegistry(userId);
 			properties = configRegistry.getProperties(new EPath(path));
 
 		} catch (ConfigRegistryException e) {
@@ -84,7 +96,8 @@ public class ConfigRegistryResource extends AbstractWSApplicationResource {
 			return Response.status(Status.BAD_REQUEST).entity(nullPropertiesError).build();
 		}
 
-		// ConfigurationRegistryService configRegistryService = getService(ConfigurationRegistryService.class);
+		// // ConfigurationRegistryService service = getService(ConfigurationRegistryService.class);
+		// ConfigRegistryService service = getService();
 		// try {
 		// configRegistryService.se
 		//

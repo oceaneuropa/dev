@@ -9,16 +9,18 @@ import org.orbit.component.server.tier3.domain.command.NodeConfigsGetCommand;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.command.ICommand;
 import org.origin.common.rest.agent.AbstractWSEditPolicy;
+import org.origin.common.rest.agent.CommonWSApplicationResource;
 import org.origin.common.rest.model.Request;
 
 public class NodeConfigEditPolicy extends AbstractWSEditPolicy {
 
 	@Override
-	public ICommand getCommand(Request request) {
-		DomainManagementService service = super.getService(DomainManagementService.class);
-		if (service == null) {
-			return null;
-		}
+	public ICommand getCommand(CommonWSApplicationResource resource, Request request) {
+		// DomainManagementService service = super.getService(DomainManagementService.class);
+		// if (service == null) {
+		// return null;
+		// }
+		DomainManagementService service = resource.getService(DomainManagementService.class);
 
 		String requestName = request.getRequestName();
 

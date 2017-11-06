@@ -71,6 +71,7 @@ public class OrbitConstants {
 	public static String COMPONENT_AUTH_NAME = "component.auth.name";
 	public static String COMPONENT_AUTH_HOST_URL = "component.auth.host.url";
 	public static String COMPONENT_AUTH_CONTEXT_ROOT = "component.auth.context_root";
+	public static String COMPONENT_AUTH_TOKEN_SECRET = "component.auth.token_secret";
 	// public static String COMPONENT_AUTH_JDBC_DRIVER = "component.auth.jdbc.driver";
 	// public static String COMPONENT_AUTH_JDBC_URL = "component.auth.jdbc.url";
 	// public static String COMPONENT_AUTH_JDBC_USERNAME = "component.auth.jdbc.username";

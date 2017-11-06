@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.origin.common.util.DateUtil;
 
-public class UserAccountRTO {
+public class UserAccount {
 
 	protected String userId; // required
 	protected String password; // required
@@ -20,7 +20,7 @@ public class UserAccountRTO {
 	/**
 	 * 
 	 */
-	public UserAccountRTO() {
+	public UserAccount() {
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class UserAccountRTO {
 	 * @param lastUpdateTime
 	 * @param activated
 	 */
-	public UserAccountRTO(String userId, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime, boolean activated) {
+	public UserAccount(String userId, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime, boolean activated) {
 		this.userId = userId;
 		this.password = password;
 		this.email = email;

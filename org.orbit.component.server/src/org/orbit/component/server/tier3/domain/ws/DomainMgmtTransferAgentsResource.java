@@ -3,6 +3,7 @@ package org.orbit.component.server.tier3.domain.ws;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -42,6 +43,16 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 @Produces(MediaType.APPLICATION_JSON)
 public class DomainMgmtTransferAgentsResource extends AbstractWSApplicationResource {
 
+	@Inject
+	public DomainManagementService service;
+
+	protected DomainManagementService getService() throws RuntimeException {
+		if (this.service == null) {
+			throw new RuntimeException("DomainManagementService is not available.");
+		}
+		return this.service;
+	}
+
 	/**
 	 * Get transfer agent configurations.
 	 * 
@@ -53,11 +64,12 @@ public class DomainMgmtTransferAgentsResource extends AbstractWSApplicationResou
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTransferAgents(@PathParam("machineId") String machineId) {
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 
 		List<TransferAgentConfigDTO> transferAgentConfigDTOs = new ArrayList<TransferAgentConfigDTO>();
 		try {
-			List<TransferAgentConfigRTO> transferAgentConfigs = domainMgmtService.getTransferAgentConfigs(machineId);
+			List<TransferAgentConfigRTO> transferAgentConfigs = service.getTransferAgentConfigs(machineId);
 			if (transferAgentConfigs != null) {
 				for (TransferAgentConfigRTO transferAgentConfig : transferAgentConfigs) {
 					TransferAgentConfigDTO transferAgentConfigDTO = ModelConverter.getInstance().toDTO(transferAgentConfig);
@@ -85,9 +97,10 @@ public class DomainMgmtTransferAgentsResource extends AbstractWSApplicationResou
 	public Response getTransferAgent(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId) {
 		TransferAgentConfigDTO transferAgentConfigDTO = null;
 
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
-			TransferAgentConfigRTO transferAgentConfig = domainMgmtService.getTransferAgentConfig(machineId, transferAgentId);
+			TransferAgentConfigRTO transferAgentConfig = service.getTransferAgentConfig(machineId, transferAgentId);
 			if (transferAgentConfig == null) {
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("TransferAgent with id '%s' cannot be found.", transferAgentId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
@@ -120,20 +133,21 @@ public class DomainMgmtTransferAgentsResource extends AbstractWSApplicationResou
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
 			String transferAgentId = addTransferAgentRequestDTO.getId();
 			if (transferAgentId == null || transferAgentId.isEmpty()) {
 				ErrorDTO emptyIdError = new ErrorDTO("transferAgentId Id is empty.");
 				return Response.status(Status.BAD_REQUEST).entity(emptyIdError).build();
 			}
-			if (domainMgmtService.transferAgentConfigExists(machineId, transferAgentId)) {
+			if (service.transferAgentConfigExists(machineId, transferAgentId)) {
 				ErrorDTO alreadyExistsError = new ErrorDTO(String.format("TransferAgent with Id '%s' already exists.", transferAgentId));
 				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
 			TransferAgentConfigRTO addTransferAgentRequest = ModelConverter.getInstance().toRTO(addTransferAgentRequestDTO);
-			succeed = domainMgmtService.addTransferAgentConfig(machineId, addTransferAgentRequest);
+			succeed = service.addTransferAgentConfig(machineId, addTransferAgentRequest);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -166,11 +180,12 @@ public class DomainMgmtTransferAgentsResource extends AbstractWSApplicationResou
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
 			TransferAgentConfigRTO updateTransferAgentRequest = ModelConverter.getInstance().toRTO(updateTransferAgentRequestDTO);
 			List<String> fieldsToUpdate = updateTransferAgentRequestDTO.getFieldsToUpdate();
-			succeed = domainMgmtService.updateTransferAgentConfig(machineId, updateTransferAgentRequest, fieldsToUpdate);
+			succeed = service.updateTransferAgentConfig(machineId, updateTransferAgentRequest, fieldsToUpdate);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -205,9 +220,10 @@ public class DomainMgmtTransferAgentsResource extends AbstractWSApplicationResou
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
-			succeed = domainMgmtService.deleteTransferAgentConfig(machineId, transferAgentId);
+			succeed = service.deleteTransferAgentConfig(machineId, transferAgentId);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

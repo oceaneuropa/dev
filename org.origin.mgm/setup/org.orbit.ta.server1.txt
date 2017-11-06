@@ -41,3 +41,18 @@ VM arguments:
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Dcomponent.transfer_agent.namespace=org.example -Dcomponent.transfer_agent.name=TransferAgent101 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta -Dcomponent.transfer_agent.home=/Users/example/origin/ta1
 
+v4
+---------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001 
+
+-DORIGIN_HOME=/Users/yayang/origin 
+-Dorbit.host.url=http://127.0.0.1:12001 
+
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.transfer_agent.namespace= group1 
+-Dcomponent.transfer_agent.name=TransferAgent101 
+-Dcomponent.transfer_agent.context_root=/orbit/v1/ta 
+-Dcomponent.transfer_agent.home=/Users/yayang/origin/ta1 
+---------------------------------------------------------------------------------------------------
+
+

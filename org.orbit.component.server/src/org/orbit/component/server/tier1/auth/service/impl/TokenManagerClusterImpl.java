@@ -43,6 +43,11 @@ public class TokenManagerClusterImpl implements TokenManager {
 		}
 
 		this.eventBus = EventBusUtil.getEventBus();
+		try {
+			this.eventBus.joinCluster(this.clusterName);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -52,7 +57,15 @@ public class TokenManagerClusterImpl implements TokenManager {
 			return;
 		}
 
-		this.eventBus = null;
+		if (this.eventBus != null) {
+			try {
+				this.eventBus.leaveCluster(this.clusterName);
+				this.eventBus.closeCluster(this.clusterName);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			this.eventBus = null;
+		}
 	}
 
 	@Override

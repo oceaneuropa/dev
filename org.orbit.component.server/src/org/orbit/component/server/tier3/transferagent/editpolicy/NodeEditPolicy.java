@@ -5,22 +5,24 @@ import org.orbit.component.server.tier3.transferagent.command.NodeCreateCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodeDeleteCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodeExistCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodeGetCommand;
+import org.orbit.component.server.tier3.transferagent.command.NodeListCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodeStartCommand;
 import org.orbit.component.server.tier3.transferagent.command.NodeStopCommand;
-import org.orbit.component.server.tier3.transferagent.command.NodeListCommand;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.command.ICommand;
 import org.origin.common.rest.agent.AbstractWSEditPolicy;
+import org.origin.common.rest.agent.CommonWSApplicationResource;
 import org.origin.common.rest.model.Request;
 
 public class NodeEditPolicy extends AbstractWSEditPolicy {
 
 	@Override
-	public ICommand getCommand(Request request) {
-		TransferAgentService service = super.getService(TransferAgentService.class);
-		if (service == null) {
-			return null;
-		}
+	public ICommand getCommand(CommonWSApplicationResource resource, Request request) {
+		// TransferAgentService service = super.getService(TransferAgentService.class);
+		// if (service == null) {
+		// return null;
+		// }
+		TransferAgentService service = resource.getService(TransferAgentService.class);
 
 		String requestName = request.getRequestName();
 		if (OrbitConstants.Requests.GET_NODES.equals(requestName)) {

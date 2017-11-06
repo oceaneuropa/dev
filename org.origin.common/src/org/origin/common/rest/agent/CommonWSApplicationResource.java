@@ -114,6 +114,10 @@ public class CommonWSApplicationResource extends AbstractWSApplicationResource {
 		return this.editPoliciesMap.get(role);
 	}
 
+	public <T> T getService(Class<T> serviceClass) {
+		return null;
+	}
+
 	/**
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/request (body parameter: Request)
 	 * 
@@ -137,7 +141,7 @@ public class CommonWSApplicationResource extends AbstractWSApplicationResource {
 				String role = editPolicyItor.next();
 				AbstractWSEditPolicy editPolicy = this.editPoliciesMap.get(role);
 				if (editPolicy != null) {
-					ICommand command = editPolicy.getCommand(request);
+					ICommand command = editPolicy.getCommand(this, request);
 					if (command != null) {
 						try {
 							commandStack.execute(context, command);

@@ -32,7 +32,7 @@ public class DomainManagementCLICommand implements Annotated {
 	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] AUTH_SERVICES_TITLES = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] MACHINE_CONFIG_TITLES = new String[] { "ID", "Name", "IP Address" };
-	protected static String[] TRANSFER_AGENT_CONFIG_TITLES = new String[] { "Machine ID", "ID", "Name", "hostURL", "contextRoot" };
+	protected static String[] TRANSFER_AGENT_CONFIG_TITLES = new String[] { "Machine ID", "ID", "Name", "hostURL", "contextRoot", "Home" };
 	protected static String[] NODE_CONFIG_TITLES = new String[] { "Machine ID", "Transfer Agent ID", "ID", "Name", "hostURL", "contextRoot" };
 
 	protected BundleContext bundleContext;
@@ -331,8 +331,9 @@ public class DomainManagementCLICommand implements Annotated {
 				String name = taConfig.getName();
 				String hostURL = taConfig.getHostURL();
 				String contextRoot = taConfig.getContextRoot();
+				String home = taConfig.getHome();
 
-				rows[rowIndex++] = new String[] { currMachineId, id, name, hostURL, contextRoot };
+				rows[rowIndex++] = new String[] { currMachineId, id, name, hostURL, contextRoot, home };
 			}
 			PrettyPrinter.prettyPrint(TRANSFER_AGENT_CONFIG_TITLES, rows, taConfigs.length);
 
@@ -375,11 +376,11 @@ public class DomainManagementCLICommand implements Annotated {
 			for (TransferAgentConfig taConfig : taConfigs) {
 				String taId = taConfig.getId();
 				String name = taConfig.getName();
-				String home = taConfig.getHome();
 				String hostURL = taConfig.getHostURL();
 				String contextRoot = taConfig.getContextRoot();
+				String home = taConfig.getHome();
 
-				rows[rowIndex++] = new String[] { machineId, taId, name, home, hostURL, contextRoot };
+				rows[rowIndex++] = new String[] { machineId, taId, name, hostURL, contextRoot, home };
 			}
 			PrettyPrinter.prettyPrint(TRANSFER_AGENT_CONFIG_TITLES, rows, taConfigs.length);
 

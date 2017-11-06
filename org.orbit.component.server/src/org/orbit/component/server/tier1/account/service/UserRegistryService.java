@@ -2,7 +2,7 @@ package org.orbit.component.server.tier1.account.service;
 
 import java.util.List;
 
-import org.orbit.component.model.tier1.account.UserAccountRTO;
+import org.orbit.component.model.tier1.account.UserAccount;
 import org.orbit.component.model.tier1.account.UserRegistryException;
 
 public interface UserRegistryService {
@@ -21,7 +21,7 @@ public interface UserRegistryService {
 	 * @return
 	 * @throws UserRegistryException
 	 */
-	List<UserAccountRTO> getUserAccounts() throws UserRegistryException;
+	List<UserAccount> getUserAccounts() throws UserRegistryException;
 
 	/**
 	 * Get a user account.
@@ -30,7 +30,7 @@ public interface UserRegistryService {
 	 * @return
 	 * @throws UserRegistryException
 	 */
-	UserAccountRTO getUserAccount(String userId) throws UserRegistryException;
+	UserAccount getUserAccount(String userId) throws UserRegistryException;
 
 	/**
 	 * Check whether a user account exists.
@@ -48,7 +48,7 @@ public interface UserRegistryService {
 	 * @return
 	 * @throws UserRegistryException
 	 */
-	UserAccountRTO registerUserAccount(UserAccountRTO newUserAccountRequest) throws UserRegistryException;
+	UserAccount registerUserAccount(UserAccount newUserAccountRequest) throws UserRegistryException;
 
 	/**
 	 * Update a user account.
@@ -57,7 +57,7 @@ public interface UserRegistryService {
 	 * @return
 	 * @throws UserRegistryException
 	 */
-	boolean updateUserAccount(UserAccountRTO updateUserAccountRequest) throws UserRegistryException;
+	boolean updateUserAccount(UserAccount updateUserAccountRequest) throws UserRegistryException;
 
 	/**
 	 * Delete a user account.

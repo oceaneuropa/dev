@@ -1,4 +1,4 @@
-package org.orbit.component.model.tier1.account;
+package org.orbit.component.model.tier1.account.dto;
 
 import java.util.Date;
 

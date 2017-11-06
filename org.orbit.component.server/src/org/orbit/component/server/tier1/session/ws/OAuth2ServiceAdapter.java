@@ -54,9 +54,8 @@ public class OAuth2ServiceAdapter {
 			@Override
 			public void modifiedService(ServiceReference<OAuth2Service> reference, OAuth2Service service) {
 				System.out.println("OAuth2Service [" + service + "] is modified.");
-
-				stopWebService(bundleContext, service);
-				startWebService(bundleContext, service);
+				// stopWebService(bundleContext, service);
+				// startWebService(bundleContext, service);
 			}
 
 			@Override
@@ -86,7 +85,7 @@ public class OAuth2ServiceAdapter {
 	 * @param service
 	 */
 	protected void startWebService(BundleContext bundleContext, OAuth2Service service) {
-		this.webApp = new OAuth2WSApplication();
+		this.webApp = new OAuth2WSApplication(bundleContext, service);
 		this.webApp.setBundleContext(bundleContext);
 		this.webApp.setContextRoot(service.getContextRoot());
 		if (this.indexProviderLoadBalancer != null) {

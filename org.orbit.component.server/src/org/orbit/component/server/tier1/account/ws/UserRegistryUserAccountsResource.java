@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -18,9 +19,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.component.model.tier1.account.ModelConverter;
-import org.orbit.component.model.tier1.account.UserAccountDTO;
-import org.orbit.component.model.tier1.account.UserAccountRTO;
+import org.orbit.component.model.tier1.account.UserAccount;
 import org.orbit.component.model.tier1.account.UserRegistryException;
+import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
 import org.orbit.component.server.tier1.account.service.UserRegistryService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
@@ -47,6 +48,16 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 @Produces(MediaType.APPLICATION_JSON)
 public class UserRegistryUserAccountsResource extends AbstractWSApplicationResource {
 
+	@Inject
+	public UserRegistryService service;
+
+	protected UserRegistryService getService() throws RuntimeException {
+		if (this.service == null) {
+			throw new RuntimeException("UserRegistryService is not available.");
+		}
+		return this.service;
+	}
+
 	/**
 	 * Get user accounts.
 	 * 
@@ -57,13 +68,14 @@ public class UserRegistryUserAccountsResource extends AbstractWSApplicationResou
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserAccounts() {
-		UserRegistryService userRegistryService = getService(UserRegistryService.class);
+		// UserRegistryService service = getService(UserRegistryService.class);
+		UserRegistryService service = getService();
 
 		List<UserAccountDTO> userAccountDTOs = new ArrayList<UserAccountDTO>();
 		try {
-			List<UserAccountRTO> userAccounts = userRegistryService.getUserAccounts();
+			List<UserAccount> userAccounts = service.getUserAccounts();
 			if (userAccounts != null) {
-				for (UserAccountRTO userAccount : userAccounts) {
+				for (UserAccount userAccount : userAccounts) {
 					UserAccountDTO userAccountDTO = ModelConverter.getInstance().toDTO(userAccount);
 					userAccountDTOs.add(userAccountDTO);
 				}
@@ -89,9 +101,10 @@ public class UserRegistryUserAccountsResource extends AbstractWSApplicationResou
 	public Response getUserAccount(@PathParam("userId") String userId) {
 		UserAccountDTO userAccountDTO = null;
 
-		UserRegistryService userRegistryService = getService(UserRegistryService.class);
+		// UserRegistryService service = getService(UserRegistryService.class);
+		UserRegistryService service = getService();
 		try {
-			UserAccountRTO userAccount = userRegistryService.getUserAccount(userId);
+			UserAccount userAccount = service.getUserAccount(userId);
 			if (userAccount == null) {
 				ErrorDTO userAccountNotFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", userId));
 				return Response.status(Status.NOT_FOUND).entity(userAccountNotFoundError).build();
@@ -119,9 +132,10 @@ public class UserRegistryUserAccountsResource extends AbstractWSApplicationResou
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response userAccountExists(@PathParam("userId") String userId) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		UserRegistryService userRegistryService = getService(UserRegistryService.class);
+		// UserRegistryService service = getService(UserRegistryService.class);
+		UserRegistryService service = getService();
 		try {
-			boolean exists = userRegistryService.userAccountExists(userId);
+			boolean exists = service.userAccountExists(userId);
 			result.put("exists", exists);
 
 		} catch (UserRegistryException e) {
@@ -148,10 +162,11 @@ public class UserRegistryUserAccountsResource extends AbstractWSApplicationResou
 		}
 
 		boolean succeed = false;
-		UserRegistryService userRegistryService = getService(UserRegistryService.class);
+		// UserRegistryService service = getService(UserRegistryService.class);
+		UserRegistryService service = getService();
 		try {
-			UserAccountRTO newUserAccountRequest = ModelConverter.getInstance().toRTO(newUserAccountRequestDTO);
-			UserAccountRTO newUserAccount = userRegistryService.registerUserAccount(newUserAccountRequest);
+			UserAccount newUserAccountRequest = ModelConverter.getInstance().toRTO(newUserAccountRequestDTO);
+			UserAccount newUserAccount = service.registerUserAccount(newUserAccountRequest);
 			if (newUserAccount != null) {
 				succeed = true;
 			}
@@ -187,10 +202,11 @@ public class UserRegistryUserAccountsResource extends AbstractWSApplicationResou
 		}
 
 		boolean succeed = false;
-		UserRegistryService userRegistryService = getService(UserRegistryService.class);
+		// UserRegistryService service = getService(UserRegistryService.class);
+		UserRegistryService service = getService();
 		try {
-			UserAccountRTO updateUserAccountRequest = ModelConverter.getInstance().toRTO(updateUserAccountRequestDTO);
-			succeed = userRegistryService.updateUserAccount(updateUserAccountRequest);
+			UserAccount updateUserAccountRequest = ModelConverter.getInstance().toRTO(updateUserAccountRequestDTO);
+			succeed = service.updateUserAccount(updateUserAccountRequest);
 
 		} catch (UserRegistryException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -224,9 +240,10 @@ public class UserRegistryUserAccountsResource extends AbstractWSApplicationResou
 		}
 
 		boolean succeed = false;
-		UserRegistryService userRegistryService = getService(UserRegistryService.class);
+		// UserRegistryService service = getService(UserRegistryService.class);
+		UserRegistryService service = getService();
 		try {
-			succeed = userRegistryService.deleteUserAccount(userId);
+			succeed = service.deleteUserAccount(userId);
 
 		} catch (UserRegistryException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -255,9 +272,10 @@ public class UserRegistryUserAccountsResource extends AbstractWSApplicationResou
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response isUserAccountActivated(@PathParam("userId") String userId) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		UserRegistryService userRegistryService = getService(UserRegistryService.class);
+		// UserRegistryService service = getService(UserRegistryService.class);
+		UserRegistryService service = getService();
 		try {
-			boolean activated = userRegistryService.isUserAccountActivated(userId);
+			boolean activated = service.isUserAccountActivated(userId);
 			result.put("activated", activated);
 
 		} catch (UserRegistryException e) {

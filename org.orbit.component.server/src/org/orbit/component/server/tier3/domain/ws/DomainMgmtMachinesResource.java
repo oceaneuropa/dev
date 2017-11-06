@@ -3,6 +3,7 @@ package org.orbit.component.server.tier3.domain.ws;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -44,6 +45,16 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 @Produces(MediaType.APPLICATION_JSON)
 public class DomainMgmtMachinesResource extends AbstractWSApplicationResource {
 
+	@Inject
+	public DomainManagementService service;
+
+	protected DomainManagementService getService() throws RuntimeException {
+		if (this.service == null) {
+			throw new RuntimeException("DomainManagementService is not available.");
+		}
+		return this.service;
+	}
+
 	/**
 	 * Get machine configurations.
 	 * 
@@ -54,11 +65,12 @@ public class DomainMgmtMachinesResource extends AbstractWSApplicationResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMachines() {
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 
 		List<MachineConfigDTO> machineConfigDTOs = new ArrayList<MachineConfigDTO>();
 		try {
-			List<MachineConfigRTO> machineConfigs = domainMgmtService.getMachineConfigs();
+			List<MachineConfigRTO> machineConfigs = service.getMachineConfigs();
 			if (machineConfigs != null) {
 				for (MachineConfigRTO machineConfig : machineConfigs) {
 					MachineConfigDTO machineConfigDTO = ModelConverter.getInstance().toDTO(machineConfig);
@@ -86,9 +98,10 @@ public class DomainMgmtMachinesResource extends AbstractWSApplicationResource {
 	public Response getMachine(@PathParam("machineId") String machineId) {
 		MachineConfigDTO machineConfigDTO = null;
 
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
-			MachineConfigRTO machineConfig = domainMgmtService.getMachineConfig(machineId);
+			MachineConfigRTO machineConfig = service.getMachineConfig(machineId);
 			if (machineConfig == null) {
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Machine with id '%s' cannot be found.", machineId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
@@ -120,20 +133,21 @@ public class DomainMgmtMachinesResource extends AbstractWSApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
 			String machineId = addMachineRequestDTO.getId();
 			if (machineId == null || machineId.isEmpty()) {
 				ErrorDTO emptyIdError = new ErrorDTO("machine Id is empty.");
 				return Response.status(Status.BAD_REQUEST).entity(emptyIdError).build();
 			}
-			if (domainMgmtService.machineConfigExists(machineId)) {
+			if (service.machineConfigExists(machineId)) {
 				ErrorDTO alreadyExistsError = new ErrorDTO(String.format("Machine with Id '%s' already exists.", machineId));
 				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
 			MachineConfigRTO addMachineRequest = ModelConverter.getInstance().toRTO(addMachineRequestDTO);
-			succeed = domainMgmtService.addMachineConfig(addMachineRequest);
+			succeed = service.addMachineConfig(addMachineRequest);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -165,11 +179,12 @@ public class DomainMgmtMachinesResource extends AbstractWSApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
 			MachineConfigRTO updateMachineRequest = ModelConverter.getInstance().toRTO(updateMachineRequestDTO);
 			List<String> fieldsToUpdate = updateMachineRequestDTO.getFieldsToUpdate();
-			succeed = domainMgmtService.updateMachineConfig(updateMachineRequest, fieldsToUpdate);
+			succeed = service.updateMachineConfig(updateMachineRequest, fieldsToUpdate);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -205,13 +220,14 @@ public class DomainMgmtMachinesResource extends AbstractWSApplicationResource {
 		}
 
 		boolean succeed = false;
-		DomainManagementService domainMgmtService = getService(DomainManagementService.class);
+		// DomainManagementService service = getService(DomainManagementService.class);
+		DomainManagementService service = getService();
 		try {
-			if (!domainMgmtService.machineConfigExists(machineId)) {
+			if (!service.machineConfigExists(machineId)) {
 				StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.FAILED, "Machine does not exist.");
 				return Response.ok().entity(statusDTO).build();
 			}
-			succeed = domainMgmtService.deleteMachineConfig(machineId);
+			succeed = service.deleteMachineConfig(machineId);
 
 		} catch (DomainMgmtException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

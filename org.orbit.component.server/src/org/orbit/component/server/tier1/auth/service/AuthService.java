@@ -11,9 +11,10 @@ public interface AuthService {
 	/**
 	 * Grant type constants
 	 * 
-	 * "client_credentials" for app login
+	 * "client_credentials" for app authorization. A third party app wants to access a resource (e.g. photos, contacts, etc.) of the user. This will be useful
+	 * when apps are available.
 	 * 
-	 * "user_credentials" for user login
+	 * "user_credentials" for user authorization
 	 * 
 	 * "refresh_token" for refreshing token
 	 */
@@ -21,44 +22,16 @@ public interface AuthService {
 	public static final String GRANT_TYPE__USER_CREDENTIALS = "user_credentials"; //$NON-NLS-1$
 	public static final String GRANT_TYPE__REFRESH_TOKEN = "refresh_token"; //$NON-NLS-1$
 
-	/**
-	 * 
-	 * @return
-	 */
 	String getNamespace();
 
-	/**
-	 * 
-	 * @return
-	 */
 	String getName();
 
-	/**
-	 * 
-	 * @return
-	 */
 	String getHostURL();
 
-	/**
-	 * 
-	 * @return
-	 */
 	String getContextRoot();
 
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 * @throws AuthException
-	 */
 	AuthorizationResponse onAuthorize(AuthorizationRequest request) throws AuthException;
 
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 * @throws AuthException
-	 */
 	TokenResponse onToken(TokenRequest request) throws AuthException;
 
 }

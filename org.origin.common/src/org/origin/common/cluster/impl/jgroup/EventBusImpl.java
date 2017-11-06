@@ -154,6 +154,19 @@ public class EventBusImpl implements EventBus {
 	// --------------------------------------------
 	// Life cycle
 	// --------------------------------------------
+	@Override
+	public void joinCluster(String clusterName) throws Exception {
+		Channel channel = findOrCreateChannel(clusterName);
+		if (channel == null) {
+			throw new RuntimeException("Cannot create jgroup Channel.");
+		}
+
+		EventGroup eventGroup = findOrCreateEventGroup(clusterName, channel);
+		if (eventGroup == null) {
+			throw new RuntimeException("Cannot create EventGroup.");
+		}
+	}
+
 	/**
 	 * Close EventGroup and JCannel.
 	 * 
@@ -163,41 +176,40 @@ public class EventBusImpl implements EventBus {
 	 * @param clusterName
 	 */
 	@Override
-	public void close(String clusterName) throws Exception {
+	public void leaveCluster(String clusterName) throws Exception {
 		this.rwlock.writeLock().lock();
 		try {
 			clusterName = checkClusterName(clusterName);
-
-			Exception ex1 = null;
-			Exception ex2 = null;
 
 			EventGroup eventGroup = this.clusterNameToEventGroupMap.remove(clusterName);
 			if (eventGroup != null) {
 				try {
 					eventGroup.stop();
 				} catch (Exception e) {
-					ex1 = e;
 					e.printStackTrace();
+					throw e;
 				}
 			}
+		} finally {
+			this.rwlock.writeLock().unlock();
+		}
+	}
+
+	@Override
+	public void closeCluster(String clusterName) throws Exception {
+		this.rwlock.writeLock().lock();
+		try {
+			clusterName = checkClusterName(clusterName);
 
 			Channel channel = this.clusterNameToChannelMap.remove(clusterName);
 			if (channel != null) {
 				try {
 					channel.close();
 				} catch (Exception e) {
-					ex2 = e;
 					e.printStackTrace();
+					throw e;
 				}
 			}
-
-			if (ex1 != null) {
-				throw ex1;
-			}
-			if (ex2 != null) {
-				throw ex2;
-			}
-
 		} finally {
 			this.rwlock.writeLock().unlock();
 		}

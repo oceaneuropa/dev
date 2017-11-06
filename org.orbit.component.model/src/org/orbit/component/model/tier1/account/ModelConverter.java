@@ -1,5 +1,6 @@
 package org.orbit.component.model.tier1.account;
 
+import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
 import org.origin.common.rest.model.ErrorDTO;
 
 public class ModelConverter {
@@ -47,7 +48,7 @@ public class ModelConverter {
 	 * @param userAccount
 	 * @return
 	 */
-	public UserAccountDTO toDTO(UserAccountRTO userAccount) {
+	public UserAccountDTO toDTO(UserAccount userAccount) {
 		if (userAccount == null) {
 			return null;
 		}
@@ -75,11 +76,11 @@ public class ModelConverter {
 	 * @param userAccountDTO
 	 * @return
 	 */
-	public UserAccountRTO toRTO(UserAccountDTO userAccountDTO) {
+	public UserAccount toRTO(UserAccountDTO userAccountDTO) {
 		if (userAccountDTO == null) {
 			return null;
 		}
-		UserAccountRTO userAccount = new UserAccountRTO();
+		UserAccount userAccount = new UserAccount();
 
 		userAccount.setUserId(userAccountDTO.getUserId());
 		userAccount.setPassword(userAccountDTO.getPassword());

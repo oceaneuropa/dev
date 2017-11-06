@@ -1,26 +1,42 @@
 package org.orbit.component.server.tier1.session.ws;
 
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Set;
 
 import javax.ws.rs.core.Application;
 
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.server.tier1.session.service.OAuth2Service;
 import org.origin.common.rest.Constants;
-import org.origin.common.rest.server.AbstractApplication;
+import org.origin.common.rest.server.AbstractResourceConfigApplication;
 import org.origin.mgm.client.api.IndexProvider;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class OAuth2WSApplication extends AbstractApplication {
+public class OAuth2WSApplication extends AbstractResourceConfigApplication /* AbstractApplication */ {
 
 	// protected static Logger logger = LoggerFactory.getLogger(OAuth2WSApplication.class);
-
+	protected OAuth2Service service;
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
 	// protected OAuth2ServiceIndexTimer serviceIndexTimer;
 	protected OAuth2ServiceIndexTimerV2 serviceIndexTimer;
 
-	public OAuth2WSApplication() {
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
+	public OAuth2WSApplication(final BundleContext bundleContext, final OAuth2Service service) {
+		super(bundleContext, service.getContextRoot());
+		this.service = service;
+
+		register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(service).to(OAuth2Service.class);
+			}
+		});
+		register(OAuth2ServiceResource.class);
 	}
 
 	public IndexProvider getIndexProvider() {
@@ -46,7 +62,7 @@ public class OAuth2WSApplication extends AbstractApplication {
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start timer for indexing the service
-		this.serviceIndexTimer = new OAuth2ServiceIndexTimerV2(this.indexProvider);
+		this.serviceIndexTimer = new OAuth2ServiceIndexTimerV2(this.indexProvider, this.service);
 		this.serviceIndexTimer.start();
 	}
 
@@ -72,17 +88,17 @@ public class OAuth2WSApplication extends AbstractApplication {
 		super.stop();
 	}
 
-	@Override
-	public Set<Class<?>> getClasses() {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-
-		// resources
-		classes.add(OAuth2ServiceResource.class);
-
-		// resolvers
-		classes.add(OAuth2ServiceResolver.class);
-
-		return classes;
-	}
+	// @Override
+	// public Set<Class<?>> getClasses() {
+	// Set<Class<?>> classes = new HashSet<Class<?>>();
+	//
+	// // resources
+	// classes.add(OAuth2ServiceResource.class);
+	//
+	// // resolvers
+	// classes.add(OAuth2ServiceResolver.class);
+	//
+	// return classes;
+	// }
 
 }

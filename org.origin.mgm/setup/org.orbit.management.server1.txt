@@ -119,6 +119,7 @@ backup5:
 -Dcomponent.auth.namespace=group1 
 -Dcomponent.auth.name=Auth1 
 -Dcomponent.auth.context_root=/orbit/v1/auth 
+-Dcomponent.auth.token_secret=Einstein@mtswz
 
 -Dcomponent.domain_mgmt.namespace=group1 
 -Dcomponent.domain_mgmt.name=Domain1 

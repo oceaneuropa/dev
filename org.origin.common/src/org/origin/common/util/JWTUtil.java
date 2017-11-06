@@ -27,7 +27,7 @@ public class JWTUtil {
 	 * @param keyValuePairs
 	 * @return
 	 */
-	public static String createToken_HMAC256(String secret, String issuer, String subject, String audiences, Date expiresAt, String[]... keyValuePairs) {
+	public static String createToken(String secret, String issuer, String subject, String audiences, Date expiresAt, String[]... keyValuePairs) throws Exception {
 		String token = null;
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -46,10 +46,12 @@ public class JWTUtil {
 		} catch (UnsupportedEncodingException exception) {
 			// UTF-8 encoding not supported
 			exception.printStackTrace();
+			throw exception;
 
 		} catch (JWTCreationException exception) {
 			// Invalid Signing configuration / Couldn't convert Claims.
 			exception.printStackTrace();
+			throw exception;
 		}
 		return token;
 	}
@@ -60,11 +62,12 @@ public class JWTUtil {
 	 * @param issuer
 	 * @param token
 	 */
-	public static void verifyToken_HMAC256(String secret, String issuer, String token) {
+	public static DecodedJWT verifyToken(String secret, String issuer, String token) throws Exception {
+		DecodedJWT jwt = null;
 		try {
 			Algorithm algorithm = Algorithm.HMAC256(secret);
 			JWTVerifier verifier = JWT.require(algorithm).withIssuer(issuer).build(); // Reusable verifier instance
-			DecodedJWT jwt = verifier.verify(token);
+			jwt = verifier.verify(token);
 
 			System.out.println("Verified JWT:\r\n" + jwt);
 			if (jwt != null) {
@@ -126,10 +129,14 @@ public class JWTUtil {
 		} catch (UnsupportedEncodingException exception) {
 			// UTF-8 encoding not supported
 			exception.printStackTrace();
+			throw exception;
+
 		} catch (JWTVerificationException exception) {
 			// Invalid signature/claims
 			exception.printStackTrace();
+			throw exception;
 		}
+		return jwt;
 	}
 
 	/**
@@ -137,18 +144,23 @@ public class JWTUtil {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		Date expiresAt = DateUtil.addMinutes(new Date(), 30);
+		try {
+			Date expiresAt = DateUtil.addMinutes(new Date(), 30);
 
-		String jwt = JWTUtil.createToken_HMAC256("secret1", "auth1", "subject", "audiences", expiresAt, //
-				new String[] { "username", "tomhanks123" }, //
-				new String[] { "email", "tomhanks@tom.com" }, //
-				new String[] { "firstName", "Tom" }, //
-				new String[] { "lastName", "Hanks" } //
-		);
-		System.out.println("Created token1:\r\n" + jwt);
-		System.out.println();
+			String jwt = JWTUtil.createToken("secret1", "auth1", "subject", "audiences", expiresAt, //
+					new String[] { "username", "tomhanks123" }, //
+					new String[] { "email", "tomhanks@tom.com" }, //
+					new String[] { "firstName", "Tom" }, //
+					new String[] { "lastName", "Hanks" } //
+			);
+			System.out.println("Created token1:\r\n" + jwt);
+			System.out.println();
 
-		verifyToken_HMAC256("secret1", "auth1", jwt);
+			verifyToken("secret1", "auth1", jwt);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }

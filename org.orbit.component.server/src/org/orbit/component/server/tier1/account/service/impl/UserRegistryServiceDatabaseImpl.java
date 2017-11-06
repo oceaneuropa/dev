@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.model.tier1.account.UserAccountRTO;
+import org.orbit.component.model.tier1.account.UserAccount;
 import org.orbit.component.model.tier1.account.UserRegistryException;
 import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.tier1.account.service.UserRegistryService;
@@ -207,7 +207,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 	}
 
 	@Override
-	public List<UserAccountRTO> getUserAccounts() throws UserRegistryException {
+	public List<UserAccount> getUserAccounts() throws UserRegistryException {
 		Connection conn = getConnection();
 		try {
 			return this.userAccountTableHandler.getUserAccounts(conn);
@@ -220,7 +220,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 	}
 
 	@Override
-	public UserAccountRTO getUserAccount(String userId) throws UserRegistryException {
+	public UserAccount getUserAccount(String userId) throws UserRegistryException {
 		checkUserId(userId);
 
 		Connection conn = getConnection();
@@ -250,7 +250,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 	}
 
 	@Override
-	public UserAccountRTO registerUserAccount(UserAccountRTO newAccountRequest) throws UserRegistryException {
+	public UserAccount registerUserAccount(UserAccount newAccountRequest) throws UserRegistryException {
 		String userId = newAccountRequest.getUserId();
 		String password = newAccountRequest.getPassword();
 		String email = newAccountRequest.getEmail();
@@ -276,7 +276,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean updateUserAccount(UserAccountRTO updateAccountRequest) throws UserRegistryException {
+	public boolean updateUserAccount(UserAccount updateAccountRequest) throws UserRegistryException {
 		String userId = updateAccountRequest.getUserId();
 		String newPassword = updateAccountRequest.getPassword();
 		String newEmail = updateAccountRequest.getEmail();
@@ -290,7 +290,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 
 		Connection conn = getConnection();
 		try {
-			UserAccountRTO userAccount = this.userAccountTableHandler.getUserAccount(conn, userId);
+			UserAccount userAccount = this.userAccountTableHandler.getUserAccount(conn, userId);
 			if (userAccount == null) {
 				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
 			}
@@ -384,7 +384,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 
 		Connection conn = getConnection();
 		try {
-			UserAccountRTO userAccount = this.userAccountTableHandler.getUserAccount(conn, userId);
+			UserAccount userAccount = this.userAccountTableHandler.getUserAccount(conn, userId);
 			if (userAccount == null) {
 				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
 			}

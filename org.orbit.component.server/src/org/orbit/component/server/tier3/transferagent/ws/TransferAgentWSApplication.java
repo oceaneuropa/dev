@@ -1,10 +1,17 @@
 package org.orbit.component.server.tier3.transferagent.ws;
 
 import java.util.Hashtable;
+import java.util.List;
 
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.process.Inflector;
+import org.glassfish.jersey.server.model.Resource;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractResourceConfigApplication;
@@ -14,7 +21,19 @@ import org.origin.mgm.client.api.IndexProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+/**
+ * https://www.programcreek.com/java-api-examples/index.php?source_dir=para-master/para-server/src/main/java/com/erudika/para/rest/Api1.java
+ *
+ */
 public class TransferAgentWSApplication extends AbstractResourceConfigApplication {
+
+	public static final String PATH = "/v1/";
+	public static final String JSON = MediaType.APPLICATION_JSON;
+	public static final String GET = HttpMethod.GET;
+	public static final String PUT = HttpMethod.PUT;
+	public static final String POST = HttpMethod.POST;
+	public static final String DELETE = HttpMethod.DELETE;
+	public static final String PATCH = "PATCH";
 
 	protected TransferAgentService service;
 	protected IndexProvider indexProvider;
@@ -40,6 +59,10 @@ public class TransferAgentWSApplication extends AbstractResourceConfigApplicatio
 			}
 		});
 		register(TransferAgentServiceResource.class);
+
+		Resource.Builder idResource = Resource.builder("id/{id}");
+		idResource.addMethod(GET).produces(JSON).handledBy(idWebServiceResourceGetHandler());
+		registerResources(idResource.build());
 	}
 
 	public TransferAgentService getTransferAgentService() {
@@ -127,6 +150,36 @@ public class TransferAgentWSApplication extends AbstractResourceConfigApplicatio
 		super.stop();
 	}
 
+	protected Inflector<ContainerRequestContext, Response> idWebServiceResourceGetHandler() {
+		return new Inflector<ContainerRequestContext, Response>() {
+			@Override
+			public Response apply(ContainerRequestContext requestContext) {
+				String id = pathParam("id", requestContext);
+				return Response.ok("Hello: " + id).build();
+			}
+		};
+	}
+
+	protected String pathParam(String param, ContainerRequestContext ctx) {
+		return ctx.getUriInfo().getPathParameters().getFirst(param);
+	}
+
+	protected List<String> pathParams(String param, ContainerRequestContext ctx) {
+		return ctx.getUriInfo().getPathParameters().get(param);
+	}
+
+	protected String queryParam(String param, ContainerRequestContext ctx) {
+		return ctx.getUriInfo().getQueryParameters().getFirst(param);
+	}
+
+	protected List<String> queryParams(String param, ContainerRequestContext ctx) {
+		return ctx.getUriInfo().getQueryParameters().get(param);
+	}
+
+	protected boolean hasQueryParam(String param, ContainerRequestContext ctx) {
+		return ctx.getUriInfo().getQueryParameters().containsKey(param);
+	}
+
 }
 
 // protected TransferAgentServiceTimer serviceIndexTimer;
@@ -147,4 +200,12 @@ public class TransferAgentWSApplication extends AbstractResourceConfigApplicatio
 // classes.add(MultiPartFeature.class);
 //
 // return classes;
+// }
+
+// private Locale getLocale(String localeStr) {
+// try {
+// return LocaleUtils.toLocale(localeStr);
+// } catch (Exception e) {
+// return Locale.US;
+// }
 // }
