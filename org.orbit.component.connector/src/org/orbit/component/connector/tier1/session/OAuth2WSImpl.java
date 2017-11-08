@@ -7,7 +7,7 @@ import org.orbit.component.api.tier1.session.OAuth2;
 import org.orbit.component.connector.OrbitConstants;
 import org.origin.common.rest.client.ClientConfiguration;
 
-public class OAuth2Impl implements OAuth2 {
+public class OAuth2WSImpl implements OAuth2 {
 
 	protected Map<String, Object> properties;
 	protected OAuth2WSClient client;
@@ -19,7 +19,7 @@ public class OAuth2Impl implements OAuth2 {
 	 * 
 	 * @param properties
 	 */
-	public OAuth2Impl(Map<String, Object> properties) {
+	public OAuth2WSImpl(Map<String, Object> properties) {
 		this.properties = properties;
 		this.loadBalanceId = getLoadBalanceId(this.properties);
 		initClient();

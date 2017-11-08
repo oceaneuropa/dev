@@ -264,17 +264,6 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * 
 	 * @param conn
 	 * @param userId
-	 * @return
-	 * @throws SQLException
-	 */
-	public boolean deleteUserAccount(Connection conn, String userId) throws SQLException {
-		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE userId=?", new Object[] { userId }, 1);
-	}
-
-	/**
-	 * 
-	 * @param conn
-	 * @param userId
 	 * @param activated
 	 * @return
 	 * @throws SQLException
@@ -289,6 +278,17 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 			return true;
 		}
 		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET activated=? WHERE userId=?", new Object[] { activated, userId }, 1);
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param userId
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean deleteUserAccount(Connection conn, String userId) throws SQLException {
+		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE userId=?", new Object[] { userId }, 1);
 	}
 
 }

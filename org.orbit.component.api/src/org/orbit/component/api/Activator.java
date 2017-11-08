@@ -6,8 +6,9 @@ import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgentAdapter;
-import org.orbit.component.cli.SystemCommand;
+import org.orbit.component.cli.ServicesCommand;
 import org.orbit.component.cli.tier1.AuthCommand;
+import org.orbit.component.cli.tier1.UserRegistryCommand;
 import org.orbit.component.cli.tier2.AppStoreCLICommand;
 import org.orbit.component.cli.tier3.DomainManagementCLICommand;
 import org.orbit.component.cli.tier3.TransferAgentCLICommand;
@@ -35,7 +36,6 @@ public class Activator implements BundleActivator {
 	// --------------------------------------------------------------------------------
 	protected ServiceTracker<UserRegistryConnector, UserRegistryConnector> userRegistryConnectorTracker;
 	protected ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector> configRegistryConnectorTracker;
-	// protected ServiceTracker<OAuth2Connector, OAuth2Connector> oauth2ConnectorTracker;
 	protected ServiceTracker<AuthConnector, AuthConnector> authConnectorTracker;
 
 	// --------------------------------------------------------------------------------
@@ -49,11 +49,12 @@ public class Activator implements BundleActivator {
 	protected ServiceTracker<DomainManagementConnector, DomainManagementConnector> domainMgmtConnectorTracker;
 	protected TransferAgentAdapter transferAgentAdapter;
 
-	protected SystemCommand systemCommand;
+	protected ServicesCommand servicesCommand;
 	protected AuthCommand authCommand;
+	protected UserRegistryCommand userRegistryCommand;
 	protected AppStoreCLICommand appStoreCommand;
 	protected DomainManagementCLICommand domainMgmtCommand;
-	protected TransferAgentCLICommand taCommand;
+	protected TransferAgentCLICommand transferAgentCommand;
 
 	protected boolean debug = true;
 
@@ -65,7 +66,6 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Start tier1 service connectors
 		// --------------------------------------------------------------------------------
-		// Start ServiceTracker for tracking UserRegistryConnector service
 		this.userRegistryConnectorTracker = new ServiceTracker<UserRegistryConnector, UserRegistryConnector>(bundleContext, UserRegistryConnector.class, new ServiceTrackerCustomizer<UserRegistryConnector, UserRegistryConnector>() {
 			@Override
 			public UserRegistryConnector addingService(ServiceReference<UserRegistryConnector> reference) {
@@ -90,7 +90,6 @@ public class Activator implements BundleActivator {
 			}
 		});
 
-		// Start ServiceTracker for tracking ConfigRegistryConnector service
 		this.configRegistryConnectorTracker = new ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector>(bundleContext, ConfigRegistryConnector.class, new ServiceTrackerCustomizer<ConfigRegistryConnector, ConfigRegistryConnector>() {
 			@Override
 			public ConfigRegistryConnector addingService(ServiceReference<ConfigRegistryConnector> reference) {
@@ -116,7 +115,6 @@ public class Activator implements BundleActivator {
 		});
 		this.configRegistryConnectorTracker.open();
 
-		// Start ServiceTracker for tracking AuthConnector service
 		this.authConnectorTracker = new ServiceTracker<AuthConnector, AuthConnector>(bundleContext, AuthConnector.class, new ServiceTrackerCustomizer<AuthConnector, AuthConnector>() {
 			@Override
 			public AuthConnector addingService(ServiceReference<AuthConnector> reference) {
@@ -144,7 +142,6 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Start tier2 service connectors
 		// --------------------------------------------------------------------------------
-		// Start ServiceTracker for tracking AppStoreConnector service
 		this.appStoreConnectorTracker = new ServiceTracker<AppStoreConnector, AppStoreConnector>(bundleContext, AppStoreConnector.class, new ServiceTrackerCustomizer<AppStoreConnector, AppStoreConnector>() {
 			@Override
 			public AppStoreConnector addingService(ServiceReference<AppStoreConnector> reference) {
@@ -203,11 +200,14 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Start CLI commands
 		// --------------------------------------------------------------------------------
-		this.systemCommand = new SystemCommand(bundleContext);
-		this.systemCommand.start();
+		this.servicesCommand = new ServicesCommand(bundleContext);
+		this.servicesCommand.start();
 
 		this.authCommand = new AuthCommand(bundleContext);
 		this.authCommand.start();
+
+		this.userRegistryCommand = new UserRegistryCommand(bundleContext);
+		this.userRegistryCommand.start();
 
 		this.appStoreCommand = new AppStoreCLICommand(bundleContext);
 		this.appStoreCommand.start();
@@ -215,8 +215,8 @@ public class Activator implements BundleActivator {
 		this.domainMgmtCommand = new DomainManagementCLICommand(bundleContext);
 		this.domainMgmtCommand.start();
 
-		this.taCommand = new TransferAgentCLICommand(bundleContext);
-		this.taCommand.start();
+		this.transferAgentCommand = new TransferAgentCLICommand(bundleContext);
+		this.transferAgentCommand.start();
 	}
 
 	@Override
@@ -224,14 +224,19 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Stop CLI commands
 		// --------------------------------------------------------------------------------
-		if (this.systemCommand != null) {
-			this.systemCommand.stop();
-			this.systemCommand = null;
+		if (this.servicesCommand != null) {
+			this.servicesCommand.stop();
+			this.servicesCommand = null;
 		}
 
 		if (this.authCommand != null) {
 			this.authCommand.stop();
 			this.authCommand = null;
+		}
+
+		if (this.userRegistryCommand != null) {
+			this.userRegistryCommand.stop();
+			this.userRegistryCommand = null;
 		}
 
 		if (this.appStoreCommand != null) {
@@ -244,15 +249,14 @@ public class Activator implements BundleActivator {
 			this.domainMgmtCommand = null;
 		}
 
-		if (this.taCommand != null) {
-			this.taCommand.stop();
-			this.taCommand = null;
+		if (this.transferAgentCommand != null) {
+			this.transferAgentCommand.stop();
+			this.transferAgentCommand = null;
 		}
 
 		// --------------------------------------------------------------------------------
 		// Stop tier3 service connectors
 		// --------------------------------------------------------------------------------
-		// Stop DomainMgmtConnector ServiceTracker
 		if (this.domainMgmtConnectorTracker != null) {
 			this.domainMgmtConnectorTracker.close();
 			this.domainMgmtConnectorTracker = null;
@@ -265,7 +269,6 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Stop tier2 service connectors
 		// --------------------------------------------------------------------------------
-		// Stop AppStoreConnector ServiceTracker
 		if (this.appStoreConnectorTracker != null) {
 			this.appStoreConnectorTracker.close();
 			this.appStoreConnectorTracker = null;
@@ -274,19 +277,16 @@ public class Activator implements BundleActivator {
 		// --------------------------------------------------------------------------------
 		// Stop tier1 service connectors
 		// --------------------------------------------------------------------------------
-		// Stop ConfigRegistryConnector ServiceTracker
 		if (this.configRegistryConnectorTracker != null) {
 			this.configRegistryConnectorTracker.close();
 			this.configRegistryConnectorTracker = null;
 		}
 
-		// Stop UserRegistryConnector ServiceTracker
 		if (this.userRegistryConnectorTracker != null) {
 			this.userRegistryConnectorTracker.close();
 			this.userRegistryConnectorTracker = null;
 		}
 
-		// Stop AuthConnector ServiceTracker
 		if (this.authConnectorTracker != null) {
 			this.authConnectorTracker.close();
 			this.authConnectorTracker = null;
@@ -341,6 +341,8 @@ public class Activator implements BundleActivator {
 	}
 
 }
+
+// protected ServiceTracker<OAuth2Connector, OAuth2Connector> oauth2ConnectorTracker;
 
 // public OAuth2Connector getOAuth2Connector() {
 // OAuth2Connector connector = null;

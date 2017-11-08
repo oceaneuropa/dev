@@ -12,7 +12,7 @@ import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.TransferAgentConfig;
-import org.orbit.component.cli.CommandHelper;
+import org.orbit.component.cli.ServicesCommandHelper;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -104,7 +104,7 @@ public class DomainManagementCLICommand implements Annotated {
 	}
 
 	protected DomainManagement getDomainManagement() throws ClientException {
-		return CommandHelper.INSTANCE.getDomainManagement(this.domainMgmtConnector);
+		return ServicesCommandHelper.INSTANCE.getDomainManagement(this.domainMgmtConnector);
 	}
 
 	// -----------------------------------------------------------------------------------------

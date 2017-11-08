@@ -28,7 +28,7 @@ public class UserRegistryConnectorImpl extends ServiceConnectorImpl<UserRegistry
 
 	@Override
 	protected UserRegistry createService(Map<String, Object> properties) {
-		return new UserRegistryImpl(properties);
+		return new UserRegistryWSImpl(properties);
 	}
 
 	@Override

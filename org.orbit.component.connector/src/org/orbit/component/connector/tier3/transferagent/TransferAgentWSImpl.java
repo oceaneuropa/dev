@@ -12,7 +12,7 @@ import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Responses;
 import org.origin.common.util.StringUtil;
 
-public class TransferAgentImpl implements TransferAgent {
+public class TransferAgentWSImpl implements TransferAgent {
 
 	protected Map<String, Object> properties;
 	protected TransferAgentWSClient client;
@@ -22,7 +22,7 @@ public class TransferAgentImpl implements TransferAgent {
 	 * 
 	 * @param properties
 	 */
-	public TransferAgentImpl(Map<String, Object> properties) {
+	public TransferAgentWSImpl(Map<String, Object> properties) {
 		this.responseConverter = new TransferAgentResponseConverterImpl();
 		this.properties = checkProperties(properties);
 		initClient();

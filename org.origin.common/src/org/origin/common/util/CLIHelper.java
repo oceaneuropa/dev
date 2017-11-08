@@ -24,19 +24,23 @@ public class CLIHelper {
 		System.out.println("    " + command);
 
 		System.out.println("parameters:");
-		for (String[] param : params) {
-			String paramName = param[0];
-			String paramValue = param[1];
+		if (params != null && params.length > 0) {
+			for (String[] param : params) {
+				String paramName = param[0];
+				String paramValue = param[1];
 
-			if ("n/a".equals(paramName)) {
-				System.out.println("    " + paramName);
-				continue;
-			}
+				if ("n/a".equals(paramName)) {
+					System.out.println("    " + paramName);
+					continue;
+				}
 
-			if (paramName != null && !paramName.startsWith("-")) {
-				paramName = "-" + paramName;
+				if (paramName != null && !paramName.startsWith("-")) {
+					paramName = "-" + paramName;
+				}
+				System.out.println("    " + paramName + " = " + paramValue);
 			}
-			System.out.println("    " + paramName + " = " + paramValue);
+		} else {
+			System.out.println("    n/a");
 		}
 
 		System.out.println("--------------------------------------------------------------");

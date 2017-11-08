@@ -26,7 +26,7 @@ import org.origin.common.util.StringUtil;
  * App store client connector implementation.
  * 
  */
-public class AppStoreImpl implements AppStore {
+public class AppStoreWSImpl implements AppStore {
 
 	protected Map<String, Object> properties;
 	protected AppStoreWSClient client;
@@ -35,7 +35,7 @@ public class AppStoreImpl implements AppStore {
 	 * 
 	 * @param properties
 	 */
-	public AppStoreImpl(Map<String, Object> properties) {
+	public AppStoreWSImpl(Map<String, Object> properties) {
 		this.properties = checkProperties(properties);
 		initClient();
 	}

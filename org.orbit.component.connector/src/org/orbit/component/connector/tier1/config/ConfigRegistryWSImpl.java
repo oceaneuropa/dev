@@ -10,7 +10,7 @@ import org.orbit.component.connector.OrbitConstants;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.StringUtil;
 
-public class ConfigRegistryImpl implements ConfigRegistry {
+public class ConfigRegistryWSImpl implements ConfigRegistry {
 
 	protected Map<String, Object> properties;
 	protected ConfigRegistryWSClient client;
@@ -22,7 +22,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	 * 
 	 * @param properties
 	 */
-	public ConfigRegistryImpl(Map<String, Object> properties) {
+	public ConfigRegistryWSImpl(Map<String, Object> properties) {
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 		}

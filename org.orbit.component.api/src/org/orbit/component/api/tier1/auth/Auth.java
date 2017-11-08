@@ -31,6 +31,8 @@ public interface Auth {
 
 	boolean ping();
 
+	String echo(String message) throws ClientException;
+
 	AuthorizationResponse authorize(AuthorizationRequest request) throws ClientException;
 
 	TokenResponse token(TokenRequest tokenRequest) throws ClientException;

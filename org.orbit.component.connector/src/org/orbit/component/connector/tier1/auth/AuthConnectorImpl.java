@@ -28,7 +28,7 @@ public class AuthConnectorImpl extends ServiceConnectorImpl<Auth> implements Aut
 
 	@Override
 	protected Auth createService(Map<String, Object> properties) {
-		return new AuthImpl(properties);
+		return new AuthWSImpl(properties);
 	}
 
 	@Override

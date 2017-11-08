@@ -18,6 +18,7 @@ public class UserAccountImpl implements UserAccount {
 	private String phone;
 	private Date creationTime;
 	private Date lastUpdateTime;
+	private boolean activated;
 
 	public UserAccountImpl() {
 	}
@@ -45,21 +46,22 @@ public class UserAccountImpl implements UserAccount {
 	}
 
 	@Override
-	public String getId() {
-		return userId;
+	public String getUserId() {
+		return this.userId;
 	}
 
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
-	// public String getPassword() {
-	// return password;
-	// }
-	//
-	// public void setPassword(String password) {
-	// this.password = password;
-	// }
+	@Override
+	public String getPassword() {
+		return this.password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	@Override
 	public String getEmail() {
@@ -115,6 +117,15 @@ public class UserAccountImpl implements UserAccount {
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
+	@Override
+	public boolean isActivated() {
+		return this.activated;
+	}
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
+	}
+
 	protected DateFormat getDateFormat() {
 		return DateUtil.getJdbcDateFormat();
 	}
@@ -127,13 +138,14 @@ public class UserAccountImpl implements UserAccount {
 		StringBuilder sb = new StringBuilder();
 		sb.append("UserAccountImpl(");
 		sb.append("userID=").append(this.userId);
-		if (debug) {
-			sb.append(", password=").append(this.password);
-		}
+		// if (debug) {
+		// sb.append(", password=").append(this.password);
+		// }
 		sb.append(", email=").append(this.email);
 		sb.append(", firstName=").append(this.firstName);
 		sb.append(", lastName=").append(this.lastName);
 		sb.append(", phone=").append(this.phone);
+		sb.append(", activated=").append(this.activated);
 		sb.append(", creationTime=").append(creationTimeString);
 		sb.append(", lastUpdateTime=").append(lastUpdateTimeString);
 		sb.append(")");

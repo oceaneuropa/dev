@@ -1,9 +1,13 @@
 package org.origin.common.rest.server;
 
 import java.util.Hashtable;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Application;
+import javax.ws.rs.core.MediaType;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.origin.common.deploy.DeployCallback;
@@ -13,6 +17,13 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpService;
 
 public class AbstractResourceConfigApplication extends ResourceConfig implements DeployCallback {
+
+	public static final String JSON = MediaType.APPLICATION_JSON;
+	public static final String GET = HttpMethod.GET;
+	public static final String PUT = HttpMethod.PUT;
+	public static final String POST = HttpMethod.POST;
+	public static final String DELETE = HttpMethod.DELETE;
+	public static final String PATCH = "PATCH";
 
 	protected BundleContext bundleContext;
 	protected String contextRoot;
@@ -103,6 +114,26 @@ public class AbstractResourceConfigApplication extends ResourceConfig implements
 			HttpService httpService = (HttpService) target;
 			System.out.println(this + " <=== " + httpService);
 		}
+	}
+
+	public String getPathParam(String paramName, ContainerRequestContext requestContext) {
+		return requestContext.getUriInfo().getPathParameters().getFirst(paramName);
+	}
+
+	public List<String> getPathParams(String paramName, ContainerRequestContext requestContext) {
+		return requestContext.getUriInfo().getPathParameters().get(paramName);
+	}
+
+	public String getQueryParam(String paramName, ContainerRequestContext requestContext) {
+		return requestContext.getUriInfo().getQueryParameters().getFirst(paramName);
+	}
+
+	public List<String> getQueryParams(String paramName, ContainerRequestContext requestContext) {
+		return requestContext.getUriInfo().getQueryParameters().get(paramName);
+	}
+
+	public boolean getHasQueryParam(String paramName, ContainerRequestContext requestContext) {
+		return requestContext.getUriInfo().getQueryParameters().containsKey(paramName);
 	}
 
 }

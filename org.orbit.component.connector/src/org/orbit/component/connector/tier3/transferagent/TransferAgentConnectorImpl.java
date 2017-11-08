@@ -41,7 +41,7 @@ public class TransferAgentConnectorImpl extends ServiceConnectorImpl<TransferAge
 		properties.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, hostURL);
 		properties.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, contextRoot);
 
-		this.transferAgent = new TransferAgentImpl(properties);
+		this.transferAgent = new TransferAgentWSImpl(properties);
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class AppStoreConnectorImpl extends ServiceConnectorImpl<AppStore> implem
 
 	@Override
 	protected AppStore createService(Map<String, Object> properties) {
-		return new AppStoreImpl(properties);
+		return new AppStoreWSImpl(properties);
 	}
 
 	@Override

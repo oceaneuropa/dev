@@ -28,7 +28,7 @@ public class OAuth2ConnectorImpl extends ServiceConnectorImpl<OAuth2> implements
 
 	@Override
 	protected OAuth2 createService(Map<String, Object> properties) {
-		return new OAuth2Impl(properties);
+		return new OAuth2WSImpl(properties);
 	}
 
 	@Override

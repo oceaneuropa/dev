@@ -267,6 +267,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 		Connection conn = getConnection();
 		try {
 			return this.userAccountTableHandler.registerUserAccount(conn, userId, password, email, firstName, lastName, phone, creationTime, lastUpdateTime);
+
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -301,11 +302,13 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 			String oldLastName = userAccount.getLastName();
 			String oldPhone = userAccount.getPhone();
 
+			Date now = new Date();
+
 			if (newPassword != null) {
 				checkPassword(newPassword);
 				boolean needToUpdate = (!newPassword.equals(oldPassword)) ? true : false;
 				if (needToUpdate) {
-					boolean succeed = this.userAccountTableHandler.updatePassword(conn, userId, newPassword, new Date());
+					boolean succeed = this.userAccountTableHandler.updatePassword(conn, userId, newPassword, now);
 					if (succeed) {
 						isUpdated = true;
 					}
@@ -316,7 +319,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 				checkEmail(newEmail);
 				boolean needToUpdate = (!newEmail.equals(oldEmail)) ? true : false;
 				if (needToUpdate) {
-					boolean succeed = this.userAccountTableHandler.updateEmail(conn, userId, newEmail, new Date());
+					boolean succeed = this.userAccountTableHandler.updateEmail(conn, userId, newEmail, now);
 					if (succeed) {
 						isUpdated = true;
 					}
@@ -338,7 +341,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 					if (newLastName == null) {
 						newLastName = oldLastName;
 					}
-					boolean succeed = this.userAccountTableHandler.updateName(conn, userId, newFirstName, newLastName, new Date());
+					boolean succeed = this.userAccountTableHandler.updateName(conn, userId, newFirstName, newLastName, now);
 					if (succeed) {
 						isUpdated = true;
 					}
@@ -347,7 +350,7 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 
 			if (newPhone != null) {
 				if (!newPhone.equals(oldPhone)) {
-					boolean succeed = this.userAccountTableHandler.updatePhone(conn, userId, newPhone, new Date());
+					boolean succeed = this.userAccountTableHandler.updatePhone(conn, userId, newPhone, now);
 					if (succeed) {
 						isUpdated = true;
 					}
@@ -370,6 +373,42 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 		Connection conn = getConnection();
 		try {
 			return this.userAccountTableHandler.deleteUserAccount(conn, userId);
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean changePassword(String userId, String oldPassword, String newPassword) throws UserRegistryException {
+		checkUserId(userId);
+
+		Connection conn = getConnection();
+		try {
+			UserAccount userAccount = this.userAccountTableHandler.getUserAccount(conn, userId);
+			if (userAccount == null) {
+				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
+			}
+
+			boolean matchOldPassword = false;
+			String existingPassword = userAccount.getPassword();
+			if (existingPassword == null) {
+				existingPassword = "";
+			}
+			if (oldPassword == null) {
+				oldPassword = "";
+			}
+			if (existingPassword.equals(oldPassword)) {
+				matchOldPassword = true;
+			}
+			if (!matchOldPassword) {
+				throw new UserRegistryException("404", "Old password is incorrect.");
+			}
+
+			return this.userAccountTableHandler.updatePassword(conn, userId, newPassword, null);
+
 		} catch (SQLException e) {
 			handleSQLException(e);
 		} finally {
@@ -404,11 +443,19 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 
 		Connection conn = getConnection();
 		try {
-			boolean exists = this.userAccountTableHandler.userAccountExists(conn, userId);
-			if (!exists) {
+			UserAccount userAccount = this.userAccountTableHandler.getUserAccount(conn, userId);
+			if (userAccount == null) {
 				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
 			}
-			return this.userAccountTableHandler.setUserAccountActivated(conn, userId, true);
+
+			boolean activated = userAccount.isActivated();
+			if (activated) {
+				// already activated
+				return true;
+			}
+
+			boolean succeed = this.userAccountTableHandler.setUserAccountActivated(conn, userId, true);
+			return succeed;
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -424,11 +471,19 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 
 		Connection conn = getConnection();
 		try {
-			boolean exists = this.userAccountTableHandler.userAccountExists(conn, userId);
-			if (!exists) {
+			UserAccount userAccount = this.userAccountTableHandler.getUserAccount(conn, userId);
+			if (userAccount == null) {
 				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
 			}
-			return this.userAccountTableHandler.setUserAccountActivated(conn, userId, false);
+
+			boolean activated = userAccount.isActivated();
+			if (!activated) {
+				// already deactivated
+				return true;
+			}
+
+			boolean succeed = this.userAccountTableHandler.setUserAccountActivated(conn, userId, false);
+			return succeed;
 
 		} catch (SQLException e) {
 			handleSQLException(e);

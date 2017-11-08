@@ -17,7 +17,7 @@ import org.orbit.component.model.tier1.auth.dto.TokenResponseDTO;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
-public class AuthImpl implements Auth {
+public class AuthWSImpl implements Auth {
 
 	protected Map<String, Object> properties;
 	protected AuthWSClient client;
@@ -26,7 +26,7 @@ public class AuthImpl implements Auth {
 	 * 
 	 * @param properties
 	 */
-	public AuthImpl(Map<String, Object> properties) {
+	public AuthWSImpl(Map<String, Object> properties) {
 		this.properties = checkProperties(properties);
 		initClient();
 	}
@@ -71,6 +71,11 @@ public class AuthImpl implements Auth {
 	@Override
 	public boolean ping() {
 		return this.client.doPing();
+	}
+
+	@Override
+	public String echo(String message) throws ClientException {
+		return this.client.echo(message);
 	}
 
 	@Override

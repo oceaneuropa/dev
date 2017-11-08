@@ -15,7 +15,7 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
-public class UserRegistryImpl implements UserRegistry {
+public class UserRegistryWSImpl implements UserRegistry {
 
 	protected Map<String, Object> properties;
 	protected UserRegistryWSClient client;
@@ -27,7 +27,7 @@ public class UserRegistryImpl implements UserRegistry {
 	 * 
 	 * @param properties
 	 */
-	public UserRegistryImpl(Map<String, Object> properties) {
+	public UserRegistryWSImpl(Map<String, Object> properties) {
 		this.properties = properties;
 		this.loadBalanceId = getLoadBalanceId(this.properties);
 		initClient();
@@ -91,7 +91,6 @@ public class UserRegistryImpl implements UserRegistry {
 	@Override
 	public UserAccount getUserAccount(String userId) throws ClientException {
 		checkUserId(userId);
-
 		UserAccount userAccount = null;
 		try {
 			UserAccountDTO userAccountDTO = this.client.getUserAccount(userId);
@@ -107,7 +106,6 @@ public class UserRegistryImpl implements UserRegistry {
 	@Override
 	public boolean exists(String userId) throws ClientException {
 		checkUserId(userId);
-
 		try {
 			return this.client.userAccountExists(userId);
 		} catch (ClientException e) {
@@ -119,7 +117,6 @@ public class UserRegistryImpl implements UserRegistry {
 	public boolean register(CreateUserAccountRequest createUserAccountRequest) throws ClientException {
 		String userId = createUserAccountRequest.getUserId();
 		checkUserId(userId);
-
 		try {
 			UserAccountDTO createUserAccountRequestDTO = toDTO(createUserAccountRequest);
 			StatusDTO status = this.client.registerUserAccount(createUserAccountRequestDTO);
@@ -136,7 +133,6 @@ public class UserRegistryImpl implements UserRegistry {
 	public boolean update(UpdateUserAccountRequest updateUserAccountRequest) throws ClientException {
 		String userId = updateUserAccountRequest.getUserId();
 		checkUserId(userId);
-
 		try {
 			UserAccountDTO updateUserAccountRequestDTO = toDTO(updateUserAccountRequest);
 			StatusDTO status = this.client.updateUserAccount(updateUserAccountRequestDTO);
@@ -150,9 +146,50 @@ public class UserRegistryImpl implements UserRegistry {
 	}
 
 	@Override
+	public boolean changePassword(String userId, String oldPassword, String newPassword) throws ClientException {
+		checkUserId(userId);
+		try {
+			return this.client.changePassword(userId, oldPassword, newPassword);
+		} catch (ClientException e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public boolean isActivated(String userId) throws ClientException {
+		checkUserId(userId);
+		try {
+			return this.client.isUserAccountActivated(userId);
+		} catch (ClientException e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public boolean activate(String userId) throws ClientException {
+		checkUserId(userId);
+		try {
+			boolean succeed = this.client.activateUserAccount(userId);
+			return succeed;
+		} catch (ClientException e) {
+			throw e;
+		}
+	}
+
+	@Override
+	public boolean deactivate(String userId) throws ClientException {
+		checkUserId(userId);
+		try {
+			boolean succeed = this.client.deactivateUserAccount(userId);
+			return succeed;
+		} catch (ClientException e) {
+			throw e;
+		}
+	}
+
+	@Override
 	public boolean delete(String userId) throws ClientException {
 		checkUserId(userId);
-
 		try {
 			StatusDTO status = this.client.deleteUserAccount(userId);
 			if (status != null && status.success()) {
@@ -162,17 +199,6 @@ public class UserRegistryImpl implements UserRegistry {
 			throw e;
 		}
 		return false;
-	}
-
-	@Override
-	public boolean isActivated(String userId) throws ClientException {
-		checkUserId(userId);
-
-		try {
-			return this.client.isUserAccountActivated(userId);
-		} catch (ClientException e) {
-			throw e;
-		}
 	}
 
 	/**
@@ -259,9 +285,13 @@ public class UserRegistryImpl implements UserRegistry {
 		UserAccountImpl impl = new UserAccountImpl();
 		impl.setUserId(dto.getUserId());
 		impl.setEmail(dto.getEmail());
+		impl.setPassword(dto.getPassword());
 		impl.setFirstName(dto.getFirstName());
 		impl.setLastName(dto.getLastName());
 		impl.setPhone(dto.getPhone());
+		impl.setCreationTime(dto.getCreationTime());
+		impl.setLastUpdateTime(dto.getLastUpdateTime());
+		impl.setActivated(dto.isActivated());
 		return impl;
 	}
 

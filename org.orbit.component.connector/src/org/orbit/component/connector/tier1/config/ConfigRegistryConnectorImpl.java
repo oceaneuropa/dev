@@ -28,7 +28,7 @@ public class ConfigRegistryConnectorImpl extends ServiceConnectorImpl<ConfigRegi
 
 	@Override
 	protected ConfigRegistry createService(Map<String, Object> properties) {
-		return new ConfigRegistryImpl(properties);
+		return new ConfigRegistryWSImpl(properties);
 	}
 
 	@Override

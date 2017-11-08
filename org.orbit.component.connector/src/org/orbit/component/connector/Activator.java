@@ -51,8 +51,8 @@ public class Activator implements BundleActivator {
 		// this.configRegistryConnector = new ConfigRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		// this.configRegistryConnector.start(bundleContext);
 
-		// this.userRegistryConnector = new UserRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		// this.userRegistryConnector.start(bundleContext);
+		this.userRegistryConnector = new UserRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.userRegistryConnector.start(bundleContext);
 
 		this.authConnector = new AuthConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.authConnector.start(bundleContext);
@@ -99,10 +99,10 @@ public class Activator implements BundleActivator {
 		// -----------------------------------------------------------------------------
 		// Stop tier1 service connectors
 		// -----------------------------------------------------------------------------
-		// if (this.userRegistryConnector != null) {
-		// this.userRegistryConnector.stop();
-		// this.userRegistryConnector = null;
-		// }
+		if (this.userRegistryConnector != null) {
+			this.userRegistryConnector.stop();
+			this.userRegistryConnector = null;
+		}
 
 		// if (this.configRegistryConnector != null) {
 		// this.configRegistryConnector.stop();

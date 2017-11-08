@@ -21,6 +21,7 @@ import org.origin.common.rest.client.ClientException;
  * {contextRoot} example: /orbit/v1/auth
  * 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/echo/{message}
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/authorize (Body parameter: AuthorizationRequestDTO)
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/token (Body parameter: TokenRequestDTO)
  * 
@@ -35,6 +36,29 @@ public class AuthWSClient extends AbstractWSClient {
 	 */
 	public AuthWSClient(ClientConfiguration config) {
 		super(config);
+	}
+
+	/**
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/echo/{message}
+	 * 
+	 * @param message
+	 * @return
+	 * @throws ClientException
+	 */
+	public String echo(String message) throws ClientException {
+		String result = null;
+		try {
+			WebTarget target = getRootPath().path("echo").path(message);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Response response = updateHeaders(builder).get();
+			checkResponse(response);
+
+			result = response.readEntity(String.class);
+
+		} catch (ClientException e) {
+			handleException(e);
+		}
+		return result;
 	}
 
 	/**

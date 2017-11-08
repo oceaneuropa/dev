@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
@@ -25,7 +27,7 @@ import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
 
-public class SystemCommand implements Annotated {
+public class ServicesCommand implements Annotated {
 
 	// Service type constants
 	public static final String USER_REGISTRY = "userregistry";
@@ -33,19 +35,26 @@ public class SystemCommand implements Annotated {
 	public static final String CONFIGR_EGISTRY = "configregistry";
 	public static final String APP_STORE = "appstore";
 	public static final String DOMAIN = "domain";
-	public static final String TRANSFER_AGENT = "transferagent";
+	// public static final String TRANSFER_AGENT = "transferagent";
 
 	// Column names constants
-	protected static String[] AUTH_SERVICES_TITLES = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
-	protected static String[] APPSTORE_SERVICES_TITLES = new String[] { "index_item_id", "appstore.namespace", "appstore.name", "appstore.host.url", "appstore.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
-	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	protected static String[] USERREGISTRY_SERVICES_COLUMNS = new String[] { "index_item_id", "userregistry.namespace", "userregistry.name", "userregistry.host.url", "userregistry.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	protected static String[] AUTH_SERVICES_COLUMNS = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	protected static String[] APPSTORE_SERVICES_COLUMNS = new String[] { "index_item_id", "appstore.namespace", "appstore.name", "appstore.host.url", "appstore.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	protected static String[] DOMAIN_SERVICES_COLUMNS = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	// protected static String[] TRANSFERAGENT_SERVICES_TITLES = new String[] { "index_item_id", "transfer_agent.namespace", "transfer_agent.name",
+	// "transfer_agent.host.url", "transfer_agent.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 
+	@Dependency
+	protected UserRegistryConnector userRegistryConnector;
 	@Dependency
 	protected AuthConnector authConnector;
 	@Dependency
 	protected AppStoreConnector appStoreConnector;
 	@Dependency
 	protected DomainManagementConnector domainMgmtConnector;
+	// @Dependency
+	// protected TransferAgentConnector transferAgentConnector;
 
 	protected BundleContext bundleContext;
 	protected String scheme = "orbit";
@@ -55,7 +64,7 @@ public class SystemCommand implements Annotated {
 	 * 
 	 * @param bundleContext
 	 */
-	public SystemCommand(BundleContext bundleContext) {
+	public ServicesCommand(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
@@ -76,7 +85,7 @@ public class SystemCommand implements Annotated {
 						"lservices", //
 		});
 
-		OSGiServiceUtil.register(this.bundleContext, SystemCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, ServicesCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -85,7 +94,7 @@ public class SystemCommand implements Annotated {
 			System.out.println(getClass().getSimpleName() + ".stop()");
 		}
 
-		OSGiServiceUtil.unregister(SystemCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(ServicesCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
@@ -93,9 +102,11 @@ public class SystemCommand implements Annotated {
 	public void connectorSet() {
 		if (debug) {
 			System.out.println(getClass().getSimpleName() + ".connectorSet()");
+			System.out.println("userRegistryConnector: " + userRegistryConnector);
 			System.out.println("authConnector: " + authConnector);
 			System.out.println("appStoreConnector: " + appStoreConnector);
 			System.out.println("domainMgmtConnector: " + domainMgmtConnector);
+			// System.out.println("transferAgentConnector: " + transferAgentConnector);
 		}
 	}
 
@@ -103,14 +114,15 @@ public class SystemCommand implements Annotated {
 	public void connectorUnset() {
 		if (debug) {
 			System.out.println(getClass().getSimpleName() + ".connectorUnset()");
+			System.out.println("userRegistryConnector: " + userRegistryConnector);
 			System.out.println("authConnector: " + authConnector);
 			System.out.println("appStoreConnector: " + appStoreConnector);
 			System.out.println("domainMgmtConnector: " + domainMgmtConnector);
+			// System.out.println("transferAgentConnector: " + transferAgentConnector);
 		}
 	}
 
 	// -----------------------------------------------------------------------------------------
-	// Service
 	// lservices
 	// -----------------------------------------------------------------------------------------
 	@Descriptor("List services")
@@ -120,6 +132,7 @@ public class SystemCommand implements Annotated {
 		}
 
 		if (USER_REGISTRY.equalsIgnoreCase(service)) {
+			listUserRegistryServices();
 
 		} else if (AUTH.equalsIgnoreCase(service)) {
 			// } else if (OAUTH2.equalsIgnoreCase(service)) {
@@ -133,22 +146,47 @@ public class SystemCommand implements Annotated {
 		} else if (DOMAIN.equalsIgnoreCase(service)) {
 			listDomainServices();
 
-		} else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
+			// } else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
+			// listTransferAgentServices();
 
 		} else {
 			// System.err.println("###### Unsupported service name: " + service);
+			listUserRegistryServices();
 			listAuthServices();
-
 			listAppStoreServices();
-
 			listDomainServices();
+			// listTransferAgentServices();
 		}
 	}
 
-	protected void listAuthServices() throws ClientException {
-		List<LoadBalanceResource<Auth>> resources = CommandHelper.INSTANCE.getAuthResources(this.authConnector);
+	protected void listUserRegistryServices() throws ClientException {
+		List<LoadBalanceResource<UserRegistry>> resources = ServicesCommandHelper.INSTANCE.getUserRegistryResources(this.userRegistryConnector);
 
-		String[][] rows = new String[resources.size()][AUTH_SERVICES_TITLES.length];
+		String[][] rows = new String[resources.size()][USERREGISTRY_SERVICES_COLUMNS.length];
+		int rowIndex = 0;
+		for (LoadBalanceResource<UserRegistry> resource : resources) {
+			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, "userregistry.namespace");
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "userregistry.name");
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "userregistry.host.url");
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "userregistry.context_root");
+			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
+			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
+
+			String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
+			String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
+
+			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+		}
+
+		PrettyPrinter.prettyPrint(USERREGISTRY_SERVICES_COLUMNS, rows, resources.size());
+		System.out.println();
+	}
+
+	protected void listAuthServices() throws ClientException {
+		List<LoadBalanceResource<Auth>> resources = ServicesCommandHelper.INSTANCE.getAuthResources(this.authConnector);
+
+		String[][] rows = new String[resources.size()][AUTH_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
 		for (LoadBalanceResource<Auth> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
@@ -165,14 +203,14 @@ public class SystemCommand implements Annotated {
 			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
 		}
 
-		PrettyPrinter.prettyPrint(AUTH_SERVICES_TITLES, rows, resources.size());
+		PrettyPrinter.prettyPrint(AUTH_SERVICES_COLUMNS, rows, resources.size());
 		System.out.println();
 	}
 
 	protected void listAppStoreServices() throws ClientException {
-		List<LoadBalanceResource<AppStore>> resources = CommandHelper.INSTANCE.getAppStoreResources(this.appStoreConnector);
+		List<LoadBalanceResource<AppStore>> resources = ServicesCommandHelper.INSTANCE.getAppStoreResources(this.appStoreConnector);
 
-		String[][] rows = new String[resources.size()][APPSTORE_SERVICES_TITLES.length];
+		String[][] rows = new String[resources.size()][APPSTORE_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
 		for (LoadBalanceResource<AppStore> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
@@ -189,14 +227,14 @@ public class SystemCommand implements Annotated {
 			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
 		}
 
-		PrettyPrinter.prettyPrint(APPSTORE_SERVICES_TITLES, rows, resources.size());
+		PrettyPrinter.prettyPrint(APPSTORE_SERVICES_COLUMNS, rows, resources.size());
 		System.out.println();
 	}
 
 	protected void listDomainServices() throws ClientException {
-		List<LoadBalanceResource<DomainManagement>> resources = CommandHelper.INSTANCE.getDomainManagementResources(this.domainMgmtConnector);
+		List<LoadBalanceResource<DomainManagement>> resources = ServicesCommandHelper.INSTANCE.getDomainManagementResources(this.domainMgmtConnector);
 
-		String[][] rows = new String[resources.size()][DOMAIN_SERVICES_TITLES.length];
+		String[][] rows = new String[resources.size()][DOMAIN_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
 		for (LoadBalanceResource<DomainManagement> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
@@ -213,9 +251,33 @@ public class SystemCommand implements Annotated {
 			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
 		}
 
-		PrettyPrinter.prettyPrint(DOMAIN_SERVICES_TITLES, rows, resources.size());
+		PrettyPrinter.prettyPrint(DOMAIN_SERVICES_COLUMNS, rows, resources.size());
 		System.out.println();
 	}
+
+	// protected void listTransferAgentServices() throws ClientException {
+	// List<LoadBalanceResource<TransferAgent>> resources = CommandHelper.INSTANCE.getTransferAgentResources(this.transferAgentConnector);
+	//
+	// String[][] rows = new String[resources.size()][TRANSFERAGENT_SERVICES_TITLES.length];
+	// int rowIndex = 0;
+	// for (LoadBalanceResource<TransferAgent> resource : resources) {
+	// Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
+	// String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.namespace");
+	// String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.name");
+	// String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.host.url");
+	// String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.context_root");
+	// Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
+	// Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
+	//
+	// String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
+	// String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
+	//
+	// rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+	// }
+	//
+	// PrettyPrinter.prettyPrint(TRANSFERAGENT_SERVICES_TITLES, rows, resources.size());
+	// System.out.println();
+	// }
 
 }
 

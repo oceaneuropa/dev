@@ -2,7 +2,6 @@ package org.orbit.component.server.tier1.auth.ws;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -39,12 +38,15 @@ import org.origin.core.resources.server.ws.ResourcesWSResource;
  * 
  * {contextRoot} example: /orbit/v1/auth
  * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
+ * 
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/echo/{message}
+ * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/authorize (Body parameter: AuthorizationRequestDTO)
  * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/token (Body parameter: TokenRequestDTO)
  * 
  * @see TransferAgentServiceResource
- * 
  */
 @javax.ws.rs.Path("/")
 @Produces(MediaType.APPLICATION_JSON)
@@ -124,16 +126,6 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 		return this.service;
 	}
 
-	@GET
-	@Path("ping")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response ping() {
-		if (this.service != null) {
-			return Response.ok(1).build();
-		}
-		return Response.ok(0).build();
-	}
-
 	@POST
 	@Path("authorize")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -163,3 +155,13 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 	}
 
 }
+
+// @GET
+// @Path("ping")
+// @Produces(MediaType.APPLICATION_JSON)
+// public Response ping() {
+// if (this.service != null) {
+// return Response.ok(1).build();
+// }
+// return Response.ok(0).build();
+// }

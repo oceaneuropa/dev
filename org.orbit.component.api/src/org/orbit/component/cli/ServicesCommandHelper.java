@@ -2,19 +2,23 @@ package org.orbit.component.cli;
 
 import java.util.List;
 
+import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagement;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
+import org.orbit.component.api.tier3.transferagent.TransferAgent;
+import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.rest.client.ClientException;
 
-public class CommandHelper {
+public class ServicesCommandHelper {
 
-	public static CommandHelper INSTANCE = new CommandHelper();
+	public static ServicesCommandHelper INSTANCE = new ServicesCommandHelper();
 
 	/**
 	 * 
@@ -62,6 +66,30 @@ public class CommandHelper {
 		}
 		System.out.println(domainMgmt.getName() + " (" + domainMgmt.getURL() + ")");
 		return domainMgmt;
+	}
+
+	/**
+	 * 
+	 * @param connector
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<LoadBalanceResource<UserRegistry>> getUserRegistryResources(UserRegistryConnector connector) throws ClientException {
+		if (connector == null) {
+			System.out.println("UserRegistryConnector is not available.");
+			throw new ClientException(500, "UserRegistryConnector is not available.");
+		}
+		LoadBalancer<UserRegistry> balancer = connector.getLoadBalancer();
+		if (balancer == null) {
+			System.out.println("load balancer is not available.");
+			return null;
+		}
+		List<LoadBalanceResource<UserRegistry>> resources = balancer.getResources();
+		if (resources == null) {
+			System.out.println("load balancer's resource is null.");
+			return null;
+		}
+		return resources;
 	}
 
 	/**
@@ -129,6 +157,30 @@ public class CommandHelper {
 			return null;
 		}
 		List<LoadBalanceResource<DomainManagement>> resources = balancer.getResources();
+		if (resources == null) {
+			System.out.println("load balancer's resource is null.");
+			return null;
+		}
+		return resources;
+	}
+
+	/**
+	 * 
+	 * @param connector
+	 * @return
+	 * @throws ClientException
+	 */
+	public List<LoadBalanceResource<TransferAgent>> getTransferAgentResources(TransferAgentConnector connector) throws ClientException {
+		if (connector == null) {
+			System.out.println("TransferAgentConnector is not available.");
+			throw new ClientException(500, "TransferAgentConnector is not available.");
+		}
+		LoadBalancer<TransferAgent> balancer = connector.getLoadBalancer();
+		if (balancer == null) {
+			System.out.println("load balancer is not available.");
+			return null;
+		}
+		List<LoadBalanceResource<TransferAgent>> resources = balancer.getResources();
 		if (resources == null) {
 			System.out.println("load balancer's resource is null.");
 			return null;
