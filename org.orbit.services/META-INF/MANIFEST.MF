@@ -1,0 +1,25 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Orbit Services
+Bundle-SymbolicName: org.orbit.services;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.orbit.service,
+ org.orbit.service.websocket,
+ org.orbit.service.websocket.impl
+Import-Package: javax.servlet;version="3.1.0",
+ javax.servlet.http;version="3.1.0",
+ javax.websocket;version="1.1.0",
+ javax.websocket.server;version="1.1.0",
+ org.eclipse.jetty.server;version="9.3.21",
+ org.eclipse.jetty.server.handler;version="9.3.21",
+ org.eclipse.jetty.server.session;version="9.3.21",
+ org.eclipse.jetty.servlet;version="9.3.21",
+ org.eclipse.jetty.util.component;version="9.3.21",
+ org.osgi.framework;version="1.8.0",
+ org.osgi.service.cm;version="1.5.0",
+ org.osgi.service.http;version="1.2.1",
+ org.osgi.service.startlevel;version="1.1.0",
+ org.osgi.util.tracker;version="1.5.1"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.orbit.service.Activator

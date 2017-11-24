@@ -1,0 +1,3 @@
+-Declipse.ignoreApp=true 
+-Dosgi.noShutdown=true 
+-Dorg.orbit.service.http.port=7001 
