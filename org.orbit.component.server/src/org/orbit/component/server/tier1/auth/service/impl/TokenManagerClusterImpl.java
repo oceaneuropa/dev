@@ -13,26 +13,19 @@ import org.origin.common.cluster.EventBusUtil;
 
 public class TokenManagerClusterImpl implements TokenManager {
 
+	protected String serviceFullName;
 	protected String clusterName;
 	protected EventBus eventBus;
 	protected AtomicBoolean activated = new AtomicBoolean(false);
 
 	/**
 	 * 
+	 * @param serviceFullName
 	 * @param clusterName
 	 */
-	public TokenManagerClusterImpl(String clusterName) {
+	public TokenManagerClusterImpl(String serviceFullName, String clusterName) {
+		this.serviceFullName = serviceFullName;
 		this.clusterName = clusterName;
-	}
-
-	public boolean isActivated() {
-		return this.activated.get();
-	}
-
-	protected void checkActivated() {
-		if (!isActivated()) {
-			throw new IllegalStateException(getClass().getSimpleName() + " is not activated.");
-		}
 	}
 
 	@Override
@@ -65,6 +58,16 @@ public class TokenManagerClusterImpl implements TokenManager {
 				e.printStackTrace();
 			}
 			this.eventBus = null;
+		}
+	}
+
+	public boolean isActivated() {
+		return this.activated.get();
+	}
+
+	protected void checkActivated() {
+		if (!isActivated()) {
+			throw new IllegalStateException(getClass().getSimpleName() + " is not activated.");
 		}
 	}
 
@@ -108,7 +111,7 @@ public class TokenManagerClusterImpl implements TokenManager {
 		checkActivated();
 
 		try {
-			this.eventBus.setProperty(this, username, userToken, this.clusterName);
+			this.eventBus.setProperty(this.serviceFullName, username, userToken, this.clusterName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

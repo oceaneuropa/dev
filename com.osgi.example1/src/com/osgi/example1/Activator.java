@@ -17,6 +17,8 @@ import com.osgi.example1.fs.server.service.local.LocalFileSystem;
 import com.osgi.example1.fs.server.service.local.LocalFileSystemConfiguration;
 import com.osgi.example1.fs.server.ws.FileSystemApplication;
 
+import jetty.example2.server.WebSocketServerOSGi;
+
 /**
  * -Dorg.osgi.service.http.port=9090
  */
@@ -36,6 +38,7 @@ public class Activator implements BundleActivator {
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected FileSystemApplication fsApplication;
 	protected FileSystemCommand fsCommand;
+	protected WebSocketServerOSGi webSocketServerOSGi;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -57,11 +60,14 @@ public class Activator implements BundleActivator {
 
 		this.fsCommand = new FileSystemCommand(bundleContext);
 		this.fsCommand.start();
+
+		this.webSocketServerOSGi = new WebSocketServerOSGi();
+		this.webSocketServerOSGi.start(bundleContext);
 	}
 
 	protected FileSystem getDatabaseFileSystem(BundleContext bundleContext) {
 		// Properties properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
-		Properties properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin"); //"admin"
+		Properties properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin"); // "admin"
 		DatabaseFileSystemConfiguration config = new DatabaseFileSystemConfiguration(properties);
 		return new DatabaseFileSystem(config);
 	}
@@ -76,6 +82,11 @@ public class Activator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		Printer.pl("Activator.stop()");
+
+		if (this.webSocketServerOSGi != null) {
+			this.webSocketServerOSGi.stop(bundleContext);
+			this.webSocketServerOSGi = null;
+		}
 
 		// 1. Stop FileSystemCommand cli command
 		if (this.fsCommand != null) {

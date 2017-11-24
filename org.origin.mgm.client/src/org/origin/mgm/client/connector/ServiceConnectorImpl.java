@@ -12,11 +12,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.origin.common.annotation.Annotated;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalanceResourceImpl;
 import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.loadbalance.policy.LoadBalancePolicy;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
+import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Pingable;
 import org.origin.common.thread.ThreadPoolTimer;
 import org.origin.common.util.DateUtil;
@@ -29,7 +31,7 @@ import org.origin.mgm.client.api.IndexService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
+public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, Annotated {
 
 	/* update index items every 15 seconds */
 	public static long INDEX_MONITOR_INTERVAL = 15 * Timer.SECOND;
@@ -126,9 +128,6 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		}
 		this.isStarted.set(true);
 
-		// -----------------------------------------------------------------------------
-		// 1. Start Monitor
-		// -----------------------------------------------------------------------------
 		// Start monitor to periodically get index items for a service
 		this.indexItemsMonitor = new IndexItemsMonitor(getConnectorClass().getSimpleName() + " Monitor", this.indexService) {
 			@Override
@@ -144,37 +143,37 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		this.indexItemsMonitor.setInterval(INDEX_MONITOR_INTERVAL);
 		this.indexItemsMonitor.start();
 
-		// -----------------------------------------------------------------------------
-		// 2. Register service
-		// -----------------------------------------------------------------------------
+		// Register connector service
 		@SuppressWarnings("rawtypes")
 		Class connectorInterface = getConnectorClass();
 		if (connectorInterface != null) {
 			Hashtable<String, Object> props = new Hashtable<String, Object>();
 			this.serviceRegistration = bundleContext.registerService(connectorInterface, this, props);
 		}
+
+		// Register Annotated service for dependency injection
+		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
 
 	/**
 	 * Stop the connector
 	 * 
 	 */
-	public synchronized void stop() {
+	public synchronized void stop(BundleContext bundleContext) {
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}
 
-		// -----------------------------------------------------------------------------
-		// 1. Unregister service
-		// -----------------------------------------------------------------------------
+		// Unregister Annotated service
+		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
+
+		// Unregister service
 		if (this.serviceRegistration != null) {
 			this.serviceRegistration.unregister();
 			this.serviceRegistration = null;
 		}
 
-		// -----------------------------------------------------------------------------
-		// 2. Stop monitor
-		// -----------------------------------------------------------------------------
+		// Stop monitor
 		if (this.indexItemsMonitor != null) {
 			this.indexItemsMonitor.stop();
 			this.indexItemsMonitor = null;
@@ -481,6 +480,11 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 		}
 
 		this.loadBalancer.removeResource(resource);
+
+		S service = resource.getService();
+		if (service != null) {
+			this.removeService(service);
+		}
 	}
 
 	/**
@@ -589,6 +593,15 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S> {
 	 * @param properties
 	 */
 	protected abstract void updateService(S service, Map<String, Object> properties);
+
+	/**
+	 * Remove an existing service.
+	 * 
+	 * @param service
+	 */
+	protected void removeService(S service) {
+
+	}
 
 	public abstract class PingMonitor extends ThreadPoolTimer {
 

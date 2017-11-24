@@ -5,6 +5,8 @@ import java.util.Hashtable;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.jackson.JacksonFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.orbit.component.server.tier2.appstore.service.AppStoreService;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractResourceConfigApplication;
@@ -40,6 +42,13 @@ public class AppStoreWSApplication extends AbstractResourceConfigApplication {
 		});
 		register(AppStoreServiceResource.class);
 		register(AppStoreAppsResource.class);
+
+		if (!isEnabled(JacksonFeature.class)) {
+			register(JacksonFeature.class);
+		}
+		if (!isEnabled(MultiPartFeature.class)) {
+			register(MultiPartFeature.class);
+		}
 	}
 
 	public AppStoreService getAppStoreService() {
@@ -56,7 +65,7 @@ public class AppStoreWSApplication extends AbstractResourceConfigApplication {
 
 	@Override
 	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 		if (this.isStarted.get()) {
 			return;
 		}
@@ -72,11 +81,13 @@ public class AppStoreWSApplication extends AbstractResourceConfigApplication {
 		// this.serviceIndexTimer = new AppStoreServiceIndexTimer(this.indexProvider);
 		this.serviceIndexTimer = new AppStoreServiceIndexTimerV2(this.indexProvider, this.service);
 		this.serviceIndexTimer.start();
+
+		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
 	}
 
 	@Override
 	public void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
+		// System.out.println(getClass().getSimpleName() + ".stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}
@@ -94,6 +105,8 @@ public class AppStoreWSApplication extends AbstractResourceConfigApplication {
 		}
 
 		super.stop();
+
+		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
 	}
 
 }

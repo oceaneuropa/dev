@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/jersey-all-2.18.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/javax.servlet_3.1.0.v201410161800.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/javax.servlet-api-3.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-all-2.22.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>

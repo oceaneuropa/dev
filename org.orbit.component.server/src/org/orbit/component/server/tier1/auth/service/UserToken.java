@@ -62,7 +62,7 @@ public class UserToken implements Serializable {
 		if (this.accessTokenExpireTime == null) {
 			return -1;
 		}
-		return DateUtil.getMinutesBetween(this.accessTokenExpireTime, new Date());
+		return DateUtil.getMinutesBetween(new Date(), this.accessTokenExpireTime);
 	}
 
 	public long getRefreshTokenExpiresInMinutes() {

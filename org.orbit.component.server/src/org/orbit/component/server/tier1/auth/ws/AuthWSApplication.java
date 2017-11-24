@@ -65,7 +65,7 @@ public class AuthWSApplication extends AbstractResourceConfigApplication {
 	@Override
 	public void start() {
 		if (isStarted()) {
-			System.out.println(getClass().getSimpleName() + ".stop() App is already started.");
+			// System.out.println(getClass().getSimpleName() + ".stop() App is already started.");
 			return;
 		}
 		super.start();
@@ -75,12 +75,14 @@ public class AuthWSApplication extends AbstractResourceConfigApplication {
 			this.serviceIndexTimer = new AuthServiceIndexTimer(this.indexProvider, this.service);
 			this.serviceIndexTimer.start();
 		}
+
+		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
 	}
 
 	@Override
 	public void stop() {
 		if (!isStarted()) {
-			System.out.println(getClass().getSimpleName() + ".stop() App is already stopped.");
+			// System.out.println(getClass().getSimpleName() + ".stop() App is already stopped.");
 			return;
 		}
 
@@ -91,6 +93,8 @@ public class AuthWSApplication extends AbstractResourceConfigApplication {
 		}
 
 		super.stop();
+
+		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
 	}
 
 	protected Inflector<ContainerRequestContext, Response> pingResourceGetHandler() {

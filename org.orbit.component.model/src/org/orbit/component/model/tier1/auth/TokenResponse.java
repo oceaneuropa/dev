@@ -9,6 +9,9 @@ public class TokenResponse {
 	protected String scope; // e.g. "create". Optional
 	protected String state; // Optional
 
+	public TokenResponse() {
+	}
+
 	public String getToken_type() {
 		return token_type;
 	}
@@ -55,6 +58,20 @@ public class TokenResponse {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("TokenResponse [\r\n");
+		sb.append("    token_type=\"").append(this.token_type).append("\",\r\n");
+		sb.append("    expires_in=").append(this.expires_in).append(" (minutes)").append(",\r\n");
+		sb.append("    access_token=\"").append(this.access_token).append("\",\r\n");
+		sb.append("    refresh_token=\"").append(this.refresh_token).append("\",\r\n");
+		sb.append("    scope=\"").append(this.scope).append("\",\r\n");
+		sb.append("    state=\"").append(this.state).append("\"\r\n");
+		sb.append("]");
+		return sb.toString();
 	}
 
 }

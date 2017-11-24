@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="runtime" sequenceNumber="6">
+<?pde version="3.8"?><target name="runtime" sequenceNumber="11">
 <locations>
-<location path="/Users/yayang/osgi/target_platform" type="Directory"/>
 <location path="/Users/jessylxj/osgi/target_platform" type="Directory"/>
+<location path="/Users/yayang/osgi/target_platform" type="Directory"/>
+<location path="/Users/yayang/osgi/target_platform/log" type="Directory"/>
+<location path="/Users/yayang/osgi/target_platform/jetty_9.3.21" type="Directory"/>
 </locations>
 </target>

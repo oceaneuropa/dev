@@ -56,7 +56,7 @@ public class UserRegistryWSApplication extends AbstractResourceConfigApplication
 
 	@Override
 	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 		if (this.isStarted.get()) {
 			return;
 		}
@@ -71,6 +71,8 @@ public class UserRegistryWSApplication extends AbstractResourceConfigApplication
 		// Start a timer to update the indexing of the service
 		this.serviceIndexTimer = new UserRegistryServiceIndexTimerV2(this.indexProvider, this.service);
 		this.serviceIndexTimer.start();
+
+		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
 	}
 
 	@Override
@@ -92,6 +94,8 @@ public class UserRegistryWSApplication extends AbstractResourceConfigApplication
 			this.serviceRegistration.unregister();
 			this.serviceRegistration = null;
 		}
+
+		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
 	}
 
 }

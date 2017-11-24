@@ -29,6 +29,7 @@ Import-Package: com.fasterxml.jackson.databind,
  org.orbit.component.model.tier3.domain,
  org.orbit.component.model.tier3.domain.request,
  org.orbit.component.model.tier3.transferagent.request,
+ org.origin.common.annotation,
  org.origin.common.io,
  org.origin.common.jdbc,
  org.origin.common.loadbalance,
@@ -41,5 +42,6 @@ Import-Package: com.fasterxml.jackson.databind,
  org.origin.mgm.client.api,
  org.origin.mgm.client.connector,
  org.origin.mgm.client.loadbalance,
- org.osgi.framework;version="1.3.0"
+ org.osgi.framework;version="1.3.0",
+ org.osgi.service.cm;version="1.5.0"
 Bundle-ActivationPolicy: lazy

@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.fs.connector.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.databind,
- javassist.bytecode,
  javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",
  org.glassfish.jersey.media.multipart,

@@ -3,7 +3,6 @@ package org.origin.common.deploy;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
@@ -39,8 +38,8 @@ public abstract class HttpServiceAdapter {
 			public HttpService addingService(ServiceReference<HttpService> reference) {
 				HttpService httpService = bundleContext.getService(reference);
 				if (debug) {
-					Printer.pl("HttpServiceSupport.httpServiceTracker.addingService()");
-					Printer.pl("\t httpService = " + httpService);
+					// Printer.pl("HttpServiceSupport.httpServiceTracker.addingService()");
+					// Printer.pl("\t httpService = " + httpService);
 				}
 
 				httpServices.add(httpService);
@@ -53,8 +52,8 @@ public abstract class HttpServiceAdapter {
 			@Override
 			public void modifiedService(ServiceReference<HttpService> reference, HttpService httpService) {
 				if (debug) {
-					Printer.pl("HttpServiceSupport.httpServiceTracker.modifiedService()");
-					Printer.pl("\t httpService = " + httpService);
+					// Printer.pl("HttpServiceSupport.httpServiceTracker.modifiedService()");
+					// Printer.pl("\t httpService = " + httpService);
 				}
 
 				undeploy(reference, httpService);
@@ -64,8 +63,8 @@ public abstract class HttpServiceAdapter {
 			@Override
 			public void removedService(ServiceReference<HttpService> reference, HttpService httpService) {
 				if (debug) {
-					Printer.pl("HttpServiceSupport.httpServiceTracker.removedService()");
-					Printer.pl("\t httpService = " + httpService);
+					// Printer.pl("HttpServiceSupport.httpServiceTracker.removedService()");
+					// Printer.pl("\t httpService = " + httpService);
 				}
 
 				undeploy(reference, httpService);

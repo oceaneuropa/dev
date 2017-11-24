@@ -66,4 +66,5 @@ public class IndexItemImpl implements IndexItem {
 		return this.properties;
 	}
 
+	
 }

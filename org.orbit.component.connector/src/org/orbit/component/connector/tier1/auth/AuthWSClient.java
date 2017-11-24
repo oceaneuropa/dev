@@ -109,6 +109,7 @@ public class AuthWSClient extends AbstractWSClient {
 			Response response = updateHeaders(builder).post(bodyParam);
 			checkResponse(response);
 
+			// String string = response.readEntity(String.class);
 			tokenResponse = response.readEntity(TokenResponseDTO.class);
 
 		} catch (ClientException e) {

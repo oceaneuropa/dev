@@ -83,7 +83,7 @@ public abstract class AbstractApplication extends Application implements DeployC
 	public void deployedTo(Object target) {
 		if (target instanceof HttpService) {
 			HttpService httpService = (HttpService) target;
-			System.out.println(this + " ===> " + httpService);
+			// System.out.println(this + " ===> " + httpService);
 		}
 	}
 
@@ -91,7 +91,7 @@ public abstract class AbstractApplication extends Application implements DeployC
 	public void undeployedFrom(Object target) {
 		if (target instanceof HttpService) {
 			HttpService httpService = (HttpService) target;
-			System.out.println(this + " <=== " + httpService);
+			// System.out.println(this + " <=== " + httpService);
 		}
 	}
 

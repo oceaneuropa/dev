@@ -49,7 +49,7 @@ public class OAuth2WSApplication extends AbstractResourceConfigApplication /* Ab
 
 	@Override
 	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 		if (this.isStarted.get()) {
 			return;
 		}
@@ -64,6 +64,8 @@ public class OAuth2WSApplication extends AbstractResourceConfigApplication /* Ab
 		// Start timer for indexing the service
 		this.serviceIndexTimer = new OAuth2ServiceIndexTimerV2(this.indexProvider, this.service);
 		this.serviceIndexTimer.start();
+
+		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
 	}
 
 	@Override
@@ -86,6 +88,8 @@ public class OAuth2WSApplication extends AbstractResourceConfigApplication /* Ab
 		}
 
 		super.stop();
+
+		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
 	}
 
 	// @Override

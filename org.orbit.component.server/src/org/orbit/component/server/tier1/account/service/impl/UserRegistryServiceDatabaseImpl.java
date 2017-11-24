@@ -250,6 +250,35 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 	}
 
 	@Override
+	public boolean matchUsernamePassword(String userId, String password) throws UserRegistryException {
+		checkUserId(userId);
+
+		Connection conn = getConnection();
+		try {
+			UserAccount userAccount = this.userAccountTableHandler.getUserAccount(conn, userId);
+			if (userAccount != null) {
+				String existingPassword = userAccount.getPassword();
+
+				if (password == null) {
+					password = "";
+				}
+				if (existingPassword == null) {
+					existingPassword = "";
+				}
+				if (password.equals(existingPassword)) {
+					return true;
+				}
+			}
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+
+		return false;
+	}
+
+	@Override
 	public UserAccount registerUserAccount(UserAccount newAccountRequest) throws UserRegistryException {
 		String userId = newAccountRequest.getUserId();
 		String password = newAccountRequest.getPassword();

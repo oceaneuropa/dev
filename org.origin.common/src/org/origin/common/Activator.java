@@ -2,7 +2,7 @@ package org.origin.common;
 
 import org.origin.common.annotation.DependencyConfigurator;
 import org.origin.common.command.IEditingDomain;
-import org.origin.common.deploy.WSDeployer;
+import org.origin.common.deploy.WebServiceDeployer;
 import org.origin.common.util.Printer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -31,7 +31,7 @@ public class Activator implements BundleActivator {
 
 	protected IEditingDomain editingDomain;
 	protected DependencyConfigurator dependencyConfigurator;
-	protected WSDeployer wsDeployer;
+	protected WebServiceDeployer webServiceDeployer;
 	// protected PropertiesConfigServiceFactory propertiesConfigFactory;
 	// protected PropertiesConfigCommand propertiesConfigCommand;
 
@@ -46,13 +46,13 @@ public class Activator implements BundleActivator {
 		this.dependencyConfigurator = new DependencyConfigurator(bundleContext);
 		this.dependencyConfigurator.start();
 
-		this.wsDeployer = new WSDeployer(bundleContext);
-		this.wsDeployer.start();
+		this.webServiceDeployer = new WebServiceDeployer(bundleContext);
+		this.webServiceDeployer.start();
 
-//		this.propertiesConfigFactory = new PropertiesConfigServiceFactory(bundleContext);
-//		this.propertiesConfigCommand = new PropertiesConfigCommand(bundleContext);
-//		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), propertiesConfigFactory);
-//		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), propertiesConfigCommand);
+		// this.propertiesConfigFactory = new PropertiesConfigServiceFactory(bundleContext);
+		// this.propertiesConfigCommand = new PropertiesConfigCommand(bundleContext);
+		// OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), propertiesConfigFactory);
+		// OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), propertiesConfigCommand);
 
 		Activator.context = bundleContext;
 		Activator.plugin = this;
@@ -69,22 +69,22 @@ public class Activator implements BundleActivator {
 			this.dependencyConfigurator = null;
 		}
 
-		if (this.wsDeployer != null) {
-			this.wsDeployer.stop();
-			this.wsDeployer = null;
+		if (this.webServiceDeployer != null) {
+			this.webServiceDeployer.stop();
+			this.webServiceDeployer = null;
 		}
 
-//		OSGiServiceUtil.unregister(this.propertiesConfigFactory);
-//		OSGiServiceUtil.unregister(this.propertiesConfigCommand);
-//
-//		if (this.propertiesConfigCommand != null) {
-//			this.propertiesConfigCommand.stop();
-//			this.propertiesConfigCommand = null;
-//		}
-//		if (this.propertiesConfigFactory != null) {
-//			this.propertiesConfigFactory.stop();
-//			this.propertiesConfigFactory = null;
-//		}
+		// OSGiServiceUtil.unregister(this.propertiesConfigFactory);
+		// OSGiServiceUtil.unregister(this.propertiesConfigCommand);
+		//
+		// if (this.propertiesConfigCommand != null) {
+		// this.propertiesConfigCommand.stop();
+		// this.propertiesConfigCommand = null;
+		// }
+		// if (this.propertiesConfigFactory != null) {
+		// this.propertiesConfigFactory.stop();
+		// this.propertiesConfigFactory = null;
+		// }
 
 		this.editingDomain = null;
 		IEditingDomain.disposeEditingDomain(PLUGIN_ID);

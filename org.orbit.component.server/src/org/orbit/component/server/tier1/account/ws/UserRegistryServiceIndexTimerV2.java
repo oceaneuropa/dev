@@ -29,6 +29,7 @@ public class UserRegistryServiceIndexTimerV2 extends ServiceIndexTimerImplV2<Ind
 	public UserRegistryServiceIndexTimerV2(IndexProvider indexProvider, UserRegistryService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
+		setDebug(true);
 	}
 
 	@Override

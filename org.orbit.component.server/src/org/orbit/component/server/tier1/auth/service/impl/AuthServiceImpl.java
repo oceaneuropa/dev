@@ -53,13 +53,6 @@ public class AuthServiceImpl implements AuthService {
 
 		update(configProps);
 
-		String clusterName = getNamespace() + ".token";
-		this.tokenManager = new TokenManagerClusterImpl(clusterName);
-		this.tokenManager.activate();
-
-		// this.eventBus = EventBusUtil.getEventBus();
-		// startBeacon();
-
 		// Start service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(AuthService.class, this, props);
@@ -70,8 +63,22 @@ public class AuthServiceImpl implements AuthService {
 			properties = new HashMap<Object, Object>();
 		}
 		this.properties = properties;
+		init();
+	}
 
+	protected void init() {
+		// 1. retrieve token secret
 		this.tokenSecret = (String) this.properties.get(OrbitConstants.COMPONENT_AUTH_TOKEN_SECRET);
+
+		// 2. init token manager
+		String serviceFullName = getFullName();
+		String clusterName = getNamespace() + ".token";
+		this.tokenManager = new TokenManagerClusterImpl(serviceFullName, clusterName);
+		this.tokenManager.activate();
+
+		// 3. start beacon (useless?)
+		// this.eventBus = EventBusUtil.getEventBus();
+		// startBeacon();
 	}
 
 	/**
@@ -183,7 +190,7 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		// Step1. Check username and password against UserRegistry.
-		boolean isAuthorized = false;
+		boolean matchUsernamePassword = false;
 		UserAccount userAccount = null;
 		try {
 			UserRegistryService userRegistryService = Activator.getUserRegistryService();
@@ -191,14 +198,15 @@ public class AuthServiceImpl implements AuthService {
 				throw new AuthException("Service Unavailable", "UserRegistry service is not available.");
 			}
 			userAccount = userRegistryService.getUserAccount(username);
-			if (userAccount != null && password.equals(userAccount.getPassword())) {
-				isAuthorized = true;
+			if (userAccount != null) {
+				matchUsernamePassword = userRegistryService.matchUsernamePassword(username, password);
 			}
+
 		} catch (UserRegistryException e) {
 			e.printStackTrace();
 			throw new AuthException(e, "Authentication Failed", e.getMessage());
 		}
-		if (!isAuthorized) {
+		if (!matchUsernamePassword) {
 			throw new AuthException("Unauthorized", "Username and password combination is invalid.");
 		}
 
@@ -309,35 +317,40 @@ public class AuthServiceImpl implements AuthService {
 	 * @throws Exception
 	 */
 	private UserToken createUserToken(UserAccount userAccount) throws Exception {
-		String issuer = getFullName();
-		String subject1 = "user_access_token";
-		String subject2 = "user_refresh_token";
-		String audiences = userAccount.getUserId();
+		UserToken userToken = null;
+		try {
+			String issuer = getFullName();
+			String subject1 = "user_access_token";
+			String subject2 = "user_refresh_token";
+			String audiences = userAccount.getUserId();
 
-		// Access token expires in 30 minutes
-		// Refresh token expires in 24 hours
-		// - The access token should be updated/refreshed with each access to web services. Accessing web services should return response header for the new
-		// access token with updated expiration time.
-		Date now = new Date();
-		Date accessTokenExpiresAt = DateUtil.addMinutes(now, 30);
-		Date refreshTokenExpiresAt = DateUtil.addHours(now, 24);
+			// Access token expires in 30 minutes
+			// Refresh token expires in 24 hours
+			// - The access token should be updated/refreshed with each access to web services. Accessing web services should return response header for the new
+			// access token with updated expiration time.
+			Date now = new Date();
+			Date accessTokenExpiresAt = DateUtil.addMinutes(now, 30);
+			Date refreshTokenExpiresAt = DateUtil.addHours(now, 24);
 
-		String username = userAccount.getUserId();
-		String email = userAccount.getEmail();
-		String firstName = userAccount.getFirstName();
-		String lastName = userAccount.getLastName();
-		String[][] keyValuePairs = new String[][] { new String[] { "username", username }, new String[] { "email", email }, new String[] { "firstName", firstName }, new String[] { "lastName", lastName } };
+			String username = userAccount.getUserId();
+			String email = userAccount.getEmail();
+			String firstName = userAccount.getFirstName();
+			String lastName = userAccount.getLastName();
+			String[][] keyValuePairs = new String[][] { new String[] { "username", username }, new String[] { "email", email }, new String[] { "firstName", firstName }, new String[] { "lastName", lastName } };
 
-		String accessToken = JWTUtil.createToken(this.tokenSecret, issuer, subject1, audiences, accessTokenExpiresAt, keyValuePairs);
-		String refreshToken = JWTUtil.createToken(this.tokenSecret, issuer, subject2, audiences, refreshTokenExpiresAt, keyValuePairs);
+			String accessToken = JWTUtil.createToken(this.tokenSecret, issuer, subject1, audiences, accessTokenExpiresAt, keyValuePairs);
+			String refreshToken = JWTUtil.createToken(this.tokenSecret, issuer, subject2, audiences, refreshTokenExpiresAt, keyValuePairs);
 
-		UserToken userToken = new UserToken();
-		userToken.setUsername(username);
-		userToken.setAccessToken(accessToken);
-		userToken.setRefreshToken(refreshToken);
-		userToken.setAccessTokenExpireTime(accessTokenExpiresAt);
-		userToken.setRefreshTokenExpireTime(refreshTokenExpiresAt);
+			userToken = new UserToken();
+			userToken.setUsername(username);
+			userToken.setAccessToken(accessToken);
+			userToken.setRefreshToken(refreshToken);
+			userToken.setAccessTokenExpireTime(accessTokenExpiresAt);
+			userToken.setRefreshTokenExpireTime(refreshTokenExpiresAt);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return userToken;
 	}
 

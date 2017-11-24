@@ -21,6 +21,8 @@ public interface UserRegistryService {
 
 	boolean userAccountExists(String userId) throws UserRegistryException;
 
+	boolean matchUsernamePassword(String userId, String password) throws UserRegistryException;
+
 	UserAccount registerUserAccount(UserAccount newUserAccountRequest) throws UserRegistryException;
 
 	boolean updateUserAccount(UserAccount updateUserAccountRequest) throws UserRegistryException;

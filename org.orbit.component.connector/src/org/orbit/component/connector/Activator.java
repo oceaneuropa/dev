@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
+import org.orbit.component.connector.tier1.account.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
@@ -15,8 +16,11 @@ import org.origin.mgm.client.api.IndexServiceUtil;
 import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
+
+	protected static final String USER_REGISTRY_MANAGED_SERVICE_FACTORY_PID = "component.userregistry.manager"; //$NON-NLS-1$
 
 	private static BundleContext context;
 
@@ -25,6 +29,9 @@ public class Activator implements BundleActivator {
 	}
 
 	protected IndexServiceLoadBalancer indexServiceLoadBalancer;
+
+	protected UserRegistryManager userRegistryManager;
+	protected ServiceRegistration<?> userRegistryManagerRegistration;
 
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
@@ -46,8 +53,16 @@ public class Activator implements BundleActivator {
 		this.indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(indexProviderProps);
 
 		// -----------------------------------------------------------------------------
-		// Start tier1 service connectors
+		// Register ManagedServiceFactories
 		// -----------------------------------------------------------------------------
+		// tier1
+		this.userRegistryManager = new UserRegistryManager();
+		this.userRegistryManager.start(bundleContext);
+
+		// -----------------------------------------------------------------------------
+		// Start service connectors
+		// -----------------------------------------------------------------------------
+		// tier1
 		// this.configRegistryConnector = new ConfigRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		// this.configRegistryConnector.start(bundleContext);
 
@@ -57,15 +72,11 @@ public class Activator implements BundleActivator {
 		this.authConnector = new AuthConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.authConnector.start(bundleContext);
 
-		// -----------------------------------------------------------------------------
-		// Start tier2 service connectors
-		// -----------------------------------------------------------------------------
+		// tier2
 		this.appStoreConnector = new AppStoreConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.appStoreConnector.start(bundleContext);
 
-		// -----------------------------------------------------------------------------
-		// Start tier3 service connectors
-		// -----------------------------------------------------------------------------
+		// tier3
 		this.domainMgmtConnector = new DomainMgmtConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.domainMgmtConnector.start(bundleContext);
 
@@ -76,10 +87,11 @@ public class Activator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		// -----------------------------------------------------------------------------
-		// Stop tier3 service connectors
+		// Stop service connectors
 		// -----------------------------------------------------------------------------
+		// tier3
 		if (this.domainMgmtConnector != null) {
-			this.domainMgmtConnector.stop();
+			this.domainMgmtConnector.stop(bundleContext);
 			this.domainMgmtConnector = null;
 		}
 
@@ -88,19 +100,15 @@ public class Activator implements BundleActivator {
 			this.transferAgentConnectorFactory = null;
 		}
 
-		// -----------------------------------------------------------------------------
-		// Stop tier2 service connectors
-		// -----------------------------------------------------------------------------
+		// tier2
 		if (this.appStoreConnector != null) {
-			this.appStoreConnector.stop();
+			this.appStoreConnector.stop(bundleContext);
 			this.appStoreConnector = null;
 		}
 
-		// -----------------------------------------------------------------------------
-		// Stop tier1 service connectors
-		// -----------------------------------------------------------------------------
+		// tier1
 		if (this.userRegistryConnector != null) {
-			this.userRegistryConnector.stop();
+			this.userRegistryConnector.stop(bundleContext);
 			this.userRegistryConnector = null;
 		}
 
@@ -110,8 +118,21 @@ public class Activator implements BundleActivator {
 		// }
 
 		if (this.authConnector != null) {
-			this.authConnector.stop();
+			this.authConnector.stop(bundleContext);
 			this.authConnector = null;
+		}
+
+		// -----------------------------------------------------------------------------
+		// Register ManagedServiceFactories
+		// -----------------------------------------------------------------------------
+		// tier3
+
+		// tier2
+
+		// tier1
+		if (userRegistryManager != null) {
+			this.userRegistryManager.stop(bundleContext);
+			this.userRegistryManager = null;
 		}
 
 		Activator.context = null;

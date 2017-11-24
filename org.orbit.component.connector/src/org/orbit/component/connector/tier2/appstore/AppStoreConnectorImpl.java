@@ -36,4 +36,10 @@ public class AppStoreConnectorImpl extends ServiceConnectorImpl<AppStore> implem
 		appStore.update(properties);
 	}
 
+	@Override
+	protected void removeService(AppStore appStore) {
+		// index items for appStore gets removed
+		// the client AppStore is removed
+	}
+
 }

@@ -58,7 +58,7 @@ public class AbstractResourceConfigApplication extends ResourceConfig implements
 	}
 
 	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 		if (!this.isStarted.compareAndSet(false, true)) {
 			return;
 		}
@@ -69,7 +69,7 @@ public class AbstractResourceConfigApplication extends ResourceConfig implements
 	}
 
 	public void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
+		// System.out.println(getClass().getSimpleName() + ".stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}
@@ -98,21 +98,21 @@ public class AbstractResourceConfigApplication extends ResourceConfig implements
 
 	@Override
 	public void deployedTo(Object target) {
-		System.out.println(getClass().getSimpleName() + ".deployedTo() " + target);
+		// System.out.println(getClass().getSimpleName() + ".deployedTo() " + target);
 
 		if (target instanceof HttpService) {
-			HttpService httpService = (HttpService) target;
-			System.out.println(this + " ===> " + httpService);
+			// HttpService httpService = (HttpService) target;
+			// System.out.println(this + " ===> " + httpService);
 		}
 	}
 
 	@Override
 	public void undeployedFrom(Object target) {
-		System.out.println(getClass().getSimpleName() + ".undeployedFrom() " + target);
+		// System.out.println(getClass().getSimpleName() + ".undeployedFrom() " + target);
 
 		if (target instanceof HttpService) {
-			HttpService httpService = (HttpService) target;
-			System.out.println(this + " <=== " + httpService);
+			// HttpService httpService = (HttpService) target;
+			// System.out.println(this + " <=== " + httpService);
 		}
 	}
 

@@ -49,7 +49,14 @@ public class AuthCommand implements Annotated {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { "auth_ping", "auth_echo", "authorize", "token", "user_token" });
+		props.put("osgi.command.function",
+				new String[] { //
+						"auth_ping", //
+						"auth_echo", //
+						"authorize", //
+						"token", //
+						"user_token" //
+		});
 		OSGiServiceUtil.register(this.bundleContext, AuthCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
@@ -267,32 +274,23 @@ public class AuthCommand implements Annotated {
 	 * 
 	 * @param username
 	 * @param password
-	 * @param scope
-	 * @param state
 	 * @throws ClientException
 	 */
 	@Descriptor("user_token")
 	public void user_token( //
 			// for user token
 			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
-			@Descriptor("Password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password, //
-
-			// optional for all grand typs
-			@Descriptor("Scope") @Parameter(names = { "-scope", "--scope" }, absentValue = Parameter.UNSPECIFIED) String scope, //
-			@Descriptor("State") @Parameter(names = { "-state", "--state" }, absentValue = Parameter.UNSPECIFIED) String state //
+			@Descriptor("Password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password //
 	) throws ClientException {
 		if (debug) {
 			CLIHelper.getInstance().printCommand(getScheme(), "user_token", //
 					new String[] { "username", username }, //
-					new String[] { "password", password }, //
-					new String[] { "scope", scope }, //
-					new String[] { "state", state } //
+					new String[] { "password", password } //
 			);
 		}
 
 		Auth auth = getAuthService();
 		if (auth == null) {
-			System.out.println("Auth is null.");
 			return;
 		}
 
@@ -310,14 +308,6 @@ public class AuthCommand implements Annotated {
 		request.setGrant_type(Auth.GRANT_TYPE__USER_CREDENTIALS);
 		request.setUsername(username);
 		request.setPassword(password);
-
-		// Set optional options
-		if (!Parameter.UNSPECIFIED.equals(scope)) {
-			request.setScope(scope);
-		}
-		if (!Parameter.UNSPECIFIED.equals(state)) {
-			request.setState(state);
-		}
 
 		TokenResponse response = auth.token(request);
 		if (response == null) {

@@ -52,7 +52,7 @@ public class ConfigRegistryWSApplication extends AbstractResourceConfigApplicati
 
 	@Override
 	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 		if (this.isStarted.get()) {
 			return;
 		}
@@ -67,11 +67,13 @@ public class ConfigRegistryWSApplication extends AbstractResourceConfigApplicati
 		// Start a timer to update the indexing of the service
 		this.serviceIndexTimer = new ConfigRegistryServiceIndexTimerV2(this.indexProvider, this.service);
 		this.serviceIndexTimer.start();
+
+		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
 	}
 
 	@Override
 	public void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
+		// System.out.println(getClass().getSimpleName() + ".stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}
@@ -88,6 +90,8 @@ public class ConfigRegistryWSApplication extends AbstractResourceConfigApplicati
 			this.serviceRegistration.unregister();
 			this.serviceRegistration = null;
 		}
+
+		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
 	}
 
 }

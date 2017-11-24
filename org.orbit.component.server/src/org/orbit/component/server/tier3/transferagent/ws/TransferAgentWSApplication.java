@@ -68,7 +68,7 @@ public class TransferAgentWSApplication extends AbstractResourceConfigApplicatio
 
 	@Override
 	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 		if (this.isStarted.get()) {
 			return;
 		}
@@ -103,11 +103,13 @@ public class TransferAgentWSApplication extends AbstractResourceConfigApplicatio
 
 		this.resourceWSApp1.start();
 		this.resourceWSApp2.start();
+
+		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
 	}
 
 	@Override
 	public void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
+		// System.out.println(getClass().getSimpleName() + ".stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}
@@ -137,6 +139,8 @@ public class TransferAgentWSApplication extends AbstractResourceConfigApplicatio
 		// TransferAgentEditPolicyFactory.unregister();
 
 		super.stop();
+
+		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
 	}
 
 	protected Inflector<ContainerRequestContext, Response> echoResourceGetHandler() {

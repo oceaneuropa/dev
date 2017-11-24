@@ -54,7 +54,6 @@ public class DomainMgmtWSApplicationV2 extends AbstractResourceConfigApplication
 
 	@Override
 	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
 		if (this.isStarted.get()) {
 			return;
 		}
@@ -73,11 +72,12 @@ public class DomainMgmtWSApplicationV2 extends AbstractResourceConfigApplication
 			// So it tells the index timer that the web service can is pingable.
 			this.serviceIndexTimer.start();
 		}
+
+		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
 	}
 
 	@Override
 	public void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}
@@ -95,6 +95,8 @@ public class DomainMgmtWSApplicationV2 extends AbstractResourceConfigApplication
 		}
 
 		super.stop();
+
+		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
 	}
 
 }
