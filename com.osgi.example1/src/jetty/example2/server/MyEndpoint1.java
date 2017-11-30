@@ -15,31 +15,23 @@ import org.slf4j.LoggerFactory;
 @ServerEndpoint(value = "/websocket/{myPathParam}")
 public class MyEndpoint1 {
 
-	private Logger LOG = LoggerFactory.getLogger(MyEndpoint1.class);
+	private static Logger LOG = LoggerFactory.getLogger(MyEndpoint1.class);
+
+	public MyEndpoint1() {
+		LOG.debug("MyEndpoint1()");
+	}
 
 	@OnOpen
 	public void onOpen(Session session, @PathParam("myPathParam") String myPathParam) {
-		LOG.info("OnOpen");
-
-		println("myPathParam = " + myPathParam);
-		SessionHelper.INSTANCE.printUserProperties(session);
-	}
-
-	@OnClose
-	public void onClose(Session session, @PathParam("myPathParam") String myPathParam) {
-		LOG.info("OnClose");
-
-		println("myPathParam = " + myPathParam);
-		SessionHelper.INSTANCE.printUserProperties(session);
+		LOG.debug("OnOpen() " + toString() + " (" + hashCode() + ")");
+		LOG.debug("\tmyPathParam = " + myPathParam);
 	}
 
 	@OnMessage
 	public void onMessage(String message, Session session, @PathParam("myPathParam") String myPathParam) {
-		LOG.info("OnMessage: " + message);
-
-		println("myPathParam = " + myPathParam);
-		SessionHelper.INSTANCE.printUserProperties(session);
-
+		LOG.debug("onMessage() " + toString() + " (" + hashCode() + ")");
+		LOG.debug("\tmyPathParam = " + myPathParam);
+		LOG.debug("\tmessage = " + message);
 		try {
 			session.getBasicRemote().sendText(message.toUpperCase());
 		} catch (IOException e) {
@@ -47,12 +39,12 @@ public class MyEndpoint1 {
 		}
 	}
 
-	protected void println() {
-		System.out.println(getClass().getSimpleName());
-	}
-
-	protected void println(String msg) {
-		System.out.println(getClass().getSimpleName() + " - " + msg);
+	@OnClose
+	public void onClose(Session session, @PathParam("myPathParam") String myPathParam) {
+		LOG.debug("onClose() " + toString() + " (" + hashCode() + ")");
+		LOG.debug("\tmyPathParam = " + myPathParam);
 	}
 
 }
+
+// SessionHelper.INSTANCE.printUserProperties(session);

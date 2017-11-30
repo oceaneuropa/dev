@@ -15,3 +15,8 @@ using ServerApplicationConfig (for server) and ClientEndpointConfig (for client)
 
 Apache Tomcat Websocket Tutorial
 (5) https://examples.javacodegeeks.com/enterprise-java/tomcat/apache-tomcat-websocket-tutorial/
+
+
+JSR 356, Java API for WebSocket
+http://www.oracle.com/technetwork/articles/java/jsr356-1937161.html
+

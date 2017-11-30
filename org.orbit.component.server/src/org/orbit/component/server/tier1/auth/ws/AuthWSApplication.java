@@ -9,7 +9,6 @@ import org.glassfish.jersey.server.model.Resource;
 import org.orbit.component.server.tier1.auth.service.AuthService;
 import org.origin.common.rest.server.AbstractResourceConfigApplication;
 import org.origin.core.resources.server.ws.ResourceWSApplication;
-import org.origin.mgm.client.api.IndexProvider;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -19,8 +18,6 @@ import org.osgi.framework.BundleContext;
 public class AuthWSApplication extends AbstractResourceConfigApplication {
 
 	protected AuthService service;
-	protected IndexProvider indexProvider;
-	protected AuthServiceIndexTimer serviceIndexTimer;
 
 	/**
 	 * 
@@ -54,14 +51,6 @@ public class AuthWSApplication extends AbstractResourceConfigApplication {
 		return this.service;
 	}
 
-	public IndexProvider getIndexProvider() {
-		return this.indexProvider;
-	}
-
-	public void setIndexProvider(IndexProvider indexProvider) {
-		this.indexProvider = indexProvider;
-	}
-
 	@Override
 	public void start() {
 		if (isStarted()) {
@@ -69,12 +58,6 @@ public class AuthWSApplication extends AbstractResourceConfigApplication {
 			return;
 		}
 		super.start();
-
-		// Start timer for indexing the service
-		if (this.indexProvider != null) {
-			this.serviceIndexTimer = new AuthServiceIndexTimer(this.indexProvider, this.service);
-			this.serviceIndexTimer.start();
-		}
 
 		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
 	}
@@ -84,12 +67,6 @@ public class AuthWSApplication extends AbstractResourceConfigApplication {
 		if (!isStarted()) {
 			// System.out.println(getClass().getSimpleName() + ".stop() App is already stopped.");
 			return;
-		}
-
-		// Stop timer for indexing the service
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
 		}
 
 		super.stop();

@@ -15,8 +15,12 @@ import org.origin.common.rest.Constants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.http.HttpService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbstractResourceConfigApplication extends ResourceConfig implements DeployCallback {
+
+	private Logger LOG = LoggerFactory.getLogger(AbstractResourceConfigApplication.class);
 
 	public static final String JSON = MediaType.APPLICATION_JSON;
 	public static final String GET = HttpMethod.GET;
@@ -58,7 +62,7 @@ public class AbstractResourceConfigApplication extends ResourceConfig implements
 	}
 
 	public void start() {
-		// System.out.println(getClass().getSimpleName() + ".start()");
+		LOG.debug("start()");
 		if (!this.isStarted.compareAndSet(false, true)) {
 			return;
 		}
@@ -69,7 +73,7 @@ public class AbstractResourceConfigApplication extends ResourceConfig implements
 	}
 
 	public void stop() {
-		// System.out.println(getClass().getSimpleName() + ".stop()");
+		LOG.debug("stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
 		}

@@ -20,7 +20,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 
-public class AppStoreCLICommand implements Annotated {
+public class AppStoreCommand implements Annotated {
 
 	protected BundleContext bundleContext;
 
@@ -31,7 +31,7 @@ public class AppStoreCLICommand implements Annotated {
 	 * 
 	 * @param bundleContext
 	 */
-	public AppStoreCLICommand(BundleContext bundleContext) {
+	public AppStoreCommand(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
@@ -41,14 +41,14 @@ public class AppStoreCLICommand implements Annotated {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
 		props.put("osgi.command.function", new String[] { "lappstores", "lapps" });
-		OSGiServiceUtil.register(this.bundleContext, AppStoreCLICommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, AppStoreCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
 	public void stop() {
 		System.out.println("AppStoreCommand.stop()");
 
-		OSGiServiceUtil.unregister(AppStoreCLICommand.class.getName(), this);
+		OSGiServiceUtil.unregister(AppStoreCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 

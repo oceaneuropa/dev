@@ -11,6 +11,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.websocket.server.ServerEndpointConfig;
 
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * About java.lang.RuntimeException: Cannot load platform configurator
@@ -43,14 +45,20 @@ import org.osgi.framework.BundleContext;
  * 
  *      Download org.apache.servicemix.bundles.javax-websocket-api-1.1_1.jar, which is a OSGi wrapper bundle for javax.websocket-api-1.1.jar
  * 
+ * 
+ * @see https://stackoverflow.com/questions/33611866/remove-endpoint-from-servercontainer-inside-weblistener
+ * 
+ *      This is about remove endpoint, which is not supported by web socket container. Only workaround is possible.
+ * 
  */
 public class WebSocketDeployer {
+
+	protected static Logger LOG = LoggerFactory.getLogger(WebSocketDeployer.class);
 
 	protected ReadWriteLock lock;
 	protected Map<WebSocketService, Set<WebSocketEndpoint>> webSocketService_to_deployed_endpoints;
 	protected WebSocketServiceListener webSocketServiceListener;
 	protected WebSocketEndpointListener webSocketEndpointListener;
-	protected boolean debug = true;
 
 	public WebSocketDeployer() {
 		this.lock = new ReentrantReadWriteLock();
@@ -98,8 +106,7 @@ public class WebSocketDeployer {
 						if (isDeployedTo(webSocketService, currEndpoint)) {
 							// There is no API to remove endpoint from websocket ServerContainer
 							// @see https://stackoverflow.com/questions/33611866/remove-endpoint-from-servercontainer-inside-weblistener
-							// doUndeploy(webSocketService, currEndpoint);
-							deactivate(currEndpoint);
+							doUndeploy(webSocketService, currEndpoint);
 						}
 					}
 				} finally {
@@ -139,8 +146,7 @@ public class WebSocketDeployer {
 						if (isDeployedTo(currWebSocketService, endpoint)) {
 							// There is no API to remove endpoint from websocket ServerContainer
 							// @see https://stackoverflow.com/questions/33611866/remove-endpoint-from-servercontainer-inside-weblistener
-							// doUndeploy(currWebSocketService, endpoint);
-							deactivate(endpoint);
+							doUndeploy(currWebSocketService, endpoint);
 						}
 					}
 				} finally {
@@ -244,9 +250,9 @@ public class WebSocketDeployer {
 	protected void doDeploy(WebSocketService webSocketService, WebSocketEndpoint endpoint) {
 		boolean succeed = false;
 
-		activate(endpoint);
 		ServerEndpointConfig endpointConfig = endpoint.getEndpointConfig();
 		if (endpointConfig != null) {
+			// add endpoint config
 			try {
 				webSocketService.addEndpoint(endpointConfig);
 				succeed = true;
@@ -255,6 +261,7 @@ public class WebSocketDeployer {
 			}
 
 		} else {
+			// add endpoint class
 			Class<?> endpointClass = endpoint.getEndpointClass();
 			if (endpointClass != null) {
 				try {
@@ -267,6 +274,9 @@ public class WebSocketDeployer {
 		}
 
 		if (succeed) {
+			// set the endpoint to be activated
+			activate(endpoint);
+
 			Set<WebSocketEndpoint> endpoints = this.webSocketService_to_deployed_endpoints.get(webSocketService);
 			if (endpoints == null) {
 				endpoints = new HashSet<WebSocketEndpoint>();
@@ -274,9 +284,7 @@ public class WebSocketDeployer {
 			}
 			endpoints.add(endpoint);
 
-			if (debug) {
-				println("WebSocketEndpoint is deployed to WebSocketService.");
-			}
+			LOG.debug("WebSocketEndpoint is deployed to WebSocketService.");
 		}
 	}
 
@@ -286,15 +294,16 @@ public class WebSocketDeployer {
 	 * @param endpoint
 	 */
 	protected void doUndeploy(WebSocketService webSocketService, WebSocketEndpoint endpoint) {
-		boolean succeed = false;
+		boolean succeed = true;
+
+		deactivate(endpoint);
+
 		if (succeed) {
 			Set<WebSocketEndpoint> endpoints = this.webSocketService_to_deployed_endpoints.get(webSocketService);
 			if (endpoints != null && endpoints.contains(endpoint)) {
 				endpoints.remove(endpoint);
 
-				if (debug) {
-					println("WebSocketEndpoint is undeployed from WebSocketService.");
-				}
+				LOG.debug("WebSocketEndpoint is undeployed from WebSocketService.");
 			}
 		}
 	}
@@ -309,14 +318,6 @@ public class WebSocketDeployer {
 		if (endpoint.isActivated()) {
 			endpoint.setActivated(false);
 		}
-	}
-
-	protected void println() {
-		System.out.println(getClass().getSimpleName());
-	}
-
-	protected void println(String msg) {
-		System.out.println(getClass().getSimpleName() + " - " + msg);
 	}
 
 }

@@ -16,6 +16,8 @@ Import-Package: org.json;version="2015.11.23",
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.component.model,
+ org.orbit.component.model.tier0.channel,
+ org.orbit.component.model.tier0.channel.dto,
  org.orbit.component.model.tier1.account,
  org.orbit.component.model.tier1.account.dto,
  org.orbit.component.model.tier1.auth,

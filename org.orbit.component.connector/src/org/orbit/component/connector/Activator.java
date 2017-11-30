@@ -3,6 +3,7 @@ package org.orbit.component.connector;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.component.connector.tier0.channel.ChannelConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
@@ -33,6 +34,7 @@ public class Activator implements BundleActivator {
 	protected UserRegistryManager userRegistryManager;
 	protected ServiceRegistration<?> userRegistryManagerRegistration;
 
+	protected ChannelConnectorImpl channelConnector;
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
 	protected AuthConnectorImpl authConnector;
@@ -53,16 +55,16 @@ public class Activator implements BundleActivator {
 		this.indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(indexProviderProps);
 
 		// -----------------------------------------------------------------------------
-		// Register ManagedServiceFactories
+		// Register ManagedServiceFactories and connector services
 		// -----------------------------------------------------------------------------
+		// tier0
+		this.channelConnector = new ChannelConnectorImpl();
+		this.channelConnector.start(bundleContext);
+
 		// tier1
 		this.userRegistryManager = new UserRegistryManager();
 		this.userRegistryManager.start(bundleContext);
 
-		// -----------------------------------------------------------------------------
-		// Start service connectors
-		// -----------------------------------------------------------------------------
-		// tier1
 		// this.configRegistryConnector = new ConfigRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		// this.configRegistryConnector.start(bundleContext);
 
@@ -87,7 +89,7 @@ public class Activator implements BundleActivator {
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		// -----------------------------------------------------------------------------
-		// Stop service connectors
+		// Unregister ManagedServiceFactories and connector services
 		// -----------------------------------------------------------------------------
 		// tier3
 		if (this.domainMgmtConnector != null) {
@@ -122,17 +124,16 @@ public class Activator implements BundleActivator {
 			this.authConnector = null;
 		}
 
-		// -----------------------------------------------------------------------------
-		// Register ManagedServiceFactories
-		// -----------------------------------------------------------------------------
-		// tier3
-
-		// tier2
-
 		// tier1
-		if (userRegistryManager != null) {
+		if (this.userRegistryManager != null) {
 			this.userRegistryManager.stop(bundleContext);
 			this.userRegistryManager = null;
+		}
+
+		// tier0
+		if (this.channelConnector != null) {
+			this.channelConnector.stop(bundleContext);
+			this.channelConnector = null;
 		}
 
 		Activator.context = null;

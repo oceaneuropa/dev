@@ -26,7 +26,7 @@ import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
 
-public class DomainManagementCLICommand implements Annotated {
+public class DomainManagementCommand implements Annotated {
 
 	// Column names constants
 	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
@@ -47,7 +47,7 @@ public class DomainManagementCLICommand implements Annotated {
 	 * 
 	 * @param bundleContext
 	 */
-	public DomainManagementCLICommand(BundleContext bundleContext) {
+	public DomainManagementCommand(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
@@ -74,7 +74,7 @@ public class DomainManagementCLICommand implements Annotated {
 						"list_nodes", "list_node", "add_node", "update_node", "remove_node", //
 		});
 
-		OSGiServiceUtil.register(this.bundleContext, DomainManagementCLICommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, DomainManagementCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -83,7 +83,7 @@ public class DomainManagementCLICommand implements Annotated {
 			System.out.println(getClass().getSimpleName() + ".stop()");
 		}
 
-		OSGiServiceUtil.unregister(DomainManagementCLICommand.class.getName(), this);
+		OSGiServiceUtil.unregister(DomainManagementCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 

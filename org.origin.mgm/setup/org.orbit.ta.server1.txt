@@ -44,7 +44,7 @@ VM arguments:
 v4
 ---------------------------------------------------------------------------------------------------
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001 
-
+-Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
 -DORIGIN_HOME=/Users/yayang/origin 
 -Dorbit.host.url=http://127.0.0.1:12001 
 

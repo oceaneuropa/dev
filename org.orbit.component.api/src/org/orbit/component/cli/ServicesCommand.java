@@ -1,11 +1,14 @@
 package org.orbit.component.cli;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.api.tier1.auth.Auth;
@@ -25,19 +28,27 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
+import org.origin.mgm.client.api.IndexItem;
+import org.origin.mgm.client.api.IndexService;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ServicesCommand implements Annotated {
 
+	protected static Logger LOG = LoggerFactory.getLogger(ServicesCommand.class);
+
 	// Service type constants
+	public static final String CHANNEL = "channel";
 	public static final String USER_REGISTRY = "userregistry";
 	public static final String AUTH = "auth";
 	public static final String CONFIGR_EGISTRY = "configregistry";
 	public static final String APP_STORE = "appstore";
 	public static final String DOMAIN = "domain";
-	// public static final String TRANSFER_AGENT = "transferagent";
+	public static final String TRANSFER_AGENT = "transferagent";
 
 	// Column names constants
+	protected static String[] CHANNEL_SERVICES_COLUMNS = new String[] { "index_item_id", "channel.namespace", "channel.name", "channel.host.url", "channel.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] USERREGISTRY_SERVICES_COLUMNS = new String[] { "index_item_id", "userregistry.namespace", "userregistry.name", "userregistry.host.url", "userregistry.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] AUTH_SERVICES_COLUMNS = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] APPSTORE_SERVICES_COLUMNS = new String[] { "index_item_id", "appstore.namespace", "appstore.name", "appstore.host.url", "appstore.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
@@ -57,15 +68,17 @@ public class ServicesCommand implements Annotated {
 	// protected TransferAgentConnector transferAgentConnector;
 
 	protected BundleContext bundleContext;
+	protected IndexService indexService;
 	protected String scheme = "orbit";
-	protected boolean debug = true;
 
 	/**
 	 * 
 	 * @param bundleContext
+	 * @param indexService
 	 */
-	public ServicesCommand(BundleContext bundleContext) {
+	public ServicesCommand(BundleContext bundleContext, IndexService indexService) {
 		this.bundleContext = bundleContext;
+		this.indexService = indexService;
 	}
 
 	protected String getScheme() {
@@ -73,10 +86,6 @@ public class ServicesCommand implements Annotated {
 	}
 
 	public void start() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".start()");
-		}
-
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
 		props.put("osgi.command.function",
@@ -90,36 +99,28 @@ public class ServicesCommand implements Annotated {
 	}
 
 	public void stop() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".stop()");
-		}
-
 		OSGiServiceUtil.unregister(ServicesCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
 	@DependencyFullfilled
 	public void connectorSet() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".connectorSet()");
-			System.out.println("userRegistryConnector: " + userRegistryConnector);
-			System.out.println("authConnector: " + authConnector);
-			System.out.println("appStoreConnector: " + appStoreConnector);
-			System.out.println("domainMgmtConnector: " + domainMgmtConnector);
-			// System.out.println("transferAgentConnector: " + transferAgentConnector);
-		}
+		LOG.debug("connectorSet()");
+		LOG.debug("userRegistryConnector: " + userRegistryConnector);
+		LOG.debug("authConnector: " + authConnector);
+		LOG.debug("appStoreConnector: " + appStoreConnector);
+		LOG.debug("domainMgmtConnector: " + domainMgmtConnector);
+		// LOG.debug("transferAgentConnector: " + transferAgentConnector);
 	}
 
 	@DependencyUnfullfilled
 	public void connectorUnset() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".connectorUnset()");
-			System.out.println("userRegistryConnector: " + userRegistryConnector);
-			System.out.println("authConnector: " + authConnector);
-			System.out.println("appStoreConnector: " + appStoreConnector);
-			System.out.println("domainMgmtConnector: " + domainMgmtConnector);
-			// System.out.println("transferAgentConnector: " + transferAgentConnector);
-		}
+		LOG.debug("connectorUnset()");
+		LOG.debug("userRegistryConnector: " + userRegistryConnector);
+		LOG.debug("authConnector: " + authConnector);
+		LOG.debug("appStoreConnector: " + appStoreConnector);
+		LOG.debug("domainMgmtConnector: " + domainMgmtConnector);
+		// LOG.debug("transferAgentConnector: " + transferAgentConnector);
 	}
 
 	// -----------------------------------------------------------------------------------------
@@ -127,15 +128,15 @@ public class ServicesCommand implements Annotated {
 	// -----------------------------------------------------------------------------------------
 	@Descriptor("List services")
 	public void lservices(@Descriptor("The service to list") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) throws ClientException {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "lservices", new String[] { "-service", service });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "lservices", new String[] { "-service", service });
 
-		if (USER_REGISTRY.equalsIgnoreCase(service)) {
+		if (CHANNEL.equalsIgnoreCase(service)) {
+			listChannelServices();
+
+		} else if (USER_REGISTRY.equalsIgnoreCase(service)) {
 			listUserRegistryServices();
 
 		} else if (AUTH.equalsIgnoreCase(service)) {
-			// } else if (OAUTH2.equalsIgnoreCase(service)) {
 			listAuthServices();
 
 		} else if (CONFIGR_EGISTRY.equalsIgnoreCase(service)) {
@@ -146,16 +147,46 @@ public class ServicesCommand implements Annotated {
 		} else if (DOMAIN.equalsIgnoreCase(service)) {
 			listDomainServices();
 
-			// } else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
-			// listTransferAgentServices();
+		} else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
 
 		} else {
 			// System.err.println("###### Unsupported service name: " + service);
+			listChannelServices();
 			listUserRegistryServices();
 			listAuthServices();
 			listAppStoreServices();
 			listDomainServices();
-			// listTransferAgentServices();
+		}
+	}
+
+	protected void listChannelServices() throws ClientException {
+		try {
+			List<IndexItem> indexItems = this.indexService.getIndexItems(OrbitConstants.CHANNEL_INDEXER_ID, OrbitConstants.CHANNEL_TYPE);
+
+			String[][] rows = new String[indexItems.size()][CHANNEL_SERVICES_COLUMNS.length];
+			int rowIndex = 0;
+			for (IndexItem indexItem : indexItems) {
+				Integer indexItemId = indexItem.getIndexItemId();
+				Map<String, Object> props = indexItem.getProperties();
+
+				String namespace = (String) props.get("channel.namespace");
+				String name = (String) props.get("channel.name");
+				String hostUrl = (String) props.get("channel.host.url");
+				String contextRoot = (String) props.get("channel.context_root");
+				Object lastHeartbeatTime = props.get("heartbeat_expire_time");
+				Object heartbeatExpireTime = props.get("last_heartbeat_time");
+
+				String lastHeartbeatTimeStr = lastHeartbeatTime.toString();
+				String heartbeatExpireTimeStr = heartbeatExpireTime.toString();
+
+				rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+			}
+
+			PrettyPrinter.prettyPrint(CHANNEL_SERVICES_COLUMNS, rows, indexItems.size());
+			System.out.println();
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -255,30 +286,29 @@ public class ServicesCommand implements Annotated {
 		System.out.println();
 	}
 
-	// protected void listTransferAgentServices() throws ClientException {
-	// List<LoadBalanceResource<TransferAgent>> resources = CommandHelper.INSTANCE.getTransferAgentResources(this.transferAgentConnector);
-	//
-	// String[][] rows = new String[resources.size()][TRANSFERAGENT_SERVICES_TITLES.length];
-	// int rowIndex = 0;
-	// for (LoadBalanceResource<TransferAgent> resource : resources) {
-	// Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-	// String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.namespace");
-	// String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.name");
-	// String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.host.url");
-	// String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.context_root");
-	// Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
-	// Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
-	//
-	// String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
-	// String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
-	//
-	// rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
-	// }
-	//
-	// PrettyPrinter.prettyPrint(TRANSFERAGENT_SERVICES_TITLES, rows, resources.size());
-	// System.out.println();
-	// }
-
 }
 
 // public static final String OAUTH2 = "oauth2";
+// protected void listTransferAgentServices() throws ClientException {
+// List<LoadBalanceResource<TransferAgent>> resources = CommandHelper.INSTANCE.getTransferAgentResources(this.transferAgentConnector);
+//
+// String[][] rows = new String[resources.size()][TRANSFERAGENT_SERVICES_TITLES.length];
+// int rowIndex = 0;
+// for (LoadBalanceResource<TransferAgent> resource : resources) {
+// Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
+// String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.namespace");
+// String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.name");
+// String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.host.url");
+// String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.context_root");
+// Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
+// Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
+//
+// String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
+// String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
+//
+// rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+// }
+//
+// PrettyPrinter.prettyPrint(TRANSFERAGENT_SERVICES_TITLES, rows, resources.size());
+// System.out.println();
+// }

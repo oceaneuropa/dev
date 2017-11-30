@@ -18,8 +18,12 @@ import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebServiceDeployer {
+
+	protected static Logger LOG = LoggerFactory.getLogger(WebServiceDeployer.class);
 
 	public static class ApplicationServiceReference {
 		protected String contextRoot;
@@ -90,7 +94,6 @@ public class WebServiceDeployer {
 	protected ApplicationAdapter applicationServicesAdapter;
 	protected List<ApplicationServiceReference> applicationServices;
 	protected ReadWriteLock lock;
-	protected boolean debug = true;
 
 	/**
 	 * 
@@ -103,9 +106,7 @@ public class WebServiceDeployer {
 	}
 
 	public void start() throws Exception {
-		if (debug) {
-			Printer.pl("WSDeployer.start()");
-		}
+		LOG.debug("start()");
 
 		// 1. Start tracking HttpService services
 		this.httpServiceAdapter = new HttpServiceAdapter(bundleContext) {
@@ -211,9 +212,7 @@ public class WebServiceDeployer {
 	}
 
 	public void stop() throws Exception {
-		if (debug) {
-			Printer.pl("WSDeployer.stop()");
-		}
+		LOG.debug("stop()");
 
 		// 1. Stop tracking Application services
 		this.applicationServicesAdapter.stop();
@@ -233,13 +232,17 @@ public class WebServiceDeployer {
 	 * @param httpService
 	 */
 	public void deployApplication(ApplicationServiceReference applicationService, HttpService httpService) {
+		LOG.debug("deployApplication()");
+
 		lock.writeLock().lock();
 		try {
 			String contextRoot = applicationService.getContextRoot();
 			Application application = applicationService.getApplication();
-			if (debug) {
-				// Printer.pl("WSDeployer.deployApplication() contextRoot = " + contextRoot + " application = " + application);
-			}
+
+			LOG.debug("\thttpService = " + httpService);
+			LOG.debug("\tcontextRoot = " + contextRoot);
+			LOG.debug("\tapplication = " + application);
+
 			if (contextRoot == null || application == null || httpService == null) {
 				return;
 			}
@@ -263,16 +266,14 @@ public class WebServiceDeployer {
 						((DeployCallback) application).deployedTo(httpService);
 					}
 
-					if (debug) {
-						Printer.pl("WSDeployer.deployApplication(). Application [" + application.getClass().getSimpleName() + "] is deployed to '" + contextRoot + "'.");
-					}
+					LOG.debug("\tApplication [" + application.getClass().getSimpleName() + "] is deployed to '" + contextRoot + "'.");
+
 				} finally {
 					Thread.currentThread().setContextClassLoader(cl);
 				}
+
 			} catch (Exception e) {
-				if (debug) {
-					Printer.pl("WSDeployer.deployApplication(). Application [" + application.getClass().getSimpleName() + "] is failed to be deployed to '" + contextRoot + "'.");
-				}
+				LOG.debug("\tApplication [" + application.getClass().getSimpleName() + "] failed to be deployed to '" + contextRoot + "'.");
 				e.printStackTrace();
 			}
 

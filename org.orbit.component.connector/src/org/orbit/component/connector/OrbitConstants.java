@@ -8,6 +8,18 @@ public class OrbitConstants {
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
 
 	// ----------------------------------------------------------------------------------------
+	// Channel
+	// ----------------------------------------------------------------------------------------
+	// index item values
+	public static String CHANNEL_INDEXER_ID = "component.channel.indexer"; // index provider id for Channel
+	public static String CHANNEL_TYPE = "Channel"; // type of index item for Channel
+
+	// index item properties
+	public static String CHANNEL_NAME = "channel.name";
+	public static String CHANNEL_HOST_URL = "channel.host.url";
+	public static String CHANNEL_CONTEXT_ROOT = "channel.context_root";
+
+	// ----------------------------------------------------------------------------------------
 	// UserRegistry
 	// ----------------------------------------------------------------------------------------
 	// index item values

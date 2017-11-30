@@ -24,7 +24,7 @@ import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
 
-public class TransferAgentCLICommand implements Annotated {
+public class TransferAgentCommand implements Annotated {
 
 	protected static String[] NODESPACE_TITLES = new String[] { "Name" };
 	protected static String[] NODE_TITLES = new String[] { "Name" };
@@ -41,7 +41,7 @@ public class TransferAgentCLICommand implements Annotated {
 	 * 
 	 * @param bundleContext
 	 */
-	public TransferAgentCLICommand(BundleContext bundleContext) {
+	public TransferAgentCommand(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
@@ -68,7 +68,7 @@ public class TransferAgentCLICommand implements Annotated {
 						"list_nodes", "node_exist", "create_node", "delete_node", "is_node_started", "start_node", "stop_node",//
 		});
 
-		OSGiServiceUtil.register(this.bundleContext, TransferAgentCLICommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, TransferAgentCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -77,7 +77,7 @@ public class TransferAgentCLICommand implements Annotated {
 			System.out.println(getClass().getSimpleName() + ".stop()");
 		}
 
-		OSGiServiceUtil.unregister(TransferAgentCLICommand.class.getName(), this);
+		OSGiServiceUtil.unregister(TransferAgentCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 

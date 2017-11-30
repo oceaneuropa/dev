@@ -26,6 +26,7 @@ import org.eclipse.jetty.server.ServerConnector;
 // import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.server.session.HashSessionManager;
 import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 // import org.eclipse.jetty.server.ssl.SslSocketConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -35,6 +36,8 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationException;
 import org.osgi.service.cm.ManagedServiceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Configuration Admin Service and ManagedService/ManagedServiceFactory
@@ -51,6 +54,8 @@ import org.osgi.service.cm.ManagedServiceFactory;
  * 
  */
 public class HttpServerManager implements ManagedServiceFactory {
+
+	protected static Logger LOG = LoggerFactory.getLogger(HttpServerManager.class);
 
 	// HttpServerManager.update()
 	// -> Create new Jetty Server instance for each PID using the Dictionary as its configurations.
@@ -210,8 +215,6 @@ public class HttpServerManager implements ManagedServiceFactory {
 	protected Map<String, Server> servers = new HashMap<String, Server>();
 	protected Map<Server, ServiceRegistration<ServerContainer>> serverToWebSocketContainerMap = new HashMap<Server, ServiceRegistration<ServerContainer>>();
 
-	protected boolean debug = true;
-
 	/**
 	 * 
 	 * @param bundleContext
@@ -233,13 +236,13 @@ public class HttpServerManager implements ManagedServiceFactory {
 	 */
 	@Override
 	public synchronized void updated(String pid, Dictionary<String, ?> dictionary) throws ConfigurationException {
-		println("updated()");
-		println("pid = " + pid);
-		println("dictionary is:");
+		LOG.debug("updated()");
+		LOG.debug("pid = " + pid);
+		LOG.debug("dictionary is:");
 		for (Enumeration<String> itor = dictionary.keys(); itor.hasMoreElements();) {
 			String propName = itor.nextElement();
 			Object propValue = dictionary.get(propName);
-			println("\t" + propName + " = " + propValue);
+			LOG.debug("\t" + propName + " = " + propValue);
 		}
 
 		deleted(pid);
@@ -254,7 +257,10 @@ public class HttpServerManager implements ManagedServiceFactory {
 		// server.addConnector(httpsConnector);
 		// }
 
-		ServletHolder servletHolder = new ServletHolder(new InternalHttpServiceServlet()); // implements javax.servlet.Servlet
+		// ServletHolder servletHolder = new ServletHolder(new InternalHttpServiceServlet()); // implements javax.servlet.Servlet
+		DefaultServlet defaultServlet = new DefaultServlet();
+		ServletHolder servletHolder = new ServletHolder(defaultServlet);
+
 		servletHolder.setInitOrder(0);
 		servletHolder.setInitParameter(Constants.SERVICE_VENDOR, "Orbit"); //$NON-NLS-1$
 		servletHolder.setInitParameter(Constants.SERVICE_DESCRIPTION, "Orbit Jetty Http Service"); //$NON-NLS-1$
@@ -294,15 +300,13 @@ public class HttpServerManager implements ManagedServiceFactory {
 		try {
 			server.start();
 
-			if (debug) {
-				println("Jetty Server is started.");
-				println("Init parameters:");
-				Map<String, String> initParams = servletHolder.getInitParameters();
-				for (Iterator<String> paramItor = initParams.keySet().iterator(); paramItor.hasNext();) {
-					String paramName = paramItor.next();
-					String paramValue = initParams.get(paramName);
-					println("\t" + paramName + " = " + paramValue);
-				}
+			LOG.debug("Jetty Server is started.");
+			LOG.debug("Init parameters:");
+			Map<String, String> initParams = servletHolder.getInitParameters();
+			for (Iterator<String> paramItor = initParams.keySet().iterator(); paramItor.hasNext();) {
+				String paramName = paramItor.next();
+				String paramValue = initParams.get(paramName);
+				LOG.debug("\t" + paramName + " = " + paramValue);
 			}
 
 		} catch (Exception e) {
@@ -315,10 +319,8 @@ public class HttpServerManager implements ManagedServiceFactory {
 
 	@Override
 	public synchronized void deleted(String pid) {
-		if (debug) {
-			println("deleted()");
-			println("pid = " + pid);
-		}
+		LOG.debug("deleted()");
+		LOG.debug("pid = " + pid);
 
 		Server server = this.servers.remove(pid);
 		if (server != null) {
@@ -360,9 +362,7 @@ public class HttpServerManager implements ManagedServiceFactory {
 	 * @throws Exception
 	 */
 	public synchronized void shutdown() throws Exception {
-		if (debug) {
-			println("Jetty Servers are shut down.");
-		}
+		LOG.debug("Jetty Servers are shut down.");
 
 		for (Iterator<Server> it = this.servers.values().iterator(); it.hasNext();) {
 			Server server = it.next();
@@ -546,9 +546,8 @@ public class HttpServerManager implements ManagedServiceFactory {
 	 * @param container
 	 */
 	protected void registerWebSocketContainer(BundleContext bundleContext, Server server, ServletHolder servletHolder, ServerContainer container) {
-		if (debug) {
-			println("registerWebSocketContainer()");
-		}
+		LOG.debug("registerWebSocketContainer()");
+
 		try {
 			if (bundleContext != null && server != null && servletHolder != null && container != null) {
 				Map<String, String> initParams = servletHolder.getInitParameters();
@@ -556,9 +555,7 @@ public class HttpServerManager implements ManagedServiceFactory {
 				Hashtable<String, Object> props = new Hashtable<String, Object>();
 				props.putAll(initParams);
 
-				if (debug) {
-					println("Register ServerContainer " + container);
-				}
+				LOG.debug("Register ServerContainer " + container);
 
 				ServiceRegistration<ServerContainer> serviceRegistration = bundleContext.registerService(ServerContainer.class, container, props);
 				if (serviceRegistration != null) {
@@ -581,23 +578,14 @@ public class HttpServerManager implements ManagedServiceFactory {
 			if (bundleContext != null && server != null) {
 				ServiceRegistration<ServerContainer> serviceRegistration = this.serverToWebSocketContainerMap.remove(server);
 				if (serviceRegistration != null) {
-					if (debug) {
-						println("Unregister ServerContainer.");
-					}
+					LOG.debug("Unregister ServerContainer.");
+
 					serviceRegistration.unregister();
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	protected void println() {
-		System.out.println(getClass().getSimpleName());
-	}
-
-	protected void println(String msg) {
-		System.out.println(getClass().getSimpleName() + " - " + msg);
 	}
 
 }

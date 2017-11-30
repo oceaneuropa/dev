@@ -12,11 +12,11 @@ import javax.websocket.WebSocketContainer;
  * https://examples.javacodegeeks.com/enterprise-java/jetty/jetty-websocket-example/
  *
  */
-public class WebSocket356ClientMain {
+public class ToUpper356ClientSocketMain {
 
 	public void send1() throws DeploymentException, IOException, URISyntaxException, InterruptedException {
 		// String dest = "ws://localhost:8080/orbit/jsr356toUpper";
-		String dest = "ws://localhost:7001/orbit/jsr356toUpper2";
+		String dest = "ws://localhost:7001/orbit/jsr356toUpper";
 		ToUpper356ClientSocket socket = new ToUpper356ClientSocket();
 		WebSocketContainer container = ContainerProvider.getWebSocketContainer();
 		container.connectToServer(socket, new URI(dest));
@@ -38,10 +38,14 @@ public class WebSocket356ClientMain {
 
 	public static void main(String[] args) {
 		try {
-			WebSocket356ClientMain main = new WebSocket356ClientMain();
-			main.send1();
-			main.send2("user1");
-			main.send2("user2");
+			ToUpper356ClientSocketMain main = new ToUpper356ClientSocketMain();
+
+			for (int i = 0; i < 3; i++) {
+				// main.send1();
+				main.send2("user" + i);
+
+				Thread.sleep(10 * 1000);
+			}
 
 			Thread.sleep(120 * 1000);
 

@@ -58,7 +58,7 @@ public class WebSocketServerOSGi {
 	}
 
 	protected ServerEndpointConfig createEndpointConfig2() {
-		ServerEndpointConfig.Builder configBuilder = ServerEndpointConfig.Builder.create(ToUpper356Socket.class, "/orbit/jsr356toUpper2");
+		ServerEndpointConfig.Builder configBuilder = ServerEndpointConfig.Builder.create(ToUpper356Socket.class, "/orbit/jsr356toUpper");
 
 		// List<String> subprotocols = Arrays.asList(new String[] { "http", "rest", "json", "xml" });
 		// List<String> subprotocols = new ArrayList<>();

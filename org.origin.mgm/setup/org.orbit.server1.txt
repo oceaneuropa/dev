@@ -87,7 +87,8 @@ backup4:
 
 backup5:
 ------------------------------------------------------------------------------------
--Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=11001
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=11001 
+-Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:11001 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 

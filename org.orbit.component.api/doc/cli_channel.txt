@@ -1,0 +1,4 @@
+channel_ping
+
+channel_send -channelId 'room1' -senderId 'userA' -message 'hello world 1'
+channel_send -channelId 'room2' -senderId 'userB' -message 'hi there 1'

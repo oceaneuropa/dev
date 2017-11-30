@@ -181,6 +181,27 @@ public class OrbitConstants {
 	public static String TRANSFER_AGENT_HOME = "transfer_agent.home";
 
 	// ----------------------------------------------------------------------------------------
+	// Broadcast
+	// ----------------------------------------------------------------------------------------
+	// config properties
+	public static String COMPONENT_CHANNEL_NAMESPACE = "component.channel.namespace";
+	public static String COMPONENT_CHANNEL_NAME = "component.channel.name";
+	public static String COMPONENT_CHANNEL_HOST_URL = "component.channel.host.url";
+	public static String COMPONENT_CHANNEL_CONTEXT_ROOT = "component.channel.context_root";
+	public static String COMPONENT_CHANNEL_HTTP_PORT = "component.channel.http_port";
+
+	// index item values
+	public static String CHANNEL_INDEXER_ID = "component.channel.indexer"; // index provider id for ChannelService
+	public static String CHANNEL_TYPE = "Channel"; // type of index item for ChannelService
+
+	// index item properties
+	public static String CHANNEL_NAMESPACE = "channel.namespace";
+	public static String CHANNEL_NAME = "channel.name";
+	public static String CHANNEL_HOST_URL = "channel.host.url";
+	public static String CHANNEL_CONTEXT_ROOT = "channel.context_root";
+	public static String CHANNEL_HTTP_PORT = "channel.http_port";
+
+	// ----------------------------------------------------------------------------------------
 	// Requests
 	// ----------------------------------------------------------------------------------------
 	public static class Requests {

@@ -1,6 +1,7 @@
 package org.orbit.component.server.tier1.auth.ws;
 
 import org.orbit.component.server.tier1.auth.service.AuthService;
+import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -9,9 +10,11 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 public class AuthServiceAdapter {
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<AuthService, AuthService> serviceTracker;
+	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	protected IndexProvider indexProvider;
 	protected AuthWSApplication webApp;
+	protected AuthServiceIndexTimer serviceIndexTimer;
 
 	public AuthServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
@@ -19,14 +22,6 @@ public class AuthServiceAdapter {
 
 	public AuthService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
-	}
-
-	public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
-		return indexProviderLoadBalancer;
-	}
-
-	public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
 	/**
@@ -40,25 +35,26 @@ public class AuthServiceAdapter {
 				AuthService service = bundleContext.getService(reference);
 				System.out.println("AuthService [" + service + "] is added.");
 
-				startWebService(bundleContext, service);
+				doStart(bundleContext, service);
+
 				return service;
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<AuthService> reference, AuthService service) {
 				System.out.println("AuthService [" + service + "] is modified.");
-				// stopWebService(bundleContext, service);
-				// startWebService(bundleContext, service);
 			}
 
 			@Override
 			public void removedService(ServiceReference<AuthService> reference, AuthService service) {
 				System.out.println("AuthService [" + service + "] is removed.");
 
-				stopWebService(bundleContext, service);
+				doStop(bundleContext, service);
 			}
 		});
 		this.serviceTracker.open();
+
+		this.indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 	}
 
 	/**
@@ -72,25 +68,20 @@ public class AuthServiceAdapter {
 		}
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 * @param service
-	 */
-	protected void startWebService(BundleContext bundleContext, AuthService service) {
+	protected void doStart(BundleContext bundleContext, AuthService service) {
 		this.webApp = new AuthWSApplication(bundleContext, service);
-		if (this.indexProviderLoadBalancer != null) {
-			this.webApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		}
 		this.webApp.start();
+
+		this.serviceIndexTimer = new AuthServiceIndexTimer(this.indexProvider, service);
+		this.serviceIndexTimer.start();
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 * @param service
-	 */
-	protected void stopWebService(BundleContext bundleContext, AuthService service) {
+	protected void doStop(BundleContext bundleContext, AuthService service) {
+		if (this.serviceIndexTimer != null) {
+			this.serviceIndexTimer.stop();
+			this.serviceIndexTimer = null;
+		}
+
 		if (this.webApp != null) {
 			this.webApp.stop();
 			this.webApp = null;

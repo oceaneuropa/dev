@@ -80,5 +80,7 @@ Service-Component: OSGI-INF/BundleHandler.xml,
 Export-Package: com.osgi.example1,
  com.osgi.example1.fs.common.vo
 Bundle-ClassPath: .
-Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"
+Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
+ ch.qos.logback.classic;bundle-version="1.2.3",
+ ch.qos.logback.core;bundle-version="1.2.3"
 Bundle-ActivationPolicy: lazy

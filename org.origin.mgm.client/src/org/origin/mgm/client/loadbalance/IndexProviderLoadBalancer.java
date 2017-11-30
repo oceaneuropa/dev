@@ -22,89 +22,89 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		return new IndexProviderLoadBalancableImpl();
 	}
 
-	protected IndexProvider getNextIndexProvider() {
-		LoadBalanceResource<IndexProvider> lbServices = this.getNext();
-		if (lbServices != null) {
-			return lbServices.getService();
-		}
-		return UNSUPPORTED_IMPL;
-	}
-
 	public class IndexProviderLoadBalancableImpl implements IndexProvider {
+
+		protected IndexProvider next() {
+			LoadBalanceResource<IndexProvider> services = getNext();
+			if (services != null) {
+				return services.getService();
+			}
+			return UNSUPPORTED_IMPL;
+		}
 
 		@Override
 		public IndexServiceConfiguration getConfiguration() {
-			return getNextIndexProvider().getConfiguration();
+			return next().getConfiguration();
 		}
 
 		@Override
 		public int ping() {
-			return getNextIndexProvider().ping();
+			return next().ping();
 		}
 
 		@Override
 		public List<IndexItem> getIndexItems() throws IOException {
-			return getNextIndexProvider().getIndexItems();
+			return next().getIndexItems();
 		}
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
-			return getNextIndexProvider().getIndexItems(indexProviderId);
+			return next().getIndexItems(indexProviderId);
 		}
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IOException {
-			return getNextIndexProvider().getIndexItems(indexProviderId, type);
+			return next().getIndexItems(indexProviderId, type);
 		}
 
 		@Override
 		public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IOException {
-			return getNextIndexProvider().getIndexItem(indexProviderId, type, name);
+			return next().getIndexItem(indexProviderId, type, name);
 		}
 
 		@Override
 		public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-			return getNextIndexProvider().getIndexItem(indexProviderId, indexItemId);
+			return next().getIndexItem(indexProviderId, indexItemId);
 		}
 
 		@Override
 		public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
-			return getNextIndexProvider().sendCommand(action, params);
+			return next().sendCommand(action, params);
 		}
 
 		@Override
 		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
-			return getNextIndexProvider().addIndexItem(indexProviderId, type, name, properties);
+			return next().addIndexItem(indexProviderId, type, name, properties);
 		}
 
 		@Override
 		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-			return getNextIndexProvider().removeIndexItem(indexProviderId, indexItemId);
+			return next().removeIndexItem(indexProviderId, indexItemId);
 		}
 
 		@Override
 		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
-			return getNextIndexProvider().setProperties(indexProviderId, indexItemId, properties);
+			return next().setProperties(indexProviderId, indexItemId, properties);
 		}
 
 		@Override
 		public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
-			return getNextIndexProvider().setProperty(indexProviderId, indexItemId, propName, propValue, propType);
+			return next().setProperty(indexProviderId, indexItemId, propName, propValue, propType);
 		}
 
 		@Override
 		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
-			return getNextIndexProvider().removeProperties(indexProviderId, indexItemId, propertyNames);
+			return next().removeProperties(indexProviderId, indexItemId, propertyNames);
 		}
 
 		@Override
 		public <T> void adapt(Class<T> clazz, T object) {
-			getNextIndexProvider().adapt(clazz, object);
+			next().adapt(clazz, object);
 		}
 
 		@Override
 		public <T> T getAdapter(Class<T> adapter) {
-			return getNextIndexProvider().getAdapter(adapter);
+			return next().getAdapter(adapter);
 		}
 	}
 

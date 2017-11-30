@@ -23,7 +23,7 @@ import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
 
-public class DomainManagementCLICommandOld implements Annotated {
+public class DomainManagementCommandOld implements Annotated {
 
 	// Service type constants
 	public static final String USER_REGISTRY = "userregistry";
@@ -48,7 +48,7 @@ public class DomainManagementCLICommandOld implements Annotated {
 	 * 
 	 * @param bundleContext
 	 */
-	public DomainManagementCLICommandOld(BundleContext bundleContext) {
+	public DomainManagementCommandOld(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 	}
 
@@ -68,7 +68,7 @@ public class DomainManagementCLICommandOld implements Annotated {
 						"_lmachines", "_addmachine", "_updatemachine", "_removemachine" //
 		});
 
-		OSGiServiceUtil.register(this.bundleContext, DomainManagementCLICommandOld.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, DomainManagementCommandOld.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -77,7 +77,7 @@ public class DomainManagementCLICommandOld implements Annotated {
 			System.out.println(getClass().getSimpleName() + ".stop()");
 		}
 
-		OSGiServiceUtil.unregister(DomainManagementCLICommandOld.class.getName(), this);
+		OSGiServiceUtil.unregister(DomainManagementCommandOld.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 

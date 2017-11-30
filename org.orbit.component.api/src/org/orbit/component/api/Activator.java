@@ -1,5 +1,8 @@
 package org.orbit.component.api;
 
+import java.util.Hashtable;
+import java.util.Map;
+
 import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
@@ -7,18 +10,27 @@ import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgentAdapter;
 import org.orbit.component.cli.ServicesCommand;
+import org.orbit.component.cli.tier0.ChannelCommand;
 import org.orbit.component.cli.tier1.AuthCommand;
 import org.orbit.component.cli.tier1.UserRegistryCommand;
-import org.orbit.component.cli.tier2.AppStoreCLICommand;
-import org.orbit.component.cli.tier3.DomainManagementCLICommand;
-import org.orbit.component.cli.tier3.TransferAgentCLICommand;
+import org.orbit.component.cli.tier2.AppStoreCommand;
+import org.orbit.component.cli.tier3.DomainManagementCommand;
+import org.orbit.component.cli.tier3.TransferAgentCommand;
+import org.origin.common.util.PropertyUtil;
+import org.origin.mgm.client.api.IndexService;
+import org.origin.mgm.client.api.IndexServiceUtil;
+import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
+
+	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
 
 	protected static BundleContext context;
 	protected static Activator instance;
@@ -31,86 +43,74 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
-	// --------------------------------------------------------------------------------
-	// tier1 connector service tracker
-	// --------------------------------------------------------------------------------
+	// Connector service trackers
+	// tier1
 	protected ServiceTracker<UserRegistryConnector, UserRegistryConnector> userRegistryConnectorTracker;
 	protected ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector> configRegistryConnectorTracker;
 	protected ServiceTracker<AuthConnector, AuthConnector> authConnectorTracker;
-
-	// --------------------------------------------------------------------------------
-	// tier2 connector service tracker
-	// --------------------------------------------------------------------------------
+	// tier2
 	protected ServiceTracker<AppStoreConnector, AppStoreConnector> appStoreConnectorTracker;
-
-	// --------------------------------------------------------------------------------
-	// tier3 connector service tracker
-	// --------------------------------------------------------------------------------
+	// tier3
 	protected ServiceTracker<DomainManagementConnector, DomainManagementConnector> domainMgmtConnectorTracker;
 	protected TransferAgentAdapter transferAgentAdapter;
 
+	// Commands
 	protected ServicesCommand servicesCommand;
+	protected ChannelCommand channelCommand;
 	protected AuthCommand authCommand;
 	protected UserRegistryCommand userRegistryCommand;
-	protected AppStoreCLICommand appStoreCommand;
-	protected DomainManagementCLICommand domainMgmtCommand;
-	protected TransferAgentCLICommand transferAgentCommand;
+	protected AppStoreCommand appStoreCommand;
+	protected DomainManagementCommand domainMgmtCommand;
+	protected TransferAgentCommand transferAgentCommand;
 
-	protected boolean debug = true;
+	protected IndexServiceLoadBalancer indexServiceLoadBalancer;
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		Activator.instance = this;
 
-		// --------------------------------------------------------------------------------
-		// Start tier1 service connectors
-		// --------------------------------------------------------------------------------
+		// Get IndexProvider load balancer
+		// load properties from accessing index service
+		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OrbitConstants.COMPONENT_INDEX_SERVICE_URL);
+		this.indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(indexProviderProps);
+
+		// Start connector service trackers
+		// tier1
 		this.userRegistryConnectorTracker = new ServiceTracker<UserRegistryConnector, UserRegistryConnector>(bundleContext, UserRegistryConnector.class, new ServiceTrackerCustomizer<UserRegistryConnector, UserRegistryConnector>() {
 			@Override
 			public UserRegistryConnector addingService(ServiceReference<UserRegistryConnector> reference) {
-				if (debug) {
-					System.out.println(getClass().getName() + " UserRegistryConnector service is added.");
-				}
+				LOG.debug(getClass().getName() + " UserRegistryConnector service is added.");
 				return bundleContext.getService(reference);
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<UserRegistryConnector> reference, UserRegistryConnector arg1) {
-				if (debug) {
-					System.out.println(getClass().getName() + " UserRegistryConnector service is modified.");
-				}
+				LOG.debug(getClass().getName() + " UserRegistryConnector service is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<UserRegistryConnector> reference, UserRegistryConnector arg1) {
-				if (debug) {
-					System.out.println(getClass().getName() + " UserRegistryConnector service is removed.");
-				}
+				LOG.debug(getClass().getName() + " UserRegistryConnector service is removed.");
 			}
 		});
 
 		this.configRegistryConnectorTracker = new ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector>(bundleContext, ConfigRegistryConnector.class, new ServiceTrackerCustomizer<ConfigRegistryConnector, ConfigRegistryConnector>() {
 			@Override
 			public ConfigRegistryConnector addingService(ServiceReference<ConfigRegistryConnector> reference) {
-				if (debug) {
-					System.out.println(getClass().getName() + " ConfigRegistryConnector service is added.");
-				}
+				LOG.debug(getClass().getName() + " ConfigRegistryConnector service is added.");
 				return bundleContext.getService(reference);
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<ConfigRegistryConnector> reference, ConfigRegistryConnector appStoreManager) {
-				if (debug) {
-					System.out.println(getClass().getName() + " ConfigRegistryConnector service is modified.");
-				}
+				LOG.debug(getClass().getName() + " ConfigRegistryConnector service is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<ConfigRegistryConnector> reference, ConfigRegistryConnector appStoreManager) {
-				if (debug) {
-					System.out.println(getClass().getName() + " ConfigRegistryConnector service is removed.");
-				}
+				LOG.debug(getClass().getName() + " ConfigRegistryConnector service is removed.");
 			}
 		});
 		this.configRegistryConnectorTracker.open();
@@ -118,90 +118,70 @@ public class Activator implements BundleActivator {
 		this.authConnectorTracker = new ServiceTracker<AuthConnector, AuthConnector>(bundleContext, AuthConnector.class, new ServiceTrackerCustomizer<AuthConnector, AuthConnector>() {
 			@Override
 			public AuthConnector addingService(ServiceReference<AuthConnector> reference) {
-				if (debug) {
-					System.out.println(getClass().getName() + " AuthConnector service is added.");
-				}
+				LOG.debug(getClass().getName() + " AuthConnector service is added.");
 				return bundleContext.getService(reference);
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<AuthConnector> reference, AuthConnector arg1) {
-				if (debug) {
-					System.out.println(getClass().getName() + " AuthConnector service is modified.");
-				}
+				LOG.debug(getClass().getName() + " AuthConnector service is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<AuthConnector> reference, AuthConnector arg1) {
-				if (debug) {
-					System.out.println(getClass().getName() + " AuthConnector service is removed.");
-				}
+				LOG.debug(getClass().getName() + " AuthConnector service is removed.");
 			}
 		});
 
-		// --------------------------------------------------------------------------------
-		// Start tier2 service connectors
-		// --------------------------------------------------------------------------------
+		// tier2
 		this.appStoreConnectorTracker = new ServiceTracker<AppStoreConnector, AppStoreConnector>(bundleContext, AppStoreConnector.class, new ServiceTrackerCustomizer<AppStoreConnector, AppStoreConnector>() {
 			@Override
 			public AppStoreConnector addingService(ServiceReference<AppStoreConnector> reference) {
-				if (debug) {
-					System.out.println(getClass().getName() + " AppStoreConnector service is added.");
-				}
+				LOG.debug(getClass().getName() + " AppStoreConnector service is added.");
 				return bundleContext.getService(reference);
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<AppStoreConnector> reference, AppStoreConnector appStoreManager) {
-				if (debug) {
-					System.out.println(getClass().getName() + " AppStoreConnector service is modified.");
-				}
+				LOG.debug(getClass().getName() + " AppStoreConnector service is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<AppStoreConnector> reference, AppStoreConnector appStoreManager) {
-				if (debug) {
-					System.out.println(getClass().getName() + " AppStoreConnector service is removed.");
-				}
+				LOG.debug(getClass().getName() + " AppStoreConnector service is removed.");
 			}
 		});
 		this.appStoreConnectorTracker.open();
 
-		// --------------------------------------------------------------------------------
-		// Start tier3 service connectors
-		// --------------------------------------------------------------------------------
+		// tier3
 		this.domainMgmtConnectorTracker = new ServiceTracker<DomainManagementConnector, DomainManagementConnector>(bundleContext, DomainManagementConnector.class, new ServiceTrackerCustomizer<DomainManagementConnector, DomainManagementConnector>() {
 			@Override
 			public DomainManagementConnector addingService(ServiceReference<DomainManagementConnector> reference) {
-				if (debug) {
-					System.out.println(getClass().getName() + " DomainMgmtConnector service is added.");
-				}
+				LOG.debug(getClass().getName() + " DomainMgmtConnector service is added.");
 				return bundleContext.getService(reference);
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<DomainManagementConnector> reference, DomainManagementConnector arg1) {
-				if (debug) {
-					System.out.println(getClass().getName() + " DomainMgmtConnector service is modified.");
-				}
+				LOG.debug(getClass().getName() + " DomainMgmtConnector service is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<DomainManagementConnector> reference, DomainManagementConnector arg1) {
-				if (debug) {
-					System.out.println(getClass().getName() + " DomainMgmtConnector service is removed.");
-				}
+				LOG.debug(getClass().getName() + " DomainMgmtConnector service is removed.");
 			}
 		});
 
 		this.transferAgentAdapter = new TransferAgentAdapter();
 		this.transferAgentAdapter.start(bundleContext);
 
-		// --------------------------------------------------------------------------------
 		// Start CLI commands
-		// --------------------------------------------------------------------------------
-		this.servicesCommand = new ServicesCommand(bundleContext);
+		IndexService indexService = this.indexServiceLoadBalancer.createLoadBalancableIndexService();
+		this.servicesCommand = new ServicesCommand(bundleContext, indexService);
 		this.servicesCommand.start();
+
+		this.channelCommand = new ChannelCommand();
+		this.channelCommand.start(bundleContext);
 
 		this.authCommand = new AuthCommand(bundleContext);
 		this.authCommand.start();
@@ -209,24 +189,27 @@ public class Activator implements BundleActivator {
 		this.userRegistryCommand = new UserRegistryCommand(bundleContext);
 		this.userRegistryCommand.start();
 
-		this.appStoreCommand = new AppStoreCLICommand(bundleContext);
+		this.appStoreCommand = new AppStoreCommand(bundleContext);
 		this.appStoreCommand.start();
 
-		this.domainMgmtCommand = new DomainManagementCLICommand(bundleContext);
+		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
 		this.domainMgmtCommand.start();
 
-		this.transferAgentCommand = new TransferAgentCLICommand(bundleContext);
+		this.transferAgentCommand = new TransferAgentCommand(bundleContext);
 		this.transferAgentCommand.start();
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		// --------------------------------------------------------------------------------
 		// Stop CLI commands
-		// --------------------------------------------------------------------------------
 		if (this.servicesCommand != null) {
 			this.servicesCommand.stop();
 			this.servicesCommand = null;
+		}
+
+		if (this.channelCommand != null) {
+			this.channelCommand.stop(bundleContext);
+			this.channelCommand = null;
 		}
 
 		if (this.authCommand != null) {
@@ -254,9 +237,8 @@ public class Activator implements BundleActivator {
 			this.transferAgentCommand = null;
 		}
 
-		// --------------------------------------------------------------------------------
-		// Stop tier3 service connectors
-		// --------------------------------------------------------------------------------
+		// Stop connector service trackers
+		// tier3
 		if (this.domainMgmtConnectorTracker != null) {
 			this.domainMgmtConnectorTracker.close();
 			this.domainMgmtConnectorTracker = null;
@@ -266,17 +248,13 @@ public class Activator implements BundleActivator {
 			this.transferAgentAdapter = null;
 		}
 
-		// --------------------------------------------------------------------------------
-		// Stop tier2 service connectors
-		// --------------------------------------------------------------------------------
+		// tier2
 		if (this.appStoreConnectorTracker != null) {
 			this.appStoreConnectorTracker.close();
 			this.appStoreConnectorTracker = null;
 		}
 
-		// --------------------------------------------------------------------------------
-		// Stop tier1 service connectors
-		// --------------------------------------------------------------------------------
+		// tier1
 		if (this.configRegistryConnectorTracker != null) {
 			this.configRegistryConnectorTracker.close();
 			this.configRegistryConnectorTracker = null;

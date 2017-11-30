@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.component.server.tier0.channel.service.ChannelServiceImpl;
 import org.orbit.component.server.tier1.account.service.impl.UserRegistryServiceDatabaseImpl;
 import org.orbit.component.server.tier1.auth.service.impl.AuthServiceImpl;
 import org.orbit.component.server.tier1.config.service.impl.ConfigRegistryServiceDatabaseImpl;
@@ -16,23 +17,25 @@ import org.osgi.framework.BundleContext;
 public class ComponentServicesCommand {
 
 	// service types
+	public static final String CHANNEL = "channel";
 	public static final String USER_REGISTRY = "userregistry";
-	// public static final String OAUTH2 = "oauth2";
 	public static final String AUTH = "auth";
 	public static final String CONFIGR_EGISTRY = "configregistry";
 	public static final String APP_STORE = "appstore";
 	public static final String DOMAIN = "domain";
 	public static final String TRANSFER_AGENT = "transferagent";
+	// public static final String OAUTH2 = "oauth2";
 
 	protected BundleContext bundleContext;
 
+	protected ChannelServiceImpl channelService;
 	protected ConfigRegistryServiceDatabaseImpl configRegistryService;
 	protected AuthServiceImpl authService;
-	// protected OAuth2ServiceDatabaseImpl oauth2Service;
 	protected UserRegistryServiceDatabaseImpl userRegistryService;
 	protected AppStoreServiceDatabaseImpl appStoreService;
 	protected DomainManagementServiceDatabaseImpl domainMgmtService;
 	protected TransferAgentServiceImpl transferAgentService;
+	// protected OAuth2ServiceDatabaseImpl oauth2Service;
 
 	/**
 	 * 
@@ -69,7 +72,10 @@ public class ComponentServicesCommand {
 	public void startservice(@Descriptor("The service to start") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) {
 		System.out.println("starting service: " + service);
 
-		if (USER_REGISTRY.equalsIgnoreCase(service)) {
+		if (CHANNEL.equalsIgnoreCase(service)) {
+			startChannelService(this.bundleContext);
+
+		} else if (USER_REGISTRY.equalsIgnoreCase(service)) {
 			startUserRegistryService(this.bundleContext);
 
 		} else if (AUTH.equalsIgnoreCase(service)) {
@@ -104,8 +110,11 @@ public class ComponentServicesCommand {
 	public void stopservice(@Descriptor("The service to stop") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) {
 		System.out.println("stopping service: " + service);
 
-		if (USER_REGISTRY.equalsIgnoreCase(service)) {
-			stopUserRegistryService();
+		if (CHANNEL.equalsIgnoreCase(service)) {
+			stopChannelService(this.bundleContext);
+
+		} else if (USER_REGISTRY.equalsIgnoreCase(service)) {
+			stopUserRegistryService(this.bundleContext);
 
 			// } else if (OAUTH2.equalsIgnoreCase(service)) {
 			// stopOAuth2Service();
@@ -114,19 +123,32 @@ public class ComponentServicesCommand {
 			stopAuthService(this.bundleContext);
 
 		} else if (CONFIGR_EGISTRY.equalsIgnoreCase(service)) {
-			stopConfigRegistryService();
+			stopConfigRegistryService(this.bundleContext);
 
 		} else if (APP_STORE.equalsIgnoreCase(service)) {
-			stopAppStoreService();
+			stopAppStoreService(this.bundleContext);
 
 		} else if (DOMAIN.equalsIgnoreCase(service)) {
 			stopDomainMgmtService(this.bundleContext);
 
 		} else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
-			stopTransferAgentService();
+			stopTransferAgentService(this.bundleContext);
 
 		} else {
 			System.err.println("###### Unsupported service name: " + service);
+		}
+	}
+
+	public void startChannelService(BundleContext bundleContext) {
+		ChannelServiceImpl channelService = new ChannelServiceImpl();
+		channelService.start(bundleContext);
+		this.channelService = channelService;
+	}
+
+	public void stopChannelService(BundleContext bundleContext) {
+		if (this.channelService != null) {
+			this.channelService.stop(bundleContext);
+			this.channelService = null;
 		}
 	}
 
@@ -136,7 +158,7 @@ public class ComponentServicesCommand {
 		this.userRegistryService = userRegistryService;
 	}
 
-	public void stopUserRegistryService() {
+	public void stopUserRegistryService(BundleContext bundleContext) {
 		if (this.userRegistryService != null) {
 			this.userRegistryService.stop();
 			this.userRegistryService = null;
@@ -162,7 +184,7 @@ public class ComponentServicesCommand {
 	// this.oauth2Service = oauth2Service;
 	// }
 	//
-	// public void stopOAuth2Service() {
+	// public void stopOAuth2Service(BundleContext bundleContext) {
 	// if (this.oauth2Service != null) {
 	// this.oauth2Service.stop();
 	// this.oauth2Service = null;
@@ -175,7 +197,7 @@ public class ComponentServicesCommand {
 		this.configRegistryService = configRegistryService;
 	}
 
-	public void stopConfigRegistryService() {
+	public void stopConfigRegistryService(BundleContext bundleContext) {
 		if (this.configRegistryService != null) {
 			this.configRegistryService.stop();
 			this.configRegistryService = null;
@@ -188,7 +210,7 @@ public class ComponentServicesCommand {
 		this.appStoreService = appStoreService;
 	}
 
-	public void stopAppStoreService() {
+	public void stopAppStoreService(BundleContext bundleContext) {
 		if (this.appStoreService != null) {
 			this.appStoreService.stop();
 			this.appStoreService = null;
@@ -214,7 +236,7 @@ public class ComponentServicesCommand {
 		this.transferAgentService = transferAgentService;
 	}
 
-	public void stopTransferAgentService() {
+	public void stopTransferAgentService(BundleContext bundleContext) {
 		if (this.transferAgentService != null) {
 			this.transferAgentService.stop();
 			this.transferAgentService = null;
