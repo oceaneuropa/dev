@@ -23,12 +23,12 @@ public class FileImpl extends ResourceImpl implements IFile {
 
 	@Override
 	public boolean create() throws IOException {
-		return getWorkspace().createUnderlyingFile(getFullPath());
+		return getWorkspace().createUnderlyingFile(this);
 	}
 
 	@Override
 	public boolean create(InputStream input) throws IOException {
-		return getWorkspace().createUnderlyingFile(getFullPath(), input);
+		return getWorkspace().createUnderlyingFile(this, input);
 	}
 
 	@Override

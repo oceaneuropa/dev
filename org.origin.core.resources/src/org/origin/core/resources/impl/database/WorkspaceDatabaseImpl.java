@@ -15,34 +15,40 @@ import org.origin.core.resources.IResource;
 import org.origin.core.resources.IWorkspace;
 import org.origin.core.resources.WorkspaceDescription;
 
+/*
+ * Workspaces table name: "workspaces"
+ * -----------------------------------
+ * workspaceId 		workspaceName
+ * -----------------------------------
+ * 1				workspace1
+ * 2				workspace2
+ * 3				workspace3
+ * -----------------------------------
+ * 
+ * Each workspace has its own table, so that data from different workspaces are separated and won't affect each other.
+ * 
+ * e.g.
+ * workspace1 table name: "workspace_1"
+ * workspace2 table name: "workspace_2"
+ * workspace3 table name: "workspace_3"
+ * 
+ */
 public class WorkspaceDatabaseImpl implements IWorkspace {
 
 	protected String id;
 	protected ConnectionAware connectionAware;
-	protected int workspaceId;
+	protected int workspaceName;
 
 	/**
 	 * 
-	 * @param id
-	 * @param connectionAware
-	 */
-	public WorkspaceDatabaseImpl(String id, ConnectionAware connectionAware) {
-		this.id = id;
-		this.connectionAware = connectionAware;
-		// this.workspacesTableHandler = new WorkspacesTableHandler(id);
-	}
-
-	/**
-	 * 
-	 * @param id
 	 * @param connectionAware
 	 * @param workspaceId
 	 */
-	public WorkspaceDatabaseImpl(String id, ConnectionAware connectionAware, int workspaceId) {
-		this.id = id;
+	public WorkspaceDatabaseImpl(ConnectionAware connectionAware, int workspaceId) {
 		this.connectionAware = connectionAware;
-		this.workspaceId = workspaceId;
-		// this.workspacesTableHandler = new WorkspacesTableHandler(id);
+		this.workspaceName = workspaceId;
+		// TODO
+		// derive workspace table name from the workspaceId and create workspace table handler for the workspace table.
 	}
 
 	public Connection getConnection() {
@@ -85,6 +91,11 @@ public class WorkspaceDatabaseImpl implements IWorkspace {
 	@Override
 	public boolean exists() {
 		return false;
+	}
+
+	@Override
+	public IFolder getVirtualRoot() {
+		return null;
 	}
 
 	@Override
@@ -155,17 +166,17 @@ public class WorkspaceDatabaseImpl implements IWorkspace {
 	}
 
 	@Override
-	public boolean createUnderlyingFile(IPath fullpath) throws IOException {
+	public boolean createUnderlyingFile(IFile file) throws IOException {
 		return false;
 	}
 
 	@Override
-	public boolean createUnderlyingFile(IPath fullpath, InputStream input) throws IOException {
+	public boolean createUnderlyingFile(IFile file, InputStream input) throws IOException {
 		return false;
 	}
 
 	@Override
-	public boolean createUnderlyingFolder(IPath fullpath) throws IOException {
+	public boolean createUnderlyingFolder(IFolder folder) throws IOException {
 		return false;
 	}
 

@@ -212,19 +212,23 @@ public class SetupUtil {
 	 * @param props
 	 */
 	public static void loadNodeConfigIniProperties(BundleContext bundleContext, Map<Object, Object> props) {
-		// load config.ini properties
-		Properties configIniProps = getNodeHomeConfigIniProperties(bundleContext);
+		try {
+			// load config.ini properties
+			Properties configIniProps = getNodeHomeConfigIniProperties(bundleContext);
 
-		if (configIniProps != null && !configIniProps.isEmpty()) {
-			@SuppressWarnings("unchecked")
-			Enumeration<String> enumr = ((Enumeration<String>) configIniProps.propertyNames());
-			while (enumr.hasMoreElements()) {
-				String propName = (String) enumr.nextElement();
-				String propValue = configIniProps.getProperty(propName);
-				if (propName != null && propValue != null) {
-					props.put(propName, propValue);
+			if (configIniProps != null && !configIniProps.isEmpty()) {
+				@SuppressWarnings("unchecked")
+				Enumeration<String> enumr = ((Enumeration<String>) configIniProps.propertyNames());
+				while (enumr.hasMoreElements()) {
+					String propName = (String) enumr.nextElement();
+					String propValue = configIniProps.getProperty(propName);
+					if (propName != null && propValue != null) {
+						props.put(propName, propValue);
+					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

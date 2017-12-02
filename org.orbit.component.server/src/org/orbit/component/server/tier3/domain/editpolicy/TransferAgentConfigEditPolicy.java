@@ -8,14 +8,14 @@ import org.orbit.component.server.tier3.domain.command.TransferAgentConfigUpdate
 import org.orbit.component.server.tier3.domain.command.TransferAgentConfigsGetCommand;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.command.ICommand;
-import org.origin.common.rest.agent.AbstractWSEditPolicy;
-import org.origin.common.rest.agent.CommonWSApplicationResource;
+import org.origin.common.rest.editpolicy.AbstractWSEditPolicyV1;
+import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 import org.origin.common.rest.model.Request;
 
-public class TransferAgentConfigEditPolicy extends AbstractWSEditPolicy {
+public class TransferAgentConfigEditPolicy extends AbstractWSEditPolicyV1 {
 
 	@Override
-	public ICommand getCommand(CommonWSApplicationResource resource, Request request) {
+	public ICommand getCommand(EditpolicyWSApplicationResource resource, Request request) {
 		// DomainManagementService service = super.getService(DomainManagementService.class);
 		// if (this.service == null) {
 		// return null;

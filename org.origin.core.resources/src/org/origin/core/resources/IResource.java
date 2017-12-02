@@ -18,7 +18,7 @@ public interface IResource extends IAdaptable {
 
 	boolean create() throws IOException;
 
-	boolean delete();
+	boolean delete() throws IOException;
 
 	void dispose();
 

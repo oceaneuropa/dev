@@ -1,7 +1,11 @@
 package org.orbit.component.api.tier3.transferagent;
 
-import org.orbit.component.api.Activator;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domain.DomainManagement;
+import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.domain.TransferAgentConfig;
 import org.origin.common.rest.client.ClientException;
 
@@ -13,29 +17,28 @@ public class TransferAgentHelper {
 		return INSTANCE;
 	}
 
-	/**
-	 * 
-	 * @param domainMgmt
-	 * @param machineId
-	 * @param transferAgentId
-	 * @return
-	 * @throws ClientException
-	 */
-	public TransferAgent getTransferAgent(DomainManagement domainMgmt, String machineId, String transferAgentId) throws ClientException {
+	public TransferAgent getTransferAgent(DomainManagementConnector domainMgmtConnector, TransferAgentConnector transferAgentConnector, String machineId, String transferAgentId) throws ClientException {
 		TransferAgent transferAgent = null;
+		DomainManagement domainMgmt = domainMgmtConnector.getService();
+		if (domainMgmt != null) {
+			TransferAgentConfig transferAgentConfig = domainMgmt.getTransferAgentConfig(machineId, transferAgentId);
+			if (transferAgentConfig != null) {
+				transferAgent = getTransferAgent(transferAgentConnector, transferAgentConfig);
+			}
+		}
+		return transferAgent;
+	}
 
-		TransferAgentConfig taConfig = domainMgmt.getTransferAgentConfig(machineId, transferAgentId);
-		if (taConfig == null) {
-			System.err.println("Transfer Agent configuration is not found.");
-			return null;
-		}
-		if (taConfig != null) {
-			transferAgent = Activator.getInstance().getTransferAgentAdapter().getTransferAgent(taConfig);
-		}
-		if (transferAgent == null) {
-			System.err.println("Transfer Agent is null.");
-		}
+	public TransferAgent getTransferAgent(TransferAgentConnector transferAgentConnector, TransferAgentConfig taConfig) {
+		Map<Object, Object> properties = new HashMap<Object, Object>();
+		properties.put(OrbitConstants.TRANSFER_AGENT_MACHINE_ID, taConfig.getMachineId());
+		properties.put(OrbitConstants.TRANSFER_AGENT_TRANSFER_AGENT_ID, taConfig.getId());
+		properties.put(OrbitConstants.TRANSFER_AGENT_NAME, taConfig.getName());
+		properties.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, taConfig.getHostURL());
+		properties.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, taConfig.getContextRoot());
+		properties.put(OrbitConstants.TRANSFER_AGENT_HOME, taConfig.getHome());
 
+		TransferAgent transferAgent = transferAgentConnector.getService(properties);
 		return transferAgent;
 	}
 

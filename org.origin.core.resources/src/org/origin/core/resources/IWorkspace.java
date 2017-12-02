@@ -26,6 +26,8 @@ public interface IWorkspace {
 	// ----------------------------------------------------------------
 	// Workspace root
 	// ----------------------------------------------------------------
+	IFolder getVirtualRoot();
+
 	IResource[] getRootMembers();
 
 	IResource findRootMember(String name);
@@ -50,12 +52,12 @@ public interface IWorkspace {
 
 	boolean underlyingResourceExists(IPath fullpath);
 
-	boolean createUnderlyingFile(IPath fullpath) throws IOException;
+	boolean createUnderlyingFile(IFile file) throws IOException;
 
-	boolean createUnderlyingFile(IPath fullpath, InputStream input) throws IOException;
+	boolean createUnderlyingFile(IFile file, InputStream input) throws IOException;
 
-	boolean createUnderlyingFolder(IPath fullpath) throws IOException;
+	boolean createUnderlyingFolder(IFolder folder) throws IOException;
 
-	boolean deleteUnderlyingResource(IPath fullpath);
+	boolean deleteUnderlyingResource(IPath fullpath) throws IOException;
 
 }

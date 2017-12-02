@@ -49,15 +49,20 @@ public class FolderImpl extends ResourceImpl implements IFolder {
 	public <RESOURCE extends IResource> RESOURCE findMember(String name, Class<RESOURCE> clazz) {
 		RESOURCE resource = null;
 		IResource member = findMember(name);
-		if (member != null && clazz.isAssignableFrom(member.getClass())) {
-			resource = (RESOURCE) member;
+		if (member != null) {
+			if (clazz.isAssignableFrom(member.getClass())) {
+				resource = (RESOURCE) member;
+			} else {
+				// returns null when when resource exists but cannot be casted to the given resource class.
+				// - no exception will be thrown, since it is more about the resource with expected name and class cannot be found.
+			}
 		}
 		return resource;
 	}
 
 	@Override
 	public boolean create() throws IOException {
-		return getWorkspace().createUnderlyingFolder(getFullPath());
+		return getWorkspace().createUnderlyingFolder(this);
 	}
 
 	@Override

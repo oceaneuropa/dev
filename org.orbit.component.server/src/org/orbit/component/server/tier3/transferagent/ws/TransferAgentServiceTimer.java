@@ -5,61 +5,95 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.server.Activator;
 import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
-import org.origin.common.thread.ServiceIndexTimer;
-import org.origin.common.thread.ServiceIndexTimerImpl;
+import org.origin.common.thread.ServiceIndexTimerImplV2;
+import org.origin.common.thread.ServiceIndexTimerV2;
+import org.origin.common.util.DateUtil;
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexProvider;
 
-public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvider, TransferAgentService> implements ServiceIndexTimer<IndexProvider, TransferAgentService> {
+public class TransferAgentServiceTimer extends ServiceIndexTimerImplV2<IndexProvider, TransferAgentService, IndexItem> implements ServiceIndexTimerV2<IndexProvider, TransferAgentService, IndexItem> {
 
-	protected IndexItem indexItem;
+	protected TransferAgentService service;
 
-	public TransferAgentServiceTimer(IndexProvider indexProvider) {
-		super("Index Timer [Transfer Agent Service]", indexProvider);
+	/**
+	 * 
+	 * @param indexProvider
+	 * @param service
+	 */
+	public TransferAgentServiceTimer(IndexProvider indexProvider, TransferAgentService service) {
+		super("Index Timer [" + service.getName() + "]", indexProvider);
+		this.service = service;
+		setDebug(true);
 	}
 
 	@Override
 	public synchronized TransferAgentService getService() {
-		return Activator.getTransferAgentService();
+		return this.service;
 	}
 
 	@Override
-	public synchronized void updateIndex(IndexProvider indexProvider, TransferAgentService service) throws IOException {
+	public IndexItem getIndex(IndexProvider indexProvider, TransferAgentService service) throws IOException {
+		String name = service.getName();
+
+		return indexProvider.getIndexItem(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, OrbitConstants.TRANSFER_AGENT_TYPE, name);
+	}
+
+	@Override
+	public IndexItem addIndex(IndexProvider indexProvider, TransferAgentService service) throws IOException {
+		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
 		String taHome = service.getHome();
 
-		this.indexItem = indexProvider.getIndexItem(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, OrbitConstants.TRANSFER_AGENT_TYPE, name);
-		if (this.indexItem == null) {
-			// Create new index item with properties
-			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(OrbitConstants.TRANSFER_AGENT_NAME, name);
-			props.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, hostURL);
-			props.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, contextRoot);
-			props.put(OrbitConstants.TRANSFER_AGENT_HOME, taHome);
-			props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		Date now = new Date();
+		Date expire = DateUtil.addSeconds(now, 30);
 
-			this.indexItem = indexProvider.addIndexItem(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, OrbitConstants.TRANSFER_AGENT_TYPE, name, props);
+		Map<String, Object> props = new Hashtable<String, Object>();
+		props.put(OrbitConstants.TRANSFER_AGENT_NAMESPACE, namespace);
+		props.put(OrbitConstants.TRANSFER_AGENT_NAME, name);
+		props.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, hostURL);
+		props.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, contextRoot);
+		props.put(OrbitConstants.TRANSFER_AGENT_HOME, taHome);
+		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(OrbitConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(OrbitConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		} else {
-			// Update existing index item with properties
-			Integer indexItemId = this.indexItem.getIndexItemId();
-			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-
-			indexProvider.setProperties(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, indexItemId, props);
-		}
+		return indexProvider.addIndexItem(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, OrbitConstants.TRANSFER_AGENT_TYPE, name, props);
 	}
 
 	@Override
-	public synchronized void removeIndex(IndexProvider indexProvider) throws IOException {
-		if (this.indexItem != null) {
-			indexProvider.removeIndexItem(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, indexItem.getIndexItemId());
-		}
+	public void updateIndex(IndexProvider indexProvider, TransferAgentService service, IndexItem indexItem) throws IOException {
+		String namespace = service.getNamespace();
+		String name = service.getName();
+		String hostURL = service.getHostURL();
+		String contextRoot = service.getContextRoot();
+		String taHome = service.getHome();
+
+		Date now = new Date();
+		Date expire = DateUtil.addSeconds(now, 30);
+
+		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = new Hashtable<String, Object>();
+		props.put(OrbitConstants.TRANSFER_AGENT_NAMESPACE, namespace);
+		props.put(OrbitConstants.TRANSFER_AGENT_NAME, name);
+		props.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, hostURL);
+		props.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, contextRoot);
+		props.put(OrbitConstants.TRANSFER_AGENT_HOME, taHome);
+		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(OrbitConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(OrbitConstants.HEARTBEAT_EXPIRE_TIME, expire);
+
+		indexProvider.setProperties(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, indexItemId, props);
+	}
+
+	@Override
+	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+
+		indexProvider.removeIndexItem(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, indexItemId);
 	}
 
 }

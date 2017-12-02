@@ -18,7 +18,7 @@ import org.origin.core.resources.IFolder;
 import org.origin.core.resources.IPath;
 import org.origin.core.resources.IResource;
 import org.origin.core.resources.IWorkspace;
-import org.origin.core.resources.ResourceFactory;
+import org.origin.core.resources.ResourcesFactory;
 import org.origin.core.resources.WorkspaceDescription;
 import org.origin.core.resources.impl.FolderImpl;
 import org.origin.core.resources.impl.PathImpl;
@@ -26,10 +26,10 @@ import org.origin.core.resources.impl.misc.WorkspaceDescriptionPersistence;
 
 public class WorkspaceLocalImpl implements IWorkspace {
 
-	private File workspaceFolder;
-	private FolderImpl rootFolder;
-	private Map<IPath, IResource> fullpathToResourceTable = new TreeMap<IPath, IResource>();
-	private WorkspaceDescription desc;
+	protected File workspaceFsFolder;
+	protected FolderImpl virtualRoot;
+	protected WorkspaceDescription desc;
+	protected Map<IPath, IResource> allResourcesMap = new TreeMap<IPath, IResource>();
 
 	/**
 	 * Constructor for non-existing workspace.
@@ -43,8 +43,8 @@ public class WorkspaceLocalImpl implements IWorkspace {
 	 * @param workspaceFolder
 	 */
 	public WorkspaceLocalImpl(File workspaceFolder) {
-		this.workspaceFolder = workspaceFolder;
-		this.rootFolder = new FolderImpl(this, PathImpl.ROOT);
+		this.workspaceFsFolder = workspaceFolder;
+		this.virtualRoot = new FolderImpl(this, PathImpl.ROOT);
 	}
 
 	@Override
@@ -54,16 +54,16 @@ public class WorkspaceLocalImpl implements IWorkspace {
 		}
 
 		// 1. Create workspace folder in file system
-		if (this.workspaceFolder == null) {
-			String folderName = desc.getName();
-			this.workspaceFolder = new File(folderName);
-			this.rootFolder = new FolderImpl(this, PathImpl.ROOT);
+		if (this.workspaceFsFolder == null) {
+			String workspaceFolderPath = desc.getWorkspaceFolderPath();
+			this.workspaceFsFolder = new File(workspaceFolderPath);
+			this.virtualRoot = new FolderImpl(this, PathImpl.ROOT);
 		}
-		if (this.workspaceFolder.isFile()) {
-			throw new IOException(this.workspaceFolder.getAbsolutePath() + " already exists, but is not a directory.");
+		if (this.workspaceFsFolder.isFile()) {
+			throw new IOException(this.workspaceFsFolder.getAbsolutePath() + " already exists, but is not a directory.");
 		}
-		if (!this.workspaceFolder.exists()) {
-			this.workspaceFolder.mkdirs();
+		if (!this.workspaceFsFolder.exists()) {
+			this.workspaceFsFolder.mkdirs();
 		}
 
 		// 2. Create {workspace}/.metadata/.workspace file and save WorkspaceDescription to it
@@ -88,12 +88,12 @@ public class WorkspaceLocalImpl implements IWorkspace {
 
 	@Override
 	public String getName() {
-		return this.workspaceFolder.getName();
+		return this.workspaceFsFolder.getName();
 	}
 
 	@Override
 	public boolean exists() {
-		if (this.workspaceFolder != null && this.workspaceFolder.isDirectory()) {
+		if (this.workspaceFsFolder != null && this.workspaceFsFolder.isDirectory()) {
 			try {
 				IFile dotWorkspaceFile = WorkspaceDescriptionPersistence.getInstance().getWorkspaceDescriptionFile(this);
 				if (dotWorkspaceFile != null && dotWorkspaceFile.exists()) {
@@ -109,29 +109,34 @@ public class WorkspaceLocalImpl implements IWorkspace {
 	@Override
 	public synchronized boolean delete() throws IOException {
 		if (exists()) {
-			return FileUtil.deleteDirectory(this.workspaceFolder);
+			return FileUtil.deleteDirectory(this.workspaceFsFolder);
 		}
 		return false;
 	}
 
 	@Override
 	public synchronized void dispose() {
-		this.fullpathToResourceTable.clear();
+		this.allResourcesMap.clear();
+	}
+
+	@Override
+	public IFolder getVirtualRoot() {
+		return this.virtualRoot;
 	}
 
 	@Override
 	public IResource[] getRootMembers() {
-		return this.rootFolder.getMembers();
+		return this.virtualRoot.getMembers();
 	}
 
 	@Override
 	public IResource findRootMember(String name) {
-		return this.rootFolder.findMember(name);
+		return this.virtualRoot.findMember(name);
 	}
 
 	@Override
 	public <RESOURCE extends IResource> RESOURCE findRootMember(String name, Class<RESOURCE> clazz) {
-		return this.rootFolder.findMember(name, clazz);
+		return this.virtualRoot.findMember(name, clazz);
 	}
 
 	@Override
@@ -143,26 +148,26 @@ public class WorkspaceLocalImpl implements IWorkspace {
 			File[] fsMemberFiles = fsFile.listFiles();
 
 			if (fsMemberFiles != null) {
-				synchronized (this.fullpathToResourceTable) {
+				synchronized (this.allResourcesMap) {
 					for (File fsMemberFile : fsMemberFiles) {
 						IPath memberFullpath = fullpath.append(fsMemberFile.getName());
 
-						IResource iResource = this.fullpathToResourceTable.get(memberFullpath);
+						IResource iResource = this.allResourcesMap.get(memberFullpath);
 						if (iResource != null) {
 							members.add(iResource);
 
 						} else {
 							if (fsMemberFile.isFile()) {
-								IFile iFile = ResourceFactory.getInstance().newFileInstance(this, memberFullpath);
+								IFile iFile = ResourcesFactory.getInstance().createFile(this, memberFullpath);
 								if (iFile != null) {
-									this.fullpathToResourceTable.put(memberFullpath, iFile);
+									this.allResourcesMap.put(memberFullpath, iFile);
 									members.add(iFile);
 								}
 
 							} else if (fsMemberFile.isDirectory()) {
-								IFolder iFolder = ResourceFactory.getInstance().newFolderInstance(this, memberFullpath);
+								IFolder iFolder = ResourcesFactory.getInstance().createFolder(this, memberFullpath);
 								if (iFolder != null) {
-									this.fullpathToResourceTable.put(memberFullpath, iFolder);
+									this.allResourcesMap.put(memberFullpath, iFolder);
 									members.add(iFolder);
 								}
 							}
@@ -186,28 +191,33 @@ public class WorkspaceLocalImpl implements IWorkspace {
 	public IFile getFile(IPath fullpath) throws IOException {
 		IFile result = null;
 
-		synchronized (this.fullpathToResourceTable) {
-			IResource iResource = this.fullpathToResourceTable.get(fullpath);
+		synchronized (this.allResourcesMap) {
+			IResource iResource = this.allResourcesMap.get(fullpath);
 			if (iResource != null) {
 				// IResource exists
 				if (iResource instanceof IFolder) {
 					File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 					if (fsFile.isDirectory()) {
-						throw new IOException(fullpath.getPathString() + " is a folder.");
-					} else {
-						// FS file doesn't exist, but was created as IFolder
-						this.fullpathToResourceTable.remove(fullpath);
+						throw new IOException(fullpath.getPathString() + " already exists, but is a directory.");
 					}
+
+					// clean up invalid record
+					// - this should not happen, since resource and fullpath are put to fullpathToResourceTable only when underlying resources are created.
+					// - see createUnderlyingFile() and createUnderlyingFolder() methods.
+					if (!fsFile.exists()) {
+						this.allResourcesMap.remove(fullpath);
+					}
+
 				} else if (iResource instanceof IFile) {
 					result = (IFile) iResource;
 				}
 			}
 
 			if (result == null) {
-				result = ResourceFactory.getInstance().newFileInstance(this, fullpath);
-				if (result != null) {
-					this.fullpathToResourceTable.put(fullpath, result);
-				}
+				// - do not put new resource and fullpath to the fullpathToResourceTable
+				// - resource and fullpath are put to fullpathToResourceTable only when underlying resources are created.
+				// - see createUnderlyingFile() and createUnderlyingFolder() methods.
+				result = ResourcesFactory.getInstance().createFile(this, fullpath);
 			}
 		}
 
@@ -218,8 +228,9 @@ public class WorkspaceLocalImpl implements IWorkspace {
 	public IFolder getFolder(IPath fullpath) throws IOException {
 		IFolder result = null;
 
-		synchronized (this.fullpathToResourceTable) {
-			IResource iResource = this.fullpathToResourceTable.get(fullpath);
+		synchronized (this.allResourcesMap) {
+			IResource iResource = this.allResourcesMap.get(fullpath);
+
 			if (iResource != null) {
 				if (iResource instanceof IFolder) {
 					result = (IFolder) iResource;
@@ -227,19 +238,23 @@ public class WorkspaceLocalImpl implements IWorkspace {
 				} else if (iResource instanceof IFile) {
 					File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 					if (fsFile.isFile()) {
-						throw new IOException(fullpath.getPathString() + " is a file.");
+						throw new IOException(fullpath.getPathString() + " already exists, but is a file.");
+					}
 
-					} else {
-						this.fullpathToResourceTable.remove(fullpath);
+					// clean up invalid record
+					// - this should not happen, since resource and fullpath are put to fullpathToResourceTable only when underlying resources are created.
+					// - see createUnderlyingFile() and createUnderlyingFolder() methods.
+					if (!fsFile.exists()) {
+						this.allResourcesMap.remove(fullpath);
 					}
 				}
 			}
 
 			if (result == null) {
-				result = ResourceFactory.getInstance().newFolderInstance(this, fullpath);
-				if (result != null) {
-					this.fullpathToResourceTable.put(fullpath, result);
-				}
+				// - do not put new resource and fullpath to the fullpathToResourceTable
+				// - resource and fullpath are put to fullpathToResourceTable only when underlying resources are created.
+				// - see createUnderlyingFile() and createUnderlyingFolder() methods.
+				result = ResourcesFactory.getInstance().createFolder(this, fullpath);
 			}
 		}
 
@@ -251,17 +266,22 @@ public class WorkspaceLocalImpl implements IWorkspace {
 	public <FILE extends IFile> FILE getFile(IPath fullpath, Class<FILE> clazz) throws IOException {
 		FILE result = null;
 
-		synchronized (this.fullpathToResourceTable) {
-			IResource iResource = this.fullpathToResourceTable.get(fullpath);
-			if (iResource != null && clazz.isAssignableFrom(iResource.getClass())) {
-				result = (FILE) iResource;
+		synchronized (this.allResourcesMap) {
+			IResource iResource = this.allResourcesMap.get(fullpath);
+
+			if (iResource != null) {
+				if (clazz.isAssignableFrom(iResource.getClass())) {
+					result = (FILE) iResource;
+				} else {
+					throw new IOException("Resource " + fullpath.getPathString() + " (" + iResource.getClass().getName() + ") already exists, but is not type of " + clazz.getName() + ".");
+				}
 			}
 
 			if (result == null) {
-				result = ResourceFactory.getInstance().newFileInstance(this, fullpath, clazz);
-				if (result != null) {
-					this.fullpathToResourceTable.put(fullpath, result);
-				}
+				// - do not put new resource and fullpath to the fullpathToResourceTable
+				// - resource and fullpath are put to fullpathToResourceTable only when underlying resources are created.
+				// - see createUnderlyingFile() and createUnderlyingFolder() methods.
+				result = ResourcesFactory.getInstance().createFile(this, fullpath, clazz);
 			}
 		}
 
@@ -273,17 +293,22 @@ public class WorkspaceLocalImpl implements IWorkspace {
 	public <FOLDER extends IFolder> FOLDER getFolder(IPath fullpath, Class<FOLDER> clazz) throws IOException {
 		FOLDER result = null;
 
-		synchronized (this.fullpathToResourceTable) {
-			IResource iResource = this.fullpathToResourceTable.get(fullpath);
-			if (iResource != null && clazz.isAssignableFrom(iResource.getClass())) {
-				result = (FOLDER) iResource;
+		synchronized (this.allResourcesMap) {
+			IResource iResource = this.allResourcesMap.get(fullpath);
+
+			if (iResource != null) {
+				if (clazz.isAssignableFrom(iResource.getClass())) {
+					result = (FOLDER) iResource;
+				} else {
+					throw new IOException("Resource " + fullpath.getPathString() + " (" + iResource.getClass().getName() + ") already exists, but is not type of " + clazz.getName() + ".");
+				}
 			}
 
 			if (result == null) {
-				result = ResourceFactory.getInstance().newFolderInstance(this, fullpath, clazz);
-				if (result != null) {
-					this.fullpathToResourceTable.put(fullpath, result);
-				}
+				// - do not put new resource and fullpath to the fullpathToResourceTable
+				// - resource and fullpath are put to fullpathToResourceTable only when underlying resources are created.
+				// - see createUnderlyingFile() and createUnderlyingFolder() methods.
+				result = ResourcesFactory.getInstance().createFolder(this, fullpath, clazz);
 			}
 		}
 
@@ -319,49 +344,40 @@ public class WorkspaceLocalImpl implements IWorkspace {
 		return false;
 	}
 
-	/**
-	 * 
-	 * @param fullpath
-	 * @return
-	 */
-	private File getUnderlyingFileFromFileSystem(IPath fullpath) {
-		IPath fsRootAbsolutePath = new PathImpl(this.workspaceFolder.getAbsolutePath());
-		IPath fsFileAbsolutePath = fsRootAbsolutePath.append(fullpath);
-
-		String pathString = fsFileAbsolutePath.getPathString();
-		if (pathString != null && pathString.endsWith(PathImpl.SEPARATOR)) {
-			pathString = pathString.substring(0, pathString.length() - 1);
-		}
-		File fsFile = new File(pathString);
-		return fsFile;
-	}
-
 	@Override
-	public boolean createUnderlyingFile(IPath fullpath) throws IOException {
+	public boolean createUnderlyingFile(IFile file) throws IOException {
+		IPath fullpath = file.getFullPath();
+
 		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
-			if (fsFile.isDirectory()) {
-				throw new IOException(fullpath.getPathString() + " is a folder.");
+			if (fsFile.exists()) {
+				throw new IOException(fullpath.getPathString() + " already exists.");
 			}
 
-			if (!fsFile.exists()) {
-				return fsFile.createNewFile();
+			boolean created = fsFile.createNewFile();
+			if (created) {
+				this.allResourcesMap.put(fullpath, file);
 			}
+			return created;
 		}
+
 		return false;
 	}
 
 	@Override
-	public boolean createUnderlyingFile(IPath fullpath, InputStream input) throws IOException {
+	public boolean createUnderlyingFile(IFile file, InputStream input) throws IOException {
+		IPath fullpath = file.getFullPath();
+
 		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
-			if (fsFile.isDirectory()) {
-				throw new IOException(fullpath.getPathString() + " is a folder.");
+			if (fsFile.exists()) {
+				throw new IOException(fullpath.getPathString() + " already exists.");
 			}
 
 			// Create file in file system if not exist.
-			if (!fsFile.exists()) {
-				fsFile.createNewFile();
+			boolean created = fsFile.createNewFile();
+			if (created) {
+				this.allResourcesMap.put(fullpath, file);
 			}
 
 			// Read from input stream and write it to the file.
@@ -373,18 +389,30 @@ public class WorkspaceLocalImpl implements IWorkspace {
 			} finally {
 				IOUtil.closeQuietly(output, true);
 			}
+
+			return created;
 		}
+
 		return false;
 	}
 
 	@Override
-	public boolean createUnderlyingFolder(IPath fullpath) throws IOException {
+	public boolean createUnderlyingFolder(IFolder folder) throws IOException {
+		IPath fullpath = folder.getFullPath();
+
 		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
 		if (fsFile != null) {
-			if (!fsFile.exists()) {
-				return fsFile.mkdirs();
+			if (fsFile.exists()) {
+				throw new IOException(fullpath.getPathString() + " already exists.");
 			}
+
+			boolean created = fsFile.mkdirs();
+			if (created) {
+				this.allResourcesMap.put(fullpath, folder);
+			}
+			return created;
 		}
+
 		return false;
 	}
 
@@ -392,8 +420,8 @@ public class WorkspaceLocalImpl implements IWorkspace {
 	public boolean deleteUnderlyingResource(IPath fullpath) {
 		boolean isDeleted = false;
 
-		synchronized (this.fullpathToResourceTable) {
-			this.fullpathToResourceTable.remove(fullpath);
+		synchronized (this.allResourcesMap) {
+			this.allResourcesMap.remove(fullpath);
 		}
 
 		File fsFile = getUnderlyingFileFromFileSystem(fullpath);
@@ -410,6 +438,24 @@ public class WorkspaceLocalImpl implements IWorkspace {
 		}
 
 		return isDeleted;
+	}
+
+	/**
+	 * 
+	 * @param fullpath
+	 * @return
+	 */
+	protected File getUnderlyingFileFromFileSystem(IPath fullpath) {
+		IPath fsRootAbsolutePath = new PathImpl(this.workspaceFsFolder.getAbsolutePath());
+		IPath fsFileAbsolutePath = fsRootAbsolutePath.append(fullpath);
+
+		String pathString = fsFileAbsolutePath.getPathString();
+		if (pathString != null && pathString.endsWith(PathImpl.SEPARATOR)) {
+			pathString = pathString.substring(0, pathString.length() - 1);
+		}
+
+		File fsFile = new File(pathString);
+		return fsFile;
 	}
 
 }

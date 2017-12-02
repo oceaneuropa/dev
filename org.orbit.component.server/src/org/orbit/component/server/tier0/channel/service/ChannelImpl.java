@@ -29,21 +29,6 @@ public class ChannelImpl implements Channel {
 
 	protected ThreadPoolExecutor createThreadPoolExecutor() {
 		ThreadFactory threadFactory = getThreadFactory();
-
-		// corePoolSize (0)
-		// --- the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set.
-		// maximumPoolSize (10)
-		// --- max number of pooled threads
-		// keepAliveTime (20 seconds)
-		// --- when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before
-		// terminating.
-		// workQueue (SynchronousQueue)
-		// --- the queue to use for holding tasks before they are executed. This queue will hold only the Runnable tasks submitted by the execute method.
-		// threadFactory (ThreadFactory)
-		// --- the factory to use when the executor creates a new thread
-
-		// This threadPoolExecutor doesn't keep idle threads in the pool.
-		// Every idle thread wait for 20 seconds and then gets terminated.
 		ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(this.coreThreadsNum, this.maxThreadsNum, this.keepAliveSeconds, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), threadFactory);
 		threadPoolExecutor.allowCoreThreadTimeOut(true);
 		return threadPoolExecutor;
@@ -105,3 +90,18 @@ public class ChannelImpl implements Channel {
 	}
 
 }
+
+// corePoolSize (0)
+// --- the number of threads to keep in the pool, even if they are idle, unless allowCoreThreadTimeOut is set.
+// maximumPoolSize (10)
+// --- max number of pooled threads
+// keepAliveTime (20 seconds)
+// --- when the number of threads is greater than the core, this is the maximum time that excess idle threads will wait for new tasks before
+// terminating.
+// workQueue (SynchronousQueue)
+// --- the queue to use for holding tasks before they are executed. This queue will hold only the Runnable tasks submitted by the execute method.
+// threadFactory (ThreadFactory)
+// --- the factory to use when the executor creates a new thread
+
+// This threadPoolExecutor doesn't keep idle threads in the pool.
+// Every idle thread wait for 20 seconds and then gets terminated.

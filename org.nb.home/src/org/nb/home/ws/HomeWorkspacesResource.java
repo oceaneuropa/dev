@@ -17,7 +17,7 @@ import org.nb.home.model.dto.WorkspaceDTO;
 import org.nb.home.model.exception.HomeException;
 import org.nb.home.model.runtime.Workspace;
 import org.nb.home.service.HomeAgentService;
-import org.origin.common.rest.agent.CommonWSApplicationResource;
+import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 import org.origin.common.rest.model.ErrorDTO;
 
 /*
@@ -31,7 +31,7 @@ import org.origin.common.rest.model.ErrorDTO;
  */
 @Path("/workspaces")
 @Produces(MediaType.APPLICATION_JSON)
-public class HomeWorkspacesResource extends CommonWSApplicationResource {
+public class HomeWorkspacesResource extends EditpolicyWSApplicationResource {
 
 	/**
 	 * Get workspaces.

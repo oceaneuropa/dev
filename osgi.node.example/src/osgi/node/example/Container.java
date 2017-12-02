@@ -1,6 +1,6 @@
 package osgi.node.example;
 
-import org.origin.common.deploy.WSDeployer;
+import org.origin.common.deploy.WebServiceDeployer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -12,7 +12,7 @@ public class Container implements BundleActivator {
 		return context;
 	}
 
-	protected WSDeployer wsDeployer;
+	protected WebServiceDeployer wsDeployer;
 	protected NodeApplication nodeApplication;
 	protected boolean debug = true;
 
@@ -24,7 +24,7 @@ public class Container implements BundleActivator {
 		Container.context = bundleContext;
 
 		// 1. Start WebService deployer
-		this.wsDeployer = new WSDeployer(bundleContext);
+		this.wsDeployer = new WebServiceDeployer(bundleContext);
 		this.wsDeployer.start();
 
 		// 2. Start NodeApplication web service

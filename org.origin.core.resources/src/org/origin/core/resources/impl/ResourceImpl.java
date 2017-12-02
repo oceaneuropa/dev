@@ -53,7 +53,7 @@ public abstract class ResourceImpl implements IResource {
 	public abstract boolean create() throws IOException;
 
 	@Override
-	public boolean delete() {
+	public boolean delete() throws IOException {
 		return getWorkspace().deleteUnderlyingResource(getFullPath());
 	}
 

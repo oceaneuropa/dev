@@ -8,11 +8,11 @@ import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.model.Resource;
 import org.orbit.component.server.tier1.auth.service.AuthService;
 import org.origin.common.rest.server.AbstractResourceConfigApplication;
-import org.origin.core.resources.server.ws.ResourceWSApplication;
+import org.origin.core.resources.server.ws.ResourcesWebServiceApplication;
 import org.osgi.framework.BundleContext;
 
 /**
- * @see ResourceWSApplication
+ * @see ResourcesWebServiceApplication
  *
  */
 public class AuthWSApplication extends AbstractResourceConfigApplication {

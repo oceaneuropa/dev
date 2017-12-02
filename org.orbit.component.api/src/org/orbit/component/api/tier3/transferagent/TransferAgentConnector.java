@@ -1,7 +1,9 @@
 package org.orbit.component.api.tier3.transferagent;
 
-import org.origin.mgm.client.connector.ServiceConnector;
+import java.util.Map;
 
-public interface TransferAgentConnector extends ServiceConnector<TransferAgent> {
+public interface TransferAgentConnector {
+
+	TransferAgent getService(Map<Object, Object> properties);
 
 }

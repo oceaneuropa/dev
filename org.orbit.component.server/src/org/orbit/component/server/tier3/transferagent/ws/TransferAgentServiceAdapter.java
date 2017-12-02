@@ -1,6 +1,7 @@
 package org.orbit.component.server.tier3.transferagent.ws;
 
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
+import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -16,10 +17,8 @@ public class TransferAgentServiceAdapter {
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<TransferAgentService, TransferAgentService> serviceTracker;
-	protected TransferAgentWSApplication webApp;
-
-	public TransferAgentServiceAdapter() {
-	}
+	protected TransferAgentWebServiceApplication webServiceApp;
+	protected TransferAgentServiceTimer serviceIndexTimer;
 
 	public TransferAgentServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
@@ -27,14 +26,6 @@ public class TransferAgentServiceAdapter {
 
 	public TransferAgentService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
-	}
-
-	public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
-		return indexProviderLoadBalancer;
-	}
-
-	public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
 	/**
@@ -48,7 +39,7 @@ public class TransferAgentServiceAdapter {
 				TransferAgentService service = bundleContext.getService(reference);
 				System.out.println("TransferAgentService [" + service + "] is added.");
 
-				startWebService(bundleContext, service);
+				doStart(bundleContext, service);
 				return service;
 			}
 
@@ -56,15 +47,15 @@ public class TransferAgentServiceAdapter {
 			public void modifiedService(ServiceReference<TransferAgentService> reference, TransferAgentService service) {
 				System.out.println("TransferAgentService [" + service + "] is modified.");
 
-				stopWebService(bundleContext, service);
-				startWebService(bundleContext, service);
+				doStop(bundleContext, service);
+				doStart(bundleContext, service);
 			}
 
 			@Override
 			public void removedService(ServiceReference<TransferAgentService> reference, TransferAgentService service) {
 				System.out.println("TransferAgentService [" + service + "] is removed.");
 
-				stopWebService(bundleContext, service);
+				doStop(bundleContext, service);
 			}
 		});
 		this.serviceTracker.open();
@@ -86,15 +77,17 @@ public class TransferAgentServiceAdapter {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void startWebService(BundleContext bundleContext, TransferAgentService service) {
+	protected void doStart(BundleContext bundleContext, TransferAgentService service) {
 		// Start web service
-		this.webApp = new TransferAgentWSApplication(bundleContext, service);
-		this.webApp.setBundleContext(bundleContext);
-		this.webApp.setContextRoot(service.getContextRoot());
-		if (this.indexProviderLoadBalancer != null) {
-			this.webApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		}
-		this.webApp.start();
+		this.webServiceApp = new TransferAgentWebServiceApplication(bundleContext, service);
+		this.webServiceApp.setBundleContext(bundleContext);
+		this.webServiceApp.setContextRoot(service.getContextRoot());
+		this.webServiceApp.start();
+
+		// Start index timer
+		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		this.serviceIndexTimer = new TransferAgentServiceTimer(indexProvider, service);
+		this.serviceIndexTimer.start();
 	}
 
 	/**
@@ -102,11 +95,17 @@ public class TransferAgentServiceAdapter {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void stopWebService(BundleContext bundleContext, TransferAgentService service) {
-		if (this.webApp != null) {
-			// Stop web service
-			this.webApp.stop();
-			this.webApp = null;
+	protected void doStop(BundleContext bundleContext, TransferAgentService service) {
+		// Stop index timer
+		if (this.serviceIndexTimer != null) {
+			this.serviceIndexTimer.stop();
+			this.serviceIndexTimer = null;
+		}
+
+		// Stop web service
+		if (this.webServiceApp != null) {
+			this.webServiceApp.stop();
+			this.webServiceApp = null;
 		}
 	}
 

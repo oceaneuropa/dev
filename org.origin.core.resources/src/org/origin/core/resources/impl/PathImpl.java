@@ -291,12 +291,8 @@ public class PathImpl implements Comparable<IPath>, IPath {
 	}
 
 	@Override
-	public boolean equals(Object o) {
-		if (!(o instanceof IPath)) {
-			return false;
-		}
-		IPath that = (IPath) o;
-		return this.pathString.equals(that.getPathString());
+	public int compareTo(IPath path) {
+		return this.pathString.compareTo(path.getPathString());
 	}
 
 	@Override
@@ -305,8 +301,12 @@ public class PathImpl implements Comparable<IPath>, IPath {
 	}
 
 	@Override
-	public int compareTo(IPath path) {
-		return this.pathString.compareTo(path.getPathString());
+	public boolean equals(Object o) {
+		if (!(o instanceof IPath)) {
+			return false;
+		}
+		IPath that = (IPath) o;
+		return this.pathString.equals(that.getPathString());
 	}
 
 	@Override

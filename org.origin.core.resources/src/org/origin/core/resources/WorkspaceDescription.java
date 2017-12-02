@@ -9,24 +9,9 @@ public class WorkspaceDescription {
 	protected String name;
 	protected String password;
 	protected String description;
+	protected String workspaceFolderPath;
 
 	public WorkspaceDescription() {
-	}
-
-	/**
-	 * 
-	 * @param version
-	 * @param id
-	 * @param name
-	 * @param password
-	 * @param description
-	 */
-	public WorkspaceDescription(String version, String id, String name, String password, String description) {
-		this.version = version;
-		this.id = id;
-		this.name = name;
-		this.password = password;
-		this.description = description;
 	}
 
 	public String getVersion() {
@@ -69,9 +54,17 @@ public class WorkspaceDescription {
 		this.description = description;
 	}
 
+	public String getWorkspaceFolderPath() {
+		return this.workspaceFolderPath;
+	}
+
+	public void setWorkspaceFolderPath(String workspaceFolderPath) {
+		this.workspaceFolderPath = workspaceFolderPath;
+	}
+
 	@Override
 	public String toString() {
-		return "WorkspaceDescription [version=" + this.version + ", id=" + this.id + ", name=" + this.name + ", password=" + this.password + ", description=" + this.description + "]";
+		return "WorkspaceDescription [version=" + this.version + ", id=" + this.id + ", name=" + this.name + ", password=" + this.password + ", description=" + this.description + ", workspaceFolderPath=" + this.workspaceFolderPath + "]";
 	}
 
 }

@@ -14,10 +14,10 @@ import javax.ws.rs.core.Response;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigDTO;
-import org.origin.common.rest.agent.CommonWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ClientUtil;
+import org.origin.common.rest.client.CommonWSClient;
 import org.origin.common.rest.model.StatusDTO;
 
 /*

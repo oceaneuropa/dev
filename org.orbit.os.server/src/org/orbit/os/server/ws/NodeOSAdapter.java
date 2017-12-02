@@ -1,20 +1,24 @@
 package org.orbit.os.server.ws;
 
 import org.orbit.os.server.service.NodeOS;
+import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class NodeOSAdapter {
 
+	protected static Logger LOG = LoggerFactory.getLogger(NodeOSAdapter.class);
+
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<NodeOS, NodeOS> serviceTracker;
-	protected NodeOSWSApplication webApp;
-
-	public NodeOSAdapter() {
-	}
+	protected NodeOSWebServiceApplication webApp;
+	protected IndexProvider indexProvider;
+	protected NodeOSIndexTimer serviceIndexTimer;
 
 	public NodeOSAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
@@ -22,14 +26,6 @@ public class NodeOSAdapter {
 
 	public NodeOS getService() {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
-	}
-
-	public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
-		return indexProviderLoadBalancer;
-	}
-
-	public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
 	/**
@@ -41,25 +37,17 @@ public class NodeOSAdapter {
 			@Override
 			public NodeOS addingService(ServiceReference<NodeOS> reference) {
 				NodeOS nodeOS = bundleContext.getService(reference);
-				System.out.println(nodeOS.getLabel() + " is added.");
-
-				startWebService(bundleContext, nodeOS);
+				doStart(bundleContext, nodeOS);
 				return nodeOS;
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<NodeOS> reference, NodeOS nodeOS) {
-				System.out.println(nodeOS.getLabel() + " is modified.");
-
-				stopWebService(bundleContext, nodeOS);
-				startWebService(bundleContext, nodeOS);
 			}
 
 			@Override
 			public void removedService(ServiceReference<NodeOS> reference, NodeOS nodeOS) {
-				System.out.println(nodeOS.getLabel() + " is removed.");
-
-				stopWebService(bundleContext, nodeOS);
+				doStop(bundleContext, nodeOS);
 			}
 		});
 		this.serviceTracker.open();
@@ -81,12 +69,20 @@ public class NodeOSAdapter {
 	 * @param bundleContext
 	 * @param nodeOS
 	 */
-	protected void startWebService(BundleContext bundleContext, NodeOS nodeOS) {
-		this.webApp = new NodeOSWSApplication();
-		this.webApp.setBundleContext(bundleContext);
-		this.webApp.setContextRoot(nodeOS.getContextRoot());
-		this.webApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
+	protected void doStart(BundleContext bundleContext, NodeOS nodeOS) {
+		LOG.info("doStart()");
+
+		if (this.indexProvider == null) {
+			this.indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		}
+
+		// Start web service
+		this.webApp = new NodeOSWebServiceApplication(bundleContext, nodeOS);
 		this.webApp.start();
+
+		// Start index timer
+		this.serviceIndexTimer = new NodeOSIndexTimer(this.indexProvider);
+		this.serviceIndexTimer.start();
 	}
 
 	/**
@@ -94,7 +90,16 @@ public class NodeOSAdapter {
 	 * @param bundleContext
 	 * @param nodeOS
 	 */
-	protected void stopWebService(BundleContext bundleContext, NodeOS nodeOS) {
+	protected void doStop(BundleContext bundleContext, NodeOS nodeOS) {
+		LOG.info("doStop()");
+
+		// Start index timer
+		if (this.serviceIndexTimer != null) {
+			this.serviceIndexTimer.stop();
+			this.serviceIndexTimer = null;
+		}
+
+		// Stop webService
 		if (this.webApp != null) {
 			this.webApp.stop();
 			this.webApp = null;

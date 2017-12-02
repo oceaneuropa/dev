@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.origin.core.resources.IWorkspace;
 import org.origin.core.resources.IWorkspaceService;
-import org.origin.core.resources.ResourceFactory;
+import org.origin.core.resources.ResourcesFactory;
 import org.origin.core.resources.WorkspaceDescription;
 import org.origin.core.resources.impl.misc.WorkspaceNameComparator;
 import org.osgi.framework.BundleContext;
@@ -45,7 +45,7 @@ public class WorkspaceServiceLocalImpl implements IWorkspaceService {
 			File[] memberFiles = this.workspacesFolder.listFiles();
 			for (File memberFile : memberFiles) {
 				if (isWorkspace(memberFile)) {
-					IWorkspace workspace = ResourceFactory.getInstance().newWorkspaceInstanceForFileSystem(memberFile);
+					IWorkspace workspace = ResourcesFactory.getInstance().createWorkspace(memberFile);
 					if (workspace != null) {
 						this.workspaces.add(workspace);
 					}
@@ -142,8 +142,9 @@ public class WorkspaceServiceLocalImpl implements IWorkspaceService {
 		desc.setId(name);
 		desc.setName(name);
 		desc.setPassword(password);
+		desc.setWorkspaceFolderPath(this.workspacesFolder.getAbsolutePath());
 
-		IWorkspace workspace = ResourceFactory.getInstance().newWorkspaceInstanceForFileSystem();
+		IWorkspace workspace = new WorkspaceLocalImpl();
 		workspace.create(desc);
 
 		synchronized (this.workspaces) {

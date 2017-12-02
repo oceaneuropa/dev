@@ -2,7 +2,7 @@ package org.orbit.os.server.service;
 
 import java.util.Map;
 
-import org.orbit.os.server.app.AppsManager;
+import org.orbit.os.server.apps.AppsManager;
 
 public interface NodeOS {
 

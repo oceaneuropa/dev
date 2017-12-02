@@ -25,15 +25,18 @@ import org.origin.mgm.client.api.IndexServiceUtil;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
+
+	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
 
 	protected static BundleContext bundleContext;
 
 	// tier0
 	protected static boolean hasChannelComponent;
 	protected static ChannelServiceAdapter channelServiceAdapter;
-
 	// tier1
 	protected static boolean hasUserRegistryComponent;
 	protected static boolean hasAuthComponent;
@@ -41,13 +44,9 @@ public class Activator implements BundleActivator {
 	protected static UserRegistryServiceAdapter userRegistryServiceAdapter;
 	protected static AuthServiceAdapter authServiceAdapter;
 	protected static ConfigRegistryServiceAdapter configRegistryServiceAdapter;
-	// protected static boolean hasOauth2Component;
-	// protected static OAuth2ServiceAdapter oauth2ServiceAdapter;
-
 	// tier2
 	protected static boolean hasAppStoreComponent;
 	protected static AppStoreServiceAdapter appStoreServiceAdapter;
-
 	// tier3
 	protected static boolean hasDomainMgmtComponent;
 	protected static boolean hasTransferAgentComponent;
@@ -91,15 +90,12 @@ public class Activator implements BundleActivator {
 		return (transferAgentServiceAdapter != null) ? transferAgentServiceAdapter.getService() : null;
 	}
 
-	protected boolean debug = true;
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ComponentServicesCommand servicesCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		if (debug) {
-			System.out.println(getClass().getName() + ".start()");
-		}
+		LOG.info("start()");
 
 		Activator.bundleContext = bundleContext;
 
@@ -120,7 +116,6 @@ public class Activator implements BundleActivator {
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
-		// PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_OAUTH2_NAME);
 
 		hasChannelComponent = configProps.containsKey(OrbitConstants.COMPONENT_CHANNEL_NAME) ? true : false;
 		hasUserRegistryComponent = configProps.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_NAME) ? true : false;
@@ -129,18 +124,14 @@ public class Activator implements BundleActivator {
 		hasAppStoreComponent = configProps.containsKey(OrbitConstants.COMPONENT_APP_STORE_NAME) ? true : false;
 		hasDomainMgmtComponent = configProps.containsKey(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME) ? true : false;
 		hasTransferAgentComponent = configProps.containsKey(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME) ? true : false;
-		// hasOauth2Component = configProps.containsKey(OrbitConstants.COMPONENT_OAUTH2_NAME) ? true : false;
 
-		if (debug) {
-			System.out.println("hasChannelComponent = " + hasChannelComponent);
-			System.out.println("hasUserRegistryComponent = " + hasUserRegistryComponent);
-			System.out.println("hasAuthComponent = " + hasAuthComponent);
-			System.out.println("hasConfigRegistryComponent = " + hasConfigRegistryComponent);
-			System.out.println("hasAppStoreComponent = " + hasAppStoreComponent);
-			System.out.println("hasDomainMgmtComponent = " + hasDomainMgmtComponent);
-			System.out.println("hasTransferAgentComponent = " + hasTransferAgentComponent);
-			// System.out.println("hasOauth2Component = " + hasOauth2Component);
-		}
+		LOG.info("hasChannelComponent = " + hasChannelComponent);
+		LOG.info("hasUserRegistryComponent = " + hasUserRegistryComponent);
+		LOG.info("hasAuthComponent = " + hasAuthComponent);
+		LOG.info("hasConfigRegistryComponent = " + hasConfigRegistryComponent);
+		LOG.info("hasAppStoreComponent = " + hasAppStoreComponent);
+		LOG.info("hasDomainMgmtComponent = " + hasDomainMgmtComponent);
+		LOG.info("hasTransferAgentComponent = " + hasTransferAgentComponent);
 
 		// Start service adapters
 		// tier0
@@ -153,10 +144,6 @@ public class Activator implements BundleActivator {
 			userRegistryServiceAdapter = new UserRegistryServiceAdapter(this.indexProviderLoadBalancer);
 			userRegistryServiceAdapter.start(bundleContext);
 		}
-		// if (hasOauth2Component) {
-		// oauth2ServiceAdapter = new OAuth2ServiceAdapter(this.indexProviderLoadBalancer);
-		// oauth2ServiceAdapter.start(bundleContext);
-		// }
 		if (hasAuthComponent) {
 			authServiceAdapter = new AuthServiceAdapter(this.indexProviderLoadBalancer);
 			authServiceAdapter.start(bundleContext);
@@ -180,7 +167,7 @@ public class Activator implements BundleActivator {
 			transferAgentServiceAdapter.start(bundleContext);
 		}
 
-		// Start CLI commands
+		// Start commands
 		this.servicesCommand = new ComponentServicesCommand();
 		this.servicesCommand.start(bundleContext);
 		// tier0
@@ -197,9 +184,6 @@ public class Activator implements BundleActivator {
 		if (hasConfigRegistryComponent) {
 			this.servicesCommand.startservice(ComponentServicesCommand.CONFIGR_EGISTRY);
 		}
-		// if (hasOauth2Component) {
-		// this.servicesCommand.startservice(ComponentServicesCommand.OAUTH2);
-		// }
 		// tier2
 		if (hasAppStoreComponent) {
 			this.servicesCommand.startservice(ComponentServicesCommand.APP_STORE);
@@ -215,9 +199,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		if (debug) {
-			System.out.println(getClass().getName() + ".stop()");
-		}
+		LOG.info("stop()");
 
 		// Stop CLI commands
 		if (this.servicesCommand != null) {
@@ -239,9 +221,6 @@ public class Activator implements BundleActivator {
 			if (hasAuthComponent) {
 				this.servicesCommand.stopservice(ComponentServicesCommand.AUTH);
 			}
-			// if (hasOauth2Component) {
-			// this.servicesCommand.stopservice(ComponentServicesCommand.OAUTH2);
-			// }
 			if (hasUserRegistryComponent) {
 				this.servicesCommand.stopservice(ComponentServicesCommand.USER_REGISTRY);
 			}
@@ -293,12 +272,6 @@ public class Activator implements BundleActivator {
 				userRegistryServiceAdapter = null;
 			}
 		}
-		// if (hasOauth2Component) {
-		// if (oauth2ServiceAdapter != null) {
-		// oauth2ServiceAdapter.stop(bundleContext);
-		// oauth2ServiceAdapter = null;
-		// }
-		// }
 		// tier0
 		if (hasChannelComponent) {
 			if (channelServiceAdapter != null) {
@@ -310,6 +283,9 @@ public class Activator implements BundleActivator {
 	}
 
 }
+
+// protected static boolean hasOauth2Component;
+// protected static OAuth2ServiceAdapter oauth2ServiceAdapter;
 
 // public IndexProvider createIndexProvider() {
 // if (this.indexProviderLoadBalancer == null) {
@@ -368,4 +344,29 @@ public class Activator implements BundleActivator {
 // e.printStackTrace();
 // }
 // System.out.println("host = " + host);
+// }
+
+// PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_OAUTH2_NAME);
+
+// hasOauth2Component = configProps.containsKey(OrbitConstants.COMPONENT_OAUTH2_NAME) ? true : false;
+// System.out.println("hasOauth2Component = " + hasOauth2Component);
+
+// if (hasOauth2Component) {
+// oauth2ServiceAdapter = new OAuth2ServiceAdapter(this.indexProviderLoadBalancer);
+// oauth2ServiceAdapter.start(bundleContext);
+// }
+
+// if (hasOauth2Component) {
+// if (oauth2ServiceAdapter != null) {
+// oauth2ServiceAdapter.stop(bundleContext);
+// oauth2ServiceAdapter = null;
+// }
+// }
+
+// if (hasOauth2Component) {
+// this.servicesCommand.startservice(ComponentServicesCommand.OAUTH2);
+// }
+
+// if (hasOauth2Component) {
+// this.servicesCommand.stopservice(ComponentServicesCommand.OAUTH2);
 // }

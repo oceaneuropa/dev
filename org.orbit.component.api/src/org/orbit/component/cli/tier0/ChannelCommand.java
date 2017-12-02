@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.tier0.channel.ChannelClient;
-import org.orbit.component.api.tier0.channel.ChannelConnector;
+import org.orbit.component.api.tier0.channel.Channels;
+import org.orbit.component.api.tier0.channel.ChannelsConnector;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -20,16 +20,25 @@ import org.slf4j.LoggerFactory;
 public class ChannelCommand implements Annotated {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ChannelCommand.class);
+
 	public static String CHANNEL_HOST_URL = "channel.host.url";
 	public static String CHANNEL_CONTEXT_ROOT = "channel.context_root";
 
 	protected Map<Object, Object> properties;
 
 	@Dependency
-	protected ChannelConnector connector;
+	protected ChannelsConnector connector;
 
 	public ChannelCommand() {
 		this.properties = new HashMap<Object, Object>();
+	}
+
+	public ChannelsConnector getConnector() {
+		return this.connector;
+	}
+
+	public void setConnector(ChannelsConnector connector) {
+		this.connector = connector;
 	}
 
 	public void start(BundleContext bundleContext) {
@@ -61,28 +70,26 @@ public class ChannelCommand implements Annotated {
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
-	protected ChannelClient getChannelClient() throws ClientException {
+	protected Channels getChannel() throws ClientException {
 		if (this.connector == null) {
 			LOG.error("ChannelConnector is not available.");
-			return null;
 		}
-		ChannelClient channelClient = this.connector.getChannelClient(this.properties);
-		if (channelClient == null) {
-			LOG.error("ChannelClient is not available.");
-			return null;
+		Channels channel = this.connector.getService(this.properties);
+		if (channel == null) {
+			LOG.error("Channel is not available.");
 		}
-		return channelClient;
+		return channel;
 	}
 
 	@Descriptor("channel_ping")
 	public void channel_ping() throws ClientException {
 		LOG.info("channel_ping()");
-		ChannelClient channelClient = getChannelClient();
-		if (channelClient == null) {
+		Channels channel = getChannel();
+		if (channel == null) {
 			return;
 		}
 
-		boolean result = channelClient.ping();
+		boolean result = channel.ping();
 		LOG.info("result = " + result);
 	}
 
@@ -93,12 +100,12 @@ public class ChannelCommand implements Annotated {
 			@Descriptor("Message") @Parameter(names = { "-message", "--message" }, absentValue = Parameter.UNSPECIFIED) String message //
 	) throws ClientException {
 		LOG.info("channel_send()");
-		ChannelClient channelClient = getChannelClient();
-		if (channelClient == null) {
+		Channels channel = getChannel();
+		if (channel == null) {
 			return;
 		}
 
-		boolean result = channelClient.send(channelId, senderId, message);
+		boolean result = channel.send(channelId, senderId, message);
 		LOG.info("result = " + result);
 	}
 

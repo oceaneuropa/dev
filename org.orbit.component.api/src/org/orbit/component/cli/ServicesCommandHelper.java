@@ -10,8 +10,6 @@ import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagement;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
-import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.rest.client.ClientException;
@@ -164,28 +162,28 @@ public class ServicesCommandHelper {
 		return resources;
 	}
 
-	/**
-	 * 
-	 * @param connector
-	 * @return
-	 * @throws ClientException
-	 */
-	public List<LoadBalanceResource<TransferAgent>> getTransferAgentResources(TransferAgentConnector connector) throws ClientException {
-		if (connector == null) {
-			System.out.println("TransferAgentConnector is not available.");
-			throw new ClientException(500, "TransferAgentConnector is not available.");
-		}
-		LoadBalancer<TransferAgent> balancer = connector.getLoadBalancer();
-		if (balancer == null) {
-			System.out.println("load balancer is not available.");
-			return null;
-		}
-		List<LoadBalanceResource<TransferAgent>> resources = balancer.getResources();
-		if (resources == null) {
-			System.out.println("load balancer's resource is null.");
-			return null;
-		}
-		return resources;
-	}
-
 }
+
+// /**
+// *
+// * @param connector
+// * @return
+// * @throws ClientException
+// */
+// public List<LoadBalanceResource<TransferAgent>> getTransferAgentResources(TransferAgentConnector connector) throws ClientException {
+// if (connector == null) {
+// System.out.println("TransferAgentConnector is not available.");
+// throw new ClientException(500, "TransferAgentConnector is not available.");
+// }
+// LoadBalancer<TransferAgent> balancer = connector.getLoadBalancer();
+// if (balancer == null) {
+// System.out.println("load balancer is not available.");
+// return null;
+// }
+// List<LoadBalanceResource<TransferAgent>> resources = balancer.getResources();
+// if (resources == null) {
+// System.out.println("load balancer's resource is null.");
+// return null;
+// }
+// return resources;
+// }

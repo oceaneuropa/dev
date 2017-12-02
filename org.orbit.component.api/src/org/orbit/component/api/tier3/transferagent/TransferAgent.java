@@ -8,53 +8,18 @@ import org.origin.common.rest.model.Responses;
 
 public interface TransferAgent {
 
-	/**
-	 * Get service name.
-	 * 
-	 * @return
-	 */
 	String getName();
 
-	/**
-	 * Get service URL.
-	 * 
-	 * @return
-	 */
 	String getURL();
 
-	/**
-	 * Get configuration properties.
-	 * 
-	 * @return
-	 */
-	Map<String, Object> getProperties();
+	Map<Object, Object> getProperties();
 
-	/**
-	 * Update configuration properties.
-	 * 
-	 * @param properties
-	 */
-	void update(Map<String, Object> properties);
+	void update(Map<Object, Object> properties);
 
-	/**
-	 * Ping the service.
-	 * 
-	 * @return
-	 */
 	boolean ping();
 
-	/**
-	 * 
-	 * @param request
-	 * @return
-	 * @throws ClientException
-	 */
 	Responses sendRequest(Request request) throws ClientException;
 
-	/**
-	 * 
-	 * @return
-	 */
 	TransferAgentResponseConverter getResponseConverter();
 
 }

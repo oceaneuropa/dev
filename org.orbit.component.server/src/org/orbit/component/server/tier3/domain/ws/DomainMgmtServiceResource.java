@@ -11,11 +11,11 @@ import org.orbit.component.server.tier3.domain.editpolicy.MachineConfigEditPolic
 import org.orbit.component.server.tier3.domain.editpolicy.NodeConfigEditPolicy;
 import org.orbit.component.server.tier3.domain.editpolicy.TransferAgentConfigEditPolicy;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
-import org.origin.common.rest.agent.CommonWSApplicationResource;
+import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
-public class DomainMgmtServiceResource extends CommonWSApplicationResource {
+public class DomainMgmtServiceResource extends EditpolicyWSApplicationResource {
 
 	@Inject
 	public DomainManagementService service;

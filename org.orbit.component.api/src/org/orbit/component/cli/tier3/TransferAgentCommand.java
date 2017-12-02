@@ -5,11 +5,11 @@ import java.util.Hashtable;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domain.DomainManagement;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.NodeInfo;
 import org.orbit.component.api.tier3.transferagent.NodespaceInfo;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
+import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgentHelper;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
@@ -23,8 +23,12 @@ import org.origin.common.rest.model.Responses;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TransferAgentCommand implements Annotated {
+
+	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentCommand.class);
 
 	protected static String[] NODESPACE_TITLES = new String[] { "Name" };
 	protected static String[] NODE_TITLES = new String[] { "Name" };
@@ -34,8 +38,8 @@ public class TransferAgentCommand implements Annotated {
 
 	@Dependency
 	protected DomainManagementConnector domainMgmtConnector;
-
-	protected boolean debug = true;
+	@Dependency
+	protected TransferAgentConnector transferAgentConnector;
 
 	/**
 	 * 
@@ -50,10 +54,6 @@ public class TransferAgentCommand implements Annotated {
 	}
 
 	public void start() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".start()");
-		}
-
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
 		props.put("osgi.command.function",
@@ -73,81 +73,26 @@ public class TransferAgentCommand implements Annotated {
 	}
 
 	public void stop() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".stop()");
-		}
-
 		OSGiServiceUtil.unregister(TransferAgentCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
 	@DependencyFullfilled
-	public void domainMgmtConnectorSet() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".domainMgmtConnectorSet() Dependency on DomainMgmtConnector is set.");
-		}
+	public void connectorsSet() {
+		LOG.info("connectorsSet()");
 	}
 
 	@DependencyUnfullfilled
-	public void domainMgmtConnectorUnset() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".domainMgmtConnectorSet() Dependency on DomainMgmtConnector is unset.");
-		}
+	public void connectorsUnset() {
+		LOG.info("connectorsUnset()");
 	}
 
 	protected TransferAgent getTransferAgent(String machineId, String transferAgentId) throws ClientException {
-		DomainManagement domainMgmt = this.domainMgmtConnector.getService();
-		checkDomainManagement(domainMgmt);
-		print(domainMgmt);
-
-		TransferAgent transferAgent = getTransferAgent(domainMgmt, machineId, transferAgentId);
-		checkTransferAgent(transferAgent);
-		print(transferAgent);
-
+		TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(this.domainMgmtConnector, this.transferAgentConnector, machineId, transferAgentId);
+		if (transferAgent == null) {
+			LOG.error("TransferAgent is not available.");
+		}
 		return transferAgent;
-	}
-
-	protected TransferAgent getTransferAgent(DomainManagement domainMgmt, String machineId, String transferAgentId) throws ClientException {
-		return TransferAgentHelper.getInstance().getTransferAgent(domainMgmt, machineId, transferAgentId);
-	}
-
-	protected void checkConnector() throws ClientException {
-		if (this.domainMgmtConnector == null) {
-			System.err.println(getClass().getSimpleName() + ".checkConnector() DomainMgmtConnector is not available.");
-			throw new ClientException(500, "DomainMgmtConnector is not available.");
-		}
-	}
-
-	protected void checkDomainManagement(DomainManagement domainMgmt) throws ClientException {
-		if (domainMgmt == null) {
-			System.err.println(getClass().getSimpleName() + ".checkDomainManagement() domainMgmt is not available.");
-			throw new ClientException(500, "domainMgmt is not available.");
-		}
-	}
-
-	protected void checkTransferAgent(TransferAgent transferAgent) throws ClientException {
-		if (transferAgent == null) {
-			System.err.println(getClass().getSimpleName() + ".checkTransferAgent() transferAgent is not available.");
-			throw new ClientException(500, "transferAgent is not available.");
-		}
-	}
-
-	protected void print(DomainManagement domainMgmt) {
-		if (domainMgmt == null) {
-			System.out.println("DomainManagement service is null.");
-			return;
-		} else {
-			System.out.println(domainMgmt.getName() + " (" + domainMgmt.getURL() + ")");
-		}
-	}
-
-	protected void print(TransferAgent transferAgent) {
-		if (transferAgent == null) {
-			System.out.println("transferAgent service is null.");
-			return;
-		} else {
-			System.out.println(transferAgent.getName() + " (" + transferAgent.getURL() + ")");
-		}
 	}
 
 	// -----------------------------------------------------------------------------------------
@@ -164,12 +109,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "ping", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
-		}
+		LOG.info("ta_ping()");
+		CLIHelper.getInstance().printCommand(getScheme(), "ping", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			boolean ping = transferAgent.ping();
 			System.out.println("ping = " + ping);
@@ -192,12 +139,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_nodespaces", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
-		}
+		LOG.info("list_nodespaces()");
+		CLIHelper.getInstance().printCommand(getScheme(), "list_nodespaces", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.GET_NODESPACES);
 
@@ -223,12 +172,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_nodespace", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
-		}
+		LOG.info("list_nodespace()");
+		CLIHelper.getInstance().printCommand(getScheme(), "list_nodespace", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.GET_NODESPACE);
 			request.setParameter("nodespace", nodespace);
@@ -257,12 +208,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "nodespace_exist", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
-		}
+		LOG.info("list_nodespace()");
+		CLIHelper.getInstance().printCommand(getScheme(), "nodespace_exist", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.NODESPACE_EXIST);
 			request.setParameter("nodespace", nodespace);
@@ -288,12 +241,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "create_nodespace", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
-		}
+		LOG.info("create_nodespace()");
+		CLIHelper.getInstance().printCommand(getScheme(), "create_nodespace", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.CREATE_NODESPACE);
 			request.setParameter("nodespace", nodespace);
@@ -319,12 +274,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "delete_nodespace", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
-		}
+		LOG.info("delete_nodespace()");
+		CLIHelper.getInstance().printCommand(getScheme(), "delete_nodespace", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.DELETE_NODESPACE);
 			request.setParameter("nodespace", nodespace);
@@ -360,15 +317,19 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_nodes", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
-		}
+		LOG.info("list_nodes()");
+		CLIHelper.getInstance().printCommand(getScheme(), "list_nodes", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.GET_NODES);
-			request.setParameter("nodespace", nodespace);
+			if (!Parameter.UNSPECIFIED.equals(nodespace)) {
+				request.setParameter("nodespace", nodespace);
+			}
 			Responses responses = transferAgent.sendRequest(request);
 
 			NodeInfo[] nodeInfos = transferAgent.getResponseConverter().convertToNodeInfos(responses);
@@ -393,12 +354,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
-		}
+		LOG.info("list_node()");
+		CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.GET_NODE);
 			request.setParameter("nodespace", nodespace);
@@ -429,12 +392,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "node_exist", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
-		}
+		LOG.info("node_exist()");
+		CLIHelper.getInstance().printCommand(getScheme(), "node_exist", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.NODE_EXIST);
 			request.setParameter("nodespace", nodespace);
@@ -462,12 +427,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "create_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
-		}
+		LOG.info("create_node()");
+		CLIHelper.getInstance().printCommand(getScheme(), "create_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.CREATE_NODE);
 			request.setParameter("nodespace", nodespace);
@@ -495,12 +462,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "delete_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
-		}
+		LOG.info("delete_node()");
+		CLIHelper.getInstance().printCommand(getScheme(), "delete_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 			Request request = new Request(OrbitConstants.Requests.DELETE_NODE);
 			request.setParameter("nodespace", nodespace);
@@ -528,12 +497,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "is_node_started", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
-		}
+		LOG.info("is_node_started()");
+		CLIHelper.getInstance().printCommand(getScheme(), "is_node_started", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -547,12 +518,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "start_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
-		}
+		LOG.info("start_node()");
+		CLIHelper.getInstance().printCommand(getScheme(), "start_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -566,12 +539,14 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "stop_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
-		}
+		LOG.info("stop_node()");
+		CLIHelper.getInstance().printCommand(getScheme(), "stop_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -579,6 +554,19 @@ public class TransferAgentCommand implements Annotated {
 	}
 
 }
+
+// protected void checkDomainManagement(DomainManagement domainMgmt) throws ClientException {
+// if (domainMgmt == null) {
+// System.err.println(getClass().getSimpleName() + ".checkDomainManagement() domainMgmt is not available.");
+// throw new ClientException(500, "domainMgmt is not available.");
+// }
+// }
+// protected void checkTransferAgent(TransferAgent transferAgent) throws ClientException {
+// if (transferAgent == null) {
+// System.err.println(getClass().getSimpleName() + ".checkTransferAgent() transferAgent is not available.");
+// throw new ClientException(500, "transferAgent is not available.");
+// }
+// }
 
 // is_nodespace_opened
 // open_nodespace

@@ -17,7 +17,7 @@ import org.orbit.component.model.tier1.auth.dto.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.dto.TokenRequestDTO;
 import org.orbit.component.server.tier1.auth.service.AuthService;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
-import org.origin.core.resources.server.ws.ResourcesWSResource;
+import org.origin.core.resources.server.ws.ResourcesWebServiceResource;
 
 /**
  * @see https://www.oauth.com/oauth2-servers/definitions
@@ -27,7 +27,7 @@ import org.origin.core.resources.server.ws.ResourcesWSResource;
  * @see https://www.oauth.com/oauth2-servers/access-tokens/refreshing-access-tokens/
  * 
  * 
- * @see ResourcesWSResource for service dependency injection.
+ * @see ResourcesWebServiceResource for service dependency injection.
  * 
  * @see ProjectNodeResource for multiple POST web services and response with model.
  * 

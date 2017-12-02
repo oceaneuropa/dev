@@ -69,7 +69,7 @@ public class HomeAgentImpl implements HomeAgent {
 	public synchronized boolean connect() throws ClientException {
 		if (this.clientConnector == null) {
 			// Ping the remote home every 10 seconds
-			this.clientConnector = new ClientConnector(this.homeAdminWSClient, 10, TimeUnit.SECONDS);
+			// this.clientConnector = new ClientConnector(this.homeAdminWSClient, 10, TimeUnit.SECONDS);
 		}
 		this.clientConnector.start();
 		return isConnected();

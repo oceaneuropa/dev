@@ -8,8 +8,11 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.deploy.DeployCallback;
 import org.origin.common.rest.Constants;
 import org.osgi.framework.BundleContext;
@@ -49,6 +52,20 @@ public class AbstractResourceConfigApplication extends ResourceConfig implements
 		// if (!isEnabled(MultiPartFeature.class)) {
 		// register(MultiPartFeature.class);
 		// }
+
+		// http://{host}:{port}/{contextRoot}/ping
+		Resource.Builder pingResource = Resource.builder("ping");
+		pingResource.addMethod(GET).produces(JSON).handledBy(pingResourceGetHandler());
+		registerResources(pingResource.build());
+	}
+
+	protected Inflector<ContainerRequestContext, Response> pingResourceGetHandler() {
+		return new Inflector<ContainerRequestContext, Response>() {
+			@Override
+			public Response apply(ContainerRequestContext requestContext) {
+				return Response.ok(1).build();
+			}
+		};
 	}
 
 	public synchronized boolean isStarted() {

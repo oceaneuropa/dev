@@ -10,7 +10,7 @@ import org.orbit.component.server.tier1.auth.service.impl.AuthServiceImpl;
 import org.orbit.component.server.tier1.config.service.impl.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.server.tier2.appstore.service.impl.AppStoreServiceDatabaseImpl;
 import org.orbit.component.server.tier3.domain.service.impl.DomainManagementServiceDatabaseImpl;
-import org.orbit.component.server.tier3.transferagent.service.impl.TransferAgentServiceImpl;
+import org.orbit.component.server.tier3.transferagent.service.TransferAgentServiceImpl;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.osgi.framework.BundleContext;
 

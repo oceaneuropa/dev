@@ -29,6 +29,10 @@ public class CLIHelper {
 				String paramName = param[0];
 				String paramValue = param[1];
 
+				if ("org.apache.felix.service.command.unspecified.parameter".equals(paramValue)) {
+					paramValue = "(n/a)";
+				}
+
 				if ("n/a".equals(paramName)) {
 					System.out.println("    " + paramName);
 					continue;

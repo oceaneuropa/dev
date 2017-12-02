@@ -3,6 +3,54 @@ package org.orbit.component.server;
 public class OrbitConstants {
 
 	// ----------------------------------------------------------------------------------------
+	// Requests
+	// ----------------------------------------------------------------------------------------
+	public static class Requests {
+		// ---------------------------------------------------------------
+		// Management request constants
+		// ---------------------------------------------------------------
+		// Machine configurations
+		public static String GET_MACHINE_CONFIGS = "get_machine_configs";
+		public static String GET_MACHINE_CONFIG = "get_machine_config";
+		public static String ADD_MACHINE_CONFIG = "add_machine_config";
+		public static String UPDATE_MACHINE_CONFIG = "update_machine_config";
+		public static String REMOVE_MACHINE_CONFIG = "remove_machine_config";
+
+		// Transfer Agent configurations
+		public static String GET_TA_CONFIGS = "get_ta_configs";
+		public static String GET_TA_CONFIG = "get_ta_config";
+		public static String ADD_TA_CONFIG = "add_ta_config";
+		public static String UPDATE_TA_CONFIG = "update_ta_config";
+		public static String REMOVE_TA_CONFIG = "remove_ta_config";
+
+		// Node configurations
+		public static String GET_NODE_CONFIGS = "get_node_configs";
+		public static String GET_NODE_CONFIG = "get_node_config";
+		public static String ADD_NODE_CONFIG = "add_node_config";
+		public static String UPDATE_NODE_CONFIG = "update_node_config";
+		public static String REMOVE_NODE_CONFIG = "remove_node_config";
+
+		// ---------------------------------------------------------------
+		// TA request constants
+		// ---------------------------------------------------------------
+		// Constants for nodespaces
+		public static String GET_NODESPACES = "get_nodespaces";
+		public static String GET_NODESPACE = "get_nodespace";
+		public static String NODESPACE_EXIST = "nodespace_exist";
+		public static String CREATE_NODESPACE = "create_nodespace";
+		public static String DELETE_NODESPACE = "delete_nodespace";
+
+		// Constants for nodes
+		public static String GET_NODES = "get_nodes";
+		public static String GET_NODE = "get_node";
+		public static String NODE_EXIST = "node_exist";
+		public static String CREATE_NODE = "create_node";
+		public static String DELETE_NODE = "delete_node";
+		public static String START_NODE = "start_node";
+		public static String STOP_NODE = "stop_node";
+	}
+
+	// ----------------------------------------------------------------------------------------
 	// Global
 	// ----------------------------------------------------------------------------------------
 	// config properties
@@ -16,6 +64,27 @@ public class OrbitConstants {
 	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
 
 	public static String PINGABLE = "pingable";
+
+	// ----------------------------------------------------------------------------------------
+	// Channel
+	// ----------------------------------------------------------------------------------------
+	// config properties
+	public static String COMPONENT_CHANNEL_NAMESPACE = "component.channel.namespace";
+	public static String COMPONENT_CHANNEL_NAME = "component.channel.name";
+	public static String COMPONENT_CHANNEL_HOST_URL = "component.channel.host.url";
+	public static String COMPONENT_CHANNEL_CONTEXT_ROOT = "component.channel.context_root";
+	public static String COMPONENT_CHANNEL_HTTP_PORT = "component.channel.http_port";
+
+	// index item values
+	public static String CHANNEL_INDEXER_ID = "component.channel.indexer"; // index provider id for ChannelService
+	public static String CHANNEL_TYPE = "Channel"; // type of index item for ChannelService
+
+	// index item properties
+	public static String CHANNEL_NAMESPACE = "channel.namespace";
+	public static String CHANNEL_NAME = "channel.name";
+	public static String CHANNEL_HOST_URL = "channel.host.url";
+	public static String CHANNEL_CONTEXT_ROOT = "channel.context_root";
+	public static String CHANNEL_HTTP_PORT = "channel.http_port";
 
 	// ----------------------------------------------------------------------------------------
 	// UserRegistry
@@ -179,75 +248,6 @@ public class OrbitConstants {
 	public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
 	public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
 	public static String TRANSFER_AGENT_HOME = "transfer_agent.home";
-
-	// ----------------------------------------------------------------------------------------
-	// Broadcast
-	// ----------------------------------------------------------------------------------------
-	// config properties
-	public static String COMPONENT_CHANNEL_NAMESPACE = "component.channel.namespace";
-	public static String COMPONENT_CHANNEL_NAME = "component.channel.name";
-	public static String COMPONENT_CHANNEL_HOST_URL = "component.channel.host.url";
-	public static String COMPONENT_CHANNEL_CONTEXT_ROOT = "component.channel.context_root";
-	public static String COMPONENT_CHANNEL_HTTP_PORT = "component.channel.http_port";
-
-	// index item values
-	public static String CHANNEL_INDEXER_ID = "component.channel.indexer"; // index provider id for ChannelService
-	public static String CHANNEL_TYPE = "Channel"; // type of index item for ChannelService
-
-	// index item properties
-	public static String CHANNEL_NAMESPACE = "channel.namespace";
-	public static String CHANNEL_NAME = "channel.name";
-	public static String CHANNEL_HOST_URL = "channel.host.url";
-	public static String CHANNEL_CONTEXT_ROOT = "channel.context_root";
-	public static String CHANNEL_HTTP_PORT = "channel.http_port";
-
-	// ----------------------------------------------------------------------------------------
-	// Requests
-	// ----------------------------------------------------------------------------------------
-	public static class Requests {
-		// ---------------------------------------------------------------
-		// Management request constants
-		// ---------------------------------------------------------------
-		// Machine configurations
-		public static String GET_MACHINE_CONFIGS = "get_machine_configs";
-		public static String GET_MACHINE_CONFIG = "get_machine_config";
-		public static String ADD_MACHINE_CONFIG = "add_machine_config";
-		public static String UPDATE_MACHINE_CONFIG = "update_machine_config";
-		public static String REMOVE_MACHINE_CONFIG = "remove_machine_config";
-
-		// Transfer Agent configurations
-		public static String GET_TA_CONFIGS = "get_ta_configs";
-		public static String GET_TA_CONFIG = "get_ta_config";
-		public static String ADD_TA_CONFIG = "add_ta_config";
-		public static String UPDATE_TA_CONFIG = "update_ta_config";
-		public static String REMOVE_TA_CONFIG = "remove_ta_config";
-
-		// Node configurations
-		public static String GET_NODE_CONFIGS = "get_node_configs";
-		public static String GET_NODE_CONFIG = "get_node_config";
-		public static String ADD_NODE_CONFIG = "add_node_config";
-		public static String UPDATE_NODE_CONFIG = "update_node_config";
-		public static String REMOVE_NODE_CONFIG = "remove_node_config";
-
-		// ---------------------------------------------------------------
-		// TA request constants
-		// ---------------------------------------------------------------
-		// Constants for nodespaces
-		public static String GET_NODESPACES = "get_nodespaces";
-		public static String GET_NODESPACE = "get_nodespace";
-		public static String NODESPACE_EXIST = "nodespace_exist";
-		public static String CREATE_NODESPACE = "create_nodespace";
-		public static String DELETE_NODESPACE = "delete_nodespace";
-
-		// Constants for nodes
-		public static String GET_NODES = "get_nodes";
-		public static String GET_NODE = "get_node";
-		public static String NODE_EXIST = "node_exist";
-		public static String CREATE_NODE = "create_node";
-		public static String DELETE_NODE = "delete_node";
-		public static String START_NODE = "start_node";
-		public static String STOP_NODE = "stop_node";
-	}
 
 }
 

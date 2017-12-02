@@ -3,14 +3,14 @@ package org.orbit.component.connector;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.connector.tier0.channel.ChannelConnectorImpl;
+import org.orbit.component.connector.tier0.channel.ChannelsConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
 import org.orbit.component.connector.tier3.domain.DomainMgmtConnectorImpl;
-import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorFactoryImpl;
+import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
 import org.origin.common.util.PropertyUtil;
 import org.origin.mgm.client.OriginConstants;
 import org.origin.mgm.client.api.IndexServiceUtil;
@@ -34,13 +34,13 @@ public class Activator implements BundleActivator {
 	protected UserRegistryManager userRegistryManager;
 	protected ServiceRegistration<?> userRegistryManagerRegistration;
 
-	protected ChannelConnectorImpl channelConnector;
+	protected ChannelsConnectorImpl channelConnector;
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
 	protected AuthConnectorImpl authConnector;
 	protected AppStoreConnectorImpl appStoreConnector;
 	protected DomainMgmtConnectorImpl domainMgmtConnector;
-	protected TransferAgentConnectorFactoryImpl transferAgentConnectorFactory;
+	protected TransferAgentConnectorImpl transferAgentConnector;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -58,7 +58,7 @@ public class Activator implements BundleActivator {
 		// Register ManagedServiceFactories and connector services
 		// -----------------------------------------------------------------------------
 		// tier0
-		this.channelConnector = new ChannelConnectorImpl();
+		this.channelConnector = new ChannelsConnectorImpl();
 		this.channelConnector.start(bundleContext);
 
 		// tier1
@@ -82,8 +82,8 @@ public class Activator implements BundleActivator {
 		this.domainMgmtConnector = new DomainMgmtConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.domainMgmtConnector.start(bundleContext);
 
-		this.transferAgentConnectorFactory = new TransferAgentConnectorFactoryImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.transferAgentConnectorFactory.start(bundleContext);
+		this.transferAgentConnector = new TransferAgentConnectorImpl();
+		this.transferAgentConnector.start(bundleContext);
 	}
 
 	@Override
@@ -97,9 +97,9 @@ public class Activator implements BundleActivator {
 			this.domainMgmtConnector = null;
 		}
 
-		if (this.transferAgentConnectorFactory != null) {
-			this.transferAgentConnectorFactory.stop(bundleContext);
-			this.transferAgentConnectorFactory = null;
+		if (this.transferAgentConnector != null) {
+			this.transferAgentConnector.stop(bundleContext);
+			this.transferAgentConnector = null;
 		}
 
 		// tier2

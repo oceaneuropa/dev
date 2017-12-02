@@ -11,14 +11,16 @@ import org.origin.common.rest.server.AbstractResourceConfigApplication;
 import org.origin.mgm.client.api.IndexProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class OAuth2WSApplication extends AbstractResourceConfigApplication /* AbstractApplication */ {
 
-	// protected static Logger logger = LoggerFactory.getLogger(OAuth2WSApplication.class);
+	protected static Logger logger = LoggerFactory.getLogger(OAuth2WSApplication.class);
+
 	protected OAuth2Service service;
 	protected IndexProvider indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
-	// protected OAuth2ServiceIndexTimer serviceIndexTimer;
 	protected OAuth2ServiceIndexTimerV2 serviceIndexTimer;
 
 	/**
@@ -92,17 +94,19 @@ public class OAuth2WSApplication extends AbstractResourceConfigApplication /* Ab
 		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
 	}
 
-	// @Override
-	// public Set<Class<?>> getClasses() {
-	// Set<Class<?>> classes = new HashSet<Class<?>>();
-	//
-	// // resources
-	// classes.add(OAuth2ServiceResource.class);
-	//
-	// // resolvers
-	// classes.add(OAuth2ServiceResolver.class);
-	//
-	// return classes;
-	// }
-
 }
+
+// @Override
+// public Set<Class<?>> getClasses() {
+// Set<Class<?>> classes = new HashSet<Class<?>>();
+//
+// // resources
+// classes.add(OAuth2ServiceResource.class);
+//
+// // resolvers
+// classes.add(OAuth2ServiceResolver.class);
+//
+// return classes;
+// }
+
+// protected OAuth2ServiceIndexTimer serviceIndexTimer;

@@ -1,11 +1,14 @@
 package org.orbit.component.server.tier2.appstore.ws;
 
 import org.orbit.component.server.tier2.appstore.service.AppStoreService;
+import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adapter to start AppStoreWSApplication when AppStoreService becomes available and to stop AppStoreWSApplication when AppStoreService becomes unavailable.
@@ -13,12 +16,12 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class AppStoreServiceAdapter {
 
+	protected static Logger LOG = LoggerFactory.getLogger(AppStoreServiceAdapter.class);
+
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<AppStoreService, AppStoreService> serviceTracker;
-	protected AppStoreWSApplication webApp;
-
-	public AppStoreServiceAdapter() {
-	}
+	protected AppStoreWebServiceApplication webServiceApp;
+	protected AppStoreServiceIndexTimer serviceIndexTimer;
 
 	public AppStoreServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
@@ -26,14 +29,6 @@ public class AppStoreServiceAdapter {
 
 	public AppStoreService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
-	}
-
-	public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
-		return indexProviderLoadBalancer;
-	}
-
-	public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
 	/**
@@ -45,25 +40,17 @@ public class AppStoreServiceAdapter {
 			@Override
 			public AppStoreService addingService(ServiceReference<AppStoreService> reference) {
 				AppStoreService service = bundleContext.getService(reference);
-				System.out.println("AppStoreService [" + service + "] is added.");
-
-				startWebService(bundleContext, service);
+				doStart(bundleContext, service);
 				return service;
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<AppStoreService> reference, AppStoreService service) {
-				System.out.println("AppStoreService [" + service + "] is modified.");
-
-				stopWebService(bundleContext, service);
-				startWebService(bundleContext, service);
 			}
 
 			@Override
 			public void removedService(ServiceReference<AppStoreService> reference, AppStoreService service) {
-				System.out.println("AppStoreService [" + service + "] is removed.");
-
-				stopWebService(bundleContext, service);
+				doStop(bundleContext, service);
 			}
 		});
 		this.serviceTracker.open();
@@ -85,14 +72,19 @@ public class AppStoreServiceAdapter {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void startWebService(BundleContext bundleContext, AppStoreService service) {
-		this.webApp = new AppStoreWSApplication(bundleContext, service);
-		this.webApp.setBundleContext(bundleContext);
-		this.webApp.setContextRoot(service.getContextRoot());
-		if (this.indexProviderLoadBalancer != null) {
-			this.webApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		}
-		this.webApp.start();
+	protected void doStart(BundleContext bundleContext, AppStoreService service) {
+		LOG.info("doStart()");
+
+		// Start web service
+		this.webServiceApp = new AppStoreWebServiceApplication(bundleContext, service);
+		this.webServiceApp.setBundleContext(bundleContext);
+		this.webServiceApp.setContextRoot(service.getContextRoot());
+		this.webServiceApp.start();
+
+		// Start index timer
+		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		this.serviceIndexTimer = new AppStoreServiceIndexTimer(indexProvider, service);
+		this.serviceIndexTimer.start();
 	}
 
 	/**
@@ -100,10 +92,19 @@ public class AppStoreServiceAdapter {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void stopWebService(BundleContext bundleContext, AppStoreService service) {
-		if (this.webApp != null) {
-			this.webApp.stop();
-			this.webApp = null;
+	protected void doStop(BundleContext bundleContext, AppStoreService service) {
+		LOG.info("doStop()");
+
+		// Stop index timer
+		if (this.serviceIndexTimer != null) {
+			this.serviceIndexTimer.stop();
+			this.serviceIndexTimer = null;
+		}
+
+		// Stop web service
+		if (this.webServiceApp != null) {
+			this.webServiceApp.stop();
+			this.webServiceApp = null;
 		}
 	}
 

@@ -1,8 +1,8 @@
 package org.orbit.component.connector.tier3.transferagent;
 
-import org.origin.common.rest.agent.CommonWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.CommonWSClient;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Responses;
 

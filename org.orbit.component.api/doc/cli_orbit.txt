@@ -123,8 +123,8 @@ orbit:remove_ta -machineId m2 -id ta22
 
 list_nodes
 -----------------------------------------------------------------------------------------------------
-list_nodes -machineId m1 -transferAgentId ta1
-list_nodes -machineId m1 -transferAgentId ta2
+list_nodes -machineId m1 -transferAgentId ta11
+list_nodes -machineId m1 -transferAgentId ta12
 -----------------------------------------------------------------------------------------------------
 
 list_node
