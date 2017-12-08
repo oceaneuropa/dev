@@ -28,8 +28,8 @@ import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.util.ResponseUtil;
 
 /*
  * ProjectSoftware resource client.
@@ -82,7 +82,7 @@ public class ProjectSoftwareWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (softwareDTOs == null) {
 			softwareDTOs = Collections.emptyList();
@@ -113,7 +113,7 @@ public class ProjectSoftwareWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return softwareDTO;
 	}
@@ -143,7 +143,7 @@ public class ProjectSoftwareWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return newSoftwareDTO;
 	}
@@ -173,7 +173,7 @@ public class ProjectSoftwareWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -203,7 +203,7 @@ public class ProjectSoftwareWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

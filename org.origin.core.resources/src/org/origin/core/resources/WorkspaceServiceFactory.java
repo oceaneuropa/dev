@@ -3,9 +3,7 @@ package org.origin.core.resources;
 import java.io.File;
 import java.util.Map;
 
-import org.orbit.fs.common.FileSystem;
 import org.origin.core.resources.impl.database.WorkspaceServiceDatabaseImpl;
-import org.origin.core.resources.impl.filesystem.WorkspaceServiceFileSystemImpl;
 import org.origin.core.resources.impl.local.WorkspaceServiceLocalImpl;
 
 public class WorkspaceServiceFactory {
@@ -25,14 +23,14 @@ public class WorkspaceServiceFactory {
 		return new WorkspaceServiceDatabaseImpl(properties);
 	}
 
-	/**
-	 * 
-	 * @param fileSystem
-	 * @return
-	 */
-	public IWorkspaceService createWorkspaceService(FileSystem fileSystem) {
-		return new WorkspaceServiceFileSystemImpl(fileSystem);
-	}
+	// /**
+	// *
+	// * @param fileSystem
+	// * @return
+	// */
+	// public IWorkspaceService createWorkspaceService(FileSystem fileSystem) {
+	// return new WorkspaceServiceFileSystemImpl(fileSystem);
+	// }
 
 	/**
 	 * 

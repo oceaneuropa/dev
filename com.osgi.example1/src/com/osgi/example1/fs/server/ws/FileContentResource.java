@@ -16,7 +16,6 @@ import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.model.ErrorDTO;
-import org.origin.common.rest.model.ModelConverter;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 

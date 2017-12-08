@@ -106,7 +106,7 @@ public class WebServiceDeployer {
 	}
 
 	public void start() throws Exception {
-		LOG.debug("start()");
+		LOG.info("start()");
 
 		// 1. Start tracking HttpService services
 		this.httpServiceAdapter = new HttpServiceAdapter(bundleContext) {
@@ -212,7 +212,7 @@ public class WebServiceDeployer {
 	}
 
 	public void stop() throws Exception {
-		LOG.debug("stop()");
+		LOG.info("stop()");
 
 		// 1. Stop tracking Application services
 		this.applicationServicesAdapter.stop();
@@ -232,16 +232,16 @@ public class WebServiceDeployer {
 	 * @param httpService
 	 */
 	public void deployApplication(ApplicationServiceReference applicationService, HttpService httpService) {
-		LOG.debug("deployApplication()");
+		LOG.info("deployApplication()");
 
 		lock.writeLock().lock();
 		try {
 			String contextRoot = applicationService.getContextRoot();
 			Application application = applicationService.getApplication();
 
-			LOG.debug("\thttpService = " + httpService);
-			LOG.debug("\tcontextRoot = " + contextRoot);
-			LOG.debug("\tapplication = " + application);
+			LOG.info("\thttpService = " + httpService);
+			LOG.info("\tcontextRoot = " + contextRoot);
+			LOG.info("\tapplication = " + application);
 
 			if (contextRoot == null || application == null || httpService == null) {
 				return;
@@ -266,14 +266,14 @@ public class WebServiceDeployer {
 						((DeployCallback) application).deployedTo(httpService);
 					}
 
-					LOG.debug("\tApplication [" + application.getClass().getSimpleName() + "] is deployed to '" + contextRoot + "'.");
+					LOG.info("\tApplication [" + application.getClass().getSimpleName() + "] is deployed to '" + contextRoot + "'.");
 
 				} finally {
 					Thread.currentThread().setContextClassLoader(cl);
 				}
 
 			} catch (Exception e) {
-				LOG.debug("\tApplication [" + application.getClass().getSimpleName() + "] failed to be deployed to '" + contextRoot + "'.");
+				LOG.info("\tApplication [" + application.getClass().getSimpleName() + "] failed to be deployed to '" + contextRoot + "'.");
 				e.printStackTrace();
 			}
 

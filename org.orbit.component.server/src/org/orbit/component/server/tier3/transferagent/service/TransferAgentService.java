@@ -3,7 +3,7 @@ package org.orbit.component.server.tier3.transferagent.service;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.core.resources.IWorkspace;
 
-public interface TransferAgentService extends WSEditPolicies {
+public interface TransferAgentService {
 
 	String getNamespace();
 
@@ -16,5 +16,7 @@ public interface TransferAgentService extends WSEditPolicies {
 	String getHome();
 
 	IWorkspace getNodeWorkspace();
+
+	WSEditPolicies getEditPolicies();
 
 }

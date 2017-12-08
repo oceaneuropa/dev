@@ -6,8 +6,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
-import org.orbit.component.server.tier3.transferagent.service.other.NodeEditPolicy;
-import org.orbit.component.server.tier3.transferagent.service.other.NodespaceEditPolicy;
+import org.orbit.component.server.tier3.transferagent.ws.editpolicy.other.NodeEditPolicyV1;
+import org.orbit.component.server.tier3.transferagent.ws.editpolicy.other.NodespaceEditPolicyV1;
 import org.origin.common.command.IEditingDomain;
 import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 
@@ -46,8 +46,8 @@ public class TransferAgentServiceResourceV1 extends EditpolicyWSApplicationResou
 	@Override
 	protected void createEditPolicies() {
 		// TransferAgentService service = getService();
-		NodespaceEditPolicy nodespaceEditPolicy = new NodespaceEditPolicy(service);
-		NodeEditPolicy nodeEditPolicy = new NodeEditPolicy(service);
+		NodespaceEditPolicyV1 nodespaceEditPolicy = new NodespaceEditPolicyV1(service);
+		NodeEditPolicyV1 nodeEditPolicy = new NodeEditPolicyV1(service);
 
 		installEditPolicy(nodespaceEditPolicy);
 		installEditPolicy(nodeEditPolicy);

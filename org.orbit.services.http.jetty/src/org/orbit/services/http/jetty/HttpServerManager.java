@@ -52,6 +52,11 @@ import org.slf4j.LoggerFactory;
  * 
  * @see ConfigInstaller for Configuration example
  * 
+ * @see https://github.com/jetty-project/embedded-jetty-websocket-examples/blob/master/javax.websocket-example/src/main/java/org/eclipse/jetty/demo/EventServer.
+ *      java
+ * 
+ *      Example code to start Jetty Server
+ * 
  */
 public class HttpServerManager implements ManagedServiceFactory {
 

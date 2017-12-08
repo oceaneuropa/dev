@@ -17,8 +17,8 @@ import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.StringUtil;
 import org.origin.mgm.model.dto.IndexItemCommandRequestDTO;
 import org.origin.mgm.model.dto.IndexItemDTO;
@@ -96,7 +96,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return result;
 	}
@@ -162,7 +162,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (indexItemDTOs == null) {
 			indexItemDTOs = Collections.emptyList();
@@ -202,7 +202,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return indexItemDTO;
 	}
@@ -240,7 +240,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return newIndexItemDTO;
 	}
@@ -272,7 +272,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return indexItemDTO;
 	}
@@ -300,7 +300,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -332,7 +332,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (properties == null) {
 			properties = new Hashtable<String, Object>();
@@ -374,7 +374,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -414,7 +414,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -456,7 +456,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

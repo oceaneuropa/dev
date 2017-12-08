@@ -10,15 +10,7 @@ import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
-import org.orbit.component.cli.ServicesCommand;
-import org.orbit.component.cli.tier0.ChannelCommand;
-import org.orbit.component.cli.tier1.AuthCommand;
-import org.orbit.component.cli.tier1.UserRegistryCommand;
-import org.orbit.component.cli.tier2.AppStoreCommand;
-import org.orbit.component.cli.tier3.DomainManagementCommand;
-import org.orbit.component.cli.tier3.TransferAgentCommand;
 import org.origin.common.util.PropertyUtil;
-import org.origin.mgm.client.api.IndexService;
 import org.origin.mgm.client.api.IndexServiceUtil;
 import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 import org.osgi.framework.BundleActivator;
@@ -54,15 +46,6 @@ public class Activator implements BundleActivator {
 	// tier3
 	protected ServiceTracker<DomainManagementConnector, DomainManagementConnector> domainMgmtConnectorTracker;
 	protected ServiceTracker<TransferAgentConnector, TransferAgentConnector> transferAgentConnectorTracker;
-
-	// Commands
-	protected ServicesCommand servicesCommand;
-	protected ChannelCommand channelCommand;
-	protected AuthCommand authCommand;
-	protected UserRegistryCommand userRegistryCommand;
-	protected AppStoreCommand appStoreCommand;
-	protected DomainManagementCommand domainMgmtCommand;
-	protected TransferAgentCommand transferAgentCommand;
 
 	protected IndexServiceLoadBalancer indexServiceLoadBalancer;
 
@@ -102,69 +85,10 @@ public class Activator implements BundleActivator {
 
 		this.transferAgentConnectorTracker = new ServiceTracker<TransferAgentConnector, TransferAgentConnector>(bundleContext, TransferAgentConnector.class, null);
 		this.transferAgentConnectorTracker.open();
-
-		// Start CLI commands
-		IndexService indexService = this.indexServiceLoadBalancer.createLoadBalancableIndexService();
-		this.servicesCommand = new ServicesCommand(bundleContext, indexService);
-		this.servicesCommand.start();
-
-		this.channelCommand = new ChannelCommand();
-		this.channelCommand.start(bundleContext);
-
-		this.authCommand = new AuthCommand(bundleContext);
-		this.authCommand.start();
-
-		this.userRegistryCommand = new UserRegistryCommand(bundleContext);
-		this.userRegistryCommand.start();
-
-		this.appStoreCommand = new AppStoreCommand(bundleContext);
-		this.appStoreCommand.start();
-
-		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
-		this.domainMgmtCommand.start();
-
-		this.transferAgentCommand = new TransferAgentCommand(bundleContext);
-		this.transferAgentCommand.start();
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		// Stop CLI commands
-		if (this.servicesCommand != null) {
-			this.servicesCommand.stop();
-			this.servicesCommand = null;
-		}
-
-		if (this.channelCommand != null) {
-			this.channelCommand.stop(bundleContext);
-			this.channelCommand = null;
-		}
-
-		if (this.authCommand != null) {
-			this.authCommand.stop();
-			this.authCommand = null;
-		}
-
-		if (this.userRegistryCommand != null) {
-			this.userRegistryCommand.stop();
-			this.userRegistryCommand = null;
-		}
-
-		if (this.appStoreCommand != null) {
-			this.appStoreCommand.stop();
-			this.appStoreCommand = null;
-		}
-
-		if (this.domainMgmtCommand != null) {
-			this.domainMgmtCommand.stop();
-			this.domainMgmtCommand = null;
-		}
-
-		if (this.transferAgentCommand != null) {
-			this.transferAgentCommand.stop();
-			this.transferAgentCommand = null;
-		}
-
 		// Stop connector service trackers
 		// tier3
 		if (this.domainMgmtConnectorTracker != null) {

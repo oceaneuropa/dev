@@ -5,25 +5,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.orbit.component.api.tier3.domain.DomainManagement;
-import org.orbit.component.api.tier3.domain.DomainManagementResponseConverter;
-import org.orbit.component.api.tier3.domain.MachineConfig;
-import org.orbit.component.api.tier3.domain.NodeConfig;
-import org.orbit.component.api.tier3.domain.TransferAgentConfig;
-import org.orbit.component.api.tier3.domain.request.AddNodeConfigRequest;
-import org.orbit.component.api.tier3.domain.request.AddTransferAgentConfigRequest;
-import org.orbit.component.api.tier3.domain.request.UpdateMachineConfigRequest;
-import org.orbit.component.api.tier3.domain.request.UpdateNodeConfigRequest;
-import org.orbit.component.api.tier3.domain.request.UpdateTransferAgentConfigRequest;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.model.tier3.domain.MachineConfigDTO;
-import org.orbit.component.model.tier3.domain.NodeConfigDTO;
-import org.orbit.component.model.tier3.domain.TransferAgentConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.DomainManagementConverter;
+import org.orbit.component.model.tier3.domain.dto.MachineConfig;
+import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.NodeConfig;
+import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
+import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
+import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
-import org.origin.common.rest.model.Responses;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.StringUtil;
 
@@ -31,14 +32,12 @@ public class DomainManagementImpl implements DomainManagement {
 
 	protected Map<String, Object> properties;
 	protected DomainMgmtWSClient client;
-	protected DomainManagementResponseConverterImpl responseConverter;
 
 	/**
 	 * 
 	 * @param properties
 	 */
 	public DomainManagementImpl(Map<String, Object> properties) {
-		this.responseConverter = new DomainManagementResponseConverterImpl();
 		this.properties = checkProperties(properties);
 		initClient();
 	}
@@ -113,14 +112,14 @@ public class DomainManagementImpl implements DomainManagement {
 	// Request/Response
 	// ---------------------------------------------------------
 	@Override
-	public Responses sendRequest(Request request) throws ClientException {
+	public Response sendRequest(Request request) throws ClientException {
 		return this.client.sendRequest(request);
 	}
 
-	@Override
-	public DomainManagementResponseConverter getResponseConverter() {
-		return this.responseConverter;
-	}
+	// @Override
+	// public DomainManagementResponseConverter getResponseConverter() {
+	// return this.responseConverter;
+	// }
 
 	// ---------------------------------------------------------
 	// Machine management

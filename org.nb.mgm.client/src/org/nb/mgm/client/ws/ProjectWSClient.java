@@ -14,8 +14,8 @@ import org.nb.mgm.model.dto.ProjectDTO;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.util.ResponseUtil;
 
 /*
  * Project resource client
@@ -63,7 +63,7 @@ public class ProjectWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (projects == null) {
 			projects = Collections.emptyList();
@@ -93,7 +93,7 @@ public class ProjectWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return project;
 	}
@@ -122,7 +122,7 @@ public class ProjectWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return newProject;
 	}
@@ -151,7 +151,7 @@ public class ProjectWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -178,7 +178,7 @@ public class ProjectWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

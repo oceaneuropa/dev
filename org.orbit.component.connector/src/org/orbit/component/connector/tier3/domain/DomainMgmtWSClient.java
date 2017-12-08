@@ -11,14 +11,14 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.model.tier3.domain.MachineConfigDTO;
-import org.orbit.component.model.tier3.domain.NodeConfigDTO;
-import org.orbit.component.model.tier3.domain.TransferAgentConfigDTO;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
-import org.origin.common.rest.client.CommonWSClient;
+import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
+import org.origin.common.rest.client.AbstractRequestResponseWSClient;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.util.ResponseUtil;
 
 /*
  * DomainManagement Machines resource client.
@@ -50,7 +50,7 @@ import org.origin.common.rest.model.StatusDTO;
  * @see TransferAgentWSClient
  * 
  */
-public class DomainMgmtWSClient extends CommonWSClient {
+public class DomainMgmtWSClient extends AbstractRequestResponseWSClient {
 
 	public static String PATH_MACHINES = "machines";
 	public static String PATH_TRANSFER_AGENTS = "transferagents";
@@ -89,7 +89,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (machines == null) {
 			machines = Collections.emptyList();
@@ -118,7 +118,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return machine;
 	}
@@ -146,7 +146,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -175,7 +175,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -201,7 +201,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -232,7 +232,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (transferAgents == null) {
 			transferAgents = Collections.emptyList();
@@ -262,7 +262,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return transferAgent;
 	}
@@ -291,7 +291,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -320,7 +320,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -347,7 +347,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -379,7 +379,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (nodeConfigs == null) {
 			nodeConfigs = Collections.emptyList();
@@ -410,7 +410,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return nodeConfigDTO;
 	}
@@ -440,7 +440,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -470,7 +470,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -498,7 +498,7 @@ public class DomainMgmtWSClient extends CommonWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

@@ -7,8 +7,7 @@ import javax.ws.rs.core.Response;
 import org.nb.home.model.dto.PingRequest;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.CommonWSClient;
-import org.origin.common.rest.model.Responses;
+import org.origin.common.rest.client.AbstractRequestResponseWSClient;
 
 /**
  * Home Agent web service client
@@ -18,7 +17,7 @@ import org.origin.common.rest.model.Responses;
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/request (body parameter: Request)
  * 
  */
-public class HomeAgentWSClient extends CommonWSClient {
+public class HomeAgentWSClient extends AbstractRequestResponseWSClient {
 
 	/**
 	 * 
@@ -56,11 +55,9 @@ public class HomeAgentWSClient extends CommonWSClient {
 	public int ping() throws ClientException {
 		int pingResult = -1;
 		try {
-			Responses responses = sendRequest(new PingRequest());
-			if (!responses.isEmpty()) {
-				// PingResponse pingResponse = new PingResponse(responses);
-				// pingResult = pingResponse.getResult();
-			}
+			Response response = sendRequest(new PingRequest());
+			pingResult = response.readEntity(Integer.class);
+
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}

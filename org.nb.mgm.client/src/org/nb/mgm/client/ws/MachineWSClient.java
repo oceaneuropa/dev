@@ -18,8 +18,8 @@ import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.PropertyUtil;
 
 /* 
@@ -102,7 +102,7 @@ public class MachineWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (machines == null) {
 			machines = Collections.emptyList();
@@ -132,7 +132,7 @@ public class MachineWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return machine;
 	}
@@ -161,7 +161,7 @@ public class MachineWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return newMachine;
 	}
@@ -190,7 +190,7 @@ public class MachineWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -217,7 +217,7 @@ public class MachineWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -255,7 +255,7 @@ public class MachineWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return properties;
 	}
@@ -285,7 +285,7 @@ public class MachineWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -318,7 +318,7 @@ public class MachineWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

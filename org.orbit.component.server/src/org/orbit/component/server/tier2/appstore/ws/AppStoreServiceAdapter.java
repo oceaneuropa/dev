@@ -20,7 +20,7 @@ public class AppStoreServiceAdapter {
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<AppStoreService, AppStoreService> serviceTracker;
-	protected AppStoreWebServiceApplication webServiceApp;
+	protected AppStoreWSApplication webServiceApp;
 	protected AppStoreServiceIndexTimer serviceIndexTimer;
 
 	public AppStoreServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
@@ -76,9 +76,7 @@ public class AppStoreServiceAdapter {
 		LOG.info("doStart()");
 
 		// Start web service
-		this.webServiceApp = new AppStoreWebServiceApplication(bundleContext, service);
-		this.webServiceApp.setBundleContext(bundleContext);
-		this.webServiceApp.setContextRoot(service.getContextRoot());
+		this.webServiceApp = new AppStoreWSApplication(bundleContext, service);
 		this.webServiceApp.start();
 
 		// Start index timer

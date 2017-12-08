@@ -1,0 +1,114 @@
+Example1
+------------------------------------------------------------------------------------------------------------------------
+osgi.bundles=org.foo.hello.jar@start, org.foo.hello.client.jar@start
+eclipse.ignoreApp=true
+osgi.console.enable.builtin=true
+------------------------------------------------------------------------------------------------------------------------
+
+Example2
+------------------------------------------------------------------------------------------------------------------------
+osgi.bundles=org.eclipse.osgi_3.10.100.v20150529-1857.jar@start, \
+org.eclipse.equinox.console_1.1.100.v20141023-1406.jar@start, \
+org.apache.felix.gogo.command-0.16.0.jar@start, \
+org.apache.felix.gogo.runtime-0.16.2.jar@start, \
+org.apache.felix.gogo.shell-0.12.0.jar@start, \
+consumer-2.0.jar, \
+provider-2.0.jar
+eclipse.ignoreApp=true
+
+osgi.console.enable.builtin=true (this is optional)
+------------------------------------------------------------------------------------------------------------------------
+
+Example3.0
+------------------------------------------------------------------------------------------------------------------------
+osgi.bundles=./lib/org.eclipse.equinox.console_1.1.100.v20141023-1406.jar@start, \
+./lib/org.apache.felix.gogo.command-0.16.0.jar@start, \
+./lib/org.apache.felix.gogo.runtime-0.16.2.jar@start, \
+./lib/org.apache.felix.gogo.shell-0.12.0.jar@start
+eclipse.ignoreApp=true
+------------------------------------------------------------------------------------------------------------------------
+
+Note:
+- osgi.bundles path is relative to the org.eclipse.osgi_3.10.100.v20150529-1857.jar file
+- it is not relative to the config.ini file
+
+
+Example3.1
+------------------------------------------------------------------------------------------------------------------------
+osgi.bundles=./lib/org.eclipse.equinox.console_1.1.100.v20141023-1406.jar@start, \
+./lib/org.apache.felix.gogo.command-0.16.0.jar@start, \
+./lib/org.apache.felix.gogo.runtime-0.16.2.jar@start, \
+./lib/org.apache.felix.gogo.shell-0.12.0.jar@start, \
+consumer-2.0.jar@start, \
+provider-2.0.jar@start
+eclipse.ignoreApp=true
+------------------------------------------------------------------------------------------------------------------------
+
+Example3.2
+------------------------------------------------------------------------------------------------------------------------
+osgi.bundles=./lib/org.eclipse.equinox.console_1.1.100.v20141023-1406.jar@start, \
+./lib/org.apache.felix.gogo.command-0.16.0.jar@start, \
+./lib/org.apache.felix.gogo.runtime-0.16.2.jar@start, \
+./lib/org.apache.felix.gogo.shell-0.12.0.jar@start, \
+org.foo.hello.jar@start, \
+org.foo.hello.client.jar@start
+eclipse.ignoreApp=true
+------------------------------------------------------------------------------------------------------------------------
+
+Another Example 1
+(example from: https://stackoverflow.com/questions/43394871/osgi-doesnt-launch-selected-bundles)
+------------------------------------------------------------------------------------------------------------------------
+osgi.bundles=reference\:file\:/home/../workspace/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/plugins/org.eclipse.equinox.simpleconfigurator_1.1.200.v20160504-1450.jar@1\:start
+org.eclipse.update.reconcile=false
+osgi.bundles.defaultStartLevel=4
+osgi.install.area=file\:/home/../workspace/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool
+osgi.framework=file\:/home/../workspace/.metadata/.plugins/org.eclipse.pde.core/.bundle_pool/plugins/org.eclipse.osgi_3.11.3.v20170209-1843.jar
+org.eclipse.equinox.simpleconfigurator.configUrl=file\:/home/../workspace/.metadata/.plugins/org.eclipse.pde.core/stable-test/org.eclipse.equinox.simpleconfigurator/bundles.info
+osgi.configuration.cascaded=false
+------------------------------------------------------------------------------------------------------------------------
+
+Another Example 2
+(from build)
+------------------------------------------------------------------------------------------------------------------------
+#This configuration file was written by: org.eclipse.equinox.internal.frameworkadmin.equinox.EquinoxFwConfigFileParser
+#Mon Dec 12 19:40:57 PST 2016
+org.eclipse.update.reconcile=false
+eclipse.p2.profile=epp.package.standard
+osgi.instance.area.default=@user.home/Documents/workspace
+osgi.framework=file\:plugins/org.eclipse.osgi_3.10.1.v20140909-1633.jar
+equinox.use.ds=true
+eclipse.buildId=4.4.1.M20140925-0400
+osgi.bundles=reference\:file\:org.eclipse.equinox.simpleconfigurator_1.1.0.v20131217-1203.jar@1\:start
+org.eclipse.equinox.simpleconfigurator.configUrl=file\:org.eclipse.equinox.simpleconfigurator/bundles.info
+eclipse.product=org.eclipse.platform.ide
+osgi.splashPath=platform\:/base/plugins/org.eclipse.platform
+osgi.framework.extensions=reference\:file\:org.eclipse.osgi.compatibility.state_1.0.1.v20140709-1414.jar
+osgi.bundles.defaultStartLevel=4
+eclipse.application=org.eclipse.ui.ide.workbench
+eclipse.p2.data.area=@config.dir/../p2/
+------------------------------------------------------------------------------------------------------------------------
+
+Another Example 3
+(https://stackoverflow.com/questions/3412617/java-lang-classnotfoundexception-org-eclipse-core-runtime-adaptor-eclipsestarte)
+------------------------------------------------------------------------------------------------------------------------
+osgi.framework=file\:plugins\\org.eclipse.osgi_3.4.2.R34x_v20080826-1230.jar
+osgi.bundles=reference\:file\:org.eclipse.equinox.simpleconfigurator_1.0.0.v20080604.jar@1\:start
+org.eclipse.equinox.simpleconfigurator.configUrl=file\:org.eclipse.equinox.simpleconfigurator\\bundles.info
+------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

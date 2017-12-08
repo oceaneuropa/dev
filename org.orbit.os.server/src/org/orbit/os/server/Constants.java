@@ -13,6 +13,14 @@ public class Constants {
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
 
 	// ----------------------------------------------------------------------------------------
+	// GAIA
+	// ----------------------------------------------------------------------------------------
+	public static String GAIA_NAMESPACE = "gaia.namespace";
+	public static String GAIA_NAME = "gaia.name";
+	public static String GAIA_HOST_URL = "gaia.host.url";
+	public static String GAIA_CONTEXT_ROOT = "gaia.context_root";
+
+	// ----------------------------------------------------------------------------------------
 	// Node
 	// ----------------------------------------------------------------------------------------
 	// config properties

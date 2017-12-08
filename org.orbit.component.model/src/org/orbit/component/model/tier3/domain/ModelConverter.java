@@ -1,5 +1,8 @@
 package org.orbit.component.model.tier3.domain;
 
+import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
 import org.origin.common.rest.model.ErrorDTO;
 
 public class ModelConverter {
@@ -32,10 +35,10 @@ public class ModelConverter {
 		if (e.getCause() != null) {
 			String causeName = e.getCause().getClass().getName();
 			String causeMessage = e.getCause().getMessage();
-			dto.setException(causeName + " " + causeMessage);
+			dto.setDetail(causeName + " " + causeMessage);
 		} else {
 			String causeName = e.getClass().getName();
-			dto.setException(causeName);
+			dto.setDetail(causeName);
 		}
 
 		return dto;

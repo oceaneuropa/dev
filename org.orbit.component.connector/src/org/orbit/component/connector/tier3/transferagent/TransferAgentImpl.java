@@ -3,27 +3,25 @@ package org.orbit.component.connector.tier3.transferagent;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.api.tier3.transferagent.TransferAgentResponseConverter;
 import org.orbit.component.connector.OrbitConstants;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
-import org.origin.common.rest.model.Responses;
 import org.origin.common.util.StringUtil;
 
 public class TransferAgentImpl implements TransferAgent {
 
 	protected Map<Object, Object> properties;
 	protected TransferAgentWSClient client;
-	protected TransferAgentResponseConverterImpl responseConverter;
 
 	/**
 	 * 
 	 * @param properties
 	 */
 	public TransferAgentImpl(Map<Object, Object> properties) {
-		this.responseConverter = new TransferAgentResponseConverterImpl();
 		this.properties = checkProperties(properties);
 		initClient();
 	}
@@ -104,13 +102,8 @@ public class TransferAgentImpl implements TransferAgent {
 	}
 
 	@Override
-	public Responses sendRequest(Request request) throws ClientException {
+	public Response sendRequest(Request request) throws ClientException {
 		return this.client.sendRequest(request);
-	}
-
-	@Override
-	public TransferAgentResponseConverter getResponseConverter() {
-		return this.responseConverter;
 	}
 
 }

@@ -16,8 +16,8 @@ import org.nb.mgm.model.dto.ProjectHomeDTO;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.util.ResponseUtil;
 
 /*
  * ProjectHome resource client.
@@ -70,7 +70,7 @@ public class ProjectHomeWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (projectHomeDTOs == null) {
 			projectHomeDTOs = Collections.emptyList();
@@ -101,7 +101,7 @@ public class ProjectHomeWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return projectHomeDTO;
 	}
@@ -131,7 +131,7 @@ public class ProjectHomeWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return newProjectHomeDTO;
 	}
@@ -161,7 +161,7 @@ public class ProjectHomeWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -190,7 +190,7 @@ public class ProjectHomeWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -275,7 +275,7 @@ public class ProjectHomeWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

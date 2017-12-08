@@ -69,7 +69,7 @@ public class AppsManagerImpl implements AppsManager {
 		}
 		this.isStarted.set(true);
 
-		InstallerDefaultImpl.getInstance().activate();
+		InstallerImpl.getInstance().activate();
 
 		loadInstalledApps();
 		initAppHandlers();
@@ -143,7 +143,7 @@ public class AppsManagerImpl implements AppsManager {
 		this.appHandlersMap.clear();
 		this.installedApps.clear();
 
-		InstallerDefaultImpl.getInstance().deactivate();
+		InstallerImpl.getInstance().deactivate();
 	}
 
 	protected void deactivateAppHandlers() throws AppException {
@@ -294,29 +294,6 @@ public class AppsManagerImpl implements AppsManager {
 
 		Installer installer = InstallerProvider.getInstance().getInstaller(this.bundleContext, appId, appVersion);
 		AppManifest appManifest = installer.install(this.bundleContext, appArchivePath);
-		if (appManifest == null) {
-			LOG.info("AppManifest is not returned by installer.");
-			return null;
-		}
-
-		AppHandler newAppHandler = registerApp(appManifest);
-		if (newAppHandler != null) {
-			return appManifest;
-		}
-		return null;
-	}
-
-	@Override
-	public AppManifest install(String appId, String appVersion) throws AppException {
-		LOG.info("install() appId = " + appId + ", appVersion = " + appVersion);
-
-		checkStarted();
-
-		// app is expected to be not installed
-		checkAppInstalled(appId, appVersion, false);
-
-		Installer installer = InstallerProvider.getInstance().getInstaller(this.bundleContext, appId, appVersion);
-		AppManifest appManifest = installer.install(this.bundleContext, appId, appVersion);
 		if (appManifest == null) {
 			LOG.info("AppManifest is not returned by installer.");
 			return null;
@@ -567,4 +544,27 @@ public class AppsManagerImpl implements AppsManager {
 // // String appId = appManifest.getId();
 // // String appVersion = appManifest.getVersion();
 // // unregisterApp(appId, appVersion);
+// }
+
+// @Override
+// public AppManifest install(String appId, String appVersion) throws AppException {
+// LOG.info("install() appId = " + appId + ", appVersion = " + appVersion);
+//
+// checkStarted();
+//
+// // app is expected to be not installed
+// checkAppInstalled(appId, appVersion, false);
+//
+// Installer installer = InstallerProvider.getInstance().getInstaller(this.bundleContext, appId, appVersion);
+// AppManifest appManifest = installer.install(this.bundleContext, appId, appVersion);
+// if (appManifest == null) {
+// LOG.info("AppManifest is not returned by installer.");
+// return null;
+// }
+//
+// AppHandler newAppHandler = registerApp(appManifest);
+// if (newAppHandler != null) {
+// return appManifest;
+// }
+// return null;
 // }

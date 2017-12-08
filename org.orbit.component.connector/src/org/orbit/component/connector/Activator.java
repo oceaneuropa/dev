@@ -3,6 +3,13 @@ package org.orbit.component.connector;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.component.cli.ServicesCommand;
+import org.orbit.component.cli.tier0.ChannelCommand;
+import org.orbit.component.cli.tier1.AuthCommand;
+import org.orbit.component.cli.tier1.UserRegistryCommand;
+import org.orbit.component.cli.tier2.AppStoreCommand;
+import org.orbit.component.cli.tier3.DomainManagementCommand;
+import org.orbit.component.cli.tier3.TransferAgentCommand;
 import org.orbit.component.connector.tier0.channel.ChannelsConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryManager;
@@ -13,6 +20,7 @@ import org.orbit.component.connector.tier3.domain.DomainMgmtConnectorImpl;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
 import org.origin.common.util.PropertyUtil;
 import org.origin.mgm.client.OriginConstants;
+import org.origin.mgm.client.api.IndexService;
 import org.origin.mgm.client.api.IndexServiceUtil;
 import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 import org.osgi.framework.BundleActivator;
@@ -41,6 +49,15 @@ public class Activator implements BundleActivator {
 	protected AppStoreConnectorImpl appStoreConnector;
 	protected DomainMgmtConnectorImpl domainMgmtConnector;
 	protected TransferAgentConnectorImpl transferAgentConnector;
+
+	// Commands
+	protected ServicesCommand servicesCommand;
+	protected ChannelCommand channelCommand;
+	protected AuthCommand authCommand;
+	protected UserRegistryCommand userRegistryCommand;
+	protected AppStoreCommand appStoreCommand;
+	protected DomainManagementCommand domainMgmtCommand;
+	protected TransferAgentCommand transferAgentCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -84,10 +101,69 @@ public class Activator implements BundleActivator {
 
 		this.transferAgentConnector = new TransferAgentConnectorImpl();
 		this.transferAgentConnector.start(bundleContext);
+
+		// Start CLI commands
+		IndexService indexService = this.indexServiceLoadBalancer.createLoadBalancableIndexService();
+		this.servicesCommand = new ServicesCommand(bundleContext, indexService);
+		this.servicesCommand.start();
+
+		this.channelCommand = new ChannelCommand();
+		this.channelCommand.start(bundleContext);
+
+		this.authCommand = new AuthCommand(bundleContext);
+		this.authCommand.start();
+
+		this.userRegistryCommand = new UserRegistryCommand(bundleContext);
+		this.userRegistryCommand.start();
+
+		this.appStoreCommand = new AppStoreCommand(bundleContext);
+		this.appStoreCommand.start();
+
+		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
+		this.domainMgmtCommand.start();
+
+		this.transferAgentCommand = new TransferAgentCommand(bundleContext);
+		this.transferAgentCommand.start();
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		// Stop CLI commands
+		if (this.servicesCommand != null) {
+			this.servicesCommand.stop();
+			this.servicesCommand = null;
+		}
+
+		if (this.channelCommand != null) {
+			this.channelCommand.stop(bundleContext);
+			this.channelCommand = null;
+		}
+
+		if (this.authCommand != null) {
+			this.authCommand.stop();
+			this.authCommand = null;
+		}
+
+		if (this.userRegistryCommand != null) {
+			this.userRegistryCommand.stop();
+			this.userRegistryCommand = null;
+		}
+
+		if (this.appStoreCommand != null) {
+			this.appStoreCommand.stop();
+			this.appStoreCommand = null;
+		}
+
+		if (this.domainMgmtCommand != null) {
+			this.domainMgmtCommand.stop();
+			this.domainMgmtCommand = null;
+		}
+
+		if (this.transferAgentCommand != null) {
+			this.transferAgentCommand.stop();
+			this.transferAgentCommand = null;
+		}
+
 		// -----------------------------------------------------------------------------
 		// Unregister ManagedServiceFactories and connector services
 		// -----------------------------------------------------------------------------

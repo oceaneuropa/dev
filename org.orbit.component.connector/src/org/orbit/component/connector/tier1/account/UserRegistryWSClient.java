@@ -19,8 +19,8 @@ import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.util.ResponseUtil;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -83,7 +83,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (userAccounts == null) {
 			userAccounts = Collections.emptyList();
@@ -112,7 +112,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return userAccount;
 	}
@@ -147,7 +147,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException | IOException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return false;
 	}
@@ -175,7 +175,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -207,7 +207,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}
@@ -257,7 +257,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException | IOException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return false;
 	}
@@ -292,7 +292,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException | IOException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return false;
 	}
@@ -344,7 +344,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException | IOException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return false;
 	}
@@ -396,7 +396,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException | IOException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return false;
 	}
@@ -423,7 +423,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return status;
 	}

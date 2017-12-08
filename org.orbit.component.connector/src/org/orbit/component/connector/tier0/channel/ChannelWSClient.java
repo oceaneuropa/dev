@@ -10,7 +10,7 @@ import org.orbit.component.model.tier0.channel.dto.ChannelMessageDTO;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
+import org.origin.common.rest.util.ResponseUtil;
 
 /*
  * Channel web service client.
@@ -52,7 +52,7 @@ public class ChannelWSClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return result;
 	}

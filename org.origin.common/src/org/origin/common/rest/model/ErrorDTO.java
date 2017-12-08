@@ -15,7 +15,7 @@ public class ErrorDTO {
 	@XmlElement
 	protected String message;
 	@XmlElement
-	protected String exception;
+	protected String detail;
 
 	public ErrorDTO() {
 	}
@@ -42,17 +42,17 @@ public class ErrorDTO {
 	 * 
 	 * @param code
 	 * @param message
-	 * @param exception
+	 * @param detail
 	 */
-	public ErrorDTO(String code, String message, String exception) {
+	public ErrorDTO(String code, String message, String detail) {
 		this.code = code;
 		this.message = message;
-		this.exception = exception;
+		this.detail = detail;
 	}
 
 	@XmlElement
 	public String getCode() {
-		return code;
+		return this.code;
 	}
 
 	public void setCode(String code) {
@@ -61,7 +61,7 @@ public class ErrorDTO {
 
 	@XmlElement
 	public String getMessage() {
-		return message;
+		return this.message;
 	}
 
 	public void setMessage(String message) {
@@ -69,12 +69,12 @@ public class ErrorDTO {
 	}
 
 	@XmlElement
-	public String getException() {
-		return exception;
+	public String getDetail() {
+		return this.detail;
 	}
 
-	public void setException(String exception) {
-		this.exception = exception;
+	public void setDetail(String detail) {
+		this.detail = detail;
 	}
 
 }

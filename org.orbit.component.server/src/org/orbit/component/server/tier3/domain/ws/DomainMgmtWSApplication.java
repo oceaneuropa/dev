@@ -1,100 +1,41 @@
 package org.orbit.component.server.tier3.domain.ws;
 
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Set;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.server.tier3.domain.service.DomainManagementService;
+import org.origin.common.rest.server.AbstractResourceConfigApplication;
+import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.Application;
+public class DomainMgmtWSApplication extends AbstractResourceConfigApplication {
 
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.origin.common.rest.Constants;
-import org.origin.common.rest.server.AbstractApplication;
-import org.origin.mgm.client.api.IndexProvider;
-import org.osgi.framework.ServiceRegistration;
+	protected static Logger LOG = LoggerFactory.getLogger(DomainMgmtWSApplication.class);
 
-public class DomainMgmtWSApplication extends AbstractApplication {
+	protected DomainManagementService service;
 
-	// protected static Logger logger = LoggerFactory.getLogger(DomainMgmtWSApplication.class);
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
+	public DomainMgmtWSApplication(final BundleContext bundleContext, final DomainManagementService service) {
+		super(bundleContext, service.getContextRoot());
+		this.service = service;
 
-	protected IndexProvider indexProvider;
-	protected ServiceRegistration<?> serviceRegistration;
-	protected DomainMgmtServiceTimer serviceIndexTimer;
-
-	public DomainMgmtWSApplication() {
+		register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(service).to(DomainManagementService.class);
+			}
+		});
+		register(DomainMgmtWSServiceResource.class);
+		register(DomainMgmtWSMachinesResource.class);
+		register(DomainMgmtWSTransferAgentsResource.class);
+		register(DomainMgmtWSNodesResource.class);
 	}
 
-	public IndexProvider getIndexProvider() {
-		return this.indexProvider;
-	}
-
-	public void setIndexProvider(IndexProvider indexProvider) {
-		this.indexProvider = indexProvider;
-	}
-
-	@Override
-	public void start() {
-		System.out.println(getClass().getSimpleName() + ".start()");
-		if (this.isStarted.get()) {
-			return;
-		}
-		super.start();
-		this.isStarted.set(true);
-
-		// Register the service
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(Constants.CONTEXT_ROOT, this.contextRoot);
-		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
-
-		// Start timer for indexing the service
-		if (this.indexProvider != null) {
-			this.serviceIndexTimer = new DomainMgmtServiceTimer(this.indexProvider);
-			// The web application knows its DomainMgmtServiceResource provides a ping method.
-			// So it tells the index timer that the web service can is pingable.
-			this.serviceIndexTimer.start();
-		}
-	}
-
-	@Override
-	public void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
-		if (!this.isStarted.compareAndSet(true, false)) {
-			return;
-		}
-
-		// Start timer for indexing the service
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
-		}
-
-		// Unregister the service
-		if (this.serviceRegistration != null) {
-			this.serviceRegistration.unregister();
-			this.serviceRegistration = null;
-		}
-
-		super.stop();
-	}
-
-	@Override
-	public Set<Class<?>> getClasses() {
-		Set<Class<?>> classes = new HashSet<Class<?>>();
-
-		// resources
-		classes.add(DomainMgmtServiceResource.class);
-		classes.add(DomainMgmtMachinesResource.class);
-		classes.add(DomainMgmtTransferAgentsResource.class);
-		classes.add(DomainMgmtNodesResource.class);
-
-		// resolvers
-		classes.add(DomainMgmtServiceResolver.class);
-
-		// http://stackoverflow.com/questions/18252990/uploading-file-using-jersey-over-restfull-service-and-the-resource-configuration
-		// In order to use multipart in your Jersey application you need to register MultiPartFeature in your application.
-		// Add additional features such as support for Multipart.
-		classes.add(MultiPartFeature.class);
-
-		return classes;
+	public DomainManagementService getDomainManagementService() {
+		return this.service;
 	}
 
 }

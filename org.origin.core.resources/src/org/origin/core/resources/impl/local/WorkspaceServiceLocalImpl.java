@@ -43,13 +43,15 @@ public class WorkspaceServiceLocalImpl implements IWorkspaceService {
 			this.workspaces.clear();
 
 			File[] memberFiles = this.workspacesFolder.listFiles();
-			for (File memberFile : memberFiles) {
-				if (isWorkspace(memberFile)) {
-					IWorkspace workspace = ResourcesFactory.getInstance().createWorkspace(memberFile);
-					if (workspace != null) {
-						this.workspaces.add(workspace);
+			if (memberFiles != null) {
+				for (File memberFile : memberFiles) {
+					if (isWorkspace(memberFile)) {
+						IWorkspace workspace = ResourcesFactory.getInstance().createWorkspace(memberFile);
+						if (workspace != null) {
+							this.workspaces.add(workspace);
+						}
 					}
-				}
+				}				
 			}
 
 			Collections.sort(this.workspaces, WorkspaceNameComparator.ASC);

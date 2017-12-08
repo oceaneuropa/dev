@@ -18,10 +18,13 @@ import org.osgi.framework.BundleEvent;
 import org.osgi.framework.BundleException;
 import org.osgi.util.tracker.BundleTracker;
 import org.osgi.util.tracker.BundleTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AppHandlerImpl implements AppHandler {
 
-	protected boolean debug = true;
+	protected static Logger LOG = LoggerFactory.getLogger(AppHandlerImpl.class);
+
 	protected AppHandler.RUNTIME_STATE runtimeState = AppHandler.RUNTIME_STATE.DEACTIVATED;
 	protected AppManifest appManifest;
 	protected BundleContext bundleContext;
@@ -69,11 +72,10 @@ public class AppHandlerImpl implements AppHandler {
 
 	@Override
 	public synchronized void activate() throws AppException {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".activate()");
-		}
+		LOG.info("activate()");
+
 		if (this.runtimeState.isActivated()) {
-			System.out.println("AppHandler is readly activated.");
+			LOG.info("AppHandler is readly activated.");
 			return;
 		}
 		this.problems.clear();
@@ -88,7 +90,8 @@ public class AppHandlerImpl implements AppHandler {
 			public AppBundle addingBundle(Bundle bundle, BundleEvent event) {
 				try {
 					if (isAppBundle(bundle, event)) {
-						System.out.println("appBundleTracker.addingBundle() " + bundle);
+						LOG.info("appBundleTracker.addingBundle() " + bundle);
+
 						AppBundle appBundle = handleAddingAppBundle(bundle, event);
 						if (appBundle != null) {
 							return appBundle;
@@ -105,7 +108,8 @@ public class AppHandlerImpl implements AppHandler {
 			@Override
 			public void modifiedBundle(Bundle bundle, BundleEvent event, AppBundle appBundle) {
 				try {
-					System.out.println("appBundleTracker.modifiedBundle() " + appBundle);
+					LOG.info("appBundleTracker.modifiedBundle() " + appBundle);
+
 					handleModifiedAppBundle(bundle, event, appBundle);
 
 				} catch (AppException e) {
@@ -117,7 +121,8 @@ public class AppHandlerImpl implements AppHandler {
 			@Override
 			public void removedBundle(Bundle bundle, BundleEvent event, AppBundle appBundle) {
 				try {
-					System.out.println("appBundleTracker.removedBundle() " + appBundle);
+					LOG.info("appBundleTracker.removedBundle() " + appBundle);
+
 					handleRemovedAppBundle(bundle, event, appBundle);
 
 				} catch (AppException e) {
@@ -133,13 +138,10 @@ public class AppHandlerImpl implements AppHandler {
 
 	@Override
 	public synchronized void deactivate() throws AppException {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".deactivate()");
-		}
+		LOG.info("deactivate()");
+
 		if (this.runtimeState.isDeactivated()) {
-			if (debug) {
-				System.out.println("AppHandler is readly deactivated.");
-			}
+			LOG.info("AppHandler is readly deactivated.");
 			return;
 		}
 
@@ -188,9 +190,7 @@ public class AppHandlerImpl implements AppHandler {
 	 * @throws AppException
 	 */
 	protected AppBundle handleAddingAppBundle(Bundle bundle, BundleEvent event) throws AppException {
-		if (debug) {
-			// System.out.print(getClass().getSimpleName() + ".handleAddingAppBundle() ");
-		}
+		LOG.info("handleAddingAppBundle()");
 
 		AppBundle appBundle = null;
 
@@ -210,9 +210,7 @@ public class AppHandlerImpl implements AppHandler {
 		// 2. If a AppBundle is found, set the OSGi Bundle to it.
 		// The AppBundle's Dependency will be resolved. When all Dependencies are resolved, the DependencySet will be resolved.
 		if (appBundle != null) {
-			if (debug) {
-				System.out.println(getClass().getSimpleName() + ".handleAddingAppBundle() " + BundleHelper.INSTANCE.getSimpleName(event));
-			}
+			LOG.info("handleAddingAppBundle() " + BundleHelper.INSTANCE.getSimpleName(event));
 
 			appBundle.setRuntimeState(AppBundle.RUNTIME_STATE.STOPPED);
 			appBundle.setBundle(bundle);
@@ -229,31 +227,21 @@ public class AppHandlerImpl implements AppHandler {
 	 * @throws AppException
 	 */
 	protected void handleModifiedAppBundle(Bundle bundle, BundleEvent event, AppBundle appBundle) throws AppException {
-		if (debug) {
-			System.out.print(getClass().getSimpleName() + ".handleModifiedAppBundle() " + BundleHelper.INSTANCE.getSimpleName(event) + " ");
-		}
+		LOG.info("handleModifiedAppBundle() " + BundleHelper.INSTANCE.getSimpleName(event));
 
 		String bundleName = BundleHelper.INSTANCE.getSimpleName(bundle);
 
 		if (BundleUtil.isBundleInstalledEvent(event)) {
-			if (debug) {
-				System.out.println(bundleName + " is installed.");
-			}
+			LOG.info(bundleName + " is installed.");
 
 		} else if (BundleUtil.isBundleResolvedEvent(event)) {
-			if (debug) {
-				System.out.println(bundleName + " is resolved.");
-			}
+			LOG.info(bundleName + " is resolved.");
 
 		} else if (BundleUtil.isBundleStartingEvent(event)) {
-			if (debug) {
-				System.out.println(bundleName + " is starting.");
-			}
+			LOG.info(bundleName + " is starting.");
 
 		} else if (BundleUtil.isBundleStartedEvent(event)) {
-			if (debug) {
-				System.out.println(bundleName + " is started.");
-			}
+			LOG.info(bundleName + " is started.");
 
 			// Update AppBundle state
 			appBundle.setRuntimeState(AppBundle.RUNTIME_STATE.STARTED);
@@ -301,14 +289,10 @@ public class AppHandlerImpl implements AppHandler {
 			}
 
 		} else if (BundleUtil.isBundleStoppingEvent(event)) {
-			if (debug) {
-				System.out.println(bundleName + " is stopping.");
-			}
+			LOG.info(bundleName + " is stopping.");
 
 		} else if (BundleUtil.isBundleStoppedEvent(event)) {
-			if (debug) {
-				System.out.println(bundleName + " is stopped.");
-			}
+			LOG.info(bundleName + " is stopped.");
 
 			// Update AppBundle state
 			appBundle.setRuntimeState(AppBundle.RUNTIME_STATE.STOPPED);
@@ -357,14 +341,10 @@ public class AppHandlerImpl implements AppHandler {
 			}
 
 		} else if (BundleUtil.isBundleUnresolvedEvent(event)) {
-			if (debug) {
-				System.out.println(bundleName + " is unresolved.");
-			}
+			LOG.info(bundleName + " is unresolved.");
 
 		} else if (BundleUtil.isBundleUninstalledEvent(event)) {
-			if (debug) {
-				System.out.println(bundleName + " is uninstalled.");
-			}
+			LOG.info(bundleName + " is uninstalled.");
 		}
 	}
 
@@ -376,12 +356,9 @@ public class AppHandlerImpl implements AppHandler {
 	 * @throws AppException
 	 */
 	protected void handleRemovedAppBundle(Bundle bundle, BundleEvent event, AppBundle appBundle) throws AppException {
-		if (debug) {
-			System.out.print(getClass().getSimpleName() + ".handleRemovedAppBundle() " + BundleHelper.INSTANCE.getSimpleName(event) + " ");
-		}
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".handleRemovedAppBundle() " + "Remove OSGi bundle from " + appBundle.getSimpleName());
-		}
+		LOG.info("handleRemovedAppBundle() " + BundleHelper.INSTANCE.getSimpleName(event));
+		LOG.info("handleRemovedAppBundle() Remove OSGi bundle from " + appBundle.getSimpleName());
+
 		appBundle.setBundle(null);
 	}
 
@@ -391,9 +368,7 @@ public class AppHandlerImpl implements AppHandler {
 	 * @param appManifest
 	 */
 	protected void createApp(BundleContext bundleContext, AppManifest appManifest) {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".createApp()");
-		}
+		LOG.info("createApp()");
 
 		String appId = appManifest.getId();
 		String appVersion = appManifest.getVersion();
@@ -468,15 +443,12 @@ public class AppHandlerImpl implements AppHandler {
 
 	@Override
 	public synchronized void startApp() throws AppException {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".startApp()");
-		}
+		LOG.info("startApp()");
+
 		checkActivated();
 
 		if (this.app.getRuntimeState().isStarted()) {
-			if (debug) {
-				System.out.println(getClass().getSimpleName() + ".startApp() " + getAppManifest().getSimpleName() + " is ready fully started.");
-			}
+			LOG.info("startApp() " + getAppManifest().getSimpleName() + " is already fully started.");
 			return;
 		}
 
@@ -505,15 +477,11 @@ public class AppHandlerImpl implements AppHandler {
 		// 2. Update App runtime state
 		if (hasDamagedAppBundle) {
 			this.app.setRuntimeState(App.RUNTIME_STATE.DAMAGED);
-			if (debug) {
-				System.out.println(getClass().getSimpleName() + ".startApp() " + this.app.getSimpleName() + " has damaged app bundle.");
-			}
+			LOG.info("startApp() " + this.app.getSimpleName() + " has damaged app bundle.");
 
 		} else if (hasFailedToStartAppBundle) {
 			this.app.setRuntimeState(App.RUNTIME_STATE.START_FAILED);
-			if (debug) {
-				System.out.println(getClass().getSimpleName() + ".startApp() " + this.app.getSimpleName() + " has app bundle(s) failed to start.");
-			}
+			LOG.info("startApp() " + this.app.getSimpleName() + " has app bundle(s) failed to start.");
 
 		} else {
 			boolean hasUnstartedAppBundle = false;
@@ -526,30 +494,22 @@ public class AppHandlerImpl implements AppHandler {
 
 			if (hasUnstartedAppBundle) {
 				this.app.setRuntimeState(App.RUNTIME_STATE.START_IMPERFECT);
-				if (debug) {
-					System.out.println(getClass().getSimpleName() + ".startApp() " + this.app.getSimpleName() + " is imperfectly started.");
-				}
+				LOG.info("startApp() " + this.app.getSimpleName() + " is imperfectly started.");
 
 			} else {
 				this.app.setRuntimeState(App.RUNTIME_STATE.STARTED);
-				if (debug) {
-					System.out.println(getClass().getSimpleName() + ".startApp() " + this.app.getSimpleName() + " is fully started.");
-				}
+				LOG.info("startApp() " + this.app.getSimpleName() + " is fully started.");
 			}
 		}
 	}
 
 	@Override
 	public synchronized void stopApp() throws AppException {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".stopApp()");
-		}
+		LOG.info("stopApp()");
 		checkActivated();
 
 		if (this.app.getRuntimeState().isStopped()) {
-			if (debug) {
-				System.out.println(getClass().getSimpleName() + ".stopApp() " + getAppManifest().getSimpleName() + " is ready fully stopped.");
-			}
+			LOG.info("stopApp() " + getAppManifest().getSimpleName() + " is already fully stopped.");
 			return;
 		}
 
@@ -578,15 +538,11 @@ public class AppHandlerImpl implements AppHandler {
 		// 2. Update App runtime state
 		if (hasDamagedAppBundle) {
 			this.app.setRuntimeState(App.RUNTIME_STATE.DAMAGED);
-			if (debug) {
-				System.out.println(getClass().getSimpleName() + ".stopApp() " + this.app.getSimpleName() + " has damaged app bundle.");
-			}
+			LOG.info("stopApp() " + this.app.getSimpleName() + " has damaged app bundle.");
 
 		} else if (hasFailedToStopAppBundle) {
 			this.app.setRuntimeState(App.RUNTIME_STATE.STOP_FAILED);
-			if (debug) {
-				System.out.println(getClass().getSimpleName() + ".stopApp() " + this.app.getSimpleName() + " has app bundle(s) failed to stop.");
-			}
+			LOG.info("stopApp() " + this.app.getSimpleName() + " has app bundle(s) failed to stop.");
 
 		} else {
 			boolean hasUnstoppedAppBundle = false;
@@ -599,28 +555,20 @@ public class AppHandlerImpl implements AppHandler {
 
 			if (hasUnstoppedAppBundle) {
 				this.app.setRuntimeState(App.RUNTIME_STATE.STOP_IMPERFECT);
-				if (debug) {
-					System.out.println(getClass().getSimpleName() + ".stopApp() " + this.app.getSimpleName() + " is imperfectly stopped.");
-				}
+				LOG.info("stopApp() " + this.app.getSimpleName() + " is imperfectly stopped.");
 
 			} else {
 				this.app.setRuntimeState(App.RUNTIME_STATE.STOPPED);
-				if (debug) {
-					System.out.println(getClass().getSimpleName() + ".stopApp() " + this.app.getSimpleName() + " is full stopped.");
-				}
+				LOG.info("stopApp() " + this.app.getSimpleName() + " is full stopped.");
 			}
 		}
 	}
 
 	protected synchronized void disposeApp() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".disposeApp()");
-		}
+		LOG.info("disposeApp()");
 
 		if (this.app == null) {
-			if (debug) {
-				System.out.println("App is alredy disposed.");
-			}
+			LOG.info("App is alredy disposed.");
 			return;
 		}
 
@@ -653,9 +601,7 @@ public class AppHandlerImpl implements AppHandler {
 	 * @throws AppException
 	 */
 	protected synchronized void startAppBundle(AppBundle appBundle) throws AppException {
-		if (debug) {
-			System.out.println(getClass().getName() + ".startAppBundle() " + appBundle.getSimpleName());
-		}
+		LOG.info("startAppBundle() " + appBundle.getSimpleName());
 
 		if (appBundle.isReady()) {
 			try {
@@ -667,9 +613,7 @@ public class AppHandlerImpl implements AppHandler {
 			}
 
 		} else {
-			if (debug) {
-				System.out.println(appBundle.getSimpleName() + " is not ready.");
-			}
+			LOG.info(appBundle.getSimpleName() + " is not ready.");
 		}
 	}
 
@@ -680,9 +624,7 @@ public class AppHandlerImpl implements AppHandler {
 	 * @throws AppException
 	 */
 	protected synchronized void stopAppBundle(AppBundle appBundle) throws AppException {
-		if (debug) {
-			System.out.println(getClass().getName() + ".stopBundle() " + appBundle.getSimpleName());
-		}
+		LOG.info("stopBundle() " + appBundle.getSimpleName());
 
 		if (appBundle.isReady()) {
 			// Stop the bundle only when it is either started or being started.
@@ -702,9 +644,7 @@ public class AppHandlerImpl implements AppHandler {
 			}
 
 		} else {
-			if (debug) {
-				System.out.println(appBundle.getSimpleName() + " is not ready.");
-			}
+			LOG.info(appBundle.getSimpleName() + " is not ready.");
 		}
 	}
 
@@ -715,7 +655,7 @@ public class AppHandlerImpl implements AppHandler {
 
 	@Override
 	public String toString() {
-		return "AppHandlerImplV2 [appManifest=" + appManifest.getSimpleName() + "]";
+		return "AppHandlerImpl [appManifest=" + this.appManifest.getSimpleName() + "]";
 	}
 
 }

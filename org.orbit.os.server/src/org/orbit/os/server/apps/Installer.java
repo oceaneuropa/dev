@@ -27,17 +27,6 @@ public interface Installer {
 	 * Install an app.
 	 * 
 	 * @param context
-	 * @param appId
-	 * @param appVersion
-	 * @return
-	 * @throws AppException
-	 */
-	AppManifest install(Object context, String appId, String appVersion) throws AppException;
-
-	/**
-	 * Install an app.
-	 * 
-	 * @param context
 	 * @param appArchivePath
 	 * @return
 	 * @throws AppException
@@ -55,3 +44,14 @@ public interface Installer {
 	boolean uninstall(Object context, AppManifest appManifest) throws AppException;
 
 }
+
+/// **
+// * Install an app.
+// *
+// * @param context
+// * @param appId
+// * @param appVersion
+// * @return
+// * @throws AppException
+// */
+// AppManifest install(Object context, String appId, String appVersion) throws AppException;

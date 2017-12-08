@@ -3,9 +3,15 @@ package org.origin.common.rest.model;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Request {
 
+	@XmlElement
 	protected String requestName;
+	@XmlElement
 	protected Map<String, Object> parameters = new LinkedHashMap<String, Object>();
 
 	public Request() {
@@ -20,6 +26,7 @@ public class Request {
 		this.parameters = parameters;
 	}
 
+	@XmlElement
 	public String getRequestName() {
 		return this.requestName;
 	}
@@ -28,6 +35,7 @@ public class Request {
 		this.requestName = requestName;
 	}
 
+	@XmlElement
 	public Map<String, Object> getParameters() {
 		return this.parameters;
 	}
@@ -36,16 +44,17 @@ public class Request {
 		this.parameters = parameters;
 	}
 
+	@XmlElement
 	public Object getParameter(String paramName) {
 		return this.parameters.get(paramName);
 	}
 
 	public void setParameter(String paramName, Object paramValue) {
-		this.parameters.put(paramName, paramValue);
-	}
-
-	public void removeParameter(String paramName) {
-		this.parameters.remove(paramName);
+		if (paramValue == null) {
+			this.parameters.remove(paramName);
+		} else {
+			this.parameters.put(paramName, paramValue);
+		}
 	}
 
 }

@@ -27,13 +27,13 @@ VM arguments:
 v4
 ---------------------------------------------------------------------------------------------------
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001 
--Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
--DORIGIN_HOME=/Users/yayang/origin 
+-Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-DORIGIN_HOME=/Users/denmark/origin 
 -Dorbit.host.url=http://127.0.0.1:12002 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
  
 -Dcomponent.transfer_agent.namespace= group1 
 -Dcomponent.transfer_agent.name=TransferAgent102 
 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta 
--Dcomponent.transfer_agent.home=/Users/yayang/origin/ta2 
+-Dcomponent.transfer_agent.home=/Users/denmark/origin/ta2 
 ---------------------------------------------------------------------------------------------------

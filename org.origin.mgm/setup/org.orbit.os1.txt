@@ -1,0 +1,23 @@
+Backup1
+------------------------------------------------------------------------------------------------
+Program arguments:
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console
+
+VM arguments:
+-Declipse.ignoreApp=true 
+-Dosgi.noShutdown=true 
+-Dorg.osgi.service.http.port=12001 
+-Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+
+-DTA_HOME=/Users/denmark/origin/ta1 
+-DNODE_HOME=/Users/denmark/origin/ta1/nodespaces/node1
+
+-Dorbit.host.url=http://127.0.0.1:12001
+
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+
+-Dgaia.namespace=group1 
+-Dgaia.name=GAIA_node1 
+-Dgaia.host.url=http://127.0.0.1:12001 
+-Dgaia.context_root=/orbit/v1/gaia 
+-Dgaia.home=/Users/denmark/origin/ta1/nodespaces/node1 

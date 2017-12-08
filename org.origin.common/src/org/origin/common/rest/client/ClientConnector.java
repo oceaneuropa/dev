@@ -11,7 +11,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.origin.common.rest.model.Pingable;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.TimeUtil;
 
@@ -71,8 +70,8 @@ public class ClientConnector {
 	 * @param pingInterval
 	 * @param pingTimeUnit
 	 * @param reschedule
-	 *            Whether to reschedule the ping runner. If reschedule is false, ping runner will not be rescheduled. If reschedule is true, ping
-	 *            runner will be rescheduled when pingInterval or pingTimeUnit is changed.
+	 *            Whether to reschedule the ping runner. If reschedule is false, ping runner will not be rescheduled. If reschedule is true, ping runner will be
+	 *            rescheduled when pingInterval or pingTimeUnit is changed.
 	 */
 	public synchronized void setPingInterval(long pingInterval, TimeUnit pingTimeUnit, boolean reschedule) {
 		long oldPingInterval = this.pingInterval;

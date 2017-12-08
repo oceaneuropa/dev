@@ -18,7 +18,7 @@ public class ChannelServiceAdapter {
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected IndexProvider indexProvider;
 	protected ChannelWebSocket webSocket;
-	protected ChannelWebServiceApplication webService;
+	protected ChannelWSApplication webService;
 	protected ChannelServiceIndexTimer serviceIndexTimer;
 
 	public ChannelServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
@@ -77,7 +77,7 @@ public class ChannelServiceAdapter {
 
 		// 2. start web service
 		LOG.debug("start web service");
-		this.webService = new ChannelWebServiceApplication(bundleContext, service);
+		this.webService = new ChannelWSApplication(bundleContext, service);
 		this.webService.start();
 
 		// 3. start index timer

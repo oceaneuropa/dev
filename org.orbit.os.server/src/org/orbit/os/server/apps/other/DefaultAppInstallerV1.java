@@ -1,7 +1,6 @@
 package org.orbit.os.server.apps.other;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -9,16 +8,12 @@ import org.orbit.app.AppManifest;
 import org.orbit.app.BundleManifest;
 import org.orbit.app.util.AppManifestUtil;
 import org.orbit.app.util.AppUtil;
-import org.orbit.component.api.Orbit;
-import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.os.server.apps.AppException;
 import org.orbit.os.server.apps.Installer;
 import org.orbit.os.server.apps.InstallerRegistry;
 import org.orbit.os.server.util.SetupUtil;
-import org.origin.common.io.IOUtil;
 import org.origin.common.osgi.BundleHelper;
 import org.origin.common.osgi.BundleUtil;
-import org.origin.common.rest.client.ClientException;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -66,100 +61,100 @@ public class DefaultAppInstallerV1 implements Installer {
 		return (BundleContext) context;
 	}
 
-	@Override
-	public AppManifest install(Object context, String appId, String appVersion) throws AppException {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".install() context = " + context + ", appId = " + appId + ", appVersion = " + appVersion);
-		}
-		BundleContext bundleContext = checkContext(context);
-
-		AppStore appStore = Orbit.getInstance().getAppStore();
-		if (appStore == null) {
-			throw new AppException("App store is not available.");
-		}
-
-		String appFolderName = AppUtil.deriveAppFolderName(appId, appVersion);
-
-		// 1. Get app record info from app store and get file name from the app info.
-		org.orbit.component.api.tier2.appstore.AppManifest appInfo = null;
-		try {
-			appInfo = appStore.getApp(appId, appVersion);
-		} catch (ClientException e) {
-			e.printStackTrace();
-			throw new AppException(e.getMessage(), e);
-		}
-		if (appInfo == null) {
-			throw new AppException("App " + appId + " - " + appVersion + " is not found on app store.");
-		}
-
-		// 2. Create {TA_HOME}/downloads/apps/<appId>_<appVersion>/
-		Path taHome = SetupUtil.getTAHome(bundleContext);
-		Path downloadsPath = SetupUtil.getTADownloadsPath(taHome, true);
-		Path appFolderDownloadPath = downloadsPath.resolve("apps").resolve(appFolderName);
-		if (!Files.exists(appFolderDownloadPath)) {
-			try {
-				appFolderDownloadPath = Files.createDirectory(appFolderDownloadPath);
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new AppException("App folder cannot be created in the '" + downloadsPath.toString() + "' folder.", e);
-			}
-		}
-
-		// 3. Download the app archive file into {TA_HOME}/downloads/apps/<appId>_<appVersion>/
-		String fileName = appInfo.getFileName();
-		if (fileName == null || fileName.isEmpty()) {
-			fileName = AppUtil.deriveAppFileName(appId, appVersion);
-		}
-		Path appArchiveDownloadPath = appFolderDownloadPath.resolve(fileName);
-		try {
-			Files.deleteIfExists(appArchiveDownloadPath);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new AppException("Existing app archive file '" + appArchiveDownloadPath.toString() + "' cannot be deleted.", e);
-		}
-
-		OutputStream output = null;
-		try {
-			output = Files.newOutputStream(appArchiveDownloadPath);
-			appStore.downloadAppArchive(appId, appVersion, output);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new AppException(e.getMessage(), e);
-
-		} catch (ClientException e) {
-			e.printStackTrace();
-			throw new AppException(e.getMessage(), e);
-
-		} finally {
-			IOUtil.closeQuietly(output, true);
-		}
-		if (!Files.exists(appArchiveDownloadPath)) {
-			throw new AppException("App archive file '" + appArchiveDownloadPath.getFileName().toString() + "' cannot be downloaded to the '" + appFolderDownloadPath.toString() + "' folder.");
-		}
-
-		// 4. Extract the downloaded app archive file to {TA_HOME}/apps/<appId>_<appVersion>/
-		Path taAppsPath = SetupUtil.getTAAppsPath(taHome, true);
-		Path appFolderPath = taAppsPath.resolve(appFolderName);
-		if (!Files.exists(appFolderPath)) {
-			try {
-				appFolderPath = Files.createDirectory(appFolderPath);
-			} catch (IOException e) {
-				e.printStackTrace();
-				throw new AppException("App folder cannot be created in the '" + taAppsPath.toString() + "' folder.", e);
-			}
-		}
-		try {
-			AppUtil.extractToAppFolder(appFolderPath.toFile(), appArchiveDownloadPath.toFile());
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new AppException("App archive file '" + appArchiveDownloadPath.getFileName().toString() + "' cannot be extracted to the '" + appFolderPath.toString() + "' folder.", e);
-		}
-
-		// 5. Install app bundles to OSGi framework.
-		AppManifest appManifest = installAppBundles(bundleContext, appFolderPath);
-		return appManifest;
-	}
+//	@Override
+//	public AppManifest install(Object context, String appId, String appVersion) throws AppException {
+//		if (debug) {
+//			System.out.println(getClass().getSimpleName() + ".install() context = " + context + ", appId = " + appId + ", appVersion = " + appVersion);
+//		}
+//		BundleContext bundleContext = checkContext(context);
+//
+//		AppStore appStore = Orbit.getInstance().getAppStore();
+//		if (appStore == null) {
+//			throw new AppException("App store is not available.");
+//		}
+//
+//		String appFolderName = AppUtil.deriveAppFolderName(appId, appVersion);
+//
+//		// 1. Get app record info from app store and get file name from the app info.
+//		org.orbit.component.api.tier2.appstore.AppManifest appInfo = null;
+//		try {
+//			appInfo = appStore.getApp(appId, appVersion);
+//		} catch (ClientException e) {
+//			e.printStackTrace();
+//			throw new AppException(e.getMessage(), e);
+//		}
+//		if (appInfo == null) {
+//			throw new AppException("App " + appId + " - " + appVersion + " is not found on app store.");
+//		}
+//
+//		// 2. Create {TA_HOME}/downloads/apps/<appId>_<appVersion>/
+//		Path taHome = SetupUtil.getTAHome(bundleContext);
+//		Path downloadsPath = SetupUtil.getTADownloadsPath(taHome, true);
+//		Path appFolderDownloadPath = downloadsPath.resolve("apps").resolve(appFolderName);
+//		if (!Files.exists(appFolderDownloadPath)) {
+//			try {
+//				appFolderDownloadPath = Files.createDirectory(appFolderDownloadPath);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				throw new AppException("App folder cannot be created in the '" + downloadsPath.toString() + "' folder.", e);
+//			}
+//		}
+//
+//		// 3. Download the app archive file into {TA_HOME}/downloads/apps/<appId>_<appVersion>/
+//		String fileName = appInfo.getFileName();
+//		if (fileName == null || fileName.isEmpty()) {
+//			fileName = AppUtil.deriveAppFileName(appId, appVersion);
+//		}
+//		Path appArchiveDownloadPath = appFolderDownloadPath.resolve(fileName);
+//		try {
+//			Files.deleteIfExists(appArchiveDownloadPath);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			throw new AppException("Existing app archive file '" + appArchiveDownloadPath.toString() + "' cannot be deleted.", e);
+//		}
+//
+//		OutputStream output = null;
+//		try {
+//			output = Files.newOutputStream(appArchiveDownloadPath);
+//			appStore.downloadAppArchive(appId, appVersion, output);
+//
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			throw new AppException(e.getMessage(), e);
+//
+//		} catch (ClientException e) {
+//			e.printStackTrace();
+//			throw new AppException(e.getMessage(), e);
+//
+//		} finally {
+//			IOUtil.closeQuietly(output, true);
+//		}
+//		if (!Files.exists(appArchiveDownloadPath)) {
+//			throw new AppException("App archive file '" + appArchiveDownloadPath.getFileName().toString() + "' cannot be downloaded to the '" + appFolderDownloadPath.toString() + "' folder.");
+//		}
+//
+//		// 4. Extract the downloaded app archive file to {TA_HOME}/apps/<appId>_<appVersion>/
+//		Path taAppsPath = SetupUtil.getTAAppsPath(taHome, true);
+//		Path appFolderPath = taAppsPath.resolve(appFolderName);
+//		if (!Files.exists(appFolderPath)) {
+//			try {
+//				appFolderPath = Files.createDirectory(appFolderPath);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//				throw new AppException("App folder cannot be created in the '" + taAppsPath.toString() + "' folder.", e);
+//			}
+//		}
+//		try {
+//			AppUtil.extractToAppFolder(appFolderPath.toFile(), appArchiveDownloadPath.toFile());
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//			throw new AppException("App archive file '" + appArchiveDownloadPath.getFileName().toString() + "' cannot be extracted to the '" + appFolderPath.toString() + "' folder.", e);
+//		}
+//
+//		// 5. Install app bundles to OSGi framework.
+//		AppManifest appManifest = installAppBundles(bundleContext, appFolderPath);
+//		return appManifest;
+//	}
 
 	@Override
 	public AppManifest install(Object context, Path appArchivePath) throws AppException {

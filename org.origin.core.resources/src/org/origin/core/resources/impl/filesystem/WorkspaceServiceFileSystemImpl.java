@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.fs.common.FileSystem;
+// import org.orbit.fs.common.FileSystem;
 import org.origin.common.resource.IPath;
 import org.origin.core.resources.IWorkspace;
 import org.origin.core.resources.IWorkspaceService;
@@ -13,11 +13,11 @@ import org.osgi.framework.BundleContext;
 
 public class WorkspaceServiceFileSystemImpl implements IWorkspaceService {
 
-	protected FileSystem fs;
-
-	public WorkspaceServiceFileSystemImpl(FileSystem fileSystem) {
-		this.fs = fileSystem;
-	}
+	// protected FileSystem fs;
+	//
+	// public WorkspaceServiceFileSystemImpl(FileSystem fileSystem) {
+	// this.fs = fileSystem;
+	// }
 
 	@Override
 	public void start(BundleContext context) throws IOException {
@@ -44,28 +44,28 @@ public class WorkspaceServiceFileSystemImpl implements IWorkspaceService {
 	 * @return
 	 */
 	protected boolean isWorkspace(IPath path) {
-		if (path != null && this.fs.isDirectory(path)) {
-			IPath dotMetadataPath = path.append(".metadata");
-			if (this.fs.isDirectory(dotMetadataPath)) {
-				IPath dotWorkspacePath = path.append(".workspace");
-				if (this.fs.exists(dotWorkspacePath) && !this.fs.isDirectory(dotWorkspacePath)) {
-					return true;
-				}
-			}
-		}
+		// if (path != null && this.fs.isDirectory(path)) {
+		// IPath dotMetadataPath = path.append(".metadata");
+		// if (this.fs.isDirectory(dotMetadataPath)) {
+		// IPath dotWorkspacePath = path.append(".workspace");
+		// if (this.fs.exists(dotWorkspacePath) && !this.fs.isDirectory(dotWorkspacePath)) {
+		// return true;
+		// }
+		// }
+		// }
 		return false;
 	}
 
 	@Override
 	public List<String> getWorkspaces() throws IOException {
 		List<String> names = new ArrayList<String>();
-		IPath[] paths = this.fs.listRoots();
-		for (IPath path : paths) {
-			if (isWorkspace(path)) {
-				String name = path.getLastSegment();
-				names.add(name);
-			}
-		}
+		// IPath[] paths = this.fs.listRoots();
+		// for (IPath path : paths) {
+		// if (isWorkspace(path)) {
+		// String name = path.getLastSegment();
+		// names.add(name);
+		// }
+		// }
 		return names;
 	}
 

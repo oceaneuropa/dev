@@ -176,13 +176,13 @@ public class SetupUtil {
 	}
 
 	/**
-	 * Get {NODE_HOME}/config.ini path.
+	 * Get {NODE_HOME}/configuration/config.ini path.
 	 * 
 	 * @param nodeHome
 	 * @return
 	 */
 	public static Path getNodeConfigIniPath(Path nodeHome) {
-		Path configIniPath = nodeHome.resolve("config.ini");
+		Path configIniPath = nodeHome.resolve("configuration").resolve("config.ini");
 		return configIniPath;
 	}
 
@@ -198,7 +198,7 @@ public class SetupUtil {
 			return new Properties();
 		}
 		Path configIniPath = getNodeConfigIniPath(nodeHome);
-		Properties configIniProps = org.origin.common.env.SetupUtil.getProperties(nodeHome, "config.ini");
+		Properties configIniProps = org.origin.common.env.SetupUtil.getProperties(nodeHome, "configuration/config.ini");
 		System.out.println("nodeHome = " + nodeHome);
 		System.out.println(configIniPath + " properties:");
 		Printer.pl(configIniProps);

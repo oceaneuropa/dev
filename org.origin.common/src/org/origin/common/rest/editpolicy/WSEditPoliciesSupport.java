@@ -15,10 +15,34 @@ public class WSEditPoliciesSupport implements WSEditPolicies {
 	}
 
 	@Override
+	public synchronized WSEditPolicy getEditPolicy(String id) {
+		if (id == null) {
+			return null;
+		}
+		WSEditPolicy editPolicy = null;
+		for (WSEditPolicy currEditPolicy : this.editPolicies) {
+			if (id.equals(currEditPolicy.getId())) {
+				editPolicy = currEditPolicy;
+				break;
+			}
+		}
+		return editPolicy;
+	}
+
+	@Override
 	public synchronized boolean installEditPolicy(WSEditPolicy editPolicy) {
 		if (editPolicy == null || this.editPolicies.contains(editPolicy)) {
 			return false;
 		}
+
+		// edit policy with same id already exists
+		String id = editPolicy.getId();
+		WSEditPolicy existingEditPolicy = getEditPolicy(id);
+		if (existingEditPolicy != null) {
+			System.err.println(WSEditPoliciesSupport.class.getSimpleName() + ".installEditPolicy(WSEditPolicy) WSEditPolicy with id '" + id + "' already exists.");
+			return false;
+		}
+
 		return this.editPolicies.add(editPolicy);
 	}
 
@@ -28,6 +52,24 @@ public class WSEditPoliciesSupport implements WSEditPolicies {
 			return false;
 		}
 		return this.editPolicies.remove(editPolicy);
+	}
+
+	@Override
+	public synchronized WSEditPolicy uninstallEditPolicy(String id) {
+		if (id == null) {
+			return null;
+		}
+		WSEditPolicy editPolicy = null;
+		for (WSEditPolicy currEditPolicy : this.editPolicies) {
+			if (id.equals(currEditPolicy.getId())) {
+				editPolicy = currEditPolicy;
+				break;
+			}
+		}
+		if (editPolicy != null) {
+			this.editPolicies.remove(editPolicy);
+		}
+		return editPolicy;
 	}
 
 	@Override

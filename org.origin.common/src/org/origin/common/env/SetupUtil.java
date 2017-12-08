@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.origin.common.io.IOUtil;
-import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 
 public class SetupUtil {

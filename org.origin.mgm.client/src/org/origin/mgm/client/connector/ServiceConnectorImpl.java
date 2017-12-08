@@ -19,7 +19,7 @@ import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.loadbalance.policy.LoadBalancePolicy;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
 import org.origin.common.osgi.OSGiServiceUtil;
-import org.origin.common.rest.model.Pingable;
+import org.origin.common.rest.client.Pingable;
 import org.origin.common.thread.ThreadPoolTimer;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.Printer;

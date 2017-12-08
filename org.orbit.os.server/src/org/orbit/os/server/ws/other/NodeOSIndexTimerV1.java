@@ -7,13 +7,13 @@ import java.util.Map;
 
 import org.orbit.os.server.Activator;
 import org.orbit.os.server.Constants;
-import org.orbit.os.server.service.NodeOS;
+import org.orbit.os.server.service.GAIA;
 import org.origin.common.thread.ServiceIndexTimer;
 import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.mgm.client.api.IndexItem;
 import org.origin.mgm.client.api.IndexProvider;
 
-public class NodeOSIndexTimerV1 extends ServiceIndexTimerImpl<IndexProvider, NodeOS> implements ServiceIndexTimer<IndexProvider, NodeOS> {
+public class NodeOSIndexTimerV1 extends ServiceIndexTimerImpl<IndexProvider, GAIA> implements ServiceIndexTimer<IndexProvider, GAIA> {
 
 	/**
 	 * 
@@ -25,12 +25,12 @@ public class NodeOSIndexTimerV1 extends ServiceIndexTimerImpl<IndexProvider, Nod
 	}
 
 	@Override
-	public NodeOS getService() {
+	public GAIA getService() {
 		return Activator.getNodeOS();
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, NodeOS nodeOS) throws IOException {
+	public void updateIndex(IndexProvider indexProvider, GAIA nodeOS) throws IOException {
 		String OSName = nodeOS.getOSName();
 		String OSVersion = nodeOS.getOSVersion();
 		String name = nodeOS.getName();

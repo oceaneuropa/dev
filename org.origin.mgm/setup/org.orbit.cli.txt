@@ -7,7 +7,7 @@ VM arguments:
 backup1:
 --------------------------------------------------------------------------
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true 
--Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
+-Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
 -DORIGIN_HOME=/Users/example/origin 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
 --------------------------------------------------------------------------

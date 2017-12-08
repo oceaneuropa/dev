@@ -10,6 +10,7 @@ import java.util.Map;
 import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.tier3.transferagent.util.TASetupUtil;
 import org.origin.common.rest.editpolicy.WSCommand;
+import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.editpolicy.WSEditPoliciesSupport;
 import org.origin.common.rest.editpolicy.WSEditPolicy;
 import org.origin.common.rest.model.Request;
@@ -18,6 +19,8 @@ import org.origin.core.resources.IWorkspace;
 import org.origin.core.resources.ResourcesFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see HomeAgentServiceImpl for IEditingDomain
@@ -25,12 +28,13 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class TransferAgentServiceImpl implements TransferAgentService {
 
+	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentServiceImpl.class);
+
 	protected BundleContext bundleContext;
 	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
-
 	protected IWorkspace nodespaceRoot;
-	protected WSEditPoliciesSupport editPoliciesSupport;
+	protected WSEditPolicies wsEditPolicies;
 
 	/**
 	 * 
@@ -38,7 +42,7 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	 */
 	public TransferAgentServiceImpl(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
-		this.editPoliciesSupport = new WSEditPoliciesSupport();
+		this.wsEditPolicies = new TransferAgentWSEditPolicies();
 	}
 
 	@Override
@@ -97,8 +101,6 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		Path nodespacesPath = TASetupUtil.getNodespacesPath(taHome, true);
 
 		this.nodespaceRoot = ResourcesFactory.getInstance().createWorkspace(nodespacesPath.toFile());
-
-		createDefaultEditPolicies();
 	}
 
 	public void stop() {
@@ -106,10 +108,6 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 			this.nodespaceRoot.dispose();
 			this.nodespaceRoot = null;
 		}
-	}
-
-	protected void createDefaultEditPolicies() {
-		installEditPolicy(new NodeEditPolicy());
 	}
 
 	/**
@@ -151,28 +149,49 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	}
 
 	@Override
-	public List<WSEditPolicy> getEditPolicies() {
-		return this.editPoliciesSupport.getEditPolicies();
+	public WSEditPolicies getEditPolicies() {
+		return this.wsEditPolicies;
 	}
 
-	@Override
-	public boolean installEditPolicy(WSEditPolicy editPolicy) {
-		editPolicy.setService(TransferAgentService.class, this);
-		return this.editPoliciesSupport.installEditPolicy(editPolicy);
-	}
+	public class TransferAgentWSEditPolicies implements WSEditPolicies {
+		WSEditPoliciesSupport editPoliciesSupport = new WSEditPoliciesSupport();
 
-	@Override
-	public boolean uninstallEditPolicy(WSEditPolicy editPolicy) {
-		boolean succeed = this.editPoliciesSupport.uninstallEditPolicy(editPolicy);
-		if (succeed) {
-			editPolicy.setService(TransferAgentService.class, null);
+		@Override
+		public List<WSEditPolicy> getEditPolicies() {
+			return this.editPoliciesSupport.getEditPolicies();
 		}
-		return succeed;
-	}
 
-	@Override
-	public WSCommand getCommand(Request request) {
-		return this.editPoliciesSupport.getCommand(request);
+		@Override
+		public WSEditPolicy getEditPolicy(String id) {
+			return this.editPoliciesSupport.getEditPolicy(id);
+		}
+
+		@Override
+		public boolean installEditPolicy(WSEditPolicy editPolicy) {
+			// Initialize the WSEditPolicy with service
+			editPolicy.setService(TransferAgentService.class, TransferAgentServiceImpl.this);
+
+			return this.editPoliciesSupport.installEditPolicy(editPolicy);
+		}
+
+		@Override
+		public boolean uninstallEditPolicy(WSEditPolicy editPolicy) {
+			boolean succeed = this.editPoliciesSupport.uninstallEditPolicy(editPolicy);
+			if (succeed) {
+				editPolicy.setService(TransferAgentService.class, null);
+			}
+			return succeed;
+		}
+
+		@Override
+		public WSEditPolicy uninstallEditPolicy(String id) {
+			return this.editPoliciesSupport.uninstallEditPolicy(id);
+		}
+
+		@Override
+		public WSCommand getCommand(Request request) {
+			return this.editPoliciesSupport.getCommand(request);
+		}
 	}
 
 }

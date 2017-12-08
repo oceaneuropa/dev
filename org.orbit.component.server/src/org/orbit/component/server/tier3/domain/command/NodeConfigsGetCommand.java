@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.orbit.component.model.tier3.domain.DomainMgmtException;
 import org.orbit.component.model.tier3.domain.ModelConverter;
-import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;

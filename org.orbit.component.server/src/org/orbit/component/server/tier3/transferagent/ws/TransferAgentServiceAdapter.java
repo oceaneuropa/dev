@@ -1,12 +1,16 @@
 package org.orbit.component.server.tier3.transferagent.ws;
 
 import org.orbit.component.server.tier3.transferagent.service.TransferAgentService;
+import org.orbit.component.server.tier3.transferagent.ws.editpolicy.NodeWSEditPolicy;
+import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adapter to start TransferAgentWSApplication when TransferAgentService becomes available and to stop TransferAgentWSApplication when TransferAgentService
@@ -15,9 +19,11 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class TransferAgentServiceAdapter {
 
+	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentServiceAdapter.class);
+
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<TransferAgentService, TransferAgentService> serviceTracker;
-	protected TransferAgentWebServiceApplication webServiceApp;
+	protected TransferAgentWSApplication webServiceApp;
 	protected TransferAgentServiceTimer serviceIndexTimer;
 
 	public TransferAgentServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
@@ -37,7 +43,7 @@ public class TransferAgentServiceAdapter {
 			@Override
 			public TransferAgentService addingService(ServiceReference<TransferAgentService> reference) {
 				TransferAgentService service = bundleContext.getService(reference);
-				System.out.println("TransferAgentService [" + service + "] is added.");
+				LOG.info("TransferAgentService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
 				return service;
@@ -45,15 +51,12 @@ public class TransferAgentServiceAdapter {
 
 			@Override
 			public void modifiedService(ServiceReference<TransferAgentService> reference, TransferAgentService service) {
-				System.out.println("TransferAgentService [" + service + "] is modified.");
-
-				doStop(bundleContext, service);
-				doStart(bundleContext, service);
+				LOG.info("TransferAgentService [" + service + "] is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<TransferAgentService> reference, TransferAgentService service) {
-				System.out.println("TransferAgentService [" + service + "] is removed.");
+				LOG.info("TransferAgentService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
 			}
@@ -78,10 +81,13 @@ public class TransferAgentServiceAdapter {
 	 * @param service
 	 */
 	protected void doStart(BundleContext bundleContext, TransferAgentService service) {
+		// Install web service edit policies
+		WSEditPolicies editPolicies = service.getEditPolicies();
+		editPolicies.uninstallEditPolicy(NodeWSEditPolicy.ID); // ensure NodeWSEditPolicy instance is not duplicated
+		editPolicies.installEditPolicy(new NodeWSEditPolicy());
+
 		// Start web service
-		this.webServiceApp = new TransferAgentWebServiceApplication(bundleContext, service);
-		this.webServiceApp.setBundleContext(bundleContext);
-		this.webServiceApp.setContextRoot(service.getContextRoot());
+		this.webServiceApp = new TransferAgentWSApplication(bundleContext, service);
 		this.webServiceApp.start();
 
 		// Start index timer
@@ -107,6 +113,10 @@ public class TransferAgentServiceAdapter {
 			this.webServiceApp.stop();
 			this.webServiceApp = null;
 		}
+
+		// Uninstall web service edit policies
+		WSEditPolicies editPolicies = service.getEditPolicies();
+		editPolicies.uninstallEditPolicy(NodeWSEditPolicy.ID);
 	}
 
 }

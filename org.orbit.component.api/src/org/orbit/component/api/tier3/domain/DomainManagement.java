@@ -2,16 +2,20 @@ package org.orbit.component.api.tier3.domain;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domain.request.AddNodeConfigRequest;
-import org.orbit.component.api.tier3.domain.request.AddTransferAgentConfigRequest;
-import org.orbit.component.api.tier3.domain.request.UpdateMachineConfigRequest;
-import org.orbit.component.api.tier3.domain.request.UpdateNodeConfigRequest;
-import org.orbit.component.api.tier3.domain.request.UpdateTransferAgentConfigRequest;
+import javax.ws.rs.core.Response;
+
+import org.orbit.component.model.tier3.domain.dto.MachineConfig;
+import org.orbit.component.model.tier3.domain.dto.NodeConfig;
+import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
+import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.model.Pingable;
+import org.origin.common.rest.client.Pingable;
 import org.origin.common.rest.model.Request;
-import org.origin.common.rest.model.Responses;
 
 public interface DomainManagement extends Pingable {
 
@@ -53,9 +57,9 @@ public interface DomainManagement extends Pingable {
 	// ------------------------------------------------------
 	// Request/Response
 	// ------------------------------------------------------
-	public Responses sendRequest(Request request) throws ClientException;
+	public Response sendRequest(Request request) throws ClientException;
 
-	DomainManagementResponseConverter getResponseConverter();
+	// DomainManagementResponseConverter getResponseConverter();
 
 	// ------------------------------------------------------
 	// Machine management

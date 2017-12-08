@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Providers;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.model.ErrorDTO;
-import org.origin.common.rest.model.ModelConverter;
+import org.origin.common.rest.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ public class AbstractWSApplicationResource implements IAdaptable {
 			e.printStackTrace();
 		}
 		logger.error(e.getMessage());
-		return ModelConverter.toDTO(e, errorCode);
+		return ResponseUtil.toDTO(e, errorCode);
 	}
 
 	/** implement IAdaptable interface */

@@ -1,11 +1,14 @@
 package org.orbit.component.server.tier3.domain.ws;
 
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
+import org.origin.mgm.client.api.IndexProvider;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Adapter to start DomainMgmtWSApplication when DomainMgmtService becomes available and to stop DomainMgmtWSApplication when DomainMgmtService becomes
@@ -14,12 +17,12 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class DomainMgmtServiceAdapter {
 
+	protected static Logger LOG = LoggerFactory.getLogger(DomainMgmtServiceAdapter.class);
+
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<DomainManagementService, DomainManagementService> serviceTracker;
-	protected DomainMgmtWSApplicationV2 webApp;
-
-	public DomainMgmtServiceAdapter() {
-	}
+	protected DomainMgmtWSApplication webServiceApp;
+	protected DomainMgmtServiceTimer serviceIndexTimer;
 
 	public DomainMgmtServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
@@ -27,14 +30,6 @@ public class DomainMgmtServiceAdapter {
 
 	public DomainManagementService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
-	}
-
-	public IndexProviderLoadBalancer getIndexProviderLoadBalancer() {
-		return indexProviderLoadBalancer;
-	}
-
-	public void setIndexProviderLoadBalancer(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
 	/**
@@ -46,25 +41,22 @@ public class DomainMgmtServiceAdapter {
 			@Override
 			public DomainManagementService addingService(ServiceReference<DomainManagementService> reference) {
 				DomainManagementService service = bundleContext.getService(reference);
-				System.out.println("DomainMgmtService [" + service + "] is added.");
+				LOG.info("DomainMgmtService [" + service + "] is added.");
 
-				startDomainMgmtWebService(bundleContext, service);
+				doStart(bundleContext, service);
 				return service;
 			}
 
 			@Override
 			public void modifiedService(ServiceReference<DomainManagementService> reference, DomainManagementService service) {
-				System.out.println("DomainMgmtService [" + service + "] is modified.");
-
-				stopDomainMgmtWebService(bundleContext, service);
-				startDomainMgmtWebService(bundleContext, service);
+				LOG.info("DomainMgmtService [" + service + "] is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<DomainManagementService> reference, DomainManagementService service) {
-				System.out.println("DomainMgmtService [" + service + "] is removed.");
+				LOG.info("DomainMgmtService [" + service + "] is removed.");
 
-				stopDomainMgmtWebService(bundleContext, service);
+				doStop(bundleContext, service);
 			}
 		});
 		this.serviceTracker.open();
@@ -81,20 +73,32 @@ public class DomainMgmtServiceAdapter {
 		}
 	}
 
-	protected void startDomainMgmtWebService(BundleContext bundleContext, DomainManagementService service) {
-		this.webApp = new DomainMgmtWSApplicationV2(bundleContext, service);
-		this.webApp.setBundleContext(bundleContext);
-		this.webApp.setContextRoot(service.getContextRoot());
-		if (this.indexProviderLoadBalancer != null) {
-			this.webApp.setIndexProvider(this.indexProviderLoadBalancer.createLoadBalancableIndexProvider());
-		}
-		this.webApp.start();
+	protected void doStart(BundleContext bundleContext, DomainManagementService service) {
+		// Start web service
+		this.webServiceApp = new DomainMgmtWSApplication(bundleContext, service);
+		this.webServiceApp.setBundleContext(bundleContext);
+		this.webServiceApp.setContextRoot(service.getContextRoot());
+		this.webServiceApp.start();
+
+		// Start index timer
+		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		this.serviceIndexTimer = new DomainMgmtServiceTimer(indexProvider, service);
+		// The web application knows its DomainMgmtServiceResource provides a ping method.
+		// So it tells the index timer that the web service can is pingable.
+		this.serviceIndexTimer.start();
 	}
 
-	protected void stopDomainMgmtWebService(BundleContext bundleContext, DomainManagementService service) {
-		if (this.webApp != null) {
-			this.webApp.stop();
-			this.webApp = null;
+	protected void doStop(BundleContext bundleContext, DomainManagementService service) {
+		// Stop index timer
+		if (this.serviceIndexTimer != null) {
+			this.serviceIndexTimer.stop();
+			this.serviceIndexTimer = null;
+		}
+
+		// Stop web service
+		if (this.webServiceApp != null) {
+			this.webServiceApp.stop();
+			this.webServiceApp = null;
 		}
 	}
 

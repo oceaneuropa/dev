@@ -4,9 +4,9 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.os.cli.AppCommand;
-import org.orbit.os.server.service.NodeOS;
+import org.orbit.os.server.service.GAIA;
 import org.orbit.os.server.util.SetupUtil;
-import org.orbit.os.server.ws.NodeOSAdapter;
+import org.orbit.os.server.ws.GaiaAdapter;
 import org.origin.common.util.PropertyUtil;
 import org.origin.mgm.client.api.IndexServiceUtil;
 import org.origin.mgm.client.loadbalance.IndexProviderLoadBalancer;
@@ -20,13 +20,13 @@ public class Activator implements BundleActivator {
 	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
 
 	protected static BundleContext bundleContext;
-	protected static NodeOSAdapter nodeOSAdapter;
+	protected static GaiaAdapter nodeOSAdapter;
 
 	public static BundleContext getContext() {
 		return bundleContext;
 	}
 
-	public static NodeOS getNodeOS() {
+	public static GAIA getNodeOS() {
 		return (nodeOSAdapter != null) ? nodeOSAdapter.getService() : null;
 	}
 
@@ -46,7 +46,7 @@ public class Activator implements BundleActivator {
 		this.indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(indexProviderProps);
 
 		// Start service adapter
-		nodeOSAdapter = new NodeOSAdapter(this.indexProviderLoadBalancer);
+		nodeOSAdapter = new GaiaAdapter(this.indexProviderLoadBalancer);
 		nodeOSAdapter.start(bundleContext);
 
 		// Start commands

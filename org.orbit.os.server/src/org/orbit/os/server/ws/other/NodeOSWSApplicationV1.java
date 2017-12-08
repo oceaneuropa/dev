@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.orbit.os.server.ws.NodeOSWebServiceResource;
+import org.orbit.os.server.ws.GaiaWSResource;
 import org.origin.common.rest.server.AbstractApplication;
 import org.osgi.framework.ServiceRegistration;
 
@@ -54,7 +54,7 @@ public class NodeOSWSApplicationV1 extends AbstractApplication {
 		Set<Class<?>> classes = new HashSet<Class<?>>();
 
 		// resources
-		classes.add(NodeOSWebServiceResource.class);
+		classes.add(GaiaWSResource.class);
 
 		// resolvers
 		classes.add(NodeOSResolver.class);

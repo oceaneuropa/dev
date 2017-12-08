@@ -20,8 +20,6 @@ public interface AppsManager {
 
 	AppManifest install(Path appArchivePath) throws AppException;
 
-	AppManifest install(String appId, String appVersion) throws AppException;
-
 	AppManifest uninstall(String appId, String appVersion) throws AppException;
 
 	AppHandler[] getAppHandlers();
@@ -31,3 +29,5 @@ public interface AppsManager {
 	List<Problem> getProblems();
 
 }
+
+// AppManifest install(String appId, String appVersion) throws AppException;

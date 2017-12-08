@@ -385,31 +385,31 @@ public class AppsManagerImplV1 implements AppsManager {
 		return null;
 	}
 
-	@Override
-	public AppManifest install(String appId, String appVersion) throws AppException {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".install() appId = " + appId + ", appVersion = " + appVersion);
-		}
-		checkStarted();
-
-		// app is expected to be not installed
-		checkAppInstalled(appId, appVersion, false);
-
-		Installer installer = InstallerProvider.getInstance().getInstaller(this.bundleContext, appId, appVersion);
-		AppManifest appManifest = installer.install(this.bundleContext, appId, appVersion);
-		if (appManifest == null) {
-			if (debug) {
-				System.out.println("AppManifest is not returned by installer.");
-			}
-			return null;
-		}
-
-		boolean registered = registerApp(appManifest);
-		if (registered) {
-			return appManifest;
-		}
-		return null;
-	}
+	// @Override
+	// public AppManifest install(String appId, String appVersion) throws AppException {
+	// if (debug) {
+	// System.out.println(getClass().getSimpleName() + ".install() appId = " + appId + ", appVersion = " + appVersion);
+	// }
+	// checkStarted();
+	//
+	// // app is expected to be not installed
+	// checkAppInstalled(appId, appVersion, false);
+	//
+	// Installer installer = InstallerProvider.getInstance().getInstaller(this.bundleContext, appId, appVersion);
+	// AppManifest appManifest = installer.install(this.bundleContext, appId, appVersion);
+	// if (appManifest == null) {
+	// if (debug) {
+	// System.out.println("AppManifest is not returned by installer.");
+	// }
+	// return null;
+	// }
+	//
+	// boolean registered = registerApp(appManifest);
+	// if (registered) {
+	// return appManifest;
+	// }
+	// return null;
+	// }
 
 	@Override
 	public AppManifest uninstall(String appId, String appVersion) throws AppException {

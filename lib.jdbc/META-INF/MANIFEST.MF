@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jdbc
 Bundle-SymbolicName: lib.jdbc
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: lib/mysql-connector-java-5.1.38-bin.jar,
  lib/postgresql-9.4.1208.jre7.jar,

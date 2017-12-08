@@ -30,10 +30,10 @@ public class DTOConverter {
 		if (e.getCause() != null) {
 			String causeName = e.getCause().getClass().getName();
 			String causeMessage = e.getCause().getMessage();
-			dto.setException(causeName + " " + causeMessage);
+			dto.setDetail(causeName + " " + causeMessage);
 		} else {
 			String causeName = e.getClass().getName();
-			dto.setException(causeName);
+			dto.setDetail(causeName);
 		}
 
 		return dto;

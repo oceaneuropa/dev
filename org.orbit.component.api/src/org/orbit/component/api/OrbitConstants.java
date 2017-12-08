@@ -38,13 +38,14 @@ public class OrbitConstants {
 		public static String DELETE_NODESPACE = "delete_nodespace";
 
 		// Constants for nodes
-		public static String GET_NODES = "get_nodes";
+		public static String LIST_NODES = "list_nodes";
 		public static String GET_NODE = "get_node";
 		public static String NODE_EXIST = "node_exist";
 		public static String CREATE_NODE = "create_node";
 		public static String DELETE_NODE = "delete_node";
 		public static String START_NODE = "start_node";
 		public static String STOP_NODE = "stop_node";
+		public static String NODE_STATUS = "node_status";
 	}
 
 	public static String COMPONENT_INDEX_SERVICE_URL = "component.indexservice.url";

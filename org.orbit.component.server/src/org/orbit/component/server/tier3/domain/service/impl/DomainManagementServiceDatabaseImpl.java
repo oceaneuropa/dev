@@ -1,5 +1,6 @@
 package org.orbit.component.server.tier3.domain.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,10 +17,6 @@ import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
 import org.orbit.component.server.OrbitConstants;
 import org.orbit.component.server.tier3.domain.service.DomainManagementService;
-import org.orbit.fs.common.Constants;
-import org.orbit.fs.common.FileSystem;
-import org.orbit.fs.common.database.DatabaseFileSystem;
-import org.orbit.fs.common.database.DatabaseFileSystemConfig;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.PropertyUtil;
@@ -69,9 +66,11 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 		this.serviceRegistry = bundleContext.registerService(DomainManagementService.class, this, props);
 
 		// Start workspace service
-		DatabaseFileSystemConfig config = new DatabaseFileSystemConfig(this.databaseProperties);
-		FileSystem fileSystem = new DatabaseFileSystem(config);
-		this.workspaceService = WorkspaceServiceFactory.getInstance().createWorkspaceService(fileSystem);
+		// DatabaseFileSystemConfig config = new DatabaseFileSystemConfig(this.databaseProperties);
+		// FileSystem fileSystem = new DatabaseFileSystem(config);
+		// this.workspaceService = WorkspaceServiceFactory.getInstance().createWorkspaceService(fileSystem);
+		this.workspaceService = WorkspaceServiceFactory.getInstance().createWorkspaceService(new File("/path-to-workspace-folder"));
+
 		try {
 			this.workspaceService.start(bundleContext);
 		} catch (IOException e) {
@@ -153,11 +152,11 @@ public class DomainManagementServiceDatabaseImpl implements DomainManagementServ
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 
-		String tableNamePrefix = namespace.replaceAll("\\.", "_");
+		// String tableNamePrefix = namespace.replaceAll("\\.", "_");
 		this.workspaceProperties = new Properties();
 		this.workspaceProperties.putAll(this.databaseProperties);
-		this.workspaceProperties.put(Constants.METADATA_TABLE_NAME, tableNamePrefix + "_" + Constants.METADATA_TABLE_NAME_DEFAULT_VALUE);
-		this.workspaceProperties.put(Constants.CONTENT_TABLE_NAME, tableNamePrefix + "_" + Constants.CONTENT_TABLE_NAME_DEFAULT_VALUE);
+		// this.workspaceProperties.put(Constants.METADATA_TABLE_NAME, tableNamePrefix + "_" + Constants.METADATA_TABLE_NAME_DEFAULT_VALUE);
+		// this.workspaceProperties.put(Constants.CONTENT_TABLE_NAME, tableNamePrefix + "_" + Constants.CONTENT_TABLE_NAME_DEFAULT_VALUE);
 	}
 
 	protected Connection getConnection() {

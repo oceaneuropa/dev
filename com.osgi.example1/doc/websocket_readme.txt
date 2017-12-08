@@ -20,3 +20,5 @@ Apache Tomcat Websocket Tutorial
 JSR 356, Java API for WebSocket
 http://www.oracle.com/technetwork/articles/java/jsr356-1937161.html
 
+Failover and Replication in a Cluster
+https://docs.oracle.com/cd/E13222_01/wls/docs90/cluster/failover.html#1022034

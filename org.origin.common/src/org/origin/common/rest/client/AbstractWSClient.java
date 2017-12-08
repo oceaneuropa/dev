@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 
 import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.util.ResponseUtil;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
  *
  */
-public abstract class AbstractWSClient implements WSClient {
+public abstract class AbstractWSClient implements Pingable {
 
 	protected ClientConfiguration config;
 	protected Client client;
@@ -68,7 +69,7 @@ public abstract class AbstractWSClient implements WSClient {
 				if (error != null) {
 					throw new ClientException(response.getStatus(), error.getMessage(), null);
 				} else {
-					throw new ClientException(response.getStatus(), response.getStatusInfo().getReasonPhrase(), null);
+					throw new ClientException(response);
 				}
 			}
 		}
@@ -158,7 +159,7 @@ public abstract class AbstractWSClient implements WSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return result;
 	}

@@ -12,17 +12,17 @@ import org.orbit.os.server.apps.App;
 import org.orbit.os.server.apps.AppBundle;
 import org.orbit.os.server.apps.AppHandler;
 import org.orbit.os.server.apps.AppsManager;
-import org.orbit.os.server.service.NodeOS;
-import org.orbit.os.server.service.NodeOSImpl;
+import org.orbit.os.server.service.GAIA;
+import org.orbit.os.server.service.GAIAImpl;
 import org.orbit.os.server.util.SetupUtil;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
+import org.origin.common.osgi.BundleHelper;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -32,13 +32,18 @@ import org.slf4j.LoggerFactory;
  */
 public class AppCommand implements Annotated {
 
-	protected static Logger LOG = LoggerFactory.getLogger(AppCommand.class);
+	// protected static Logger LOG = LoggerFactory.getLogger(AppCommand.class);
+	public static class LOG {
+		public static void info(String message) {
+			System.out.println(message);
+		}
+	}
 
 	protected BundleContext bundleContext;
-	protected NodeOSImpl nodeOSImpl;
+	protected GAIAImpl nodeOSImpl;
 
 	@org.origin.common.annotation.Dependency
-	protected NodeOS nodeOS;
+	protected GAIA nodeOS;
 
 	/**
 	 * Activate the command.
@@ -102,7 +107,7 @@ public class AppCommand implements Annotated {
 
 		if (this.nodeOSImpl == null) {
 			Properties configIniProps = SetupUtil.getNodeHomeConfigIniProperties(this.bundleContext);
-			this.nodeOSImpl = new NodeOSImpl(this.bundleContext, configIniProps);
+			this.nodeOSImpl = new GAIAImpl(this.bundleContext, configIniProps);
 		}
 		this.nodeOSImpl.start();
 	}
@@ -162,13 +167,24 @@ public class AppCommand implements Annotated {
 					// appBundleText += " (Runtime State: " + app.getRuntimeState().toString() + ")";
 					// System.out.println(appBundleText);
 
+					Bundle[] osgiBundles = bundleContext.getBundles();
+
+					LOG.info("    Bundles:");
 					for (AppBundle appBundle : app.getAppBundles()) {
 						String bundleName = appBundle.getBundleName();
 						String bundleVersion = appBundle.getBundleVersion();
 						// Dependency.STATE dependencyState = appBundle.getDependency().getState();
 						AppBundle.RUNTIME_STATE appBundleRuntimeState = appBundle.getRuntimeState();
 
-						String appModuleText = "    bundle: " + (bundleName + "_" + bundleVersion);
+						Bundle osgiBundle = BundleHelper.INSTANCE.findBundle(osgiBundles, bundleName, bundleVersion);
+
+						// long bundleId = -1;
+						// if (osgiBundle != null) {
+						// bundleId = osgiBundle.getBundleId();
+						// }
+
+						// String appModuleText = " (" + bundleId + ") " + (bundleName + " (" + bundleVersion + ")");
+						String appModuleText = "        " + osgiBundle.toString();
 						// appBundleText += " (Dependency State: " + dependencyState.toString() + ")";
 						appModuleText += " (Runtime State: " + appBundleRuntimeState.toString() + ")";
 						LOG.info(appModuleText);

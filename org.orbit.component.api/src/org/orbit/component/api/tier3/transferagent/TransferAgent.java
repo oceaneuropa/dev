@@ -2,9 +2,10 @@ package org.orbit.component.api.tier3.transferagent;
 
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
-import org.origin.common.rest.model.Responses;
 
 public interface TransferAgent {
 
@@ -18,9 +19,7 @@ public interface TransferAgent {
 
 	boolean ping();
 
-	Responses sendRequest(Request request) throws ClientException;
-
-	TransferAgentResponseConverter getResponseConverter();
+	Response sendRequest(Request request) throws ClientException;
 
 }
 
@@ -44,3 +43,5 @@ public interface TransferAgent {
 // boolean stopNode(StopNodeRequest request) throws ClientException;
 //
 // boolean isNodeRunning(String nodeId) throws ClientException;
+
+// TransferAgentResponseConverter getResponseConverter();

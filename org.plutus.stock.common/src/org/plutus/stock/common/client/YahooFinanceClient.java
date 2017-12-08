@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ClientUtil;
+import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.DateUtil;
 import org.plutus.stock.model.dto.YahooFinanceStockData;
 
@@ -212,7 +212,7 @@ public class YahooFinanceClient extends AbstractWSClient {
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
-			ClientUtil.closeQuietly(response, true);
+			ResponseUtil.closeQuietly(response, true);
 		}
 
 		if (comparator != null) {
