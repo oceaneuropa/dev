@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Component API
-Bundle-SymbolicName: org.orbit.component.api
+Bundle-SymbolicName: org.orbit.component.api;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.component.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -9,23 +9,12 @@ Import-Package: javax.ws.rs.core;version="2.0.0",
  org.orbit.component.model.tier1.auth,
  org.orbit.component.model.tier3.domain.dto,
  org.orbit.component.model.tier3.domain.request,
- org.origin.common.annotation,
- org.origin.common.jdbc,
- org.origin.common.loadbalance,
- org.origin.common.osgi,
- org.origin.common.rest.client,
- org.origin.common.rest.model,
- org.origin.common.rest.util,
- org.origin.common.util,
- org.origin.mgm.client.api,
- org.origin.mgm.client.connector,
- org.origin.mgm.client.loadbalance,
+ org.orbit.infra.api.indexes,
  org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j;version="1.7.25"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.component.api,
- org.orbit.component.api.tier0.channel,
  org.orbit.component.api.tier1.account,
  org.orbit.component.api.tier1.account.request,
  org.orbit.component.api.tier1.auth,
@@ -35,4 +24,5 @@ Export-Package: org.orbit.component.api,
  org.orbit.component.api.tier2.appstore.request,
  org.orbit.component.api.tier3.domain,
  org.orbit.component.api.tier3.transferagent
-Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"
+Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
+ org.origin.common;bundle-version="1.0.0"

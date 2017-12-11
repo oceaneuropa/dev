@@ -1,0 +1,37 @@
+Backup1:
+
+Program Arguments:
+-----------------------------------------------------------------------------------------------------------
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean
+-----------------------------------------------------------------------------------------------------------
+
+VM Arguments:
+-----------------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true 
+-Dosgi.noShutdown=true 
+-Dorg.osgi.service.http.port=10001 
+-Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
+
+-DNB_HOME=/Users/yayang/cluster 
+-Dcluster.persistence.local.dir=/Users/yayang/cluster/data 
+-Dcluster.home.dir=/Users/yayang/cluster/home1 
+-DORIGIN_HOME=/Users/yayang/origin 
+-Dorbit.host.url=http://127.0.0.1:10001 
+
+-Dorg.orbit.service.http.port=20001 
+
+-Dcomponent.indexservice.autostart=true
+-Dcomponent.indexservice.namespace=group1 
+-Dcomponent.indexservice.name=IndexService1 
+-Dcomponent.indexservice.context_root=/orbit/v1/indexservice 
+-Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver 
+-Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
+-Dcomponent.indexservice.jdbc.username=postgres 
+-Dcomponent.indexservice.jdbc.password=admin
+-----------------------------------------------------------------------------------------------------------
+
+
+
+
+
+

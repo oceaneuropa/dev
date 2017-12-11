@@ -7,9 +7,9 @@ import java.util.Map;
 import org.orbit.component.api.tier1.session.OAuth2;
 import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.connector.OrbitConstants;
-import org.origin.mgm.client.api.IndexItem;
-import org.origin.mgm.client.api.IndexService;
-import org.origin.mgm.client.connector.ServiceConnectorImpl;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.ServiceConnectorImpl;
 
 public class OAuth2ConnectorImpl extends ServiceConnectorImpl<OAuth2> implements OAuth2Connector {
 

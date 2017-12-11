@@ -4,12 +4,14 @@ import java.io.IOException;
 
 import org.origin.common.util.Timer;
 
-public abstract class ServiceIndexTimerImpl<INDEX_PROVIDER, SERVICE> extends ThreadPoolTimer implements ServiceIndexTimer<INDEX_PROVIDER, SERVICE> {
+public abstract class ServiceIndexTimerImpl<INDEX_PROVIDER, SERVICE, IDX_ITEM> extends ThreadPoolTimer implements ServiceIndexTimer<INDEX_PROVIDER, SERVICE, IDX_ITEM> {
 
 	/* update index items every 15 seconds */
 	public static long INDEXING_INTERVAL = 15 * Timer.SECOND;
 
 	protected INDEX_PROVIDER indexProvider;
+	protected IDX_ITEM indexItem;
+	protected boolean removeIndexWhenDisposed = true;
 
 	/**
 	 * 
@@ -18,47 +20,17 @@ public abstract class ServiceIndexTimerImpl<INDEX_PROVIDER, SERVICE> extends Thr
 	 */
 	public ServiceIndexTimerImpl(String name, INDEX_PROVIDER indexProvider) {
 		super(name);
-		if (indexProvider == null) {
-			throw new IllegalArgumentException("indexProvider is null.");
-		}
 		this.indexProvider = indexProvider;
 
 		setInterval(INDEXING_INTERVAL);
 
-		Runnable runnable = createRunnable();
-		setRunnable(runnable);
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	protected Runnable createRunnable() {
 		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				String name = ServiceIndexTimerImpl.this.getName();
-				INDEX_PROVIDER indexProvider = ServiceIndexTimerImpl.this.indexProvider;
-				SERVICE service = getService();
-
-				if (indexProvider == null) {
-					System.err.println(name + " indexProvider is null.");
-					return;
-				}
-
-				if (service == null) {
-					System.err.println(name + " service is null.");
-					return;
-				}
-
-				try {
-					updateIndex(indexProvider, service);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				performIndexing();
 			}
 		};
-		return runnable;
+		setRunnable(runnable);
 	}
 
 	public INDEX_PROVIDER getIndexProvider() {
@@ -69,46 +41,56 @@ public abstract class ServiceIndexTimerImpl<INDEX_PROVIDER, SERVICE> extends Thr
 		this.indexProvider = indexProvider;
 	}
 
-	/**
-	 * Get the service.
-	 * 
-	 * @return
-	 */
-	public abstract SERVICE getService();
+	public boolean isRemoveIndexWhenDisposed() {
+		return this.removeIndexWhenDisposed;
+	}
 
-	/**
-	 * Create or update the index item for the service.
-	 * 
-	 * @param indexProvider
-	 * @param service
-	 * @throws IOException
-	 */
-	public abstract void updateIndex(INDEX_PROVIDER indexProvider, SERVICE service) throws IOException;
+	public void setRemoveIndexWhenDisposed(boolean removeIndexWhenDisposed) {
+		this.removeIndexWhenDisposed = removeIndexWhenDisposed;
+	}
 
-	/**
-	 * Delete the index item for the service.
-	 * 
-	 * @param indexProvider
-	 * @throws IOException
-	 */
-	public void removeIndex(INDEX_PROVIDER indexProvider) throws IOException {
+	protected synchronized void performIndexing() {
+		String name = getName();
+
+		if (this.indexProvider == null) {
+			System.err.println(name + " indexProvider is null.");
+			return;
+		}
+
+		SERVICE service = getService();
+		if (service == null) {
+			System.err.println(name + " service is null.");
+			return;
+		}
+
+		try {
+			if (this.indexItem == null) {
+				this.indexItem = getIndex(this.indexProvider, service);
+			}
+			if (this.indexItem == null) {
+				this.indexItem = addIndex(this.indexProvider, service);
+			} else {
+				updateIndex(this.indexProvider, service, this.indexItem);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
 
-		String name = getName();
-		INDEX_PROVIDER indexProvider = ServiceIndexTimerImpl.this.indexProvider;
-		// SERVICE service = getService();
-		if (indexProvider == null) {
-			System.err.println(name + " indexProvider is null.");
-			return;
-		}
-		try {
-			removeIndex(indexProvider);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (this.removeIndexWhenDisposed) {
+			if (this.indexProvider != null && this.indexItem != null) {
+				try {
+					removeIndex(this.indexProvider, this.indexItem);
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 

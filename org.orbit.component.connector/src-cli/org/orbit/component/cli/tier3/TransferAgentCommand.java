@@ -10,6 +10,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
+import org.orbit.component.connector.tier3.transferagent.TransferAgentHelper;
 import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
 import org.orbit.component.model.tier3.transferagent.dto.TransferAgentResponseConverter;
 import org.origin.common.annotation.Annotated;

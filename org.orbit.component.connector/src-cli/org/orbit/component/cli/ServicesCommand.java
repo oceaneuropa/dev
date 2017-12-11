@@ -18,6 +18,8 @@ import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainManagement;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.cli.tier3.ResourcePropertyHelper;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -28,8 +30,6 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
-import org.origin.mgm.client.api.IndexItem;
-import org.origin.mgm.client.api.IndexService;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,6 @@ public class ServicesCommand implements Annotated {
 	protected static Logger LOG = LoggerFactory.getLogger(ServicesCommand.class);
 
 	// Service type constants
-	public static final String CHANNEL = "channel";
 	public static final String USER_REGISTRY = "userregistry";
 	public static final String AUTH = "auth";
 	public static final String CONFIGR_EGISTRY = "configregistry";
@@ -48,7 +47,6 @@ public class ServicesCommand implements Annotated {
 	public static final String TRANSFER_AGENT = "transferagent";
 
 	// Column names constants
-	protected static String[] CHANNEL_SERVICES_COLUMNS = new String[] { "index_item_id", "channel.namespace", "channel.name", "channel.host.url", "channel.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] USERREGISTRY_SERVICES_COLUMNS = new String[] { "index_item_id", "userregistry.namespace", "userregistry.name", "userregistry.host.url", "userregistry.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] AUTH_SERVICES_COLUMNS = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] APPSTORE_SERVICES_COLUMNS = new String[] { "index_item_id", "appstore.namespace", "appstore.name", "appstore.host.url", "appstore.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
@@ -127,10 +125,7 @@ public class ServicesCommand implements Annotated {
 	public void lservices(@Descriptor("The service to list") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "lservices", new String[] { "-service", service });
 
-		if (CHANNEL.equalsIgnoreCase(service)) {
-			listChannelServices();
-
-		} else if (USER_REGISTRY.equalsIgnoreCase(service)) {
+		if (USER_REGISTRY.equalsIgnoreCase(service)) {
 			listUserRegistryServices();
 
 		} else if (AUTH.equalsIgnoreCase(service)) {
@@ -149,43 +144,11 @@ public class ServicesCommand implements Annotated {
 
 		} else {
 			// System.err.println("###### Unsupported service name: " + service);
-			listChannelServices();
 			listUserRegistryServices();
 			listAuthServices();
 			listAppStoreServices();
 			listDomainServices();
 			listTransferAgents();
-		}
-	}
-
-	protected void listChannelServices() throws ClientException {
-		try {
-			List<IndexItem> indexItems = this.indexService.getIndexItems(OrbitConstants.CHANNEL_INDEXER_ID, OrbitConstants.CHANNEL_TYPE);
-
-			String[][] rows = new String[indexItems.size()][CHANNEL_SERVICES_COLUMNS.length];
-			int rowIndex = 0;
-			for (IndexItem indexItem : indexItems) {
-				Integer indexItemId = indexItem.getIndexItemId();
-				Map<String, Object> props = indexItem.getProperties();
-
-				String namespace = (String) props.get(OrbitConstants.CHANNEL_NAMESPACE);
-				String name = (String) props.get(OrbitConstants.CHANNEL_NAME);
-				String hostUrl = (String) props.get(OrbitConstants.CHANNEL_HOST_URL);
-				String contextRoot = (String) props.get(OrbitConstants.CHANNEL_CONTEXT_ROOT);
-				Object lastHeartbeatTime = props.get(OrbitConstants.HEARTBEAT_EXPIRE_TIME);
-				Object heartbeatExpireTime = props.get(OrbitConstants.LAST_HEARTBEAT_TIME);
-
-				String lastHeartbeatTimeStr = lastHeartbeatTime.toString();
-				String heartbeatExpireTimeStr = heartbeatExpireTime.toString();
-
-				rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
-			}
-
-			PrettyPrinter.prettyPrint(CHANNEL_SERVICES_COLUMNS, rows, indexItems.size());
-			System.out.println();
-
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

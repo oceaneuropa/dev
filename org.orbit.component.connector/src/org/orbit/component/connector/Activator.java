@@ -4,13 +4,11 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.cli.ServicesCommand;
-import org.orbit.component.cli.tier0.ChannelCommand;
 import org.orbit.component.cli.tier1.AuthCommand;
 import org.orbit.component.cli.tier1.UserRegistryCommand;
 import org.orbit.component.cli.tier2.AppStoreCommand;
 import org.orbit.component.cli.tier3.DomainManagementCommand;
 import org.orbit.component.cli.tier3.TransferAgentCommand;
-import org.orbit.component.connector.tier0.channel.ChannelsConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
@@ -18,31 +16,35 @@ import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
 import org.orbit.component.connector.tier3.domain.DomainMgmtConnectorImpl;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
+import org.orbit.infra.api.indexes.IndexServiceConnector;
+import org.orbit.infra.api.indexes.IndexServiceConnectorAdapter;
+import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
+import org.orbit.infra.api.indexes.IndexServiceUtil;
 import org.origin.common.util.PropertyUtil;
-import org.origin.mgm.client.OriginConstants;
-import org.origin.mgm.client.api.IndexService;
-import org.origin.mgm.client.api.IndexServiceUtil;
-import org.origin.mgm.client.loadbalance.IndexServiceLoadBalancer;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
 
 	protected static final String USER_REGISTRY_MANAGED_SERVICE_FACTORY_PID = "component.userregistry.manager"; //$NON-NLS-1$
 
-	private static BundleContext context;
+	protected static BundleContext context;
+	protected static Activator instance;
 
-	static BundleContext getContext() {
+	public static BundleContext getContext() {
 		return context;
 	}
 
-	protected IndexServiceLoadBalancer indexServiceLoadBalancer;
+	public static Activator getInstance() {
+		return instance;
+	}
 
+	protected IndexServiceConnectorAdapter indexServiceConnectorAdapter;
+
+	// ManagedServiceFactory
 	protected UserRegistryManager userRegistryManager;
-	protected ServiceRegistration<?> userRegistryManagerRegistration;
 
-	protected ChannelsConnectorImpl channelConnector;
+	// Connectors
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
 	protected AuthConnectorImpl authConnector;
@@ -52,7 +54,6 @@ public class Activator implements BundleActivator {
 
 	// Commands
 	protected ServicesCommand servicesCommand;
-	protected ChannelCommand channelCommand;
 	protected AuthCommand authCommand;
 	protected UserRegistryCommand userRegistryCommand;
 	protected AppStoreCommand appStoreCommand;
@@ -60,55 +61,66 @@ public class Activator implements BundleActivator {
 	protected TransferAgentCommand transferAgentCommand;
 
 	@Override
-	public void start(BundleContext bundleContext) throws Exception {
+	public void start(final BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+		Activator.instance = this;
 
-		// -----------------------------------------------------------------------------
+		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapter() {
+			@Override
+			public void connectorAdded(IndexServiceConnector connector) {
+				doStart(Activator.context, connector);
+			}
+
+			@Override
+			public void connectorRemoved(IndexServiceConnector connector) {
+				doStop(Activator.context);
+			}
+		};
+		this.indexServiceConnectorAdapter.start(bundleContext);
+	}
+
+	@Override
+	public void stop(BundleContext bundleContext) throws Exception {
+		if (this.indexServiceConnectorAdapter != null) {
+			this.indexServiceConnectorAdapter.stop(bundleContext);
+			this.indexServiceConnectorAdapter = null;
+		}
+
+		Activator.instance = null;
+		Activator.context = null;
+	}
+
+	protected void doStart(BundleContext bundleContext, IndexServiceConnector connector) {
 		// Get load balancer for IndexProvider
-		// -----------------------------------------------------------------------------
-		// load properties from accessing index service
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OriginConstants.COMPONENT_INDEX_SERVICE_URL_PROP);
-		this.indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(indexProviderProps);
+		PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.OrbitConstants.COMPONENT_INDEX_SERVICE_URL_PROP);
+		IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
 
-		// -----------------------------------------------------------------------------
 		// Register ManagedServiceFactories and connector services
-		// -----------------------------------------------------------------------------
-		// tier0
-		this.channelConnector = new ChannelsConnectorImpl();
-		this.channelConnector.start(bundleContext);
-
 		// tier1
 		this.userRegistryManager = new UserRegistryManager();
 		this.userRegistryManager.start(bundleContext);
 
-		// this.configRegistryConnector = new ConfigRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
-		// this.configRegistryConnector.start(bundleContext);
-
-		this.userRegistryConnector = new UserRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.userRegistryConnector = new UserRegistryConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.userRegistryConnector.start(bundleContext);
 
-		this.authConnector = new AuthConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.authConnector = new AuthConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.authConnector.start(bundleContext);
 
 		// tier2
-		this.appStoreConnector = new AppStoreConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.appStoreConnector = new AppStoreConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
-		this.domainMgmtConnector = new DomainMgmtConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.domainMgmtConnector = new DomainMgmtConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.domainMgmtConnector.start(bundleContext);
 
 		this.transferAgentConnector = new TransferAgentConnectorImpl();
 		this.transferAgentConnector.start(bundleContext);
 
-		// Start CLI commands
-		IndexService indexService = this.indexServiceLoadBalancer.createLoadBalancableIndexService();
-		this.servicesCommand = new ServicesCommand(bundleContext, indexService);
+		// Start commands
+		this.servicesCommand = new ServicesCommand(bundleContext, indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.servicesCommand.start();
-
-		this.channelCommand = new ChannelCommand();
-		this.channelCommand.start(bundleContext);
 
 		this.authCommand = new AuthCommand(bundleContext);
 		this.authCommand.start();
@@ -126,17 +138,11 @@ public class Activator implements BundleActivator {
 		this.transferAgentCommand.start();
 	}
 
-	@Override
-	public void stop(BundleContext bundleContext) throws Exception {
-		// Stop CLI commands
+	protected void doStop(BundleContext bundleContext) {
+		// Stop commands
 		if (this.servicesCommand != null) {
 			this.servicesCommand.stop();
 			this.servicesCommand = null;
-		}
-
-		if (this.channelCommand != null) {
-			this.channelCommand.stop(bundleContext);
-			this.channelCommand = null;
 		}
 
 		if (this.authCommand != null) {
@@ -164,9 +170,7 @@ public class Activator implements BundleActivator {
 			this.transferAgentCommand = null;
 		}
 
-		// -----------------------------------------------------------------------------
 		// Unregister ManagedServiceFactories and connector services
-		// -----------------------------------------------------------------------------
 		// tier3
 		if (this.domainMgmtConnector != null) {
 			this.domainMgmtConnector.stop(bundleContext);
@@ -190,29 +194,15 @@ public class Activator implements BundleActivator {
 			this.userRegistryConnector = null;
 		}
 
-		// if (this.configRegistryConnector != null) {
-		// this.configRegistryConnector.stop();
-		// this.configRegistryConnector = null;
-		// }
-
 		if (this.authConnector != null) {
 			this.authConnector.stop(bundleContext);
 			this.authConnector = null;
 		}
 
-		// tier1
 		if (this.userRegistryManager != null) {
 			this.userRegistryManager.stop(bundleContext);
 			this.userRegistryManager = null;
 		}
-
-		// tier0
-		if (this.channelConnector != null) {
-			this.channelConnector.stop(bundleContext);
-			this.channelConnector = null;
-		}
-
-		Activator.context = null;
 	}
 
 }
@@ -225,4 +215,12 @@ public class Activator implements BundleActivator {
 // if (this.oauth2Connector != null) {
 // this.oauth2Connector.stop();
 // this.oauth2Connector = null;
+// }
+
+// this.configRegistryConnector = new ConfigRegistryConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
+// this.configRegistryConnector.start(bundleContext);
+
+// if (this.configRegistryConnector != null) {
+// this.configRegistryConnector.stop();
+// this.configRegistryConnector = null;
 // }

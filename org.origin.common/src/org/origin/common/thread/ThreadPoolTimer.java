@@ -8,11 +8,16 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @see org.apache.activemq.transport.AbstractInactivityMonitor
  *
  */
 public class ThreadPoolTimer {
+
+	protected static Logger LOG = LoggerFactory.getLogger(ThreadPoolTimer.class);
 
 	// monitor every 10 seconds
 	protected static long DEFAULT_TIMER_INTERVAL_TIME_MILLS = 10 * 1000; // 10 seconds
@@ -189,7 +194,7 @@ public class ThreadPoolTimer {
 						}
 
 						if (debug) {
-							System.out.println(toString() + " run.");
+							LOG.info(toString() + " run.");
 						}
 
 						threadPoolExecutor.execute(new Runnable() {

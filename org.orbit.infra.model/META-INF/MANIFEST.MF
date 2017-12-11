@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Orbit :: Infra Model
+Bundle-SymbolicName: org.orbit.infra.model;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.orbit.infra.model.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.origin.common.json,
+ org.origin.common.rest.model,
+ org.origin.common.util,
+ org.osgi.framework;version="1.3.0"
+Export-Package: org.orbit.infra.model,
+ org.orbit.infra.model.channel,
+ org.orbit.infra.model.indexes
+Bundle-ActivationPolicy: lazy

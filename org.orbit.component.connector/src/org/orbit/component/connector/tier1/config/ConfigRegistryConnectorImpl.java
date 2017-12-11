@@ -7,9 +7,9 @@ import java.util.Map;
 import org.orbit.component.api.tier1.config.ConfigRegistry;
 import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.connector.OrbitConstants;
-import org.origin.mgm.client.api.IndexItem;
-import org.origin.mgm.client.api.IndexService;
-import org.origin.mgm.client.connector.ServiceConnectorImpl;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.ServiceConnectorImpl;
 
 public class ConfigRegistryConnectorImpl extends ServiceConnectorImpl<ConfigRegistry> implements ConfigRegistryConnector {
 

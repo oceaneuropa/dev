@@ -5,19 +5,26 @@ import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
-	private static BundleContext context;
+	protected static BundleContext context;
+	protected static Activator instance;
 
-	static BundleContext getContext() {
+	public static BundleContext getContext() {
 		return context;
+	}
+
+	public static Activator getInstance() {
+		return instance;
 	}
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+		Activator.instance = this;
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		Activator.instance = null;
 		Activator.context = null;
 	}
 

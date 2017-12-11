@@ -8,7 +8,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
-import org.orbit.component.cli.tier3.TransferAgentHelper;
+import org.orbit.component.connector.tier3.transferagent.TransferAgentHelper;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
