@@ -9,7 +9,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.orbit.os.api.Constants;
+import org.orbit.os.api.OSConstants;
 import org.orbit.os.api.apps.ProgramManifest;
 import org.origin.common.io.IOUtil;
 import org.osgi.framework.Bundle;
@@ -28,7 +28,7 @@ public class AppManifestUtil {
 		if (bundle != null) {
 			URL url = null;
 			try {
-				url = bundle.getResource(Constants.APP_MANIFEST_FULLPATH);
+				url = bundle.getResource(OSConstants.APP_MANIFEST_FULLPATH);
 
 			} catch (Exception e) {
 				System.err.println(AppManifestUtil.class.getSimpleName() + ".getAppManifest() " + e.getClass().getName() + "|" + e.getMessage());
@@ -59,7 +59,7 @@ public class AppManifestUtil {
 	 */
 	public static ProgramManifest getManifestFromAppFolder(File appFolder) {
 		ProgramManifest appManifest = null;
-		File appManifestFile = new File(appFolder, Constants.APP_MANIFEST_FULLPATH);
+		File appManifestFile = new File(appFolder, OSConstants.APP_MANIFEST_FULLPATH);
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(appManifestFile);

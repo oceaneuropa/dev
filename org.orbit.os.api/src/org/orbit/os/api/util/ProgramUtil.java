@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.orbit.os.api.Constants;
+import org.orbit.os.api.OSConstants;
 import org.orbit.os.api.apps.ProgramManifest;
 import org.origin.common.io.IOUtil;
 import org.origin.common.osgi.BundleUtil;
@@ -44,7 +44,7 @@ public class ProgramUtil {
 				try {
 					String fileName = zipEntry.getName();
 					// System.out.println(fileName);
-					if (Constants.APP_MANIFEST_FULLPATH.equals(fileName)) {
+					if (OSConstants.APP_MANIFEST_FULLPATH.equals(fileName)) {
 						appManifest = AppManifestUtil.loadManifes(zis);
 						break;
 					}
@@ -85,7 +85,7 @@ public class ProgramUtil {
 				try {
 					String fileName = zipEntry.getName();
 					// System.out.println(fileName);
-					if (Constants.APP_MANIFEST_FULLPATH.equals(fileName)) {
+					if (OSConstants.APP_MANIFEST_FULLPATH.equals(fileName)) {
 						appManifest = AppManifestUtil.loadManifes(zis);
 						break;
 					}

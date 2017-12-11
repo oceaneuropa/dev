@@ -2,7 +2,7 @@ package org.orbit.os.api;
 
 import java.io.File;
 
-public class Constants {
+public class OSConstants {
 
 	public final static String META_INF = "META-INF"; //$NON-NLS-1$
 

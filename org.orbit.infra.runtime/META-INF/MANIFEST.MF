@@ -22,17 +22,6 @@ Import-Package: javax.inject;version="1.0.0",
  org.orbit.infra.model.indexes,
  org.orbit.service.websocket,
  org.orbit.service.websocket.impl,
- org.origin.common.command,
- org.origin.common.command.impl,
- org.origin.common.jdbc,
- org.origin.common.json,
- org.origin.common.osgi,
- org.origin.common.rest,
- org.origin.common.rest.model,
- org.origin.common.rest.server,
- org.origin.common.runtime,
- org.origin.common.thread,
- org.origin.common.util,
  org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j;version="1.7.25"
@@ -40,5 +29,6 @@ Export-Package: org.orbit.infra.runtime,
  org.orbit.infra.runtime.indexes.service,
  org.orbit.infra.runtime.indexes.service.other,
  org.orbit.infra.runtime.indexes.ws
-Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"
+Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
+ org.origin.common;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

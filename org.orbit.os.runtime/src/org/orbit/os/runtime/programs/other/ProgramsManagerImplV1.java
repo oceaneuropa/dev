@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.orbit.os.api.Constants;
+import org.orbit.os.api.OSConstants;
 import org.orbit.os.api.apps.ProgramManifest;
 import org.orbit.os.api.util.AppManifestUtil;
 import org.orbit.os.api.util.ProgramUtil;
@@ -88,7 +88,7 @@ public class ProgramsManagerImplV1 implements ProgramsAndFeatures {
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(appsPath)) {
 			for (Path appPath : stream) {
 				if (Files.isDirectory(appPath)) {
-					Path manifestPath = appPath.resolve(Constants.APP_MANIFEST_FULLPATH);
+					Path manifestPath = appPath.resolve(OSConstants.APP_MANIFEST_FULLPATH);
 					if (Files.exists(manifestPath)) {
 						ProgramManifest appManifest = AppManifestUtil.loadManifes(manifestPath);
 						if (appManifest != null) {
@@ -242,7 +242,7 @@ public class ProgramsManagerImplV1 implements ProgramsAndFeatures {
 		String appFolderName = ProgramUtil.deriveAppFolderName(appManifest.getId(), appManifest.getVersion());
 		Path appFolderPath = appsPath.resolve(appFolderName);
 
-		Path manifestPath = appFolderPath.resolve(Constants.APP_MANIFEST_FULLPATH);
+		Path manifestPath = appFolderPath.resolve(OSConstants.APP_MANIFEST_FULLPATH);
 		try {
 			AppManifestUtil.saveManifest(appManifest, manifestPath);
 		} catch (IOException e) {
