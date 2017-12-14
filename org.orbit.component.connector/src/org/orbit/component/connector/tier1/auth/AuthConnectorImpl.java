@@ -9,9 +9,9 @@ import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.ServiceConnectorImpl;
+import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class AuthConnectorImpl extends ServiceConnectorImpl<Auth> implements AuthConnector {
+public class AuthConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<Auth> implements AuthConnector {
 
 	/**
 	 * 

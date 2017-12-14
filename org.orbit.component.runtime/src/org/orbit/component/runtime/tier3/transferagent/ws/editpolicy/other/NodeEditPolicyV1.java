@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.transferagent.ws.editpolicy.other;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.Requests;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 import org.orbit.component.runtime.tier3.transferagent.ws.command.other.NodeCreateCommandV1;
 import org.orbit.component.runtime.tier3.transferagent.ws.command.other.NodeDeleteCommandV1;
@@ -25,25 +25,25 @@ public class NodeEditPolicyV1 extends AbstractWSEditPolicyV1 {
 	@Override
 	public ICommand getCommand(EditpolicyWSApplicationResource resource, Request request) {
 		String requestName = request.getRequestName();
-		if (OrbitConstants.Requests.LIST_NODES.equals(requestName)) {
+		if (Requests.LIST_NODES.equals(requestName)) {
 			return new NodeListCommandV1(service, request);
 
-		} else if (OrbitConstants.Requests.GET_NODE.equals(requestName)) {
+		} else if (Requests.GET_NODE.equals(requestName)) {
 			return new NodeGetCommandV1(service, request);
 
-		} else if (OrbitConstants.Requests.NODE_EXIST.equals(requestName)) {
+		} else if (Requests.NODE_EXIST.equals(requestName)) {
 			return new NodeExistCommandV1(service, request);
 
-		} else if (OrbitConstants.Requests.CREATE_NODE.equals(requestName)) {
+		} else if (Requests.CREATE_NODE.equals(requestName)) {
 			return new NodeCreateCommandV1(service, request);
 
-		} else if (OrbitConstants.Requests.DELETE_NODE.equals(requestName)) {
+		} else if (Requests.DELETE_NODE.equals(requestName)) {
 			return new NodeDeleteCommandV1(service, request);
 
-		} else if (OrbitConstants.Requests.START_NODE.equals(requestName)) {
+		} else if (Requests.START_NODE.equals(requestName)) {
 			return new NodeStartCommandV1(service, request);
 
-		} else if (OrbitConstants.Requests.STOP_NODE.equals(requestName)) {
+		} else if (Requests.STOP_NODE.equals(requestName)) {
 			return new NodeStopCommandV1(service, request);
 		}
 

@@ -3,9 +3,9 @@ package org.orbit.component.runtime.tier3.transferagent.ws.command.other;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.component.model.tier3.transferagent.ModelConverter;
 import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
+import org.orbit.component.runtime.tier3.transferagent.util.ModelConverter;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommandResult;

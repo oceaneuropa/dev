@@ -65,7 +65,7 @@ public class Program {
 		return this.programManifest;
 	}
 
-	public Program.RUNTIME_STATE getRuntimeState() {
+	public RUNTIME_STATE getRuntimeState() {
 		return this.runtimeState;
 	}
 

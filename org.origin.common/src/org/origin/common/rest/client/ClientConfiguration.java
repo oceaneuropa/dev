@@ -1,13 +1,12 @@
 package org.origin.common.rest.client;
 
 import java.net.URI;
+import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -16,7 +15,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
@@ -25,52 +23,41 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 public class ClientConfiguration {
 
-	protected static Map<String, ClientConfiguration> configMap = new HashMap<String, ClientConfiguration>();
+	public static synchronized ClientConfiguration create(String fullUrl) {
+		try {
+			String hostUrl = null;
+			String contextRoot = null;
 
-	/**
-	 * 
-	 * @param url
-	 * @param contextRoot
-	 * @param username
-	 * @return
-	 */
-	public static synchronized ClientConfiguration get(String url, String contextRoot, String username) {
-		String key = url + "::" + contextRoot + "::" + username;
-		ClientConfiguration config = configMap.get(key);
-		if (config == null) {
-			config = new ClientConfiguration(url, contextRoot);
-			config.setUsername(username);
-			configMap.put(key, config);
+			URL url = new URL(fullUrl.trim());
+
+			String fullURL = url.toExternalForm();
+			String path = url.getPath();
+
+			if (path != null && !path.isEmpty()) {
+				hostUrl = fullURL.substring(0, fullURL.indexOf(path));
+				contextRoot = path;
+			} else {
+				hostUrl = fullURL;
+			}
+
+			if (hostUrl == null) {
+				hostUrl = "";
+			}
+			if (contextRoot == null) {
+				contextRoot = "";
+			}
+
+			return new ClientConfiguration(hostUrl, contextRoot);
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		return config;
+
+		return null;
 	}
 
-	/**
-	 * 
-	 * @param url
-	 * @param contextRoot
-	 * @param username
-	 * @return
-	 */
-	public static synchronized ClientConfiguration get(String url, String contextRoot, String username, String password) {
-		String key = url + "::" + contextRoot + "::" + username;
-		ClientConfiguration config = configMap.get(key);
-		if (config == null) {
-			config = new ClientConfiguration(url, contextRoot);
-			config.setUsername(username);
-			if (password != null) {
-				config.setPassword(password);
-			}
-			configMap.put(key, config);
-		} else {
-			String oldPassword = config.getPassword();
-			if ((oldPassword == null && password != null) && (password != null && !password.equals(oldPassword))) {
-				// need to reset any cached login result
-
-				config.setPassword(password);
-			}
-		}
-		return config;
+	public static synchronized ClientConfiguration get(String hostUrl, String contextRoot, String username, String password) {
+		return new ClientConfiguration(hostUrl, contextRoot);
 	}
 
 	protected static TrustManager[] TRUST = new TrustManager[] { new X509TrustManager() {
@@ -101,11 +88,9 @@ public class ClientConfiguration {
 	protected String scheme;
 	protected String host;
 	protected int port;
-
 	protected String contextRoot;
-
-	protected String username;
-	protected String password;
+	protected String tokenType = "Bearer";
+	protected String accessToken = "";
 
 	/**
 	 * 
@@ -155,13 +140,24 @@ public class ClientConfiguration {
 		this.contextRoot = contextRoot;
 	}
 
-	public String getId() {
-		String id = this.url + "::" + this.contextRoot + "::" + this.username;
-		return id;
+	public String getTokenType() {
+		return this.tokenType;
+	}
+
+	public void setTokenType(String tokenType) {
+		this.tokenType = tokenType;
+	}
+
+	public String getAccessToken() {
+		return this.accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 
 	public String getUrl() {
-		return url;
+		return this.url;
 	}
 
 	public void setUrl(String url) {
@@ -169,7 +165,7 @@ public class ClientConfiguration {
 	}
 
 	public String getScheme() {
-		return scheme;
+		return this.scheme;
 	}
 
 	public void setScheme(String scheme) {
@@ -177,7 +173,7 @@ public class ClientConfiguration {
 	}
 
 	public String getHost() {
-		return host;
+		return this.host;
 	}
 
 	public void setHost(String host) {
@@ -185,7 +181,7 @@ public class ClientConfiguration {
 	}
 
 	public int getPort() {
-		return port;
+		return this.port;
 	}
 
 	public void setPort(int port) {
@@ -193,36 +189,22 @@ public class ClientConfiguration {
 	}
 
 	public String getContextRoot() {
-		return contextRoot;
+		return this.contextRoot;
 	}
 
 	public void setContextRoot(String contextRoot) {
 		this.contextRoot = contextRoot;
 	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public Client createClient() {
 		Client client = null;
+
 		ClientConfig clientCfg = new ClientConfig();
 		clientCfg.register(JacksonFeature.class);
 		clientCfg.register(MultiPartFeature.class);
 
 		String scheme = getScheme();
+
 		if ("https".equalsIgnoreCase(scheme)) {
 			SSLContext sslCtx = null;
 			try {
@@ -236,11 +218,14 @@ public class ClientConfiguration {
 				e.printStackTrace();
 			}
 			client = ClientBuilder.newBuilder().register(MultiPartFeature.class).withConfig(clientCfg).hostnameVerifier(new TrustAllHostNameVerifier()).sslContext(sslCtx).build();
+
 		} else if ("http".equalsIgnoreCase(scheme)) {
 			client = ClientBuilder.newBuilder().register(MultiPartFeature.class).withConfig(clientCfg).build();
+
 		} else {
 			throw new IllegalArgumentException("URL is invalid.");
 		}
+
 		return client;
 	}
 
@@ -291,23 +276,68 @@ public class ClientConfiguration {
 		return UriBuilder.fromPath(contextRoot).scheme(this.scheme).host(this.host).port(this.port).build();
 	}
 
-	/**
-	 * 
-	 * @param builder
-	 * @return
-	 */
-	public Builder updateHeaders(Builder builder) {
-		if (builder != null) {
-
-		}
-		return builder;
-	}
-
-	public static void main(String[] args) {
-		ClientConfiguration config = new ClientConfiguration("http://127.0.0.1:10001/orbit/v1", null);
-	}
-
 }
+
+// protected static Map<String, ClientConfiguration> configMap = new HashMap<String, ClientConfiguration>();
+
+// protected String username;
+// protected String password;
+
+// /**
+// *
+// * @param url
+// * @param contextRoot
+// * @param username
+// * @return
+// */
+// public static synchronized ClientConfiguration get(String url, String contextRoot, String username, String password) {
+// String key = url + "::" + contextRoot + "::" + username;
+// ClientConfiguration config = configMap.get(key);
+// if (config == null) {
+// config = new ClientConfiguration(url, contextRoot);
+// config.setUsername(username);
+// if (password != null) {
+// config.setPassword(password);
+// }
+// configMap.put(key, config);
+// } else {
+// String oldPassword = config.getPassword();
+// if ((oldPassword == null && password != null) && (password != null && !password.equals(oldPassword))) {
+// // need to reset any cached login result
+//
+// config.setPassword(password);
+// }
+// }
+// return config;
+// }
+
+// public static synchronized ClientConfiguration get(String hostUrl, String contextRoot, String username, String password) {
+// ClientConfiguration config = new ClientConfiguration(hostUrl, contextRoot);
+// config.setUsername(username);
+// config.setPassword(password);
+// return config;
+// }
+
+// public String getId() {
+// String id = this.url + "::" + this.contextRoot + "::" + this.username;
+// return id;
+// }
+
+// public String getUsername() {
+// return username;
+// }
+//
+// public void setUsername(String username) {
+// this.username = username;
+// }
+//
+// public String getPassword() {
+// return password;
+// }
+//
+// public void setPassword(String password) {
+// this.password = password;
+// }
 
 /// **
 // *
@@ -331,4 +361,20 @@ public class ClientConfiguration {
 // this.host = host;
 // this.port = port;
 // this.contextRoot = contextRoot;
+// }
+
+// /**
+// *
+// * @param builder
+// * @return
+// */
+// public Builder updateHeaders(Builder builder) {
+// if (builder != null) {
+//
+// }
+// return builder;
+// }
+
+// public static void main(String[] args) {
+// ClientConfiguration config = new ClientConfiguration("http://127.0.0.1:10001/orbit/v1", null);
 // }

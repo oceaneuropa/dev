@@ -12,6 +12,7 @@ import org.orbit.os.runtime.programs.ProgramException;
 import org.orbit.os.runtime.programs.ProgramsAndFeatures;
 import org.orbit.os.runtime.programs.ProgramsAndFeaturesImpl;
 import org.orbit.os.runtime.util.SetupUtil;
+import org.orbit.os.runtime.world.Worlds;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.editpolicy.WSEditPoliciesSupport;
@@ -264,6 +265,11 @@ public class GAIAImpl implements GAIA {
 		public WSCommand getCommand(Request request) {
 			return this.editPoliciesSupport.getCommand(request);
 		}
+	}
+
+	@Override
+	public Worlds getWorlds() {
+		return null;
 	}
 
 }

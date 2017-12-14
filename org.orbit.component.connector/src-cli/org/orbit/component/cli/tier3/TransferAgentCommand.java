@@ -6,10 +6,9 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentHelper;
 import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
 import org.orbit.component.model.tier3.transferagent.dto.TransferAgentResponseConverter;
@@ -19,6 +18,7 @@ import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.rest.model.Request;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
@@ -33,27 +33,21 @@ public class TransferAgentCommand implements Annotated {
 	protected static String[] NODESPACE_TITLES = new String[] { "Name" };
 	protected static String[] NODE_TITLES = new String[] { "Name" };
 
-	protected BundleContext bundleContext;
 	protected String scheme = "ta";
 
 	@Dependency
-	protected DomainManagementConnector domainMgmtConnector;
-	@Dependency
-	protected TransferAgentConnector transferAgentConnector;
-
-	/**
-	 * 
-	 * @param bundleContext
-	 */
-	public TransferAgentCommand(BundleContext bundleContext) {
-		this.bundleContext = bundleContext;
-	}
+	protected DomainManagementConnector domainConnector;
+	// @Dependency
+	// protected TransferAgentConnector transferAgentConnector;
+	// protected ServiceConnectorAdapterV1<TransferAgent> transferAgentConnector;
+	// protected ServiceConnectorAdapterV2 transferAgentConnector;
+	protected ServiceConnectorAdapter<TransferAgent> taConnector;
 
 	protected String getScheme() {
 		return this.scheme;
 	}
 
-	public void start() {
+	public void start(final BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
 		props.put("osgi.command.function",
@@ -65,13 +59,25 @@ public class TransferAgentCommand implements Annotated {
 						"list_nodes", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
 		});
 
-		OSGiServiceUtil.register(this.bundleContext, TransferAgentCommand.class.getName(), this, props);
-		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
+		OSGiServiceUtil.register(bundleContext, TransferAgentCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
+
+		// this.transferAgentConnector = new ServiceConnectorAdapterV1<TransferAgent>(TransferAgent.class.getName());
+		// this.transferAgentConnector.start(bundleContext);
+		// this.transferAgentConnector = new ServiceConnectorAdapterV2(TransferAgent.class.getName());
+		// this.transferAgentConnector.start(bundleContext);
+		this.taConnector = new ServiceConnectorAdapter<TransferAgent>(TransferAgent.class);
+		this.taConnector.start(bundleContext);
 	}
 
-	public void stop() {
+	public void stop(final BundleContext bundleContext) {
 		OSGiServiceUtil.unregister(TransferAgentCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
+
+		if (this.taConnector != null) {
+			this.taConnector.stop(bundleContext);
+			this.taConnector = null;
+		}
 	}
 
 	@DependencyFullfilled
@@ -85,7 +91,11 @@ public class TransferAgentCommand implements Annotated {
 	}
 
 	protected TransferAgent getTransferAgent(String machineId, String transferAgentId) throws ClientException {
-		TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(this.domainMgmtConnector, this.transferAgentConnector, machineId, transferAgentId);
+		return getTransferAgent("my.jwt.token", machineId, transferAgentId);
+	}
+
+	protected TransferAgent getTransferAgent(String token, String machineId, String transferAgentId) throws ClientException {
+		TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(token, this.domainConnector, this.taConnector, machineId, transferAgentId);
 		if (transferAgent == null) {
 			LOG.error("TransferAgent is not available.");
 		}
@@ -155,7 +165,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.LIST_NODES);
+			Request request = new Request(Requests.LIST_NODES);
 			Response response = transferAgent.sendRequest(request);
 
 			NodeInfo[] nodeInfos = TransferAgentResponseConverter.INSTANCE.convertToNodeInfos(response);
@@ -187,7 +197,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.GET_NODE);
+			Request request = new Request(Requests.GET_NODE);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = transferAgent.sendRequest(request);
@@ -223,7 +233,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.NODE_EXIST);
+			Request request = new Request(Requests.NODE_EXIST);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = transferAgent.sendRequest(request);
@@ -250,7 +260,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.CREATE_NODE);
+			Request request = new Request(Requests.CREATE_NODE);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = transferAgent.sendRequest(request);
@@ -278,7 +288,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.DELETE_NODE);
+			Request request = new Request(Requests.DELETE_NODE);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = transferAgent.sendRequest(request);
@@ -347,7 +357,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.NODE_STATUS);
+			Request request = new Request(Requests.NODE_STATUS);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = transferAgent.sendRequest(request);

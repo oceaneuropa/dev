@@ -16,8 +16,8 @@ import org.orbit.infra.api.OrbitConstants;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalanceResourceImpl;
+import org.origin.common.loadbalance.LoadBalancedServiceConnector;
 import org.origin.common.loadbalance.LoadBalancer;
-import org.origin.common.loadbalance.ServiceConnector;
 import org.origin.common.loadbalance.policy.LoadBalancePolicy;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -29,7 +29,7 @@ import org.origin.common.util.Timer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, Annotated {
+public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT> implements LoadBalancedServiceConnector<SERVICE_CLIENT>, Annotated {
 
 	/* update index items every 15 seconds */
 	public static long INDEX_MONITOR_INTERVAL = 15 * Timer.SECOND;
@@ -40,18 +40,18 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	protected boolean debug = true;
 	protected IndexService indexService;
 	protected Class<?> connectorClass;
-	protected LoadBalancer<S> loadBalancer;
+	protected LoadBalancer<SERVICE_CLIENT> loadBalancer;
 	protected IndexItemsMonitor indexItemsMonitor;
 	protected ServiceRegistration<?> serviceRegistration;
 	protected ReadWriteLock rwLock = new ReentrantReadWriteLock();
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
-	protected Map<LoadBalanceResource<S>, PingMonitor> resourceToActivePingMonitorMap = new LinkedHashMap<LoadBalanceResource<S>, PingMonitor>();
+	protected Map<LoadBalanceResource<SERVICE_CLIENT>, PingMonitor> resourceToActivePingMonitorMap = new LinkedHashMap<LoadBalanceResource<SERVICE_CLIENT>, PingMonitor>();
 
 	/**
 	 * 
 	 * @param indexService
 	 */
-	public ServiceConnectorImpl(IndexService indexService) {
+	public IndexBasedLoadBalancedServiceConnectorImpl(IndexService indexService) {
 		this.indexService = indexService;
 		this.loadBalancer = createLoadBalancer();
 	}
@@ -61,7 +61,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param indexService
 	 * @param connectorClass
 	 */
-	public ServiceConnectorImpl(IndexService indexService, Class<?> connectorClass) {
+	public IndexBasedLoadBalancedServiceConnectorImpl(IndexService indexService, Class<?> connectorClass) {
 		this.indexService = indexService;
 		this.loadBalancer = createLoadBalancer();
 		this.connectorClass = connectorClass;
@@ -91,17 +91,17 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 		return this.connectorClass;
 	}
 
-	protected LoadBalancer<S> createLoadBalancer() {
-		LoadBalancer<S> loadBalancer = new LoadBalancer<S>();
+	protected LoadBalancer<SERVICE_CLIENT> createLoadBalancer() {
+		LoadBalancer<SERVICE_CLIENT> loadBalancer = new LoadBalancer<SERVICE_CLIENT>();
 		loadBalancer.setPolicy(getLoadBalancePolicy());
 		return loadBalancer;
 	}
 
-	protected LoadBalancePolicy<S> getLoadBalancePolicy() {
-		return new RoundRobinLoadBalancePolicy<S>();
+	protected LoadBalancePolicy<SERVICE_CLIENT> getLoadBalancePolicy() {
+		return new RoundRobinLoadBalancePolicy<SERVICE_CLIENT>();
 	}
 
-	public LoadBalancer<S> getLoadBalancer() {
+	public LoadBalancer<SERVICE_CLIENT> getLoadBalancer() {
 		return this.loadBalancer;
 	}
 
@@ -130,7 +130,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 		this.indexItemsMonitor = new IndexItemsMonitor(getConnectorClass().getSimpleName() + " Monitor", this.indexService) {
 			@Override
 			protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
-				return ServiceConnectorImpl.this.getIndexItems(indexService);
+				return IndexBasedLoadBalancedServiceConnectorImpl.this.getIndexItems(indexService);
 			}
 
 			@Override
@@ -179,18 +179,18 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	}
 
 	@Override
-	public S getService() {
+	public SERVICE_CLIENT getService() {
 		checkStarted();
 
 		if (this.loadBalancer.isEmpty()) {
 			updateLoadBalancer(this.loadBalancer, this.indexItemsMonitor.getLoadedIndexItems());
 		}
 
-		S service = null;
+		SERVICE_CLIENT service = null;
 		try {
 			this.rwLock.readLock().lock();
 
-			LoadBalanceResource<S> resource = this.loadBalancer.getNext();
+			LoadBalanceResource<SERVICE_CLIENT> resource = this.loadBalancer.getNext();
 			if (resource != null) {
 				service = resource.getService();
 
@@ -234,14 +234,14 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param loadBalancer
 	 * @param latestIndexItems
 	 */
-	protected synchronized void updateLoadBalancer(LoadBalancer<S> loadBalancer, List<IndexItem> latestIndexItems) {
+	protected synchronized void updateLoadBalancer(LoadBalancer<SERVICE_CLIENT> loadBalancer, List<IndexItem> latestIndexItems) {
 		this.rwLock.writeLock().lock();
 
 		try {
-			List<LoadBalanceResource<S>> existingResources = loadBalancer.getResources();
+			List<LoadBalanceResource<SERVICE_CLIENT>> existingResources = loadBalancer.getResources();
 
-			Map<Integer, LoadBalanceResource<S>> existingResourcesMap = new HashMap<Integer, LoadBalanceResource<S>>();
-			for (LoadBalanceResource<S> resource : existingResources) {
+			Map<Integer, LoadBalanceResource<SERVICE_CLIENT>> existingResourcesMap = new HashMap<Integer, LoadBalanceResource<SERVICE_CLIENT>>();
+			for (LoadBalanceResource<SERVICE_CLIENT> resource : existingResources) {
 				Integer currIndexItemId = (Integer) resource.getProperty(OrbitConstants.INDEX_ITEM_ID);
 				if (currIndexItemId == null) {
 					System.err.println(getConnectorClass().getSimpleName() + " LoadBalanceResource's 'index_item_id' property is not available.");
@@ -256,10 +256,10 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 				latestIndexItemsMap.put(indexItemId, indexItem);
 			}
 
-			List<LoadBalanceResource<S>> resourcesToRemove = new ArrayList<LoadBalanceResource<S>>();
-			List<LoadBalanceResource<S>> newResources = new ArrayList<LoadBalanceResource<S>>();
+			List<LoadBalanceResource<SERVICE_CLIENT>> resourcesToRemove = new ArrayList<LoadBalanceResource<SERVICE_CLIENT>>();
+			List<LoadBalanceResource<SERVICE_CLIENT>> newResources = new ArrayList<LoadBalanceResource<SERVICE_CLIENT>>();
 
-			for (LoadBalanceResource<S> existingResource : existingResources) {
+			for (LoadBalanceResource<SERVICE_CLIENT> existingResource : existingResources) {
 				Integer resourceIndexItemId = (Integer) existingResource.getProperty(OrbitConstants.INDEX_ITEM_ID);
 				if (resourceIndexItemId == null) {
 					System.err.println(getConnectorClass().getSimpleName() + " LoadBalanceResource's 'index_item_id' property is not available.");
@@ -280,18 +280,18 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 				Integer indexItemId = latestIndexItem.getIndexItemId();
 
 				if (!existingResourcesMap.containsKey(indexItemId)) {
-					LoadBalanceResource<S> newResource = createResource(latestIndexItem);
+					LoadBalanceResource<SERVICE_CLIENT> newResource = createResource(latestIndexItem);
 					if (newResource != null) {
 						newResources.add(newResource);
 					}
 				}
 			}
 
-			for (LoadBalanceResource<S> resourceToRemove : resourcesToRemove) {
+			for (LoadBalanceResource<SERVICE_CLIENT> resourceToRemove : resourcesToRemove) {
 				removeResource(resourceToRemove);
 			}
 
-			for (LoadBalanceResource<S> newResource : newResources) {
+			for (LoadBalanceResource<SERVICE_CLIENT> newResource : newResources) {
 				addResource(newResource);
 			}
 
@@ -305,8 +305,8 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param latestIndexItem
 	 * @return
 	 */
-	protected LoadBalanceResource<S> createResource(IndexItem latestIndexItem) {
-		LoadBalanceResource<S> newResource = null;
+	protected LoadBalanceResource<SERVICE_CLIENT> createResource(IndexItem latestIndexItem) {
+		LoadBalanceResource<SERVICE_CLIENT> newResource = null;
 
 		Integer indexItemId = latestIndexItem.getIndexItemId();
 		Map<String, Object> properties = latestIndexItem.getProperties();
@@ -315,9 +315,9 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 		newProperties.put(OrbitConstants.INDEX_ITEM_ID, indexItemId);
 		newProperties.putAll(properties);
 
-		S newService = createService(newProperties);
+		SERVICE_CLIENT newService = createService(newProperties);
 		if (newService != null) {
-			newResource = new LoadBalanceResourceImpl<S>(newService, newProperties);
+			newResource = new LoadBalanceResourceImpl<SERVICE_CLIENT>(newService, newProperties);
 			// keep a reference to the IndexItem
 			newResource.adapt(IndexItem.class, latestIndexItem);
 		}
@@ -329,7 +329,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * 
 	 * @param resource
 	 */
-	protected void addResource(LoadBalanceResource<S> resource) {
+	protected void addResource(LoadBalanceResource<SERVICE_CLIENT> resource) {
 		if (this.debug) {
 			IndexItem indexItem = resource.getAdapter(IndexItem.class);
 			Integer indexItemId = indexItem.getIndexItemId();
@@ -347,7 +347,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param resource
 	 * @param latestIndexItem
 	 */
-	protected void updateResource(LoadBalanceResource<S> resource, IndexItem latestIndexItem) {
+	protected void updateResource(LoadBalanceResource<SERVICE_CLIENT> resource, IndexItem latestIndexItem) {
 		// 1. Get IndexItem attributes
 		Integer indexItemId = latestIndexItem.getIndexItemId();
 		String indexProviderId = latestIndexItem.getIndexProviderId();
@@ -455,7 +455,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 		}
 
 		// 5. Update service properties
-		S service = resource.getService();
+		SERVICE_CLIENT service = resource.getService();
 		if (service != null) {
 			updateService(service, newProperties);
 		} else {
@@ -467,7 +467,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * 
 	 * @param resource
 	 */
-	protected void removeResource(LoadBalanceResource<S> resource) {
+	protected void removeResource(LoadBalanceResource<SERVICE_CLIENT> resource) {
 		if (this.debug) {
 			IndexItem indexItem = resource.getAdapter(IndexItem.class);
 			Integer indexItemId = indexItem.getIndexItemId();
@@ -479,7 +479,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 
 		this.loadBalancer.removeResource(resource);
 
-		S service = resource.getService();
+		SERVICE_CLIENT service = resource.getService();
 		if (service != null) {
 			this.removeService(service);
 		}
@@ -493,7 +493,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param resource
 	 * @return
 	 */
-	protected boolean isPingable(LoadBalanceResource<S> resource) {
+	protected boolean isPingable(LoadBalanceResource<SERVICE_CLIENT> resource) {
 		return (resource.getService() instanceof Pingable) ? true : false;
 	}
 
@@ -502,7 +502,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param resource
 	 * @return
 	 */
-	protected boolean hasActivePingMonitor(LoadBalanceResource<S> resource) {
+	protected boolean hasActivePingMonitor(LoadBalanceResource<SERVICE_CLIENT> resource) {
 		synchronized (this.resourceToActivePingMonitorMap) {
 			return (this.resourceToActivePingMonitorMap.containsKey(resource)) ? true : false;
 		}
@@ -514,7 +514,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param resource
 	 * @param interval
 	 */
-	protected void startActivePingMonitor(LoadBalanceResource<S> resource, long interval) {
+	protected void startActivePingMonitor(LoadBalanceResource<SERVICE_CLIENT> resource, long interval) {
 		IndexItem indexItem = resource.getAdapter(IndexItem.class);
 		System.out.println(getClass().getSimpleName() + ".startActivePingMonitor() IndexItem [" + indexItem.getName() + "]");
 
@@ -522,7 +522,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 		monitorName = "Ping Monitor [" + monitorName + "]";
 		PingMonitor pingMonitor = new PingMonitor(monitorName, resource, interval) {
 			@Override
-			void pinged(LoadBalanceResource<S> resource, boolean succeed) {
+			void pinged(LoadBalanceResource<SERVICE_CLIENT> resource, boolean succeed) {
 				updatePing(resource, succeed);
 			}
 		};
@@ -538,7 +538,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * 
 	 * @param resource
 	 */
-	protected void stopActivePingMonitor(LoadBalanceResource<S> resource) {
+	protected void stopActivePingMonitor(LoadBalanceResource<SERVICE_CLIENT> resource) {
 		IndexItem indexItem = resource.getAdapter(IndexItem.class);
 		System.out.println(getClass().getSimpleName() + ".stopActivePingMonitor() IndexItem [" + indexItem.getName() + "]");
 
@@ -556,7 +556,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param resource
 	 * @param succeed
 	 */
-	protected void updatePing(LoadBalanceResource<S> resource, boolean succeed) {
+	protected void updatePing(LoadBalanceResource<SERVICE_CLIENT> resource, boolean succeed) {
 		Date nowTime = new Date();
 		if (succeed) {
 			// ping succeeded
@@ -582,7 +582,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param properties
 	 * @return
 	 */
-	protected abstract S createService(Map<String, Object> properties);
+	protected abstract SERVICE_CLIENT createService(Map<String, Object> properties);
 
 	/**
 	 * Update an existing service.
@@ -590,27 +590,27 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 	 * @param service
 	 * @param properties
 	 */
-	protected abstract void updateService(S service, Map<String, Object> properties);
+	protected abstract void updateService(SERVICE_CLIENT service, Map<String, Object> properties);
 
 	/**
 	 * Remove an existing service.
 	 * 
 	 * @param service
 	 */
-	protected void removeService(S service) {
+	protected void removeService(SERVICE_CLIENT service) {
 
 	}
 
 	public abstract class PingMonitor extends ThreadPoolTimer {
 
-		protected LoadBalanceResource<S> resource;
+		protected LoadBalanceResource<SERVICE_CLIENT> resource;
 
 		/**
 		 * 
 		 * @param name
 		 * @param resource
 		 */
-		public PingMonitor(String name, LoadBalanceResource<S> resource) {
+		public PingMonitor(String name, LoadBalanceResource<SERVICE_CLIENT> resource) {
 			this(name, resource, 0);
 		}
 
@@ -620,7 +620,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 		 * @param resource
 		 * @param interval
 		 */
-		public PingMonitor(String name, LoadBalanceResource<S> resource, long interval) {
+		public PingMonitor(String name, LoadBalanceResource<SERVICE_CLIENT> resource, long interval) {
 			super(name);
 			setDebug(true);
 
@@ -639,7 +639,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 		}
 
 		protected void ping() {
-			S service = this.resource.getService();
+			SERVICE_CLIENT service = this.resource.getService();
 			if (service instanceof Pingable) {
 				boolean succeed = false;
 				try {
@@ -660,7 +660,7 @@ public abstract class ServiceConnectorImpl<S> implements ServiceConnector<S>, An
 		 * @param resource
 		 * @param succeed
 		 */
-		abstract void pinged(LoadBalanceResource<S> resource, boolean succeed);
+		abstract void pinged(LoadBalanceResource<SERVICE_CLIENT> resource, boolean succeed);
 	}
 
 }

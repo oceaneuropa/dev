@@ -13,7 +13,7 @@ public class ChannelWSApplication extends AbstractResourceConfigApplication {
 
 	protected ChannelService service;
 
-	public ChannelWSApplication(BundleContext bundleContext, ChannelService service) {
+	public ChannelWSApplication(final BundleContext bundleContext, final ChannelService service) {
 		super(bundleContext, service.getContextRoot());
 		this.service = service;
 

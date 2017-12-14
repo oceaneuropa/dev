@@ -1,4 +1,4 @@
-package org.origin.common.loadbalance;
+package org.origin.common.loadbalance.other;
 
 import java.util.Map;
 

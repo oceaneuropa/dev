@@ -6,6 +6,8 @@ public class OrbitConstants {
 	// IndexItem
 	// ----------------------------------------------------------------------------------------
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
+	public static String ORBIT_URL = "orbit.url";
+	public static String ORBIT_TOKEN = "orbit.token";
 
 	// ----------------------------------------------------------------------------------------
 	// Channel
@@ -111,10 +113,13 @@ public class OrbitConstants {
 	public static String TRANSFER_AGENT_TYPE = "TransferAgent"; // type of index item for TransferAgent service
 
 	// index item properties
-	public static String TRANSFER_AGENT_MACHINE_ID = "transfer_agent.machine_id";
-	public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "transfer_agent.id";
-	public static String TRANSFER_AGENT_NAME = "transfer_agent.name";
-	public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
-	public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
+	// public static String TRANSFER_AGENT_MACHINE_ID = "transfer_agent.machine_id";
+	// public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "transfer_agent.id";
+	// public static String TRANSFER_AGENT_NAME = "transfer_agent.name";
+	// public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
+	// public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
+	public static String TRANSFER_AGENT_MACHINE_ID = "machine_id";
+	public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "id";
+	public static String TRANSFER_AGENT_NAME = "name";
 
 }

@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.domain.editpolicy;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.Requests;
 import org.orbit.component.runtime.tier3.domain.command.NodeConfigAddCommand;
 import org.orbit.component.runtime.tier3.domain.command.NodeConfigGetCommand;
 import org.orbit.component.runtime.tier3.domain.command.NodeConfigRemoveCommand;
@@ -24,19 +24,19 @@ public class NodeConfigEditPolicy extends AbstractWSEditPolicyV1 {
 
 		String requestName = request.getRequestName();
 
-		if (OrbitConstants.Requests.GET_NODE_CONFIGS.equals(requestName)) {
+		if (Requests.GET_NODE_CONFIGS.equals(requestName)) {
 			return new NodeConfigsGetCommand(service, request);
 
-		} else if (OrbitConstants.Requests.GET_NODE_CONFIG.equals(requestName)) {
+		} else if (Requests.GET_NODE_CONFIG.equals(requestName)) {
 			return new NodeConfigGetCommand(service, request);
 
-		} else if (OrbitConstants.Requests.ADD_NODE_CONFIG.equals(requestName)) {
+		} else if (Requests.ADD_NODE_CONFIG.equals(requestName)) {
 			return new NodeConfigAddCommand(service, request);
 
-		} else if (OrbitConstants.Requests.UPDATE_NODE_CONFIG.equals(requestName)) {
+		} else if (Requests.UPDATE_NODE_CONFIG.equals(requestName)) {
 			return new NodeConfigUpdateCommand(service, request);
 
-		} else if (OrbitConstants.Requests.REMOVE_NODE_CONFIG.equals(requestName)) {
+		} else if (Requests.REMOVE_NODE_CONFIG.equals(requestName)) {
 			return new NodeConfigRemoveCommand(service, request);
 		}
 

@@ -3,7 +3,6 @@ package org.orbit.os.runtime.ws;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.os.runtime.service.GAIA;
-import org.orbit.os.runtime.ws.editpolicy.GaiaWSEditPolicy;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -37,18 +36,18 @@ public class GaiaAdapter {
 		this.serviceTracker = new ServiceTracker<GAIA, GAIA>(bundleContext, GAIA.class, new ServiceTrackerCustomizer<GAIA, GAIA>() {
 			@Override
 			public GAIA addingService(ServiceReference<GAIA> reference) {
-				GAIA nodeOS = bundleContext.getService(reference);
-				doStart(bundleContext, nodeOS);
-				return nodeOS;
+				GAIA gaia = bundleContext.getService(reference);
+				doStart(bundleContext, gaia);
+				return gaia;
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<GAIA> reference, GAIA nodeOS) {
+			public void modifiedService(ServiceReference<GAIA> reference, GAIA gaia) {
 			}
 
 			@Override
-			public void removedService(ServiceReference<GAIA> reference, GAIA nodeOS) {
-				doStop(bundleContext, nodeOS);
+			public void removedService(ServiceReference<GAIA> reference, GAIA gaia) {
+				doStop(bundleContext, gaia);
 			}
 		});
 		this.serviceTracker.open();
@@ -68,32 +67,32 @@ public class GaiaAdapter {
 	/**
 	 * 
 	 * @param bundleContext
-	 * @param nodeOS
+	 * @param gaia
 	 */
-	protected void doStart(BundleContext bundleContext, GAIA nodeOS) {
+	protected void doStart(BundleContext bundleContext, GAIA gaia) {
 		LOG.info("doStart()");
 
 		// Install web service edit policies
-		WSEditPolicies editPolicies = nodeOS.getEditPolicies();
-		editPolicies.uninstallEditPolicy(GaiaWSEditPolicy.ID); // ensure NodeOSWSEditPolicy instance is not duplicated
+		WSEditPolicies editPolicies = gaia.getEditPolicies();
+		editPolicies.uninstallEditPolicy(GaiaWSEditPolicy.ID); // ensure GaiaWSEditPolicy instance is not duplicated
 		editPolicies.installEditPolicy(new GaiaWSEditPolicy());
 
 		// Start web service
-		this.webServiceApp = new GaiaWSApplication(bundleContext, nodeOS);
+		this.webServiceApp = new GaiaWSApplication(bundleContext, gaia);
 		this.webServiceApp.start();
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
-		this.serviceIndexTimer = new GaiaIndexTimer(indexProvider);
+		this.serviceIndexTimer = new GaiaIndexTimer(indexProvider, gaia);
 		this.serviceIndexTimer.start();
 	}
 
 	/**
 	 * 
 	 * @param bundleContext
-	 * @param nodeOS
+	 * @param gaia
 	 */
-	protected void doStop(BundleContext bundleContext, GAIA nodeOS) {
+	protected void doStop(BundleContext bundleContext, GAIA gaia) {
 		LOG.info("doStop()");
 
 		// Start index timer
@@ -109,7 +108,7 @@ public class GaiaAdapter {
 		}
 
 		// Uninstall web service edit policies
-		WSEditPolicies editPolicies = nodeOS.getEditPolicies();
+		WSEditPolicies editPolicies = gaia.getEditPolicies();
 		editPolicies.uninstallEditPolicy(GaiaWSEditPolicy.ID);
 	}
 

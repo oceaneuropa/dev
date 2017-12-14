@@ -1,7 +1,7 @@
 package org.orbit.component.api.tier2.appstore;
 
-import org.origin.common.loadbalance.ServiceConnector;
+import org.origin.common.loadbalance.LoadBalancedServiceConnector;
 
-public interface AppStoreConnector extends ServiceConnector<AppStore> {
+public interface AppStoreConnector extends LoadBalancedServiceConnector<AppStore> {
 
 }

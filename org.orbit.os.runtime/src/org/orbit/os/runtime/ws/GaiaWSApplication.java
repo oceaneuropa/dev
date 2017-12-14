@@ -15,16 +15,16 @@ public class GaiaWSApplication extends AbstractResourceConfigApplication {
 	protected static Logger LOG = LoggerFactory.getLogger(GaiaWSApplication.class);
 
 	protected ServiceRegistration<?> serviceRegistration;
-	protected GAIA service;
+	protected GAIA gaia;
 
-	public GaiaWSApplication(BundleContext bundleContext, GAIA service) {
-		super(bundleContext, service.getContextRoot());
-		this.service = service;
+	public GaiaWSApplication(final BundleContext bundleContext, final GAIA gaia) {
+		super(bundleContext, gaia.getContextRoot());
+		this.gaia = gaia;
 
 		AbstractBinder serviceBinder = new AbstractBinder() {
 			@Override
 			protected void configure() {
-				bind(service).to(GAIA.class);
+				bind(gaia).to(GAIA.class);
 			}
 		};
 
@@ -40,7 +40,7 @@ public class GaiaWSApplication extends AbstractResourceConfigApplication {
 	}
 
 	public GAIA getService() {
-		return this.service;
+		return this.gaia;
 	}
 
 }

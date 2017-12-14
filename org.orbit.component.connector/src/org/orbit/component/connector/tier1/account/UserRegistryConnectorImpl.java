@@ -9,9 +9,9 @@ import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.ServiceConnectorImpl;
+import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class UserRegistryConnectorImpl extends ServiceConnectorImpl<UserRegistry> implements UserRegistryConnector {
+public class UserRegistryConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<UserRegistry> implements UserRegistryConnector {
 
 	/**
 	 * 

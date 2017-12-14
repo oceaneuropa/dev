@@ -1,11 +1,14 @@
 package org.origin.common.rest.client;
 
 import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation.Builder;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
@@ -36,7 +39,7 @@ public abstract class AbstractWSClient implements Pingable {
 	}
 
 	public ClientConfiguration getClientConfiguration() {
-		return config;
+		return this.config;
 	}
 
 	/**
@@ -112,7 +115,17 @@ public abstract class AbstractWSClient implements Pingable {
 	 * @return
 	 */
 	public Builder updateHeaders(Builder builder) {
-		return this.config.updateHeaders(builder);
+		String tokenType = this.config.getTokenType();
+		String accessToken = this.config.getAccessToken();
+
+		List<String> cookies = new ArrayList<String>();
+		cookies.add("tokenType=" + tokenType);
+		cookies.add("accessToken=" + accessToken);
+
+		builder = builder.header(HttpHeaders.AUTHORIZATION, tokenType + " " + accessToken);
+		builder = builder.header(HttpHeaders.COOKIE, cookies);
+
+		return builder;
 	}
 
 	/**

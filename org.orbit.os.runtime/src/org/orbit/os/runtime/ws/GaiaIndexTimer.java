@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.os.runtime.Activator;
 import org.orbit.os.runtime.OSConstants;
 import org.orbit.os.runtime.service.GAIA;
 import org.origin.common.thread.ServiceIndexTimer;
@@ -15,35 +14,39 @@ import org.origin.common.thread.ServiceIndexTimerImpl;
 
 public class GaiaIndexTimer extends ServiceIndexTimerImpl<IndexProvider, GAIA, IndexItem> implements ServiceIndexTimer<IndexProvider, GAIA, IndexItem> {
 
+	protected GAIA gaia;
+
 	/**
 	 * 
 	 * @param indexProvider
+	 * @param gaia
 	 */
-	public GaiaIndexTimer(IndexProvider indexProvider) {
-		super("Index Timer [NodeOS Service]", indexProvider);
+	public GaiaIndexTimer(IndexProvider indexProvider, GAIA gaia) {
+		super("Index Timer [" + gaia.getName() + "]", indexProvider);
 		setDebug(false);
+		this.gaia = gaia;
 	}
 
 	@Override
 	public GAIA getService() {
-		return Activator.getInstance().getGAIA();
+		return this.gaia;
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, GAIA service) throws IOException {
-		String name = service.getName();
+	public IndexItem getIndex(IndexProvider indexProvider, GAIA gaia) throws IOException {
+		String name = gaia.getName();
 
 		return indexProvider.getIndexItem(OSConstants.OS_INDEXER_ID, OSConstants.OS_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, GAIA service) throws IOException {
-		String OSName = service.getOSName();
-		String OSVersion = service.getOSVersion();
-		String name = service.getName();
-		String hostURL = service.getHostURL();
-		String contextRoot = service.getContextRoot();
-		String nodeHome = service.getHome();
+	public IndexItem addIndex(IndexProvider indexProvider, GAIA gaia) throws IOException {
+		String OSName = gaia.getOSName();
+		String OSVersion = gaia.getOSVersion();
+		String name = gaia.getName();
+		String hostURL = gaia.getHostURL();
+		String contextRoot = gaia.getContextRoot();
+		String nodeHome = gaia.getHome();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(OSConstants.OS_PROGRAM_NAME, OSName);
@@ -58,7 +61,7 @@ public class GaiaIndexTimer extends ServiceIndexTimerImpl<IndexProvider, GAIA, I
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, GAIA service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexProvider indexProvider, GAIA gaia, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(OSConstants.LAST_HEARTBEAT_TIME, new Date().getTime());

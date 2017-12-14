@@ -45,7 +45,7 @@ public class YahooFinanceClient extends AbstractWSClient {
 	 * 
 	 */
 	public YahooFinanceClient() {
-		super(ClientConfiguration.get("http://chart.finance.yahoo.com:80", "table.csv", null));
+		super(ClientConfiguration.get("http://chart.finance.yahoo.com:80", "table.csv", null, null));
 	}
 
 	/**

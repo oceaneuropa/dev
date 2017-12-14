@@ -13,7 +13,7 @@ public class IndexServiceWSApplication extends AbstractResourceConfigApplication
 
 	protected IndexService service;
 
-	public IndexServiceWSApplication(BundleContext bundleContext, IndexService service) {
+	public IndexServiceWSApplication(final BundleContext bundleContext, final IndexService service) {
 		super(bundleContext, service.getContextRoot());
 		this.service = service;
 

@@ -6,10 +6,10 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.transferagent.ModelConverter;
 import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
 import org.orbit.component.runtime.tier3.transferagent.resource.WorkspaceNodeHelper;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
+import org.orbit.component.runtime.tier3.transferagent.util.ModelConverter;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.Request;
 import org.origin.core.resources.node.INode;

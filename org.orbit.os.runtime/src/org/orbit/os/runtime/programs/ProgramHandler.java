@@ -30,7 +30,7 @@ public interface ProgramHandler {
 
 	Program getProgram();
 
-	ProgramHandler.RUNTIME_STATE getRuntimeState();
+	RUNTIME_STATE getRuntimeState();
 
 	void activate() throws ProgramException;
 

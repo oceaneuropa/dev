@@ -17,9 +17,11 @@ public interface TransferAgent {
 
 	void update(Map<Object, Object> properties);
 
-	boolean ping();
+	boolean ping() throws ClientException;
 
 	Response sendRequest(Request request) throws ClientException;
+
+	boolean close() throws ClientException;
 
 }
 

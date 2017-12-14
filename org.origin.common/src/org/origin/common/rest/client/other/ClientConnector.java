@@ -1,4 +1,4 @@
-package org.origin.common.rest.client;
+package org.origin.common.rest.client.other;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.origin.common.rest.client.Pingable;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.TimeUtil;
 

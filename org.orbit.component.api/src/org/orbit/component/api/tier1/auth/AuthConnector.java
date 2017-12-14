@@ -1,7 +1,7 @@
 package org.orbit.component.api.tier1.auth;
 
-import org.origin.common.loadbalance.ServiceConnector;
+import org.origin.common.loadbalance.LoadBalancedServiceConnector;
 
-public interface AuthConnector extends ServiceConnector<Auth> {
+public interface AuthConnector extends LoadBalancedServiceConnector<Auth> {
 
 }

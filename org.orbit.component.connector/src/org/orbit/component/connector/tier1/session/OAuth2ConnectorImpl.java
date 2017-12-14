@@ -9,9 +9,9 @@ import org.orbit.component.api.tier1.session.OAuth2Connector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.ServiceConnectorImpl;
+import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class OAuth2ConnectorImpl extends ServiceConnectorImpl<OAuth2> implements OAuth2Connector {
+public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<OAuth2> implements OAuth2Connector {
 
 	/**
 	 * 

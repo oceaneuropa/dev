@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.domain.DomainManagementConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
@@ -143,7 +143,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.GET_NODESPACES);
+			Request request = new Request(Requests.GET_NODESPACES);
 
 			// Responses responses = transferAgent.sendRequest(request);
 			// NodespaceInfo[] nodespaceInfoResponses = transferAgent.getResponseConverter().convertToNodespaceInfos(responses);
@@ -176,7 +176,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.GET_NODESPACE);
+			Request request = new Request(Requests.GET_NODESPACE);
 			request.setParameter("nodespace", nodespace);
 
 			// Responses responses = transferAgent.sendRequest(request);
@@ -212,7 +212,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.NODESPACE_EXIST);
+			Request request = new Request(Requests.NODESPACE_EXIST);
 			request.setParameter("nodespace", nodespace);
 
 			// Responses responses = transferAgent.sendRequest(request);
@@ -245,7 +245,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.CREATE_NODESPACE);
+			Request request = new Request(Requests.CREATE_NODESPACE);
 			request.setParameter("nodespace", nodespace);
 
 			// Responses responses = transferAgent.sendRequest(request);
@@ -278,7 +278,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.DELETE_NODESPACE);
+			Request request = new Request(Requests.DELETE_NODESPACE);
 			request.setParameter("nodespace", nodespace);
 
 			// Responses responses = transferAgent.sendRequest(request);
@@ -321,7 +321,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.LIST_NODES);
+			Request request = new Request(Requests.LIST_NODES);
 			if (!Parameter.UNSPECIFIED.equals(nodespace)) {
 				request.setParameter("nodespace", nodespace);
 			}
@@ -358,7 +358,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.GET_NODE);
+			Request request = new Request(Requests.GET_NODE);
 			request.setParameter("nodespace", nodespace);
 			request.setParameter("node", nodeId);
 
@@ -396,7 +396,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.NODE_EXIST);
+			Request request = new Request(Requests.NODE_EXIST);
 			request.setParameter("nodespace", nodespace);
 			request.setParameter("node", nodeId);
 
@@ -431,7 +431,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.CREATE_NODE);
+			Request request = new Request(Requests.CREATE_NODE);
 			request.setParameter("nodespace", nodespace);
 			request.setParameter("node", nodeId);
 
@@ -466,7 +466,7 @@ public class TransferAgentCommand implements Annotated {
 				return;
 			}
 
-			Request request = new Request(OrbitConstants.Requests.DELETE_NODE);
+			Request request = new Request(Requests.DELETE_NODE);
 			request.setParameter("nodespace", nodespace);
 			request.setParameter("node", nodeId);
 

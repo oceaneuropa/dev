@@ -134,8 +134,8 @@ public class Activator implements BundleActivator {
 		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
 		this.domainMgmtCommand.start();
 
-		this.transferAgentCommand = new TransferAgentCommand(bundleContext);
-		this.transferAgentCommand.start();
+		this.transferAgentCommand = new TransferAgentCommand();
+		this.transferAgentCommand.start(bundleContext);
 	}
 
 	protected void doStop(BundleContext bundleContext) {
@@ -166,7 +166,7 @@ public class Activator implements BundleActivator {
 		}
 
 		if (this.transferAgentCommand != null) {
-			this.transferAgentCommand.stop();
+			this.transferAgentCommand.stop(bundleContext);
 			this.transferAgentCommand = null;
 		}
 

@@ -9,9 +9,9 @@ import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.ServiceConnectorImpl;
+import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class AppStoreConnectorImpl extends ServiceConnectorImpl<AppStore> implements AppStoreConnector {
+public class AppStoreConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<AppStore> implements AppStoreConnector {
 
 	/**
 	 * 

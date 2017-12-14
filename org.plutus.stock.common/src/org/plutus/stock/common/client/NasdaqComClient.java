@@ -44,7 +44,7 @@ public class NasdaqComClient extends AbstractWSClient {
 	 * 
 	 */
 	public NasdaqComClient() {
-		super(ClientConfiguration.get("http://www.nasdaq.com:80", "screening/companies-by-industry.aspx", null));
+		super(ClientConfiguration.get("http://www.nasdaq.com:80", "screening/companies-by-industry.aspx", null, null));
 	}
 
 	/**

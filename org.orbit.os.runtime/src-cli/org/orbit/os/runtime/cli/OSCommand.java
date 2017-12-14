@@ -54,10 +54,9 @@ public class OSCommand implements Annotated {
 		this.bundleContext = bundleContext;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "node");
+		props.put("osgi.command.scope", "gaia");
 		props.put("osgi.command.function",
 				new String[] { //
-						"startnodeos", "stopnodeos", //
 						"listapps", "installapp", "uninstallapp", //
 						"activateapp", "deactivateapp", //
 						"startapp", "stopapp" //

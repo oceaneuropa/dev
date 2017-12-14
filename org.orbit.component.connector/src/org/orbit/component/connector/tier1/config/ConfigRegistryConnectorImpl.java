@@ -9,9 +9,9 @@ import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.ServiceConnectorImpl;
+import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class ConfigRegistryConnectorImpl extends ServiceConnectorImpl<ConfigRegistry> implements ConfigRegistryConnector {
+public class ConfigRegistryConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<ConfigRegistry> implements ConfigRegistryConnector {
 
 	/**
 	 * 

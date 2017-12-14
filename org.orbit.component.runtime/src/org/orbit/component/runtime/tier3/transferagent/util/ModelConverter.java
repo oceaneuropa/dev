@@ -1,4 +1,4 @@
-package org.orbit.component.model.tier3.transferagent;
+package org.orbit.component.runtime.tier3.transferagent.util;
 
 import java.net.URI;
 

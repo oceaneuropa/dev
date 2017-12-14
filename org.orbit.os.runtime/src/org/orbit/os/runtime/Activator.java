@@ -9,7 +9,6 @@ import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.infra.api.indexes.IndexServiceUtil;
 import org.orbit.os.runtime.cli.OSCommand;
 import org.orbit.os.runtime.service.GAIA;
-import org.orbit.os.runtime.util.SetupUtil;
 import org.orbit.os.runtime.ws.GaiaAdapter;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
@@ -93,14 +92,13 @@ public class Activator implements BundleActivator {
 	 */
 	protected void doStart(BundleContext bundleContext, IndexProviderConnector connector) {
 		// Get IndexProvider load balancer
-		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		SetupUtil.loadNodeConfigIniProperties(bundleContext, indexProviderProps);
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OSConstants.COMPONENT_INDEX_SERVICE_URL);
-		IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, indexProviderProps);
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, OSConstants.COMPONENT_INDEX_SERVICE_URL);
+		IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, properties);
 
 		// Start service adapter
-		gaiaAdapter = new GaiaAdapter(indexProviderLoadBalancer);
-		gaiaAdapter.start(bundleContext);
+		this.gaiaAdapter = new GaiaAdapter(indexProviderLoadBalancer);
+		this.gaiaAdapter.start(bundleContext);
 	}
 
 	/**
@@ -109,10 +107,12 @@ public class Activator implements BundleActivator {
 	 */
 	protected void doStop(BundleContext bundleContext) {
 		// Stop service adapter
-		if (gaiaAdapter != null) {
-			gaiaAdapter.stop(bundleContext);
-			gaiaAdapter = null;
+		if (this.gaiaAdapter != null) {
+			this.gaiaAdapter.stop(bundleContext);
+			this.gaiaAdapter = null;
 		}
 	}
 
 }
+
+// SetupUtil.loadNodeConfigIniProperties(bundleContext, indexProviderProps);

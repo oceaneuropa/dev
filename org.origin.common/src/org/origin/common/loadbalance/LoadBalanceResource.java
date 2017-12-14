@@ -4,19 +4,19 @@ import java.util.Map;
 
 import org.origin.common.adapter.IAdaptable;
 
-public interface LoadBalanceResource<S> extends IAdaptable {
+public interface LoadBalanceResource<SERVICE> extends IAdaptable {
 
 	/**
 	 * 
 	 * @param service
 	 */
-	void setService(S service);
+	void setService(SERVICE service);
 
 	/**
 	 * 
 	 * @return
 	 */
-	S getService();
+	SERVICE getService();
 
 	/**
 	 * 

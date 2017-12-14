@@ -6,10 +6,10 @@ import java.util.UUID;
 
 import org.origin.common.adapter.AdaptorSupport;
 
-public class LoadBalanceResourceImpl<S> implements LoadBalanceResource<S> {
+public class LoadBalanceResourceImpl<SERVICE> implements LoadBalanceResource<SERVICE> {
 
 	protected String id;
-	protected S service;
+	protected SERVICE service;
 	protected Map<String, Object> properties = new Hashtable<String, Object>();
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
@@ -17,7 +17,7 @@ public class LoadBalanceResourceImpl<S> implements LoadBalanceResource<S> {
 	 * 
 	 * @param service
 	 */
-	public LoadBalanceResourceImpl(S service) {
+	public LoadBalanceResourceImpl(SERVICE service) {
 		this(service, UUID.randomUUID().toString());
 	}
 
@@ -26,7 +26,7 @@ public class LoadBalanceResourceImpl<S> implements LoadBalanceResource<S> {
 	 * @param service
 	 * @param id
 	 */
-	public LoadBalanceResourceImpl(S service, String id) {
+	public LoadBalanceResourceImpl(SERVICE service, String id) {
 		if (service == null) {
 			throw new IllegalArgumentException("service is null.");
 		}
@@ -42,7 +42,7 @@ public class LoadBalanceResourceImpl<S> implements LoadBalanceResource<S> {
 	 * @param service
 	 * @param properties
 	 */
-	public LoadBalanceResourceImpl(S service, Map<String, Object> properties) {
+	public LoadBalanceResourceImpl(SERVICE service, Map<String, Object> properties) {
 		if (service == null) {
 			throw new IllegalArgumentException("service is null.");
 		}
@@ -65,12 +65,12 @@ public class LoadBalanceResourceImpl<S> implements LoadBalanceResource<S> {
 	}
 
 	@Override
-	public void setService(S service) {
+	public void setService(SERVICE service) {
 		this.service = service;
 	}
 
 	@Override
-	public S getService() {
+	public SERVICE getService() {
 		return this.service;
 	}
 

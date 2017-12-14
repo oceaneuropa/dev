@@ -17,7 +17,7 @@ import org.origin.common.rest.util.ResponseUtil;
 public class JIRAWebServiceClient extends AbstractWSClient {
 
 	public JIRAWebServiceClient() {
-		super(ClientConfiguration.get("https://some.company.com:443", "browse/some-ticket", null));
+		super(ClientConfiguration.get("https://some.company.com:443", "browse/some-ticket", null, null));
 	}
 
 	public JIRAWebServiceClient(ClientConfiguration config) {
