@@ -1,8 +1,6 @@
 package org.origin.common.rest.client;
 
 import java.net.ConnectException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
@@ -13,7 +11,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 
-import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.util.ResponseUtil;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -61,19 +58,22 @@ public abstract class AbstractWSClient implements Pingable {
 	protected void checkResponse(Response response) throws ClientException {
 		if (response != null && response.getStatusInfo() != null) {
 			if (!Family.SUCCESSFUL.equals(response.getStatusInfo().getFamily())) {
-				ErrorDTO error = null;
-				try {
-					error = response.readEntity(ErrorDTO.class);
-				} catch (Exception e) {
-					// e.printStackTrace();
-					System.err.println(getClass().getSimpleName() + ".checkResponse(Response) Exception [" + e.getClass().getSimpleName() + "] " + e.getMessage());
-					throw new ClientException(500, e.getMessage(), null);
-				}
-				if (error != null) {
-					throw new ClientException(response.getStatus(), error.getMessage(), null);
-				} else {
-					throw new ClientException(response);
-				}
+				// ErrorDTO error = null;
+				// try {
+				// // String responseString = response.readEntity(String.class);
+				// error = response.readEntity(ErrorDTO.class);
+				// } catch (Exception e) {
+				// // e.printStackTrace();
+				// // System.err.println(getClass().getSimpleName() + ".checkResponse(Response) Exception [" + e.getClass().getSimpleName() + "] " +
+				// e.getMessage());
+				// // throw new ClientException(500, e.getMessage(), null);
+				// }
+				// if (error != null) {
+				// throw new ClientException(response.getStatus(), error.getMessage(), null);
+				// } else {
+				// throw new ClientException(response);
+				// }
+				throw new ClientException(response);
 			}
 		}
 	}
@@ -118,11 +118,28 @@ public abstract class AbstractWSClient implements Pingable {
 		String tokenType = this.config.getTokenType();
 		String accessToken = this.config.getAccessToken();
 
-		List<String> cookies = new ArrayList<String>();
-		cookies.add("tokenType=" + tokenType);
-		cookies.add("accessToken=" + accessToken);
+		if (accessToken != null && !accessToken.isEmpty()) {
+			builder = builder.header(HttpHeaders.AUTHORIZATION, tokenType + " " + accessToken);
+		}
 
-		builder = builder.header(HttpHeaders.AUTHORIZATION, tokenType + " " + accessToken);
+		String cookies = "";
+		if (accessToken != null && !accessToken.isEmpty()) {
+			cookies += ("tokenType=" + tokenType);
+			cookies += (";accessToken=" + accessToken);
+		}
+		// Map<String, String> props = this.config.getProperties();
+		// if (props != null) {
+		// int i = 0;
+		// for (Iterator<String> itor = props.keySet().iterator(); itor.hasNext();) {
+		// if (i > 0) {
+		// cookies += ";";
+		// }
+		// String key = itor.next();
+		// String value = props.get(key);
+		// cookies += (key + "=" + value);
+		// i++;
+		// }
+		// }
 		builder = builder.header(HttpHeaders.COOKIE, cookies);
 
 		return builder;

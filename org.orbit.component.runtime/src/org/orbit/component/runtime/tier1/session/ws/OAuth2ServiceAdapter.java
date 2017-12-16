@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.tier1.session.ws;
 
+import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
@@ -88,10 +89,8 @@ public class OAuth2ServiceAdapter {
 	 */
 	protected void startWebService(BundleContext bundleContext, OAuth2Service service) {
 		// Start web service
-		this.webServiceApp = new OAuth2WSApplication(bundleContext, service);
-		this.webServiceApp.setBundleContext(bundleContext);
-		this.webServiceApp.setContextRoot(service.getContextRoot());
-		this.webServiceApp.start();
+		this.webServiceApp = new OAuth2WSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
@@ -113,7 +112,7 @@ public class OAuth2ServiceAdapter {
 
 		// Stop web service
 		if (this.webServiceApp != null) {
-			this.webServiceApp.stop();
+			this.webServiceApp.stop(bundleContext);
 			this.webServiceApp = null;
 		}
 	}

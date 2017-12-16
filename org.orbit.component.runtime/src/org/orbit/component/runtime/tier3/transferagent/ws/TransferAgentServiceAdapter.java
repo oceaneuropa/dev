@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.tier3.transferagent.ws;
 
+import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 import org.orbit.component.runtime.tier3.transferagent.ws.editpolicy.NodeWSEditPolicy;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -87,8 +88,8 @@ public class TransferAgentServiceAdapter {
 		editPolicies.installEditPolicy(new NodeWSEditPolicy());
 
 		// Start web service
-		this.webServiceApp = new TransferAgentWSApplication(bundleContext, service);
-		this.webServiceApp.start();
+		this.webServiceApp = new TransferAgentWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
@@ -110,7 +111,7 @@ public class TransferAgentServiceAdapter {
 
 		// Stop web service
 		if (this.webServiceApp != null) {
-			this.webServiceApp.stop();
+			this.webServiceApp.stop(bundleContext);
 			this.webServiceApp = null;
 		}
 

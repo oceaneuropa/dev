@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.domain.editpolicy;
 
-import org.orbit.component.runtime.Requests;
+import org.orbit.component.runtime.common.ws.Requests;
 import org.orbit.component.runtime.tier3.domain.command.MachineConfigAddCommand;
 import org.orbit.component.runtime.tier3.domain.command.MachineConfigGetCommand;
 import org.orbit.component.runtime.tier3.domain.command.MachineConfigRemoveCommand;

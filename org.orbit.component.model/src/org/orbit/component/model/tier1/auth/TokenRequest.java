@@ -14,19 +14,19 @@ public class TokenRequest {
 	public TokenRequest() {
 	}
 
-	public String getGrant_type() {
+	public String getGrantType() {
 		return this.grant_type;
 	}
 
-	public void setGrant_type(String grant_type) {
+	public void setGrantType(String grant_type) {
 		this.grant_type = grant_type;
 	}
 
-	public String getClient_id() {
+	public String getClientId() {
 		return this.client_id;
 	}
 
-	public void setClient_id(String client_id) {
+	public void setClientId(String client_id) {
 		this.client_id = client_id;
 	}
 
@@ -34,7 +34,7 @@ public class TokenRequest {
 		return this.client_secret;
 	}
 
-	public void setClient_secret(String client_secret) {
+	public void setClientSecret(String client_secret) {
 		this.client_secret = client_secret;
 	}
 
@@ -54,11 +54,11 @@ public class TokenRequest {
 		this.password = password;
 	}
 
-	public String getRefresh_token() {
+	public String getRefreshToken() {
 		return this.refresh_token;
 	}
 
-	public void setRefresh_token(String refresh_token) {
+	public void setRefreshToken(String refresh_token) {
 		this.refresh_token = refresh_token;
 	}
 

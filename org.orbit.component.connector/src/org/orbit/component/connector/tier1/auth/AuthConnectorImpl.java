@@ -28,7 +28,7 @@ public class AuthConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImp
 
 	@Override
 	protected Auth createService(Map<String, Object> properties) {
-		return new AuthWSImpl(properties);
+		return new AuthImpl(properties);
 	}
 
 	@Override

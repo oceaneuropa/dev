@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.domain.editpolicy;
 
-import org.orbit.component.runtime.Requests;
+import org.orbit.component.runtime.common.ws.Requests;
 import org.orbit.component.runtime.tier3.domain.command.TransferAgentConfigAddCommand;
 import org.orbit.component.runtime.tier3.domain.command.TransferAgentConfigGetCommand;
 import org.orbit.component.runtime.tier3.domain.command.TransferAgentConfigRemoveCommand;

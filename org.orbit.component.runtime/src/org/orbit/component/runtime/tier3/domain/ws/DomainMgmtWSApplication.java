@@ -1,26 +1,19 @@
 package org.orbit.component.runtime.tier3.domain.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.origin.common.rest.server.AbstractResourceConfigApplication;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class DomainMgmtWSApplication extends AbstractResourceConfigApplication {
-
-	protected static Logger LOG = LoggerFactory.getLogger(DomainMgmtWSApplication.class);
-
-	protected DomainManagementService service;
+public class DomainMgmtWSApplication extends OrbitWSApplication {
 
 	/**
 	 * 
-	 * @param bundleContext
 	 * @param service
+	 * @param feature
 	 */
-	public DomainMgmtWSApplication(final BundleContext bundleContext, final DomainManagementService service) {
-		super(bundleContext, service.getContextRoot());
-		this.service = service;
+	public DomainMgmtWSApplication(final DomainManagementService service, int feature) {
+		super(service.getContextRoot(), feature);
+		adapt(DomainManagementService.class, service);
 
 		register(new AbstractBinder() {
 			@Override
@@ -31,10 +24,6 @@ public class DomainMgmtWSApplication extends AbstractResourceConfigApplication {
 		register(DomainMgmtWSMachinesResource.class);
 		register(DomainMgmtWSTransferAgentsResource.class);
 		register(DomainMgmtWSNodesResource.class);
-	}
-
-	public DomainManagementService getDomainManagementService() {
-		return this.service;
 	}
 
 }

@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.Activator;
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;

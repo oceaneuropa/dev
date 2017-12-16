@@ -15,7 +15,6 @@ public abstract class ApplicationAdapter {
 	protected BundleContext bundleContext;
 	protected ServiceTracker<Application, Application> applicationServiceTracker;
 	protected Map<ServiceReference<Application>, Application> applicationsMap;
-	protected boolean debug = true;
 
 	/**
 	 * 

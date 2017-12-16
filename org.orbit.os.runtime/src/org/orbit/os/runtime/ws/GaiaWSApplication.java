@@ -1,25 +1,15 @@
 package org.orbit.os.runtime.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.orbit.os.runtime.service.GAIA;
-import org.origin.common.rest.server.AbstractResourceConfigApplication;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.origin.common.rest.server.AbstractJerseyWSApplication;
+import org.origin.common.rest.server.FeatureConstants;
 
-public class GaiaWSApplication extends AbstractResourceConfigApplication {
+public class GaiaWSApplication extends AbstractJerseyWSApplication {
 
-	protected static Logger LOG = LoggerFactory.getLogger(GaiaWSApplication.class);
-
-	protected ServiceRegistration<?> serviceRegistration;
-	protected GAIA gaia;
-
-	public GaiaWSApplication(final BundleContext bundleContext, final GAIA gaia) {
-		super(bundleContext, gaia.getContextRoot());
-		this.gaia = gaia;
+	public GaiaWSApplication(final GAIA gaia, int feature) {
+		super(gaia.getContextRoot(), feature);
+		adapt(GAIA.class, gaia);
 
 		AbstractBinder serviceBinder = new AbstractBinder() {
 			@Override
@@ -27,34 +17,21 @@ public class GaiaWSApplication extends AbstractResourceConfigApplication {
 				bind(gaia).to(GAIA.class);
 			}
 		};
-
 		register(serviceBinder);
 		register(GaiaWSResource.class);
-
-		if (!isEnabled(JacksonFeature.class)) {
-			register(JacksonFeature.class);
-		}
-		if (!isEnabled(MultiPartFeature.class)) {
-			register(MultiPartFeature.class);
-		}
 	}
 
-	public GAIA getService() {
-		return this.gaia;
+	@Override
+	protected int checkFeature(int feature) {
+		feature = super.checkFeature(feature);
+
+		if ((feature & FeatureConstants.JACKSON) == 0) {
+			feature = feature | FeatureConstants.JACKSON;
+		}
+		if ((feature & FeatureConstants.MULTIPLEPART) == 0) {
+			feature = feature | FeatureConstants.MULTIPLEPART;
+		}
+		return feature;
 	}
 
 }
-
-// Resource.Builder pingResource = Resource.builder("ping");
-// pingResource.addMethod(GET).produces(JSON).handledBy(pingResourceGetHandler());
-// registerResources(pingResource.build());
-
-// protected Inflector<ContainerRequestContext, Response> pingResourceGetHandler() {
-// return new Inflector<ContainerRequestContext, Response>() {
-// @Override
-// public Response apply(ContainerRequestContext requestContext) {
-// int result = (getService() != null) ? 1 : 0;
-// return Response.ok(result).build();
-// }
-// };
-// }

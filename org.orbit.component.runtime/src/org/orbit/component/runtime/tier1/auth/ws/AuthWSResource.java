@@ -130,7 +130,7 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response authorize(AuthorizationRequestDTO authorizationRequestDTO) {
 		try {
-			AuthorizationResponse response = getService().onAuthorize(AuthConverter.getInstance().toRequest(authorizationRequestDTO));
+			AuthorizationResponse response = getService().authorize(AuthConverter.getInstance().toRequest(authorizationRequestDTO));
 			return Response.ok().entity(AuthConverter.getInstance().toResponseDTO(response)).build();
 
 		} catch (AuthException e) {
@@ -144,7 +144,7 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response token(TokenRequestDTO tokenRequestDTO) {
 		try {
-			TokenResponse response = getService().onToken(AuthConverter.getInstance().toRequest(tokenRequestDTO));
+			TokenResponse response = getService().getToken(AuthConverter.getInstance().toRequest(tokenRequestDTO));
 			return Response.ok().entity(AuthConverter.getInstance().toResponseDTO(response)).build();
 
 		} catch (AuthException e) {

@@ -1,6 +1,7 @@
 package org.orbit.infra.runtime.indexes.ws;
 
 import org.orbit.infra.runtime.indexes.service.IndexService;
+import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -61,8 +62,8 @@ public class IndexServiceAdapter {
 	protected void doStart(BundleContext bundleContext, IndexService service) {
 		// 1. start web service
 		LOG.debug("start web service");
-		this.webService = new IndexServiceWSApplication(bundleContext, service);
-		this.webService.start();
+		this.webService = new IndexServiceWSApplication(service, FeatureConstants.PING);
+		this.webService.start(bundleContext);
 
 		// 2. start index timer
 		LOG.debug("start index timer");
@@ -81,7 +82,7 @@ public class IndexServiceAdapter {
 		// 2. stop web service
 		LOG.debug("stop web service");
 		if (this.webService != null) {
-			this.webService.stop();
+			this.webService.stop(bundleContext);
 			this.webService = null;
 		}
 	}

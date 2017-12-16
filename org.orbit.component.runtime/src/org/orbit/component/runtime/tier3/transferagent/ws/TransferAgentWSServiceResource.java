@@ -1,11 +1,17 @@
 package org.orbit.component.runtime.tier3.transferagent.ws;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -59,11 +65,43 @@ public class TransferAgentWSServiceResource extends AbstractWSApplicationResourc
 	@POST
 	@Path("request")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response request(@Context HttpHeaders hh, Request request) {
+	public Response request( //
+			@Context HttpServletRequest servletRequest, //
+			@Context HttpServletResponse servletResponse, //
+			@Context ServletContext servletContext, //
+			@Context HttpHeaders httpHeaders, //
+			Request request) {
 		System.out.println(getClass().getSimpleName() + ".request()");
 
-		MultivaluedMap<String, String> requestHeaders = hh.getRequestHeaders();
-		Map<String, Cookie> cookies = hh.getCookies();
+		HttpSession session = servletRequest.getSession();
+		System.out.println("HttpSession:");
+		System.out.println("-----------------------------------------------------------------");
+		if (session == null) {
+			System.out.println("null");
+		} else {
+			String id = session.getId();
+			long creationTIme = session.getCreationTime();
+			long lastAccessTime = session.getLastAccessedTime();
+			boolean isNew = session.isNew();
+			int interval = session.getMaxInactiveInterval();
+			System.out.println("id = " + id);
+			System.out.println("creationTIme = " + new Date(creationTIme));
+			System.out.println("lastAccessTime = " + new Date(lastAccessTime));
+			System.out.println("isNew = " + isNew);
+			System.out.println("interval = " + interval);
+			System.out.println("Attributes:");
+			for (Enumeration<String> enumr = session.getAttributeNames(); enumr.hasMoreElements();) {
+				String attrName = enumr.nextElement();
+				Object attrValue = session.getAttribute(attrName);
+				String attrValueStr = attrValue != null ? attrValue.toString() : null;
+				System.out.println("\t" + attrName + " = " + attrValueStr);
+			}
+			session.setAttribute("accessToken", "Einstein@mtswz");
+		}
+		System.out.println("-----------------------------------------------------------------");
+
+		MultivaluedMap<String, String> requestHeaders = httpHeaders.getRequestHeaders();
+		Map<String, Cookie> cookies = httpHeaders.getCookies();
 
 		System.out.println("Headers:");
 		System.out.println("-----------------------------------------------------------------");

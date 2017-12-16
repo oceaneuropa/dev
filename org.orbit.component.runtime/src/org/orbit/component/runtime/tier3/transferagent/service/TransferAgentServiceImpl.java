@@ -7,7 +7,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier3.transferagent.util.TASetupUtil;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.editpolicy.WSEditPolicies;

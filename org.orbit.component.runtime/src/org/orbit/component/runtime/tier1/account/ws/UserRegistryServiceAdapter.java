@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.tier1.account.ws;
 
+import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
@@ -78,10 +79,8 @@ public class UserRegistryServiceAdapter {
 	 * @param service
 	 */
 	protected void doStart(BundleContext bundleContext, UserRegistryService service) {
-		this.webApp = new UserRegistryWSApplication(bundleContext, service);
-		this.webApp.setBundleContext(bundleContext);
-		this.webApp.setContextRoot(service.getContextRoot());
-		this.webApp.start();
+		this.webApp = new UserRegistryWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webApp.start(bundleContext);
 
 		// Start a timer to update the indexing of the service
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
@@ -96,7 +95,7 @@ public class UserRegistryServiceAdapter {
 	 */
 	protected void doStop(BundleContext bundleContext, UserRegistryService service) {
 		if (this.webApp != null) {
-			this.webApp.stop();
+			this.webApp.stop(bundleContext);
 			this.webApp = null;
 		}
 	}

@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.tier3.domain.ws;
 
+import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
@@ -75,16 +76,12 @@ public class DomainMgmtServiceAdapter {
 
 	protected void doStart(BundleContext bundleContext, DomainManagementService service) {
 		// Start web service
-		this.webServiceApp = new DomainMgmtWSApplication(bundleContext, service);
-		this.webServiceApp.setBundleContext(bundleContext);
-		this.webServiceApp.setContextRoot(service.getContextRoot());
-		this.webServiceApp.start();
+		this.webServiceApp = new DomainMgmtWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		this.serviceIndexTimer = new DomainMgmtServiceTimer(indexProvider, service);
-		// The web application knows its DomainMgmtServiceResource provides a ping method.
-		// So it tells the index timer that the web service can is pingable.
 		this.serviceIndexTimer.start();
 	}
 
@@ -97,7 +94,7 @@ public class DomainMgmtServiceAdapter {
 
 		// Stop web service
 		if (this.webServiceApp != null) {
-			this.webServiceApp.stop();
+			this.webServiceApp.stop(bundleContext);
 			this.webServiceApp = null;
 		}
 	}

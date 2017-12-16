@@ -4,6 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.cli.ServicesCommand;
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryServiceAdapter;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;

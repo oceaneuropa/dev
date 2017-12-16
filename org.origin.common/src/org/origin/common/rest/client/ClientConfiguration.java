@@ -89,8 +89,10 @@ public class ClientConfiguration {
 	protected String host;
 	protected int port;
 	protected String contextRoot;
+
+	// protected Map<String, String> properties;
 	protected String tokenType = "Bearer";
-	protected String accessToken = "";
+	protected String accessToken;
 
 	/**
 	 * 
@@ -140,22 +142,6 @@ public class ClientConfiguration {
 		this.contextRoot = contextRoot;
 	}
 
-	public String getTokenType() {
-		return this.tokenType;
-	}
-
-	public void setTokenType(String tokenType) {
-		this.tokenType = tokenType;
-	}
-
-	public String getAccessToken() {
-		return this.accessToken;
-	}
-
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-
 	public String getUrl() {
 		return this.url;
 	}
@@ -194,6 +180,30 @@ public class ClientConfiguration {
 
 	public void setContextRoot(String contextRoot) {
 		this.contextRoot = contextRoot;
+	}
+
+	// public Map<String, String> getProperties() {
+	// return this.properties;
+	// }
+	//
+	// public void setProperties(Map<String, String> properties) {
+	// this.properties = properties;
+	// }
+
+	public String getTokenType() {
+		return tokenType;
+	}
+
+	public void setTokenType(String tokenType) {
+		this.tokenType = tokenType;
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 
 	public Client createClient() {

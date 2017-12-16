@@ -30,8 +30,8 @@ public interface AuthService {
 
 	String getContextRoot();
 
-	AuthorizationResponse onAuthorize(AuthorizationRequest request) throws AuthException;
+	AuthorizationResponse authorize(AuthorizationRequest request) throws AuthException;
 
-	TokenResponse onToken(TokenRequest request) throws AuthException;
+	TokenResponse getToken(TokenRequest request) throws AuthException;
 
 }

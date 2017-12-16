@@ -1,24 +1,18 @@
 package org.orbit.component.runtime.tier1.account.ws.other;
 
-import java.util.Hashtable;
-
-import javax.ws.rs.core.Application;
-
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryServiceIndexTimer;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryUserAccountsWSResource;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.rest.Constants;
-import org.origin.common.rest.server.AbstractResourceConfigApplication;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 /**
  * @see https://www.ibm.com/support/knowledgecenter/en/SSHRKX_8.0.0/plan/plan_ureg.html
  *
  */
-public class UserRegistryWSApplicationV1 extends AbstractResourceConfigApplication {
+public class UserRegistryWSApplicationV1 extends OrbitWSApplication {
 
 	protected UserRegistryService service;
 	protected IndexProvider indexProvider;
@@ -27,11 +21,11 @@ public class UserRegistryWSApplicationV1 extends AbstractResourceConfigApplicati
 
 	/**
 	 * 
-	 * @param bundleContext
 	 * @param service
+	 * @param feature
 	 */
-	public UserRegistryWSApplicationV1(final BundleContext bundleContext, final UserRegistryService service) {
-		super(bundleContext, service.getContextRoot());
+	public UserRegistryWSApplicationV1(final UserRegistryService service, int feature) {
+		super(service.getContextRoot(), feature);
 		this.service = service;
 
 		register(new AbstractBinder() {
@@ -56,49 +50,51 @@ public class UserRegistryWSApplicationV1 extends AbstractResourceConfigApplicati
 		this.indexProvider = indexProvider;
 	}
 
-	@Override
-	public void start() {
-		// System.out.println(getClass().getSimpleName() + ".start()");
-		if (this.isStarted.get()) {
-			return;
-		}
-		super.start();
-		this.isStarted.set(true);
-
-		// Register Application service
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(Constants.CONTEXT_ROOT, this.contextRoot);
-		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
-
-		// Start a timer to update the indexing of the service
-		this.serviceIndexTimer = new UserRegistryServiceIndexTimer(this.indexProvider, this.service);
-		this.serviceIndexTimer.start();
-
-		System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is started.");
-	}
-
-	@Override
-	public void stop() {
-		System.out.println(getClass().getSimpleName() + ".stop()");
-		if (!this.isStarted.compareAndSet(true, false)) {
-			return;
-		}
-		super.stop();
-
-		// Stop Timers
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
-		}
-
-		// Unregister Application service
-		if (this.serviceRegistration != null) {
-			this.serviceRegistration.unregister();
-			this.serviceRegistration = null;
-		}
-
-		System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is stopped.");
-	}
+	// @Override
+	// public void start() {
+	// // System.out.println(getClass().getSimpleName() + ".start()");
+	// if (this.isStarted.get()) {
+	// return;
+	// }
+	// super.start();
+	// this.isStarted.set(true);
+	//
+	// // Register Application service
+	// Hashtable<String, Object> props = new Hashtable<String, Object>();
+	// props.put(Constants.CONTEXT_ROOT, this.contextRoot);
+	// this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
+	//
+	// // Start a timer to update the indexing of the service
+	// this.serviceIndexTimer = new UserRegistryServiceIndexTimer(this.indexProvider, this.service);
+	// this.serviceIndexTimer.start();
+	//
+	// System.out.println(getClass().getSimpleName() + ".start(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is
+	// started.");
+	// }
+	//
+	// @Override
+	// public void stop() {
+	// System.out.println(getClass().getSimpleName() + ".stop()");
+	// if (!this.isStarted.compareAndSet(true, false)) {
+	// return;
+	// }
+	// super.stop();
+	//
+	// // Stop Timers
+	// if (this.serviceIndexTimer != null) {
+	// this.serviceIndexTimer.stop();
+	// this.serviceIndexTimer = null;
+	// }
+	//
+	// // Unregister Application service
+	// if (this.serviceRegistration != null) {
+	// this.serviceRegistration.unregister();
+	// this.serviceRegistration = null;
+	// }
+	//
+	// System.out.println(getClass().getSimpleName() + ".stop(). Web service for [" + this.service.getNamespace() + "." + this.service.getName() + "] is
+	// stopped.");
+	// }
 
 }
 

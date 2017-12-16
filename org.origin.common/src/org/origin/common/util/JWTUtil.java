@@ -139,6 +139,60 @@ public class JWTUtil {
 		return jwt;
 	}
 
+	public static void print(DecodedJWT jwt) {
+		if (jwt == null) {
+			System.out.println("JWT is null.");
+			return;
+		}
+
+		String jwtId = jwt.getId();
+		String jwtKeyId = jwt.getKeyId();
+		String jwtAlgorithm = jwt.getAlgorithm();
+		String jwtIssuer = jwt.getIssuer();
+		String jwtToken = jwt.getToken();
+		String jwtHeader = jwt.getHeader();
+		String jwtPayload = jwt.getPayload();
+		String jwtSignature = jwt.getSignature();
+		String jwtType = jwt.getType();
+		String jwtContentType = jwt.getContentType();
+		String jwtSubject = jwt.getSubject();
+		Date jwtExpires = jwt.getExpiresAt();
+
+		List<String> audiences = jwt.getAudience();
+		Map<String, Claim> claimsMap = jwt.getClaims();
+
+		System.out.println("\tid: " + jwtId);
+		System.out.println("\tkeyId: " + jwtKeyId);
+		System.out.println("\talgorithm: " + jwtAlgorithm);
+		System.out.println("\tissuer: " + jwtIssuer);
+		System.out.println("\ttoken: " + jwtToken);
+		System.out.println("\theader: " + jwtHeader);
+		System.out.println("\tpayload: " + jwtPayload);
+		System.out.println("\tsignature: " + jwtSignature);
+		System.out.println("\ttype: " + jwtType);
+		System.out.println("\tcontentType: " + jwtContentType);
+		System.out.println("\tsubject: " + jwtSubject);
+		System.out.println("\texpires: " + jwtExpires);
+
+		System.out.println();
+		System.out.println("\taudiences:");
+		if (audiences != null) {
+			for (String audience : audiences) {
+				System.out.println("\t\t" + audience);
+			}
+		}
+
+		System.out.println();
+		System.out.println("\tclaims:");
+		if (claimsMap != null) {
+			for (Iterator<String> claimItor = claimsMap.keySet().iterator(); claimItor.hasNext();) {
+				String name = claimItor.next();
+				Claim claim = claimsMap.get(name);
+				System.out.println("\t\t" + name + "=" + claim);
+			}
+		}
+	}
+
 	/**
 	 * 
 	 * @param args

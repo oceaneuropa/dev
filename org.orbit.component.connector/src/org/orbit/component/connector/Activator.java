@@ -3,12 +3,12 @@ package org.orbit.component.connector;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.component.cli.AppStoreCommand;
+import org.orbit.component.cli.AuthCommand;
+import org.orbit.component.cli.DomainManagementCommand;
 import org.orbit.component.cli.ServicesCommand;
-import org.orbit.component.cli.tier1.AuthCommand;
-import org.orbit.component.cli.tier1.UserRegistryCommand;
-import org.orbit.component.cli.tier2.AppStoreCommand;
-import org.orbit.component.cli.tier3.DomainManagementCommand;
-import org.orbit.component.cli.tier3.TransferAgentCommand;
+import org.orbit.component.cli.TransferAgentCommand;
+import org.orbit.component.cli.UserRegistryCommand;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;

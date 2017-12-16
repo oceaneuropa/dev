@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.transferagent.ws.editpolicy.other;
 
-import org.orbit.component.runtime.Requests;
+import org.orbit.component.runtime.common.ws.Requests;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 import org.orbit.component.runtime.tier3.transferagent.ws.command.other.NodespaceCreateCommandV1;
 import org.orbit.component.runtime.tier3.transferagent.ws.command.other.NodespaceDeleteCommandV1;

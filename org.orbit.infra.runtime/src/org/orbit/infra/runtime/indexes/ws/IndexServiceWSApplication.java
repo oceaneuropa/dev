@@ -2,20 +2,13 @@ package org.orbit.infra.runtime.indexes.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.origin.common.rest.server.AbstractResourceConfigApplication;
-import org.osgi.framework.BundleContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.origin.common.rest.server.AbstractJerseyWSApplication;
 
-public class IndexServiceWSApplication extends AbstractResourceConfigApplication {
+public class IndexServiceWSApplication extends AbstractJerseyWSApplication {
 
-	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceWSApplication.class);
-
-	protected IndexService service;
-
-	public IndexServiceWSApplication(final BundleContext bundleContext, final IndexService service) {
-		super(bundleContext, service.getContextRoot());
-		this.service = service;
+	public IndexServiceWSApplication(final IndexService service, int feature) {
+		super(service.getContextRoot(), feature);
+		adapt(IndexService.class, service);
 
 		AbstractBinder serviceBinder = new AbstractBinder() {
 			@Override
@@ -27,10 +20,6 @@ public class IndexServiceWSApplication extends AbstractResourceConfigApplication
 		register(IndexServiceWSResource.class);
 		register(IndexItemsWSResource.class);
 		register(IndexItemWSResource.class);
-	}
-
-	public IndexService getService() {
-		return this.service;
 	}
 
 }

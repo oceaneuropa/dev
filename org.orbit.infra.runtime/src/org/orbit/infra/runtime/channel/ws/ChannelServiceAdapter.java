@@ -3,6 +3,7 @@ package org.orbit.infra.runtime.channel.ws;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.infra.runtime.channel.service.ChannelService;
+import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -74,8 +75,8 @@ public class ChannelServiceAdapter {
 
 		// 2. start web service
 		LOG.debug("start web service");
-		this.webService = new ChannelWSApplication(bundleContext, service);
-		this.webService.start();
+		this.webService = new ChannelWSApplication(service, FeatureConstants.PING);
+		this.webService.start(bundleContext);
 
 		// 3. start index timer
 		LOG.debug("start index timer");
@@ -95,7 +96,7 @@ public class ChannelServiceAdapter {
 		// 2. stop web service
 		LOG.debug("stop web service");
 		if (this.webService != null) {
-			this.webService.stop();
+			this.webService.stop(bundleContext);
 			this.webService = null;
 		}
 

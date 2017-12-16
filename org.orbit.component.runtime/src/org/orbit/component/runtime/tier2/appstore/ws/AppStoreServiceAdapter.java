@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.tier2.appstore.ws;
 
+import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
@@ -76,8 +77,8 @@ public class AppStoreServiceAdapter {
 		LOG.info("doStart()");
 
 		// Start web service
-		this.webServiceApp = new AppStoreWSApplication(bundleContext, service);
-		this.webServiceApp.start();
+		this.webServiceApp = new AppStoreWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
@@ -101,7 +102,7 @@ public class AppStoreServiceAdapter {
 
 		// Stop web service
 		if (this.webServiceApp != null) {
-			this.webServiceApp.stop();
+			this.webServiceApp.stop(bundleContext);
 			this.webServiceApp = null;
 		}
 	}

@@ -26,8 +26,3 @@ public class TransferAgentWSClient extends AbstractRequestResponseWSClient {
 	}
 
 }
-
-// @Override
-// public Response sendRequest(Request request) throws ClientException {
-// return super.sendRequest(request);
-// }

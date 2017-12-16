@@ -145,9 +145,9 @@ public class WebServiceDeployer {
 			@Override
 			public void deploy(ServiceReference<Application> reference, Application application) {
 				String contextRoot = (String) reference.getProperty(Constants.CONTEXT_ROOT);
-				if (debug) {
-					// Printer.pl("ApplicationServiceAdapter.deploy() contextRoot = " + contextRoot + " application = " + application);
-				}
+
+				// Printer.pl("ApplicationServiceAdapter.deploy() contextRoot = " + contextRoot + " application = " + application);
+
 				if (contextRoot == null) {
 					return;
 				}
@@ -171,9 +171,9 @@ public class WebServiceDeployer {
 				lock.writeLock().lock();
 				try {
 					String contextRoot = (String) reference.getProperty(Constants.CONTEXT_ROOT);
-					if (debug) {
-						// Printer.pl("ApplicationServiceAdapter.undeploy() contextRoot = " + contextRoot + " application = " + application);
-					}
+
+					// Printer.pl("ApplicationServiceAdapter.undeploy() contextRoot = " + contextRoot + " application = " + application);
+
 					if (contextRoot == null) {
 						return;
 					}
@@ -191,9 +191,9 @@ public class WebServiceDeployer {
 									}
 
 								} catch (Exception e) {
-									if (debug) {
-										Printer.pl("ApplicationServiceAdapter.undeploy(). Cannot undeply Application from HttpService. contextRoot = " + contextRoot);
-									}
+
+									Printer.pl("ApplicationServiceAdapter.undeploy(). Cannot undeply Application from HttpService. contextRoot = " + contextRoot);
+
 									e.printStackTrace();
 								}
 							}
@@ -262,8 +262,12 @@ public class WebServiceDeployer {
 
 					applicationService.setDeployedTo(httpService);
 
-					if (application instanceof DeployCallback) {
-						((DeployCallback) application).deployedTo(httpService);
+					try {
+						if (application instanceof DeployCallback) {
+							((DeployCallback) application).deployedTo(httpService);
+						}
+					} catch (Exception e) {
+						LOG.error("\tDeployCallback exception: " + e.getMessage());
 					}
 
 					LOG.info("\tApplication [" + application.getClass().getSimpleName() + "] is deployed to '" + contextRoot + "'.");

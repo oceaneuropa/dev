@@ -4,6 +4,7 @@ import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.os.runtime.service.GAIA;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
+import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -78,8 +79,8 @@ public class GaiaAdapter {
 		editPolicies.installEditPolicy(new GaiaWSEditPolicy());
 
 		// Start web service
-		this.webServiceApp = new GaiaWSApplication(bundleContext, gaia);
-		this.webServiceApp.start();
+		this.webServiceApp = new GaiaWSApplication(gaia, FeatureConstants.PING | FeatureConstants.JACKSON | FeatureConstants.MULTIPLEPART);
+		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
@@ -103,7 +104,7 @@ public class GaiaAdapter {
 
 		// Stop webService
 		if (this.webServiceApp != null) {
-			this.webServiceApp.stop();
+			this.webServiceApp.stop(bundleContext);
 			this.webServiceApp = null;
 		}
 

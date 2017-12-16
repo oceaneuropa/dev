@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.tier1.auth.ws;
 
+import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
@@ -12,9 +13,8 @@ public class AuthServiceAdapter {
 
 	protected ServiceTracker<AuthService, AuthService> serviceTracker;
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-	protected IndexProvider indexProvider;
-	protected AuthWSApplication webServiceApp;
-	protected AuthServiceIndexTimer serviceIndexTimer;
+	protected AuthWSApplication webService;
+	protected AuthServiceIndexTimer indexTimer;
 
 	public AuthServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
@@ -53,8 +53,6 @@ public class AuthServiceAdapter {
 			}
 		});
 		this.serviceTracker.open();
-
-		this.indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 	}
 
 	/**
@@ -69,22 +67,27 @@ public class AuthServiceAdapter {
 	}
 
 	protected void doStart(BundleContext bundleContext, AuthService service) {
-		this.webServiceApp = new AuthWSApplication(bundleContext, service);
-		this.webServiceApp.start();
+		// Start web service
+		this.webService = new AuthWSApplication(service, OrbitFeatureConstants.PING);
+		this.webService.start(bundleContext);
 
-		this.serviceIndexTimer = new AuthServiceIndexTimer(this.indexProvider, service);
-		this.serviceIndexTimer.start();
+		// Start indexing
+		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		this.indexTimer = new AuthServiceIndexTimer(indexProvider, service);
+		this.indexTimer.start();
 	}
 
 	protected void doStop(BundleContext bundleContext, AuthService service) {
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
+		// Stop indexing
+		if (this.indexTimer != null) {
+			this.indexTimer.stop();
+			this.indexTimer = null;
 		}
 
-		if (this.webServiceApp != null) {
-			this.webServiceApp.stop();
-			this.webServiceApp = null;
+		// Stop web service
+		if (this.webService != null) {
+			this.webService.stop(bundleContext);
+			this.webService = null;
 		}
 	}
 

@@ -116,6 +116,9 @@ public class TransferAgentImpl implements TransferAgent {
 
 		ClientConfiguration config = ClientConfiguration.create(fullUrl);
 		config.setAccessToken(token);
+		// Map<String, String> props = new HashMap<String, String>();
+		// props.put(OrbitConstants.ORBIT_TOKEN, token);
+		// config.setProperties(props);
 
 		this.client = new TransferAgentWSClient(config);
 	}

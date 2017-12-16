@@ -70,12 +70,12 @@ public class AuthConverter {
 	 * @return
 	 */
 	public TokenRequestDTO toRequestDTO(TokenRequest tokenRequest) {
-		String grant_type = tokenRequest.getGrant_type();
-		String client_id = tokenRequest.getClient_id();
+		String grant_type = tokenRequest.getGrantType();
+		String client_id = tokenRequest.getClientId();
 		String client_secret = tokenRequest.getClient_secret();
 		String username = tokenRequest.getUsername();
 		String password = tokenRequest.getPassword();
-		String refresh_token = tokenRequest.getRefresh_token();
+		String refresh_token = tokenRequest.getRefreshToken();
 		String scope = tokenRequest.getScope();
 		String state = tokenRequest.getState();
 
@@ -107,10 +107,10 @@ public class AuthConverter {
 		String state = tokenResponseDTO.getState();
 
 		TokenResponse response = new TokenResponse();
-		response.setToken_type(token_type);
-		response.setAccess_token(access_token);
-		response.setExpires_in(expires_in);
-		response.setRefresh_token(refresh_token);
+		response.setTokenType(token_type);
+		response.setAccessToken(access_token);
+		response.setExpiresIn(expires_in);
+		response.setRefreshToken(refresh_token);
 		response.setScope(scope);
 		response.setState(state);
 
@@ -202,12 +202,12 @@ public class AuthConverter {
 		String state = tokenRequestDTO.getState();
 
 		TokenRequest request = new TokenRequest();
-		request.setGrant_type(grant_type);
-		request.setClient_id(client_id);
-		request.setClient_secret(client_secret);
+		request.setGrantType(grant_type);
+		request.setClientId(client_id);
+		request.setClientSecret(client_secret);
 		request.setUsername(username);
 		request.setPassword(password);
-		request.setRefresh_token(refresh_token);
+		request.setRefreshToken(refresh_token);
 		request.setScope(scope);
 		request.setState(state);
 
@@ -221,10 +221,10 @@ public class AuthConverter {
 	 * @return
 	 */
 	public TokenResponseDTO toResponseDTO(TokenResponse tokenResponse) {
-		String token_type = tokenResponse.getToken_type();
-		String access_token = tokenResponse.getAccess_token();
-		long expires_in = tokenResponse.getExpires_in();
-		String refresh_token = tokenResponse.getRefresh_token();
+		String token_type = tokenResponse.getTokenType();
+		String access_token = tokenResponse.getAccessToken();
+		long expires_in = tokenResponse.getExpiresIn();
+		String refresh_token = tokenResponse.getRefreshToken();
 		String scope = tokenResponse.getScope();
 		String state = tokenResponse.getState();
 

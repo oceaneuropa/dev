@@ -14,7 +14,7 @@ import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.runtime.Activator;
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.JWTUtil;
@@ -134,13 +134,13 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public AuthorizationResponse onAuthorize(AuthorizationRequest request) throws AuthException {
+	public AuthorizationResponse authorize(AuthorizationRequest request) throws AuthException {
 		return null;
 	}
 
 	@Override
-	public TokenResponse onToken(TokenRequest request) throws AuthException {
-		String grantType = request.getGrant_type();
+	public TokenResponse getToken(TokenRequest request) throws AuthException {
+		String grantType = request.getGrantType();
 		TokenResponse response = null;
 		if (GRANT_TYPE__CLIENT_CREDENTIALS.equalsIgnoreCase(grantType)) {
 			// app login
@@ -210,7 +210,7 @@ public class AuthServiceImpl implements AuthService {
 		// Step2. Create new UserToken and store it in the tokenManager
 		UserToken userToken = null;
 		try {
-			userToken = createUserToken(userAccount);
+			userToken = createAccessToken(userAccount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AuthException("Authentication Failed", e.getMessage());
@@ -219,10 +219,10 @@ public class AuthServiceImpl implements AuthService {
 
 		// Step3. Return the token response
 		TokenResponse response = new TokenResponse();
-		response.setToken_type("Bearer");
-		response.setAccess_token(userToken.getAccessToken());
-		response.setExpires_in(userToken.getAccessTokenExpiresInMinutes());
-		response.setRefresh_token(userToken.getRefreshToken());
+		response.setTokenType("Bearer");
+		response.setAccessToken(userToken.getAccessToken());
+		response.setExpiresIn(userToken.getAccessTokenExpiresInMinutes());
+		response.setRefreshToken(userToken.getRefreshToken());
 		response.setState(request.getState());
 		response.setScope(request.getScope());
 		return response;
@@ -238,7 +238,7 @@ public class AuthServiceImpl implements AuthService {
 		// Step1. Decode the JWT object
 		// - Exception is thrown by JWT (JWTVerifier) API if the token has expired.
 		String issuer = getFullName();
-		String refreshToken = request.getRefresh_token();
+		String refreshToken = request.getRefreshToken();
 		if (refreshToken == null || refreshToken.isEmpty()) {
 			throw new AuthException("Bad Request", "Refresh token is empty.");
 		}
@@ -289,7 +289,7 @@ public class AuthServiceImpl implements AuthService {
 		// Step4. Create new UserToken and store it in the tokenManager
 		UserToken userToken = null;
 		try {
-			userToken = createUserToken(userAccount);
+			userToken = createAccessToken(userAccount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new AuthException("Authentication Failed", e.getMessage());
@@ -298,10 +298,10 @@ public class AuthServiceImpl implements AuthService {
 
 		// Step5. Return the token response
 		TokenResponse response = new TokenResponse();
-		response.setToken_type("Bearer");
-		response.setAccess_token(userToken.getAccessToken());
-		response.setExpires_in(userToken.getAccessTokenExpiresInMinutes());
-		response.setRefresh_token(userToken.getRefreshToken());
+		response.setTokenType("Bearer");
+		response.setAccessToken(userToken.getAccessToken());
+		response.setExpiresIn(userToken.getAccessTokenExpiresInMinutes());
+		response.setRefreshToken(userToken.getRefreshToken());
 		response.setState(request.getState());
 		response.setScope(request.getScope());
 		return response;
@@ -313,10 +313,11 @@ public class AuthServiceImpl implements AuthService {
 	 * @return
 	 * @throws Exception
 	 */
-	private UserToken createUserToken(UserAccount userAccount) throws Exception {
+	private UserToken createAccessToken(UserAccount userAccount) throws Exception {
 		UserToken userToken = null;
 		try {
-			String issuer = getFullName();
+			// String issuer = getFullName();
+			String issuer = "orbit.auth";
 			String subject1 = "user_access_token";
 			String subject2 = "user_refresh_token";
 			String audiences = userAccount.getUserId();
