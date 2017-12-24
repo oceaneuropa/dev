@@ -63,14 +63,14 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 		if (hasFeature(FeatureConstants.PING)) {
 			// http://{host}:{port}/{contextRoot}/ping
 			Resource.Builder pingWSResource = Resource.builder("ping");
-			pingWSResource.addMethod(GET).produces(JSON).handledBy(pingResourceGetHandler());
+			pingWSResource.addMethod(GET).produces(JSON).handledBy(pingInflector());
 			registerResources(pingWSResource.build());
 		}
 
 		if (hasFeature(FeatureConstants.ECHO)) {
 			// http://{host}:{port}/{contextRoot}/echo?message=<message>
 			Resource.Builder echoWSResource = Resource.builder("echo");
-			echoWSResource.addMethod(GET).produces(JSON).handledBy(echoResourceGetHandler());
+			echoWSResource.addMethod(GET).produces(JSON).handledBy(echoInflector());
 			registerResources(echoWSResource.build());
 		}
 
@@ -87,7 +87,7 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 		}
 	}
 
-	protected Inflector<ContainerRequestContext, Response> pingResourceGetHandler() {
+	protected Inflector<ContainerRequestContext, Response> pingInflector() {
 		return new Inflector<ContainerRequestContext, Response>() {
 			@Override
 			public Response apply(ContainerRequestContext requestContext) {
@@ -96,7 +96,7 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 		};
 	}
 
-	protected Inflector<ContainerRequestContext, Response> echoResourceGetHandler() {
+	protected Inflector<ContainerRequestContext, Response> echoInflector() {
 		return new Inflector<ContainerRequestContext, Response>() {
 			@Override
 			public Response apply(ContainerRequestContext requestContext) {
@@ -163,23 +163,23 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 	}
 
 	public String getPathParam(String paramName, ContainerRequestContext requestContext) {
-		return requestContext.getUriInfo().getPathParameters().getFirst(paramName);
+		return RequestHelper.INSTANCE.getPathParam(paramName, requestContext);
 	}
 
 	public List<String> getPathParams(String paramName, ContainerRequestContext requestContext) {
-		return requestContext.getUriInfo().getPathParameters().get(paramName);
+		return RequestHelper.INSTANCE.getPathParams(paramName, requestContext);
 	}
 
 	public String getQueryParam(String paramName, ContainerRequestContext requestContext) {
-		return requestContext.getUriInfo().getQueryParameters().getFirst(paramName);
+		return RequestHelper.INSTANCE.getQueryParam(paramName, requestContext);
 	}
 
 	public List<String> getQueryParams(String paramName, ContainerRequestContext requestContext) {
-		return requestContext.getUriInfo().getQueryParameters().get(paramName);
+		return RequestHelper.INSTANCE.getQueryParams(paramName, requestContext);
 	}
 
 	public boolean getHasQueryParam(String paramName, ContainerRequestContext requestContext) {
-		return requestContext.getUriInfo().getQueryParameters().containsKey(paramName);
+		return RequestHelper.INSTANCE.getHasQueryParam(paramName, requestContext);
 	}
 
 	/** implement IAdaptable interface */

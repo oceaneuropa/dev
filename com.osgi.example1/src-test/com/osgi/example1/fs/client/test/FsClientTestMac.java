@@ -11,8 +11,8 @@ import org.junit.runners.MethodSorters;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
-import com.osgi.example1.fs.client.ws.FileSystemWSClient;
 import com.osgi.example1.fs.client.ws.FileSystemUtil;
+import com.osgi.example1.fs.client.ws.FileSystemWSClient;
 import com.osgi.example1.fs.common.Path;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -29,7 +29,7 @@ public class FsClientTestMac {
 	}
 
 	protected FileSystemWSClient getClient() {
-		ClientConfiguration config = ClientConfiguration.get("http://127.0.0.1:9090", "/fs/v1", "root", "admin");
+		ClientConfiguration config = ClientConfiguration.create(null, "root", "http://127.0.0.1:9090", "/fs/v1");
 		return new FileSystemWSClient(config);
 	}
 

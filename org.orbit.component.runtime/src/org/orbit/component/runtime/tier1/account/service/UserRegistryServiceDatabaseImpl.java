@@ -38,7 +38,6 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_NAMESPACE);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT);
@@ -80,7 +79,6 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 		}
 
 		String globalHostURL = (String) configProps.get(OrbitConstants.ORBIT_HOST_URL);
-		String namespace = (String) configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_NAMESPACE);
 		String name = (String) configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
 		String hostURL = (String) configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_HOST_URL);
 		String contextRoot = (String) configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT);
@@ -93,7 +91,6 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 		System.out.println("Config properties:");
 		System.out.println("-----------------------------------------------------");
 		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-		System.out.println(OrbitConstants.COMPONENT_USER_REGISTRY_NAMESPACE + " = " + namespace);
 		System.out.println(OrbitConstants.COMPONENT_USER_REGISTRY_NAME + " = " + name);
 		System.out.println(OrbitConstants.COMPONENT_USER_REGISTRY_HOST_URL + " = " + hostURL);
 		System.out.println(OrbitConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT + " = " + contextRoot);
@@ -129,12 +126,6 @@ public class UserRegistryServiceDatabaseImpl implements UserRegistryService {
 
 	protected Connection getConnection() {
 		return DatabaseUtil.getConnection(this.databaseProperties);
-	}
-
-	@Override
-	public String getNamespace() {
-		String namespace = (String) this.configProps.get(OrbitConstants.COMPONENT_USER_REGISTRY_NAMESPACE);
-		return namespace;
 	}
 
 	@Override

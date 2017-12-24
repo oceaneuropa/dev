@@ -52,7 +52,7 @@ public class TransferAgentConnectorImplV2 implements TransferAgentConnector {
 	// }
 
 	@Override
-	public boolean update(TransferAgent agent, Map<Object, Object> properties) throws ClientException {
+	public boolean update(TransferAgent agent, Map<String, Object> properties) throws ClientException {
 		return false;
 	}
 
@@ -62,7 +62,7 @@ public class TransferAgentConnectorImplV2 implements TransferAgentConnector {
 	}
 
 	@Override
-	public TransferAgent getService(Map<Object, Object> properties) throws ClientException {
+	public TransferAgent getService(Map<String, Object> properties) throws ClientException {
 		return null;
 	}
 

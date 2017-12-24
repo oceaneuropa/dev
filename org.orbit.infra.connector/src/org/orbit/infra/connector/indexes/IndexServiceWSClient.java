@@ -87,9 +87,10 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		int result = 0;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("ping").request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("ping");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			result = response.readEntity(Integer.class);
 
@@ -118,10 +119,11 @@ public class IndexServiceWSClient extends AbstractWSClient {
 			commandRequest.setCommand(command);
 			commandRequest.setParameters(params);
 
-			Builder builder = getRootPath().path("commandrequest").request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("commandrequest");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexItemCommandRequestDTO>(commandRequest) {
 			}));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 
@@ -154,7 +156,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 			}
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			indexItemDTOs = response.readEntity(new GenericType<List<IndexItemDTO>>() {
 			});
@@ -190,7 +192,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 			target = target.queryParam("name", name);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			// indexItemDTO = response.readEntity(IndexItemDTO.class);
 			List<IndexItemDTO> indexItemDTOs = response.readEntity(new GenericType<List<IndexItemDTO>>() {
@@ -230,10 +232,11 @@ public class IndexServiceWSClient extends AbstractWSClient {
 
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("indexitems").path(indexProviderId).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("indexitems").path(indexProviderId);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexItemDTO>(newIndexItemRequest) {
 			}));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			newIndexItemDTO = response.readEntity(IndexItemDTO.class);
 
@@ -265,7 +268,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("indexitems").path(indexProviderId).path(String.valueOf(indexItemId));
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			indexItemDTO = response.readEntity(IndexItemDTO.class);
 
@@ -291,9 +294,10 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("indexitems").path(indexProviderId).path(String.valueOf(indexItemId)).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("indexitems").path(indexProviderId).path(String.valueOf(indexItemId));
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 
@@ -323,9 +327,10 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		Map<String, ?> properties = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("indexitems").path(indexProviderId).path(String.valueOf(indexItemId)).path("properties").request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("indexitems").path(indexProviderId).path(String.valueOf(indexItemId)).path("properties");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			properties = response.readEntity(Map.class);
 
@@ -367,7 +372,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexItemSetPropertiesRequestDTO>(setPropertiesRequest) {
 			}));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 
@@ -407,7 +412,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexItemSetPropertyRequestDTO>(setPropertyRequest) {
 			}));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 
@@ -449,7 +454,7 @@ public class IndexServiceWSClient extends AbstractWSClient {
 			target = target.queryParam("propertynames", propertyNamesStr);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 

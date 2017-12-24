@@ -8,8 +8,8 @@ import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
-import org.orbit.component.api.tier3.domain.DomainManagement;
-import org.orbit.component.api.tier3.domain.DomainManagementConnector;
+import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceConnector;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.rest.client.ClientException;
@@ -56,14 +56,14 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public DomainManagement getDomainManagement(DomainManagementConnector connector) throws ClientException {
-		DomainManagement domainMgmt = connector.getService();
-		if (domainMgmt == null) {
-			System.err.println(getClass().getSimpleName() + ".getDomainManagement() domainMgmt is not available.");
-			throw new ClientException(500, "domainMgmt is not available.");
+	public DomainService getDomainService(DomainServiceConnector connector) throws ClientException {
+		DomainService domainService = connector.getService();
+		if (domainService == null) {
+			System.err.println(getClass().getSimpleName() + ".getDomainService() domainService is not available.");
+			throw new ClientException(500, "domainService is not available.");
 		}
-		System.out.println(domainMgmt.getName() + " (" + domainMgmt.getURL() + ")");
-		return domainMgmt;
+		System.out.println(domainService.getName() + " (" + domainService.getURL() + ")");
+		return domainService;
 	}
 
 	/**
@@ -144,17 +144,17 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<LoadBalanceResource<DomainManagement>> getDomainManagementResources(DomainManagementConnector connector) throws ClientException {
+	public List<LoadBalanceResource<DomainService>> getDomainServiceResources(DomainServiceConnector connector) throws ClientException {
 		if (connector == null) {
-			System.out.println("DomainManagementConnector is not available.");
-			throw new ClientException(500, "DomainManagementConnector is not available.");
+			System.out.println("DomainServiceConnector is not available.");
+			throw new ClientException(500, "DomainServiceConnector is not available.");
 		}
-		LoadBalancer<DomainManagement> balancer = connector.getLoadBalancer();
+		LoadBalancer<DomainService> balancer = connector.getLoadBalancer();
 		if (balancer == null) {
 			System.out.println("load balancer is not available.");
 			return null;
 		}
-		List<LoadBalanceResource<DomainManagement>> resources = balancer.getResources();
+		List<LoadBalanceResource<DomainService>> resources = balancer.getResources();
 		if (resources == null) {
 			System.out.println("load balancer's resource is null.");
 			return null;

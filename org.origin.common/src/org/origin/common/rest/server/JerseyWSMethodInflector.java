@@ -1,0 +1,316 @@
+package org.origin.common.rest.server;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+
+import org.glassfish.jersey.process.Inflector;
+import org.glassfish.jersey.server.model.Resource;
+import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.switcher.Switcher;
+import org.origin.common.util.JSONUtils;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+/*
+ * 1. Why using ObjectNode to deserialize request body
+ * @see https://stackoverflow.com/questions/19389723/can-not-deserialize-instance-of-java-lang-string-out-of-start-object-token
+ * 
+ * 2. How to handle query parameter with multiple values
+ * @see https://stackoverflow.com/questions/24059773/correct-way-to-pass-multiple-values-for-same-parameter-name-in-get-request
+ * 
+ * 3. Do not set "Content-Length" header to avoid exception (org.apache.http.ProtocolException: Content-Length header already present)
+ * @see https://stackoverflow.com/questions/3332370/content-length-header-already-present
+ *
+ */
+public class JerseyWSMethodInflector implements Inflector<ContainerRequestContext, Response> {
+
+	protected String methodType;
+	protected String methodPath;
+	protected String produces;
+	protected Client client;
+	protected Switcher<URI> baseUriSwitcher;
+
+	public JerseyWSMethodInflector() {
+	}
+
+	public JerseyWSMethodInflector(String methodPath, String methodType, String produces, Client client, Switcher<URI> baseURIWwitcher) {
+		this.methodPath = methodPath;
+		this.methodType = methodType;
+		this.produces = produces;
+		this.client = client;
+		this.baseUriSwitcher = baseURIWwitcher;
+	}
+
+	public void addToResource(Resource.Builder wsResource) {
+		wsResource.addChildResource(getMethodPath()).addMethod(getMethodType()).produces(getProduces()).handledBy(this);
+	}
+
+	public String getMethodType() {
+		return this.methodType;
+	}
+
+	public void setMethodType(String methodType) {
+		this.methodType = methodType;
+	}
+
+	public String getMethodPath() {
+		return this.methodPath;
+	}
+
+	public void setMethodPath(String methodPath) {
+		this.methodPath = methodPath;
+	}
+
+	public String getProduces() {
+		return this.produces;
+	}
+
+	public void setProduces(String produces) {
+		this.produces = produces;
+	}
+
+	public Client getClient() {
+		return this.client;
+	}
+
+	public void setClient(Client client) {
+		this.client = client;
+	}
+
+	public Switcher<URI> getSwitcher() {
+		return baseUriSwitcher;
+	}
+
+	public void setSwitcher(Switcher<URI> baseUriSwitcher) {
+		this.baseUriSwitcher = baseUriSwitcher;
+	}
+
+	protected void checkClient() {
+		if (this.client == null) {
+			throw new IllegalStateException("Web service client is not set.");
+		}
+	}
+
+	protected void checkSwitcher() {
+		if (this.baseUriSwitcher == null) {
+			throw new IllegalStateException("Base URI switcher is not set.");
+		}
+	}
+
+	public void selfCheck() {
+		checkClient();
+		checkSwitcher();
+	}
+
+	@Override
+	public Response apply(ContainerRequestContext requestContext) {
+		selfCheck();
+
+		// Step1. load the bullet
+		Object payload = getPayload(requestContext);
+
+		// Step2. switch the barrel
+		URI newBaseURI = this.baseUriSwitcher.getNext(this.methodPath, 3, 1000);
+		if (newBaseURI == null) {
+			System.err.println("Target base URI is null.");
+			return Response.serverError().entity(new ErrorDTO("500", "Target base URI is not available.", null)).build();
+		}
+
+		// Step3. aim the target
+		// (1) append request path
+		String newRequestUriStr = appendRequestPath(requestContext, newBaseURI);
+
+		// (2) append query parameters
+		appendQueryParameters(requestContext, newRequestUriStr);
+
+		URI newRequestUri = null;
+		try {
+			newRequestUri = new URI(newRequestUriStr);
+		} catch (Exception e) {
+			System.err.println("New request URI is invalid. " + e.getMessage());
+			return Response.serverError().entity(new ErrorDTO("500", "New request URI is invalid. ", e.getMessage())).build();
+		}
+
+		// (3) aim the target
+		Invocation.Builder newWSResource = this.client.target(newRequestUri).request();
+		newWSResource.accept(new MediaType[] { MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE, MediaType.TEXT_PLAIN_TYPE });
+
+		// (4) update request headers
+		updateRequestHeaders(requestContext, newWSResource);
+
+		// Step4. pull the trigger and fire!
+		Response response = sendRequest(newWSResource, payload);
+
+		return response;
+	}
+
+	/**
+	 * Step1. load the bullet
+	 * 
+	 * @param requestContext
+	 * @return
+	 */
+	protected Object getPayload(ContainerRequestContext requestContext) {
+		Object payload = null;
+		InputStream input = null;
+		try {
+			input = requestContext.getEntityStream();
+			if (input != null && input.available() > 0) {
+				payload = JSONUtils.getJsonReader(ObjectNode.class).readValue(input);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return payload;
+	}
+
+	/**
+	 * Step3. aim the target
+	 * 
+	 * (1) append request path
+	 * 
+	 * @param requestContext
+	 * @param baseURI
+	 * @return
+	 */
+	protected String appendRequestPath(ContainerRequestContext requestContext, URI baseURI) {
+		String path = requestContext.getUriInfo().getPath();
+		String newRequestURIstr = baseURI.toString() + path;
+		return newRequestURIstr;
+	}
+
+	/**
+	 * Step3. aim the target
+	 * 
+	 * (2) append query parameters
+	 * 
+	 * - UriInfo.getPath() does not include query parameters. Need to check UriInfo.getPath(boolean)
+	 * 
+	 * - when there is path parameters, the path parameters values are already in the path. So there is no need to configure path parameters in the path.
+	 * 
+	 * @param requestContext
+	 * @param newRequestURIstr
+	 * @return
+	 */
+	protected String appendQueryParameters(ContainerRequestContext requestContext, String newRequestURIstr) {
+		String queryParamStr = "";
+		MultivaluedMap<String, String> queryParams = requestContext.getUriInfo().getQueryParameters();
+		if (queryParams != null) {
+			for (Iterator<String> queryParamItor = queryParams.keySet().iterator(); queryParamItor.hasNext();) {
+				String paramName = queryParamItor.next();
+				List<String> paramValues = queryParams.get(paramName);
+				if (paramValues != null) {
+					for (String paramValue : paramValues) {
+						if (!queryParamStr.isEmpty()) {
+							queryParamStr += "&";
+						}
+						queryParamStr += paramName + "=" + paramValue;
+					}
+				}
+			}
+		}
+		if (!queryParamStr.isEmpty()) {
+			if (newRequestURIstr.contains("?")) {
+				if (newRequestURIstr.endsWith("?")) {
+					newRequestURIstr += queryParamStr;
+				} else {
+					newRequestURIstr += "&" + queryParamStr;
+				}
+			} else {
+				newRequestURIstr += "?" + queryParamStr;
+			}
+		}
+		return newRequestURIstr;
+	}
+
+	/**
+	 * Step3. aim the target
+	 * 
+	 * (4) update request headers
+	 * 
+	 * @param requestContext
+	 * @param wsResource
+	 */
+	protected void updateRequestHeaders(ContainerRequestContext requestContext, Invocation.Builder wsResource) {
+		Map<String, String> newRequestHeaders = new HashMap<String, String>();
+
+		MultivaluedMap<String, String> requestHeaders = requestContext.getHeaders();
+		if (requestHeaders != null) {
+			for (Iterator<String> headerItor = requestHeaders.keySet().iterator(); headerItor.hasNext();) {
+				String headerName = headerItor.next();
+				// if ("Content-Length".equals(headerName)) {
+				// continue;
+				// }
+				String headerValueString = requestContext.getHeaderString(headerName);
+				newRequestHeaders.put(headerName, headerValueString);
+			}
+		}
+		for (Iterator<String> newHeaderItor = newRequestHeaders.keySet().iterator(); newHeaderItor.hasNext();) {
+			String headerName = newHeaderItor.next();
+			String headerValue = newRequestHeaders.get(headerName);
+			wsResource.header(headerName, headerValue);
+		}
+	}
+
+	/**
+	 * Step4. pull the trigger and fire!
+	 * 
+	 * @param builder
+	 * @param payload
+	 * @return
+	 */
+	protected Response sendRequest(Invocation.Builder builder, Object payload) {
+		Response response = null;
+		if ("GET".equalsIgnoreCase(this.methodType)) {
+			response = builder.get(Response.class);
+		} else if ("POST".equalsIgnoreCase(this.methodType)) {
+			response = builder.post(Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE), Response.class);
+		} else if ("PUT".equalsIgnoreCase(this.methodType)) {
+			response = builder.put(Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE), Response.class);
+		} else if ("DELETE".equalsIgnoreCase(this.methodType)) {
+			response = builder.delete(Response.class);
+		}
+		return response;
+	}
+
+}
+
+// map = JSONUtils.getJsonReader(Map.class).readValue(input);
+// payload = JSONUtils.getJsonReader(String.class).readValue(input);
+
+// URI reqUri = uriInfo.getRequestUri(); // e.g. http://127.0.0.1:13001/orbit/v1/ta/request
+// URI absPath = uriInfo.getAbsolutePath(); // e.g. http://127.0.0.1:13001/orbit/v1/ta/request
+// URI baseUri = uriInfo.getBaseUri(); // e.g. http://127.0.0.1:13001/orbit/v1/ta/
+// String path = uriInfo.getPath(); // e.g. request
+// String path1 = uriInfo.getPath(true); // e.g. request
+// String path2 = uriInfo.getPath(false); // e.g. request
+// int length = requestContext.getLength(); // e.g. 44
+// String method = requestContext.getMethod(); // e.g. "POST"
+// Request request = requestContext.getRequest(); // e.g. org.glassfish.jersey.server.ContainerRequest@58de0746
+// MultivaluedMap<String, String> pathParams = uriInfo.getPathParameters();
+
+// URI url = new URI(driverFactory.getClientConfiguration().getScheme() + "://" + host+ ":" + port + resourcePath);
+// http://127.0.0.1:12001/orbit/v1/ta (real)
+// http://127.0.0.1:13001/orbit/v1/ta (lbr)
+// String newRequestPath = "http://127.0.0.1:12001/orbit/v1/ta/" + path;

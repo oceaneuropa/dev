@@ -28,7 +28,7 @@ public class FsClientTestMac {
 	}
 
 	protected FileSystemWSClient getClient() {
-		ClientConfiguration config = ClientConfiguration.get("http://127.0.0.1:9090", "/fs/v1", "root", "admin");
+		ClientConfiguration config = ClientConfiguration.create("orbit", "root", "http://127.0.0.1:9090", "/fs/v1");
 		return new FileSystemWSClient(config);
 	}
 

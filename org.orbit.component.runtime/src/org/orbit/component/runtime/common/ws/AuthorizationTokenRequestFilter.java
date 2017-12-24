@@ -32,7 +32,7 @@ public class AuthorizationTokenRequestFilter implements ContainerRequestFilter {
 		String token = parseToken(headerValue);
 		DecodedJWT jwt = verifyToken(token);
 		if (jwt == null) {
-			throw new NotAuthorizedException("Bearer error=\"invalid_token\"");
+			// throw new NotAuthorizedException("Bearer error=\"invalid_token\"");
 		}
 
 		if (jwt != null) {

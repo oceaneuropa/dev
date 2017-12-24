@@ -7,8 +7,6 @@ import org.orbit.component.model.tier1.account.UserRegistryException;
 
 public interface UserRegistryService {
 
-	public String getNamespace();
-
 	public String getName();
 
 	public String getHostURL();

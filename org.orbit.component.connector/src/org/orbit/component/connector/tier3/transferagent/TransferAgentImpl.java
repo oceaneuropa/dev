@@ -16,21 +16,21 @@ import org.origin.common.util.StringUtil;
 public class TransferAgentImpl implements TransferAgent {
 
 	protected TransferAgentConnector connector;
-	protected Map<Object, Object> properties;
+	protected Map<String, Object> properties;
 	protected TransferAgentWSClient client;
 
 	/**
 	 * 
 	 * @param properties
 	 */
-	public TransferAgentImpl(Map<Object, Object> properties) {
+	public TransferAgentImpl(Map<String, Object> properties) {
 		this.properties = checkProperties(properties);
 		initClient();
 	}
 
-	private Map<Object, Object> checkProperties(Map<Object, Object> properties) {
+	private Map<String, Object> checkProperties(Map<String, Object> properties) {
 		if (properties == null) {
-			properties = new HashMap<Object, Object>();
+			properties = new HashMap<String, Object>();
 		}
 		return properties;
 	}
@@ -64,12 +64,12 @@ public class TransferAgentImpl implements TransferAgent {
 		// String hostURL = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
 		// String contextRoot = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
 		// return hostURL + contextRoot;
-		String fullUrl = (String) properties.get(OrbitConstants.ORBIT_URL);
+		String fullUrl = (String) properties.get(OrbitConstants.URL);
 		return fullUrl;
 	}
 
 	@Override
-	public Map<Object, Object> getProperties() {
+	public Map<String, Object> getProperties() {
 		return this.properties;
 	}
 
@@ -79,26 +79,26 @@ public class TransferAgentImpl implements TransferAgent {
 	 * @param properties
 	 */
 	@Override
-	public void update(Map<Object, Object> properties) {
+	public void update(Map<String, Object> properties) {
 		// String oldUrl = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
 		// String oldContextRoot = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
 
-		String oldFullUrl = (String) this.properties.get(OrbitConstants.ORBIT_URL);
-		String oldToken = (String) this.properties.get(OrbitConstants.ORBIT_TOKEN);
+		String oldFullUrl = (String) this.properties.get(OrbitConstants.URL);
+		// String oldToken = (String) this.properties.get(OrbitConstants.ORBIT_TOKEN);
 
 		properties = checkProperties(properties);
 		this.properties.putAll(properties);
 
 		// String newUrl = (String) properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
 		// String newContextRoot = (String) properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
-		String newFullUrl = (String) properties.get(OrbitConstants.ORBIT_URL);
-		String newToken = (String) properties.get(OrbitConstants.ORBIT_TOKEN);
+		String newFullUrl = (String) properties.get(OrbitConstants.URL);
+		// String newToken = (String) properties.get(OrbitConstants.ORBIT_TOKEN);
 
 		boolean reinitClient = false;
 		// if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {
 		// reinitClient = true;
 		// }
-		if (!StringUtil.equals(oldFullUrl, newFullUrl) || !StringUtil.equals(oldToken, newToken)) {
+		if (!StringUtil.equals(oldFullUrl, newFullUrl)) {
 			reinitClient = true;
 		}
 		if (reinitClient) {
@@ -107,19 +107,11 @@ public class TransferAgentImpl implements TransferAgent {
 	}
 
 	protected void initClient() {
-		// String url = (String) properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
-		// String contextRoot = (String) properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
-		// return ClientConfiguration.get(url, contextRoot, null, null);
+		String realm = (String) this.properties.get(OrbitConstants.REALM);
+		String username = (String) this.properties.get(OrbitConstants.USERNAME);
+		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
 
-		String fullUrl = (String) this.properties.get(OrbitConstants.ORBIT_URL);
-		String token = (String) this.properties.get(OrbitConstants.ORBIT_TOKEN);
-
-		ClientConfiguration config = ClientConfiguration.create(fullUrl);
-		config.setAccessToken(token);
-		// Map<String, String> props = new HashMap<String, String>();
-		// props.put(OrbitConstants.ORBIT_TOKEN, token);
-		// config.setProperties(props);
-
+		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
 		this.client = new TransferAgentWSClient(config);
 	}
 
@@ -129,8 +121,22 @@ public class TransferAgentImpl implements TransferAgent {
 	}
 
 	@Override
+	public String echo(String message) throws ClientException {
+		return this.client.echo(message);
+	}
+
+	@Override
+	public String level(String level1, String level2, String message1, String message2) throws ClientException {
+		return this.client.level(level1, level2, message1, message2);
+	}
+
+	@Override
 	public Response sendRequest(Request request) throws ClientException {
 		return this.client.sendRequest(request);
 	}
 
 }
+
+// String url = (String) properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
+// String contextRoot = (String) properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
+// return ClientConfiguration.get(url, contextRoot, null, null);

@@ -1,6 +1,6 @@
 package org.orbit.component.connector.tier3.transferagent;
 
-import org.origin.common.rest.client.AbstractRequestResponseWSClient;
+import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 
 /*
@@ -15,12 +15,8 @@ import org.origin.common.rest.client.ClientConfiguration;
  * @see HomeAgentWSClient
  * 
  */
-public class TransferAgentWSClient extends AbstractRequestResponseWSClient {
+public class TransferAgentWSClient extends AbstractWSClient {
 
-	/**
-	 * 
-	 * @param config
-	 */
 	public TransferAgentWSClient(ClientConfiguration config) {
 		super(config);
 	}

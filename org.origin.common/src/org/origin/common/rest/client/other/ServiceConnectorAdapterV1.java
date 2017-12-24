@@ -35,7 +35,7 @@ public class ServiceConnectorAdapterV1<SERVICE> {
 		return this.serviceTracker != null ? this.serviceTracker.getService() : null;
 	}
 
-	public SERVICE getService(Map<Object, Object> properties) throws ClientException {
+	public SERVICE getService(Map<String, Object> properties) throws ClientException {
 		SERVICE service = null;
 		if (this.serviceTracker != null) {
 			ServiceConnector<SERVICE> connector = this.serviceTracker.getService();

@@ -236,9 +236,11 @@ public class UserRegistryWSImpl implements UserRegistry {
 	 * @return
 	 */
 	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
+		String realm = (String) properties.get(OrbitConstants.REALM);
+		String username = (String) properties.get(OrbitConstants.USERNAME);
 		String url = (String) properties.get(OrbitConstants.USER_REGISTRY_HOST_URL);
 		String contextRoot = (String) properties.get(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT);
-		return ClientConfiguration.get(url, contextRoot, null, null);
+		return ClientConfiguration.create(realm, username, url, contextRoot);
 	}
 
 	/**

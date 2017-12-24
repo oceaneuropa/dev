@@ -31,7 +31,7 @@ public class WorkspaceTest {
 
 	protected void setUp() {
 		NodeResourceProvider.register();
-		File nodespacesFolder = new File("/Users/yayang/origin/ta1/nodespaces");
+		File nodespacesFolder = new File("/Users/denmark/origin/ta1/nodespaces");
 		this.workspace = ResourcesFactory.getInstance().createWorkspace(nodespacesFolder);
 	}
 

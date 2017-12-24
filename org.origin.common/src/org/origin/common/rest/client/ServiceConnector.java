@@ -10,15 +10,22 @@ import org.osgi.framework.ServiceRegistration;
 
 public abstract class ServiceConnector<SERVICE> {
 
-	public static final String ORBIT_URL = "orbit.url";
-	public static final String ORBIT_TOKEN = "orbit.token";
 	public static final String CONNECTOR_SERVICE_ID = "connector.service.id";
 	protected static final String SEPARATOR = "::";
 
 	protected Class<SERVICE> serviceClass;
 	protected String serviceId;
-	protected Map<String, SERVICE> serviceMap;
+	protected Map<String, SERVICE> services;
 	protected ServiceRegistration<?> serviceRegistration;
+
+	// /**
+	// *
+	// * @param serviceId
+	// */
+	// public ServiceConnector(String serviceId) {
+	// this.serviceId = serviceId;
+	// this.serviceMap = new HashMap<String, SERVICE>();
+	// }
 
 	/**
 	 * 
@@ -30,7 +37,7 @@ public abstract class ServiceConnector<SERVICE> {
 		}
 		this.serviceClass = serviceClass;
 		this.serviceId = serviceClass.getName();
-		this.serviceMap = new HashMap<String, SERVICE>();
+		this.services = new HashMap<String, SERVICE>();
 	}
 
 	public String getServiceId() {
@@ -51,13 +58,13 @@ public abstract class ServiceConnector<SERVICE> {
 			this.serviceRegistration.unregister();
 			this.serviceRegistration = null;
 		}
-		this.serviceMap.clear();
+		this.services.clear();
 	}
 
-	protected void checkProperties(Map<Object, Object> properties) throws ClientException {
-		String fullUrl = (String) properties.get(ORBIT_URL);
+	protected void checkProperties(Map<String, Object> properties) throws ClientException {
+		String fullUrl = (String) properties.get(ClientConfiguration.URL);
 		if (fullUrl == null || fullUrl.isEmpty()) {
-			throw new RuntimeException("'" + ORBIT_URL + "' property is not set.");
+			throw new RuntimeException("'" + ClientConfiguration.URL + "' property is not set.");
 		}
 	}
 
@@ -66,16 +73,22 @@ public abstract class ServiceConnector<SERVICE> {
 	 * @param properties
 	 * @return
 	 */
-	protected String getServiceKey(Map<Object, Object> properties) {
-		String fullUrl = (String) properties.get(ORBIT_URL);
-		String token = (String) properties.get(ORBIT_TOKEN);
-		if (fullUrl == null) {
-			fullUrl = "n/a";
+	protected String getServiceKey(Map<String, Object> properties) {
+		String realm = (String) properties.get(ClientConfiguration.REALM);
+		String username = (String) properties.get(ClientConfiguration.USERNAME);
+		String url = (String) properties.get(ClientConfiguration.URL);
+
+		if (realm == null) {
+			realm = ClientConfiguration.DEFAULT_REALM;
 		}
-		if (token == null) {
-			token = "n/a";
+		if (username == null) {
+			username = ClientConfiguration.UNKNOWN_USERNAME;
 		}
-		String key = fullUrl + SEPARATOR + token;
+		if (url == null) {
+			url = "n/a";
+		}
+
+		String key = realm + SEPARATOR + username + SEPARATOR + url;
 		return key;
 	}
 
@@ -85,21 +98,21 @@ public abstract class ServiceConnector<SERVICE> {
 	 * @return
 	 * @throws ClientException
 	 */
-	public synchronized SERVICE getService(Map<Object, Object> properties) throws ClientException {
+	public synchronized SERVICE getService(Map<String, Object> properties) throws ClientException {
 		checkProperties(properties);
 
 		String key = getServiceKey(properties);
 
-		SERVICE service = this.serviceMap.get(key);
+		SERVICE service = this.services.get(key);
 		if (service == null) {
 			service = create(properties);
-			this.serviceMap.put(key, service);
+			this.services.put(key, service);
 		}
 
 		return service;
 	}
 
-	protected abstract SERVICE create(Map<Object, Object> properties);
+	protected abstract SERVICE create(Map<String, Object> properties);
 
 	/**
 	 * 
@@ -108,23 +121,23 @@ public abstract class ServiceConnector<SERVICE> {
 	 * @return
 	 * @throws ClientException
 	 */
-	public synchronized boolean update(SERVICE service, Map<Object, Object> properties) throws ClientException {
+	public synchronized boolean update(SERVICE service, Map<String, Object> properties) throws ClientException {
 		if (service == null) {
 			throw new IllegalArgumentException("service is null.");
 		}
 		checkProperties(properties);
 
-		if (this.serviceMap.containsValue(service)) {
-			for (Iterator<String> itor = this.serviceMap.keySet().iterator(); itor.hasNext();) {
+		if (this.services.containsValue(service)) {
+			for (Iterator<String> itor = this.services.keySet().iterator(); itor.hasNext();) {
 				String currKey = itor.next();
-				SERVICE currClient = this.serviceMap.get(currKey);
+				SERVICE currClient = this.services.get(currKey);
 
 				if (service.equals(currClient)) {
 					String newKey = getServiceKey(properties);
 
 					if (!newKey.equals(currKey)) {
-						this.serviceMap.remove(currKey);
-						this.serviceMap.put(newKey, currClient);
+						this.services.remove(currKey);
+						this.services.put(newKey, currClient);
 						return true;
 					}
 				}
@@ -144,11 +157,11 @@ public abstract class ServiceConnector<SERVICE> {
 			throw new IllegalArgumentException("service is null.");
 		}
 
-		if (this.serviceMap.containsValue(service)) {
+		if (this.services.containsValue(service)) {
 			String keyToRemove = null;
-			for (Iterator<String> itor = this.serviceMap.keySet().iterator(); itor.hasNext();) {
+			for (Iterator<String> itor = this.services.keySet().iterator(); itor.hasNext();) {
 				String currKey = itor.next();
-				SERVICE currAgent = this.serviceMap.get(currKey);
+				SERVICE currAgent = this.services.get(currKey);
 
 				if (service.equals(currAgent)) {
 					keyToRemove = currKey;
@@ -156,7 +169,7 @@ public abstract class ServiceConnector<SERVICE> {
 				}
 			}
 			if (keyToRemove != null) {
-				this.serviceMap.remove(keyToRemove);
+				this.services.remove(keyToRemove);
 				return true;
 			}
 		}
@@ -164,12 +177,3 @@ public abstract class ServiceConnector<SERVICE> {
 	}
 
 }
-
-// /**
-// *
-// * @param serviceId
-// */
-// public ServiceConnector(String serviceId) {
-// this.serviceId = serviceId;
-// this.serviceMap = new HashMap<String, SERVICE>();
-// }

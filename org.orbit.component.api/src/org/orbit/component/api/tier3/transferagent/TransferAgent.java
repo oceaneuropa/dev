@@ -13,11 +13,15 @@ public interface TransferAgent {
 
 	String getURL();
 
-	Map<Object, Object> getProperties();
+	Map<String, Object> getProperties();
 
-	void update(Map<Object, Object> properties);
+	void update(Map<String, Object> properties);
 
 	boolean ping() throws ClientException;
+
+	String echo(String message) throws ClientException;
+
+	String level(String level1, String level2, String message1, String message2) throws ClientException;
 
 	Response sendRequest(Request request) throws ClientException;
 

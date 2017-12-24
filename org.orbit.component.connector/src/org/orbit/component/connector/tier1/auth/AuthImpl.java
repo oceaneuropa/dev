@@ -32,14 +32,21 @@ public class AuthImpl implements Auth {
 	}
 
 	protected void initClient() {
-		ClientConfiguration clientConfig = getClientConfiguration(this.properties);
-		this.client = new AuthWSClient(clientConfig);
-	}
+		String realm = (String) properties.get(OrbitConstants.REALM);
+		String username = (String) properties.get(OrbitConstants.USERNAME);
+		String fullUrl = (String) properties.get(OrbitConstants.URL);
 
-	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
 		String url = (String) properties.get(OrbitConstants.AUTH_HOST_URL);
 		String contextRoot = (String) properties.get(OrbitConstants.AUTH_CONTEXT_ROOT);
-		return ClientConfiguration.get(url, contextRoot, null, null);
+
+		ClientConfiguration clientConfig = null;
+		if (fullUrl != null) {
+			clientConfig = ClientConfiguration.create(realm, username, fullUrl, null);
+		} else {
+			clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
+		}
+
+		this.client = new AuthWSClient(clientConfig);
 	}
 
 	@Override
@@ -63,6 +70,11 @@ public class AuthImpl implements Auth {
 
 	@Override
 	public String getURL() {
+		String fullUrl = (String) properties.get(OrbitConstants.URL);
+		if (fullUrl != null) {
+			return fullUrl;
+		}
+
 		String hostURL = (String) this.properties.get(OrbitConstants.AUTH_HOST_URL);
 		String contextRoot = (String) this.properties.get(OrbitConstants.AUTH_CONTEXT_ROOT);
 		return hostURL + contextRoot;

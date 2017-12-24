@@ -3,11 +3,16 @@ package org.orbit.component.connector;
 public class OrbitConstants {
 
 	// ----------------------------------------------------------------------------------------
+	// Connector property names
+	// ----------------------------------------------------------------------------------------
+	public static String REALM = "realm";
+	public static String USERNAME = "username";
+	public static String URL = "url";
+
+	// ----------------------------------------------------------------------------------------
 	// IndexItem
 	// ----------------------------------------------------------------------------------------
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
-	public static String ORBIT_URL = "orbit.url";
-	public static String ORBIT_TOKEN = "orbit.token";
 
 	// ----------------------------------------------------------------------------------------
 	// Channel
@@ -94,16 +99,16 @@ public class OrbitConstants {
 	public static String APPSTORE_CONTEXT_ROOT = "appstore.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// DomainManagement
+	// DomainService
 	// ----------------------------------------------------------------------------------------
 	// index item values
-	public static String DOMAIN_MANAGEMENT_INDEXER_ID = "component.domain_mgmt.indexer"; // index provider id for DomainManagement service
-	public static String DOMAIN_MANAGEMENT_TYPE = "DomainManagement"; // type of index item for DomainManagement service
+	public static String DOMAIN_SERVICE_INDEXER_ID = "component.domain_service.indexer"; // index provider id for DomainService
+	public static String DOMAIN_SERVICE_TYPE = "DomainService"; // type of index item for DomainService
 
 	// index item properties
-	public static String DOMAIN_MANAGEMENT_NAME = "domain_mgmt.name";
-	public static String DOMAIN_MANAGEMENT_HOST_URL = "domain_mgmt.host.url";
-	public static String DOMAIN_MANAGEMENT_CONTEXT_ROOT = "domain_mgmt.context_root";
+	public static String DOMAIN_SERVICE_NAME = "domain_service.name";
+	public static String DOMAIN_SERVICE_HOST_URL = "domain_service.host.url";
+	public static String DOMAIN_SERVICE_CONTEXT_ROOT = "domain_service.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// TransferAgent
@@ -113,13 +118,14 @@ public class OrbitConstants {
 	public static String TRANSFER_AGENT_TYPE = "TransferAgent"; // type of index item for TransferAgent service
 
 	// index item properties
-	// public static String TRANSFER_AGENT_MACHINE_ID = "transfer_agent.machine_id";
-	// public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "transfer_agent.id";
-	// public static String TRANSFER_AGENT_NAME = "transfer_agent.name";
-	// public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
-	// public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
 	public static String TRANSFER_AGENT_MACHINE_ID = "machine_id";
 	public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "id";
 	public static String TRANSFER_AGENT_NAME = "name";
 
 }
+
+// public static String TRANSFER_AGENT_MACHINE_ID = "transfer_agent.machine_id";
+// public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "transfer_agent.id";
+// public static String TRANSFER_AGENT_NAME = "transfer_agent.name";
+// public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
+// public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";

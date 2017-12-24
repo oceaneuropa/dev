@@ -18,7 +18,7 @@ public class TransferAgentConnectorImplV3 extends ServiceConnector<TransferAgent
 	}
 
 	@Override
-	protected TransferAgent create(Map<Object, Object> properties) {
+	protected TransferAgent create(Map<String, Object> properties) {
 		return new TransferAgentImpl(properties);
 	}
 

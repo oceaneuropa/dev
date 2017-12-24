@@ -1,7 +1,6 @@
 package org.origin.common.rest.client;
 
 import java.net.URI;
-import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -15,7 +14,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.core.UriBuilder;
 
 import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
@@ -23,42 +21,13 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 public class ClientConfiguration {
 
-	public static synchronized ClientConfiguration create(String fullUrl) {
-		try {
-			String hostUrl = null;
-			String contextRoot = null;
+	public static final String REALM = "realm";
+	public static final String USERNAME = "username";
+	public static final String URL = "url";
 
-			URL url = new URL(fullUrl.trim());
-
-			String fullURL = url.toExternalForm();
-			String path = url.getPath();
-
-			if (path != null && !path.isEmpty()) {
-				hostUrl = fullURL.substring(0, fullURL.indexOf(path));
-				contextRoot = path;
-			} else {
-				hostUrl = fullURL;
-			}
-
-			if (hostUrl == null) {
-				hostUrl = "";
-			}
-			if (contextRoot == null) {
-				contextRoot = "";
-			}
-
-			return new ClientConfiguration(hostUrl, contextRoot);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	public static synchronized ClientConfiguration get(String hostUrl, String contextRoot, String username, String password) {
-		return new ClientConfiguration(hostUrl, contextRoot);
-	}
+	public static final int DEFAULT_PORT = 80;
+	public static final String DEFAULT_REALM = "default_realm";
+	public static final String UNKNOWN_USERNAME = "unknown_user";
 
 	protected static TrustManager[] TRUST = new TrustManager[] { new X509TrustManager() {
 		@Override
@@ -82,36 +51,34 @@ public class ClientConfiguration {
 		}
 	}
 
-	public static final int DEFAULT_PORT = 8090;
+	public static synchronized ClientConfiguration create(String realm, String username, String fullUrl) {
+		return new ClientConfiguration(realm, username, fullUrl, null);
+	}
 
-	protected String url;
+	public static synchronized ClientConfiguration create(String realm, String username, String hostUrl, String contextRoot) {
+		return new ClientConfiguration(realm, username, hostUrl, contextRoot);
+	}
+
+	protected String realm;
+	protected String username;
 	protected String scheme;
 	protected String host;
 	protected int port;
 	protected String contextRoot;
 
-	// protected Map<String, String> properties;
-	protected String tokenType = "Bearer";
-	protected String accessToken;
-
 	/**
 	 * 
-	 * @param url
-	 */
-	public ClientConfiguration(String url) {
-		this(url, null);
-	}
-
-	/**
-	 * 
+	 * @param realm
+	 * @param username
 	 * @param url
 	 * @param contextRoot
 	 */
-	public ClientConfiguration(String url, String contextRoot) {
+	public ClientConfiguration(String realm, String username, String url, String contextRoot) {
 		if (url == null || url.isEmpty()) {
 			throw new IllegalArgumentException("URL is empty.");
 		}
-		this.url = url;
+		this.realm = checkRealm(realm);
+		this.username = checkUsername(username);
 
 		URI uri = null;
 		try {
@@ -121,20 +88,14 @@ public class ClientConfiguration {
 		}
 		if (uri != null) {
 			String scheme = uri.getScheme();
-			if (scheme == null || scheme.isEmpty() || (!"http".equals(scheme) && !"https".equals(scheme))) {
-				scheme = "http";
-			}
-			this.scheme = scheme;
+			this.scheme = checkScheme(scheme);
 			this.host = uri.getHost();
 			this.port = uri.getPort();
 
 			String path = uri.getPath();
-			if (contextRoot == null) {
-				if (path != null) {
-					contextRoot = path;
-				}
+			if (contextRoot == null && path != null) {
+				contextRoot = path;
 			}
-
 			if (this.port < 0) {
 				this.port = DEFAULT_PORT;
 			}
@@ -142,68 +103,57 @@ public class ClientConfiguration {
 		this.contextRoot = contextRoot;
 	}
 
-	public String getUrl() {
-		return this.url;
+	protected String checkRealm(String realm) {
+		if (realm == null) {
+			realm = DEFAULT_REALM;
+		}
+		return realm;
 	}
 
-	public void setUrl(String url) {
-		this.url = url;
+	protected String checkUsername(String username) {
+		if (username == null) {
+			username = UNKNOWN_USERNAME;
+		}
+		return username;
+	}
+
+	protected String checkScheme(String scheme) {
+		if (scheme == null || scheme.isEmpty() || (!"http".equals(scheme) && !"https".equals(scheme))) {
+			scheme = "http";
+		}
+		return scheme;
+	}
+
+	public synchronized String getRealm() {
+		return this.realm;
+	}
+
+	public synchronized void setRealm(String realm) {
+		this.realm = checkRealm(realm);
+	}
+
+	public synchronized String getUsername() {
+		return this.username;
+	}
+
+	public synchronized void setUsername(String username) {
+		this.username = checkUsername(username);
 	}
 
 	public String getScheme() {
 		return this.scheme;
 	}
 
-	public void setScheme(String scheme) {
-		this.scheme = scheme;
-	}
-
 	public String getHost() {
 		return this.host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
 	}
 
 	public int getPort() {
 		return this.port;
 	}
 
-	public void setPort(int port) {
-		this.port = port;
-	}
-
 	public String getContextRoot() {
 		return this.contextRoot;
-	}
-
-	public void setContextRoot(String contextRoot) {
-		this.contextRoot = contextRoot;
-	}
-
-	// public Map<String, String> getProperties() {
-	// return this.properties;
-	// }
-	//
-	// public void setProperties(Map<String, String> properties) {
-	// this.properties = properties;
-	// }
-
-	public String getTokenType() {
-		return tokenType;
-	}
-
-	public void setTokenType(String tokenType) {
-		this.tokenType = tokenType;
-	}
-
-	public String getAccessToken() {
-		return accessToken;
-	}
-
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
 	}
 
 	public Client createClient() {
@@ -262,28 +212,6 @@ public class ClientConfiguration {
 			}
 			return url + contextRoot;
 		}
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	public URI getBaseURI() {
-		String contextRoot = this.contextRoot;
-		if (contextRoot != null) {
-			contextRoot = contextRoot.trim();
-		}
-		if (contextRoot == null || contextRoot.isEmpty()) {
-			contextRoot = "/";
-		} else {
-			if (!contextRoot.startsWith("/")) {
-				contextRoot = "/" + contextRoot;
-			}
-			if (contextRoot.endsWith("/")) {
-				contextRoot = contextRoot.substring(0, contextRoot.lastIndexOf("/"));
-			}
-		}
-		return UriBuilder.fromPath(contextRoot).scheme(this.scheme).host(this.host).port(this.port).build();
 	}
 
 }
@@ -387,4 +315,53 @@ public class ClientConfiguration {
 
 // public static void main(String[] args) {
 // ClientConfiguration config = new ClientConfiguration("http://127.0.0.1:10001/orbit/v1", null);
+// }
+
+// public Map<String, String> getProperties() {
+// return this.properties;
+// }
+//
+// public void setProperties(Map<String, String> properties) {
+// this.properties = properties;
+// }
+
+// try {
+// String hostUrl = null;
+// String contextRoot = null;
+//
+// URL url = new URL(fullUrl.trim());
+//
+// String fullURL = url.toExternalForm();
+// String path = url.getPath();
+//
+// if (path != null && !path.isEmpty()) {
+// hostUrl = fullURL.substring(0, fullURL.indexOf(path));
+// contextRoot = path;
+// } else {
+// hostUrl = fullURL;
+// }
+//
+// if (hostUrl == null) {
+// hostUrl = "";
+// }
+// if (contextRoot == null) {
+// contextRoot = "";
+// }
+
+// public URI getBaseURI() {
+// String contextRoot = this.contextRoot;
+// if (contextRoot != null) {
+// contextRoot = contextRoot.trim();
+// }
+// if (contextRoot == null || contextRoot.isEmpty()) {
+// contextRoot = "/";
+// } else {
+// if (!contextRoot.startsWith("/")) {
+// contextRoot = "/" + contextRoot;
+// }
+// if (contextRoot.endsWith("/")) {
+// contextRoot = contextRoot.substring(0, contextRoot.lastIndexOf("/"));
+// }
+// }
+// return UriBuilder.fromPath(contextRoot).scheme(this.scheme).host(this.host).port(this.port).build();
 // }

@@ -45,7 +45,7 @@ public class YahooFinanceClient extends AbstractWSClient {
 	 * 
 	 */
 	public YahooFinanceClient() {
-		super(ClientConfiguration.get("http://chart.finance.yahoo.com:80", "table.csv", null, null));
+		super(ClientConfiguration.create("orbit", null, "http://chart.finance.yahoo.com:80", "table.csv"));
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class YahooFinanceClient extends AbstractWSClient {
 
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 

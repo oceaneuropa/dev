@@ -10,7 +10,6 @@ import org.origin.common.rest.client.ClientConfiguration;
  * /orbit/v1/sso/oauth2
  * 
  * 
- * 
  */
 public class OAuth2WSClient extends AbstractWSClient {
 

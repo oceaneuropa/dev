@@ -2,6 +2,9 @@ package org.orbit.infra.connector;
 
 public class OrbitConstants {
 
+	public static String REALM = "realm";
+	public static String USERNAME = "username";
+
 	// ----------------------------------------------------------------------------------------
 	// IndexItem
 	// ----------------------------------------------------------------------------------------

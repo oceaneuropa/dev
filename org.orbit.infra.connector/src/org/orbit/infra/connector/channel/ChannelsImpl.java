@@ -54,9 +54,11 @@ public class ChannelsImpl implements Channels {
 	}
 
 	protected void init() {
+		String realm = (String) this.properties.get(OrbitConstants.REALM);
+		String username = (String) this.properties.get(OrbitConstants.USERNAME);
 		String url = (String) this.properties.get(OrbitConstants.CHANNEL_HOST_URL);
 		String contextRoot = (String) this.properties.get(OrbitConstants.CHANNEL_CONTEXT_ROOT);
-		ClientConfiguration clientConfig = ClientConfiguration.get(url, contextRoot, null, null);
+		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
 
 		this.client = new ChannelWSClient(clientConfig);
 	}

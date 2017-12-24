@@ -42,7 +42,6 @@ public class AuthServiceImpl implements AuthService {
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_NAMESPACE);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_CONTEXT_ROOT);
@@ -65,12 +64,11 @@ public class AuthServiceImpl implements AuthService {
 
 	protected void init() {
 		// 1. retrieve token secret
+		String realm = (String) this.properties.get(OrbitConstants.REALM);
 		this.tokenSecret = (String) this.properties.get(OrbitConstants.COMPONENT_AUTH_TOKEN_SECRET);
 
 		// 2. init token manager
-		String serviceFullName = getFullName();
-		String clusterName = getNamespace() + ".token";
-		this.tokenManager = new TokenManagerClusterImpl(serviceFullName, clusterName);
+		this.tokenManager = new TokenManagerClusterImpl(getName(), realm);
 		this.tokenManager.activate();
 
 		// 3. start beacon (useless?)
@@ -99,20 +97,8 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	@Override
-	public String getNamespace() {
-		return (String) this.properties.get(OrbitConstants.COMPONENT_AUTH_NAMESPACE);
-	}
-
-	@Override
 	public String getName() {
 		return (String) this.properties.get(OrbitConstants.COMPONENT_AUTH_NAME);
-	}
-
-	protected String getFullName() {
-		if (getNamespace() == null || getNamespace().isEmpty()) {
-			return getName();
-		}
-		return getNamespace() + "." + getName();
 	}
 
 	@Override
@@ -237,7 +223,7 @@ public class AuthServiceImpl implements AuthService {
 	private TokenResponse handleRefreshToken(TokenRequest request) throws AuthException {
 		// Step1. Decode the JWT object
 		// - Exception is thrown by JWT (JWTVerifier) API if the token has expired.
-		String issuer = getFullName();
+		String issuer = getName();
 		String refreshToken = request.getRefreshToken();
 		if (refreshToken == null || refreshToken.isEmpty()) {
 			throw new AuthException("Bad Request", "Refresh token is empty.");

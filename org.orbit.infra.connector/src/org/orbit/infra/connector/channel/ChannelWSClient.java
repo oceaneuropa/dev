@@ -2,6 +2,7 @@ package org.orbit.infra.connector.channel;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,9 +44,10 @@ public class ChannelWSClient extends AbstractWSClient {
 			Entity<?> formData = Entity.json(new GenericEntity<ChannelMessageDTO>(messageDTO) {
 			});
 
-			Builder builder = getRootPath().path("inbound").request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("inbound");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(formData);
-			checkResponse(response);
+			checkResponse(target, response);
 
 			result = response.readEntity(Integer.class);
 

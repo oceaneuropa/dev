@@ -1,20 +1,24 @@
 package org.orbit.component.cli;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier1.auth.GrantTypeConstants;
-import org.orbit.component.api.tier3.domain.DomainManagementConnector;
+import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.connector.tier3.transferagent.TransferAgentHelper;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
+import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
 import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
 import org.orbit.component.model.tier3.transferagent.dto.TransferAgentResponseConverter;
 import org.origin.common.annotation.Annotated;
@@ -22,6 +26,7 @@ import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.osgi.OSGiServiceUtil;
+import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.rest.model.Request;
@@ -43,12 +48,8 @@ public class TransferAgentCommand implements Annotated {
 	@Dependency
 	protected AuthConnector authConnector;
 	@Dependency
-	protected DomainManagementConnector domainConnector;
+	protected DomainServiceConnector domainConnector;
 
-	// @Dependency
-	// protected TransferAgentConnector transferAgentConnector;
-	// protected ServiceConnectorAdapterV1<TransferAgent> transferAgentConnector;
-	// protected ServiceConnectorAdapterV2 transferAgentConnector;
 	protected ServiceConnectorAdapter<TransferAgent> taConnector;
 
 	protected String getScheme() {
@@ -60,11 +61,9 @@ public class TransferAgentCommand implements Annotated {
 		props.put("osgi.command.scope", getScheme());
 		props.put("osgi.command.function",
 				new String[] { //
-						// service
-						"ping",
-
-						// Nodes
-						"list_nodes", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
+						"login", "ping", //
+						"echo", "level", //
+						"list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
 		});
 
 		OSGiServiceUtil.register(bundleContext, TransferAgentCommand.class.getName(), this, props);
@@ -110,44 +109,93 @@ public class TransferAgentCommand implements Annotated {
 		return auth;
 	}
 
-	protected TransferAgent getTransferAgent(String accessToken, String machineId, String transferAgentId) throws ClientException {
-		System.out.println("getTransferAgent() accessToken = " + accessToken);
+	protected TransferAgent getTransferAgent(String machineId, String transferAgentId) throws ClientException {
+		TransferAgent transferAgent = null;
 
-		TransferAgent transferAgent = TransferAgentHelper.getInstance().getTransferAgent(accessToken, this.domainConnector, this.taConnector, machineId, transferAgentId);
+		DomainService domainService = this.domainConnector.getService();
+		if (domainService != null) {
+			TransferAgentConfig taConfig = domainService.getTransferAgentConfig(machineId, transferAgentId);
+			if (taConfig != null) {
+				String url = taConfig.getHostURL() + taConfig.getContextRoot();
+
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(OrbitConstants.REALM, this.realm);
+				properties.put(OrbitConstants.USERNAME, this.username);
+				properties.put(OrbitConstants.URL, url);
+
+				transferAgent = this.taConnector.getService(properties);
+				if (transferAgent == null) {
+					LOG.error("TransferAgent is not available.");
+				}
+			}
+		}
+
+		return transferAgent;
+	}
+
+	protected TransferAgent getTransferAgent(String realm, String username, String url) throws ClientException {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(OrbitConstants.REALM, realm);
+		properties.put(OrbitConstants.USERNAME, username);
+		properties.put(OrbitConstants.URL, url);
+
+		TransferAgent transferAgent = this.taConnector.getService(properties);
 		if (transferAgent == null) {
 			LOG.error("TransferAgent is not available.");
 		}
 		return transferAgent;
 	}
 
-	protected String accessToken = null;
-
-	protected synchronized String getAccessToken() throws ClientException {
-		if (accessToken == null) {
-			Auth auth = getAuth();
-			if (auth != null) {
-				TokenRequest tokenRequest = new TokenRequest();
-				tokenRequest.setGrantType(GrantTypeConstants.USER_CREDENTIALS);
-				tokenRequest.setUsername("admin1");
-				tokenRequest.setPassword("123");
-				TokenResponse tokenResponse = auth.getToken(tokenRequest);
-
-				this.accessToken = tokenResponse.getAccessToken();
-			}
-		}
-		return this.accessToken;
-	}
-
 	// -----------------------------------------------------------------------------------------
 	// Service
+	// login
 	// ping
 	// -----------------------------------------------------------------------------------------
+	private String realm = ClientConfiguration.DEFAULT_REALM;
+	private String username = ClientConfiguration.UNKNOWN_USERNAME;
+
+	@Descriptor("login")
+	public void login( //
+			@Descriptor("username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
+			@Descriptor("password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password //
+	) {
+		Auth auth = getAuth();
+		if (auth == null) {
+			return;
+		}
+
+		if (Parameter.UNSPECIFIED.equals(username)) {
+			LOG.error("'-username' parameter is not set.");
+			return;
+		}
+		if (Parameter.UNSPECIFIED.equals(password)) {
+			LOG.error("'-password' parameter is not set.");
+			return;
+		}
+
+		try {
+			TokenRequest tokenRequest = new TokenRequest();
+			tokenRequest.setGrantType(GrantTypeConstants.USER_CREDENTIALS);
+			tokenRequest.setUsername(username);
+			tokenRequest.setPassword(password);
+
+			TokenResponse tokenResponse = auth.getToken(tokenRequest);
+			if (tokenResponse != null && tokenResponse.getAccessToken() != null) {
+				// keep the username, if authorized
+				this.username = username;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * 
 	 * @param machineId
 	 * @param transferAgentId
 	 */
-	@Descriptor("Ping TA")
+	@Descriptor("ping")
 	public void ping( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
@@ -156,17 +204,89 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "ping", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 			if (transferAgent == null) {
 				return;
 			}
 
 			boolean ping = transferAgent.ping();
-			System.out.println("ping = " + ping);
+			System.out.println("ping result = " + ping);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 * @param url
+	 * @param message
+	 */
+	@Descriptor("echo")
+	public void echo( //
+			@Descriptor("TA server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
+			@Descriptor("Message") @Parameter(names = { "-m", "--m" }, absentValue = Parameter.UNSPECIFIED) String message //
+	) {
+		LOG.info("echo()");
+		CLIHelper.getInstance().printCommand(getScheme(), "echo", new String[] { "url", url }, new String[] { "m", message });
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'--url' parameter is not set.");
+			return;
+		}
+		if (Parameter.UNSPECIFIED.equals(message)) {
+			LOG.error("'--m' parameter is not set.");
+			return;
+		}
+
+		try {
+			TransferAgent transferAgent = getTransferAgent(this.realm, this.username, url);
+			if (transferAgent == null) {
+				return;
+			}
+
+			String echoMessage = transferAgent.echo(message);
+			System.out.println("echo result = " + echoMessage);
+
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+	}
+
+	@Descriptor("level")
+	public void level( //
+			@Descriptor("TA server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
+			@Descriptor("Level 1") @Parameter(names = { "-l1", "-l1" }, absentValue = Parameter.UNSPECIFIED) String level1, //
+			@Descriptor("Level 2") @Parameter(names = { "-l2", "-l2" }, absentValue = Parameter.UNSPECIFIED) String level2, //
+			@Descriptor("Message 1") @Parameter(names = { "-m1", "--m1" }, absentValue = Parameter.UNSPECIFIED) String message1, //
+			@Descriptor("Message 2") @Parameter(names = { "-m2", "--m2" }, absentValue = Parameter.UNSPECIFIED) String message2 //
+	) {
+		LOG.info("level()");
+		CLIHelper.getInstance().printCommand(getScheme(), "level", new String[] { "url", url }, new String[] { "l1", level1 }, new String[] { "l2", level2 }, new String[] { "m1", message1 }, new String[] { "m2", message2 });
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'--url' parameter is not set.");
+			return;
+		}
+		if (Parameter.UNSPECIFIED.equals(level1)) {
+			LOG.error("'--l1' parameter is not set.");
+			return;
+		}
+		if (Parameter.UNSPECIFIED.equals(level2)) {
+			LOG.error("'--l2' parameter is not set.");
+			return;
+		}
+
+		try {
+			TransferAgent transferAgent = getTransferAgent(this.realm, this.username, url);
+			if (transferAgent == null) {
+				return;
+			}
+
+			String levelResult = transferAgent.level(level1, level2, message1, message2);
+			System.out.println("level result = " + levelResult);
+
+		} catch (Exception e) {
+			// e.printStackTrace();
+			System.out.println(e.toString());
 		}
 	}
 
@@ -197,8 +317,47 @@ public class TransferAgentCommand implements Annotated {
 		}
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+			if (transferAgent == null) {
+				return;
+			}
+
+			Request request = new Request(Requests.LIST_NODES);
+			Response response = transferAgent.sendRequest(request);
+
+			NodeInfo[] nodeInfos = TransferAgentResponseConverter.INSTANCE.convertToNodeInfos(response);
+			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
+			int rowIndex = 0;
+			for (NodeInfo nodeInfo : nodeInfos) {
+				String name = nodeInfo.getName();
+				rows[rowIndex++] = new String[] { name };
+			}
+			PrettyPrinter.prettyPrint(NODE_TITLES, rows, nodeInfos.length);
+
+		} catch (Exception e) {
+			// e.printStackTrace();
+			System.out.println(e.toString());
+		}
+	}
+
+	/**
+	 * 
+	 * @param url
+	 *            e.g. http://127.0.0.1:12001/orbit/v1/ta
+	 * 
+	 *            e.g. http://127.0.0.1:13001/orbit/v1/ta
+	 */
+	@Descriptor("List nodes 2")
+	public void list_nodes2(@Descriptor("url") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url) {
+		LOG.info("list_nodes2()");
+		CLIHelper.getInstance().printCommand(getScheme(), "list_nodes2", new String[] { "url", url });
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'-url' parameter is not set.");
+			return;
+		}
+
+		try {
+			TransferAgent transferAgent = getTransferAgent(this.realm, this.username, url);
 			if (transferAgent == null) {
 				return;
 			}
@@ -231,8 +390,7 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 			if (transferAgent == null) {
 				return;
 			}
@@ -268,8 +426,7 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "node_exist", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 			if (transferAgent == null) {
 				return;
 			}
@@ -296,8 +453,7 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "create_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 			if (transferAgent == null) {
 				return;
 			}
@@ -325,8 +481,7 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "delete_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 			if (transferAgent == null) {
 				return;
 			}
@@ -354,8 +509,7 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "start_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 			if (transferAgent == null) {
 				return;
 			}
@@ -376,8 +530,7 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "stop_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 			if (transferAgent == null) {
 				return;
 			}
@@ -397,8 +550,7 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "node_status", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
 
 		try {
-			String accessToken = getAccessToken();
-			TransferAgent transferAgent = getTransferAgent(accessToken, machineId, transferAgentId);
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
 			if (transferAgent == null) {
 				return;
 			}
@@ -417,6 +569,11 @@ public class TransferAgentCommand implements Annotated {
 	}
 
 }
+
+// @Dependency
+// protected TransferAgentConnector transferAgentConnector;
+// protected ServiceConnectorAdapterV1<TransferAgent> transferAgentConnector;
+// protected ServiceConnectorAdapterV2 transferAgentConnector;
 
 // protected void checkDomainManagement(DomainManagement domainMgmt) throws ClientException {
 // if (domainMgmt == null) {

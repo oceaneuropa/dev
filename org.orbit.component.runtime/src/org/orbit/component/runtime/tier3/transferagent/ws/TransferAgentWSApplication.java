@@ -1,6 +1,11 @@
 package org.orbit.component.runtime.tier3.transferagent.ws;
 
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Response;
+
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.process.Inflector;
+import org.glassfish.jersey.server.model.Resource;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 
@@ -25,7 +30,26 @@ public class TransferAgentWSApplication extends OrbitWSApplication {
 				bind(service).to(TransferAgentService.class);
 			}
 		});
-		register(TransferAgentWSServiceResource.class);
+		register(TransferAgentWSResource.class);
+
+		// http://{host}:{port}/{contextRoot}/level/{level1}/{level2}?message1=<message1>&message2=<message2>
+		Resource.Builder levelWSResource = Resource.builder("level/{level1}/{level2}");
+		levelWSResource.addMethod(GET).produces(JSON).handledBy(levelInflector());
+		registerResources(levelWSResource.build());
+	}
+
+	protected Inflector<ContainerRequestContext, Response> levelInflector() {
+		return new Inflector<ContainerRequestContext, Response>() {
+			@Override
+			public Response apply(ContainerRequestContext requestContext) {
+				String level1 = getPathParam("level1", requestContext);
+				String level2 = getPathParam("level2", requestContext);
+				String message1 = getQueryParam("message1", requestContext);
+				String message2 = getQueryParam("message2", requestContext);
+				String resultMessage = level1 + "/" + level2 + "?" + message1 + "&" + message2;
+				return Response.ok(resultMessage).build();
+			}
+		};
 	}
 
 }

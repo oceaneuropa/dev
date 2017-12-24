@@ -101,9 +101,11 @@ public class IndexServiceImpl implements IndexService {
 	 * @return
 	 */
 	protected ClientConfiguration getClientConfiguration(Map<Object, Object> properties) {
+		String realm = (String) properties.get(OrbitConstants.REALM);
+		String username = (String) properties.get(OrbitConstants.USERNAME);
 		String url = (String) properties.get(OrbitConstants.INDEX_SERVICE_HOST_URL);
 		String contextRoot = (String) properties.get(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT);
-		return ClientConfiguration.get(url, contextRoot, null, null);
+		return ClientConfiguration.create(realm, username, url, contextRoot);
 	}
 
 	@Override

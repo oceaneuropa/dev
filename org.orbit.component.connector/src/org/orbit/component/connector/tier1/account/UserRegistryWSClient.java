@@ -76,7 +76,7 @@ public class UserRegistryWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path(PATH_USERACCOUNTS);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			userAccounts = response.readEntity(new GenericType<List<UserAccountDTO>>() {
 			});
@@ -104,9 +104,10 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		UserAccountDTO userAccount = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).path(userId).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS).path(userId);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			userAccount = response.readEntity(UserAccountDTO.class);
 		} catch (ClientException e) {
@@ -129,9 +130,10 @@ public class UserRegistryWSClient extends AbstractWSClient {
 	public boolean userAccountExists(String userId) throws ClientException {
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).path(userId).path(PATH_EXISTS).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS).path(userId).path(PATH_EXISTS);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 
@@ -166,10 +168,11 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<UserAccountDTO>(newUserAccountRequestDTO) {
 			}));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {
@@ -198,9 +201,10 @@ public class UserRegistryWSClient extends AbstractWSClient {
 			Entity<?> bodyParameter = Entity.json(new GenericEntity<UserAccountDTO>(updateUserAccountRequestDTO) {
 			});
 
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).put(bodyParameter);
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 
@@ -234,9 +238,10 @@ public class UserRegistryWSClient extends AbstractWSClient {
 			Entity<?> bodyParameter = Entity.json(new GenericEntity<UserAccountActionDTO>(actionDTO) {
 			});
 
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).path(PATH_ACTION).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS).path(PATH_ACTION);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).put(bodyParameter);
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 
@@ -274,9 +279,10 @@ public class UserRegistryWSClient extends AbstractWSClient {
 	public boolean isUserAccountActivated(String userId) throws ClientException {
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).path(userId).path(PATH_ACTIVATED).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS).path(userId).path(PATH_ACTIVATED);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 
@@ -321,9 +327,10 @@ public class UserRegistryWSClient extends AbstractWSClient {
 			Entity<?> bodyParameter = Entity.json(new GenericEntity<UserAccountActionDTO>(actionDTO) {
 			});
 
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).path(PATH_ACTION).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS).path(PATH_ACTION);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).put(bodyParameter);
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 
@@ -373,9 +380,10 @@ public class UserRegistryWSClient extends AbstractWSClient {
 			Entity<?> bodyParameter = Entity.json(new GenericEntity<UserAccountActionDTO>(actionDTO) {
 			});
 
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).path(PATH_ACTION).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS).path(PATH_ACTION);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).put(bodyParameter);
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 
@@ -415,9 +423,10 @@ public class UserRegistryWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path(PATH_USERACCOUNTS).path(userId).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path(PATH_USERACCOUNTS).path(userId);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 		} catch (ClientException e) {

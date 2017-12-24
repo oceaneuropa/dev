@@ -134,13 +134,14 @@ backup5:
 backup6:
 ------------------------------------------------------------------------------------
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=11002 
--Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
--DORIGIN_HOME=/Users/yayang/origin 
+-Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-DORIGIN_HOME=/Users/denmark/origin 
 -Dorbit.host.url=http://127.0.0.1:11002 
 -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 
+-Drealm=orbit1 
+
 -Dcomponent.appstore.autostart=true 
--Dcomponent.appstore.namespace=group1 
 -Dcomponent.appstore.name=AppStore2 
 -Dcomponent.appstore.context_root=/orbit/v1/appstore 
 -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver 
@@ -149,7 +150,6 @@ backup6:
 -Dcomponent.appstore.jdbc.password=admin 
 
 -Dcomponent.configregistry.autostart=true 
--Dcomponent.configregistry.namespace=group1 
 -Dcomponent.configregistry.name=ConfigRegistry2 
 -Dcomponent.configregistry.context_root=/orbit/v1/configregistry 
 -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver 
@@ -158,7 +158,6 @@ backup6:
 -Dcomponent.configregistry.jdbc.password=admin 
 
 -Dcomponent.userregistry.autostart=true 
--Dcomponent.userregistry.namespace=group1 
 -Dcomponent.userregistry.name=UserRegistry2 
 -Dcomponent.userregistry.context_root=/orbit/v1/userregistry 
 -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver 
@@ -167,17 +166,21 @@ backup6:
 -Dcomponent.userregistry.jdbc.password=admin 
 
 -Dcomponent.auth.autostart=true 
--Dcomponent.auth.namespace=group1 
 -Dcomponent.auth.name=Auth2 
 -Dcomponent.auth.context_root=/orbit/v1/auth 
 -Dcomponent.auth.token_secret=Einstein 
 
--Dcomponent.domain_mgmt.autostart=true 
--Dcomponent.domain_mgmt.namespace=group1 
--Dcomponent.domain_mgmt.name=Domain2 
--Dcomponent.domain_mgmt.context_root=/orbit/v1/domain 
--Dcomponent.domain_mgmt.jdbc.driver=org.postgresql.Driver 
--Dcomponent.domain_mgmt.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
--Dcomponent.domain_mgmt.jdbc.username=postgres 
--Dcomponent.domain_mgmt.jdbc.password=admin 
+-Dcomponent.domain_service.autostart=true 
+-Dcomponent.domain_service.name=Domain2 
+-Dcomponent.domain_service.context_root=/orbit/v1/domain 
+-Dcomponent.domain_service.jdbc.driver=org.postgresql.Driver 
+-Dcomponent.domain_service.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
+-Dcomponent.domain_service.jdbc.username=postgres 
+-Dcomponent.domain_service.jdbc.password=admin
 ------------------------------------------------------------------------------------
+
+
+
+
+
+

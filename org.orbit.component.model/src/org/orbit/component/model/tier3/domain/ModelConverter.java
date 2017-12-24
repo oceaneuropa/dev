@@ -17,12 +17,12 @@ public class ModelConverter {
 	// RTO to DTO
 	// ------------------------------------------------------------------------------------------
 	/**
-	 * Convert DomainManagementException object to Error DTO.
+	 * Convert DomainException object to Error DTO.
 	 * 
 	 * @param e
 	 * @return
 	 */
-	public ErrorDTO toDTO(DomainMgmtException e) {
+	public ErrorDTO toDTO(DomainException e) {
 		if (e == null) {
 			return null;
 		}

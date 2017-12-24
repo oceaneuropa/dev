@@ -1,10 +1,16 @@
 package org.orbit.component.runtime.tier1.auth.ws;
 
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -30,8 +36,9 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
  * 
  * @see ProjectNodeResource for multiple POST web services and response with model.
  * 
+ * @see https://stackoverflow.com/questions/8889679/how-to-create-a-cookie-and-add-to-http-response-from-inside-my-service-layer
+ * 
  */
-
 /*
  * Auth web service resource.
  * 
@@ -128,7 +135,12 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 	@POST
 	@Path("authorize")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response authorize(AuthorizationRequestDTO authorizationRequestDTO) {
+	public Response authorize( //
+			@Context HttpServletRequest servletRequest, //
+			@Context HttpServletResponse servletResponse, //
+			@Context ServletContext servletContext, //
+			@Context HttpHeaders httpHeaders, //
+			AuthorizationRequestDTO authorizationRequestDTO) {
 		try {
 			AuthorizationResponse response = getService().authorize(AuthConverter.getInstance().toRequest(authorizationRequestDTO));
 			return Response.ok().entity(AuthConverter.getInstance().toResponseDTO(response)).build();
@@ -142,15 +154,50 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 	@POST
 	@Path("token")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response token(TokenRequestDTO tokenRequestDTO) {
+	public Response token( //
+			@Context HttpServletRequest servletRequest, //
+			@Context HttpServletResponse servletResponse, //
+			@Context ServletContext servletContext, //
+			@Context HttpHeaders httpHeaders, //
+			TokenRequestDTO tokenRequestDTO) {
 		try {
 			TokenResponse response = getService().getToken(AuthConverter.getInstance().toRequest(tokenRequestDTO));
+
+			if (response != null && response.getAccessToken() != null) {
+				String accessToken = response.getAccessToken();
+				Cookie cookie = create("OrbitSession", accessToken, false, 60 * 60 * 24, "/");
+				servletResponse.addCookie(cookie);
+			}
+			// Cookie cookie2 = create("OrbitSession2", "Einstein@mtswz", false, 60 * 60 * 24, "/");
+			// servletResponse.addCookie(cookie2);
+
 			return Response.ok().entity(AuthConverter.getInstance().toResponseDTO(response)).build();
 
 		} catch (AuthException e) {
 			e.printStackTrace();
 			return Response.status(Status.BAD_REQUEST).entity(AuthConverter.getInstance().toResponseDTO(e)).build();
 		}
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @param value
+	 * @param secure
+	 * @param expireIn
+	 * @param path
+	 * @return
+	 */
+	protected Cookie create(String name, String value, boolean secure, int expireIn, String path) {
+		Cookie cookie = new Cookie(name, value);
+		// determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
+		cookie.setSecure(secure);
+		// A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the
+		// cookie to be deleted.
+		cookie.setMaxAge(expireIn);
+		// The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
+		cookie.setPath(path);
+		return cookie;
 	}
 
 }

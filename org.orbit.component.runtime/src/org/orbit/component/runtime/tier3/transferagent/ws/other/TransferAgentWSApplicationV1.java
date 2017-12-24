@@ -3,7 +3,7 @@ package org.orbit.component.runtime.tier3.transferagent.ws.other;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
-import org.orbit.component.runtime.tier3.transferagent.ws.TransferAgentWSServiceResource;
+import org.orbit.component.runtime.tier3.transferagent.ws.TransferAgentWSResource;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -30,7 +30,7 @@ public class TransferAgentWSApplicationV1 extends OrbitWSApplication {
 				bind(service).to(TransferAgentService.class);
 			}
 		});
-		register(TransferAgentWSServiceResource.class);
+		register(TransferAgentWSResource.class);
 	}
 
 	public TransferAgentService getService() {

@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Jersey
-Bundle-SymbolicName: lib.jersey
+Bundle-SymbolicName: lib.jersey;singleton:=true
 Bundle-Version: 2.22.2
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-ClassPath: lib/jersey-all-2.22.2.jar
+Bundle-ClassPath: lib/jersey-all-2.22.2.jar,
+ lib/jersey-apache-connector-2.26.jar
 Export-Package: com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.core.base,
@@ -106,6 +107,7 @@ Export-Package: com.fasterxml.jackson.annotation,
  org.glassfish.hk2.utilities.reflection,
  org.glassfish.hk2.utilities.reflection.internal,
  org.glassfish.jersey,
+ org.glassfish.jersey.apache.connector,
  org.glassfish.jersey.client,
  org.glassfish.jersey.client.authentication,
  org.glassfish.jersey.client.filter,
@@ -189,4 +191,7 @@ Export-Package: com.fasterxml.jackson.annotation,
  org.jvnet.mimepull,
  org.jvnet.tiger_types
 Require-Bundle: javax.servlet;bundle-version="3.1.0",
- javax.servlet-api;bundle-version="3.1.0"
+ javax.servlet-api;bundle-version="3.1.0",
+ org.apache.httpcomponents.httpcore;bundle-version="4.4.8",
+ org.apache.httpcomponents.httpclient;bundle-version="4.5.4"
+Bundle-ActivationPolicy: lazy

@@ -5,10 +5,14 @@ VM arguments:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
 
 backup1:
---------------------------------------------------------------------------
--Declipse.ignoreApp=true -Dosgi.noShutdown=true 
+-------------------------------------------------------------------------- 
+ -Declipse.ignoreApp=true -Dosgi.noShutdown=true 
 -Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
--DORIGIN_HOME=/Users/example/origin 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+-DORIGIN_HOME=/Users/denmark/origin 
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+
+-Drealm=orbit1 
+
+-Dchannel.host.url=http://127.0.0.1:11003 
+-Dchannel.context_root=/orbit/v1/channel
 --------------------------------------------------------------------------
- 

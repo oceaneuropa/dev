@@ -13,8 +13,8 @@ import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryServiceAdapter;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceAdapter;
-import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domain.ws.DomainMgmtServiceAdapter;
+import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceAdapter;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 import org.orbit.component.runtime.tier3.transferagent.ws.TransferAgentServiceAdapter;
 import org.orbit.infra.api.indexes.IndexProviderConnector;
@@ -65,7 +65,7 @@ public class Activator implements BundleActivator {
 	// tier3
 	protected boolean hasDomainMgmtService;
 	protected boolean autoStartDomainMgmtService;
-	protected DomainMgmtServiceAdapter domainMgmtServiceAdapter;
+	protected DomainServiceAdapter domainMgmtServiceAdapter;
 
 	protected boolean hasTransferAgentService;
 	protected boolean autoStartTransferAgentService;
@@ -88,28 +88,28 @@ public class Activator implements BundleActivator {
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_SERVICE_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
 
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_USER_REGISTRY_AUTOSTART);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_AUTOSTART);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_AUTOSTART);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_AUTOSTART);
+		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_DOMAIN_SERVICE_AUTOSTART);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_TRANSFER_AGENT_AUTOSTART);
 
 		hasUserRegistryService = configProps.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_NAME) ? true : false;
 		hasAuthService = configProps.containsKey(OrbitConstants.COMPONENT_AUTH_NAME) ? true : false;
 		hasConfigRegistryService = configProps.containsKey(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME) ? true : false;
 		hasAppStoreService = configProps.containsKey(OrbitConstants.COMPONENT_APP_STORE_NAME) ? true : false;
-		hasDomainMgmtService = configProps.containsKey(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME) ? true : false;
+		hasDomainMgmtService = configProps.containsKey(OrbitConstants.COMPONENT_DOMAIN_SERVICE_NAME) ? true : false;
 		hasTransferAgentService = configProps.containsKey(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME) ? true : false;
 
 		autoStartUserRegistryService = configProps.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_AUTOSTART) ? true : false;
 		autoStartAuthService = configProps.containsKey(OrbitConstants.COMPONENT_AUTH_AUTOSTART) ? true : false;
 		autoStartConfigRegistryService = configProps.containsKey(OrbitConstants.COMPONENT_CONFIG_REGISTRY_AUTOSTART) ? true : false;
 		autoStartAppStoreService = configProps.containsKey(OrbitConstants.COMPONENT_APP_STORE_AUTOSTART) ? true : false;
-		autoStartDomainMgmtService = configProps.containsKey(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_AUTOSTART) ? true : false;
+		autoStartDomainMgmtService = configProps.containsKey(OrbitConstants.COMPONENT_DOMAIN_SERVICE_AUTOSTART) ? true : false;
 		autoStartTransferAgentService = configProps.containsKey(OrbitConstants.COMPONENT_TRANSFER_AGENT_AUTOSTART) ? true : false;
 
 		LOG.info("hasUserRegistryService = " + hasUserRegistryService);
@@ -249,7 +249,7 @@ public class Activator implements BundleActivator {
 
 		// tier3
 		if (hasDomainMgmtService) {
-			domainMgmtServiceAdapter = new DomainMgmtServiceAdapter(indexProviderLoadBalancer);
+			domainMgmtServiceAdapter = new DomainServiceAdapter(indexProviderLoadBalancer);
 			domainMgmtServiceAdapter.start(bundleContext);
 		}
 		if (hasTransferAgentService) {
@@ -311,7 +311,7 @@ public class Activator implements BundleActivator {
 		return (appStoreServiceAdapter != null) ? appStoreServiceAdapter.getService() : null;
 	}
 
-	public DomainManagementService getDomainMgmtService() {
+	public DomainService getDomainMgmtService() {
 		return (domainMgmtServiceAdapter != null) ? domainMgmtServiceAdapter.getService() : null;
 	}
 

@@ -9,8 +9,8 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.thread.ServiceIndexTimer;
+import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.util.DateUtil;
 
 public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvider, TransferAgentService, IndexItem> implements ServiceIndexTimer<IndexProvider, TransferAgentService, IndexItem> {
@@ -42,7 +42,6 @@ public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvid
 
 	@Override
 	public IndexItem addIndex(IndexProvider indexProvider, TransferAgentService service) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -52,7 +51,6 @@ public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvid
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.TRANSFER_AGENT_NAMESPACE, namespace);
 		props.put(OrbitConstants.TRANSFER_AGENT_NAME, name);
 		props.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, hostURL);
 		props.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, contextRoot);
@@ -66,7 +64,6 @@ public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvid
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, TransferAgentService service, IndexItem indexItem) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -77,7 +74,6 @@ public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvid
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.TRANSFER_AGENT_NAMESPACE, namespace);
 		props.put(OrbitConstants.TRANSFER_AGENT_NAME, name);
 		props.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, hostURL);
 		props.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, contextRoot);

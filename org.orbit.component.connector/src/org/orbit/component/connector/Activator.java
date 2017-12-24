@@ -5,16 +5,16 @@ import java.util.Map;
 
 import org.orbit.component.cli.AppStoreCommand;
 import org.orbit.component.cli.AuthCommand;
-import org.orbit.component.cli.DomainManagementCommand;
+import org.orbit.component.cli.DomainServiceCommand;
 import org.orbit.component.cli.ServicesCommand;
 import org.orbit.component.cli.TransferAgentCommand;
 import org.orbit.component.cli.UserRegistryCommand;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryManager;
-import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
+import org.orbit.component.connector.tier1.auth.AuthConnectorLoadBalanceImpl;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
-import org.orbit.component.connector.tier3.domain.DomainMgmtConnectorImpl;
+import org.orbit.component.connector.tier3.domain.DomainServiceConnectorImpl;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
 import org.orbit.infra.api.indexes.IndexServiceConnector;
 import org.orbit.infra.api.indexes.IndexServiceConnectorAdapter;
@@ -47,9 +47,9 @@ public class Activator implements BundleActivator {
 	// Connectors
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
-	protected AuthConnectorImpl authConnector;
+	protected AuthConnectorLoadBalanceImpl authConnector;
 	protected AppStoreConnectorImpl appStoreConnector;
-	protected DomainMgmtConnectorImpl domainMgmtConnector;
+	protected DomainServiceConnectorImpl domainMgmtConnector;
 	protected TransferAgentConnectorImpl transferAgentConnector;
 
 	// Commands
@@ -57,7 +57,7 @@ public class Activator implements BundleActivator {
 	protected AuthCommand authCommand;
 	protected UserRegistryCommand userRegistryCommand;
 	protected AppStoreCommand appStoreCommand;
-	protected DomainManagementCommand domainMgmtCommand;
+	protected DomainServiceCommand domainMgmtCommand;
 	protected TransferAgentCommand transferAgentCommand;
 
 	@Override
@@ -104,7 +104,7 @@ public class Activator implements BundleActivator {
 		this.userRegistryConnector = new UserRegistryConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.userRegistryConnector.start(bundleContext);
 
-		this.authConnector = new AuthConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.authConnector = new AuthConnectorLoadBalanceImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.authConnector.start(bundleContext);
 
 		// tier2
@@ -112,7 +112,7 @@ public class Activator implements BundleActivator {
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
-		this.domainMgmtConnector = new DomainMgmtConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.domainMgmtConnector = new DomainServiceConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.domainMgmtConnector.start(bundleContext);
 
 		this.transferAgentConnector = new TransferAgentConnectorImpl();
@@ -131,7 +131,7 @@ public class Activator implements BundleActivator {
 		this.appStoreCommand = new AppStoreCommand(bundleContext);
 		this.appStoreCommand.start();
 
-		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
+		this.domainMgmtCommand = new DomainServiceCommand(bundleContext);
 		this.domainMgmtCommand.start();
 
 		this.transferAgentCommand = new TransferAgentCommand();

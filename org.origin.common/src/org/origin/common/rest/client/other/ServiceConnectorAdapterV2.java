@@ -36,7 +36,7 @@ public class ServiceConnectorAdapterV2 {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <SERVICE> SERVICE getService(Class<SERVICE> clazz, Map<Object, Object> properties) throws ClientException {
+	public <SERVICE> SERVICE getService(Class<SERVICE> clazz, Map<String, Object> properties) throws ClientException {
 		SERVICE service = null;
 		if (this.serviceTracker != null) {
 			ServiceConnector<Object> connector = this.serviceTracker.getService();

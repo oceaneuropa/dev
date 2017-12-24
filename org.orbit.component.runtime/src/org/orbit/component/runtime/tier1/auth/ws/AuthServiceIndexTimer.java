@@ -42,7 +42,6 @@ public class AuthServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, 
 
 	@Override
 	public IndexItem addIndex(IndexProvider indexProvider, AuthService service) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -51,7 +50,6 @@ public class AuthServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, 
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.AUTH_NAMESPACE, namespace);
 		props.put(OrbitConstants.AUTH_NAME, name);
 		props.put(OrbitConstants.AUTH_HOST_URL, hostURL);
 		props.put(OrbitConstants.AUTH_CONTEXT_ROOT, contextRoot);
@@ -64,7 +62,6 @@ public class AuthServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, 
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, AuthService service, IndexItem indexItem) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -75,7 +72,6 @@ public class AuthServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, 
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.AUTH_NAMESPACE, namespace);
 		props.put(OrbitConstants.AUTH_NAME, name);
 		props.put(OrbitConstants.AUTH_HOST_URL, hostURL);
 		props.put(OrbitConstants.AUTH_CONTEXT_ROOT, contextRoot);

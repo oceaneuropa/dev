@@ -9,8 +9,8 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.thread.ServiceIndexTimer;
+import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.util.DateUtil;
 
 /**
@@ -46,7 +46,6 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimerImpl<Index
 
 	@Override
 	public IndexItem addIndex(IndexProvider indexProvider, ConfigRegistryService service) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -55,7 +54,6 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimerImpl<Index
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.CONFIG_REGISTRY_NAMESPACE, namespace);
 		props.put(OrbitConstants.CONFIG_REGISTRY_NAME, name);
 		props.put(OrbitConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
 		props.put(OrbitConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);
@@ -68,7 +66,6 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimerImpl<Index
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, ConfigRegistryService service, IndexItem indexItem) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -78,7 +75,6 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimerImpl<Index
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.CONFIG_REGISTRY_NAMESPACE, namespace);
 		props.put(OrbitConstants.CONFIG_REGISTRY_NAME, name);
 		props.put(OrbitConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
 		props.put(OrbitConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);

@@ -86,7 +86,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 			}
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 			// paths = response.readEntity(new GenericType<List<Path>>() {
@@ -125,7 +125,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 		try {
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 
@@ -158,7 +158,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 		try {
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			result = response.readEntity(clazz);
 
@@ -294,7 +294,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 		try {
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(null);
-			checkResponse(response);
+			checkResponse(target, response);
 
 			// String responseString = response.readEntity(String.class);
 			// int responseStatus = response.getStatus();
@@ -324,7 +324,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 		try {
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(null);
-			checkResponse(response);
+			checkResponse(target, response);
 
 			// String responseString = response.readEntity(String.class);
 			// int responseStatus = response.getStatus();
@@ -354,7 +354,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 		try {
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).delete();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			// String responseString = response.readEntity(String.class);
 			// int responseStatus = response.getStatus();
@@ -388,7 +388,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("content").queryParam("path", destFilePath.getPathString());
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(Entity.entity(multipart, multipart.getMediaType()));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);
 			return (status != null && status.success()) ? true : false;
@@ -434,7 +434,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("content").queryParam("path", destFilePath.getPathString());
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(Entity.entity(multipart, multipart.getMediaType()));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);
 			return (status != null && status.success()) ? true : false;
@@ -571,7 +571,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("content").queryParam("path", sourceFilePath.getPathString());
 			Builder builder = target.request(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
 			Response response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			input = response.readEntity(InputStream.class);
 
@@ -626,7 +626,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("content").queryParam("path", sourceFilePath.getPathString());
 			Builder builder = target.request(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
 			Response response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			input = response.readEntity(InputStream.class);
 			output = new FileOutputStream(destLocalFile);

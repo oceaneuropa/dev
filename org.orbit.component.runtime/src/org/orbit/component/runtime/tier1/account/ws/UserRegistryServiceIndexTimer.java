@@ -46,7 +46,6 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexPr
 
 	@Override
 	public IndexItem addIndex(IndexProvider indexProvider, UserRegistryService service) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -55,7 +54,6 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexPr
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.USER_REGISTRY_NAMESPACE, namespace);
 		props.put(OrbitConstants.USER_REGISTRY_NAME, name);
 		props.put(OrbitConstants.USER_REGISTRY_HOST_URL, hostURL);
 		props.put(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT, contextRoot);
@@ -68,7 +66,6 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexPr
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, UserRegistryService service, IndexItem indexItem) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -78,7 +75,6 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexPr
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.USER_REGISTRY_NAMESPACE, namespace);
 		props.put(OrbitConstants.USER_REGISTRY_NAME, name);
 		props.put(OrbitConstants.USER_REGISTRY_HOST_URL, hostURL);
 		props.put(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT, contextRoot);

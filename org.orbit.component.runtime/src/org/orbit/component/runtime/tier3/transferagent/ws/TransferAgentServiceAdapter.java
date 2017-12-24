@@ -24,7 +24,7 @@ public class TransferAgentServiceAdapter {
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<TransferAgentService, TransferAgentService> serviceTracker;
-	protected TransferAgentWSApplication webServiceApp;
+	protected TransferAgentWSApplication webService;
 	protected TransferAgentServiceTimer serviceIndexTimer;
 
 	public TransferAgentServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
@@ -88,8 +88,8 @@ public class TransferAgentServiceAdapter {
 		editPolicies.installEditPolicy(new NodeWSEditPolicy());
 
 		// Start web service
-		this.webServiceApp = new TransferAgentWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
-		this.webServiceApp.start(bundleContext);
+		this.webService = new TransferAgentWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webService.start(bundleContext);
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
@@ -110,9 +110,9 @@ public class TransferAgentServiceAdapter {
 		}
 
 		// Stop web service
-		if (this.webServiceApp != null) {
-			this.webServiceApp.stop(bundleContext);
-			this.webServiceApp = null;
+		if (this.webService != null) {
+			this.webService.stop(bundleContext);
+			this.webService = null;
 		}
 
 		// Uninstall web service edit policies

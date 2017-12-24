@@ -15,8 +15,8 @@ import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.AuthConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
-import org.orbit.component.api.tier3.domain.DomainManagement;
-import org.orbit.component.api.tier3.domain.DomainManagementConnector;
+import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceConnector;
 import org.orbit.component.cli.util.ResourcePropertyHelper;
 import org.orbit.component.cli.util.ServicesCommandHelper;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -61,7 +61,7 @@ public class ServicesCommand implements Annotated {
 	@Dependency
 	protected AppStoreConnector appStoreConnector;
 	@Dependency
-	protected DomainManagementConnector domainMgmtConnector;
+	protected DomainServiceConnector domainMgmtConnector;
 
 	protected BundleContext bundleContext;
 	protected IndexService indexService;
@@ -226,14 +226,14 @@ public class ServicesCommand implements Annotated {
 	}
 
 	protected void listDomainServices() throws ClientException {
-		List<LoadBalanceResource<DomainManagement>> resources = ServicesCommandHelper.INSTANCE.getDomainManagementResources(this.domainMgmtConnector);
+		List<LoadBalanceResource<DomainService>> resources = ServicesCommandHelper.INSTANCE.getDomainServiceResources(this.domainMgmtConnector);
 
 		String[][] rows = new String[resources.size()][DOMAIN_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
-		for (LoadBalanceResource<DomainManagement> resource : resources) {
+		for (LoadBalanceResource<DomainService> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_MANAGEMENT_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_MANAGEMENT_NAME);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_SERVICE_NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_SERVICE_NAME);
 			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_MANAGEMENT_HOST_URL);
 			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_MANAGEMENT_CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);

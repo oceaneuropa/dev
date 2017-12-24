@@ -7,9 +7,9 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.orbit.component.runtime.tier3.domain.ws.DomainMgmtWSMachinesResource;
-import org.orbit.component.runtime.tier3.domain.ws.DomainMgmtWSNodesResource;
-import org.orbit.component.runtime.tier3.domain.ws.DomainMgmtWSTransferAgentsResource;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSMachinesResource;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSNodesResource;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSTransferAgentsResource;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;
@@ -85,9 +85,9 @@ public class DomainMgmtWSApplicationV1 extends AbstractApplication {
 
 		// resources
 		classes.add(DomainMgmtWSServiceResourceV1.class);
-		classes.add(DomainMgmtWSMachinesResource.class);
-		classes.add(DomainMgmtWSTransferAgentsResource.class);
-		classes.add(DomainMgmtWSNodesResource.class);
+		classes.add(DomainServiceWSMachinesResource.class);
+		classes.add(DomainServiceWSTransferAgentsResource.class);
+		classes.add(DomainServiceWSNodesResource.class);
 
 		// resolvers
 		classes.add(DomainMgmtServiceResolver.class);

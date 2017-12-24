@@ -8,7 +8,7 @@ import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceData
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
-import org.orbit.component.runtime.tier3.domain.service.DomainManagementServiceDatabaseImpl;
+import org.orbit.component.runtime.tier3.domain.service.DomainServiceDatabaseImpl;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentServiceImpl;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.osgi.framework.BundleContext;
@@ -29,7 +29,7 @@ public class ServicesCommand {
 	protected AuthServiceImpl authService;
 	protected UserRegistryServiceDatabaseImpl userRegistryService;
 	protected AppStoreServiceDatabaseImpl appStoreService;
-	protected DomainManagementServiceDatabaseImpl domainMgmtService;
+	protected DomainServiceDatabaseImpl domainMgmtService;
 	protected TransferAgentServiceImpl transferAgentService;
 
 	/**
@@ -175,7 +175,7 @@ public class ServicesCommand {
 	}
 
 	public void startDomainMgmtService(BundleContext bundleContext) {
-		DomainManagementServiceDatabaseImpl domainMgmtService = new DomainManagementServiceDatabaseImpl();
+		DomainServiceDatabaseImpl domainMgmtService = new DomainServiceDatabaseImpl();
 		domainMgmtService.start(bundleContext);
 		this.domainMgmtService = domainMgmtService;
 	}

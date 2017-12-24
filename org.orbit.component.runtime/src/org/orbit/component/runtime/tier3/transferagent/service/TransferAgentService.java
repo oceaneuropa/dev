@@ -5,8 +5,6 @@ import org.origin.core.resources.IWorkspace;
 
 public interface TransferAgentService {
 
-	String getNamespace();
-
 	String getName();
 
 	String getHostURL();

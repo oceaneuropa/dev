@@ -44,7 +44,7 @@ public class FileSystemConfigurationImpl implements FileSystemConfiguration {
 	}
 
 	public synchronized FileSystemWSClient getFileSystemClient() {
-		ClientConfiguration config = ClientConfiguration.get(url, contextRoot, username, password);
+		ClientConfiguration config = ClientConfiguration.create("orbit", this.username, this.url, this.contextRoot);
 		FileSystemWSClient fsClient = this.clientMap.get(config);
 		if (fsClient == null) {
 			fsClient = new FileSystemWSClient(config);

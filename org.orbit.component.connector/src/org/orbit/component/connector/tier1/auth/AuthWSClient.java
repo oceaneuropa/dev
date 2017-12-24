@@ -30,16 +30,12 @@ import org.origin.common.rest.client.ClientException;
  */
 public class AuthWSClient extends AbstractWSClient {
 
-	/**
-	 * 
-	 * @param config
-	 */
 	public AuthWSClient(ClientConfiguration config) {
 		super(config);
 	}
 
 	/**
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/echo/{message}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/echo?message={message}
 	 * 
 	 * @param message
 	 * @return
@@ -48,10 +44,10 @@ public class AuthWSClient extends AbstractWSClient {
 	public String echo(String message) throws ClientException {
 		String result = null;
 		try {
-			WebTarget target = getRootPath().path("echo").path(message);
+			WebTarget target = getRootPath().path("echo").queryParam("message", message);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			result = response.readEntity(String.class);
 
@@ -77,7 +73,7 @@ public class AuthWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("authorize");
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(bodyParam);
-			checkResponse(response);
+			checkResponse(target, response);
 
 			// String responseString = response.readEntity(String.class);
 			// int responseStatus = response.getStatus();
@@ -107,10 +103,17 @@ public class AuthWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("token");
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(bodyParam);
-			checkResponse(response);
+			checkResponse(target, response);
 
-			// String string = response.readEntity(String.class);
 			tokenResponse = response.readEntity(TokenResponseDTO.class);
+
+			if (tokenResponse != null) {
+				String tokenType = tokenResponse.getToken_type();
+				String accessToken = tokenResponse.getAccess_token();
+				if (accessToken != null) {
+					updateToken(tokenType, accessToken);
+				}
+			}
 
 		} catch (ClientException e) {
 			handleException(e);

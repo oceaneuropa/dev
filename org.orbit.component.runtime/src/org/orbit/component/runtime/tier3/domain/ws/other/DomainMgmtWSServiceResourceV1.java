@@ -7,10 +7,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.runtime.tier3.domain.editpolicy.MachineConfigEditPolicy;
-import org.orbit.component.runtime.tier3.domain.editpolicy.NodeConfigEditPolicy;
-import org.orbit.component.runtime.tier3.domain.editpolicy.TransferAgentConfigEditPolicy;
-import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
+import org.orbit.component.runtime.tier3.domain.editpolicy.other.MachineConfigEditPolicy;
+import org.orbit.component.runtime.tier3.domain.editpolicy.other.NodeConfigEditPolicy;
+import org.orbit.component.runtime.tier3.domain.editpolicy.other.TransferAgentConfigEditPolicy;
+import org.orbit.component.runtime.tier3.domain.service.DomainService;
 import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 
 @Path("/")
@@ -18,18 +18,18 @@ import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 public class DomainMgmtWSServiceResourceV1 extends EditpolicyWSApplicationResource {
 
 	@Inject
-	public DomainManagementService service;
+	public DomainService service;
 
-	protected DomainManagementService getService() throws RuntimeException {
+	protected DomainService getService() throws RuntimeException {
 		if (this.service == null) {
-			throw new RuntimeException("DomainManagementService is not available.");
+			throw new RuntimeException("DomainService is not available.");
 		}
 		return this.service;
 	}
 
 	@Override
 	public <T> T getService(Class<T> serviceClass) {
-		if (DomainManagementService.class.isAssignableFrom(serviceClass)) {
+		if (DomainService.class.isAssignableFrom(serviceClass)) {
 			return (T) getService();
 		}
 		return null;
@@ -39,8 +39,7 @@ public class DomainMgmtWSServiceResourceV1 extends EditpolicyWSApplicationResour
 	@Path("ping")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ping() {
-		// DomainManagementService service = getService(DomainManagementService.class);
-		DomainManagementService service = getService();
+		DomainService service = getService();
 		if (service != null) {
 			return Response.ok(1).build();
 		}

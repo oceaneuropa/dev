@@ -46,7 +46,6 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvid
 
 	@Override
 	public IndexItem addIndex(IndexProvider indexProvider, AppStoreService service) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -55,7 +54,6 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvid
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.APPSTORE_NAMESPACE, namespace);
 		props.put(OrbitConstants.APPSTORE_NAME, name);
 		props.put(OrbitConstants.APPSTORE_HOST_URL, hostURL);
 		props.put(OrbitConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
@@ -68,7 +66,6 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvid
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, AppStoreService service, IndexItem indexItem) throws IOException {
-		String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -78,7 +75,6 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvid
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.APPSTORE_NAMESPACE, namespace);
 		props.put(OrbitConstants.APPSTORE_NAME, name);
 		props.put(OrbitConstants.APPSTORE_HOST_URL, hostURL);
 		props.put(OrbitConstants.APPSTORE_CONTEXT_ROOT, contextRoot);

@@ -44,7 +44,7 @@ public class NasdaqComClient extends AbstractWSClient {
 	 * 
 	 */
 	public NasdaqComClient() {
-		super(ClientConfiguration.get("http://www.nasdaq.com:80", "screening/companies-by-industry.aspx", null, null));
+		super(ClientConfiguration.create("orbit", null, "http://www.nasdaq.com:80", "screening/companies-by-industry.aspx"));
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class NasdaqComClient extends AbstractWSClient {
 
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 

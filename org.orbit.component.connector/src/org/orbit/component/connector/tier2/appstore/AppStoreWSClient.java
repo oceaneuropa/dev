@@ -59,10 +59,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class AppStoreWSClient extends AbstractWSClient {
 
-	/**
-	 * 
-	 * @param config
-	 */
 	public AppStoreWSClient(ClientConfiguration config) {
 		super(config);
 	}
@@ -86,7 +82,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 			}
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			apps = response.readEntity(new GenericType<List<AppManifestDTO>>() {
 			});
@@ -115,10 +111,11 @@ public class AppStoreWSClient extends AbstractWSClient {
 		List<AppManifestDTO> apps = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps/query").request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("apps/query");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<AppQueryDTO>(queryDTO) {
 			}));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			apps = response.readEntity(new GenericType<List<AppManifestDTO>>() {
 			});
@@ -148,9 +145,10 @@ public class AppStoreWSClient extends AbstractWSClient {
 		AppManifestDTO app = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps").path(appId).path(appVersion).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			app = response.readEntity(AppManifestDTO.class);
 
@@ -175,9 +173,10 @@ public class AppStoreWSClient extends AbstractWSClient {
 	public boolean appExists(String appId, String appVersion) throws ClientException {
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps").path(appId).path(appVersion).path("exists").request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion).path("exists");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			String responseString = response.readEntity(String.class);
 
@@ -211,10 +210,11 @@ public class AppStoreWSClient extends AbstractWSClient {
 		AppManifestDTO newApp = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps").request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("apps");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<AppManifestDTO>(newAppRequestDTO) {
 			}));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			newApp = response.readEntity(AppManifestDTO.class);
 
@@ -241,10 +241,11 @@ public class AppStoreWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps").request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("apps");
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).put(Entity.json(new GenericEntity<AppManifestDTO>(updateAppRequestDTO) {
 			}));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 
@@ -294,7 +295,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion).path("content");
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(Entity.entity(multipart, multipart.getMediaType()));
-			checkResponse(response);
+			checkResponse(target, response);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);
 			return status;
@@ -323,7 +324,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion).path("content");
 			Builder builder = target.request(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
 			Response response = updateHeaders(builder).get();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			input = response.readEntity(InputStream.class);
 
@@ -354,9 +355,10 @@ public class AppStoreWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			Builder builder = getRootPath().path("apps").path(appId).path(appVersion).request(MediaType.APPLICATION_JSON);
+			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion);
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
-			checkResponse(response);
+			checkResponse(target, response);
 
 			status = response.readEntity(StatusDTO.class);
 

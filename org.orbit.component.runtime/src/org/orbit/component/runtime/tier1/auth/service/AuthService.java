@@ -22,8 +22,6 @@ public interface AuthService {
 	public static final String GRANT_TYPE__USER_CREDENTIALS = "user_credentials"; //$NON-NLS-1$
 	public static final String GRANT_TYPE__REFRESH_TOKEN = "refresh_token"; //$NON-NLS-1$
 
-	String getNamespace();
-
 	String getName();
 
 	String getHostURL();
