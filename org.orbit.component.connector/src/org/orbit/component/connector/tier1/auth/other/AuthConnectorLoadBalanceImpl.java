@@ -1,17 +1,19 @@
-package org.orbit.component.connector.tier1.auth;
+package org.orbit.component.connector.tier1.auth.other;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.auth.Auth;
-import org.orbit.component.api.tier1.auth.AuthConnector;
+import org.orbit.component.api.tier1.auth.other.AuthConnector;
+import org.orbit.component.api.tier1.auth.other.AuthConnectorV1;
 import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.tier1.auth.AuthImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class AuthConnectorLoadBalanceImpl extends IndexBasedLoadBalancedServiceConnectorImpl<Auth> implements AuthConnector {
+public class AuthConnectorLoadBalanceImpl extends IndexBasedLoadBalancedServiceConnectorImpl<Auth> implements AuthConnectorV1 {
 
 	/**
 	 * 

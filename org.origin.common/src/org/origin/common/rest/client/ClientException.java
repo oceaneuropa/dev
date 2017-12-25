@@ -59,9 +59,9 @@ public class ClientException extends Exception {
 
 					Map<?, ?> result = mapper.readValue(responseString, Map.class);
 					if (result != null) {
-						Object errorCodeObject = result.get("errorCode");
-						Object errorMsgObject = result.get("errorMsg");
-						Object errorDetailObject = result.get("errorDetail");
+						Object errorCodeObject = result.get("code");
+						Object errorMsgObject = result.get("message");
+						Object errorDetailObject = result.get("detail");
 
 						if (errorCodeObject != null) {
 							errorCode = errorCodeObject.toString();

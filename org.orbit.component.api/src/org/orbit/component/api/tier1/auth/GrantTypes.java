@@ -1,6 +1,6 @@
 package org.orbit.component.api.tier1.auth;
 
-public class GrantTypeConstants {
+public class GrantTypes {
 
 	/**
 	 * Grant type constants

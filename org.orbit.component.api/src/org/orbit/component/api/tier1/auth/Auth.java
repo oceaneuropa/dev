@@ -6,9 +6,10 @@ import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
+import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface Auth {
+public interface Auth extends IAdaptable {
 
 	void update(Map<String, Object> properties);
 
@@ -23,5 +24,7 @@ public interface Auth {
 	AuthorizationResponse authorize(AuthorizationRequest request) throws ClientException;
 
 	TokenResponse getToken(TokenRequest tokenRequest) throws ClientException;
+
+	boolean close() throws ClientException;
 
 }

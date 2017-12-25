@@ -18,11 +18,13 @@ Export-Package: org.orbit.component.api,
  org.orbit.component.api.tier1.account,
  org.orbit.component.api.tier1.account.request,
  org.orbit.component.api.tier1.auth,
+ org.orbit.component.api.tier1.auth.other,
  org.orbit.component.api.tier1.config,
  org.orbit.component.api.tier1.session,
  org.orbit.component.api.tier2.appstore,
  org.orbit.component.api.tier2.appstore.request,
  org.orbit.component.api.tier3.domain,
- org.orbit.component.api.tier3.transferagent
+ org.orbit.component.api.tier3.transferagent,
+ org.orbit.component.api.tier3.transferagent.other
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  org.origin.common;bundle-version="1.0.0"

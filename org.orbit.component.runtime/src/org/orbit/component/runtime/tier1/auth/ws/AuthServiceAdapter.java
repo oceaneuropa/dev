@@ -68,7 +68,7 @@ public class AuthServiceAdapter {
 
 	protected void doStart(BundleContext bundleContext, AuthService service) {
 		// Start web service
-		this.webService = new AuthWSApplication(service, OrbitFeatureConstants.PING);
+		this.webService = new AuthWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO);
 		this.webService.start(bundleContext);
 
 		// Start indexing

@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
+import org.orbit.component.api.tier3.transferagent.other.TransferAgentConnector;
 import org.origin.common.rest.client.ClientException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

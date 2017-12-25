@@ -11,8 +11,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier1.auth.Auth;
-import org.orbit.component.api.tier1.auth.AuthConnector;
-import org.orbit.component.api.tier1.auth.GrantTypeConstants;
+import org.orbit.component.api.tier1.auth.GrantTypes;
 import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.api.tier3.domain.DomainServiceConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
@@ -45,8 +44,8 @@ public class TransferAgentCommand implements Annotated {
 
 	protected String scheme = "ta";
 
-	@Dependency
-	protected AuthConnector authConnector;
+	protected ServiceConnectorAdapter<Auth> authConnector;
+
 	@Dependency
 	protected DomainServiceConnector domainConnector;
 
@@ -69,10 +68,6 @@ public class TransferAgentCommand implements Annotated {
 		OSGiServiceUtil.register(bundleContext, TransferAgentCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 
-		// this.transferAgentConnector = new ServiceConnectorAdapterV1<TransferAgent>(TransferAgent.class.getName());
-		// this.transferAgentConnector.start(bundleContext);
-		// this.transferAgentConnector = new ServiceConnectorAdapterV2(TransferAgent.class.getName());
-		// this.transferAgentConnector.start(bundleContext);
 		this.taConnector = new ServiceConnectorAdapter<TransferAgent>(TransferAgent.class);
 		this.taConnector.start(bundleContext);
 	}
@@ -97,12 +92,13 @@ public class TransferAgentCommand implements Annotated {
 		LOG.info("connectorsUnset()");
 	}
 
-	protected Auth getAuth() {
-		if (this.authConnector == null) {
-			LOG.error("AuthConnector is not available.");
-			return null;
-		}
-		Auth auth = this.authConnector.getService();
+	protected Auth getAuth(String realm, String username, String url) throws ClientException {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(OrbitConstants.REALM, realm);
+		properties.put(OrbitConstants.USERNAME, username);
+		properties.put(OrbitConstants.URL, url);
+
+		Auth auth = this.authConnector.getService(properties);
 		if (auth == null) {
 			LOG.error("Auth is not available.");
 		}
@@ -156,14 +152,15 @@ public class TransferAgentCommand implements Annotated {
 
 	@Descriptor("login")
 	public void login( //
+			@Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
 			@Descriptor("username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
 			@Descriptor("password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password //
 	) {
-		Auth auth = getAuth();
-		if (auth == null) {
+		CLIHelper.getInstance().printCommand(getScheme(), "login", new String[] { "url", url }, new String[] { "username", username }, new String[] { "password", password });
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'-url' parameter is not set.");
 			return;
 		}
-
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			LOG.error("'-username' parameter is not set.");
 			return;
@@ -174,8 +171,13 @@ public class TransferAgentCommand implements Annotated {
 		}
 
 		try {
+			Auth auth = getAuth(this.realm, this.username, url);
+			if (auth == null) {
+				return;
+			}
+
 			TokenRequest tokenRequest = new TokenRequest();
-			tokenRequest.setGrantType(GrantTypeConstants.USER_CREDENTIALS);
+			tokenRequest.setGrantType(GrantTypes.USER_CREDENTIALS);
 			tokenRequest.setUsername(username);
 			tokenRequest.setPassword(password);
 
@@ -200,7 +202,7 @@ public class TransferAgentCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
 	) {
-		LOG.info("ping()");
+		// LOG.info("ping()");
 		CLIHelper.getInstance().printCommand(getScheme(), "ping", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
 
 		try {
@@ -571,9 +573,29 @@ public class TransferAgentCommand implements Annotated {
 }
 
 // @Dependency
+// protected AuthConnector authConnector;
+
+// @Dependency
 // protected TransferAgentConnector transferAgentConnector;
 // protected ServiceConnectorAdapterV1<TransferAgent> transferAgentConnector;
 // protected ServiceConnectorAdapterV2 transferAgentConnector;
+
+// this.transferAgentConnector = new ServiceConnectorAdapterV1<TransferAgent>(TransferAgent.class.getName());
+// this.transferAgentConnector.start(bundleContext);
+// this.transferAgentConnector = new ServiceConnectorAdapterV2(TransferAgent.class.getName());
+// this.transferAgentConnector.start(bundleContext);
+
+// protected Auth getAuth() {
+// if (this.authConnector == null) {
+// LOG.error("AuthConnector is not available.");
+// return null;
+// }
+// Auth auth = this.authConnector.getService();
+// if (auth == null) {
+// LOG.error("Auth is not available.");
+// }
+// return auth;
+// }
 
 // protected void checkDomainManagement(DomainManagement domainMgmt) throws ClientException {
 // if (domainMgmt == null) {

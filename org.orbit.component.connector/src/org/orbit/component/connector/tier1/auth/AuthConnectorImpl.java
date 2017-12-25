@@ -13,7 +13,7 @@ public class AuthConnectorImpl extends ServiceConnector<Auth> {
 
 	@Override
 	protected Auth create(Map<String, Object> properties) {
-		return new AuthImpl(properties);
+		return new AuthImpl(this, properties);
 	}
 
 }

@@ -1,51 +1,44 @@
 package org.orbit.component.cli;
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.auth.Auth;
-import org.orbit.component.api.tier1.auth.AuthConnector;
-import org.orbit.component.api.tier1.auth.GrantTypeConstants;
+import org.orbit.component.api.tier1.auth.GrantTypes;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.origin.common.annotation.Annotated;
-import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.osgi.OSGiServiceUtil;
+import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.util.CLIHelper;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * @see TransferAgentCommand
- *
- */
 public class AuthCommand implements Annotated {
 
-	protected BundleContext bundleContext;
+	protected static Logger LOG = LoggerFactory.getLogger(AuthCommand.class);
 
-	@Dependency
-	protected AuthConnector connector;
+	protected ServiceConnectorAdapter<Auth> authConnector;
 
-	protected boolean debug = true;
-
-	/**
-	 * 
-	 * @param bundleContext
-	 */
-	public AuthCommand(BundleContext bundleContext) {
-		this.bundleContext = bundleContext;
-	}
+	private String realm = ClientConfiguration.DEFAULT_REALM;
+	private String username = ClientConfiguration.UNKNOWN_USERNAME;
 
 	protected String getScheme() {
 		return "orbit";
 	}
 
-	public void start() {
+	public void start(final BundleContext bundleContext) {
 		System.out.println("AuthCommand.start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -58,11 +51,14 @@ public class AuthCommand implements Annotated {
 						"token", //
 						"user_token" //
 		});
-		OSGiServiceUtil.register(this.bundleContext, AuthCommand.class.getName(), this, props);
-		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
+		OSGiServiceUtil.register(bundleContext, AuthCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
+
+		this.authConnector = new ServiceConnectorAdapter<Auth>(Auth.class);
+		this.authConnector.start(bundleContext);
 	}
 
-	public void stop() {
+	public void stop(final BundleContext bundleContext) {
 		System.out.println("AuthCommand.stop()");
 
 		OSGiServiceUtil.unregister(AuthCommand.class.getName(), this);
@@ -79,26 +75,30 @@ public class AuthCommand implements Annotated {
 		System.out.println("AuthConnector is unset.");
 	}
 
-	protected Auth getAuthService() throws ClientException {
-		if (this.connector == null) {
-			System.out.println("AuthConnector service is not available.");
-			return null;
-		}
-		Auth auth = this.connector.getService();
+	protected Auth getAuth(String realm, String username, String url) throws ClientException {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(OrbitConstants.REALM, realm);
+		properties.put(OrbitConstants.USERNAME, username);
+		properties.put(OrbitConstants.URL, url);
+
+		Auth auth = this.authConnector.getService(properties);
 		if (auth == null) {
-			System.out.println("Auth service is not available.");
-			return null;
+			LOG.error("Auth is not available.");
 		}
 		return auth;
 	}
 
 	@Descriptor("auth_ping")
-	public void auth_ping() throws ClientException {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "auth_ping");
+	public void auth_ping( //
+			@Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url //
+	) throws ClientException {
+		CLIHelper.getInstance().printCommand(getScheme(), "auth_ping", new String[] { "url", url });
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'-url' parameter is not set.");
+			return;
 		}
 
-		Auth auth = getAuthService();
+		Auth auth = getAuth(this.realm, this.username, url);
 		if (auth == null) {
 			return;
 		}
@@ -109,12 +109,16 @@ public class AuthCommand implements Annotated {
 
 	@Descriptor("auth_echo")
 	public void auth_echo( //
-			@Descriptor("ID") @Parameter(names = { "-message", "--message" }, absentValue = Parameter.UNSPECIFIED) String message) throws ClientException {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "auth_echo", new String[] { "message", message });
+			@Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
+			@Descriptor("Message") @Parameter(names = { "-m", "--m" }, absentValue = Parameter.UNSPECIFIED) String message //
+	) throws ClientException {
+		CLIHelper.getInstance().printCommand(getScheme(), "auth_echo", new String[] { "url", url }, new String[] { "m", message });
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'-url' parameter is not set.");
+			return;
 		}
 
-		Auth auth = getAuthService();
+		Auth auth = getAuth(this.realm, this.username, url);
 		if (auth == null) {
 			return;
 		}
@@ -125,21 +129,25 @@ public class AuthCommand implements Annotated {
 
 	@Descriptor("authorize")
 	public void authorize( //
+			@Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
 			@Descriptor("Client ID") @Parameter(names = { "-client_id", "--client_id" }, absentValue = Parameter.UNSPECIFIED) String client_id, //
 			@Descriptor("Response Type") @Parameter(names = { "-response_type", "--response_type" }, absentValue = Parameter.UNSPECIFIED) String response_type, //
 			@Descriptor("Scope") @Parameter(names = { "-scope", "--scope" }, absentValue = Parameter.UNSPECIFIED) String scope, //
 			@Descriptor("State") @Parameter(names = { "-state", "--state" }, absentValue = Parameter.UNSPECIFIED) String state //
 	) throws ClientException {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "authorize", //
-					new String[] { "client_id", client_id }, //
-					new String[] { "response_type", response_type }, //
-					new String[] { "scope", scope }, //
-					new String[] { "state", state } //
-			);
+		CLIHelper.getInstance().printCommand(getScheme(), "authorize", //
+				new String[] { "url", url }, //
+				new String[] { "client_id", client_id }, //
+				new String[] { "response_type", response_type }, //
+				new String[] { "scope", scope }, //
+				new String[] { "state", state } //
+		);
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'-url' parameter is not set.");
+			return;
 		}
 
-		Auth auth = getAuthService();
+		Auth auth = getAuth(this.realm, this.username, url);
 		if (auth == null) {
 			return;
 		}
@@ -174,6 +182,7 @@ public class AuthCommand implements Annotated {
 	 */
 	@Descriptor("token")
 	public void token( //
+			@Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
 			@Descriptor("Grant Type") @Parameter(names = { "-grant_type", "--grant_type" }, absentValue = Parameter.UNSPECIFIED) String grant_type, //
 
 			// for app token
@@ -191,27 +200,30 @@ public class AuthCommand implements Annotated {
 			@Descriptor("Scope") @Parameter(names = { "-scope", "--scope" }, absentValue = Parameter.UNSPECIFIED) String scope, //
 			@Descriptor("State") @Parameter(names = { "-state", "--state" }, absentValue = Parameter.UNSPECIFIED) String state //
 	) throws ClientException {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "token", //
-					new String[] { "grant_type", grant_type }, //
-					new String[] { "client_id", client_id }, //
-					new String[] { "client_secret", client_secret }, //
-					new String[] { "username", username }, //
-					new String[] { "password", password }, //
-					new String[] { "refresh_token", refresh_token }, //
-					new String[] { "scope", scope }, //
-					new String[] { "state", state } //
-			);
+		CLIHelper.getInstance().printCommand(getScheme(), "token", //
+				new String[] { "url", url }, //
+				new String[] { "grant_type", grant_type }, //
+				new String[] { "client_id", client_id }, //
+				new String[] { "client_secret", client_secret }, //
+				new String[] { "username", username }, //
+				new String[] { "password", password }, //
+				new String[] { "refresh_token", refresh_token }, //
+				new String[] { "scope", scope }, //
+				new String[] { "state", state } //
+		);
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'-url' parameter is not set.");
+			return;
 		}
 
-		Auth auth = getAuthService();
+		Auth auth = getAuth(this.realm, this.username, url);
 		if (auth == null) {
 			return;
 		}
 
 		TokenRequest request = new TokenRequest();
 
-		if (GrantTypeConstants.CLIENT_CREDENTIALS.equals(grant_type)) {
+		if (GrantTypes.CLIENT_CREDENTIALS.equals(grant_type)) {
 			if (Parameter.UNSPECIFIED.equals(client_id)) {
 				System.out.println("client_id is not set.");
 				return;
@@ -225,7 +237,7 @@ public class AuthCommand implements Annotated {
 			request.setClientId(client_id);
 			request.setClientSecret(client_secret);
 
-		} else if (GrantTypeConstants.USER_CREDENTIALS.equals(grant_type)) {
+		} else if (GrantTypes.USER_CREDENTIALS.equals(grant_type)) {
 			if (Parameter.UNSPECIFIED.equals(username)) {
 				System.out.println("username is not set.");
 				return;
@@ -239,7 +251,7 @@ public class AuthCommand implements Annotated {
 			request.setUsername(username);
 			request.setPassword(password);
 
-		} else if (GrantTypeConstants.REFRESH_TOKEN.equals(grant_type)) {
+		} else if (GrantTypes.REFRESH_TOKEN.equals(grant_type)) {
 			if (Parameter.UNSPECIFIED.equals(refresh_token)) {
 				System.out.println("refresh_token is not set.");
 				return;
@@ -279,44 +291,69 @@ public class AuthCommand implements Annotated {
 	 */
 	@Descriptor("user_token")
 	public void user_token( //
+			@Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
 			// for user token
 			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
 			@Descriptor("Password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password //
 	) throws ClientException {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "user_token", //
-					new String[] { "username", username }, //
-					new String[] { "password", password } //
-			);
-		}
-
-		Auth auth = getAuthService();
-		if (auth == null) {
+		CLIHelper.getInstance().printCommand(getScheme(), "user_token", //
+				new String[] { "username", username }, //
+				new String[] { "password", password } //
+		);
+		if (Parameter.UNSPECIFIED.equals(url)) {
+			LOG.error("'-url' parameter is not set.");
 			return;
 		}
 
-		TokenRequest request = new TokenRequest();
+		try {
+			Auth auth = getAuth(this.realm, this.username, url);
+			if (auth == null) {
+				return;
+			}
 
-		if (Parameter.UNSPECIFIED.equals(username)) {
-			System.out.println("username is not set.");
-			return;
-		}
-		if (Parameter.UNSPECIFIED.equals(password)) {
-			System.out.println("password is not set.");
-			return;
-		}
+			TokenRequest request = new TokenRequest();
 
-		request.setGrantType(GrantTypeConstants.USER_CREDENTIALS);
-		request.setUsername(username);
-		request.setPassword(password);
+			if (Parameter.UNSPECIFIED.equals(username)) {
+				System.out.println("username is not set.");
+				return;
+			}
+			if (Parameter.UNSPECIFIED.equals(password)) {
+				System.out.println("password is not set.");
+				return;
+			}
 
-		TokenResponse response = auth.getToken(request);
-		if (response == null) {
-			System.out.println("TokenResponse is null");
-		} else {
-			System.out.println("TokenResponse is:");
-			System.out.println(response);
+			request.setGrantType(GrantTypes.USER_CREDENTIALS);
+			request.setUsername(username);
+			request.setPassword(password);
+
+			TokenResponse response = auth.getToken(request);
+			if (response == null) {
+				System.out.println("TokenResponse is null");
+			} else {
+				System.out.println("TokenResponse is:");
+				System.out.println(response);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 }
+
+// protected BundleContext bundleContext;
+// @Dependency
+// protected AuthConnector authConnector;
+
+// protected Auth getAuthService() throws ClientException {
+// if (this.connector == null) {
+// System.out.println("AuthConnector service is not available.");
+// return null;
+// }
+// Auth auth = this.connector.getService();
+// if (auth == null) {
+// System.out.println("Auth service is not available.");
+// return null;
+// }
+// return auth;
+// }

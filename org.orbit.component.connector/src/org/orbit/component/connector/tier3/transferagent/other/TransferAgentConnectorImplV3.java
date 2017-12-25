@@ -3,7 +3,7 @@ package org.orbit.component.connector.tier3.transferagent.other;
 import java.util.Map;
 
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
+import org.orbit.component.api.tier3.transferagent.other.TransferAgentConnector;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.osgi.framework.ServiceRegistration;

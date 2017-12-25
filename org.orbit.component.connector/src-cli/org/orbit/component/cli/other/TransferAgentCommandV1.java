@@ -11,7 +11,7 @@ import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.api.tier3.domain.DomainServiceConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.api.tier3.transferagent.TransferAgentConnector;
+import org.orbit.component.api.tier3.transferagent.other.TransferAgentConnector;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;

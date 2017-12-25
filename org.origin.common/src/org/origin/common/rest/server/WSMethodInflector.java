@@ -15,6 +15,7 @@ import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.model.Resource;
@@ -22,7 +23,7 @@ import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.switcher.Switcher;
 import org.origin.common.util.JSONUtils;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /*
  * 1. Why using ObjectNode to deserialize request body
@@ -34,8 +35,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 3. Do not set "Content-Length" header to avoid exception (org.apache.http.ProtocolException: Content-Length header already present)
  * @see https://stackoverflow.com/questions/3332370/content-length-header-already-present
  *
+ * 4. Send javax ws-rs post request.
+ * @see https://stackoverflow.com/questions/27211012/how-to-send-json-object-from-rest-client-using-javax-ws-rs-client-webtarget
+ * 
  */
-public class JerseyWSMethodInflector implements Inflector<ContainerRequestContext, Response> {
+public class WSMethodInflector implements Inflector<ContainerRequestContext, Response> {
 
 	protected String methodType;
 	protected String methodPath;
@@ -43,15 +47,17 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 	protected Client client;
 	protected Switcher<URI> baseUriSwitcher;
 
-	public JerseyWSMethodInflector() {
+	public WSMethodInflector() {
 	}
 
-	public JerseyWSMethodInflector(String methodPath, String methodType, String produces, Client client, Switcher<URI> baseURIWwitcher) {
+	public WSMethodInflector(Resource.Builder wsResource, String methodPath, String methodType, String produces, Client client, Switcher<URI> baseUriSwitcher) {
 		this.methodPath = methodPath;
 		this.methodType = methodType;
 		this.produces = produces;
 		this.client = client;
-		this.baseUriSwitcher = baseURIWwitcher;
+		this.baseUriSwitcher = baseUriSwitcher;
+
+		addToResource(wsResource);
 	}
 
 	public void addToResource(Resource.Builder wsResource) {
@@ -123,19 +129,20 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 		Object payload = getPayload(requestContext);
 
 		// Step2. switch the barrel
-		URI newBaseURI = this.baseUriSwitcher.getNext(this.methodPath, 3, 1000);
-		if (newBaseURI == null) {
+		URI targetBaseURI = getTargetBaseURI();
+		if (targetBaseURI == null) {
 			System.err.println("Target base URI is null.");
 			return Response.serverError().entity(new ErrorDTO("500", "Target base URI is not available.", null)).build();
 		}
 
 		// Step3. aim the target
 		// (1) append request path
-		String newRequestUriStr = appendRequestPath(requestContext, newBaseURI);
+		String newRequestUriStr = appendRequestPath(requestContext, targetBaseURI);
 
 		// (2) append query parameters
-		appendQueryParameters(requestContext, newRequestUriStr);
+		newRequestUriStr = appendQueryParameters(requestContext, newRequestUriStr);
 
+		// (3) aim the target
 		URI newRequestUri = null;
 		try {
 			newRequestUri = new URI(newRequestUriStr);
@@ -143,8 +150,9 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 			System.err.println("New request URI is invalid. " + e.getMessage());
 			return Response.serverError().entity(new ErrorDTO("500", "New request URI is invalid. ", e.getMessage())).build();
 		}
+		// System.out.println(getClass().getSimpleName() + ".apply() newRequestUri = " + newRequestUri);
 
-		// (3) aim the target
+		// Invocation.Builder newWSResource = this.client.target(newRequestUri).request(MediaType.APPLICATION_JSON);
 		Invocation.Builder newWSResource = this.client.target(newRequestUri).request();
 		newWSResource.accept(new MediaType[] { MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_XML_TYPE, MediaType.TEXT_PLAIN_TYPE });
 
@@ -169,7 +177,7 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 		try {
 			input = requestContext.getEntityStream();
 			if (input != null && input.available() > 0) {
-				payload = JSONUtils.getJsonReader(ObjectNode.class).readValue(input);
+				payload = JSONUtils.getJsonReader(JsonNode.class).readValue(input);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -186,6 +194,16 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 	}
 
 	/**
+	 * Step2. switch the barrel
+	 * 
+	 * @return
+	 */
+	protected URI getTargetBaseURI() {
+		URI newBaseURI = this.baseUriSwitcher.getNext(this.methodPath, 3, 1000);
+		return newBaseURI;
+	}
+
+	/**
 	 * Step3. aim the target
 	 * 
 	 * (1) append request path
@@ -196,7 +214,12 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 	 */
 	protected String appendRequestPath(ContainerRequestContext requestContext, URI baseURI) {
 		String path = requestContext.getUriInfo().getPath();
-		String newRequestURIstr = baseURI.toString() + path;
+		String newRequestURIstr = null;
+		if (baseURI.toString().endsWith("/") || path.startsWith("/")) {
+			newRequestURIstr = baseURI.toString() + path;
+		} else {
+			newRequestURIstr = baseURI.toString() + "/" + path;
+		}
 		return newRequestURIstr;
 	}
 
@@ -259,9 +282,6 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 		if (requestHeaders != null) {
 			for (Iterator<String> headerItor = requestHeaders.keySet().iterator(); headerItor.hasNext();) {
 				String headerName = headerItor.next();
-				// if ("Content-Length".equals(headerName)) {
-				// continue;
-				// }
 				String headerValueString = requestContext.getHeaderString(headerName);
 				newRequestHeaders.put(headerName, headerValueString);
 			}
@@ -276,21 +296,44 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 	/**
 	 * Step4. pull the trigger and fire!
 	 * 
-	 * @param builder
+	 * @param wsResource
 	 * @param payload
 	 * @return
 	 */
-	protected Response sendRequest(Invocation.Builder builder, Object payload) {
+	protected Response sendRequest(Invocation.Builder wsResource, Object payload) {
 		Response response = null;
-		if ("GET".equalsIgnoreCase(this.methodType)) {
-			response = builder.get(Response.class);
-		} else if ("POST".equalsIgnoreCase(this.methodType)) {
-			response = builder.post(Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE), Response.class);
-		} else if ("PUT".equalsIgnoreCase(this.methodType)) {
-			response = builder.put(Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE), Response.class);
-		} else if ("DELETE".equalsIgnoreCase(this.methodType)) {
-			response = builder.delete(Response.class);
+		try {
+			Entity<?> bodyParam = null;
+
+			// Note:
+			// - Javax ws-rs Entity is the body parameter for POST and PUT method.
+			// - The Entity is created with com.fasterxml.jackson.databind.JsonNode
+			if (payload instanceof JsonNode) {
+				bodyParam = Entity.entity((JsonNode) payload, MediaType.APPLICATION_JSON_TYPE);
+			}
+
+			if ("GET".equalsIgnoreCase(this.methodType)) {
+				response = wsResource.get(Response.class);
+
+			} else if ("POST".equalsIgnoreCase(this.methodType)) {
+				response = wsResource.post(bodyParam, Response.class);
+
+			} else if ("PUT".equalsIgnoreCase(this.methodType)) {
+				response = wsResource.put(bodyParam, Response.class);
+
+			} else if ("DELETE".equalsIgnoreCase(this.methodType)) {
+				response = wsResource.delete(Response.class);
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			if (response != null) {
+				return response;
+			}
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ErrorDTO("500", "Error occurs when forwarding request.", e.getMessage())).build();
 		}
+
 		return response;
 	}
 
@@ -314,3 +357,24 @@ public class JerseyWSMethodInflector implements Inflector<ContainerRequestContex
 // http://127.0.0.1:12001/orbit/v1/ta (real)
 // http://127.0.0.1:13001/orbit/v1/ta (lbr)
 // String newRequestPath = "http://127.0.0.1:12001/orbit/v1/ta/" + path;
+
+// if ("Content-Length".equals(headerName)) {
+// continue;
+// }
+
+// bodyParam = Entity.json(new GenericEntity<ObjectNode>((ObjectNode) payload) {
+// });
+// bodyParam = Entity.json(new GenericEntity<JsonToken>(((ObjectNode) payload).asToken()) {
+// });
+// bodyParam = Entity.json(new GenericEntity<Object>(payload) {
+// });
+// bodyParam = Entity.json(new GenericEntity<String>(((ObjectNode) payload).toString()) {
+// });
+// bodyParam = Entity.json(new StringEntity<(((ObjectNode) payload).toString()) {
+// });
+
+// bodyParam = Entity.json(payload);
+// bodyParam = Entity.entity(stringPayload, MediaType.APPLICATION_JSON_TYPE);
+
+// bodyParam = Entity.json(new GenericEntity<String>(stringPayload) {
+// });

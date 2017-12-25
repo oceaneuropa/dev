@@ -63,14 +63,14 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 		if (hasFeature(FeatureConstants.PING)) {
 			// http://{host}:{port}/{contextRoot}/ping
 			Resource.Builder pingWSResource = Resource.builder("ping");
-			pingWSResource.addMethod(GET).produces(JSON).handledBy(pingInflector());
+			pingWSResource.addMethod(GET).produces(JSON).handledBy(getPingInflector());
 			registerResources(pingWSResource.build());
 		}
 
 		if (hasFeature(FeatureConstants.ECHO)) {
 			// http://{host}:{port}/{contextRoot}/echo?message=<message>
 			Resource.Builder echoWSResource = Resource.builder("echo");
-			echoWSResource.addMethod(GET).produces(JSON).handledBy(echoInflector());
+			echoWSResource.addMethod(GET).produces(JSON).handledBy(getEchoInflector());
 			registerResources(echoWSResource.build());
 		}
 
@@ -87,7 +87,7 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 		}
 	}
 
-	protected Inflector<ContainerRequestContext, Response> pingInflector() {
+	protected Inflector<ContainerRequestContext, Response> getPingInflector() {
 		return new Inflector<ContainerRequestContext, Response>() {
 			@Override
 			public Response apply(ContainerRequestContext requestContext) {
@@ -96,7 +96,7 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 		};
 	}
 
-	protected Inflector<ContainerRequestContext, Response> echoInflector() {
+	protected Inflector<ContainerRequestContext, Response> getEchoInflector() {
 		return new Inflector<ContainerRequestContext, Response>() {
 			@Override
 			public Response apply(ContainerRequestContext requestContext) {

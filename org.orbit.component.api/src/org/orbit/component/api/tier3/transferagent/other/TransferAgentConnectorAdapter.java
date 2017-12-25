@@ -1,5 +1,6 @@
-package org.orbit.component.api.tier3.transferagent;
+package org.orbit.component.api.tier3.transferagent.other;
 
+import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.origin.common.rest.client.ServiceConnector;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -15,17 +16,11 @@ public class TransferAgentConnectorAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentConnectorAdapter.class);
 
-	protected BundleContext bundleContext;
-	protected ServiceTracker<TransferAgentConnector, TransferAgentConnector> serviceTracker;
-	protected ServiceTracker<ServiceConnector<TransferAgent>, ServiceConnector<TransferAgent>> serviceTracker2;
+	protected ServiceTracker<ServiceConnector<TransferAgent>, ServiceConnector<TransferAgent>> serviceTracker;
 	protected String connectorId;
 
 	public TransferAgentConnectorAdapter() {
 		this.connectorId = "transfer_agent.connector";
-	}
-
-	public TransferAgentConnector getConnector() {
-		return this.serviceTracker != null ? this.serviceTracker.getService() : null;
 	}
 
 	/**
@@ -33,36 +28,14 @@ public class TransferAgentConnectorAdapter {
 	 * 
 	 */
 	public void start(BundleContext bundleContext) {
-		// this.serviceTracker = new ServiceTracker<TransferAgentConnector, TransferAgentConnector>(bundleContext, TransferAgentConnector.class, new
-		// ServiceTrackerCustomizer<TransferAgentConnector, TransferAgentConnector>() {
-		// @Override
-		// public TransferAgentConnector addingService(ServiceReference<TransferAgentConnector> reference) {
-		// TransferAgentConnector connector = bundleContext.getService(reference);
-		// LOG.info("addingService() TransferAgentConnector is added: " + connector);
-		// connectorAdded(connector);
-		// return connector;
-		// }
-		//
-		// @Override
-		// public void modifiedService(ServiceReference<TransferAgentConnector> reference, TransferAgentConnector connector) {
-		// LOG.info("removedService() TransferAgentConnector is modified: " + connector);
-		// }
-		//
-		// @Override
-		// public void removedService(ServiceReference<TransferAgentConnector> reference, TransferAgentConnector connector) {
-		// LOG.info("removedService() TransferAgentConnector is removed: " + connector);
-		// connectorRemoved(connector);
-		// }
-		// });
-		// this.serviceTracker.open();
-
 		Filter filter = null;
 		try {
 			filter = bundleContext.createFilter("(&(" + Constants.OBJECTCLASS + "=" + ServiceConnector.class.getName() + ")(connector.id=" + this.connectorId + "))");
 		} catch (InvalidSyntaxException e) {
 			e.printStackTrace();
 		}
-		this.serviceTracker2 = new ServiceTracker<ServiceConnector<TransferAgent>, ServiceConnector<TransferAgent>>(bundleContext, filter, new ServiceTrackerCustomizer<ServiceConnector<TransferAgent>, ServiceConnector<TransferAgent>>() {
+
+		this.serviceTracker = new ServiceTracker<ServiceConnector<TransferAgent>, ServiceConnector<TransferAgent>>(bundleContext, filter, new ServiceTrackerCustomizer<ServiceConnector<TransferAgent>, ServiceConnector<TransferAgent>>() {
 			@Override
 			public ServiceConnector<TransferAgent> addingService(ServiceReference<ServiceConnector<TransferAgent>> reference) {
 				ServiceConnector<TransferAgent> connector = bundleContext.getService(reference);
@@ -82,7 +55,7 @@ public class TransferAgentConnectorAdapter {
 				connectorRemoved(connector);
 			}
 		});
-		this.serviceTracker2.open();
+		this.serviceTracker.open();
 	}
 
 	/**
@@ -90,23 +63,10 @@ public class TransferAgentConnectorAdapter {
 	 * 
 	 */
 	public void stop(BundleContext bundleContext) {
-		// if (this.serviceTracker != null) {
-		// this.serviceTracker.close();
-		// this.serviceTracker = null;
-		// }
-
-		if (this.serviceTracker2 != null) {
-			this.serviceTracker2.close();
-			this.serviceTracker2 = null;
+		if (this.serviceTracker != null) {
+			this.serviceTracker.close();
+			this.serviceTracker = null;
 		}
-	}
-
-	public void connectorAdded(TransferAgentConnector connector) {
-
-	}
-
-	public void connectorRemoved(TransferAgentConnector connector) {
-
 	}
 
 	public void connectorAdded(ServiceConnector<TransferAgent> connector) {
@@ -118,3 +78,46 @@ public class TransferAgentConnectorAdapter {
 	}
 
 }
+
+// protected BundleContext bundleContext;
+// protected ServiceTracker<TransferAgentConnector, TransferAgentConnector> serviceTracker;
+
+// public TransferAgentConnector getConnector() {
+// return this.serviceTracker != null ? this.serviceTracker.getService() : null;
+// }
+
+// this.serviceTracker = new ServiceTracker<TransferAgentConnector, TransferAgentConnector>(bundleContext, TransferAgentConnector.class, new
+// ServiceTrackerCustomizer<TransferAgentConnector, TransferAgentConnector>() {
+// @Override
+// public TransferAgentConnector addingService(ServiceReference<TransferAgentConnector> reference) {
+// TransferAgentConnector connector = bundleContext.getService(reference);
+// LOG.info("addingService() TransferAgentConnector is added: " + connector);
+// connectorAdded(connector);
+// return connector;
+// }
+//
+// @Override
+// public void modifiedService(ServiceReference<TransferAgentConnector> reference, TransferAgentConnector connector) {
+// LOG.info("removedService() TransferAgentConnector is modified: " + connector);
+// }
+//
+// @Override
+// public void removedService(ServiceReference<TransferAgentConnector> reference, TransferAgentConnector connector) {
+// LOG.info("removedService() TransferAgentConnector is removed: " + connector);
+// connectorRemoved(connector);
+// }
+// });
+// this.serviceTracker.open();
+
+// if (this.serviceTracker != null) {
+// this.serviceTracker.close();
+// this.serviceTracker = null;
+// }
+
+// public void connectorAdded(TransferAgentConnector connector) {
+//
+// }
+//
+// public void connectorRemoved(TransferAgentConnector connector) {
+//
+// }

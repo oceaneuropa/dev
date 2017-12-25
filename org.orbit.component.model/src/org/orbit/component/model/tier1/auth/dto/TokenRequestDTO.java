@@ -23,6 +23,9 @@ public class TokenRequestDTO {
 	@XmlElement
 	protected String state; // optional
 
+	public TokenRequestDTO() {
+	}
+
 	public String getGrant_type() {
 		return grant_type;
 	}

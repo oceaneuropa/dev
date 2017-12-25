@@ -1,6 +1,7 @@
 package org.orbit.component.cli;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
@@ -12,7 +13,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.api.tier1.auth.Auth;
-import org.orbit.component.api.tier1.auth.AuthConnector;
+import org.orbit.component.api.tier1.auth.other.AuthConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainService;
@@ -178,7 +179,8 @@ public class ServicesCommand implements Annotated {
 	}
 
 	protected void listAuthServices() throws ClientException {
-		List<LoadBalanceResource<Auth>> resources = ServicesCommandHelper.INSTANCE.getAuthResources(this.authConnector);
+		// List<LoadBalanceResource<Auth>> resources = ServicesCommandHelper.INSTANCE.getAuthResources(this.authConnector);
+		List<LoadBalanceResource<Auth>> resources = new ArrayList<LoadBalanceResource<Auth>>();
 
 		String[][] rows = new String[resources.size()][AUTH_SERVICES_COLUMNS.length];
 		int rowIndex = 0;

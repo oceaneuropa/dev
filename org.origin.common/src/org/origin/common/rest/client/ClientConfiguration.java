@@ -159,9 +159,9 @@ public class ClientConfiguration {
 	public Client createClient() {
 		Client client = null;
 
-		ClientConfig clientCfg = new ClientConfig();
-		clientCfg.register(JacksonFeature.class);
-		clientCfg.register(MultiPartFeature.class);
+		ClientConfig clientConfig = new ClientConfig();
+		clientConfig.register(JacksonFeature.class);
+		clientConfig.register(MultiPartFeature.class);
 
 		String scheme = getScheme();
 
@@ -177,10 +177,10 @@ public class ClientConfiguration {
 			} catch (KeyManagementException e) {
 				e.printStackTrace();
 			}
-			client = ClientBuilder.newBuilder().register(MultiPartFeature.class).withConfig(clientCfg).hostnameVerifier(new TrustAllHostNameVerifier()).sslContext(sslCtx).build();
+			client = ClientBuilder.newBuilder().register(MultiPartFeature.class).withConfig(clientConfig).hostnameVerifier(new TrustAllHostNameVerifier()).sslContext(sslCtx).build();
 
 		} else if ("http".equalsIgnoreCase(scheme)) {
-			client = ClientBuilder.newBuilder().register(MultiPartFeature.class).withConfig(clientCfg).build();
+			client = ClientBuilder.newBuilder().register(MultiPartFeature.class).withConfig(clientConfig).build();
 
 		} else {
 			throw new IllegalArgumentException("URL is invalid.");

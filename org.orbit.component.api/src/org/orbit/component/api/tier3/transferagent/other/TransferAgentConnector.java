@@ -1,7 +1,8 @@
-package org.orbit.component.api.tier3.transferagent;
+package org.orbit.component.api.tier3.transferagent.other;
 
 import java.util.Map;
 
+import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.origin.common.rest.client.ClientException;
 
 public interface TransferAgentConnector {

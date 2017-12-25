@@ -1,10 +1,11 @@
-package org.orbit.component.connector.tier1.auth;
+package org.orbit.component.connector.tier1.auth.other;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.tier1.auth.AuthWSClient;
 import org.orbit.component.model.tier1.auth.AuthConverter;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
@@ -14,46 +15,21 @@ import org.orbit.component.model.tier1.auth.dto.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.dto.AuthorizationResponseDTO;
 import org.orbit.component.model.tier1.auth.dto.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.dto.TokenResponseDTO;
-import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.ServiceConnector;
 
-public class AuthImpl implements Auth {
+public class AuthImplV1 implements Auth {
 
 	protected Map<String, Object> properties;
 	protected AuthWSClient client;
-	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
 	 * @param properties
 	 */
-	public AuthImpl(Map<String, Object> properties) {
-		this(null, properties);
-	}
-
-	/**
-	 * 
-	 * @param connector
-	 * @param properties
-	 */
-	public AuthImpl(ServiceConnector<Auth> connector, Map<String, Object> properties) {
-		if (connector != null) {
-			adapt(ServiceConnector.class, connector);
-		}
+	public AuthImplV1(Map<String, Object> properties) {
 		this.properties = checkProperties(properties);
 		initClient();
-	}
-
-	@Override
-	public boolean close() throws ClientException {
-		@SuppressWarnings("unchecked")
-		ServiceConnector<Auth> connector = getAdapter(ServiceConnector.class);
-		if (connector != null) {
-			return connector.close(this);
-		}
-		return false;
 	}
 
 	protected void initClient() {
@@ -61,7 +37,16 @@ public class AuthImpl implements Auth {
 		String username = (String) properties.get(OrbitConstants.USERNAME);
 		String fullUrl = (String) properties.get(OrbitConstants.URL);
 
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, fullUrl);
+		String url = (String) properties.get(OrbitConstants.AUTH_HOST_URL);
+		String contextRoot = (String) properties.get(OrbitConstants.AUTH_CONTEXT_ROOT);
+
+		ClientConfiguration clientConfig = null;
+		if (fullUrl != null) {
+			clientConfig = ClientConfiguration.create(realm, username, fullUrl, null);
+		} else {
+			clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
+		}
+
 		this.client = new AuthWSClient(clientConfig);
 	}
 
@@ -87,7 +72,13 @@ public class AuthImpl implements Auth {
 	@Override
 	public String getURL() {
 		String fullUrl = (String) properties.get(OrbitConstants.URL);
-		return fullUrl;
+		if (fullUrl != null) {
+			return fullUrl;
+		}
+
+		String hostURL = (String) this.properties.get(OrbitConstants.AUTH_HOST_URL);
+		String contextRoot = (String) this.properties.get(OrbitConstants.AUTH_CONTEXT_ROOT);
+		return hostURL + contextRoot;
 	}
 
 	@Override
@@ -132,12 +123,16 @@ public class AuthImpl implements Auth {
 
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
-		this.adaptorSupport.adapt(clazz, object);
 	}
 
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
-		return this.adaptorSupport.getAdapter(adapter);
+		return null;
+	}
+
+	@Override
+	public boolean close() throws ClientException {
+		return false;
 	}
 
 }

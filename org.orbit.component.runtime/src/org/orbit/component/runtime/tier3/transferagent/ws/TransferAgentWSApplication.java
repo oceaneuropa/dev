@@ -15,6 +15,8 @@ import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentServ
  */
 public class TransferAgentWSApplication extends OrbitWSApplication {
 
+	protected TransferAgentService service;
+
 	/**
 	 * 
 	 * @param service
@@ -34,19 +36,33 @@ public class TransferAgentWSApplication extends OrbitWSApplication {
 
 		// http://{host}:{port}/{contextRoot}/level/{level1}/{level2}?message1=<message1>&message2=<message2>
 		Resource.Builder levelWSResource = Resource.builder("level/{level1}/{level2}");
-		levelWSResource.addMethod(GET).produces(JSON).handledBy(levelInflector());
+		levelWSResource.addMethod(GET).produces(JSON).handledBy(getLevelInflector());
 		registerResources(levelWSResource.build());
 	}
 
-	protected Inflector<ContainerRequestContext, Response> levelInflector() {
+	@Override
+	protected Inflector<ContainerRequestContext, Response> getEchoInflector() {
 		return new Inflector<ContainerRequestContext, Response>() {
 			@Override
 			public Response apply(ContainerRequestContext requestContext) {
+				TransferAgentService service = getAdapter(TransferAgentService.class);
+				String message = getQueryParam("message", requestContext);
+				String resultMessage = message + " (from '" + service.getName() + "')";
+				return Response.ok(resultMessage).build();
+			}
+		};
+	}
+
+	protected Inflector<ContainerRequestContext, Response> getLevelInflector() {
+		return new Inflector<ContainerRequestContext, Response>() {
+			@Override
+			public Response apply(ContainerRequestContext requestContext) {
+				TransferAgentService service = getAdapter(TransferAgentService.class);
 				String level1 = getPathParam("level1", requestContext);
 				String level2 = getPathParam("level2", requestContext);
 				String message1 = getQueryParam("message1", requestContext);
 				String message2 = getQueryParam("message2", requestContext);
-				String resultMessage = level1 + "/" + level2 + "?" + message1 + "&" + message2;
+				String resultMessage = level1 + "/" + level2 + "?" + message1 + "&" + message2 + " (from '" + service.getName() + "')";
 				return Response.ok(resultMessage).build();
 			}
 		};

@@ -11,7 +11,7 @@ import org.orbit.component.cli.TransferAgentCommand;
 import org.orbit.component.cli.UserRegistryCommand;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryManager;
-import org.orbit.component.connector.tier1.auth.AuthConnectorLoadBalanceImpl;
+import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
 import org.orbit.component.connector.tier3.domain.DomainServiceConnectorImpl;
@@ -47,7 +47,7 @@ public class Activator implements BundleActivator {
 	// Connectors
 	protected ConfigRegistryConnectorImpl configRegistryConnector;
 	protected UserRegistryConnectorImpl userRegistryConnector;
-	protected AuthConnectorLoadBalanceImpl authConnector;
+	protected AuthConnectorImpl authConnector;
 	protected AppStoreConnectorImpl appStoreConnector;
 	protected DomainServiceConnectorImpl domainMgmtConnector;
 	protected TransferAgentConnectorImpl transferAgentConnector;
@@ -104,7 +104,7 @@ public class Activator implements BundleActivator {
 		this.userRegistryConnector = new UserRegistryConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.userRegistryConnector.start(bundleContext);
 
-		this.authConnector = new AuthConnectorLoadBalanceImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.authConnector = new AuthConnectorImpl();
 		this.authConnector.start(bundleContext);
 
 		// tier2
@@ -122,8 +122,8 @@ public class Activator implements BundleActivator {
 		this.servicesCommand = new ServicesCommand(bundleContext, indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.servicesCommand.start();
 
-		this.authCommand = new AuthCommand(bundleContext);
-		this.authCommand.start();
+		this.authCommand = new AuthCommand();
+		this.authCommand.start(bundleContext);
 
 		this.userRegistryCommand = new UserRegistryCommand(bundleContext);
 		this.userRegistryCommand.start();
@@ -146,7 +146,7 @@ public class Activator implements BundleActivator {
 		}
 
 		if (this.authCommand != null) {
-			this.authCommand.stop();
+			this.authCommand.stop(bundleContext);
 			this.authCommand = null;
 		}
 
@@ -208,6 +208,10 @@ public class Activator implements BundleActivator {
 }
 
 // protected OAuth2ConnectorImpl oauth2Connector;
+// protected AuthConnectorLoadBalanceImpl authConnector;
+
+// this.authConnector = new AuthConnectorLoadBalanceImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
+// this.authConnector.start(bundleContext);
 
 // this.oauth2Connector = new OAuth2ConnectorImpl(this.indexServiceLoadBalancer.createLoadBalancableIndexService());
 // this.oauth2Connector.start(bundleContext);
