@@ -4,13 +4,15 @@ import java.net.URI;
 import java.util.List;
 
 import org.orbit.component.runtime.switcher.util.SwitcherMonitorURIImpl;
+import org.orbit.component.runtime.switcher.util.SwitcherPolicyStickyOrbitSessionImpl;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryJerseyImpl;
-import org.origin.common.switcher.Switcher;
-import org.origin.common.switcher.SwitcherMonitor;
-import org.origin.common.switcher.impl.SwitcherImpl;
-import org.origin.common.switcher.impl.SwitcherInputURIImpl;
-import org.origin.common.switcher.impl.SwitcherPolicyRoundRobinImpl;
+import org.origin.common.rest.switcher.Switcher;
+import org.origin.common.rest.switcher.SwitcherMonitor;
+import org.origin.common.rest.switcher.SwitcherPolicy;
+import org.origin.common.rest.switcher.impl.SwitcherImpl;
+import org.origin.common.rest.switcher.impl.SwitcherInputURIImpl;
+import org.origin.common.rest.switcher.impl.SwitcherPolicyRoundRobinImpl;
 import org.origin.common.util.URIUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -32,19 +34,13 @@ public class Activator implements BundleActivator {
 
 		WSClientFactory factory = createClientFactory(bundleContext);
 
-		// Start Auth switcher
 		startAuthSwitcher(bundleContext, "/orbit/v1/auth", factory, URIUtil.toList("http://127.0.0.1:11001/orbit/v1/auth;http://127.0.0.1:11002/orbit/v1/auth"));
-
-		// Start TransferAgent switcher
 		startTransferAgentSwitcher(bundleContext, "/orbit/v1/ta", factory, URIUtil.toList("http://127.0.0.1:12001/orbit/v1/ta;http://127.0.0.1:12002/orbit/v1/ta"));
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		// Stop TransferAgent switcher
 		stopTransferAgentSwitcher(bundleContext);
-
-		// Stop Auth switcher
 		stopAuthSwitcher(bundleContext);
 
 		Activator.bundleContext = null;
@@ -55,7 +51,7 @@ public class Activator implements BundleActivator {
 	}
 
 	protected void startAuthSwitcher(BundleContext bundleContext, String contextRoot, WSClientFactory factory, List<URI> authUriList) {
-		Switcher<URI> authUriSwitcher = createSwitcher(authUriList);
+		Switcher<URI> authUriSwitcher = createUriSwitcher(authUriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 		this.authSwitcher = new AuthWSApplicationSwitcher(contextRoot, factory, authUriSwitcher);
 		this.authSwitcher.start(bundleContext);
 	}
@@ -68,7 +64,7 @@ public class Activator implements BundleActivator {
 	}
 
 	protected void startTransferAgentSwitcher(BundleContext bundleContext, String contextRoot, WSClientFactory factory, List<URI> taUriList) {
-		Switcher<URI> taUriSwitcher = createSwitcher(taUriList);
+		Switcher<URI> taUriSwitcher = createUriSwitcher(taUriList, SwitcherPolicy.MODE_STICKY);
 		this.transferAgentSwitcher = new TransferAgentWSApplicationSwitcher(contextRoot, factory, taUriSwitcher);
 		this.transferAgentSwitcher.start(bundleContext);
 	}
@@ -80,15 +76,25 @@ public class Activator implements BundleActivator {
 		}
 	}
 
-	protected Switcher<URI> createSwitcher(List<URI> uriList) {
+	protected Switcher<URI> createUriSwitcher(List<URI> uriList, int policyMode) {
 		Switcher<URI> switcher = new SwitcherImpl<URI>();
 
+		// (1) set input
 		SwitcherInputURIImpl input = new SwitcherInputURIImpl(uriList);
 		switcher.setInput(input);
 
-		SwitcherPolicyRoundRobinImpl<URI> policy = new SwitcherPolicyRoundRobinImpl<URI>();
-		switcher.setPolicy(policy);
+		// (2) set policy
+		SwitcherPolicy<URI> policy = null;
+		if ((SwitcherPolicy.MODE_ROUND_ROBIN & policyMode) == SwitcherPolicy.MODE_ROUND_ROBIN) {
+			policy = new SwitcherPolicyRoundRobinImpl<URI>();
+		} else if ((SwitcherPolicy.MODE_STICKY & policyMode) == SwitcherPolicy.MODE_STICKY) {
+			policy = new SwitcherPolicyStickyOrbitSessionImpl<URI>();
+		}
+		if (policy != null) {
+			switcher.setPolicy(policy);
+		}
 
+		// (3) set monitor
 		SwitcherMonitor<URI> monitor = new SwitcherMonitorURIImpl<URI>();
 		switcher.setMonitor(monitor);
 

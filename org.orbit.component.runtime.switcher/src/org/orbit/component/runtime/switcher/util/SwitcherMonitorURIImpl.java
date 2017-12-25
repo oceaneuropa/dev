@@ -1,8 +1,8 @@
 package org.orbit.component.runtime.switcher.util;
 
-import org.origin.common.switcher.Switcher;
-import org.origin.common.switcher.SwitcherItemMonitor;
-import org.origin.common.switcher.SwitcherMonitor;
+import org.origin.common.rest.switcher.Switcher;
+import org.origin.common.rest.switcher.SwitcherItemMonitor;
+import org.origin.common.rest.switcher.SwitcherMonitor;
 
 public class SwitcherMonitorURIImpl<URI> implements SwitcherMonitor<URI> {
 

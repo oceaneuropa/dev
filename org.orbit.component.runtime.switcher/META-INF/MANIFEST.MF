@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.orbit.component.runtime.switcher
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.component.runtime.switcher.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: com.fasterxml.jackson.annotation,
+Import-Package: com.auth0.jwt.interfaces,
+ com.fasterxml.jackson.annotation,
  com.fasterxml.jackson.core,
  com.fasterxml.jackson.databind,
  com.fasterxml.jackson.databind.node,

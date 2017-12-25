@@ -1,4 +1,6 @@
-package org.origin.common.switcher;
+package org.origin.common.rest.switcher;
+
+import javax.ws.rs.container.ContainerRequestContext;
 
 public interface Switcher<ITEM> {
 
@@ -22,8 +24,8 @@ public interface Switcher<ITEM> {
 
 	void stop();
 
-	ITEM getNext(String methodPath);
+	ITEM getNext(ContainerRequestContext requestContext, String methodPath);
 
-	ITEM getNext(String methodPath, int retry, long interval);
+	ITEM getNext(ContainerRequestContext requestContext, String methodPath, int retry, long interval);
 
 }

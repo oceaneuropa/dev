@@ -2,7 +2,6 @@ package org.orbit.component.runtime.common.ws;
 
 import java.io.IOException;
 
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
@@ -30,7 +29,7 @@ public class AuthorizationTokenRequestFilter implements ContainerRequestFilter {
 		// }
 
 		String token = parseToken(headerValue);
-		DecodedJWT jwt = verifyToken(token);
+		DecodedJWT jwt = verifyJWT(token);
 		if (jwt == null) {
 			// throw new NotAuthorizedException("Bearer error=\"invalid_token\"");
 		}
@@ -64,7 +63,7 @@ public class AuthorizationTokenRequestFilter implements ContainerRequestFilter {
 		return null;
 	}
 
-	protected DecodedJWT verifyToken(String token) {
+	protected DecodedJWT verifyJWT(String token) {
 		DecodedJWT jwt = null;
 		if (token != null) {
 			try {

@@ -1,16 +1,18 @@
-package org.origin.common.switcher.impl;
+package org.origin.common.rest.switcher.impl;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.container.ContainerRequestContext;
+
 import org.origin.common.event.PropertyChangeEvent;
 import org.origin.common.event.PropertyChangeListener;
-import org.origin.common.switcher.Switcher;
-import org.origin.common.switcher.SwitcherInput;
-import org.origin.common.switcher.SwitcherItemMonitor;
-import org.origin.common.switcher.SwitcherMonitor;
-import org.origin.common.switcher.SwitcherPolicy;
+import org.origin.common.rest.switcher.Switcher;
+import org.origin.common.rest.switcher.SwitcherInput;
+import org.origin.common.rest.switcher.SwitcherItemMonitor;
+import org.origin.common.rest.switcher.SwitcherMonitor;
+import org.origin.common.rest.switcher.SwitcherPolicy;
 
 public class SwitcherImpl<ITEM> implements Switcher<ITEM> {
 
@@ -164,18 +166,18 @@ public class SwitcherImpl<ITEM> implements Switcher<ITEM> {
 	}
 
 	@Override
-	public ITEM getNext(String methodPath) {
-		return getPolicy().getNext(methodPath);
+	public ITEM getNext(ContainerRequestContext requestContext, String methodPath) {
+		return getPolicy().getNext(requestContext, methodPath);
 	}
 
 	@Override
-	public ITEM getNext(String methodPath, int retry, long interval) {
+	public ITEM getNext(ContainerRequestContext requestContext, String methodPath, int retry, long interval) {
 		if (retry <= 0) {
-			return getNext(methodPath);
+			return getNext(requestContext, methodPath);
 		}
 
 		for (int i = 0; i < retry; i++) {
-			ITEM item = getNext(methodPath);
+			ITEM item = getNext(requestContext, methodPath);
 			if (item != null) {
 				return item;
 			}

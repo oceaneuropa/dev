@@ -1,4 +1,4 @@
-package org.origin.common.switcher.impl;
+package org.origin.common.rest.switcher.impl;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.Map;
 import org.origin.common.event.PropertyChangeEvent;
 import org.origin.common.event.PropertyChangeListener;
 import org.origin.common.event.PropertyChangeListenerSupport;
-import org.origin.common.switcher.SwitcherInput;
+import org.origin.common.rest.switcher.SwitcherInput;
 
 public class SwitcherInputURIImpl implements SwitcherInput<URI> {
 

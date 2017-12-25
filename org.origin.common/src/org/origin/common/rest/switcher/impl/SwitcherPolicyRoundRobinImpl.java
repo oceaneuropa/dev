@@ -1,11 +1,13 @@
-package org.origin.common.switcher.impl;
+package org.origin.common.rest.switcher.impl;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.origin.common.switcher.Switcher;
-import org.origin.common.switcher.SwitcherPolicy;
+import javax.ws.rs.container.ContainerRequestContext;
+
+import org.origin.common.rest.switcher.Switcher;
+import org.origin.common.rest.switcher.SwitcherPolicy;
 
 public class SwitcherPolicyRoundRobinImpl<ITEM> implements SwitcherPolicy<ITEM> {
 
@@ -29,7 +31,7 @@ public class SwitcherPolicyRoundRobinImpl<ITEM> implements SwitcherPolicy<ITEM> 
 	}
 
 	@Override
-	public synchronized ITEM getNext(String methodPath) {
+	public synchronized ITEM getNext(ContainerRequestContext requestContext, String methodPath) {
 		checkSwitcher();
 
 		// check whether items are available
@@ -38,8 +40,8 @@ public class SwitcherPolicyRoundRobinImpl<ITEM> implements SwitcherPolicy<ITEM> 
 			return null;
 		}
 
-		Integer pointer = this.methodPathToPointer.get(methodPath);
 		// initialize the pointer or reset the pointer
+		Integer pointer = this.methodPathToPointer.get(methodPath);
 		if (pointer == null || pointer >= items.size()) {
 			pointer = 0;
 		}
@@ -47,8 +49,7 @@ public class SwitcherPolicyRoundRobinImpl<ITEM> implements SwitcherPolicy<ITEM> 
 		ITEM item = items.get(pointer);
 
 		// update pointer
-		pointer += 1;
-		this.methodPathToPointer.put(methodPath, pointer);
+		this.methodPathToPointer.put(methodPath, ++pointer);
 
 		return item;
 	}

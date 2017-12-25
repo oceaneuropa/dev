@@ -7,7 +7,7 @@ import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSMethodInflector;
-import org.origin.common.switcher.Switcher;
+import org.origin.common.rest.switcher.Switcher;
 import org.osgi.framework.BundleContext;
 
 /**

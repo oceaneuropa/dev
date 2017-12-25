@@ -1,4 +1,4 @@
-package org.origin.common.switcher;
+package org.origin.common.rest.switcher;
 
 public interface SwitcherItemMonitor<ITEM> {
 

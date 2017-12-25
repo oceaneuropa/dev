@@ -1,5 +1,7 @@
 package org.orbit.component.connector.tier3.transferagent;
 
+import javax.ws.rs.client.Invocation.Builder;
+
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 
@@ -19,6 +21,11 @@ public class TransferAgentWSClient extends AbstractWSClient {
 
 	public TransferAgentWSClient(ClientConfiguration config) {
 		super(config);
+	}
+
+	@Override
+	public Builder updateHeaders(Builder builder) {
+		return super.updateHeaders(builder);
 	}
 
 }

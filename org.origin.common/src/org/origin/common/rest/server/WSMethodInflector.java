@@ -20,7 +20,7 @@ import javax.ws.rs.core.Response.Status;
 import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.rest.model.ErrorDTO;
-import org.origin.common.switcher.Switcher;
+import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.util.JSONUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -129,7 +129,7 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 		Object payload = getPayload(requestContext);
 
 		// Step2. switch the barrel
-		URI targetBaseURI = getTargetBaseURI();
+		URI targetBaseURI = getTargetBaseURI(requestContext);
 		if (targetBaseURI == null) {
 			System.err.println("Target base URI is null.");
 			return Response.serverError().entity(new ErrorDTO("500", "Target base URI is not available.", null)).build();
@@ -196,11 +196,12 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 	/**
 	 * Step2. switch the barrel
 	 * 
+	 * @param requestContext
 	 * @return
 	 */
-	protected URI getTargetBaseURI() {
-		URI newBaseURI = this.baseUriSwitcher.getNext(this.methodPath, 3, 1000);
-		return newBaseURI;
+	protected URI getTargetBaseURI(ContainerRequestContext requestContext) {
+		URI targetBaseURI = this.baseUriSwitcher.getNext(requestContext, this.methodPath, 3, 1000);
+		return targetBaseURI;
 	}
 
 	/**

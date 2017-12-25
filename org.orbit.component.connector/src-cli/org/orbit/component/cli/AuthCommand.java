@@ -31,8 +31,8 @@ public class AuthCommand implements Annotated {
 
 	protected ServiceConnectorAdapter<Auth> authConnector;
 
-	private String realm = ClientConfiguration.DEFAULT_REALM;
-	private String username = ClientConfiguration.UNKNOWN_USERNAME;
+	private String default_realm = ClientConfiguration.DEFAULT_REALM;
+	private String default_username = ClientConfiguration.UNKNOWN_USERNAME;
 
 	protected String getScheme() {
 		return "orbit";
@@ -98,7 +98,7 @@ public class AuthCommand implements Annotated {
 			return;
 		}
 
-		Auth auth = getAuth(this.realm, this.username, url);
+		Auth auth = getAuth(this.default_realm, this.default_username, url);
 		if (auth == null) {
 			return;
 		}
@@ -118,7 +118,7 @@ public class AuthCommand implements Annotated {
 			return;
 		}
 
-		Auth auth = getAuth(this.realm, this.username, url);
+		Auth auth = getAuth(this.default_realm, this.default_username, url);
 		if (auth == null) {
 			return;
 		}
@@ -147,7 +147,7 @@ public class AuthCommand implements Annotated {
 			return;
 		}
 
-		Auth auth = getAuth(this.realm, this.username, url);
+		Auth auth = getAuth(this.default_realm, this.default_username, url);
 		if (auth == null) {
 			return;
 		}
@@ -216,7 +216,8 @@ public class AuthCommand implements Annotated {
 			return;
 		}
 
-		Auth auth = getAuth(this.realm, this.username, url);
+		String theUsername = username != null ? username : this.default_username;
+		Auth auth = getAuth(this.default_realm, theUsername, url);
 		if (auth == null) {
 			return;
 		}
@@ -304,9 +305,17 @@ public class AuthCommand implements Annotated {
 			LOG.error("'-url' parameter is not set.");
 			return;
 		}
+		if (Parameter.UNSPECIFIED.equals(username)) {
+			LOG.error("'-username' parameter is not set.");
+			return;
+		}
+		if (Parameter.UNSPECIFIED.equals(password)) {
+			LOG.error("'-password' parameter is not set.");
+			return;
+		}
 
 		try {
-			Auth auth = getAuth(this.realm, this.username, url);
+			Auth auth = getAuth(this.default_realm, username, url);
 			if (auth == null) {
 				return;
 			}
