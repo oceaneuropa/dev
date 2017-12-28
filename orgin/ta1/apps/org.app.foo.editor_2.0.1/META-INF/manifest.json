@@ -1,0 +1,19 @@
+{
+	"id" : "org.app.foo.editor",
+	"version" : "2.0.1",
+	"name" : "Foo Editor",
+	"type" : "text editor",
+	"description" : "Text editor for editing foo files.",
+	"bundles" : [
+		{"Bundle-SymbolicName" : "org.app.example1", "Bundle-Version" : "1.0.5"},
+		{"Bundle-SymbolicName" : "org.app.example2", "Bundle-Version" : "1.0.6"},
+	],
+	"classpath" : [
+		"plugins/org.app.example1_1.0.5.jar",
+		"plugins/org.app.example2_1.0.6.jar"
+	],
+	"properties" : [
+		{ "name" : "p1", "value" : "v1"},
+		{ "name" : "p2", "value" : "v2"},
+	]
+}
