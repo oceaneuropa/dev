@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="runtime_win" sequenceNumber="1">
+<?pde version="3.8"?><target name="runtime_win" sequenceNumber="5">
 <locations>
-<location path="C:\osgi\target_platform" type="Directory"/>
+<location path="C:\dev\target_platforms\target_platform" type="Directory"/>
+<location path="C:\dev\target_platforms\target_platform\log" type="Directory"/>
+<location path="C:\dev\target_platforms\target_platform\jetty_9.3.21" type="Directory"/>
+<location path="C:\dev\target_platforms\target_platform\apache-http" type="Directory"/>
 </locations>
 </target>
