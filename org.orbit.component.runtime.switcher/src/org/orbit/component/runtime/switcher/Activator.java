@@ -25,7 +25,11 @@ public class Activator implements BundleActivator {
 		return bundleContext;
 	}
 
+	// tir1
+	protected UserRegistryWSApplicationSwitcher userRegistrySwitcher;
 	protected AuthWSApplicationSwitcher authSwitcher;
+
+	// tir3
 	protected TransferAgentWSApplicationSwitcher transferAgentSwitcher;
 
 	@Override
@@ -34,13 +38,21 @@ public class Activator implements BundleActivator {
 
 		WSClientFactory factory = createClientFactory(bundleContext);
 
+		// tire1
+		startUserRegistrySwitcher(bundleContext, "/orbit/v1/userregistry", factory, URIUtil.toList("http://127.0.0.1:11001/orbit/v1/userregistry;http://127.0.0.1:11002/orbit/v1/userregistry"));
 		startAuthSwitcher(bundleContext, "/orbit/v1/auth", factory, URIUtil.toList("http://127.0.0.1:11001/orbit/v1/auth;http://127.0.0.1:11002/orbit/v1/auth"));
+
+		// tire3
 		startTransferAgentSwitcher(bundleContext, "/orbit/v1/ta", factory, URIUtil.toList("http://127.0.0.1:12001/orbit/v1/ta;http://127.0.0.1:12002/orbit/v1/ta"));
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		// tire3
 		stopTransferAgentSwitcher(bundleContext);
+
+		// tire1
+		stopUserRegistrySwitcher(bundleContext);
 		stopAuthSwitcher(bundleContext);
 
 		Activator.bundleContext = null;
@@ -50,9 +62,22 @@ public class Activator implements BundleActivator {
 		return new WSClientFactoryJerseyImpl();
 	}
 
-	protected void startAuthSwitcher(BundleContext bundleContext, String contextRoot, WSClientFactory factory, List<URI> authUriList) {
-		Switcher<URI> authUriSwitcher = createUriSwitcher(authUriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.authSwitcher = new AuthWSApplicationSwitcher(contextRoot, factory, authUriSwitcher);
+	protected void startUserRegistrySwitcher(BundleContext bundleContext, String contextRoot, WSClientFactory factory, List<URI> uriList) {
+		Switcher<URI> uriSwitcher = createUriSwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
+		this.userRegistrySwitcher = new UserRegistryWSApplicationSwitcher(contextRoot, factory, uriSwitcher);
+		this.userRegistrySwitcher.start(bundleContext);
+	}
+
+	protected void stopUserRegistrySwitcher(BundleContext bundleContext) {
+		if (this.userRegistrySwitcher != null) {
+			this.userRegistrySwitcher.stop(bundleContext);
+			this.userRegistrySwitcher = null;
+		}
+	}
+
+	protected void startAuthSwitcher(BundleContext bundleContext, String contextRoot, WSClientFactory factory, List<URI> uriList) {
+		Switcher<URI> uriSwitcher = createUriSwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
+		this.authSwitcher = new AuthWSApplicationSwitcher(contextRoot, factory, uriSwitcher);
 		this.authSwitcher.start(bundleContext);
 	}
 
@@ -63,9 +88,9 @@ public class Activator implements BundleActivator {
 		}
 	}
 
-	protected void startTransferAgentSwitcher(BundleContext bundleContext, String contextRoot, WSClientFactory factory, List<URI> taUriList) {
-		Switcher<URI> taUriSwitcher = createUriSwitcher(taUriList, SwitcherPolicy.MODE_STICKY);
-		this.transferAgentSwitcher = new TransferAgentWSApplicationSwitcher(contextRoot, factory, taUriSwitcher);
+	protected void startTransferAgentSwitcher(BundleContext bundleContext, String contextRoot, WSClientFactory factory, List<URI> uriList) {
+		Switcher<URI> uriSwitcher = createUriSwitcher(uriList, SwitcherPolicy.MODE_STICKY);
+		this.transferAgentSwitcher = new TransferAgentWSApplicationSwitcher(contextRoot, factory, uriSwitcher);
 		this.transferAgentSwitcher.start(bundleContext);
 	}
 

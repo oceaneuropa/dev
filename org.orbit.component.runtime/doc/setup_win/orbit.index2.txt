@@ -1,0 +1,16 @@
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true 
+-Dorg.osgi.service.http.port=10002 
+
+-Dorbit.host.url=http://127.0.0.1:10002 
+-Dorg.orbit.service.http.port=20002 
+
+-Drealm=orbit1 
+-Dcomponent.indexservice.autostart=true
+-Dcomponent.indexservice.name=IndexService2 
+-Dcomponent.indexservice.context_root=/orbit/v1/indexservice 
+-Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver 
+-Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
+-Dcomponent.indexservice.jdbc.username=postgres 
+-Dcomponent.indexservice.jdbc.password=admin
+
+-Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 

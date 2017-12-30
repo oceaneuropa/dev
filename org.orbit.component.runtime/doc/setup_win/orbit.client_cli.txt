@@ -1,0 +1,11 @@
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true 
+
+-DORIGIN_HOME=C:/dev/orgin/ta1 
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+
+-Drealm=orbit1 
+
+-Dchannel.host.url=http://127.0.0.1:11003 
+-Dchannel.context_root=/orbit/v1/channel 
+
+-Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 

@@ -39,14 +39,12 @@ public class AuthWSApplicationSwitcher extends AbstractJerseyWSApplication {
 	@Override
 	public void start(BundleContext bundleContext) {
 		this.switcher.start();
-
 		super.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) {
 		super.stop(bundleContext);
-
 		this.switcher.stop();
 	}
 

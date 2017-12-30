@@ -1,14 +1,18 @@
-package org.orbit.component.cli;
+package org.orbit.component.cli.other;
 
 import java.util.Date;
 import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClient;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
+import org.origin.common.annotation.Annotated;
+import org.origin.common.annotation.Dependency;
+import org.origin.common.annotation.DependencyFullfilled;
+import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
@@ -18,11 +22,14 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserRegistryCommand {
+public class UserRegistryCommandV1 implements Annotated {
 
-	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryCommandV1.class);
 
 	protected static String[] USER_ACCOUNT_COLUMNS = new String[] { "User Id", "Email", "Password", "First Name", "Last Name", "Phone", "Activated", "Creation Time", "Last Update Time" };
+
+	@Dependency
+	protected UserRegistryConnector connector;
 
 	protected String getScheme() {
 		return "orbit";
@@ -45,22 +52,48 @@ public class UserRegistryCommand {
 				"delete_user" //
 		} //
 		);
-		OSGiServiceUtil.register(bundleContext, UserRegistryCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, UserRegistryCommandV1.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
 
 	public void stop(BundleContext bundleContext) {
 		System.out.println("UserRegistryCommand.stop()");
 
-		OSGiServiceUtil.unregister(UserRegistryCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(UserRegistryCommandV1.class.getName(), this);
+		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
+	}
+
+	@DependencyFullfilled
+	public void connectorSet() {
+		System.out.println("UserRegistryConnector is set.");
+	}
+
+	@DependencyUnfullfilled
+	public void connectorUnset() {
+		System.out.println("UserRegistryConnector is unset.");
+	}
+
+	protected UserRegistry getUserRegistryService() throws ClientException {
+		if (this.connector == null) {
+			System.out.println("AuthConnector service is not available.");
+			return null;
+		}
+		UserRegistry userRegistry = this.connector.getService();
+		if (userRegistry == null) {
+			System.out.println("UserRegistry service is not available.");
+			return null;
+		}
+		return userRegistry;
 	}
 
 	@Descriptor("list_users")
-	public void list_users(//
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url //
-	) throws ClientException {
-		CLIHelper.getInstance().printCommand(getScheme(), "list_users", new String[] { "url", url });
+	public void list_users() throws ClientException {
+		CLIHelper.getInstance().printCommand(getScheme(), "list_users");
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistryService(url);
+		UserRegistry userRegistry = getUserRegistryService();
+		if (userRegistry == null) {
+			return;
+		}
 
 		UserAccount[] userAccounts = userRegistry.getUserAccounts();
 
@@ -88,25 +121,33 @@ public class UserRegistryCommand {
 
 	@Descriptor("get_user")
 	public void get_user( //
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
-			@Descriptor("username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
+			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "get_user", new String[] { "username", username });
+
+		UserRegistry userRegistry = getUserRegistryService();
+		if (userRegistry == null) {
+			return;
+		}
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
 			return;
 		}
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistryService(url);
-
 		UserAccount userAccount = userRegistry.getUserAccount(username);
 
-		UserAccount[] userAccounts = (userAccount != null) ? new UserAccount[] { userAccount } : new UserAccount[0];
+		UserAccount[] userAccounts = null;
+		if (userAccount != null) {
+			userAccounts = new UserAccount[] { userAccount };
+		} else {
+			userAccounts = new UserAccount[0];
+		}
+
 		String[][] rows = new String[userAccounts.length][USER_ACCOUNT_COLUMNS.length];
 		int rowIndex = 0;
 		for (UserAccount currUserAccount : userAccounts) {
-			String currUserId = currUserAccount.getUserId();
+			String userId = currUserAccount.getUserId();
 			String firstName = currUserAccount.getFirstName();
 			String lastName = currUserAccount.getLastName();
 			String email = currUserAccount.getEmail();
@@ -117,7 +158,7 @@ public class UserRegistryCommand {
 			String createTimeStr = (createTime != null) ? DateUtil.toString(createTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 			String updateTimeStr = (updateTime != null) ? DateUtil.toString(updateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { currUserId, email, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
+			rows[rowIndex++] = new String[] { userId, email, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
 		}
 
 		PrettyPrinter.prettyPrint(USER_ACCOUNT_COLUMNS, rows, userAccounts.length);
@@ -126,8 +167,7 @@ public class UserRegistryCommand {
 
 	@Descriptor("add_user")
 	public void add_user( //
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
-			@Descriptor("UserId") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
+			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
 			@Descriptor("Password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password, //
 			@Descriptor("Email") @Parameter(names = { "-email", "--email" }, absentValue = Parameter.UNSPECIFIED) String email, //
 			@Descriptor("First Name") @Parameter(names = { "-firstname", "--firstname" }, absentValue = Parameter.UNSPECIFIED) String firstName, //
@@ -143,10 +183,13 @@ public class UserRegistryCommand {
 				new String[] { "phone", phone } //
 		);
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistryService(url);
+		UserRegistry userRegistry = getUserRegistryService();
+		if (userRegistry == null) {
+			return;
+		}
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
-			System.out.println("userId is not set.");
+			System.out.println("username is not set.");
 			return;
 		}
 		if (Parameter.UNSPECIFIED.equals(password)) {
@@ -172,8 +215,7 @@ public class UserRegistryCommand {
 
 	@Descriptor("change_password")
 	public void change_password( //
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
-			@Descriptor("UerId") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
+			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
 			@Descriptor("Old password") @Parameter(names = { "-oldpassword", "--oldpassword" }, absentValue = Parameter.UNSPECIFIED) String oldPassword, //
 			@Descriptor("New password") @Parameter(names = { "-newpassword", "--newpassword" }, absentValue = Parameter.UNSPECIFIED) String newPassword //
 	) throws ClientException {
@@ -183,7 +225,10 @@ public class UserRegistryCommand {
 				new String[] { "newpassword", newPassword } //
 		);
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistryService(url);
+		UserRegistry userRegistry = getUserRegistryService();
+		if (userRegistry == null) {
+			return;
+		}
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
@@ -200,12 +245,14 @@ public class UserRegistryCommand {
 
 	@Descriptor("activate_user")
 	public void activate_user( //
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
 			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
 	) throws ClientException {
-		CLIHelper.getInstance().printCommand(getScheme(), "activate_user", new String[] { "url", url }, new String[] { "username", username });
+		CLIHelper.getInstance().printCommand(getScheme(), "activate_user", new String[] { "username", username });
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistryService(url);
+		UserRegistry userRegistry = getUserRegistryService();
+		if (userRegistry == null) {
+			return;
+		}
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
@@ -221,12 +268,11 @@ public class UserRegistryCommand {
 
 	@Descriptor("deactivate_user")
 	public void deactivate_user( //
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
 			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
 	) throws ClientException {
-		CLIHelper.getInstance().printCommand(getScheme(), "deactivate_user", new String[] { "url", url }, new String[] { "username", username });
+		CLIHelper.getInstance().printCommand(getScheme(), "deactivate_user", new String[] { "username", username });
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistryService(url);
+		UserRegistry userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}
@@ -245,12 +291,11 @@ public class UserRegistryCommand {
 
 	@Descriptor("delete_user")
 	public void delete_user( //
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
 			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
 	) throws ClientException {
-		CLIHelper.getInstance().printCommand(getScheme(), "remove_user", new String[] { "url", url }, new String[] { "username", username });
+		CLIHelper.getInstance().printCommand(getScheme(), "remove_user", new String[] { "username", username });
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistryService(url);
+		UserRegistry userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}

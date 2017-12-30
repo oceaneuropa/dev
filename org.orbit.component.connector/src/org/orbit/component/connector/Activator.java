@@ -10,7 +10,7 @@ import org.orbit.component.cli.ServicesCommand;
 import org.orbit.component.cli.TransferAgentCommand;
 import org.orbit.component.cli.UserRegistryCommand;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
-import org.orbit.component.connector.tier1.account.UserRegistryManager;
+import org.orbit.component.connector.tier1.account.other.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
@@ -101,7 +101,7 @@ public class Activator implements BundleActivator {
 		this.userRegistryManager = new UserRegistryManager();
 		this.userRegistryManager.start(bundleContext);
 
-		this.userRegistryConnector = new UserRegistryConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.userRegistryConnector = new UserRegistryConnectorImpl();
 		this.userRegistryConnector.start(bundleContext);
 
 		this.authConnector = new AuthConnectorImpl();
@@ -125,8 +125,8 @@ public class Activator implements BundleActivator {
 		this.authCommand = new AuthCommand();
 		this.authCommand.start(bundleContext);
 
-		this.userRegistryCommand = new UserRegistryCommand(bundleContext);
-		this.userRegistryCommand.start();
+		this.userRegistryCommand = new UserRegistryCommand();
+		this.userRegistryCommand.start(bundleContext);
 
 		this.appStoreCommand = new AppStoreCommand(bundleContext);
 		this.appStoreCommand.start();
@@ -151,7 +151,7 @@ public class Activator implements BundleActivator {
 		}
 
 		if (this.userRegistryCommand != null) {
-			this.userRegistryCommand.stop();
+			this.userRegistryCommand.stop(bundleContext);
 			this.userRegistryCommand = null;
 		}
 
