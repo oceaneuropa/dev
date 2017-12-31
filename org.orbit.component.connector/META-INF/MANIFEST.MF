@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Component Connector
+Bundle-Name: Orbit :: Component Connector
 Bundle-SymbolicName: org.orbit.component.connector;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.component.connector.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.fasterxml.jackson.databind,
@@ -10,37 +10,12 @@ Import-Package: com.fasterxml.jackson.databind,
  javax.ws.rs.core;version="2.0.0",
  org.glassfish.jersey.media.multipart,
  org.glassfish.jersey.media.multipart.file,
- org.junit,
- org.junit.runner,
- org.junit.runner.notification,
- org.junit.runners,
- org.orbit.component.api,
- org.orbit.component.api.tier1.account,
- org.orbit.component.api.tier1.account.request,
- org.orbit.component.api.tier1.auth,
- org.orbit.component.api.tier1.auth.other,
- org.orbit.component.api.tier1.config,
- org.orbit.component.api.tier1.session,
- org.orbit.component.api.tier2.appstore,
- org.orbit.component.api.tier2.appstore.request,
- org.orbit.component.api.tier3.domain,
- org.orbit.component.api.tier3.transferagent,
- org.orbit.component.api.tier3.transferagent.other,
- org.orbit.component.model.tier1.account,
- org.orbit.component.model.tier1.account.dto,
- org.orbit.component.model.tier1.auth,
- org.orbit.component.model.tier1.auth.dto,
- org.orbit.component.model.tier2.appstore,
- org.orbit.component.model.tier3.domain,
- org.orbit.component.model.tier3.domain.dto,
- org.orbit.component.model.tier3.domain.request,
- org.orbit.component.model.tier3.transferagent.dto,
- org.orbit.component.model.tier3.transferagent.request,
- org.orbit.infra.api,
- org.orbit.infra.api.indexes,
  org.osgi.framework;version="1.3.0",
  org.osgi.service.cm;version="1.5.0",
  org.slf4j;version="1.7.25"
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
- org.origin.common;bundle-version="1.0.0"
+Require-Bundle: org.origin.common;bundle-version="1.0.0",
+ org.orbit.component.api;bundle-version="1.0.0",
+ org.orbit.component.model;bundle-version="1.0.0",
+ lib.org.junit;bundle-version="1.0.0",
+ org.orbit.infra.api;bundle-version="1.0.0"

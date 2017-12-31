@@ -1,26 +1,12 @@
 package org.orbit.component.connector;
 
-import java.util.Hashtable;
-import java.util.Map;
-
-import org.orbit.component.cli.AppStoreCommand;
-import org.orbit.component.cli.AuthCommand;
-import org.orbit.component.cli.DomainServiceCommand;
-import org.orbit.component.cli.ServicesCommand;
-import org.orbit.component.cli.TransferAgentCommand;
-import org.orbit.component.cli.UserRegistryCommand;
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
-import org.orbit.component.connector.tier1.account.UserRegistryManager;
+import org.orbit.component.connector.tier1.account.other.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
 import org.orbit.component.connector.tier3.domain.DomainServiceConnectorImpl;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
-import org.orbit.infra.api.indexes.IndexServiceConnector;
-import org.orbit.infra.api.indexes.IndexServiceConnectorAdapter;
-import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
-import org.orbit.infra.api.indexes.IndexServiceUtil;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -39,8 +25,6 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
-	protected IndexServiceConnectorAdapter indexServiceConnectorAdapter;
-
 	// ManagedServiceFactory
 	protected UserRegistryManager userRegistryManager;
 
@@ -52,124 +36,47 @@ public class Activator implements BundleActivator {
 	protected DomainServiceConnectorImpl domainMgmtConnector;
 	protected TransferAgentConnectorImpl transferAgentConnector;
 
-	// Commands
-	protected ServicesCommand servicesCommand;
-	protected AuthCommand authCommand;
-	protected UserRegistryCommand userRegistryCommand;
-	protected AppStoreCommand appStoreCommand;
-	protected DomainServiceCommand domainMgmtCommand;
-	protected TransferAgentCommand transferAgentCommand;
-
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		Activator.instance = this;
 
-		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapter() {
-			@Override
-			public void connectorAdded(IndexServiceConnector connector) {
-				doStart(Activator.context, connector);
-			}
-
-			@Override
-			public void connectorRemoved(IndexServiceConnector connector) {
-				doStop(Activator.context);
-			}
-		};
-		this.indexServiceConnectorAdapter.start(bundleContext);
+		doStart(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		if (this.indexServiceConnectorAdapter != null) {
-			this.indexServiceConnectorAdapter.stop(bundleContext);
-			this.indexServiceConnectorAdapter = null;
-		}
+		doStop(bundleContext);
 
 		Activator.instance = null;
 		Activator.context = null;
 	}
 
-	protected void doStart(BundleContext bundleContext, IndexServiceConnector connector) {
-		// Get load balancer for IndexProvider
-		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.OrbitConstants.COMPONENT_INDEX_SERVICE_URL_PROP);
-		IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
-
+	protected void doStart(BundleContext bundleContext) {
 		// Register ManagedServiceFactories and connector services
 		// tier1
 		this.userRegistryManager = new UserRegistryManager();
 		this.userRegistryManager.start(bundleContext);
 
-		this.userRegistryConnector = new UserRegistryConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.userRegistryConnector = new UserRegistryConnectorImpl();
 		this.userRegistryConnector.start(bundleContext);
 
 		this.authConnector = new AuthConnectorImpl();
 		this.authConnector.start(bundleContext);
 
 		// tier2
-		this.appStoreConnector = new AppStoreConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.appStoreConnector = new AppStoreConnectorImpl();
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
-		this.domainMgmtConnector = new DomainServiceConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
+		this.domainMgmtConnector = new DomainServiceConnectorImpl();
 		this.domainMgmtConnector.start(bundleContext);
 
 		this.transferAgentConnector = new TransferAgentConnectorImpl();
 		this.transferAgentConnector.start(bundleContext);
-
-		// Start commands
-		this.servicesCommand = new ServicesCommand(bundleContext, indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.servicesCommand.start();
-
-		this.authCommand = new AuthCommand();
-		this.authCommand.start(bundleContext);
-
-		this.userRegistryCommand = new UserRegistryCommand(bundleContext);
-		this.userRegistryCommand.start();
-
-		this.appStoreCommand = new AppStoreCommand(bundleContext);
-		this.appStoreCommand.start();
-
-		this.domainMgmtCommand = new DomainServiceCommand(bundleContext);
-		this.domainMgmtCommand.start();
-
-		this.transferAgentCommand = new TransferAgentCommand();
-		this.transferAgentCommand.start(bundleContext);
 	}
 
 	protected void doStop(BundleContext bundleContext) {
-		// Stop commands
-		if (this.servicesCommand != null) {
-			this.servicesCommand.stop();
-			this.servicesCommand = null;
-		}
-
-		if (this.authCommand != null) {
-			this.authCommand.stop(bundleContext);
-			this.authCommand = null;
-		}
-
-		if (this.userRegistryCommand != null) {
-			this.userRegistryCommand.stop();
-			this.userRegistryCommand = null;
-		}
-
-		if (this.appStoreCommand != null) {
-			this.appStoreCommand.stop();
-			this.appStoreCommand = null;
-		}
-
-		if (this.domainMgmtCommand != null) {
-			this.domainMgmtCommand.stop();
-			this.domainMgmtCommand = null;
-		}
-
-		if (this.transferAgentCommand != null) {
-			this.transferAgentCommand.stop(bundleContext);
-			this.transferAgentCommand = null;
-		}
-
 		// Unregister ManagedServiceFactories and connector services
 		// tier3
 		if (this.domainMgmtConnector != null) {

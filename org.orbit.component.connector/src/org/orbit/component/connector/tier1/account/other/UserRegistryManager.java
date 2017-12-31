@@ -1,4 +1,4 @@
-package org.orbit.component.connector.tier1.account;
+package org.orbit.component.connector.tier1.account.other;
 
 import java.util.Dictionary;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.connector.tier1.account.UserRegistryImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
@@ -85,7 +86,7 @@ public class UserRegistryManager implements ManagedServiceFactory {
 		UserRegistry userRegistry = this.pidToUserRegistryMap.get(pid);
 		if (userRegistry == null) {
 			// Create new UserRegistry instance
-			userRegistry = new UserRegistryWSImpl((Map<String, Object>) dictionary);
+			userRegistry = new UserRegistryImpl(null, (Map<String, Object>) dictionary);
 			this.pidToUserRegistryMap.put(pid, userRegistry);
 
 			registerUserRegistry(pid, userRegistry, dictionary);

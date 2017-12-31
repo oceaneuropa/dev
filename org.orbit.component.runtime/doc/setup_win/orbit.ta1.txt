@@ -1,0 +1,15 @@
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true 
+-Dorg.osgi.service.http.port=12001 
+
+-DORIGIN_HOME=C:/dev/orgin/ta1 
+-Dorbit.host.url=http://127.0.0.1:12001 
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+
+-Drealm=orbit1 
+
+-Dcomponent.transfer_agent.autostart=true 
+-Dcomponent.transfer_agent.name=TransferAgent1 
+-Dcomponent.transfer_agent.context_root=/orbit/v1/ta 
+-Dcomponent.transfer_agent.home=C:/dev/orgin/ta1 
+
+-Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 

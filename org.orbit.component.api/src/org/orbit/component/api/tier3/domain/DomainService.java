@@ -13,51 +13,29 @@ import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequ
 import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
+import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.Pingable;
 import org.origin.common.rest.model.Request;
 
-public interface DomainService extends Pingable {
+public interface DomainService extends Pingable, IAdaptable {
 
-	/**
-	 * Get service name.
-	 * 
-	 * @return
-	 */
+	boolean close() throws ClientException;
+
 	String getName();
 
-	/**
-	 * Get service URL.
-	 * 
-	 * @return
-	 */
 	String getURL();
 
-	/**
-	 * Get configuration properties.
-	 * 
-	 * @return
-	 */
 	Map<String, Object> getProperties();
 
-	/**
-	 * Update configuration properties.
-	 * 
-	 * @param properties
-	 */
 	void update(Map<String, Object> properties);
 
-	/**
-	 * Ping the service.
-	 * 
-	 * @return
-	 */
 	int ping() throws ClientException;
 
 	// ------------------------------------------------------
 	// Request/Response
 	// ------------------------------------------------------
-	public Response sendRequest(Request request) throws ClientException;
+	Response sendRequest(Request request) throws ClientException;
 
 	// ------------------------------------------------------
 	// Machine management
@@ -106,7 +84,8 @@ public interface DomainService extends Pingable {
 // public boolean removeMachineConfigProperty(String machineId, String name) throws ClientException;
 
 // public Map<String, Object> getTransferAgentConfigProperties(String machineId, String transferAgentId) throws ClientException;
-// public boolean setTransferAgentConfigProperty(String machineId, String transferAgentId, String name, Object value) throws ClientException;
+// public boolean setTransferAgentConfigProperty(String machineId, String transferAgentId, String name, Object value) throws
+// ClientException;
 // public Object getTransferAgentConfigProperty(String machineId, String transferAgentId, String name) throws ClientException;
 // public boolean removeTransferAgentConfigProperty(String machineId, String transferAgentId, String name) throws ClientException;
 

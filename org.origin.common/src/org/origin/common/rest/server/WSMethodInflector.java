@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -162,6 +163,10 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 		// Step4. pull the trigger and fire!
 		Response response = sendRequest(newWSResource, payload);
 
+		// The "switcher.targetURI" response header is read by web service client
+		// - see AbstractWSClient.handleResponseHeaders(WebTarget target, Response response) method.
+		response.getHeaders().putSingle("switcher.targetURI", newRequestUri.toString());
+
 		return response;
 	}
 
@@ -231,7 +236,8 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 	 * 
 	 * - UriInfo.getPath() does not include query parameters. Need to check UriInfo.getPath(boolean)
 	 * 
-	 * - when there is path parameters, the path parameters values are already in the path. So there is no need to configure path parameters in the path.
+	 * - when there is path parameters, the path parameters values are already in the path. So there is no need to configure path parameters in
+	 * the path.
 	 * 
 	 * @param requestContext
 	 * @param newRequestURIstr

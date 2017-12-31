@@ -1,9 +1,9 @@
 package org.orbit.component.connector.tier1.account;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserRegistry;
@@ -11,34 +11,46 @@ import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.request.UpdateUserAccountRequest;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
+import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.StatusDTO;
 
-public class UserRegistryWSImpl implements UserRegistry {
+public class UserRegistryImpl implements UserRegistry {
 
 	protected Map<String, Object> properties;
 	protected UserRegistryWSClient client;
-
-	protected String loadBalanceId;
-	protected Properties loadBalanceProperties;
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
+	 * @param connector
 	 * @param properties
 	 */
-	public UserRegistryWSImpl(Map<String, Object> properties) {
-		this.properties = properties;
-		this.loadBalanceId = getLoadBalanceId(this.properties);
+	public UserRegistryImpl(ServiceConnector<UserRegistry> connector, Map<String, Object> properties) {
+		if (connector != null) {
+			adapt(ServiceConnector.class, connector);
+		}
+		this.properties = checkProperties(properties);
 		initClient();
 	}
 
-	// ------------------------------------------------------------------------------------------------
-	// Configuration methods
-	// ------------------------------------------------------------------------------------------------
-	protected void initClient() {
-		ClientConfiguration clientConfig = getClientConfiguration(this.properties);
-		this.client = new UserRegistryWSClient(clientConfig);
+	protected Map<String, Object> checkProperties(Map<String, Object> properties) {
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+		}
+		return properties;
+	}
+
+	@Override
+	public boolean close() throws ClientException {
+		@SuppressWarnings("unchecked")
+		ServiceConnector<UserRegistry> connector = getAdapter(ServiceConnector.class);
+		if (connector != null) {
+			return connector.close(this);
+		}
+		return false;
 	}
 
 	@Override
@@ -48,9 +60,17 @@ public class UserRegistryWSImpl implements UserRegistry {
 
 	@Override
 	public void update(Map<String, Object> properties) {
-		this.properties = properties;
-		this.loadBalanceId = getLoadBalanceId(this.properties);
+		this.properties = checkProperties(properties);
 		initClient();
+	}
+
+	protected void initClient() {
+		String realm = (String) this.properties.get(OrbitConstants.REALM);
+		String username = (String) this.properties.get(OrbitConstants.USERNAME);
+		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
+
+		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, fullUrl);
+		this.client = new UserRegistryWSClient(clientConfig);
 	}
 
 	@Override
@@ -61,14 +81,10 @@ public class UserRegistryWSImpl implements UserRegistry {
 
 	@Override
 	public String getURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.USER_REGISTRY_HOST_URL);
-		String contextRoot = (String) this.properties.get(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT);
-		return hostURL + contextRoot;
+		String fullUrl = (String) properties.get(OrbitConstants.URL);
+		return fullUrl;
 	}
 
-	// ------------------------------------------------------------------------------------------------
-	// Web service client methods
-	// ------------------------------------------------------------------------------------------------
 	@Override
 	public boolean ping() {
 		return this.client.doPing();
@@ -230,20 +246,6 @@ public class UserRegistryWSImpl implements UserRegistry {
 	}
 
 	/**
-	 * Get user registry client configuration.
-	 * 
-	 * @param properties
-	 * @return
-	 */
-	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String url = (String) properties.get(OrbitConstants.USER_REGISTRY_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT);
-		return ClientConfiguration.create(realm, username, url, contextRoot);
-	}
-
-	/**
 	 * Convert CreateUserAccountRequest to DTO.
 	 * 
 	 * @param createUserAccountRequest
@@ -295,6 +297,16 @@ public class UserRegistryWSImpl implements UserRegistry {
 		impl.setLastUpdateTime(dto.getLastUpdateTime());
 		impl.setActivated(dto.isActivated());
 		return impl;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		return this.adaptorSupport.getAdapter(adapter);
 	}
 
 }

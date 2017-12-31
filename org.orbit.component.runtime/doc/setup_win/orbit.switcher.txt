@@ -1,0 +1,7 @@
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true 
+-Dorg.osgi.service.http.port=13001 
+
+-Dorbit.host.url=http://127.0.0.1:13001 
+-Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+
+-Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 

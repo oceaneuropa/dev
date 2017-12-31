@@ -4,9 +4,10 @@ import java.util.Map;
 
 import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.request.UpdateUserAccountRequest;
+import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface UserRegistry {
+public interface UserRegistry extends IAdaptable {
 
 	String getName();
 
@@ -37,5 +38,7 @@ public interface UserRegistry {
 	boolean deactivate(String userId) throws ClientException;
 
 	boolean delete(String userId) throws ClientException;
+
+	boolean close() throws ClientException;
 
 }

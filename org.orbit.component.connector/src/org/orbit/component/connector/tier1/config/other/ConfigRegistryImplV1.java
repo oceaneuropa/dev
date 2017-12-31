@@ -1,4 +1,4 @@
-package org.orbit.component.connector.tier1.config;
+package org.orbit.component.connector.tier1.config.other;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,10 +7,11 @@ import java.util.Properties;
 import org.orbit.component.api.tier1.config.ConfigRegistry;
 import org.orbit.component.api.tier1.config.EPath;
 import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.tier1.config.ConfigRegistryWSClient;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.StringUtil;
 
-public class ConfigRegistryWSImpl implements ConfigRegistry {
+public class ConfigRegistryImplV1 implements ConfigRegistry {
 
 	protected Map<String, Object> properties;
 	protected ConfigRegistryWSClient client;
@@ -22,7 +23,7 @@ public class ConfigRegistryWSImpl implements ConfigRegistry {
 	 * 
 	 * @param properties
 	 */
-	public ConfigRegistryWSImpl(Map<String, Object> properties) {
+	public ConfigRegistryImplV1(Map<String, Object> properties) {
 		if (properties == null) {
 			properties = new HashMap<String, Object>();
 		}
@@ -136,6 +137,21 @@ public class ConfigRegistryWSImpl implements ConfigRegistry {
 	@Override
 	public void removeAll(String userId) throws ClientException {
 
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+
+	}
+
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		return null;
+	}
+
+	@Override
+	public boolean close() throws ClientException {
+		return false;
 	}
 
 }

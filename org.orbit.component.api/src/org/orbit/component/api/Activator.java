@@ -24,10 +24,14 @@ public class Activator implements BundleActivator {
 	public void start(final BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		Activator.instance = this;
+
+		OrbitClient.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		OrbitClient.getInstance().stop(bundleContext);
+
 		Activator.context = null;
 		Activator.instance = null;
 	}

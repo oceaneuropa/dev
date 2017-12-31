@@ -8,7 +8,6 @@ import java.util.Map;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.UserRegistryConnector;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier1.account.UserRegistryManager;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;

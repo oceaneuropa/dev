@@ -21,14 +21,6 @@ public class TransferAgentImpl implements TransferAgent {
 
 	/**
 	 * 
-	 * @param properties
-	 */
-	public TransferAgentImpl(Map<String, Object> properties) {
-		this(null, properties);
-	}
-
-	/**
-	 * 
 	 * @param connector
 	 * @param properties
 	 */
@@ -57,31 +49,11 @@ public class TransferAgentImpl implements TransferAgent {
 		return false;
 	}
 
-	// ------------------------------------------------------------------------------------------------
-	// Configuration methods
-	// ------------------------------------------------------------------------------------------------
-	@Override
-	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_NAME);
-		return name;
-	}
-
-	@Override
-	public String getURL() {
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
-		return fullUrl;
-	}
-
 	@Override
 	public Map<String, Object> getProperties() {
 		return this.properties;
 	}
 
-	/**
-	 * Update properties. Re-initiate web service client if host URL or context root is changed.
-	 * 
-	 * @param properties
-	 */
 	@Override
 	public void update(Map<String, Object> properties) {
 		this.properties = checkProperties(properties);
@@ -95,6 +67,21 @@ public class TransferAgentImpl implements TransferAgent {
 
 		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
 		this.client = new TransferAgentWSClient(config);
+	}
+
+	// ------------------------------------------------------------------------------------------------
+	// Configuration methods
+	// ------------------------------------------------------------------------------------------------
+	@Override
+	public String getName() {
+		String name = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_NAME);
+		return name;
+	}
+
+	@Override
+	public String getURL() {
+		String fullUrl = (String) properties.get(OrbitConstants.URL);
+		return fullUrl;
 	}
 
 	@Override
@@ -128,7 +115,3 @@ public class TransferAgentImpl implements TransferAgent {
 	}
 
 }
-
-// String url = (String) properties.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
-// String contextRoot = (String) properties.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
-// return ClientConfiguration.get(url, contextRoot, null, null);

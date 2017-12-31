@@ -250,7 +250,8 @@ public abstract class AbstractWSClient implements Pingable {
 			// cookieString += (";accessToken=" + accessToken);
 		}
 
-		// 2. Get "OrbitSession" value from "Set-Cookies" response header (retrieved from response header and stored in CookieManager for each user) and set the
+		// 2. Get "OrbitSession" value from "Set-Cookies" response header (retrieved from response header and stored in CookieManager for each user)
+		// and set the
 		// value in "cookie" request header.
 		// - In handleResponseHeaders(Response), "Set-Cookies" response header value is retrieved and stored in CookieManager as cookies.
 		// - For each user in a realm, there is one CookieManager instance for that specific user in that specific realm.
@@ -310,6 +311,15 @@ public abstract class AbstractWSClient implements Pingable {
 
 					CookieManager cookieManager = Realms.getRealm(realm).getCookieManager(username);
 					cookieManager.setCookies(uri, setCookieString);
+				}
+
+				String targetBaseURI = response.getHeaderString("switcher.targetURI");
+				if (targetBaseURI != null) {
+					System.out.println("switcher.targetURI:");
+					System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
+					System.out.println(uri.toString() + " -> " + targetBaseURI);
+					System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
+					System.out.println();
 				}
 			}
 		} catch (Exception e) {

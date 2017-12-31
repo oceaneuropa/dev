@@ -23,6 +23,7 @@ import org.orbit.component.model.tier1.auth.dto.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.dto.TokenRequestDTO;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.util.CookieUtil;
 
 /**
  * @see https://www.oauth.com/oauth2-servers/definitions
@@ -118,7 +119,8 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 
 	// 5. https://stackoverflow.com/questions/5925954/what-are-bearer-tokens-and-token-type-in-oauth-2
 	// --------------------------------------------------------
-	// Bearer can be simply understood as "give access to the bearer of this token." It's the equivalent of issuing a cheque "give money to the bearer of the
+	// Bearer can be simply understood as "give access to the bearer of this token." It's the equivalent of issuing a cheque "give money to the
+	// bearer of the
 	// cheque".
 	// --------------------------------------------------------
 
@@ -165,7 +167,7 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 
 			if (response != null && response.getAccessToken() != null) {
 				String accessToken = response.getAccessToken();
-				Cookie cookie = create("OrbitSession", accessToken, false, 60 * 60 * 24, "/");
+				Cookie cookie = CookieUtil.create("OrbitSession", accessToken, false, 60 * 60 * 24, "/");
 				servletResponse.addCookie(cookie);
 			}
 
@@ -183,30 +185,6 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 			e.printStackTrace();
 			return Response.status(Status.BAD_REQUEST).entity(AuthConverter.getInstance().toResponseDTO(e)).build();
 		}
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @param value
-	 * @param secure
-	 * @param expireIn
-	 * @param path
-	 * @return
-	 */
-	protected Cookie create(String name, String value, boolean secure, int expireIn, String path) {
-		Cookie cookie = new Cookie(name, value);
-		// determines whether the cookie should only be sent using a secure protocol, such as HTTPS or SSL
-		cookie.setSecure(secure);
-
-		// A negative value means that the cookie is not stored persistently and will be deleted when the Web browser exits. A zero value causes the
-		// cookie to be deleted.
-		cookie.setMaxAge(expireIn);
-
-		// The cookie is visible to all the pages in the directory you specify, and all the pages in that directory's subdirectories
-		cookie.setPath(path);
-
-		return cookie;
 	}
 
 }
