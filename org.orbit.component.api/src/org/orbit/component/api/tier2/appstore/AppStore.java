@@ -7,48 +7,24 @@ import java.util.Map;
 import org.orbit.component.api.tier2.appstore.request.AppQuery;
 import org.orbit.component.api.tier2.appstore.request.CreateAppRequest;
 import org.orbit.component.api.tier2.appstore.request.UpdateAppRequest;
+import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
 /**
  * App store client interface.
  *
  */
-public interface AppStore {
+public interface AppStore extends IAdaptable {
 
-	/**
-	 * Get service name.
-	 * 
-	 * @return
-	 */
 	String getName();
 
-	/**
-	 * Get service URL.
-	 * 
-	 * @return
-	 */
 	String getURL();
 
-	/**
-	 * Get configuration properties.
-	 * 
-	 * @return
-	 */
 	Map<String, Object> getProperties();
 
-	/**
-	 * Update configuration properties.
-	 * 
-	 * @param properties
-	 */
 	void update(Map<String, Object> properties);
 
-	/**
-	 * Ping the service.
-	 * 
-	 * @return
-	 */
-	public boolean ping();
+	boolean ping();
 
 	/**
 	 * Get apps.
@@ -136,5 +112,7 @@ public interface AppStore {
 	 * @throws ClientException
 	 */
 	void downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException;
+
+	boolean close() throws ClientException;
 
 }

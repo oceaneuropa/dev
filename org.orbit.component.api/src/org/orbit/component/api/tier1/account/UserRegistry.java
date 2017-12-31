@@ -39,4 +39,6 @@ public interface UserRegistry extends IAdaptable {
 
 	boolean delete(String userId) throws ClientException;
 
+	boolean close() throws ClientException;
+
 }

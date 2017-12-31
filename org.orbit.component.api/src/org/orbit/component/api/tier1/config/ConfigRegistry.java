@@ -2,43 +2,19 @@ package org.orbit.component.api.tier1.config;
 
 import java.util.Map;
 
+import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface ConfigRegistry {
+public interface ConfigRegistry extends IAdaptable {
 
-	/**
-	 * Get ConfigRegistry name.
-	 * 
-	 * @return
-	 */
 	String getName();
 
-	/**
-	 * Get ConfigRegistry URL.
-	 * 
-	 * @return
-	 */
 	String getURL();
 
-	/**
-	 * Get properties.
-	 * 
-	 * @return
-	 */
 	Map<String, Object> getProperties();
 
-	/**
-	 * Update properties.
-	 * 
-	 * @param properties
-	 */
 	void update(Map<String, Object> properties);
 
-	/**
-	 * Ping the service.
-	 * 
-	 * @return
-	 */
 	boolean ping();
 
 	/**
@@ -49,7 +25,7 @@ public interface ConfigRegistry {
 	 * @return
 	 * @throws ClientException
 	 */
-	public Map<String, String> getProperties(String userId, EPath path) throws ClientException;
+	Map<String, String> getProperties(String userId, EPath path) throws ClientException;
 
 	/**
 	 * Get a property in a path.
@@ -60,7 +36,7 @@ public interface ConfigRegistry {
 	 * @return
 	 * @throws ClientException
 	 */
-	public String getProperty(String userId, EPath path, String name) throws ClientException;
+	String getProperty(String userId, EPath path, String name) throws ClientException;
 
 	/**
 	 * Set the properties to a path.
@@ -70,7 +46,7 @@ public interface ConfigRegistry {
 	 * @param properties
 	 * @throws ClientException
 	 */
-	public void setProperties(String userId, EPath path, Map<String, String> properties) throws ClientException;
+	void setProperties(String userId, EPath path, Map<String, String> properties) throws ClientException;
 
 	/**
 	 * Set a property to a path.
@@ -81,7 +57,7 @@ public interface ConfigRegistry {
 	 * @param value
 	 * @throws ClientException
 	 */
-	public void setProperty(String userId, EPath path, String name, String value) throws ClientException;
+	void setProperty(String userId, EPath path, String name, String value) throws ClientException;
 
 	/**
 	 * Remove a property from a path.
@@ -90,7 +66,7 @@ public interface ConfigRegistry {
 	 * @param name
 	 * @throws ClientException
 	 */
-	public void removeProperty(String userId, EPath path, String name) throws ClientException;
+	void removeProperty(String userId, EPath path, String name) throws ClientException;
 
 	/**
 	 * Remove the properties from a path.
@@ -99,7 +75,7 @@ public interface ConfigRegistry {
 	 * @param path
 	 * @throws ClientException
 	 */
-	public void removeAll(String userId, EPath path) throws ClientException;
+	void removeAll(String userId, EPath path) throws ClientException;
 
 	/**
 	 * Remove all properties from this registry.
@@ -107,6 +83,8 @@ public interface ConfigRegistry {
 	 * @param userId
 	 * @throws ClientException
 	 */
-	public void removeAll(String userId) throws ClientException;
+	void removeAll(String userId) throws ClientException;
+
+	boolean close() throws ClientException;
 
 }

@@ -1,4 +1,4 @@
-package org.orbit.component.connector.tier3.domain;
+package org.orbit.component.connector.tier3.domain.other;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,7 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.tier3.domain.DomainServiceWSClient;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.dto.ModelConverter;
@@ -28,8 +29,9 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.util.StringUtil;
 
-public class DomainServiceImpl implements DomainService {
+public class DomainServiceImplV1 implements DomainService {
 
 	protected Map<String, Object> properties;
 	protected DomainServiceWSClient client;
@@ -39,19 +41,12 @@ public class DomainServiceImpl implements DomainService {
 	 * 
 	 * @param properties
 	 */
-	public DomainServiceImpl(ServiceConnector<DomainService> connector, Map<String, Object> properties) {
+	public DomainServiceImplV1(ServiceConnector<DomainService> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
 		this.properties = checkProperties(properties);
 		initClient();
-	}
-
-	private Map<String, Object> checkProperties(Map<String, Object> properties) {
-		if (properties == null) {
-			properties = new HashMap<String, Object>();
-		}
-		return properties;
 	}
 
 	@Override
@@ -64,26 +59,9 @@ public class DomainServiceImpl implements DomainService {
 		return false;
 	}
 
-	@Override
-	public Map<String, Object> getProperties() {
-		return this.properties;
-	}
-
-	@Override
-	public void update(Map<String, Object> properties) {
-		this.properties = checkProperties(properties);
-		initClient();
-	}
-
-	protected void initClient() {
-		String realm = (String) this.properties.get(OrbitConstants.REALM);
-		String username = (String) this.properties.get(OrbitConstants.USERNAME);
-		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
-
-		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
-		this.client = new DomainServiceWSClient(config);
-	}
-
+	// ---------------------------------------------------------
+	// Configuration methods
+	// ---------------------------------------------------------
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_NAME);
@@ -92,8 +70,51 @@ public class DomainServiceImpl implements DomainService {
 
 	@Override
 	public String getURL() {
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
-		return fullUrl;
+		String hostURL = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
+		String contextRoot = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
+		return hostURL + contextRoot;
+	}
+
+	@Override
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	/**
+	 * Update properties. Re-initiate web service client if host URL or context root is changed.
+	 * 
+	 * @param properties
+	 */
+	@Override
+	public void update(Map<String, Object> properties) {
+		String oldUrl = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
+		String oldContextRoot = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
+
+		properties = checkProperties(properties);
+		this.properties.putAll(properties);
+
+		String newUrl = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
+		String newContextRoot = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
+
+		boolean reinitClient = false;
+		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {
+			reinitClient = true;
+		}
+		if (reinitClient) {
+			initClient();
+		}
+	}
+
+	private Map<String, Object> checkProperties(Map<String, Object> properties) {
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+		}
+		return properties;
+	}
+
+	protected void initClient() {
+		ClientConfiguration clientConfig = getClientConfiguration(this.properties);
+		this.client = new DomainServiceWSClient(clientConfig);
 	}
 
 	// ---------------------------------------------------------

@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: org.junit library
-Bundle-SymbolicName: lib.org.junit
+Bundle-SymbolicName: lib.org.junit;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
@@ -66,3 +66,4 @@ Export-Package: junit.extensions,
  org.testng.util,
  org.testng.xml,
  org.testng.xml.dom
+Bundle-ActivationPolicy: lazy

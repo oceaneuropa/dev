@@ -15,7 +15,5 @@ auth_echo -url http://127.0.0.1:13001/orbit/v1/auth -m hello
 
 login
 ------------------------------------------------------------------------
-login -url http://127.0.0.1:11001/orbit/v1/auth -username admin1 -password 123
-login -url http://127.0.0.1:11002/orbit/v1/auth -username admin1 -password 123
 login -url http://127.0.0.1:13001/orbit/v1/auth -username admin1 -password 123
 ------------------------------------------------------------------------

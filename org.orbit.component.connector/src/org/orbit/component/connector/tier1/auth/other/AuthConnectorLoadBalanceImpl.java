@@ -30,7 +30,7 @@ public class AuthConnectorLoadBalanceImpl extends IndexBasedLoadBalancedServiceC
 
 	@Override
 	protected Auth createService(Map<String, Object> properties) {
-		return new AuthImpl(properties);
+		return new AuthImpl(null, properties);
 	}
 
 	@Override

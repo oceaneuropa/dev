@@ -27,14 +27,6 @@ public class AuthImpl implements Auth {
 
 	/**
 	 * 
-	 * @param properties
-	 */
-	public AuthImpl(Map<String, Object> properties) {
-		this(null, properties);
-	}
-
-	/**
-	 * 
 	 * @param connector
 	 * @param properties
 	 */
@@ -44,6 +36,13 @@ public class AuthImpl implements Auth {
 		}
 		this.properties = checkProperties(properties);
 		initClient();
+	}
+
+	protected Map<String, Object> checkProperties(Map<String, Object> properties) {
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+		}
+		return properties;
 	}
 
 	@Override
@@ -56,13 +55,9 @@ public class AuthImpl implements Auth {
 		return false;
 	}
 
-	protected void initClient() {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
-
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, fullUrl);
-		this.client = new AuthWSClient(clientConfig);
+	@Override
+	public Map<String, Object> getProperties() {
+		return this.properties;
 	}
 
 	@Override
@@ -71,11 +66,13 @@ public class AuthImpl implements Auth {
 		initClient();
 	}
 
-	protected Map<String, Object> checkProperties(Map<String, Object> properties) {
-		if (properties == null) {
-			properties = new HashMap<String, Object>();
-		}
-		return properties;
+	protected void initClient() {
+		String realm = (String) properties.get(OrbitConstants.REALM);
+		String username = (String) properties.get(OrbitConstants.USERNAME);
+		String fullUrl = (String) properties.get(OrbitConstants.URL);
+
+		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, fullUrl);
+		this.client = new AuthWSClient(clientConfig);
 	}
 
 	@Override

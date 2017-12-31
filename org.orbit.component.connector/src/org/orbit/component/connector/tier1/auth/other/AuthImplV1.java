@@ -51,6 +51,11 @@ public class AuthImplV1 implements Auth {
 	}
 
 	@Override
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	@Override
 	public void update(Map<String, Object> properties) {
 		this.properties = checkProperties(properties);
 		initClient();

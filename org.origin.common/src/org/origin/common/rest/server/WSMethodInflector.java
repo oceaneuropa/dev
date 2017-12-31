@@ -163,9 +163,9 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 		// Step4. pull the trigger and fire!
 		Response response = sendRequest(newWSResource, payload);
 
-		// The "orbit.targetURI" response header is read by web service client
+		// The "switcher.targetURI" response header is read by web service client
 		// - see AbstractWSClient.handleResponseHeaders(WebTarget target, Response response) method.
-		response.getHeaders().putSingle("orbit.targetURI", newRequestUri.toString());
+		response.getHeaders().putSingle("switcher.targetURI", newRequestUri.toString());
 
 		return response;
 	}

@@ -1,4 +1,7 @@
-package org.orbit.component.connector;
+package org.orbit.component.connector.other;
+
+import java.util.Hashtable;
+import java.util.Map;
 
 import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
 import org.orbit.component.connector.tier1.account.other.UserRegistryManager;
@@ -7,23 +10,30 @@ import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
 import org.orbit.component.connector.tier3.domain.DomainServiceConnectorImpl;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
+import org.orbit.infra.api.indexes.IndexServiceConnector;
+import org.orbit.infra.api.indexes.IndexServiceConnectorAdapter;
+import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
+import org.orbit.infra.api.indexes.IndexServiceUtil;
+import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class ActivatorV1 implements BundleActivator {
 
 	protected static final String USER_REGISTRY_MANAGED_SERVICE_FACTORY_PID = "component.userregistry.manager"; //$NON-NLS-1$
 
 	protected static BundleContext context;
-	protected static Activator instance;
+	protected static ActivatorV1 instance;
 
 	public static BundleContext getContext() {
 		return context;
 	}
 
-	public static Activator getInstance() {
+	public static ActivatorV1 getInstance() {
 		return instance;
 	}
+
+	protected IndexServiceConnectorAdapter indexServiceConnectorAdapter;
 
 	// ManagedServiceFactory
 	protected UserRegistryManager userRegistryManager;
@@ -38,21 +48,40 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
-		Activator.instance = this;
+		ActivatorV1.context = bundleContext;
+		ActivatorV1.instance = this;
 
-		doStart(bundleContext);
+		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapter() {
+			@Override
+			public void connectorAdded(IndexServiceConnector connector) {
+				doStart(ActivatorV1.context, connector);
+			}
+
+			@Override
+			public void connectorRemoved(IndexServiceConnector connector) {
+				doStop(ActivatorV1.context);
+			}
+		};
+		this.indexServiceConnectorAdapter.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		doStop(bundleContext);
+		if (this.indexServiceConnectorAdapter != null) {
+			this.indexServiceConnectorAdapter.stop(bundleContext);
+			this.indexServiceConnectorAdapter = null;
+		}
 
-		Activator.instance = null;
-		Activator.context = null;
+		ActivatorV1.instance = null;
+		ActivatorV1.context = null;
 	}
 
-	protected void doStart(BundleContext bundleContext) {
+	protected void doStart(BundleContext bundleContext, IndexServiceConnector connector) {
+		// Get load balancer for IndexProvider
+		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.OrbitConstants.COMPONENT_INDEX_SERVICE_URL_PROP);
+		IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
+
 		// Register ManagedServiceFactories and connector services
 		// tier1
 		this.userRegistryManager = new UserRegistryManager();
@@ -69,6 +98,7 @@ public class Activator implements BundleActivator {
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
+		// this.domainMgmtConnector = new DomainServiceConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		this.domainMgmtConnector = new DomainServiceConnectorImpl();
 		this.domainMgmtConnector.start(bundleContext);
 

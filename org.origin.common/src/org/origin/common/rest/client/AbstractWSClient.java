@@ -313,9 +313,9 @@ public abstract class AbstractWSClient implements Pingable {
 					cookieManager.setCookies(uri, setCookieString);
 				}
 
-				String targetBaseURI = response.getHeaderString("orbit.targetURI");
+				String targetBaseURI = response.getHeaderString("switcher.targetURI");
 				if (targetBaseURI != null) {
-					System.out.println("orbit.targetURI:");
+					System.out.println("switcher.targetURI:");
 					System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
 					System.out.println(uri.toString() + " -> " + targetBaseURI);
 					System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");

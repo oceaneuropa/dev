@@ -11,6 +11,8 @@ import org.origin.common.rest.client.ClientException;
 
 public interface Auth extends IAdaptable {
 
+	Map<String, Object> getProperties();
+
 	void update(Map<String, Object> properties);
 
 	String getName();

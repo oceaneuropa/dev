@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.auth.Auth;
+import org.orbit.component.api.tier1.config.ConfigRegistry;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -79,6 +80,7 @@ public class OrbitClient {
 	// tier1
 	protected ServiceConnectorAdapter<Auth> authConnector;
 	protected ServiceConnectorAdapter<UserRegistry> userRegistryConnector;
+	protected ServiceConnectorAdapter<ConfigRegistry> configRegistryConnector;
 
 	// tier3
 	protected ServiceConnectorAdapter<TransferAgent> taConnector;
@@ -100,6 +102,9 @@ public class OrbitClient {
 		this.userRegistryConnector = new ServiceConnectorAdapter<UserRegistry>(UserRegistry.class);
 		this.userRegistryConnector.start(bundleContext);
 
+		this.configRegistryConnector = new ServiceConnectorAdapter<ConfigRegistry>(ConfigRegistry.class);
+		this.configRegistryConnector.start(bundleContext);
+
 		// tier3
 		this.taConnector = new ServiceConnectorAdapter<TransferAgent>(TransferAgent.class);
 		this.taConnector.start(bundleContext);
@@ -117,6 +122,11 @@ public class OrbitClient {
 			this.userRegistryConnector = null;
 		}
 
+		if (this.configRegistryConnector != null) {
+			this.configRegistryConnector.stop(bundleContext);
+			this.configRegistryConnector = null;
+		}
+
 		// tier3
 		if (this.taConnector != null) {
 			this.taConnector.stop(bundleContext);
@@ -132,20 +142,6 @@ public class OrbitClient {
 		return this.threadUserInfo.get().getUsername();
 	}
 
-	public void setUserInfo(String realm, String username, String password) {
-		if (isRealmUnset(realm)) {
-			realm = DEFAULT_REALM;
-		}
-		if (isUsernameUnset(username)) {
-			username = DEFAULT_USERNAME;
-		}
-
-		UserInfo userInfo = this.threadUserInfo.get();
-		userInfo.setRealm(realm);
-		userInfo.setUsername(username);
-		userInfo.setPassword(password);
-	}
-
 	protected boolean isRealmUnset(String realm) {
 		if (realm == null || realm.isEmpty() || Parameter.UNSPECIFIED.equals(realm)) {
 			return true;
@@ -158,6 +154,20 @@ public class OrbitClient {
 			return true;
 		}
 		return false;
+	}
+
+	public void setUserInfo(String realm, String username, String password) {
+		if (isRealmUnset(realm)) {
+			realm = DEFAULT_REALM;
+		}
+		if (isUsernameUnset(username)) {
+			username = DEFAULT_USERNAME;
+		}
+
+		UserInfo userInfo = this.threadUserInfo.get();
+		userInfo.setRealm(realm);
+		userInfo.setUsername(username);
+		userInfo.setPassword(password);
 	}
 
 	public Auth getAuth(String url) throws ClientException {
@@ -185,11 +195,11 @@ public class OrbitClient {
 		return auth;
 	}
 
-	public UserRegistry getUserRegistryService(String url) throws ClientException {
-		return getUserRegistryService(null, null, url);
+	public UserRegistry getUserRegistry(String url) throws ClientException {
+		return getUserRegistry(null, null, url);
 	}
 
-	public UserRegistry getUserRegistryService(String realm, String username, String url) throws ClientException {
+	public UserRegistry getUserRegistry(String realm, String username, String url) throws ClientException {
 		if (isRealmUnset(realm)) {
 			realm = getRealm();
 		}
@@ -208,6 +218,31 @@ public class OrbitClient {
 			throw new IllegalStateException("UserRegistry is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
 		}
 		return userRegistry;
+	}
+
+	public ConfigRegistry getConfigRegistry(String url) throws ClientException {
+		return getConfigRegistry(null, null, url);
+	}
+
+	public ConfigRegistry getConfigRegistry(String realm, String username, String url) throws ClientException {
+		if (isRealmUnset(realm)) {
+			realm = getRealm();
+		}
+		if (isUsernameUnset(username)) {
+			username = getUsername();
+		}
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(OrbitConstants.REALM, realm);
+		properties.put(OrbitConstants.USERNAME, username);
+		properties.put(OrbitConstants.URL, url);
+
+		ConfigRegistry configRegistry = this.configRegistryConnector.getService(properties);
+		if (configRegistry == null) {
+			LOG.error("ConfigRegistry is not available.");
+			throw new IllegalStateException("ConfigRegistry is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+		}
+		return configRegistry;
 	}
 
 	public TransferAgent getTransferAgent(String url) throws ClientException {

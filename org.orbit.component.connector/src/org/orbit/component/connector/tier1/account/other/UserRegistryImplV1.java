@@ -1,4 +1,4 @@
-package org.orbit.component.connector.tier1.account;
+package org.orbit.component.connector.tier1.account.other;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +10,8 @@ import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.request.UpdateUserAccountRequest;
 import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.tier1.account.UserAccountImpl;
+import org.orbit.component.connector.tier1.account.UserRegistryWSClient;
 import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
@@ -17,7 +19,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.StatusDTO;
 
-public class UserRegistryImpl implements UserRegistry {
+public class UserRegistryImplV1 implements UserRegistry {
 
 	protected Map<String, Object> properties;
 	protected UserRegistryWSClient client;
@@ -28,7 +30,7 @@ public class UserRegistryImpl implements UserRegistry {
 	 * @param connector
 	 * @param properties
 	 */
-	public UserRegistryImpl(ServiceConnector<UserRegistry> connector, Map<String, Object> properties) {
+	public UserRegistryImplV1(ServiceConnector<UserRegistry> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
@@ -310,3 +312,20 @@ public class UserRegistryImpl implements UserRegistry {
 	}
 
 }
+
+// ClientConfiguration clientConfig = getClientConfiguration(this.properties);
+// this.client = new UserRegistryWSClient(clientConfig);
+
+// /**
+// * Get user registry client configuration.
+// *
+// * @param properties
+// * @return
+// */
+// protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
+// String realm = (String) properties.get(OrbitConstants.REALM);
+// String username = (String) properties.get(OrbitConstants.USERNAME);
+// String url = (String) properties.get(OrbitConstants.USER_REGISTRY_HOST_URL);
+// String contextRoot = (String) properties.get(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT);
+// return ClientConfiguration.create(realm, username, url, contextRoot);
+// }
