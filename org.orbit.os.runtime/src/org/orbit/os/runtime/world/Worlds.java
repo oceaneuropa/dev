@@ -2,7 +2,7 @@ package org.orbit.os.runtime.world;
 
 import java.util.List;
 
-import org.origin.world.api.World;
+import org.spirit.world.api.World;
 
 public interface Worlds {
 

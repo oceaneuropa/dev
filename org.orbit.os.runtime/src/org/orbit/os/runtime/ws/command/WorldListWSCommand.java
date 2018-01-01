@@ -12,7 +12,7 @@ import org.orbit.os.runtime.util.ModelConverter;
 import org.orbit.os.runtime.world.WorldException;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.Request;
-import org.origin.world.api.World;
+import org.spirit.world.api.World;
 
 public class WorldListWSCommand extends AbstractWSCommand {
 

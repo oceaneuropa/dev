@@ -1,7 +1,7 @@
 package org.orbit.os.runtime.util;
 
 import org.orbit.os.model.world.dto.WorldDTO;
-import org.origin.world.api.World;
+import org.spirit.world.api.World;
 
 public class ModelConverter {
 
