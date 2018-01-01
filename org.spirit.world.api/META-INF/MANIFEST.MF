@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Orbit :: World :: API
+Bundle-SymbolicName: org.spirit.world.api;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.spirit.world.api.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.osgi.framework;version="1.3.0",
+ org.osgi.util.tracker;version="1.5.1",
+ org.slf4j;version="1.7.25"
+Bundle-ActivationPolicy: lazy
+Export-Package: org.spirit.world.api
