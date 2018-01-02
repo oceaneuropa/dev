@@ -43,7 +43,7 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 		}
 
 		@Override
-		public Map<Object, Object> getProperties() {
+		public Map<String, Object> getProperties() {
 			return next().getProperties();
 		}
 
@@ -110,7 +110,7 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 		}
 
 		@Override
-		public Map<Object, Object> getProperties() {
+		public Map<String, Object> getProperties() {
 			throw new UnsupportedOperationException();
 		}
 

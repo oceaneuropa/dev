@@ -77,7 +77,7 @@ public class AppStoreServiceAdapter {
 		LOG.info("doStart()");
 
 		// Start web service
-		this.webServiceApp = new AppStoreWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webServiceApp = new AppStoreWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer

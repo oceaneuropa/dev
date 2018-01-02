@@ -17,7 +17,7 @@ public interface IndexService extends IAdaptable {
 
 	String getURL();
 
-	Map<Object, Object> getProperties();
+	Map<String, Object> getProperties();
 
 	// void update(Map<Object, Object> properties);
 

@@ -89,7 +89,7 @@ public class OAuth2ServiceAdapter {
 	 */
 	protected void startWebService(BundleContext bundleContext, OAuth2Service service) {
 		// Start web service
-		this.webServiceApp = new OAuth2WSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webServiceApp = new OAuth2WSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer

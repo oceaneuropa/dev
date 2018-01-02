@@ -88,7 +88,7 @@ public class TransferAgentServiceAdapter {
 		editPolicies.installEditPolicy(new NodeWSEditPolicy());
 
 		// Start web service
-		this.webService = new TransferAgentWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webService = new TransferAgentWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webService.start(bundleContext);
 
 		// Start index timer

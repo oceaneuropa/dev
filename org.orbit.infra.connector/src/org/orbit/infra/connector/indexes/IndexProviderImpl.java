@@ -17,7 +17,7 @@ public class IndexProviderImpl extends IndexServiceImpl implements IndexProvider
 	 * 
 	 * @param properties
 	 */
-	public IndexProviderImpl(Map<Object, Object> properties) {
+	public IndexProviderImpl(Map<String, Object> properties) {
 		super(properties);
 	}
 

@@ -76,7 +76,7 @@ public class ConfigRegistryServiceAdapter {
 	 * @param service
 	 */
 	protected void doStart(BundleContext bundleContext, ConfigRegistryService service) {
-		this.webServiceApp = new ConfigRegistryWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTHORIZATION_TOKEN_REQUEST_FILTER);
+		this.webServiceApp = new ConfigRegistryWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
 
 		// Start a timer to update the indexing of the service

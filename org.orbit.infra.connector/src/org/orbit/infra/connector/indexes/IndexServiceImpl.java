@@ -15,11 +15,10 @@ import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.util.StringUtil;
 
 public class IndexServiceImpl implements IndexService {
 
-	protected Map<Object, Object> properties;
+	protected Map<String, Object> properties;
 	protected IndexServiceWSClient client;
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
@@ -27,9 +26,16 @@ public class IndexServiceImpl implements IndexService {
 	 * 
 	 * @param config
 	 */
-	public IndexServiceImpl(Map<Object, Object> properties) {
+	public IndexServiceImpl(Map<String, Object> properties) {
 		this.properties = checkProperties(properties);
 		initClient();
+	}
+
+	private Map<String, Object> checkProperties(Map<String, Object> properties) {
+		if (properties == null) {
+			properties = new HashMap<String, Object>();
+		}
+		return properties;
 	}
 
 	// ------------------------------------------------------------------------------------------------
@@ -49,7 +55,7 @@ public class IndexServiceImpl implements IndexService {
 	}
 
 	@Override
-	public Map<Object, Object> getProperties() {
+	public Map<String, Object> getProperties() {
 		return this.properties;
 	}
 
@@ -59,34 +65,18 @@ public class IndexServiceImpl implements IndexService {
 	 * @param properties
 	 */
 	// @Override
-	public void update(Map<Object, Object> properties) {
-		String oldUrl = (String) this.properties.get(OrbitConstants.INDEX_SERVICE_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT);
-
-		properties = checkProperties(properties);
-		this.properties.putAll(properties);
-
-		String newUrl = (String) properties.get(OrbitConstants.INDEX_SERVICE_HOST_URL);
-		String newContextRoot = (String) properties.get(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT);
-
-		boolean reinitClient = false;
-		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {
-			reinitClient = true;
-		}
-		if (reinitClient) {
-			initClient();
-		}
-	}
-
-	private Map<Object, Object> checkProperties(Map<Object, Object> properties) {
-		if (properties == null) {
-			properties = new HashMap<Object, Object>();
-		}
-		return properties;
+	public void update(Map<String, Object> properties) {
+		this.properties = checkProperties(properties);
+		initClient();
 	}
 
 	protected void initClient() {
-		ClientConfiguration clientConfig = getClientConfiguration(this.properties);
+		String realm = (String) properties.get(OrbitConstants.REALM);
+		String username = (String) properties.get(OrbitConstants.USERNAME);
+		String url = (String) properties.get(OrbitConstants.INDEX_SERVICE_HOST_URL);
+		String contextRoot = (String) properties.get(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT);
+		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
+
 		this.client = new IndexServiceWSClient(clientConfig);
 	}
 
@@ -100,7 +90,7 @@ public class IndexServiceImpl implements IndexService {
 	 * @param properties
 	 * @return
 	 */
-	protected ClientConfiguration getClientConfiguration(Map<Object, Object> properties) {
+	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
 		String realm = (String) properties.get(OrbitConstants.REALM);
 		String username = (String) properties.get(OrbitConstants.USERNAME);
 		String url = (String) properties.get(OrbitConstants.INDEX_SERVICE_HOST_URL);
