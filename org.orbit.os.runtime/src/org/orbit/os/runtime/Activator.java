@@ -36,6 +36,7 @@ public class Activator implements BundleActivator {
 	protected GaiaAdapter gaiaAdapter;
 
 	public GAIA getGAIA() {
+		// TEST
 		return (this.gaiaAdapter != null) ? this.gaiaAdapter.getService() : null;
 	}
 
