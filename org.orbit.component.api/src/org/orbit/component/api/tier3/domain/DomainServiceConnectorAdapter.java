@@ -11,7 +11,6 @@ public class DomainServiceConnectorAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(DomainServiceConnectorAdapter.class);
 
-	protected BundleContext bundleContext;
 	protected ServiceTracker<DomainServiceConnector, DomainServiceConnector> serviceTracker;
 
 	public DomainServiceConnectorAdapter() {

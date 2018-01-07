@@ -12,12 +12,14 @@ import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @see https://technology.amis.nl/2015/05/14/java-web-application-sending-json-messages-through-websocket-to-html5-browser-application-for-real-time-push/
+/*
+ * 1. @see https://technology.amis.nl/2015/05/14/java-web-application-sending-json-messages-through-websocket-to-html5-browser-application-for-real-time-push/
  * 
- * @see https://stackoverflow.com/questions/21763829/jsr-356-how-to-abort-a-websocket-connection-during-the-handshake
+ * 2. JSR-356: How to abort a websocket connection during the handshake? 
+ *    https://stackoverflow.com/questions/21763829/jsr-356-how-to-abort-a-websocket-connection-during-the-handshake
  * 
- *      JSR-356: How to abort a websocket connection during the handshake?
+ * 3. Example:
+ *    https://www.programcreek.com/java-api-examples/index.php?source_dir=jetty-web-sockets-jsr356-master/src/main/java/com/example/ws/ServerStarter.java
  * 
  */
 public class ChannelWebSocket {

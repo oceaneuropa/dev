@@ -1,9 +1,11 @@
 package org.orbit.component.runtime.tier2.appstore.ws;
 
+import java.util.Map;
+
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -19,13 +21,17 @@ public class AppStoreServiceAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(AppStoreServiceAdapter.class);
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<AppStoreService, AppStoreService> serviceTracker;
 	protected AppStoreWSApplication webServiceApp;
 	protected AppStoreServiceIndexTimer serviceIndexTimer;
 
-	public AppStoreServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	public AppStoreServiceAdapter(Map<Object, Object> properties) {
+		this.properties = properties;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public AppStoreService getService() {
@@ -81,7 +87,7 @@ public class AppStoreServiceAdapter {
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProvider indexProvider = getIndexProvider();
 		this.serviceIndexTimer = new AppStoreServiceIndexTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

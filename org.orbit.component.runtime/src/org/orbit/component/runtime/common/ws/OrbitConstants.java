@@ -8,7 +8,7 @@ public class OrbitConstants {
 	public static String REALM = "realm";
 
 	// config properties
-	public static String COMPONENT_INDEX_SERVICE_URL = "component.indexservice.url";
+	public static String COMPONENT_INDEX_SERVICE_URL = "component.index_service.url";
 
 	// global config properties
 	public static String ORBIT_HOST_URL = "orbit.host.url";
@@ -175,6 +175,28 @@ public class OrbitConstants {
 	public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
 	public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
 	public static String TRANSFER_AGENT_HOME = "transfer_agent.home";
+
+	// ----------------------------------------------------------------------------------------
+	// MissionControl
+	// ----------------------------------------------------------------------------------------
+	public static String COMPONENT_MISSION_CONTROL_AUTOSTART = "component.mission_control.autostart";
+	public static String COMPONENT_MISSION_CONTROL_NAME = "component.mission_control.name";
+	public static String COMPONENT_MISSION_CONTROL_HOST_URL = "component.mission_control.host.url";
+	public static String COMPONENT_MISSION_CONTROL_CONTEXT_ROOT = "component.mission_control.context_root";
+	public static String COMPONENT_MISSION_CONTROL_JDBC_DRIVER = "component.mission_control.jdbc.driver";
+	public static String COMPONENT_MISSION_CONTROL_JDBC_URL = "component.mission_control.jdbc.url";
+	public static String COMPONENT_MISSION_CONTROL_JDBC_USERNAME = "component.mission_control.jdbc.username";
+	public static String COMPONENT_MISSION_CONTROL_JDBC_PASSWORD = "component.mission_control.jdbc.password";
+
+	// index item values
+	public static String MISSION_CONTROL_INDEXER_ID = "component.mission_control.indexer"; // index provider id for MissionControl service
+	public static String MISSION_CONTROL_TYPE = "MissionControl"; // type of index item for MissionControl service
+
+	// index item properties
+	public static String MISSION_CONTROL_NAME = "mission_control.name";
+	public static String MISSION_CONTROL_HOST_URL = "mission_control.host.url";
+	public static String MISSION_CONTROL_CONTEXT_ROOT = "mission_control.context_root";
+	public static String MISSION_CONTROL_HOME = "mission_control.home";
 
 }
 

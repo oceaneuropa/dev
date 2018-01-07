@@ -39,6 +39,10 @@ import com.fasterxml.jackson.databind.JsonNode;
  * 4. Send javax ws-rs post request.
  * @see https://stackoverflow.com/questions/27211012/how-to-send-json-object-from-rest-client-using-javax-ws-rs-client-webtarget
  * 
+ * 5. Inflector example
+ * https://www.programcreek.com/java-api-examples/index.php?api=org.glassfish.jersey.process.Inflector
+ * https://www.programcreek.com/java-api-examples/index.php?api=org.glassfish.jersey.server.model.Resource
+ * 
  */
 public class WSMethodInflector implements Inflector<ContainerRequestContext, Response> {
 

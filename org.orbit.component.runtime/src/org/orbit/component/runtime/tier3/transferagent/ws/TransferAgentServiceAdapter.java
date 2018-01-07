@@ -1,10 +1,12 @@
 package org.orbit.component.runtime.tier3.transferagent.ws;
 
+import java.util.Map;
+
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 import org.orbit.component.runtime.tier3.transferagent.ws.editpolicy.NodeWSEditPolicy;
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -22,13 +24,17 @@ public class TransferAgentServiceAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentServiceAdapter.class);
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<TransferAgentService, TransferAgentService> serviceTracker;
 	protected TransferAgentWSApplication webService;
 	protected TransferAgentServiceTimer serviceIndexTimer;
 
-	public TransferAgentServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	public TransferAgentServiceAdapter(Map<Object, Object> properties) {
+		this.properties = properties;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public TransferAgentService getService() {
@@ -92,7 +98,7 @@ public class TransferAgentServiceAdapter {
 		this.webService.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProvider indexProvider = getIndexProvider();
 		this.serviceIndexTimer = new TransferAgentServiceTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

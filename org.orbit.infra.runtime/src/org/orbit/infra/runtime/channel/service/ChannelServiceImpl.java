@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.model.channel.ChannelException;
-import org.orbit.infra.runtime.OrbitConstants;
+import org.orbit.infra.runtime.InfraConstants;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class ChannelServiceImpl implements ChannelService {
 
-	protected String namespace;
+	// protected String namespace;
 	protected String name;
 	protected String hostURL;
 	protected String contextRoot;
@@ -29,23 +29,23 @@ public class ChannelServiceImpl implements ChannelService {
 		this.properties = new HashMap<Object, Object>();
 	}
 
-	@Override
-	public String getNamespace() {
-		return (String) this.properties.get(OrbitConstants.COMPONENT_CHANNEL_NAMESPACE);
-	}
+	// @Override
+	// public String getNamespace() {
+	// return (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_NAMESPACE);
+	// }
 
 	@Override
 	public String getName() {
-		return (String) this.properties.get(OrbitConstants.COMPONENT_CHANNEL_NAME);
+		return (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_NAME);
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.COMPONENT_CHANNEL_HOST_URL);
+		String hostURL = (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.properties.get(OrbitConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(InfraConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -54,22 +54,22 @@ public class ChannelServiceImpl implements ChannelService {
 
 	@Override
 	public String getContextRoot() {
-		return (String) this.properties.get(OrbitConstants.COMPONENT_CHANNEL_CONTEXT_ROOT);
+		return (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_CONTEXT_ROOT);
 	}
 
 	@Override
 	public String getHttpPort() {
-		return (String) this.properties.get(OrbitConstants.COMPONENT_CHANNEL_HTTP_PORT);
+		return (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_HTTP_PORT);
 	}
 
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CHANNEL_NAMESPACE);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CHANNEL_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CHANNEL_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CHANNEL_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CHANNEL_HTTP_PORT);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
+		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAMESPACE);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_HTTP_PORT);
 
 		update(configProps);
 

@@ -8,7 +8,7 @@ public interface WSEditPolicy {
 
 	<S> S getService(Class<S> clazz);
 
-	<S> void setService(Class<S> clazz, S service);
+	void setService(Class<?> clazz, Object service);
 
 	WSCommand getCommand(Request request);
 

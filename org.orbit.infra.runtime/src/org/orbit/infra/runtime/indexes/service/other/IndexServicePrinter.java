@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import org.orbit.infra.runtime.OrbitConstants;
+import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.origin.common.util.PropertiesAware;
 import org.origin.common.util.PropertyUtil;
@@ -102,15 +102,15 @@ public class IndexServicePrinter {
 	}
 
 	protected String getName() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), OrbitConstants.COMPONENT_INDEX_SERVICE_NAME, null);
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_NAME, null);
 	}
 
 	protected String getHostUrl() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), OrbitConstants.COMPONENT_INDEX_SERVICE_HOST_URL, null);
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL, null);
 	}
 
 	protected String getContextRoot() {
-		return PropertyUtil.getString(getIndexServiceConfigProperties(), OrbitConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, null);
+		return PropertyUtil.getString(getIndexServiceConfigProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, null);
 	}
 
 	/**

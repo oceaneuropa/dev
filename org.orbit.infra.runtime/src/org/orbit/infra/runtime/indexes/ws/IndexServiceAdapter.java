@@ -62,7 +62,7 @@ public class IndexServiceAdapter {
 	protected void doStart(BundleContext bundleContext, IndexService service) {
 		// 1. start web service
 		LOG.debug("start web service");
-		this.webService = new IndexServiceWSApplication(service, FeatureConstants.PING);
+		this.webService = new IndexServiceWSApplication(service, FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webService.start(bundleContext);
 
 		// 2. start index timer

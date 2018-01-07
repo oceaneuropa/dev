@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexServiceException;
-import org.orbit.infra.runtime.OrbitConstants;
+import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.thread.ServiceIndexTimer;
@@ -36,7 +36,7 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 		try {
 			String name = service.getName();
 
-			return indexProvider.getIndexItem(OrbitConstants.INDEX_SERVICE_INDEXER_ID, OrbitConstants.INDEX_SERVICE_TYPE, name);
+			return indexProvider.getIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name);
 
 		} catch (IndexServiceException e) {
 			throw new IOException(e);
@@ -51,12 +51,12 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 			String contextRoot = service.getContextRoot();
 
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(OrbitConstants.INDEX_SERVICE_NAME, name);
-			props.put(OrbitConstants.INDEX_SERVICE_HOST_URL, hostURL);
-			props.put(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
-			props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.INDEX_SERVICE_NAME, name);
+			props.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
+			props.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
+			props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			return indexProvider.addIndexItem(OrbitConstants.INDEX_SERVICE_INDEXER_ID, OrbitConstants.INDEX_SERVICE_TYPE, name, props);
+			return indexProvider.addIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name, props);
 
 		} catch (IndexServiceException e) {
 			throw new IOException(e);
@@ -68,9 +68,9 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 		try {
 			Integer indexItemId = indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			indexProvider.setProperties(OrbitConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, props);
+			indexProvider.setProperties(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, props);
 
 		} catch (IndexServiceException e) {
 			throw new IOException(e);
@@ -82,7 +82,7 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 		try {
 			Integer indexItemId = indexItem.getIndexItemId();
 
-			indexProvider.removeIndexItem(OrbitConstants.INDEX_SERVICE_INDEXER_ID, indexItemId);
+			indexProvider.removeIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId);
 
 		} catch (IndexServiceException e) {
 			throw new IOException(e);

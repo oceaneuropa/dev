@@ -6,7 +6,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClient;
+import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.api.tier3.domain.DomainServiceConnector;
@@ -78,7 +78,7 @@ public class TransferAgentCommand implements Annotated {
 			TransferAgentConfig taConfig = domainService.getTransferAgentConfig(machineId, transferAgentId);
 			if (taConfig != null) {
 				String url = taConfig.getHostURL() + taConfig.getContextRoot();
-				transferAgent = OrbitClient.getInstance().getTransferAgent(url);
+				transferAgent = OrbitClients.getInstance().getTransferAgent(url);
 			}
 		}
 		return transferAgent;
@@ -134,7 +134,7 @@ public class TransferAgentCommand implements Annotated {
 		}
 
 		try {
-			TransferAgent transferAgent = OrbitClient.getInstance().getTransferAgent(url);
+			TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(url);
 			String echoMessage = transferAgent.echo(message);
 			System.out.println("echo result = " + echoMessage);
 
@@ -167,7 +167,7 @@ public class TransferAgentCommand implements Annotated {
 		}
 
 		try {
-			TransferAgent transferAgent = OrbitClient.getInstance().getTransferAgent(url);
+			TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(url);
 			String levelResult = transferAgent.level(level1, level2, message1, message2);
 			System.out.println("level result = " + levelResult);
 
@@ -245,7 +245,7 @@ public class TransferAgentCommand implements Annotated {
 		}
 
 		try {
-			TransferAgent transferAgent = OrbitClient.getInstance().getTransferAgent(url);
+			TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(url);
 			Request request = new Request(Requests.LIST_NODES);
 			Response response = transferAgent.sendRequest(request);
 

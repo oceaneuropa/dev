@@ -20,10 +20,14 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.plugin = this;
 		Activator.context = bundleContext;
+
+		InfraClients.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		InfraClients.getInstance().stop(bundleContext);
+
 		Activator.context = null;
 		Activator.plugin = null;
 	}

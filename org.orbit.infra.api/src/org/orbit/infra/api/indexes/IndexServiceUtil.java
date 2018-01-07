@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.infra.api.OrbitConstants;
+import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.indexes.other.IndexProviderConnectorV1;
+import org.orbit.infra.api.indexes.other.IndexServiceConnectorV1;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalanceResourceImpl;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
@@ -19,7 +21,7 @@ public class IndexServiceUtil {
 	 * @param props
 	 * @return
 	 */
-	public static List<IndexService> getIndexServices(IndexServiceConnector connector, Map<Object, Object> props) {
+	public static List<IndexService> getIndexServices(IndexServiceConnectorV1 connector, Map<Object, Object> props) {
 		List<IndexService> indexServices = new ArrayList<IndexService>();
 
 		if (connector != null) {
@@ -42,7 +44,7 @@ public class IndexServiceUtil {
 	 * @param props
 	 * @return
 	 */
-	public static IndexServiceLoadBalancer getIndexServiceLoadBalancer(IndexServiceConnector connector, Map<Object, Object> props) {
+	public static IndexServiceLoadBalancer getIndexServiceLoadBalancer(IndexServiceConnectorV1 connector, Map<Object, Object> props) {
 		List<LoadBalanceResource<IndexService>> resources = new ArrayList<LoadBalanceResource<IndexService>>();
 
 		if (connector != null) {
@@ -68,7 +70,7 @@ public class IndexServiceUtil {
 	 * @param props
 	 * @return
 	 */
-	public static List<IndexProvider> getIndexProviders(IndexProviderConnector connector, Map<Object, Object> props) {
+	public static List<IndexProvider> getIndexProviders(IndexProviderConnectorV1 connector, Map<Object, Object> props) {
 		List<IndexProvider> indexProviders = new ArrayList<IndexProvider>();
 
 		if (connector != null) {
@@ -91,7 +93,7 @@ public class IndexServiceUtil {
 	 * @param props
 	 * @return
 	 */
-	public static IndexProviderLoadBalancer getIndexProviderLoadBalancer(IndexProviderConnector connector, Map<Object, Object> props) {
+	public static IndexProviderLoadBalancer getIndexProviderLoadBalancer(IndexProviderConnectorV1 connector, Map<Object, Object> props) {
 		List<LoadBalanceResource<IndexProvider>> resources = new ArrayList<LoadBalanceResource<IndexProvider>>();
 
 		if (connector != null) {
@@ -119,7 +121,7 @@ public class IndexServiceUtil {
 	private static List<URL> getIndexServiceURLs(Map<Object, Object> props) {
 		List<URL> indexServiceURIs = new ArrayList<URL>();
 		if (props != null) {
-			Object obj = props.get(OrbitConstants.COMPONENT_INDEX_SERVICE_URL_PROP);
+			Object obj = props.get(InfraConstants.COMPONENT_INDEX_SERVICE_URL);
 			if (obj instanceof String) {
 				String str = (String) obj;
 				if (str.contains(";")) {
@@ -180,8 +182,8 @@ public class IndexServiceUtil {
 				contextRoot = "";
 			}
 
-			properties.put(OrbitConstants.INDEX_SERVICE_HOST_URL, hostURL);
-			properties.put(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
+			properties.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
+			properties.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
 
 		} catch (Exception e) {
 			e.printStackTrace();

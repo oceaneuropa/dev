@@ -16,12 +16,10 @@ import org.orbit.infra.runtime.channel.service.OutboundListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * For one websocket client, one ChannelWebSocketEndpoint instance is created by websocket server.
+/*
+ * 1. For one websocket client, one ChannelWebSocketEndpoint instance is created by websocket server.
  * 
- * @see http://www.tomitribe.com/blog/2015/05/websocket-and-lock-it/
- * 
- *      Websocket endpoint authorization
+ * 2. Websocket endpoint authorization @see http://www.tomitribe.com/blog/2015/05/websocket-and-lock-it/
  * 
  */
 @ServerEndpoint(value = "/channel/{channelId}")

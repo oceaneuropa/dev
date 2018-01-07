@@ -2,16 +2,19 @@ package org.orbit.infra.api.channel;
 
 import java.util.Map;
 
+import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface Channels {
+public interface Channels extends IAdaptable {
 
-	Map<Object, Object> getProperties();
+	Map<String, Object> getProperties();
 
-	void update(Map<Object, Object> properties);
+	void update(Map<String, Object> properties);
 
 	boolean ping();
 
 	boolean send(String channelId, String senderId, String message) throws ClientException;
+
+	boolean close() throws ClientException;
 
 }

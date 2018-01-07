@@ -11,7 +11,6 @@ public class UserRegistryConnectorAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryConnectorAdapter.class);
 
-	protected BundleContext bundleContext;
 	protected ServiceTracker<UserRegistryConnector, UserRegistryConnector> serviceTracker;
 
 	public UserRegistryConnectorAdapter() {

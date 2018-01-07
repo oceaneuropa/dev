@@ -5,6 +5,8 @@ import org.origin.core.resources.IWorkspace;
 
 public interface TransferAgentService {
 
+	WSEditPolicies getEditPolicies();
+
 	String getName();
 
 	String getHostURL();
@@ -14,7 +16,5 @@ public interface TransferAgentService {
 	String getHome();
 
 	IWorkspace getNodeWorkspace();
-
-	WSEditPolicies getEditPolicies();
 
 }

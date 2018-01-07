@@ -6,6 +6,12 @@ import org.origin.common.rest.model.Request;
 
 public interface WSEditPolicies {
 
+	Class<?>[] getServiceClasses();
+
+	<S> S getService(Class<S> clazz);
+
+	void setService(Class<?> clazz, Object service);
+
 	List<WSEditPolicy> getEditPolicies();
 
 	WSEditPolicy getEditPolicy(String id);

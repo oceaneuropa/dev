@@ -39,7 +39,7 @@ public class ServiceConnectorAdapter<SERVICE> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public SERVICE getService(Map<String, Object> properties) throws ClientException {
+	public SERVICE getService(Map<String, Object> properties) {
 		SERVICE service = null;
 		if (this.serviceTracker != null) {
 			ServiceConnector<Object> connector = this.serviceTracker.getService();

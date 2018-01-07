@@ -13,7 +13,7 @@ import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
-import org.orbit.component.runtime.Activator;
+import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.origin.common.util.DateUtil;
@@ -176,7 +176,7 @@ public class AuthServiceImpl implements AuthService {
 		boolean matchUsernamePassword = false;
 		UserAccount userAccount = null;
 		try {
-			UserRegistryService userRegistryService = Activator.getInstance().getUserRegistryService();
+			UserRegistryService userRegistryService = OrbitServices.getInstance().getUserRegistryService();
 			if (userRegistryService == null) {
 				throw new AuthException("Service Unavailable", "UserRegistry service is not available.");
 			}
@@ -259,7 +259,7 @@ public class AuthServiceImpl implements AuthService {
 		// Step3. Find user account by username
 		UserAccount userAccount = null;
 		try {
-			UserRegistryService userRegistryService = Activator.getInstance().getUserRegistryService();
+			UserRegistryService userRegistryService = OrbitServices.getInstance().getUserRegistryService();
 			if (userRegistryService == null) {
 				throw new AuthException("Service Unavailable", "UserRegistry service is not available.");
 			}

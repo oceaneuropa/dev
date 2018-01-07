@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.runtime.OrbitConstants;
+import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.origin.common.thread.ServiceIndexTimer;
 import org.origin.common.thread.ServiceIndexTimerImpl;
@@ -37,12 +37,12 @@ public class ChannelServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvide
 	public IndexItem getIndex(IndexProvider indexProvider, ChannelService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(OrbitConstants.CHANNEL_INDEXER_ID, OrbitConstants.CHANNEL_TYPE, name);
+		return indexProvider.getIndexItem(InfraConstants.CHANNEL_INDEXER_ID, InfraConstants.CHANNEL_TYPE, name);
 	}
 
 	@Override
 	public IndexItem addIndex(IndexProvider indexProvider, ChannelService service) throws IOException {
-		String namespace = service.getNamespace();
+		// String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -51,20 +51,20 @@ public class ChannelServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvide
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.CHANNEL_NAMESPACE, namespace);
-		props.put(OrbitConstants.CHANNEL_NAME, name);
-		props.put(OrbitConstants.CHANNEL_HOST_URL, hostURL);
-		props.put(OrbitConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
+		// props.put(InfraConstants.CHANNEL_NAMESPACE, namespace);
+		props.put(InfraConstants.CHANNEL_NAME, name);
+		props.put(InfraConstants.CHANNEL_HOST_URL, hostURL);
+		props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(OrbitConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(OrbitConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(InfraConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(InfraConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		return indexProvider.addIndexItem(OrbitConstants.CHANNEL_INDEXER_ID, OrbitConstants.CHANNEL_TYPE, name, props);
+		return indexProvider.addIndexItem(InfraConstants.CHANNEL_INDEXER_ID, InfraConstants.CHANNEL_TYPE, name, props);
 	}
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, ChannelService service, IndexItem indexItem) throws IOException {
-		String namespace = service.getNamespace();
+		// String namespace = service.getNamespace();
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -75,22 +75,22 @@ public class ChannelServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvide
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.CHANNEL_NAMESPACE, namespace);
-		props.put(OrbitConstants.CHANNEL_NAME, name);
-		props.put(OrbitConstants.CHANNEL_HOST_URL, hostURL);
-		props.put(OrbitConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
+		// props.put(InfraConstants.CHANNEL_NAMESPACE, namespace);
+		props.put(InfraConstants.CHANNEL_NAME, name);
+		props.put(InfraConstants.CHANNEL_HOST_URL, hostURL);
+		props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(OrbitConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(OrbitConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(InfraConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(InfraConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		indexProvider.setProperties(OrbitConstants.CHANNEL_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(InfraConstants.CHANNEL_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(OrbitConstants.CHANNEL_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(InfraConstants.CHANNEL_INDEXER_ID, indexItemId);
 	}
 
 }

@@ -16,6 +16,11 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 
+/*
+ * Example
+ * https://www.programcreek.com/java-api-examples/index.php?source_dir=jetty-web-sockets-jsr356-master/src/main/java/com/example/ws/ServerStarter.java
+ * 
+ */
 public class WebSocketServerMain {
 
 	protected int port;

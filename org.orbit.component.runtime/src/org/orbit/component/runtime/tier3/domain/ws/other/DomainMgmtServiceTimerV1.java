@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.Activator;
+import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier3.domain.service.DomainService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.other.ServiceIndexTimerV1;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
+import org.origin.common.thread.other.ServiceIndexTimerV1;
 
 public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, DomainService> implements ServiceIndexTimerV1<IndexProvider, DomainService> {
 
@@ -24,7 +24,7 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 
 	@Override
 	public synchronized DomainService getService() {
-		return Activator.getInstance().getDomainMgmtService();
+		return OrbitServices.getInstance().getDomainService();
 	}
 
 	@Override

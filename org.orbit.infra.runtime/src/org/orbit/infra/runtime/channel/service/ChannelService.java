@@ -6,7 +6,7 @@ import org.orbit.infra.model.channel.ChannelException;
 
 public interface ChannelService {
 
-	String getNamespace();
+	// String getNamespace();
 
 	String getName();
 

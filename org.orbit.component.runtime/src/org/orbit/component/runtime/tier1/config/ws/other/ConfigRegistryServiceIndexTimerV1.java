@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.Activator;
+import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.other.ServiceIndexTimerV1;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
+import org.origin.common.thread.other.ServiceIndexTimerV1;
 
 /**
  * ConfigRegistry service timer to update index item for the service.
@@ -29,7 +29,7 @@ public class ConfigRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<I
 
 	@Override
 	public ConfigRegistryService getService() {
-		return Activator.getInstance().getConfigRegistryService();
+		return OrbitServices.getInstance().getConfigRegistryService();
 	}
 
 	@Override

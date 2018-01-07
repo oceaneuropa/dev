@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.connector.OrbitConstants;
+import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.json.JSONUtil;
@@ -43,14 +43,14 @@ public class IndexServiceImpl implements IndexService {
 	// ------------------------------------------------------------------------------------------------
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.INDEX_SERVICE_NAME);
+		String name = (String) this.properties.get(InfraConstants.INDEX_SERVICE_NAME);
 		return name;
 	}
 
 	@Override
 	public String getURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.INDEX_SERVICE_HOST_URL);
-		String contextRoot = (String) this.properties.get(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
+		String contextRoot = (String) this.properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 
@@ -71,10 +71,10 @@ public class IndexServiceImpl implements IndexService {
 	}
 
 	protected void initClient() {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String url = (String) properties.get(OrbitConstants.INDEX_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT);
+		String realm = (String) properties.get(InfraConstants.REALM);
+		String username = (String) properties.get(InfraConstants.USERNAME);
+		String url = (String) properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
+		String contextRoot = (String) properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
 		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
 
 		this.client = new IndexServiceWSClient(clientConfig);
@@ -91,10 +91,10 @@ public class IndexServiceImpl implements IndexService {
 	 * @return
 	 */
 	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String url = (String) properties.get(OrbitConstants.INDEX_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.INDEX_SERVICE_CONTEXT_ROOT);
+		String realm = (String) properties.get(InfraConstants.REALM);
+		String username = (String) properties.get(InfraConstants.USERNAME);
+		String url = (String) properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
+		String contextRoot = (String) properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
 		return ClientConfiguration.create(realm, username, url, contextRoot);
 	}
 

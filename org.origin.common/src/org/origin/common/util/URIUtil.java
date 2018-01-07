@@ -27,6 +27,38 @@ public class URIUtil {
 	}
 
 	/**
+	 * Convert a ";" separated string to a list of host URI and append context root to each of the host URI in the list.
+	 * 
+	 * @param hostURLsString
+	 * @param contextRoot
+	 * @return
+	 */
+	public static List<URI> toList(String hostURLsString, String contextRoot) {
+		if (contextRoot == null) {
+			return toList(hostURLsString);
+		}
+
+		List<URI> uriList = new ArrayList<URI>();
+
+		List<URI> hostURIs = toList(hostURLsString);
+		for (URI hostURI : hostURIs) {
+			String uriString = hostURI.toString();
+			if (!uriString.endsWith("/") && !contextRoot.startsWith("/")) {
+				uriString += "/";
+			}
+			uriString += contextRoot;
+
+			try {
+				uriList.add(new URI(uriString));
+			} catch (URISyntaxException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return uriList;
+	}
+
+	/**
 	 * Convert a ";" separated string to a list of URI.
 	 * 
 	 * If the string does not contain ";", the string is considered as a single URI.

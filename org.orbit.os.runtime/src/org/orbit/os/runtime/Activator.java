@@ -1,16 +1,6 @@
 package org.orbit.os.runtime;
 
-import java.util.Hashtable;
-import java.util.Map;
-
-import org.orbit.infra.api.indexes.IndexProviderConnector;
-import org.orbit.infra.api.indexes.IndexProviderConnectorAdapter;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
-import org.orbit.infra.api.indexes.IndexServiceUtil;
 import org.orbit.os.runtime.cli.OSCommand;
-import org.orbit.os.runtime.service.GAIA;
-import org.orbit.os.runtime.ws.GaiaAdapter;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -31,14 +21,7 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
-	protected IndexProviderConnectorAdapter indexProviderConnectorAdapter;
 	protected OSCommand OSCommand;
-	protected GaiaAdapter gaiaAdapter;
-
-	public GAIA getGAIA() {
-		// TEST
-		return (this.gaiaAdapter != null) ? this.gaiaAdapter.getService() : null;
-	}
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -47,35 +30,23 @@ public class Activator implements BundleActivator {
 		Activator.bundleContext = bundleContext;
 		Activator.instance = this;
 
-		// Start commands
+		// Start command and services
 		this.OSCommand = new OSCommand();
 		this.OSCommand.start(bundleContext);
 		this.OSCommand.startGAIA();
 
-		this.indexProviderConnectorAdapter = new IndexProviderConnectorAdapter() {
-			@Override
-			public void connectorAdded(IndexProviderConnector connector) {
-				doStart(Activator.bundleContext, connector);
-			}
-
-			@Override
-			public void connectorRemoved(IndexProviderConnector connector) {
-				doStop(Activator.bundleContext);
-			}
-		};
-		this.indexProviderConnectorAdapter.start(bundleContext);
+		// Start tracking services for starting web service and indexer
+		OSServices.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.info("stop()");
 
-		if (this.indexProviderConnectorAdapter != null) {
-			this.indexProviderConnectorAdapter.stop(bundleContext);
-			this.indexProviderConnectorAdapter = null;
-		}
+		// Stop tracking services for stopping web service and indexer
+		OSServices.getInstance().stop(bundleContext);
 
-		// Stop commands
+		// Stop command and services
 		if (this.OSCommand != null) {
 			this.OSCommand.stopGAIA();
 			this.OSCommand.stop(bundleContext);
@@ -84,34 +55,6 @@ public class Activator implements BundleActivator {
 
 		Activator.instance = null;
 		Activator.bundleContext = null;
-	}
-
-	/**
-	 * 
-	 * @param bundleContext
-	 * @param connector
-	 */
-	protected void doStart(BundleContext bundleContext, IndexProviderConnector connector) {
-		// Get IndexProvider load balancer
-		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OSConstants.COMPONENT_INDEX_SERVICE_URL);
-		IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, properties);
-
-		// Start service adapter
-		this.gaiaAdapter = new GaiaAdapter(indexProviderLoadBalancer);
-		this.gaiaAdapter.start(bundleContext);
-	}
-
-	/**
-	 * 
-	 * @param bundleContext
-	 */
-	protected void doStop(BundleContext bundleContext) {
-		// Stop service adapter
-		if (this.gaiaAdapter != null) {
-			this.gaiaAdapter.stop(bundleContext);
-			this.gaiaAdapter = null;
-		}
 	}
 
 }

@@ -19,5 +19,6 @@ Import-Package: org.origin.common.adapter,
  org.slf4j;version="1.7.25"
 Export-Package: org.orbit.infra.api,
  org.orbit.infra.api.channel,
- org.orbit.infra.api.indexes
+ org.orbit.infra.api.indexes,
+ org.orbit.infra.api.indexes.other
 Bundle-ActivationPolicy: lazy

@@ -32,3 +32,9 @@ Import-Package: com.auth0.jwt.interfaces,
  org.slf4j;version="1.7.25"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.origin.common;bundle-version="1.0.0"
+Export-Package: org.orbit.component.runtime.switcher,
+ org.orbit.component.runtime.switcher.tier1,
+ org.orbit.component.runtime.switcher.tier2,
+ org.orbit.component.runtime.switcher.tier3,
+ org.orbit.component.runtime.switcher.tier4,
+ org.orbit.component.runtime.switcher.util

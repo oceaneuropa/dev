@@ -9,7 +9,7 @@ public class OSConstants {
 	// Global
 	// ----------------------------------------------------------------------------------------
 	// config properties
-	public static String COMPONENT_INDEX_SERVICE_URL = "component.indexservice.url";
+	public static String COMPONENT_INDEX_SERVICE_URL = "component.index_service.url";
 	// global config properties
 	public static String ORBIT_HOST_URL = "orbit.host.url";
 	// global index item properties

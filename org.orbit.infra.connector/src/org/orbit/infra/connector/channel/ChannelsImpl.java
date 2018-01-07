@@ -4,63 +4,62 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.channel.Channels;
-import org.orbit.infra.connector.OrbitConstants;
+import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.model.channel.ChannelMessageDTO;
+import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.util.StringUtil;
+import org.origin.common.rest.client.ServiceConnector;
 
 public class ChannelsImpl implements Channels {
 
-	protected Map<Object, Object> properties;
+	protected Map<String, Object> properties;
 	protected ChannelWSClient client;
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
-	public ChannelsImpl(Map<Object, Object> properties) {
+	public ChannelsImpl(ServiceConnector<Channels> connector, Map<String, Object> properties) {
+		if (connector != null) {
+			adapt(ServiceConnector.class, connector);
+		}
 		this.properties = checkProperties(properties);
-		init();
+		initClient();
 	}
 
-	protected Map<Object, Object> checkProperties(Map<Object, Object> properties) {
+	protected Map<String, Object> checkProperties(Map<String, Object> properties) {
 		if (properties == null) {
-			properties = new HashMap<Object, Object>();
+			properties = new HashMap<String, Object>();
 		}
 		return properties;
 	}
 
 	@Override
-	public Map<Object, Object> getProperties() {
+	public boolean close() throws ClientException {
+		@SuppressWarnings("unchecked")
+		ServiceConnector<Channels> connector = getAdapter(ServiceConnector.class);
+		if (connector != null) {
+			return connector.close(this);
+		}
+		return false;
+	}
+
+	@Override
+	public Map<String, Object> getProperties() {
 		return this.properties;
 	}
 
 	@Override
-	public void update(Map<Object, Object> properties) {
-		properties = checkProperties(properties);
-
-		String oldUrl = (String) this.properties.get(OrbitConstants.CHANNEL_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(OrbitConstants.CHANNEL_CONTEXT_ROOT);
-
-		this.properties.putAll(properties);
-
-		String newUrl = (String) properties.get(OrbitConstants.CHANNEL_HOST_URL);
-		String newContextRoot = (String) properties.get(OrbitConstants.CHANNEL_CONTEXT_ROOT);
-
-		boolean reinit = false;
-		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {
-			reinit = true;
-		}
-		if (reinit) {
-			init();
-		}
+	public void update(Map<String, Object> properties) {
+		this.properties = checkProperties(properties);
+		initClient();
 	}
 
-	protected void init() {
-		String realm = (String) this.properties.get(OrbitConstants.REALM);
-		String username = (String) this.properties.get(OrbitConstants.USERNAME);
-		String url = (String) this.properties.get(OrbitConstants.CHANNEL_HOST_URL);
-		String contextRoot = (String) this.properties.get(OrbitConstants.CHANNEL_CONTEXT_ROOT);
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
+	protected void initClient() {
+		String realm = (String) this.properties.get(InfraConstants.REALM);
+		String username = (String) this.properties.get(InfraConstants.USERNAME);
+		String fullUrl = (String) this.properties.get(InfraConstants.URL);
 
-		this.client = new ChannelWSClient(clientConfig);
+		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
+		this.client = new ChannelWSClient(config);
 	}
 
 	@Override
@@ -85,6 +84,16 @@ public class ChannelsImpl implements Channels {
 			throw e;
 		}
 		return false;
+	}
+
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		return this.adaptorSupport.getAdapter(adapter);
 	}
 
 }

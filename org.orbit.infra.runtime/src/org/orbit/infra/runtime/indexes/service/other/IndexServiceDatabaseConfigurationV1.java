@@ -3,7 +3,7 @@ package org.orbit.infra.runtime.indexes.service.other;
 import java.sql.Connection;
 import java.util.Properties;
 
-import org.orbit.infra.runtime.OrbitConstants;
+import org.orbit.infra.runtime.InfraConstants;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.util.PropertiesAware;
@@ -27,10 +27,10 @@ public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurati
 
 	@Override
 	public Connection getConnection() {
-		String driver = (String) this.props.get(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
-		String url = (String) this.props.get(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
-		String username = (String) this.props.get(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
-		String password = (String) this.props.get(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
+		String driver = (String) this.props.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
+		String url = (String) this.props.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
+		String username = (String) this.props.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
+		String password = (String) this.props.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
 
 		Properties properties = DatabaseUtil.getProperties(driver, url, username, password);
 		return DatabaseUtil.getConnection(properties);

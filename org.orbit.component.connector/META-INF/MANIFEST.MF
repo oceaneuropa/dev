@@ -19,3 +19,12 @@ Require-Bundle: org.origin.common;bundle-version="1.0.0",
  org.orbit.component.model;bundle-version="1.0.0",
  lib.org.junit;bundle-version="1.0.0",
  org.orbit.infra.api;bundle-version="1.0.0"
+Export-Package: org.orbit.component.connector,
+ org.orbit.component.connector.tier1.account,
+ org.orbit.component.connector.tier1.auth,
+ org.orbit.component.connector.tier1.config,
+ org.orbit.component.connector.tier1.session,
+ org.orbit.component.connector.tier2.appstore,
+ org.orbit.component.connector.tier3.domain,
+ org.orbit.component.connector.tier3.transferagent,
+ org.orbit.component.connector.tier4.mission

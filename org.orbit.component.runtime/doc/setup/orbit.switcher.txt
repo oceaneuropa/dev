@@ -1,0 +1,39 @@
+Program Arguments:
+-------------------------------------------------------------------------------------------------------
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean
+-------------------------------------------------------------------------------------------------------
+
+VM Arguments:
+-------------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=9090 
+
+-Drealm=orbit1 
+-Dorbit.host.url=http://127.0.0.1:9090 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+
+-Dcomponent.user_registry.switcher.context_root=/orbit/v1/userregistry 
+-Dcomponent.user_registry.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.user_registry.switcher.urls=http://127.0.0.1:11001/orbit/v1/userregistry;http://127.0.0.1:11002/orbit/v1/userregistry 
+
+-Dcomponent.auth.switcher.context_root=/orbit/v1/auth  
+-Dcomponent.auth.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.auth.switcher.urls=http://127.0.0.1:11001/orbit/v1/auth;http://127.0.0.1:11002/orbit/v1/auth
+
+-Dcomponent.app_store.switcher.context_root=/orbit/v1/appstore 
+-Dcomponent.app_store.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.app_store.switcher.urls=http://127.0.0.1:11001/orbit/v1/appstore;http://127.0.0.1:11002/orbit/v1/appstore 
+
+-Dcomponent.domain_service.switcher.context_root=/orbit/v1/domain 
+-Dcomponent.domain_service.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.domain_service.switcher.urls=http://127.0.0.1:11001/orbit/v1/domain;http://127.0.0.1:11002/orbit/v1/domain 
+
+-Dcomponent.transfer_agent.switcher.context_root=/orbit/v1/ta 
+-Dcomponent.transfer_agent.switcher.hosts=http://127.0.0.1:12001;http://127.0.0.1:12002 
+-Dcomponent.transfer_agent.switcher.urls=http://127.0.0.1:12001/orbit/v1/ta;http://127.0.0.1:12002/orbit/v1/ta 
+
+-Dcomponent.mission_control.switcher.context_root=/orbit/v1/mission 
+-Dcomponent.mission_control.switcher.hosts=http://127.0.0.1:11101;http://127.0.0.1:11102 
+-Dcomponent.mission_control.switcher.urls=http://127.0.0.1:11101/orbit/v1/mission;http://127.0.0.1:11102/orbit/v1/mission 
+
+-Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
+-------------------------------------------------------------------------------------------------------

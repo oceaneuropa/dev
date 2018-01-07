@@ -4,16 +4,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier3.transferagent.util.TASetupUtil;
-import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
-import org.origin.common.rest.editpolicy.WSEditPoliciesSupport;
-import org.origin.common.rest.editpolicy.WSEditPolicy;
-import org.origin.common.rest.model.Request;
+import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
 import org.origin.common.util.PropertyUtil;
 import org.origin.core.resources.IWorkspace;
 import org.origin.core.resources.ResourcesFactory;
@@ -30,53 +26,17 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentServiceImpl.class);
 
-	protected BundleContext bundleContext;
 	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected IWorkspace nodespaceRoot;
 	protected WSEditPolicies wsEditPolicies;
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
-	public TransferAgentServiceImpl(BundleContext bundleContext) {
-		this.bundleContext = bundleContext;
-		this.wsEditPolicies = new TransferAgentWSEditPolicies();
+	public TransferAgentServiceImpl() {
+		this.wsEditPolicies = new WSEditPoliciesImpl();
+		this.wsEditPolicies.setService(TransferAgentService.class, this);
 	}
 
-	@Override
-	public String getName() {
-		String name = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
-		return name;
-	}
-
-	@Override
-	public String getHostURL() {
-		String hostURL = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL);
-		if (hostURL != null) {
-			return hostURL;
-		}
-		String globalHostURL = (String) this.configProps.get(OrbitConstants.ORBIT_HOST_URL);
-		if (globalHostURL != null) {
-			return globalHostURL;
-		}
-		return null;
-	}
-
-	@Override
-	public String getContextRoot() {
-		String contextRoot = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT);
-		return contextRoot;
-	}
-
-	@Override
-	public String getHome() {
-		String home = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOME);
-		return home;
-	}
-
-	public void start() {
+	public void start(BundleContext bundleContext) {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		TASetupUtil.loadConfigIniProperties(bundleContext, configProps);
 		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
@@ -96,7 +56,12 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 		this.nodespaceRoot = ResourcesFactory.getInstance().createWorkspace(nodespacesPath.toFile());
 	}
 
-	public void stop() {
+	public void stop(BundleContext bundleContext) {
+		if (this.serviceRegistry != null) {
+			this.serviceRegistry.unregister();
+			this.serviceRegistry = null;
+		}
+
 		if (this.nodespaceRoot != null) {
 			this.nodespaceRoot.dispose();
 			this.nodespaceRoot = null;
@@ -135,6 +100,37 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	}
 
 	@Override
+	public String getName() {
+		String name = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_NAME);
+		return name;
+	}
+
+	@Override
+	public String getHostURL() {
+		String hostURL = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOST_URL);
+		if (hostURL != null) {
+			return hostURL;
+		}
+		String globalHostURL = (String) this.configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		if (globalHostURL != null) {
+			return globalHostURL;
+		}
+		return null;
+	}
+
+	@Override
+	public String getContextRoot() {
+		String contextRoot = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT);
+		return contextRoot;
+	}
+
+	@Override
+	public String getHome() {
+		String home = (String) this.configProps.get(OrbitConstants.COMPONENT_TRANSFER_AGENT_HOME);
+		return home;
+	}
+
+	@Override
 	public IWorkspace getNodeWorkspace() {
 		return this.nodespaceRoot;
 	}
@@ -142,47 +138,6 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 	@Override
 	public WSEditPolicies getEditPolicies() {
 		return this.wsEditPolicies;
-	}
-
-	public class TransferAgentWSEditPolicies implements WSEditPolicies {
-		WSEditPoliciesSupport editPoliciesSupport = new WSEditPoliciesSupport();
-
-		@Override
-		public List<WSEditPolicy> getEditPolicies() {
-			return this.editPoliciesSupport.getEditPolicies();
-		}
-
-		@Override
-		public WSEditPolicy getEditPolicy(String id) {
-			return this.editPoliciesSupport.getEditPolicy(id);
-		}
-
-		@Override
-		public boolean installEditPolicy(WSEditPolicy editPolicy) {
-			// Initialize the WSEditPolicy with service
-			editPolicy.setService(TransferAgentService.class, TransferAgentServiceImpl.this);
-
-			return this.editPoliciesSupport.installEditPolicy(editPolicy);
-		}
-
-		@Override
-		public boolean uninstallEditPolicy(WSEditPolicy editPolicy) {
-			boolean succeed = this.editPoliciesSupport.uninstallEditPolicy(editPolicy);
-			if (succeed) {
-				editPolicy.setService(TransferAgentService.class, null);
-			}
-			return succeed;
-		}
-
-		@Override
-		public WSEditPolicy uninstallEditPolicy(String id) {
-			return this.editPoliciesSupport.uninstallEditPolicy(id);
-		}
-
-		@Override
-		public WSCommand getCommand(Request request) {
-			return this.editPoliciesSupport.getCommand(request);
-		}
 	}
 
 }
@@ -196,4 +151,45 @@ public class TransferAgentServiceImpl implements TransferAgentService {
 // if (this.editingDomain != null) {
 // IEditingDomain.disposeEditingDomain(TransferAgentService.class.getName());
 // this.editingDomain = null;
+// }
+
+// public class TransferAgentWSEditPolicies implements WSEditPolicies {
+// WSEditPoliciesSupport editPoliciesSupport = new WSEditPoliciesSupport();
+//
+// @Override
+// public List<WSEditPolicy> getEditPolicies() {
+// return this.editPoliciesSupport.getEditPolicies();
+// }
+//
+// @Override
+// public WSEditPolicy getEditPolicy(String id) {
+// return this.editPoliciesSupport.getEditPolicy(id);
+// }
+//
+// @Override
+// public boolean installEditPolicy(WSEditPolicy editPolicy) {
+// // Initialize the WSEditPolicy with service
+// editPolicy.setService(TransferAgentService.class, TransferAgentServiceImpl.this);
+//
+// return this.editPoliciesSupport.installEditPolicy(editPolicy);
+// }
+//
+// @Override
+// public boolean uninstallEditPolicy(WSEditPolicy editPolicy) {
+// boolean succeed = this.editPoliciesSupport.uninstallEditPolicy(editPolicy);
+// if (succeed) {
+// editPolicy.setService(TransferAgentService.class, null);
+// }
+// return succeed;
+// }
+//
+// @Override
+// public WSEditPolicy uninstallEditPolicy(String id) {
+// return this.editPoliciesSupport.uninstallEditPolicy(id);
+// }
+//
+// @Override
+// public WSCommand getCommand(Request request) {
+// return this.editPoliciesSupport.getCommand(request);
+// }
 // }

@@ -1,9 +1,11 @@
 package org.orbit.component.runtime.tier1.auth.ws;
 
+import java.util.Map;
+
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -11,13 +13,17 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
 public class AuthServiceAdapter {
 
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<AuthService, AuthService> serviceTracker;
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected AuthWSApplication webService;
 	protected AuthServiceIndexTimer indexTimer;
 
-	public AuthServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	public AuthServiceAdapter(Map<Object, Object> properties) {
+		this.properties = properties;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public AuthService getService() {
@@ -72,7 +78,7 @@ public class AuthServiceAdapter {
 		this.webService.start(bundleContext);
 
 		// Start indexing
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProvider indexProvider = getIndexProvider();
 		this.indexTimer = new AuthServiceIndexTimer(indexProvider, service);
 		this.indexTimer.start();
 	}

@@ -1,28 +1,38 @@
 package org.orbit.component.runtime.tier1.account.ws;
 
+import java.util.Map;
+
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Adapter to start UserRegistryWSApplication when UserRegistryService becomes available and to stop UserRegistryWSApplication when
- * UserRegistryService becomes unavailable.
+ * Adapter to start UserRegistryWSApplication when UserRegistryService becomes available and to stop UserRegistryWSApplication when UserRegistryService becomes
+ * unavailable.
  * 
  */
 public class UserRegistryServiceAdapter {
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryServiceAdapter.class);
+
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<UserRegistryService, UserRegistryService> serviceTracker;
 	protected UserRegistryWSApplication webApp;
 	protected UserRegistryServiceIndexTimer serviceIndexTimer;
 
-	public UserRegistryServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	public UserRegistryServiceAdapter(Map<Object, Object> properties) {
+		this.properties = properties;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public UserRegistryService getService() {
@@ -83,7 +93,7 @@ public class UserRegistryServiceAdapter {
 		this.webApp.start(bundleContext);
 
 		// Start a timer to update the indexing of the service
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProvider indexProvider = getIndexProvider();
 		this.serviceIndexTimer = new UserRegistryServiceIndexTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

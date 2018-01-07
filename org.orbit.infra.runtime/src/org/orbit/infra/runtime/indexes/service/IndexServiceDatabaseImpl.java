@@ -14,7 +14,7 @@ import java.util.Properties;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemVO;
 import org.orbit.infra.model.indexes.IndexServiceException;
-import org.orbit.infra.runtime.OrbitConstants;
+import org.orbit.infra.runtime.InfraConstants;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -43,14 +43,14 @@ public class IndexServiceDatabaseImpl implements IndexService {
 		LOG.info("start()");
 
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_INDEX_SERVICE_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_INDEX_SERVICE_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
 
 		update(configProps);
 
@@ -82,23 +82,23 @@ public class IndexServiceDatabaseImpl implements IndexService {
 			properties = new HashMap<Object, Object>();
 		}
 
-		String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
-		String name = (String) properties.get(OrbitConstants.COMPONENT_INDEX_SERVICE_NAME);
-		String hostURL = (String) properties.get(OrbitConstants.COMPONENT_INDEX_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT);
-		String jdbcDriver = (String) properties.get(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
-		String jdbcURL = (String) properties.get(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
-		String jdbcUsername = (String) properties.get(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
-		String jdbcPassword = (String) properties.get(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
+		String globalHostURL = (String) properties.get(InfraConstants.ORBIT_HOST_URL);
+		String name = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_NAME);
+		String hostURL = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL);
+		String contextRoot = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT);
+		String jdbcDriver = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
+		String jdbcURL = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
+		String jdbcUsername = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
+		String jdbcPassword = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
 
-		LOG.info(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-		LOG.info(OrbitConstants.COMPONENT_INDEX_SERVICE_NAME + " = " + name);
-		LOG.info(OrbitConstants.COMPONENT_INDEX_SERVICE_HOST_URL + " = " + hostURL);
-		LOG.info(OrbitConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT + " = " + contextRoot);
-		LOG.info(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER + " = " + jdbcDriver);
-		LOG.info(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_URL + " = " + jdbcURL);
-		LOG.info(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME + " = " + jdbcUsername);
-		LOG.info(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD + " = " + jdbcPassword);
+		LOG.info(InfraConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_NAME + " = " + name);
+		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL + " = " + hostURL);
+		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT + " = " + contextRoot);
+		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER + " = " + jdbcDriver);
+		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL + " = " + jdbcURL);
+		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME + " = " + jdbcUsername);
+		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD + " = " + jdbcPassword);
 
 		this.properties = properties;
 		this.databaseProperties = getConnectionProperties(this.properties);
@@ -120,10 +120,10 @@ public class IndexServiceDatabaseImpl implements IndexService {
 	 * @return
 	 */
 	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = getProperty(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER, String.class);
-		String url = getProperty(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_URL, String.class);
-		String username = getProperty(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME, String.class);
-		String password = getProperty(OrbitConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD, String.class);
+		String driver = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER, String.class);
+		String url = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL, String.class);
+		String username = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME, String.class);
+		String password = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD, String.class);
 		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
@@ -133,19 +133,19 @@ public class IndexServiceDatabaseImpl implements IndexService {
 
 	@Override
 	public String getName() {
-		String name = getProperty(OrbitConstants.COMPONENT_INDEX_SERVICE_NAME, String.class);
+		String name = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_NAME, String.class);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = getProperty(OrbitConstants.COMPONENT_INDEX_SERVICE_HOST_URL, String.class);
+		String hostURL = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL, String.class);
 		if (hostURL != null) {
 			return hostURL;
 		}
 
 		// default global config
-		String globalHostURL = (String) this.properties.get(OrbitConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(InfraConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -155,7 +155,7 @@ public class IndexServiceDatabaseImpl implements IndexService {
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = getProperty(OrbitConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, String.class);
+		String contextRoot = getProperty(InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, String.class);
 		return contextRoot;
 	}
 

@@ -5,10 +5,10 @@ import java.util.List;
 
 import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
-import org.orbit.component.model.tier3.domain.ModelConverter;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
 import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.ws.ModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;

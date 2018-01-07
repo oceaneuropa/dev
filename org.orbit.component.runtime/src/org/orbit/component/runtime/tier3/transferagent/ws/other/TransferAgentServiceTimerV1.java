@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.Activator;
+import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.other.ServiceIndexTimerV1;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
+import org.origin.common.thread.other.ServiceIndexTimerV1;
 
 public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, TransferAgentService> implements ServiceIndexTimerV1<IndexProvider, TransferAgentService> {
 
@@ -23,7 +23,7 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 
 	@Override
 	public synchronized TransferAgentService getService() {
-		return Activator.getInstance().getTransferAgentService();
+		return OrbitServices.getInstance().getTransferAgentService();
 	}
 
 	@Override

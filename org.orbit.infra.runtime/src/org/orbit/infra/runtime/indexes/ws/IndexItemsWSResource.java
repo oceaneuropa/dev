@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * {contextRoot} example:
  * /orbit/v1/indexservice/
  *
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}?type={type}&type={name}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}?type={type}&name={name}
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid} (Body parameter: IndexItemDTO)
  * 
  *     Not being used:
@@ -61,7 +61,7 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 	/**
 	 * Get index items.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}?type={type}&type={name}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}?type={type}&name={name}
 	 * 
 	 * @param indexProviderId
 	 * @param type

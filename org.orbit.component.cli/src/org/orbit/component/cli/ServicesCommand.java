@@ -20,6 +20,7 @@ import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.api.tier3.domain.DomainServiceConnector;
 import org.orbit.component.cli.util.ResourcePropertyHelper;
 import org.orbit.component.cli.util.ServicesCommandHelper;
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.annotation.Annotated;
@@ -32,6 +33,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
+import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +57,9 @@ public class ServicesCommand implements Annotated {
 	protected static String[] DOMAIN_SERVICES_COLUMNS = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] TRANSFERAGENT_SERVICES_TITLES = new String[] { "index_item_id", "transfer_agent.namespace", "transfer_agent.name", "transfer_agent.host.url", "transfer_agent.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 
+	protected String scheme = "orbit";
+	protected Map<Object, Object> properties;
+
 	@Dependency
 	protected UserRegistryConnector userRegistryConnector;
 	@Dependency
@@ -64,25 +69,11 @@ public class ServicesCommand implements Annotated {
 	@Dependency
 	protected DomainServiceConnector domainMgmtConnector;
 
-	protected BundleContext bundleContext;
-	protected IndexService indexService;
-	protected String scheme = "orbit";
-
-	/**
-	 * 
-	 * @param bundleContext
-	 * @param indexService
-	 */
-	public ServicesCommand(BundleContext bundleContext, IndexService indexService) {
-		this.bundleContext = bundleContext;
-		this.indexService = indexService;
-	}
-
 	protected String getScheme() {
 		return this.scheme;
 	}
 
-	public void start() {
+	public void start(BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
 		props.put("osgi.command.function",
@@ -91,13 +82,20 @@ public class ServicesCommand implements Annotated {
 						"lservices", //
 		});
 
-		OSGiServiceUtil.register(this.bundleContext, ServicesCommand.class.getName(), this, props);
-		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
+		OSGiServiceUtil.register(bundleContext, ServicesCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
+
+		this.properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_INDEX_SERVICE_URL);
 	}
 
-	public void stop() {
+	public void stop(BundleContext bundleContext) {
 		OSGiServiceUtil.unregister(ServicesCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
+	}
+
+	protected IndexService getIndexService() {
+		return InfraClients.getInstance().getIndexService(this.properties);
 	}
 
 	@DependencyFullfilled
@@ -253,7 +251,9 @@ public class ServicesCommand implements Annotated {
 
 	protected void listTransferAgents() throws ClientException {
 		try {
-			List<IndexItem> indexItems = this.indexService.getIndexItems(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, OrbitConstants.TRANSFER_AGENT_TYPE);
+			IndexService indexService = getIndexService();
+
+			List<IndexItem> indexItems = indexService.getIndexItems(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, OrbitConstants.TRANSFER_AGENT_TYPE);
 
 			String[][] rows = new String[indexItems.size()][TRANSFERAGENT_SERVICES_TITLES.length];
 			int rowIndex = 0;

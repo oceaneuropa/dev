@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.orbit.infra.api.OrbitConstants;
+import org.orbit.infra.api.InfraConstants;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalanceResourceImpl;
@@ -242,7 +242,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 
 			Map<Integer, LoadBalanceResource<SERVICE_CLIENT>> existingResourcesMap = new HashMap<Integer, LoadBalanceResource<SERVICE_CLIENT>>();
 			for (LoadBalanceResource<SERVICE_CLIENT> resource : existingResources) {
-				Integer currIndexItemId = (Integer) resource.getProperty(OrbitConstants.INDEX_ITEM_ID);
+				Integer currIndexItemId = (Integer) resource.getProperty(InfraConstants.INDEX_ITEM_ID);
 				if (currIndexItemId == null) {
 					System.err.println(getConnectorClass().getSimpleName() + " LoadBalanceResource's 'index_item_id' property is not available.");
 					continue;
@@ -260,7 +260,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 			List<LoadBalanceResource<SERVICE_CLIENT>> newResources = new ArrayList<LoadBalanceResource<SERVICE_CLIENT>>();
 
 			for (LoadBalanceResource<SERVICE_CLIENT> existingResource : existingResources) {
-				Integer resourceIndexItemId = (Integer) existingResource.getProperty(OrbitConstants.INDEX_ITEM_ID);
+				Integer resourceIndexItemId = (Integer) existingResource.getProperty(InfraConstants.INDEX_ITEM_ID);
 				if (resourceIndexItemId == null) {
 					System.err.println(getConnectorClass().getSimpleName() + " LoadBalanceResource's 'index_item_id' property is not available.");
 					continue;
@@ -312,7 +312,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 		Map<String, Object> properties = latestIndexItem.getProperties();
 
 		Map<String, Object> newProperties = new HashMap<String, Object>();
-		newProperties.put(OrbitConstants.INDEX_ITEM_ID, indexItemId);
+		newProperties.put(InfraConstants.INDEX_ITEM_ID, indexItemId);
 		newProperties.putAll(properties);
 
 		SERVICE_CLIENT newService = createService(newProperties);
@@ -358,7 +358,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 		// 2. Set resource properties
 		Map<String, Object> newProperties = new HashMap<String, Object>();
 		// Put indexItemId as properties of the resource, so that when index items are updated, a resource can be associated with an updated index item.
-		newProperties.put(OrbitConstants.INDEX_ITEM_ID, indexItemId);
+		newProperties.put(InfraConstants.INDEX_ITEM_ID, indexItemId);
 		newProperties.putAll(properties);
 
 		// update the resource's properties with the index item's properties
@@ -403,7 +403,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 		boolean isHeartbeatExpired = false;
 		if (lastHeartbeatTime != null) {
 			Date heartbeatExpireTime = DateUtil.addSeconds(lastHeartbeatTime, 30);
-			resource.setProperty(OrbitConstants.HEARTBEAT_EXPIRE_TIME, heartbeatExpireTime);
+			resource.setProperty(InfraConstants.HEARTBEAT_EXPIRE_TIME, heartbeatExpireTime);
 			if (heartbeatExpireTime.before(new Date())) {
 				isHeartbeatExpired = true;
 			}
@@ -560,19 +560,19 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 		Date nowTime = new Date();
 		if (succeed) {
 			// ping succeeded
-			resource.setProperty(OrbitConstants.LAST_PING_TIME, nowTime);
-			resource.setProperty(OrbitConstants.LAST_PING_SUCCEED, Boolean.TRUE);
+			resource.setProperty(InfraConstants.LAST_PING_TIME, nowTime);
+			resource.setProperty(InfraConstants.LAST_PING_SUCCEED, Boolean.TRUE);
 
 			// The service can be pinged right now.
 			// If the service heart beat was expired. The expiration can be lifted now.
-			if (resource.hasProperty(OrbitConstants.HEARTBEAT_EXPIRE_TIME)) {
-				resource.removeProperty(OrbitConstants.HEARTBEAT_EXPIRE_TIME);
+			if (resource.hasProperty(InfraConstants.HEARTBEAT_EXPIRE_TIME)) {
+				resource.removeProperty(InfraConstants.HEARTBEAT_EXPIRE_TIME);
 			}
 
 		} else {
 			// ping failed
-			resource.setProperty(OrbitConstants.LAST_PING_TIME, nowTime);
-			resource.setProperty(OrbitConstants.LAST_PING_SUCCEED, Boolean.FALSE);
+			resource.setProperty(InfraConstants.LAST_PING_TIME, nowTime);
+			resource.setProperty(InfraConstants.LAST_PING_SUCCEED, Boolean.FALSE);
 		}
 	}
 

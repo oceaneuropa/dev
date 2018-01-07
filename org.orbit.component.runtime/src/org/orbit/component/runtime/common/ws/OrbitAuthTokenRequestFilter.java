@@ -14,13 +14,13 @@ import org.slf4j.LoggerFactory;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-/**
- * @see https://tools.ietf.org/html/rfc6750
+/*
+ * 1. https://tools.ietf.org/html/rfc6750 The OAuth 2.0 Authorization Framework: Bearer Token Usage
  * 
- *      The OAuth 2.0 Authorization Framework: Bearer Token Usage
+ * 2. org.origin.common.rest.filter.BearerTokenFilter
  * 
- * @see org.origin.common.rest.filter.BearerTokenFilter
- * 
+ * 3. Example
+ *    https://www.programcreek.com/java-api-examples/index.php?api=javax.ws.rs.core.Cookie
  */
 public class OrbitAuthTokenRequestFilter implements ContainerRequestFilter {
 

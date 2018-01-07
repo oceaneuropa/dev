@@ -11,7 +11,6 @@ public class AppStoreConnectorAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(AppStoreConnectorAdapter.class);
 
-	protected BundleContext bundleContext;
 	protected ServiceTracker<AppStoreConnector, AppStoreConnector> serviceTracker;
 
 	public AppStoreConnectorAdapter() {

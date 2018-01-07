@@ -10,10 +10,10 @@ import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
 import org.orbit.component.connector.tier3.domain.DomainServiceConnectorImpl;
 import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
-import org.orbit.infra.api.indexes.IndexServiceConnector;
-import org.orbit.infra.api.indexes.IndexServiceConnectorAdapter;
 import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
 import org.orbit.infra.api.indexes.IndexServiceUtil;
+import org.orbit.infra.api.indexes.other.IndexServiceConnectorAdapterV1;
+import org.orbit.infra.api.indexes.other.IndexServiceConnectorV1;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -33,7 +33,7 @@ public class ActivatorV1 implements BundleActivator {
 		return instance;
 	}
 
-	protected IndexServiceConnectorAdapter indexServiceConnectorAdapter;
+	protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
 
 	// ManagedServiceFactory
 	protected UserRegistryManager userRegistryManager;
@@ -51,14 +51,14 @@ public class ActivatorV1 implements BundleActivator {
 		ActivatorV1.context = bundleContext;
 		ActivatorV1.instance = this;
 
-		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapter() {
+		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {
 			@Override
-			public void connectorAdded(IndexServiceConnector connector) {
+			public void connectorAdded(IndexServiceConnectorV1 connector) {
 				doStart(ActivatorV1.context, connector);
 			}
 
 			@Override
-			public void connectorRemoved(IndexServiceConnector connector) {
+			public void connectorRemoved(IndexServiceConnectorV1 connector) {
 				doStop(ActivatorV1.context);
 			}
 		};
@@ -76,10 +76,10 @@ public class ActivatorV1 implements BundleActivator {
 		ActivatorV1.context = null;
 	}
 
-	protected void doStart(BundleContext bundleContext, IndexServiceConnector connector) {
+	protected void doStart(BundleContext bundleContext, IndexServiceConnectorV1 connector) {
 		// Get load balancer for IndexProvider
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.OrbitConstants.COMPONENT_INDEX_SERVICE_URL_PROP);
+		PropertyUtil.loadProperty(bundleContext, indexProviderProps, org.orbit.infra.api.InfraConstants.COMPONENT_INDEX_SERVICE_URL);
 		IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
 
 		// Register ManagedServiceFactories and connector services

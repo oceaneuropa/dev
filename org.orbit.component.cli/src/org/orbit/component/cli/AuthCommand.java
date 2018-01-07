@@ -4,13 +4,14 @@ import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClient;
+import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.GrantTypes;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.util.CLIHelper;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -29,12 +30,13 @@ public class AuthCommand {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { //
-				"auth_ping", //
-				"auth_echo", //
-				// "authorize", //
-				// "token", //
-				"login" //
+		props.put("osgi.command.function",
+				new String[] { //
+						"auth_ping", //
+						"auth_echo", //
+						// "authorize", //
+						// "token", //
+						"login" //
 		});
 		OSGiServiceUtil.register(bundleContext, AuthCommand.class.getName(), this, props);
 	}
@@ -55,7 +57,7 @@ public class AuthCommand {
 			return;
 		}
 
-		Auth auth = OrbitClient.getInstance().getAuth(url);
+		Auth auth = OrbitClients.getInstance().getAuth(url);
 
 		boolean result = auth.ping();
 		System.out.println("Result is: " + result);
@@ -72,7 +74,7 @@ public class AuthCommand {
 			return;
 		}
 
-		Auth auth = OrbitClient.getInstance().getAuth(url);
+		Auth auth = OrbitClients.getInstance().getAuth(url);
 
 		String result = auth.echo(message);
 		System.out.println("Result is: " + result);
@@ -274,7 +276,7 @@ public class AuthCommand {
 		}
 
 		try {
-			Auth auth = OrbitClient.getInstance().getAuth(realm, username, url);
+			Auth auth = OrbitClients.getInstance().getAuth(realm, username, url);
 
 			TokenRequest request = new TokenRequest();
 
@@ -298,7 +300,7 @@ public class AuthCommand {
 				System.out.println("TokenResponse is:");
 				System.out.println(response);
 
-				OrbitClient.getInstance().setUserInfo(realm, username, password);
+				GlobalContext.getInstance().setCurrentUser(realm, username, password);
 			}
 
 		} catch (Exception e) {

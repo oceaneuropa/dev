@@ -10,8 +10,6 @@ import org.origin.common.rest.model.Request;
 
 public interface TransferAgent extends IAdaptable {
 
-	String getName();
-
 	String getURL();
 
 	Map<String, Object> getProperties();

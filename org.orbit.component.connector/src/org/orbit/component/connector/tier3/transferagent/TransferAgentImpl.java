@@ -69,15 +69,6 @@ public class TransferAgentImpl implements TransferAgent {
 		this.client = new TransferAgentWSClient(config);
 	}
 
-	// ------------------------------------------------------------------------------------------------
-	// Configuration methods
-	// ------------------------------------------------------------------------------------------------
-	@Override
-	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.TRANSFER_AGENT_NAME);
-		return name;
-	}
-
 	@Override
 	public String getURL() {
 		String fullUrl = (String) properties.get(OrbitConstants.URL);

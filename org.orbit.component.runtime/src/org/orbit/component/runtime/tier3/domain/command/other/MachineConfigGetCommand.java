@@ -2,9 +2,9 @@ package org.orbit.component.runtime.tier3.domain.command.other;
 
 import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
-import org.orbit.component.model.tier3.domain.ModelConverter;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.ws.ModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;

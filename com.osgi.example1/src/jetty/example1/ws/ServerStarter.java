@@ -8,6 +8,11 @@ import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainer
 //import org.springframework.web.context.ContextLoaderListener;
 //import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+/*
+ * Example
+ * https://www.programcreek.com/java-api-examples/index.php?source_dir=jetty-web-sockets-jsr356-master/src/main/java/com/example/ws/ServerStarter.java
+ * 
+ */
 public class ServerStarter {
 	public static void main(String[] args) throws Exception {
 		Server server = new Server(8080);

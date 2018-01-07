@@ -1,9 +1,11 @@
 package org.orbit.component.runtime.tier1.config.ws;
 
+import java.util.Map;
+
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -16,13 +18,17 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public class ConfigRegistryServiceAdapter {
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<ConfigRegistryService, ConfigRegistryService> serviceTracker;
 	protected ConfigRegistryWSApplication webServiceApp;
 	protected ConfigRegistryServiceIndexTimer serviceIndexTimer;
 
-	public ConfigRegistryServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	public ConfigRegistryServiceAdapter(Map<Object, Object> properties) {
+		this.properties = properties;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public ConfigRegistryService getService() {
@@ -80,7 +86,7 @@ public class ConfigRegistryServiceAdapter {
 		this.webServiceApp.start(bundleContext);
 
 		// Start a timer to update the indexing of the service
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProvider indexProvider = getIndexProvider();
 		this.serviceIndexTimer = new ConfigRegistryServiceIndexTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

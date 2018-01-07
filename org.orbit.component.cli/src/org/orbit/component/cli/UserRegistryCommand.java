@@ -5,7 +5,7 @@ import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClient;
+import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
@@ -33,16 +33,17 @@ public class UserRegistryCommand {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { //
-				"userregistry_ping", //
-				"userregistry_echo", //
-				"list_users", //
-				"get_user", //
-				"add_user", //
-				"change_password", //
-				"activate_user", //
-				"deactivate_user", //
-				"delete_user" //
+		props.put("osgi.command.function",
+				new String[] { //
+						"userregistry_ping", //
+						"userregistry_echo", //
+						"list_users", //
+						"get_user", //
+						"add_user", //
+						"change_password", //
+						"activate_user", //
+						"deactivate_user", //
+						"delete_user" //
 		} //
 		);
 		OSGiServiceUtil.register(bundleContext, UserRegistryCommand.class.getName(), this, props);
@@ -54,13 +55,17 @@ public class UserRegistryCommand {
 		OSGiServiceUtil.unregister(UserRegistryCommand.class.getName(), this);
 	}
 
+	protected UserRegistry getUserRegistry(String url) {
+		return OrbitClients.getInstance().getUserRegistry(url);
+	}
+
 	@Descriptor("list_users")
 	public void list_users(//
 			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url //
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_users", new String[] { "url", url });
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistry(url);
+		UserRegistry userRegistry = getUserRegistry(url);
 
 		UserAccount[] userAccounts = userRegistry.getUserAccounts();
 
@@ -98,7 +103,7 @@ public class UserRegistryCommand {
 			return;
 		}
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistry(url);
+		UserRegistry userRegistry = getUserRegistry(url);
 
 		UserAccount userAccount = userRegistry.getUserAccount(username);
 
@@ -143,7 +148,7 @@ public class UserRegistryCommand {
 				new String[] { "phone", phone } //
 		);
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistry(url);
+		UserRegistry userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("userId is not set.");
@@ -183,7 +188,7 @@ public class UserRegistryCommand {
 				new String[] { "newpassword", newPassword } //
 		);
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistry(url);
+		UserRegistry userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
@@ -205,7 +210,7 @@ public class UserRegistryCommand {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "activate_user", new String[] { "url", url }, new String[] { "username", username });
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistry(url);
+		UserRegistry userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
@@ -226,10 +231,7 @@ public class UserRegistryCommand {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "deactivate_user", new String[] { "url", url }, new String[] { "username", username });
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistry(url);
-		if (userRegistry == null) {
-			return;
-		}
+		UserRegistry userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
@@ -250,10 +252,7 @@ public class UserRegistryCommand {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_user", new String[] { "url", url }, new String[] { "username", username });
 
-		UserRegistry userRegistry = OrbitClient.getInstance().getUserRegistry(url);
-		if (userRegistry == null) {
-			return;
-		}
+		UserRegistry userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");

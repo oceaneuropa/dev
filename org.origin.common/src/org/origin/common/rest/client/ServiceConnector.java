@@ -61,10 +61,10 @@ public abstract class ServiceConnector<SERVICE> {
 		this.services.clear();
 	}
 
-	protected void checkProperties(Map<String, Object> properties) throws ClientException {
+	protected void checkProperties(Map<String, Object> properties) {
 		String fullUrl = (String) properties.get(ClientConfiguration.URL);
 		if (fullUrl == null || fullUrl.isEmpty()) {
-			throw new RuntimeException("'" + ClientConfiguration.URL + "' property is not set.");
+			throw new IllegalArgumentException("'" + ClientConfiguration.URL + "' property is not found.");
 		}
 	}
 
@@ -98,7 +98,7 @@ public abstract class ServiceConnector<SERVICE> {
 	 * @return
 	 * @throws ClientException
 	 */
-	public synchronized SERVICE getService(Map<String, Object> properties) throws ClientException {
+	public synchronized SERVICE getService(Map<String, Object> properties) {
 		checkProperties(properties);
 
 		String key = getServiceKey(properties);

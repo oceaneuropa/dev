@@ -114,13 +114,23 @@ public class OrbitConstants {
 	// TransferAgent
 	// ----------------------------------------------------------------------------------------
 	// index item values
-	public static String TRANSFER_AGENT_INDEXER_ID = "component.transfer_agent.indexer"; // index provider id for TransferAgent service
-	public static String TRANSFER_AGENT_TYPE = "TransferAgent"; // type of index item for TransferAgent service
+	// public static String TRANSFER_AGENT_INDEXER_ID = "component.transfer_agent.indexer"; // index provider id for TransferAgent service
+	// public static String TRANSFER_AGENT_TYPE = "TransferAgent"; // type of index item for TransferAgent service
 
 	// index item properties
-	public static String TRANSFER_AGENT_MACHINE_ID = "machine_id";
-	public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "id";
-	public static String TRANSFER_AGENT_NAME = "name";
+	// public static String TRANSFER_AGENT_MACHINE_ID = "machine_id";
+	// public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "id";
+	// public static String TRANSFER_AGENT_NAME = "name";
+
+	// ----------------------------------------------------------------------------------------
+	// MissionControl
+	// ----------------------------------------------------------------------------------------
+	// index item values
+	// public static String MISSION_CONTROL_INDEXER_ID = "component.mission_control.indexer"; // index provider id for MissionControl service
+	// public static String MISSION_CONTROL_TYPE = "MissionControl"; // type of index item for MissionControl service
+
+	// index item properties
+	// public static String MISSION_CONTROL_NAME = "name";
 
 }
 

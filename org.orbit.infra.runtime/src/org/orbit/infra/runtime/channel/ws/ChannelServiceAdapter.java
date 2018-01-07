@@ -1,7 +1,9 @@
 package org.orbit.infra.runtime.channel.ws;
 
+import java.util.Map;
+
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
@@ -15,14 +17,18 @@ public class ChannelServiceAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ChannelServiceAdapter.class);
 
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<ChannelService, ChannelService> serviceTracker;
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ChannelWebSocket webSocket;
 	protected ChannelWSApplication webService;
 	protected ChannelServiceIndexTimer serviceIndexTimer;
 
-	public ChannelServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	public ChannelServiceAdapter(Map<Object, Object> properties) {
+		this.properties = properties;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public ChannelService getService() {
@@ -75,12 +81,12 @@ public class ChannelServiceAdapter {
 
 		// 2. start web service
 		LOG.debug("start web service");
-		this.webService = new ChannelWSApplication(service, FeatureConstants.PING);
+		this.webService = new ChannelWSApplication(service, FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webService.start(bundleContext);
 
 		// 3. start index timer
 		LOG.debug("start index timer");
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProvider indexProvider = getIndexProvider();
 		this.serviceIndexTimer = new ChannelServiceIndexTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

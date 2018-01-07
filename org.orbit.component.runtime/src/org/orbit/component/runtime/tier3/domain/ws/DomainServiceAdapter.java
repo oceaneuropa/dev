@@ -1,9 +1,11 @@
 package org.orbit.component.runtime.tier3.domain.ws;
 
+import java.util.Map;
+
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -20,13 +22,17 @@ public class DomainServiceAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(DomainServiceAdapter.class);
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<DomainService, DomainService> serviceTracker;
 	protected DomainServiceWSApplication webServiceApp;
 	protected DomainServiceTimer serviceIndexTimer;
 
-	public DomainServiceAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	public DomainServiceAdapter(Map<Object, Object> properties) {
+		this.properties = properties;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public DomainService getService() {
@@ -80,7 +86,7 @@ public class DomainServiceAdapter {
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProvider indexProvider = getIndexProvider();
 		this.serviceIndexTimer = new DomainServiceTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

@@ -2,7 +2,6 @@ package org.orbit.os.runtime.service;
 
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,11 +12,8 @@ import org.orbit.os.runtime.programs.ProgramsAndFeatures;
 import org.orbit.os.runtime.programs.ProgramsAndFeaturesImpl;
 import org.orbit.os.runtime.util.SetupUtil;
 import org.orbit.os.runtime.world.Worlds;
-import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
-import org.origin.common.rest.editpolicy.WSEditPoliciesSupport;
-import org.origin.common.rest.editpolicy.WSEditPolicy;
-import org.origin.common.rest.model.Request;
+import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -48,7 +44,9 @@ public class GAIAImpl implements GAIA {
 		this.bundleContext = bundleContext;
 		this.configIniProps = configIniProps;
 		this.appsManager = new ProgramsAndFeaturesImpl(bundleContext);
-		this.wsEditPolicies = new NodeOSWSEditPolicies();
+
+		this.wsEditPolicies = new WSEditPoliciesImpl();
+		this.wsEditPolicies.setService(GAIA.class, this);
 	}
 
 	@Override
@@ -222,51 +220,6 @@ public class GAIAImpl implements GAIA {
 		return this.wsEditPolicies;
 	}
 
-	public class NodeOSWSEditPolicies implements WSEditPolicies {
-		WSEditPoliciesSupport editPoliciesSupport = new WSEditPoliciesSupport();
-
-		@Override
-		public List<WSEditPolicy> getEditPolicies() {
-			return this.editPoliciesSupport.getEditPolicies();
-		}
-
-		@Override
-		public WSEditPolicy getEditPolicy(String id) {
-			return this.editPoliciesSupport.getEditPolicy(id);
-		}
-
-		@Override
-		public boolean installEditPolicy(WSEditPolicy editPolicy) {
-			// Initialize the WSEditPolicy with service
-			editPolicy.setService(GAIA.class, GAIAImpl.this);
-
-			return this.editPoliciesSupport.installEditPolicy(editPolicy);
-		}
-
-		@Override
-		public boolean uninstallEditPolicy(WSEditPolicy editPolicy) {
-			boolean succeed = this.editPoliciesSupport.uninstallEditPolicy(editPolicy);
-			if (succeed) {
-				editPolicy.setService(GAIA.class, null);
-			}
-			return succeed;
-		}
-
-		@Override
-		public WSEditPolicy uninstallEditPolicy(String id) {
-			WSEditPolicy editPolicy = this.editPoliciesSupport.uninstallEditPolicy(id);
-			if (editPolicy != null) {
-				editPolicy.setService(GAIA.class, null);
-			}
-			return editPolicy;
-		}
-
-		@Override
-		public WSCommand getCommand(Request request) {
-			return this.editPoliciesSupport.getCommand(request);
-		}
-	}
-
 	@Override
 	public Worlds getWorlds() {
 		return null;
@@ -354,4 +307,49 @@ public class GAIAImpl implements GAIA {
 // }
 // protected Connection getConnection() {
 // return DatabaseUtil.getConnection(this.databaseProperties);
+// }
+
+// public class NodeOSWSEditPolicies implements WSEditPolicies {
+// WSEditPoliciesSupport editPoliciesSupport = new WSEditPoliciesSupport();
+//
+// @Override
+// public List<WSEditPolicy> getEditPolicies() {
+// return this.editPoliciesSupport.getEditPolicies();
+// }
+//
+// @Override
+// public WSEditPolicy getEditPolicy(String id) {
+// return this.editPoliciesSupport.getEditPolicy(id);
+// }
+//
+// @Override
+// public boolean installEditPolicy(WSEditPolicy editPolicy) {
+// // Initialize the WSEditPolicy with service
+// editPolicy.setService(GAIA.class, GAIAImpl.this);
+//
+// return this.editPoliciesSupport.installEditPolicy(editPolicy);
+// }
+//
+// @Override
+// public boolean uninstallEditPolicy(WSEditPolicy editPolicy) {
+// boolean succeed = this.editPoliciesSupport.uninstallEditPolicy(editPolicy);
+// if (succeed) {
+// editPolicy.setService(GAIA.class, null);
+// }
+// return succeed;
+// }
+//
+// @Override
+// public WSEditPolicy uninstallEditPolicy(String id) {
+// WSEditPolicy editPolicy = this.editPoliciesSupport.uninstallEditPolicy(id);
+// if (editPolicy != null) {
+// editPolicy.setService(GAIA.class, null);
+// }
+// return editPolicy;
+// }
+//
+// @Override
+// public WSCommand getCommand(Request request) {
+// return this.editPoliciesSupport.getCommand(request);
+// }
 // }

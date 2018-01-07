@@ -38,7 +38,7 @@ public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBala
 	protected UserRegistry createService(Map<String, Object> properties) {
 		try {
 			// Unique key to identify a service and Configuration
-			String indexItemId = properties.get(org.orbit.infra.api.OrbitConstants.INDEX_ITEM_ID).toString(); // "index_item_id"
+			String indexItemId = properties.get(org.orbit.infra.api.InfraConstants.INDEX_ITEM_ID).toString(); // "index_item_id"
 
 			Configuration configuration = null;
 			// Find existing Configuration with same "index_item_id" property.

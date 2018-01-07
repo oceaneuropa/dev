@@ -11,7 +11,6 @@ public class ConfigRegistryConnectorAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ConfigRegistryConnectorAdapter.class);
 
-	protected BundleContext bundleContext;
 	protected ServiceTracker<ConfigRegistryConnector, ConfigRegistryConnector> serviceTracker;
 
 	public ConfigRegistryConnectorAdapter() {

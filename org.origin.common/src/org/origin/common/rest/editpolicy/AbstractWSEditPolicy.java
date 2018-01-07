@@ -24,7 +24,7 @@ public abstract class AbstractWSEditPolicy implements WSEditPolicy {
 	}
 
 	@Override
-	public <S> void setService(Class<S> clazz, S service) {
+	public void setService(Class<?> clazz, Object service) {
 		if (service != null) {
 			this.servicesMap.put(clazz, service);
 		} else {

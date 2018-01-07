@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
-import org.orbit.component.model.tier3.domain.ModelConverter;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.runtime.tier3.domain.service.DomainService;
 import org.origin.common.rest.model.ErrorDTO;

@@ -1,7 +1,9 @@
 package org.orbit.os.runtime.ws;
 
+import java.util.Map;
+
+import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.os.runtime.service.GAIA;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.server.FeatureConstants;
@@ -16,13 +18,17 @@ public class GaiaAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(GaiaAdapter.class);
 
-	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<GAIA, GAIA> serviceTracker;
 	protected GaiaWSApplication webServiceApp;
 	protected GaiaIndexTimer serviceIndexTimer;
 
-	public GaiaAdapter(IndexProviderLoadBalancer indexProviderLoadBalancer) {
-		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
+	public GaiaAdapter(Map<Object, Object> properties) {
+		this.properties = properties;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public GAIA getService() {
@@ -83,7 +89,7 @@ public class GaiaAdapter {
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProvider indexProvider = getIndexProvider();
 		this.serviceIndexTimer = new GaiaIndexTimer(indexProvider, gaia);
 		this.serviceIndexTimer.start();
 	}

@@ -97,3 +97,4 @@ Export-Package: org.origin.common,
  org.origin.common.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
+Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"

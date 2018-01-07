@@ -39,24 +39,23 @@ import org.osgi.service.cm.ManagedServiceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Configuration Admin Service and ManagedService/ManagedServiceFactory
  * 
- * @see org.eclipse.equinox.http.jetty.internal.HttpServiceManager
+ * 1. @see org.eclipse.equinox.http.jetty.internal.HttpServiceManager
  * 
- * @see http://felix.apache.org/documentation/subprojects/apache-felix-config-admin.html
+ * 2. @see http://felix.apache.org/documentation/subprojects/apache-felix-config-admin.html
  * 
- * @see https://blog.openshift.com/how-to-build-java-websocket-applications-using-the-jsr-356-api/
+ * 3. @see https://blog.openshift.com/how-to-build-java-websocket-applications-using-the-jsr-356-api/
  * 
- * @see ConfigAdminSupport for ConfigAdmin example
+ * 4. @see ConfigAdminSupport for ConfigAdmin example
  * 
- * @see ConfigInstaller for Configuration example
+ * 5. @see ConfigInstaller for Configuration example
  * 
- * @see https://github.com/jetty-project/embedded-jetty-websocket-examples/blob/master/javax.websocket-example/src/main/java/org/eclipse/jetty/demo/EventServer.
- *      java
- * 
- *      Example code to start Jetty Server
- * 
+ * 6. Example
+ *    https://github.com/jetty-project/embedded-jetty-websocket-examples/blob/master/javax.websocket-example/src/main/java/org/eclipse/jetty/demo/EventServer.java
+ *    https://www.programcreek.com/java-api-examples/index.php?source_dir=jetty-web-sockets-jsr356-master/src/main/java/com/example/ws/ServerStarter.java
+ *    
  */
 public class HttpServerManager implements ManagedServiceFactory {
 
