@@ -18,6 +18,9 @@ import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentServ
 import org.orbit.component.runtime.tier3.transferagent.ws.TransferAgentServiceAdapter;
 import org.orbit.component.runtime.tier4.mission.service.MissionControlService;
 import org.orbit.component.runtime.tier4.mission.ws.MissionControlAdapter;
+import org.orbit.infra.api.indexes.IndexProvider;
+import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -41,6 +44,9 @@ public class OrbitServices {
 		return instance;
 	}
 
+	protected Map<Object, Object> properties;
+	protected ServiceConnectorAdapter<IndexProvider> indexProviderConnector;
+
 	// tier1
 	protected UserRegistryServiceAdapter userRegistryServiceAdapter;
 	protected AuthServiceAdapter authServiceAdapter;
@@ -56,10 +62,29 @@ public class OrbitServices {
 	// tier4
 	protected MissionControlAdapter missionControlServiceAdapter;
 
-	public void start(BundleContext bundleContext) {
+	public void start(final BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_INDEX_SERVICE_URL);
+		this.properties = properties;
 
+		this.indexProviderConnector = new ServiceConnectorAdapter<IndexProvider>(IndexProvider.class) {
+			@Override
+			public void connectorAdded(ServiceConnector<IndexProvider> connector) {
+				doStart(bundleContext);
+			}
+
+			@Override
+			public void connectorRemoved(ServiceConnector<IndexProvider> connector) {
+			}
+		};
+		this.indexProviderConnector.start(bundleContext);
+	}
+
+	public void stop(final BundleContext bundleContext) {
+		doStop(bundleContext);
+	}
+
+	public void doStart(BundleContext bundleContext) {
 		// Start service adapters
 		// tier1
 		this.userRegistryServiceAdapter = new UserRegistryServiceAdapter(properties);
@@ -87,7 +112,7 @@ public class OrbitServices {
 		this.missionControlServiceAdapter.start(bundleContext);
 	}
 
-	public void stop(BundleContext bundleContext) {
+	public void doStop(BundleContext bundleContext) {
 		// Stop service adapters
 		// tier4
 		if (this.missionControlServiceAdapter != null) {

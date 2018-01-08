@@ -81,9 +81,9 @@ public class OrbitSwitchers {
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_DOMAIN_SERVICE_SWITCHER_HOSTS);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_DOMAIN_SERVICE_SWITCHER_URLS);
 
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_HOSTS);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_URLS);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_CONTEXT_ROOT);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_HOSTS);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_URLS);
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_MISSION_CONTROL_SWITCHER_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_MISSION_CONTROL_SWITCHER_HOSTS);
@@ -101,7 +101,7 @@ public class OrbitSwitchers {
 
 		// tier3
 		startDomainServiceSwitcher(bundleContext, factory, properties);
-		startTransferAgentSwitcher(bundleContext, factory, properties);
+		// startTransferAgentSwitcher(bundleContext, factory, properties);
 
 		// tier4
 		startMissionControlSwitcher(bundleContext, factory, properties);
@@ -115,7 +115,7 @@ public class OrbitSwitchers {
 
 		// tier3
 		stopDomainServiceSwitcher(bundleContext);
-		stopTransferAgentSwitcher(bundleContext);
+		// stopTransferAgentSwitcher(bundleContext);
 
 		// tier2
 		stopAppStoreSwitcher(bundleContext);

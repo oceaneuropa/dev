@@ -17,7 +17,6 @@ public class ServiceConnectorAdapter<SERVICE> {
 	protected static Logger LOG = LoggerFactory.getLogger(ServiceConnectorAdapter.class);
 
 	protected Class<SERVICE> serviceClass;
-	protected BundleContext bundleContext;
 	protected ServiceTracker<ServiceConnector<Object>, ServiceConnector<Object>> serviceTracker;
 
 	/**
@@ -73,7 +72,9 @@ public class ServiceConnectorAdapter<SERVICE> {
 			public ServiceConnector<Object> addingService(ServiceReference<ServiceConnector<Object>> reference) {
 				ServiceConnector<Object> connector = bundleContext.getService(reference);
 				LOG.info("addingService() ServiceConnector is added: " + connector);
-				connectorAdded(connector);
+
+				notifyConnectorAdded((ServiceConnector<SERVICE>) connector, 1000);
+
 				return connector;
 			}
 
@@ -85,7 +86,8 @@ public class ServiceConnectorAdapter<SERVICE> {
 			@Override
 			public void removedService(ServiceReference<ServiceConnector<Object>> reference, ServiceConnector<Object> connector) {
 				LOG.info("removedService() ServiceConnector is removed: " + connector);
-				connectorRemoved(connector);
+
+				notifyConnectorRemoved((ServiceConnector<SERVICE>) connector, 1000);
 			}
 		});
 		this.serviceTracker.open();
@@ -102,11 +104,45 @@ public class ServiceConnectorAdapter<SERVICE> {
 		}
 	}
 
-	public void connectorAdded(ServiceConnector<?> connector) {
+	public void notifyConnectorAdded(final ServiceConnector<SERVICE> connector, final long delay) {
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				if (delay > 0) {
+					try {
+						Thread.sleep(delay);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				connectorAdded((ServiceConnector<SERVICE>) connector);
+			}
+		});
+		t.start();
+	}
+
+	public void notifyConnectorRemoved(final ServiceConnector<SERVICE> connector, final long delay) {
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				if (delay > 0) {
+					try {
+						Thread.sleep(delay);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				connectorRemoved((ServiceConnector<SERVICE>) connector);
+			}
+		});
+		t.start();
+	}
+
+	public void connectorAdded(ServiceConnector<SERVICE> connector) {
 
 	}
 
-	public void connectorRemoved(ServiceConnector<?> connector) {
+	public void connectorRemoved(ServiceConnector<SERVICE> connector) {
 
 	}
 

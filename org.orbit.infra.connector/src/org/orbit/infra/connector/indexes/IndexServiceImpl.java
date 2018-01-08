@@ -73,9 +73,18 @@ public class IndexServiceImpl implements IndexService {
 	protected void initClient() {
 		String realm = (String) properties.get(InfraConstants.REALM);
 		String username = (String) properties.get(InfraConstants.USERNAME);
-		String url = (String) properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
+		String url = (String) properties.get(InfraConstants.URL);
+
+		String orbitRealm = (String) properties.get(InfraConstants.ORBIT_REALM);
+		String orbitIndexServiceURL = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		if (realm == null && orbitRealm != null) {
+			realm = orbitRealm;
+		}
+		if (url == null && orbitIndexServiceURL != null) {
+			url = orbitIndexServiceURL;
+		}
+
+		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url);
 
 		this.client = new IndexServiceWSClient(clientConfig);
 	}

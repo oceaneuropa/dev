@@ -81,6 +81,8 @@ public class AuthServiceAdapter {
 		IndexProvider indexProvider = getIndexProvider();
 		this.indexTimer = new AuthServiceIndexTimer(indexProvider, service);
 		this.indexTimer.start();
+
+		// Start tracking IndexProvider service.
 	}
 
 	protected void doStop(BundleContext bundleContext, AuthService service) {

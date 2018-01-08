@@ -5,6 +5,9 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	// Orbit
 	// ----------------------------------------------------------------------------------------
+	public static String ORBIT_REALM = "orbit.realm";
+	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
+
 	public static String REALM = "realm";
 	public static String USERNAME = "username";
 	public static String URL = "url";
