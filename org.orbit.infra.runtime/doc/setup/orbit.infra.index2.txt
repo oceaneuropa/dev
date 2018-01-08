@@ -7,10 +7,7 @@ Program Arguments:
 
 VM Arguments:
 -----------------------------------------------------------------------------------------------------------
--Declipse.ignoreApp=true 
--Dosgi.noShutdown=true 
--Dorg.osgi.service.http.port=10001 
--Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 
 
 -DNB_HOME=/Users/denmark/cluster 
 -Dcluster.persistence.local.dir=/Users/denmark/cluster/data 
@@ -20,18 +17,15 @@ VM Arguments:
 
 -Dorg.orbit.service.http.port=20001 
 
--Dcomponent.indexservice.autostart=true
--Dcomponent.indexservice.namespace=group1 
--Dcomponent.indexservice.name=IndexService1 
--Dcomponent.indexservice.context_root=/orbit/v1/indexservice 
--Dcomponent.indexservice.jdbc.driver=org.postgresql.Driver 
--Dcomponent.indexservice.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
--Dcomponent.indexservice.jdbc.username=postgres 
--Dcomponent.indexservice.jdbc.password=admin
+-Dcomponent.index_service.autostart=true
+-Dcomponent.index_service.namespace=group1 
+-Dcomponent.index_service.name=IndexService1 
+-Dcomponent.index_service.context_root=/orbit/v1/indexservice 
+-Dcomponent.index_service.jdbc.driver=org.postgresql.Driver 
+-Dcomponent.index_service.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
+-Dcomponent.index_service.jdbc.username=postgres 
+-Dcomponent.index_service.jdbc.password=admin 
+
+-Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
 -----------------------------------------------------------------------------------------------------------
-
-
-
-
-
 

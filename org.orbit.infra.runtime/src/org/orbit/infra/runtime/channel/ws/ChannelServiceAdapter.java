@@ -1,5 +1,6 @@
 package org.orbit.infra.runtime.channel.ws;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraClients;
@@ -24,15 +25,22 @@ public class ChannelServiceAdapter {
 	protected ChannelServiceIndexTimer serviceIndexTimer;
 
 	public ChannelServiceAdapter(Map<Object, Object> properties) {
-		this.properties = properties;
+		this.properties = checkProperties(properties);
 	}
 
-	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties);
+	protected Map<Object, Object> checkProperties(Map<Object, Object> properties) {
+		if (properties == null) {
+			properties = new HashMap<Object, Object>();
+		}
+		return properties;
 	}
 
 	public ChannelService getService() {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	public void start(final BundleContext bundleContext) {

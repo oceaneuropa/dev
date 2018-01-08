@@ -5,19 +5,12 @@ public class OrbitConstants {
 	// ----------------------------------------------------------------------------------------
 	// Global
 	// ----------------------------------------------------------------------------------------
-	public static String REALM = "realm";
-
-	// config properties
-	public static String COMPONENT_INDEX_SERVICE_URL = "component.index_service.url";
-
-	// global config properties
 	public static String ORBIT_HOST_URL = "orbit.host.url";
+	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 
 	// global index item properties
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
 	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
-
-	// public static String PINGABLE = "pingable";
 
 	// ----------------------------------------------------------------------------------------
 	// UserRegistry

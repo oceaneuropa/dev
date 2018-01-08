@@ -32,7 +32,7 @@ public class OSServices {
 
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OSConstants.COMPONENT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OSConstants.ORBIT_INDEX_SERVICE_URL);
 
 		// Start service adapter
 		this.gaiaAdapter = new GaiaAdapter(properties);

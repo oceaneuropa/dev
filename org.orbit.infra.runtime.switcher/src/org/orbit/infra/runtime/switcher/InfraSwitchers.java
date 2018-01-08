@@ -54,7 +54,6 @@ public class InfraSwitchers {
 
 		startIndexServiceSwitcher(bundleContext, factory, properties);
 		startChannelSwitcher(bundleContext, factory, properties);
-
 	}
 
 	public void stop(BundleContext bundleContext) {

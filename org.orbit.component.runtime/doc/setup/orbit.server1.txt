@@ -7,7 +7,7 @@ orbit.service.http.host=127.0.0.1
 orbit.service.http.port=11001
 orbit.service.http.contextroot=/orbit/v1/indexservice
 
-component.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+component.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice
 
 // tier 1 service configurations
 component.userregistry.namespace=group1
@@ -54,13 +54,13 @@ backup0:
 backup1:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=11001
 -DORIGIN_HOME=/Users/example/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=11001 -Dorbit.service.http.contextroot=/orbit/v1/indexservice
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice
 -Dcomponent.appstore.name=AppStoreInstance1 -Dcomponent.appstore.contextroot=/orbit/v1 -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver -Dcomponent.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.appstore.jdbc.username=postgres -Dcomponent.appstore.jdbc.password=admin -Dcomponent.configregistry.name=ConfigRegistryInstance1 -Dcomponent.configregistry.contextroot=/orbit/v1 -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.configregistry.jdbc.username=postgres -Dcomponent.configregistry.jdbc.password=admin
 
 backup2:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=11001
 -DORIGIN_HOME=/Users/example/origin -Dorbit.service.http.host=127.0.0.1 -Dorbit.service.http.port=11001 -Dorbit.service.http.contextroot=/orbit/v1/indexservice
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice
 -Dcomponent.appstore.name=AppStoreInstance1 -Dcomponent.appstore.contextroot=/orbit/v1/appstore -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver -Dcomponent.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.appstore.jdbc.username=postgres -Dcomponent.appstore.jdbc.password=admin 
 -Dcomponent.configregistry.name=ConfigRegistryInstance1 -Dcomponent.configregistry.contextroot=/orbit/v1/configregistry -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.configregistry.jdbc.username=postgres -Dcomponent.configregistry.jdbc.password=admin
 -Dcomponent.userregistry.name=UserRegistryInstance1 -Dcomponent.userregistry.contextroot=/orbit/v1/userregistry -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.userregistry.jdbc.username=postgres -Dcomponent.userregistry.jdbc.password=admin
@@ -69,7 +69,7 @@ backup3:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=11001
 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:11001 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Dcomponent.userregistry.name=UserRegistryInstance1 -Dcomponent.userregistry.context_root=/orbit/v1/userregistry -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.userregistry.jdbc.username=postgres -Dcomponent.userregistry.jdbc.password=admin
 -Dcomponent.configregistry.name=ConfigRegistryInstance1 -Dcomponent.configregistry.context_root=/orbit/v1/configregistry -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.configregistry.jdbc.username=postgres -Dcomponent.configregistry.jdbc.password=admin
 -Dcomponent.appstore.name=AppStoreInstance1 -Dcomponent.appstore.context_root=/orbit/v1/appstore -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver -Dcomponent.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.appstore.jdbc.username=postgres -Dcomponent.appstore.jdbc.password=admin
@@ -79,7 +79,7 @@ backup4:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=11001
 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:11001 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Dcomponent.userregistry.namespace=group1 -Dcomponent.userregistry.name=UserRegistryInstance1 -Dcomponent.userregistry.context_root=/orbit/v1/userregistry -Dcomponent.userregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.userregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.userregistry.jdbc.username=postgres -Dcomponent.userregistry.jdbc.password=admin
 -Dcomponent.configregistry.namespace=group1 -Dcomponent.configregistry.name=ConfigRegistryInstance1 -Dcomponent.configregistry.context_root=/orbit/v1/configregistry -Dcomponent.configregistry.jdbc.driver=org.postgresql.Driver -Dcomponent.configregistry.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.configregistry.jdbc.username=postgres -Dcomponent.configregistry.jdbc.password=admin
 -Dcomponent.appstore.namespace=group1 -Dcomponent.appstore.name=AppStoreInstance1 -Dcomponent.appstore.context_root=/orbit/v1/appstore -Dcomponent.appstore.jdbc.driver=org.postgresql.Driver -Dcomponent.appstore.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.appstore.jdbc.username=postgres -Dcomponent.appstore.jdbc.password=admin
@@ -91,7 +91,7 @@ backup5:
 -Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:11001 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 
 -Dcomponent.appstore.namespace=group1 
 -Dcomponent.appstore.name=AppStoreInstance1 
@@ -137,7 +137,7 @@ backup6:
 -Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
 -DORIGIN_HOME=/Users/denmark/origin 
 -Dorbit.host.url=http://127.0.0.1:11001 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 
 -Drealm=orbit1 
 

@@ -9,25 +9,22 @@ public class InfraConstants {
 	public static String USERNAME = "username";
 	public static String URL = "url";
 
+	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
+
 	// global index item properties
 	public static String INDEX_ITEM_ID = "index_item_id";
-
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
 	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
-
 	public static String LAST_PING_TIME = "last_ping_time";
 	public static String LAST_PING_SUCCEED = "last_ping_succeed";
 
 	// ----------------------------------------------------------------------------------------
 	// IndexService/IndexItem
 	// ----------------------------------------------------------------------------------------
-	// property names
-	public static String COMPONENT_INDEX_SERVICE_URL = "component.indexs_ervice.url";
-
 	// index item properties
-	public static String INDEX_SERVICE_NAME = "indexservice.name";
-	public static String INDEX_SERVICE_HOST_URL = "indexservice.host.url";
-	public static String INDEX_SERVICE_CONTEXT_ROOT = "indexservice.context_root";
+	public static String INDEX_SERVICE_NAME = "index_service.name";
+	public static String INDEX_SERVICE_HOST_URL = "index_service.host.url";
+	public static String INDEX_SERVICE_CONTEXT_ROOT = "index_service.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// Channel

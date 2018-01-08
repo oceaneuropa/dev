@@ -2,7 +2,7 @@ Example1 (all defined as properties):
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
 -DNODE_HOME=/Users/example/origin/ta1/nodes/node11
 -Dorbit.host.url=http://127.0.0.1:12001 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice
 -Dcomponent.node.name=Node11
 -Dcomponent.node.context_root=/orbit/v1/node
 -Dcomponent.node.jdbc.driver=org.postgresql.Driver
@@ -19,7 +19,7 @@ config.ini
 ------------------------------------------------------------------------------------
 logback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
 orbit.host.url=http://127.0.0.1:13001 
-component.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice
+component.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice
 component.node.namespace=org.example
 component.node.name=Node11
 component.node.context_root=/orbit/v1/node

@@ -46,6 +46,25 @@ import org.osgi.framework.BundleContext;
 
 public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServiceUpdatable, ConnectionAware, CommandRequestHandler {
 
+	// index item attribute names
+	public static String INDEX_ITEM_ID_ATTR = "indexItemId";
+	public static String INDEX_ITEM_PROVIDER_ID_ATTR = "indexProviderId";
+	public static String INDEX_ITEM_TYPE_ATTR = "type";
+	public static String INDEX_ITEM_NAME_ATTR = "name";
+	public static String INDEX_ITEM_PROPERTIES_ATTR = "properties";
+	public static String INDEX_ITEM_CREATE_TIME_ATTR = "createTime";
+	public static String INDEX_ITEM_LAST_UPDATE_TIME_ATTR = "lastUpdateTime";
+
+	// runtime error codes
+	public static String ERROR_CODE_INDEX_ITEM_EXIST = "1001";
+	public static String ERROR_CODE_INDEX_ITEM_NOT_FOUND = "2002";
+	public static String ERROR_CODE_INDEX_ITEM_ILLEGAL_ARGUMENTS = "2003";
+
+	// runtime constants
+	public static String INDEX_SERVICE_EDITING_DOMAIN = "indexservice"; // editing domain name for editing index services
+	public static String CONFIG_SERVICE_HEARTBEAT_EXPIRE_TIME = "index.service.heartbeatExpireTime";
+	public static int DEFAULT_HEARTBEAT_EXPIRE_TIME = 30; // if no heartbeat for the last 30 seconds, the node is considered as not active.
+
 	protected BundleContext bundleContext;
 	protected IndexServiceDatabaseConfigurationV1 indexServiceConfig;
 	protected IndexServiceListenerSupport listenerSupport = new IndexServiceListenerSupport();
@@ -146,7 +165,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	}
 
 	public Integer getServiceHeartbeatExpireTime() {
-		return PropertyUtil.getInt(this.indexServiceConfig.getProperties(), InfraConstants.CONFIG_SERVICE_HEARTBEAT_EXPIRE_TIME, InfraConstants.DEFAULT_HEARTBEAT_EXPIRE_TIME);
+		return PropertyUtil.getInt(this.indexServiceConfig.getProperties(), CONFIG_SERVICE_HEARTBEAT_EXPIRE_TIME, DEFAULT_HEARTBEAT_EXPIRE_TIME);
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
@@ -161,7 +180,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		initializeTables();
 
 		// Initialize the command stack
-		this.revisionCommandStack = IEditingDomain.getEditingDomain(InfraConstants.INDEX_SERVICE_EDITING_DOMAIN).getCommandStack(this);
+		this.revisionCommandStack = IEditingDomain.getEditingDomain(INDEX_SERVICE_EDITING_DOMAIN).getCommandStack(this);
 
 		// Synchronize once when the index service is started, so that the cachedIndexItems and cachedRevisionId can be initialized.
 		try {
@@ -227,7 +246,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		}
 
 		// dispose the command stack
-		IEditingDomain.getEditingDomain(InfraConstants.INDEX_SERVICE_EDITING_DOMAIN).disposeCommandStack(this);
+		IEditingDomain.getEditingDomain(INDEX_SERVICE_EDITING_DOMAIN).disposeCommandStack(this);
 		this.revisionCommandStack = null;
 	}
 
@@ -365,7 +384,8 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	// continue;
 	// }
 	//
-	// IndexServiceConfiguration config = contextRoot == null ? new IndexServiceConfiguration(url) : new IndexServiceConfiguration(url, contextRoot);
+	// IndexServiceConfiguration config = contextRoot == null ? new IndexServiceConfiguration(url) : new IndexServiceConfiguration(url,
+	// contextRoot);
 	// IndexService indexService = IndexServiceFactory.getInstance().createIndexService(config);
 	// try {
 	// indexService.sendCommand("sync", null);
@@ -800,7 +820,8 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 								String lastUpdateTimeCachedStr = lastUpdateTimeCached != null ? DateUtil.toString(lastUpdateTimeCached, DateUtil.getJdbcDateFormat()) : "null";
 								String lastUpdateTimeSnapshotStr = lastUpdateTimeSnapshot != null ? DateUtil.toString(lastUpdateTimeSnapshot, DateUtil.getJdbcDateFormat()) : "null";
 
-								System.err.println("\t\t\tvalidate() indexItemSnapshot (lastUpdateTime=" + lastUpdateTimeSnapshotStr + ") is out of sync with cachedIndexItem (lastUpdateTime=" + lastUpdateTimeCachedStr + "). The cachedIndexItem has been updated duirng validation. Update of the cachedIndexItem (indexItemId=" + cachedIndexItem.getIndexItemId() + ") is cancelled");
+								System.err.println("\t\t\tvalidate() indexItemSnapshot (lastUpdateTime=" + lastUpdateTimeSnapshotStr + ") is out of sync with cachedIndexItem (lastUpdateTime=" + lastUpdateTimeCachedStr
+										+ "). The cachedIndexItem has been updated duirng validation. Update of the cachedIndexItem (indexItemId=" + cachedIndexItem.getIndexItemId() + ") is cancelled");
 								continue;
 							}
 
@@ -1137,12 +1158,12 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		// -------------------------------------------------------------------------------------------------------
 		// Step1. Create a new request record in database.
 		// -------------------------------------------------------------------------------------------------------
-		String requestCommand = InfraConstants.CMD_CREATE_INDEX_ITEM;
+		String requestCommand = RevisionCommand.CMD_CREATE_INDEX_ITEM;
 		Map<String, Object> requestArguments = new HashMap<String, Object>();
-		requestArguments.put(InfraConstants.INDEX_ITEM_PROVIDER_ID_ATTR, indexProviderId);
-		requestArguments.put(InfraConstants.INDEX_ITEM_TYPE_ATTR, type);
-		requestArguments.put(InfraConstants.INDEX_ITEM_NAME_ATTR, name);
-		requestArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, properties);
+		requestArguments.put(INDEX_ITEM_PROVIDER_ID_ATTR, indexProviderId);
+		requestArguments.put(INDEX_ITEM_TYPE_ATTR, type);
+		requestArguments.put(INDEX_ITEM_NAME_ATTR, name);
+		requestArguments.put(INDEX_ITEM_PROPERTIES_ATTR, properties);
 
 		Object[] requestResult = createRequest(indexProviderId, requestCommand, requestArguments);
 		Integer requestId = (Integer) requestResult[0];
@@ -1168,20 +1189,20 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				// Step 3. Create revision record in database.
 				// -------------------------------------------------------------------------------------------------------
 				// command and arguments (for creating index item)
-				String command = InfraConstants.CMD_CREATE_INDEX_ITEM;
+				String command = RevisionCommand.CMD_CREATE_INDEX_ITEM;
 				Map<String, Object> commandArguments = new HashMap<String, Object>();
-				commandArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
-				commandArguments.put(InfraConstants.INDEX_ITEM_PROVIDER_ID_ATTR, indexProviderId);
-				commandArguments.put(InfraConstants.INDEX_ITEM_TYPE_ATTR, type);
-				commandArguments.put(InfraConstants.INDEX_ITEM_NAME_ATTR, name);
-				commandArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, newProperties);
-				commandArguments.put(InfraConstants.INDEX_ITEM_CREATE_TIME_ATTR, createTime);
-				commandArguments.put(InfraConstants.INDEX_ITEM_LAST_UPDATE_TIME_ATTR, lastUpdateTime);
+				commandArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
+				commandArguments.put(INDEX_ITEM_PROVIDER_ID_ATTR, indexProviderId);
+				commandArguments.put(INDEX_ITEM_TYPE_ATTR, type);
+				commandArguments.put(INDEX_ITEM_NAME_ATTR, name);
+				commandArguments.put(INDEX_ITEM_PROPERTIES_ATTR, newProperties);
+				commandArguments.put(INDEX_ITEM_CREATE_TIME_ATTR, createTime);
+				commandArguments.put(INDEX_ITEM_LAST_UPDATE_TIME_ATTR, lastUpdateTime);
 
 				// undo command and arguments (for deleting index item)
-				String undoCommand = InfraConstants.CMD_DELETE_INDEX_ITEM;
+				String undoCommand = RevisionCommand.CMD_DELETE_INDEX_ITEM;
 				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
+				undoCommandArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
 
 				revisionVO = getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
 			}
@@ -1256,9 +1277,9 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		Map<String, Object> properties = JSONUtil.toProperties(propertiesString);
 
 		// 2. Create a new request record in database.
-		String requestCommand = InfraConstants.CMD_DELETE_INDEX_ITEM;
+		String requestCommand = RevisionCommand.CMD_DELETE_INDEX_ITEM;
 		Map<String, Object> requestArguments = new HashMap<String, Object>();
-		requestArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
+		requestArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
 
 		Object[] requestResult = createRequest(indexProviderId, requestCommand, requestArguments);
 		Integer requestId = (Integer) requestResult[0];
@@ -1274,20 +1295,20 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			// 4. Create revision record in database.
 			if (deleted) {
 				// command and arguments (for deleting index item)
-				String command = InfraConstants.CMD_DELETE_INDEX_ITEM;
+				String command = RevisionCommand.CMD_DELETE_INDEX_ITEM;
 				Map<String, Object> commandArguments = new HashMap<String, Object>();
-				commandArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
+				commandArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
 
 				// undo command and arguments (for creating index item)
-				String undoCommand = InfraConstants.CMD_CREATE_INDEX_ITEM;
+				String undoCommand = RevisionCommand.CMD_CREATE_INDEX_ITEM;
 				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_PROVIDER_ID_ATTR, indexProviderId);
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_TYPE_ATTR, type);
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_NAME_ATTR, name);
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, properties);
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_CREATE_TIME_ATTR, createTime);
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_LAST_UPDATE_TIME_ATTR, lastUpdateTime);
+				undoCommandArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
+				undoCommandArguments.put(INDEX_ITEM_PROVIDER_ID_ATTR, indexProviderId);
+				undoCommandArguments.put(INDEX_ITEM_TYPE_ATTR, type);
+				undoCommandArguments.put(INDEX_ITEM_NAME_ATTR, name);
+				undoCommandArguments.put(INDEX_ITEM_PROPERTIES_ATTR, properties);
+				undoCommandArguments.put(INDEX_ITEM_CREATE_TIME_ATTR, createTime);
+				undoCommandArguments.put(INDEX_ITEM_LAST_UPDATE_TIME_ATTR, lastUpdateTime);
 
 				revisionVO = getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
 			}
@@ -1357,10 +1378,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		newProperties.putAll(properties);
 
 		// 2. Create a new request record in database.
-		String requestCommand = InfraConstants.CMD_UPDATE_INDEX_ITEM;
+		String requestCommand = RevisionCommand.CMD_UPDATE_INDEX_ITEM;
 		Map<String, Object> requestArguments = new HashMap<String, Object>();
-		requestArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
-		requestArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, properties);
+		requestArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
+		requestArguments.put(INDEX_ITEM_PROPERTIES_ATTR, properties);
 
 		Object[] requestResult = createRequest(indexProviderId, requestCommand, requestArguments);
 		Integer requestId = (Integer) requestResult[0];
@@ -1376,18 +1397,18 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			// 4. Create revision record in database.
 			if (updated) {
 				// command and arguments (for updating index item properties)
-				String command = InfraConstants.CMD_UPDATE_INDEX_ITEM;
+				String command = RevisionCommand.CMD_UPDATE_INDEX_ITEM;
 				Map<String, Object> commandArguments = new HashMap<String, Object>();
-				commandArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
-				commandArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, oldProperties);
-				commandArguments.put(InfraConstants.INDEX_ITEM_LAST_UPDATE_TIME_ATTR, oldLastUpdateTime);
+				commandArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
+				commandArguments.put(INDEX_ITEM_PROPERTIES_ATTR, oldProperties);
+				commandArguments.put(INDEX_ITEM_LAST_UPDATE_TIME_ATTR, oldLastUpdateTime);
 
 				// undo command and arguments (for reverting changes to the index item properties)
-				String undoCommand = InfraConstants.CMD_UPDATE_INDEX_ITEM;
+				String undoCommand = RevisionCommand.CMD_UPDATE_INDEX_ITEM;
 				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
-				commandArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, newProperties);
-				commandArguments.put(InfraConstants.INDEX_ITEM_LAST_UPDATE_TIME_ATTR, newLastUpdateTime);
+				undoCommandArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
+				commandArguments.put(INDEX_ITEM_PROPERTIES_ATTR, newProperties);
+				commandArguments.put(INDEX_ITEM_LAST_UPDATE_TIME_ATTR, newLastUpdateTime);
 
 				revisionVO = getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
 			}
@@ -1466,10 +1487,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			requestArgsProperties.put(propName, propValue);
 		}
 
-		String requestCommand = InfraConstants.CMD_UPDATE_INDEX_ITEM;
+		String requestCommand = RevisionCommand.CMD_UPDATE_INDEX_ITEM;
 		Map<String, Object> requestArguments = new HashMap<String, Object>();
-		requestArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
-		requestArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, requestArgsProperties);
+		requestArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
+		requestArguments.put(INDEX_ITEM_PROPERTIES_ATTR, requestArgsProperties);
 
 		Object[] requestResult = createRequest(indexProviderId, requestCommand, requestArguments);
 		Integer requestId = (Integer) requestResult[0];
@@ -1486,18 +1507,18 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			// 4. Create revision record in database.
 			if (updated) {
 				// command and arguments (for updating index item properties)
-				String command = InfraConstants.CMD_UPDATE_INDEX_ITEM;
+				String command = RevisionCommand.CMD_UPDATE_INDEX_ITEM;
 				Map<String, Object> commandArguments = new HashMap<String, Object>();
-				commandArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
-				commandArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, oldAllProperties);
-				commandArguments.put(InfraConstants.INDEX_ITEM_LAST_UPDATE_TIME_ATTR, oldLastUpdateTime);
+				commandArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
+				commandArguments.put(INDEX_ITEM_PROPERTIES_ATTR, oldAllProperties);
+				commandArguments.put(INDEX_ITEM_LAST_UPDATE_TIME_ATTR, oldLastUpdateTime);
 
 				// undo command and arguments (for reverting changes to the index item properties)
-				String undoCommand = InfraConstants.CMD_UPDATE_INDEX_ITEM;
+				String undoCommand = RevisionCommand.CMD_UPDATE_INDEX_ITEM;
 				Map<String, Object> undoCommandArguments = new HashMap<String, Object>();
-				undoCommandArguments.put(InfraConstants.INDEX_ITEM_ID_ATTR, indexItemId);
-				commandArguments.put(InfraConstants.INDEX_ITEM_PROPERTIES_ATTR, newAllProperties);
-				commandArguments.put(InfraConstants.INDEX_ITEM_LAST_UPDATE_TIME_ATTR, newLastUpdateTime);
+				undoCommandArguments.put(INDEX_ITEM_ID_ATTR, indexItemId);
+				commandArguments.put(INDEX_ITEM_PROPERTIES_ATTR, newAllProperties);
+				commandArguments.put(INDEX_ITEM_LAST_UPDATE_TIME_ATTR, newLastUpdateTime);
 
 				revisionVO = getDatabaseHelper().createRevisionInDatabase(this, indexProviderId, command, commandArguments, undoCommand, undoCommandArguments);
 			}
@@ -1569,7 +1590,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				}
 			}
 			if (indexItemIdExists) {
-				throw new IndexServiceException(InfraConstants.ERROR_CODE_INDEX_ITEM_EXIST, "Index item with id '" + indexItem.getIndexItemId() + "' already exists.");
+				throw new IndexServiceException(ERROR_CODE_INDEX_ITEM_EXIST, "Index item with id '" + indexItem.getIndexItemId() + "' already exists.");
 			}
 			this.cachedIndexItems.add(indexItem);
 
@@ -1598,7 +1619,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			}
 
 			if (indexItemToRemove == null) {
-				throw new IndexServiceException(InfraConstants.ERROR_CODE_INDEX_ITEM_NOT_FOUND, "Index item with id '" + indexItemId + "' is not found.");
+				throw new IndexServiceException(ERROR_CODE_INDEX_ITEM_NOT_FOUND, "Index item with id '" + indexItemId + "' is not found.");
 			}
 
 			this.cachedIndexItems.remove(indexItemToRemove);
@@ -1628,7 +1649,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			}
 
 			if (indexItemToUpdate == null) {
-				throw new IndexServiceException(InfraConstants.ERROR_CODE_INDEX_ITEM_NOT_FOUND, "Index item with id '" + indexItemId + "' is not found.");
+				throw new IndexServiceException(ERROR_CODE_INDEX_ITEM_NOT_FOUND, "Index item with id '" + indexItemId + "' is not found.");
 			}
 
 			indexItemToUpdate.setProperties(properties);

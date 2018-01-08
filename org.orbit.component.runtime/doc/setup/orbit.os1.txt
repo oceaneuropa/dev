@@ -14,7 +14,7 @@ VM arguments:
 -DNODE_HOME=/Users/denmark/origin/ta1/nodespaces/node1
 
 -Dorbit.host.url=http://127.0.0.1:12001
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Drealm=orbit1 
 
 -Dgaia.name=GAIA_node1 

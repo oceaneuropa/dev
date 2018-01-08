@@ -167,7 +167,7 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 
 }
 
-// public static final String INDEX_SERVICE_INDEXER_ID = "component.indexservice.indexer";
+// public static final String INDEX_SERVICE_INDEXER_ID = "component_.index_service.indexer";
 // protected ThreadPoolTimer indexServicesMonitor;
 
 // @Override

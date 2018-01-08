@@ -1,12 +1,13 @@
-package org.origin.common.rest.client;
+package org.origin.common.rest.client.other;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.felix.service.command.Parameter;
 import org.origin.common.Activator;
+import org.origin.common.rest.client.GlobalContext;
 
-public class GlobalContextImpl extends GlobalContext {
+public class GlobalContextImplV1 extends GlobalContext {
 
 	public class UserInfo {
 		private String realm;
@@ -47,10 +48,12 @@ public class GlobalContextImpl extends GlobalContext {
 		}
 	}
 
+	// protected ThreadLocal<String> currentRealm;
+	// protected ThreadLocal<Map<String, UserInfo>> realmUserInfo;
 	protected String currentRealm;
 	protected Map<String, UserInfo> realmUserInfo;
 
-	public GlobalContextImpl() {
+	public GlobalContextImplV1() {
 		this.currentRealm = getDefaultRealm();
 		this.realmUserInfo = new HashMap<String, UserInfo>();
 	}
@@ -71,23 +74,6 @@ public class GlobalContextImpl extends GlobalContext {
 		return defaultUsername;
 	}
 
-	public String checkRealm(String realm) {
-		if (isRealmUnset(realm)) {
-			realm = getCurrentRealm();
-		}
-		return realm;
-	}
-
-	public String checkUsername(String realm, String username) {
-		if (isRealmUnset(realm)) {
-			realm = getCurrentRealm();
-		}
-		if (isUsernameUnset(username)) {
-			username = getCurrentUsername(realm);
-		}
-		return username;
-	}
-
 	public boolean isRealmUnset(String realm) {
 		if (realm == null || realm.isEmpty() || Parameter.UNSPECIFIED.equals(realm)) {
 			return true;
@@ -103,6 +89,7 @@ public class GlobalContextImpl extends GlobalContext {
 	}
 
 	public String getCurrentRealm() {
+		// return this.currentRealm.get();
 		return this.currentRealm;
 	}
 
@@ -112,6 +99,7 @@ public class GlobalContextImpl extends GlobalContext {
 		}
 
 		String currUsername = null;
+		// Map<String, UserInfo> realmUserInfo = this.realmUserInfo.get();
 		UserInfo currUserInfo = realmUserInfo.get(realm);
 		if (currUserInfo != null) {
 			currUsername = currUserInfo.getUsername();
@@ -122,26 +110,43 @@ public class GlobalContextImpl extends GlobalContext {
 		return currUsername;
 	}
 
-	public void setCurrentUser(String currentRealm, String username, String password) {
-		if (isRealmUnset(currentRealm)) {
-			currentRealm = getDefaultRealm();
+	public void setCurrentUser(String realm, String username, String password) {
+		if (isRealmUnset(realm)) {
+			realm = getDefaultRealm();
 		}
 		if (isUsernameUnset(username)) {
 			username = getDefaultUsername();
 		}
 
 		// set current realm
-		this.currentRealm = currentRealm;
+		// this.currentRealm.set(realm);
+		this.currentRealm = realm;
 
 		// set current user
-		UserInfo userInfo = realmUserInfo.get(currentRealm);
-		if (userInfo == null) {
-			userInfo = new UserInfo();
-			realmUserInfo.put(currentRealm, userInfo);
+		// Map<String, UserInfo> realmUserInfo = this.realmUserInfo.get();
+
+		UserInfo currentUserInfo = realmUserInfo.get(realm);
+		if (currentUserInfo == null) {
+			currentUserInfo = new UserInfo();
+			realmUserInfo.put(realm, currentUserInfo);
 		}
-		userInfo.setRealm(currentRealm);
-		userInfo.setUsername(username);
-		userInfo.setPassword(password);
+		currentUserInfo.setRealm(realm);
+		currentUserInfo.setUsername(username);
+		currentUserInfo.setPassword(password);
+
+		// this.realmUserInfo.set(realmUserInfo);
+	}
+
+	@Override
+	public String checkRealm(String realm) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String checkUsername(String realm, String username) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

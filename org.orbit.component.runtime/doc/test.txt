@@ -8,7 +8,7 @@ Example result:
 [
   {
     "indexItemId": 3,
-    "indexProviderId": "component.indexservice.indexer",
+    "indexProviderId": "component.index_service.indexer",
     "type": "IndexService",
     "name": "IndexServiceInstance1",
     "properties": {

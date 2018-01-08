@@ -1,0 +1,26 @@
+Backup1:
+
+Program Arguments:
+-----------------------------------------------------------------------------------------------------------
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean
+-----------------------------------------------------------------------------------------------------------
+
+VM Arguments:
+-----------------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 
+
+-Dorbit.realm=orbit1 
+-Dorbit.host.url=http://127.0.0.1:10001 
+-Dorbit.index_service.url=http://127.0.0.1:8000 
+
+-Dcomponent.index_service.autostart=true 
+-Dcomponent.index_service.name=IndexService1 
+-Dcomponent.index_service.context_root=/orbit/v1/indexservice 
+-Dcomponent.index_service.jdbc.driver=org.postgresql.Driver 
+-Dcomponent.index_service.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
+-Dcomponent.index_service.jdbc.username=postgres 
+-Dcomponent.index_service.jdbc.password=admin 
+
+-Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 
+-----------------------------------------------------------------------------------------------------------
+

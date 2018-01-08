@@ -95,7 +95,7 @@ public class OrbitServicesV1 {
 		// load properties from accessing index service
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
 		// TASetupUtil.loadConfigIniProperties(bundleContext, indexProviderProps);
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OrbitConstants.COMPONENT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OrbitConstants.ORBIT_INDEX_SERVICE_URL);
 		IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, indexProviderProps);
 
 		// Start service adapters

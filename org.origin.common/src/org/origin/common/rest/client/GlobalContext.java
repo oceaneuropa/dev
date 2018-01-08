@@ -21,23 +21,6 @@ public abstract class GlobalContext {
 		return instance;
 	}
 
-	public String checkRealm(String realm) {
-		if (isRealmUnset(realm)) {
-			realm = getCurrentRealm();
-		}
-		return realm;
-	}
-
-	public String checkUsername(String realm, String username) {
-		if (isRealmUnset(realm)) {
-			realm = getCurrentRealm();
-		}
-		if (isUsernameUnset(username)) {
-			username = getCurrentUsername(realm);
-		}
-		return username;
-	}
-
 	public boolean isRealmUnset(String realm) {
 		if (realm == null || realm.isEmpty() || Parameter.UNSPECIFIED.equals(realm)) {
 			return true;
@@ -52,9 +35,9 @@ public abstract class GlobalContext {
 		return false;
 	}
 
-	public abstract String getCurrentRealm();
+	public abstract String checkRealm(String realm);
 
-	public abstract String getCurrentUsername(String realm);
+	public abstract String checkUsername(String realm, String username);
 
 	public abstract void setCurrentUser(String realm, String username, String password);
 

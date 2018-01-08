@@ -1,0 +1,22 @@
+1. Single machine:
+------------------------------------------------------------------------------------------------------
+global (web service front)
+	8000
+
+channel (web socket front)
+	7001, 7002 (,..., 7005,..., 7009) (outbound - web sockets)
+	9001, 9002 (,..., 9006,..., 9009) (inbound  - web services)
+
+index_service (infra)
+	10001, 10002 (,..., 10010)
+
+user_registry, auth, config_registryappstore, app_store, domain_service (components)
+	11001, 11002 (,..., 11010)
+
+transfer_agent (agents)
+	12001, 12002 (,..., 12010)
+
+node (nodes)
+	13001, 13002 (,..., 13010)
+------------------------------------------------------------------------------------------------------
+

@@ -65,10 +65,10 @@ public class InfraClients {
 	public IndexProvider getIndexProvider(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
-			url = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_URL);
+			url = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		}
 		if (url == null) {
-			throw new IllegalStateException("'" + InfraConstants.COMPONENT_INDEX_SERVICE_URL + "' property is not found.");
+			throw new IllegalStateException("'" + InfraConstants.ORBIT_INDEX_SERVICE_URL + "' property is not found.");
 		}
 		return getIndexProvider(url);
 	}
@@ -96,11 +96,11 @@ public class InfraClients {
 	public IndexService getIndexService(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
-			url = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_URL);
+			url = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		}
 		if (url == null) {
-			LOG.error("'" + InfraConstants.COMPONENT_INDEX_SERVICE_URL + "' property is not found.");
-			throw new IllegalStateException("'" + InfraConstants.COMPONENT_INDEX_SERVICE_URL + "' property is not found.");
+			LOG.error("'" + InfraConstants.ORBIT_INDEX_SERVICE_URL + "' property is not found.");
+			throw new IllegalStateException("'" + InfraConstants.ORBIT_INDEX_SERVICE_URL + "' property is not found.");
 		}
 		return getIndexService(url);
 	}

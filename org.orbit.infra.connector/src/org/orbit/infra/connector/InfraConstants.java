@@ -2,18 +2,12 @@ package org.orbit.infra.connector;
 
 public class InfraConstants {
 
+	// ----------------------------------------------------------------------------------------
+	// Orbit
+	// ----------------------------------------------------------------------------------------
 	public static String REALM = "realm";
 	public static String USERNAME = "username";
 	public static String URL = "url";
-
-	// ----------------------------------------------------------------------------------------
-	// IndexItem
-	// ----------------------------------------------------------------------------------------
-	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
-	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
-
-	// config property
-	public static String COMPONENT_INDEX_SERVICE_URL = "component.index_service.url";
 
 	// ----------------------------------------------------------------------------------------
 	// Channel
@@ -31,13 +25,17 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	// IndexService
 	// ----------------------------------------------------------------------------------------
-	// index item values
-	public static String INDEX_SERVICE_INDEXER_ID = "component.indexservice.indexer"; // index provider id for IndexService
-	public static String INDEX_SERVICE_TYPE = "IndexService"; // type of index item for IndexService
-
 	// index item properties
 	public static String INDEX_SERVICE_NAME = "indexservice.name";
 	public static String INDEX_SERVICE_HOST_URL = "indexservice.host.url";
 	public static String INDEX_SERVICE_CONTEXT_ROOT = "indexservice.context_root";
 
 }
+
+// public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
+// public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
+// public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
+
+// index item values
+// public static String INDEX_SERVICE_INDEXER_ID = "component_.index_service.indexer"; // index provider id for IndexService
+// public static String INDEX_SERVICE_TYPE = "IndexService"; // type of index item for IndexService

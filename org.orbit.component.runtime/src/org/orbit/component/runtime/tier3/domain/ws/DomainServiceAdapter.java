@@ -14,8 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Adapter to start DomainMgmtWSApplication when DomainMgmtService becomes available and to stop DomainMgmtWSApplication when DomainMgmtService becomes
- * unavailable.
+ * Adapter to start DomainMgmtWSApplication when DomainMgmtService becomes available and to stop DomainMgmtWSApplication when
+ * DomainMgmtService becomes unavailable.
  * 
  */
 public class DomainServiceAdapter {
@@ -31,12 +31,12 @@ public class DomainServiceAdapter {
 		this.properties = properties;
 	}
 
-	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties);
-	}
-
 	public DomainService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
+	}
+
+	public IndexProvider getIndexProvider() {
+		return InfraClients.getInstance().getIndexProvider(this.properties);
 	}
 
 	/**

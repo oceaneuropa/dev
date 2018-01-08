@@ -12,7 +12,7 @@ import java.util.Map;
  * 
  * Example:
  * 
- * IndexService: "component.indexservice.indexer"
+ * IndexService: "component_.index_service.indexer"
  * 
  * AppStore: "component.appstore.indexer"
  * 

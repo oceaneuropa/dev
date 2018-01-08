@@ -28,8 +28,8 @@ public class Activator implements BundleActivator {
 	private static final String AUTOSTART = "org.orbit.service.http.jetty.autostart"; //$NON-NLS-1$
 
 	// Use these properties for setting the default ports
-	private static final String ORG_OSGI_SERVICE_HTTP_PORT = "org.orbit.service.http.port"; //$NON-NLS-1$
-	private static final String ORG_OSGI_SERVICE_HTTP_PORT_SECURE = "org.orbit.service.http.port.secure"; //$NON-NLS-1$
+	private static final String ORG_OSGI_SERVICE_HTTP_PORT = "orbit.service.http.port"; //$NON-NLS-1$
+	private static final String ORG_OSGI_SERVICE_HTTP_PORT_SECURE = "orbit.service.http.port.secure"; //$NON-NLS-1$
 
 	// Used by createDefaultSettings(BundleContext context) method
 	private static final String PROPERTY_PREFIX = "org.orbit.service.http.jetty."; //$NON-NLS-1$
@@ -76,7 +76,8 @@ public class Activator implements BundleActivator {
 		workDir.mkdir();
 		this.httpServerManager = new HttpServerManager(bundleContext, workDir);
 
-		// Update HttpServerManager to start Jetty Server immediately and to trigger starting of HttpService (HttpServiceFactory) and WebSocketService
+		// Update HttpServerManager to start Jetty Server immediately and to trigger starting of HttpService (HttpServiceFactory) and
+		// WebSocketService
 		// (WebSocketServiceFactory).
 		String autostart = bundleContext.getProperty(AUTOSTART);
 		if ((autostart == null || Boolean.valueOf(autostart).booleanValue()) && !isBundleActivationPolicyUsed(bundleContext)) {
@@ -141,9 +142,9 @@ public class Activator implements BundleActivator {
 		defaultSettings.put(JettyConstants.HTTP_ENABLED, httpEnabled);
 
 		// HTTP Port
-		// using "org.orbit.service.http.jetty.http.port"
+		// using "orbit.service.http.jetty.http.port"
 		// or
-		// using "org.orbit.service.http.port"
+		// using "orbit.service.http.port"
 		String httpPortProperty = context.getProperty(PROPERTY_PREFIX + JettyConstants.HTTP_PORT);
 		if (httpPortProperty == null) {
 			httpPortProperty = context.getProperty(ORG_OSGI_SERVICE_HTTP_PORT);

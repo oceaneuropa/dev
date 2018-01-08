@@ -121,7 +121,7 @@ public class IndexServiceUtil {
 	private static List<URL> getIndexServiceURLs(Map<Object, Object> props) {
 		List<URL> indexServiceURIs = new ArrayList<URL>();
 		if (props != null) {
-			Object obj = props.get(InfraConstants.COMPONENT_INDEX_SERVICE_URL);
+			Object obj = props.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 			if (obj instanceof String) {
 				String str = (String) obj;
 				if (str.contains(";")) {

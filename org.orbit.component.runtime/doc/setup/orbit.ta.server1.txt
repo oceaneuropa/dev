@@ -11,7 +11,7 @@ VM arguments:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:12001 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Dcomponent.transfer_agent.name=TransferAgent101 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta -Dcomponent.transfer_agent.jdbc.driver=org.postgresql.Driver -Dcomponent.transfer_agent.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin -Dcomponent.transfer_agent.jdbc.username=postgres -Dcomponent.transfer_agent.jdbc.password=admin
 
 
@@ -25,7 +25,7 @@ VM arguments:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:12001 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Dcomponent.transfer_agent.name=TransferAgent101 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta -Dcomponent.transfer_agent.home=/Users/example/origin/ta1
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +38,7 @@ VM arguments:
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=12001
 -DORIGIN_HOME=/Users/example/origin 
 -Dorbit.host.url=http://127.0.0.1:12001 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Dcomponent.transfer_agent.namespace=org.example -Dcomponent.transfer_agent.name=TransferAgent101 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta -Dcomponent.transfer_agent.home=/Users/example/origin/ta1
 
 v4
@@ -48,7 +48,7 @@ v4
 -DORIGIN_HOME=/Users/denmark/origin 
 -Dorbit.host.url=http://127.0.0.1:12001 
 
--Dcomponent.indexservice.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
 -Dcomponent.transfer_agent.namespace= group1 
 -Dcomponent.transfer_agent.name=TransferAgent101 
 -Dcomponent.transfer_agent.context_root=/orbit/v1/ta 

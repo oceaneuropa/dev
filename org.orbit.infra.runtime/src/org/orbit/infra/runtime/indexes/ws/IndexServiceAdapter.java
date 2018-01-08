@@ -1,5 +1,8 @@
 package org.orbit.infra.runtime.indexes.ws;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
@@ -13,9 +16,21 @@ public class IndexServiceAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceAdapter.class);
 
+	protected Map<Object, Object> properties;
 	protected ServiceTracker<IndexService, IndexService> serviceTracker;
 	protected IndexServiceWSApplication webService;
 	protected IndexServiceIndexTimer serviceIndexTimer;
+
+	public IndexServiceAdapter(Map<Object, Object> properties) {
+		this.properties = checkProperties(properties);
+	}
+
+	protected Map<Object, Object> checkProperties(Map<Object, Object> properties) {
+		if (properties == null) {
+			properties = new HashMap<Object, Object>();
+		}
+		return properties;
+	}
 
 	public IndexService getService() {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;

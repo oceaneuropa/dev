@@ -52,7 +52,7 @@ public class ServicesCommand {
 		}
 
 		Hashtable<String, Object> commandProps = new Hashtable<String, Object>();
-		commandProps.put("osgi.command.scope", "orbitmgmt");
+		commandProps.put("osgi.command.scope", "infra");
 		commandProps.put("osgi.command.function", new String[] { "startservice", "stopservice" });
 		OSGiServiceUtil.register(bundleContext, ServicesCommand.class.getName(), this, commandProps);
 	}

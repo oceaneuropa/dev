@@ -34,14 +34,15 @@ public class InfraServices {
 	protected ChannelServiceAdapter channelServiceAdapter;
 
 	public void start(BundleContext bundleContext) {
-		Map<Object, Object> configProperties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProperties, InfraConstants.COMPONENT_INDEX_SERVICE_URL);
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
 
 		// Start service adapters
-		this.indexServiceAdapter = new IndexServiceAdapter();
+		this.indexServiceAdapter = new IndexServiceAdapter(properties);
 		this.indexServiceAdapter.start(bundleContext);
 
-		this.channelServiceAdapter = new ChannelServiceAdapter(configProperties);
+		this.channelServiceAdapter = new ChannelServiceAdapter(properties);
 		this.channelServiceAdapter.start(bundleContext);
 	}
 

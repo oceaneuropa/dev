@@ -3,17 +3,19 @@ package org.orbit.component.api;
 public class OrbitConstants {
 
 	// ----------------------------------------------------------------------------------------
-	// Connector property names
+	// global
 	// ----------------------------------------------------------------------------------------
+	// config properties
+	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
+
+	// index item properties
+	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
+	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
+
+	// runtime properties
 	public static String REALM = "realm";
 	public static String USERNAME = "username";
 	public static String URL = "url";
-
-	public static String COMPONENT_INDEX_SERVICE_URL = "component.index_service.url";
-
-	// global index item properties
-	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
-	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
 
 	// ----------------------------------------------------------------------------------------
 	// UserRegistry

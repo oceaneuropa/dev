@@ -16,6 +16,7 @@ import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
+import org.origin.common.Activator;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.JWTUtil;
 import org.origin.common.util.PropertyUtil;
@@ -64,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
 
 	protected void init() {
 		// 1. retrieve token secret
-		String realm = (String) this.properties.get(OrbitConstants.REALM);
+		String realm = Activator.getDefault().getRealm();
 		this.tokenSecret = (String) this.properties.get(OrbitConstants.COMPONENT_AUTH_TOKEN_SECRET);
 
 		// 2. init token manager
@@ -310,7 +311,8 @@ public class AuthServiceImpl implements AuthService {
 
 			// Access token expires in 30 minutes
 			// Refresh token expires in 24 hours
-			// - The access token should be updated/refreshed with each access to web services. Accessing web services should return response header for the new
+			// - The access token should be updated/refreshed with each access to web services. Accessing web services should return response header for
+			// the new
 			// access token with updated expiration time.
 			Date now = new Date();
 			Date accessTokenExpiresAt = DateUtil.addMinutes(now, 30);

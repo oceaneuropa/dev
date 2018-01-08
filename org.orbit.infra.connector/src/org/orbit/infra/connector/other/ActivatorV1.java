@@ -83,9 +83,9 @@ public class ActivatorV1 implements BundleActivator {
 
 	protected void doStart(BundleContext bundleContext, IndexServiceConnectorV1 connector) {
 		// Get load balancer for IndexProvider
-		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, InfraConstants.COMPONENT_INDEX_SERVICE_URL);
-		IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
+		// Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
+		// PropertyUtil.loadProperty(bundleContext, indexProviderProps, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// IndexServiceLoadBalancer indexServiceLoadBalancer = IndexServiceUtil.getIndexServiceLoadBalancer(connector, indexProviderProps);
 
 		// this.servicesCommand = new ServicesCommand(indexServiceLoadBalancer.createLoadBalancableIndexService());
 		// this.servicesCommand = new ServicesCommand();

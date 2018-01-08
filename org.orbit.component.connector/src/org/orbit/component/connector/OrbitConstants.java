@@ -27,18 +27,6 @@ public class OrbitConstants {
 	public static String CHANNEL_CONTEXT_ROOT = "channel.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// IndexService
-	// ----------------------------------------------------------------------------------------
-	// index item values
-	public static String INDEX_SERVICE_INDEXER_ID = "component.indexservice.indexer"; // index provider id for IndexService
-	public static String INDEX_SERVICE_TYPE = "IndexService"; // type of index item for IndexService
-
-	// index item properties
-	public static String INDEX_SERVICE_NAME = "indexservice.name";
-	public static String INDEX_SERVICE_HOST_URL = "indexservice.host.url";
-	public static String INDEX_SERVICE_CONTEXT_ROOT = "indexservice.context_root";
-
-	// ----------------------------------------------------------------------------------------
 	// UserRegistry
 	// ----------------------------------------------------------------------------------------
 	// index item values
@@ -139,3 +127,15 @@ public class OrbitConstants {
 // public static String TRANSFER_AGENT_NAME = "transfer_agent.name";
 // public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
 // public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
+
+// ----------------------------------------------------------------------------------------
+// IndexService
+// ----------------------------------------------------------------------------------------
+// index item values
+// public static String INDEX_SERVICE_INDEXER_ID = "component_.index_service.indexer"; // index provider id for IndexService
+// public static String INDEX_SERVICE_TYPE = "IndexService"; // type of index item for IndexService
+
+// index item properties
+// public static String INDEX_SERVICE_NAME = "indexservice.name";
+// public static String INDEX_SERVICE_HOST_URL = "indexservice.host.url";
+// public static String INDEX_SERVICE_CONTEXT_ROOT = "indexservice.context_root";

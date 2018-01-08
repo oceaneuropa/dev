@@ -74,7 +74,7 @@ public class ActivatorV1 implements BundleActivator {
 
 		// Start service adapters
 		if (hasIndexService) {
-			indexServiceAdapter = new IndexServiceAdapter();
+			indexServiceAdapter = new IndexServiceAdapter(null);
 			indexServiceAdapter.start(bundleContext);
 		}
 
@@ -140,7 +140,7 @@ public class ActivatorV1 implements BundleActivator {
 		// Get IndexProvider load balancer
 		// load properties from accessing index service
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, InfraConstants.COMPONENT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, indexProviderProps, InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, indexProviderProps);
 
 		if (hasChannelService) {

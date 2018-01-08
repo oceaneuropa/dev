@@ -1,0 +1,21 @@
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=8000 
+
+-Dorbit.host.url=http://127.0.0.1:8000 
+-Dorbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice 
+
+-Dcomponent.user_registry.switcher.context_root=/orbit/v1/userregistry 
+-Dcomponent.user_registry.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+
+-Dcomponent.auth.switcher.context_root=/orbit/v1/auth 
+-Dcomponent.auth.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+
+-Dcomponent.config_registry.switcher.context_root=/orbit/v1/configregistry 
+-Dcomponent.config_registry.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+
+-Dcomponent.app_store.switcher.context_root=/orbit/v1/appstore 
+-Dcomponent.app_store.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+
+-Dcomponent.domain.switcher.context_root=/orbit/v1/domain 
+-Dcomponent.domain.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+
+-Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 

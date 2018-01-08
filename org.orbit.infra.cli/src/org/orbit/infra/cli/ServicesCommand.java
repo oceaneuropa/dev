@@ -51,8 +51,8 @@ public class ServicesCommand implements Annotated {
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_URL);
-		this.indexServiceUrl = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		this.indexServiceUrl = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 	}
 
 	public void stop(BundleContext bundleContext) {
