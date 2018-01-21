@@ -28,7 +28,7 @@ public class GaiaAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties);
+		return InfraClients.getInstance().getIndexProviderReference(this.properties);
 	}
 
 	public GAIA getService() {

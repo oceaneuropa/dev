@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.orbit.infra.api.channel.Channels;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderReference;
 import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceReference;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.osgi.framework.BundleContext;
@@ -62,6 +64,10 @@ public class InfraClients {
 		}
 	}
 
+	public IndexProvider getIndexProviderReference(Map<?, ?> properties) {
+		return new IndexProviderReference(properties);
+	}
+
 	public IndexProvider getIndexProvider(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
@@ -91,6 +97,10 @@ public class InfraClients {
 			throw new IllegalStateException("IndexProvider is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
 		}
 		return indexProvider;
+	}
+
+	public IndexService getIndexServiceReference(Map<?, ?> properties) {
+		return new IndexServiceReference(properties);
 	}
 
 	public IndexService getIndexService(Map<?, ?> properties) {

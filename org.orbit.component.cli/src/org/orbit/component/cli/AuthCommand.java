@@ -80,166 +80,6 @@ public class AuthCommand {
 		System.out.println("Result is: " + result);
 	}
 
-	// @Descriptor("authorize")
-	// public void authorize( //
-	// @Descriptor("Realm") @Parameter(names = { "-realm", "--realm" }, absentValue = Parameter.UNSPECIFIED) String realm, //
-	// @Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
-	//
-	// @Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
-	// @Descriptor("Client ID") @Parameter(names = { "-client_id", "--client_id" }, absentValue = Parameter.UNSPECIFIED) String client_id, //
-	// @Descriptor("Response Type") @Parameter(names = { "-response_type", "--response_type" }, absentValue = Parameter.UNSPECIFIED) String
-	// response_type, //
-	// @Descriptor("Scope") @Parameter(names = { "-scope", "--scope" }, absentValue = Parameter.UNSPECIFIED) String scope, //
-	// @Descriptor("State") @Parameter(names = { "-state", "--state" }, absentValue = Parameter.UNSPECIFIED) String state //
-	// ) throws ClientException {
-	// CLIHelper.getInstance().printCommand(getScheme(), "authorize", //
-	// new String[] { "url", url }, //
-	// new String[] { "client_id", client_id }, //
-	// new String[] { "response_type", response_type }, //
-	// new String[] { "scope", scope }, //
-	// new String[] { "state", state } //
-	// );
-	// if (Parameter.UNSPECIFIED.equals(url)) {
-	// LOG.error("'-url' parameter is not set.");
-	// return;
-	// }
-	//
-	// Auth auth = getAuth(realm, username, url);
-	//
-	// AuthorizationRequest request = new AuthorizationRequest();
-	// request.setClient_id(client_id);
-	// request.setResponse_type(response_type);
-	// request.setScope(scope);
-	// request.setState(state);
-	//
-	// AuthorizationResponse response = auth.authorize(request);
-	// if (response == null) {
-	// System.out.println("AuthorizationResponse is null");
-	// } else {
-	// System.out.println("AuthorizationResponse is:");
-	// System.out.println(response);
-	// }
-	// }
-
-	// /**
-	// *
-	// * @param grant_type
-	// * e.g. "client_credentials" (for app login) or "user_credentials" (for user login) or "refresh_token" for refreshing token
-	// * @param client_id
-	// * @param client_secret
-	// * @param username
-	// * @param password
-	// * @param refresh_token
-	// * @param scope
-	// * @param state
-	// * @throws ClientException
-	// */
-	// @Descriptor("token")
-	// public void token( //
-	// @Descriptor("Realm") @Parameter(names = { "-realm", "--realm" }, absentValue = Parameter.UNSPECIFIED) String realm, //
-	//
-	// @Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
-	// @Descriptor("Grant Type") @Parameter(names = { "-grant_type", "--grant_type" }, absentValue = Parameter.UNSPECIFIED) String grant_type,
-	// //
-	//
-	// // for app token
-	// @Descriptor("Client ID") @Parameter(names = { "-client_id", "--client_id" }, absentValue = Parameter.UNSPECIFIED) String client_id, //
-	// @Descriptor("Client Secret") @Parameter(names = { "-client_secret", "--client_secret" }, absentValue = Parameter.UNSPECIFIED) String
-	// client_secret, //
-	//
-	// // for user token
-	// @Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
-	// @Descriptor("Password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password, //
-	//
-	// // for refreshing token
-	// @Descriptor("Refresh Token") @Parameter(names = { "-refresh_token", "--refresh_token" }, absentValue = Parameter.UNSPECIFIED) String
-	// refresh_token, //
-	//
-	// // optional for all grand typs
-	// @Descriptor("Scope") @Parameter(names = { "-scope", "--scope" }, absentValue = Parameter.UNSPECIFIED) String scope, //
-	// @Descriptor("State") @Parameter(names = { "-state", "--state" }, absentValue = Parameter.UNSPECIFIED) String state //
-	// ) throws ClientException {
-	// CLIHelper.getInstance().printCommand(getScheme(), "token", //
-	// new String[] { "url", url }, //
-	// new String[] { "grant_type", grant_type }, //
-	// new String[] { "client_id", client_id }, //
-	// new String[] { "client_secret", client_secret }, //
-	// new String[] { "username", username }, //
-	// new String[] { "password", password }, //
-	// new String[] { "refresh_token", refresh_token }, //
-	// new String[] { "scope", scope }, //
-	// new String[] { "state", state } //
-	// );
-	// if (Parameter.UNSPECIFIED.equals(url)) {
-	// LOG.error("'-url' parameter is not set.");
-	// return;
-	// }
-	//
-	// Auth auth = getAuth(realm, username, url);
-	//
-	// TokenRequest request = new TokenRequest();
-	//
-	// if (GrantTypes.CLIENT_CREDENTIALS.equals(grant_type)) {
-	// if (Parameter.UNSPECIFIED.equals(client_id)) {
-	// System.out.println("client_id is not set.");
-	// return;
-	// }
-	// if (Parameter.UNSPECIFIED.equals(client_secret)) {
-	// System.out.println("client_secret is not set.");
-	// return;
-	// }
-	//
-	// request.setGrantType(grant_type);
-	// request.setClientId(client_id);
-	// request.setClientSecret(client_secret);
-	//
-	// } else if (GrantTypes.USER_CREDENTIALS.equals(grant_type)) {
-	// if (Parameter.UNSPECIFIED.equals(username)) {
-	// System.out.println("username is not set.");
-	// return;
-	// }
-	// if (Parameter.UNSPECIFIED.equals(password)) {
-	// System.out.println("password is not set.");
-	// return;
-	// }
-	//
-	// request.setGrantType(grant_type);
-	// request.setUsername(username);
-	// request.setPassword(password);
-	//
-	// } else if (GrantTypes.REFRESH_TOKEN.equals(grant_type)) {
-	// if (Parameter.UNSPECIFIED.equals(refresh_token)) {
-	// System.out.println("refresh_token is not set.");
-	// return;
-	// }
-	//
-	// request.setGrantType(grant_type);
-	// request.setRefreshToken(refresh_token);
-	//
-	// } else {
-	// System.out.println("Unsupported grand_type: " + grant_type);
-	// return;
-	// }
-	//
-	// // Set optional options
-	// if (!Parameter.UNSPECIFIED.equals(scope)) {
-	// request.setScope(scope);
-	// }
-	// if (!Parameter.UNSPECIFIED.equals(state)) {
-	// request.setState(state);
-	// }
-	//
-	// TokenResponse response = auth.getToken(request);
-	//
-	// if (response == null) {
-	// System.out.println("TokenResponse is null");
-	// } else {
-	// System.out.println("TokenResponse is:");
-	//
-	// System.out.println(response);
-	// }
-	// }
-
 	/**
 	 * 
 	 * @param realm
@@ -325,4 +165,164 @@ public class AuthCommand {
 // return null;
 // }
 // return auth;
+// }
+
+// @Descriptor("authorize")
+// public void authorize( //
+// @Descriptor("Realm") @Parameter(names = { "-realm", "--realm" }, absentValue = Parameter.UNSPECIFIED) String realm, //
+// @Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
+//
+// @Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
+// @Descriptor("Client ID") @Parameter(names = { "-client_id", "--client_id" }, absentValue = Parameter.UNSPECIFIED) String client_id, //
+// @Descriptor("Response Type") @Parameter(names = { "-response_type", "--response_type" }, absentValue = Parameter.UNSPECIFIED) String
+// response_type, //
+// @Descriptor("Scope") @Parameter(names = { "-scope", "--scope" }, absentValue = Parameter.UNSPECIFIED) String scope, //
+// @Descriptor("State") @Parameter(names = { "-state", "--state" }, absentValue = Parameter.UNSPECIFIED) String state //
+// ) throws ClientException {
+// CLIHelper.getInstance().printCommand(getScheme(), "authorize", //
+// new String[] { "url", url }, //
+// new String[] { "client_id", client_id }, //
+// new String[] { "response_type", response_type }, //
+// new String[] { "scope", scope }, //
+// new String[] { "state", state } //
+// );
+// if (Parameter.UNSPECIFIED.equals(url)) {
+// LOG.error("'-url' parameter is not set.");
+// return;
+// }
+//
+// Auth auth = getAuth(realm, username, url);
+//
+// AuthorizationRequest request = new AuthorizationRequest();
+// request.setClient_id(client_id);
+// request.setResponse_type(response_type);
+// request.setScope(scope);
+// request.setState(state);
+//
+// AuthorizationResponse response = auth.authorize(request);
+// if (response == null) {
+// System.out.println("AuthorizationResponse is null");
+// } else {
+// System.out.println("AuthorizationResponse is:");
+// System.out.println(response);
+// }
+// }
+
+// /**
+// *
+// * @param grant_type
+// * e.g. "client_credentials" (for app login) or "user_credentials" (for user login) or "refresh_token" for refreshing token
+// * @param client_id
+// * @param client_secret
+// * @param username
+// * @param password
+// * @param refresh_token
+// * @param scope
+// * @param state
+// * @throws ClientException
+// */
+// @Descriptor("token")
+// public void token( //
+// @Descriptor("Realm") @Parameter(names = { "-realm", "--realm" }, absentValue = Parameter.UNSPECIFIED) String realm, //
+//
+// @Descriptor("Auth server URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
+// @Descriptor("Grant Type") @Parameter(names = { "-grant_type", "--grant_type" }, absentValue = Parameter.UNSPECIFIED) String grant_type,
+// //
+//
+// // for app token
+// @Descriptor("Client ID") @Parameter(names = { "-client_id", "--client_id" }, absentValue = Parameter.UNSPECIFIED) String client_id, //
+// @Descriptor("Client Secret") @Parameter(names = { "-client_secret", "--client_secret" }, absentValue = Parameter.UNSPECIFIED) String
+// client_secret, //
+//
+// // for user token
+// @Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
+// @Descriptor("Password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password, //
+//
+// // for refreshing token
+// @Descriptor("Refresh Token") @Parameter(names = { "-refresh_token", "--refresh_token" }, absentValue = Parameter.UNSPECIFIED) String
+// refresh_token, //
+//
+// // optional for all grand typs
+// @Descriptor("Scope") @Parameter(names = { "-scope", "--scope" }, absentValue = Parameter.UNSPECIFIED) String scope, //
+// @Descriptor("State") @Parameter(names = { "-state", "--state" }, absentValue = Parameter.UNSPECIFIED) String state //
+// ) throws ClientException {
+// CLIHelper.getInstance().printCommand(getScheme(), "token", //
+// new String[] { "url", url }, //
+// new String[] { "grant_type", grant_type }, //
+// new String[] { "client_id", client_id }, //
+// new String[] { "client_secret", client_secret }, //
+// new String[] { "username", username }, //
+// new String[] { "password", password }, //
+// new String[] { "refresh_token", refresh_token }, //
+// new String[] { "scope", scope }, //
+// new String[] { "state", state } //
+// );
+// if (Parameter.UNSPECIFIED.equals(url)) {
+// LOG.error("'-url' parameter is not set.");
+// return;
+// }
+//
+// Auth auth = getAuth(realm, username, url);
+//
+// TokenRequest request = new TokenRequest();
+//
+// if (GrantTypes.CLIENT_CREDENTIALS.equals(grant_type)) {
+// if (Parameter.UNSPECIFIED.equals(client_id)) {
+// System.out.println("client_id is not set.");
+// return;
+// }
+// if (Parameter.UNSPECIFIED.equals(client_secret)) {
+// System.out.println("client_secret is not set.");
+// return;
+// }
+//
+// request.setGrantType(grant_type);
+// request.setClientId(client_id);
+// request.setClientSecret(client_secret);
+//
+// } else if (GrantTypes.USER_CREDENTIALS.equals(grant_type)) {
+// if (Parameter.UNSPECIFIED.equals(username)) {
+// System.out.println("username is not set.");
+// return;
+// }
+// if (Parameter.UNSPECIFIED.equals(password)) {
+// System.out.println("password is not set.");
+// return;
+// }
+//
+// request.setGrantType(grant_type);
+// request.setUsername(username);
+// request.setPassword(password);
+//
+// } else if (GrantTypes.REFRESH_TOKEN.equals(grant_type)) {
+// if (Parameter.UNSPECIFIED.equals(refresh_token)) {
+// System.out.println("refresh_token is not set.");
+// return;
+// }
+//
+// request.setGrantType(grant_type);
+// request.setRefreshToken(refresh_token);
+//
+// } else {
+// System.out.println("Unsupported grand_type: " + grant_type);
+// return;
+// }
+//
+// // Set optional options
+// if (!Parameter.UNSPECIFIED.equals(scope)) {
+// request.setScope(scope);
+// }
+// if (!Parameter.UNSPECIFIED.equals(state)) {
+// request.setState(state);
+// }
+//
+// TokenResponse response = auth.getToken(request);
+//
+// if (response == null) {
+// System.out.println("TokenResponse is null");
+// } else {
+// System.out.println("TokenResponse is:");
+//
+// System.out.println(response);
+// }
 // }

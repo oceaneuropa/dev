@@ -1,0 +1,35 @@
+Program Arguments:
+-------------------------------------------------------------------------------------------------------
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean
+-------------------------------------------------------------------------------------------------------
+
+VM Arguments:
+-------------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=8000 
+
+-Dorbit.host.url=http://127.0.0.1:8000 
+-Dorbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice 
+
+-Dcomponent.index_service.switcher.hosts=http://127.0.0.1:10001;http://127.0.0.1:10002 
+-Dcomponent.index_service.switcher.context_root=/orbit/v1/indexservice 
+
+-Dcomponent.channel.switcher.hosts=http://127.0.0.1:9001;http://127.0.0.1:9002 
+-Dcomponent.channel.switcher.context_root=/orbit/v1/channel 
+
+-Dcomponent.user_registry.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.user_registry.switcher.context_root=/orbit/v1/userregistry 
+ 
+-Dcomponent.auth.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.auth.switcher.context_root=/orbit/v1/auth 
+
+-Dcomponent.config_registry.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.config_registry.switcher.context_root=/orbit/v1/configregistry 
+ 
+-Dcomponent.app_store.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.app_store.switcher.context_root=/orbit/v1/appstore 
+
+-Dcomponent.domain_service.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
+-Dcomponent.domain_service.switcher.context_root=/orbit/v1/domain 
+ 
+-Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
+-------------------------------------------------------------------------------------------------------

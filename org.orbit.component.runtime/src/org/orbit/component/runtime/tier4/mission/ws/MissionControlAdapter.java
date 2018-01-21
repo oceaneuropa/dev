@@ -4,8 +4,10 @@ import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier4.mission.service.MissionControlService;
+import org.orbit.component.runtime.tier4.mission.ws.editpolicy.MissionWSEditPolicy;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -32,7 +34,7 @@ public class MissionControlAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties);
+		return InfraClients.getInstance().getIndexProviderReference(this.properties);
 	}
 
 	public MissionControlService getService() {
@@ -81,6 +83,11 @@ public class MissionControlAdapter {
 	}
 
 	protected void doStart(BundleContext bundleContext, MissionControlService service) {
+		// Install web service edit policies
+		WSEditPolicies editPolicies = service.getEditPolicies();
+		editPolicies.uninstallEditPolicy(MissionWSEditPolicy.ID); // ensure MissionWSEditPolicy instance is not duplicated
+		editPolicies.installEditPolicy(new MissionWSEditPolicy());
+
 		// Start web service
 		this.webServiceApp = new MissionControlWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
@@ -103,6 +110,10 @@ public class MissionControlAdapter {
 			this.webServiceApp.stop(bundleContext);
 			this.webServiceApp = null;
 		}
+
+		// Uninstall web service edit policies
+		WSEditPolicies editPolicies = service.getEditPolicies();
+		editPolicies.uninstallEditPolicy(MissionWSEditPolicy.ID);
 	}
 
 }

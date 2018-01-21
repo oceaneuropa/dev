@@ -1,4 +1,4 @@
-package org.orbit.component.model.tier3.transferagent.dto;
+package org.orbit.component.model.tier3.transferagent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,14 +6,17 @@ import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
+import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
+import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
+import org.orbit.component.model.tier3.transferagent.dto.NodeInfoImpl;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 
-public class TransferAgentResponseConverter {
+public class TransferAgentConverter {
 
-	public static TransferAgentResponseConverter INSTANCE = new TransferAgentResponseConverter();
+	public static TransferAgentConverter INSTANCE = new TransferAgentConverter();
 
-	public NodeInfo[] convertToNodeInfos(Response response) throws ClientException {
+	public NodeInfo[] getNodes(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}
@@ -30,7 +33,7 @@ public class TransferAgentResponseConverter {
 		return nodeInfos.toArray(new NodeInfo[nodeInfos.size()]);
 	}
 
-	public NodeInfo convertToNodeInfo(Response response) throws ClientException {
+	public NodeInfo getNode(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}
@@ -61,7 +64,7 @@ public class TransferAgentResponseConverter {
 		return exists;
 	}
 
-	public boolean createNodeSucceed(Response response) throws ClientException {
+	public boolean isNodeCreated(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}
@@ -75,7 +78,7 @@ public class TransferAgentResponseConverter {
 		return succeed;
 	}
 
-	public boolean deleteNodeSucceed(Response response) throws ClientException {
+	public boolean isNodeDeleted(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}

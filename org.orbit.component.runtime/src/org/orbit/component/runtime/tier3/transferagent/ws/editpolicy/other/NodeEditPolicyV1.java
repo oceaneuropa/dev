@@ -25,7 +25,7 @@ public class NodeEditPolicyV1 extends AbstractWSEditPolicyV1 {
 	@Override
 	public ICommand getCommand(EditpolicyWSApplicationResource resource, Request request) {
 		String requestName = request.getRequestName();
-		if (Requests.LIST_NODES.equals(requestName)) {
+		if (Requests.GET_NODES.equals(requestName)) {
 			return new NodeListCommandV1(service, request);
 
 		} else if (Requests.GET_NODE.equals(requestName)) {

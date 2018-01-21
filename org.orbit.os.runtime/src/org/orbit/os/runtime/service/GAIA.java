@@ -30,9 +30,9 @@ public interface GAIA {
 
 	void stop();
 
-	ProgramsAndFeatures getProgramsAndFeatures();
-
 	WSEditPolicies getEditPolicies();
+
+	ProgramsAndFeatures getProgramsAndFeatures();
 
 	Worlds getWorlds();
 

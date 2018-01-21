@@ -16,23 +16,23 @@ public class OrbitConstants {
 	// UserRegistry
 	// ----------------------------------------------------------------------------------------
 	// config properties
-	public static String COMPONENT_USER_REGISTRY_AUTOSTART = "component.userregistry.autostart";
-	public static String COMPONENT_USER_REGISTRY_NAME = "component.userregistry.name";
-	public static String COMPONENT_USER_REGISTRY_HOST_URL = "component.userregistry.host.url";
-	public static String COMPONENT_USER_REGISTRY_CONTEXT_ROOT = "component.userregistry.context_root";
-	public static String COMPONENT_USER_REGISTRY_JDBC_DRIVER = "component.userregistry.jdbc.driver";
-	public static String COMPONENT_USER_REGISTRY_JDBC_URL = "component.userregistry.jdbc.url";
-	public static String COMPONENT_USER_REGISTRY_JDBC_USERNAME = "component.userregistry.jdbc.username";
-	public static String COMPONENT_USER_REGISTRY_JDBC_PASSWORD = "component.userregistry.jdbc.password";
+	public static String COMPONENT_USER_REGISTRY_AUTOSTART = "component.user_registry.autostart";
+	public static String COMPONENT_USER_REGISTRY_NAME = "component.user_registry.name";
+	public static String COMPONENT_USER_REGISTRY_HOST_URL = "component.user_registry.host.url";
+	public static String COMPONENT_USER_REGISTRY_CONTEXT_ROOT = "component.user_registry.context_root";
+	public static String COMPONENT_USER_REGISTRY_JDBC_DRIVER = "component.user_registry.jdbc.driver";
+	public static String COMPONENT_USER_REGISTRY_JDBC_URL = "component.user_registry.jdbc.url";
+	public static String COMPONENT_USER_REGISTRY_JDBC_USERNAME = "component.user_registry.jdbc.username";
+	public static String COMPONENT_USER_REGISTRY_JDBC_PASSWORD = "component.user_registry.jdbc.password";
 
 	// index item values
-	public static String USER_REGISTRY_INDEXER_ID = "component.userregistry.indexer"; // index provider id for UserRegistry
+	public static String USER_REGISTRY_INDEXER_ID = "component.user_registry.indexer"; // index provider id for UserRegistry
 	public static String USER_REGISTRY_TYPE = "UserRegistry"; // type of index item for UserRegistry
 
 	// index item properties
-	public static String USER_REGISTRY_NAME = "userregistry.name";
-	public static String USER_REGISTRY_HOST_URL = "userregistry.host.url";
-	public static String USER_REGISTRY_CONTEXT_ROOT = "userregistry.context_root";
+	public static String USER_REGISTRY_NAME = "user_registry.name";
+	public static String USER_REGISTRY_HOST_URL = "user_registry.host.url";
+	public static String USER_REGISTRY_CONTEXT_ROOT = "user_registry.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// OAuth2
@@ -84,45 +84,45 @@ public class OrbitConstants {
 	// ConfigRegistry
 	// ----------------------------------------------------------------------------------------
 	// config properties
-	public static String COMPONENT_CONFIG_REGISTRY_AUTOSTART = "component.configregistry.autostart";
-	public static String COMPONENT_CONFIG_REGISTRY_NAME = "component.configregistry.name";
-	public static String COMPONENT_CONFIG_REGISTRY_HOST_URL = "component.configregistry.host.url";
-	public static String COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT = "component.configregistry.context_root";
-	public static String COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER = "component.configregistry.jdbc.driver";
-	public static String COMPONENT_CONFIG_REGISTRY_JDBC_URL = "component.configregistry.jdbc.url";
-	public static String COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME = "component.configregistry.jdbc.username";
-	public static String COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD = "component.configregistry.jdbc.password";
+	public static String COMPONENT_CONFIG_REGISTRY_AUTOSTART = "component.config_registry.autostart";
+	public static String COMPONENT_CONFIG_REGISTRY_NAME = "component.config_registry.name";
+	public static String COMPONENT_CONFIG_REGISTRY_HOST_URL = "component.config_registry.host.url";
+	public static String COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT = "component.config_registry.context_root";
+	public static String COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER = "component.config_registry.jdbc.driver";
+	public static String COMPONENT_CONFIG_REGISTRY_JDBC_URL = "component.config_registry.jdbc.url";
+	public static String COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME = "component.config_registry.jdbc.username";
+	public static String COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD = "component.config_registry.jdbc.password";
 
 	// index item values
-	public static String CONFIG_REGISTRY_INDEXER_ID = "component.configregistry.indexer"; // index provider id for ConfigRegistry
+	public static String CONFIG_REGISTRY_INDEXER_ID = "component.config_registry.indexer"; // index provider id for ConfigRegistry
 	public static String CONFIG_REGISTRY_TYPE = "ConfigRegistry"; // type of index item for ConfigRegistry
 
 	// index item properties
-	public static String CONFIG_REGISTRY_NAME = "configregistry.name";
-	public static String CONFIG_REGISTRY_HOST_URL = "configregistry.host.url";
-	public static String CONFIG_REGISTRY_CONTEXT_ROOT = "configregistry.context_root";
+	public static String CONFIG_REGISTRY_NAME = "config_registry.name";
+	public static String CONFIG_REGISTRY_HOST_URL = "config_registry.host.url";
+	public static String CONFIG_REGISTRY_CONTEXT_ROOT = "config_registry.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// AppStore
 	// ----------------------------------------------------------------------------------------
 	// config properties
-	public static String COMPONENT_APP_STORE_AUTOSTART = "component.appstore.autostart";
-	public static String COMPONENT_APP_STORE_NAME = "component.appstore.name";
-	public static String COMPONENT_APP_STORE_HOST_URL = "component.appstore.host.url";
-	public static String COMPONENT_APP_STORE_CONTEXT_ROOT = "component.appstore.context_root";
-	public static String COMPONENT_APP_STORE_JDBC_DRIVER = "component.appstore.jdbc.driver";
-	public static String COMPONENT_APP_STORE_JDBC_URL = "component.appstore.jdbc.url";
-	public static String COMPONENT_APP_STORE_JDBC_USERNAME = "component.appstore.jdbc.username";
-	public static String COMPONENT_APP_STORE_JDBC_PASSWORD = "component.appstore.jdbc.password";
+	public static String COMPONENT_APP_STORE_AUTOSTART = "component.app_store.autostart";
+	public static String COMPONENT_APP_STORE_NAME = "component.app_store.name";
+	public static String COMPONENT_APP_STORE_HOST_URL = "component.app_store.host.url";
+	public static String COMPONENT_APP_STORE_CONTEXT_ROOT = "component.app_store.context_root";
+	public static String COMPONENT_APP_STORE_JDBC_DRIVER = "component.app_store.jdbc.driver";
+	public static String COMPONENT_APP_STORE_JDBC_URL = "component.app_store.jdbc.url";
+	public static String COMPONENT_APP_STORE_JDBC_USERNAME = "component.app_store.jdbc.username";
+	public static String COMPONENT_APP_STORE_JDBC_PASSWORD = "component.app_store.jdbc.password";
 
 	// index item values
-	public static String APP_STORE_INDEXER_ID = "component.appstore.indexer"; // index provider id for AppStore
+	public static String APP_STORE_INDEXER_ID = "component.app_store.indexer"; // index provider id for AppStore
 	public static String APP_STORE_TYPE = "AppStore"; // type of index item for AppStore
 
 	// index item properties
-	public static String APPSTORE_NAME = "appstore.name";
-	public static String APPSTORE_HOST_URL = "appstore.host.url";
-	public static String APPSTORE_CONTEXT_ROOT = "appstore.context_root";
+	public static String APPSTORE_NAME = "app_store.name";
+	public static String APPSTORE_HOST_URL = "app_store.host.url";
+	public static String APPSTORE_CONTEXT_ROOT = "app_store.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// DomainService

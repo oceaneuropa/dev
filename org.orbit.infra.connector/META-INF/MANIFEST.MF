@@ -19,7 +19,6 @@ Import-Package: javax.ws.rs.client;version="2.0.0",
  org.orbit.infra.model.indexes,
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.7.25"
-Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.infra.connector,
  org.orbit.infra.connector.channel,
  org.orbit.infra.connector.indexes

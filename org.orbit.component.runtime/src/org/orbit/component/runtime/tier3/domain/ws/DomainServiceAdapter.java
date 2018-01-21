@@ -36,7 +36,7 @@ public class DomainServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties);
+		return InfraClients.getInstance().getIndexProviderReference(this.properties);
 	}
 
 	/**

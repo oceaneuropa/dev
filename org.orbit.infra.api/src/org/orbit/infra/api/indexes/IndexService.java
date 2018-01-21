@@ -6,12 +6,13 @@ import java.util.Map;
 
 // import org.orbit.component.connector.tier0.indexes.IndexServiceConfiguration;
 import org.origin.common.adapter.IAdaptable;
+import org.origin.common.service.ProxyService;
 
 /**
  * Used by client to query index items.
  *
  */
-public interface IndexService extends IAdaptable {
+public interface IndexService extends ProxyService, IAdaptable {
 
 	String getName();
 
@@ -27,6 +28,16 @@ public interface IndexService extends IAdaptable {
 	 * @return result larger than 0 means service is available. result equals or smaller than 0 means service is not available.
 	 */
 	boolean ping();
+
+	/**
+	 * Execute an action with optional parameters.
+	 * 
+	 * @param action
+	 * @param params
+	 * @return
+	 * @throws IOException
+	 */
+	public boolean sendCommand(String action, Map<String, Object> params) throws IOException;
 
 	/**
 	 * Get all index items.
@@ -74,16 +85,6 @@ public interface IndexService extends IAdaptable {
 	 * @throws IOException
 	 */
 	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
-
-	/**
-	 * Execute an action with optional parameters.
-	 * 
-	 * @param action
-	 * @param params
-	 * @return
-	 * @throws IOException
-	 */
-	public boolean sendCommand(String action, Map<String, Object> params) throws IOException;
 
 }
 

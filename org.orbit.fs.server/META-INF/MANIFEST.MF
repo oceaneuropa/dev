@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: File System Server
-Bundle-SymbolicName: org.orbit.fs.server
+Bundle-SymbolicName: org.orbit.fs.server;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.fs.server.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -23,6 +23,5 @@ Import-Package: javax.ws.rs;version="2.0.0",
  org.origin.common.rest.server,
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.7.10"
-Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.fs.server,
  org.orbit.fs.server.ws

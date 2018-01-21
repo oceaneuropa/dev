@@ -120,23 +120,23 @@ public class OSCommand implements Annotated {
 	}
 
 	@Descriptor("List installed programs")
-	public void listapps() throws ClientException {
+	public void list_programs() throws ClientException {
 		LOG.info("listapps()");
 		checkGAIA();
 
-		ProgramHandler[] appHandlers = this.gaia.getProgramsAndFeatures().getProgramHandlers();
-		int num = (appHandlers != null) ? appHandlers.length : 0;
+		ProgramHandler[] programHandlers = this.gaia.getProgramsAndFeatures().getProgramHandlers();
+		int num = (programHandlers != null) ? programHandlers.length : 0;
 
 		LOG.info("Number of apps: " + num);
-		if (appHandlers != null) {
-			for (ProgramHandler appHandler : appHandlers) {
+		if (programHandlers != null) {
+			for (ProgramHandler programHandler : programHandlers) {
 				LOG.info("------------------------------------------------------------");
-				ProgramManifest appManifest = appHandler.getManifest();
+				ProgramManifest appManifest = programHandler.getManifest();
 				String appId = appManifest.getId();
 				String appVersion = appManifest.getVersion();
-				Program app = appHandler.getProgram();
+				Program app = programHandler.getProgram();
 
-				String appText = appId + "_" + appVersion + " (Activation State: " + appHandler.getRuntimeState().toString() + ")";
+				String appText = appId + "_" + appVersion + " (Activation State: " + programHandler.getRuntimeState().toString() + ")";
 				if (app != null) {
 					// DependencySet.STATE dependencySetState = runtimeApp.getDependencySet().getState();
 					Program.RUNTIME_STATE appRuntimeState = app.getRuntimeState();

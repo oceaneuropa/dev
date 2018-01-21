@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: File System Test
-Bundle-SymbolicName: org.orbit.fs.test
+Bundle-SymbolicName: org.orbit.fs.test;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.fs.test.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

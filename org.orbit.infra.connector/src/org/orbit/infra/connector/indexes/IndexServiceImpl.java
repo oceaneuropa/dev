@@ -15,12 +15,14 @@ import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.service.InternalProxyService;
 
-public class IndexServiceImpl implements IndexService {
+public class IndexServiceImpl implements IndexService, InternalProxyService {
 
 	protected Map<String, Object> properties;
 	protected IndexServiceWSClient client;
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
+	protected boolean isProxy = false;
 
 	/**
 	 * 
@@ -264,6 +266,16 @@ public class IndexServiceImpl implements IndexService {
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public boolean isProxy() {
+		return this.isProxy;
+	}
+
+	@Override
+	public void setProxy(boolean isProxy) {
+		this.isProxy = isProxy;
 	}
 
 }

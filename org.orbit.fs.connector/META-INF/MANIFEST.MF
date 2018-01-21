@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: File System Connector
-Bundle-SymbolicName: org.orbit.fs.connector
+Bundle-SymbolicName: org.orbit.fs.connector;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.orbit.fs.connector.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
@@ -20,7 +20,6 @@ Import-Package: com.fasterxml.jackson.databind,
  org.origin.common.rest.client,
  org.origin.common.rest.model,
  org.osgi.framework;version="1.3.0"
-Bundle-ActivationPolicy: lazy
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2"
 Export-Package: org.orbit.fs.connector,
  org.orbit.fs.connector.cli,

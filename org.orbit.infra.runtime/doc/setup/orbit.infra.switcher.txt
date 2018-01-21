@@ -1,0 +1,21 @@
+Program Arguments:
+-----------------------------------------------------------------------------------------------------------
+-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean
+-----------------------------------------------------------------------------------------------------------
+
+VM Arguments:
+-----------------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=8000 
+
+-Dorbit.host.url=http://127.0.0.1:8000 
+-Dorbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice 
+
+-Dcomponent.index_service.switcher.context_root=/orbit/v1/indexservice 
+-Dcomponent.index_service.switcher.hosts=http://127.0.0.1:10001;http://127.0.0.1:10002 
+
+-Dcomponent.channel.switcher.context_root=/orbit/v1/channel 
+-Dcomponent.channel.switcher.hosts=http://127.0.0.1:9001;http://127.0.0.1:9002 
+
+-Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-----------------------------------------------------------------------------------------------------------
+

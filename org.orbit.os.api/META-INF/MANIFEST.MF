@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit OS API
-Bundle-SymbolicName: org.orbit.os.api
-Bundle-Version: 1.0.0.qualifier
+Bundle-Name: Orbit :: OS :: API
+Bundle-SymbolicName: org.orbit.os.api;singleton:=true
+Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.os.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.json;version="2015.11.23",

@@ -1,5 +1,3 @@
-Backup1:
-
 Program Arguments:
 -----------------------------------------------------------------------------------------------------------
 -os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean

@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.UserRegistryConnector;
@@ -67,7 +68,7 @@ public class ServicesCommand implements Annotated {
 	@Dependency
 	protected AppStoreConnector appStoreConnector;
 	@Dependency
-	protected DomainServiceConnector domainMgmtConnector;
+	protected DomainServiceConnector domainServiceConnector;
 
 	protected String getScheme() {
 		return this.scheme;
@@ -86,7 +87,13 @@ public class ServicesCommand implements Annotated {
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 
 		this.properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_USER_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_AUTH_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_CONFIG_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_APP_STORE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
 	}
 
 	public void stop(BundleContext bundleContext) {
@@ -95,7 +102,7 @@ public class ServicesCommand implements Annotated {
 	}
 
 	protected IndexService getIndexService() {
-		return InfraClients.getInstance().getIndexService(this.properties);
+		return InfraClients.getInstance().getIndexServiceReference(this.properties);
 	}
 
 	@DependencyFullfilled
@@ -104,7 +111,7 @@ public class ServicesCommand implements Annotated {
 		LOG.debug("userRegistryConnector: " + userRegistryConnector);
 		LOG.debug("authConnector: " + authConnector);
 		LOG.debug("appStoreConnector: " + appStoreConnector);
-		LOG.debug("domainMgmtConnector: " + domainMgmtConnector);
+		LOG.debug("domainMgmtConnector: " + domainServiceConnector);
 		// LOG.debug("transferAgentConnector: " + transferAgentConnector);
 	}
 
@@ -114,7 +121,7 @@ public class ServicesCommand implements Annotated {
 		LOG.debug("userRegistryConnector: " + userRegistryConnector);
 		LOG.debug("authConnector: " + authConnector);
 		LOG.debug("appStoreConnector: " + appStoreConnector);
-		LOG.debug("domainMgmtConnector: " + domainMgmtConnector);
+		LOG.debug("domainMgmtConnector: " + domainServiceConnector);
 		// LOG.debug("transferAgentConnector: " + transferAgentConnector);
 	}
 
@@ -159,10 +166,10 @@ public class ServicesCommand implements Annotated {
 		int rowIndex = 0;
 		for (LoadBalanceResource<UserRegistry> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.USER_REGISTRY_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.USER_REGISTRY_NAME);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.USER_REGISTRY_HOST_URL);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.USER_REGISTRY_CONTEXT_ROOT);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_HOST_URL);
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
 			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
@@ -184,10 +191,10 @@ public class ServicesCommand implements Annotated {
 		int rowIndex = 0;
 		for (LoadBalanceResource<Auth> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.AUTH_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.AUTH_NAME);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.AUTH_HOST_URL);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.AUTH_CONTEXT_ROOT);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_HOST_URL);
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
 			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
@@ -208,10 +215,10 @@ public class ServicesCommand implements Annotated {
 		int rowIndex = 0;
 		for (LoadBalanceResource<AppStore> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.APPSTORE_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.APPSTORE_NAME);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.APPSTORE_HOST_URL);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.APPSTORE_CONTEXT_ROOT);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_HOST_URL);
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
 			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
@@ -226,16 +233,16 @@ public class ServicesCommand implements Annotated {
 	}
 
 	protected void listDomainServices() throws ClientException {
-		List<LoadBalanceResource<DomainService>> resources = ServicesCommandHelper.INSTANCE.getDomainServiceResources(this.domainMgmtConnector);
+		List<LoadBalanceResource<DomainService>> resources = ServicesCommandHelper.INSTANCE.getDomainServiceResources(this.domainServiceConnector);
 
 		String[][] rows = new String[resources.size()][DOMAIN_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
 		for (LoadBalanceResource<DomainService> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_SERVICE_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_SERVICE_NAME);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_MANAGEMENT_HOST_URL);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, OrbitConstants.DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_SERVICE_NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_SERVICE_NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_MANAGEMENT_HOST_URL);
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_MANAGEMENT_CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
 			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
@@ -253,7 +260,7 @@ public class ServicesCommand implements Annotated {
 		try {
 			IndexService indexService = getIndexService();
 
-			List<IndexItem> indexItems = indexService.getIndexItems(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, OrbitConstants.TRANSFER_AGENT_TYPE);
+			List<IndexItem> indexItems = indexService.getIndexItems(IndexConstants.TRANSFER_AGENT_INDEXER_ID, IndexConstants.TRANSFER_AGENT_TYPE);
 
 			String[][] rows = new String[indexItems.size()][TRANSFERAGENT_SERVICES_TITLES.length];
 			int rowIndex = 0;
@@ -261,12 +268,12 @@ public class ServicesCommand implements Annotated {
 				Integer indexItemId = indexItem.getIndexItemId();
 				Map<String, Object> props = indexItem.getProperties();
 
-				String namespace = (String) props.get(OrbitConstants.TRANSFER_AGENT_NAMESPACE);
-				String name = (String) props.get(OrbitConstants.TRANSFER_AGENT_NAME);
-				String hostUrl = (String) props.get(OrbitConstants.TRANSFER_AGENT_HOST_URL);
-				String contextRoot = (String) props.get(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT);
-				Object lastHeartbeatTime = props.get(OrbitConstants.HEARTBEAT_EXPIRE_TIME);
-				Object heartbeatExpireTime = props.get(OrbitConstants.LAST_HEARTBEAT_TIME);
+				String namespace = (String) props.get(IndexConstants.TRANSFER_AGENT_NAMESPACE);
+				String name = (String) props.get(IndexConstants.TRANSFER_AGENT_NAME);
+				String hostUrl = (String) props.get(IndexConstants.TRANSFER_AGENT_HOST_URL);
+				String contextRoot = (String) props.get(IndexConstants.TRANSFER_AGENT_CONTEXT_ROOT);
+				Object lastHeartbeatTime = props.get(IndexConstants.HEARTBEAT_EXPIRE_TIME);
+				Object heartbeatExpireTime = props.get(IndexConstants.LAST_HEARTBEAT_TIME);
 
 				String lastHeartbeatTimeStr = lastHeartbeatTime.toString();
 				String heartbeatExpireTimeStr = heartbeatExpireTime.toString();

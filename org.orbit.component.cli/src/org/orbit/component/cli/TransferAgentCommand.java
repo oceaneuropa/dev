@@ -12,8 +12,8 @@ import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.api.tier3.domain.DomainServiceConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
+import org.orbit.component.model.tier3.transferagent.TransferAgentConverter;
 import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
-import org.orbit.component.model.tier3.transferagent.dto.TransferAgentResponseConverter;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -46,10 +46,11 @@ public class TransferAgentCommand implements Annotated {
 	public void start(final BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function", new String[] { //
-				"ping", //
-				"echo", "level", //
-				"list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
+		props.put("osgi.command.function",
+				new String[] { //
+						"ping", //
+						"echo", "level", //
+						"list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
 		});
 
 		OSGiServiceUtil.register(bundleContext, TransferAgentCommand.class.getName(), this, props);
@@ -81,6 +82,17 @@ public class TransferAgentCommand implements Annotated {
 				transferAgent = OrbitClients.getInstance().getTransferAgent(url);
 			}
 		}
+		if (transferAgent == null) {
+			throw new IllegalStateException("TransferAgent is null.");
+		}
+		return transferAgent;
+	}
+
+	protected TransferAgent getTransferAgent(String url) {
+		TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(url);
+		if (transferAgent == null) {
+			throw new IllegalStateException("TransferAgent is null.");
+		}
 		return transferAgent;
 	}
 
@@ -101,9 +113,6 @@ public class TransferAgentCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "ping", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
-			}
 
 			boolean ping = transferAgent.ping();
 			System.out.println("ping result = " + ping);
@@ -134,7 +143,8 @@ public class TransferAgentCommand implements Annotated {
 		}
 
 		try {
-			TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(url);
+			TransferAgent transferAgent = getTransferAgent(url);
+
 			String echoMessage = transferAgent.echo(message);
 			System.out.println("echo result = " + echoMessage);
 
@@ -167,7 +177,8 @@ public class TransferAgentCommand implements Annotated {
 		}
 
 		try {
-			TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(url);
+			TransferAgent transferAgent = getTransferAgent(url);
+
 			String levelResult = transferAgent.level(level1, level2, message1, message2);
 			System.out.println("level result = " + levelResult);
 
@@ -204,14 +215,11 @@ public class TransferAgentCommand implements Annotated {
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
-			if (transferAgent == null) {
-				return;
-			}
 
-			Request request = new Request(Requests.LIST_NODES);
+			Request request = new Request(Requests.GET_NODES);
 			Response response = transferAgent.sendRequest(request);
 
-			NodeInfo[] nodeInfos = TransferAgentResponseConverter.INSTANCE.convertToNodeInfos(response);
+			NodeInfo[] nodeInfos = TransferAgentConverter.INSTANCE.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
 			for (NodeInfo nodeInfo : nodeInfos) {
@@ -245,11 +253,12 @@ public class TransferAgentCommand implements Annotated {
 		}
 
 		try {
-			TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(url);
-			Request request = new Request(Requests.LIST_NODES);
+			TransferAgent transferAgent = getTransferAgent(url);
+
+			Request request = new Request(Requests.GET_NODES);
 			Response response = transferAgent.sendRequest(request);
 
-			NodeInfo[] nodeInfos = TransferAgentResponseConverter.INSTANCE.convertToNodeInfos(response);
+			NodeInfo[] nodeInfos = TransferAgentConverter.INSTANCE.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
 			for (NodeInfo nodeInfo : nodeInfos) {
@@ -281,7 +290,7 @@ public class TransferAgentCommand implements Annotated {
 
 			Response response = transferAgent.sendRequest(request);
 
-			NodeInfo nodeInfo = TransferAgentResponseConverter.INSTANCE.convertToNodeInfo(response);
+			NodeInfo nodeInfo = TransferAgentConverter.INSTANCE.getNode(response);
 			NodeInfo[] nodeInfos = (nodeInfo != null) ? new NodeInfo[] { nodeInfo } : new NodeInfo[] {};
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
@@ -313,7 +322,7 @@ public class TransferAgentCommand implements Annotated {
 			request.setParameter("nodeId", nodeId);
 
 			Response response = transferAgent.sendRequest(request);
-			boolean exists = TransferAgentResponseConverter.INSTANCE.nodeExists(response);
+			boolean exists = TransferAgentConverter.INSTANCE.nodeExists(response);
 			LOG.info("exists: " + exists);
 
 		} catch (Exception e) {
@@ -338,7 +347,7 @@ public class TransferAgentCommand implements Annotated {
 
 			Response response = transferAgent.sendRequest(request);
 
-			boolean succeed = TransferAgentResponseConverter.INSTANCE.createNodeSucceed(response);
+			boolean succeed = TransferAgentConverter.INSTANCE.isNodeCreated(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
@@ -363,7 +372,7 @@ public class TransferAgentCommand implements Annotated {
 
 			Response response = transferAgent.sendRequest(request);
 
-			boolean succeed = TransferAgentResponseConverter.INSTANCE.deleteNodeSucceed(response);
+			boolean succeed = TransferAgentConverter.INSTANCE.isNodeDeleted(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
@@ -423,7 +432,7 @@ public class TransferAgentCommand implements Annotated {
 
 			Response response = transferAgent.sendRequest(request);
 
-			String status = TransferAgentResponseConverter.INSTANCE.getNodeStatus(response);
+			String status = TransferAgentConverter.INSTANCE.getNodeStatus(response);
 			LOG.info("status: " + status);
 
 		} catch (Exception e) {

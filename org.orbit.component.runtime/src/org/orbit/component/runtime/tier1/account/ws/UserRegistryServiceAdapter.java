@@ -32,7 +32,7 @@ public class UserRegistryServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties);
+		return InfraClients.getInstance().getIndexProviderReference(this.properties);
 	}
 
 	public UserRegistryService getService() {

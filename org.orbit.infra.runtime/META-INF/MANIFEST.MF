@@ -38,4 +38,3 @@ Export-Package: org.orbit.infra.runtime,
  org.orbit.infra.runtime.indexes.ws.other
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  org.origin.common;bundle-version="1.0.0"
-Bundle-ActivationPolicy: lazy

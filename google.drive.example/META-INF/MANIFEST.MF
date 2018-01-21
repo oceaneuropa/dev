@@ -1,11 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Example
-Bundle-SymbolicName: google.drive.example
+Bundle-SymbolicName: google.drive.example;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: google.drive.example.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
  lib0/google-api-services-drive-v2-rev212-1.21.0.jar,
  lib2/google-api-services-drive-v3-rev17-1.21.0.jar,

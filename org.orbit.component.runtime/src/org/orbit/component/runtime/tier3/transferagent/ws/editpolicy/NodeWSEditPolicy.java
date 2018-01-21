@@ -30,7 +30,7 @@ public class NodeWSEditPolicy extends AbstractWSEditPolicy {
 
 		String requestName = request.getRequestName();
 
-		if (Requests.LIST_NODES.equals(requestName)) {
+		if (Requests.GET_NODES.equals(requestName)) {
 			return new NodeListWSCommand(service);
 
 		} else if (Requests.GET_NODE.equals(requestName)) {

@@ -24,7 +24,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.transferagent.TransferAgentException;
+import org.orbit.component.model.tier4.mission.rto.MissionException;
 import org.orbit.component.runtime.tier4.mission.service.MissionControlService;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
@@ -141,8 +141,8 @@ public class MissionControlWSResource extends AbstractWSApplicationResource {
 
 			} catch (Exception e) {
 				String statusCode = String.valueOf(Status.INTERNAL_SERVER_ERROR.getStatusCode());
-				if (e instanceof TransferAgentException) {
-					statusCode = ((TransferAgentException) e).getCode();
+				if (e instanceof MissionException) {
+					statusCode = ((MissionException) e).getCode();
 				}
 				ErrorDTO error = handleError(e, statusCode, true);
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();

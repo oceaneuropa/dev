@@ -113,6 +113,11 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		public <T> T getAdapter(Class<T> adapter) {
 			return next().getAdapter(adapter);
 		}
+
+		@Override
+		public boolean isProxy() {
+			return false;
+		}
 	}
 
 	public static class IndexProviderUnsupportedImpl implements IndexProvider {
@@ -199,6 +204,11 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		@Override
 		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
 			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean isProxy() {
+			return false;
 		}
 	}
 

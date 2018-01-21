@@ -1,5 +1,3 @@
-Backup1:
-
 Program Arguments:
 -----------------------------------------------------------------------------------------------------------
 -os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean
@@ -9,16 +7,11 @@ VM Arguments:
 -----------------------------------------------------------------------------------------------------------
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 
 
--DNB_HOME=/Users/denmark/cluster 
--Dcluster.persistence.local.dir=/Users/denmark/cluster/data 
--Dcluster.home.dir=/Users/denmark/cluster/home1 
--DORIGIN_HOME=/Users/denmark/origin 
+-Dorbit.realm=orbit1 
 -Dorbit.host.url=http://127.0.0.1:10001 
+-Dorbit.index_service.url=http://127.0.0.1:8000 
 
--Dorg.orbit.service.http.port=20001 
-
--Dcomponent.index_service.autostart=true
--Dcomponent.index_service.namespace=group1 
+-Dcomponent.index_service.autostart=true 
 -Dcomponent.index_service.name=IndexService1 
 -Dcomponent.index_service.context_root=/orbit/v1/indexservice 
 -Dcomponent.index_service.jdbc.driver=org.postgresql.Driver 
@@ -28,9 +21,4 @@ VM Arguments:
 
 -Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
 -----------------------------------------------------------------------------------------------------------
-
-
-
-
-
 

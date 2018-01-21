@@ -17,6 +17,7 @@ public class Activator implements BundleActivator {
 	protected AppStoreCommand appStoreCommand;
 	protected DomainServiceCommand domainMgmtCommand;
 	protected TransferAgentCommand transferAgentCommand;
+	protected MissionControlCommand missionControlCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -40,6 +41,9 @@ public class Activator implements BundleActivator {
 
 		this.transferAgentCommand = new TransferAgentCommand();
 		this.transferAgentCommand.start(bundleContext);
+
+		this.missionControlCommand = new MissionControlCommand();
+		this.missionControlCommand.start(bundleContext);
 	}
 
 	@Override
@@ -73,6 +77,11 @@ public class Activator implements BundleActivator {
 		if (this.transferAgentCommand != null) {
 			this.transferAgentCommand.stop(bundleContext);
 			this.transferAgentCommand = null;
+		}
+
+		if (this.missionControlCommand != null) {
+			this.missionControlCommand.stop(bundleContext);
+			this.missionControlCommand = null;
 		}
 
 		Activator.context = null;

@@ -10,7 +10,7 @@ channel (web socket front)
 index_service (infra)
 	10001, 10002 (,..., 10010)
 
-user_registry, auth, config_registryappstore, app_store, domain_service (components)
+user_registry, auth, config_registry, app_store, app_store, domain_service, mission_control (components)
 	11001, 11002 (,..., 11010)
 
 transfer_agent (agents)

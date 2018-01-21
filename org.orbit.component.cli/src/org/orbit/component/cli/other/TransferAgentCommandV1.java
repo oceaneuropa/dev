@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.api.tier3.domain.DomainServiceConnector;
@@ -100,12 +100,12 @@ public class TransferAgentCommandV1 implements Annotated {
 			TransferAgentConfig taConfig = domain.getTransferAgentConfig(machineId, transferAgentId);
 			if (taConfig != null) {
 				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(OrbitConstants.TRANSFER_AGENT_MACHINE_ID, taConfig.getMachineId());
-				properties.put(OrbitConstants.TRANSFER_AGENT_TRANSFER_AGENT_ID, taConfig.getId());
-				properties.put(OrbitConstants.TRANSFER_AGENT_NAME, taConfig.getName());
-				properties.put(OrbitConstants.TRANSFER_AGENT_HOST_URL, taConfig.getHostURL());
-				properties.put(OrbitConstants.TRANSFER_AGENT_CONTEXT_ROOT, taConfig.getContextRoot());
-				properties.put(OrbitConstants.TRANSFER_AGENT_HOME, taConfig.getHome());
+				properties.put(IndexConstants.TRANSFER_AGENT_MACHINE_ID, taConfig.getMachineId());
+				properties.put(IndexConstants.TRANSFER_AGENT_TRANSFER_AGENT_ID, taConfig.getId());
+				properties.put(IndexConstants.TRANSFER_AGENT_NAME, taConfig.getName());
+				properties.put(IndexConstants.TRANSFER_AGENT_HOST_URL, taConfig.getHostURL());
+				properties.put(IndexConstants.TRANSFER_AGENT_CONTEXT_ROOT, taConfig.getContextRoot());
+				properties.put(IndexConstants.TRANSFER_AGENT_HOME, taConfig.getHome());
 
 				TransferAgent transferAgent = taConnector.getService(properties);
 				return transferAgent;
@@ -345,7 +345,7 @@ public class TransferAgentCommandV1 implements Annotated {
 				return;
 			}
 
-			Request request = new Request(Requests.LIST_NODES);
+			Request request = new Request(Requests.GET_NODES);
 			if (!Parameter.UNSPECIFIED.equals(nodespace)) {
 				request.setParameter("nodespace", nodespace);
 			}

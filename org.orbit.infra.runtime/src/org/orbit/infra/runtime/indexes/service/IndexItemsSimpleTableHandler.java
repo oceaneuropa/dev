@@ -249,7 +249,9 @@ public class IndexItemsSimpleTableHandler implements DatabaseTableAware {
 	 */
 	public IndexItemVO insert(Connection conn, String type, String name, String propertiesString, Date createTime, Date lastUpdateTime) throws SQLException {
 		IndexItemVO newIndexItemVO = null;
-
+		if (createTime == null) {
+			createTime = new Date();
+		}
 		if (lastUpdateTime == null) {
 			lastUpdateTime = createTime;
 		}

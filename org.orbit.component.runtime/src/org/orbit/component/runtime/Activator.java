@@ -1,5 +1,6 @@
 package org.orbit.component.runtime;
 
+import org.orbit.component.api.OrbitClients;
 import org.orbit.component.runtime.cli.ServicesCommand;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -33,6 +34,9 @@ public class Activator implements BundleActivator {
 		// Start commands and services
 		this.servicesCommand = new ServicesCommand();
 		this.servicesCommand.start(bundleContext);
+
+		// 
+		OrbitClients.getInstance().start(bundleContext);
 
 		// Start tracking services for starting web service and indexer
 		OrbitServices.getInstance().start(bundleContext);

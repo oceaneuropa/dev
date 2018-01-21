@@ -96,6 +96,11 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 		public <T> T getAdapter(Class<T> adapter) {
 			return next().getAdapter(adapter);
 		}
+
+		@Override
+		public boolean isProxy() {
+			return false;
+		}
 	}
 
 	public static class IndexServiceUnsupportedImpl implements IndexService {
@@ -162,6 +167,11 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 		@Override
 		public <T> T getAdapter(Class<T> adapter) {
 			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public boolean isProxy() {
+			return false;
 		}
 	}
 

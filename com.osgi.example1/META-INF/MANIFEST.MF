@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Orbit Example1
 Bundle-SymbolicName: com.osgi.example1;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: com.osgi.example1.Activator
 Bundle-Vendor: OSGI
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
@@ -100,4 +100,3 @@ Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  ch.qos.logback.classic;bundle-version="1.2.3",
  ch.qos.logback.core;bundle-version="1.2.3",
  lib.org.apache.commons
-Bundle-ActivationPolicy: lazy

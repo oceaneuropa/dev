@@ -1,15 +1,19 @@
 package org.orbit.component.api;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.config.ConfigRegistry;
+import org.orbit.component.api.tier2.appstore.AppStore;
+import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.api.tier4.mission.MissionControl;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
+import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +37,16 @@ public class OrbitClients {
 	}
 
 	// tier1
-	protected ServiceConnectorAdapter<Auth> authConnector;
 	protected ServiceConnectorAdapter<UserRegistry> userRegistryConnector;
+	protected ServiceConnectorAdapter<Auth> authConnector;
 	protected ServiceConnectorAdapter<ConfigRegistry> configRegistryConnector;
 
+	// tier2
+	protected ServiceConnectorAdapter<AppStore> appStoreConnector;
+
 	// tier3
-	protected ServiceConnectorAdapter<TransferAgent> taConnector;
+	protected ServiceConnectorAdapter<DomainService> domainServiceConnector;
+	protected ServiceConnectorAdapter<TransferAgent> transferAgentConnector;
 
 	// tier4
 	protected ServiceConnectorAdapter<MissionControl> missionControlConnector;
@@ -57,25 +65,38 @@ public class OrbitClients {
 		this.configRegistryConnector = new ServiceConnectorAdapter<ConfigRegistry>(ConfigRegistry.class);
 		this.configRegistryConnector.start(bundleContext);
 
+		// tier2
+		this.appStoreConnector = new ServiceConnectorAdapter<AppStore>(AppStore.class);
+		this.appStoreConnector.start(bundleContext);
+
 		// tier3
-		this.taConnector = new ServiceConnectorAdapter<TransferAgent>(TransferAgent.class);
-		this.taConnector.start(bundleContext);
+		this.domainServiceConnector = new ServiceConnectorAdapter<DomainService>(DomainService.class);
+		this.domainServiceConnector.start(bundleContext);
+
+		this.transferAgentConnector = new ServiceConnectorAdapter<TransferAgent>(TransferAgent.class);
+		this.transferAgentConnector.start(bundleContext);
 
 		// tier4
 		this.missionControlConnector = new ServiceConnectorAdapter<MissionControl>(MissionControl.class);
 		this.missionControlConnector.start(bundleContext);
+
+		// Client API properties for connecting to other remote services.
+		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+
+		PropertyUtil.loadProperty(bundleContext, configProps, org.orbit.component.api.OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, org.orbit.component.api.OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
 	}
 
 	public void stop(final BundleContext bundleContext) {
 		// tier1
-		if (this.authConnector != null) {
-			this.authConnector.stop(bundleContext);
-			this.authConnector = null;
-		}
-
 		if (this.userRegistryConnector != null) {
 			this.userRegistryConnector.stop(bundleContext);
 			this.userRegistryConnector = null;
+		}
+
+		if (this.authConnector != null) {
+			this.authConnector.stop(bundleContext);
+			this.authConnector = null;
 		}
 
 		if (this.configRegistryConnector != null) {
@@ -83,10 +104,21 @@ public class OrbitClients {
 			this.configRegistryConnector = null;
 		}
 
+		// tier2
+		if (this.appStoreConnector != null) {
+			this.appStoreConnector.stop(bundleContext);
+			this.appStoreConnector = null;
+		}
+
 		// tier3
-		if (this.taConnector != null) {
-			this.taConnector.stop(bundleContext);
-			this.taConnector = null;
+		if (this.domainServiceConnector != null) {
+			this.domainServiceConnector.stop(bundleContext);
+			this.domainServiceConnector = null;
+		}
+
+		if (this.transferAgentConnector != null) {
+			this.transferAgentConnector.stop(bundleContext);
+			this.transferAgentConnector = null;
 		}
 
 		// tier4
@@ -96,25 +128,16 @@ public class OrbitClients {
 		}
 	}
 
-	public Auth getAuth(String url) {
-		return getAuth(null, null, url);
-	}
-
-	public Auth getAuth(String realm, String username, String url) {
-		realm = GlobalContext.getInstance().checkRealm(realm);
-		username = GlobalContext.getInstance().checkUsername(realm, username);
-
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put(OrbitConstants.REALM, realm);
-		properties.put(OrbitConstants.USERNAME, username);
-		properties.put(OrbitConstants.URL, url);
-
-		Auth auth = this.authConnector.getService(properties);
-		if (auth == null) {
-			LOG.error("Auth is not available.");
-			throw new IllegalStateException("Auth is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+	public UserRegistry getUserRegistry(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(OrbitConstants.ORBIT_USER_REGISTRY_URL);
 		}
-		return auth;
+		if (url == null) {
+			LOG.error("'" + OrbitConstants.ORBIT_USER_REGISTRY_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_USER_REGISTRY_URL + "' property is not found.");
+		}
+		return getUserRegistry(url);
 	}
 
 	public UserRegistry getUserRegistry(String url) {
@@ -138,6 +161,51 @@ public class OrbitClients {
 		return userRegistry;
 	}
 
+	public Auth getAuth(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(OrbitConstants.ORBIT_AUTH_URL);
+		}
+		if (url == null) {
+			LOG.error("'" + OrbitConstants.ORBIT_AUTH_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_AUTH_URL + "' property is not found.");
+		}
+		return getAuth(url);
+	}
+
+	public Auth getAuth(String url) {
+		return getAuth(null, null, url);
+	}
+
+	public Auth getAuth(String realm, String username, String url) {
+		realm = GlobalContext.getInstance().checkRealm(realm);
+		username = GlobalContext.getInstance().checkUsername(realm, username);
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(OrbitConstants.REALM, realm);
+		properties.put(OrbitConstants.USERNAME, username);
+		properties.put(OrbitConstants.URL, url);
+
+		Auth auth = this.authConnector.getService(properties);
+		if (auth == null) {
+			LOG.error("Auth is not available.");
+			throw new IllegalStateException("Auth is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+		}
+		return auth;
+	}
+
+	public ConfigRegistry getConfigRegistry(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(OrbitConstants.ORBIT_CONFIG_REGISTRY_URL);
+		}
+		if (url == null) {
+			LOG.error("'" + OrbitConstants.ORBIT_CONFIG_REGISTRY_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_CONFIG_REGISTRY_URL + "' property is not found.");
+		}
+		return getConfigRegistry(url);
+	}
+
 	public ConfigRegistry getConfigRegistry(String url) {
 		return getConfigRegistry(null, null, url);
 	}
@@ -159,6 +227,84 @@ public class OrbitClients {
 		return configRegistry;
 	}
 
+	public AppStore getAppStore(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(OrbitConstants.ORBIT_APP_STORE_URL);
+		}
+		if (url == null) {
+			LOG.error("'" + OrbitConstants.ORBIT_APP_STORE_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_APP_STORE_URL + "' property is not found.");
+		}
+		return getAppStore(url);
+	}
+
+	public AppStore getAppStore(String url) {
+		return getAppStore(null, null, url);
+	}
+
+	public AppStore getAppStore(String realm, String username, String url) {
+		realm = GlobalContext.getInstance().checkRealm(realm);
+		username = GlobalContext.getInstance().checkUsername(realm, username);
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(OrbitConstants.REALM, realm);
+		properties.put(OrbitConstants.USERNAME, username);
+		properties.put(OrbitConstants.URL, url);
+
+		AppStore auth = this.appStoreConnector.getService(properties);
+		if (auth == null) {
+			LOG.error("AppStore is not available.");
+			throw new IllegalStateException("AppStore is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+		}
+		return auth;
+	}
+
+	public DomainService getDomainService(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		}
+		if (url == null) {
+			LOG.error("'" + OrbitConstants.ORBIT_DOMAIN_SERVICE_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_DOMAIN_SERVICE_URL + "' property is not found.");
+		}
+		return getDomainService(url);
+	}
+
+	public DomainService getDomainService(String url) {
+		return getDomainService(null, null, url);
+	}
+
+	public DomainService getDomainService(String realm, String username, String url) {
+		realm = GlobalContext.getInstance().checkRealm(realm);
+		username = GlobalContext.getInstance().checkUsername(realm, username);
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(OrbitConstants.REALM, realm);
+		properties.put(OrbitConstants.USERNAME, username);
+		properties.put(OrbitConstants.URL, url);
+
+		DomainService domainService = this.domainServiceConnector.getService(properties);
+		if (domainService == null) {
+			LOG.error("DomainService is not available.");
+			throw new IllegalStateException("DomainService is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+		}
+		return domainService;
+	}
+
+	public TransferAgent getTransferAgent(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
+		}
+		if (url == null) {
+			LOG.error("'" + OrbitConstants.ORBIT_TRANSFER_AGENT_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_TRANSFER_AGENT_URL + "' property is not found.");
+		}
+		return getTransferAgent(url);
+	}
+
 	public TransferAgent getTransferAgent(String url) {
 		return getTransferAgent(null, null, url);
 	}
@@ -172,12 +318,24 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		TransferAgent transferAgent = this.taConnector.getService(properties);
+		TransferAgent transferAgent = this.transferAgentConnector.getService(properties);
 		if (transferAgent == null) {
 			LOG.error("TransferAgent is not available.");
 			throw new IllegalStateException("TransferAgent is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
 		}
 		return transferAgent;
+	}
+
+	public MissionControl getMissionControl(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(OrbitConstants.ORBIT_MISSION_CONTROL_URL);
+		}
+		if (url == null) {
+			LOG.error("'" + OrbitConstants.ORBIT_MISSION_CONTROL_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_MISSION_CONTROL_URL + "' property is not found.");
+		}
+		return getMissionControl(url);
 	}
 
 	public MissionControl getMissionControl(String url) {

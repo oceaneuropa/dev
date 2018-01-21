@@ -37,7 +37,7 @@ public class Requests {
 	public static String DELETE_NODESPACE = "delete_nodespace";
 
 	// Constants for nodes
-	public static String LIST_NODES = "list_nodes";
+	public static String GET_NODES = "get_nodes";
 	public static String GET_NODE = "get_node";
 	public static String NODE_EXIST = "node_exist";
 	public static String CREATE_NODE = "create_node";
@@ -45,5 +45,18 @@ public class Requests {
 	public static String START_NODE = "start_node";
 	public static String STOP_NODE = "stop_node";
 	public static String NODE_STATUS = "node_status";
+
+	// ---------------------------------------------------------------
+	// Mission control request constants
+	// ---------------------------------------------------------------
+	// Constants for missions
+	public static String GET_MISSIONS = "get_missions";
+	public static String GET_MISSION = "get_mission";
+	public static String MISSION_EXIST = "mission_exist";
+	public static String CREATE_MISSION = "create_mission";
+	public static String DELETE_MISSION = "delete_mission";
+	public static String START_MISSION = "start_mission";
+	public static String STOP_MISSION = "stop_mission";
+	public static String MISSION_STATUS = "mission_status";
 
 }
