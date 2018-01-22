@@ -9,8 +9,8 @@ import org.orbit.infra.api.indexes.other.IndexServiceConnectorAdapterV1;
 import org.orbit.infra.api.indexes.other.IndexServiceConnectorV1;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.connector.channel.ChannelsConnectorImpl;
-import org.orbit.infra.connector.indexes.IndexProviderConnectorImpl;
-import org.orbit.infra.connector.indexes.IndexServiceConnectorImpl;
+import org.orbit.infra.connector.indexes.IndexProviderConnector;
+import org.orbit.infra.connector.indexes.IndexServiceConnector;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -25,18 +25,18 @@ public class ActivatorV1 implements BundleActivator {
 
 	protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
 
-	protected IndexServiceConnectorImpl indexServiceConnectorImpl;
-	protected IndexProviderConnectorImpl indexProviderConnectorImpl;
+	protected IndexServiceConnector indexServiceConnectorImpl;
+	protected IndexProviderConnector indexProviderConnectorImpl;
 	protected ChannelsConnectorImpl channelConnector;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		ActivatorV1.context = bundleContext;
 
-		this.indexProviderConnectorImpl = new IndexProviderConnectorImpl();
+		this.indexProviderConnectorImpl = new IndexProviderConnector();
 		this.indexProviderConnectorImpl.start(bundleContext);
 
-		this.indexServiceConnectorImpl = new IndexServiceConnectorImpl();
+		this.indexServiceConnectorImpl = new IndexServiceConnector();
 		this.indexServiceConnectorImpl.start(bundleContext);
 
 		this.channelConnector = new ChannelsConnectorImpl();

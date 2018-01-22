@@ -11,11 +11,17 @@ public class Activator implements BundleActivator {
 		return context;
 	}
 
+	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
+
+		OSClients.getInstance().start(bundleContext);
 	}
 
+	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		OSClients.getInstance().stop(bundleContext);
+
 		Activator.context = null;
 	}
 

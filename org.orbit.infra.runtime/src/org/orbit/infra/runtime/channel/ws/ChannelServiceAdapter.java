@@ -40,7 +40,7 @@ public class ChannelServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties);
+		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
 	}
 
 	public void start(final BundleContext bundleContext) {

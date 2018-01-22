@@ -9,7 +9,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.os.runtime.OSConstants;
 import org.orbit.os.runtime.OSServices;
-import org.orbit.os.runtime.service.GAIA;
+import org.orbit.os.runtime.gaia.GAIA;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 

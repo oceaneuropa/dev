@@ -3,31 +3,33 @@ package org.orbit.component.cli;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.component.api.OrbitClients;
+import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.domain.DomainService;
-import org.orbit.component.api.tier3.domain.DomainServiceConnector;
-import org.orbit.component.cli.util.ServicesCommandHelper;
-import org.orbit.component.model.tier3.domain.dto.ResponseConverter;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
+import org.orbit.component.model.tier3.domain.dto.ResponseConverter;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
 import org.origin.common.annotation.Annotated;
-import org.origin.common.annotation.Dependency;
-import org.origin.common.annotation.DependencyFullfilled;
-import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.osgi.OSGiServiceUtil;
-import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
+import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DomainServiceCommand implements Annotated {
+
+	protected static Logger LOG = LoggerFactory.getLogger(DomainServiceCommand.class);
 
 	// Column names constants
 	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
@@ -37,12 +39,9 @@ public class DomainServiceCommand implements Annotated {
 	protected static String[] NODE_CONFIG_TITLES = new String[] { "Machine ID", "Transfer Agent ID", "ID", "Name", "hostURL", "contextRoot" };
 
 	protected BundleContext bundleContext;
+	protected Map<Object, Object> properties;
+
 	protected String scheme = "orbit";
-
-	@Dependency
-	protected DomainServiceConnector domainServiceConnector;
-
-	protected boolean debug = true;
 
 	/**
 	 * 
@@ -57,9 +56,7 @@ public class DomainServiceCommand implements Annotated {
 	}
 
 	public void start() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".start()");
-		}
+		LOG.info("start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
@@ -75,37 +72,25 @@ public class DomainServiceCommand implements Annotated {
 						"list_nodes", "list_node", "add_node", "update_node", "remove_node", //
 		});
 
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		this.properties = properties;
+
 		OSGiServiceUtil.register(this.bundleContext, DomainServiceCommand.class.getName(), this, props);
-		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
 	public void stop() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".stop()");
-		}
+		LOG.info("stop()");
 
 		OSGiServiceUtil.unregister(DomainServiceCommand.class.getName(), this);
-		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
-	@DependencyFullfilled
-	public void connectorSet() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".connectorSet()");
-			System.out.println("domainMgmtConnector: " + domainServiceConnector);
+	protected DomainService getDomainService() {
+		DomainService domainService = OrbitClients.getInstance().getDomainService(this.properties);
+		if (domainService == null) {
+			throw new IllegalStateException("DomainService is null.");
 		}
-	}
-
-	@DependencyUnfullfilled
-	public void connectorUnset() {
-		if (debug) {
-			System.out.println(getClass().getSimpleName() + ".connectorSet()");
-			System.out.println("domainMgmtConnector: " + domainServiceConnector);
-		}
-	}
-
-	protected DomainService getDomainService() throws ClientException {
-		return ServicesCommandHelper.INSTANCE.getDomainService(this.domainServiceConnector);
+		return domainService;
 	}
 
 	// -----------------------------------------------------------------------------------------
@@ -118,9 +103,7 @@ public class DomainServiceCommand implements Annotated {
 	// -----------------------------------------------------------------------------------------
 	@Descriptor("List machine configs")
 	public void list_machines() {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_machines", new String[] { "n/a", null });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "list_machines");
 
 		try {
 			DomainService domainService = getDomainService();
@@ -149,9 +132,7 @@ public class DomainServiceCommand implements Annotated {
 	public void list_machine( //
 			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_machine", new String[] { "id", id });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "list_machine", new String[] { "id", id });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -185,9 +166,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = "null") String name, //
 			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = "null") String ip //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "add_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "add_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -217,9 +196,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Machine Name") @Parameter(names = { "-name", "--name" }, absentValue = Parameter.UNSPECIFIED) String name, //
 			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = Parameter.UNSPECIFIED) String ip //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "update_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "update_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -265,9 +242,7 @@ public class DomainServiceCommand implements Annotated {
 	public void remove_machine( //
 			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "remove_machine", new String[] { "id", id });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "remove_machine", new String[] { "id", id });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -301,9 +276,7 @@ public class DomainServiceCommand implements Annotated {
 	public void list_tas( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_tas", new String[] { "machineId", machineId });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "list_tas", new String[] { "machineId", machineId });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -345,9 +318,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = "null") String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_ta", new String[] { "machineId", machineId }, new String[] { "id", id });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "list_ta", new String[] { "machineId", machineId }, new String[] { "id", id });
 
 		try {
 			if (Parameter.UNSPECIFIED.equals(machineId)) {
@@ -395,9 +366,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Transfer Agent host URL") @Parameter(names = { "-hostURL", "--hostURL" }, absentValue = Parameter.UNSPECIFIED) String hostURL, //
 			@Descriptor("Transfer Agent context root") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "add_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "add_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -431,9 +400,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Transfer Agent host URL") @Parameter(names = { "-hostURL", "--hostURL" }, absentValue = Parameter.UNSPECIFIED) String hostURL, //
 			@Descriptor("Transfer Agent contextRoot") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "update_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "update_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -489,9 +456,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "remove_ta", new String[] { "machineId", machineId }, new String[] { "id", id });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "remove_ta", new String[] { "machineId", machineId }, new String[] { "id", id });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -527,9 +492,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_nodes", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "list_nodes", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
 
 		try {
 			if (Parameter.UNSPECIFIED.equals(machineId)) {
@@ -576,9 +539,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = "null") String id //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id });
 
 		try {
 			if (Parameter.UNSPECIFIED.equals(machineId)) {
@@ -633,9 +594,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Node host URL") @Parameter(names = { "-hostURL", "--hostURL" }, absentValue = Parameter.UNSPECIFIED) String hostURL, //
 			@Descriptor("Node context root") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "add_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "add_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -690,9 +649,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Node host URL") @Parameter(names = { "-hostURL", "--hostURL" }, absentValue = Parameter.UNSPECIFIED) String hostURL, //
 			@Descriptor("Node contextRoot") @Parameter(names = { "-contextRoot", "--contextRoot" }, absentValue = Parameter.UNSPECIFIED) String contextRoot //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "update_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "update_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
 			DomainService domainService = getDomainService();
@@ -750,9 +707,7 @@ public class DomainServiceCommand implements Annotated {
 			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = "null") String transferAgentId, //
 			@Descriptor("Node ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
-		if (debug) {
-			CLIHelper.getInstance().printCommand(getScheme(), "remove_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id });
-		}
+		CLIHelper.getInstance().printCommand(getScheme(), "remove_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id });
 
 		try {
 			DomainService domainService = getDomainService();

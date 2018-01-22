@@ -76,12 +76,6 @@ public class AuthImpl implements Auth {
 	}
 
 	@Override
-	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.AUTH_NAME);
-		return name;
-	}
-
-	@Override
 	public String getURL() {
 		String fullUrl = (String) properties.get(OrbitConstants.URL);
 		return fullUrl;

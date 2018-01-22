@@ -62,11 +62,11 @@ public class DomainServiceImplV1 implements DomainService {
 	// ---------------------------------------------------------
 	// Configuration methods
 	// ---------------------------------------------------------
-	@Override
-	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_NAME);
-		return name;
-	}
+	// @Override
+	// public String getName() {
+	// String name = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_NAME);
+	// return name;
+	// }
 
 	@Override
 	public String getURL() {
@@ -120,9 +120,19 @@ public class DomainServiceImplV1 implements DomainService {
 	// ---------------------------------------------------------
 	// Web service methods
 	// ---------------------------------------------------------
+	// @Override
+	// public int ping() throws ClientException {
+	// return this.client.ping();
+	// }
+
 	@Override
-	public int ping() throws ClientException {
-		return this.client.ping();
+	public boolean ping() {
+		return this.client.doPing();
+	}
+
+	@Override
+	public String echo(String message) throws ClientException {
+		return this.client.echo(message);
 	}
 
 	// ---------------------------------------------------------
@@ -454,6 +464,11 @@ public class DomainServiceImplV1 implements DomainService {
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return this.adaptorSupport.getAdapter(adapter);
+	}
+
+	@Override
+	public boolean isProxy() {
+		return false;
 	}
 
 }

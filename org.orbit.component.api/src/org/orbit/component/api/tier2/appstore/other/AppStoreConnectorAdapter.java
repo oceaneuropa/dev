@@ -1,4 +1,4 @@
-package org.orbit.component.api.tier2.appstore;
+package org.orbit.component.api.tier2.appstore.other;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

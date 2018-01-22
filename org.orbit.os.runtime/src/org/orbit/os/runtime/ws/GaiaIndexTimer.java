@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.os.runtime.OSConstants;
-import org.orbit.os.runtime.service.GAIA;
+import org.orbit.os.runtime.gaia.GAIA;
 import org.origin.common.thread.ServiceIndexTimer;
 import org.origin.common.thread.ServiceIndexTimerImpl;
 

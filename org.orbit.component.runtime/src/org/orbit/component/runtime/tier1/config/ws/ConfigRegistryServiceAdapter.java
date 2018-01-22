@@ -6,7 +6,7 @@ import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderReference;
+import org.orbit.infra.api.indexes.IndexProviderProxy;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -29,7 +29,7 @@ public class ConfigRegistryServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProviderReference(this.properties);
+		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
 	}
 
 	public ConfigRegistryService getService() {

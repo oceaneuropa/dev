@@ -1,31 +1,28 @@
 package org.orbit.component.cli;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
+import org.orbit.component.api.OrbitClients;
+import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier2.appstore.AppStoreConnector;
 import org.orbit.component.api.tier2.appstore.request.AppQuery;
 import org.origin.common.annotation.Annotated;
-import org.origin.common.annotation.Dependency;
-import org.origin.common.annotation.DependencyFullfilled;
-import org.origin.common.annotation.DependencyUnfullfilled;
-import org.origin.common.loadbalance.LoadBalanceResource;
-import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.util.Printer;
+import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AppStoreCommand implements Annotated {
 
-	protected BundleContext bundleContext;
+	protected static Logger LOG = LoggerFactory.getLogger(AppStoreCommand.class);
 
-	@Dependency
-	protected AppStoreConnector appStoreConnector;
+	protected BundleContext bundleContext;
+	protected Map<Object, Object> properties;
 
 	/**
 	 * 
@@ -36,79 +33,36 @@ public class AppStoreCommand implements Annotated {
 	}
 
 	public void start() {
-		System.out.println("AppStoreCommand.start()");
+		LOG.info("start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { "lappstores", "lapps" });
+		props.put("osgi.command.function", new String[] { "list_apps" });
+
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_APP_STORE_URL);
+		this.properties = properties;
+
 		OSGiServiceUtil.register(this.bundleContext, AppStoreCommand.class.getName(), this, props);
-		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
 	public void stop() {
-		System.out.println("AppStoreCommand.stop()");
+		LOG.info("stop()");
 
 		OSGiServiceUtil.unregister(AppStoreCommand.class.getName(), this);
-		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
-	@DependencyFullfilled
-	public void appStoreConnectorSet() {
-		System.out.println("AppStoreConnector is set.");
-	}
-
-	@DependencyUnfullfilled
-	public void appStoreConnectorUnset() {
-		System.out.println("AppStoreConnector is unset.");
-	}
-
-	protected void checkConnector() throws ClientException {
-		if (this.appStoreConnector == null) {
-			System.out.println("AppStoreConnector is not available.");
-			throw new ClientException(500, "AppStoreConnector is not available.");
+	protected AppStore getAppStore() {
+		AppStore appStore = OrbitClients.getInstance().getAppStore(this.properties);
+		if (appStore == null) {
+			throw new IllegalStateException("AppStore is null.");
 		}
-	}
-
-	@Descriptor("List AppStores")
-	public void lappstores() throws ClientException {
-		checkConnector();
-
-		LoadBalancer<AppStore> lb = this.appStoreConnector.getLoadBalancer();
-		if (lb == null) {
-			System.out.println("AppStore LoadBalancer is not available.");
-			return;
-		}
-
-		List<LoadBalanceResource<AppStore>> resources = lb.getResources();
-		if (resources == null) {
-			System.out.println("AppStore LoadBalancer's resource is null.");
-			return;
-		}
-
-		System.out.println("Number of AppStores: " + resources.size());
-		for (LoadBalanceResource<AppStore> resource : resources) {
-			// String id = resource.getId();
-			AppStore appStore = resource.getService();
-			String name = appStore.getName();
-			String url = appStore.getURL();
-			// System.out.println(name + " (id = '" + id + "', url = '" + url + "')");
-			System.out.println(name + " (url = '" + url + "')");
-			Map<?, ?> properties = resource.getProperties();
-			Printer.pl(properties);
-			System.out.println("ping: " + appStore.ping());
-			System.out.println();
-		}
+		return appStore;
 	}
 
 	@Descriptor("List Apps")
-	public void lapps() throws ClientException {
-		checkConnector();
-
-		AppStore appStore = this.appStoreConnector.getService();
-		if (appStore == null) {
-			System.out.println("AppStore is not available.");
-			return;
-		}
+	public void list_apps() throws ClientException {
+		AppStore appStore = getAppStore();
 
 		AppQuery query = new AppQuery();
 		AppManifest[] appManifests = appStore.getApps(query);
@@ -134,3 +88,32 @@ public class AppStoreCommand implements Annotated {
 	}
 
 }
+
+// @Descriptor("List AppStores")
+// public void lappstores() throws ClientException {
+// LoadBalancer<AppStore> lb = this.appStoreConnector.getLoadBalancer();
+// if (lb == null) {
+// System.out.println("AppStore LoadBalancer is not available.");
+// return;
+// }
+//
+// List<LoadBalanceResource<AppStore>> resources = lb.getResources();
+// if (resources == null) {
+// System.out.println("AppStore LoadBalancer's resource is null.");
+// return;
+// }
+//
+// System.out.println("Number of AppStores: " + resources.size());
+// for (LoadBalanceResource<AppStore> resource : resources) {
+// // String id = resource.getId();
+// AppStore appStore = resource.getService();
+// String name = appStore.getName();
+// String url = appStore.getURL();
+// // System.out.println(name + " (id = '" + id + "', url = '" + url + "')");
+// System.out.println(name + " (url = '" + url + "')");
+// Map<?, ?> properties = resource.getProperties();
+// Printer.pl(properties);
+// System.out.println("ping: " + appStore.ping());
+// System.out.println();
+// }
+// }

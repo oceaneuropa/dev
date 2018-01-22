@@ -7,7 +7,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserRegistry;
-import org.orbit.component.api.tier1.account.UserRegistryConnector;
+import org.orbit.component.api.tier1.account.other.UserRegistryConnector;
 import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;

@@ -11,49 +11,67 @@ public class Activator implements BundleActivator {
 		return context;
 	}
 
+	// services
 	protected ServicesCommand servicesCommand;
+
+	// tier1
 	protected AuthCommand authCommand;
 	protected UserRegistryCommand userRegistryCommand;
+
+	// tier2
 	protected AppStoreCommand appStoreCommand;
+
+	// tier3
 	protected DomainServiceCommand domainMgmtCommand;
 	protected TransferAgentCommand transferAgentCommand;
+	protected TransferAgentCommandGeneric transferAgentCommandGeneric;
+
+	// tier4
 	protected MissionControlCommand missionControlCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 
-		// Start commands
+		// services
 		this.servicesCommand = new ServicesCommand();
 		this.servicesCommand.start(bundleContext);
 
+		// tier1
 		this.authCommand = new AuthCommand();
 		this.authCommand.start(bundleContext);
 
 		this.userRegistryCommand = new UserRegistryCommand();
 		this.userRegistryCommand.start(bundleContext);
 
+		// tier2
 		this.appStoreCommand = new AppStoreCommand(bundleContext);
 		this.appStoreCommand.start();
 
+		// tier3
 		this.domainMgmtCommand = new DomainServiceCommand(bundleContext);
 		this.domainMgmtCommand.start();
 
 		this.transferAgentCommand = new TransferAgentCommand();
 		this.transferAgentCommand.start(bundleContext);
 
+		this.transferAgentCommandGeneric = new TransferAgentCommandGeneric();
+		this.transferAgentCommandGeneric.start(bundleContext);
+
+		// tier4
 		this.missionControlCommand = new MissionControlCommand();
 		this.missionControlCommand.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		// Stop commands
+		// services
 		if (this.servicesCommand != null) {
 			this.servicesCommand.stop(bundleContext);
 			this.servicesCommand = null;
 		}
 
+		// tier1
 		if (this.authCommand != null) {
 			this.authCommand.stop(bundleContext);
 			this.authCommand = null;
@@ -64,11 +82,13 @@ public class Activator implements BundleActivator {
 			this.userRegistryCommand = null;
 		}
 
+		// tier2
 		if (this.appStoreCommand != null) {
 			this.appStoreCommand.stop();
 			this.appStoreCommand = null;
 		}
 
+		// tier3
 		if (this.domainMgmtCommand != null) {
 			this.domainMgmtCommand.stop();
 			this.domainMgmtCommand = null;
@@ -79,6 +99,12 @@ public class Activator implements BundleActivator {
 			this.transferAgentCommand = null;
 		}
 
+		if (this.transferAgentCommandGeneric != null) {
+			this.transferAgentCommandGeneric.stop(bundleContext);
+			this.transferAgentCommandGeneric = null;
+		}
+
+		// tier4
 		if (this.missionControlCommand != null) {
 			this.missionControlCommand.stop(bundleContext);
 			this.missionControlCommand = null;

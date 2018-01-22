@@ -3,7 +3,7 @@ package org.orbit.os.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.os.runtime.service.GAIA;
+import org.orbit.os.runtime.gaia.GAIA;
 import org.orbit.os.runtime.ws.GaiaAdapter;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;

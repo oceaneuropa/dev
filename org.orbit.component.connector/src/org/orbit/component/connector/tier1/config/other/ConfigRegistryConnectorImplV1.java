@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.config.ConfigRegistry;
-import org.orbit.component.api.tier1.config.ConfigRegistryConnector;
+import org.orbit.component.api.tier1.config.other.ConfigRegistryConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier1.config.ConfigRegistryImpl;
 import org.orbit.infra.api.indexes.IndexItem;

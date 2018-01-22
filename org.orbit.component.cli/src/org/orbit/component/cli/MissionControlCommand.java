@@ -10,12 +10,12 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier3.domain.DomainService;
-import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.api.tier4.mission.MissionControl;
 import org.orbit.component.model.tier3.transferagent.TransferAgentConverter;
 import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
 import org.origin.common.osgi.OSGiServiceUtil;
+import org.origin.common.rest.client.ServiceClient;
+import org.origin.common.rest.client.ServiceClientCommand;
 import org.origin.common.rest.model.Request;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
@@ -24,7 +24,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MissionControlCommand {
+public class MissionControlCommand extends ServiceClientCommand {
 
 	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentCommand.class);
 
@@ -34,7 +34,8 @@ public class MissionControlCommand {
 	protected String scheme = "mission";
 	protected Map<Object, Object> properties;
 
-	protected String getScheme() {
+	@Override
+	public String getScheme() {
 		return this.scheme;
 	}
 
@@ -48,33 +49,20 @@ public class MissionControlCommand {
 						"list_missions", "get_mission", "mission_exist", "create_mission", "delete_mission", "start_mission", "stop_mission", "mission_status"//
 		});
 
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
+		this.properties = properties;
+
 		OSGiServiceUtil.register(bundleContext, TransferAgentCommand.class.getName(), this, props);
-
-		this.properties = new Hashtable<Object, Object>();
-
-		PropertyUtil.loadProperty(bundleContext, this.properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, this.properties, OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
-		PropertyUtil.loadProperty(bundleContext, this.properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
 	}
 
 	public void stop(final BundleContext bundleContext) {
 		OSGiServiceUtil.unregister(TransferAgentCommand.class.getName(), this);
 	}
 
-	protected DomainService getDomainService() {
-		DomainService domainService = OrbitClients.getInstance().getDomainService(this.properties);
-		if (domainService == null) {
-			throw new IllegalStateException("DomainService is null.");
-		}
-		return domainService;
-	}
-
-	protected TransferAgent getTransferAgent() {
-		TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(this.properties);
-		if (transferAgent == null) {
-			throw new IllegalStateException("TransferAgent is null.");
-		}
-		return transferAgent;
+	@Override
+	public ServiceClient getServiceClient() {
+		return getMissionControl();
 	}
 
 	protected MissionControl getMissionControl() {
@@ -127,3 +115,22 @@ public class MissionControlCommand {
 	}
 
 }
+
+// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
+
+// protected DomainService getDomainService() {
+// DomainService domainService = OrbitClients.getInstance().getDomainService(this.properties);
+// if (domainService == null) {
+// throw new IllegalStateException("DomainService is null.");
+// }
+// return domainService;
+// }
+
+// protected TransferAgent getTransferAgent() {
+// TransferAgent transferAgent = OrbitClients.getInstance().getTransferAgent(this.properties);
+// if (transferAgent == null) {
+// throw new IllegalStateException("TransferAgent is null.");
+// }
+// return transferAgent;
+// }

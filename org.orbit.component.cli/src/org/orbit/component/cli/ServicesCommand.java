@@ -12,13 +12,13 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UserRegistry;
-import org.orbit.component.api.tier1.account.UserRegistryConnector;
+import org.orbit.component.api.tier1.account.other.UserRegistryConnector;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.other.AuthConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier2.appstore.AppStoreConnector;
+import org.orbit.component.api.tier2.appstore.other.AppStoreConnector;
 import org.orbit.component.api.tier3.domain.DomainService;
-import org.orbit.component.api.tier3.domain.DomainServiceConnector;
+import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.orbit.component.cli.util.ResourcePropertyHelper;
 import org.orbit.component.cli.util.ServicesCommandHelper;
 import org.orbit.infra.api.InfraClients;
@@ -102,7 +102,7 @@ public class ServicesCommand implements Annotated {
 	}
 
 	protected IndexService getIndexService() {
-		return InfraClients.getInstance().getIndexServiceReference(this.properties);
+		return InfraClients.getInstance().getIndexServiceProxy(this.properties);
 	}
 
 	@DependencyFullfilled

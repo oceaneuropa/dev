@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.session.OAuth2;
-import org.orbit.component.api.tier1.session.OAuth2Connector;
+import org.orbit.component.api.tier1.session.other.OAuth2Connector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.os.runtime.service.GAIA;
+import org.orbit.os.runtime.gaia.GAIA;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
@@ -28,7 +28,7 @@ public class GaiaAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProviderReference(this.properties);
+		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
 	}
 
 	public GAIA getService() {

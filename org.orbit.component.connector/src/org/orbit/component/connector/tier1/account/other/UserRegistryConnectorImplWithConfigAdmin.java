@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.account.UserRegistry;
-import org.orbit.component.api.tier1.account.UserRegistryConnector;
+import org.orbit.component.api.tier1.account.other.UserRegistryConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;

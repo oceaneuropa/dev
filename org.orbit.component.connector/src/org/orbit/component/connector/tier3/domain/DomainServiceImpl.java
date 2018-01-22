@@ -1,11 +1,8 @@
 package org.orbit.component.connector.tier3.domain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.connector.OrbitConstants;
@@ -22,94 +19,37 @@ import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequ
 import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
-import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
-import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.StatusDTO;
 
-public class DomainServiceImpl implements DomainService {
-
-	protected Map<String, Object> properties;
-	protected DomainServiceWSClient client;
-	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
+public class DomainServiceImpl extends ServiceClientImpl<DomainService, DomainServiceWSClient> implements DomainService {
 
 	/**
 	 * 
+	 * @param connector
 	 * @param properties
 	 */
 	public DomainServiceImpl(ServiceConnector<DomainService> connector, Map<String, Object> properties) {
-		if (connector != null) {
-			adapt(ServiceConnector.class, connector);
-		}
-		this.properties = checkProperties(properties);
-		initClient();
-	}
-
-	private Map<String, Object> checkProperties(Map<String, Object> properties) {
-		if (properties == null) {
-			properties = new HashMap<String, Object>();
-		}
-		return properties;
+		super(connector, properties);
 	}
 
 	@Override
-	public boolean close() throws ClientException {
-		@SuppressWarnings("unchecked")
-		ServiceConnector<DomainService> connector = getAdapter(ServiceConnector.class);
-		if (connector != null) {
-			return connector.close(this);
-		}
-		return false;
-	}
-
-	@Override
-	public Map<String, Object> getProperties() {
-		return this.properties;
-	}
-
-	@Override
-	public void update(Map<String, Object> properties) {
-		this.properties = checkProperties(properties);
-		initClient();
-	}
-
-	protected void initClient() {
+	protected DomainServiceWSClient createWSClient(Map<String, Object> properties) {
 		String realm = (String) this.properties.get(OrbitConstants.REALM);
 		String username = (String) this.properties.get(OrbitConstants.USERNAME);
 		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
 
 		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
-		this.client = new DomainServiceWSClient(config);
-	}
-
-	@Override
-	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_NAME);
-		return name;
+		return new DomainServiceWSClient(config);
 	}
 
 	@Override
 	public String getURL() {
 		String fullUrl = (String) properties.get(OrbitConstants.URL);
 		return fullUrl;
-	}
-
-	// ---------------------------------------------------------
-	// Web service methods
-	// ---------------------------------------------------------
-	@Override
-	public int ping() throws ClientException {
-		return this.client.ping();
-	}
-
-	// ---------------------------------------------------------
-	// Request/Response
-	// ---------------------------------------------------------
-	@Override
-	public Response sendRequest(Request request) throws ClientException {
-		return this.client.sendRequest(request);
 	}
 
 	// ---------------------------------------------------------
@@ -408,34 +348,13 @@ public class DomainServiceImpl implements DomainService {
 		return false;
 	}
 
-	// ---------------------------------------------------------
-	// Helper methods
-	// ---------------------------------------------------------
-	/**
-	 * Get web service client configuration.
-	 * 
-	 * @param properties
-	 * @return
-	 */
-	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String url = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
-		return ClientConfiguration.create(realm, username, url, contextRoot);
-	}
-
-	@Override
-	public <T> void adapt(Class<T> clazz, T object) {
-		this.adaptorSupport.adapt(clazz, object);
-	}
-
-	@Override
-	public <T> T getAdapter(Class<T> adapter) {
-		return this.adaptorSupport.getAdapter(adapter);
-	}
-
 }
+
+// @Override
+// public String getName() {
+// String name = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_NAME);
+// return name;
+// }
 
 // ------------------------------------------------------
 // Life cycle
@@ -467,4 +386,21 @@ public class DomainServiceImpl implements DomainService {
 // }
 //
 // return transferAgent;
+// }
+
+//// ---------------------------------------------------------
+//// Helper methods
+//// ---------------------------------------------------------
+/// **
+// * Get web service client configuration.
+// *
+// * @param properties
+// * @return
+// */
+// protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
+// String realm = (String) properties.get(OrbitConstants.REALM);
+// String username = (String) properties.get(OrbitConstants.USERNAME);
+// String url = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
+// String contextRoot = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
+// return ClientConfiguration.create(realm, username, url, contextRoot);
 // }

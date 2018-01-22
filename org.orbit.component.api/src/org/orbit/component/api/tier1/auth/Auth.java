@@ -15,8 +15,6 @@ public interface Auth extends IAdaptable {
 
 	void update(Map<String, Object> properties);
 
-	String getName();
-
 	String getURL();
 
 	boolean ping();

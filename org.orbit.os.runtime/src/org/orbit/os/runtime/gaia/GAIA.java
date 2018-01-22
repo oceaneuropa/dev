@@ -1,4 +1,4 @@
-package org.orbit.os.runtime.service;
+package org.orbit.os.runtime.gaia;
 
 import java.util.Map;
 

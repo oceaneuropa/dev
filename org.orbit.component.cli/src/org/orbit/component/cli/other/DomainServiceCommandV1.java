@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.tier3.domain.DomainService;
-import org.orbit.component.api.tier3.domain.DomainServiceConnector;
+import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.orbit.component.cli.util.ResourcePropertyHelper;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
@@ -139,7 +139,8 @@ public class DomainServiceCommandV1 implements Annotated {
 			System.out.println("DomainService is null.");
 			return;
 		} else {
-			System.out.println(domainService.getName() + " (" + domainService.getURL() + ")");
+			// System.out.println(domainService.getName() + " (" + domainService.getURL() + ")");
+			System.out.println("(" + domainService.getURL() + ")");
 		}
 	}
 

@@ -5,9 +5,6 @@ public class OrbitConstants {
 	// ----------------------------------------------------------------------------------------
 	// orbit service config properties
 	// ----------------------------------------------------------------------------------------
-	// infra
-	// public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
-
 	// tier1
 	public static String ORBIT_USER_REGISTRY_URL = "orbit.user_registry.url";
 	public static String ORBIT_AUTH_URL = "orbit.auth.url";

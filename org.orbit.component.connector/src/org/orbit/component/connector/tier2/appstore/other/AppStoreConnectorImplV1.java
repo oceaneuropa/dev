@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier2.appstore.AppStoreConnector;
+import org.orbit.component.api.tier2.appstore.other.AppStoreConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier2.appstore.AppStoreImpl;
 import org.orbit.infra.api.indexes.IndexItem;

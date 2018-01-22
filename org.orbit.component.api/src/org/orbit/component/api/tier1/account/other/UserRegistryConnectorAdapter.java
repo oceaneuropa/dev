@@ -1,4 +1,4 @@
-package org.orbit.component.api.tier1.account;
+package org.orbit.component.api.tier1.account.other;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

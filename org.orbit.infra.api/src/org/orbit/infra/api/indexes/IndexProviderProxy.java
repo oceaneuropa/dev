@@ -6,50 +6,50 @@ import java.util.Map;
 
 import org.orbit.infra.api.InfraClients;
 
-public class IndexServiceReference implements IndexService {
+public class IndexProviderProxy implements IndexProvider {
 
-	private static IndexServiceProxy PROXY = new IndexServiceProxy();
+	private static IndexProviderProxyImpl PROXY = new IndexProviderProxyImpl();
 
 	protected Map<?, ?> properties;
 	protected String realm;
 	protected String username;
 	protected String url;
 
-	protected IndexService indexService = PROXY;
+	protected IndexProvider indexProvider = PROXY;
 
-	public IndexServiceReference(Map<?, ?> properties) {
+	public IndexProviderProxy(Map<?, ?> properties) {
 		this.properties = properties;
 	}
 
-	public IndexServiceReference(String url) {
+	public IndexProviderProxy(String url) {
 		this(null, null, url);
 	}
 
-	public IndexServiceReference(String realm, String username, String url) {
+	public IndexProviderProxy(String realm, String username, String url) {
 		this.realm = realm;
 		this.username = username;
 		this.url = url;
 	}
 
-	protected synchronized IndexService resolve() {
-		if (this.indexService == null || this.indexService.isProxy()) {
-			IndexService resolvedIndexService = null;
+	protected synchronized IndexProvider resolve() {
+		if (this.indexProvider == null || this.indexProvider.isProxy()) {
+			IndexProvider resolvedIndexProvider = null;
 			if (this.properties != null) {
-				resolvedIndexService = InfraClients.getInstance().getIndexService(this.properties);
+				resolvedIndexProvider = InfraClients.getInstance().getIndexProvider(this.properties);
 			}
-			if (resolvedIndexService == null) {
+			if (resolvedIndexProvider == null) {
 				if (this.url != null) {
-					resolvedIndexService = InfraClients.getInstance().getIndexService(this.realm, this.username, this.url);
+					resolvedIndexProvider = InfraClients.getInstance().getIndexProvider(this.realm, this.username, this.url);
 				}
 			}
-			if (resolvedIndexService != null && !resolvedIndexService.isProxy()) {
-				this.indexService = resolvedIndexService;
+			if (resolvedIndexProvider != null && !resolvedIndexProvider.isProxy()) {
+				this.indexProvider = resolvedIndexProvider;
 			}
 		}
-		if (this.indexService == null) {
-			this.indexService = PROXY;
+		if (this.indexProvider == null) {
+			this.indexProvider = PROXY;
 		}
-		return this.indexService;
+		return this.indexProvider;
 	}
 
 	@Override
@@ -103,6 +103,31 @@ public class IndexServiceReference implements IndexService {
 	}
 
 	@Override
+	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
+		return resolve().addIndexItem(indexProviderId, type, name, properties);
+	}
+
+	@Override
+	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+		return resolve().removeIndexItem(indexProviderId, indexItemId);
+	}
+
+	@Override
+	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
+		return resolve().setProperties(indexProviderId, indexItemId, properties);
+	}
+
+	@Override
+	public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
+		return resolve().setProperty(indexProviderId, indexItemId, propName, propValue, propType);
+	}
+
+	@Override
+	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
+		return resolve().removeProperties(indexProviderId, indexItemId, propertyNames);
+	}
+
+	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		resolve().adapt(clazz, object);
 	}
@@ -117,7 +142,7 @@ public class IndexServiceReference implements IndexService {
 		return false;
 	}
 
-	public static class IndexServiceProxy implements IndexService {
+	public static class IndexProviderProxyImpl implements IndexProvider {
 
 		@Override
 		public String getName() {
@@ -176,6 +201,31 @@ public class IndexServiceReference implements IndexService {
 		@Override
 		public <T> T getAdapter(Class<T> adapter) {
 			return null;
+		}
+
+		@Override
+		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
+			return null;
+		}
+
+		@Override
+		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+			return false;
+		}
+
+		@Override
+		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
+			return false;
+		}
+
+		@Override
+		public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
+			return false;
+		}
+
+		@Override
+		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
+			return false;
 		}
 
 		@Override

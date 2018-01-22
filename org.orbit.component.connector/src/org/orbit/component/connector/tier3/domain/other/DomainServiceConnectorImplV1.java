@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier3.domain.DomainService;
-import org.orbit.component.api.tier3.domain.DomainServiceConnector;
+import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier3.domain.DomainServiceImpl;
 import org.orbit.infra.api.indexes.IndexItem;

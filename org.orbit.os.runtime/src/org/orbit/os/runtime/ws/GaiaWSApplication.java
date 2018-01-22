@@ -1,7 +1,7 @@
 package org.orbit.os.runtime.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.orbit.os.runtime.service.GAIA;
+import org.orbit.os.runtime.gaia.GAIA;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
 import org.origin.common.rest.server.FeatureConstants;
 

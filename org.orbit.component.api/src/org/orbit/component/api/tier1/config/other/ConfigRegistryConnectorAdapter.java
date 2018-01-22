@@ -1,4 +1,4 @@
-package org.orbit.component.api.tier1.config;
+package org.orbit.component.api.tier1.config.other;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

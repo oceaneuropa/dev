@@ -1,9 +1,5 @@
 package org.orbit.component.api.tier3.domain;
 
-import java.util.Map;
-
-import javax.ws.rs.core.Response;
-
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
@@ -13,29 +9,12 @@ import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequ
 import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
-import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.client.Pingable;
-import org.origin.common.rest.model.Request;
+import org.origin.common.rest.client.ServiceClient;
 
-public interface DomainService extends Pingable, IAdaptable {
+public interface DomainService extends ServiceClient {
 
-	boolean close() throws ClientException;
-
-	String getName();
-
-	String getURL();
-
-	Map<String, Object> getProperties();
-
-	void update(Map<String, Object> properties);
-
-	int ping() throws ClientException;
-
-	// ------------------------------------------------------
-	// Request/Response
-	// ------------------------------------------------------
-	Response sendRequest(Request request) throws ClientException;
+	// String getName();
 
 	// ------------------------------------------------------
 	// Machine management

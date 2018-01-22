@@ -34,7 +34,7 @@ public class MissionControlAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProviderReference(this.properties);
+		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
 	}
 
 	public MissionControlService getService() {

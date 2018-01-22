@@ -1,7 +1,7 @@
 package org.orbit.os.runtime.ws;
 
 import org.orbit.os.runtime.Requests;
-import org.orbit.os.runtime.service.GAIA;
+import org.orbit.os.runtime.gaia.GAIA;
 import org.orbit.os.runtime.ws.command.WorldCreateWSCommand;
 import org.orbit.os.runtime.ws.command.WorldDeleteWSCommand;
 import org.orbit.os.runtime.ws.command.WorldExistWSCommand;

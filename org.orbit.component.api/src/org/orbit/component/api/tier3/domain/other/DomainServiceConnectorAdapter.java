@@ -1,4 +1,4 @@
-package org.orbit.component.api.tier3.domain;
+package org.orbit.component.api.tier3.domain.other;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

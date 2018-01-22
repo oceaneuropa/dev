@@ -2,10 +2,12 @@ package org.orbit.component.cli;
 
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
+import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
@@ -14,6 +16,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
+import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +27,14 @@ public class UserRegistryCommand {
 
 	protected static String[] USER_ACCOUNT_COLUMNS = new String[] { "User Id", "Email", "Password", "First Name", "Last Name", "Phone", "Activated", "Creation Time", "Last Update Time" };
 
+	protected Map<Object, Object> properties;
+
 	protected String getScheme() {
 		return "orbit";
 	}
 
 	public void start(BundleContext bundleContext) {
-		System.out.println("UserRegistryCommand.start()");
+		LOG.info("start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
@@ -44,28 +49,34 @@ public class UserRegistryCommand {
 						"activate_user", //
 						"deactivate_user", //
 						"delete_user" //
-		} //
-		);
+		});
+
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_USER_REGISTRY_URL);
+		this.properties = properties;
+
 		OSGiServiceUtil.register(bundleContext, UserRegistryCommand.class.getName(), this, props);
 	}
 
 	public void stop(BundleContext bundleContext) {
-		System.out.println("UserRegistryCommand.stop()");
+		LOG.info("stop()");
 
 		OSGiServiceUtil.unregister(UserRegistryCommand.class.getName(), this);
 	}
 
-	protected UserRegistry getUserRegistry(String url) {
-		return OrbitClients.getInstance().getUserRegistry(url);
+	protected UserRegistry getUserRegistry() {
+		UserRegistry userRegistry = OrbitClients.getInstance().getUserRegistry(this.properties);
+		if (userRegistry == null) {
+			throw new IllegalStateException("UserRegistry is null.");
+		}
+		return userRegistry;
 	}
 
 	@Descriptor("list_users")
-	public void list_users(//
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url //
-	) throws ClientException {
-		CLIHelper.getInstance().printCommand(getScheme(), "list_users", new String[] { "url", url });
+	public void list_users() throws ClientException {
+		CLIHelper.getInstance().printCommand(getScheme(), "list_users");
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserRegistry userRegistry = getUserRegistry();
 
 		UserAccount[] userAccounts = userRegistry.getUserAccounts();
 
@@ -88,22 +99,19 @@ public class UserRegistryCommand {
 		}
 
 		PrettyPrinter.prettyPrint(USER_ACCOUNT_COLUMNS, rows, userAccounts.length);
-		System.out.println();
 	}
 
 	@Descriptor("get_user")
 	public void get_user( //
-			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
 			@Descriptor("username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "get_user", new String[] { "username", username });
-
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
 			return;
 		}
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserRegistry userRegistry = getUserRegistry();
 
 		UserAccount userAccount = userRegistry.getUserAccount(username);
 
@@ -147,9 +155,6 @@ public class UserRegistryCommand {
 				new String[] { "lastname", lastName }, //
 				new String[] { "phone", phone } //
 		);
-
-		UserRegistry userRegistry = getUserRegistry(url);
-
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("userId is not set.");
 			return;
@@ -162,6 +167,8 @@ public class UserRegistryCommand {
 			System.out.println("email is not set.");
 			return;
 		}
+
+		UserRegistry userRegistry = getUserRegistry();
 
 		CreateUserAccountRequest request = new CreateUserAccountRequest();
 		request.setUserId(username);
@@ -187,9 +194,6 @@ public class UserRegistryCommand {
 				new String[] { "oldpassword", oldPassword }, //
 				new String[] { "newpassword", newPassword } //
 		);
-
-		UserRegistry userRegistry = getUserRegistry(url);
-
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
 			return;
@@ -198,6 +202,8 @@ public class UserRegistryCommand {
 			System.out.println("newpassword is not set.");
 			return;
 		}
+
+		UserRegistry userRegistry = getUserRegistry();
 
 		boolean succeed = userRegistry.changePassword(username, oldPassword, newPassword);
 		System.out.println("Password is updated: " + succeed);
@@ -209,13 +215,12 @@ public class UserRegistryCommand {
 			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "activate_user", new String[] { "url", url }, new String[] { "username", username });
-
-		UserRegistry userRegistry = getUserRegistry(url);
-
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
 			return;
 		}
+
+		UserRegistry userRegistry = getUserRegistry();
 
 		boolean succeed = userRegistry.activate(username);
 		boolean activated = userRegistry.isActivated(username);
@@ -230,13 +235,12 @@ public class UserRegistryCommand {
 			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "deactivate_user", new String[] { "url", url }, new String[] { "username", username });
-
-		UserRegistry userRegistry = getUserRegistry(url);
-
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
 			return;
 		}
+
+		UserRegistry userRegistry = getUserRegistry();
 
 		boolean succeed = userRegistry.deactivate(username);
 		boolean activated = userRegistry.isActivated(username);
@@ -251,13 +255,12 @@ public class UserRegistryCommand {
 			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username //
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_user", new String[] { "url", url }, new String[] { "username", username });
-
-		UserRegistry userRegistry = getUserRegistry(url);
-
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
 			return;
 		}
+
+		UserRegistry userRegistry = getUserRegistry();
 
 		boolean succeed = userRegistry.delete(username);
 		System.out.println("User deletion result: " + succeed);

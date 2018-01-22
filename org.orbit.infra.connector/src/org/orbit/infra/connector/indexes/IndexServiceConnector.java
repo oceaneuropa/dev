@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class IndexServiceConnectorImpl extends ServiceConnector<IndexService> {
+public class IndexServiceConnector extends ServiceConnector<IndexService> {
 
-	public IndexServiceConnectorImpl() {
+	public IndexServiceConnector() {
 		super(IndexService.class);
 	}
 
