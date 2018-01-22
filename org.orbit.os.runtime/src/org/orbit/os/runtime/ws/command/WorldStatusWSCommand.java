@@ -1,6 +1,7 @@
 package org.orbit.os.runtime.ws.command;
 
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.orbit.os.runtime.service.GAIA;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
@@ -16,7 +17,7 @@ public class WorldStatusWSCommand extends AbstractWSCommand {
 
 	@Override
 	public Response execute(Request request) {
-		return null;
+		return Response.status(Status.OK).build();
 	}
 
 }

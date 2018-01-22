@@ -1,13 +1,13 @@
 package org.orbit.os.runtime.util;
 
 import org.orbit.os.model.world.dto.WorldDTO;
-import org.spirit.world.api.World;
+import org.orbit.os.model.world.rto.World;
 
-public class ModelConverter {
+public class WorldModelConverter {
 
-	private static ModelConverter converter = new ModelConverter();
+	private static WorldModelConverter converter = new WorldModelConverter();
 
-	public static ModelConverter getInstance() {
+	public static WorldModelConverter getInstance() {
 		return converter;
 	}
 

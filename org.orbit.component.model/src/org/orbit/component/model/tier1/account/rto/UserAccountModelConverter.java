@@ -1,13 +1,13 @@
-package org.orbit.component.model.tier1.account;
+package org.orbit.component.model.tier1.account.rto;
 
 import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
 import org.origin.common.rest.model.ErrorDTO;
 
-public class ModelConverter {
+public class UserAccountModelConverter {
 
-	private static ModelConverter converter = new ModelConverter();
+	private static UserAccountModelConverter converter = new UserAccountModelConverter();
 
-	public static ModelConverter getInstance() {
+	public static UserAccountModelConverter getInstance() {
 		return converter;
 	}
 

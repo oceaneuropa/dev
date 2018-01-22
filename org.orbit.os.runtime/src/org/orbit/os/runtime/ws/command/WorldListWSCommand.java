@@ -7,12 +7,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.os.model.world.dto.WorldDTO;
+import org.orbit.os.model.world.rto.World;
 import org.orbit.os.runtime.service.GAIA;
-import org.orbit.os.runtime.util.ModelConverter;
-import org.orbit.os.runtime.world.WorldException;
+import org.orbit.os.runtime.util.WorldModelConverter;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.Request;
-import org.spirit.world.api.World;
 
 public class WorldListWSCommand extends AbstractWSCommand {
 
@@ -23,19 +22,13 @@ public class WorldListWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
-	public Response execute(Request request) {
+	public Response execute(Request request) throws Exception {
 		List<WorldDTO> worldDTOs = new ArrayList<WorldDTO>();
-
-		try {
-			List<World> worlds = this.gaia.getWorlds().getWorld();
-			for (World world : worlds) {
-				WorldDTO worldDTO = ModelConverter.getInstance().toDTO(world);
-				worldDTOs.add(worldDTO);
-			}
-		} catch (WorldException e) {
-			e.printStackTrace();
+		List<World> worlds = this.gaia.getWorlds().getWorlds();
+		for (World world : worlds) {
+			WorldDTO worldDTO = WorldModelConverter.getInstance().toDTO(world);
+			worldDTOs.add(worldDTO);
 		}
-
 		return Response.status(Status.OK).entity(worldDTOs).build();
 	}
 

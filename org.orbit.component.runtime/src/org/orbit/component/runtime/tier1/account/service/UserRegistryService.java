@@ -2,8 +2,8 @@ package org.orbit.component.runtime.tier1.account.service;
 
 import java.util.List;
 
-import org.orbit.component.model.tier1.account.UserAccount;
-import org.orbit.component.model.tier1.account.UserRegistryException;
+import org.orbit.component.model.tier1.account.rto.UserAccount;
+import org.orbit.component.model.tier1.account.rto.UserRegistryException;
 
 public interface UserRegistryService {
 

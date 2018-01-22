@@ -6,7 +6,7 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
 import org.orbit.component.runtime.tier3.transferagent.resource.WorkspaceNodeHelper;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
-import org.orbit.component.runtime.tier3.transferagent.util.ModelConverter;
+import org.orbit.component.runtime.tier3.transferagent.util.NodeModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -21,7 +21,7 @@ public class NodeGetWSCommand implements WSCommand {
 	}
 
 	@Override
-	public Response execute(Request request) {
+	public Response execute(Request request) throws Exception {
 		String nodeId = (request.getParameter("nodeId") instanceof String) ? (String) request.getParameter("nodeId") : null;
 		if (nodeId == null || nodeId.isEmpty()) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "'nodeId' parameter is not set.");
@@ -34,7 +34,7 @@ public class NodeGetWSCommand implements WSCommand {
 			return Response.status(Status.NOT_FOUND).entity(error).build();
 		}
 
-		INodeDTO nodeDTO = ModelConverter.getInstance().toDTO(node);
+		INodeDTO nodeDTO = NodeModelConverter.getInstance().toDTO(node);
 		return Response.status(Status.OK).entity(nodeDTO).build();
 	}
 

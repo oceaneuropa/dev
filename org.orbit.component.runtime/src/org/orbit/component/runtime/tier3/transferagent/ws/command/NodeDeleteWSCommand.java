@@ -1,6 +1,5 @@
 package org.orbit.component.runtime.tier3.transferagent.ws.command;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class NodeDeleteWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
-	public Response execute(Request request) {
+	public Response execute(Request request) throws Exception {
 		String nodeId = (request.getParameter("nodeId") instanceof String) ? (String) request.getParameter("nodeId") : null;
 		if (nodeId == null || nodeId.isEmpty()) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "'nodeId' parameter is not set.", null);
@@ -32,23 +31,13 @@ public class NodeDeleteWSCommand extends AbstractWSCommand {
 		}
 
 		IWorkspace workspace = this.service.getNodeWorkspace();
-
 		boolean exists = WorkspaceNodeHelper.INSTANCE.nodeExists(workspace, nodeId);
 		if (!exists) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "Node '" + nodeId + "' does not exist.", null);
 			return Response.status(Status.NOT_FOUND).entity(error).build();
 		}
 
-		boolean succeed = false;
-		try {
-			succeed = WorkspaceNodeBuilder.INSTANCE.deleteNode(workspace, nodeId);
-
-		} catch (IOException e) {
-			e.printStackTrace();
-
-			ErrorDTO error = handleError(e, "500", true);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-		}
+		boolean succeed = WorkspaceNodeBuilder.INSTANCE.deleteNode(workspace, nodeId);
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("succeed", succeed);

@@ -2,11 +2,11 @@ package org.orbit.os.runtime.world;
 
 import java.util.List;
 
-import org.spirit.world.api.World;
+import org.orbit.os.model.world.rto.World;
 
 public interface Worlds {
 
-	List<World> getWorld() throws WorldException;
+	List<World> getWorlds() throws WorldException;
 
 	boolean exists(String name) throws WorldException;
 

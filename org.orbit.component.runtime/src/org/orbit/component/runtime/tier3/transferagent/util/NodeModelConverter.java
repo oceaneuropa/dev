@@ -8,11 +8,11 @@ import org.origin.core.resources.IPath;
 import org.origin.core.resources.node.INode;
 import org.origin.core.resources.node.INodespace;
 
-public class ModelConverter {
+public class NodeModelConverter {
 
-	private static ModelConverter converter = new ModelConverter();
+	private static NodeModelConverter converter = new NodeModelConverter();
 
-	public static ModelConverter getInstance() {
+	public static NodeModelConverter getInstance() {
 		return converter;
 	}
 

@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier3.transferagent.ws.command.other;
 
 import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
-import org.orbit.component.runtime.tier3.transferagent.util.ModelConverter;
+import org.orbit.component.runtime.tier3.transferagent.util.NodeModelConverter;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommandResult;
@@ -50,7 +50,7 @@ public class NodeGetCommandV1 extends AbstractTransferAgentCommandV1 {
 				return new CommandResult(response);
 			}
 
-			INodeDTO nodeDTO = ModelConverter.getInstance().toDTO(node);
+			INodeDTO nodeDTO = NodeModelConverter.getInstance().toDTO(node);
 
 			Response response = new Response(Response.SUCCESS, "Nodes is retrieved.");
 			response.setBody(nodeDTO);

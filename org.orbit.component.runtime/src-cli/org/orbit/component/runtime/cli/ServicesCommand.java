@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
-import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceDatabaseImpl;
+import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl;
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
@@ -39,7 +39,7 @@ public class ServicesCommand {
 	protected boolean autoStartAuthService;
 	protected boolean autoStartConfigRegistryService;
 
-	protected UserRegistryServiceDatabaseImpl userRegistryService;
+	protected UserRegistryServiceImpl userRegistryService;
 	protected AuthServiceImpl authService;
 	protected ConfigRegistryServiceDatabaseImpl configRegistryService;
 
@@ -236,14 +236,14 @@ public class ServicesCommand {
 	}
 
 	public void startUserRegistryService(BundleContext bundleContext) {
-		UserRegistryServiceDatabaseImpl userRegistryService = new UserRegistryServiceDatabaseImpl();
+		UserRegistryServiceImpl userRegistryService = new UserRegistryServiceImpl();
 		userRegistryService.start(bundleContext);
 		this.userRegistryService = userRegistryService;
 	}
 
 	public void stopUserRegistryService(BundleContext bundleContext) {
 		if (this.userRegistryService != null) {
-			this.userRegistryService.stop();
+			this.userRegistryService.stop(bundleContext);
 			this.userRegistryService = null;
 		}
 	}

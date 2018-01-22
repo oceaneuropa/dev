@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
-import org.orbit.component.runtime.tier3.transferagent.util.ModelConverter;
+import org.orbit.component.runtime.tier3.transferagent.util.NodeModelConverter;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommandResult;
@@ -49,7 +49,7 @@ public class NodeListCommandV1 extends AbstractTransferAgentCommandV1 {
 			for (IResource resource : resources) {
 				if (resource instanceof INode) {
 					INode node = (INode) resource;
-					INodeDTO nodeDTO = ModelConverter.getInstance().toDTO(node);
+					INodeDTO nodeDTO = NodeModelConverter.getInstance().toDTO(node);
 					nodeDTOs.add(nodeDTO);
 				}
 			}

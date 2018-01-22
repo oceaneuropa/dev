@@ -6,8 +6,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.orbit.component.model.tier1.account.UserAccount;
-import org.orbit.component.model.tier1.account.UserRegistryException;
+import org.orbit.component.model.tier1.account.rto.UserAccount;
+import org.orbit.component.model.tier1.account.rto.UserRegistryException;
 import org.orbit.component.model.tier1.auth.AuthException;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;

@@ -1,4 +1,4 @@
-package org.orbit.component.runtime.tier1.account.service;
+package org.orbit.component.runtime.tier1.account.persistence;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -7,7 +7,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.orbit.component.model.tier1.account.UserAccount;
+import org.orbit.component.model.tier1.account.rto.UserAccount;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -159,7 +159,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public UserAccount registerUserAccount(Connection conn, String userId, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime) throws SQLException {
+	public UserAccount createUserAccount(Connection conn, String userId, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime) throws SQLException {
 		if (creationTime == null) {
 			creationTime = new Date();
 		}

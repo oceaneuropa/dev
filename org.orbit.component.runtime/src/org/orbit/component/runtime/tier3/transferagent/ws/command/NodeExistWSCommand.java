@@ -21,7 +21,7 @@ public class NodeExistWSCommand implements WSCommand {
 	}
 
 	@Override
-	public Response execute(Request request) {
+	public Response execute(Request request) throws Exception {
 		String nodeId = (request.getParameter("nodeId") instanceof String) ? (String) request.getParameter("nodeId") : null;
 		if (nodeId == null || nodeId.isEmpty()) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "'nodeId' parameter is not set.", null);
