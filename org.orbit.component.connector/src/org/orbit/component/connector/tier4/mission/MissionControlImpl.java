@@ -21,9 +21,9 @@ public class MissionControlImpl extends ServiceClientImpl<MissionControl, Missio
 
 	@Override
 	protected MissionControlWSClient createWSClient(Map<String, Object> properties) {
-		String realm = (String) this.properties.get(OrbitConstants.REALM);
-		String username = (String) this.properties.get(OrbitConstants.USERNAME);
-		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
+		String realm = (String) properties.get(OrbitConstants.REALM);
+		String username = (String) properties.get(OrbitConstants.USERNAME);
+		String fullUrl = (String) properties.get(OrbitConstants.URL);
 
 		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
 		return new MissionControlWSClient(config);
@@ -31,7 +31,7 @@ public class MissionControlImpl extends ServiceClientImpl<MissionControl, Missio
 
 	@Override
 	public String getURL() {
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
+		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
 		return fullUrl;
 	}
 
