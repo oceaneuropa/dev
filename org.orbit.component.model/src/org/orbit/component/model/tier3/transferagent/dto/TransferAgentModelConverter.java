@@ -1,4 +1,4 @@
-package org.orbit.component.model.tier3.transferagent;
+package org.orbit.component.model.tier3.transferagent.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,65 +6,68 @@ import java.util.List;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
-import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
-import org.orbit.component.model.tier3.transferagent.dto.NodeInfoImpl;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 
-public class TransferAgentConverter {
+public class TransferAgentModelConverter {
 
-	public static TransferAgentConverter INSTANCE = new TransferAgentConverter();
+	public static TransferAgentModelConverter INSTANCE = new TransferAgentModelConverter();
+
+	public NodeInfo toNode(INodeDTO nodeDTO) {
+		NodeInfoImpl nodeInfo = new NodeInfoImpl();
+		nodeInfo.setId(nodeDTO.getId());
+		nodeInfo.setName(nodeDTO.getName());
+		return nodeInfo;
+	}
 
 	public NodeInfo[] getNodes(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}
-
-		List<NodeInfo> nodeInfos = new ArrayList<NodeInfo>();
+		List<NodeInfo> nodes = new ArrayList<NodeInfo>();
 		List<INodeDTO> nodeDTOs = response.readEntity(new GenericType<List<INodeDTO>>() {
 		});
 		for (INodeDTO nodeDTO : nodeDTOs) {
-			NodeInfoImpl nodeInfo = new NodeInfoImpl();
-			nodeInfo.setId(nodeDTO.getId());
-			nodeInfo.setName(nodeDTO.getName());
-			nodeInfos.add(nodeInfo);
+			NodeInfo node = toNode(nodeDTO);
+			nodes.add(node);
 		}
-		return nodeInfos.toArray(new NodeInfo[nodeInfos.size()]);
+		return nodes.toArray(new NodeInfo[nodes.size()]);
 	}
 
 	public NodeInfo getNode(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}
-
-		NodeInfoImpl nodeInfo = null;
+		NodeInfo node = null;
 		INodeDTO nodeDTO = response.readEntity(INodeDTO.class);
 		if (nodeDTO != null) {
-			nodeInfo = new NodeInfoImpl();
-			nodeInfo.setId(nodeDTO.getId());
-			nodeInfo.setName(nodeDTO.getName());
+			node = toNode(nodeDTO);
 		}
-		return nodeInfo;
+		return node;
 	}
 
-	public boolean nodeExists(Response response) throws ClientException {
+	public boolean exists(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}
-
 		boolean exists = false;
 		try {
 			exists = ResponseUtil.getSimpleValue(response, "exists", Boolean.class);
-
 		} catch (Exception e) {
 			throw new ClientException(500, e.getMessage(), e);
 		}
-
 		return exists;
 	}
 
-	public boolean isNodeCreated(Response response) throws ClientException {
+	public boolean isCreated(Response response) throws ClientException {
+		return isSucceed(response);
+	}
+
+	public boolean isDeleted(Response response) throws ClientException {
+		return isSucceed(response);
+	}
+
+	public boolean isSucceed(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}
@@ -78,21 +81,7 @@ public class TransferAgentConverter {
 		return succeed;
 	}
 
-	public boolean isNodeDeleted(Response response) throws ClientException {
-		if (!ResponseUtil.isSuccessful(response)) {
-			throw new ClientException(response);
-		}
-		boolean succeed = false;
-		try {
-			succeed = ResponseUtil.getSimpleValue(response, "succeed", Boolean.class);
-
-		} catch (Exception e) {
-			throw new ClientException(500, e.getMessage(), e);
-		}
-		return succeed;
-	}
-
-	public String getNodeStatus(Response response) throws ClientException {
+	public String getStatus(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);
 		}

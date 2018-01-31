@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class UserRegistryConnectorImpl extends ServiceConnector<UserRegistry> {
+public class UserRegistryConnector extends ServiceConnector<UserRegistry> {
 
-	public UserRegistryConnectorImpl() {
+	public UserRegistryConnector() {
 		super(UserRegistry.class);
 	}
 

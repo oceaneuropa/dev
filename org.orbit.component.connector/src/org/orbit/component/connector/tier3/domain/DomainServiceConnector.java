@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.component.api.tier3.domain.DomainService;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class DomainServiceConnectorImpl extends ServiceConnector<DomainService> {
+public class DomainServiceConnector extends ServiceConnector<DomainService> {
 
-	public DomainServiceConnectorImpl() {
+	public DomainServiceConnector() {
 		super(DomainService.class);
 	}
 

@@ -19,6 +19,7 @@ public class GaiaWSApplication extends AbstractJerseyWSApplication {
 		};
 		register(serviceBinder);
 		register(GaiaWSResource.class);
+		register(WorldsWSResource.class);
 	}
 
 	@Override

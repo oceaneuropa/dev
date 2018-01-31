@@ -3,13 +3,13 @@ package org.orbit.component.connector.other;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
+import org.orbit.component.connector.tier1.account.UserRegistryConnector;
 import org.orbit.component.connector.tier1.account.other.UserRegistryManager;
-import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
-import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
-import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
-import org.orbit.component.connector.tier3.domain.DomainServiceConnectorImpl;
-import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
+import org.orbit.component.connector.tier1.auth.AuthConnector;
+import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
+import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
+import org.orbit.component.connector.tier3.domain.DomainServiceConnector;
+import org.orbit.component.connector.tier3.transferagent.TransferAgentConnector;
 import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
 import org.orbit.infra.api.indexes.IndexServiceUtil;
 import org.orbit.infra.api.indexes.other.IndexServiceConnectorAdapterV1;
@@ -39,12 +39,12 @@ public class ActivatorV1 implements BundleActivator {
 	protected UserRegistryManager userRegistryManager;
 
 	// Connectors
-	protected ConfigRegistryConnectorImpl configRegistryConnector;
-	protected UserRegistryConnectorImpl userRegistryConnector;
-	protected AuthConnectorImpl authConnector;
-	protected AppStoreConnectorImpl appStoreConnector;
-	protected DomainServiceConnectorImpl domainMgmtConnector;
-	protected TransferAgentConnectorImpl transferAgentConnector;
+	protected ConfigRegistryConnector configRegistryConnector;
+	protected UserRegistryConnector userRegistryConnector;
+	protected AuthConnector authConnector;
+	protected AppStoreConnector appStoreConnector;
+	protected DomainServiceConnector domainMgmtConnector;
+	protected TransferAgentConnector transferAgentConnector;
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
@@ -87,22 +87,22 @@ public class ActivatorV1 implements BundleActivator {
 		this.userRegistryManager = new UserRegistryManager();
 		this.userRegistryManager.start(bundleContext);
 
-		this.userRegistryConnector = new UserRegistryConnectorImpl();
+		this.userRegistryConnector = new UserRegistryConnector();
 		this.userRegistryConnector.start(bundleContext);
 
-		this.authConnector = new AuthConnectorImpl();
+		this.authConnector = new AuthConnector();
 		this.authConnector.start(bundleContext);
 
 		// tier2
-		this.appStoreConnector = new AppStoreConnectorImpl();
+		this.appStoreConnector = new AppStoreConnector();
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
 		// this.domainMgmtConnector = new DomainServiceConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.domainMgmtConnector = new DomainServiceConnectorImpl();
+		this.domainMgmtConnector = new DomainServiceConnector();
 		this.domainMgmtConnector.start(bundleContext);
 
-		this.transferAgentConnector = new TransferAgentConnectorImpl();
+		this.transferAgentConnector = new TransferAgentConnector();
 		this.transferAgentConnector.start(bundleContext);
 	}
 

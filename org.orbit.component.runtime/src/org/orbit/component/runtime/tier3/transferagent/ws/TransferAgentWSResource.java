@@ -24,7 +24,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.transferagent.TransferAgentException;
+import org.orbit.component.model.tier3.transferagent.rto.TransferAgentException;
 import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;

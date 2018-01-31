@@ -31,7 +31,7 @@ public class GAIAImpl extends ServiceClientImpl<GAIA, GAIAWSClient> implements G
 
 	@Override
 	public String getURL() {
-		String fullUrl = (String) properties.get(OSConstants.URL);
+		String fullUrl = (String) this.properties.get(OSConstants.URL);
 		return fullUrl;
 	}
 

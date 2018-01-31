@@ -1,4 +1,4 @@
-package org.orbit.os.runtime.world;
+package org.orbit.os.model.gaia.rto;
 
 public class WorldException extends Exception {
 

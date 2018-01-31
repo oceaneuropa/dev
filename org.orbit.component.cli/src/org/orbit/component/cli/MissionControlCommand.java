@@ -11,8 +11,8 @@ import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier4.mission.MissionControl;
-import org.orbit.component.model.tier3.transferagent.TransferAgentConverter;
-import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
+import org.orbit.component.model.tier4.mission.dto.Mission;
+import org.orbit.component.model.tier4.mission.dto.MissionControlModelConverter;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.client.ServiceClientCommand;
@@ -28,8 +28,7 @@ public class MissionControlCommand extends ServiceClientCommand {
 
 	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentCommand.class);
 
-	protected static String[] NODESPACE_TITLES = new String[] { "Name" };
-	protected static String[] NODE_TITLES = new String[] { "Name" };
+	protected static String[] MISSION_COLUMN_NAMES = new String[] { "Name" };
 
 	protected String scheme = "mission";
 	protected Map<Object, Object> properties;
@@ -80,8 +79,6 @@ public class MissionControlCommand extends ServiceClientCommand {
 	// mission_exist
 	// create_mission
 	// delete_mission
-	// start_mission
-	// stop_mission
 	// mission_status
 	// -----------------------------------------------------------------------------------------
 	@Descriptor("List missions")
@@ -96,21 +93,20 @@ public class MissionControlCommand extends ServiceClientCommand {
 		try {
 			MissionControl missionControl = getMissionControl();
 
-			Request request = new Request(Requests.GET_NODES);
+			Request request = new Request(Requests.GET_MISSIONS);
 			Response response = missionControl.sendRequest(request);
 
-			NodeInfo[] nodeInfos = TransferAgentConverter.INSTANCE.getNodes(response);
-			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
+			Mission[] missions = MissionControlModelConverter.INSTANCE.getMissions(response);
+			String[][] rows = new String[missions.length][MISSION_COLUMN_NAMES.length];
 			int rowIndex = 0;
-			for (NodeInfo nodeInfo : nodeInfos) {
-				String name = nodeInfo.getName();
+			for (Mission mission : missions) {
+				String name = mission.getName();
 				rows[rowIndex++] = new String[] { name };
 			}
-			PrettyPrinter.prettyPrint(NODE_TITLES, rows, nodeInfos.length);
+			PrettyPrinter.prettyPrint(MISSION_COLUMN_NAMES, rows, missions.length);
 
 		} catch (Exception e) {
-			// e.printStackTrace();
-			System.out.println(e.toString());
+			e.printStackTrace();
 		}
 	}
 

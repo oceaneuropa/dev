@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.component.api.tier4.mission.MissionControl;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class MissionControlConnectorImpl extends ServiceConnector<MissionControl> {
+public class MissionControlConnector extends ServiceConnector<MissionControl> {
 
-	public MissionControlConnectorImpl() {
+	public MissionControlConnector() {
 		super(MissionControl.class);
 	}
 

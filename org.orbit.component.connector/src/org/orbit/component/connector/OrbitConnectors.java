@@ -1,13 +1,13 @@
 package org.orbit.component.connector;
 
-import org.orbit.component.connector.tier1.account.UserRegistryConnectorImpl;
+import org.orbit.component.connector.tier1.account.UserRegistryConnector;
 import org.orbit.component.connector.tier1.account.other.UserRegistryManager;
-import org.orbit.component.connector.tier1.auth.AuthConnectorImpl;
-import org.orbit.component.connector.tier1.config.ConfigRegistryConnectorImpl;
-import org.orbit.component.connector.tier2.appstore.AppStoreConnectorImpl;
-import org.orbit.component.connector.tier3.domain.DomainServiceConnectorImpl;
-import org.orbit.component.connector.tier3.transferagent.TransferAgentConnectorImpl;
-import org.orbit.component.connector.tier4.mission.MissionControlConnectorImpl;
+import org.orbit.component.connector.tier1.auth.AuthConnector;
+import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
+import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
+import org.orbit.component.connector.tier3.domain.DomainServiceConnector;
+import org.orbit.component.connector.tier3.transferagent.TransferAgentConnector;
+import org.orbit.component.connector.tier4.mission.MissionControlConnector;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,44 +37,44 @@ public class OrbitConnectors {
 
 	// Connectors
 	// tier1
-	protected ConfigRegistryConnectorImpl configRegistryConnector;
-	protected UserRegistryConnectorImpl userRegistryConnector;
-	protected AuthConnectorImpl authConnector;
+	protected ConfigRegistryConnector configRegistryConnector;
+	protected UserRegistryConnector userRegistryConnector;
+	protected AuthConnector authConnector;
 
 	// tier2
-	protected AppStoreConnectorImpl appStoreConnector;
+	protected AppStoreConnector appStoreConnector;
 
 	// tier3
-	protected DomainServiceConnectorImpl domainServiceConnector;
-	protected TransferAgentConnectorImpl transferAgentConnector;
+	protected DomainServiceConnector domainServiceConnector;
+	protected TransferAgentConnector transferAgentConnector;
 
 	// tier4
-	protected MissionControlConnectorImpl missionControlConnector;
+	protected MissionControlConnector missionControlConnector;
 
 	public void start(BundleContext bundleContext) {
 		// tier1
 		this.userRegistryManager = new UserRegistryManager();
 		this.userRegistryManager.start(bundleContext);
 
-		this.userRegistryConnector = new UserRegistryConnectorImpl();
+		this.userRegistryConnector = new UserRegistryConnector();
 		this.userRegistryConnector.start(bundleContext);
 
-		this.authConnector = new AuthConnectorImpl();
+		this.authConnector = new AuthConnector();
 		this.authConnector.start(bundleContext);
 
 		// tier2
-		this.appStoreConnector = new AppStoreConnectorImpl();
+		this.appStoreConnector = new AppStoreConnector();
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
-		this.domainServiceConnector = new DomainServiceConnectorImpl();
+		this.domainServiceConnector = new DomainServiceConnector();
 		this.domainServiceConnector.start(bundleContext);
 
-		this.transferAgentConnector = new TransferAgentConnectorImpl();
+		this.transferAgentConnector = new TransferAgentConnector();
 		this.transferAgentConnector.start(bundleContext);
 
 		// tier4
-		this.missionControlConnector = new MissionControlConnectorImpl();
+		this.missionControlConnector = new MissionControlConnector();
 		this.missionControlConnector.start(bundleContext);
 	}
 

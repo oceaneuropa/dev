@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.infra.api.channel.Channels;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class ChannelsConnectorImpl extends ServiceConnector<Channels> {
+public class ChannelsConnector extends ServiceConnector<Channels> {
 
-	public ChannelsConnectorImpl() {
+	public ChannelsConnector() {
 		super(Channels.class);
 	}
 

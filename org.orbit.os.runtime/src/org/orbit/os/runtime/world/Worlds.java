@@ -2,7 +2,7 @@ package org.orbit.os.runtime.world;
 
 import java.util.List;
 
-import org.orbit.os.model.world.rto.World;
+import org.orbit.os.model.gaia.rto.WorldException;
 
 public interface Worlds {
 

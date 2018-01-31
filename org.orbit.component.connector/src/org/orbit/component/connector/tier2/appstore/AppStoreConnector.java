@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class AppStoreConnectorImpl extends ServiceConnector<AppStore> {
+public class AppStoreConnector extends ServiceConnector<AppStore> {
 
-	public AppStoreConnectorImpl() {
+	public AppStoreConnector() {
 		super(AppStore.class);
 	}
 

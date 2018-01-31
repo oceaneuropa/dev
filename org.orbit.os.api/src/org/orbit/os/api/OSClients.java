@@ -29,25 +29,25 @@ public class OSClients {
 		return instance;
 	}
 
-	protected ServiceConnectorAdapter<GAIA> gaiaConnector;
+	protected ServiceConnectorAdapter<GAIA> gaiaConnectorAdapter;
 
 	/**
 	 * 
 	 * @param bundleContext
 	 */
-	public void start(final BundleContext bundleContext) {
-		this.gaiaConnector = new ServiceConnectorAdapter<GAIA>(GAIA.class);
-		this.gaiaConnector.start(bundleContext);
+	public void start(BundleContext bundleContext) {
+		this.gaiaConnectorAdapter = new ServiceConnectorAdapter<GAIA>(GAIA.class);
+		this.gaiaConnectorAdapter.start(bundleContext);
 	}
 
 	/**
 	 * 
 	 * @param bundleContext
 	 */
-	public void stop(final BundleContext bundleContext) {
-		if (this.gaiaConnector != null) {
-			this.gaiaConnector.stop(bundleContext);
-			this.gaiaConnector = null;
+	public void stop(BundleContext bundleContext) {
+		if (this.gaiaConnectorAdapter != null) {
+			this.gaiaConnectorAdapter.stop(bundleContext);
+			this.gaiaConnectorAdapter = null;
 		}
 	}
 
@@ -102,7 +102,7 @@ public class OSClients {
 		properties.put(OSConstants.USERNAME, username);
 		properties.put(OSConstants.URL, url);
 
-		GAIA gaia = this.gaiaConnector.getService(properties);
+		GAIA gaia = this.gaiaConnectorAdapter.getService(properties);
 		if (gaia == null) {
 			LOG.error("GAIA is not available.");
 			throw new IllegalStateException("GAIA is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");

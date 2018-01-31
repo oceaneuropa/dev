@@ -8,7 +8,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.os.api.apps.ProgramManifest;
 import org.orbit.os.runtime.gaia.GAIA;
-import org.orbit.os.runtime.gaia.GAIAImpl;
+import org.orbit.os.runtime.gaia.impl.GAIAImpl;
 import org.orbit.os.runtime.programs.Program;
 import org.orbit.os.runtime.programs.ProgramBundle;
 import org.orbit.os.runtime.programs.ProgramHandler;

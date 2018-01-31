@@ -6,10 +6,10 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.os.model.world.dto.WorldDTO;
-import org.orbit.os.model.world.rto.World;
+import org.orbit.os.model.gaia.dto.WorldDTO;
 import org.orbit.os.runtime.gaia.GAIA;
 import org.orbit.os.runtime.util.WorldModelConverter;
+import org.orbit.os.runtime.world.World;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.Request;
 

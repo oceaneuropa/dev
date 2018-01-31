@@ -1,4 +1,4 @@
-package org.orbit.os.runtime.gaia;
+package org.orbit.os.runtime.gaia.impl;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -7,11 +7,13 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.orbit.os.runtime.OSConstants;
+import org.orbit.os.runtime.gaia.GAIA;
 import org.orbit.os.runtime.programs.ProgramException;
 import org.orbit.os.runtime.programs.ProgramsAndFeatures;
 import org.orbit.os.runtime.programs.ProgramsAndFeaturesImpl;
 import org.orbit.os.runtime.util.SetupUtil;
 import org.orbit.os.runtime.world.Worlds;
+import org.orbit.os.runtime.world.impl.WorldServiceImpl;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
 import org.origin.common.util.PropertyUtil;
@@ -30,6 +32,8 @@ public class GAIAImpl implements GAIA {
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ProgramsAndFeatures appsManager;
 	protected WSEditPolicies wsEditPolicies;
+	protected Worlds worlds;
+
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
 
 	/**
@@ -47,6 +51,8 @@ public class GAIAImpl implements GAIA {
 
 		this.wsEditPolicies = new WSEditPoliciesImpl();
 		this.wsEditPolicies.setService(GAIA.class, this);
+
+		this.worlds = new WorldServiceImpl();
 	}
 
 	@Override
@@ -222,7 +228,7 @@ public class GAIAImpl implements GAIA {
 
 	@Override
 	public Worlds getWorlds() {
-		return null;
+		return this.worlds;
 	}
 
 }

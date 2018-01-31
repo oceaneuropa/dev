@@ -1,4 +1,4 @@
-package org.orbit.os.model.world.dto;
+package org.orbit.os.model.gaia.dto;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

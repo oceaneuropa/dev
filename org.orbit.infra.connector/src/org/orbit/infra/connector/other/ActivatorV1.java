@@ -8,7 +8,7 @@ import org.orbit.infra.api.indexes.IndexServiceUtil;
 import org.orbit.infra.api.indexes.other.IndexServiceConnectorAdapterV1;
 import org.orbit.infra.api.indexes.other.IndexServiceConnectorV1;
 import org.orbit.infra.connector.InfraConstants;
-import org.orbit.infra.connector.channel.ChannelsConnectorImpl;
+import org.orbit.infra.connector.channel.ChannelsConnector;
 import org.orbit.infra.connector.indexes.IndexProviderConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
 import org.origin.common.util.PropertyUtil;
@@ -27,7 +27,7 @@ public class ActivatorV1 implements BundleActivator {
 
 	protected IndexServiceConnector indexServiceConnectorImpl;
 	protected IndexProviderConnector indexProviderConnectorImpl;
-	protected ChannelsConnectorImpl channelConnector;
+	protected ChannelsConnector channelConnector;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -39,7 +39,7 @@ public class ActivatorV1 implements BundleActivator {
 		this.indexServiceConnectorImpl = new IndexServiceConnector();
 		this.indexServiceConnectorImpl.start(bundleContext);
 
-		this.channelConnector = new ChannelsConnectorImpl();
+		this.channelConnector = new ChannelsConnector();
 		this.channelConnector.start(bundleContext);
 
 		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {

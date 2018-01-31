@@ -1,7 +1,7 @@
 package org.orbit.os.runtime.util;
 
-import org.orbit.os.model.world.dto.WorldDTO;
-import org.orbit.os.model.world.rto.World;
+import org.orbit.os.model.gaia.dto.WorldDTO;
+import org.orbit.os.runtime.world.World;
 
 public class WorldModelConverter {
 

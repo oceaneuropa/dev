@@ -9,8 +9,8 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.model.tier3.transferagent.TransferAgentConverter;
 import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
+import org.orbit.component.model.tier3.transferagent.dto.TransferAgentModelConverter;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Request;
 import org.origin.common.util.CLIHelper;
@@ -158,7 +158,7 @@ public class TransferAgentCommandGeneric {
 			Request request = new Request(Requests.GET_NODES);
 			Response response = transferAgent.sendRequest(request);
 
-			NodeInfo[] nodeInfos = TransferAgentConverter.INSTANCE.getNodes(response);
+			NodeInfo[] nodeInfos = TransferAgentModelConverter.INSTANCE.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
 			for (NodeInfo nodeInfo : nodeInfos) {

@@ -1,4 +1,4 @@
-package org.orbit.os.model.world.dto;
+package org.orbit.os.model.gaia.dto;
 
 public class WorldImpl implements World {
 

@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class AuthConnectorImpl extends ServiceConnector<Auth> {
+public class AuthConnector extends ServiceConnector<Auth> {
 
-	public AuthConnectorImpl() {
+	public AuthConnector() {
 		super(Auth.class);
 	}
 

@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.component.api.tier1.config.ConfigRegistry;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class ConfigRegistryConnectorImpl extends ServiceConnector<ConfigRegistry> {
+public class ConfigRegistryConnector extends ServiceConnector<ConfigRegistry> {
 
-	public ConfigRegistryConnectorImpl() {
+	public ConfigRegistryConnector() {
 		super(ConfigRegistry.class);
 	}
 

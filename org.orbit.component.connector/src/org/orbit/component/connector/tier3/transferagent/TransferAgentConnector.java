@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class TransferAgentConnectorImpl extends ServiceConnector<TransferAgent> {
+public class TransferAgentConnector extends ServiceConnector<TransferAgent> {
 
-	public TransferAgentConnectorImpl() {
+	public TransferAgentConnector() {
 		super(TransferAgent.class);
 	}
 

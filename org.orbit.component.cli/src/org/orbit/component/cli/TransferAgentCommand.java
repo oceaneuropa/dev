@@ -13,8 +13,8 @@ import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.domain.DomainService;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
-import org.orbit.component.model.tier3.transferagent.TransferAgentConverter;
 import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
+import org.orbit.component.model.tier3.transferagent.dto.TransferAgentModelConverter;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClient;
@@ -153,7 +153,7 @@ public class TransferAgentCommand extends ServiceClientCommand {
 			Request request = new Request(Requests.GET_NODES);
 			Response response = transferAgent.sendRequest(request);
 
-			NodeInfo[] nodeInfos = TransferAgentConverter.INSTANCE.getNodes(response);
+			NodeInfo[] nodeInfos = TransferAgentModelConverter.INSTANCE.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
 			for (NodeInfo nodeInfo : nodeInfos) {
@@ -185,7 +185,7 @@ public class TransferAgentCommand extends ServiceClientCommand {
 
 			Response response = transferAgent.sendRequest(request);
 
-			NodeInfo nodeInfo = TransferAgentConverter.INSTANCE.getNode(response);
+			NodeInfo nodeInfo = TransferAgentModelConverter.INSTANCE.getNode(response);
 			NodeInfo[] nodeInfos = (nodeInfo != null) ? new NodeInfo[] { nodeInfo } : new NodeInfo[] {};
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
@@ -217,7 +217,7 @@ public class TransferAgentCommand extends ServiceClientCommand {
 			request.setParameter("nodeId", nodeId);
 
 			Response response = transferAgent.sendRequest(request);
-			boolean exists = TransferAgentConverter.INSTANCE.nodeExists(response);
+			boolean exists = TransferAgentModelConverter.INSTANCE.exists(response);
 			LOG.info("exists: " + exists);
 
 		} catch (Exception e) {
@@ -242,7 +242,7 @@ public class TransferAgentCommand extends ServiceClientCommand {
 
 			Response response = transferAgent.sendRequest(request);
 
-			boolean succeed = TransferAgentConverter.INSTANCE.isNodeCreated(response);
+			boolean succeed = TransferAgentModelConverter.INSTANCE.isCreated(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
@@ -267,8 +267,33 @@ public class TransferAgentCommand extends ServiceClientCommand {
 
 			Response response = transferAgent.sendRequest(request);
 
-			boolean succeed = TransferAgentConverter.INSTANCE.isNodeDeleted(response);
+			boolean succeed = TransferAgentModelConverter.INSTANCE.isDeleted(response);
 			LOG.info("succeed: " + succeed);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Descriptor("Get the status of a node")
+	public void node_status( //
+			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
+			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
+	) {
+		LOG.info("node_status()");
+		CLIHelper.getInstance().printCommand(getScheme(), "node_status", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
+
+		try {
+			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
+
+			Request request = new Request(Requests.NODE_STATUS);
+			request.setParameter("nodeId", nodeId);
+
+			Response response = transferAgent.sendRequest(request);
+
+			String status = TransferAgentModelConverter.INSTANCE.getStatus(response);
+			LOG.info("status: " + status);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -304,31 +329,6 @@ public class TransferAgentCommand extends ServiceClientCommand {
 
 		try {
 			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Descriptor("Get the status of a node")
-	public void node_status( //
-			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
-			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
-	) {
-		LOG.info("node_status()");
-		CLIHelper.getInstance().printCommand(getScheme(), "node_status", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
-
-		try {
-			TransferAgent transferAgent = getTransferAgent(machineId, transferAgentId);
-
-			Request request = new Request(Requests.NODE_STATUS);
-			request.setParameter("nodeId", nodeId);
-
-			Response response = transferAgent.sendRequest(request);
-
-			String status = TransferAgentConverter.INSTANCE.getNodeStatus(response);
-			LOG.info("status: " + status);
 
 		} catch (Exception e) {
 			e.printStackTrace();

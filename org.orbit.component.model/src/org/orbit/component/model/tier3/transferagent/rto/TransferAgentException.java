@@ -1,4 +1,4 @@
-package org.orbit.component.model.tier3.transferagent;
+package org.orbit.component.model.tier3.transferagent.rto;
 
 public class TransferAgentException extends Exception {
 
