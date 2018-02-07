@@ -8,7 +8,7 @@ import org.orbit.os.api.OSClients;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
 
-public class GAIAProxy implements GAIA {
+public class GAIAProxy implements GAIAClient {
 
 	private static GAIAProxyImpl PROXY = new GAIAProxyImpl();
 
@@ -17,7 +17,7 @@ public class GAIAProxy implements GAIA {
 	protected String username;
 	protected String url;
 
-	protected GAIA gaia = PROXY;
+	protected GAIAClient gaia = PROXY;
 
 	public GAIAProxy(Map<?, ?> properties) {
 		this.properties = properties;
@@ -33,9 +33,9 @@ public class GAIAProxy implements GAIA {
 		this.url = url;
 	}
 
-	protected synchronized GAIA resolve() {
+	protected synchronized GAIAClient resolve() {
 		if (this.gaia == null || this.gaia.isProxy()) {
-			GAIA resolvedGAIA = null;
+			GAIAClient resolvedGAIA = null;
 			if (this.properties != null) {
 				resolvedGAIA = OSClients.getInstance().getGAIA(this.properties);
 			}
@@ -103,7 +103,7 @@ public class GAIAProxy implements GAIA {
 		return false;
 	}
 
-	public static class GAIAProxyImpl implements GAIA {
+	public static class GAIAProxyImpl implements GAIAClient {
 
 		@Override
 		public boolean close() throws ClientException {

@@ -68,7 +68,7 @@ public class ServicesCommand {
 		this.bundleContext = bundleContext;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put("osgi.command.scope", "orbitmgmt");
+		props.put("osgi.command.scope", "orbit");
 		props.put("osgi.command.function", new String[] { "startservice", "stopservice" });
 		OSGiServiceUtil.register(bundleContext, ServicesCommand.class.getName(), this, props);
 

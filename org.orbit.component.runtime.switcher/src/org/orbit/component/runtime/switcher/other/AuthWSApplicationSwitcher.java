@@ -1,15 +1,15 @@
-package org.orbit.component.runtime.switcher.tier1;
+package org.orbit.component.runtime.switcher.other;
 
 import java.net.URI;
 
 import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.rest.client.WSClientFactory;
-import org.origin.common.rest.server.AbstractJerseyWSApplicationSwitcher;
+import org.origin.common.rest.server.WSApplicationSwitcher;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSMethodInflector;
 import org.origin.common.rest.switcher.Switcher;
 
-public class AuthWSApplicationSwitcher extends AbstractJerseyWSApplicationSwitcher {
+public class AuthWSApplicationSwitcher extends WSApplicationSwitcher {
 
 	/**
 	 * 

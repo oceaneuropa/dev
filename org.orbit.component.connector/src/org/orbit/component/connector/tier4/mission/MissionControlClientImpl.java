@@ -2,20 +2,20 @@ package org.orbit.component.connector.tier4.mission;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier4.mission.MissionControl;
+import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.orbit.component.connector.OrbitConstants;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class MissionControlImpl extends ServiceClientImpl<MissionControl, MissionControlWSClient> implements MissionControl {
+public class MissionControlClientImpl extends ServiceClientImpl<MissionControlClient, MissionControlWSClient> implements MissionControlClient {
 
 	/**
 	 * 
 	 * @param connector
 	 * @param properties
 	 */
-	public MissionControlImpl(ServiceConnector<MissionControl> connector, Map<String, Object> properties) {
+	public MissionControlClientImpl(ServiceConnector<MissionControlClient> connector, Map<String, Object> properties) {
 		super(connector, properties);
 	}
 

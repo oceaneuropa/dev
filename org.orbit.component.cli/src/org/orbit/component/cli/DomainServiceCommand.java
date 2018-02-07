@@ -12,7 +12,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
 import org.orbit.component.model.tier3.domain.dto.ResponseConverter;
@@ -85,8 +85,8 @@ public class DomainServiceCommand implements Annotated {
 		OSGiServiceUtil.unregister(DomainServiceCommand.class.getName(), this);
 	}
 
-	protected DomainService getDomainService() {
-		DomainService domainService = OrbitClients.getInstance().getDomainService(this.properties);
+	protected DomainServiceClient getDomainService() {
+		DomainServiceClient domainService = OrbitClients.getInstance().getDomainService(this.properties);
 		if (domainService == null) {
 			throw new IllegalStateException("DomainService is null.");
 		}
@@ -106,7 +106,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_machines");
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.GET_MACHINE_CONFIGS);
 			Response response = domainService.sendRequest(request);
@@ -135,7 +135,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_machine", new String[] { "id", id });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.GET_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
@@ -169,7 +169,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "add_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.ADD_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
@@ -199,7 +199,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "update_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.UPDATE_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
@@ -245,7 +245,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_machine", new String[] { "id", id });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.REMOVE_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
@@ -279,7 +279,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_tas", new String[] { "machineId", machineId });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.GET_TA_CONFIGS);
 			if (!Parameter.UNSPECIFIED.equals(machineId)) {
@@ -330,7 +330,7 @@ public class DomainServiceCommand implements Annotated {
 				return;
 			}
 
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.GET_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -369,7 +369,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "add_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.ADD_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -403,7 +403,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "update_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.UPDATE_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -459,7 +459,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_ta", new String[] { "machineId", machineId }, new String[] { "id", id });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.REMOVE_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -504,7 +504,7 @@ public class DomainServiceCommand implements Annotated {
 				return;
 			}
 
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.GET_NODE_CONFIGS);
 			request.setParameter("machineId", machineId);
@@ -555,7 +555,7 @@ public class DomainServiceCommand implements Annotated {
 				return;
 			}
 
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.GET_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -597,7 +597,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "add_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request addNodeConfigRequest = new Request(Requests.ADD_NODE_CONFIG);
 			addNodeConfigRequest.setParameter("machineId", machineId);
@@ -652,7 +652,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "update_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.UPDATE_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -710,7 +710,7 @@ public class DomainServiceCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id });
 
 		try {
-			DomainService domainService = getDomainService();
+			DomainServiceClient domainService = getDomainService();
 
 			Request request = new Request(Requests.REMOVE_NODE_CONFIG);
 			request.setParameter("machineId", machineId);

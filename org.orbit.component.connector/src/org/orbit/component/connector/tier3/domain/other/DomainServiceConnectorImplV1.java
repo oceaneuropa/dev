@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier3.domain.DomainServiceImpl;
+import org.orbit.component.connector.tier3.domain.DomainServiceClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<DomainService> implements DomainServiceConnector {
+public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<DomainServiceClient> implements DomainServiceConnector {
 
 	/**
 	 * 
@@ -28,12 +28,12 @@ public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceC
 	}
 
 	@Override
-	protected DomainService createService(Map<String, Object> properties) {
-		return new DomainServiceImpl(null, properties);
+	protected DomainServiceClient createService(Map<String, Object> properties) {
+		return new DomainServiceClientImpl(null, properties);
 	}
 
 	@Override
-	protected void updateService(DomainService domainService, Map<String, Object> properties) {
+	protected void updateService(DomainServiceClient domainService, Map<String, Object> properties) {
 		// System.out.println(getClass().getSimpleName() + ".updateService()");
 		domainService.update(properties);
 

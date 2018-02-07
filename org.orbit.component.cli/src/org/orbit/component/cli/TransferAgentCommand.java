@@ -10,7 +10,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
 import org.orbit.component.model.tier3.transferagent.dto.NodeInfo;
@@ -75,8 +75,8 @@ public class TransferAgentCommand extends ServiceClientCommand {
 		return getDomainService();
 	}
 
-	protected DomainService getDomainService() {
-		DomainService domainService = OrbitClients.getInstance().getDomainService(this.properties);
+	protected DomainServiceClient getDomainService() {
+		DomainServiceClient domainService = OrbitClients.getInstance().getDomainService(this.properties);
 		if (domainService == null) {
 			throw new IllegalStateException("DomainService is null.");
 		}
@@ -84,7 +84,7 @@ public class TransferAgentCommand extends ServiceClientCommand {
 	}
 
 	protected TransferAgent getTransferAgent(String machineId, String transferAgentId) throws ClientException {
-		DomainService domainService = getDomainService();
+		DomainServiceClient domainService = getDomainService();
 		TransferAgentConfig taConfig = domainService.getTransferAgentConfig(machineId, transferAgentId);
 		if (taConfig != null) {
 			String url = taConfig.getHostURL() + taConfig.getContextRoot();

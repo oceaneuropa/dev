@@ -1,8 +1,8 @@
 package org.orbit.component.api.tier3.domain.other;
 
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.origin.common.loadbalance.LoadBalancedServiceConnector;
 
-public interface DomainServiceConnector extends LoadBalancedServiceConnector<DomainService> {
+public interface DomainServiceConnector extends LoadBalancedServiceConnector<DomainServiceClient> {
 
 }

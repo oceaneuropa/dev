@@ -4,12 +4,12 @@ import java.net.URI;
 
 import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.rest.client.WSClientFactory;
-import org.origin.common.rest.server.AbstractJerseyWSApplicationSwitcher;
+import org.origin.common.rest.server.WSApplicationSwitcher;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSMethodInflector;
 import org.origin.common.rest.switcher.Switcher;
 
-public class ChannelWSApplicationSwitcher extends AbstractJerseyWSApplicationSwitcher {
+public class ChannelWSApplicationSwitcher extends WSApplicationSwitcher {
 
 	/**
 	 * 

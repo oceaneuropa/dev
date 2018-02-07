@@ -8,7 +8,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
 import org.orbit.component.api.tier3.transferagent.other.TransferAgentConnector;
@@ -95,7 +95,7 @@ public class TransferAgentCommandV1 implements Annotated {
 	}
 
 	public TransferAgent getTransferAgent(DomainServiceConnector domainConnector, TransferAgentConnector taConnector, String machineId, String transferAgentId) throws ClientException {
-		DomainService domain = domainConnector.getService();
+		DomainServiceClient domain = domainConnector.getService();
 		if (domain != null) {
 			TransferAgentConfig taConfig = domain.getTransferAgentConfig(machineId, transferAgentId);
 			if (taConfig != null) {

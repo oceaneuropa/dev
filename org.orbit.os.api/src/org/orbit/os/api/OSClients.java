@@ -3,7 +3,7 @@ package org.orbit.os.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.os.api.gaia.GAIA;
+import org.orbit.os.api.gaia.GAIAClient;
 import org.orbit.os.api.gaia.GAIAProxy;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
@@ -29,14 +29,14 @@ public class OSClients {
 		return instance;
 	}
 
-	protected ServiceConnectorAdapter<GAIA> gaiaConnectorAdapter;
+	protected ServiceConnectorAdapter<GAIAClient> gaiaConnectorAdapter;
 
 	/**
 	 * 
 	 * @param bundleContext
 	 */
 	public void start(BundleContext bundleContext) {
-		this.gaiaConnectorAdapter = new ServiceConnectorAdapter<GAIA>(GAIA.class);
+		this.gaiaConnectorAdapter = new ServiceConnectorAdapter<GAIAClient>(GAIAClient.class);
 		this.gaiaConnectorAdapter.start(bundleContext);
 	}
 
@@ -56,7 +56,7 @@ public class OSClients {
 	 * @param properties
 	 * @return
 	 */
-	public GAIA getGAIAProxy(Map<?, ?> properties) {
+	public GAIAClient getGAIAProxy(Map<?, ?> properties) {
 		return new GAIAProxy(properties);
 	}
 
@@ -65,7 +65,7 @@ public class OSClients {
 	 * @param properties
 	 * @return
 	 */
-	public GAIA getGAIA(Map<?, ?> properties) {
+	public GAIAClient getGAIA(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OSConstants.ORBIT_GAIA_URL);
@@ -82,7 +82,7 @@ public class OSClients {
 	 * @param url
 	 * @return
 	 */
-	public GAIA getGAIA(String url) {
+	public GAIAClient getGAIA(String url) {
 		return getGAIA(null, null, url);
 	}
 
@@ -93,7 +93,7 @@ public class OSClients {
 	 * @param url
 	 * @return
 	 */
-	public GAIA getGAIA(String realm, String username, String url) {
+	public GAIAClient getGAIA(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -102,7 +102,7 @@ public class OSClients {
 		properties.put(OSConstants.USERNAME, username);
 		properties.put(OSConstants.URL, url);
 
-		GAIA gaia = this.gaiaConnectorAdapter.getService(properties);
+		GAIAClient gaia = this.gaiaConnectorAdapter.getService(properties);
 		if (gaia == null) {
 			LOG.error("GAIA is not available.");
 			throw new IllegalStateException("GAIA is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");

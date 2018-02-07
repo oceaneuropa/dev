@@ -10,7 +10,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.os.api.OSClients;
 import org.orbit.os.api.OSConstants;
 import org.orbit.os.api.Requests;
-import org.orbit.os.api.gaia.GAIA;
+import org.orbit.os.api.gaia.GAIAClient;
 import org.orbit.os.model.gaia.dto.GAIAModelConverter;
 import org.orbit.os.model.gaia.dto.World;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -67,8 +67,8 @@ public class GAIACommand extends ServiceClientCommand {
 		return getGAIA();
 	}
 
-	protected GAIA getGAIA() {
-		GAIA gaia = OSClients.getInstance().getGAIA(this.properties);
+	protected GAIAClient getGAIA() {
+		GAIAClient gaia = OSClients.getInstance().getGAIA(this.properties);
 		if (gaia == null) {
 			throw new IllegalStateException("GAIA is null.");
 		}
@@ -102,7 +102,7 @@ public class GAIACommand extends ServiceClientCommand {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_worlds");
 
 		try {
-			GAIA gaia = getGAIA();
+			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Requests.LIST_WORLDS);
 			Response response = gaia.sendRequest(request);
@@ -128,7 +128,7 @@ public class GAIACommand extends ServiceClientCommand {
 		CLIHelper.getInstance().printCommand(getScheme(), "get_world", new String[] { "name", name });
 
 		try {
-			GAIA gaia = getGAIA();
+			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Requests.GET_WORLD);
 			request.setParameter("name", name);
@@ -157,7 +157,7 @@ public class GAIACommand extends ServiceClientCommand {
 		CLIHelper.getInstance().printCommand(getScheme(), "world_exist", new String[] { "name", name });
 
 		try {
-			GAIA gaia = getGAIA();
+			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Requests.WORLD_EXIST);
 			request.setParameter("name", name);
@@ -178,7 +178,7 @@ public class GAIACommand extends ServiceClientCommand {
 		CLIHelper.getInstance().printCommand(getScheme(), "create_world", new String[] { "name", name });
 
 		try {
-			GAIA gaia = getGAIA();
+			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Requests.CREATE_WORLD);
 			request.setParameter("name", name);
@@ -200,7 +200,7 @@ public class GAIACommand extends ServiceClientCommand {
 		CLIHelper.getInstance().printCommand(getScheme(), "delete_world", new String[] { "name", name });
 
 		try {
-			GAIA gaia = getGAIA();
+			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Requests.DELETE_WORLD);
 			request.setParameter("name", name);
@@ -222,7 +222,7 @@ public class GAIACommand extends ServiceClientCommand {
 		CLIHelper.getInstance().printCommand(getScheme(), "world_status", new String[] { "name", name });
 
 		try {
-			GAIA gaia = getGAIA();
+			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Requests.WORLD_STATUS);
 			request.setParameter("name", name);

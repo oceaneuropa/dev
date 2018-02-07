@@ -1,22 +1,14 @@
-package org.orbit.component.runtime.switcher;
+package org.orbit.component.runtime.switcher.other;
 
 import java.net.URI;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.runtime.switcher.tier1.AuthWSApplicationDesc;
-import org.orbit.component.runtime.switcher.tier1.ConfigRegistryWSApplicationDesc;
-import org.orbit.component.runtime.switcher.tier1.UserRegistryWSApplicationDesc;
-import org.orbit.component.runtime.switcher.tier2.AppStoreWSApplicationDesc;
-import org.orbit.component.runtime.switcher.tier3.DomainServiceWSApplicationDesc;
-import org.orbit.component.runtime.switcher.tier3.TransferAgentWSApplicationDesc;
-import org.orbit.component.runtime.switcher.tier4.MissionControlWSApplicationDesc;
+import org.orbit.component.runtime.switcher.OrbitSwitchersConstants;
 import org.orbit.component.runtime.switcher.util.SwitcherHelper;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryJerseyImpl;
-import org.origin.common.rest.server.WSApplicationDesc;
-import org.origin.common.rest.server.WSApplicationDescriptiveSwitcher;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
 import org.origin.common.util.PropertyUtil;
@@ -25,40 +17,38 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class OrbitSwitchers {
+public class OrbitSwitchersV1 {
 
-	protected static Logger LOG = LoggerFactory.getLogger(OrbitSwitchers.class);
+	protected static Logger LOG = LoggerFactory.getLogger(OrbitSwitchersV1.class);
 
 	private static Object lock = new Object[0];
-	private static OrbitSwitchers instance = null;
+	private static OrbitSwitchersV1 instance = null;
 
-	public static OrbitSwitchers getInstance() {
+	public static OrbitSwitchersV1 getInstance() {
 		if (instance == null) {
 			synchronized (lock) {
 				if (instance == null) {
-					instance = new OrbitSwitchers();
+					instance = new OrbitSwitchersV1();
 				}
 			}
 		}
 		return instance;
 	}
 
-	protected WSClientFactory wsClientFactory;
-
 	// tier1
-	protected WSApplicationDescriptiveSwitcher userRegistrySwitcher;
-	protected WSApplicationDescriptiveSwitcher authSwitcher;
-	protected WSApplicationDescriptiveSwitcher configRegistrySwitcher;
+	protected UserRegistryWSApplicationSwitcher userRegistrySwitcher;
+	protected AuthWSApplicationSwitcher authSwitcher;
+	protected ConfigRegistryWSApplicationSwitcher configRegistrySwitcher;
 
 	// tier2
-	protected WSApplicationDescriptiveSwitcher appStoreSwitcher;
+	protected AppStoreWSApplicationSwitcher appStoreSwitcher;
 
 	// tier3
-	protected WSApplicationDescriptiveSwitcher domainServiceSwitcher;
-	protected WSApplicationDescriptiveSwitcher transferAgentSwitcher;
+	protected DomainServiceWSApplicationSwitcher domainServiceSwitcher;
+	protected TransferAgentWSApplicationSwitcher transferAgentSwitcher;
 
 	// tier4
-	protected WSApplicationDescriptiveSwitcher missionControlSwitcher;
+	protected MissionControlWSApplicationSwitcher missionControlSwitcher;
 
 	public void start(BundleContext bundleContext) {
 		LOG.info("start()");
@@ -85,30 +75,30 @@ public class OrbitSwitchers {
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_DOMAIN_SERVICE_SWITCHER_HOSTS);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_DOMAIN_SERVICE_SWITCHER_URLS);
 
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_HOSTS);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_URLS);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_CONTEXT_ROOT);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_HOSTS);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_URLS);
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_MISSION_CONTROL_SWITCHER_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_MISSION_CONTROL_SWITCHER_HOSTS);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitSwitchersConstants.COMPONENT_MISSION_CONTROL_SWITCHER_URLS);
 
-		this.wsClientFactory = new WSClientFactoryJerseyImpl();
+		WSClientFactory factory = createClientFactory(bundleContext, properties);
 
 		// tier1
-		startUserRegistrySwitcher(bundleContext, this.wsClientFactory, properties);
-		startAuthSwitcher(bundleContext, this.wsClientFactory, properties);
-		startConfigRegistrySwitcher(bundleContext, this.wsClientFactory, properties);
+		startUserRegistrySwitcher(bundleContext, factory, properties);
+		startAuthSwitcher(bundleContext, factory, properties);
+		startConfigRegistrySwitcher(bundleContext, factory, properties);
 
 		// tier2
-		startAppStoreSwitcher(bundleContext, this.wsClientFactory, properties);
+		startAppStoreSwitcher(bundleContext, factory, properties);
 
 		// tier3
-		startDomainServiceSwitcher(bundleContext, this.wsClientFactory, properties);
-		startTransferAgentSwitcher(bundleContext, this.wsClientFactory, properties);
+		startDomainServiceSwitcher(bundleContext, factory, properties);
+		// startTransferAgentSwitcher(bundleContext, factory, properties);
 
 		// tier4
-		startMissionControlSwitcher(bundleContext, this.wsClientFactory, properties);
+		startMissionControlSwitcher(bundleContext, factory, properties);
 	}
 
 	public void stop(BundleContext bundleContext) {
@@ -119,7 +109,7 @@ public class OrbitSwitchers {
 
 		// tier3
 		stopDomainServiceSwitcher(bundleContext);
-		stopTransferAgentSwitcher(bundleContext);
+		// stopTransferAgentSwitcher(bundleContext);
 
 		// tier2
 		stopAppStoreSwitcher(bundleContext);
@@ -136,6 +126,10 @@ public class OrbitSwitchers {
 
 	protected List<URI> toList(String hostURLsString, String contextRoot) {
 		return URIUtil.toList(hostURLsString, contextRoot);
+	}
+
+	protected WSClientFactory createClientFactory(BundleContext bundleContext, Map<Object, Object> properties) {
+		return new WSClientFactoryJerseyImpl();
 	}
 
 	// tier1
@@ -158,14 +152,12 @@ public class OrbitSwitchers {
 			return;
 		}
 
-		UserRegistryWSApplicationDesc appDesc = new UserRegistryWSApplicationDesc(contextRoot);
-		startUserRegistrySwitcher(bundleContext, appDesc, factory, uriList);
+		startUserRegistrySwitcher(bundleContext, factory, contextRoot, uriList);
 	}
 
-	protected void startUserRegistrySwitcher(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
+	protected void startUserRegistrySwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-
-		this.userRegistrySwitcher = new WSApplicationDescriptiveSwitcher(appDesc, uriSwitcher, factory);
+		this.userRegistrySwitcher = new UserRegistryWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
 		this.userRegistrySwitcher.start(bundleContext);
 	}
 
@@ -195,13 +187,12 @@ public class OrbitSwitchers {
 			return;
 		}
 
-		AuthWSApplicationDesc appDesc = new AuthWSApplicationDesc(contextRoot);
-		startAuthSwitcher(bundleContext, appDesc, factory, uriList);
+		startAuthSwitcher(bundleContext, factory, contextRoot, uriList);
 	}
 
-	protected void startAuthSwitcher(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
+	protected void startAuthSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.authSwitcher = new WSApplicationDescriptiveSwitcher(appDesc, uriSwitcher, factory);
+		this.authSwitcher = new AuthWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
 		this.authSwitcher.start(bundleContext);
 	}
 
@@ -231,13 +222,12 @@ public class OrbitSwitchers {
 			return;
 		}
 
-		ConfigRegistryWSApplicationDesc appDesc = new ConfigRegistryWSApplicationDesc(contextRoot);
-		startConfigRegistrySwitcher(bundleContext, appDesc, factory, uriList);
+		startConfigRegistrySwitcher(bundleContext, factory, contextRoot, uriList);
 	}
 
-	protected void startConfigRegistrySwitcher(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
+	protected void startConfigRegistrySwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
-		this.configRegistrySwitcher = new WSApplicationDescriptiveSwitcher(appDesc, uriSwitcher, factory);
+		this.configRegistrySwitcher = new ConfigRegistryWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
 		this.configRegistrySwitcher.start(bundleContext);
 	}
 
@@ -268,13 +258,12 @@ public class OrbitSwitchers {
 			return;
 		}
 
-		AppStoreWSApplicationDesc appDesc = new AppStoreWSApplicationDesc(contextRoot);
-		startAppStoreSwitcher(bundleContext, appDesc, factory, uriList);
+		startAppStoreSwitcher(bundleContext, factory, contextRoot, uriList);
 	}
 
-	protected void startAppStoreSwitcher(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
+	protected void startAppStoreSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.appStoreSwitcher = new WSApplicationDescriptiveSwitcher(appDesc, uriSwitcher, factory);
+		this.appStoreSwitcher = new AppStoreWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
 		this.appStoreSwitcher.start(bundleContext);
 	}
 
@@ -305,13 +294,12 @@ public class OrbitSwitchers {
 			return;
 		}
 
-		DomainServiceWSApplicationDesc appDesc = new DomainServiceWSApplicationDesc(contextRoot);
-		startDomainServiceSwitcher(bundleContext, appDesc, factory, uriList);
+		startDomainServiceSwitcher(bundleContext, factory, contextRoot, uriList);
 	}
 
-	protected void startDomainServiceSwitcher(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
+	protected void startDomainServiceSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
-		this.domainServiceSwitcher = new WSApplicationDescriptiveSwitcher(appDesc, uriSwitcher, factory);
+		this.domainServiceSwitcher = new DomainServiceWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
 		this.domainServiceSwitcher.start(bundleContext);
 	}
 
@@ -341,13 +329,12 @@ public class OrbitSwitchers {
 			return;
 		}
 
-		TransferAgentWSApplicationDesc appDesc = new TransferAgentWSApplicationDesc(contextRoot);
-		startTransferAgentSwitcher(bundleContext, appDesc, factory, uriList);
+		startTransferAgentSwitcher(bundleContext, factory, contextRoot, uriList);
 	}
 
-	protected void startTransferAgentSwitcher(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
+	protected void startTransferAgentSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
-		this.transferAgentSwitcher = new WSApplicationDescriptiveSwitcher(appDesc, uriSwitcher, factory);
+		this.transferAgentSwitcher = new TransferAgentWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
 		this.transferAgentSwitcher.start(bundleContext);
 	}
 
@@ -378,13 +365,12 @@ public class OrbitSwitchers {
 			return;
 		}
 
-		MissionControlWSApplicationDesc appDesc = new MissionControlWSApplicationDesc(contextRoot);
-		startMissionControlSwitcher(bundleContext, appDesc, factory, uriList);
+		startMissionControlSwitcher(bundleContext, factory, contextRoot, uriList);
 	}
 
-	protected void startMissionControlSwitcher(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
+	protected void startMissionControlSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.missionControlSwitcher = new WSApplicationDescriptiveSwitcher(appDesc, uriSwitcher, factory);
+		this.missionControlSwitcher = new MissionControlWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
 		this.missionControlSwitcher.start(bundleContext);
 	}
 

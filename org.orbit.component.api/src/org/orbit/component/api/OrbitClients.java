@@ -8,9 +8,9 @@ import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.config.ConfigRegistry;
 import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.orbit.component.api.tier3.transferagent.TransferAgent;
-import org.orbit.component.api.tier4.mission.MissionControl;
+import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.util.PropertyUtil;
@@ -45,11 +45,11 @@ public class OrbitClients {
 	protected ServiceConnectorAdapter<AppStore> appStoreConnector;
 
 	// tier3
-	protected ServiceConnectorAdapter<DomainService> domainServiceConnector;
+	protected ServiceConnectorAdapter<DomainServiceClient> domainServiceConnector;
 	protected ServiceConnectorAdapter<TransferAgent> transferAgentConnector;
 
 	// tier4
-	protected ServiceConnectorAdapter<MissionControl> missionControlConnector;
+	protected ServiceConnectorAdapter<MissionControlClient> missionControlConnector;
 
 	public OrbitClients() {
 	}
@@ -70,14 +70,14 @@ public class OrbitClients {
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
-		this.domainServiceConnector = new ServiceConnectorAdapter<DomainService>(DomainService.class);
+		this.domainServiceConnector = new ServiceConnectorAdapter<DomainServiceClient>(DomainServiceClient.class);
 		this.domainServiceConnector.start(bundleContext);
 
 		this.transferAgentConnector = new ServiceConnectorAdapter<TransferAgent>(TransferAgent.class);
 		this.transferAgentConnector.start(bundleContext);
 
 		// tier4
-		this.missionControlConnector = new ServiceConnectorAdapter<MissionControl>(MissionControl.class);
+		this.missionControlConnector = new ServiceConnectorAdapter<MissionControlClient>(MissionControlClient.class);
 		this.missionControlConnector.start(bundleContext);
 
 		// Client API properties for connecting to other remote services.
@@ -260,7 +260,7 @@ public class OrbitClients {
 		return auth;
 	}
 
-	public DomainService getDomainService(Map<?, ?> properties) {
+	public DomainServiceClient getDomainService(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
@@ -272,11 +272,11 @@ public class OrbitClients {
 		return getDomainService(url);
 	}
 
-	public DomainService getDomainService(String url) {
+	public DomainServiceClient getDomainService(String url) {
 		return getDomainService(null, null, url);
 	}
 
-	public DomainService getDomainService(String realm, String username, String url) {
+	public DomainServiceClient getDomainService(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -285,7 +285,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		DomainService domainService = this.domainServiceConnector.getService(properties);
+		DomainServiceClient domainService = this.domainServiceConnector.getService(properties);
 		if (domainService == null) {
 			LOG.error("DomainService is not available.");
 			throw new IllegalStateException("DomainService is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
@@ -326,7 +326,7 @@ public class OrbitClients {
 		return transferAgent;
 	}
 
-	public MissionControl getMissionControl(Map<?, ?> properties) {
+	public MissionControlClient getMissionControl(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_MISSION_CONTROL_URL);
@@ -338,11 +338,11 @@ public class OrbitClients {
 		return getMissionControl(url);
 	}
 
-	public MissionControl getMissionControl(String url) {
+	public MissionControlClient getMissionControl(String url) {
 		return getMissionControl(null, null, url);
 	}
 
-	public MissionControl getMissionControl(String realm, String username, String url) {
+	public MissionControlClient getMissionControl(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -351,7 +351,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		MissionControl missionControl = this.missionControlConnector.getService(properties);
+		MissionControlClient missionControl = this.missionControlConnector.getService(properties);
 		if (missionControl == null) {
 			LOG.error("MissionControl is not available.");
 			throw new IllegalStateException("MissionControl is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");

@@ -2,18 +2,18 @@ package org.orbit.component.connector.tier4.mission;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier4.mission.MissionControl;
+import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class MissionControlConnector extends ServiceConnector<MissionControl> {
+public class MissionControlConnector extends ServiceConnector<MissionControlClient> {
 
 	public MissionControlConnector() {
-		super(MissionControl.class);
+		super(MissionControlClient.class);
 	}
 
 	@Override
-	protected MissionControl create(Map<String, Object> properties) {
-		return new MissionControlImpl(this, properties);
+	protected MissionControlClient create(Map<String, Object> properties) {
+		return new MissionControlClientImpl(this, properties);
 	}
 
 }

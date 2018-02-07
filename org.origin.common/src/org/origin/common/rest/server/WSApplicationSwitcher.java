@@ -11,11 +11,11 @@ import org.osgi.framework.BundleContext;
  * https://www.javaworld.com/article/2077922/architecture-scalability/server-load-balancing-architectures-part-2-application-level-load-balanci.html
  * 
  */
-public class AbstractJerseyWSApplicationSwitcher extends AbstractJerseyWSApplication {
+public class WSApplicationSwitcher extends AbstractJerseyWSApplication {
 
 	protected Switcher<URI> switcher;
 
-	public AbstractJerseyWSApplicationSwitcher(String contextRoot, int feature, Switcher<URI> switcher) {
+	public WSApplicationSwitcher(String contextRoot, int feature, Switcher<URI> switcher) {
 		super(contextRoot, feature);
 		this.switcher = switcher;
 	}

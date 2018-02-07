@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier3.domain.DomainServiceWSClient;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
@@ -31,7 +31,7 @@ import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.StringUtil;
 
-public class DomainServiceImplV1 implements DomainService {
+public class DomainServiceImplV1 implements DomainServiceClient {
 
 	protected Map<String, Object> properties;
 	protected DomainServiceWSClient client;
@@ -41,7 +41,7 @@ public class DomainServiceImplV1 implements DomainService {
 	 * 
 	 * @param properties
 	 */
-	public DomainServiceImplV1(ServiceConnector<DomainService> connector, Map<String, Object> properties) {
+	public DomainServiceImplV1(ServiceConnector<DomainServiceClient> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
@@ -52,7 +52,7 @@ public class DomainServiceImplV1 implements DomainService {
 	@Override
 	public boolean close() throws ClientException {
 		@SuppressWarnings("unchecked")
-		ServiceConnector<DomainService> connector = getAdapter(ServiceConnector.class);
+		ServiceConnector<DomainServiceClient> connector = getAdapter(ServiceConnector.class);
 		if (connector != null) {
 			return connector.close(this);
 		}

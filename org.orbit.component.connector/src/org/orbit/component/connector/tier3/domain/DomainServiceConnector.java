@@ -2,18 +2,18 @@ package org.orbit.component.connector.tier3.domain;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class DomainServiceConnector extends ServiceConnector<DomainService> {
+public class DomainServiceConnector extends ServiceConnector<DomainServiceClient> {
 
 	public DomainServiceConnector() {
-		super(DomainService.class);
+		super(DomainServiceClient.class);
 	}
 
 	@Override
-	protected DomainService create(Map<String, Object> properties) {
-		return new DomainServiceImpl(this, properties);
+	protected DomainServiceClient create(Map<String, Object> properties) {
+		return new DomainServiceClientImpl(this, properties);
 	}
 
 }

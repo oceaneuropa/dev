@@ -10,7 +10,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier4.mission.MissionControl;
+import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.orbit.component.model.tier4.mission.dto.Mission;
 import org.orbit.component.model.tier4.mission.dto.MissionControlModelConverter;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -64,8 +64,8 @@ public class MissionControlCommand extends ServiceClientCommand {
 		return getMissionControl();
 	}
 
-	protected MissionControl getMissionControl() {
-		MissionControl missionControl = OrbitClients.getInstance().getMissionControl(this.properties);
+	protected MissionControlClient getMissionControl() {
+		MissionControlClient missionControl = OrbitClients.getInstance().getMissionControl(this.properties);
 		if (missionControl == null) {
 			throw new IllegalStateException("MissionControl is null.");
 		}
@@ -91,7 +91,7 @@ public class MissionControlCommand extends ServiceClientCommand {
 		}
 
 		try {
-			MissionControl missionControl = getMissionControl();
+			MissionControlClient missionControl = getMissionControl();
 
 			Request request = new Request(Requests.GET_MISSIONS);
 			Response response = missionControl.sendRequest(request);

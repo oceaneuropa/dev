@@ -3,19 +3,19 @@ package org.orbit.os.connector.gaia;
 import java.util.Map;
 
 import org.orbit.os.api.OSConstants;
-import org.orbit.os.api.gaia.GAIA;
+import org.orbit.os.api.gaia.GAIAClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class GAIAImpl extends ServiceClientImpl<GAIA, GAIAWSClient> implements GAIA {
+public class GAIAClientImpl extends ServiceClientImpl<GAIAClient, GAIAWSClient> implements GAIAClient {
 
 	/**
 	 * 
 	 * @param connector
 	 * @param properties
 	 */
-	public GAIAImpl(ServiceConnector<GAIA> connector, Map<String, Object> properties) {
+	public GAIAClientImpl(ServiceConnector<GAIAClient> connector, Map<String, Object> properties) {
 		super(connector, properties);
 	}
 

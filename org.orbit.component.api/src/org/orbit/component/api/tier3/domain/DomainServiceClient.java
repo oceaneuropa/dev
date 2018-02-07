@@ -12,7 +12,7 @@ import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigR
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClient;
 
-public interface DomainService extends ServiceClient {
+public interface DomainServiceClient extends ServiceClient {
 
 	// String getName();
 

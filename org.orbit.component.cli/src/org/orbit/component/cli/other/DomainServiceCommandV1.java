@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.tier3.domain.DomainService;
+import org.orbit.component.api.tier3.domain.DomainServiceClient;
 import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.orbit.component.cli.util.ResourcePropertyHelper;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
@@ -96,16 +96,16 @@ public class DomainServiceCommandV1 implements Annotated {
 		}
 	}
 
-	protected List<LoadBalanceResource<DomainService>> getServiceResources() throws ClientException {
+	protected List<LoadBalanceResource<DomainServiceClient>> getServiceResources() throws ClientException {
 		checkConnector();
 
-		LoadBalancer<DomainService> lb = this.domainServiceConnector.getLoadBalancer();
+		LoadBalancer<DomainServiceClient> lb = this.domainServiceConnector.getLoadBalancer();
 		if (lb == null) {
 			System.out.println("DomainService LoadBalancer is not available.");
 			return null;
 		}
 
-		List<LoadBalanceResource<DomainService>> resources = lb.getResources();
+		List<LoadBalanceResource<DomainServiceClient>> resources = lb.getResources();
 		if (resources == null) {
 			System.out.println("DomainService LoadBalancer's resource is null.");
 			return null;
@@ -113,8 +113,8 @@ public class DomainServiceCommandV1 implements Annotated {
 		return resources;
 	}
 
-	protected DomainService getDomainService() throws ClientException {
-		DomainService domainMgmt = this.domainServiceConnector.getService();
+	protected DomainServiceClient getDomainService() throws ClientException {
+		DomainServiceClient domainMgmt = this.domainServiceConnector.getService();
 		checkDomainService(domainMgmt);
 		print(domainMgmt);
 		return domainMgmt;
@@ -127,14 +127,14 @@ public class DomainServiceCommandV1 implements Annotated {
 		}
 	}
 
-	protected void checkDomainService(DomainService domainService) throws ClientException {
+	protected void checkDomainService(DomainServiceClient domainService) throws ClientException {
 		if (domainService == null) {
 			System.err.println(getClass().getSimpleName() + ".checkDomainService() domainMgmt is not available.");
 			throw new ClientException(500, "DomainService is not available.");
 		}
 	}
 
-	protected void print(DomainService domainService) {
+	protected void print(DomainServiceClient domainService) {
 		if (domainService == null) {
 			System.out.println("DomainService is null.");
 			return;
@@ -176,12 +176,12 @@ public class DomainServiceCommandV1 implements Annotated {
 	}
 
 	public void listDomainServices() throws ClientException {
-		List<LoadBalanceResource<DomainService>> resources = getServiceResources();
+		List<LoadBalanceResource<DomainServiceClient>> resources = getServiceResources();
 
 		// System.out.println("Number of services: " + resources.size());
 		String[][] rows = new String[resources.size()][DOMAIN_SERVICES_TITLES.length];
 		int rowIndex = 0;
-		for (LoadBalanceResource<DomainService> resource : resources) {
+		for (LoadBalanceResource<DomainServiceClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
 			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.name");
 			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.host.url");
@@ -205,7 +205,7 @@ public class DomainServiceCommandV1 implements Annotated {
 	@Descriptor("List machine configurations")
 	public void _lmachines() {
 		try {
-			DomainService domainMgmt = getDomainService();
+			DomainServiceClient domainMgmt = getDomainService();
 
 			MachineConfig[] machineConfigs = domainMgmt.getMachineConfigs();
 			// System.out.println("Number of machines: " + machineConfigs.length);
@@ -238,7 +238,7 @@ public class DomainServiceCommandV1 implements Annotated {
 			@Descriptor("Machine IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = "null") String ipAddress //
 	) {
 		try {
-			DomainService domainMgmt = getDomainService();
+			DomainServiceClient domainMgmt = getDomainService();
 
 			AddMachineConfigRequest addMachineRequest = new AddMachineConfigRequest();
 			addMachineRequest.setMachineId(machineId);
@@ -269,7 +269,7 @@ public class DomainServiceCommandV1 implements Annotated {
 			@Descriptor("IP Address") @Parameter(names = { "-ip", "--ip" }, absentValue = Parameter.UNSPECIFIED) String ipAddress //
 	) {
 		try {
-			DomainService domainMgmt = getDomainService();
+			DomainServiceClient domainMgmt = getDomainService();
 
 			UpdateMachineConfigRequest updateMachineRequest = new UpdateMachineConfigRequest();
 			updateMachineRequest.setMachineId(machineId);
@@ -308,7 +308,7 @@ public class DomainServiceCommandV1 implements Annotated {
 			@Descriptor("Machine ID") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String machineId //
 	) {
 		try {
-			DomainService domainMgmt = getDomainService();
+			DomainServiceClient domainMgmt = getDomainService();
 
 			boolean succeed = domainMgmt.removeMachineConfig(machineId);
 			if (succeed) {
