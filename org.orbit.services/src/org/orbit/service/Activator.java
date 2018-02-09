@@ -1,8 +1,8 @@
 package org.orbit.service;
 
-import org.orbit.service.program.ProgramService;
-import org.orbit.service.program.ProgramServiceTracker;
-import org.orbit.service.program.impl.ProgramProviderServiceImpl;
+import org.orbit.service.program.IProgramExtensionService;
+import org.orbit.service.program.impl.ProgramExtensionServiceImpl;
+import org.orbit.service.program.util.ProgramExtensionServiceTracker;
 import org.orbit.service.websocket.ServerContainerAdapter;
 import org.orbit.service.websocket.WebSocketDeployer;
 import org.osgi.framework.BundleActivator;
@@ -21,7 +21,7 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
-	protected ProgramServiceTracker programServiceTracker;
+	protected ProgramExtensionServiceTracker programServiceTracker;
 	protected WebSocketDeployer webSocketDeployer;
 	protected ServerContainerAdapter webSocketServerContainerAdapter;
 
@@ -30,9 +30,9 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		Activator.instance = this;
 
-		this.programServiceTracker = new ProgramServiceTracker();
+		this.programServiceTracker = new ProgramExtensionServiceTracker();
 		this.programServiceTracker.start(bundleContext);
-		ProgramProviderServiceImpl.getInstance().start(bundleContext);
+		ProgramExtensionServiceImpl.getInstance().start(bundleContext);
 
 		this.webSocketDeployer = new WebSocketDeployer();
 		this.webSocketDeployer.start(bundleContext);
@@ -53,7 +53,7 @@ public class Activator implements BundleActivator {
 			this.webSocketDeployer = null;
 		}
 
-		ProgramProviderServiceImpl.getInstance().stop(bundleContext);
+		ProgramExtensionServiceImpl.getInstance().stop(bundleContext);
 		if (this.programServiceTracker != null) {
 			this.programServiceTracker.stop(bundleContext);
 			this.programServiceTracker = null;
@@ -63,7 +63,7 @@ public class Activator implements BundleActivator {
 		Activator.context = null;
 	}
 
-	public ProgramService getProgramService() {
+	public IProgramExtensionService getProgramExtensionService() {
 		return (this.programServiceTracker != null) ? this.programServiceTracker.getProgramService() : null;
 	}
 

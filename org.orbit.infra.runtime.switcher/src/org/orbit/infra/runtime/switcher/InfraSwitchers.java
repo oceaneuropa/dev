@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.switcher.util.SwitcherHelper;
 import org.origin.common.rest.client.WSClientFactory;
-import org.origin.common.rest.client.WSClientFactoryJerseyImpl;
+import org.origin.common.rest.client.WSClientFactoryImpl;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
 import org.origin.common.util.PropertyUtil;
@@ -34,8 +34,8 @@ public class InfraSwitchers {
 		return instance;
 	}
 
-	protected IndexServiceWSApplicationSwitcher indexServiceSwitcher;
-	protected ChannelWSApplicationSwitcher channelSwitcher;
+	protected IndexServiceWSApplicationRelay indexServiceSwitcher;
+	protected ChannelWSApplicationRelay channelSwitcher;
 
 	public void start(BundleContext bundleContext) {
 		LOG.info("start()");
@@ -72,7 +72,7 @@ public class InfraSwitchers {
 	}
 
 	protected WSClientFactory createClientFactory(BundleContext bundleContext, Map<Object, Object> properties) {
-		return new WSClientFactoryJerseyImpl();
+		return new WSClientFactoryImpl();
 	}
 
 	protected void startIndexServiceSwitcher(BundleContext bundleContext, WSClientFactory factory, Map<Object, Object> properties) {
@@ -99,7 +99,7 @@ public class InfraSwitchers {
 
 	protected void startIndexServiceSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.indexServiceSwitcher = new IndexServiceWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
+		this.indexServiceSwitcher = new IndexServiceWSApplicationRelay(contextRoot, uriSwitcher, factory);
 		this.indexServiceSwitcher.start(bundleContext);
 	}
 
@@ -134,7 +134,7 @@ public class InfraSwitchers {
 
 	protected void startChannelSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.channelSwitcher = new ChannelWSApplicationSwitcher(contextRoot, uriSwitcher, factory);
+		this.channelSwitcher = new ChannelWSApplicationRelay(contextRoot, uriSwitcher, factory);
 		this.channelSwitcher.start(bundleContext);
 	}
 

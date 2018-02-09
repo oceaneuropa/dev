@@ -1,24 +1,33 @@
 package org.orbit.os.runtime.cli;
 
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.os.api.apps.ProgramManifest;
+import org.orbit.os.runtime.api.WSRelayControl;
 import org.orbit.os.runtime.gaia.GAIA;
 import org.orbit.os.runtime.gaia.impl.GAIAImpl;
 import org.orbit.os.runtime.programs.Program;
 import org.orbit.os.runtime.programs.ProgramBundle;
 import org.orbit.os.runtime.programs.ProgramHandler;
 import org.orbit.os.runtime.programs.ProgramsAndFeatures;
+import org.orbit.service.Activator;
+import org.orbit.service.program.IProgramExtension;
+import org.orbit.service.program.IProgramExtensionService;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.osgi.BundleHelper;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.WSClientFactory;
+import org.origin.common.rest.client.WSClientFactoryImpl;
+import org.origin.common.util.URIUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
@@ -364,6 +373,59 @@ public class OSCommand implements Annotated {
 		}
 
 		LOG.info("");
+	}
+
+	protected WSClientFactory wsClientFactory = new WSClientFactoryImpl();
+
+	/**
+	 * 
+	 * @param extensionId
+	 * @param contextRoot
+	 * @param hostURLsString
+	 */
+	public void startrelay(String extensionId, String contextRoot, String hostURLsString) {
+		LOG.info("startrelay('" + extensionId + "')");
+
+		IProgramExtensionService service = Activator.getInstance().getProgramExtensionService();
+		IProgramExtension extension = service.getProgramExtension(WSRelayControl.EXTENSION_TYPE_ID, extensionId);
+		if (extension == null) {
+			LOG.info("Program extension is not available.");
+			return;
+		}
+
+		WSRelayControl relayControl = extension.getAdapter(WSRelayControl.class);
+		if (relayControl == null) {
+			LOG.info("WSRelayControl is not available.");
+			return;
+		}
+
+		List<URI> uriList = URIUtil.toList(hostURLsString, contextRoot);
+		relayControl.start(bundleContext, wsClientFactory, contextRoot, uriList);
+	}
+
+	/**
+	 * 
+	 * @param extensionId
+	 * @param contextRoot
+	 * @param hostURLsString
+	 */
+	public void stoprelay(String extensionId, String contextRoot) {
+		LOG.info("stoprelay('" + extensionId + "')");
+
+		IProgramExtensionService service = Activator.getInstance().getProgramExtensionService();
+		IProgramExtension extension = service.getProgramExtension(WSRelayControl.EXTENSION_TYPE_ID, extensionId);
+		if (extension == null) {
+			LOG.info("Program extension is not available.");
+			return;
+		}
+
+		WSRelayControl relayControl = extension.getAdapter(WSRelayControl.class);
+		if (relayControl == null) {
+			LOG.info("WSRelayControl is not available.");
+			return;
+		}
+
+		relayControl.stop(bundleContext, contextRoot);
 	}
 
 }

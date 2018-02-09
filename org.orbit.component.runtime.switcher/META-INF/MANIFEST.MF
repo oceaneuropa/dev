@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: Runtime Switcher
 Bundle-SymbolicName: org.orbit.component.runtime.switcher;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.orbit.component.runtime.switcher.Activator
+Bundle-Activator: org.orbit.component.runtime.relay.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.auth0.jwt.interfaces,
  com.fasterxml.jackson.annotation,
@@ -27,14 +27,19 @@ Import-Package: com.auth0.jwt.interfaces,
  org.glassfish.jersey.process,
  org.glassfish.jersey.server,
  org.glassfish.jersey.server.model,
+ org.orbit.os.runtime.api,
+ org.orbit.service.program,
+ org.orbit.service.program.impl,
+ org.orbit.service.program.util,
  org.osgi.framework;version="1.3.0",
  org.osgi.service.http;version="1.2.1",
  org.slf4j;version="1.7.25"
 Require-Bundle: org.origin.common;bundle-version="1.0.0",
  org.apache.felix.gogo.runtime;bundle-version="[0.0.0,1.0.0)"
-Export-Package: org.orbit.component.runtime.switcher,
- org.orbit.component.runtime.switcher.tier1,
- org.orbit.component.runtime.switcher.tier2,
- org.orbit.component.runtime.switcher.tier3,
- org.orbit.component.runtime.switcher.tier4,
- org.orbit.component.runtime.switcher.util
+Export-Package: org.orbit.component.runtime.relay,
+ org.orbit.component.runtime.relay.tier1,
+ org.orbit.component.runtime.relay.tier2,
+ org.orbit.component.runtime.relay.tier3,
+ org.orbit.component.runtime.relay.tier4,
+ org.orbit.component.runtime.relay.util,
+ org.orbit.component.runtime.switcher.cli

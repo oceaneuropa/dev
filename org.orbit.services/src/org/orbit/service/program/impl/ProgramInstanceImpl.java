@@ -1,13 +1,13 @@
 package org.orbit.service.program.impl;
 
-import org.orbit.service.program.ProgramInstance;
-import org.orbit.service.program.ProgramProvider;
-import org.osgi.framework.BundleContext;
+import org.orbit.service.program.IProgramExtension.Context;
+import org.orbit.service.program.IProgramInstance;
+import org.orbit.service.program.IProgramLauncher;
 
-public class ProgramInstanceImpl implements ProgramInstance {
+public class ProgramInstanceImpl implements IProgramInstance {
 
-	protected BundleContext bundleContext;
-	protected ProgramProvider programProvider;
+	protected Context context;
+	protected IProgramLauncher launcher;
 	protected Object referencedInstance;
 	protected boolean exited = false;
 
@@ -16,31 +16,32 @@ public class ProgramInstanceImpl implements ProgramInstance {
 
 	/**
 	 * 
-	 * @param bundleContext
-	 * @param programProvider
+	 * @param context
+	 * @param launcher
 	 * @param referencedInstance
 	 */
-	public ProgramInstanceImpl(BundleContext bundleContext, ProgramProvider programProvider, Object referencedInstance) {
-		this.bundleContext = bundleContext;
-		this.programProvider = programProvider;
+	public ProgramInstanceImpl(Context context, IProgramLauncher launcher, Object referencedInstance) {
+		this.context = context;
+		this.launcher = launcher;
 		this.referencedInstance = referencedInstance;
 	}
 
 	@Override
-	public BundleContext getBundleContext() {
-		return this.bundleContext;
+	public Context getContext() {
+		return this.context;
 	}
 
-	public void setBundleContext(BundleContext bundleContext) {
-		this.bundleContext = bundleContext;
+	public void setContext(Context context) {
+		this.context = context;
 	}
 
-	public ProgramProvider getProgramProvider() {
-		return this.programProvider;
+	@Override
+	public IProgramLauncher getLauncher() {
+		return this.launcher;
 	}
 
-	public void setProgramProvider(ProgramProvider programProvider) {
-		this.programProvider = programProvider;
+	public void setProgramExtension(IProgramLauncher launcher) {
+		this.launcher = launcher;
 	}
 
 	@Override
@@ -56,11 +57,11 @@ public class ProgramInstanceImpl implements ProgramInstance {
 	public int exit() {
 		int exitCode = 0;
 		if (!this.exited) {
-			ProgramProvider programProvider = getProgramProvider();
-			BundleContext bundleContext = getBundleContext();
+			IProgramLauncher launcher = getLauncher();
+			Context context = getContext();
 			Object referencedInstance = getReferenceInstance();
-			if (programProvider != null && bundleContext != null) {
-				exitCode = programProvider.exit(bundleContext, referencedInstance);
+			if (launcher != null) {
+				exitCode = launcher.exit(context, referencedInstance);
 			}
 			this.exited = true;
 		}

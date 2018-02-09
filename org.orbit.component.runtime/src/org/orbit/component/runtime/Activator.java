@@ -22,6 +22,7 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
+	protected Extensions extensions;
 	protected ServicesCommand servicesCommand;
 
 	@Override
@@ -31,11 +32,15 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		Activator.instance = this;
 
+		// Register program extensions
+		this.extensions = new Extensions();
+		this.extensions.start(bundleContext);
+
 		// Start commands and services
 		this.servicesCommand = new ServicesCommand();
 		this.servicesCommand.start(bundleContext);
 
-		// 
+		// Start tracking web service connector services
 		OrbitClients.getInstance().start(bundleContext);
 
 		// Start tracking services for starting web service and indexer
@@ -49,10 +54,19 @@ public class Activator implements BundleActivator {
 		// Stop tracking services for stopping web service and indexer
 		OrbitServices.getInstance().stop(bundleContext);
 
+		// Stop tracking web service connector services
+		OrbitClients.getInstance().stop(bundleContext);
+
 		// Stop commands and services
 		if (this.servicesCommand != null) {
 			this.servicesCommand.stop(bundleContext);
 			this.servicesCommand = null;
+		}
+
+		// Unregister program extensions
+		if (this.extensions != null) {
+			this.extensions.stop(bundleContext);
+			this.extensions = null;
 		}
 
 		Activator.instance = null;
