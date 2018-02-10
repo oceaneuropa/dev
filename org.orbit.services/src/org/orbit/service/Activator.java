@@ -1,8 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 OceanEuropa.
+ * All rights reserved.
+ *
+ * Contributors:
+ *     OceanEuropa - initial API and implementation
+ *******************************************************************************/
 package org.orbit.service;
 
-import org.orbit.service.program.IProgramExtensionService;
-import org.orbit.service.program.impl.ProgramExtensionServiceImpl;
-import org.orbit.service.program.util.ProgramExtensionServiceTracker;
 import org.orbit.service.websocket.ServerContainerAdapter;
 import org.orbit.service.websocket.WebSocketDeployer;
 import org.osgi.framework.BundleActivator;
@@ -21,7 +25,6 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
-	protected ProgramExtensionServiceTracker programServiceTracker;
 	protected WebSocketDeployer webSocketDeployer;
 	protected ServerContainerAdapter webSocketServerContainerAdapter;
 
@@ -29,10 +32,6 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 		Activator.instance = this;
-
-		this.programServiceTracker = new ProgramExtensionServiceTracker();
-		this.programServiceTracker.start(bundleContext);
-		ProgramExtensionServiceImpl.getInstance().start(bundleContext);
 
 		this.webSocketDeployer = new WebSocketDeployer();
 		this.webSocketDeployer.start(bundleContext);
@@ -53,18 +52,8 @@ public class Activator implements BundleActivator {
 			this.webSocketDeployer = null;
 		}
 
-		ProgramExtensionServiceImpl.getInstance().stop(bundleContext);
-		if (this.programServiceTracker != null) {
-			this.programServiceTracker.stop(bundleContext);
-			this.programServiceTracker = null;
-		}
-
 		Activator.instance = null;
 		Activator.context = null;
-	}
-
-	public IProgramExtensionService getProgramExtensionService() {
-		return (this.programServiceTracker != null) ? this.programServiceTracker.getProgramService() : null;
 	}
 
 }

@@ -7,14 +7,14 @@ import java.util.Map;
 
 import org.orbit.component.runtime.relay.tier2.AppStoreWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
-import org.orbit.os.runtime.api.WSRelayControl;
+import org.orbit.sdk.WSRelayControlImpl;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSApplicationDescriptiveRelay;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
 import org.osgi.framework.BundleContext;
 
-public class AppStoreWSRelayControl implements WSRelayControl {
+public class AppStoreWSRelayControl extends WSRelayControlImpl {
 
 	public static AppStoreWSRelayControl INSTANCE = new AppStoreWSRelayControl();
 

@@ -7,14 +7,14 @@ import java.util.Map;
 
 import org.orbit.component.runtime.relay.tier3.TransferAgentWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
-import org.orbit.os.runtime.api.WSRelayControl;
+import org.orbit.sdk.WSRelayControlImpl;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSApplicationDescriptiveRelay;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
 import org.osgi.framework.BundleContext;
 
-public class TransferAgentWSRelayControl implements WSRelayControl {
+public class TransferAgentWSRelayControl extends WSRelayControlImpl {
 
 	public static TransferAgentWSRelayControl INSTANCE = new TransferAgentWSRelayControl();
 

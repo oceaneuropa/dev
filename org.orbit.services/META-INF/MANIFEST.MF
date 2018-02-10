@@ -5,9 +5,6 @@ Bundle-SymbolicName: org.orbit.services;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.orbit.service,
- org.orbit.service.program,
- org.orbit.service.program.impl,
- org.orbit.service.program.util,
  org.orbit.service.websocket,
  org.orbit.service.websocket.impl
 Import-Package: javax.servlet;version="3.1.0",

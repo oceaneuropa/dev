@@ -35,7 +35,7 @@ public class WSEditPoliciesImpl implements WSEditPolicies {
 
 	@Override
 	public boolean installEditPolicy(WSEditPolicy editPolicy) {
-		// Initialize the WSEditPolicy with services
+		// Inject the services to the WSEditPolicy
 		configure(editPolicy);
 
 		return this.editPoliciesSupport.installEditPolicy(editPolicy);

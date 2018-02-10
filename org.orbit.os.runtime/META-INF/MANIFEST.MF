@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: OS :: Runtime
 Bundle-SymbolicName: org.orbit.os.runtime;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.orbit.os.runtime.Activator
+Bundle-Activator: org.orbit.platform.runtime.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.inject;version="1.0.0",
  javax.json;version="1.1.2",
@@ -26,9 +26,7 @@ Import-Package: javax.inject;version="1.0.0",
  org.orbit.os.api.util,
  org.orbit.os.model.gaia.dto,
  org.orbit.os.model.gaia.rto,
- org.orbit.os.runtime.api,
  org.orbit.service,
- org.orbit.service.program,
  org.osgi.framework;version="1.3.0",
  org.osgi.framework.launch;version="1.2.0",
  org.osgi.service.http;version="1.2.1",
@@ -36,11 +34,11 @@ Import-Package: javax.inject;version="1.0.0",
  org.slf4j;version="1.7.25"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
- org.origin.common;bundle-version="1.0.0"
-Export-Package: org.orbit.os.runtime,
- org.orbit.os.runtime.cli,
- org.orbit.os.runtime.gaia,
- org.orbit.os.runtime.programs,
- org.orbit.os.runtime.util,
- org.orbit.os.runtime.ws,
- org.orbit.os.runtime.ws.command
+ org.origin.common;bundle-version="[0.0.0,2.0.0)",
+ org.orbit.sdk;bundle-version="[0.0.0,2.0.0)"
+Export-Package: org.orbit.platform.runtime,
+ org.orbit.platform.runtime.cli,
+ org.orbit.platform.runtime.gaia.service,
+ org.orbit.platform.runtime.gaia.ws,
+ org.orbit.platform.runtime.programs,
+ org.orbit.platform.runtime.util

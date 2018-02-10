@@ -7,14 +7,14 @@ import java.util.Map;
 
 import org.orbit.component.runtime.relay.tier3.DomainServiceWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
-import org.orbit.os.runtime.api.WSRelayControl;
+import org.orbit.sdk.WSRelayControlImpl;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSApplicationDescriptiveRelay;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
 import org.osgi.framework.BundleContext;
 
-public class DomainServiceWSRelayControl implements WSRelayControl {
+public class DomainServiceWSRelayControl extends WSRelayControlImpl {
 
 	public static DomainServiceWSRelayControl INSTANCE = new DomainServiceWSRelayControl();
 

@@ -1,8 +1,8 @@
 package org.orbit.component.runtime.relay.other.extensions;
 
 import org.orbit.component.runtime.relay.extensions.TransferAgentWSRelayControl;
-import org.orbit.os.runtime.api.WSRelayControl;
-import org.orbit.service.program.impl.ProgramExtensionImpl;
+import org.orbit.sdk.WSRelayControl;
+import org.orbit.sdk.extension.impl.ProgramExtensionImpl;
 
 public class TransferAgentRelayExtension extends ProgramExtensionImpl {
 

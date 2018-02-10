@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 OceanEuropa.
+ * All rights reserved.
+ *
+ * Contributors:
+ *     OceanEuropa - initial API and implementation
+ *******************************************************************************/
 package org.orbit.component.runtime.relay;
 
 import org.orbit.component.runtime.relay.extensions.AppStoreWSRelayControl;
@@ -7,9 +14,9 @@ import org.orbit.component.runtime.relay.extensions.DomainServiceWSRelayControl;
 import org.orbit.component.runtime.relay.extensions.MissionControlWSRelayControl;
 import org.orbit.component.runtime.relay.extensions.TransferAgentWSRelayControl;
 import org.orbit.component.runtime.relay.extensions.UserRegistryWSRelayControl;
-import org.orbit.os.runtime.api.WSRelayControl;
-import org.orbit.service.program.util.ProgramExtension;
-import org.orbit.service.program.util.ProgramExtensions;
+import org.orbit.sdk.WSRelayControl;
+import org.orbit.sdk.extension.util.ProgramExtension;
+import org.orbit.sdk.extension.util.ProgramExtensions;
 
 public class Extensions extends ProgramExtensions {
 
@@ -32,33 +39,47 @@ public class Extensions extends ProgramExtensions {
 
 		// tier 1
 		ProgramExtension userRegistryRelayExtension = new ProgramExtension(extensionTypeId, USER_REGISTRY_RELAY_EXTENSION_ID);
+		userRegistryRelayExtension.setName("User registration relay");
+		userRegistryRelayExtension.setDescription("User registration relay description");
 		userRegistryRelayExtension.adapt(WSRelayControl.class, UserRegistryWSRelayControl.INSTANCE);
 		add(userRegistryRelayExtension);
 
 		ProgramExtension authRelayExtension = new ProgramExtension(extensionTypeId, AUTH_RELAY_EXTENSION_ID);
+		authRelayExtension.setName("Auth relay");
+		authRelayExtension.setDescription("Auth relay description");
 		authRelayExtension.adapt(WSRelayControl.class, AuthWSRelayControl.INSTANCE);
 		add(authRelayExtension);
 
 		ProgramExtension configRegistryRelayExtension = new ProgramExtension(extensionTypeId, CONFIG_REGISTRY_RELAY_EXTENSION_ID);
+		configRegistryRelayExtension.setName("Config registration relay");
+		configRegistryRelayExtension.setDescription("Config registration relay description");
 		configRegistryRelayExtension.adapt(WSRelayControl.class, ConfigRegistryWSRelayControl.INSTANCE);
 		add(configRegistryRelayExtension);
 
 		// tier 2
 		ProgramExtension appStoreRelayExtension = new ProgramExtension(extensionTypeId, APP_STORE_RELAY_EXTENSION_ID);
+		appStoreRelayExtension.setName("App store relay");
+		appStoreRelayExtension.setDescription("App store relay description");
 		appStoreRelayExtension.adapt(WSRelayControl.class, AppStoreWSRelayControl.INSTANCE);
 		add(appStoreRelayExtension);
 
 		// tier 3
 		ProgramExtension domainServiceRelayExtension = new ProgramExtension(extensionTypeId, DOMAIN_SERVICE_RELAY_EXTENSION_ID);
+		domainServiceRelayExtension.setName("Domain service relay");
+		domainServiceRelayExtension.setDescription("Domain service relay description");
 		domainServiceRelayExtension.adapt(WSRelayControl.class, DomainServiceWSRelayControl.INSTANCE);
 		add(domainServiceRelayExtension);
 
 		ProgramExtension transferAgentRelayExtension = new ProgramExtension(extensionTypeId, TRANSFER_AGENT_RELAY_EXTENSION_ID);
+		transferAgentRelayExtension.setName("Transfer agent relay");
+		transferAgentRelayExtension.setDescription("Transfer agent relay description");
 		transferAgentRelayExtension.adapt(WSRelayControl.class, TransferAgentWSRelayControl.INSTANCE);
 		add(transferAgentRelayExtension);
 
 		// tier 4
 		ProgramExtension missionControlRelayExtension = new ProgramExtension(extensionTypeId, MISSION_CONTROL_RELAY_EXTENSION_ID);
+		missionControlRelayExtension.setName("Mission control relay");
+		missionControlRelayExtension.setDescription("Mission control relay description");
 		missionControlRelayExtension.adapt(WSRelayControl.class, MissionControlWSRelayControl.INSTANCE);
 		add(missionControlRelayExtension);
 	}

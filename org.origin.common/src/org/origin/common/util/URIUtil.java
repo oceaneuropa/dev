@@ -72,8 +72,13 @@ public class URIUtil {
 			String[] segments = null;
 
 			if (string.contains(";")) {
-				// multiple URLs in the string
+				// multiple URLs in the string, separated by ';'
 				segments = string.split(";");
+
+			} else if (string.contains(",")) {
+				// multiple URLs in the string, separated by ','
+				segments = string.split(",");
+
 			} else {
 				// single URL in the string
 				segments = new String[] { string };

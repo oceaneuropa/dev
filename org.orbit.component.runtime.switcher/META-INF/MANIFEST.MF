@@ -27,15 +27,12 @@ Import-Package: com.auth0.jwt.interfaces,
  org.glassfish.jersey.process,
  org.glassfish.jersey.server,
  org.glassfish.jersey.server.model,
- org.orbit.os.runtime.api,
- org.orbit.service.program,
- org.orbit.service.program.impl,
- org.orbit.service.program.util,
  org.osgi.framework;version="1.3.0",
  org.osgi.service.http;version="1.2.1",
  org.slf4j;version="1.7.25"
-Require-Bundle: org.origin.common;bundle-version="1.0.0",
- org.apache.felix.gogo.runtime;bundle-version="[0.0.0,1.0.0)"
+Require-Bundle: org.origin.common;bundle-version="[0.0.0,2.0.0)",
+ org.apache.felix.gogo.runtime;bundle-version="[0.0.0,1.0.0)",
+ org.orbit.sdk;bundle-version="[0.0.0,2.0.0)"
 Export-Package: org.orbit.component.runtime.relay,
  org.orbit.component.runtime.relay.tier1,
  org.orbit.component.runtime.relay.tier2,
