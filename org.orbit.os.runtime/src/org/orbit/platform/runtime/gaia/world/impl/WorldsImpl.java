@@ -3,7 +3,7 @@ package org.orbit.platform.runtime.gaia.world.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.os.model.gaia.rto.WorldException;
+import org.orbit.platform.model.gaia.rto.WorldException;
 import org.orbit.platform.runtime.gaia.world.World;
 import org.orbit.platform.runtime.gaia.world.Worlds;
 

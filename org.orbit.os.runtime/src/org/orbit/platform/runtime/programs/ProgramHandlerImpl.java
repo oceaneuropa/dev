@@ -3,8 +3,8 @@ package org.orbit.platform.runtime.programs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.os.api.apps.BundleManifest;
-import org.orbit.os.api.apps.ProgramManifest;
+import org.orbit.platform.api.apps.BundleManifest;
+import org.orbit.platform.api.apps.ProgramManifest;
 import org.origin.common.osgi.BundleHelper;
 import org.origin.common.osgi.BundleUtil;
 import org.origin.common.osgi.Dependency;

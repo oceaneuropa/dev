@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.orbit.os.api.apps.ProgramManifest;
-import org.orbit.os.api.util.AppManifestUtil;
-import org.orbit.os.api.util.ProgramUtil;
+import org.orbit.platform.api.apps.ProgramManifest;
+import org.orbit.platform.api.util.AppManifestUtil;
+import org.orbit.platform.api.util.ProgramUtil;
 import org.origin.common.runtime.Problem;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;

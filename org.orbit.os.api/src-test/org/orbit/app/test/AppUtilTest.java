@@ -9,8 +9,8 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.orbit.os.api.apps.ProgramManifest;
-import org.orbit.os.api.util.ProgramUtil;
+import org.orbit.platform.api.apps.ProgramManifest;
+import org.orbit.platform.api.util.ProgramUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AppUtilTest {

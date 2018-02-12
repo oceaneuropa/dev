@@ -63,12 +63,14 @@ public class WSEditPoliciesSupport implements WSEditPolicies {
 			return false;
 		}
 
-		// edit policy with same id already exists
+		// Check existing edit policy with same id
 		String id = editPolicy.getId();
 		WSEditPolicy existingEditPolicy = getEditPolicy(id);
 		if (existingEditPolicy != null) {
-			System.err.println(WSEditPoliciesSupport.class.getSimpleName() + ".installEditPolicy(WSEditPolicy) WSEditPolicy with id '" + id + "' already exists.");
-			return false;
+			// System.err.println(WSEditPoliciesSupport.class.getSimpleName() + ".installEditPolicy(WSEditPolicy) WSEditPolicy with id '" + id + "' already
+			// exists.");
+			// return false;
+			uninstallEditPolicy(existingEditPolicy);
 		}
 
 		return this.editPolicies.add(editPolicy);

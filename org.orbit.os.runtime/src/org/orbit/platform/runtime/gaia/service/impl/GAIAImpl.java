@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.orbit.platform.runtime.OSConstants;
+import org.orbit.platform.runtime.PlatformConstants;
 import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.orbit.platform.runtime.gaia.world.Worlds;
 import org.orbit.platform.runtime.gaia.world.impl.WorldsImpl;
@@ -51,17 +51,17 @@ public class GAIAImpl implements GAIA {
 
 	@Override
 	public String getName() {
-		String name = getProperty(OSConstants.GAIA_NAME);
+		String name = getProperty(PlatformConstants.GAIA_NAME);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = getProperty(OSConstants.GAIA_HOST_URL);
+		String hostURL = getProperty(PlatformConstants.GAIA_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = getProperty(OSConstants.ORBIT_HOST_URL);
+		String globalHostURL = getProperty(PlatformConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -70,7 +70,7 @@ public class GAIAImpl implements GAIA {
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = getProperty(OSConstants.GAIA_CONTEXT_ROOT);
+		String contextRoot = getProperty(PlatformConstants.GAIA_CONTEXT_ROOT);
 		return contextRoot;
 	}
 
@@ -87,15 +87,15 @@ public class GAIAImpl implements GAIA {
 			configProps = new HashMap<Object, Object>();
 		}
 
-		String globalHostURL = getProperty(OSConstants.ORBIT_HOST_URL);
-		String name = getProperty(OSConstants.GAIA_NAME);
-		String hostURL = getProperty(OSConstants.GAIA_HOST_URL);
-		String contextRoot = getProperty(OSConstants.GAIA_CONTEXT_ROOT);
+		String globalHostURL = getProperty(PlatformConstants.ORBIT_HOST_URL);
+		String name = getProperty(PlatformConstants.GAIA_NAME);
+		String hostURL = getProperty(PlatformConstants.GAIA_HOST_URL);
+		String contextRoot = getProperty(PlatformConstants.GAIA_CONTEXT_ROOT);
 
-		LOG.info(OSConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-		LOG.info(OSConstants.GAIA_NAME + " = " + name);
-		LOG.info(OSConstants.GAIA_HOST_URL + " = " + hostURL);
-		LOG.info(OSConstants.GAIA_CONTEXT_ROOT + " = " + contextRoot);
+		LOG.info(PlatformConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		LOG.info(PlatformConstants.GAIA_NAME + " = " + name);
+		LOG.info(PlatformConstants.GAIA_HOST_URL + " = " + hostURL);
+		LOG.info(PlatformConstants.GAIA_CONTEXT_ROOT + " = " + contextRoot);
 
 		this.properties = configProps;
 		// this.databaseProperties = getConnectionProperties();
@@ -133,11 +133,11 @@ public class GAIAImpl implements GAIA {
 
 		// load properties
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(this.bundleContext, configProps, OSConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, PlatformConstants.ORBIT_HOST_URL);
 		// PropertyUtil.loadProperty(this.bundleContext, configProps, OSConstants.GAIA_NAMESPACE);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, OSConstants.GAIA_NAME);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, OSConstants.GAIA_HOST_URL);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, OSConstants.GAIA_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, PlatformConstants.GAIA_NAME);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, PlatformConstants.GAIA_HOST_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, PlatformConstants.GAIA_CONTEXT_ROOT);
 		updateProperties(configProps);
 
 		// start OS service
@@ -163,7 +163,7 @@ public class GAIAImpl implements GAIA {
 			return;
 		}
 
-		// Stop OS service
+		// Stop GAIA service
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();
 			this.serviceRegistry = null;

@@ -20,7 +20,7 @@ import org.plutus.lottery.powerball.DrawStat;
 public class A22_SumAnalysisAnalysisTester extends AbstractAnalysisTester {
 
 	public A22_SumAnalysisAnalysisTester() {
-		super(new File(SystemUtils.getUserDir(), "/doc/pb-winnums-text_02-22-2017.txt"));
+		super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
 	}
 
 	@Test
@@ -62,12 +62,19 @@ public class A22_SumAnalysisAnalysisTester extends AbstractAnalysisTester {
 			// int sumUp__34Index = globalStat.get(DrawStat.PROP_SUM_UP___34_PERCENT_INDEX, Integer.class);
 			// int sumDown34Index = globalStat.get(DrawStat.PROP_SUM_DOWN_34_PERCENT_INDEX, Integer.class);
 
-			System.out.println("<count>:<sum-list> (size=" + countToSumListMap.size() + "):");
+			System.out.println("<count>:<sum-list>:");
 			System.out.println("--------------------------------------------------------------------------------------------------------");
 			for (Iterator<Integer> countItor = countToSumListMap.keySet().iterator(); countItor.hasNext();) {
 				Integer count = countItor.next();
 				List<Integer> currSumList = countToSumListMap.get(count);
-				String currSumListStr = Arrays.toString(currSumList.toArray(new Integer[currSumList.size()]));
+
+				String currSumListStr = null;
+				try {
+					Object[] objects = currSumList.toArray(new Object[currSumList.size()]);
+					currSumListStr = Arrays.toString(objects);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 
 				double percent = (int) (BigDecimalUtil.rounding(count * currSumList.size() * 100.00 / sumTotalCount, 2));
 
@@ -79,7 +86,7 @@ public class A22_SumAnalysisAnalysisTester extends AbstractAnalysisTester {
 			System.out.println("<sum>:<count> (size=" + sumList.size() + "):");
 			System.out.println("--------------------------------------------------------------------------------------------------------");
 			for (int i = 0; i < sumList.size(); i++) {
-				Integer sum = sumList.get(i);
+				Object sum = sumList.get(i);
 				Integer count = sumToCountMap.get(sum);
 
 				boolean isMidIndex = (i == sumMidIndex) ? true : false;
@@ -151,7 +158,8 @@ public class A22_SumAnalysisAnalysisTester extends AbstractAnalysisTester {
 			System.out.println("--------------------------------------------------------------------------------------------------------");
 
 			System.out.println();
-			System.out.println("<dist-avg>:<count> map (size=" + distAvgList.size() + "):");
+			System.out.println("<dist-avg>:<count> map:");
+			System.out.println("平均距离次数统计");
 			System.out.println("--------------------------------------------------------------------------------------------------------");
 			for (int i = 0; i < distAvgList.size(); i++) {
 				Integer distAvg = distAvgList.get(i);
@@ -159,7 +167,7 @@ public class A22_SumAnalysisAnalysisTester extends AbstractAnalysisTester {
 
 				double percent = (int) (BigDecimalUtil.rounding(count * 100.00 / distAvgTotalCount, 2));
 
-				System.out.println("[" + distAvg + "] " + ">" + count + " (" + percent + " %)");
+				System.out.println("[" + distAvg + "] " + "-> " + count + " (" + percent + " %)");
 			}
 			System.out.println("--------------------------------------------------------------------------------------------------------");
 

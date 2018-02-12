@@ -17,7 +17,7 @@ import org.plutus.lottery.powerball.DrawStat;
 public class A21_OddEvenAnalysisTester extends AbstractAnalysisTester {
 
 	public A21_OddEvenAnalysisTester() {
-		super(new File(SystemUtils.getUserDir(), "/doc/pb-winnums-text_02-22-2017.txt"));
+		super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
 	}
 
 	@Test

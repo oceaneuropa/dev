@@ -22,7 +22,7 @@ import org.plutus.lottery.powerball.report.CombinationReport;
 public class A24_RepetitionAnalysisTester extends AbstractAnalysisTester {
 
 	public A24_RepetitionAnalysisTester() {
-		super(new File(SystemUtils.getUserDir(), "/doc/pb-winnums-text_02-22-2017.txt"));
+		super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
 	}
 
 	@Override

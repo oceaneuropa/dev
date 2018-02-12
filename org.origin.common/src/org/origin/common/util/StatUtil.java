@@ -76,6 +76,14 @@ public class StatUtil {
 		return sum;
 	}
 
+	public static double diff_avg(int scale, int... n) {
+		int diffs[] = new int[n.length - 1];
+		for (int i = 0; i < diffs.length; i++) {
+			diffs[i] = (n[i + 1] - n[i]);
+		}
+		return avg(scale, diffs);
+	}
+
 	public static double avg(int scale, int... n) {
 		int size = n.length;
 		long sum = sum(n);

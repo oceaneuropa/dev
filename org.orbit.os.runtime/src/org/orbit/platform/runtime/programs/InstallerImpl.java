@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import org.orbit.os.api.apps.ProgramManifest;
-import org.orbit.os.api.apps.BundleManifest;
-import org.orbit.os.api.util.AppManifestUtil;
-import org.orbit.os.api.util.ProgramUtil;
+import org.orbit.platform.api.apps.BundleManifest;
+import org.orbit.platform.api.apps.ProgramManifest;
+import org.orbit.platform.api.util.AppManifestUtil;
+import org.orbit.platform.api.util.ProgramUtil;
 import org.orbit.platform.runtime.programs.ProgramException;
 import org.orbit.platform.runtime.util.SetupUtil;
 import org.origin.common.io.FileUtil;

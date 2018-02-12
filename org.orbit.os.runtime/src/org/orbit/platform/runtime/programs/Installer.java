@@ -2,7 +2,7 @@ package org.orbit.platform.runtime.programs;
 
 import java.nio.file.Path;
 
-import org.orbit.os.api.apps.ProgramManifest;
+import org.orbit.platform.api.apps.ProgramManifest;
 import org.orbit.platform.runtime.programs.ProgramException;
 
 public interface Installer {

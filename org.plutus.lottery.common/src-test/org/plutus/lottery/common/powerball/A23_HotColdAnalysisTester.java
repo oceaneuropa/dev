@@ -21,7 +21,7 @@ import org.plutus.lottery.powerball.report.NumberReports;
 public class A23_HotColdAnalysisTester extends AbstractAnalysisTester {
 
 	public A23_HotColdAnalysisTester() {
-		super(new File(SystemUtils.getUserDir(), "/doc/pb-winnums-text_02-22-2017.txt"));
+		super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
 	}
 
 	@Test

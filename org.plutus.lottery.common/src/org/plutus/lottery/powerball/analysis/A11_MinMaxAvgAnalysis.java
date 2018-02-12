@@ -67,11 +67,12 @@ public class A11_MinMaxAvgAnalysis implements Analysis {
 			// ----------------------------------------------------
 			// 间距均值
 			// ----------------------------------------------------
-			int dist1 = n2 - n1;
-			int dist2 = n3 - n2;
-			int dist3 = n4 - n3;
-			int dist4 = n5 - n4;
-			int dist_avg = (int) StatUtil.avg(2, dist1, dist2, dist3, dist4);
+			// int dist1 = n2 - n1;
+			// int dist2 = n3 - n2;
+			// int dist3 = n4 - n3;
+			// int dist4 = n5 - n4;
+			// int dist_avg = (int) StatUtil.avg(2, dist1, dist2, dist3, dist4);
+			int dist_avg = (int) StatUtil.diff_avg(2, n1, n2, n3, n4, n5);
 
 			// ----------------------------------------------------
 			// 保存统计结果

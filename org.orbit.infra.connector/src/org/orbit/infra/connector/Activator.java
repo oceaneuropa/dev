@@ -15,12 +15,12 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 
-		InfraConnectors.getInstance().start(bundleContext);
+		Connectors.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		InfraConnectors.getInstance().stop(bundleContext);
+		Connectors.getInstance().stop(bundleContext);
 
 		Activator.context = null;
 	}

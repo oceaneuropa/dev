@@ -8,11 +8,11 @@ import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.os.api.apps.ProgramManifest;
+import org.orbit.platform.api.apps.ProgramManifest;
 import org.orbit.platform.runtime.Activator;
-import org.orbit.platform.runtime.core.Platform;
 import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.orbit.platform.runtime.gaia.service.impl.GAIAImpl;
+import org.orbit.platform.runtime.platform.Platform;
 import org.orbit.platform.runtime.programs.Program;
 import org.orbit.platform.runtime.programs.ProgramBundle;
 import org.orbit.platform.runtime.programs.ProgramHandler;
@@ -137,12 +137,12 @@ public class PlatformCommand implements Annotated {
 	}
 
 	protected ProgramsAndFeatures getProgramsAndFeatures() {
-		Platform os = Activator.getInstance().getOS();
+		Platform os = Activator.getInstance().getPlatform();
 		return os.getProgramsAndFeatures();
 	}
 
 	protected IProgramExtensionService getProgramExtensionService() {
-		Platform os = Activator.getInstance().getOS();
+		Platform os = Activator.getInstance().getPlatform();
 		return os.getProgramExtensionService();
 	}
 

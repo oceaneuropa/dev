@@ -3,7 +3,7 @@ package org.orbit.platform.runtime.gaia.ws.command;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.os.model.gaia.dto.WorldDTO;
+import org.orbit.platform.model.gaia.dto.WorldDTO;
 import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.orbit.platform.runtime.gaia.world.World;
 import org.orbit.platform.runtime.gaia.world.WorldModelConverter;

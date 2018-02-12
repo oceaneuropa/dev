@@ -3,12 +3,13 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: OS :: CLI
 Bundle-SymbolicName: org.orbit.os.cli;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.orbit.os.cli.Activator
+Bundle-Activator: org.orbit.platform.cli.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs.core;version="2.0.0",
- org.orbit.os.api,
- org.orbit.os.api.gaia,
- org.orbit.os.model.gaia.dto,
+ org.orbit.platform.api,
+ org.orbit.platform.api.gaia,
+ org.orbit.platform.api.platform,
+ org.orbit.platform.model.gaia.dto,
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.7.25"
 Require-Bundle: org.origin.common;bundle-version="1.0.0",

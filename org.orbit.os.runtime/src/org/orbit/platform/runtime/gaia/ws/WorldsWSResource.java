@@ -14,8 +14,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.os.model.gaia.dto.WorldDTO;
-import org.orbit.os.model.gaia.rto.WorldException;
+import org.orbit.platform.model.gaia.dto.WorldDTO;
+import org.orbit.platform.model.gaia.rto.WorldException;
 import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.orbit.platform.runtime.gaia.world.World;
 import org.orbit.platform.runtime.gaia.world.WorldModelConverter;

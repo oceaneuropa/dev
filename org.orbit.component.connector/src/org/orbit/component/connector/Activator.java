@@ -21,12 +21,12 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		Activator.instance = this;
 
-		OrbitConnectors.getInstance().start(bundleContext);
+		Connectors.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		OrbitConnectors.getInstance().stop(bundleContext);
+		Connectors.getInstance().stop(bundleContext);
 
 		Activator.instance = null;
 		Activator.context = null;

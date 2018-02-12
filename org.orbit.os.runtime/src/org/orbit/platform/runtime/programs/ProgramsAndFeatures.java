@@ -3,7 +3,7 @@ package org.orbit.platform.runtime.programs;
 import java.nio.file.Path;
 import java.util.List;
 
-import org.orbit.os.api.apps.ProgramManifest;
+import org.orbit.platform.api.apps.ProgramManifest;
 import org.origin.common.runtime.Problem;
 
 public interface ProgramsAndFeatures {

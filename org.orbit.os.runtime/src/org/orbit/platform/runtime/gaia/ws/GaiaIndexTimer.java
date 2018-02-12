@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.runtime.OSConstants;
+import org.orbit.platform.runtime.PlatformConstants;
 import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.origin.common.thread.ServiceIndexTimer;
 import org.origin.common.thread.ServiceIndexTimerImpl;
@@ -36,7 +36,7 @@ public class GaiaIndexTimer extends ServiceIndexTimerImpl<IndexProvider, GAIA, I
 	public IndexItem getIndex(IndexProvider indexProvider, GAIA gaia) throws IOException {
 		String name = gaia.getName();
 
-		return indexProvider.getIndexItem(OSConstants.GAIA_INDEXER_ID, OSConstants.GAIA_TYPE, name);
+		return indexProvider.getIndexItem(PlatformConstants.GAIA_INDEXER_ID, PlatformConstants.GAIA_TYPE, name);
 	}
 
 	@Override
@@ -51,29 +51,29 @@ public class GaiaIndexTimer extends ServiceIndexTimerImpl<IndexProvider, GAIA, I
 		Map<String, Object> props = new Hashtable<String, Object>();
 		// props.put(OSConstants.OS_PROGRAM_NAME, OSName);
 		// props.put(OSConstants.OS_PROGRAM_VERSION, OSVersion);
-		props.put(OSConstants.GAIA_NAME, name);
-		props.put(OSConstants.GAIA_HOST_URL, hostURL);
-		props.put(OSConstants.GAIA_CONTEXT_ROOT, contextRoot);
-		props.put(OSConstants.GAIA_HOME, nodeHome);
-		props.put(OSConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(PlatformConstants.GAIA_NAME, name);
+		props.put(PlatformConstants.GAIA_HOST_URL, hostURL);
+		props.put(PlatformConstants.GAIA_CONTEXT_ROOT, contextRoot);
+		// props.put(PlatformConstants.GAIA_HOME, nodeHome);
+		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		return indexProvider.addIndexItem(OSConstants.GAIA_INDEXER_ID, OSConstants.GAIA_TYPE, name, props);
+		return indexProvider.addIndexItem(PlatformConstants.GAIA_INDEXER_ID, PlatformConstants.GAIA_TYPE, name, props);
 	}
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, GAIA gaia, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OSConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		indexProvider.setProperties(OSConstants.GAIA_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(PlatformConstants.GAIA_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(OSConstants.GAIA_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(PlatformConstants.GAIA_INDEXER_ID, indexItemId);
 	}
 
 }

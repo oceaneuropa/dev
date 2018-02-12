@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.runtime.OSConstants;
+import org.orbit.platform.runtime.PlatformConstants;
 import org.orbit.platform.runtime.command.service.CommandService;
 import org.origin.common.thread.ServiceIndexTimer;
 import org.origin.common.thread.ServiceIndexTimerImpl;
@@ -36,7 +36,7 @@ public class CommandServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvide
 	public IndexItem getIndex(IndexProvider indexProvider, CommandService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(OSConstants.COMMAND_SERVICE_INDEXER_ID, OSConstants.COMMAND_SERVICE_TYPE, name);
+		return indexProvider.getIndexItem(PlatformConstants.COMMAND_SERVICE_INDEXER_ID, PlatformConstants.COMMAND_SERVICE_TYPE, name);
 	}
 
 	@Override
@@ -45,27 +45,27 @@ public class CommandServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvide
 		String contextRoot = service.getContextRoot();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OSConstants.COMMAND_SERVICE_NAME, name);
-		props.put(OSConstants.COMMAND_SERVICE_CONTEXT_ROOT, contextRoot);
-		props.put(OSConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(PlatformConstants.COMMAND_SERVICE_NAME, name);
+		props.put(PlatformConstants.COMMAND_SERVICE_CONTEXT_ROOT, contextRoot);
+		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		return indexProvider.addIndexItem(OSConstants.COMMAND_SERVICE_INDEXER_ID, OSConstants.COMMAND_SERVICE_TYPE, name, props);
+		return indexProvider.addIndexItem(PlatformConstants.COMMAND_SERVICE_INDEXER_ID, PlatformConstants.COMMAND_SERVICE_TYPE, name, props);
 	}
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, CommandService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OSConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		indexProvider.setProperties(OSConstants.COMMAND_SERVICE_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(PlatformConstants.COMMAND_SERVICE_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(OSConstants.COMMAND_SERVICE_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(PlatformConstants.COMMAND_SERVICE_INDEXER_ID, indexItemId);
 	}
 
 }

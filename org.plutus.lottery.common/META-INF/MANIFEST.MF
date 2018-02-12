@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.plutus.lottery.common
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.plutus.lottery.common.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.junit,
+Import-Package: org.jgroups.demos;version="3.6.13.Final",
+ org.junit,
  org.junit.runner,
  org.junit.runner.notification,
  org.junit.runners,

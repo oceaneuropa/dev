@@ -17,7 +17,7 @@ import org.plutus.lottery.powerball.DrawStat;
 public class A11_MinMaxAvgAnalysisTester extends AbstractAnalysisTester {
 
 	public A11_MinMaxAvgAnalysisTester() {
-		super(new File(SystemUtils.getUserDir(), "/doc/pb-winnums-text_02-22-2017.txt"));
+		super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
 	}
 
 	@Override

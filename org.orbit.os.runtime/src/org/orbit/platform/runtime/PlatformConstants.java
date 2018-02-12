@@ -1,0 +1,65 @@
+package org.orbit.platform.runtime;
+
+public class PlatformConstants {
+
+	// ----------------------------------------------------------------------------------------
+	// Global
+	// ----------------------------------------------------------------------------------------
+	// config properties
+	public static String ORBIT_HOST_URL = "orbit.host.url";
+	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
+
+	// index item properties
+	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
+
+	// ----------------------------------------------------------------------------------------
+	// Platform
+	// ----------------------------------------------------------------------------------------
+	// index item values
+	public static String PLATFORM_INDEXER_ID = "platform.indexer"; // index provider id for Platform
+	public static String PLATFORM_TYPE = "Platform"; // type of index item for Platform
+
+	// index item properties
+	public static String PLATFORM_NAME = "platform.name";
+	public static String PLATFORM_VERSION = "platform.version";
+	public static String PLATFORM_HOST_URL = "platform.host.url";
+	public static String PLATFORM_CONTEXT_ROOT = "platform.context_root";
+	public static String PLATFORM_HOME = "platform.home";
+
+	// ----------------------------------------------------------------------------------------
+	// Platform CommandService
+	// ----------------------------------------------------------------------------------------
+	// index item values
+	public static String COMMAND_SERVICE_INDEXER_ID = "command_service.indexer"; // index provider id for OS
+	public static String COMMAND_SERVICE_TYPE = "CommandService"; // type of index item for OS
+
+	// index item properties
+	public static String COMMAND_SERVICE_NAME = "command_service.name";
+	public static String COMMAND_SERVICE_CONTEXT_ROOT = "command_service.context_root";
+
+	// ----------------------------------------------------------------------------------------
+	// GAIA
+	// ----------------------------------------------------------------------------------------
+	// index item values
+	public static String GAIA_INDEXER_ID = "gaia.indexer"; // index provider id for OS
+	public static String GAIA_TYPE = "GAIA"; // type of index item for OS
+
+	// index item properties
+	public static String GAIA_NAME = "gaia.name";
+	public static String GAIA_HOST_URL = "gaia.host.url";
+	public static String GAIA_CONTEXT_ROOT = "gaia.context_root";
+
+}
+
+// public static final String PLATFORM__NAME = "Sun";
+// public static final String PLATFORM__VERSION = "1.0.0";
+
+// config properties
+// public static String COMPONENT_NODE_NAMESPACE = "os.namespace";
+// public static String COMPONENT_NODE_NAME = "os.name";
+// public static String COMPONENT_NODE_HOST_URL = "os.host.url";
+// public static String COMPONENT_NODE_CONTEXT_ROOT = "os.context_root";
+// public static String COMPONENT_NODE_JDBC_DRIVER = "os.jdbc.driver";
+// public static String COMPONENT_NODE_JDBC_URL = "os.jdbc.url";
+// public static String COMPONENT_NODE_JDBC_USERNAME = "os.jdbc.username";
+// public static String COMPONENT_NODE_JDBC_PASSWORD = "os.jdbc.password";
