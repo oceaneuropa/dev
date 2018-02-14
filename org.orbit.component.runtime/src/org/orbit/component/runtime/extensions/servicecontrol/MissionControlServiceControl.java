@@ -2,8 +2,8 @@ package org.orbit.component.runtime.extensions.servicecontrol;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.tier4.mission.service.MissionControlServiceImpl;
-import org.orbit.sdk.ServiceControlImpl;
+import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
+import org.orbit.platform.sdk.servicecontrol.ServiceControlImpl;
 import org.osgi.framework.BundleContext;
 
 public class MissionControlServiceControl extends ServiceControlImpl {

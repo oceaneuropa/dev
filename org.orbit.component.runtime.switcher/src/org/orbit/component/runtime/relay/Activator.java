@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 OceanEuropa.
+ * All rights reserved.
+ *
+ * Contributors:
+ *     OceanEuropa - initial API and implementation
+ *******************************************************************************/
 package org.orbit.component.runtime.relay;
 
 import org.osgi.framework.BundleActivator;
@@ -11,30 +18,24 @@ public class Activator implements BundleActivator {
 		return context;
 	}
 
-	protected Extensions extensions;
-
 	@Override
 	public void start(BundleContext context) throws Exception {
 		Activator.context = context;
 
 		// Register program extensions
-		this.extensions = new Extensions();
-		this.extensions.start(context);
+		Extensions.INSTANCE.start(context);
 
 		// Start web service app relays
-		OrbitRelays.getInstance().start(context);
+		WSRelays.getInstance().start(context);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		// Stop web service app relays
-		OrbitRelays.getInstance().stop(bundleContext);
+		WSRelays.getInstance().stop(bundleContext);
 
 		// Unregister program extensions
-		if (this.extensions != null) {
-			this.extensions.stop(bundleContext);
-			this.extensions = null;
-		}
+		Extensions.INSTANCE.stop(bundleContext);
 
 		Activator.context = null;
 	}

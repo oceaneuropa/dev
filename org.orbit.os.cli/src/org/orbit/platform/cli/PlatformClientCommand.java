@@ -36,7 +36,8 @@ public class PlatformClientCommand extends ServiceClientCommand {
 		props.put("osgi.command.function",
 				new String[] { //
 						"ping", "echo", "connect", //
-						"start_service", "stop_service", //
+						"start_web_service", "stop_web_service", //
+						"start_web_service_relay", "stop_web_service_relay", //
 						"execute", //
 		});
 
@@ -67,11 +68,18 @@ public class PlatformClientCommand extends ServiceClientCommand {
 		return platform;
 	}
 
-	@Descriptor("Start service")
-	public void start_service( //
+	@Descriptor("Start web service")
+	public void start_web_service( //
 			@Descriptor("Id") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
 	) {
-		CLIHelper.getInstance().printCommand(getScheme(), "start_service", new String[] { "id", id });
+		CLIHelper.getInstance().printCommand(getScheme(), "start_web_service", new String[] { "id", id });
+	}
+
+	@Descriptor("Stop web service")
+	public void stop_web_service( //
+			@Descriptor("Id") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
+	) {
+		CLIHelper.getInstance().printCommand(getScheme(), "stop_web_service", new String[] { "id", id });
 	}
 
 }

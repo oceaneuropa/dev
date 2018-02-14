@@ -5,11 +5,6 @@ import org.osgi.framework.BundleContext;
 public class OAuth2ServiceDatabaseImpl implements OAuth2Service {
 
 	@Override
-	public String getNamespace() {
-		return null;
-	}
-
-	@Override
 	public String getName() {
 		return null;
 	}

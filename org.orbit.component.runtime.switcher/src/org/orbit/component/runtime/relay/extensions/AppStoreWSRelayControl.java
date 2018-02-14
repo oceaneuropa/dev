@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.component.runtime.relay.tier2.AppStoreWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
-import org.orbit.sdk.WSRelayControlImpl;
+import org.orbit.platform.sdk.relay.WSRelayControlImpl;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSApplicationDescriptiveRelay;
 import org.origin.common.rest.switcher.Switcher;

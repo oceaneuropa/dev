@@ -1,11 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 OceanEuropa.
+ * All rights reserved.
+ *
+ * Contributors:
+ *     OceanEuropa - initial API and implementation
+ *******************************************************************************/
 package org.orbit.component.runtime.tier1.auth.ws;
 
 import java.util.Map;
 
+import org.orbit.component.runtime.Extensions;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.platform.sdk.extension.util.ProgramExtension;
+import org.orbit.platform.sdk.urlprovider.URLProvider;
+import org.orbit.platform.sdk.urlprovider.URLProviderImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -15,8 +26,9 @@ public class AuthServiceAdapter {
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<AuthService, AuthService> serviceTracker;
-	protected AuthWSApplication webService;
+	protected AuthWSApplication webApp;
 	protected AuthServiceIndexTimer indexTimer;
+	protected ProgramExtension urlProviderExtension;
 
 	public AuthServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -72,30 +84,51 @@ public class AuthServiceAdapter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
 	protected void doStart(BundleContext bundleContext, AuthService service) {
-		// Start web service
-		this.webService = new AuthWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO);
-		this.webService.start(bundleContext);
+		// Start web app
+		this.webApp = new AuthWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO);
+		this.webApp.start(bundleContext);
 
-		// Start indexing
+		// Start indexing timer
 		IndexProvider indexProvider = getIndexProvider();
 		this.indexTimer = new AuthServiceIndexTimer(indexProvider, service);
 		this.indexTimer.start();
 
-		// Start tracking IndexProvider service.
+		// Register URL provider extension
+		this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.AUTH_URL_PROVIDER_EXTENSION_ID);
+		this.urlProviderExtension.setName("Auth URL provider");
+		this.urlProviderExtension.setDescription("Auth URL provider description");
+		this.urlProviderExtension.adapt(URLProvider.class, new URLProviderImpl(service));
+		Extensions.INSTANCE.addExtension(this.urlProviderExtension);
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
 	protected void doStop(BundleContext bundleContext, AuthService service) {
-		// Stop indexing
+		// Unregister URL provider extension
+		if (this.urlProviderExtension != null) {
+			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+			this.urlProviderExtension = null;
+		}
+
+		// Stop indexing timer
 		if (this.indexTimer != null) {
 			this.indexTimer.stop();
 			this.indexTimer = null;
 		}
 
-		// Stop web service
-		if (this.webService != null) {
-			this.webService.stop(bundleContext);
-			this.webService = null;
+		// Stop web app
+		if (this.webApp != null) {
+			this.webApp.stop(bundleContext);
+			this.webApp = null;
 		}
 	}
 

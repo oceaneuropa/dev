@@ -11,8 +11,8 @@ import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
 import org.orbit.component.runtime.tier3.domain.service.DomainServiceDatabaseImpl;
-import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentServiceImpl;
-import org.orbit.component.runtime.tier4.mission.service.MissionControlServiceImpl;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlServiceImpl;
+import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -52,7 +52,7 @@ public class ServicesCommand {
 	protected boolean autoStartTransferAgentService;
 
 	protected DomainServiceDatabaseImpl domainService;
-	protected TransferAgentServiceImpl transferAgentService;
+	protected NodeControlServiceImpl transferAgentService;
 
 	// tier4
 	protected boolean autoStartMissionControlService;
@@ -301,7 +301,7 @@ public class ServicesCommand {
 	}
 
 	public void startTransferAgentService(BundleContext bundleContext) {
-		TransferAgentServiceImpl transferAgentService = new TransferAgentServiceImpl();
+		NodeControlServiceImpl transferAgentService = new NodeControlServiceImpl();
 		transferAgentService.start(bundleContext);
 		this.transferAgentService = transferAgentService;
 	}

@@ -5,11 +5,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.platform.api.apps.ProgramManifest;
 import org.orbit.platform.runtime.Activator;
+import org.orbit.platform.runtime.Extensions;
+import org.orbit.platform.runtime.PlatformConstants;
 import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.orbit.platform.runtime.gaia.service.impl.GAIAImpl;
 import org.orbit.platform.runtime.platform.Platform;
@@ -17,9 +20,12 @@ import org.orbit.platform.runtime.programs.Program;
 import org.orbit.platform.runtime.programs.ProgramBundle;
 import org.orbit.platform.runtime.programs.ProgramHandler;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
-import org.orbit.sdk.WSRelayControl;
-import org.orbit.sdk.extension.IProgramExtension;
-import org.orbit.sdk.extension.IProgramExtensionService;
+import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.orbit.platform.sdk.extension.IProgramExtensionService;
+import org.orbit.platform.sdk.extension.util.ProgramExtension;
+import org.orbit.platform.sdk.relay.WSRelayControl;
+import org.orbit.platform.sdk.urlprovider.URLProvider;
+import org.orbit.platform.sdk.urlprovider.URLProviderImpl;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
@@ -28,6 +34,7 @@ import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
+import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.URIUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -48,7 +55,9 @@ public class PlatformCommand implements Annotated {
 	}
 
 	protected BundleContext bundleContext;
+	protected Map<Object, Object> properties;
 	protected GAIAImpl gaiaImpl;
+	protected WSClientFactory wsClientFactory = new WSClientFactoryImpl();
 
 	@org.origin.common.annotation.Dependency
 	protected GAIA gaia;
@@ -62,6 +71,10 @@ public class PlatformCommand implements Annotated {
 		LOG.info("start()");
 
 		this.bundleContext = bundleContext;
+
+		this.properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_INDEX_SERVICE_URL);
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "gaia");
@@ -100,33 +113,6 @@ public class PlatformCommand implements Annotated {
 		LOG.info("GAIA service is unset.");
 		LOG.info("GAIA is " + this.gaia);
 	}
-
-	// @Descriptor("Start GAIA")
-	// public void startGAIA() throws ClientException {
-	// LOG.info("startGAIA()");
-	//
-	// if (this.gaiaImpl == null) {
-	// // Properties configIniProps = SetupUtil.getNodeHomeConfigIniProperties(this.bundleContext);
-	// this.gaiaImpl = new GAIAImpl(this.bundleContext, null);
-	// }
-	// this.gaiaImpl.start();
-	// }
-	//
-	// @Descriptor("Stop GAIA")
-	// public void stopGAIA() throws ClientException {
-	// LOG.info("stopGAIA()");
-	//
-	// if (this.gaiaImpl != null) {
-	// this.gaiaImpl.stop();
-	// this.gaiaImpl = null;
-	// }
-	// }
-	// protected void checkGAIA() throws ClientException {
-	// if (this.gaia == null) {
-	// LOG.info("NodeOS is not available.");
-	// throw new ClientException(500, "GAIA is not available.");
-	// }
-	// }
 
 	public void startCommandService() throws ClientException {
 
@@ -384,32 +370,47 @@ public class PlatformCommand implements Annotated {
 		LOG.info("");
 	}
 
-	protected WSClientFactory wsClientFactory = new WSClientFactoryImpl();
+	public String getHostURL() {
+		String globalHostURL = (String) this.properties.get(PlatformConstants.ORBIT_HOST_URL);
+		if (globalHostURL != null) {
+			return globalHostURL;
+		}
+		return null;
+	}
 
 	/**
 	 * 
 	 * @param extensionId
 	 * @param contextRoot
-	 * @param hostURLsString
+	 * @param targetHostURLsString
 	 */
-	public void startrelay(String extensionId, String contextRoot, String hostURLsString) {
+	public void startrelay(String extensionId, String contextRoot, String targetHostURLsString) {
 		LOG.info("startrelay('" + extensionId + "')");
 
 		IProgramExtensionService service = getProgramExtensionService();
-		IProgramExtension extension = service.getExtension(WSRelayControl.EXTENSION_TYPE_ID, extensionId);
-		if (extension == null) {
+
+		// Start ws relay
+		IProgramExtension relayExtension = service.getExtension(WSRelayControl.EXTENSION_TYPE_ID, extensionId);
+		if (relayExtension == null) {
 			LOG.info("Program extension is not available.");
 			return;
 		}
-
-		WSRelayControl relayControl = extension.getAdapter(WSRelayControl.class);
+		WSRelayControl relayControl = relayExtension.getAdapter(WSRelayControl.class);
 		if (relayControl == null) {
 			LOG.info("WSRelayControl is not available.");
 			return;
 		}
 
-		List<URI> uriList = URIUtil.toList(hostURLsString, contextRoot);
-		relayControl.start(bundleContext, wsClientFactory, contextRoot, uriList);
+		String hostURL = getHostURL();
+		List<URI> targetURIs = URIUtil.toList(targetHostURLsString, contextRoot);
+		relayControl.start(bundleContext, wsClientFactory, contextRoot, targetURIs);
+
+		// Register URL provider extension
+		ProgramExtension urlProviderServiceExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, extensionId);
+		urlProviderServiceExtension.setName("URL provider for '" + extensionId + "'");
+		urlProviderServiceExtension.setDescription("URL provider for '" + extensionId + "' description");
+		urlProviderServiceExtension.adapt(URLProvider.class, new URLProviderImpl(hostURL, contextRoot));
+		Extensions.INSTANCE.addExtension(urlProviderServiceExtension);
 	}
 
 	/**
@@ -434,7 +435,38 @@ public class PlatformCommand implements Annotated {
 			return;
 		}
 
+		// Unregister URL provider extension
+		ProgramExtension urlProviderServiceExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, extensionId);
+		Extensions.INSTANCE.removeExtension(urlProviderServiceExtension);
+
 		relayControl.stop(bundleContext, contextRoot);
 	}
 
 }
+
+// @Descriptor("Start GAIA")
+// public void startGAIA() throws ClientException {
+// LOG.info("startGAIA()");
+//
+// if (this.gaiaImpl == null) {
+// // Properties configIniProps = SetupUtil.getNodeHomeConfigIniProperties(this.bundleContext);
+// this.gaiaImpl = new GAIAImpl(this.bundleContext, null);
+// }
+// this.gaiaImpl.start();
+// }
+//
+// @Descriptor("Stop GAIA")
+// public void stopGAIA() throws ClientException {
+// LOG.info("stopGAIA()");
+//
+// if (this.gaiaImpl != null) {
+// this.gaiaImpl.stop();
+// this.gaiaImpl = null;
+// }
+// }
+// protected void checkGAIA() throws ClientException {
+// if (this.gaia == null) {
+// LOG.info("NodeOS is not available.");
+// throw new ClientException(500, "GAIA is not available.");
+// }
+// }

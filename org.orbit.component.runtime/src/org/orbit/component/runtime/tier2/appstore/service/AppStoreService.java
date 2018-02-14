@@ -6,14 +6,11 @@ import java.util.List;
 import org.orbit.component.model.tier2.appstore.AppManifestRTO;
 import org.orbit.component.model.tier2.appstore.AppQueryRTO;
 import org.orbit.component.model.tier2.appstore.AppStoreException;
+import org.origin.common.rest.server.WebServiceAware;
 
-public interface AppStoreService {
+public interface AppStoreService extends WebServiceAware {
 
 	public String getName();
-
-	public String getHostURL();
-
-	public String getContextRoot();
 
 	/**
 	 * Get apps.

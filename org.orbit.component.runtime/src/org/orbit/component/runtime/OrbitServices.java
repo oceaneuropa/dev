@@ -14,10 +14,10 @@ import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceAdapter;
 import org.orbit.component.runtime.tier3.domain.service.DomainService;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceAdapter;
-import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
-import org.orbit.component.runtime.tier3.transferagent.ws.TransferAgentServiceAdapter;
-import org.orbit.component.runtime.tier4.mission.service.MissionControlService;
-import org.orbit.component.runtime.tier4.mission.ws.MissionControlAdapter;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceAdapter;
+import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
+import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlAdapter;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
@@ -57,7 +57,7 @@ public class OrbitServices {
 
 	// tier3
 	protected DomainServiceAdapter domainServiceAdapter;
-	protected TransferAgentServiceAdapter transferAgentServiceAdapter;
+	protected NodeControlServiceAdapter transferAgentServiceAdapter;
 
 	// tier4
 	protected MissionControlAdapter missionControlServiceAdapter;
@@ -104,7 +104,7 @@ public class OrbitServices {
 		this.domainServiceAdapter = new DomainServiceAdapter(properties);
 		this.domainServiceAdapter.start(bundleContext);
 
-		this.transferAgentServiceAdapter = new TransferAgentServiceAdapter(properties);
+		this.transferAgentServiceAdapter = new NodeControlServiceAdapter(properties);
 		this.transferAgentServiceAdapter.start(bundleContext);
 
 		// tier4
@@ -174,7 +174,7 @@ public class OrbitServices {
 		return (this.domainServiceAdapter != null) ? this.domainServiceAdapter.getService() : null;
 	}
 
-	public TransferAgentService getTransferAgentService() {
+	public NodeControlService getTransferAgentService() {
 		return (this.transferAgentServiceAdapter != null) ? this.transferAgentServiceAdapter.getService() : null;
 	}
 

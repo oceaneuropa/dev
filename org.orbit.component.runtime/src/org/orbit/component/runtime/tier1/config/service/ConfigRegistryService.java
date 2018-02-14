@@ -1,12 +1,10 @@
 package org.orbit.component.runtime.tier1.config.service;
 
-public interface ConfigRegistryService {
+import org.origin.common.rest.server.WebServiceAware;
+
+public interface ConfigRegistryService extends WebServiceAware {
 
 	String getName();
-
-	String getHostURL();
-
-	String getContextRoot();
 
 	ConfigRegistry getRegistry(String userId);
 

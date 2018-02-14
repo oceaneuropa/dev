@@ -1,12 +1,22 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 OceanEuropa.
+ * All rights reserved.
+ *
+ * Contributors:
+ *     OceanEuropa - initial API and implementation
+ *******************************************************************************/
 package org.orbit.component.runtime.tier2.appstore.ws;
 
 import java.util.Map;
 
+import org.orbit.component.runtime.Extensions;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderProxy;
+import org.orbit.platform.sdk.extension.util.ProgramExtension;
+import org.orbit.platform.sdk.urlprovider.URLProvider;
+import org.orbit.platform.sdk.urlprovider.URLProviderImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -24,8 +34,9 @@ public class AppStoreServiceAdapter {
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<AppStoreService, AppStoreService> serviceTracker;
-	protected AppStoreWSApplication webServiceApp;
-	protected AppStoreServiceIndexTimer serviceIndexTimer;
+	protected AppStoreWSApplication webApp;
+	protected AppStoreServiceIndexTimer indexTimer;
+	protected ProgramExtension urlProviderExtension;
 
 	public AppStoreServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -83,14 +94,21 @@ public class AppStoreServiceAdapter {
 	protected void doStart(BundleContext bundleContext, AppStoreService service) {
 		LOG.info("doStart()");
 
-		// Start web service
-		this.webServiceApp = new AppStoreWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
-		this.webServiceApp.start(bundleContext);
+		// Start web app
+		this.webApp = new AppStoreWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webApp.start(bundleContext);
 
-		// Start index timer
+		// Start indexing timer
 		IndexProvider indexProvider = getIndexProvider();
-		this.serviceIndexTimer = new AppStoreServiceIndexTimer(indexProvider, service);
-		this.serviceIndexTimer.start();
+		this.indexTimer = new AppStoreServiceIndexTimer(indexProvider, service);
+		this.indexTimer.start();
+
+		// Register URL provider extension
+		this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.APP_STORE_URL_PROVIDER_EXTENSION_ID);
+		this.urlProviderExtension.setName("App store URL provider");
+		this.urlProviderExtension.setDescription("App store URL provider description");
+		this.urlProviderExtension.adapt(URLProvider.class, new URLProviderImpl(service));
+		Extensions.INSTANCE.addExtension(this.urlProviderExtension);
 	}
 
 	/**
@@ -101,16 +119,22 @@ public class AppStoreServiceAdapter {
 	protected void doStop(BundleContext bundleContext, AppStoreService service) {
 		LOG.info("doStop()");
 
-		// Stop index timer
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
+		// Unregister URL provider extension
+		if (this.urlProviderExtension != null) {
+			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+			this.urlProviderExtension = null;
 		}
 
-		// Stop web service
-		if (this.webServiceApp != null) {
-			this.webServiceApp.stop(bundleContext);
-			this.webServiceApp = null;
+		// Stop indexing timer
+		if (this.indexTimer != null) {
+			this.indexTimer.stop();
+			this.indexTimer = null;
+		}
+
+		// Stop web app
+		if (this.webApp != null) {
+			this.webApp.stop(bundleContext);
+			this.webApp = null;
 		}
 	}
 

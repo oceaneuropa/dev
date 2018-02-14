@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.orbit.platform.runtime.command.service.CommandService;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
-import org.orbit.sdk.extension.IProgramExtensionService;
+import org.orbit.platform.sdk.extension.IProgramExtensionService;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 

@@ -1,13 +1,9 @@
 package org.orbit.component.runtime.tier1.session.service;
 
-public interface OAuth2Service {
+import org.origin.common.rest.server.WebServiceAware;
 
-	public String getNamespace();
+public interface OAuth2Service extends WebServiceAware {
 
 	public String getName();
-
-	public String getHostURL();
-
-	public String getContextRoot();
 
 }

@@ -8,11 +8,13 @@
 package org.orbit.platform.runtime;
 
 import org.orbit.platform.runtime.extensions.servicecontrol.GAIAServiceControl;
-import org.orbit.sdk.ServiceControl;
-import org.orbit.sdk.extension.util.ProgramExtension;
-import org.orbit.sdk.extension.util.ProgramExtensions;
+import org.orbit.platform.sdk.extension.util.ProgramExtension;
+import org.orbit.platform.sdk.extension.util.ProgramExtensions;
+import org.orbit.platform.sdk.servicecontrol.ServiceControl;
 
 public class Extensions extends ProgramExtensions {
+
+	public static Extensions INSTANCE = new Extensions();
 
 	public static final String GAIA_SERVICE_EXTENSION_ID = "component.gaia.service";
 
@@ -28,7 +30,7 @@ public class Extensions extends ProgramExtensions {
 		gaiaServiceExtension.setName("GAIA service");
 		gaiaServiceExtension.setDescription("GAIA service description");
 		gaiaServiceExtension.adapt(ServiceControl.class, GAIAServiceControl.INSTANCE);
-		add(gaiaServiceExtension);
+		addExtension(gaiaServiceExtension);
 	}
 
 }

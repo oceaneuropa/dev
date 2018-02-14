@@ -5,8 +5,9 @@ import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
+import org.origin.common.rest.server.WebServiceAware;
 
-public interface AuthService {
+public interface AuthService extends WebServiceAware {
 
 	/**
 	 * Grant type constants
@@ -23,10 +24,6 @@ public interface AuthService {
 	public static final String GRANT_TYPE__REFRESH_TOKEN = "refresh_token"; //$NON-NLS-1$
 
 	String getName();
-
-	String getHostURL();
-
-	String getContextRoot();
 
 	AuthorizationResponse authorize(AuthorizationRequest request) throws AuthException;
 

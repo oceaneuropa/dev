@@ -15,10 +15,10 @@ import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.other.AppStoreServiceAdapterV1;
 import org.orbit.component.runtime.tier3.domain.service.DomainService;
 import org.orbit.component.runtime.tier3.domain.ws.other.DomainServiceAdapterV1;
-import org.orbit.component.runtime.tier3.transferagent.service.TransferAgentService;
-import org.orbit.component.runtime.tier3.transferagent.ws.other.TransferAgentServiceAdapterV1;
-import org.orbit.component.runtime.tier4.mission.service.MissionControlService;
-import org.orbit.component.runtime.tier4.mission.ws.other.MissionControlAdapterV1;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.other.TransferAgentServiceAdapterV1;
+import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
+import org.orbit.component.runtime.tier4.missioncontrol.ws.other.MissionControlAdapterV1;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.infra.api.indexes.IndexServiceUtil;
 import org.orbit.infra.api.indexes.other.IndexProviderConnectorAdapterV1;
@@ -191,7 +191,7 @@ public class OrbitServicesV1 {
 		return (this.domainServiceAdapter != null) ? this.domainServiceAdapter.getService() : null;
 	}
 
-	public TransferAgentService getTransferAgentService() {
+	public NodeControlService getTransferAgentService() {
 		return (this.transferAgentServiceAdapter != null) ? this.transferAgentServiceAdapter.getService() : null;
 	}
 

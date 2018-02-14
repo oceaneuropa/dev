@@ -1,9 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 OceanEuropa.
+ * All rights reserved.
+ *
+ * Contributors:
+ *     OceanEuropa - initial API and implementation
+ *******************************************************************************/
 package org.orbit.component.runtime.extensions.servicecontrol;
 
 import java.util.Map;
 
 import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl;
-import org.orbit.sdk.ServiceControlImpl;
+import org.orbit.platform.sdk.servicecontrol.ServiceControlImpl;
 import org.osgi.framework.BundleContext;
 
 public class UserRegistryServiceControl extends ServiceControlImpl {

@@ -19,12 +19,12 @@ public class PlatformIndexTimer extends ServiceIndexTimerImpl<IndexProvider, Pla
 	/**
 	 * 
 	 * @param indexProvider
-	 * @param service
+	 * @param platform
 	 */
-	public PlatformIndexTimer(IndexProvider indexProvider, Platform service) {
-		super("Index Timer [" + service.getName() + "(" + service.getVersion() + ")]", indexProvider);
+	public PlatformIndexTimer(IndexProvider indexProvider, Platform platform) {
+		super("Index Timer [" + platform.getName() + "(" + platform.getVersion() + ")]", indexProvider);
 		setDebug(false);
-		this.platform = service;
+		this.platform = platform;
 	}
 
 	@Override
@@ -45,14 +45,14 @@ public class PlatformIndexTimer extends ServiceIndexTimerImpl<IndexProvider, Pla
 		String version = platform.getVersion();
 		String hostURL = platform.getHostURL();
 		String contextRoot = platform.getContextRoot();
-		String nodeHome = platform.getHome();
+		String home = platform.getHome();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(PlatformConstants.PLATFORM_NAME, name);
 		props.put(PlatformConstants.PLATFORM_VERSION, version);
 		props.put(PlatformConstants.PLATFORM_HOST_URL, hostURL);
 		props.put(PlatformConstants.PLATFORM_CONTEXT_ROOT, contextRoot);
-		props.put(PlatformConstants.PLATFORM_HOME, nodeHome);
+		props.put(PlatformConstants.PLATFORM_HOME, home);
 		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		return indexProvider.addIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_TYPE, name, props);

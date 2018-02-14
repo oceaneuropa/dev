@@ -3,7 +3,7 @@ package org.orbit.component.runtime.extensions.servicecontrol;
 import java.util.Map;
 
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
-import org.orbit.sdk.ServiceControlImpl;
+import org.orbit.platform.sdk.servicecontrol.ServiceControlImpl;
 import org.osgi.framework.BundleContext;
 
 public class AppStoreServiceControl extends ServiceControlImpl {

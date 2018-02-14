@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.component.runtime.relay.tier1.UserRegistryWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
-import org.orbit.sdk.WSRelayControlImpl;
+import org.orbit.platform.sdk.relay.WSRelayControlImpl;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSApplicationDescriptiveRelay;
 import org.origin.common.rest.switcher.Switcher;
@@ -21,14 +21,14 @@ public class UserRegistryWSRelayControl extends WSRelayControlImpl {
 	protected Map<String, WSApplicationDescriptiveRelay> wsAppMap = new HashMap<String, WSApplicationDescriptiveRelay>();
 
 	@Override
-	public synchronized void start(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
+	public synchronized void start(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> targetURLs) {
 		WSApplicationDescriptiveRelay wsApp = this.wsAppMap.get(contextRoot);
 		if (wsApp != null) {
 			return;
 		}
 
 		UserRegistryWSApplicationDesc wsAppDesc = new UserRegistryWSApplicationDesc(contextRoot);
-		Switcher<URI> switcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
+		Switcher<URI> switcher = SwitcherUtil.INSTANCE.createURISwitcher(targetURLs, SwitcherPolicy.MODE_ROUND_ROBIN);
 		WSApplicationDescriptiveRelay newWsApp = new WSApplicationDescriptiveRelay(wsAppDesc, switcher, factory);
 		newWsApp.start(bundleContext);
 

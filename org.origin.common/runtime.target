@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="runtime" sequenceNumber="19">
+<?pde version="3.8"?><target name="runtime" sequenceNumber="22">
 <locations>
 <location path="/Users/yayang/osgi/target_platform/jetty_9.3.21" type="Directory"/>
 <location path="/Users/yayang/osgi/target_platform" type="Directory"/>
@@ -9,5 +9,8 @@
 <location path="/Users/yayang/osgi/target_platform/apache-felix" type="Directory"/>
 <location path="/Users/yayang/osgi/target_platform/eclipse-equinox" type="Directory"/>
 <location path="/Users/yayang/osgi/target_platform/javax" type="Directory"/>
+<location path="/Users/yayang/osgi/target_platform/apache-odata" type="Directory"/>
+<location path="/Users/yayang/osgi/target_platform/apache-netty" type="Directory"/>
+<location path="/Users/yayang/osgi/target_platform/apache-commons" type="Directory"/>
 </locations>
 </target>

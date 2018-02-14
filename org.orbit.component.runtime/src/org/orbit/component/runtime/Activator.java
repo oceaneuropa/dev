@@ -22,7 +22,6 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
-	protected Extensions extensions;
 	protected ServicesCommand servicesCommand;
 
 	@Override
@@ -33,8 +32,7 @@ public class Activator implements BundleActivator {
 		Activator.instance = this;
 
 		// Register program extensions
-		this.extensions = new Extensions();
-		this.extensions.start(bundleContext);
+		Extensions.INSTANCE.start(bundleContext);
 
 		// Start commands and services
 		this.servicesCommand = new ServicesCommand();
@@ -64,10 +62,7 @@ public class Activator implements BundleActivator {
 		}
 
 		// Unregister program extensions
-		if (this.extensions != null) {
-			this.extensions.stop(bundleContext);
-			this.extensions = null;
-		}
+		Extensions.INSTANCE.stop(bundleContext);
 
 		Activator.instance = null;
 		Activator.context = null;

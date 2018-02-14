@@ -4,14 +4,11 @@ import java.util.List;
 
 import org.orbit.component.model.tier1.account.rto.UserAccount;
 import org.orbit.component.model.tier1.account.rto.UserRegistryException;
+import org.origin.common.rest.server.WebServiceAware;
 
-public interface UserRegistryService {
+public interface UserRegistryService extends WebServiceAware {
 
 	public String getName();
-
-	public String getHostURL();
-
-	public String getContextRoot();
 
 	List<UserAccount> getUserAccounts() throws UserRegistryException;
 

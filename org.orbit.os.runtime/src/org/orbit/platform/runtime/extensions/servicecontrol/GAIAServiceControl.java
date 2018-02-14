@@ -3,7 +3,7 @@ package org.orbit.platform.runtime.extensions.servicecontrol;
 import java.util.Map;
 
 import org.orbit.platform.runtime.gaia.service.impl.GAIAImpl;
-import org.orbit.sdk.ServiceControlImpl;
+import org.orbit.platform.sdk.servicecontrol.ServiceControlImpl;
 import org.osgi.framework.BundleContext;
 
 public class GAIAServiceControl extends ServiceControlImpl {

@@ -26,7 +26,7 @@ public class WSApplicationDesc {
 	}
 
 	public int getFeature() {
-		return feature;
+		return this.feature;
 	}
 
 	public void setFeature(int feature) {

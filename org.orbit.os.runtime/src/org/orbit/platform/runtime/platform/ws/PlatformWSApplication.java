@@ -7,6 +7,11 @@ import org.origin.common.rest.server.FeatureConstants;
 
 public class PlatformWSApplication extends AbstractJerseyWSApplication {
 
+	/**
+	 * 
+	 * @param platform
+	 * @param feature
+	 */
 	public PlatformWSApplication(final Platform platform, int feature) {
 		super(platform.getContextRoot(), feature);
 		adapt(Platform.class, platform);

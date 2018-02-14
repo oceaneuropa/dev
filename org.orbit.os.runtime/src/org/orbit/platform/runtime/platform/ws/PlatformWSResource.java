@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.orbit.platform.runtime.platform.Platform;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
@@ -34,9 +33,9 @@ public class PlatformWSResource extends AbstractWSApplicationResource {
 	@Path("request")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response request(Request request) {
-		Platform service = getService();
+		Platform platform = getService();
 
-		WSCommand command = service.getEditPolicies().getCommand(request);
+		WSCommand command = platform.getEditPolicies().getCommand(request);
 		if (command != null) {
 			try {
 				return command.execute(request);

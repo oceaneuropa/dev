@@ -17,11 +17,11 @@ import org.orbit.platform.runtime.command.service.impl.CommandServiceImpl;
 import org.orbit.platform.runtime.programs.ProgramException;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.ProgramsAndFeaturesImpl;
-import org.orbit.sdk.ServiceControl;
-import org.orbit.sdk.WSRelayControl;
-import org.orbit.sdk.extension.IProgramExtension;
-import org.orbit.sdk.extension.IProgramExtensionService;
-import org.orbit.sdk.extension.util.ProgramExtensionServiceTracker;
+import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.orbit.platform.sdk.extension.IProgramExtensionService;
+import org.orbit.platform.sdk.extension.util.ProgramExtensionServiceTracker;
+import org.orbit.platform.sdk.relay.WSRelayControl;
+import org.orbit.platform.sdk.servicecontrol.ServiceControl;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
@@ -37,6 +37,9 @@ import org.slf4j.LoggerFactory;
  * @see https://en.wikipedia.org/wiki/List_of_nearest_stars_and_brown_dwarfs
  */
 public class PlatformImpl implements Platform {
+
+	public static final String PLATFORM__NAME = "Sun";
+	public static final String PLATFORM__VERSION = "1.0.0";
 
 	protected static Logger LOG = LoggerFactory.getLogger(PlatformImpl.class);
 
@@ -206,12 +209,12 @@ public class PlatformImpl implements Platform {
 
 	@Override
 	public String getName() {
-		return "Sun";
+		return PLATFORM__NAME;
 	}
 
 	@Override
 	public String getVersion() {
-		return "1.0.0";
+		return PLATFORM__VERSION;
 	}
 
 	@Override

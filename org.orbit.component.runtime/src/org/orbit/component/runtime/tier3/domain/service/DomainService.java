@@ -6,15 +6,12 @@ import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
 import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
+import org.origin.common.rest.server.WebServiceAware;
 import org.origin.core.resources.IWorkspaceService;
 
-public interface DomainService {
+public interface DomainService extends WebServiceAware {
 
 	String getName();
-
-	String getHostURL();
-
-	String getContextRoot();
 
 	// ------------------------------------------------------
 	// Machine management

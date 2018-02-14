@@ -35,7 +35,7 @@ Import-Package: javax.inject;version="1.0.0",
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  org.origin.common;bundle-version="[0.0.0,2.0.0)",
- org.orbit.sdk;bundle-version="[0.0.0,2.0.0)"
+ org.orbit.platform.sdk;bundle-version="[0.0.0,2.0.0)"
 Export-Package: org.orbit.platform.runtime,
  org.orbit.platform.runtime.cli,
  org.orbit.platform.runtime.gaia.service,

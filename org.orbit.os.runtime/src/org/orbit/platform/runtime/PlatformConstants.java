@@ -51,9 +51,6 @@ public class PlatformConstants {
 
 }
 
-// public static final String PLATFORM__NAME = "Sun";
-// public static final String PLATFORM__VERSION = "1.0.0";
-
 // config properties
 // public static String COMPONENT_NODE_NAMESPACE = "os.namespace";
 // public static String COMPONENT_NODE_NAME = "os.name";
