@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.relay.other;
 
-import org.orbit.component.runtime.relay.WSRelays;
+import org.orbit.component.runtime.relay.OrbitRelays;
 import org.orbit.component.runtime.relay.other.extensions.AppStoreRelayExtension;
 import org.orbit.component.runtime.relay.other.extensions.AuthRelayExtension;
 import org.orbit.component.runtime.relay.other.extensions.ConfigRegistryRelayExtension;
@@ -62,12 +62,12 @@ public class ActivatorV1 implements BundleActivator {
 		this.missionControlRelayExtension = new MissionControlRelayExtension();
 		this.missionControlRelayExtension.register(context);
 
-		WSRelays.getInstance().start(context);
+		OrbitRelays.getInstance().start(context);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		WSRelays.getInstance().stop(bundleContext);
+		OrbitRelays.getInstance().stop(bundleContext);
 
 		// tier 4
 		if (this.missionControlRelayExtension != null) {

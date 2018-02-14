@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.relay.other.extensions;
 
-import org.orbit.component.runtime.relay.extensions.TransferAgentWSRelayControl;
+import org.orbit.component.runtime.relay.extensions.NodeControlWSRelayControl;
 import org.orbit.platform.sdk.extension.impl.ProgramExtensionImpl;
 import org.orbit.platform.sdk.relay.WSRelayControl;
 
@@ -9,7 +9,7 @@ public class TransferAgentRelayExtension extends ProgramExtensionImpl {
 	public static final String ID = "orbit.component.transfer_agent.relay";
 
 	public TransferAgentRelayExtension() {
-		adapt(WSRelayControl.class, TransferAgentWSRelayControl.INSTANCE);
+		adapt(WSRelayControl.class, NodeControlWSRelayControl.INSTANCE);
 	}
 
 	@Override

@@ -4,7 +4,7 @@ import java.net.URI;
 
 import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.rest.client.WSClientFactory;
-import org.origin.common.rest.server.WSApplicationRelay;
+import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSMethodInflector;
 import org.origin.common.rest.switcher.Switcher;
@@ -19,7 +19,7 @@ import org.origin.common.rest.switcher.Switcher;
  * @see https://www.mkyong.com/webservices/jax-rs/restful-java-client-with-apache-httpclient/
  * 
  */
-public class TransferAgentWSApplicationRelay extends WSApplicationRelay {
+public class TransferAgentWSApplicationRelay extends WSRelayApplication {
 
 	/**
 	 * 

@@ -5,18 +5,18 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.runtime.relay.tier1.AuthWSApplicationDesc;
-import org.orbit.component.runtime.relay.tier1.ConfigRegistryWSApplicationDesc;
-import org.orbit.component.runtime.relay.tier1.UserRegistryWSApplicationDesc;
-import org.orbit.component.runtime.relay.tier2.AppStoreWSApplicationDesc;
-import org.orbit.component.runtime.relay.tier3.DomainServiceWSApplicationDesc;
-import org.orbit.component.runtime.relay.tier3.TransferAgentWSApplicationDesc;
-import org.orbit.component.runtime.relay.tier4.MissionControlWSApplicationDesc;
+import org.orbit.component.runtime.relay.desc.AppStoreWSApplicationDesc;
+import org.orbit.component.runtime.relay.desc.AuthWSApplicationDesc;
+import org.orbit.component.runtime.relay.desc.ConfigRegistryWSApplicationDesc;
+import org.orbit.component.runtime.relay.desc.DomainServiceWSApplicationDesc;
+import org.orbit.component.runtime.relay.desc.MissionControlWSApplicationDesc;
+import org.orbit.component.runtime.relay.desc.NodeControlWSApplicationDesc;
+import org.orbit.component.runtime.relay.desc.UserRegistryWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
 import org.origin.common.rest.server.WSApplicationDesc;
-import org.origin.common.rest.server.WSApplicationDescriptiveRelay;
+import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
 import org.origin.common.util.PropertyUtil;
@@ -25,18 +25,18 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WSRelays {
+public class OrbitRelays {
 
-	protected static Logger LOG = LoggerFactory.getLogger(WSRelays.class);
+	protected static Logger LOG = LoggerFactory.getLogger(OrbitRelays.class);
 
 	private static Object lock = new Object[0];
-	private static WSRelays instance = null;
+	private static OrbitRelays instance = null;
 
-	public static WSRelays getInstance() {
+	public static OrbitRelays getInstance() {
 		if (instance == null) {
 			synchronized (lock) {
 				if (instance == null) {
-					instance = new WSRelays();
+					instance = new OrbitRelays();
 				}
 			}
 		}
@@ -47,19 +47,19 @@ public class WSRelays {
 	protected WSClientFactory wsClientFactory;
 
 	// tier1
-	protected WSApplicationDescriptiveRelay userRegistryRelay;
-	protected WSApplicationDescriptiveRelay authRelay;
-	protected WSApplicationDescriptiveRelay configRegistryRelay;
+	protected WSRelayApplication userRegistryRelay;
+	protected WSRelayApplication authRelay;
+	protected WSRelayApplication configRegistryRelay;
 
 	// tier2
-	protected WSApplicationDescriptiveRelay appStoreRelay;
+	protected WSRelayApplication appStoreRelay;
 
 	// tier3
-	protected WSApplicationDescriptiveRelay domainServiceRelay;
-	protected WSApplicationDescriptiveRelay transferAgentRelay;
+	protected WSRelayApplication domainServiceRelay;
+	protected WSRelayApplication nodeControlRelay;
 
 	// tier4
-	protected WSApplicationDescriptiveRelay missionControlRelay;
+	protected WSRelayApplication missionControlRelay;
 
 	public void start(BundleContext bundleContext) {
 		LOG.info("start()");
@@ -89,9 +89,9 @@ public class WSRelays {
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_DOMAIN_SERVICE_SWITCHER_HOSTS);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_DOMAIN_SERVICE_SWITCHER_URLS);
 
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_HOSTS);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_URLS);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_HOSTS);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_URLS);
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_MISSION_CONTROL_SWITCHER_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_MISSION_CONTROL_SWITCHER_HOSTS);
@@ -109,7 +109,7 @@ public class WSRelays {
 
 		// tier3
 		startDomainServiceRelay(bundleContext, this.wsClientFactory, properties);
-		startTransferAgentRelay(bundleContext, this.wsClientFactory, properties);
+		startNodeControlRelay(bundleContext, this.wsClientFactory, properties);
 
 		// tier4
 		startMissionControlRelay(bundleContext, this.wsClientFactory, properties);
@@ -123,7 +123,7 @@ public class WSRelays {
 
 		// tier3
 		stopDomainServiceRelay(bundleContext);
-		stopTransferAgentRelay(bundleContext);
+		stopNodeControlRelay(bundleContext);
 
 		// tier2
 		stopAppStoreRelay(bundleContext);
@@ -177,7 +177,7 @@ public class WSRelays {
 	protected void startUserRegistryRelay(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
-		this.userRegistryRelay = new WSApplicationDescriptiveRelay(appDesc, uriSwitcher, factory);
+		this.userRegistryRelay = new WSRelayApplication(appDesc, uriSwitcher, factory);
 		this.userRegistryRelay.start(bundleContext);
 	}
 
@@ -213,7 +213,7 @@ public class WSRelays {
 
 	protected void startAuthRelay(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.authRelay = new WSApplicationDescriptiveRelay(appDesc, uriSwitcher, factory);
+		this.authRelay = new WSRelayApplication(appDesc, uriSwitcher, factory);
 		this.authRelay.start(bundleContext);
 	}
 
@@ -249,7 +249,7 @@ public class WSRelays {
 
 	protected void startConfigRegistryRelay(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
-		this.configRegistryRelay = new WSApplicationDescriptiveRelay(appDesc, uriSwitcher, factory);
+		this.configRegistryRelay = new WSRelayApplication(appDesc, uriSwitcher, factory);
 		this.configRegistryRelay.start(bundleContext);
 	}
 
@@ -286,7 +286,7 @@ public class WSRelays {
 
 	protected void startAppStoreRelay(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.appStoreRelay = new WSApplicationDescriptiveRelay(appDesc, uriSwitcher, factory);
+		this.appStoreRelay = new WSRelayApplication(appDesc, uriSwitcher, factory);
 		this.appStoreRelay.start(bundleContext);
 	}
 
@@ -323,7 +323,7 @@ public class WSRelays {
 
 	protected void startDomainServiceRelay(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
-		this.domainServiceRelay = new WSApplicationDescriptiveRelay(appDesc, uriSwitcher, factory);
+		this.domainServiceRelay = new WSRelayApplication(appDesc, uriSwitcher, factory);
 		this.domainServiceRelay.start(bundleContext);
 	}
 
@@ -334,10 +334,10 @@ public class WSRelays {
 		}
 	}
 
-	protected void startTransferAgentRelay(BundleContext bundleContext, WSClientFactory factory, Map<Object, Object> properties) {
-		String contextRoot = (String) properties.get(OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_CONTEXT_ROOT);
-		String hosts = (String) properties.get(OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_HOSTS);
-		String urls = (String) properties.get(OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_URLS);
+	protected void startNodeControlRelay(BundleContext bundleContext, WSClientFactory factory, Map<Object, Object> properties) {
+		String contextRoot = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_CONTEXT_ROOT);
+		String hosts = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_HOSTS);
+		String urls = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_URLS);
 
 		if (contextRoot == null) {
 			return;
@@ -353,20 +353,20 @@ public class WSRelays {
 			return;
 		}
 
-		TransferAgentWSApplicationDesc appDesc = new TransferAgentWSApplicationDesc(contextRoot);
-		startTransferAgentRelay(bundleContext, appDesc, factory, uriList);
+		NodeControlWSApplicationDesc appDesc = new NodeControlWSApplicationDesc(contextRoot);
+		startNodeControlRelay(bundleContext, appDesc, factory, uriList);
 	}
 
-	protected void startTransferAgentRelay(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
+	protected void startNodeControlRelay(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
-		this.transferAgentRelay = new WSApplicationDescriptiveRelay(appDesc, uriSwitcher, factory);
-		this.transferAgentRelay.start(bundleContext);
+		this.nodeControlRelay = new WSRelayApplication(appDesc, uriSwitcher, factory);
+		this.nodeControlRelay.start(bundleContext);
 	}
 
-	protected void stopTransferAgentRelay(BundleContext bundleContext) {
-		if (this.transferAgentRelay != null) {
-			this.transferAgentRelay.stop(bundleContext);
-			this.transferAgentRelay = null;
+	protected void stopNodeControlRelay(BundleContext bundleContext) {
+		if (this.nodeControlRelay != null) {
+			this.nodeControlRelay.stop(bundleContext);
+			this.nodeControlRelay = null;
 		}
 	}
 
@@ -396,7 +396,7 @@ public class WSRelays {
 
 	protected void startMissionControlRelay(BundleContext bundleContext, WSApplicationDesc appDesc, WSClientFactory factory, List<URI> uriList) {
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.missionControlRelay = new WSApplicationDescriptiveRelay(appDesc, uriSwitcher, factory);
+		this.missionControlRelay = new WSRelayApplication(appDesc, uriSwitcher, factory);
 		this.missionControlRelay.start(bundleContext);
 	}
 

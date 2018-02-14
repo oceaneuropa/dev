@@ -311,9 +311,9 @@ public class OrbitSwitchers {
 	}
 
 	protected void startTransferAgentSwitcher(BundleContext bundleContext, WSClientFactory factory, Map<Object, Object> properties) {
-		String contextRoot = (String) properties.get(OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_CONTEXT_ROOT);
-		String hosts = (String) properties.get(OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_HOSTS);
-		String urls = (String) properties.get(OrbitRelayConstants.COMPONENT_TRANSFER_AGENT_SWITCHER_URLS);
+		String contextRoot = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_CONTEXT_ROOT);
+		String hosts = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_HOSTS);
+		String urls = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_SWITCHER_URLS);
 
 		if (contextRoot == null) {
 			return;

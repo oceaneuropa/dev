@@ -1,16 +1,16 @@
-package org.orbit.component.runtime.relay.tier3;
+package org.orbit.component.runtime.relay.desc;
 
 import org.origin.common.rest.server.WSApplicationDesc;
 import org.origin.common.rest.server.WSMethodDesc;
 import org.origin.common.rest.server.WSResourceDesc;
 
-public class TransferAgentWSApplicationDesc extends WSApplicationDesc {
+public class NodeControlWSApplicationDesc extends WSApplicationDesc {
 
 	/**
 	 * 
 	 * @param contextRoot
 	 */
-	public TransferAgentWSApplicationDesc(String contextRoot) {
+	public NodeControlWSApplicationDesc(String contextRoot) {
 		super(contextRoot);
 
 		WSResourceDesc rootWSResource = new WSResourceDesc(this, "/");

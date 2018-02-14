@@ -11,7 +11,6 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.platform.api.apps.ProgramManifest;
 import org.orbit.platform.runtime.Activator;
-import org.orbit.platform.runtime.Extensions;
 import org.orbit.platform.runtime.PlatformConstants;
 import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.orbit.platform.runtime.gaia.service.impl.GAIAImpl;
@@ -22,10 +21,7 @@ import org.orbit.platform.runtime.programs.ProgramHandler;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.sdk.extension.IProgramExtension;
 import org.orbit.platform.sdk.extension.IProgramExtensionService;
-import org.orbit.platform.sdk.extension.util.ProgramExtension;
 import org.orbit.platform.sdk.relay.WSRelayControl;
-import org.orbit.platform.sdk.urlprovider.URLProvider;
-import org.orbit.platform.sdk.urlprovider.URLProviderImpl;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
@@ -403,21 +399,13 @@ public class PlatformCommand implements Annotated {
 
 		String hostURL = getHostURL();
 		List<URI> targetURIs = URIUtil.toList(targetHostURLsString, contextRoot);
-		relayControl.start(bundleContext, wsClientFactory, contextRoot, targetURIs);
-
-		// Register URL provider extension
-		ProgramExtension urlProviderServiceExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, extensionId);
-		urlProviderServiceExtension.setName("URL provider for '" + extensionId + "'");
-		urlProviderServiceExtension.setDescription("URL provider for '" + extensionId + "' description");
-		urlProviderServiceExtension.adapt(URLProvider.class, new URLProviderImpl(hostURL, contextRoot));
-		Extensions.INSTANCE.addExtension(urlProviderServiceExtension);
+		relayControl.start(bundleContext, wsClientFactory, hostURL, contextRoot, targetURIs);
 	}
 
 	/**
 	 * 
 	 * @param extensionId
 	 * @param contextRoot
-	 * @param hostURLsString
 	 */
 	public void stoprelay(String extensionId, String contextRoot) {
 		LOG.info("stoprelay('" + extensionId + "')");
@@ -435,11 +423,8 @@ public class PlatformCommand implements Annotated {
 			return;
 		}
 
-		// Unregister URL provider extension
-		ProgramExtension urlProviderServiceExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, extensionId);
-		Extensions.INSTANCE.removeExtension(urlProviderServiceExtension);
-
-		relayControl.stop(bundleContext, contextRoot);
+		String hostURL = getHostURL();
+		relayControl.stop(bundleContext, hostURL, contextRoot);
 	}
 
 }

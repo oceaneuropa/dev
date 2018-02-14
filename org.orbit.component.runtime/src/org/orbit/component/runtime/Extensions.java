@@ -28,7 +28,7 @@ public class Extensions extends ProgramExtensions {
 	public static final String CONFIG_REGISTRY_SERVICE_EXTENSION_ID = "component.config_registry.service";
 	public static final String APP_STORE_SERVICE_EXTENSION_ID = "component.app_store.service";
 	public static final String DOMAIN_SERVICE_SERVICE_EXTENSION_ID = "component.domain_service.service";
-	public static final String TRANSFER_AGENT_SERVICE_EXTENSION_ID = "component.transfer_agent.service";
+	public static final String NODE_CONTROL_SERVICE_EXTENSION_ID = "component.node_control.service";
 	public static final String MISSION_CONTROL_SERVICE_EXTENSION_ID = "component.mission_control.service";
 
 	// extension id constants for URL providers
@@ -86,7 +86,7 @@ public class Extensions extends ProgramExtensions {
 		domainServiceServiceExtension.adapt(ServiceControl.class, DomainServiceServiceControl.INSTANCE);
 		addExtension(domainServiceServiceExtension);
 
-		ProgramExtension transferAgentServiceExtension = new ProgramExtension(extensionTypeId, TRANSFER_AGENT_SERVICE_EXTENSION_ID);
+		ProgramExtension transferAgentServiceExtension = new ProgramExtension(extensionTypeId, NODE_CONTROL_SERVICE_EXTENSION_ID);
 		transferAgentServiceExtension.setName("Transfer agent service");
 		transferAgentServiceExtension.setDescription("Transfer agent service description");
 		transferAgentServiceExtension.adapt(ServiceControl.class, TransferAgentServiceControl.INSTANCE);

@@ -26,13 +26,13 @@ public class Activator implements BundleActivator {
 		Extensions.INSTANCE.start(context);
 
 		// Start web service app relays
-		WSRelays.getInstance().start(context);
+		OrbitRelays.getInstance().start(context);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		// Stop web service app relays
-		WSRelays.getInstance().stop(bundleContext);
+		OrbitRelays.getInstance().stop(bundleContext);
 
 		// Unregister program extensions
 		Extensions.INSTANCE.stop(bundleContext);

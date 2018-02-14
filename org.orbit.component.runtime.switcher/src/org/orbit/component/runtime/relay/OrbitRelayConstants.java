@@ -44,11 +44,11 @@ public class OrbitRelayConstants {
 	public static String COMPONENT_DOMAIN_SERVICE_SWITCHER_URLS = "component.domain_service.relay.urls";
 
 	// ----------------------------------------------------------------------------------------
-	// TransferAgent
+	// NodeControl
 	// ----------------------------------------------------------------------------------------
-	public static String COMPONENT_TRANSFER_AGENT_SWITCHER_CONTEXT_ROOT = "component.transfer_agent.relay.context_root";
-	public static String COMPONENT_TRANSFER_AGENT_SWITCHER_HOSTS = "component.transfer_agent.relay.hosts";
-	public static String COMPONENT_TRANSFER_AGENT_SWITCHER_URLS = "component.transfer_agent.relay.urls";
+	public static String COMPONENT_NODE_CONTROL_SWITCHER_CONTEXT_ROOT = "component.node_control.relay.context_root";
+	public static String COMPONENT_NODE_CONTROL_SWITCHER_HOSTS = "component.node_control.relay.hosts";
+	public static String COMPONENT_NODE_CONTROL_SWITCHER_URLS = "component.node_control.relay.urls";
 
 	// ----------------------------------------------------------------------------------------
 	// MissionControl

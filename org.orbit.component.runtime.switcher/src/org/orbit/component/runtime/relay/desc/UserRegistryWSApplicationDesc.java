@@ -1,4 +1,4 @@
-package org.orbit.component.runtime.relay.tier1;
+package org.orbit.component.runtime.relay.desc;
 
 import org.origin.common.rest.server.WSApplicationDesc;
 import org.origin.common.rest.server.WSMethodDesc;

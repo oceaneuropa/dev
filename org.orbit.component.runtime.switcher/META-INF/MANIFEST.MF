@@ -34,9 +34,7 @@ Require-Bundle: org.origin.common;bundle-version="[0.0.0,2.0.0)",
  org.apache.felix.gogo.runtime;bundle-version="[0.0.0,1.0.0)",
  org.orbit.platform.sdk;bundle-version="[0.0.0,2.0.0)"
 Export-Package: org.orbit.component.runtime.relay,
- org.orbit.component.runtime.relay.tier1,
- org.orbit.component.runtime.relay.tier2,
- org.orbit.component.runtime.relay.tier3,
- org.orbit.component.runtime.relay.tier4,
+ org.orbit.component.runtime.relay.desc,
+ org.orbit.component.runtime.relay.extensions,
  org.orbit.component.runtime.relay.util,
  org.orbit.component.runtime.switcher.cli
