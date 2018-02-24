@@ -7,29 +7,20 @@
  *******************************************************************************/
 package org.orbit.component.runtime;
 
-import org.orbit.component.runtime.extensions.servicecontrol.AppStoreServiceControl;
-import org.orbit.component.runtime.extensions.servicecontrol.AuthServiceControl;
-import org.orbit.component.runtime.extensions.servicecontrol.ConfigRegistryServiceControl;
-import org.orbit.component.runtime.extensions.servicecontrol.DomainServiceServiceControl;
-import org.orbit.component.runtime.extensions.servicecontrol.MissionControlServiceControl;
-import org.orbit.component.runtime.extensions.servicecontrol.TransferAgentServiceControl;
-import org.orbit.component.runtime.extensions.servicecontrol.UserRegistryServiceControl;
+import org.orbit.component.runtime.extensions.serviceactivator.AppStoreServiceActivator;
+import org.orbit.component.runtime.extensions.serviceactivator.AuthServiceActivator;
+import org.orbit.component.runtime.extensions.serviceactivator.ConfigRegistryServiceActivator;
+import org.orbit.component.runtime.extensions.serviceactivator.DomainManagementServiceActivator;
+import org.orbit.component.runtime.extensions.serviceactivator.MissionControlServiceActivator;
+import org.orbit.component.runtime.extensions.serviceactivator.NodeManagementServiceActivator;
+import org.orbit.component.runtime.extensions.serviceactivator.UserRegistryServiceActivator;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.extension.util.ProgramExtension;
 import org.orbit.platform.sdk.extension.util.ProgramExtensions;
-import org.orbit.platform.sdk.servicecontrol.ServiceControl;
 
 public class Extensions extends ProgramExtensions {
 
 	public static Extensions INSTANCE = new Extensions();
-
-	// extension id constants for services
-	public static final String USER_REGISTRY_SERVICE_EXTENSION_ID = "component.user_registry.service";
-	public static final String AUTH_SERVICEE_EXTENSION_ID = "component.auth.service";
-	public static final String CONFIG_REGISTRY_SERVICE_EXTENSION_ID = "component.config_registry.service";
-	public static final String APP_STORE_SERVICE_EXTENSION_ID = "component.app_store.service";
-	public static final String DOMAIN_SERVICE_SERVICE_EXTENSION_ID = "component.domain_service.service";
-	public static final String NODE_CONTROL_SERVICE_EXTENSION_ID = "component.node_control.service";
-	public static final String MISSION_CONTROL_SERVICE_EXTENSION_ID = "component.mission_control.service";
 
 	// extension id constants for URL providers
 	public static final String USER_REGISTRY_URL_PROVIDER_EXTENSION_ID = "component.user_registry.url_provider";
@@ -43,61 +34,61 @@ public class Extensions extends ProgramExtensions {
 	@Override
 	public void createExtensions() {
 		createServiceCommandExtensions();
-		createServiceControlExtensions();
+		createServiceActivatorExtensions();
 	}
 
 	protected void createServiceCommandExtensions() {
 		// String extensionTypeId = ServiceCommand.EXTENSION_TYPE_ID;
 	}
 
-	protected void createServiceControlExtensions() {
-		String extensionTypeId = ServiceControl.EXTENSION_TYPE_ID;
+	protected void createServiceActivatorExtensions() {
+		String typeId = ServiceActivator.TYPE_ID;
 
 		// tier 1
-		ProgramExtension userRegistryServiceExtension = new ProgramExtension(extensionTypeId, USER_REGISTRY_SERVICE_EXTENSION_ID);
-		userRegistryServiceExtension.setName("User registration service");
-		userRegistryServiceExtension.setDescription("User registration service description");
-		userRegistryServiceExtension.adapt(ServiceControl.class, UserRegistryServiceControl.INSTANCE);
-		addExtension(userRegistryServiceExtension);
+		ProgramExtension userRegistryActivatorExtension = new ProgramExtension(typeId, UserRegistryServiceActivator.ID);
+		userRegistryActivatorExtension.setName("User registration service activator");
+		userRegistryActivatorExtension.setDescription("User registration service activator description");
+		userRegistryActivatorExtension.adapt(ServiceActivator.class, UserRegistryServiceActivator.INSTANCE);
+		addExtension(userRegistryActivatorExtension);
 
-		ProgramExtension authServiceExtension = new ProgramExtension(extensionTypeId, AUTH_SERVICEE_EXTENSION_ID);
-		authServiceExtension.setName("Auth service");
-		authServiceExtension.setDescription("Auth service description");
-		authServiceExtension.adapt(ServiceControl.class, AuthServiceControl.INSTANCE);
-		addExtension(authServiceExtension);
+		ProgramExtension authActivatorExtension = new ProgramExtension(typeId, AuthServiceActivator.ID);
+		authActivatorExtension.setName("Auth service activator");
+		authActivatorExtension.setDescription("Auth service activator description");
+		authActivatorExtension.adapt(ServiceActivator.class, AuthServiceActivator.INSTANCE);
+		addExtension(authActivatorExtension);
 
-		ProgramExtension configRegistryServiceExtension = new ProgramExtension(extensionTypeId, CONFIG_REGISTRY_SERVICE_EXTENSION_ID);
-		configRegistryServiceExtension.setName("Config registration service");
-		configRegistryServiceExtension.setDescription("Config registration service description");
-		configRegistryServiceExtension.adapt(ServiceControl.class, ConfigRegistryServiceControl.INSTANCE);
-		addExtension(configRegistryServiceExtension);
+		ProgramExtension configRegistryActivatorExtension = new ProgramExtension(typeId, ConfigRegistryServiceActivator.ID);
+		configRegistryActivatorExtension.setName("Config registration service activator");
+		configRegistryActivatorExtension.setDescription("Config registration service activator description");
+		configRegistryActivatorExtension.adapt(ServiceActivator.class, ConfigRegistryServiceActivator.INSTANCE);
+		addExtension(configRegistryActivatorExtension);
 
 		// tier 2
-		ProgramExtension appStoreServiceExtension = new ProgramExtension(extensionTypeId, APP_STORE_SERVICE_EXTENSION_ID);
-		appStoreServiceExtension.setName("App store service");
-		appStoreServiceExtension.setDescription("App store service description");
-		appStoreServiceExtension.adapt(ServiceControl.class, AppStoreServiceControl.INSTANCE);
-		addExtension(appStoreServiceExtension);
+		ProgramExtension appStoreActivatorExtension = new ProgramExtension(typeId, AppStoreServiceActivator.ID);
+		appStoreActivatorExtension.setName("App store service activator");
+		appStoreActivatorExtension.setDescription("App store service activator description");
+		appStoreActivatorExtension.adapt(ServiceActivator.class, AppStoreServiceActivator.INSTANCE);
+		addExtension(appStoreActivatorExtension);
 
 		// tier 3
-		ProgramExtension domainServiceServiceExtension = new ProgramExtension(extensionTypeId, DOMAIN_SERVICE_SERVICE_EXTENSION_ID);
-		domainServiceServiceExtension.setName("Domain service");
-		domainServiceServiceExtension.setDescription("Domain service description");
-		domainServiceServiceExtension.adapt(ServiceControl.class, DomainServiceServiceControl.INSTANCE);
-		addExtension(domainServiceServiceExtension);
+		ProgramExtension domainManagementActivatorExtension = new ProgramExtension(typeId, DomainManagementServiceActivator.ID);
+		domainManagementActivatorExtension.setName("Domain management service activator");
+		domainManagementActivatorExtension.setDescription("Domain management service activator description");
+		domainManagementActivatorExtension.adapt(ServiceActivator.class, DomainManagementServiceActivator.INSTANCE);
+		addExtension(domainManagementActivatorExtension);
 
-		ProgramExtension transferAgentServiceExtension = new ProgramExtension(extensionTypeId, NODE_CONTROL_SERVICE_EXTENSION_ID);
-		transferAgentServiceExtension.setName("Transfer agent service");
-		transferAgentServiceExtension.setDescription("Transfer agent service description");
-		transferAgentServiceExtension.adapt(ServiceControl.class, TransferAgentServiceControl.INSTANCE);
-		addExtension(transferAgentServiceExtension);
+		ProgramExtension nodeManagementActivatorExtension = new ProgramExtension(typeId, NodeManagementServiceActivator.ID);
+		nodeManagementActivatorExtension.setName("Node management service activator");
+		nodeManagementActivatorExtension.setDescription("Node management service activator description");
+		nodeManagementActivatorExtension.adapt(ServiceActivator.class, NodeManagementServiceActivator.INSTANCE);
+		addExtension(nodeManagementActivatorExtension);
 
 		// tier 4
-		ProgramExtension missionControlServiceExtension = new ProgramExtension(extensionTypeId, MISSION_CONTROL_SERVICE_EXTENSION_ID);
-		missionControlServiceExtension.setName("Mission control service");
-		missionControlServiceExtension.setDescription("Mission control service description");
-		missionControlServiceExtension.adapt(ServiceControl.class, MissionControlServiceControl.INSTANCE);
-		addExtension(missionControlServiceExtension);
+		ProgramExtension missionControlActivatorExtension = new ProgramExtension(typeId, MissionControlServiceActivator.ID);
+		missionControlActivatorExtension.setName("Mission control service activator");
+		missionControlActivatorExtension.setDescription("Mission control service activator description");
+		missionControlActivatorExtension.adapt(ServiceActivator.class, MissionControlServiceActivator.INSTANCE);
+		addExtension(missionControlActivatorExtension);
 	}
 
 }

@@ -6,7 +6,7 @@ import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.account.other.UserRegistryConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.other.AppStoreConnector;
-import org.orbit.component.api.tier3.domain.DomainServiceClient;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
@@ -54,8 +54,8 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public DomainServiceClient getDomainService(DomainServiceConnector connector) throws ClientException {
-		DomainServiceClient domainService = connector.getService();
+	public DomainManagementClient getDomainService(DomainServiceConnector connector) throws ClientException {
+		DomainManagementClient domainService = connector.getService();
 		if (domainService == null) {
 			System.err.println(getClass().getSimpleName() + ".getDomainService() domainService is not available.");
 			throw new ClientException(500, "domainService is not available.");
@@ -143,17 +143,17 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<LoadBalanceResource<DomainServiceClient>> getDomainServiceResources(DomainServiceConnector connector) throws ClientException {
+	public List<LoadBalanceResource<DomainManagementClient>> getDomainServiceResources(DomainServiceConnector connector) throws ClientException {
 		if (connector == null) {
 			System.out.println("DomainServiceConnector is not available.");
 			throw new ClientException(500, "DomainServiceConnector is not available.");
 		}
-		LoadBalancer<DomainServiceClient> balancer = connector.getLoadBalancer();
+		LoadBalancer<DomainManagementClient> balancer = connector.getLoadBalancer();
 		if (balancer == null) {
 			System.out.println("load balancer is not available.");
 			return null;
 		}
-		List<LoadBalanceResource<DomainServiceClient>> resources = balancer.getResources();
+		List<LoadBalanceResource<DomainManagementClient>> resources = balancer.getResources();
 		if (resources == null) {
 			System.out.println("load balancer's resource is null.");
 			return null;

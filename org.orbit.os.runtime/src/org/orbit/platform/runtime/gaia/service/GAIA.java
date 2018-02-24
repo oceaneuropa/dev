@@ -17,10 +17,6 @@ public interface GAIA {
 
 	void updateProperties(Map<Object, Object> configProps);
 
-	void start();
-
-	void stop();
-
 	WSEditPolicies getEditPolicies();
 
 	Worlds getWorlds();

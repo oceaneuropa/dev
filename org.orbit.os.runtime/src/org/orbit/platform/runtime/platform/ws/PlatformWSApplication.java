@@ -24,6 +24,9 @@ public class PlatformWSApplication extends AbstractJerseyWSApplication {
 		};
 		register(serviceBinder);
 		register(PlatformWSResource.class);
+		register(PlatformWSExtensionTypesResource.class);
+		register(PlatformWSExtensionsResource.class);
+		register(PlatformWSServicesResource.class);
 	}
 
 	@Override

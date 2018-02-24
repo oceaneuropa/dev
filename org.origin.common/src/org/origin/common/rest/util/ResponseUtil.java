@@ -13,6 +13,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Responses;
+import org.origin.common.rest.server.ServerException;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,6 +57,33 @@ public class ResponseUtil {
 		ErrorDTO dto = new ErrorDTO();
 
 		dto.setCode(errorCode);
+		dto.setMessage(e.getMessage());
+
+		if (e.getCause() != null) {
+			String causeName = e.getCause().getClass().getName();
+			String causeMessage = e.getCause().getMessage();
+			dto.setDetail(causeName + " " + causeMessage);
+		} else {
+			String causeName = e.getClass().getName();
+			dto.setDetail(causeName);
+		}
+
+		return dto;
+	}
+
+	/**
+	 * Convert ServerException object to Error DTO.
+	 * 
+	 * @param e
+	 * @return
+	 */
+	public ErrorDTO toDTO(ServerException e) {
+		if (e == null) {
+			return null;
+		}
+
+		ErrorDTO dto = new ErrorDTO();
+		dto.setCode(e.getCode());
 		dto.setMessage(e.getMessage());
 
 		if (e.getCause() != null) {

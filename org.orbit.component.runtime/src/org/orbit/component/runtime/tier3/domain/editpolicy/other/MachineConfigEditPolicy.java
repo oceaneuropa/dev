@@ -6,7 +6,7 @@ import org.orbit.component.runtime.tier3.domain.command.other.MachineConfigGetCo
 import org.orbit.component.runtime.tier3.domain.command.other.MachineConfigRemoveCommand;
 import org.orbit.component.runtime.tier3.domain.command.other.MachineConfigUpdateCommand;
 import org.orbit.component.runtime.tier3.domain.command.other.MachineConfigsGetCommand;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.origin.common.command.ICommand;
 import org.origin.common.rest.editpolicy.AbstractWSEditPolicyV1;
 import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
@@ -16,7 +16,7 @@ public class MachineConfigEditPolicy extends AbstractWSEditPolicyV1 {
 
 	@Override
 	public ICommand getCommand(EditpolicyWSApplicationResource resource, Request request) {
-		DomainService service = resource.getService(DomainService.class);
+		DomainManagementService service = resource.getService(DomainManagementService.class);
 
 		String requestName = request.getRequestName();
 

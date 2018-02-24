@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domain.DomainServiceClient;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
@@ -25,14 +25,14 @@ import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.StatusDTO;
 
-public class DomainServiceClientImpl extends ServiceClientImpl<DomainServiceClient, DomainServiceWSClient> implements DomainServiceClient {
+public class DomainServiceClientImpl extends ServiceClientImpl<DomainManagementClient, DomainServiceWSClient> implements DomainManagementClient {
 
 	/**
 	 * 
 	 * @param connector
 	 * @param properties
 	 */
-	public DomainServiceClientImpl(ServiceConnector<DomainServiceClient> connector, Map<String, Object> properties) {
+	public DomainServiceClientImpl(ServiceConnector<DomainManagementClient> connector, Map<String, Object> properties) {
 		super(connector, properties);
 	}
 

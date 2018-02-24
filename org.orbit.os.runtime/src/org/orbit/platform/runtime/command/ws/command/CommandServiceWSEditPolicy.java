@@ -1,6 +1,6 @@
 package org.orbit.platform.runtime.command.ws.command;
 
-import org.orbit.platform.runtime.Requests;
+import org.orbit.platform.runtime.RequestConstants;
 import org.orbit.platform.runtime.command.service.CommandService;
 import org.origin.common.rest.editpolicy.AbstractWSEditPolicy;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -24,10 +24,10 @@ public class CommandServiceWSEditPolicy extends AbstractWSEditPolicy {
 
 		String requestName = request.getRequestName();
 
-		if (Requests.START_SERVICE.equals(requestName)) {
+		if (RequestConstants.START_SERVICE.equals(requestName)) {
 			return new StartServiceCommand(commandService);
 
-		} else if (Requests.STOP_SERVICE.equals(requestName)) {
+		} else if (RequestConstants.STOP_SERVICE.equals(requestName)) {
 			return new StopServiceCommand(commandService);
 		}
 

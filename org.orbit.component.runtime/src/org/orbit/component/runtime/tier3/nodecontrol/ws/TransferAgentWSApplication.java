@@ -7,7 +7,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.model.Resource;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 
 /**
  * https://www.programcreek.com/java-api-examples/index.php?source_dir=para-master/para-server/src/main/java/com/erudika/para/rest/Api1.java
@@ -15,21 +15,21 @@ import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
  */
 public class TransferAgentWSApplication extends OrbitWSApplication {
 
-	protected NodeControlService service;
+	protected NodeManagementService service;
 
 	/**
 	 * 
 	 * @param service
 	 * @param feature
 	 */
-	public TransferAgentWSApplication(final NodeControlService service, int feature) {
+	public TransferAgentWSApplication(final NodeManagementService service, int feature) {
 		super(service.getContextRoot(), feature);
-		adapt(NodeControlService.class, service);
+		adapt(NodeManagementService.class, service);
 
 		register(new AbstractBinder() {
 			@Override
 			protected void configure() {
-				bind(service).to(NodeControlService.class);
+				bind(service).to(NodeManagementService.class);
 			}
 		});
 		register(TransferAgentWSResource.class);
@@ -45,7 +45,7 @@ public class TransferAgentWSApplication extends OrbitWSApplication {
 		return new Inflector<ContainerRequestContext, Response>() {
 			@Override
 			public Response apply(ContainerRequestContext requestContext) {
-				NodeControlService service = getAdapter(NodeControlService.class);
+				NodeManagementService service = getAdapter(NodeManagementService.class);
 				String message = getQueryParam("message", requestContext);
 				String resultMessage = message + " (from '" + service.getName() + "')";
 				return Response.ok(resultMessage).build();
@@ -57,7 +57,7 @@ public class TransferAgentWSApplication extends OrbitWSApplication {
 		return new Inflector<ContainerRequestContext, Response>() {
 			@Override
 			public Response apply(ContainerRequestContext requestContext) {
-				NodeControlService service = getAdapter(NodeControlService.class);
+				NodeManagementService service = getAdapter(NodeManagementService.class);
 				String level1 = getPathParam("level1", requestContext);
 				String level2 = getPathParam("level2", requestContext);
 				String message1 = getQueryParam("message1", requestContext);

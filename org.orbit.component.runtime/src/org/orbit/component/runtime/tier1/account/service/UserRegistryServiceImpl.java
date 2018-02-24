@@ -7,29 +7,35 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.orbit.component.model.tier1.account.rto.UserAccount;
-import org.orbit.component.model.tier1.account.rto.UserRegistryException;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.persistence.UserAccountPersistence;
 import org.orbit.component.runtime.tier1.account.persistence.UserAccountPersistenceImpl;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class UserRegistryServiceImpl implements UserRegistryService {
 
+	protected Map<String, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected UserAccountPersistence userAccountPersistence;
 
-	public UserRegistryServiceImpl() {
+	public UserRegistryServiceImpl(Map<String, Object> initProperties) {
+		this.initProperties = initProperties;
 	}
 
 	public void start(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".start()");
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (this.initProperties != null) {
+			properties.putAll(this.initProperties);
+		}
+
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_HOST_URL);
@@ -102,48 +108,48 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	/**
 	 * 
 	 * @param e
-	 * @throws UserRegistryException
+	 * @throws ServerException
 	 */
-	protected void handleException(Exception e) throws UserRegistryException {
+	protected void handleException(Exception e) throws ServerException {
 		e.printStackTrace();
-		throw new UserRegistryException(StatusDTO.RESP_500, e.getMessage(), e);
+		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	/**
 	 * 
 	 * @param userId
-	 * @throws UserRegistryException
+	 * @throws ServerException
 	 */
-	protected void checkUserId(String userId) throws UserRegistryException {
+	protected void checkUserId(String userId) throws ServerException {
 		if (userId == null || userId.isEmpty()) {
-			throw new UserRegistryException("400", "userId is empty.");
+			throw new ServerException("400", "userId is empty.");
 		}
 	}
 
 	/**
 	 * 
 	 * @param password
-	 * @throws UserRegistryException
+	 * @throws ServerException
 	 */
-	protected void checkPassword(String password) throws UserRegistryException {
+	protected void checkPassword(String password) throws ServerException {
 		if (password == null || password.isEmpty()) {
-			throw new UserRegistryException("400", "password is empty.");
+			throw new ServerException("400", "password is empty.");
 		}
 	}
 
 	/**
 	 * 
 	 * @param email
-	 * @throws UserRegistryException
+	 * @throws ServerException
 	 */
-	protected void checkEmail(String email) throws UserRegistryException {
+	protected void checkEmail(String email) throws ServerException {
 		if (email == null || email.isEmpty()) {
-			throw new UserRegistryException("400", "email is empty.");
+			throw new ServerException("400", "email is empty.");
 		}
 	}
 
 	@Override
-	public List<UserAccount> getUserAccounts() throws UserRegistryException {
+	public List<UserAccount> getUserAccounts() throws ServerException {
 		try {
 			return this.userAccountPersistence.getUserAccounts();
 		} catch (Exception e) {
@@ -153,7 +159,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public UserAccount getUserAccount(String userId) throws UserRegistryException {
+	public UserAccount getUserAccount(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
 			return this.userAccountPersistence.getUserAccount(userId);
@@ -164,7 +170,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean userAccountExists(String userId) throws UserRegistryException {
+	public boolean userAccountExists(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
 			return this.userAccountPersistence.userAccountExists(userId);
@@ -175,7 +181,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean matchUsernamePassword(String userId, String password) throws UserRegistryException {
+	public boolean matchUsernamePassword(String userId, String password) throws ServerException {
 		checkUserId(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
@@ -199,7 +205,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public UserAccount registerUserAccount(UserAccount newAccountRequest) throws UserRegistryException {
+	public UserAccount registerUserAccount(UserAccount newAccountRequest) throws ServerException {
 		String userId = newAccountRequest.getUserId();
 		String password = newAccountRequest.getPassword();
 		String email = newAccountRequest.getEmail();
@@ -220,7 +226,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean updateUserAccount(UserAccount updateAccountRequest) throws UserRegistryException {
+	public boolean updateUserAccount(UserAccount updateAccountRequest) throws ServerException {
 		String userId = updateAccountRequest.getUserId();
 		String newPassword = updateAccountRequest.getPassword();
 		String newEmail = updateAccountRequest.getEmail();
@@ -235,7 +241,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
-				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
+				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
 
 			String oldPassword = userAccount.getPassword();
@@ -305,7 +311,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean deleteUserAccount(String userId) throws UserRegistryException {
+	public boolean deleteUserAccount(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
 			return this.userAccountPersistence.deleteUserAccount(userId);
@@ -316,12 +322,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean changePassword(String userId, String oldPassword, String newPassword) throws UserRegistryException {
+	public boolean changePassword(String userId, String oldPassword, String newPassword) throws ServerException {
 		checkUserId(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
-				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
+				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
 
 			boolean matchOldPassword = false;
@@ -336,7 +342,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 				matchOldPassword = true;
 			}
 			if (!matchOldPassword) {
-				throw new UserRegistryException("404", "Old password is incorrect.");
+				throw new ServerException("404", "Old password is incorrect.");
 			}
 			return this.userAccountPersistence.updatePassword(userId, newPassword);
 
@@ -347,12 +353,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean isUserAccountActivated(String userId) throws UserRegistryException {
+	public boolean isUserAccountActivated(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
-				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
+				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
 			return userAccount.isActivated();
 
@@ -363,12 +369,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean activateUserAccount(String userId) throws UserRegistryException {
+	public boolean activateUserAccount(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
-				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
+				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
 			boolean activated = userAccount.isActivated();
 			if (activated) {
@@ -384,12 +390,12 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 	}
 
 	@Override
-	public boolean deactivateUserAccount(String userId) throws UserRegistryException {
+	public boolean deactivateUserAccount(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
-				throw new UserRegistryException("404", "User account with userId '" + userId + "' is not found.");
+				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
 			boolean activated = userAccount.isActivated();
 			if (!activated) {

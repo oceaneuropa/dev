@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.orbit.component.model.tier2.appstore.AppManifestRTO;
 import org.orbit.component.model.tier2.appstore.AppQueryRTO;
-import org.orbit.component.model.tier2.appstore.AppStoreException;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.server.WebServiceAware;
 
 public interface AppStoreService extends WebServiceAware {
@@ -17,18 +17,18 @@ public interface AppStoreService extends WebServiceAware {
 	 * 
 	 * @param type
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	List<AppManifestRTO> getApps(String type) throws AppStoreException;
+	List<AppManifestRTO> getApps(String type) throws ServerException;
 
 	/**
 	 * Get apps.
 	 * 
 	 * @param query
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	List<AppManifestRTO> getApps(AppQueryRTO query) throws AppStoreException;
+	List<AppManifestRTO> getApps(AppQueryRTO query) throws ServerException;
 
 	/**
 	 * Get an app.
@@ -36,9 +36,9 @@ public interface AppStoreService extends WebServiceAware {
 	 * @param appId
 	 * @param appVersion
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	AppManifestRTO getApp(String appId, String appVersion) throws AppStoreException;
+	AppManifestRTO getApp(String appId, String appVersion) throws ServerException;
 
 	/**
 	 * Check whether an app exists.
@@ -46,27 +46,27 @@ public interface AppStoreService extends WebServiceAware {
 	 * @param appId
 	 * @param appVersion
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	boolean appExists(String appId, String appVersion) throws AppStoreException;
+	boolean appExists(String appId, String appVersion) throws ServerException;
 
 	/**
 	 * Add an app.
 	 * 
 	 * @param newAppRequest
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	AppManifestRTO addApp(AppManifestRTO newAppRequest) throws AppStoreException;
+	AppManifestRTO addApp(AppManifestRTO newAppRequest) throws ServerException;
 
 	/**
 	 * Update an app.
 	 * 
 	 * @param updateAppRequest
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	boolean updateApp(AppManifestRTO updateAppRequest) throws AppStoreException;
+	boolean updateApp(AppManifestRTO updateAppRequest) throws ServerException;
 
 	/**
 	 * Delete an app.
@@ -74,9 +74,9 @@ public interface AppStoreService extends WebServiceAware {
 	 * @param appId
 	 * @param appVersion
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	boolean deleteApp(String appId, String appVersion) throws AppStoreException;
+	boolean deleteApp(String appId, String appVersion) throws ServerException;
 
 	/**
 	 * Download app.
@@ -84,9 +84,9 @@ public interface AppStoreService extends WebServiceAware {
 	 * @param appId
 	 * @param appVersion
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	byte[] downloadApp(String appId, String appVersion) throws AppStoreException;
+	byte[] downloadApp(String appId, String appVersion) throws ServerException;
 
 	/**
 	 * Download app input stream.
@@ -94,9 +94,9 @@ public interface AppStoreService extends WebServiceAware {
 	 * @param appId
 	 * @param appVersion
 	 * @return
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	InputStream downloadAppInputStream(String appId, String appVersion) throws AppStoreException;
+	InputStream downloadAppInputStream(String appId, String appVersion) throws ServerException;
 
 	/**
 	 * Upload app.
@@ -105,8 +105,8 @@ public interface AppStoreService extends WebServiceAware {
 	 * @param appVersion
 	 * @param fileName
 	 * @param fileInputStream
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	boolean uploadApp(String appId, String appVersion, String fileName, InputStream fileInputStream) throws AppStoreException;
+	boolean uploadApp(String appId, String appVersion, String fileName, InputStream fileInputStream) throws ServerException;
 
 }

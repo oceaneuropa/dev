@@ -7,12 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.model.tier1.config.ConfigRegistryException;
 import org.orbit.component.model.tier1.config.EPath;
 import org.orbit.component.model.tier1.config.RegistryPathVO;
 import org.orbit.component.model.tier1.config.RegistryPropertyVO;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.ServerException;
 
 /**
  * Database implementation of a ConfigRegistry.
@@ -53,15 +53,15 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
-	protected void handleException(Exception e) throws ConfigRegistryException {
-		throw new ConfigRegistryException(StatusDTO.RESP_500, e.getMessage(), e);
+	protected void handleException(Exception e) throws ServerException {
+		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	// ---------------------------------------------------------------------------------------------------------
 	// Path
 	// ---------------------------------------------------------------------------------------------------------
 	@Override
-	public List<EPath> getPaths() throws ConfigRegistryException {
+	public List<EPath> getPaths() throws ServerException {
 		List<EPath> paths = new ArrayList<EPath>();
 		Connection conn = getConnection();
 		try {
@@ -83,7 +83,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean hasPath(EPath path) throws ConfigRegistryException {
+	public boolean hasPath(EPath path) throws ServerException {
 		boolean hasPath = false;
 		Connection conn = getConnection();
 		try {
@@ -97,7 +97,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean addPath(EPath path, String description) throws ConfigRegistryException {
+	public boolean addPath(EPath path, String description) throws ServerException {
 		if (hasPath(path)) {
 			return false;
 		}
@@ -116,7 +116,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean updatePath(EPath path, EPath newPath) throws ConfigRegistryException {
+	public boolean updatePath(EPath path, EPath newPath) throws ServerException {
 		if (hasPath(path)) {
 			return false;
 		}
@@ -133,7 +133,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean updatePathDescription(EPath path, String description) throws ConfigRegistryException {
+	public boolean updatePathDescription(EPath path, String description) throws ServerException {
 		if (hasPath(path)) {
 			return false;
 		}
@@ -150,7 +150,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean removePath(EPath path) throws ConfigRegistryException {
+	public boolean removePath(EPath path) throws ServerException {
 		if (hasPath(path)) {
 			return false;
 		}
@@ -168,7 +168,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean removeAllPaths() throws ConfigRegistryException {
+	public boolean removeAllPaths() throws ServerException {
 		Connection conn = getConnection();
 		try {
 			// delete all paths and all properties in each path.
@@ -186,7 +186,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	// Path properties
 	// ---------------------------------------------------------------------------------------------------------
 	@Override
-	public Map<String, String> getProperties(EPath path) throws ConfigRegistryException {
+	public Map<String, String> getProperties(EPath path) throws ServerException {
 		Map<String, String> properties = new LinkedHashMap<String, String>();
 		Connection conn = getConnection();
 		try {
@@ -207,7 +207,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public String getProperty(EPath path, String name) throws ConfigRegistryException {
+	public String getProperty(EPath path, String name) throws ServerException {
 		String value = null;
 		Connection conn = getConnection();
 		try {
@@ -224,7 +224,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean setProperty(EPath path, String name, String value) throws ConfigRegistryException {
+	public boolean setProperty(EPath path, String name, String value) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.propertyTableHandler.setProperty(conn, this.userId, path.getPathString(), name, value);
@@ -238,7 +238,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean removeProperty(EPath path, String name) throws ConfigRegistryException {
+	public boolean removeProperty(EPath path, String name) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.propertyTableHandler.deleteProperty(conn, this.userId, path.getPathString(), name);
@@ -252,7 +252,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean removeProperties(EPath path) throws ConfigRegistryException {
+	public boolean removeProperties(EPath path) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.propertyTableHandler.deleteProperties(conn, this.userId, path.getPathString());

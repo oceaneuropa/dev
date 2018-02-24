@@ -6,7 +6,7 @@ import org.orbit.component.connector.tier1.auth.AuthConnector;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
 import org.orbit.component.connector.tier3.domain.DomainServiceConnector;
-import org.orbit.component.connector.tier3.transferagent.TransferAgentConnector;
+import org.orbit.component.connector.tier3.nodecontrol.NodeManagementConnector;
 import org.orbit.component.connector.tier4.mission.MissionControlConnector;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -46,7 +46,7 @@ public class Connectors {
 
 	// tier3
 	protected DomainServiceConnector domainServiceConnector;
-	protected TransferAgentConnector transferAgentConnector;
+	protected NodeManagementConnector transferAgentConnector;
 
 	// tier4
 	protected MissionControlConnector missionControlConnector;
@@ -70,7 +70,7 @@ public class Connectors {
 		this.domainServiceConnector = new DomainServiceConnector();
 		this.domainServiceConnector.start(bundleContext);
 
-		this.transferAgentConnector = new TransferAgentConnector();
+		this.transferAgentConnector = new NodeManagementConnector();
 		this.transferAgentConnector.start(bundleContext);
 
 		// tier4

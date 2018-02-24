@@ -1,13 +1,11 @@
 package org.orbit.component.runtime.tier3.domain.ws;
 
-import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
 import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
-import org.origin.common.rest.model.ErrorDTO;
 
 public class ModelConverter {
 
@@ -20,34 +18,6 @@ public class ModelConverter {
 	// ------------------------------------------------------------------------------------------
 	// RTO to DTO
 	// ------------------------------------------------------------------------------------------
-	/**
-	 * Convert DomainException object to Error DTO.
-	 * 
-	 * @param e
-	 * @return
-	 */
-	public ErrorDTO toDTO(DomainException e) {
-		if (e == null) {
-			return null;
-		}
-
-		ErrorDTO dto = new ErrorDTO();
-
-		dto.setCode(e.getCode());
-		dto.setMessage(e.getMessage());
-
-		if (e.getCause() != null) {
-			String causeName = e.getCause().getClass().getName();
-			String causeMessage = e.getCause().getMessage();
-			dto.setDetail(causeName + " " + causeMessage);
-		} else {
-			String causeName = e.getClass().getName();
-			dto.setDetail(causeName);
-		}
-
-		return dto;
-	}
-
 	/**
 	 * Convert MachineConfigRTO to MachineConfigDTO.
 	 * 

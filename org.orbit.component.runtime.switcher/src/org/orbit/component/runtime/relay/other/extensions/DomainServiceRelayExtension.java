@@ -1,8 +1,8 @@
 package org.orbit.component.runtime.relay.other.extensions;
 
 import org.orbit.component.runtime.relay.extensions.DomainServiceWSRelayControl;
+import org.orbit.platform.sdk.WSRelayControl;
 import org.orbit.platform.sdk.extension.impl.ProgramExtensionImpl;
-import org.orbit.platform.sdk.relay.WSRelayControl;
 
 public class DomainServiceRelayExtension extends ProgramExtensionImpl {
 

@@ -1,7 +1,7 @@
 package org.orbit.component.runtime.tier3.nodecontrol.ws.editpolicy.other;
 
 import org.orbit.component.runtime.common.ws.Requests;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.other.NodespaceCreateCommandV1;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.other.NodespaceDeleteCommandV1;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.other.NodespaceExistCommandV1;
@@ -14,9 +14,9 @@ import org.origin.common.rest.model.Request;
 
 public class NodespaceEditPolicyV1 extends AbstractWSEditPolicyV1 {
 
-	protected NodeControlService service;
+	protected NodeManagementService service;
 
-	public NodespaceEditPolicyV1(NodeControlService service) {
+	public NodespaceEditPolicyV1(NodeManagementService service) {
 		this.service = service;
 	}
 

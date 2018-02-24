@@ -1,7 +1,6 @@
 package org.orbit.component.runtime.tier3.domain.command.other;
 
-import org.orbit.component.model.tier3.domain.DomainException;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -10,10 +9,11 @@ import org.origin.common.command.impl.CommandResult;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
+import org.origin.common.rest.server.ServerException;
 
 public class TransferAgentConfigRemoveCommand extends AbstractCommand {
 
-	protected DomainService service;
+	protected DomainManagementService service;
 	protected Request request;
 
 	/**
@@ -21,7 +21,7 @@ public class TransferAgentConfigRemoveCommand extends AbstractCommand {
 	 * @param service
 	 * @param request
 	 */
-	public TransferAgentConfigRemoveCommand(DomainService service, Request request) {
+	public TransferAgentConfigRemoveCommand(DomainManagementService service, Request request) {
 		this.service = service;
 		this.request = request;
 	}
@@ -36,7 +36,7 @@ public class TransferAgentConfigRemoveCommand extends AbstractCommand {
 			String id = (String) this.request.getParameter("id");
 
 			if (!this.service.transferAgentConfigExists(machineId, id)) {
-				DomainException exception = new DomainException("404", "Transfer agent is not found.");
+				ServerException exception = new ServerException("404", "Transfer agent is not found.");
 				Response response = new Response(Response.FAILURE, "Transfer agent does not exist.", exception);
 				responses.setResponse(response);
 				return new CommandResult(response);
@@ -44,7 +44,7 @@ public class TransferAgentConfigRemoveCommand extends AbstractCommand {
 
 			succeed = this.service.deleteTransferAgentConfig(machineId, id);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);
 			responses.setResponse(response);
 			return new CommandResult(response);

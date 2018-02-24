@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.orbit.component.model.tier4.mission.rto.Mission;
-import org.orbit.component.model.tier4.mission.rto.MissionException;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.persistence.MissionPersistenceHandler;
 import org.orbit.component.runtime.tier4.missioncontrol.service.persistence.MissionPersistenceHandlerDatabaseImpl;
@@ -18,6 +17,7 @@ import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -28,31 +28,35 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 
 	protected static Logger LOG = LoggerFactory.getLogger(MissionControlServiceImpl.class);
 
+	protected Map<String, Object> initProperties;
 	protected WSEditPolicies wsEditPolicies;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected MissionPersistenceHandler persistenceHandler;
 
-	public MissionControlServiceImpl() {
+	public MissionControlServiceImpl(Map<String, Object> initProperties) {
+		this.initProperties = initProperties;
 		this.wsEditPolicies = new WSEditPoliciesImpl();
 		this.wsEditPolicies.setService(MissionControlService.class, this);
 	}
 
 	public void start(BundleContext bundleContext) {
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (this.initProperties != null) {
+			properties.putAll(this.initProperties);
+		}
 		// Service properties
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_MISSION_CONTROL_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_MISSION_CONTROL_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_MISSION_CONTROL_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_PASSWORD);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_DRIVER);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_USERNAME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_PASSWORD);
 
-		update(configProps);
+		update(properties);
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(MissionControlService.class, this, props);
@@ -126,9 +130,9 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	 * @param e
 	 * @throws IndexServiceException
 	 */
-	protected void handleException(Exception e) throws MissionException {
+	protected void handleException(Exception e) throws ServerException {
 		e.printStackTrace();
-		throw new MissionException(StatusDTO.RESP_500, e.getMessage(), e);
+		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	protected MissionPersistenceHandler getPersistenceHandler() {
@@ -136,7 +140,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public List<Mission> getMissions(String typeId) throws MissionException {
+	public List<Mission> getMissions(String typeId) throws ServerException {
 		List<Mission> missions = null;
 		try {
 			missions = getPersistenceHandler().getMissions(typeId);
@@ -150,7 +154,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public Mission getMission(String typeId, String name) throws MissionException {
+	public Mission getMission(String typeId, String name) throws ServerException {
 		Mission mission = null;
 		try {
 			mission = getPersistenceHandler().getMission(typeId, name);
@@ -162,18 +166,18 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public Mission createMission(String typeId, String name) throws MissionException {
+	public Mission createMission(String typeId, String name) throws ServerException {
 		Mission mission = null;
 		try {
 			// 1. Check and create mission record
 			boolean nameExists = getPersistenceHandler().nameExists(typeId, name);
 			if (nameExists) {
-				throw new MissionException("404", "Mission with name '" + name + "' already exists.");
+				throw new ServerException("404", "Mission with name '" + name + "' already exists.");
 			}
 
 			mission = getPersistenceHandler().insert(typeId, name);
 			if (mission == null) {
-				throw new MissionException("404", "Mission cannot be created.");
+				throw new ServerException("404", "Mission cannot be created.");
 			}
 
 			// 2. TA - Node -> OS -> create mission instance.
@@ -191,7 +195,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public boolean deleteMission(String typeId, String name) throws MissionException {
+	public boolean deleteMission(String typeId, String name) throws ServerException {
 		boolean succeed = false;
 		try {
 			succeed = getPersistenceHandler().delete(typeId, name);
@@ -203,12 +207,12 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public boolean startMission(String typeId, String name) throws MissionException {
+	public boolean startMission(String typeId, String name) throws ServerException {
 		return false;
 	}
 
 	@Override
-	public boolean stopMission(String typeId, String name) throws MissionException {
+	public boolean stopMission(String typeId, String name) throws ServerException {
 		return false;
 	}
 

@@ -1,7 +1,7 @@
 package org.orbit.component.runtime.tier3.domain.ws.other;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceTimer;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -23,7 +23,7 @@ public class DomainServiceAdapterV1 {
 	protected static Logger LOG = LoggerFactory.getLogger(DomainServiceAdapterV1.class);
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-	protected ServiceTracker<DomainService, DomainService> serviceTracker;
+	protected ServiceTracker<DomainManagementService, DomainManagementService> serviceTracker;
 	protected DomainServiceWSApplication webServiceApp;
 	protected DomainServiceTimer serviceIndexTimer;
 
@@ -31,7 +31,7 @@ public class DomainServiceAdapterV1 {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
-	public DomainService getService() {
+	public DomainManagementService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
@@ -40,10 +40,10 @@ public class DomainServiceAdapterV1 {
 	 * @param bundleContext
 	 */
 	public void start(final BundleContext bundleContext) {
-		this.serviceTracker = new ServiceTracker<DomainService, DomainService>(bundleContext, DomainService.class, new ServiceTrackerCustomizer<DomainService, DomainService>() {
+		this.serviceTracker = new ServiceTracker<DomainManagementService, DomainManagementService>(bundleContext, DomainManagementService.class, new ServiceTrackerCustomizer<DomainManagementService, DomainManagementService>() {
 			@Override
-			public DomainService addingService(ServiceReference<DomainService> reference) {
-				DomainService service = bundleContext.getService(reference);
+			public DomainManagementService addingService(ServiceReference<DomainManagementService> reference) {
+				DomainManagementService service = bundleContext.getService(reference);
 				LOG.info("DomainMgmtService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
@@ -51,12 +51,12 @@ public class DomainServiceAdapterV1 {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<DomainService> reference, DomainService service) {
+			public void modifiedService(ServiceReference<DomainManagementService> reference, DomainManagementService service) {
 				LOG.info("DomainMgmtService [" + service + "] is modified.");
 			}
 
 			@Override
-			public void removedService(ServiceReference<DomainService> reference, DomainService service) {
+			public void removedService(ServiceReference<DomainManagementService> reference, DomainManagementService service) {
 				LOG.info("DomainMgmtService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
@@ -76,7 +76,7 @@ public class DomainServiceAdapterV1 {
 		}
 	}
 
-	protected void doStart(BundleContext bundleContext, DomainService service) {
+	protected void doStart(BundleContext bundleContext, DomainManagementService service) {
 		// Start web service
 		this.webServiceApp = new DomainServiceWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
@@ -87,7 +87,7 @@ public class DomainServiceAdapterV1 {
 		this.serviceIndexTimer.start();
 	}
 
-	protected void doStop(BundleContext bundleContext, DomainService service) {
+	protected void doStop(BundleContext bundleContext, DomainManagementService service) {
 		// Stop index timer
 		if (this.serviceIndexTimer != null) {
 			this.serviceIndexTimer.stop();

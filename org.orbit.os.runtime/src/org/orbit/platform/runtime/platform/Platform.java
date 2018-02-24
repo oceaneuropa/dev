@@ -37,4 +37,6 @@ public interface Platform extends IAdaptable {
 
 	ProgramsAndFeatures getProgramsAndFeatures();
 
+	// void stop(IProcess process);
+
 }

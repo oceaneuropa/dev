@@ -14,9 +14,9 @@ import org.orbit.component.runtime.relay.extensions.DomainServiceWSRelayControl;
 import org.orbit.component.runtime.relay.extensions.MissionControlWSRelayControl;
 import org.orbit.component.runtime.relay.extensions.NodeControlWSRelayControl;
 import org.orbit.component.runtime.relay.extensions.UserRegistryWSRelayControl;
+import org.orbit.platform.sdk.WSRelayControl;
 import org.orbit.platform.sdk.extension.util.ProgramExtension;
 import org.orbit.platform.sdk.extension.util.ProgramExtensions;
-import org.orbit.platform.sdk.relay.WSRelayControl;
 
 public class Extensions extends ProgramExtensions {
 

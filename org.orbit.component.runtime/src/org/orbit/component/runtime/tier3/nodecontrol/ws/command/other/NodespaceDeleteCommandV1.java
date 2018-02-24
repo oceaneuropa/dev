@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.nodecontrol.ws.command.other;
 
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommandResult;
@@ -17,7 +17,7 @@ public class NodespaceDeleteCommandV1 extends AbstractTransferAgentCommandV1 {
 	 * @param service
 	 * @param request
 	 */
-	public NodespaceDeleteCommandV1(NodeControlService service, Request request) {
+	public NodespaceDeleteCommandV1(NodeManagementService service, Request request) {
 		super(service, request);
 	}
 

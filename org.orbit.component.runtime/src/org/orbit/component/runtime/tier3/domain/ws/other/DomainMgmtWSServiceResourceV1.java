@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 import org.orbit.component.runtime.tier3.domain.editpolicy.other.MachineConfigEditPolicy;
 import org.orbit.component.runtime.tier3.domain.editpolicy.other.NodeConfigEditPolicy;
 import org.orbit.component.runtime.tier3.domain.editpolicy.other.TransferAgentConfigEditPolicy;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 
 @Path("/")
@@ -18,9 +18,9 @@ import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 public class DomainMgmtWSServiceResourceV1 extends EditpolicyWSApplicationResource {
 
 	@Inject
-	public DomainService service;
+	public DomainManagementService service;
 
-	protected DomainService getService() throws RuntimeException {
+	protected DomainManagementService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("DomainService is not available.");
 		}
@@ -29,7 +29,7 @@ public class DomainMgmtWSServiceResourceV1 extends EditpolicyWSApplicationResour
 
 	@Override
 	public <T> T getService(Class<T> serviceClass) {
-		if (DomainService.class.isAssignableFrom(serviceClass)) {
+		if (DomainManagementService.class.isAssignableFrom(serviceClass)) {
 			return (T) getService();
 		}
 		return null;
@@ -39,7 +39,7 @@ public class DomainMgmtWSServiceResourceV1 extends EditpolicyWSApplicationResour
 	@Path("ping")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ping() {
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		if (service != null) {
 			return Response.ok(1).build();
 		}

@@ -1,6 +1,6 @@
 package org.orbit.platform.runtime.gaia.ws.command;
 
-import org.orbit.platform.runtime.Requests;
+import org.orbit.platform.runtime.RequestConstants;
 import org.orbit.platform.runtime.gaia.service.GAIA;
 import org.origin.common.rest.editpolicy.AbstractWSEditPolicy;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -24,22 +24,22 @@ public class GaiaWSEditPolicy extends AbstractWSEditPolicy {
 
 		String requestName = request.getRequestName();
 
-		if (Requests.LIST_WORLDS.equals(requestName)) {
+		if (RequestConstants.LIST_WORLDS.equals(requestName)) {
 			return new WorldListWSCommand(gaia);
 
-		} else if (Requests.GET_WORLD.equals(requestName)) {
+		} else if (RequestConstants.GET_WORLD.equals(requestName)) {
 			return new WorldGetWSCommand(gaia);
 
-		} else if (Requests.WORLD_EXIST.equals(requestName)) {
+		} else if (RequestConstants.WORLD_EXIST.equals(requestName)) {
 			return new WorldExistWSCommand(gaia);
 
-		} else if (Requests.CREATE_WORLD.equals(requestName)) {
+		} else if (RequestConstants.CREATE_WORLD.equals(requestName)) {
 			return new WorldCreateWSCommand(gaia);
 
-		} else if (Requests.DELETE_WORLD.equals(requestName)) {
+		} else if (RequestConstants.DELETE_WORLD.equals(requestName)) {
 			return new WorldDeleteWSCommand(gaia);
 
-		} else if (Requests.WORLD_STATUS.equals(requestName)) {
+		} else if (RequestConstants.WORLD_STATUS.equals(requestName)) {
 			return new WorldStatusWSCommand(gaia);
 		}
 

@@ -16,13 +16,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier1.config.ConfigRegistryException;
 import org.orbit.component.model.tier1.config.EPath;
 import org.orbit.component.model.tier1.config.SetPropertiesDTO;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistry;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 
 /*
  * Config registry resource.
@@ -70,7 +70,7 @@ public class ConfigRegistryWSResource extends AbstractWSApplicationResource {
 			ConfigRegistry configRegistry = service.getRegistry(userId);
 			properties = configRegistry.getProperties(new EPath(path));
 
-		} catch (ConfigRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

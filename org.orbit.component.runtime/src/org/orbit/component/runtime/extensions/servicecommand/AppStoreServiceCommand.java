@@ -2,7 +2,7 @@ package org.orbit.component.runtime.extensions.servicecommand;
 
 import java.util.Map;
 
-import org.orbit.platform.sdk.servicecommand.ServiceCommand;
+import org.orbit.platform.sdk.ServiceCommand;
 import org.osgi.framework.BundleContext;
 
 public class AppStoreServiceCommand implements ServiceCommand {

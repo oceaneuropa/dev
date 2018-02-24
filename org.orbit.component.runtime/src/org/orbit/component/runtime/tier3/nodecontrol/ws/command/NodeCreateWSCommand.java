@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeBuilder;
 import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeHelper;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -16,9 +16,9 @@ import org.origin.core.resources.IWorkspace;
 
 public class NodeCreateWSCommand extends AbstractWSCommand {
 
-	protected NodeControlService service;
+	protected NodeManagementService service;
 
-	public NodeCreateWSCommand(NodeControlService service) {
+	public NodeCreateWSCommand(NodeManagementService service) {
 		this.service = service;
 	}
 

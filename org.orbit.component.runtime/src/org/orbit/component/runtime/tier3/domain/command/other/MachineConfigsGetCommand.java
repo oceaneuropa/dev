@@ -3,10 +3,9 @@ package org.orbit.component.runtime.tier3.domain.command.other;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domain.ws.ModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -16,10 +15,11 @@ import org.origin.common.command.impl.CommandResult;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
+import org.origin.common.rest.server.ServerException;
 
 public class MachineConfigsGetCommand extends AbstractCommand {
 
-	protected DomainService service;
+	protected DomainManagementService service;
 	protected Request request;
 
 	/**
@@ -27,7 +27,7 @@ public class MachineConfigsGetCommand extends AbstractCommand {
 	 * @param service
 	 * @param request
 	 */
-	public MachineConfigsGetCommand(DomainService service, Request request) {
+	public MachineConfigsGetCommand(DomainManagementService service, Request request) {
 		this.service = service;
 		this.request = request;
 	}
@@ -46,7 +46,7 @@ public class MachineConfigsGetCommand extends AbstractCommand {
 				}
 			}
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);
 			responses.setResponse("response", response);
 			return new CommandResult(response);

@@ -16,16 +16,18 @@ import org.osgi.framework.ServiceRegistration;
 
 public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService {
 
-	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
+	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected Map<String, ConfigRegistry> userIdToRegistryMap = new HashMap<String, ConfigRegistry>();
 
 	/**
 	 * 
-	 * @param props
+	 * @param initProperties
 	 */
-	public ConfigRegistryServiceDatabaseImpl() {
+	public ConfigRegistryServiceDatabaseImpl(Map<String, Object> initProperties) {
+		this.initProperties = initProperties;
 	}
 
 	/**
@@ -35,17 +37,21 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 	public void start(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".start()");
 
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD);
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (this.initProperties != null) {
+			properties.putAll(this.initProperties);
+		}
 
-		updateProperties(configProps);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD);
+
+		updateProperties(properties);
 
 		initialize();
 
@@ -57,7 +63,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 	 * Stop ConfigRegistryService
 	 * 
 	 */
-	public void stop() {
+	public void stop(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".stop()");
 
 		if (this.serviceRegistry != null) {
@@ -100,8 +106,8 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 		System.out.println("-----------------------------------------------------");
 		System.out.println();
 
-		this.configProps = configProps;
-		this.databaseProperties = getConnectionProperties(this.configProps);
+		this.properties = configProps;
+		this.databaseProperties = getConnectionProperties(this.properties);
 
 		for (Iterator<Entry<String, ConfigRegistry>> itor = this.userIdToRegistryMap.entrySet().iterator(); itor.hasNext();) {
 			Entry<String, ConfigRegistry> entry = itor.next();
@@ -118,10 +124,10 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 	 * @return
 	 */
 	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = (String) this.configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER);
-		String url = (String) this.configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL);
-		String username = (String) this.configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME);
-		String password = (String) this.configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD);
+		String driver = (String) this.properties.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER);
+		String url = (String) this.properties.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL);
+		String username = (String) this.properties.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME);
+		String password = (String) this.properties.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD);
 		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
@@ -146,17 +152,17 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 
 	@Override
 	public String getName() {
-		String name = (String) this.configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
+		String name = (String) this.properties.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL);
+		String hostURL = (String) this.properties.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(OrbitConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -165,7 +171,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = (String) this.configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT);
+		String contextRoot = (String) this.properties.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT);
 		return contextRoot;
 	}
 

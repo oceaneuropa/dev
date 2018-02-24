@@ -18,8 +18,8 @@ public class RelaysCommand {
 	public static final String AUTH = "auth";
 	public static final String CONFIGR_EGISTRY = "config_registry";
 	public static final String APP_STORE = "app_store";
-	public static final String DOMAIN = "domain";
-	public static final String NODE_CONTROL = "node_control";
+	public static final String DOMAIN_MANAGEMENT = "domain_management";
+	public static final String NODE_MANAGEMENT = "node_management";
 	public static final String MISSION_CONTROL = "mission_control";
 
 	protected BundleContext bundleContext;

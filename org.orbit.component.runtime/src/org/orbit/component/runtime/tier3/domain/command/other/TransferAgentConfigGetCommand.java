@@ -1,9 +1,8 @@
 package org.orbit.component.runtime.tier3.domain.command.other;
 
-import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
 import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domain.ws.ModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -13,10 +12,11 @@ import org.origin.common.command.impl.CommandResult;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
+import org.origin.common.rest.server.ServerException;
 
 public class TransferAgentConfigGetCommand extends AbstractCommand {
 
-	protected DomainService service;
+	protected DomainManagementService service;
 	protected Request request;
 
 	/**
@@ -24,7 +24,7 @@ public class TransferAgentConfigGetCommand extends AbstractCommand {
 	 * @param service
 	 * @param request
 	 */
-	public TransferAgentConfigGetCommand(DomainService service, Request request) {
+	public TransferAgentConfigGetCommand(DomainManagementService service, Request request) {
 		this.service = service;
 		this.request = request;
 	}
@@ -44,7 +44,7 @@ public class TransferAgentConfigGetCommand extends AbstractCommand {
 				taConfigDTO.setMachineId(machineId);
 			}
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);
 			responses.setResponse("response", response);
 			return new CommandResult(response);

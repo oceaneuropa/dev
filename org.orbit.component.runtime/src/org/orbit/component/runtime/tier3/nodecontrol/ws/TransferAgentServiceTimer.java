@@ -6,42 +6,42 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitConstants;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.origin.common.thread.ServiceIndexTimer;
 import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.util.DateUtil;
 
-public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvider, NodeControlService, IndexItem> implements ServiceIndexTimer<IndexProvider, NodeControlService, IndexItem> {
+public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvider, NodeManagementService, IndexItem> implements ServiceIndexTimer<IndexProvider, NodeManagementService, IndexItem> {
 
-	protected NodeControlService service;
+	protected NodeManagementService service;
 
 	/**
 	 * 
 	 * @param indexProvider
 	 * @param service
 	 */
-	public TransferAgentServiceTimer(IndexProvider indexProvider, NodeControlService service) {
+	public TransferAgentServiceTimer(IndexProvider indexProvider, NodeManagementService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
 	}
 
 	@Override
-	public synchronized NodeControlService getService() {
+	public synchronized NodeManagementService getService() {
 		return this.service;
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, NodeControlService service) throws IOException {
+	public IndexItem getIndex(IndexProvider indexProvider, NodeManagementService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(OrbitConstants.TRANSFER_AGENT_INDEXER_ID, OrbitConstants.TRANSFER_AGENT_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, NodeControlService service) throws IOException {
+	public IndexItem addIndex(IndexProvider indexProvider, NodeManagementService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -63,7 +63,7 @@ public class TransferAgentServiceTimer extends ServiceIndexTimerImpl<IndexProvid
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, NodeControlService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexProvider indexProvider, NodeManagementService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();

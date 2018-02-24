@@ -11,44 +11,54 @@ import java.util.Properties;
 
 import org.orbit.component.model.tier2.appstore.AppManifestRTO;
 import org.orbit.component.model.tier2.appstore.AppQueryRTO;
-import org.orbit.component.model.tier2.appstore.AppStoreException;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class AppStoreServiceDatabaseImpl implements AppStoreService {
 
-	protected Map<Object, Object> configProps = new HashMap<Object, Object>();
+	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 
 	protected AppCategoryTableHandler categoryTableHandler;
 	protected AppMetadataTableHandler appTableHandler;
 
-	public AppStoreServiceDatabaseImpl() {
+	/**
+	 * 
+	 * @param initProperties
+	 */
+	public AppStoreServiceDatabaseImpl(Map<String, Object> initProperties) {
+		this.initProperties = initProperties;
 	}
 
 	/**
-	 * Start AppStoreService
 	 * 
+	 * @param bundleContext
 	 */
 	public void start(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".start()");
 
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD);
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (this.initProperties != null) {
+			properties.putAll(this.initProperties);
+		}
 
-		updateProperties(configProps);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD);
+
+		updateProperties(properties);
 
 		String database = null;
 		try {
@@ -72,7 +82,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	 * Stop AppStoreService
 	 * 
 	 */
-	public void stop() {
+	public void stop(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".stop()");
 
 		// Unregister AppStoreService
@@ -116,8 +126,8 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 		System.out.println("-----------------------------------------------------");
 		System.out.println();
 
-		this.configProps = configProps;
-		this.databaseProperties = getConnectionProperties(this.configProps);
+		this.properties = configProps;
+		this.databaseProperties = getConnectionProperties(this.properties);
 	}
 
 	/**
@@ -126,10 +136,10 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	 * @return
 	 */
 	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = (String) this.configProps.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER);
-		String url = (String) this.configProps.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_URL);
-		String username = (String) this.configProps.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME);
-		String password = (String) this.configProps.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD);
+		String driver = (String) this.properties.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER);
+		String url = (String) this.properties.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_URL);
+		String username = (String) this.properties.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME);
+		String password = (String) this.properties.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD);
 		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
@@ -158,17 +168,17 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 
 	@Override
 	public String getName() {
-		String name = (String) this.configProps.get(OrbitConstants.COMPONENT_APP_STORE_NAME);
+		String name = (String) this.properties.get(OrbitConstants.COMPONENT_APP_STORE_NAME);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.configProps.get(OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
+		String hostURL = (String) this.properties.get(OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.configProps.get(OrbitConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(OrbitConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -177,22 +187,22 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = (String) this.configProps.get(OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
+		String contextRoot = (String) this.properties.get(OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
 		return contextRoot;
 	}
 
 	/**
 	 * 
 	 * @param e
-	 * @throws AppStoreException
+	 * @throws ServerException
 	 */
-	protected void handleSQLException(SQLException e) throws AppStoreException {
+	protected void handleSQLException(SQLException e) throws ServerException {
 		e.printStackTrace();
-		throw new AppStoreException(StatusDTO.RESP_500, e.getMessage(), e);
+		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	@Override
-	public List<AppManifestRTO> getApps(String type) throws AppStoreException {
+	public List<AppManifestRTO> getApps(String type) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			AppQueryRTO query = new AppQueryRTO();
@@ -207,7 +217,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public List<AppManifestRTO> getApps(AppQueryRTO query) throws AppStoreException {
+	public List<AppManifestRTO> getApps(AppQueryRTO query) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.appTableHandler.getApps(conn, query);
@@ -220,7 +230,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public boolean appExists(String appId, String appVersion) throws AppStoreException {
+	public boolean appExists(String appId, String appVersion) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.appTableHandler.appExists(conn, appId, appVersion);
@@ -233,7 +243,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public AppManifestRTO getApp(String appId, String appVersion) throws AppStoreException {
+	public AppManifestRTO getApp(String appId, String appVersion) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.appTableHandler.getApp(conn, appId, appVersion);
@@ -246,13 +256,13 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public AppManifestRTO addApp(AppManifestRTO createAppRequest) throws AppStoreException {
+	public AppManifestRTO addApp(AppManifestRTO createAppRequest) throws ServerException {
 		Connection conn = getConnection();
 
 		String appId = createAppRequest.getAppId();
 		String appVersion = createAppRequest.getAppVersion();
 		if (appExists(appId, appVersion)) {
-			throw new AppStoreException(StatusDTO.RESP_500, "App already exists.");
+			throw new ServerException(StatusDTO.RESP_500, "App already exists.");
 		}
 
 		try {
@@ -266,7 +276,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public boolean updateApp(AppManifestRTO updateAppRequest) throws AppStoreException {
+	public boolean updateApp(AppManifestRTO updateAppRequest) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.appTableHandler.update(conn, updateAppRequest);
@@ -279,7 +289,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public boolean deleteApp(String appId, String appVersion) throws AppStoreException {
+	public boolean deleteApp(String appId, String appVersion) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.appTableHandler.delete(conn, appId, appVersion);
@@ -292,7 +302,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public byte[] downloadApp(String appId, String appVersion) throws AppStoreException {
+	public byte[] downloadApp(String appId, String appVersion) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.appTableHandler.getAppContent(conn, appId, appVersion);
@@ -305,7 +315,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public InputStream downloadAppInputStream(String appId, String appVersion) throws AppStoreException {
+	public InputStream downloadAppInputStream(String appId, String appVersion) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.appTableHandler.getAppContentInputStream(conn, appId, appVersion);
@@ -318,7 +328,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	}
 
 	@Override
-	public boolean uploadApp(String appId, String appVersion, String fileName, InputStream fileInputStream) throws AppStoreException {
+	public boolean uploadApp(String appId, String appVersion, String fileName, InputStream fileInputStream) throws ServerException {
 		Connection conn = getConnection();
 		try {
 			boolean succeed = this.appTableHandler.setAppContent(conn, appId, appVersion, fileInputStream);

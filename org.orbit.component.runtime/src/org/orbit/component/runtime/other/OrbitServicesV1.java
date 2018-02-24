@@ -13,9 +13,9 @@ import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.component.runtime.tier1.config.ws.other.ConfigRegistryServiceAdapterV1;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.other.AppStoreServiceAdapterV1;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domain.ws.other.DomainServiceAdapterV1;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.other.TransferAgentServiceAdapterV1;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.other.MissionControlAdapterV1;
@@ -187,11 +187,11 @@ public class OrbitServicesV1 {
 	}
 
 	// tier3
-	public DomainService getDomainService() {
+	public DomainManagementService getDomainService() {
 		return (this.domainServiceAdapter != null) ? this.domainServiceAdapter.getService() : null;
 	}
 
-	public NodeControlService getTransferAgentService() {
+	public NodeManagementService getTransferAgentService() {
 		return (this.transferAgentServiceAdapter != null) ? this.transferAgentServiceAdapter.getService() : null;
 	}
 

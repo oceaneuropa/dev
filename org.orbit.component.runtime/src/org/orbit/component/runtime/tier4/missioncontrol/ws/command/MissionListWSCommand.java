@@ -9,11 +9,11 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.component.model.tier4.mission.dto.MissionDTO;
 import org.orbit.component.model.tier4.mission.rto.Mission;
 import org.orbit.component.model.tier4.mission.rto.MissionConverter;
-import org.orbit.component.model.tier4.mission.rto.MissionException;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.server.ServerException;
 
 public class MissionListWSCommand extends AbstractWSCommand {
 
@@ -39,7 +39,7 @@ public class MissionListWSCommand extends AbstractWSCommand {
 				missionDTOs.add(missionDTO);
 			}
 
-		} catch (MissionException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
 
 			ErrorDTO error = handleError(e, "500", true);

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domain.DomainServiceClient;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier3.domain.DomainServiceClientImpl;
@@ -12,7 +12,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<DomainServiceClient> implements DomainServiceConnector {
+public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<DomainManagementClient> implements DomainServiceConnector {
 
 	/**
 	 * 
@@ -28,12 +28,12 @@ public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceC
 	}
 
 	@Override
-	protected DomainServiceClient createService(Map<String, Object> properties) {
+	protected DomainManagementClient createService(Map<String, Object> properties) {
 		return new DomainServiceClientImpl(null, properties);
 	}
 
 	@Override
-	protected void updateService(DomainServiceClient domainService, Map<String, Object> properties) {
+	protected void updateService(DomainManagementClient domainService, Map<String, Object> properties) {
 		// System.out.println(getClass().getSimpleName() + ".updateService()");
 		domainService.update(properties);
 

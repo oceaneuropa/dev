@@ -8,8 +8,8 @@ import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.config.ConfigRegistry;
 import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier3.domain.DomainServiceClient;
-import org.orbit.component.api.tier3.transferagent.TransferAgent;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeManagementClient;
 import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
@@ -45,8 +45,8 @@ public class OrbitClients {
 	protected ServiceConnectorAdapter<AppStore> appStoreConnector;
 
 	// tier3
-	protected ServiceConnectorAdapter<DomainServiceClient> domainServiceConnector;
-	protected ServiceConnectorAdapter<TransferAgent> transferAgentConnector;
+	protected ServiceConnectorAdapter<DomainManagementClient> domainServiceConnector;
+	protected ServiceConnectorAdapter<NodeManagementClient> transferAgentConnector;
 
 	// tier4
 	protected ServiceConnectorAdapter<MissionControlClient> missionControlConnector;
@@ -70,10 +70,10 @@ public class OrbitClients {
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
-		this.domainServiceConnector = new ServiceConnectorAdapter<DomainServiceClient>(DomainServiceClient.class);
+		this.domainServiceConnector = new ServiceConnectorAdapter<DomainManagementClient>(DomainManagementClient.class);
 		this.domainServiceConnector.start(bundleContext);
 
-		this.transferAgentConnector = new ServiceConnectorAdapter<TransferAgent>(TransferAgent.class);
+		this.transferAgentConnector = new ServiceConnectorAdapter<NodeManagementClient>(NodeManagementClient.class);
 		this.transferAgentConnector.start(bundleContext);
 
 		// tier4
@@ -260,7 +260,7 @@ public class OrbitClients {
 		return auth;
 	}
 
-	public DomainServiceClient getDomainService(Map<?, ?> properties) {
+	public DomainManagementClient getDomainService(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
@@ -272,11 +272,11 @@ public class OrbitClients {
 		return getDomainService(url);
 	}
 
-	public DomainServiceClient getDomainService(String url) {
+	public DomainManagementClient getDomainService(String url) {
 		return getDomainService(null, null, url);
 	}
 
-	public DomainServiceClient getDomainService(String realm, String username, String url) {
+	public DomainManagementClient getDomainService(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -285,7 +285,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		DomainServiceClient domainService = this.domainServiceConnector.getService(properties);
+		DomainManagementClient domainService = this.domainServiceConnector.getService(properties);
 		if (domainService == null) {
 			LOG.error("DomainService is not available.");
 			throw new IllegalStateException("DomainService is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
@@ -293,7 +293,7 @@ public class OrbitClients {
 		return domainService;
 	}
 
-	public TransferAgent getTransferAgent(Map<?, ?> properties) {
+	public NodeManagementClient getTransferAgent(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
@@ -305,11 +305,11 @@ public class OrbitClients {
 		return getTransferAgent(url);
 	}
 
-	public TransferAgent getTransferAgent(String url) {
+	public NodeManagementClient getTransferAgent(String url) {
 		return getTransferAgent(null, null, url);
 	}
 
-	public TransferAgent getTransferAgent(String realm, String username, String url) {
+	public NodeManagementClient getTransferAgent(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -318,7 +318,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		TransferAgent transferAgent = this.transferAgentConnector.getService(properties);
+		NodeManagementClient transferAgent = this.transferAgentConnector.getService(properties);
 		if (transferAgent == null) {
 			LOG.error("TransferAgent is not available.");
 			throw new IllegalStateException("TransferAgent is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");

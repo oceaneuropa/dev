@@ -26,13 +26,13 @@ import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppManifestRTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryRTO;
-import org.orbit.component.model.tier2.appstore.AppStoreException;
 import org.orbit.component.model.tier2.appstore.ModelConverter;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 
 /*
  * Apps resource.
@@ -93,7 +93,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 					appDTOs.add(appDTO);
 				}
 			}
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -125,7 +125,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 					appDTOs.add(appDTO);
 				}
 			}
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -157,7 +157,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 			}
 			appDTO = ModelConverter.getInstance().toDTO(app);
 
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -185,7 +185,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 			boolean exists = service.appExists(appId, appVersion);
 			result.put("exists", exists);
 
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -230,7 +230,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 
 			newAppDTO = ModelConverter.getInstance().toDTO(newApp);
 
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -261,7 +261,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 			AppManifestRTO appToUpdate = ModelConverter.getInstance().toRTO(updateAppRequestDTO);
 			succeed = service.updateApp(appToUpdate);
 
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -299,7 +299,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 		try {
 			succeed = service.deleteApp(appId, appVersion);
 
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -356,7 +356,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 
 			succeed = service.uploadApp(appId, appVersion, fileName, uploadedInputStream);
 
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		} finally {
@@ -411,7 +411,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 
 			fileContentBytes = service.downloadApp(appId, appVersion);
 
-		} catch (AppStoreException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

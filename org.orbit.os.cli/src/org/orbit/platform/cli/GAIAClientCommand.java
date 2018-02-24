@@ -9,7 +9,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.platform.api.PlatformClients;
 import org.orbit.platform.api.PlatformConstants;
-import org.orbit.platform.api.Requests;
+import org.orbit.platform.api.RequestConstants;
 import org.orbit.platform.api.gaia.GAIAClient;
 import org.orbit.platform.model.gaia.dto.GAIAModelConverter;
 import org.orbit.platform.model.gaia.dto.World;
@@ -104,7 +104,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 		try {
 			GAIAClient gaia = getGAIA();
 
-			Request request = new Request(Requests.LIST_WORLDS);
+			Request request = new Request(RequestConstants.LIST_WORLDS);
 			Response response = gaia.sendRequest(request);
 
 			World[] worlds = GAIAModelConverter.INSTANCE.getWorlds(response);
@@ -130,7 +130,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 		try {
 			GAIAClient gaia = getGAIA();
 
-			Request request = new Request(Requests.GET_WORLD);
+			Request request = new Request(RequestConstants.GET_WORLD);
 			request.setParameter("name", name);
 
 			Response response = gaia.sendRequest(request);
@@ -159,7 +159,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 		try {
 			GAIAClient gaia = getGAIA();
 
-			Request request = new Request(Requests.WORLD_EXIST);
+			Request request = new Request(RequestConstants.WORLD_EXIST);
 			request.setParameter("name", name);
 
 			Response response = gaia.sendRequest(request);
@@ -180,7 +180,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 		try {
 			GAIAClient gaia = getGAIA();
 
-			Request request = new Request(Requests.CREATE_WORLD);
+			Request request = new Request(RequestConstants.CREATE_WORLD);
 			request.setParameter("name", name);
 
 			Response response = gaia.sendRequest(request);
@@ -202,7 +202,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 		try {
 			GAIAClient gaia = getGAIA();
 
-			Request request = new Request(Requests.DELETE_WORLD);
+			Request request = new Request(RequestConstants.DELETE_WORLD);
 			request.setParameter("name", name);
 
 			Response response = gaia.sendRequest(request);
@@ -224,7 +224,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 		try {
 			GAIAClient gaia = getGAIA();
 
-			Request request = new Request(Requests.WORLD_STATUS);
+			Request request = new Request(RequestConstants.WORLD_STATUS);
 			request.setParameter("name", name);
 
 			Response response = gaia.sendRequest(request);

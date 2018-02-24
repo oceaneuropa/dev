@@ -1,7 +1,7 @@
 package org.orbit.component.runtime.tier3.nodecontrol.ws.editpolicy;
 
 import org.orbit.component.runtime.common.ws.Requests;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeCreateWSCommand;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeDeleteWSCommand;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeExistWSCommand;
@@ -23,7 +23,7 @@ public class NodeWSEditPolicy extends AbstractWSEditPolicy {
 
 	@Override
 	public WSCommand getCommand(Request request) {
-		NodeControlService service = getService(NodeControlService.class);
+		NodeManagementService service = getService(NodeManagementService.class);
 		if (service == null) {
 			return null;
 		}

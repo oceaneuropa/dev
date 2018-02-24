@@ -8,9 +8,9 @@ import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlSe
 import org.orbit.component.runtime.tier4.missioncontrol.ws.editpolicy.MissionWSEditPolicy;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.platform.sdk.URLProvider;
+import org.orbit.platform.sdk.URLProviderImpl;
 import org.orbit.platform.sdk.extension.util.ProgramExtension;
-import org.orbit.platform.sdk.urlprovider.URLProvider;
-import org.orbit.platform.sdk.urlprovider.URLProviderImpl;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

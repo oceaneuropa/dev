@@ -10,6 +10,7 @@ Import-Package: javax.ws.rs.client;version="2.0.0",
  org.orbit.platform.api,
  org.orbit.platform.api.gaia,
  org.orbit.platform.api.platform,
+ org.orbit.platform.model.platform.dto,
  org.osgi.framework;version="1.3.0",
  org.slf4j;version="1.7.25"
 Bundle-ActivationPolicy: lazy

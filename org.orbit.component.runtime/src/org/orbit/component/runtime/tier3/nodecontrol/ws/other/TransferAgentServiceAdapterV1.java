@@ -1,7 +1,7 @@
 package org.orbit.component.runtime.tier3.nodecontrol.ws.other;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.TransferAgentServiceTimer;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.TransferAgentWSApplication;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.editpolicy.NodeWSEditPolicy;
@@ -25,7 +25,7 @@ public class TransferAgentServiceAdapterV1 {
 	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentServiceAdapterV1.class);
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-	protected ServiceTracker<NodeControlService, NodeControlService> serviceTracker;
+	protected ServiceTracker<NodeManagementService, NodeManagementService> serviceTracker;
 	protected TransferAgentWSApplication webService;
 	protected TransferAgentServiceTimer serviceIndexTimer;
 
@@ -33,7 +33,7 @@ public class TransferAgentServiceAdapterV1 {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
-	public NodeControlService getService() {
+	public NodeManagementService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
@@ -42,10 +42,10 @@ public class TransferAgentServiceAdapterV1 {
 	 * @param bundleContext
 	 */
 	public void start(final BundleContext bundleContext) {
-		this.serviceTracker = new ServiceTracker<NodeControlService, NodeControlService>(bundleContext, NodeControlService.class, new ServiceTrackerCustomizer<NodeControlService, NodeControlService>() {
+		this.serviceTracker = new ServiceTracker<NodeManagementService, NodeManagementService>(bundleContext, NodeManagementService.class, new ServiceTrackerCustomizer<NodeManagementService, NodeManagementService>() {
 			@Override
-			public NodeControlService addingService(ServiceReference<NodeControlService> reference) {
-				NodeControlService service = bundleContext.getService(reference);
+			public NodeManagementService addingService(ServiceReference<NodeManagementService> reference) {
+				NodeManagementService service = bundleContext.getService(reference);
 				LOG.info("TransferAgentService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
@@ -53,12 +53,12 @@ public class TransferAgentServiceAdapterV1 {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<NodeControlService> reference, NodeControlService service) {
+			public void modifiedService(ServiceReference<NodeManagementService> reference, NodeManagementService service) {
 				LOG.info("TransferAgentService [" + service + "] is modified.");
 			}
 
 			@Override
-			public void removedService(ServiceReference<NodeControlService> reference, NodeControlService service) {
+			public void removedService(ServiceReference<NodeManagementService> reference, NodeManagementService service) {
 				LOG.info("TransferAgentService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
@@ -83,7 +83,7 @@ public class TransferAgentServiceAdapterV1 {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void doStart(BundleContext bundleContext, NodeControlService service) {
+	protected void doStart(BundleContext bundleContext, NodeManagementService service) {
 		// Install web service edit policies
 		WSEditPolicies editPolicies = service.getEditPolicies();
 		editPolicies.uninstallEditPolicy(NodeWSEditPolicy.ID); // ensure NodeWSEditPolicy instance is not duplicated
@@ -104,7 +104,7 @@ public class TransferAgentServiceAdapterV1 {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void doStop(BundleContext bundleContext, NodeControlService service) {
+	protected void doStop(BundleContext bundleContext, NodeManagementService service) {
 		// Stop index timer
 		if (this.serviceIndexTimer != null) {
 			this.serviceIndexTimer.stop();

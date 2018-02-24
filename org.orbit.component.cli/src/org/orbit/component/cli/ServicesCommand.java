@@ -17,7 +17,7 @@ import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.other.AuthConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.other.AppStoreConnector;
-import org.orbit.component.api.tier3.domain.DomainServiceClient;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
 import org.orbit.component.cli.util.ResourcePropertyHelper;
 import org.orbit.component.cli.util.ServicesCommandHelper;
@@ -233,11 +233,11 @@ public class ServicesCommand implements Annotated {
 	}
 
 	protected void listDomainServices() throws ClientException {
-		List<LoadBalanceResource<DomainServiceClient>> resources = ServicesCommandHelper.INSTANCE.getDomainServiceResources(this.domainServiceConnector);
+		List<LoadBalanceResource<DomainManagementClient>> resources = ServicesCommandHelper.INSTANCE.getDomainServiceResources(this.domainServiceConnector);
 
 		String[][] rows = new String[resources.size()][DOMAIN_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
-		for (LoadBalanceResource<DomainServiceClient> resource : resources) {
+		for (LoadBalanceResource<DomainManagementClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
 			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_SERVICE_NAMESPACE);
 			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_SERVICE_NAME);

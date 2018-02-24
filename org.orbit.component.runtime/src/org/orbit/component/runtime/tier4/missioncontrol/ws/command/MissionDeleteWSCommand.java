@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeBuilder;
 import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeHelper;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;

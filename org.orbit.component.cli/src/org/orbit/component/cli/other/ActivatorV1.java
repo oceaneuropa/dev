@@ -5,9 +5,9 @@ import java.util.Map;
 
 import org.orbit.component.cli.AppStoreCommand;
 import org.orbit.component.cli.AuthCommand;
-import org.orbit.component.cli.DomainServiceCommand;
+import org.orbit.component.cli.DomainManagementCommand;
 import org.orbit.component.cli.ServicesCommand;
-import org.orbit.component.cli.TransferAgentCommand;
+import org.orbit.component.cli.NodeManagementCommand;
 import org.orbit.component.cli.UserRegistryCommand;
 import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
 import org.orbit.infra.api.indexes.IndexServiceUtil;
@@ -31,8 +31,8 @@ public class ActivatorV1 implements BundleActivator {
 	protected AuthCommand authCommand;
 	protected UserRegistryCommand userRegistryCommand;
 	protected AppStoreCommand appStoreCommand;
-	protected DomainServiceCommand domainMgmtCommand;
-	protected TransferAgentCommand transferAgentCommand;
+	protected DomainManagementCommand domainMgmtCommand;
+	protected NodeManagementCommand transferAgentCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -80,10 +80,10 @@ public class ActivatorV1 implements BundleActivator {
 		this.appStoreCommand = new AppStoreCommand(bundleContext);
 		this.appStoreCommand.start();
 
-		this.domainMgmtCommand = new DomainServiceCommand(bundleContext);
+		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
 		this.domainMgmtCommand.start();
 
-		this.transferAgentCommand = new TransferAgentCommand();
+		this.transferAgentCommand = new NodeManagementCommand();
 		this.transferAgentCommand.start(bundleContext);
 	}
 

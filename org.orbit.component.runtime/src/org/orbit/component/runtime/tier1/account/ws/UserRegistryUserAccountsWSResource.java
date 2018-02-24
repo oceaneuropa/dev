@@ -21,12 +21,12 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.component.model.tier1.account.dto.UserAccountActionDTO;
 import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
 import org.orbit.component.model.tier1.account.rto.UserAccount;
-import org.orbit.component.model.tier1.account.rto.UserAccountModelConverter;
-import org.orbit.component.model.tier1.account.rto.UserRegistryException;
+import org.orbit.component.model.tier1.account.rto.ModelConverter;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 
 /*
  * User registry resource.
@@ -78,11 +78,11 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 			List<UserAccount> userAccounts = service.getUserAccounts();
 			if (userAccounts != null) {
 				for (UserAccount userAccount : userAccounts) {
-					UserAccountDTO userAccountDTO = UserAccountModelConverter.getInstance().toDTO(userAccount);
+					UserAccountDTO userAccountDTO = ModelConverter.getInstance().toDTO(userAccount);
 					userAccountDTOs.add(userAccountDTO);
 				}
 			}
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -110,9 +110,9 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", userId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
-			userAccountDTO = UserAccountModelConverter.getInstance().toDTO(userAccount);
+			userAccountDTO = ModelConverter.getInstance().toDTO(userAccount);
 
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -139,7 +139,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 			boolean exists = service.userAccountExists(userId);
 			result.put("exists", exists);
 
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -165,13 +165,13 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 		boolean succeed = false;
 		UserRegistryService service = getService();
 		try {
-			UserAccount newUserAccountRequest = UserAccountModelConverter.getInstance().toRTO(newUserAccountRequestDTO);
+			UserAccount newUserAccountRequest = ModelConverter.getInstance().toRTO(newUserAccountRequestDTO);
 			UserAccount newUserAccount = service.registerUserAccount(newUserAccountRequest);
 			if (newUserAccount != null) {
 				succeed = true;
 			}
 
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -204,10 +204,10 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 		boolean succeed = false;
 		UserRegistryService service = getService();
 		try {
-			UserAccount updateUserAccountRequest = UserAccountModelConverter.getInstance().toRTO(updateUserAccountRequestDTO);
+			UserAccount updateUserAccountRequest = ModelConverter.getInstance().toRTO(updateUserAccountRequestDTO);
 			succeed = service.updateUserAccount(updateUserAccountRequest);
 
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -239,7 +239,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 			boolean activated = service.isUserAccountActivated(userId);
 			result.put("activated", activated);
 
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -321,7 +321,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -351,7 +351,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 		try {
 			succeed = service.deleteUserAccount(userId);
 
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

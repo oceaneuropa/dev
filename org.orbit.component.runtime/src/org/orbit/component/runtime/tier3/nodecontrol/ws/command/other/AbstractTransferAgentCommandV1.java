@@ -1,12 +1,12 @@
 package org.orbit.component.runtime.tier3.nodecontrol.ws.command.other;
 
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.rest.model.Request;
 
 public abstract class AbstractTransferAgentCommandV1 extends AbstractCommand {
 
-	protected NodeControlService service;
+	protected NodeManagementService service;
 	protected Request request;
 
 	/**
@@ -14,16 +14,16 @@ public abstract class AbstractTransferAgentCommandV1 extends AbstractCommand {
 	 * @param service
 	 * @param request
 	 */
-	public AbstractTransferAgentCommandV1(NodeControlService service, Request request) {
+	public AbstractTransferAgentCommandV1(NodeManagementService service, Request request) {
 		this.service = service;
 		this.request = request;
 	}
 
-	public NodeControlService getService() {
+	public NodeManagementService getService() {
 		return service;
 	}
 
-	public void setService(NodeControlService service) {
+	public void setService(NodeManagementService service) {
 		this.service = service;
 	}
 

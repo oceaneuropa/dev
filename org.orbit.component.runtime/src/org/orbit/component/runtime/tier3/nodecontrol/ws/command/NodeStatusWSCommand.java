@@ -3,15 +3,15 @@ package org.orbit.component.runtime.tier3.nodecontrol.ws.command;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.Request;
 
 public class NodeStatusWSCommand extends AbstractWSCommand {
 
-	protected NodeControlService service;
+	protected NodeManagementService service;
 
-	public NodeStatusWSCommand(NodeControlService service) {
+	public NodeStatusWSCommand(NodeManagementService service) {
 		this.service = service;
 	}
 

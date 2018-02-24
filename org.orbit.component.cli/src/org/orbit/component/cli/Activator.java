@@ -22,9 +22,9 @@ public class Activator implements BundleActivator {
 	protected AppStoreCommand appStoreCommand;
 
 	// tier3
-	protected DomainServiceCommand domainMgmtCommand;
-	protected TransferAgentCommand transferAgentCommand;
-	protected TransferAgentCommandGeneric transferAgentCommandGeneric;
+	protected DomainManagementCommand domainMgmtCommand;
+	protected NodeManagementCommand transferAgentCommand;
+	protected NodeManagementCommandGeneric transferAgentCommandGeneric;
 
 	// tier4
 	protected MissionControlCommand missionControlCommand;
@@ -49,13 +49,13 @@ public class Activator implements BundleActivator {
 		this.appStoreCommand.start();
 
 		// tier3
-		this.domainMgmtCommand = new DomainServiceCommand(bundleContext);
+		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
 		this.domainMgmtCommand.start();
 
-		this.transferAgentCommand = new TransferAgentCommand();
+		this.transferAgentCommand = new NodeManagementCommand();
 		this.transferAgentCommand.start(bundleContext);
 
-		this.transferAgentCommandGeneric = new TransferAgentCommandGeneric();
+		this.transferAgentCommandGeneric = new NodeManagementCommandGeneric();
 		this.transferAgentCommandGeneric.start(bundleContext);
 
 		// tier4

@@ -6,42 +6,42 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitConstants;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.origin.common.thread.ServiceIndexTimerImpl;
 import org.origin.common.thread.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
-public class DomainServiceTimer extends ServiceIndexTimerImpl<IndexProvider, DomainService, IndexItem> implements ServiceIndexTimer<IndexProvider, DomainService, IndexItem> {
+public class DomainServiceTimer extends ServiceIndexTimerImpl<IndexProvider, DomainManagementService, IndexItem> implements ServiceIndexTimer<IndexProvider, DomainManagementService, IndexItem> {
 
-	protected DomainService service;
+	protected DomainManagementService service;
 
 	/**
 	 * 
 	 * @param indexProvider
 	 * @param service
 	 */
-	public DomainServiceTimer(IndexProvider indexProvider, DomainService service) {
+	public DomainServiceTimer(IndexProvider indexProvider, DomainManagementService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
 	}
 
 	@Override
-	public synchronized DomainService getService() {
+	public synchronized DomainManagementService getService() {
 		return this.service;
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, DomainService service) throws IOException {
+	public IndexItem getIndex(IndexProvider indexProvider, DomainManagementService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(OrbitConstants.DOMAIN_SERVICE_INDEXER_ID, OrbitConstants.DOMAIN_SERVICE_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, DomainService service) throws IOException {
+	public IndexItem addIndex(IndexProvider indexProvider, DomainManagementService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -61,7 +61,7 @@ public class DomainServiceTimer extends ServiceIndexTimerImpl<IndexProvider, Dom
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, DomainService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexProvider indexProvider, DomainManagementService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();

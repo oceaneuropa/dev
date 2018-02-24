@@ -12,7 +12,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.orbit.component.model.tier4.mission.dto.Mission;
-import org.orbit.component.model.tier4.mission.dto.MissionControlModelConverter;
+import org.orbit.component.model.tier4.mission.dto.ModelConverter;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.client.ServiceClientCommand;
@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class MissionControlCommand extends ServiceClientCommand {
 
-	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(NodeManagementCommand.class);
 
 	protected static String[] MISSION_COLUMN_NAMES = new String[] { "Name" };
 
@@ -52,11 +52,11 @@ public class MissionControlCommand extends ServiceClientCommand {
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
 		this.properties = properties;
 
-		OSGiServiceUtil.register(bundleContext, TransferAgentCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, NodeManagementCommand.class.getName(), this, props);
 	}
 
 	public void stop(final BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(TransferAgentCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(NodeManagementCommand.class.getName(), this);
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class MissionControlCommand extends ServiceClientCommand {
 			Request request = new Request(Requests.GET_MISSIONS);
 			Response response = missionControl.sendRequest(request);
 
-			Mission[] missions = MissionControlModelConverter.INSTANCE.getMissions(response);
+			Mission[] missions = ModelConverter.INSTANCE.getMissions(response);
 			String[][] rows = new String[missions.length][MISSION_COLUMN_NAMES.length];
 			int rowIndex = 0;
 			for (Mission mission : missions) {

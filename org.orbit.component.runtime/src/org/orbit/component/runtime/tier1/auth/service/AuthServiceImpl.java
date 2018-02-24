@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.orbit.component.model.tier1.account.rto.UserAccount;
-import org.orbit.component.model.tier1.account.rto.UserRegistryException;
 import org.orbit.component.model.tier1.auth.AuthException;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
@@ -17,6 +16,7 @@ import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.origin.common.Activator;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.JWTUtil;
 import org.origin.common.util.PropertyUtil;
@@ -28,12 +28,18 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class AuthServiceImpl implements AuthService {
 
-	private Map<Object, Object> properties = new HashMap<Object, Object>();
-	private TokenManager tokenManager;
-	private String tokenSecret;
-	private ServiceRegistration<?> serviceRegistry;
+	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> properties = new HashMap<Object, Object>();
+	protected TokenManager tokenManager;
+	protected String tokenSecret;
+	protected ServiceRegistration<?> serviceRegistry;
 
-	public AuthServiceImpl() {
+	/**
+	 * 
+	 * @param initProperties
+	 */
+	public AuthServiceImpl(Map<String, Object> initProperties) {
+		this.initProperties = initProperties;
 	}
 
 	/**
@@ -41,14 +47,17 @@ public class AuthServiceImpl implements AuthService {
 	 * @param bundleContext
 	 */
 	public void start(BundleContext bundleContext) {
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, configProps, OrbitConstants.COMPONENT_AUTH_TOKEN_SECRET);
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (this.initProperties != null) {
+			properties.putAll(this.initProperties);
+		}
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_TOKEN_SECRET);
 
-		update(configProps);
+		update(properties);
 
 		// Start service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -186,7 +195,7 @@ public class AuthServiceImpl implements AuthService {
 				matchUsernamePassword = userRegistryService.matchUsernamePassword(username, password);
 			}
 
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
 			throw new AuthException(e, "Authentication Failed", e.getMessage());
 		}
@@ -265,7 +274,7 @@ public class AuthServiceImpl implements AuthService {
 				throw new AuthException("Service Unavailable", "UserRegistry service is not available.");
 			}
 			userAccount = userRegistryService.getUserAccount(username);
-		} catch (UserRegistryException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
 			throw new AuthException(e, "User Registry Exception", e.getMessage());
 		}

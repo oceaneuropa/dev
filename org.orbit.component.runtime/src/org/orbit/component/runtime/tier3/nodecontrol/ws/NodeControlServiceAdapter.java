@@ -4,13 +4,13 @@ import java.util.Map;
 
 import org.orbit.component.runtime.Extensions;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.editpolicy.NodeWSEditPolicy;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.platform.sdk.URLProvider;
+import org.orbit.platform.sdk.URLProviderImpl;
 import org.orbit.platform.sdk.extension.util.ProgramExtension;
-import org.orbit.platform.sdk.urlprovider.URLProvider;
-import org.orbit.platform.sdk.urlprovider.URLProviderImpl;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -29,7 +29,7 @@ public class NodeControlServiceAdapter {
 	protected static Logger LOG = LoggerFactory.getLogger(NodeControlServiceAdapter.class);
 
 	protected Map<Object, Object> properties;
-	protected ServiceTracker<NodeControlService, NodeControlService> serviceTracker;
+	protected ServiceTracker<NodeManagementService, NodeManagementService> serviceTracker;
 	protected TransferAgentWSApplication webApp;
 	protected TransferAgentServiceTimer indexTimer;
 	protected ProgramExtension urlProviderExtension;
@@ -42,7 +42,7 @@ public class NodeControlServiceAdapter {
 		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
 	}
 
-	public NodeControlService getService() {
+	public NodeManagementService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
@@ -51,10 +51,10 @@ public class NodeControlServiceAdapter {
 	 * @param bundleContext
 	 */
 	public void start(final BundleContext bundleContext) {
-		this.serviceTracker = new ServiceTracker<NodeControlService, NodeControlService>(bundleContext, NodeControlService.class, new ServiceTrackerCustomizer<NodeControlService, NodeControlService>() {
+		this.serviceTracker = new ServiceTracker<NodeManagementService, NodeManagementService>(bundleContext, NodeManagementService.class, new ServiceTrackerCustomizer<NodeManagementService, NodeManagementService>() {
 			@Override
-			public NodeControlService addingService(ServiceReference<NodeControlService> reference) {
-				NodeControlService service = bundleContext.getService(reference);
+			public NodeManagementService addingService(ServiceReference<NodeManagementService> reference) {
+				NodeManagementService service = bundleContext.getService(reference);
 				LOG.info("TransferAgentService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
@@ -62,12 +62,12 @@ public class NodeControlServiceAdapter {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<NodeControlService> reference, NodeControlService service) {
+			public void modifiedService(ServiceReference<NodeManagementService> reference, NodeManagementService service) {
 				LOG.info("TransferAgentService [" + service + "] is modified.");
 			}
 
 			@Override
-			public void removedService(ServiceReference<NodeControlService> reference, NodeControlService service) {
+			public void removedService(ServiceReference<NodeManagementService> reference, NodeManagementService service) {
 				LOG.info("TransferAgentService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
@@ -92,7 +92,7 @@ public class NodeControlServiceAdapter {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void doStart(BundleContext bundleContext, NodeControlService service) {
+	protected void doStart(BundleContext bundleContext, NodeManagementService service) {
 		// Install web service edit policies
 		WSEditPolicies editPolicies = service.getEditPolicies();
 		editPolicies.uninstallEditPolicy(NodeWSEditPolicy.ID); // ensure NodeWSEditPolicy instance is not duplicated
@@ -120,7 +120,7 @@ public class NodeControlServiceAdapter {
 	 * @param bundleContext
 	 * @param service
 	 */
-	protected void doStop(BundleContext bundleContext, NodeControlService service) {
+	protected void doStop(BundleContext bundleContext, NodeManagementService service) {
 		// Unregister URL provider extension
 		if (this.urlProviderExtension != null) {
 			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);

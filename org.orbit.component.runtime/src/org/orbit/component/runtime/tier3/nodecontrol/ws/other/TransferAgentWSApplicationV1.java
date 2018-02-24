@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier3.nodecontrol.ws.other;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.TransferAgentWSResource;
 import org.osgi.framework.BundleContext;
 
@@ -12,7 +12,7 @@ import org.osgi.framework.BundleContext;
  */
 public class TransferAgentWSApplicationV1 extends OrbitWSApplication {
 
-	protected NodeControlService service;
+	protected NodeManagementService service;
 
 	/**
 	 * 
@@ -20,20 +20,20 @@ public class TransferAgentWSApplicationV1 extends OrbitWSApplication {
 	 * @param service
 	 * @param feature
 	 */
-	public TransferAgentWSApplicationV1(final BundleContext bundleContext, final NodeControlService service, int feature) {
+	public TransferAgentWSApplicationV1(final BundleContext bundleContext, final NodeManagementService service, int feature) {
 		super(service.getContextRoot(), feature);
 		this.service = service;
 
 		register(new AbstractBinder() {
 			@Override
 			protected void configure() {
-				bind(service).to(NodeControlService.class);
+				bind(service).to(NodeManagementService.class);
 			}
 		});
 		register(TransferAgentWSResource.class);
 	}
 
-	public NodeControlService getService() {
+	public NodeManagementService getService() {
 		return this.service;
 	}
 

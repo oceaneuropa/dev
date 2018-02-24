@@ -24,12 +24,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier4.mission.rto.MissionException;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 
 /**
  * https://docs.oracle.com/cd/E19798-01/821-1841/6nmq2cp1v/index.html
@@ -141,8 +141,8 @@ public class MissionControlWSResource extends AbstractWSApplicationResource {
 
 			} catch (Exception e) {
 				String statusCode = String.valueOf(Status.INTERNAL_SERVER_ERROR.getStatusCode());
-				if (e instanceof MissionException) {
-					statusCode = ((MissionException) e).getCode();
+				if (e instanceof ServerException) {
+					statusCode = ((ServerException) e).getCode();
 				}
 				ErrorDTO error = handleError(e, statusCode, true);
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();

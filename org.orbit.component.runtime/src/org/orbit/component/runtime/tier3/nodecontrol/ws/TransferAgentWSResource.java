@@ -24,12 +24,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.transferagent.rto.TransferAgentException;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 
 /**
  * https://docs.oracle.com/cd/E19798-01/821-1841/6nmq2cp1v/index.html
@@ -53,9 +53,9 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 public class TransferAgentWSResource extends AbstractWSApplicationResource {
 
 	@Inject
-	public NodeControlService service;
+	public NodeManagementService service;
 
-	public NodeControlService getService() throws RuntimeException {
+	public NodeManagementService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("TransferAgentService is not available.");
 		}
@@ -132,7 +132,7 @@ public class TransferAgentWSResource extends AbstractWSApplicationResource {
 		}
 		System.out.println("-----------------------------------------------------------------");
 
-		NodeControlService service = getService();
+		NodeManagementService service = getService();
 
 		WSCommand command = service.getEditPolicies().getCommand(request);
 		if (command != null) {
@@ -141,8 +141,8 @@ public class TransferAgentWSResource extends AbstractWSApplicationResource {
 
 			} catch (Exception e) {
 				String statusCode = String.valueOf(Status.INTERNAL_SERVER_ERROR.getStatusCode());
-				if (e instanceof TransferAgentException) {
-					statusCode = ((TransferAgentException) e).getCode();
+				if (e instanceof ServerException) {
+					statusCode = ((ServerException) e).getCode();
 				}
 				ErrorDTO error = handleError(e, statusCode, true);
 				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();

@@ -7,13 +7,13 @@ import java.util.Map;
 
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 
-public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, DomainService> implements ServiceIndexTimerV1<IndexProvider, DomainService> {
+public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, DomainManagementService> implements ServiceIndexTimerV1<IndexProvider, DomainManagementService> {
 
 	protected IndexItem indexItem;
 
@@ -23,12 +23,12 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 	}
 
 	@Override
-	public synchronized DomainService getService() {
+	public synchronized DomainManagementService getService() {
 		return OrbitServices.getInstance().getDomainService();
 	}
 
 	@Override
-	public synchronized void updateIndex(IndexProvider indexProvider, DomainService service) throws IOException {
+	public synchronized void updateIndex(IndexProvider indexProvider, DomainManagementService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();

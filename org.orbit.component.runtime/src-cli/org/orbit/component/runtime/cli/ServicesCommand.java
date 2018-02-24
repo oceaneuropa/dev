@@ -10,8 +10,8 @@ import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
-import org.orbit.component.runtime.tier3.domain.service.DomainServiceDatabaseImpl;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlServiceImpl;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementServiceImpl;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementServiceImpl;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.util.PropertyUtil;
@@ -28,8 +28,8 @@ public class ServicesCommand {
 	public static final String AUTH = "auth";
 	public static final String CONFIGR_EGISTRY = "config_registry";
 	public static final String APP_STORE = "app_store";
-	public static final String DOMAIN = "domain";
-	public static final String TRANSFER_AGENT = "transfer_agent";
+	public static final String DOMAIN_MANAGEMENT = "domain_management";
+	public static final String NODE_MANAGEMENT = "node_management";
 	public static final String MISSION_CONTROL = "mission_control";
 
 	protected BundleContext bundleContext;
@@ -51,8 +51,8 @@ public class ServicesCommand {
 	protected boolean autoStartDomainMgmtService;
 	protected boolean autoStartTransferAgentService;
 
-	protected DomainServiceDatabaseImpl domainService;
-	protected NodeControlServiceImpl transferAgentService;
+	protected DomainManagementServiceImpl domainManagementService;
+	protected NodeManagementServiceImpl nodeManagementService;
 
 	// tier4
 	protected boolean autoStartMissionControlService;
@@ -118,10 +118,10 @@ public class ServicesCommand {
 
 		// tier3
 		if (autoStartDomainMgmtService) {
-			startservice(ServicesCommand.DOMAIN);
+			startservice(ServicesCommand.DOMAIN_MANAGEMENT);
 		}
 		if (autoStartTransferAgentService) {
-			startservice(ServicesCommand.TRANSFER_AGENT);
+			startservice(ServicesCommand.NODE_MANAGEMENT);
 		}
 
 		// tier4
@@ -143,8 +143,8 @@ public class ServicesCommand {
 		stopservice(ServicesCommand.MISSION_CONTROL);
 
 		// tier3
-		stopservice(ServicesCommand.TRANSFER_AGENT);
-		stopservice(ServicesCommand.DOMAIN);
+		stopservice(ServicesCommand.NODE_MANAGEMENT);
+		stopservice(ServicesCommand.DOMAIN_MANAGEMENT);
 
 		// tier2
 		stopservice(ServicesCommand.APP_STORE);
@@ -185,11 +185,11 @@ public class ServicesCommand {
 		} else if (APP_STORE.equalsIgnoreCase(service)) {
 			startAppStoreService(this.bundleContext);
 
-		} else if (DOMAIN.equalsIgnoreCase(service)) {
-			startDomainService(this.bundleContext);
+		} else if (DOMAIN_MANAGEMENT.equalsIgnoreCase(service)) {
+			startDomainManagementService(this.bundleContext);
 
-		} else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
-			startTransferAgentService(this.bundleContext);
+		} else if (NODE_MANAGEMENT.equalsIgnoreCase(service)) {
+			startNodeManagementService(this.bundleContext);
 
 		} else if (MISSION_CONTROL.equalsIgnoreCase(service)) {
 			startMissionControlService(this.bundleContext);
@@ -221,11 +221,11 @@ public class ServicesCommand {
 		} else if (APP_STORE.equalsIgnoreCase(service)) {
 			stopAppStoreService(this.bundleContext);
 
-		} else if (DOMAIN.equalsIgnoreCase(service)) {
-			stopDomainService(this.bundleContext);
+		} else if (DOMAIN_MANAGEMENT.equalsIgnoreCase(service)) {
+			stopDomainManagementService(this.bundleContext);
 
-		} else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
-			stopTransferAgentService(this.bundleContext);
+		} else if (NODE_MANAGEMENT.equalsIgnoreCase(service)) {
+			stopNodeManagementService(this.bundleContext);
 
 		} else if (MISSION_CONTROL.equalsIgnoreCase(service)) {
 			stopMissionControlService(this.bundleContext);
@@ -236,7 +236,7 @@ public class ServicesCommand {
 	}
 
 	public void startUserRegistryService(BundleContext bundleContext) {
-		UserRegistryServiceImpl userRegistryService = new UserRegistryServiceImpl();
+		UserRegistryServiceImpl userRegistryService = new UserRegistryServiceImpl(null);
 		userRegistryService.start(bundleContext);
 		this.userRegistryService = userRegistryService;
 	}
@@ -249,7 +249,7 @@ public class ServicesCommand {
 	}
 
 	public void startAuthService(BundleContext bundleContext) {
-		AuthServiceImpl authService = new AuthServiceImpl();
+		AuthServiceImpl authService = new AuthServiceImpl(null);
 		authService.start(bundleContext);
 		this.authService = authService;
 	}
@@ -262,59 +262,59 @@ public class ServicesCommand {
 	}
 
 	public void startConfigRegistryService(BundleContext bundleContext) {
-		ConfigRegistryServiceDatabaseImpl configRegistryService = new ConfigRegistryServiceDatabaseImpl();
+		ConfigRegistryServiceDatabaseImpl configRegistryService = new ConfigRegistryServiceDatabaseImpl(null);
 		configRegistryService.start(bundleContext);
 		this.configRegistryService = configRegistryService;
 	}
 
 	public void stopConfigRegistryService(BundleContext bundleContext) {
 		if (this.configRegistryService != null) {
-			this.configRegistryService.stop();
+			this.configRegistryService.stop(bundleContext);
 			this.configRegistryService = null;
 		}
 	}
 
 	public void startAppStoreService(BundleContext bundleContext) {
-		AppStoreServiceDatabaseImpl appStoreService = new AppStoreServiceDatabaseImpl();
+		AppStoreServiceDatabaseImpl appStoreService = new AppStoreServiceDatabaseImpl(null);
 		appStoreService.start(bundleContext);
 		this.appStoreService = appStoreService;
 	}
 
 	public void stopAppStoreService(BundleContext bundleContext) {
 		if (this.appStoreService != null) {
-			this.appStoreService.stop();
+			this.appStoreService.stop(bundleContext);
 			this.appStoreService = null;
 		}
 	}
 
-	public void startDomainService(BundleContext bundleContext) {
-		DomainServiceDatabaseImpl domainService = new DomainServiceDatabaseImpl();
+	public void startDomainManagementService(BundleContext bundleContext) {
+		DomainManagementServiceImpl domainService = new DomainManagementServiceImpl(null);
 		domainService.start(bundleContext);
-		this.domainService = domainService;
+		this.domainManagementService = domainService;
 	}
 
-	public void stopDomainService(BundleContext bundleContext) {
-		if (this.domainService != null) {
-			this.domainService.stop(bundleContext);
-			this.domainService = null;
+	public void stopDomainManagementService(BundleContext bundleContext) {
+		if (this.domainManagementService != null) {
+			this.domainManagementService.stop(bundleContext);
+			this.domainManagementService = null;
 		}
 	}
 
-	public void startTransferAgentService(BundleContext bundleContext) {
-		NodeControlServiceImpl transferAgentService = new NodeControlServiceImpl();
+	public void startNodeManagementService(BundleContext bundleContext) {
+		NodeManagementServiceImpl transferAgentService = new NodeManagementServiceImpl(null);
 		transferAgentService.start(bundleContext);
-		this.transferAgentService = transferAgentService;
+		this.nodeManagementService = transferAgentService;
 	}
 
-	public void stopTransferAgentService(BundleContext bundleContext) {
-		if (this.transferAgentService != null) {
-			this.transferAgentService.stop(bundleContext);
-			this.transferAgentService = null;
+	public void stopNodeManagementService(BundleContext bundleContext) {
+		if (this.nodeManagementService != null) {
+			this.nodeManagementService.stop(bundleContext);
+			this.nodeManagementService = null;
 		}
 	}
 
 	public void startMissionControlService(BundleContext bundleContext) {
-		MissionControlServiceImpl missionControlService = new MissionControlServiceImpl();
+		MissionControlServiceImpl missionControlService = new MissionControlServiceImpl(null);
 		missionControlService.start(bundleContext);
 		this.missionControlService = missionControlService;
 	}

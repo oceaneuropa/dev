@@ -16,13 +16,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 
 /*
  * DomainService Machines resource.
@@ -45,9 +45,9 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 public class DomainServiceWSMachinesResource extends AbstractWSApplicationResource {
 
 	@Inject
-	public DomainService service;
+	public DomainManagementService service;
 
-	protected DomainService getService() throws RuntimeException {
+	protected DomainManagementService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("DomainService is not available.");
 		}
@@ -64,7 +64,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMachines() {
-		DomainService service = getService();
+		DomainManagementService service = getService();
 
 		List<MachineConfigDTO> machineConfigDTOs = new ArrayList<MachineConfigDTO>();
 		try {
@@ -75,7 +75,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 					machineConfigDTOs.add(machineConfigDTO);
 				}
 			}
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -96,7 +96,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 	public Response getMachine(@PathParam("machineId") String machineId) {
 		MachineConfigDTO machineConfigDTO = null;
 
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		try {
 			MachineConfigRTO machineConfig = service.getMachineConfig(machineId);
 			if (machineConfig == null) {
@@ -105,7 +105,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 			}
 			machineConfigDTO = ModelConverter.getInstance().toDTO(machineConfig);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -130,7 +130,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 		}
 
 		boolean succeed = false;
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		try {
 			String machineId = addMachineRequestDTO.getId();
 			if (machineId == null || machineId.isEmpty()) {
@@ -145,7 +145,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 			MachineConfigRTO addMachineRequest = ModelConverter.getInstance().toRTO(addMachineRequestDTO);
 			succeed = service.addMachineConfig(addMachineRequest);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -175,13 +175,13 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 		}
 
 		boolean succeed = false;
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		try {
 			MachineConfigRTO updateMachineRequest = ModelConverter.getInstance().toRTO(updateMachineRequestDTO);
 			List<String> fieldsToUpdate = updateMachineRequestDTO.getFieldsToUpdate();
 			succeed = service.updateMachineConfig(updateMachineRequest, fieldsToUpdate);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -215,7 +215,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 		}
 
 		boolean succeed = false;
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		try {
 			if (!service.machineConfigExists(machineId)) {
 				StatusDTO statusDTO = new StatusDTO(StatusDTO.RESP_200, StatusDTO.FAILED, "Machine does not exist.");
@@ -223,7 +223,7 @@ public class DomainServiceWSMachinesResource extends AbstractWSApplicationResour
 			}
 			succeed = service.deleteMachineConfig(machineId);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

@@ -5,7 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.editpolicy.other.NodeEditPolicyV1;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.editpolicy.other.NodespaceEditPolicyV1;
 import org.origin.common.command.IEditingDomain;
@@ -27,9 +27,9 @@ import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
 public class TransferAgentServiceResourceV1 extends EditpolicyWSApplicationResource {
 
 	@Inject
-	public NodeControlService service;
+	public NodeManagementService service;
 
-	public NodeControlService getService() throws RuntimeException {
+	public NodeManagementService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("TransferAgentService is not available.");
 		}
@@ -38,7 +38,7 @@ public class TransferAgentServiceResourceV1 extends EditpolicyWSApplicationResou
 
 	@Override
 	protected IEditingDomain getEditingDomain() {
-		NodeControlService service = getService();
+		NodeManagementService service = getService();
 		// return service.getEditingDomain();
 		return null;
 	}

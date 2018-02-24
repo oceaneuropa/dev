@@ -16,13 +16,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,9 +47,9 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	protected static Logger LOG = LoggerFactory.getLogger(DomainServiceWSNodesResource.class);
 
 	@Inject
-	public DomainService service;
+	public DomainManagementService service;
 
-	protected DomainService getService() throws RuntimeException {
+	protected DomainManagementService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("DomainService is not available.");
 		}
@@ -68,7 +68,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getNodes(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId) {
-		DomainService service = getService();
+		DomainManagementService service = getService();
 
 		List<NodeConfigDTO> nodeConfigDTOs = new ArrayList<NodeConfigDTO>();
 		try {
@@ -80,7 +80,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 				}
 			}
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -102,7 +102,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	public Response getNode(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId, @PathParam("nodeId") String nodeId) {
 		NodeConfigDTO nodeConfigDTO = null;
 
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		try {
 			NodeConfigRTO nodeConfig = service.getNodeConfig(machineId, transferAgentId, nodeId);
 			if (nodeConfig == null) {
@@ -112,7 +112,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 
 			nodeConfigDTO = ModelConverter.getInstance().toDTO(nodeConfig);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -139,7 +139,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		}
 
 		boolean succeed = false;
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		try {
 			String nodeId = addNodeRequestDTO.getId();
 			if (nodeId == null || nodeId.isEmpty()) {
@@ -155,7 +155,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 
 			succeed = service.addNodeConfig(machineId, transferAgentId, addNodeRequest);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -187,14 +187,14 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		}
 
 		boolean succeed = false;
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		try {
 			NodeConfigRTO updateNodeRequest = ModelConverter.getInstance().toRTO(updateNodeRequestDTO);
 			List<String> fieldsToUpdate = updateNodeRequestDTO.getFieldsToUpdate();
 
 			succeed = service.updateNodeConfig(machineId, transferAgentId, updateNodeRequest, fieldsToUpdate);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -228,11 +228,11 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		}
 
 		boolean succeed = false;
-		DomainService service = getService();
+		DomainManagementService service = getService();
 		try {
 			succeed = service.deleteNodeConfig(machineId, transferAgentId, nodeId);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

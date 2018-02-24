@@ -2,9 +2,8 @@ package org.orbit.component.runtime.tier3.domain.command.other;
 
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.DomainException;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -13,10 +12,11 @@ import org.origin.common.command.impl.CommandResult;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
+import org.origin.common.rest.server.ServerException;
 
 public class MachineConfigUpdateCommand extends AbstractCommand {
 
-	protected DomainService service;
+	protected DomainManagementService service;
 	protected Request request;
 
 	/**
@@ -24,7 +24,7 @@ public class MachineConfigUpdateCommand extends AbstractCommand {
 	 * @param service
 	 * @param request
 	 */
-	public MachineConfigUpdateCommand(DomainService service, Request request) {
+	public MachineConfigUpdateCommand(DomainManagementService service, Request request) {
 		this.service = service;
 		this.request = request;
 	}
@@ -42,7 +42,7 @@ public class MachineConfigUpdateCommand extends AbstractCommand {
 			List<String> fieldsToUpdate = (List<String>) this.request.getParameter("fieldsToUpdate");
 
 			if (!this.service.machineConfigExists(machineId)) {
-				DomainException exception = new DomainException("404", "Machine is not found.");
+				ServerException exception = new ServerException("404", "Machine is not found.");
 				Response response = new Response(Response.FAILURE, "Machine does not exist.", exception);
 				responses.setResponse(response);
 				return new CommandResult(response);
@@ -55,7 +55,7 @@ public class MachineConfigUpdateCommand extends AbstractCommand {
 
 			succeed = this.service.updateMachineConfig(updateMachineRequest, fieldsToUpdate);
 
-		} catch (DomainException e) {
+		} catch (ServerException e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);
 			responses.setResponse(response);
 			return new CommandResult(response);

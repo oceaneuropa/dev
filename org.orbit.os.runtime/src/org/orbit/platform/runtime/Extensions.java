@@ -7,30 +7,28 @@
  *******************************************************************************/
 package org.orbit.platform.runtime;
 
-import org.orbit.platform.runtime.extensions.servicecontrol.GAIAServiceControl;
+import org.orbit.platform.runtime.extensions.servicecontrol.GAIAServiceActivator;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.extension.util.ProgramExtension;
 import org.orbit.platform.sdk.extension.util.ProgramExtensions;
-import org.orbit.platform.sdk.servicecontrol.ServiceControl;
 
 public class Extensions extends ProgramExtensions {
 
 	public static Extensions INSTANCE = new Extensions();
 
-	public static final String GAIA_SERVICE_EXTENSION_ID = "component.gaia.service";
-
 	@Override
 	public void createExtensions() {
-		createServiceControlExtensions();
+		createServiceActivatorExtensions();
 	}
 
-	protected void createServiceControlExtensions() {
-		String extensionTypeId = ServiceControl.EXTENSION_TYPE_ID;
+	protected void createServiceActivatorExtensions() {
+		String typeId = ServiceActivator.TYPE_ID;
 
-		ProgramExtension gaiaServiceExtension = new ProgramExtension(extensionTypeId, GAIA_SERVICE_EXTENSION_ID);
-		gaiaServiceExtension.setName("GAIA service");
-		gaiaServiceExtension.setDescription("GAIA service description");
-		gaiaServiceExtension.adapt(ServiceControl.class, GAIAServiceControl.INSTANCE);
-		addExtension(gaiaServiceExtension);
+		ProgramExtension gaiaActivatorExtension = new ProgramExtension(typeId, GAIAServiceActivator.ID);
+		gaiaActivatorExtension.setName("GAIA service activator");
+		gaiaActivatorExtension.setDescription("GAIA service activator description");
+		gaiaActivatorExtension.adapt(ServiceActivator.class, GAIAServiceActivator.INSTANCE);
+		addExtension(gaiaActivatorExtension);
 	}
 
 }

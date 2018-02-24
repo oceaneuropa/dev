@@ -23,7 +23,7 @@ public class GAIAImpl implements GAIA {
 	protected static Logger LOG = LoggerFactory.getLogger(GAIAImpl.class);
 
 	protected BundleContext bundleContext;
-	protected Map<String, Object> configProperties;
+	protected Map<String, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected WSEditPolicies wsEditPolicies;
@@ -33,15 +33,13 @@ public class GAIAImpl implements GAIA {
 
 	/**
 	 * 
-	 * @param bundleContext
-	 * @param configProperties
+	 * @param initProperties
 	 */
-	public GAIAImpl(BundleContext bundleContext, Map<String, Object> configProperties) {
-		if (configProperties == null) {
-			configProperties = new HashMap<String, Object>();
+	public GAIAImpl(Map<String, Object> initProperties) {
+		if (initProperties == null) {
+			initProperties = new HashMap<String, Object>();
 		}
-		this.bundleContext = bundleContext;
-		this.configProperties = configProperties;
+		this.initProperties = initProperties;
 
 		this.wsEditPolicies = new WSEditPoliciesImpl();
 		this.wsEditPolicies.setService(GAIA.class, this);
@@ -113,8 +111,8 @@ public class GAIAImpl implements GAIA {
 			return (T) object;
 		}
 		// If config properties cannot be found, read from config.ini file
-		if (this.configProperties != null && String.class.equals(valueClass)) {
-			String value = (String) this.configProperties.get(key.toString());
+		if (this.initProperties != null && String.class.equals(valueClass)) {
+			String value = (String) this.initProperties.get(key.toString());
 			if (value != null) {
 				return (T) value;
 			}
@@ -122,14 +120,15 @@ public class GAIAImpl implements GAIA {
 		return null;
 	}
 
-	@Override
-	public synchronized void start() {
+	public synchronized void start(BundleContext bundleContext) {
 		LOG.info("start()");
 		if (isStarted()) {
 			LOG.info("GAIA is readly started.");
 			return;
 		}
 		this.isStarted.set(true);
+
+		this.bundleContext = bundleContext;
 
 		// load properties
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
@@ -155,8 +154,7 @@ public class GAIAImpl implements GAIA {
 		}
 	}
 
-	@Override
-	public synchronized void stop() {
+	public synchronized void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			LOG.info("GAIA is readly stopped.");
@@ -168,6 +166,8 @@ public class GAIAImpl implements GAIA {
 			this.serviceRegistry.unregister();
 			this.serviceRegistry = null;
 		}
+
+		this.bundleContext = null;
 	}
 
 	@Override

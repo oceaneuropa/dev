@@ -1,7 +1,7 @@
 package org.orbit.component.runtime.tier3.nodecontrol.ws.command.other;
 
-import org.orbit.component.model.tier3.transferagent.dto.INodeDTO;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.model.tier3.nodecontrol.dto.INodeDTO;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.util.NodeModelConverter;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -20,7 +20,7 @@ public class NodeGetCommandV1 extends AbstractTransferAgentCommandV1 {
 	 * @param service
 	 * @param request
 	 */
-	public NodeGetCommandV1(NodeControlService service, Request request) {
+	public NodeGetCommandV1(NodeManagementService service, Request request) {
 		super(service, request);
 	}
 

@@ -4,12 +4,12 @@ import java.util.Map;
 
 import org.orbit.component.runtime.Extensions;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.tier3.domain.service.DomainService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.platform.sdk.URLProvider;
+import org.orbit.platform.sdk.URLProviderImpl;
 import org.orbit.platform.sdk.extension.util.ProgramExtension;
-import org.orbit.platform.sdk.urlprovider.URLProvider;
-import org.orbit.platform.sdk.urlprovider.URLProviderImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -27,7 +27,7 @@ public class DomainServiceAdapter {
 	protected static Logger LOG = LoggerFactory.getLogger(DomainServiceAdapter.class);
 
 	protected Map<Object, Object> properties;
-	protected ServiceTracker<DomainService, DomainService> serviceTracker;
+	protected ServiceTracker<DomainManagementService, DomainManagementService> serviceTracker;
 	protected DomainServiceWSApplication webApp;
 	protected DomainServiceTimer indexTimer;
 	protected ProgramExtension urlProviderExtension;
@@ -36,7 +36,7 @@ public class DomainServiceAdapter {
 		this.properties = properties;
 	}
 
-	public DomainService getService() {
+	public DomainManagementService getService() {
 		return (this.serviceTracker != null) ? serviceTracker.getService() : null;
 	}
 
@@ -49,10 +49,10 @@ public class DomainServiceAdapter {
 	 * @param bundleContext
 	 */
 	public void start(final BundleContext bundleContext) {
-		this.serviceTracker = new ServiceTracker<DomainService, DomainService>(bundleContext, DomainService.class, new ServiceTrackerCustomizer<DomainService, DomainService>() {
+		this.serviceTracker = new ServiceTracker<DomainManagementService, DomainManagementService>(bundleContext, DomainManagementService.class, new ServiceTrackerCustomizer<DomainManagementService, DomainManagementService>() {
 			@Override
-			public DomainService addingService(ServiceReference<DomainService> reference) {
-				DomainService service = bundleContext.getService(reference);
+			public DomainManagementService addingService(ServiceReference<DomainManagementService> reference) {
+				DomainManagementService service = bundleContext.getService(reference);
 				LOG.info("DomainService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
@@ -60,12 +60,12 @@ public class DomainServiceAdapter {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<DomainService> reference, DomainService service) {
+			public void modifiedService(ServiceReference<DomainManagementService> reference, DomainManagementService service) {
 				LOG.info("DomainService [" + service + "] is modified.");
 			}
 
 			@Override
-			public void removedService(ServiceReference<DomainService> reference, DomainService service) {
+			public void removedService(ServiceReference<DomainManagementService> reference, DomainManagementService service) {
 				LOG.info("DomainService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
@@ -85,7 +85,7 @@ public class DomainServiceAdapter {
 		}
 	}
 
-	protected void doStart(BundleContext bundleContext, DomainService service) {
+	protected void doStart(BundleContext bundleContext, DomainManagementService service) {
 		// Start web app
 		this.webApp = new DomainServiceWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webApp.start(bundleContext);
@@ -103,7 +103,7 @@ public class DomainServiceAdapter {
 		Extensions.INSTANCE.addExtension(this.urlProviderExtension);
 	}
 
-	protected void doStop(BundleContext bundleContext, DomainService service) {
+	protected void doStop(BundleContext bundleContext, DomainManagementService service) {
 		// Unregister URL provider extension
 		if (this.urlProviderExtension != null) {
 			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);

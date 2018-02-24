@@ -9,20 +9,25 @@ package org.orbit.platform.runtime.platform;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.platform.runtime.PlatformConstants;
 import org.orbit.platform.runtime.command.service.CommandService;
 import org.orbit.platform.runtime.command.service.impl.CommandServiceImpl;
+import org.orbit.platform.runtime.processes.ProcessManagerImpl;
 import org.orbit.platform.runtime.programs.ProgramException;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.ProgramsAndFeaturesImpl;
+import org.orbit.platform.sdk.IPlatform;
+import org.orbit.platform.sdk.IPlatformContext;
+import org.orbit.platform.sdk.IProcess;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.extension.IProgramExtension;
 import org.orbit.platform.sdk.extension.IProgramExtensionService;
 import org.orbit.platform.sdk.extension.util.ProgramExtensionServiceTracker;
-import org.orbit.platform.sdk.relay.WSRelayControl;
-import org.orbit.platform.sdk.servicecontrol.ServiceControl;
 import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
@@ -36,22 +41,25 @@ import org.slf4j.LoggerFactory;
 /**
  * @see https://en.wikipedia.org/wiki/List_of_nearest_stars_and_brown_dwarfs
  */
-public class PlatformImpl implements Platform {
+public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 
 	public static final String PLATFORM__NAME = "Sun";
 	public static final String PLATFORM__VERSION = "1.0.0";
 
 	protected static Logger LOG = LoggerFactory.getLogger(PlatformImpl.class);
 
+	protected ProcessManagerImpl processManager;
+	protected WSEditPolicies wsEditPolicies;
+
+	protected BundleContext bundleContext;
 	protected ProgramExtensionServiceTracker programExtensionServiceTracker;
 	protected CommandService commandService;
 	protected ProgramsAndFeatures programsAndFreatures;
-
-	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 	protected WSClientFactory wsClientFactory = new WSClientFactoryImpl();
-	protected WSEditPolicies wsEditPolicies;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
+
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	public PlatformImpl() {
 		this.wsEditPolicies = new WSEditPoliciesImpl();
@@ -64,23 +72,29 @@ public class PlatformImpl implements Platform {
 	 * @throws Exception
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		// load properties
+		this.bundleContext = bundleContext;
+
+		this.processManager = new ProcessManagerImpl();
+		this.processManager.start(bundleContext);
+
+		// 1. load properties
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.ORBIT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_VERSION);
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_CONTEXT_ROOT);
+		updateProperties(configProps);
 
-		// 1. Start tracking program extension service
+		// 2. Start tracking program extension service
 		this.programExtensionServiceTracker = new ProgramExtensionServiceTracker();
 		this.programExtensionServiceTracker.start(bundleContext);
 
-		// 2. Start command service
+		// 3. Start command service
 		this.commandService = new CommandServiceImpl();
 		this.commandService.start();
 
-		// 3. Start programs and features service
+		// 4. Start programs and features service
 		try {
 			this.programsAndFreatures = new ProgramsAndFeaturesImpl(bundleContext);
 			this.programsAndFreatures.start();
@@ -88,59 +102,61 @@ public class PlatformImpl implements Platform {
 			e.printStackTrace();
 		}
 
-		// 4. Auto services
-		IProgramExtensionService extensionService = getProgramExtensionService();
-		if (extensionService != null) {
-			startExtensionServices(bundleContext, extensionService);
-			startExtensionRelays(bundleContext, extensionService, this.wsClientFactory);
-		}
+		// 5. Auto start services
+		startExtensionServices();
 
-		updateProperties(configProps);
-
-		// Register as Platform service
+		// 6. Register as Platform service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(Platform.class, this, props);
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 * @param extensionService
-	 */
-	protected void startExtensionServices(BundleContext bundleContext, IProgramExtensionService extensionService) {
-		IProgramExtension[] serviceControlExtensions = extensionService.getExtensions(ServiceControl.EXTENSION_TYPE_ID);
-		for (IProgramExtension serviceControlExtension : serviceControlExtensions) {
-			ServiceControl serviceControl = serviceControlExtension.getAdapter(ServiceControl.class);
-			if (serviceControl != null) {
-				Map<String, Object> properties = serviceControl.getConfigProperties(bundleContext);
-				if (serviceControl.isAutoStart(bundleContext, properties)) {
-					serviceControl.start(bundleContext, properties);
+	protected void startExtensionServices() {
+		IProgramExtensionService extensionService = getProgramExtensionService();
+		if (extensionService != null) {
+			String[] extensionTypeIds = extensionService.getExtensionTypeIds();
+			for (String extensionTypeId : extensionTypeIds) {
+				IProgramExtension[] extensions = extensionService.getExtensions(extensionTypeId);
+				if (extensions != null) {
+					for (IProgramExtension extension : extensions) {
+						autoStart(extension);
+					}
 				}
 			}
 		}
 	}
 
-	/**
-	 * 
-	 * @param bundleContext
-	 * @param extensionService
-	 * @param wsClientFactory
-	 */
-	protected void startExtensionRelays(BundleContext bundleContext, IProgramExtensionService extensionService, WSClientFactory wsClientFactory) {
-		IProgramExtension[] relayControlExtensions = extensionService.getExtensions(WSRelayControl.EXTENSION_TYPE_ID);
-		for (IProgramExtension relayControlExtension : relayControlExtensions) {
-			String extensionId = relayControlExtension.getId();
-			// Note:
-			// - Need to find contextRoot and URL list from bundle context from the extensionId.
-			// - That means the platform need to understand (or have dependency on --- another way to say) the configuration property names of WS relay. The
-			// problem is the configuration property names are different among different WS relays, unless a common format is used for all WS relays, which will
-			// require xml based configuration file, instead of property based config.ini file or VM arguments.
+	protected void autoStart(IProgramExtension extension) {
+		ServiceActivator serviceControl = extension.getAdapter(ServiceActivator.class);
+		if (serviceControl != null) {
+			IPlatformContext context = createContext(extension);
 
-			// WSRelayControl relayControl = serviceControlExtension.getAdapter(WSRelayControl.class);
-			// if (relayControl != null && relayControl.isAutoStart(bundleContext)) {
-			// relayControl.start(bundleContext, wsClientFactory, contextRoot, uriList);
-			// }
+			if (serviceControl.isAutoStart(context)) {
+				String processName = serviceControl.getProcessName();
+
+				IProcess process = this.processManager.createProcess(extension, processName);
+				process.adapt(Platform.class, this);
+				process.adapt(IPlatformContext.class, context);
+				process.adapt(IProgramExtension.class, extension);
+
+				serviceControl.start(context, process);
+			}
 		}
+	}
+
+	protected void start(IProgramExtension extension) {
+
+	}
+
+	protected IPlatformContext createContext(IProgramExtension extension) {
+		PlatformContextImpl context = new PlatformContextImpl();
+		context.setPlatform(this);
+		context.setBundleContext(this.bundleContext);
+
+		context.adapt(IPlatform.class, this);
+		context.adapt(BundleContext.class, this.bundleContext);
+		context.adapt(IProgramExtension.class, extension);
+
+		return context;
 	}
 
 	/**
@@ -175,6 +191,13 @@ public class PlatformImpl implements Platform {
 			this.programExtensionServiceTracker.stop(bundleContext);
 			this.programExtensionServiceTracker = null;
 		}
+
+		if (this.processManager != null) {
+			this.processManager.stop(bundleContext);
+			this.processManager = null;
+		}
+
+		this.bundleContext = null;
 	}
 
 	@Override
@@ -262,6 +285,28 @@ public class PlatformImpl implements Platform {
 		return this.programsAndFreatures;
 	}
 
+	/** Implements IPlatform SDK interface */
+	@Override
+	public List<IProcess> getProcesses() {
+		return this.processManager.getProcesses();
+	}
+
+	@Override
+	public List<IProcess> getProcesses(String extensionTypeId) {
+		return this.processManager.getProcesses(extensionTypeId);
+	}
+
+	@Override
+	public List<IProcess> getProcesses(String extensionTypeId, String extensionId) {
+		return this.processManager.getProcesses(extensionTypeId, extensionId);
+	}
+
+	@Override
+	public IProcess getProcess(int pid) {
+		return this.processManager.getProcess(pid);
+	}
+
+	/** Implements IAdaptable interface */
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		this.adaptorSupport.adapt(clazz, object);
@@ -292,4 +337,27 @@ public class PlatformImpl implements Platform {
 // @Override
 // public PlatformCommand getOSCommand() {
 // return this.platformCommand;
+// }
+
+// protected IProcess createProcess(String extensionTypeId, String extensionId, String name) {
+// return this.processesHandler.createProcess(extensionTypeId, extensionId, name);
+// }
+
+// @Override
+// public void stop(IProcess process) {
+// if (process == null) {
+// return;
+// }
+//
+// IPlatformContext context = process.getAdapter(IPlatformContext.class);
+// IProgramExtension extension = process.getAdapter(IProgramExtension.class);
+//
+// if (extension != null) {
+// ServiceActivator serviceControl = extension.getAdapter(ServiceActivator.class);
+//
+// if (serviceControl != null) {
+// serviceControl.stop(context, process);
+// this.processesService.removeProcess(process);
+// }
+// }
 // }

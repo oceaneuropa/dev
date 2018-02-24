@@ -24,6 +24,10 @@ public class PlatformClientCommand extends ServiceClientCommand {
 	protected String scheme = "platform";
 	protected Map<Object, Object> properties;
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void start(final BundleContext bundleContext) {
 		LOG.info("start()");
 
@@ -44,6 +48,10 @@ public class PlatformClientCommand extends ServiceClientCommand {
 		OSGiServiceUtil.register(bundleContext, PlatformClientCommand.class.getName(), this, props);
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void stop(final BundleContext bundleContext) {
 		LOG.info("stop()");
 
@@ -57,29 +65,41 @@ public class PlatformClientCommand extends ServiceClientCommand {
 
 	@Override
 	public ServiceClient getServiceClient() {
-		return getPlatform();
+		return getPlatformClient();
 	}
 
-	protected PlatformClient getPlatform() {
-		PlatformClient platform = PlatformClients.getInstance().getPlatform(this.properties);
-		if (platform == null) {
+	protected PlatformClient getPlatformClient() {
+		PlatformClient platformClient = PlatformClients.getInstance().getPlatform(this.properties);
+		if (platformClient == null) {
 			throw new IllegalStateException("Platform is null.");
 		}
-		return platform;
+		return platformClient;
 	}
 
-	@Descriptor("Start web service")
-	public void start_web_service( //
-			@Descriptor("Id") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
+	@Descriptor("Start service")
+	public void start_service( //
+			@Descriptor("Extension Type Id") @Parameter(names = { "-extensionTypeId", "--extensionTypeId" }, absentValue = Parameter.UNSPECIFIED) String extensionTypeId, //
+			@Descriptor("Service Id") @Parameter(names = { "-serviceId", "--serviceId" }, absentValue = Parameter.UNSPECIFIED) String serviceId //
 	) {
-		CLIHelper.getInstance().printCommand(getScheme(), "start_web_service", new String[] { "id", id });
+		CLIHelper.getInstance().printCommand(getScheme(), "start_service", new String[] { "extensionTypeId", extensionTypeId }, new String[] { "serviceId", serviceId });
 	}
 
-	@Descriptor("Stop web service")
-	public void stop_web_service( //
-			@Descriptor("Id") @Parameter(names = { "-id", "--id" }, absentValue = Parameter.UNSPECIFIED) String id //
+	@Descriptor("Stop service")
+	public void stop_service( //
+			@Descriptor("Extension Type Id") @Parameter(names = { "-extensionTypeId", "--extensionTypeId" }, absentValue = Parameter.UNSPECIFIED) String extensionTypeId, //
+			@Descriptor("Service Id") @Parameter(names = { "-serviceId", "--serviceId" }, absentValue = Parameter.UNSPECIFIED) String serviceId //
 	) {
-		CLIHelper.getInstance().printCommand(getScheme(), "stop_web_service", new String[] { "id", id });
+		CLIHelper.getInstance().printCommand(getScheme(), "stop_service", new String[] { "extensionTypeId", extensionTypeId }, new String[] { "serviceId", serviceId });
+	}
+
+	@Descriptor("List services")
+	public void list_services( //
+			@Descriptor("Extension Type Id") @Parameter(names = { "-extensionTypeId", "--extensionTypeId" }, absentValue = Parameter.UNSPECIFIED) String extensionTypeId //
+	) {
+		CLIHelper.getInstance().printCommand(getScheme(), "list_services", new String[] { "extensionTypeId", extensionTypeId });
+
+		PlatformClient platformClient = getPlatformClient();
+
 	}
 
 }

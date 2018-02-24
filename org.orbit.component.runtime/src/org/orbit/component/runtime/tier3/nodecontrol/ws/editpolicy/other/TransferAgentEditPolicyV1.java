@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.nodecontrol.ws.editpolicy.other;
 
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.origin.common.command.ICommand;
 import org.origin.common.rest.editpolicy.AbstractWSEditPolicyV1;
 import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
@@ -19,7 +19,7 @@ public class TransferAgentEditPolicyV1 extends AbstractWSEditPolicyV1 {
 		// return null;
 		// }
 		// String requestName = request.getRequestName();
-		NodeControlService service = resource.getService(NodeControlService.class);
+		NodeManagementService service = resource.getService(NodeManagementService.class);
 
 		return null;
 	}

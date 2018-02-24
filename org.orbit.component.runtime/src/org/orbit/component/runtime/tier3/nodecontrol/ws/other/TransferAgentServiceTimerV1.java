@@ -7,13 +7,13 @@ import java.util.Map;
 
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 
-public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, NodeControlService> implements ServiceIndexTimerV1<IndexProvider, NodeControlService> {
+public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, NodeManagementService> implements ServiceIndexTimerV1<IndexProvider, NodeManagementService> {
 
 	protected IndexItem indexItem;
 
@@ -22,12 +22,12 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 	}
 
 	@Override
-	public synchronized NodeControlService getService() {
+	public synchronized NodeManagementService getService() {
 		return OrbitServices.getInstance().getTransferAgentService();
 	}
 
 	@Override
-	public synchronized void updateIndex(IndexProvider indexProvider, NodeControlService service) throws IOException {
+	public synchronized void updateIndex(IndexProvider indexProvider, NodeManagementService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
