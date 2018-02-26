@@ -9,21 +9,18 @@ package org.orbit.platform.runtime.platform;
 
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import org.orbit.platform.runtime.PlatformConstants;
 import org.orbit.platform.runtime.command.service.CommandService;
 import org.orbit.platform.runtime.command.service.impl.CommandServiceImpl;
+import org.orbit.platform.runtime.processes.ProcessManager;
 import org.orbit.platform.runtime.processes.ProcessManagerImpl;
 import org.orbit.platform.runtime.programs.ProgramException;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.ProgramsAndFeaturesImpl;
 import org.orbit.platform.sdk.IPlatform;
-import org.orbit.platform.sdk.IPlatformContext;
-import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.orbit.platform.sdk.IProcessManager;
 import org.orbit.platform.sdk.extension.IProgramExtensionService;
 import org.orbit.platform.sdk.extension.util.ProgramExtensionServiceTracker;
 import org.origin.common.adapter.AdaptorSupport;
@@ -74,9 +71,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	public void start(BundleContext bundleContext) throws Exception {
 		this.bundleContext = bundleContext;
 
-		this.processManager = new ProcessManagerImpl();
-		this.processManager.start(bundleContext);
-
 		// 1. load properties
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.ORBIT_HOST_URL);
@@ -86,15 +80,19 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_CONTEXT_ROOT);
 		updateProperties(configProps);
 
-		// 2. Start tracking program extension service
+		// 2. Start managing processes
+		this.processManager = new ProcessManagerImpl(this);
+		this.processManager.start(bundleContext);
+
+		// 3. Start tracking program extension service
 		this.programExtensionServiceTracker = new ProgramExtensionServiceTracker();
 		this.programExtensionServiceTracker.start(bundleContext);
 
-		// 3. Start command service
+		// 4. Start command service
 		this.commandService = new CommandServiceImpl();
 		this.commandService.start();
 
-		// 4. Start programs and features service
+		// 5. Start programs and features service
 		try {
 			this.programsAndFreatures = new ProgramsAndFeaturesImpl(bundleContext);
 			this.programsAndFreatures.start();
@@ -102,61 +100,9 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 			e.printStackTrace();
 		}
 
-		// 5. Auto start services
-		startExtensionServices();
-
 		// 6. Register as Platform service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(Platform.class, this, props);
-	}
-
-	protected void startExtensionServices() {
-		IProgramExtensionService extensionService = getProgramExtensionService();
-		if (extensionService != null) {
-			String[] extensionTypeIds = extensionService.getExtensionTypeIds();
-			for (String extensionTypeId : extensionTypeIds) {
-				IProgramExtension[] extensions = extensionService.getExtensions(extensionTypeId);
-				if (extensions != null) {
-					for (IProgramExtension extension : extensions) {
-						autoStart(extension);
-					}
-				}
-			}
-		}
-	}
-
-	protected void autoStart(IProgramExtension extension) {
-		ServiceActivator serviceControl = extension.getAdapter(ServiceActivator.class);
-		if (serviceControl != null) {
-			IPlatformContext context = createContext(extension);
-
-			if (serviceControl.isAutoStart(context)) {
-				String processName = serviceControl.getProcessName();
-
-				IProcess process = this.processManager.createProcess(extension, processName);
-				process.adapt(Platform.class, this);
-				process.adapt(IPlatformContext.class, context);
-				process.adapt(IProgramExtension.class, extension);
-
-				serviceControl.start(context, process);
-			}
-		}
-	}
-
-	protected void start(IProgramExtension extension) {
-
-	}
-
-	protected IPlatformContext createContext(IProgramExtension extension) {
-		PlatformContextImpl context = new PlatformContextImpl();
-		context.setPlatform(this);
-		context.setBundleContext(this.bundleContext);
-
-		context.adapt(IPlatform.class, this);
-		context.adapt(BundleContext.class, this.bundleContext);
-		context.adapt(IProgramExtension.class, extension);
-
-		return context;
 	}
 
 	/**
@@ -285,25 +231,15 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		return this.programsAndFreatures;
 	}
 
+	@Override
+	public ProcessManager getProcessManager() {
+		return this.processManager;
+	}
+
 	/** Implements IPlatform SDK interface */
 	@Override
-	public List<IProcess> getProcesses() {
-		return this.processManager.getProcesses();
-	}
-
-	@Override
-	public List<IProcess> getProcesses(String extensionTypeId) {
-		return this.processManager.getProcesses(extensionTypeId);
-	}
-
-	@Override
-	public List<IProcess> getProcesses(String extensionTypeId, String extensionId) {
-		return this.processManager.getProcesses(extensionTypeId, extensionId);
-	}
-
-	@Override
-	public IProcess getProcess(int pid) {
-		return this.processManager.getProcess(pid);
+	public IProcessManager getIProcessManager() {
+		return this.processManager;
 	}
 
 	/** Implements IAdaptable interface */

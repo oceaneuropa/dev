@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.IPlatformContext;
-import org.orbit.platform.sdk.IProcess;
 import org.origin.common.adapter.AdaptorSupport;
 import org.osgi.framework.BundleContext;
 
@@ -28,11 +27,6 @@ public class PlatformContextImpl implements IPlatformContext {
 	}
 
 	@Override
-	public IProcess[] getProcesses() {
-		return null;
-	}
-
-	@Override
 	public BundleContext getBundleContext() {
 		return this.bundleContext;
 	}
@@ -48,7 +42,29 @@ public class PlatformContextImpl implements IPlatformContext {
 
 	@Override
 	public void setProperties(Map<String, Object> properties) {
-		this.properties = properties;
+		if (properties != null) {
+			this.properties.putAll(properties);
+		}
+	}
+
+	@Override
+	public boolean hasProperty(String propName) {
+		return this.properties.containsKey(propName);
+	}
+
+	@Override
+	public Object getProperty(String propName) {
+		return this.properties.get(propName);
+	}
+
+	@Override
+	public void setProperty(String propName, Object propValue) {
+		this.properties.put(propName, propValue);
+	}
+
+	@Override
+	public Object removeProperty(String propName) {
+		return this.properties.remove(propName);
 	}
 
 	@Override

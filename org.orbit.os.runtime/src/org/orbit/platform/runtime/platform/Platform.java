@@ -10,12 +10,14 @@ package org.orbit.platform.runtime.platform;
 import java.util.Map;
 
 import org.orbit.platform.runtime.command.service.CommandService;
+import org.orbit.platform.runtime.processes.ProcessManager;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.sdk.extension.IProgramExtensionService;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
+import org.origin.common.rest.server.WebServiceAware;
 
-public interface Platform extends IAdaptable {
+public interface Platform extends WebServiceAware, IAdaptable {
 
 	String getName();
 
@@ -37,6 +39,6 @@ public interface Platform extends IAdaptable {
 
 	ProgramsAndFeatures getProgramsAndFeatures();
 
-	// void stop(IProcess process);
+	ProcessManager getProcessManager();
 
 }

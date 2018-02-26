@@ -1,24 +1,34 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2018 OceanEuropa.
+ * All rights reserved.
+ *
+ * Contributors:
+ *     OceanEuropa - initial API and implementation
+ *******************************************************************************/
 package org.orbit.platform.runtime.processes;
 
-import java.util.List;
+import java.util.Map;
 
 import org.orbit.platform.sdk.IProcess;
+import org.orbit.platform.sdk.IProcessFilter;
 import org.orbit.platform.sdk.extension.IProgramExtension;
 
 public interface ProcessManager {
 
-	List<ProcessHandler> getProcessHandlers();
+	ProcessHandler startProcess(IProgramExtension extension, Map<String, Object> properties);
 
-	List<IProcess> getProcesses();
+	void stopProcess(int pid, boolean sync);
 
-	List<IProcess> getProcesses(String extensionTypeId);
+	ProcessHandler[] getProcessHandlers();
 
-	List<IProcess> getProcesses(String extensionTypeId, String extensionId);
+	ProcessHandler[] getProcessHandlers(ProcessHandlerFilter filter);
+
+	ProcessHandler getProcessHandler(int pid);
+
+	IProcess[] getProcesses();
+
+	IProcess[] getProcesses(IProcessFilter filter);
 
 	IProcess getProcess(int pid);
-
-	IProcess createProcess(IProgramExtension extension, String processName);
-
-	boolean removeProcess(IProcess process);
 
 }
