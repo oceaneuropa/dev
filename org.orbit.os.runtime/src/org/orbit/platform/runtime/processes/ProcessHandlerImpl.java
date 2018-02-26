@@ -18,6 +18,7 @@ public class ProcessHandlerImpl implements ProcessHandler {
 	protected IProgramExtension extension;
 	protected IPlatformContext context;
 	protected IProcess process;
+
 	protected RUNTIME_STATE runtimeState = RUNTIME_STATE.STOPPED;
 
 	/**
@@ -53,9 +54,25 @@ public class ProcessHandlerImpl implements ProcessHandler {
 		this.runtimeState = runtimeState;
 	}
 
-	public synchronized void doStart() {
+	@Override
+	public boolean canStart() {
+		if (canChangeState(this.runtimeState, RUNTIME_STATE.STARTED) || canChangeState(this.runtimeState, RUNTIME_STATE.START_FAILED)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized void start() throws ProcessException {
+		if (!canStart()) {
+			throw new ProcessException("Cannot start process from current state '" + this.runtimeState.name() + "'.");
+		}
+
 		ServiceActivator serviceActivator = this.extension.getAdapter(ServiceActivator.class);
 		if (serviceActivator != null) {
+			if (!canChangeState(this.runtimeState, RUNTIME_STATE.STARTED) && !canChangeState(this.runtimeState, RUNTIME_STATE.START_FAILED)) {
+				throw new RuntimeException("Cannot start process from '" + this.runtimeState.name() + "' state.");
+			}
 			try {
 				serviceActivator.start(this.context, this.process);
 				setRuntimeState(RUNTIME_STATE.STARTED);
@@ -67,7 +84,20 @@ public class ProcessHandlerImpl implements ProcessHandler {
 		}
 	}
 
-	public synchronized void doStop() {
+	@Override
+	public boolean canStop() {
+		if (canChangeState(this.runtimeState, RUNTIME_STATE.STOPPED) || canChangeState(this.runtimeState, RUNTIME_STATE.STOP_FAILED)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized void stop() throws ProcessException {
+		if (!canStop()) {
+			throw new ProcessException("Cannot stop process from current state '" + this.runtimeState.name() + "'.");
+		}
+
 		ServiceActivator serviceActivator = this.extension.getAdapter(ServiceActivator.class);
 		if (serviceActivator != null) {
 			try {
@@ -79,6 +109,54 @@ public class ProcessHandlerImpl implements ProcessHandler {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * 
+	 * @param fromState
+	 * @param toState
+	 * @return
+	 */
+	protected boolean canChangeState(RUNTIME_STATE fromState, RUNTIME_STATE toState) {
+		if (fromState == null) {
+			throw new RuntimeException("fromState is null");
+		}
+		if (toState == null) {
+			throw new RuntimeException("toState is null");
+		}
+
+		if (RUNTIME_STATE.STOPPED.equals(fromState)) {
+			// Stopped -> Started
+			// Stopped -> StartFailed
+			if (RUNTIME_STATE.STARTED.equals(toState) || RUNTIME_STATE.START_FAILED.equals(toState)) {
+				return true;
+			}
+
+		} else if (RUNTIME_STATE.STOP_FAILED.equals(fromState)) {
+			// StopFailed -> Started
+			// StopFailed -> StartFailed
+			// StopFailed -> Stopped
+			if (RUNTIME_STATE.STARTED.equals(toState) || RUNTIME_STATE.START_FAILED.equals(toState) || RUNTIME_STATE.STOPPED.equals(toState)) {
+				return true;
+			}
+
+		} else if (RUNTIME_STATE.STARTED.equals(fromState)) {
+			// Started -> Stopped
+			// Started -> StopFailed
+			if (RUNTIME_STATE.STOPPED.equals(toState) || RUNTIME_STATE.STOP_FAILED.equals(toState)) {
+				return true;
+			}
+
+		} else if (RUNTIME_STATE.START_FAILED.equals(fromState)) {
+			// StartFailed -> Stopped
+			// StartFailed -> StopFailed
+			// StartFailed -> Started
+			if (RUNTIME_STATE.STOPPED.equals(toState) || RUNTIME_STATE.STOP_FAILED.equals(toState) || RUNTIME_STATE.STARTED.equals(toState)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

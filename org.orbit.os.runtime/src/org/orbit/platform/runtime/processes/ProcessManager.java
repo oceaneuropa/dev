@@ -15,9 +15,9 @@ import org.orbit.platform.sdk.extension.IProgramExtension;
 
 public interface ProcessManager {
 
-	ProcessHandler startProcess(IProgramExtension extension, Map<String, Object> properties);
+	ProcessHandler createProcess(IProgramExtension extension, Map<String, Object> properties) throws ProcessException;
 
-	void stopProcess(int pid, boolean sync);
+	void exitProcess(int pid, boolean sync) throws ProcessException;
 
 	ProcessHandler[] getProcessHandlers();
 

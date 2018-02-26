@@ -47,4 +47,12 @@ public interface ProcessHandler {
 
 	RUNTIME_STATE getRuntimeState();
 
+	boolean canStart();
+
+	boolean canStop();
+
+	void start() throws ProcessException;
+
+	void stop() throws ProcessException;
+
 }
