@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -25,7 +26,6 @@ import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.IProcessFilter;
 import org.orbit.platform.sdk.IProcessManager;
-import org.orbit.platform.sdk.ProcessImpl;
 import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.extension.IProgramExtension;
 import org.orbit.platform.sdk.extension.util.ProgramExtensionTracker;
@@ -61,9 +61,10 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	public void start(BundleContext bundleContext) {
 		this.bundleContext = bundleContext;
 
+		// 1. Start thread executor
 		this.executor = Executors.newFixedThreadPool(this.numThreads);
 
-		// Start tracking IProgramExtension services
+		// 2. Start tracking IProgramExtension services
 		// - for IProgramExtension service has a ServiceActivator, check whether it is auto start, if so, start the ServiceActivator.
 		this.programExtensionTracker = new ProgramExtensionTracker();
 		this.programExtensionTracker.addListener(this);
@@ -71,11 +72,12 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	}
 
 	/**
+	 * @see http://winterbe.com/posts/2015/04/07/java8-concurrency-tutorial-thread-executor-examples/
 	 * 
 	 * @param bundleContext
 	 */
 	public void stop(BundleContext bundleContext) {
-		// Stop tracking IProgramExtension services of ServiceActivator
+		// 1. Stop tracking IProgramExtension services of ServiceActivator
 		// - for IProgramExtension service with ServiceActivator type, stop the ServiceActivator.
 		if (this.programExtensionTracker != null) {
 			this.programExtensionTracker.stop(bundleContext);
@@ -83,8 +85,23 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 			this.programExtensionTracker = null;
 		}
 
+		// 2. Shutdown thread executor
 		if (this.executor != null) {
-			this.executor.shutdown();
+			try {
+				System.out.println("attempt to shutdown executor");
+				this.executor.shutdown();
+				this.executor.awaitTermination(10, TimeUnit.SECONDS);
+
+			} catch (InterruptedException e) {
+				System.err.println("tasks interrupted");
+
+			} finally {
+				if (!this.executor.isTerminated()) {
+					System.err.println("cancel non-finished tasks");
+				}
+				this.executor.shutdownNow();
+				System.out.println("shutdown finished");
+			}
 			this.executor = null;
 		}
 

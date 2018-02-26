@@ -1,5 +1,6 @@
-package org.orbit.platform.sdk;
+package org.orbit.platform.runtime.processes;
 
+import org.orbit.platform.sdk.IProcess;
 import org.origin.common.adapter.AdaptorSupport;
 
 public class ProcessImpl implements IProcess {
