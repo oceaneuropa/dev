@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: OS :: Runtime API
 Bundle-SymbolicName: org.orbit.platform.sdk;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.platform.sdk.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.origin.common.adapter,
@@ -12,8 +12,9 @@ Import-Package: org.origin.common.adapter,
  org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1"
 Bundle-ActivationPolicy: lazy
-Export-Package: org.orbit.platform.sdk,
- org.orbit.platform.sdk.app,
- org.orbit.platform.sdk.extension,
- org.orbit.platform.sdk.extension.impl,
- org.orbit.platform.sdk.extension.util
+Export-Package: org.orbit.platform.sdk;version="1.0.0",
+ org.orbit.platform.sdk.extension;version="1.0.0",
+ org.orbit.platform.sdk.extension.impl;version="1.0.0",
+ org.orbit.platform.sdk.extension.util;version="1.0.0",
+ org.orbit.platform.sdk.other;version="1.0.0",
+ org.orbit.platform.sdk.util

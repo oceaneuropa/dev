@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Orbit :: Spirit Connector
+Bundle-SymbolicName: org.orbit.spirit.connector;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.orbit.spirit.connector.Activator
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: javax.ws.rs.client;version="[2.0.0,3.0.0)",
+ org.orbit.spirit.api;version="[1.0.0,2.0.0)",
+ org.orbit.spirit.api.gaia;version="[1.0.0,2.0.0)",
+ org.osgi.framework;version="[1.3.0,2.0.0)",
+ org.slf4j;version="[1.7.25,2.0.0)"
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)"
+Export-Package: org.orbit.spirit.connector;version="1.0.0",
+ org.orbit.spirit.connector.gaia;version="1.0.0"

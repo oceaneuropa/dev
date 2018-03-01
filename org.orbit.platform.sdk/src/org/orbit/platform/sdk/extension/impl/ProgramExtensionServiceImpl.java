@@ -7,9 +7,11 @@
  *******************************************************************************/
 package org.orbit.platform.sdk.extension.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -124,18 +126,40 @@ public class ProgramExtensionServiceImpl implements IProgramExtensionService {
 	 * @return
 	 */
 	@Override
+	public IProgramExtension[] getExtensions() {
+		List<IProgramExtension> programExtensions = new ArrayList<IProgramExtension>();
+		for (String typeId : getExtensionTypeIds()) {
+			IProgramExtensionProcessor processor = getProcessor(typeId);
+			if (processor != null) {
+				IProgramExtension[] currExtensions = processor.getExtensions();
+				if (currExtensions != null) {
+					for (IProgramExtension currExtension : currExtensions) {
+						programExtensions.add(currExtension);
+					}
+				}
+			}
+		}
+		return programExtensions.toArray(new IProgramExtension[programExtensions.size()]);
+	}
+
+	/**
+	 * 
+	 * @param typeId
+	 * @return
+	 */
+	@Override
 	public IProgramExtension[] getExtensions(String typeId) {
 		typeId = checkTypeId(typeId);
 
-		IProgramExtension[] programExtensions = null;
+		IProgramExtension[] extensions = null;
 		IProgramExtensionProcessor processor = getProcessor(typeId);
 		if (processor != null) {
-			programExtensions = processor.getExtensions();
+			extensions = processor.getExtensions();
 		}
-		if (programExtensions == null) {
-			programExtensions = EMPTY_ARRAY;
+		if (extensions == null) {
+			extensions = EMPTY_ARRAY;
 		}
-		return programExtensions;
+		return extensions;
 	}
 
 	/**

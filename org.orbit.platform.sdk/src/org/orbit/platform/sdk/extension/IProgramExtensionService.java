@@ -21,6 +21,13 @@ public interface IProgramExtensionService {
 	String[] getExtensionTypeIds();
 
 	/**
+	 * Get all program extensions.
+	 * 
+	 * @return
+	 */
+	IProgramExtension[] getExtensions();
+
+	/**
 	 * Get program extensions for a given extension type.
 	 * 
 	 * @param typeId

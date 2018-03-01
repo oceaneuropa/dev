@@ -18,8 +18,9 @@ Import-Package: org.origin.common.adapter,
  org.osgi.service.cm;version="1.5.0",
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j;version="1.7.25"
-Export-Package: org.orbit.infra.api,
- org.orbit.infra.api.channel,
- org.orbit.infra.api.indexes,
- org.orbit.infra.api.indexes.other
+Export-Package: org.orbit.infra.api;version="1.0.0",
+ org.orbit.infra.api.channel;version="1.0.0",
+ org.orbit.infra.api.indexes;version="1.0.0",
+ org.orbit.infra.api.indexes.other;version="1.0.0"
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,2.0.0)"
