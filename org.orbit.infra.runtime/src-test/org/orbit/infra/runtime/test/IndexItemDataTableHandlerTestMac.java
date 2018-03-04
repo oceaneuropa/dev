@@ -19,7 +19,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.orbit.infra.model.indexes.IndexItemVO;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemDataTableHandler;
+import org.orbit.infra.runtime.indexes.service.IndexItemDataTableHandler;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 

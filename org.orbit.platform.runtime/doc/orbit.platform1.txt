@@ -1,0 +1,15 @@
+
+---------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=6001 
+-Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-DORIGIN_HOME=/Users/denmark/origin 
+-Dorbit.host.url=http://127.0.0.1:12001 
+
+-Dorbit.realm=group1 
+
+-Dcomponent.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice 
+-Dplatform.name=Sun
+-Dplatform.version=1.0 
+-Dplatform.context_root=/orbit/v1/platform 
+-Dplatform.home=/Users/denmark/origin 
+---------------------------------------------------------------------------------------------------

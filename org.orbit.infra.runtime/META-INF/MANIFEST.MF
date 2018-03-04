@@ -13,6 +13,7 @@ Import-Package: javax.inject;version="1.0.0",
  javax.ws.rs.ext;version="2.0.0",
  org.glassfish.hk2.utilities.binding,
  org.glassfish.jersey.server,
+ org.glassfish.jersey.server.model,
  org.junit,
  org.junit.runner,
  org.junit.runner.notification,
@@ -33,8 +34,8 @@ Export-Package: org.orbit.infra.runtime,
  org.orbit.infra.runtime.channel.ws,
  org.orbit.infra.runtime.cli,
  org.orbit.infra.runtime.indexes.service,
- org.orbit.infra.runtime.indexes.service.other,
- org.orbit.infra.runtime.indexes.ws,
- org.orbit.infra.runtime.indexes.ws.other
+ org.orbit.infra.runtime.indexes.ws
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
- org.origin.common;bundle-version="1.0.0"
+ org.origin.common;bundle-version="1.0.0",
+ org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)"
+Bundle-ActivationPolicy: lazy

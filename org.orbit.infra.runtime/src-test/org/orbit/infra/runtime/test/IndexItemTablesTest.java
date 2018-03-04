@@ -10,9 +10,9 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemDataTableHandler;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemRequestTableHandler;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemRevisionTableHandler;
+import org.orbit.infra.runtime.indexes.service.IndexItemDataTableHandler;
+import org.orbit.infra.runtime.indexes.service.IndexItemRequestTableHandler;
+import org.orbit.infra.runtime.indexes.service.IndexItemRevisionTableHandler;
 import org.origin.common.jdbc.DatabaseUtil;
 
 public class IndexItemTablesTest {

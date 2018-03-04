@@ -16,7 +16,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.orbit.infra.model.indexes.IndexItemRevisionVO;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemRevisionTableHandler;
+import org.orbit.infra.runtime.indexes.service.IndexItemRevisionTableHandler;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 

@@ -1,6 +1,6 @@
 package org.orbit.infra.runtime.test;
 
-import static org.orbit.infra.runtime.indexes.service.other.IndexItemRequestTableHandler.STATUS_PENDING;
+import static org.orbit.infra.runtime.indexes.service.IndexItemRequestTableHandler.STATUS_PENDING;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.orbit.infra.model.indexes.IndexItemRequestVO;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemRequestTableHandler;
+import org.orbit.infra.runtime.indexes.service.IndexItemRequestTableHandler;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 

@@ -10,6 +10,7 @@ package org.orbit.platform.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.platform.runtime.cli.PlatformServerCommand;
 import org.orbit.platform.runtime.core.Platform;
 import org.orbit.platform.runtime.core.PlatformImpl;
 import org.orbit.platform.runtime.core.ws.PlatformAdapter;
@@ -38,6 +39,7 @@ public class Activator implements BundleActivator {
 	protected PlatformTracker platformTracker;
 	protected PlatformAdapter platformAdapter;
 	protected PlatformImpl platform;
+	protected PlatformServerCommand command;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -61,11 +63,21 @@ public class Activator implements BundleActivator {
 		// Start Platform impl
 		this.platform = new PlatformImpl();
 		this.platform.start(bundleContext);
+
+		// Start server CLI
+		this.command = new PlatformServerCommand();
+		this.command.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.info("stop()");
+
+		// Stop server CLI
+		if (this.command != null) {
+			this.command.stop(bundleContext);
+			this.command = null;
+		}
 
 		// Stop Platform impl
 		this.platform.stop(bundleContext);

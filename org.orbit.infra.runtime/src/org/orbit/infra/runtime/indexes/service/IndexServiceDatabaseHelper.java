@@ -1,6 +1,6 @@
 package org.orbit.infra.runtime.indexes.service;
 
-import static org.orbit.infra.runtime.indexes.service.other.IndexItemRequestTableHandler.STATUS_PENDING;
+import static org.orbit.infra.runtime.indexes.service.IndexItemRequestTableHandler.STATUS_PENDING;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -16,9 +16,6 @@ import org.orbit.infra.model.indexes.IndexItemRequestVO;
 import org.orbit.infra.model.indexes.IndexItemRevisionVO;
 import org.orbit.infra.model.indexes.IndexItemVO;
 import org.orbit.infra.model.indexes.IndexServiceException;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemDataTableHandler;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemRequestTableHandler;
-import org.orbit.infra.runtime.indexes.service.other.IndexItemRevisionTableHandler;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;

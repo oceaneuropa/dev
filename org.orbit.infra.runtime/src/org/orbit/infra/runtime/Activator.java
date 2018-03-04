@@ -1,6 +1,7 @@
 package org.orbit.infra.runtime;
 
-import org.orbit.infra.runtime.cli.ServicesCommand;
+import org.orbit.infra.runtime.cli.InfraCommand;
+import org.orbit.infra.runtime.relay.InfraRelays;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -21,19 +22,25 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
-	protected ServicesCommand servicesCommand;
+	protected InfraCommand infraCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.bundleContext = bundleContext;
 		Activator.instance = this;
 
-		// Start command and services
-		this.servicesCommand = new ServicesCommand();
-		this.servicesCommand.start(bundleContext);
+		// Register program extensions
+		Extensions.INSTANCE.start(bundleContext);
 
-		// Start tracking services for starting web service and indexer
+		// Start command and services
+		this.infraCommand = new InfraCommand();
+		this.infraCommand.start(bundleContext);
+
+		// Start tracking services
 		InfraServices.getInstance().start(bundleContext);
+
+		// Start relays
+		InfraRelays.getInstance().start(bundleContext);
 	}
 
 	@Override
@@ -41,14 +48,20 @@ public class Activator implements BundleActivator {
 		Activator.instance = null;
 		Activator.bundleContext = null;
 
-		// Stop tracking services for stopping web service and indexer
+		// Stop relays
+		InfraRelays.getInstance().stop(bundleContext);
+
+		// Stop tracking services
 		InfraServices.getInstance().stop(bundleContext);
 
 		// Stop command and services
-		if (this.servicesCommand != null) {
-			this.servicesCommand.stop(bundleContext);
-			this.servicesCommand = null;
+		if (this.infraCommand != null) {
+			this.infraCommand.stop(bundleContext);
+			this.infraCommand = null;
 		}
+
+		// Unregister program extensions
+		Extensions.INSTANCE.stop(bundleContext);
 	}
 
 }

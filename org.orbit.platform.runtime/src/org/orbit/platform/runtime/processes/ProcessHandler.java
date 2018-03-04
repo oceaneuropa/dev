@@ -24,6 +24,10 @@ public interface ProcessHandler {
 			this.state = state;
 		}
 
+		public String getValue() {
+			return this.state;
+		}
+
 		public boolean isStarted() {
 			return ("STARTED").equalsIgnoreCase(this.state) ? true : false;
 		}

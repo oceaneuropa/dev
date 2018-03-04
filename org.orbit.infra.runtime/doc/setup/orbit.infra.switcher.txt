@@ -17,5 +17,6 @@ VM Arguments:
 -Dcomponent.channel.switcher.hosts=http://127.0.0.1:9001;http://127.0.0.1:9002 
 
 -Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 
 -----------------------------------------------------------------------------------------------------------
 

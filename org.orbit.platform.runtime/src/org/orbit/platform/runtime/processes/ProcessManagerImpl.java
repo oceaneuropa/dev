@@ -189,18 +189,17 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	 * @see org.eclipse.jgit.util.FS
 	 * 
 	 * @param extension
+	 * @param properties
+	 * @throws ProcessException
 	 */
-	public ProcessHandler createProcess(IProgramExtension extension, final Map<String, Object> properties) {
+	public int createProcess(final IProgramExtension extension, final Map<String, Object> properties) throws ProcessException {
 		ServiceActivator serviceActivator = extension.getAdapter(ServiceActivator.class);
 		if (serviceActivator == null) {
 			// Do not start process if ServiceActivator is not available.
-			return null;
+			throw new ProcessException("ServiceActivator is not available from the extension.");
 		}
 
 		ProcessHandler processHandler = null;
-
-		boolean doStart = false;
-
 		if (serviceActivator.isSingleInstance()) {
 			// Do not start if process already exists for the extension
 			ProcessHandlerFilterForProgramExtension filter = new ProcessHandlerFilterForProgramExtension(extension);
@@ -208,13 +207,10 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 			if (processHandlers.length > 0) {
 				processHandler = processHandlers[0];
 			}
-
-		} else {
-			// Create a new process for the extension
-			doStart = true;
 		}
 
-		if (doStart) {
+		if (processHandler == null) {
+			// Create a new process for the extension
 			Callable<ProcessHandler> callable = new Callable<ProcessHandler>() {
 				@Override
 				public ProcessHandler call() throws Exception {
@@ -231,10 +227,17 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 
 			} catch (ExecutionException e) {
 				e.printStackTrace();
+				if (e.getCause() instanceof ProcessException) {
+					throw (ProcessException) e.getCause();
+				}
 			}
 		}
 
-		return processHandler;
+		int pid = -1;
+		if (processHandler != null && processHandler.getProcess() != null) {
+			pid = processHandler.getProcess().getPID();
+		}
+		return pid;
 	}
 
 	/**
@@ -243,6 +246,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	 * @param serviceActivator
 	 * @param properties
 	 * @return
+	 * @throws ProcessException
 	 */
 	protected ProcessHandler doCreateProcess(IProgramExtension extension, ServiceActivator serviceActivator, Map<String, Object> properties) throws ProcessException {
 		this.processesLock.writeLock().lock();
@@ -286,30 +290,130 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	}
 
 	@Override
-	public void exitProcess(final int pid, boolean sync) throws ProcessException {
+	public boolean startProcess(int pid, boolean async) throws ProcessException {
+		Callable<Boolean> callable = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				return doStartProcess(pid);
+			}
+		};
+		Future<Boolean> future = this.executor.submit(callable);
+		if (!async) {
+			try {
+				return future.get();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+				Throwable throwable = e.getCause();
+				if (throwable instanceof ProcessException) {
+					throw (ProcessException) throwable;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean stopProcess(int pid, boolean async) throws ProcessException {
+		Callable<Boolean> callable = new Callable<Boolean>() {
+			@Override
+			public Boolean call() throws Exception {
+				return doStopProcess(pid, true);
+			}
+		};
+		Future<Boolean> future = this.executor.submit(callable);
+		if (!async) {
+			try {
+				return future.get();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+				Throwable throwable = e.getCause();
+				if (throwable instanceof ProcessException) {
+					throw (ProcessException) throwable;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean exitProcess(final int pid, boolean async) throws ProcessException {
 		Callable<Boolean> callable = new Callable<Boolean>() {
 			@Override
 			public Boolean call() throws Exception {
 				return doExitProcess(pid, true);
 			}
 		};
-
-		Future<?> future = this.executor.submit(callable);
-		if (sync) {
+		Future<Boolean> future = this.executor.submit(callable);
+		if (!async) {
 			try {
-				future.get();
-
+				return future.get();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
-
 			} catch (ExecutionException e) {
 				e.printStackTrace();
-
 				Throwable throwable = e.getCause();
 				if (throwable instanceof ProcessException) {
 					throw (ProcessException) throwable;
 				}
 			}
+		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param pid
+	 * @return
+	 * @throws ProcessException
+	 */
+	protected boolean doStartProcess(int pid) throws ProcessException {
+		this.processesLock.writeLock().lock();
+		try {
+			ProcessHandler processHandler = getProcessHandler(pid);
+			if (processHandler == null) {
+				throw new ProcessException("Process '" + pid + "' does not exists.");
+			}
+			if (!((ProcessHandlerImpl) processHandler).canStart()) {
+				throw new ProcessException("Process '" + pid + "' cannot be started.");
+			}
+			((ProcessHandlerImpl) processHandler).start();
+			if (processHandler.getRuntimeState().isStarted()) {
+				return true;
+			}
+			return false;
+		} finally {
+			this.processesLock.writeLock().unlock();
+		}
+	}
+
+	/**
+	 * 
+	 * @param pid
+	 * @param force
+	 * @return
+	 * @throws ProcessException
+	 */
+	protected boolean doStopProcess(int pid, boolean force) throws ProcessException {
+		this.processesLock.writeLock().lock();
+		try {
+			ProcessHandler processHandler = getProcessHandler(pid);
+			if (processHandler == null) {
+				throw new ProcessException("Process '" + pid + "' does not exists.");
+			}
+			if (!((ProcessHandlerImpl) processHandler).canStop()) {
+				throw new ProcessException("Process '" + pid + "' cannot be stopped.");
+			}
+			((ProcessHandlerImpl) processHandler).stop();
+			if (processHandler.getRuntimeState().isStopped()) {
+				return true;
+			}
+			return false;
+		} finally {
+			this.processesLock.writeLock().unlock();
 		}
 	}
 
