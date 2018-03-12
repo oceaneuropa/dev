@@ -15,9 +15,13 @@ import org.orbit.component.runtime.relay.extensions.MissionControlWSRelayControl
 import org.orbit.component.runtime.relay.extensions.NodeControlWSRelayControl;
 import org.orbit.component.runtime.relay.extensions.UserRegistryWSRelayControl;
 import org.orbit.platform.sdk.WSRelayControl;
-import org.orbit.platform.sdk.extension.util.ProgramExtension;
-import org.orbit.platform.sdk.extension.util.ProgramExtensions;
+import org.orbit.platform.sdk.extension.desc.ProgramExtension;
+import org.orbit.platform.sdk.extension.desc.ProgramExtensions;
 
+/**
+ * Component relay extensions
+ * 
+ */
 public class Extensions extends ProgramExtensions {
 
 	public static Extensions INSTANCE = new Extensions();
@@ -52,46 +56,46 @@ public class Extensions extends ProgramExtensions {
 		ProgramExtension userRegistryRelayExtension = new ProgramExtension(extensionTypeId, USER_REGISTRY_RELAY_EXTENSION_ID);
 		userRegistryRelayExtension.setName("User registration relay");
 		userRegistryRelayExtension.setDescription("User registration relay description");
-		userRegistryRelayExtension.adapt(WSRelayControl.class, UserRegistryWSRelayControl.INSTANCE);
+		userRegistryRelayExtension.addInterface(WSRelayControl.class, UserRegistryWSRelayControl.INSTANCE);
 		addExtension(userRegistryRelayExtension);
 
 		ProgramExtension authRelayExtension = new ProgramExtension(extensionTypeId, AUTH_RELAY_EXTENSION_ID);
 		authRelayExtension.setName("Auth relay");
 		authRelayExtension.setDescription("Auth relay description");
-		authRelayExtension.adapt(WSRelayControl.class, AuthWSRelayControl.INSTANCE);
+		authRelayExtension.addInterface(WSRelayControl.class, AuthWSRelayControl.INSTANCE);
 		addExtension(authRelayExtension);
 
 		ProgramExtension configRegistryRelayExtension = new ProgramExtension(extensionTypeId, CONFIG_REGISTRY_RELAY_EXTENSION_ID);
 		configRegistryRelayExtension.setName("Config registration relay");
 		configRegistryRelayExtension.setDescription("Config registration relay description");
-		configRegistryRelayExtension.adapt(WSRelayControl.class, ConfigRegistryWSRelayControl.INSTANCE);
+		configRegistryRelayExtension.addInterface(WSRelayControl.class, ConfigRegistryWSRelayControl.INSTANCE);
 		addExtension(configRegistryRelayExtension);
 
 		// tier 2
 		ProgramExtension appStoreRelayExtension = new ProgramExtension(extensionTypeId, APP_STORE_RELAY_EXTENSION_ID);
 		appStoreRelayExtension.setName("App store relay");
 		appStoreRelayExtension.setDescription("App store relay description");
-		appStoreRelayExtension.adapt(WSRelayControl.class, AppStoreWSRelayControl.INSTANCE);
+		appStoreRelayExtension.addInterface(WSRelayControl.class, AppStoreWSRelayControl.INSTANCE);
 		addExtension(appStoreRelayExtension);
 
 		// tier 3
 		ProgramExtension domainServiceRelayExtension = new ProgramExtension(extensionTypeId, DOMAIN_SERVICE_RELAY_EXTENSION_ID);
 		domainServiceRelayExtension.setName("Domain service relay");
 		domainServiceRelayExtension.setDescription("Domain service relay description");
-		domainServiceRelayExtension.adapt(WSRelayControl.class, DomainServiceWSRelayControl.INSTANCE);
+		domainServiceRelayExtension.addInterface(WSRelayControl.class, DomainServiceWSRelayControl.INSTANCE);
 		addExtension(domainServiceRelayExtension);
 
 		ProgramExtension nodeControlRelayExtension = new ProgramExtension(extensionTypeId, NODE_CONTROL_RELAY_EXTENSION_ID);
 		nodeControlRelayExtension.setName("Node control relay");
 		nodeControlRelayExtension.setDescription("Node control relay description");
-		nodeControlRelayExtension.adapt(WSRelayControl.class, NodeControlWSRelayControl.INSTANCE);
+		nodeControlRelayExtension.addInterface(WSRelayControl.class, NodeControlWSRelayControl.INSTANCE);
 		addExtension(nodeControlRelayExtension);
 
 		// tier 4
 		ProgramExtension missionControlRelayExtension = new ProgramExtension(extensionTypeId, MISSION_CONTROL_RELAY_EXTENSION_ID);
 		missionControlRelayExtension.setName("Mission control relay");
 		missionControlRelayExtension.setDescription("Mission control relay description");
-		missionControlRelayExtension.adapt(WSRelayControl.class, MissionControlWSRelayControl.INSTANCE);
+		missionControlRelayExtension.addInterface(WSRelayControl.class, MissionControlWSRelayControl.INSTANCE);
 		addExtension(missionControlRelayExtension);
 	}
 

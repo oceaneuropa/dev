@@ -9,7 +9,7 @@ import org.orbit.component.runtime.relay.util.SwitcherUtil;
 import org.orbit.platform.sdk.URLProvider;
 import org.orbit.platform.sdk.URLProviderImpl;
 import org.orbit.platform.sdk.WSRelayControlImpl;
-import org.orbit.platform.sdk.extension.util.ProgramExtension;
+import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
@@ -41,7 +41,7 @@ public class AppStoreWSRelayControl extends WSRelayControlImpl {
 			urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.APP_STORE_URL_PROVIDER_EXTENSION_ID);
 			urlProviderExtension.setName("URL provider for app store");
 			urlProviderExtension.setDescription("URL provider for app store description");
-			urlProviderExtension.adapt(URLProvider.class, new URLProviderImpl(hostURL, contextRoot));
+			urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(hostURL, contextRoot));
 			Extensions.INSTANCE.addExtension(urlProviderExtension);
 
 			this.extensionMap.put(url, urlProviderExtension);

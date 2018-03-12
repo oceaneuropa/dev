@@ -141,7 +141,7 @@ public class InfraCommand {
 	}
 
 	public void startChannelService(BundleContext bundleContext) {
-		ChannelServiceImpl channelService = new ChannelServiceImpl();
+		ChannelServiceImpl channelService = new ChannelServiceImpl(null);
 		channelService.start(bundleContext);
 		this.channelService = channelService;
 	}

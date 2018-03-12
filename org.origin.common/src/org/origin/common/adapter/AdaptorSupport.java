@@ -17,13 +17,21 @@ public class AdaptorSupport implements IAdaptable {
 	protected Map<Class<?>, Object> objectsMap;
 
 	public AdaptorSupport() {
-		// this.objectsMap = new ConcurrentHashMap<Class<?>, Object>();
 		this.objectsMap = new LinkedHashMap<Class<?>, Object>();
 	}
 
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		this.objectsMap.put(clazz, object);
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		if (classes != null) {
+			for (Class<T> clazz : classes) {
+				this.objectsMap.put(clazz, object);
+			}
+		}
 	}
 
 	@Override
@@ -41,3 +49,5 @@ public class AdaptorSupport implements IAdaptable {
 	}
 
 }
+
+// this.objectsMap = new ConcurrentHashMap<Class<?>, Object>();

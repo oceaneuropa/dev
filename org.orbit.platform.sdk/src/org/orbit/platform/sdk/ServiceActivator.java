@@ -12,30 +12,7 @@ public interface ServiceActivator {
 	public static final String TYPE_ID = "platform.service_activator";
 
 	/**
-	 * Whether the service should be started automatically.
-	 * 
-	 * @param context
-	 * @return
-	 */
-	boolean isAutoStart();
-
-	/**
-	 * Whether the service is single instance.
-	 * 
-	 * @param context
-	 * @return
-	 */
-	boolean isSingleInstance();
-
-	/**
-	 * Get the process name.
-	 * 
-	 * @return
-	 */
-	String getProcessName();
-
-	/**
-	 * Start a process of the service.
+	 * Start service.
 	 * 
 	 * @param context
 	 * @return
@@ -43,10 +20,31 @@ public interface ServiceActivator {
 	void start(IPlatformContext context, IProcess process);
 
 	/**
-	 * Stop a process of the service.
+	 * Stop service.
 	 * 
 	 * @param context
 	 */
 	void stop(IPlatformContext context, IProcess process);
 
 }
+
+// /**
+// * Whether the service should be started automatically.
+// *
+// * @param context
+// * @return
+// */
+// boolean isAutoStart();
+// /**
+// * Whether the service is single instance.
+// *
+// * @param context
+// * @return
+// */
+// boolean isSingleton();
+// /**
+// * Get the service name.
+// *
+// * @return
+// */
+// String getName();

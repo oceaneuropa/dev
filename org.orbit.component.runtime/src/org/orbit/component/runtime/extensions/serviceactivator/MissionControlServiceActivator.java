@@ -6,19 +6,14 @@ import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlSe
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivatorImpl;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
-public class MissionControlServiceActivator extends ServiceActivatorImpl {
+public class MissionControlServiceActivator implements ServiceActivator {
 
 	public static final String ID = "component.mission_control.service_activator";
 
 	public static MissionControlServiceActivator INSTANCE = new MissionControlServiceActivator();
-
-	@Override
-	public String getProcessName() {
-		return "MissionControl";
-	}
 
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
@@ -44,3 +39,8 @@ public class MissionControlServiceActivator extends ServiceActivatorImpl {
 	}
 
 }
+
+// @Override
+// public String getName() {
+// return "MissionControl";
+// }

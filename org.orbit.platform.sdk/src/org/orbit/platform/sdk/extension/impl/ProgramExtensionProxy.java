@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.orbit.platform.sdk.extension.IProgramExtension;
 import org.orbit.platform.sdk.extension.IProgramExtensionFilter;
+import org.orbit.platform.sdk.extension.desc.InterfaceDescription;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
@@ -69,9 +70,9 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	public String getName() {
 		String name = null;
 		try {
-			IProgramExtension programExtension = getTarget(IProgramExtension.class);
-			if (programExtension != null) {
-				name = programExtension.getName();
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				name = extension.getName();
 			}
 		} finally {
 			ungetTarget();
@@ -83,9 +84,9 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	public String getDescription() {
 		String description = null;
 		try {
-			IProgramExtension programExtension = getTarget(IProgramExtension.class);
-			if (programExtension != null) {
-				description = programExtension.getDescription();
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				description = extension.getDescription();
 			}
 		} finally {
 			ungetTarget();
@@ -97,9 +98,9 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	public Map<Object, Object> getProperties() {
 		Map<Object, Object> properties = null;
 		try {
-			IProgramExtension programExtension = getTarget(IProgramExtension.class);
-			if (programExtension != null) {
-				properties = programExtension.getProperties();
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				properties = extension.getProperties();
 			}
 		} finally {
 			ungetTarget();
@@ -111,9 +112,9 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	public IProgramExtensionFilter getFilter() {
 		IProgramExtensionFilter filter = null;
 		try {
-			IProgramExtension programExtension = getTarget(IProgramExtension.class);
-			if (programExtension != null) {
-				filter = programExtension.getFilter();
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				filter = extension.getFilter();
 			}
 		} finally {
 			ungetTarget();
@@ -122,11 +123,163 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	}
 
 	@Override
+	public Object[] getInterfaces() {
+		Object[] interfaces = null;
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				interfaces = extension.getInterfaces();
+			}
+		} finally {
+			ungetTarget();
+		}
+		return interfaces;
+	}
+
+	@Override
+	public <T> T getInterface(Class<T> clazz) {
+		T t = null;
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				t = extension.getInterface(clazz);
+			}
+		} finally {
+			ungetTarget();
+		}
+		return t;
+	}
+
+	@Override
+	public InterfaceDescription getInterfaceDescription(Class<?> clazz) {
+		InterfaceDescription desc = null;
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				desc = extension.getInterfaceDescription(clazz);
+			}
+		} finally {
+			ungetTarget();
+		}
+		return desc;
+	}
+
+	@Override
+	public InterfaceDescription getInterfaceDescription(Object object) {
+		InterfaceDescription desc = null;
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				desc = extension.getInterfaceDescription(object);
+			}
+		} finally {
+			ungetTarget();
+		}
+		return desc;
+	}
+
+	@Override
+	public <T> void addInterface(Class<T> clazz, T object) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.addInterface(clazz, object);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public <T> void addInterface(Class<T> clazz, T object, String name) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.addInterface(clazz, object, name);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public <T> void addInterface(Class<T> clazz, T object, InterfaceDescription description) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.addInterface(clazz, object, description);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public <T> void addInterface(Class<T>[] classes, T object) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.addInterface(classes, object);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public <T> void addInterface(Class<T>[] classes, T object, String name) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.addInterface(classes, object, name);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public <T> void addInterface(Class<T>[] classes, T object, InterfaceDescription description) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.addInterface(classes, object, description);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public void removeInterface(Class<?>... classes) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.removeInterface(classes);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		try {
 			IProgramExtension programExtension = getTarget(IProgramExtension.class);
 			if (programExtension != null) {
 				programExtension.adapt(clazz, object);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		try {
+			IProgramExtension programExtension = getTarget(IProgramExtension.class);
+			if (programExtension != null) {
+				programExtension.adapt(classes, object);
 			}
 		} finally {
 			ungetTarget();
@@ -192,4 +345,18 @@ public class ProgramExtensionProxy implements IProgramExtension {
 // ungetTarget();
 // }
 // return launcher;
+// }
+
+// @Override
+// public String[] getParameters() {
+// String[] parameters = null;
+// try {
+// IProgramExtension programExtension = getTarget(IProgramExtension.class);
+// if (programExtension != null) {
+// parameters = programExtension.getParameters();
+// }
+// } finally {
+// ungetTarget();
+// }
+// return parameters;
 // }

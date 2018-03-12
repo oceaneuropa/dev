@@ -110,6 +110,11 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
+		public <T> void adapt(Class<T>[] classes, T object) {
+			next().adapt(classes, object);
+		}
+
+		@Override
 		public <T> T getAdapter(Class<T> adapter) {
 			return next().getAdapter(adapter);
 		}
@@ -173,6 +178,11 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 
 		@Override
 		public <T> void adapt(Class<T> clazz, T object) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public <T> void adapt(Class<T>[] classes, T object) {
 			throw new UnsupportedOperationException();
 		}
 

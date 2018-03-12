@@ -24,7 +24,6 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.StatusDTO;
-import org.origin.common.util.StringUtil;
 
 /**
  * App store client connector implementation.
@@ -329,6 +328,11 @@ public class AppStoreImplV1 implements AppStore {
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
 	}
 
 	@Override

@@ -2,14 +2,14 @@ package org.orbit.component.runtime.relay.other.extensions;
 
 import org.orbit.component.runtime.relay.extensions.MissionControlWSRelayControl;
 import org.orbit.platform.sdk.WSRelayControl;
-import org.orbit.platform.sdk.extension.impl.ProgramExtensionImpl;
+import org.orbit.platform.sdk.extension.impl.other.ProgramExtensionImplV1;
 
-public class MissionControlRelayExtension extends ProgramExtensionImpl {
+public class MissionControlRelayExtension extends ProgramExtensionImplV1 {
 
 	public static final String ID = "orbit.component.mission_control.relay";
 
 	public MissionControlRelayExtension() {
-		adapt(WSRelayControl.class, MissionControlWSRelayControl.INSTANCE);
+		addInterface(WSRelayControl.class, MissionControlWSRelayControl.INSTANCE);
 	}
 
 	@Override

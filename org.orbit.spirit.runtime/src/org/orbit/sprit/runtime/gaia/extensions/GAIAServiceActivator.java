@@ -4,21 +4,16 @@ import java.util.Map;
 
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivatorImpl;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.sprit.runtime.gaia.service.GAIA;
 import org.orbit.sprit.runtime.gaia.service.GAIAImpl;
 import org.osgi.framework.BundleContext;
 
-public class GAIAServiceActivator extends ServiceActivatorImpl {
+public class GAIAServiceActivator implements ServiceActivator {
 
 	public static final String ID = "component.gaia.service_activator";
 
 	public static GAIAServiceActivator INSTANCE = new GAIAServiceActivator();
-
-	@Override
-	public String getProcessName() {
-		return "GAIA";
-	}
 
 	@Override
 	public synchronized void start(IPlatformContext context, IProcess process) {
@@ -44,3 +39,8 @@ public class GAIAServiceActivator extends ServiceActivatorImpl {
 	}
 
 }
+
+// @Override
+// public String getName() {
+// return "GAIA";
+// }

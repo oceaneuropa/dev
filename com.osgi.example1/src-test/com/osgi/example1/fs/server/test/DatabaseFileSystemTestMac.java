@@ -263,17 +263,22 @@ public class DatabaseFileSystemTestMac {
 		System.out.println();
 	}
 
+	@Ignore
 	@Test
 	public void test009_inputStreamToFsDir() throws IOException {
 		System.out.println("--- --- --- test009_inputStreamToFsDir() --- --- ---");
 
-		// String dirPath = "/Users/example/Downloads/apache/myfolder";
-		// String zipPath = dirPath + ".zip";
-		// Path filePath = new Path(zipPath);
-		// if (fs.exists(filePath)) {
-		// fs.delete(filePath);
-		// }
-		// fs.copyInputStreamToFsFile(ZipUtil.getZipInputStream(new File(sourcePath)), new Path(targetPath));
+		// local dir location
+		File localDir = new File("/Users/example/Downloads/apache/myfolder");
+
+		// FS file path
+		Path fsPath = new Path("/Users/example/Downloads/apache/myfolder.zip");
+
+		if (this.fs.exists(fsPath)) {
+			this.fs.delete(fsPath);
+		}
+
+		this.fs.copyInputStreamToFsFile(ZipUtil.getZipInputStream(localDir), fsPath);
 	}
 
 	@Ignore
@@ -330,9 +335,10 @@ public class DatabaseFileSystemTestMac {
 	public void test031_fsFileToLocalFile() throws IOException {
 		System.out.println("--- --- --- test030_fsDirToLocalDir() --- --- ---");
 
+		Path fsPath = new Path("/Users/example/Downloads/apache/myfolder.zip");
+
 		File localDir = new File("/Users/example/Downloads/test_target");
 
-		Path fsPath = new Path("/Users/example/Downloads/apache/myfolder.zip");
 		FileSystemUtil.copyFsFileToLocalDirectory(fs, fsPath, localDir);
 
 		System.out.println();

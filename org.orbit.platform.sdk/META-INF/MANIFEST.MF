@@ -14,7 +14,9 @@ Import-Package: org.origin.common.adapter,
 Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.platform.sdk;version="1.0.0",
  org.orbit.platform.sdk.extension;version="1.0.0",
+ org.orbit.platform.sdk.extension.desc;version="1.0.0",
  org.orbit.platform.sdk.extension.impl;version="1.0.0",
+ org.orbit.platform.sdk.extension.impl.other;version="1.0.0",
  org.orbit.platform.sdk.extension.util;version="1.0.0",
  org.orbit.platform.sdk.other;version="1.0.0",
- org.orbit.platform.sdk.util
+ org.orbit.platform.sdk.util;version="1.0.0"

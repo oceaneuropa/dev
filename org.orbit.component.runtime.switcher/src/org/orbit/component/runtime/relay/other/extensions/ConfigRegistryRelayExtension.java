@@ -2,14 +2,14 @@ package org.orbit.component.runtime.relay.other.extensions;
 
 import org.orbit.component.runtime.relay.extensions.ConfigRegistryWSRelayControl;
 import org.orbit.platform.sdk.WSRelayControl;
-import org.orbit.platform.sdk.extension.impl.ProgramExtensionImpl;
+import org.orbit.platform.sdk.extension.impl.other.ProgramExtensionImplV1;
 
-public class ConfigRegistryRelayExtension extends ProgramExtensionImpl {
+public class ConfigRegistryRelayExtension extends ProgramExtensionImplV1 {
 
 	public static final String ID = "orbit.component.config_registry.relay";
 
 	public ConfigRegistryRelayExtension() {
-		adapt(WSRelayControl.class, ConfigRegistryWSRelayControl.INSTANCE);
+		addInterface(WSRelayControl.class, ConfigRegistryWSRelayControl.INSTANCE);
 	}
 
 	@Override

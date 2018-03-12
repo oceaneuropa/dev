@@ -22,6 +22,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.orbit.platform.runtime.core.PlatformContextImpl;
 import org.orbit.platform.runtime.core.PlatformImpl;
 import org.orbit.platform.runtime.util.ProcessHandlerFilterForProgramExtension;
+import org.orbit.platform.runtime.util.ProgramExtensionHelper;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.IProcessFilter;
@@ -117,7 +118,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 
 		// Autostart process of the extension
 		final ServiceActivator serviceActivator = extension.getAdapter(ServiceActivator.class);
-		if (serviceActivator != null && serviceActivator.isAutoStart()) {
+		if (serviceActivator != null && ProgramExtensionHelper.INSTANCE.isAutoStart(extension, serviceActivator)) {
 			boolean sync = false;
 			Callable<ProcessHandler> callable = new Callable<ProcessHandler>() {
 				@Override
@@ -200,7 +201,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 		}
 
 		ProcessHandler processHandler = null;
-		if (serviceActivator.isSingleInstance()) {
+		if (ProgramExtensionHelper.INSTANCE.isSingleton(extension, serviceActivator)) {
 			// Do not start if process already exists for the extension
 			ProcessHandlerFilterForProgramExtension filter = new ProcessHandlerFilterForProgramExtension(extension);
 			ProcessHandler[] processHandlers = getProcessHandlers(filter);
@@ -252,12 +253,12 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 		this.processesLock.writeLock().lock();
 		try {
 			int pid = getNextPID();
-			String processName = serviceActivator.getProcessName();
+			String name = ProgramExtensionHelper.INSTANCE.getName(extension, serviceActivator);
 
 			IPlatformContext context = createContext();
 			context.setProperties(properties);
 
-			ProcessImpl process = new ProcessImpl(pid, processName);
+			ProcessImpl process = new ProcessImpl(pid, name);
 			process.adapt(IProgramExtension.class, extension);
 			process.adapt(IPlatformContext.class, context);
 
@@ -304,7 +305,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				Throwable throwable = e.getCause();
 				if (throwable instanceof ProcessException) {
 					throw (ProcessException) throwable;
@@ -329,7 +330,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				Throwable throwable = e.getCause();
 				if (throwable instanceof ProcessException) {
 					throw (ProcessException) throwable;
@@ -354,7 +355,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (ExecutionException e) {
-				e.printStackTrace();
+				// e.printStackTrace();
 				Throwable throwable = e.getCause();
 				if (throwable instanceof ProcessException) {
 					throw (ProcessException) throwable;
@@ -377,10 +378,13 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 			if (processHandler == null) {
 				throw new ProcessException("Process '" + pid + "' does not exists.");
 			}
-			if (!((ProcessHandlerImpl) processHandler).canStart()) {
+			if (processHandler.getRuntimeState().isStarted()) {
+				throw new ProcessException("Process '" + pid + "' is already started.");
+			}
+			if (!processHandler.canStart()) {
 				throw new ProcessException("Process '" + pid + "' cannot be started.");
 			}
-			((ProcessHandlerImpl) processHandler).start();
+			processHandler.start();
 			if (processHandler.getRuntimeState().isStarted()) {
 				return true;
 			}
@@ -404,10 +408,13 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 			if (processHandler == null) {
 				throw new ProcessException("Process '" + pid + "' does not exists.");
 			}
-			if (!((ProcessHandlerImpl) processHandler).canStop()) {
+			if (processHandler.getRuntimeState().isStopped()) {
+				throw new ProcessException("Process '" + pid + "' is already stopped.");
+			}
+			if (!processHandler.canStop()) {
 				throw new ProcessException("Process '" + pid + "' cannot be stopped.");
 			}
-			((ProcessHandlerImpl) processHandler).stop();
+			processHandler.stop();
 			if (processHandler.getRuntimeState().isStopped()) {
 				return true;
 			}

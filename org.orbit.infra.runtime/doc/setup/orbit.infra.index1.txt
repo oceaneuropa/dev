@@ -11,7 +11,7 @@ VM Arguments:
 -Dorbit.host.url=http://127.0.0.1:10001 
 -Dorbit.index_service.url=http://127.0.0.1:8000 
 
--Dcomponent.index_service.autostart=true 
+-Dcomponent.index_service.autostart=false 
 -Dcomponent.index_service.name=IndexService1 
 -Dcomponent.index_service.context_root=/orbit/v1/indexservice 
 -Dcomponent.index_service.jdbc.driver=org.postgresql.Driver 

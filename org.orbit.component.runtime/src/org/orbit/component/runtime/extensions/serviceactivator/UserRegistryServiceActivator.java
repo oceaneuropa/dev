@@ -13,19 +13,14 @@ import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivatorImpl;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
-public class UserRegistryServiceActivator extends ServiceActivatorImpl {
+public class UserRegistryServiceActivator implements ServiceActivator {
 
 	public static final String ID = "component.user_registry.service_activator";
 
 	public static UserRegistryServiceActivator INSTANCE = new UserRegistryServiceActivator();
-
-	@Override
-	public String getProcessName() {
-		return "UserRegistry";
-	}
 
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
@@ -51,3 +46,8 @@ public class UserRegistryServiceActivator extends ServiceActivatorImpl {
 	}
 
 }
+
+// @Override
+// public String getName() {
+// return "UserRegistry";
+// }

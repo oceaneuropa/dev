@@ -20,6 +20,13 @@ public interface IAdaptable {
 	public <T> void adapt(Class<T> clazz, T object);
 
 	/**
+	 * 
+	 * @param classes
+	 * @param object
+	 */
+	public <T> void adapt(Class<T>[] classes, T object);
+
+	/**
 	 * Returns an object which is an instance of the given class. Returns null if no such object can be found.
 	 * 
 	 * @param adapter

@@ -5,7 +5,7 @@
  * Contributors:
  *     OceanEuropa - initial API and implementation
  *******************************************************************************/
-package org.orbit.platform.sdk.extension.util;
+package org.orbit.platform.sdk.extension.desc;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,12 +13,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.orbit.platform.sdk.extension.IProgramExtension;
 import org.orbit.platform.sdk.extension.impl.ProgramExtensionDescriptiveImpl;
+import org.orbit.platform.sdk.extension.util.ProgramExtensionRegistry;
 import org.osgi.framework.BundleContext;
 
 public abstract class ProgramExtensions {
 
 	protected BundleContext context;
-	protected List<ProgramExtension> programExtensionDescs = new ArrayList<ProgramExtension>();
+	protected List<ProgramExtension> extensionDescs = new ArrayList<ProgramExtension>();
 	protected List<IProgramExtension> extensions = new ArrayList<IProgramExtension>();
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
 
@@ -36,15 +37,6 @@ public abstract class ProgramExtensions {
 		this.context = context;
 
 		createExtensions();
-
-		// // Register IProgramExtensions
-		// for (final ProgramExtension programExtensionDesc : this.programExtensionDescs) {
-		// IProgramExtension extension = new ProgramExtensionDescriptiveImpl(programExtensionDesc);
-		// extension.adapt(ProgramExtension.class, programExtensionDesc);
-		//
-		// ProgramExtensionRegistry.getInstance().register(context, extension);
-		// this.extensions.add(extension);
-		// }
 	}
 
 	/**
@@ -67,7 +59,7 @@ public abstract class ProgramExtensions {
 		}
 
 		// clear up data
-		this.programExtensionDescs.clear();
+		this.extensionDescs.clear();
 		this.extensions.clear();
 
 		this.context = null;
@@ -90,23 +82,23 @@ public abstract class ProgramExtensions {
 	 * @return
 	 */
 	public List<ProgramExtension> getExtensionDescriptions() {
-		return this.programExtensionDescs;
+		return this.extensionDescs;
 	}
 
 	/**
 	 * 
-	 * @param programExtensionDesc
+	 * @param extensionDesc
 	 */
-	public synchronized void addExtension(ProgramExtension programExtensionDesc) {
-		if (programExtensionDesc == null) {
+	public synchronized void addExtension(ProgramExtension extensionDesc) {
+		if (extensionDesc == null) {
 			return;
 		}
-		if (programExtensionDesc != null && this.programExtensionDescs.contains(programExtensionDesc)) {
+		if (extensionDesc != null && this.extensionDescs.contains(extensionDesc)) {
 			return;
 		}
 
-		String typeId = programExtensionDesc.getTypeId();
-		String id = programExtensionDesc.getId();
+		String typeId = extensionDesc.getTypeId();
+		String id = extensionDesc.getId();
 		if (typeId == null) {
 			throw new IllegalArgumentException("typeId is null.");
 		}
@@ -114,46 +106,49 @@ public abstract class ProgramExtensions {
 			throw new IllegalArgumentException("id is null.");
 		}
 
-		ProgramExtension programExtensionDescToRemove = null;
-		for (final ProgramExtension currProgramExtensionDesc : this.programExtensionDescs) {
-			String currTypeId = currProgramExtensionDesc.getTypeId();
-			String currId = currProgramExtensionDesc.getId();
+		ProgramExtension extensionDescToRemove = null;
+		for (final ProgramExtension currExtensionDesc : this.extensionDescs) {
+			String currTypeId = currExtensionDesc.getTypeId();
+			String currId = currExtensionDesc.getId();
 			if (typeId.equals(currTypeId) && id.equals(currId)) {
-				programExtensionDescToRemove = currProgramExtensionDesc;
+				extensionDescToRemove = currExtensionDesc;
 				break;
 			}
 		}
 
-		if (programExtensionDescToRemove != null) {
-			removeExtension(programExtensionDescToRemove);
+		if (extensionDescToRemove != null) {
+			removeExtension(extensionDescToRemove);
 		}
 
-		this.programExtensionDescs.add(programExtensionDesc);
+		this.extensionDescs.add(extensionDesc);
 
-		// Register IProgramExtension dynamically
-		IProgramExtension extension = new ProgramExtensionDescriptiveImpl(programExtensionDesc);
+		// Register IProgramExtension service
+		IProgramExtension extension = new ProgramExtensionDescriptiveImpl(extensionDesc);
+		extension.adapt(ProgramExtension.class, extensionDesc); // set (adapt) ProgramExtension in the IProgramExtension
+
 		this.extensions.add(extension);
 		ProgramExtensionRegistry.getInstance().register(this.context, extension);
 	}
 
 	/**
 	 * 
-	 * @param programExtensionDesc
+	 * @param extensionDesc
 	 */
-	public synchronized void removeExtension(ProgramExtension programExtensionDesc) {
-		if (programExtensionDesc == null) {
+	public synchronized void removeExtension(ProgramExtension extensionDesc) {
+		if (extensionDesc == null) {
 			return;
 		}
-		if (programExtensionDesc != null && this.programExtensionDescs.contains(programExtensionDesc)) {
-			this.programExtensionDescs.remove(programExtensionDesc);
+		if (extensionDesc != null && this.extensionDescs.contains(extensionDesc)) {
+			this.extensionDescs.remove(extensionDesc);
 		}
 
-		// Unregister IProgramExtension dynamically
+		// Unregister IProgramExtension service
 		IProgramExtension extensionToRemove = null;
-		for (IProgramExtension extension : this.extensions) {
-			ProgramExtension currProgramExtensionDesc = extension.getAdapter(ProgramExtension.class);
-			if (programExtensionDesc.equals(currProgramExtensionDesc)) {
-				extensionToRemove = extension;
+		for (IProgramExtension currExtension : this.extensions) {
+
+			ProgramExtension currExtensionDesc = currExtension.getAdapter(ProgramExtension.class); // get ProgramExtension from the IProgramExtension
+			if (extensionDesc.equals(currExtensionDesc)) {
+				extensionToRemove = currExtension;
 				break;
 			}
 		}
@@ -164,3 +159,12 @@ public abstract class ProgramExtensions {
 	}
 
 }
+
+// // Register IProgramExtensions
+// for (final ProgramExtension programExtensionDesc : this.programExtensionDescs) {
+// IProgramExtension extension = new ProgramExtensionDescriptiveImpl(programExtensionDesc);
+// extension.adapt(ProgramExtension.class, programExtensionDesc);
+//
+// ProgramExtensionRegistry.getInstance().register(context, extension);
+// this.extensions.add(extension);
+// }

@@ -6,24 +6,14 @@ import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivatorImpl;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
-public class IndexServiceActivator extends ServiceActivatorImpl {
+public class IndexServiceActivator implements ServiceActivator {
 
 	public static final String ID = "orbit.index_service.service_activator";
 
 	public static IndexServiceActivator INSTANCE = new IndexServiceActivator();
-
-	@Override
-	public boolean isAutoStart() {
-		return true;
-	}
-
-	@Override
-	public String getProcessName() {
-		return "IndexService";
-	}
 
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
@@ -49,3 +39,24 @@ public class IndexServiceActivator extends ServiceActivatorImpl {
 	}
 
 }
+
+// protected IParameter[] parameters;
+
+// @Override
+// public String getName() {
+// return "IndexService";
+// }
+
+// public synchronized IParameter[] getParameters() {
+// if (this.parameters == null) {
+// this.parameters = new IParameter[] { //
+// new ParameterImpl("component.index_service.name", "service instance name"), //
+// new ParameterImpl("component.index_service.context_root", "web service context root"), //
+// new ParameterImpl("component.index_service.jdbc.driver", "JDBC driver"), //
+// new ParameterImpl("component.index_service.jdbc.url", "JDBC URL"), //
+// new ParameterImpl("component.index_service.jdbc.username", "JDBC username"), //
+// new ParameterImpl("component.index_service.jdbc.password", "JDBC password") //
+// };
+// }
+// return this.parameters;
+// }

@@ -329,6 +329,11 @@ public class AppStoreImpl implements AppStore {
 	}
 
 	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return this.adaptorSupport.getAdapter(adapter);
 	}

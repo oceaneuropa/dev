@@ -145,6 +145,11 @@ public class ConfigRegistryImplV1 implements ConfigRegistry {
 	}
 
 	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+
+	}
+
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return null;
 	}

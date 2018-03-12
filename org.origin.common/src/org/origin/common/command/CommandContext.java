@@ -30,6 +30,11 @@ public class CommandContext implements IAdaptable {
 	}
 
 	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		adaptorSupport.adapt(clazz, object);
 	}

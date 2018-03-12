@@ -729,7 +729,12 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
-		adaptorSupport.adapt(clazz, object);
+		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
 	}
 
 }

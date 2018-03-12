@@ -11,7 +11,7 @@ import java.util.Map;
 
 import org.origin.common.adapter.IAdaptable;
 
-public interface IProgramExtension extends IAdaptable {
+public interface IProgramExtension extends IAdaptable, InterfacesAware {
 
 	public interface Context extends IAdaptable {
 
@@ -68,3 +68,10 @@ public interface IProgramExtension extends IAdaptable {
 // * @return
 // */
 // IProgramLauncher getLauncher();
+
+// /**
+// * Get extension parameter names.
+// *
+// * @return
+// */
+// String[] getParameters();

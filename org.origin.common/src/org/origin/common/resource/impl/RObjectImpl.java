@@ -77,6 +77,11 @@ public abstract class RObjectImpl implements RObject, Cloneable {
 	}
 
 	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		if (Resource.class.isAssignableFrom(clazz) && object instanceof Resource) {
 			this.resource = (Resource) object;

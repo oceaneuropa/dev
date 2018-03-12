@@ -153,6 +153,11 @@ public class PlatformProxy implements PlatformClient {
 	}
 
 	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		resolve().adapt(classes, object);
+	}
+
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return resolve().getAdapter(adapter);
 	}
@@ -240,6 +245,10 @@ public class PlatformProxy implements PlatformClient {
 
 		@Override
 		public <T> void adapt(Class<T> clazz, T object) {
+		}
+
+		@Override
+		public <T> void adapt(Class<T>[] classes, T object) {
 		}
 
 		@Override

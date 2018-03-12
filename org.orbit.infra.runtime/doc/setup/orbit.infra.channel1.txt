@@ -13,7 +13,7 @@ VM arguments:
 
 -Dorbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice 
 
--Dcomponent.channel.autostart=true 
+-Dcomponent.channel.autostart=false 
 -Dcomponent.channel.name=Channel1 
 -Dcomponent.channel.context_root=/orbit/v1/channel 
 -Dcomponent.channel.http_port=7001 

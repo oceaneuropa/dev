@@ -180,6 +180,11 @@ public abstract class ResourceImpl implements Resource {
 	}
 
 	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		this.adaptorSupport.adapt(clazz, object);
 	}

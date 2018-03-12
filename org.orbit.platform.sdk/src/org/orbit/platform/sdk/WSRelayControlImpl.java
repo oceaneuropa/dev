@@ -3,7 +3,7 @@ package org.orbit.platform.sdk;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.platform.sdk.extension.util.ProgramExtension;
+import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.osgi.framework.BundleContext;
 

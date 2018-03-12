@@ -6,19 +6,14 @@ import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivatorImpl;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
-public class AppStoreServiceActivator extends ServiceActivatorImpl {
+public class AppStoreServiceActivator implements ServiceActivator {
 
 	public static final String ID = "component.app_store.service_activator";
 
 	public static AppStoreServiceActivator INSTANCE = new AppStoreServiceActivator();
-
-	@Override
-	public String getProcessName() {
-		return "AppStore";
-	}
 
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
@@ -44,3 +39,8 @@ public class AppStoreServiceActivator extends ServiceActivatorImpl {
 	}
 
 }
+
+// @Override
+// public String getName() {
+// return "AppStore";
+// }

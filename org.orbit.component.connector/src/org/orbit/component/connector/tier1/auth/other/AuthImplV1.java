@@ -131,6 +131,11 @@ public class AuthImplV1 implements Auth {
 	}
 
 	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+
+	}
+
+	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return null;
 	}

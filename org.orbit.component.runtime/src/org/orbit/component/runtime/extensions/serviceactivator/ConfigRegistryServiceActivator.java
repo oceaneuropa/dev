@@ -6,19 +6,14 @@ import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivatorImpl;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
-public class ConfigRegistryServiceActivator extends ServiceActivatorImpl {
+public class ConfigRegistryServiceActivator implements ServiceActivator {
 
 	public static final String ID = "component.config_registry.service_activator";
 
 	public static ConfigRegistryServiceActivator INSTANCE = new ConfigRegistryServiceActivator();
-
-	@Override
-	public String getProcessName() {
-		return "ConfigRegistry";
-	}
 
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
@@ -44,3 +39,8 @@ public class ConfigRegistryServiceActivator extends ServiceActivatorImpl {
 	}
 
 }
+
+// @Override
+// public String getName() {
+// return "ConfigRegistry";
+// }

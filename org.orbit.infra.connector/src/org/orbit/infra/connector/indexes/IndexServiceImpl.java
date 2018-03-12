@@ -269,6 +269,11 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 	}
 
 	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
 	public boolean isProxy() {
 		return this.isProxy;
 	}

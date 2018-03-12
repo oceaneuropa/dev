@@ -15,7 +15,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class ChannelServiceImpl implements ChannelService {
 
-	// protected String namespace;
+	protected Map<String, Object> initProperties;
 	protected String name;
 	protected String hostURL;
 	protected String contextRoot;
@@ -24,15 +24,15 @@ public class ChannelServiceImpl implements ChannelService {
 	protected ServiceRegistration<?> serviceRegistry;
 	protected Map<Object, Object> properties;
 
-	public ChannelServiceImpl() {
+	/**
+	 * 
+	 * @param initProperties
+	 */
+	public ChannelServiceImpl(Map<String, Object> initProperties) {
+		this.initProperties = initProperties;
 		this.channelMap = Collections.synchronizedMap(new HashMap<String, Channel>());
 		this.properties = new HashMap<Object, Object>();
 	}
-
-	// @Override
-	// public String getNamespace() {
-	// return (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_NAMESPACE);
-	// }
 
 	@Override
 	public String getName() {
@@ -64,6 +64,10 @@ public class ChannelServiceImpl implements ChannelService {
 
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+		if (this.initProperties != null) {
+			configProps.putAll(this.initProperties);
+		}
+
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
 		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAMESPACE);
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAME);
@@ -147,3 +151,9 @@ public class ChannelServiceImpl implements ChannelService {
 	}
 
 }
+
+// protected String namespace;
+// @Override
+// public String getNamespace() {
+// return (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_NAMESPACE);
+// }

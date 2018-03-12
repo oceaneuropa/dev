@@ -2,14 +2,14 @@ package org.orbit.component.runtime.relay.other.extensions;
 
 import org.orbit.component.runtime.relay.extensions.UserRegistryWSRelayControl;
 import org.orbit.platform.sdk.WSRelayControl;
-import org.orbit.platform.sdk.extension.impl.ProgramExtensionImpl;
+import org.orbit.platform.sdk.extension.impl.other.ProgramExtensionImplV1;
 
-public class UserRegistryRelayExtension extends ProgramExtensionImpl {
+public class UserRegistryRelayExtension extends ProgramExtensionImplV1 {
 
 	public static final String ID = "orbit.component.user_registry.relay";
 
 	public UserRegistryRelayExtension() {
-		adapt(WSRelayControl.class, UserRegistryWSRelayControl.INSTANCE);
+		addInterface(WSRelayControl.class, UserRegistryWSRelayControl.INSTANCE);
 	}
 
 	@Override

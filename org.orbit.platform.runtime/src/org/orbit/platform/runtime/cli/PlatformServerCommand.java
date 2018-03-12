@@ -19,10 +19,13 @@ import org.orbit.platform.runtime.programs.ProgramBundle;
 import org.orbit.platform.runtime.programs.ProgramHandler;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.manifest.ProgramManifest;
+import org.orbit.platform.runtime.util.CommonModelHelper;
+import org.orbit.platform.runtime.util.ProgramExtensionHelper;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.WSRelayControl;
 import org.orbit.platform.sdk.extension.IProgramExtension;
 import org.orbit.platform.sdk.extension.IProgramExtensionService;
+import org.orbit.platform.sdk.extension.desc.InterfaceDescription;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
@@ -45,7 +48,8 @@ import org.osgi.framework.BundleContext;
  */
 public class PlatformServerCommand implements Annotated {
 
-	protected static String[] EXTENSION_COLUMNS = new String[] { "Type Id", "Id", "Name", "Description" };
+	protected static String[] EXTENSION_COLUMNS = new String[] { "Extension Type Id", "Extension Id", "Name", "Description" };
+	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Parameters" };
 	protected static String[] PROCESS_COLUMNS = new String[] { "Process Id", "Name", "Runtime State" };
 
 	// protected static Logger LOG = LoggerFactory.getLogger(AppCommand.class);
@@ -80,8 +84,11 @@ public class PlatformServerCommand implements Annotated {
 		props.put("osgi.command.scope", "platform");
 		props.put("osgi.command.function",
 				new String[] { //
-						"list_extensions", "lextensions", //
+						"list_extensions", "lextensions", "lextensioninterfaces", //
+
 						"list_processes", "lprocesses", "create_process", "start_process", "stop_process", "exit_process", //
+						"start_all_processes", "stop_all_processes", "exit_all_processes", //
+
 						"listapps", "installapp", "uninstallapp", //
 						"activateapp", "deactivateapp", //
 						"startapp", "stopapp" //
@@ -137,11 +144,11 @@ public class PlatformServerCommand implements Annotated {
 		return this.platform.getProcessManager();
 	}
 
-	public void lextensions() throws ClientException {
-		list_extensions();
-	}
-
-	public void list_extensions() throws ClientException {
+	/**
+	 * List all extensions.
+	 * 
+	 */
+	public void lextensions() {
 		IProgramExtension[] extensions = getProgramExtensionService().getExtensions();
 		String[][] records = new String[extensions.length][EXTENSION_COLUMNS.length];
 		int index = 0;
@@ -151,11 +158,82 @@ public class PlatformServerCommand implements Annotated {
 		PrettyPrinter.prettyPrint(EXTENSION_COLUMNS, records);
 	}
 
-	public void lprocesses() throws ClientException {
-		list_processes();
+	/**
+	 * List interfaces of an extension.
+	 * 
+	 * @param extensionTypeId
+	 * @param extensionId
+	 */
+	public void lextensioninterfaces_v1( //
+			// Parameters
+			@Descriptor("Extension type id") @Parameter(names = { "-typeId", "--typeId" }, absentValue = "") String extensionTypeId, //
+			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
+	) {
+		IProgramExtension extension = getProgramExtensionService().getExtension(extensionTypeId, extensionId);
+		if (extension == null) {
+			System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
+			return;
+		}
+
+		Object[] interfaces = extension.getInterfaces();
+		String[][] records = new String[interfaces.length][INTERFACE_COLUMNS.length];
+		int index = 0;
+		for (Object interfaceObj : interfaces) {
+			InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
+			String parameters = ProgramExtensionHelper.INSTANCE.toParametersString(desc.getParameters());
+			records[index++] = new String[] { desc.getName(), String.valueOf(desc.isSingleton()), String.valueOf(desc.isAutoStart()), parameters };
+		}
+		PrettyPrinter.prettyPrint(INTERFACE_COLUMNS, records);
 	}
 
-	public void list_processes() throws ClientException {
+	/**
+	 * List interfaces of an extension.
+	 * 
+	 * @param extensionTypeId
+	 * @param extensionId
+	 */
+	public void lextensioninterfaces( //
+			// Parameters
+			@Descriptor("Extension type id") @Parameter(names = { "-typeId", "--typeId" }, absentValue = "") String extensionTypeId, //
+			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
+	) {
+		IProgramExtension extension = getProgramExtensionService().getExtension(extensionTypeId, extensionId);
+		if (extension == null) {
+			System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
+			return;
+		}
+
+		Object[] interfaces = extension.getInterfaces();
+
+		int numRecords = 0;
+		for (Object interfaceObj : interfaces) {
+			InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
+			org.orbit.platform.sdk.extension.desc.Parameter[] parameters = desc.getParameters();
+			numRecords += parameters.length;
+		}
+
+		String[][] records = new String[numRecords][INTERFACE_COLUMNS.length];
+		int index = 0;
+		for (Object interfaceObj : interfaces) {
+			InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
+			org.orbit.platform.sdk.extension.desc.Parameter[] parameters = desc.getParameters();
+			for (int i = 0; i < parameters.length; i++) {
+				org.orbit.platform.sdk.extension.desc.Parameter parameter = parameters[i];
+				if (i == 0) {
+					records[index++] = new String[] { desc.getName(), String.valueOf(desc.isSingleton()), String.valueOf(desc.isAutoStart()), parameter.getLabel() };
+				} else {
+					records[index++] = new String[] { "", "", "", parameter.getLabel() };
+				}
+			}
+		}
+		PrettyPrinter.prettyPrint(INTERFACE_COLUMNS, records);
+	}
+
+	/**
+	 * List all processes.
+	 * 
+	 */
+	public void lprocesses() {
 		IProcess[] processes = getProcessManager().getProcesses();
 		String[][] records = new String[processes.length][PROCESS_COLUMNS.length];
 		int index = 0;
@@ -167,9 +245,18 @@ public class PlatformServerCommand implements Annotated {
 		PrettyPrinter.prettyPrint(PROCESS_COLUMNS, records);
 	}
 
-	public void create_process(// Parameters
+	/**
+	 * 
+	 * @param extensionTypeId
+	 * @param extensionId
+	 * @param params
+	 * @throws ClientException
+	 */
+	public void create_process( //
+			// Parameters
 			@Descriptor("Extension type id") @Parameter(names = { "-typeId", "--typeId" }, absentValue = "") String extensionTypeId, //
-			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
+			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId, //
+			@Descriptor("Parameters") @Parameter(names = { "-params", "--params" }, absentValue = "") String params //
 	) throws ClientException {
 		try {
 			IProgramExtension extension = getProgramExtensionService().getExtension(extensionTypeId, extensionId);
@@ -177,15 +264,24 @@ public class PlatformServerCommand implements Annotated {
 				System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
 				return;
 			}
-			int pid = getProcessManager().createProcess(extension, null);
+
+			Map<String, Object> properties = CommonModelHelper.INSTANCE.toMap(params);
+			int pid = getProcessManager().createProcess(extension, properties);
 			System.out.println("pid: " + pid);
 
 		} catch (ProcessException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
-	public void start_process(
+	/**
+	 * 
+	 * @param pid
+	 * @param async
+	 * @throws ClientException
+	 */
+	public void start_process( //
 			// Parameters
 			@Descriptor("Process id") @Parameter(names = { "-pid", "--pid" }, absentValue = "") int pid, //
 			// Options
@@ -198,10 +294,45 @@ public class PlatformServerCommand implements Annotated {
 			}
 
 		} catch (ProcessException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
+	/**
+	 * 
+	 * @param async
+	 * @throws ClientException
+	 */
+	public void start_all_processes(
+			// Options
+			@Descriptor("Async") @Parameter(names = { "-async", "--async" }, absentValue = "false", presentValue = "true") boolean async //
+	) throws ClientException {
+		IProcess[] processes = getProcessManager().getProcesses();
+		int numProcesses = processes.length;
+		int numSucceeded = 0;
+		for (IProcess process : processes) {
+			try {
+				boolean succeed = getProcessManager().startProcess(process.getPID(), async);
+				if (succeed) {
+					numSucceeded++;
+				}
+			} catch (ProcessException e) {
+				// e.printStackTrace();
+				System.err.println(e.getMessage());
+			}
+		}
+		if (!async) {
+			System.out.println("Total started: " + numSucceeded + "/" + numProcesses);
+		}
+	}
+
+	/**
+	 * 
+	 * @param pid
+	 * @param async
+	 * @throws ClientException
+	 */
 	public void stop_process(
 			// Parameters
 			@Descriptor("Process id") @Parameter(names = { "-pid", "--pid" }, absentValue = "") int pid, //
@@ -215,10 +346,46 @@ public class PlatformServerCommand implements Annotated {
 			}
 
 		} catch (ProcessException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			System.err.println(e.getMessage());
 		}
 	}
 
+	/**
+	 * 
+	 * @param async
+	 * @throws ClientException
+	 */
+	public void stop_all_processes(
+			// Options
+			@Descriptor("Async") @Parameter(names = { "-async", "--async" }, absentValue = "false", presentValue = "true") boolean async //
+	) throws ClientException {
+		IProcess[] processes = getProcessManager().getProcesses();
+		int numProcesses = processes.length;
+		int numSucceeded = 0;
+		for (IProcess process : processes) {
+			try {
+
+				boolean succeed = getProcessManager().stopProcess(process.getPID(), async);
+				if (succeed) {
+					numSucceeded++;
+				}
+			} catch (ProcessException e) {
+				// e.printStackTrace();
+				System.err.println(e.getMessage());
+			}
+		}
+		if (!async) {
+			System.out.println("Total stopped: " + numSucceeded + "/" + numProcesses);
+		}
+	}
+
+	/**
+	 * 
+	 * @param pid
+	 * @param async
+	 * @throws ClientException
+	 */
 	public void exit_process(
 			// Parameters
 			@Descriptor("Process id") @Parameter(names = { "-pid", "--pid" }, absentValue = "") int pid, //
@@ -230,9 +397,35 @@ public class PlatformServerCommand implements Annotated {
 			if (!async) {
 				System.out.println("exited: " + succeed);
 			}
-
 		} catch (ProcessException e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 * @param async
+	 * @throws ClientException
+	 */
+	public void exit_all_processes(
+			// Options
+			@Descriptor("Async") @Parameter(names = { "-async", "--async" }, absentValue = "false", presentValue = "true") boolean async //
+	) throws ClientException {
+		IProcess[] processes = getProcessManager().getProcesses();
+		int numProcesses = processes.length;
+		int numSucceeded = 0;
+		for (IProcess process : processes) {
+			try {
+				boolean succeed = getProcessManager().exitProcess(process.getPID(), async);
+				if (succeed) {
+					numSucceeded++;
+				}
+			} catch (ProcessException e) {
+				e.printStackTrace();
+			}
+		}
+		if (!async) {
+			System.out.println("Total exited: " + numSucceeded + "/" + numProcesses);
 		}
 	}
 

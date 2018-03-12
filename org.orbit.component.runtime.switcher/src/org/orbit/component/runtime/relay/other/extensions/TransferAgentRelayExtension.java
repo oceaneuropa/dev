@@ -2,14 +2,14 @@ package org.orbit.component.runtime.relay.other.extensions;
 
 import org.orbit.component.runtime.relay.extensions.NodeControlWSRelayControl;
 import org.orbit.platform.sdk.WSRelayControl;
-import org.orbit.platform.sdk.extension.impl.ProgramExtensionImpl;
+import org.orbit.platform.sdk.extension.impl.other.ProgramExtensionImplV1;
 
-public class TransferAgentRelayExtension extends ProgramExtensionImpl {
+public class TransferAgentRelayExtension extends ProgramExtensionImplV1 {
 
 	public static final String ID = "orbit.component.transfer_agent.relay";
 
 	public TransferAgentRelayExtension() {
-		adapt(WSRelayControl.class, NodeControlWSRelayControl.INSTANCE);
+		addInterface(WSRelayControl.class, NodeControlWSRelayControl.INSTANCE);
 	}
 
 	@Override

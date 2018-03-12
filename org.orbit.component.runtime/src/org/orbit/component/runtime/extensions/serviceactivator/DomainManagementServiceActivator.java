@@ -6,19 +6,14 @@ import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivatorImpl;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
-public class DomainManagementServiceActivator extends ServiceActivatorImpl {
+public class DomainManagementServiceActivator implements ServiceActivator {
 
 	public static final String ID = "component.domain_management.service_activator";
 
 	public static DomainManagementServiceActivator INSTANCE = new DomainManagementServiceActivator();
-
-	@Override
-	public String getProcessName() {
-		return "DomainService";
-	}
 
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
@@ -44,3 +39,8 @@ public class DomainManagementServiceActivator extends ServiceActivatorImpl {
 	}
 
 }
+
+// @Override
+// public String getName() {
+// return "DomainService";
+// }

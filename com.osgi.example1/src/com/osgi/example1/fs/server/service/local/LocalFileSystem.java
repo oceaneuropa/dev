@@ -14,8 +14,8 @@ import org.osgi.framework.ServiceRegistration;
 
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
-import com.osgi.example1.fs.server.service.FileSystemConfiguration;
 import com.osgi.example1.fs.server.service.FileSystem;
+import com.osgi.example1.fs.server.service.FileSystemConfiguration;
 
 public class LocalFileSystem implements FileSystem {
 
@@ -311,7 +311,12 @@ public class LocalFileSystem implements FileSystem {
 
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
-		adaptorSupport.adapt(clazz, object);
+		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
 	}
 
 }

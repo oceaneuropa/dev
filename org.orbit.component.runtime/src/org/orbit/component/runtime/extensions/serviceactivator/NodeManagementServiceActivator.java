@@ -6,19 +6,14 @@ import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementServi
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivatorImpl;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
-public class NodeManagementServiceActivator extends ServiceActivatorImpl {
+public class NodeManagementServiceActivator implements ServiceActivator {
 
 	public static final String ID = "component.node_management.service_activator";
 
 	public static NodeManagementServiceActivator INSTANCE = new NodeManagementServiceActivator();
-
-	@Override
-	public String getProcessName() {
-		return "NodeManagement";
-	}
 
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
@@ -44,3 +39,8 @@ public class NodeManagementServiceActivator extends ServiceActivatorImpl {
 	}
 
 }
+
+// @Override
+// public String getName() {
+// return "NodeManagement";
+// }

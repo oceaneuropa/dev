@@ -31,5 +31,5 @@ VM Arguments:
 -Dcomponent.domain_service.switcher.hosts=http://127.0.0.1:11001;http://127.0.0.1:11002 
 -Dcomponent.domain_service.switcher.context_root=/orbit/v1/domain 
  
--Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
+-Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
 -------------------------------------------------------------------------------------------------------

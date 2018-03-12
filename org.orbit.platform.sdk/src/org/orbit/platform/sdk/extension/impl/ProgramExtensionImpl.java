@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.platform.sdk.extension.IProgramExtension;
-import org.orbit.platform.sdk.extension.IProgramExtensionFilter;
 import org.orbit.platform.sdk.extension.IProgramExtensionService;
 import org.origin.common.adapter.AdaptorSupport;
 import org.osgi.framework.BundleContext;
@@ -89,13 +88,13 @@ public abstract class ProgramExtensionImpl implements IProgramExtension {
 	}
 
 	@Override
-	public IProgramExtensionFilter getFilter() {
-		return getAdapter(IProgramExtensionFilter.class);
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
 	}
 
 	@Override
-	public <T> void adapt(Class<T> clazz, T object) {
-		this.adaptorSupport.adapt(clazz, object);
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
 	}
 
 	@Override
@@ -153,4 +152,9 @@ public abstract class ProgramExtensionImpl implements IProgramExtension {
 // @Override
 // public IProgramLauncher getLauncher() {
 // return getAdapter(IProgramLauncher.class);
+// }
+
+// @Override
+// public IProgramExtensionFilter getFilter() {
+// return getAdapter(IProgramExtensionFilter.class);
 // }
