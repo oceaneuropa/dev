@@ -44,3 +44,30 @@ public class GAIAServiceActivator implements ServiceActivator {
 // public String getName() {
 // return "GAIA";
 // }
+
+// @Descriptor("Start GAIA")
+// public void startGAIA() throws ClientException {
+// LOG.info("startGAIA()");
+//
+// if (this.gaiaImpl == null) {
+//// Properties configIniProps = SetupUtil.getNodeHomeConfigIniProperties(this.bundleContext);
+// this.gaiaImpl = new GAIAImpl(this.bundleContext, null);
+// }
+// this.gaiaImpl.start();
+// }
+//
+// @Descriptor("Stop GAIA")
+// public void stopGAIA() throws ClientException {
+// LOG.info("stopGAIA()");
+//
+// if (this.gaiaImpl != null) {
+// this.gaiaImpl.stop();
+// this.gaiaImpl = null;
+// }
+// }
+// protected void checkGAIA() throws ClientException {
+// if (this.gaia == null) {
+// LOG.info("NodeOS is not available.");
+// throw new ClientException(500, "GAIA is not available.");
+// }
+// }

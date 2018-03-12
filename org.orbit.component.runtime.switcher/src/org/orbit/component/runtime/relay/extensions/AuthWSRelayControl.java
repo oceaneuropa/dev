@@ -7,7 +7,6 @@ import org.orbit.component.runtime.relay.Extensions;
 import org.orbit.component.runtime.relay.desc.AuthWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
 import org.orbit.platform.sdk.URLProvider;
-import org.orbit.platform.sdk.URLProviderImpl;
 import org.orbit.platform.sdk.WSRelayControlImpl;
 import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.origin.common.rest.client.WSClientFactory;
@@ -41,7 +40,7 @@ public class AuthWSRelayControl extends WSRelayControlImpl {
 			urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.AUTH_URL_PROVIDER_EXTENSION_ID);
 			urlProviderExtension.setName("URL provider for auth");
 			urlProviderExtension.setDescription("URL provider for auth description");
-			urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(hostURL, contextRoot));
+			// urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(hostURL, contextRoot));
 			Extensions.INSTANCE.addExtension(urlProviderExtension);
 
 			this.extensionMap.put(url, urlProviderExtension);

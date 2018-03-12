@@ -39,21 +39,3 @@ public class ChannelServiceActivator implements ServiceActivator {
 	}
 
 }
-
-// @Override
-// public boolean isAutoStart() {
-// return false;
-// }
-
-// @Override
-// public String getName() {
-// return "ChannelService";
-// }
-//
-// public String[] getParameters() {
-// return new String[] { //
-// "component.channel.name", //
-// "component.channel.context_root", //
-// "component.channel.http_port" //
-// };
-// }

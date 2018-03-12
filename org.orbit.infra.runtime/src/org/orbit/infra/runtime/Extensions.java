@@ -35,8 +35,8 @@ public class Extensions extends ProgramExtensions {
 				new Parameter("component.index_service.jdbc.driver", "JDBC driver"), //
 				new Parameter("component.index_service.jdbc.url", "JDBC URL"), //
 				new Parameter("component.index_service.jdbc.username", "JDBC username"), //
-				new Parameter("component.index_service.jdbc.password", "JDBC password"), //
-				new Parameter("orbit.host.url", "generic host url", true) //
+				new Parameter("component.index_service.jdbc.password", "JDBC password") //
+		// new Parameter("orbit.host.url", "generic host url", true) //
 		);
 		indexServiceExtension.addInterface(ServiceActivator.class, IndexServiceActivator.INSTANCE, indexServiceDesc);
 		addExtension(indexServiceExtension);
@@ -49,8 +49,8 @@ public class Extensions extends ProgramExtensions {
 		channelServiceDesc.setParameters( //
 				new Parameter("component.channel.name", "instance name"), //
 				new Parameter("component.channel.context_root", "web service context root"), //
-				new Parameter("component.channel.http_port", "web socket http port"), //
-				new Parameter("orbit.host.url", "generic host url", true) //
+				new Parameter("component.channel.http_port", "web socket http port") //
+		// new Parameter("orbit.host.url", "generic host url", true) //
 		);
 		channelServiceExtension.addInterface(ServiceActivator.class, ChannelServiceActivator.INSTANCE, channelServiceDesc);
 		// test for multi-interfaces in an extension

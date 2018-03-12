@@ -7,7 +7,6 @@ import org.orbit.component.runtime.relay.Extensions;
 import org.orbit.component.runtime.relay.desc.DomainServiceWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
 import org.orbit.platform.sdk.URLProvider;
-import org.orbit.platform.sdk.URLProviderImpl;
 import org.orbit.platform.sdk.WSRelayControlImpl;
 import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.origin.common.rest.client.WSClientFactory;
@@ -41,7 +40,7 @@ public class DomainServiceWSRelayControl extends WSRelayControlImpl {
 			urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.DOMAIN_SERVICE_URL_PROVIDER_EXTENSION_ID);
 			urlProviderExtension.setName("URL provider for domain service");
 			urlProviderExtension.setDescription("URL provider for domain service description");
-			urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(hostURL, contextRoot));
+			// urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(hostURL, contextRoot));
 			Extensions.INSTANCE.addExtension(urlProviderExtension);
 
 			this.extensionMap.put(url, urlProviderExtension);

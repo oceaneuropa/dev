@@ -34,6 +34,8 @@ import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
+import org.origin.common.rest.server.WebServiceAware;
+import org.origin.common.rest.server.WebServiceAwareRegistry;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.URIUtil;
@@ -51,6 +53,7 @@ public class PlatformServerCommand implements Annotated {
 	protected static String[] EXTENSION_COLUMNS = new String[] { "Extension Type Id", "Extension Id", "Name", "Description" };
 	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Parameters" };
 	protected static String[] PROCESS_COLUMNS = new String[] { "Process Id", "Name", "Runtime State" };
+	protected static String[] WEB_SERVICE_COLUMNS = new String[] { "Name", "URL" };
 
 	// protected static Logger LOG = LoggerFactory.getLogger(AppCommand.class);
 	public static class LOG {
@@ -84,7 +87,9 @@ public class PlatformServerCommand implements Annotated {
 		props.put("osgi.command.scope", "platform");
 		props.put("osgi.command.function",
 				new String[] { //
-						"list_extensions", "lextensions", "lextensioninterfaces", //
+						"lhost", "lendpoints", //
+
+						"list_extensions", "lextensions", "linterfaces", //
 
 						"list_processes", "lprocesses", "create_process", "start_process", "stop_process", "exit_process", //
 						"start_all_processes", "stop_all_processes", "exit_all_processes", //
@@ -144,6 +149,27 @@ public class PlatformServerCommand implements Annotated {
 		return this.platform.getProcessManager();
 	}
 
+	public void lhost() {
+		String hostURL = this.platform.getHostURL();
+		System.out.println(hostURL);
+	}
+
+	public void lendpoints() {
+		WebServiceAware[] webServiceAwares = WebServiceAwareRegistry.getInstance().getWebServiceAwares();
+		String[][] records = new String[webServiceAwares.length][WEB_SERVICE_COLUMNS.length];
+		int index = 0;
+		for (WebServiceAware webServiceAware : webServiceAwares) {
+			String hostURL = webServiceAware.getHostURL();
+			String contextRoot = webServiceAware.getContextRoot();
+			String url = hostURL + contextRoot;
+			if (!hostURL.endsWith("/") && !contextRoot.startsWith("/")) {
+				url = hostURL + "/" + contextRoot;
+			}
+			records[index++] = new String[] { webServiceAware.getName(), url };
+		}
+		PrettyPrinter.prettyPrint(WEB_SERVICE_COLUMNS, records);
+	}
+
 	/**
 	 * List all extensions.
 	 * 
@@ -192,17 +218,43 @@ public class PlatformServerCommand implements Annotated {
 	 * @param extensionTypeId
 	 * @param extensionId
 	 */
-	public void lextensioninterfaces( //
+	public void linterfaces( //
 			// Parameters
 			@Descriptor("Extension type id") @Parameter(names = { "-typeId", "--typeId" }, absentValue = "") String extensionTypeId, //
 			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
 	) {
-		IProgramExtension extension = getProgramExtensionService().getExtension(extensionTypeId, extensionId);
+		if ("".equals(extensionTypeId) || "".equals(extensionId)) {
+			IProgramExtension[] extensions = getProgramExtensionService().getExtensions();
+			for (IProgramExtension extension : extensions) {
+				linterfaces(extension);
+				System.out.println();
+			}
+
+		} else if (!"".equals(extensionTypeId) && "".equals(extensionId)) {
+			IProgramExtension[] extensions = getProgramExtensionService().getExtensions(extensionTypeId);
+			for (IProgramExtension extension : extensions) {
+				linterfaces(extension);
+				System.out.println();
+			}
+
+		} else if (!"".equals(extensionTypeId) && !"".equals(extensionId)) {
+			IProgramExtension extension = getProgramExtensionService().getExtension(extensionTypeId, extensionId);
+			if (extension == null) {
+				System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
+				return;
+			}
+			linterfaces(extension);
+		}
+	}
+
+	/**
+	 * 
+	 * @param extension
+	 */
+	protected void linterfaces(IProgramExtension extension) {
 		if (extension == null) {
-			System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
 			return;
 		}
-
 		Object[] interfaces = extension.getInterfaces();
 
 		int numRecords = 0;
@@ -226,6 +278,11 @@ public class PlatformServerCommand implements Annotated {
 				}
 			}
 		}
+
+		System.out.println("Extension:");
+		System.out.println(extension);
+
+		System.out.println("\r\nInterfaces:");
 		PrettyPrinter.prettyPrint(INTERFACE_COLUMNS, records);
 	}
 
@@ -692,7 +749,7 @@ public class PlatformServerCommand implements Annotated {
 			LOG.info("Program extension is not available.");
 			return;
 		}
-		WSRelayControl relayControl = relayExtension.getAdapter(WSRelayControl.class);
+		WSRelayControl relayControl = relayExtension.getInterface(WSRelayControl.class);
 		if (relayControl == null) {
 			LOG.info("WSRelayControl is not available.");
 			return;
@@ -718,7 +775,7 @@ public class PlatformServerCommand implements Annotated {
 			return;
 		}
 
-		WSRelayControl relayControl = extension.getAdapter(WSRelayControl.class);
+		WSRelayControl relayControl = extension.getInterface(WSRelayControl.class);
 		if (relayControl == null) {
 			LOG.info("WSRelayControl is not available.");
 			return;
@@ -729,30 +786,3 @@ public class PlatformServerCommand implements Annotated {
 	}
 
 }
-
-// @Descriptor("Start GAIA")
-// public void startGAIA() throws ClientException {
-// LOG.info("startGAIA()");
-//
-// if (this.gaiaImpl == null) {
-// // Properties configIniProps = SetupUtil.getNodeHomeConfigIniProperties(this.bundleContext);
-// this.gaiaImpl = new GAIAImpl(this.bundleContext, null);
-// }
-// this.gaiaImpl.start();
-// }
-//
-// @Descriptor("Stop GAIA")
-// public void stopGAIA() throws ClientException {
-// LOG.info("stopGAIA()");
-//
-// if (this.gaiaImpl != null) {
-// this.gaiaImpl.stop();
-// this.gaiaImpl = null;
-// }
-// }
-// protected void checkGAIA() throws ClientException {
-// if (this.gaia == null) {
-// LOG.info("NodeOS is not available.");
-// throw new ClientException(500, "GAIA is not available.");
-// }
-// }

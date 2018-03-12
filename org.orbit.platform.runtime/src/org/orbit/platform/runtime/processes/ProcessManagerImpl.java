@@ -117,7 +117,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 		}
 
 		// Autostart process of the extension
-		final ServiceActivator serviceActivator = extension.getAdapter(ServiceActivator.class);
+		final ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
 		if (serviceActivator != null && ProgramExtensionHelper.INSTANCE.isAutoStart(extension, serviceActivator)) {
 			boolean sync = false;
 			Callable<ProcessHandler> callable = new Callable<ProcessHandler>() {
@@ -194,7 +194,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	 * @throws ProcessException
 	 */
 	public int createProcess(final IProgramExtension extension, final Map<String, Object> properties) throws ProcessException {
-		ServiceActivator serviceActivator = extension.getAdapter(ServiceActivator.class);
+		ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
 		if (serviceActivator == null) {
 			// Do not start process if ServiceActivator is not available.
 			throw new ProcessException("ServiceActivator is not available from the extension.");

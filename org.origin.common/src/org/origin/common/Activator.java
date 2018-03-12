@@ -6,6 +6,7 @@ import java.util.Map;
 import org.origin.common.annotation.DependencyConfigurator;
 import org.origin.common.command.IEditingDomain;
 import org.origin.common.deploy.WebServiceDeployer;
+import org.origin.common.rest.server.WebServiceAwareRegistry;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -46,6 +47,8 @@ public class Activator implements BundleActivator {
 		PropertyUtil.loadProperty(bundleContext, properties, ORBIT_REALM);
 		this.properties = properties;
 
+		WebServiceAwareRegistry.getInstance().start(bundleContext);
+
 		this.editingDomain = IEditingDomain.getEditingDomain(PLUGIN_ID);
 
 		this.dependencyConfigurator = new DependencyConfigurator(bundleContext);
@@ -70,6 +73,8 @@ public class Activator implements BundleActivator {
 		}
 
 		IEditingDomain.disposeEditingDomain(PLUGIN_ID);
+
+		WebServiceAwareRegistry.getInstance().stop(bundleContext);
 
 		this.editingDomain = null;
 		Activator.plugin = null;

@@ -16,11 +16,17 @@ public class URLProviderImpl implements URLProvider {
 
 	/**
 	 * 
+	 * @param name
 	 * @param hostURL
 	 * @param contextRootl
 	 */
-	public URLProviderImpl(final String hostURL, final String contextRootl) {
+	public URLProviderImpl(final String name, final String hostURL, final String contextRootl) {
 		this.service = new WebServiceAware() {
+			@Override
+			public String getName() {
+				return name;
+			}
+
 			@Override
 			public String getHostURL() {
 				return hostURL;

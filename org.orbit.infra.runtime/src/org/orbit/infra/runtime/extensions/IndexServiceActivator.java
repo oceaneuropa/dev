@@ -39,24 +39,3 @@ public class IndexServiceActivator implements ServiceActivator {
 	}
 
 }
-
-// protected IParameter[] parameters;
-
-// @Override
-// public String getName() {
-// return "IndexService";
-// }
-
-// public synchronized IParameter[] getParameters() {
-// if (this.parameters == null) {
-// this.parameters = new IParameter[] { //
-// new ParameterImpl("component.index_service.name", "service instance name"), //
-// new ParameterImpl("component.index_service.context_root", "web service context root"), //
-// new ParameterImpl("component.index_service.jdbc.driver", "JDBC driver"), //
-// new ParameterImpl("component.index_service.jdbc.url", "JDBC URL"), //
-// new ParameterImpl("component.index_service.jdbc.username", "JDBC username"), //
-// new ParameterImpl("component.index_service.jdbc.password", "JDBC password") //
-// };
-// }
-// return this.parameters;
-// }

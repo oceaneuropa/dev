@@ -131,6 +131,10 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 		}
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void start(BundleContext bundleContext) {
 		LOG.debug("start()");
 		if (!this.isStarted.compareAndSet(false, true)) {
@@ -140,12 +144,26 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.CONTEXT_ROOT, this.contextRoot);
 		this.serviceRegistration = bundleContext.registerService(Application.class, this, props);
+
+		WebServiceAware webServiceAware = getAdapter(WebServiceAware.class);
+		if (webServiceAware != null) {
+			WebServiceAwareRegistry.getInstance().register(bundleContext, webServiceAware);
+		}
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void stop(BundleContext bundleContext) {
 		LOG.debug("stop()");
 		if (!this.isStarted.compareAndSet(true, false)) {
 			return;
+		}
+
+		WebServiceAware webServiceAware = getAdapter(WebServiceAware.class);
+		if (webServiceAware != null) {
+			WebServiceAwareRegistry.getInstance().unregister(bundleContext, webServiceAware);
 		}
 
 		if (this.serviceRegistration != null) {

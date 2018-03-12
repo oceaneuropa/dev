@@ -331,6 +331,20 @@ public class ProgramExtensionProxy implements IProgramExtension {
 		return equals;
 	}
 
+	@Override
+	public String toString() {
+		String string = null;
+		try {
+			IProgramExtension programExtension = getTarget(IProgramExtension.class);
+			if (programExtension != null) {
+				string = programExtension.toString();
+			}
+		} finally {
+			ungetTarget();
+		}
+		return string;
+	}
+
 }
 
 // @Override

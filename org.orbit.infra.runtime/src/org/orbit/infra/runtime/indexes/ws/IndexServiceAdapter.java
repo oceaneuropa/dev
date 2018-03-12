@@ -74,6 +74,11 @@ public class IndexServiceAdapter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
 	protected void doStart(BundleContext bundleContext, IndexService service) {
 		// 1. start web service
 		LOG.debug("start web service");
@@ -86,6 +91,11 @@ public class IndexServiceAdapter {
 		this.serviceIndexTimer.start();
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
 	protected void doStop(BundleContext bundleContext, IndexService service) {
 		// 1. stop index timer
 		LOG.debug("stop index timer");

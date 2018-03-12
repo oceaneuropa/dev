@@ -147,6 +147,12 @@ public abstract class ProgramExtensionImpl implements IProgramExtension {
 		return false;
 	}
 
+	@Override
+	public String toString() {
+		// return "Extension: typeId=\"" + getTypeId() + "\", id=\"" + getId() + "\", name=\"" + getName() + "\", description=\"" + getDescription() + "\"";
+		return "typeId=\"" + getTypeId() + "\", id=\"" + getId() + "\", name=\"" + getName() + "\", description=\"" + getDescription() + "\"";
+	}
+
 }
 
 // @Override

@@ -37,9 +37,9 @@ public class Extensions extends ProgramExtensions {
 		InterfaceDescription gaiaDesc = new InterfaceDescription("GAIA");
 		gaiaDesc.setParameters( //
 				new Parameter("gaia.name", "GAIA instance name"), //
-				new Parameter("gaia.context_root", "web service context root"), //
-				new Parameter("gaia.host.url", "host url", true), //
-				new Parameter("orbit.host.url", "generic host url", true) //
+				new Parameter("gaia.context_root", "web service context root") //
+		// new Parameter("gaia.host.url", "host url", true), //
+		// new Parameter("orbit.host.url", "generic host url", true) //
 		);
 		gaiaExtension.addInterface(ServiceActivator.class, GAIAServiceActivator.INSTANCE, gaiaDesc);
 		addExtension(gaiaExtension);

@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexServiceException;
+import org.origin.common.rest.server.WebServiceAware;
 import org.osgi.framework.BundleContext;
 
-public interface IndexService {
+public interface IndexService extends WebServiceAware {
 
 	public void start(BundleContext bundleContext);
 

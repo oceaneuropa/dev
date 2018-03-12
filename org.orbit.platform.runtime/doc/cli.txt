@@ -37,21 +37,3 @@ install /Users/example/origin/ta1/apps/org.app.foo.editor_2.0.1/plugins/org.app.
 install /Users/example/origin/ta1/apps/org.app.foo.editor_2.0.1/plugins/org.app.example2_1.0.6.jar
 ------------------------------------------------------------------------------------
 
-
-PlatformServerCommand
-------------------------------------------------------------------------------------
-lextensions
-
-lextensioninterfaces -typeId platform.service_activator -id orbit.index_service.service_activator
-
-lextensioninterfaces -typeId platform.service_activator -id orbit.channel_service.service_activator
-------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
