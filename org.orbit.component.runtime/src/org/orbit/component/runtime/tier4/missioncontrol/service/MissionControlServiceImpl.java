@@ -28,14 +28,14 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 
 	protected static Logger LOG = LoggerFactory.getLogger(MissionControlServiceImpl.class);
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected WSEditPolicies wsEditPolicies;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected MissionPersistenceHandler persistenceHandler;
 
-	public MissionControlServiceImpl(Map<String, Object> initProperties) {
+	public MissionControlServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 		this.wsEditPolicies = new WSEditPoliciesImpl();
 		this.wsEditPolicies.setService(MissionControlService.class, this);

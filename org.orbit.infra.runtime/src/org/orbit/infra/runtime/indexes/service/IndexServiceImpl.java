@@ -28,7 +28,7 @@ public class IndexServiceImpl implements IndexService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceImpl.class);
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
@@ -37,7 +37,7 @@ public class IndexServiceImpl implements IndexService {
 	 * 
 	 * @param initProperties
 	 */
-	public IndexServiceImpl(Map<String, Object> initProperties) {
+	public IndexServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 	}
 

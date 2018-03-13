@@ -18,7 +18,7 @@ public class GAIAServiceActivator implements ServiceActivator {
 	@Override
 	public synchronized void start(IPlatformContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
-		Map<String, Object> properties = context.getProperties();
+		Map<Object, Object> properties = context.getProperties();
 
 		// Start GAIA service
 		GAIAImpl newGAIA = new GAIAImpl(properties);

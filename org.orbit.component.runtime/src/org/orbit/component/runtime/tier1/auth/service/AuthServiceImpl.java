@@ -28,7 +28,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class AuthServiceImpl implements AuthService {
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected TokenManager tokenManager;
 	protected String tokenSecret;
@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
 	 * 
 	 * @param initProperties
 	 */
-	public AuthServiceImpl(Map<String, Object> initProperties) {
+	public AuthServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 	}
 

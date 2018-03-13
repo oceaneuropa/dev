@@ -1,7 +1,6 @@
 package org.orbit.infra.runtime;
 
 import org.orbit.infra.runtime.cli.InfraCommand;
-import org.orbit.infra.runtime.relay.InfraRelays;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -40,7 +39,7 @@ public class Activator implements BundleActivator {
 		InfraServices.getInstance().start(bundleContext);
 
 		// Start relays
-		InfraRelays.getInstance().start(bundleContext);
+		// InfraRelays.getInstance().start(bundleContext);
 	}
 
 	@Override
@@ -49,7 +48,7 @@ public class Activator implements BundleActivator {
 		Activator.bundleContext = null;
 
 		// Stop relays
-		InfraRelays.getInstance().stop(bundleContext);
+		// InfraRelays.getInstance().stop(bundleContext);
 
 		// Stop tracking services
 		InfraServices.getInstance().stop(bundleContext);

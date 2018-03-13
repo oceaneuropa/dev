@@ -13,11 +13,11 @@ public class CommonModelHelper {
 	 * @param string
 	 * @return
 	 */
-	public Map<String, Object> toMap(String string) {
+	public Map<Object, Object> toMap(String string) {
 		if (string == null || string.isEmpty()) {
 			return null;
 		}
-		Map<String, Object> parametersMap = new LinkedHashMap<String, Object>();
+		Map<Object, Object> parametersMap = new LinkedHashMap<Object, Object>();
 		String[] segments = null;
 		if (string.contains(";")) {
 			// multiple segments in the string, separated by ';'
@@ -41,11 +41,11 @@ public class CommonModelHelper {
 	 * @param strings
 	 * @return
 	 */
-	public static Map<String, Object> toMap(String... strings) {
+	public static Map<Object, Object> toMap(String... strings) {
 		if (strings == null || strings.length == 0) {
 			return null;
 		}
-		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		Map<Object, Object> map = new LinkedHashMap<Object, Object>();
 		for (String string : strings) {
 			String key = null;
 			Object value = null;

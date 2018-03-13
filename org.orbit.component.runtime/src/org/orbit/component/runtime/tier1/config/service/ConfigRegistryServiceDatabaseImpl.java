@@ -16,7 +16,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService {
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
@@ -26,7 +26,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 	 * 
 	 * @param initProperties
 	 */
-	public ConfigRegistryServiceDatabaseImpl(Map<String, Object> initProperties) {
+	public ConfigRegistryServiceDatabaseImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 	}
 

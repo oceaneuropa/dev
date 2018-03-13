@@ -1,0 +1,12 @@
+
+---------------------------------------------------------------------------------------------------
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=8000 
+-Dlogback.configurationFile=/Users/yayang/origin/logback/orbit0.xml 
+
+-Dorbit.realm=group1 
+-Dorbit.host.url=http://127.0.0.1:8000 
+-Dcomponent.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice 
+ 
+-Dplatform.context_root=/orbit/v1/platform 
+-Dplatform.home=/Users/yayang/origin  
+---------------------------------------------------------------------------------------------------

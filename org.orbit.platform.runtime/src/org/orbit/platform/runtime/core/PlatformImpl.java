@@ -74,8 +74,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		// 1. load properties
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_VERSION);
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_CONTEXT_ROOT);
 		updateProperties(configProps);

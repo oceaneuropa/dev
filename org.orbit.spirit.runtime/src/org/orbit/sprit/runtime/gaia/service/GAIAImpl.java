@@ -21,7 +21,7 @@ public class GAIAImpl implements GAIA {
 	protected static Logger LOG = LoggerFactory.getLogger(GAIAImpl.class);
 
 	protected BundleContext bundleContext;
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected WSEditPolicies wsEditPolicies;
@@ -33,9 +33,9 @@ public class GAIAImpl implements GAIA {
 	 * 
 	 * @param initProperties
 	 */
-	public GAIAImpl(Map<String, Object> initProperties) {
+	public GAIAImpl(Map<Object, Object> initProperties) {
 		if (initProperties == null) {
-			initProperties = new HashMap<String, Object>();
+			initProperties = new HashMap<Object, Object>();
 		}
 		this.initProperties = initProperties;
 

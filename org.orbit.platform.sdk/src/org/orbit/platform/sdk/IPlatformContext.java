@@ -11,9 +11,9 @@ public interface IPlatformContext extends IAdaptable {
 
 	BundleContext getBundleContext();
 
-	Map<String, Object> getProperties();
+	Map<Object, Object> getProperties();
 
-	void setProperties(Map<String, Object> properties);
+	void setProperties(Map<Object, Object> properties);
 
 	boolean hasProperty(String propName);
 

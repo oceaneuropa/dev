@@ -3,9 +3,13 @@ package org.origin.common.rest.server;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.client.Client;
 
 import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.rest.client.WSClientFactory;
+import org.origin.common.rest.client.WSClientFactoryImpl;
 import org.origin.common.rest.switcher.Switcher;
 import org.osgi.framework.BundleContext;
 
@@ -18,10 +22,30 @@ import org.osgi.framework.BundleContext;
 public class WSRelayApplication extends AbstractJerseyWSApplication {
 
 	protected Switcher<URI> switcher;
+	protected WSClientFactory factory;
 
 	public WSRelayApplication(String contextRoot, int feature, Switcher<URI> switcher) {
 		super(contextRoot, feature);
 		this.switcher = switcher;
+	}
+
+	public WSClientFactory getWSClientFactory() {
+		if (this.factory == null) {
+			this.factory = new WSClientFactoryImpl();
+		}
+		return this.factory;
+	}
+
+	public void setWSClientFactory(WSClientFactory factory) {
+		this.factory = factory;
+	}
+
+	protected Client createClient() {
+		return createClient(null);
+	}
+
+	protected Client createClient(Map<String, Object> properties) {
+		return getWSClientFactory().createClient(properties);
 	}
 
 	/**

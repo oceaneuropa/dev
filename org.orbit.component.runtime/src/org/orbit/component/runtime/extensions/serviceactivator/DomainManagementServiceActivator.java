@@ -18,7 +18,7 @@ public class DomainManagementServiceActivator implements ServiceActivator {
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
-		Map<String, Object> properties = context.getProperties();
+		Map<Object, Object> properties = context.getProperties();
 
 		// Start DomainManagementService
 		DomainManagementServiceImpl domainService = new DomainManagementServiceImpl(properties);

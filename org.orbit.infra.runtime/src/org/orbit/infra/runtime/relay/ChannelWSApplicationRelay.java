@@ -3,26 +3,27 @@ package org.orbit.infra.runtime.relay;
 import java.net.URI;
 
 import org.glassfish.jersey.server.model.Resource;
-import org.origin.common.rest.client.WSClientFactory;
-import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSMethodInflector;
+import org.origin.common.rest.server.WSRelayApplication;
+import org.origin.common.rest.server.WebServiceAware;
 import org.origin.common.rest.switcher.Switcher;
 
 public class ChannelWSApplicationRelay extends WSRelayApplication {
 
 	/**
 	 * 
-	 * @param contextRoot
+	 * @param webServiceAware
 	 * @param switcher
-	 * @param factory
 	 */
-	public ChannelWSApplicationRelay(String contextRoot, Switcher<URI> switcher, WSClientFactory factory) {
-		super(contextRoot, FeatureConstants.PING, switcher);
+	public ChannelWSApplicationRelay(WebServiceAware webServiceAware, Switcher<URI> switcher) {
+		super(webServiceAware.getContextRoot(), FeatureConstants.PING, switcher);
+
+		adapt(WebServiceAware.class, webServiceAware);
 
 		Resource.Builder wsResource = Resource.builder("/");
-		new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
-		new WSMethodInflector(wsResource, "inbound", POST, JSON, factory.createClient(null), switcher);
+		new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);
+		new WSMethodInflector(wsResource, "inbound", POST, JSON, createClient(), switcher);
 
 		registerResources(wsResource.build());
 	}

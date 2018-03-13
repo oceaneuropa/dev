@@ -26,13 +26,13 @@ public class NodeManagementServiceImpl implements NodeManagementService {
 
 	protected static Logger LOG = LoggerFactory.getLogger(NodeManagementServiceImpl.class);
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected IWorkspace nodespaceRoot;
 	protected WSEditPolicies wsEditPolicies;
 
-	public NodeManagementServiceImpl(Map<String, Object> initProperties) {
+	public NodeManagementServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 		this.wsEditPolicies = new WSEditPoliciesImpl();
 		this.wsEditPolicies.setService(NodeManagementService.class, this);

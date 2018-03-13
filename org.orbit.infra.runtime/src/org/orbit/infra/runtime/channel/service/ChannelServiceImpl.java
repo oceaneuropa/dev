@@ -15,7 +15,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class ChannelServiceImpl implements ChannelService {
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected String name;
 	protected String hostURL;
 	protected String contextRoot;
@@ -28,7 +28,7 @@ public class ChannelServiceImpl implements ChannelService {
 	 * 
 	 * @param initProperties
 	 */
-	public ChannelServiceImpl(Map<String, Object> initProperties) {
+	public ChannelServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 		this.channelMap = Collections.synchronizedMap(new HashMap<String, Channel>());
 		this.properties = new HashMap<Object, Object>();

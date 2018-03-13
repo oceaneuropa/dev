@@ -19,12 +19,12 @@ import org.osgi.framework.ServiceRegistration;
 
 public class UserRegistryServiceImpl implements UserRegistryService {
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected UserAccountPersistence userAccountPersistence;
 
-	public UserRegistryServiceImpl(Map<String, Object> initProperties) {
+	public UserRegistryServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 	}
 

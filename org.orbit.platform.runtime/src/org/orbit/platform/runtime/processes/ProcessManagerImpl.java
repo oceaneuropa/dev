@@ -193,7 +193,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	 * @param properties
 	 * @throws ProcessException
 	 */
-	public int createProcess(final IProgramExtension extension, final Map<String, Object> properties) throws ProcessException {
+	public int createProcess(final IProgramExtension extension, final Map<Object, Object> properties) throws ProcessException {
 		ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
 		if (serviceActivator == null) {
 			// Do not start process if ServiceActivator is not available.
@@ -249,7 +249,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	 * @return
 	 * @throws ProcessException
 	 */
-	protected ProcessHandler doCreateProcess(IProgramExtension extension, ServiceActivator serviceActivator, Map<String, Object> properties) throws ProcessException {
+	protected ProcessHandler doCreateProcess(IProgramExtension extension, ServiceActivator serviceActivator, Map<Object, Object> properties) throws ProcessException {
 		this.processesLock.writeLock().lock();
 		try {
 			int pid = getNextPID();

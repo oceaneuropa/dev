@@ -18,7 +18,7 @@ public class NodeManagementServiceActivator implements ServiceActivator {
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
-		Map<String, Object> properties = context.getProperties();
+		Map<Object, Object> properties = context.getProperties();
 
 		// Start NodeManagementService
 		NodeManagementServiceImpl nodeManagementService = new NodeManagementServiceImpl(properties);

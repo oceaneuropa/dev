@@ -18,7 +18,7 @@ public class AppStoreServiceActivator implements ServiceActivator {
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
-		Map<String, Object> properties = context.getProperties();
+		Map<Object, Object> properties = context.getProperties();
 
 		// Start AppStoreService
 		AppStoreServiceDatabaseImpl appStore = new AppStoreServiceDatabaseImpl(properties);

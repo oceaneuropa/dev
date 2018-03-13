@@ -58,12 +58,14 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	// Relay
 	// ----------------------------------------------------------------------------------------
-	public static String COMPONENT_INDEX_SERVICE_SWITCHER_CONTEXT_ROOT = "component.index_service.switcher.context_root";
-	public static String COMPONENT_INDEX_SERVICE_SWITCHER_HOSTS = "component.index_service.switcher.hosts";
-	public static String COMPONENT_INDEX_SERVICE_SWITCHER_URLS = "component.index_service.switcher.urls";
+	public static String COMPONENT_INDEX_SERVICE_RELAY_NAME = "component.index_service.relay.name";
+	public static String COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT = "component.index_service.relay.context_root";
+	public static String COMPONENT_INDEX_SERVICE_RELAY_HOSTS = "component.index_service.relay.hosts";
+	public static String COMPONENT_INDEX_SERVICE_RELAY_URLS = "component.index_service.relay.urls";
 
-	public static String COMPONENT_CHANNEL_SWITCHER_CONTEXT_ROOT = "component.channel.switcher.context_root";
-	public static String COMPONENT_CHANNEL_SWITCHER_HOSTS = "component.channel.switcher.hosts";
-	public static String COMPONENT_CHANNEL_SWITCHER_URLS = "component.channel.switcher.urls";
+	public static String COMPONENT_CHANNEL_RELAY_NAME = "component.channel.relay.name";
+	public static String COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT = "component.channel.relay.context_root";
+	public static String COMPONENT_CHANNEL_RELAY_HOSTS = "component.channel.relay.hosts";
+	public static String COMPONENT_CHANNEL_RELAY_URLS = "component.channel.relay.urls";
 
 }

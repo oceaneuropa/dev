@@ -12,7 +12,7 @@ public class PlatformContextImpl implements IPlatformContext {
 
 	protected IPlatform platform;
 	protected BundleContext bundleContext;
-	protected Map<String, Object> properties = new HashMap<String, Object>();
+	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	public PlatformContextImpl() {
@@ -37,12 +37,12 @@ public class PlatformContextImpl implements IPlatformContext {
 	}
 
 	@Override
-	public Map<String, Object> getProperties() {
+	public Map<Object, Object> getProperties() {
 		return this.properties;
 	}
 
 	@Override
-	public void setProperties(Map<String, Object> properties) {
+	public void setProperties(Map<Object, Object> properties) {
 		if (properties != null) {
 			this.properties.putAll(properties);
 		}

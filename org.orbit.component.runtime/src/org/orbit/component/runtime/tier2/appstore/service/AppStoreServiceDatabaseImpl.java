@@ -21,7 +21,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class AppStoreServiceDatabaseImpl implements AppStoreService {
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
@@ -33,7 +33,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	 * 
 	 * @param initProperties
 	 */
-	public AppStoreServiceDatabaseImpl(Map<String, Object> initProperties) {
+	public AppStoreServiceDatabaseImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 	}
 

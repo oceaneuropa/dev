@@ -322,7 +322,7 @@ public class PlatformServerCommand implements Annotated {
 				return;
 			}
 
-			Map<String, Object> properties = CommonModelHelper.INSTANCE.toMap(params);
+			Map<Object, Object> properties = CommonModelHelper.INSTANCE.toMap(params);
 			int pid = getProcessManager().createProcess(extension, properties);
 			System.out.println("pid: " + pid);
 

@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.runtime.InfraConstants;
-import org.origin.common.rest.client.WSClientFactory;
-import org.origin.common.rest.client.WSClientFactoryImpl;
+import org.origin.common.rest.server.WebServiceAware;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
 import org.origin.common.util.PropertyUtil;
@@ -34,33 +33,31 @@ public class InfraRelays {
 		return instance;
 	}
 
-	protected IndexServiceWSApplicationRelay indexServiceSwitcher;
-	protected ChannelWSApplicationRelay channelSwitcher;
+	protected IndexServiceWSApplicationRelay indexServiceRelay;
+	protected ChannelWSApplicationRelay channelRelay;
 
 	public void start(BundleContext bundleContext) {
 		LOG.info("start()");
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_SWITCHER_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_SWITCHER_HOSTS);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_SWITCHER_URLS);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS);
 
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_SWITCHER_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_SWITCHER_HOSTS);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_SWITCHER_URLS);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_URLS);
 
-		WSClientFactory factory = createClientFactory(bundleContext, properties);
-
-		startIndexServiceSwitcher(bundleContext, factory, properties);
-		startChannelSwitcher(bundleContext, factory, properties);
+		startIndexServiceRelay(bundleContext, properties);
+		startChannelRelay(bundleContext, properties);
 	}
 
 	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
-		stopIndexServiceSwitcher(bundleContext);
-		stopChannelSwitcher(bundleContext);
+		stopIndexServiceRelay(bundleContext);
+		stopChannelRelay(bundleContext);
 	}
 
 	protected List<URI> toList(String baseURIsString) {
@@ -71,17 +68,31 @@ public class InfraRelays {
 		return URIUtil.toList(hostURLsString, contextRoot);
 	}
 
-	protected WSClientFactory createClientFactory(BundleContext bundleContext, Map<Object, Object> properties) {
-		return new WSClientFactoryImpl();
-	}
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param initProperties
+	 * @return
+	 */
+	public IndexServiceWSApplicationRelay createIndexServiceRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
+		String name = (String) initProperties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_NAME);
+		if (name == null) {
+			name = "IndexServiceRelay";
+		}
+		final String _name = name;
+		final String contextRoot = (String) initProperties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT);
+		String hosts = (String) initProperties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS);
+		String urls = (String) initProperties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS);
 
-	protected void startIndexServiceSwitcher(BundleContext bundleContext, WSClientFactory factory, Map<Object, Object> properties) {
-		String contextRoot = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_SWITCHER_CONTEXT_ROOT);
-		String hosts = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_SWITCHER_HOSTS);
-		String urls = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_SWITCHER_URLS);
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (initProperties != null) {
+			properties.putAll(initProperties);
+		}
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
+		final String hostURL = (String) properties.get(InfraConstants.ORBIT_HOST_URL);
 
 		if (contextRoot == null) {
-			return;
+			return null;
 		}
 
 		List<URI> uriList = null;
@@ -91,32 +102,63 @@ public class InfraRelays {
 			uriList = toList(hosts, contextRoot);
 		}
 		if (uriList == null || uriList.isEmpty()) {
-			return;
+			return null;
 		}
 
-		startIndexServiceSwitcher(bundleContext, factory, contextRoot, uriList);
-	}
+		WebServiceAware webServiceAware = new WebServiceAware() {
+			@Override
+			public String getName() {
+				return _name;
+			}
 
-	protected void startIndexServiceSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
+			@Override
+			public String getHostURL() {
+				return hostURL;
+			}
+
+			@Override
+			public String getContextRoot() {
+				return contextRoot;
+			}
+		};
+
 		Switcher<URI> uriSwitcher = RelayHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.indexServiceSwitcher = new IndexServiceWSApplicationRelay(contextRoot, uriSwitcher, factory);
-		this.indexServiceSwitcher.start(bundleContext);
+		IndexServiceWSApplicationRelay relay = new IndexServiceWSApplicationRelay(webServiceAware, uriSwitcher);
+
+		return relay;
 	}
 
-	protected void stopIndexServiceSwitcher(BundleContext bundleContext) {
-		if (this.indexServiceSwitcher != null) {
-			this.indexServiceSwitcher.stop(bundleContext);
-			this.indexServiceSwitcher = null;
+	protected void startIndexServiceRelay(BundleContext bundleContext, Map<Object, Object> properties) {
+		this.indexServiceRelay = createIndexServiceRelay(bundleContext, properties);
+		this.indexServiceRelay.start(bundleContext);
+	}
+
+	protected void stopIndexServiceRelay(BundleContext bundleContext) {
+		if (this.indexServiceRelay != null) {
+			this.indexServiceRelay.stop(bundleContext);
+			this.indexServiceRelay = null;
 		}
 	}
 
-	protected void startChannelSwitcher(BundleContext bundleContext, WSClientFactory factory, Map<Object, Object> properties) {
-		String contextRoot = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_SWITCHER_CONTEXT_ROOT);
-		String hosts = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_SWITCHER_HOSTS);
-		String urls = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_SWITCHER_URLS);
+	public ChannelWSApplicationRelay createChannelRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
+		String name = (String) initProperties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_NAME);
+		if (name == null) {
+			name = "ChannelServiceRelay";
+		}
+		final String _name = name;
+		String contextRoot = (String) initProperties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT);
+		String hosts = (String) initProperties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS);
+		String urls = (String) initProperties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_URLS);
+
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (initProperties != null) {
+			properties.putAll(initProperties);
+		}
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
+		final String hostURL = (String) properties.get(InfraConstants.ORBIT_HOST_URL);
 
 		if (contextRoot == null) {
-			return;
+			return null;
 		}
 
 		List<URI> uriList = null;
@@ -126,22 +168,41 @@ public class InfraRelays {
 			uriList = toList(hosts, contextRoot);
 		}
 		if (uriList == null || uriList.isEmpty()) {
-			return;
+			return null;
 		}
 
-		startChannelSwitcher(bundleContext, factory, contextRoot, uriList);
-	}
+		WebServiceAware webServiceAware = new WebServiceAware() {
+			@Override
+			public String getName() {
+				return _name;
+			}
 
-	protected void startChannelSwitcher(BundleContext bundleContext, WSClientFactory factory, String contextRoot, List<URI> uriList) {
+			@Override
+			public String getHostURL() {
+				return hostURL;
+			}
+
+			@Override
+			public String getContextRoot() {
+				return contextRoot;
+			}
+		};
+
 		Switcher<URI> uriSwitcher = RelayHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
-		this.channelSwitcher = new ChannelWSApplicationRelay(contextRoot, uriSwitcher, factory);
-		this.channelSwitcher.start(bundleContext);
+		ChannelWSApplicationRelay relay = new ChannelWSApplicationRelay(webServiceAware, uriSwitcher);
+
+		return relay;
 	}
 
-	protected void stopChannelSwitcher(BundleContext bundleContext) {
-		if (this.channelSwitcher != null) {
-			this.channelSwitcher.stop(bundleContext);
-			this.channelSwitcher = null;
+	protected void startChannelRelay(BundleContext bundleContext, Map<Object, Object> properties) {
+		this.channelRelay = createChannelRelay(bundleContext, properties);
+		this.channelRelay.start(bundleContext);
+	}
+
+	protected void stopChannelRelay(BundleContext bundleContext) {
+		if (this.channelRelay != null) {
+			this.channelRelay.stop(bundleContext);
+			this.channelRelay = null;
 		}
 	}
 

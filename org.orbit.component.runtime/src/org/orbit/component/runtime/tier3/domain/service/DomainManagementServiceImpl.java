@@ -27,7 +27,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class DomainManagementServiceImpl implements DomainManagementService {
 
-	protected Map<String, Object> initProperties;
+	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected Properties workspaceProperties;
@@ -38,7 +38,7 @@ public class DomainManagementServiceImpl implements DomainManagementService {
 	protected NodeConfigTableHandler nodeConfigTableHandler = NodeConfigTableHandler.INSTANCE;
 	protected IWorkspaceService workspaceService;
 
-	public DomainManagementServiceImpl(Map<String, Object> initProperties) {
+	public DomainManagementServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 	}
 

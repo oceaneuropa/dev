@@ -15,7 +15,7 @@ import org.orbit.platform.sdk.extension.IProgramExtension;
 
 public interface ProcessManager {
 
-	int createProcess(IProgramExtension extension, Map<String, Object> properties) throws ProcessException;
+	int createProcess(IProgramExtension extension, Map<Object, Object> properties) throws ProcessException;
 
 	boolean startProcess(int pid, boolean async) throws ProcessException;
 

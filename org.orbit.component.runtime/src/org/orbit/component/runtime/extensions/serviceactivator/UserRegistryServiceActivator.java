@@ -25,7 +25,7 @@ public class UserRegistryServiceActivator implements ServiceActivator {
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
 		BundleContext bundleContext = context.getBundleContext();
-		Map<String, Object> properties = context.getProperties();
+		Map<Object, Object> properties = context.getProperties();
 
 		// Start UserRegistryService
 		UserRegistryServiceImpl userRegistryService = new UserRegistryServiceImpl(properties);
