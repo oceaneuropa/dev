@@ -31,7 +31,7 @@ public class StartServiceCommand extends AbstractWSCommand {
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		IProgramExtension extension = this.platform.getProgramExtensionService().getExtension(extensionTypeId, extensionId);
+		IProgramExtension extension = this.platform.getExtensionService().getExtension(extensionTypeId, extensionId);
 		if (extension == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Extension does not exist.", null);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();

@@ -13,6 +13,7 @@ Import-Package: org.origin.common.adapter,
  org.osgi.util.tracker;version="1.5.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.platform.sdk;version="1.0.0",
+ org.orbit.platform.sdk.condition;version="1.0.0",
  org.orbit.platform.sdk.extension;version="1.0.0",
  org.orbit.platform.sdk.extension.desc;version="1.0.0",
  org.orbit.platform.sdk.extension.impl;version="1.0.0",

@@ -69,32 +69,22 @@ public class ProgramExtensionDescriptiveImpl extends ProgramExtensionImpl {
 	}
 
 	@Override
-	public <T> void addInterface(Class<T> clazz, T object) {
+	public <T> void addInterface(Class<?> clazz, T object) {
 		this.extensionDesc.addInterface(clazz, object);
 	}
 
 	@Override
-	public <T> void addInterface(Class<T> clazz, T object, String name) {
-		this.extensionDesc.addInterface(clazz, object, name);
-	}
-
-	@Override
-	public <T> void addInterface(Class<T> clazz, T object, InterfaceDescription description) {
+	public <T> void addInterface(Class<?> clazz, T object, InterfaceDescription description) {
 		this.extensionDesc.addInterface(clazz, object, description);
 	}
 
 	@Override
-	public <T> void addInterface(Class<T>[] classes, T object) {
+	public <T> void addInterface(Class<?>[] classes, T object) {
 		this.extensionDesc.addInterface(classes, object);
 	}
 
 	@Override
-	public <T> void addInterface(Class<T>[] classes, T object, String name) {
-		this.extensionDesc.addInterface(classes, object, name);
-	}
-
-	@Override
-	public <T> void addInterface(Class<T>[] classes, T object, InterfaceDescription description) {
+	public <T> void addInterface(Class<?>[] classes, T object, InterfaceDescription description) {
 		this.extensionDesc.addInterface(classes, object, description);
 	}
 
@@ -128,4 +118,14 @@ public class ProgramExtensionDescriptiveImpl extends ProgramExtensionImpl {
 // @Override
 // public <T> T getAdapter(Class<T> adapter) {
 // return this.programExtensionDesc.getAdapter(adapter);
+// }
+
+// @Override
+// public <T> void addInterface(Class<T> clazz, T object, String name) {
+// this.extensionDesc.addInterface(clazz, object, name);
+// }
+//
+// @Override
+// public <T> void addInterface(Class<T>[] classes, T object, String name) {
+// this.extensionDesc.addInterface(classes, object, name);
 // }

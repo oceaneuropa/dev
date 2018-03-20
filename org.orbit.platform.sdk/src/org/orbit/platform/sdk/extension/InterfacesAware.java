@@ -12,17 +12,13 @@ public interface InterfacesAware {
 
 	InterfaceDescription getInterfaceDescription(Object object);
 
-	<T> void addInterface(Class<T> clazz, T object);
+	<T> void addInterface(Class<?> clazz, T object);
 
-	<T> void addInterface(Class<T> clazz, T object, String name);
+	<T> void addInterface(Class<?> clazz, T object, InterfaceDescription description);
 
-	<T> void addInterface(Class<T> clazz, T object, InterfaceDescription description);
+	<T> void addInterface(Class<?>[] classes, T object);
 
-	<T> void addInterface(Class<T>[] classes, T object);
-
-	<T> void addInterface(Class<T>[] classes, T object, String name);
-
-	<T> void addInterface(Class<T>[] classes, T object, InterfaceDescription description);
+	<T> void addInterface(Class<?>[] classes, T object, InterfaceDescription description);
 
 	void removeInterface(Class<?>... classes);
 

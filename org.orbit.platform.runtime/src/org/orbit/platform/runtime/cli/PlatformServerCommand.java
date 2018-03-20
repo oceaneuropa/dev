@@ -141,7 +141,7 @@ public class PlatformServerCommand implements Annotated {
 
 	protected IProgramExtensionService getProgramExtensionService() {
 		checkPlatform();
-		return this.platform.getProgramExtensionService();
+		return this.platform.getExtensionService();
 	}
 
 	protected ProcessManager getProcessManager() {

@@ -1,5 +1,7 @@
 package org.orbit.platform.sdk.extension.desc;
 
+import org.orbit.platform.sdk.condition.ICondition;
+
 public class InterfaceDescription {
 
 	private static final Parameter[] EMPTY_PARAMETERS = new Parameter[0];
@@ -8,14 +10,25 @@ public class InterfaceDescription {
 	protected boolean singleton = true;
 	protected boolean autoStart = false;
 	protected Parameter[] parameters;
+	protected ICondition triggerCondition;
 
 	public InterfaceDescription() {
 	}
 
+	/**
+	 * 
+	 * @param name
+	 */
 	public InterfaceDescription(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * 
+	 * @param name
+	 * @param singleton
+	 * @param autoStart
+	 */
 	public InterfaceDescription(String name, boolean singleton, boolean autoStart) {
 		this.name = name;
 		this.singleton = singleton;
@@ -55,6 +68,14 @@ public class InterfaceDescription {
 
 	public synchronized void setParameters(Parameter... parameters) {
 		this.parameters = parameters;
+	}
+
+	public ICondition getTriggerCondition() {
+		return this.triggerCondition;
+	}
+
+	public void setTriggerCondition(ICondition triggerCondition) {
+		this.triggerCondition = triggerCondition;
 	}
 
 }

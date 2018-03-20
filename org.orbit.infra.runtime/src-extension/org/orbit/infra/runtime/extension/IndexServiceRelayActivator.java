@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.extensions;
+package org.orbit.infra.runtime.extension;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import org.osgi.framework.BundleContext;
 
 public class IndexServiceRelayActivator implements ServiceActivator {
 
-	public static final String ID = "orbit.index_service.relay.service_activator";
+	public static final String ID = "org.orbit.infra.runtime.IndexServiceRelayActivator";
 
 	public static IndexServiceRelayActivator INSTANCE = new IndexServiceRelayActivator();
 

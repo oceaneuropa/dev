@@ -29,12 +29,14 @@ Import-Package: javax.inject;version="1.0.0",
  org.osgi.service.http;version="1.2.1",
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j;version="1.7.25"
-Export-Package: org.orbit.infra.runtime,
- org.orbit.infra.runtime.channel.service,
- org.orbit.infra.runtime.channel.ws,
- org.orbit.infra.runtime.cli,
- org.orbit.infra.runtime.indexes.service,
- org.orbit.infra.runtime.indexes.ws
+Export-Package: org.orbit.infra.runtime;version="1.0.0",
+ org.orbit.infra.runtime.channel.service;version="1.0.0",
+ org.orbit.infra.runtime.channel.ws;version="1.0.0",
+ org.orbit.infra.runtime.cli;version="1.0.0",
+ org.orbit.infra.runtime.extension;version="1.0.0",
+ org.orbit.infra.runtime.indexes.service;version="1.0.0",
+ org.orbit.infra.runtime.indexes.ws;version="1.0.0",
+ org.orbit.infra.runtime.relay;version="1.0.0"
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  org.origin.common;bundle-version="1.0.0",
  org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)"

@@ -47,7 +47,7 @@ public class PlatformWSExtensionTypesResource extends AbstractWSApplicationResou
 		List<String> extensionTypeIds = new ArrayList<String>();
 
 		Platform platform = getService();
-		IProgramExtensionService service = platform.getProgramExtensionService();
+		IProgramExtensionService service = platform.getExtensionService();
 
 		String[] extensionTypeIdArrays = service.getExtensionTypeIds();
 		for (String extensionTypeId : extensionTypeIdArrays) {

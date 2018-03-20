@@ -58,11 +58,11 @@ public class PlatformWSExtensionsResource extends AbstractWSApplicationResource 
 		List<ExtensionDTO> extensionDTOs = new ArrayList<ExtensionDTO>();
 
 		Platform platform = getService();
-		IProgramExtensionService service = platform.getProgramExtensionService();
+		IProgramExtensionService service = platform.getExtensionService();
 
 		IProgramExtension[] extensions = null;
 		if ((extensionTypeId == null || extensionTypeId.isEmpty()) && (extensionId == null || extensionId.isEmpty())) {
-			extensions = platform.getProgramExtensionService().getExtensions();
+			extensions = platform.getExtensionService().getExtensions();
 
 		} else if (extensionId == null || extensionId.isEmpty()) {
 			extensions = service.getExtensions(extensionTypeId);

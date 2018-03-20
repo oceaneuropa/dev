@@ -215,7 +215,7 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	}
 
 	@Override
-	public IProgramExtensionService getProgramExtensionService() {
+	public IProgramExtensionService getExtensionService() {
 		return (this.programExtensionServiceTracker != null) ? this.programExtensionServiceTracker.getService() : null;
 	}
 

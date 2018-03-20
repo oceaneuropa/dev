@@ -69,7 +69,6 @@ public class ChannelServiceImpl implements ChannelService {
 		}
 
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
-		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAMESPACE);
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_CONTEXT_ROOT);
@@ -153,6 +152,7 @@ public class ChannelServiceImpl implements ChannelService {
 }
 
 // protected String namespace;
+// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAMESPACE);
 // @Override
 // public String getNamespace() {
 // return (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_NAMESPACE);

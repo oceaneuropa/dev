@@ -33,7 +33,7 @@ public interface Platform extends WebServiceAware, IAdaptable {
 
 	WSEditPolicies getEditPolicies();
 
-	IProgramExtensionService getProgramExtensionService();
+	IProgramExtensionService getExtensionService();
 
 	CommandService getCommandService();
 

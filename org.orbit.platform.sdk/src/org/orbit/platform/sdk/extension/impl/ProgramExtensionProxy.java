@@ -179,7 +179,7 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	}
 
 	@Override
-	public <T> void addInterface(Class<T> clazz, T object) {
+	public <T> void addInterface(Class<?> clazz, T object) {
 		try {
 			IProgramExtension extension = getTarget(IProgramExtension.class);
 			if (extension != null) {
@@ -190,20 +190,20 @@ public class ProgramExtensionProxy implements IProgramExtension {
 		}
 	}
 
-	@Override
-	public <T> void addInterface(Class<T> clazz, T object, String name) {
-		try {
-			IProgramExtension extension = getTarget(IProgramExtension.class);
-			if (extension != null) {
-				extension.addInterface(clazz, object, name);
-			}
-		} finally {
-			ungetTarget();
-		}
-	}
+	// @Override
+	// public <T> void addInterface(Class<T> clazz, T object, String name) {
+	// try {
+	// IProgramExtension extension = getTarget(IProgramExtension.class);
+	// if (extension != null) {
+	// extension.addInterface(clazz, object, name);
+	// }
+	// } finally {
+	// ungetTarget();
+	// }
+	// }
 
 	@Override
-	public <T> void addInterface(Class<T> clazz, T object, InterfaceDescription description) {
+	public <T> void addInterface(Class<?> clazz, T object, InterfaceDescription description) {
 		try {
 			IProgramExtension extension = getTarget(IProgramExtension.class);
 			if (extension != null) {
@@ -215,7 +215,7 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	}
 
 	@Override
-	public <T> void addInterface(Class<T>[] classes, T object) {
+	public <T> void addInterface(Class<?>[] classes, T object) {
 		try {
 			IProgramExtension extension = getTarget(IProgramExtension.class);
 			if (extension != null) {
@@ -227,19 +227,7 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	}
 
 	@Override
-	public <T> void addInterface(Class<T>[] classes, T object, String name) {
-		try {
-			IProgramExtension extension = getTarget(IProgramExtension.class);
-			if (extension != null) {
-				extension.addInterface(classes, object, name);
-			}
-		} finally {
-			ungetTarget();
-		}
-	}
-
-	@Override
-	public <T> void addInterface(Class<T>[] classes, T object, InterfaceDescription description) {
+	public <T> void addInterface(Class<?>[] classes, T object, InterfaceDescription description) {
 		try {
 			IProgramExtension extension = getTarget(IProgramExtension.class);
 			if (extension != null) {
@@ -373,4 +361,16 @@ public class ProgramExtensionProxy implements IProgramExtension {
 // ungetTarget();
 // }
 // return parameters;
+// }
+
+// @Override
+// public <T> void addInterface(Class<T>[] classes, T object, String name) {
+// try {
+// IProgramExtension extension = getTarget(IProgramExtension.class);
+// if (extension != null) {
+// extension.addInterface(classes, object, name);
+// }
+// } finally {
+// ungetTarget();
+// }
 // }

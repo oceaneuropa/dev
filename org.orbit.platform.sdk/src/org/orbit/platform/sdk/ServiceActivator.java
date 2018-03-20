@@ -9,7 +9,7 @@ package org.orbit.platform.sdk;
 
 public interface ServiceActivator {
 
-	public static final String TYPE_ID = "platform.service_activator";
+	public static final String TYPE_ID = "platform.sdk.ServiceActivator";
 
 	/**
 	 * Start service.
