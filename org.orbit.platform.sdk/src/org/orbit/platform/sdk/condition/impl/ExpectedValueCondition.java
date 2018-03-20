@@ -56,9 +56,8 @@ public class ExpectedValueCondition implements ICondition {
 	@Override
 	public boolean evaluate(Object context, Object source, Object target, Map<String, Object> args) {
 		if (args != null) {
-			boolean hasMatched = false;
-			boolean hasUnmatched = false;
-
+			boolean hasExpected = false;
+			boolean hasUnexpected = false;
 			if (this.expectedValues != null) {
 				for (Iterator<String> itor = args.keySet().iterator(); itor.hasNext();) {
 					Object argName = itor.next();
@@ -66,16 +65,15 @@ public class ExpectedValueCondition implements ICondition {
 					Object expectedValue = this.expectedValues.get(argName);
 
 					if ((orgValue == null && expectedValue == null) || (orgValue != null && orgValue.equals(expectedValue))) {
-						hasMatched = true;
+						hasExpected = true;
 					}
 					if ((orgValue == null && expectedValue != null) || (orgValue != null && !orgValue.equals(expectedValue))) {
-						hasUnmatched = true;
+						hasUnexpected = true;
 						break;
 					}
 				}
 			}
-
-			if (hasMatched && !hasUnmatched) {
+			if (hasExpected && !hasUnexpected) {
 				return true;
 			}
 		}

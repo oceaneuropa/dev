@@ -51,7 +51,7 @@ import org.osgi.framework.BundleContext;
 public class PlatformServerCommand implements Annotated {
 
 	protected static String[] EXTENSION_COLUMNS = new String[] { "Extension Type Id", "Extension Id", "Name", "Description" };
-	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Parameters" };
+	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Interface Class Name", "Interface Object", "Parameters" };
 	protected static String[] PROCESS_COLUMNS = new String[] { "Process Id", "Name", "Runtime State" };
 	protected static String[] WEB_SERVICE_COLUMNS = new String[] { "Name", "URL" };
 
@@ -261,7 +261,12 @@ public class PlatformServerCommand implements Annotated {
 		for (Object interfaceObj : interfaces) {
 			InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
 			org.orbit.platform.sdk.extension.desc.Parameter[] parameters = desc.getParameters();
-			numRecords += parameters.length;
+
+			if (parameters.length == 0) {
+				numRecords += 1;
+			} else {
+				numRecords += parameters.length;
+			}
 		}
 
 		String[][] records = new String[numRecords][INTERFACE_COLUMNS.length];
@@ -269,12 +274,24 @@ public class PlatformServerCommand implements Annotated {
 		for (Object interfaceObj : interfaces) {
 			InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
 			org.orbit.platform.sdk.extension.desc.Parameter[] parameters = desc.getParameters();
-			for (int i = 0; i < parameters.length; i++) {
-				org.orbit.platform.sdk.extension.desc.Parameter parameter = parameters[i];
-				if (i == 0) {
-					records[index++] = new String[] { desc.getName(), String.valueOf(desc.isSingleton()), String.valueOf(desc.isAutoStart()), parameter.getLabel() };
-				} else {
-					records[index++] = new String[] { "", "", "", parameter.getLabel() };
+
+			String name = desc.getName();
+			String isSingleton = String.valueOf(desc.isSingleton());
+			String isAutoStart = String.valueOf(desc.isAutoStart());
+			String interfaceClassName = desc.getInterfaceClassName();
+			String interfaceObject = (desc.getInterfaceObject() != null) ? desc.getInterfaceObject().toString() : null;
+
+			if (parameters.length == 0) {
+				records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceObject, null };
+
+			} else {
+				for (int i = 0; i < parameters.length; i++) {
+					org.orbit.platform.sdk.extension.desc.Parameter parameter = parameters[i];
+					if (i == 0) {
+						records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceObject, parameter.getLabel() };
+					} else {
+						records[index++] = new String[] { "", "", "", "", "", parameter.getLabel() };
+					}
 				}
 			}
 		}

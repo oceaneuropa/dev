@@ -1,19 +1,29 @@
 package org.orbit.platform.sdk.extension;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.platform.sdk.extension.desc.InterfaceDescription;
 
 public class InterfacesSupport implements InterfacesAware {
 
-	protected Map<Class<?>, Object> classToInterfaceMap = new HashMap<Class<?>, Object>();
+	protected Map<Class<?>, InterfaceDescription> classToDescriptionMap = new HashMap<Class<?>, InterfaceDescription>();
 	protected Map<Class<?>, Object> classToInstanceMap = new HashMap<Class<?>, Object>();
-	protected Map<Object, InterfaceDescription> interfaceToDescriptionMap = new HashMap<Object, InterfaceDescription>();
 
 	@Override
 	public Object[] getInterfaces() {
-		return this.classToInterfaceMap.values().toArray(new Object[this.classToInterfaceMap.size()]);
+		List<Object> interfaces = new ArrayList<Object>();
+		for (Iterator<Class<?>> itor = this.classToDescriptionMap.keySet().iterator(); itor.hasNext();) {
+			Class<?> interfaceClass = itor.next();
+			Object object = getInterface(interfaceClass);
+			if (object != null) {
+				interfaces.add(object);
+			}
+		}
+		return interfaces.toArray(new Object[interfaces.size()]);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -21,32 +31,35 @@ public class InterfacesSupport implements InterfacesAware {
 	public synchronized <T> T getInterface(Class<T> clazz) {
 		T t = null;
 		if (clazz != null) {
-			Object object = this.classToInterfaceMap.get(clazz);
+			InterfaceDescription desc = this.classToDescriptionMap.get(clazz);
 
-			if (object != null) {
-				if (object instanceof String) {
+			if (desc != null) {
+				Object object = desc.getInterfaceObject();
+				if (object != null && clazz.isAssignableFrom(object.getClass())) {
+					t = (T) object;
+				}
+				if (t == null) {
 					Object instance = this.classToInstanceMap.get(clazz);
-
 					if (instance != null && clazz.isAssignableFrom(instance.getClass())) {
 						t = (T) instance;
 
 					} else {
-						try {
-							Class<?> implClass = Class.forName((String) object);
-							if (implClass != null) {
-								instance = implClass.newInstance();
+						String className = desc.getInterfaceClassName();
+						if (className != null) {
+							try {
+								Class<?> implClass = Class.forName((String) object);
+								if (implClass != null) {
+									instance = implClass.newInstance();
+									if (instance != null && clazz.isAssignableFrom(instance.getClass())) {
+										this.classToInstanceMap.put(clazz, instance);
+										t = (T) instance;
+									}
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						if (instance != null && clazz.isAssignableFrom(instance.getClass())) {
-							this.classToInstanceMap.put(clazz, instance);
-							t = (T) instance;
 						}
 					}
-
-				} else if (clazz.isAssignableFrom(object.getClass())) {
-					t = (T) object;
 				}
 			}
 		}
@@ -57,10 +70,7 @@ public class InterfacesSupport implements InterfacesAware {
 	public InterfaceDescription getInterfaceDescription(Class<?> clazz) {
 		InterfaceDescription desc = null;
 		if (clazz != null) {
-			Object object = getInterface(clazz);
-			if (object != null) {
-				desc = getInterfaceDescription((Object) object);
-			}
+			desc = this.classToDescriptionMap.get(clazz);
 		}
 		return desc;
 	}
@@ -69,7 +79,31 @@ public class InterfacesSupport implements InterfacesAware {
 	public InterfaceDescription getInterfaceDescription(Object object) {
 		InterfaceDescription desc = null;
 		if (object != null) {
-			desc = this.interfaceToDescriptionMap.get(object);
+			for (Iterator<Class<?>> itor = this.classToDescriptionMap.keySet().iterator(); itor.hasNext();) {
+				Class<?> interfaceClass = itor.next();
+				InterfaceDescription currDesc = this.classToDescriptionMap.get(interfaceClass);
+				if (currDesc != null) {
+					Object interfaceObject = currDesc.getInterfaceObject();
+					if (object.equals(interfaceObject)) {
+						desc = currDesc;
+						break;
+					}
+				}
+			}
+
+			if (desc == null) {
+				for (Iterator<Class<?>> itor = this.classToInstanceMap.keySet().iterator(); itor.hasNext();) {
+					Class<?> interfaceClass = itor.next();
+					Object interfaceInstance = this.classToInstanceMap.get(interfaceClass);
+					if (object.equals(interfaceInstance)) {
+						InterfaceDescription currDesc = this.classToDescriptionMap.get(interfaceClass);
+						if (currDesc != null) {
+							desc = currDesc;
+							break;
+						}
+					}
+				}
+			}
 		}
 		return desc;
 	}
@@ -77,46 +111,35 @@ public class InterfacesSupport implements InterfacesAware {
 	@Override
 	public <T> void addInterface(Class<?> clazz, T object) {
 		if (clazz != null && object != null) {
-			addInterface(clazz, object, new InterfaceDescription(clazz.getSimpleName()));
+			InterfaceDescription desc = new InterfaceDescription(clazz.getSimpleName());
+			desc.setInterfaceClass(clazz);
+			if (object instanceof String) {
+				desc.setInterfaceClassName((String) object);
+			} else {
+				desc.setInterfaceObject(object);
+			}
+			addInterface(desc);
 		}
 	}
 
 	@Override
-	public <T> void addInterface(Class<?> clazz, T object, InterfaceDescription description) {
-		if (clazz != null && object != null) {
-			this.classToInterfaceMap.put(clazz, object);
-
-			if (description != null) {
-				this.interfaceToDescriptionMap.put(object, description);
-			}
+	public <T> void addInterface(InterfaceDescription desc) {
+		if (desc == null) {
+			throw new IllegalArgumentException("InterfaceDescription is null.");
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> void addInterface(Class<?>[] classes, T object) {
-		if (classes != null && object != null) {
-			for (Class<?> clazz : classes) {
-				addInterface((Class<T>) clazz, object);
-			}
+		Class<?> interfaceClass = desc.getInterfaceClass();
+		if (interfaceClass == null) {
+			throw new IllegalArgumentException("interfaceClass is null.");
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public <T> void addInterface(Class<?>[] classes, T object, InterfaceDescription description) {
-		if (classes != null && object != null) {
-			for (Class<?> clazz : classes) {
-				addInterface((Class<T>) clazz, object, description);
-			}
-		}
+		this.classToDescriptionMap.put(interfaceClass, desc);
 	}
 
 	@Override
 	public void removeInterface(Class<?>... classes) {
 		if (classes != null) {
 			for (Class<?> clazz : classes) {
-				this.classToInterfaceMap.remove(clazz);
+				this.classToDescriptionMap.remove(clazz);
+				this.classToInstanceMap.remove(clazz);
 			}
 		}
 	}
@@ -128,6 +151,26 @@ public class InterfacesSupport implements InterfacesAware {
 // if (classes != null && object != null) {
 // for (Class<T> clazz : classes) {
 // addInterface((Class<T>) clazz, object, name);
+// }
+// }
+// }
+
+// @SuppressWarnings("unchecked")
+// @Override
+// public <T> void addInterface(Class<?>[] classes, T object) {
+// if (classes != null && object != null) {
+// for (Class<?> clazz : classes) {
+// addInterface((Class<T>) clazz, object);
+// }
+// }
+// }
+
+// @SuppressWarnings("unchecked")
+// @Override
+// public <T> void addInterface(Class<?>[] classes, T object, InterfaceDescription description) {
+// if (classes != null && object != null) {
+// for (Class<?> clazz : classes) {
+// addInterface((Class<T>) clazz, object, description);
 // }
 // }
 // }

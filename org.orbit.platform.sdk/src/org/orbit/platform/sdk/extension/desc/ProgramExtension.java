@@ -105,18 +105,8 @@ public class ProgramExtension implements /* IAdaptable, */ InterfacesAware {
 	}
 
 	@Override
-	public <T> void addInterface(Class<?> clazz, T object, InterfaceDescription description) {
-		this.interfacesSupport.addInterface(clazz, object, description);
-	}
-
-	@Override
-	public <T> void addInterface(Class<?>[] classes, T object) {
-		this.interfacesSupport.addInterface(classes, object);
-	}
-
-	@Override
-	public <T> void addInterface(Class<?>[] classes, T object, InterfaceDescription description) {
-		this.interfacesSupport.addInterface(classes, object, description);
+	public <T> void addInterface(InterfaceDescription description) {
+		this.interfacesSupport.addInterface(description);
 	}
 
 	@Override

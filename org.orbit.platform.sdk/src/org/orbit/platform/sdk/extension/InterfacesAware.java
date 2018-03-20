@@ -14,12 +14,12 @@ public interface InterfacesAware {
 
 	<T> void addInterface(Class<?> clazz, T object);
 
-	<T> void addInterface(Class<?> clazz, T object, InterfaceDescription description);
-
-	<T> void addInterface(Class<?>[] classes, T object);
-
-	<T> void addInterface(Class<?>[] classes, T object, InterfaceDescription description);
+	<T> void addInterface(InterfaceDescription description);
 
 	void removeInterface(Class<?>... classes);
 
 }
+
+// <T> void addInterface(Class<?>[] classes, T object);
+
+// <T> void addInterface(Class<?>[] classes, T object, InterfaceDescription description);

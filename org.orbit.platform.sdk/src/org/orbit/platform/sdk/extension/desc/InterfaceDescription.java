@@ -11,6 +11,9 @@ public class InterfaceDescription {
 	protected boolean autoStart = false;
 	protected Parameter[] parameters;
 	protected ICondition triggerCondition;
+	protected Class<?> interfaceClass;
+	protected Object interfaceObject;
+	protected String interfaceClassName;
 
 	public InterfaceDescription() {
 	}
@@ -33,6 +36,16 @@ public class InterfaceDescription {
 		this.name = name;
 		this.singleton = singleton;
 		this.autoStart = autoStart;
+	}
+
+	/**
+	 * 
+	 * @param interfaceClass
+	 * @param interfaceObject
+	 */
+	public InterfaceDescription(Class<?> interfaceClass, Object interfaceObject) {
+		this.interfaceClass = interfaceClass;
+		this.interfaceObject = interfaceObject;
 	}
 
 	public String getName() {
@@ -76,6 +89,30 @@ public class InterfaceDescription {
 
 	public void setTriggerCondition(ICondition triggerCondition) {
 		this.triggerCondition = triggerCondition;
+	}
+
+	public Class<?> getInterfaceClass() {
+		return this.interfaceClass;
+	}
+
+	public void setInterfaceClass(Class<?> interfaceClass) {
+		this.interfaceClass = interfaceClass;
+	}
+
+	public Object getInterfaceObject() {
+		return this.interfaceObject;
+	}
+
+	public void setInterfaceObject(Object interfaceObject) {
+		this.interfaceObject = interfaceObject;
+	}
+
+	public String getInterfaceClassName() {
+		return interfaceClassName;
+	}
+
+	public void setInterfaceClassName(String interfaceClassName) {
+		this.interfaceClassName = interfaceClassName;
 	}
 
 }

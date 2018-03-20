@@ -18,6 +18,16 @@ public class PlatformContextImpl implements IPlatformContext {
 	public PlatformContextImpl() {
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param platform
+	 */
+	public PlatformContextImpl(BundleContext bundleContext, IPlatform platform) {
+		this.bundleContext = bundleContext;
+		this.platform = platform;
+	}
+
 	@Override
 	public IPlatform getPlatform() {
 		return this.platform;

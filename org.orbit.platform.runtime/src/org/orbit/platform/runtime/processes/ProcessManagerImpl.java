@@ -29,6 +29,7 @@ import org.orbit.platform.sdk.IProcessFilter;
 import org.orbit.platform.sdk.IProcessManager;
 import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.orbit.platform.sdk.extension.desc.InterfaceDescription;
 import org.orbit.platform.sdk.extension.util.ProgramExtensionTracker;
 import org.orbit.platform.sdk.extension.util.ProgramExtensionTracker.ProgramExtensionListener;
 import org.osgi.framework.BundleContext;
@@ -117,25 +118,33 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 		}
 
 		// Autostart process of the extension
-		final ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
-		if (serviceActivator != null && ProgramExtensionHelper.INSTANCE.isAutoStart(extension, serviceActivator)) {
-			boolean sync = false;
-			Callable<ProcessHandler> callable = new Callable<ProcessHandler>() {
-				@Override
-				public ProcessHandler call() throws Exception {
-					return doCreateProcess(extension, serviceActivator, null);
-				}
-			};
-			Future<?> future = this.executor.submit(callable);
-			if (sync) {
-				try {
-					future.get();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					future.cancel(true);
+		boolean isAutoStart = false;
+		InterfaceDescription desc = extension.getInterfaceDescription(ServiceActivator.class);
+		if (desc != null) {
+			IPlatformContext context = createContext();
+			isAutoStart = ProgramExtensionHelper.INSTANCE.isAutoStart(context, desc);
+		}
+		if (isAutoStart) {
+			final ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
+			if (serviceActivator != null) {
+				boolean sync = false;
+				Callable<ProcessHandler> callable = new Callable<ProcessHandler>() {
+					@Override
+					public ProcessHandler call() throws Exception {
+						return doCreateProcess(extension, serviceActivator, null);
+					}
+				};
+				Future<?> future = this.executor.submit(callable);
+				if (sync) {
+					try {
+						future.get();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						future.cancel(true);
 
-				} catch (ExecutionException e) {
-					e.printStackTrace();
+					} catch (ExecutionException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -179,9 +188,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	}
 
 	protected IPlatformContext createContext() {
-		PlatformContextImpl context = new PlatformContextImpl();
-		context.setBundleContext(this.bundleContext);
-		context.setPlatform(this.platform);
+		PlatformContextImpl context = new PlatformContextImpl(this.bundleContext, this.platform);
 		return context;
 	}
 
