@@ -31,6 +31,32 @@ public class ProgramExtension implements /* IAdaptable, */ InterfacesAware {
 		this.id = id;
 	}
 
+	/**
+	 * 
+	 * @param typeId
+	 * @param id
+	 * @param name
+	 */
+	public ProgramExtension(String typeId, String id, String name) {
+		this.typeId = typeId;
+		this.id = id;
+		this.name = name;
+	}
+
+	/**
+	 * 
+	 * @param typeId
+	 * @param id
+	 * @param name
+	 * @param description
+	 */
+	public ProgramExtension(String typeId, String id, String name, String description) {
+		this.typeId = typeId;
+		this.id = id;
+		this.name = name;
+		this.description = description;
+	}
+
 	public String getTypeId() {
 		return this.typeId;
 	}
@@ -100,12 +126,22 @@ public class ProgramExtension implements /* IAdaptable, */ InterfacesAware {
 	}
 
 	@Override
-	public <T> void addInterface(Class<?> clazz, T object) {
-		this.interfacesSupport.addInterface(clazz, object);
+	public <T> void addInterface(Class<?> clazz, T interfaceInstance) {
+		this.interfacesSupport.addInterface(clazz, interfaceInstance);
 	}
 
 	@Override
-	public <T> void addInterface(InterfaceDescription description) {
+	public void addInterface(Class<?> clazz, String interfaceClassName) {
+		this.interfacesSupport.addInterface(clazz, interfaceClassName);
+	}
+
+	@Override
+	public void addInterface(Class<?> clazz, Class<?> interfaceImplClass) {
+		this.interfacesSupport.addInterface(clazz, interfaceImplClass);
+	}
+
+	@Override
+	public void addInterface(InterfaceDescription description) {
 		this.interfacesSupport.addInterface(description);
 	}
 

@@ -18,7 +18,6 @@ public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 	 */
 	public IndexServiceWSApplicationRelay(WebServiceAware webServiceAware, Switcher<URI> switcher) {
 		super(webServiceAware.getContextRoot(), FeatureConstants.PING, switcher);
-
 		adapt(WebServiceAware.class, webServiceAware);
 
 		// Note:

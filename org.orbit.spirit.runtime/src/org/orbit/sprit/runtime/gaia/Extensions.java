@@ -31,20 +31,17 @@ public class Extensions extends ProgramExtensions {
 		String typeId = ServiceActivator.TYPE_ID;
 
 		// GAIA
-		ProgramExtension gaiaExtension = new ProgramExtension(typeId, GAIAServiceActivator.ID);
-		gaiaExtension.setName("GAIA activator");
-		gaiaExtension.setDescription("GAIA activator description");
-		InterfaceDescription gaiaDesc = new InterfaceDescription("GAIA");
-		gaiaDesc.setInterfaceClass(ServiceActivator.class);
-		gaiaDesc.setInterfaceObject(GAIAServiceActivator.INSTANCE);
+		ProgramExtension gaiaExtension = new ProgramExtension(typeId, GAIAServiceActivator.ID, "GAIA activator", "GAIA activator description");
+		InterfaceDescription gaiaDesc = new InterfaceDescription("GAIA", ServiceActivator.class, GAIAServiceActivator.class.getName());
 		gaiaDesc.setParameters( //
 				new Parameter("gaia.name", "GAIA instance name"), //
 				new Parameter("gaia.context_root", "web service context root") //
-		// new Parameter("gaia.host.url", "host url", true), //
-		// new Parameter("orbit.host.url", "generic host url", true) //
 		);
 		gaiaExtension.addInterface(gaiaDesc);
 		addExtension(gaiaExtension);
 	}
 
 }
+
+// new Parameter("gaia.host.url", "host url", true), //
+// new Parameter("orbit.host.url", "generic host url", true) //

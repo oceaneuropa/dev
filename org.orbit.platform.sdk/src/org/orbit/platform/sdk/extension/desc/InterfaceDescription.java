@@ -12,7 +12,8 @@ public class InterfaceDescription {
 	protected Parameter[] parameters;
 	protected ICondition triggerCondition;
 	protected Class<?> interfaceClass;
-	protected Object interfaceObject;
+	protected Class<?> interfaceImplClass;
+	protected Object interfaceInstance;
 	protected String interfaceClassName;
 
 	public InterfaceDescription() {
@@ -28,24 +29,55 @@ public class InterfaceDescription {
 
 	/**
 	 * 
-	 * @param name
-	 * @param singleton
-	 * @param autoStart
+	 * @param interfaceClass
+	 * @param interfaceClassName
 	 */
-	public InterfaceDescription(String name, boolean singleton, boolean autoStart) {
-		this.name = name;
-		this.singleton = singleton;
-		this.autoStart = autoStart;
+	public InterfaceDescription(Class<?> interfaceClass, String interfaceClassName) {
+		this(interfaceClass.getSimpleName(), interfaceClass, interfaceClassName);
 	}
 
 	/**
 	 * 
 	 * @param interfaceClass
-	 * @param interfaceObject
+	 * @param interfaceImplClass
 	 */
-	public InterfaceDescription(Class<?> interfaceClass, Object interfaceObject) {
+	public InterfaceDescription(Class<?> interfaceClass, Class<?> interfaceImplClass) {
+		this(interfaceClass.getSimpleName(), interfaceClass, interfaceImplClass);
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @param interfaceClass
+	 * @param interfaceClassName
+	 */
+	public InterfaceDescription(String name, Class<?> interfaceClass, String interfaceClassName) {
+		this.name = name;
 		this.interfaceClass = interfaceClass;
-		this.interfaceObject = interfaceObject;
+		this.interfaceClassName = interfaceClassName;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @param interfaceClass
+	 * @param interfaceImplClass
+	 */
+	public InterfaceDescription(String name, Class<?> interfaceClass, Class<?> interfaceImplClass) {
+		this.name = name;
+		this.interfaceClass = interfaceClass;
+		this.interfaceImplClass = interfaceImplClass;
+	}
+
+	/**
+	 * 
+	 * @param interfaceClass
+	 * @param interfaceInstance
+	 */
+	public InterfaceDescription(Class<?> interfaceClass, Object interfaceInstance) {
+		this.name = interfaceClass.getSimpleName();
+		this.interfaceClass = interfaceClass;
+		this.interfaceInstance = interfaceInstance;
 	}
 
 	public String getName() {
@@ -99,12 +131,20 @@ public class InterfaceDescription {
 		this.interfaceClass = interfaceClass;
 	}
 
-	public Object getInterfaceObject() {
-		return this.interfaceObject;
+	public Class<?> getInterfaceImplClass() {
+		return this.interfaceImplClass;
 	}
 
-	public void setInterfaceObject(Object interfaceObject) {
-		this.interfaceObject = interfaceObject;
+	public void setInterfaceImplClass(Class<?> interfaceImplClass) {
+		this.interfaceImplClass = interfaceImplClass;
+	}
+
+	public Object getInterfaceInstance() {
+		return this.interfaceInstance;
+	}
+
+	public void setInterfaceInstance(Object interfaceInstance) {
+		this.interfaceInstance = interfaceInstance;
 	}
 
 	public String getInterfaceClassName() {

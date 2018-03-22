@@ -89,12 +89,12 @@ public class PlatformServerCommand implements Annotated {
 				new String[] { //
 						"lhost", "lendpoints", //
 
-						"list_extensions", "lextensions", "linterfaces", //
+						"lextensions", "linterfaces", //
 
-						"list_processes", "lprocesses", "create_process", "start_process", "stop_process", "exit_process", //
-						"start_all_processes", "stop_all_processes", "exit_all_processes", //
+						"lprocs", "create_proc", "start_proc", "stop_proc", "exit_proc", //
+						"start_all_procs", "stop_all_procs", "exit_all_procs", //
 
-						"listapps", "installapp", "uninstallapp", //
+						"lprograms", "installapp", "uninstallapp", //
 						"activateapp", "deactivateapp", //
 						"startapp", "stopapp" //
 		});
@@ -279,7 +279,7 @@ public class PlatformServerCommand implements Annotated {
 			String isSingleton = String.valueOf(desc.isSingleton());
 			String isAutoStart = String.valueOf(desc.isAutoStart());
 			String interfaceClassName = desc.getInterfaceClassName();
-			String interfaceObject = (desc.getInterfaceObject() != null) ? desc.getInterfaceObject().toString() : null;
+			String interfaceObject = (desc.getInterfaceInstance() != null) ? desc.getInterfaceInstance().toString() : null;
 
 			if (parameters.length == 0) {
 				records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceObject, null };
@@ -307,7 +307,7 @@ public class PlatformServerCommand implements Annotated {
 	 * List all processes.
 	 * 
 	 */
-	public void lprocesses() {
+	public void lprocs() {
 		IProcess[] processes = getProcessManager().getProcesses();
 		String[][] records = new String[processes.length][PROCESS_COLUMNS.length];
 		int index = 0;
@@ -355,7 +355,7 @@ public class PlatformServerCommand implements Annotated {
 	 * @param async
 	 * @throws ClientException
 	 */
-	public void start_process( //
+	public void start_proc( //
 			// Parameters
 			@Descriptor("Process id") @Parameter(names = { "-pid", "--pid" }, absentValue = "") int pid, //
 			// Options
@@ -378,7 +378,7 @@ public class PlatformServerCommand implements Annotated {
 	 * @param async
 	 * @throws ClientException
 	 */
-	public void start_all_processes(
+	public void start_all_procs(
 			// Options
 			@Descriptor("Async") @Parameter(names = { "-async", "--async" }, absentValue = "false", presentValue = "true") boolean async //
 	) throws ClientException {
@@ -407,7 +407,7 @@ public class PlatformServerCommand implements Annotated {
 	 * @param async
 	 * @throws ClientException
 	 */
-	public void stop_process(
+	public void stop_proc(
 			// Parameters
 			@Descriptor("Process id") @Parameter(names = { "-pid", "--pid" }, absentValue = "") int pid, //
 			// Options
@@ -430,7 +430,7 @@ public class PlatformServerCommand implements Annotated {
 	 * @param async
 	 * @throws ClientException
 	 */
-	public void stop_all_processes(
+	public void stop_all_procs(
 			// Options
 			@Descriptor("Async") @Parameter(names = { "-async", "--async" }, absentValue = "false", presentValue = "true") boolean async //
 	) throws ClientException {
@@ -460,7 +460,7 @@ public class PlatformServerCommand implements Annotated {
 	 * @param async
 	 * @throws ClientException
 	 */
-	public void exit_process(
+	public void exit_proc(
 			// Parameters
 			@Descriptor("Process id") @Parameter(names = { "-pid", "--pid" }, absentValue = "") int pid, //
 			// Options
@@ -481,7 +481,7 @@ public class PlatformServerCommand implements Annotated {
 	 * @param async
 	 * @throws ClientException
 	 */
-	public void exit_all_processes(
+	public void exit_all_procs(
 			// Options
 			@Descriptor("Async") @Parameter(names = { "-async", "--async" }, absentValue = "false", presentValue = "true") boolean async //
 	) throws ClientException {
@@ -503,9 +503,9 @@ public class PlatformServerCommand implements Annotated {
 		}
 	}
 
-	@Descriptor("List installed programs")
-	public void list_programs() throws ClientException {
-		LOG.info("listapps()");
+	@Descriptor("List programs")
+	public void lprograms() throws ClientException {
+		LOG.info("lprograms()");
 
 		ProgramHandler[] programHandlers = getProgramsAndFeatures().getProgramHandlers();
 		int num = (programHandlers != null) ? programHandlers.length : 0;

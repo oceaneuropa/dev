@@ -179,11 +179,11 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	}
 
 	@Override
-	public <T> void addInterface(Class<?> clazz, T object) {
+	public <T> void addInterface(Class<?> clazz, T interfaceInstance) {
 		try {
 			IProgramExtension extension = getTarget(IProgramExtension.class);
 			if (extension != null) {
-				extension.addInterface(clazz, object);
+				extension.addInterface(clazz, interfaceInstance);
 			}
 		} finally {
 			ungetTarget();
@@ -191,7 +191,31 @@ public class ProgramExtensionProxy implements IProgramExtension {
 	}
 
 	@Override
-	public <T> void addInterface(InterfaceDescription description) {
+	public void addInterface(Class<?> clazz, String interfaceClassName) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.addInterface(clazz, interfaceClassName);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public void addInterface(Class<?> clazz, Class<?> interfaceImplClass) {
+		try {
+			IProgramExtension extension = getTarget(IProgramExtension.class);
+			if (extension != null) {
+				extension.addInterface(clazz, interfaceImplClass);
+			}
+		} finally {
+			ungetTarget();
+		}
+	}
+
+	@Override
+	public void addInterface(InterfaceDescription description) {
 		try {
 			IProgramExtension extension = getTarget(IProgramExtension.class);
 			if (extension != null) {

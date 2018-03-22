@@ -2,9 +2,6 @@ package org.orbit.component.runtime.relay.other.extensions;
 
 import org.orbit.component.runtime.relay.extensions.AppStoreWSRelayControl;
 import org.orbit.platform.sdk.WSRelayControl;
-import org.orbit.platform.sdk.extension.IProgramExtensionFilter;
-import org.orbit.platform.sdk.extension.desc.InterfaceDescription;
-import org.orbit.platform.sdk.extension.impl.ProgramExtensionImpl;
 import org.orbit.platform.sdk.extension.impl.other.ProgramExtensionImplV1;
 
 public class AppStoreRelayExtension extends ProgramExtensionImplV1 {

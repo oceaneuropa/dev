@@ -34,7 +34,7 @@ public class InterfacesSupport implements InterfacesAware {
 			InterfaceDescription desc = this.classToDescriptionMap.get(clazz);
 
 			if (desc != null) {
-				Object object = desc.getInterfaceObject();
+				Object object = desc.getInterfaceInstance();
 				if (object != null && clazz.isAssignableFrom(object.getClass())) {
 					t = (T) object;
 				}
@@ -44,16 +44,33 @@ public class InterfacesSupport implements InterfacesAware {
 						t = (T) instance;
 
 					} else {
-						String className = desc.getInterfaceClassName();
-						if (className != null) {
-							try {
-								Class<?> implClass = Class.forName((String) object);
-								if (implClass != null) {
-									instance = implClass.newInstance();
-									if (instance != null && clazz.isAssignableFrom(instance.getClass())) {
-										this.classToInstanceMap.put(clazz, instance);
-										t = (T) instance;
+						Class<?> implClass = desc.getInterfaceImplClass();
+						if (implClass == null) {
+							String className = desc.getInterfaceClassName();
+							if (className != null) {
+								ClassLoader cl = Thread.currentThread().getContextClassLoader();
+								try {
+									ClassLoader extensionClassLoader = getClass().getClassLoader();
+									Thread.currentThread().setContextClassLoader(extensionClassLoader);
+
+									try {
+										implClass = Class.forName((String) className);
+									} catch (Exception e) {
+										e.printStackTrace();
 									}
+
+								} finally {
+									Thread.currentThread().setContextClassLoader(cl);
+								}
+							}
+						}
+
+						if (implClass != null) {
+							try {
+								instance = implClass.newInstance();
+								if (instance != null && clazz.isAssignableFrom(instance.getClass())) {
+									this.classToInstanceMap.put(clazz, instance);
+									t = (T) instance;
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -83,7 +100,7 @@ public class InterfacesSupport implements InterfacesAware {
 				Class<?> interfaceClass = itor.next();
 				InterfaceDescription currDesc = this.classToDescriptionMap.get(interfaceClass);
 				if (currDesc != null) {
-					Object interfaceObject = currDesc.getInterfaceObject();
+					Object interfaceObject = currDesc.getInterfaceInstance();
 					if (object.equals(interfaceObject)) {
 						desc = currDesc;
 						break;
@@ -109,21 +126,37 @@ public class InterfacesSupport implements InterfacesAware {
 	}
 
 	@Override
-	public <T> void addInterface(Class<?> clazz, T object) {
-		if (clazz != null && object != null) {
+	public <T> void addInterface(Class<?> clazz, T interfaceInstance) {
+		if (clazz != null) {
 			InterfaceDescription desc = new InterfaceDescription(clazz.getSimpleName());
 			desc.setInterfaceClass(clazz);
-			if (object instanceof String) {
-				desc.setInterfaceClassName((String) object);
-			} else {
-				desc.setInterfaceObject(object);
-			}
+			desc.setInterfaceInstance(interfaceInstance);
 			addInterface(desc);
 		}
 	}
 
 	@Override
-	public <T> void addInterface(InterfaceDescription desc) {
+	public void addInterface(Class<?> clazz, String interfaceClassName) {
+		if (clazz != null) {
+			InterfaceDescription desc = new InterfaceDescription(clazz.getSimpleName());
+			desc.setInterfaceClass(clazz);
+			desc.setInterfaceClassName(interfaceClassName);
+			addInterface(desc);
+		}
+	}
+
+	@Override
+	public void addInterface(Class<?> clazz, Class<?> interfaceImplClass) {
+		if (clazz != null) {
+			InterfaceDescription desc = new InterfaceDescription(clazz.getSimpleName());
+			desc.setInterfaceClass(clazz);
+			desc.setInterfaceImplClass(interfaceImplClass);
+			addInterface(desc);
+		}
+	}
+
+	@Override
+	public void addInterface(InterfaceDescription desc) {
 		if (desc == null) {
 			throw new IllegalArgumentException("InterfaceDescription is null.");
 		}

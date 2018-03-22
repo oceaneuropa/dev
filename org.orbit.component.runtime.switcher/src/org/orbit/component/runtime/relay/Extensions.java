@@ -53,49 +53,35 @@ public class Extensions extends ProgramExtensions {
 		String extensionTypeId = WSRelayControl.EXTENSION_TYPE_ID;
 
 		// tier 1
-		ProgramExtension userRegistryRelayExtension = new ProgramExtension(extensionTypeId, USER_REGISTRY_RELAY_EXTENSION_ID);
-		userRegistryRelayExtension.setName("User registration relay");
-		userRegistryRelayExtension.setDescription("User registration relay description");
-		userRegistryRelayExtension.addInterface(WSRelayControl.class, UserRegistryWSRelayControl.INSTANCE);
+		ProgramExtension userRegistryRelayExtension = new ProgramExtension(extensionTypeId, USER_REGISTRY_RELAY_EXTENSION_ID, "User registration relay", "User registration relay description");
+		userRegistryRelayExtension.addInterface(WSRelayControl.class, UserRegistryWSRelayControl.class.getName());
 		addExtension(userRegistryRelayExtension);
 
-		ProgramExtension authRelayExtension = new ProgramExtension(extensionTypeId, AUTH_RELAY_EXTENSION_ID);
-		authRelayExtension.setName("Auth relay");
-		authRelayExtension.setDescription("Auth relay description");
-		authRelayExtension.addInterface(WSRelayControl.class, AuthWSRelayControl.INSTANCE);
+		ProgramExtension authRelayExtension = new ProgramExtension(extensionTypeId, AUTH_RELAY_EXTENSION_ID, "Auth relay", "Auth relay description");
+		authRelayExtension.addInterface(WSRelayControl.class, AuthWSRelayControl.class.getName());
 		addExtension(authRelayExtension);
 
-		ProgramExtension configRegistryRelayExtension = new ProgramExtension(extensionTypeId, CONFIG_REGISTRY_RELAY_EXTENSION_ID);
-		configRegistryRelayExtension.setName("Config registration relay");
-		configRegistryRelayExtension.setDescription("Config registration relay description");
-		configRegistryRelayExtension.addInterface(WSRelayControl.class, ConfigRegistryWSRelayControl.INSTANCE);
+		ProgramExtension configRegistryRelayExtension = new ProgramExtension(extensionTypeId, CONFIG_REGISTRY_RELAY_EXTENSION_ID, "Config registration relay", "Config registration relay description");
+		configRegistryRelayExtension.addInterface(WSRelayControl.class, ConfigRegistryWSRelayControl.class.getName());
 		addExtension(configRegistryRelayExtension);
 
 		// tier 2
-		ProgramExtension appStoreRelayExtension = new ProgramExtension(extensionTypeId, APP_STORE_RELAY_EXTENSION_ID);
-		appStoreRelayExtension.setName("App store relay");
-		appStoreRelayExtension.setDescription("App store relay description");
-		appStoreRelayExtension.addInterface(WSRelayControl.class, AppStoreWSRelayControl.INSTANCE);
+		ProgramExtension appStoreRelayExtension = new ProgramExtension(extensionTypeId, APP_STORE_RELAY_EXTENSION_ID, "App store relay", "App store relay description");
+		appStoreRelayExtension.addInterface(WSRelayControl.class, AppStoreWSRelayControl.class.getName());
 		addExtension(appStoreRelayExtension);
 
 		// tier 3
-		ProgramExtension domainServiceRelayExtension = new ProgramExtension(extensionTypeId, DOMAIN_SERVICE_RELAY_EXTENSION_ID);
-		domainServiceRelayExtension.setName("Domain service relay");
-		domainServiceRelayExtension.setDescription("Domain service relay description");
-		domainServiceRelayExtension.addInterface(WSRelayControl.class, DomainServiceWSRelayControl.INSTANCE);
+		ProgramExtension domainServiceRelayExtension = new ProgramExtension(extensionTypeId, DOMAIN_SERVICE_RELAY_EXTENSION_ID, "Domain service relay", "Domain service relay description");
+		domainServiceRelayExtension.addInterface(WSRelayControl.class, DomainServiceWSRelayControl.class.getName());
 		addExtension(domainServiceRelayExtension);
 
-		ProgramExtension nodeControlRelayExtension = new ProgramExtension(extensionTypeId, NODE_CONTROL_RELAY_EXTENSION_ID);
-		nodeControlRelayExtension.setName("Node control relay");
-		nodeControlRelayExtension.setDescription("Node control relay description");
-		nodeControlRelayExtension.addInterface(WSRelayControl.class, NodeControlWSRelayControl.INSTANCE);
+		ProgramExtension nodeControlRelayExtension = new ProgramExtension(extensionTypeId, NODE_CONTROL_RELAY_EXTENSION_ID, "Node control relay", "Node control relay description");
+		nodeControlRelayExtension.addInterface(WSRelayControl.class, NodeControlWSRelayControl.class.getName());
 		addExtension(nodeControlRelayExtension);
 
 		// tier 4
-		ProgramExtension missionControlRelayExtension = new ProgramExtension(extensionTypeId, MISSION_CONTROL_RELAY_EXTENSION_ID);
-		missionControlRelayExtension.setName("Mission control relay");
-		missionControlRelayExtension.setDescription("Mission control relay description");
-		missionControlRelayExtension.addInterface(WSRelayControl.class, MissionControlWSRelayControl.INSTANCE);
+		ProgramExtension missionControlRelayExtension = new ProgramExtension(extensionTypeId, MISSION_CONTROL_RELAY_EXTENSION_ID, "Mission control relay", "Mission control relay description");
+		missionControlRelayExtension.addInterface(WSRelayControl.class, MissionControlWSRelayControl.class.getName());
 		addExtension(missionControlRelayExtension);
 	}
 

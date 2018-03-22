@@ -46,9 +46,9 @@ public class WebServiceAwareRegistryImpl extends WebServiceAwareRegistry {
 		}
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(WebServiceAware.PROP_NAME, webServiceAware.getName());
-		props.put(WebServiceAware.PROP_HOST_URL, webServiceAware.getHostURL());
-		props.put(WebServiceAware.PROP_CONTEXT_ROOT, webServiceAware.getContextRoot());
+		props.put(WebServiceAware.PROP_NAME, webServiceAware.getName() != null ? webServiceAware.getName() : "n/a");
+		props.put(WebServiceAware.PROP_HOST_URL, webServiceAware.getHostURL() != null ? webServiceAware.getHostURL() : "n/a");
+		props.put(WebServiceAware.PROP_CONTEXT_ROOT, webServiceAware.getContextRoot() != null ? webServiceAware.getContextRoot() : "n/a");
 		ServiceRegistration<?> serviceRegistration = bundleContext.registerService(WebServiceAware.class, webServiceAware, props);
 		this.webServiceAwareToServiceRegistrationMap.put(webServiceAware, serviceRegistration);
 	}

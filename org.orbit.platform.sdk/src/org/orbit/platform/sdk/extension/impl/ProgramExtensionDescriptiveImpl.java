@@ -69,8 +69,18 @@ public class ProgramExtensionDescriptiveImpl extends ProgramExtensionImpl {
 	}
 
 	@Override
-	public <T> void addInterface(InterfaceDescription description) {
+	public void addInterface(InterfaceDescription description) {
 		this.extensionDesc.addInterface(description);
+	}
+
+	@Override
+	public void addInterface(Class<?> clazz, String interfaceClassName) {
+		this.extensionDesc.addInterface(clazz, interfaceClassName);
+	}
+
+	@Override
+	public void addInterface(Class<?> clazz, Class<?> interfaceImplClass) {
+		this.extensionDesc.addInterface(clazz, interfaceImplClass);
 	}
 
 	@Override

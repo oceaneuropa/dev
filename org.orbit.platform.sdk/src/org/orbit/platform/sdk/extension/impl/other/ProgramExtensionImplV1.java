@@ -123,12 +123,22 @@ public abstract class ProgramExtensionImplV1 extends ProgramExtensionImpl implem
 	}
 
 	@Override
-	public <T> void addInterface(Class<?> clazz, T object) {
-		this.interfacesSupport.addInterface(clazz, object);
+	public <T> void addInterface(Class<?> clazz, T interfaceInstance) {
+		this.interfacesSupport.addInterface(clazz, interfaceInstance);
 	}
 
 	@Override
-	public <T> void addInterface(InterfaceDescription description) {
+	public void addInterface(Class<?> clazz, String interfaceClassName) {
+		this.interfacesSupport.addInterface(clazz, interfaceClassName);
+	}
+
+	@Override
+	public void addInterface(Class<?> clazz, Class<?> interfaceImplClass) {
+		this.interfacesSupport.addInterface(clazz, interfaceImplClass);
+	}
+
+	@Override
+	public void addInterface(InterfaceDescription description) {
 		this.interfacesSupport.addInterface(description);
 	}
 

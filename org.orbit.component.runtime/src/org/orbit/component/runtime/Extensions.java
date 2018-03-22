@@ -49,49 +49,35 @@ public class Extensions extends ProgramExtensions {
 		String typeId = ServiceActivator.TYPE_ID;
 
 		// tier 1
-		ProgramExtension userRegistryActivatorExtension = new ProgramExtension(typeId, UserRegistryServiceActivator.ID);
-		userRegistryActivatorExtension.setName("User registration service activator");
-		userRegistryActivatorExtension.setDescription("User registration service activator description");
-		userRegistryActivatorExtension.addInterface(ServiceActivator.class, UserRegistryServiceActivator.INSTANCE);
+		ProgramExtension userRegistryActivatorExtension = new ProgramExtension(typeId, UserRegistryServiceActivator.ID, "User registration service activator", "User registration service activator description");
+		userRegistryActivatorExtension.addInterface(ServiceActivator.class, UserRegistryServiceActivator.class.getName());
 		addExtension(userRegistryActivatorExtension);
 
-		ProgramExtension authActivatorExtension = new ProgramExtension(typeId, AuthServiceActivator.ID);
-		authActivatorExtension.setName("Auth service activator");
-		authActivatorExtension.setDescription("Auth service activator description");
-		authActivatorExtension.addInterface(ServiceActivator.class, AuthServiceActivator.INSTANCE);
+		ProgramExtension authActivatorExtension = new ProgramExtension(typeId, AuthServiceActivator.ID, "Auth service activator", "Auth service activator description");
+		authActivatorExtension.addInterface(ServiceActivator.class, AuthServiceActivator.class.getName());
 		addExtension(authActivatorExtension);
 
-		ProgramExtension configRegistryActivatorExtension = new ProgramExtension(typeId, ConfigRegistryServiceActivator.ID);
-		configRegistryActivatorExtension.setName("Config registration service activator");
-		configRegistryActivatorExtension.setDescription("Config registration service activator description");
-		configRegistryActivatorExtension.addInterface(ServiceActivator.class, ConfigRegistryServiceActivator.INSTANCE);
+		ProgramExtension configRegistryActivatorExtension = new ProgramExtension(typeId, ConfigRegistryServiceActivator.ID, "Config registration service activator", "Config registration service activator description");
+		configRegistryActivatorExtension.addInterface(ServiceActivator.class, ConfigRegistryServiceActivator.class.getName());
 		addExtension(configRegistryActivatorExtension);
 
 		// tier 2
-		ProgramExtension appStoreActivatorExtension = new ProgramExtension(typeId, AppStoreServiceActivator.ID);
-		appStoreActivatorExtension.setName("App store service activator");
-		appStoreActivatorExtension.setDescription("App store service activator description");
-		appStoreActivatorExtension.addInterface(ServiceActivator.class, AppStoreServiceActivator.INSTANCE);
+		ProgramExtension appStoreActivatorExtension = new ProgramExtension(typeId, AppStoreServiceActivator.ID, "App store service activator", "App store service activator description");
+		appStoreActivatorExtension.addInterface(ServiceActivator.class, AppStoreServiceActivator.class.getName());
 		addExtension(appStoreActivatorExtension);
 
 		// tier 3
-		ProgramExtension domainManagementActivatorExtension = new ProgramExtension(typeId, DomainManagementServiceActivator.ID);
-		domainManagementActivatorExtension.setName("Domain management service activator");
-		domainManagementActivatorExtension.setDescription("Domain management service activator description");
-		domainManagementActivatorExtension.addInterface(ServiceActivator.class, DomainManagementServiceActivator.INSTANCE);
+		ProgramExtension domainManagementActivatorExtension = new ProgramExtension(typeId, DomainManagementServiceActivator.ID, "Domain management service activator", "Domain management service activator description");
+		domainManagementActivatorExtension.addInterface(ServiceActivator.class, DomainManagementServiceActivator.class.getName());
 		addExtension(domainManagementActivatorExtension);
 
-		ProgramExtension nodeManagementActivatorExtension = new ProgramExtension(typeId, NodeManagementServiceActivator.ID);
-		nodeManagementActivatorExtension.setName("Node management service activator");
-		nodeManagementActivatorExtension.setDescription("Node management service activator description");
-		nodeManagementActivatorExtension.addInterface(ServiceActivator.class, NodeManagementServiceActivator.INSTANCE);
+		ProgramExtension nodeManagementActivatorExtension = new ProgramExtension(typeId, NodeManagementServiceActivator.ID, "Node management service activator", "Node management service activator description");
+		nodeManagementActivatorExtension.addInterface(ServiceActivator.class, NodeManagementServiceActivator.class.getName());
 		addExtension(nodeManagementActivatorExtension);
 
 		// tier 4
-		ProgramExtension missionControlActivatorExtension = new ProgramExtension(typeId, MissionControlServiceActivator.ID);
-		missionControlActivatorExtension.setName("Mission control service activator");
-		missionControlActivatorExtension.setDescription("Mission control service activator description");
-		missionControlActivatorExtension.addInterface(ServiceActivator.class, MissionControlServiceActivator.INSTANCE);
+		ProgramExtension missionControlActivatorExtension = new ProgramExtension(typeId, MissionControlServiceActivator.ID, "Mission control service activator", "Mission control service activator description");
+		missionControlActivatorExtension.addInterface(ServiceActivator.class, MissionControlServiceActivator.class.getName());
 		addExtension(missionControlActivatorExtension);
 	}
 

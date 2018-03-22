@@ -33,39 +33,30 @@ public class InfraRelays {
 		return instance;
 	}
 
-	protected IndexServiceWSApplicationRelay indexServiceRelay;
-	protected ChannelWSApplicationRelay channelRelay;
+	// protected IndexServiceWSApplicationRelay indexServiceRelay;
+	// protected ChannelWSApplicationRelay channelRelay;
 
 	public void start(BundleContext bundleContext) {
 		LOG.info("start()");
 
-		Map<Object, Object> properties = new Hashtable<Object, Object>();
-
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS);
-
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_URLS);
-
-		startIndexServiceRelay(bundleContext, properties);
-		startChannelRelay(bundleContext, properties);
+		// Map<Object, Object> properties = new Hashtable<Object, Object>();
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_NAME);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_NAME);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_URLS);
+		// startIndexServiceRelay(bundleContext, properties);
+		// startChannelRelay(bundleContext, properties);
 	}
 
 	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
-		stopIndexServiceRelay(bundleContext);
-		stopChannelRelay(bundleContext);
-	}
-
-	protected List<URI> toList(String baseURIsString) {
-		return URIUtil.toList(baseURIsString);
-	}
-
-	protected List<URI> toList(String hostURLsString, String contextRoot) {
-		return URIUtil.toList(hostURLsString, contextRoot);
+		// stopIndexServiceRelay(bundleContext);
+		// stopChannelRelay(bundleContext);
 	}
 
 	/**
@@ -75,21 +66,21 @@ public class InfraRelays {
 	 * @return
 	 */
 	public IndexServiceWSApplicationRelay createIndexServiceRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
-		String name = (String) initProperties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_NAME);
-		if (name == null) {
-			name = "IndexServiceRelay";
-		}
-		final String _name = name;
-		final String contextRoot = (String) initProperties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT);
-		String hosts = (String) initProperties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS);
-		String urls = (String) initProperties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS);
-
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (initProperties != null) {
 			properties.putAll(initProperties);
 		}
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS);
+
 		final String hostURL = (String) properties.get(InfraConstants.ORBIT_HOST_URL);
+		final String name = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_NAME);
+		final String contextRoot = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT);
+		String hosts = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS);
+		String urls = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS);
 
 		if (contextRoot == null) {
 			return null;
@@ -108,7 +99,7 @@ public class InfraRelays {
 		WebServiceAware webServiceAware = new WebServiceAware() {
 			@Override
 			public String getName() {
-				return _name;
+				return name;
 			}
 
 			@Override
@@ -128,34 +119,28 @@ public class InfraRelays {
 		return relay;
 	}
 
-	protected void startIndexServiceRelay(BundleContext bundleContext, Map<Object, Object> properties) {
-		this.indexServiceRelay = createIndexServiceRelay(bundleContext, properties);
-		this.indexServiceRelay.start(bundleContext);
-	}
-
-	protected void stopIndexServiceRelay(BundleContext bundleContext) {
-		if (this.indexServiceRelay != null) {
-			this.indexServiceRelay.stop(bundleContext);
-			this.indexServiceRelay = null;
-		}
-	}
-
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param initProperties
+	 * @return
+	 */
 	public ChannelWSApplicationRelay createChannelRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
-		String name = (String) initProperties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_NAME);
-		if (name == null) {
-			name = "ChannelServiceRelay";
-		}
-		final String _name = name;
-		String contextRoot = (String) initProperties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT);
-		String hosts = (String) initProperties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS);
-		String urls = (String) initProperties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_URLS);
-
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (initProperties != null) {
 			properties.putAll(initProperties);
 		}
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_RELAY_URLS);
+
 		final String hostURL = (String) properties.get(InfraConstants.ORBIT_HOST_URL);
+		final String name = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_NAME);
+		final String contextRoot = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT);
+		String hosts = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS);
+		String urls = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_URLS);
 
 		if (contextRoot == null) {
 			return null;
@@ -174,7 +159,7 @@ public class InfraRelays {
 		WebServiceAware webServiceAware = new WebServiceAware() {
 			@Override
 			public String getName() {
-				return _name;
+				return name;
 			}
 
 			@Override
@@ -194,16 +179,36 @@ public class InfraRelays {
 		return relay;
 	}
 
-	protected void startChannelRelay(BundleContext bundleContext, Map<Object, Object> properties) {
-		this.channelRelay = createChannelRelay(bundleContext, properties);
-		this.channelRelay.start(bundleContext);
+	protected List<URI> toList(String baseURIsString) {
+		return URIUtil.toList(baseURIsString);
 	}
 
-	protected void stopChannelRelay(BundleContext bundleContext) {
-		if (this.channelRelay != null) {
-			this.channelRelay.stop(bundleContext);
-			this.channelRelay = null;
-		}
+	protected List<URI> toList(String hostURLsString, String contextRoot) {
+		return URIUtil.toList(hostURLsString, contextRoot);
 	}
 
 }
+
+// protected void startIndexServiceRelay(BundleContext bundleContext, Map<Object, Object> properties) {
+// this.indexServiceRelay = createIndexServiceRelay(bundleContext, properties);
+// this.indexServiceRelay.start(bundleContext);
+// }
+
+// protected void stopIndexServiceRelay(BundleContext bundleContext) {
+// if (this.indexServiceRelay != null) {
+// this.indexServiceRelay.stop(bundleContext);
+// this.indexServiceRelay = null;
+// }
+// }
+
+// protected void startChannelRelay(BundleContext bundleContext, Map<Object, Object> properties) {
+// this.channelRelay = createChannelRelay(bundleContext, properties);
+// this.channelRelay.start(bundleContext);
+// }
+//
+// protected void stopChannelRelay(BundleContext bundleContext) {
+// if (this.channelRelay != null) {
+// this.channelRelay.stop(bundleContext);
+// this.channelRelay = null;
+// }
+// }
