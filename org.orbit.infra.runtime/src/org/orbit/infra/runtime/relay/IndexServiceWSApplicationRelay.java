@@ -6,8 +6,8 @@ import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSMethodInflector;
 import org.origin.common.rest.server.WSRelayApplication;
-import org.origin.common.rest.server.WebServiceAware;
 import org.origin.common.rest.switcher.Switcher;
+import org.origin.common.rest.util.WebServiceAware;
 
 public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 

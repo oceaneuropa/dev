@@ -15,7 +15,7 @@ import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.sdk.extension.IProgramExtensionService;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
-import org.origin.common.rest.server.WebServiceAware;
+import org.origin.common.rest.util.WebServiceAware;
 
 public interface Platform extends WebServiceAware, IAdaptable {
 

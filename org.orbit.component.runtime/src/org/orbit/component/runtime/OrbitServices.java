@@ -12,10 +12,10 @@ import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryServiceAdapter;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceAdapter;
-import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domain.ws.DomainServiceAdapter;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
-import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceAdapter;
+import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
+import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceAdapter;
+import org.orbit.component.runtime.tier3.nodemanagement.service.NodeManagementService;
+import org.orbit.component.runtime.tier3.nodemanagement.ws.NodeManagementServiceAdapter;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlAdapter;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -57,7 +57,7 @@ public class OrbitServices {
 
 	// tier3
 	protected DomainServiceAdapter domainServiceAdapter;
-	protected NodeControlServiceAdapter transferAgentServiceAdapter;
+	protected NodeManagementServiceAdapter transferAgentServiceAdapter;
 
 	// tier4
 	protected MissionControlAdapter missionControlServiceAdapter;
@@ -104,7 +104,7 @@ public class OrbitServices {
 		this.domainServiceAdapter = new DomainServiceAdapter(properties);
 		this.domainServiceAdapter.start(bundleContext);
 
-		this.transferAgentServiceAdapter = new NodeControlServiceAdapter(properties);
+		this.transferAgentServiceAdapter = new NodeManagementServiceAdapter(properties);
 		this.transferAgentServiceAdapter.start(bundleContext);
 
 		// tier4

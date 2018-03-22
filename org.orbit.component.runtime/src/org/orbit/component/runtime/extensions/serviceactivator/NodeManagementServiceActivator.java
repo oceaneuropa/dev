@@ -2,16 +2,17 @@ package org.orbit.component.runtime.extensions.serviceactivator;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementService;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementServiceImpl;
+import org.orbit.component.runtime.tier3.nodemanagement.service.NodeManagementService;
+import org.orbit.component.runtime.tier3.nodemanagement.service.NodeManagementServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ServiceActivator;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
 public class NodeManagementServiceActivator implements ServiceActivator {
 
-	public static final String ID = "component.node_management.service_activator";
+	public static final String ID = "org.orbit.component.runtime.NodeManagementServiceActivator";
 
 	public static NodeManagementServiceActivator INSTANCE = new NodeManagementServiceActivator();
 
@@ -21,10 +22,10 @@ public class NodeManagementServiceActivator implements ServiceActivator {
 		Map<Object, Object> properties = context.getProperties();
 
 		// Start NodeManagementService
-		NodeManagementServiceImpl nodeManagementService = new NodeManagementServiceImpl(properties);
-		nodeManagementService.start(bundleContext);
+		NodeManagementServiceImpl nodeControlService = new NodeManagementServiceImpl(properties);
+		nodeControlService.start(bundleContext);
 
-		process.adapt(NodeManagementService.class, nodeManagementService);
+		process.adapt(NodeManagementService.class, nodeControlService);
 	}
 
 	@Override
@@ -32,15 +33,10 @@ public class NodeManagementServiceActivator implements ServiceActivator {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop NodeManagementService
-		NodeManagementService nodeManagementService = process.getAdapter(NodeManagementService.class);
-		if (nodeManagementService instanceof NodeManagementServiceImpl) {
-			((NodeManagementServiceImpl) nodeManagementService).stop(bundleContext);
+		NodeManagementService nodeControlService = process.getAdapter(NodeManagementService.class);
+		if (nodeControlService instanceof LifecycleAware) {
+			((LifecycleAware) nodeControlService).stop(bundleContext);
 		}
 	}
 
 }
-
-// @Override
-// public String getName() {
-// return "NodeManagement";
-// }

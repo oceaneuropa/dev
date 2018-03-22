@@ -9,11 +9,12 @@ import java.util.Map;
 
 import org.orbit.infra.model.channel.ChannelException;
 import org.orbit.infra.runtime.InfraConstants;
+import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class ChannelServiceImpl implements ChannelService {
+public class ChannelServiceImpl implements ChannelService, LifecycleAware {
 
 	protected Map<Object, Object> initProperties;
 	protected String name;
@@ -62,6 +63,7 @@ public class ChannelServiceImpl implements ChannelService {
 		return (String) this.properties.get(InfraConstants.COMPONENT_CHANNEL_HTTP_PORT);
 	}
 
+	@Override
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 		if (this.initProperties != null) {
@@ -69,8 +71,8 @@ public class ChannelServiceImpl implements ChannelService {
 		}
 
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAME);
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_HTTP_PORT);
 
@@ -88,6 +90,7 @@ public class ChannelServiceImpl implements ChannelService {
 		this.properties = properties;
 	}
 
+	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();

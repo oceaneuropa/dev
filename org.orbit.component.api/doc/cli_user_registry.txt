@@ -13,9 +13,9 @@ add user
 add_user -username admin1 -password 123 -firstname Tom1 -lastname Cat1 -email admin1@example.org -phone '(123)456-7891'
 add_user -username admin2 -password 123 -firstname Tom2 -lastname Cat2 -email admin2@example.org -phone '(123)456-7892'
 add_user -username admin3 -password 123 -firstname Tom3 -lastname Cat3 -email admin3@example.org -phone '(123)456-7893'
-add_user -username guest1 -password 123 -firstname Den1 -lastname Mark1 -email denmark1@example.org -phone '(101)333-8881'
-add_user -username guest2 -password 123 -firstname Den2 -lastname Mark2 -email denmark2@example.org -phone '(101)333-8882'
-add_user -username guest3 -password 123 -firstname Den3 -lastname Mark3 -email denmark3@example.org -phone '(101)333-8883'
+add_user -username guest1 -password 123 -firstname Den1 -lastname Mark1 -email ocean1@example.org -phone '(101)333-8881'
+add_user -username guest2 -password 123 -firstname Den2 -lastname Mark2 -email ocean2@example.org -phone '(101)333-8882'
+add_user -username guest3 -password 123 -firstname Den3 -lastname Mark3 -email ocean3@example.org -phone '(101)333-8883'
 ------------------------------------------------------------------------------------------------------------------------------
 
 change password

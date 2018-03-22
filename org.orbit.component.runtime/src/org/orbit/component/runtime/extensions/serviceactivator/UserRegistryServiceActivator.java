@@ -14,11 +14,12 @@ import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ServiceActivator;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
 public class UserRegistryServiceActivator implements ServiceActivator {
 
-	public static final String ID = "component.user_registry.service_activator";
+	public static final String ID = "org.orbit.component.runtime.UserRegistryServiceActivator";
 
 	public static UserRegistryServiceActivator INSTANCE = new UserRegistryServiceActivator();
 
@@ -40,14 +41,9 @@ public class UserRegistryServiceActivator implements ServiceActivator {
 
 		// Stop UserRegistryService
 		UserRegistryService userRegistry = process.getAdapter(UserRegistryService.class);
-		if (userRegistry instanceof UserRegistryServiceImpl) {
-			((UserRegistryServiceImpl) userRegistry).stop(bundleContext);
+		if (userRegistry instanceof LifecycleAware) {
+			((LifecycleAware) userRegistry).stop(bundleContext);
 		}
 	}
 
 }
-
-// @Override
-// public String getName() {
-// return "UserRegistry";
-// }

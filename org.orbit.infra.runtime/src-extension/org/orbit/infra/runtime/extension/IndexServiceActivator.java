@@ -7,6 +7,7 @@ import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ServiceActivator;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
 public class IndexServiceActivator implements ServiceActivator {
@@ -33,8 +34,8 @@ public class IndexServiceActivator implements ServiceActivator {
 
 		// Stop IndexService
 		IndexService indexService = process.getAdapter(IndexService.class);
-		if (indexService instanceof IndexServiceImpl) {
-			((IndexServiceImpl) indexService).stop(bundleContext);
+		if (indexService instanceof LifecycleAware) {
+			((LifecycleAware) indexService).stop(bundleContext);
 		}
 	}
 

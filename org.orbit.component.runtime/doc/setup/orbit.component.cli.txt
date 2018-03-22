@@ -15,5 +15,5 @@ backup1:
 -Dchannel.host.url=http://127.0.0.1:9001 
 -Dchannel.context_root=/orbit/v1/channel
 
--Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-Dlogback.configurationFile=/Users/ocean/origin/logback/orbit0.xml 
 --------------------------------------------------------------------------

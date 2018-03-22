@@ -17,7 +17,7 @@ Example2 (using config.ini):
 
 config.ini
 ------------------------------------------------------------------------------------
-logback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+logback.configurationFile=/Users/ocean/origin/logback/orbit0.xml 
 orbit.host.url=http://127.0.0.1:13001 
 component.index_service.url=http://127.0.0.1:10001/orbit/v1/indexservice
 component.node.namespace=org.example

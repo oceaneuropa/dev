@@ -18,8 +18,8 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	// config properties
 	public static String COMPONENT_INDEX_SERVICE_AUTOSTART = "component.index_service.autostart";
-	public static String COMPONENT_INDEX_SERVICE_NAME = "component.index_service.name";
 	public static String COMPONENT_INDEX_SERVICE_HOST_URL = "component.index_service.host.url";
+	public static String COMPONENT_INDEX_SERVICE_NAME = "component.index_service.name";
 	public static String COMPONENT_INDEX_SERVICE_CONTEXT_ROOT = "component.index_service.context_root";
 	public static String COMPONENT_INDEX_SERVICE_JDBC_DRIVER = "component.index_service.jdbc.driver";
 	public static String COMPONENT_INDEX_SERVICE_JDBC_URL = "component.index_service.jdbc.url";
@@ -40,8 +40,8 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	// config properties
 	public static String COMPONENT_CHANNEL_AUTOSTART = "component.channel.autostart";
-	public static String COMPONENT_CHANNEL_NAME = "component.channel.name";
 	public static String COMPONENT_CHANNEL_HOST_URL = "component.channel.host.url";
+	public static String COMPONENT_CHANNEL_NAME = "component.channel.name";
 	public static String COMPONENT_CHANNEL_CONTEXT_ROOT = "component.channel.context_root";
 	public static String COMPONENT_CHANNEL_HTTP_PORT = "component.channel.http_port";
 

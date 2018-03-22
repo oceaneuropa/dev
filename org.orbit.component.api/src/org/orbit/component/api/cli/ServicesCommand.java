@@ -56,7 +56,7 @@ public class ServicesCommand implements Annotated {
 	protected static String[] AUTH_SERVICES_COLUMNS = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] APPSTORE_SERVICES_COLUMNS = new String[] { "index_item_id", "appstore.namespace", "appstore.name", "appstore.host.url", "appstore.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] DOMAIN_SERVICES_COLUMNS = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
-	protected static String[] TRANSFERAGENT_SERVICES_TITLES = new String[] { "index_item_id", "transfer_agent.namespace", "transfer_agent.name", "transfer_agent.host.url", "transfer_agent.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	protected static String[] TRANSFERAGENT_SERVICES_TITLES = new String[] { "index_item_id", "node_service.name", "node_service.host.url", "node_service.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 
 	protected String scheme = "orbit";
 	protected Map<Object, Object> properties;
@@ -260,7 +260,7 @@ public class ServicesCommand implements Annotated {
 		try {
 			IndexService indexService = getIndexService();
 
-			List<IndexItem> indexItems = indexService.getIndexItems(IndexConstants.TRANSFER_AGENT_INDEXER_ID, IndexConstants.TRANSFER_AGENT_TYPE);
+			List<IndexItem> indexItems = indexService.getIndexItems(IndexConstants.NODE_SERVICE_INDEXER_ID, IndexConstants.NODE_SERVICE_TYPE);
 
 			String[][] rows = new String[indexItems.size()][TRANSFERAGENT_SERVICES_TITLES.length];
 			int rowIndex = 0;
@@ -268,17 +268,17 @@ public class ServicesCommand implements Annotated {
 				Integer indexItemId = indexItem.getIndexItemId();
 				Map<String, Object> props = indexItem.getProperties();
 
-				String namespace = (String) props.get(IndexConstants.TRANSFER_AGENT_NAMESPACE);
-				String name = (String) props.get(IndexConstants.TRANSFER_AGENT_NAME);
-				String hostUrl = (String) props.get(IndexConstants.TRANSFER_AGENT_HOST_URL);
-				String contextRoot = (String) props.get(IndexConstants.TRANSFER_AGENT_CONTEXT_ROOT);
+				// String namespace = (String) props.get(IndexConstants.NODE_SERVICE_NAMESPACE);
+				String name = (String) props.get(IndexConstants.NODE_SERVICE_NAME);
+				String hostUrl = (String) props.get(IndexConstants.NODE_SERVICE_HOST_URL);
+				String contextRoot = (String) props.get(IndexConstants.NODE_SERVICE_CONTEXT_ROOT);
 				Object lastHeartbeatTime = props.get(IndexConstants.HEARTBEAT_EXPIRE_TIME);
 				Object heartbeatExpireTime = props.get(IndexConstants.LAST_HEARTBEAT_TIME);
 
 				String lastHeartbeatTimeStr = lastHeartbeatTime.toString();
 				String heartbeatExpireTimeStr = heartbeatExpireTime.toString();
 
-				rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+				rows[rowIndex++] = new String[] { indexItemId.toString(), name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
 			}
 
 			PrettyPrinter.prettyPrint(TRANSFERAGENT_SERVICES_TITLES, rows, indexItems.size());

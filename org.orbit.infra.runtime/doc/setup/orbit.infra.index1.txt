@@ -19,7 +19,7 @@ VM Arguments:
 -Dcomponent.index_service.jdbc.username=postgres 
 -Dcomponent.index_service.jdbc.password=admin 
 
--Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-Dlogback.configurationFile=/Users/ocean/origin/logback/orbit0.xml 
 -Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 
 -----------------------------------------------------------------------------------------------------------
 

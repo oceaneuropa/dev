@@ -49,19 +49,20 @@ public class IndexConstants {
 	// TransferAgent
 	// ----------------------------------------------------------------------------------------
 	// index item values
-	public static String TRANSFER_AGENT_INDEXER_ID = "component.transfer_agent.indexer"; // index provider id for TransferAgent service
-	public static String TRANSFER_AGENT_TYPE = "TransferAgent"; // type of index item for TransferAgent service
+	public static String NODE_SERVICE_INDEXER_ID = "component.node_service.indexer"; // index provider id for Node management service
+	public static String NODE_SERVICE_TYPE = "NodeService"; // type of index item for Node management service
 
 	// index item properties
-	public static String TRANSFER_AGENT_MACHINE_ID = "transfer_agent.machine_id";
-	public static String TRANSFER_AGENT_TRANSFER_AGENT_ID = "transfer_agent.id";
-	public static String TRANSFER_AGENT_NAMESPACE = "transfer_agent.namespace";
-	public static String TRANSFER_AGENT_NAME = "transfer_agent.name";
-	public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
-	public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
-	public static String TRANSFER_AGENT_HOME = "transfer_agent.home";
+	public static String NODE_SERVICE_MACHINE_ID = "node_service.machine_id";
+	public static String NODE_SERVICE_TRANSFER_AGENT_ID = "node_service.id";
+	public static String NODE_SERVICE_NAME = "node_service.name";
+	public static String NODE_SERVICE_HOST_URL = "node_service.host.url";
+	public static String NODE_SERVICE_CONTEXT_ROOT = "node_service.context_root";
+	public static String NODE_SERVICE_HOME = "node_service.home";
 
 }
+
+// public static String TRANSFER_AGENT_NAMESPACE = "node_service.namespace";
 
 // index item values
 // public static String APP_STORE_INDEXER_ID = "component.appstore.indexer"; // index provider id for AppStore

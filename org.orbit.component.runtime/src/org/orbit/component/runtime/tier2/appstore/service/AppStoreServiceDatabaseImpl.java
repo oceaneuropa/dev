@@ -15,11 +15,12 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class AppStoreServiceDatabaseImpl implements AppStoreService {
+public class AppStoreServiceDatabaseImpl implements AppStoreService, LifecycleAware {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -41,6 +42,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void start(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".start()");
 
@@ -50,8 +52,8 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 		}
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_URL);
@@ -82,6 +84,7 @@ public class AppStoreServiceDatabaseImpl implements AppStoreService {
 	 * Stop AppStoreService
 	 * 
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".stop()");
 

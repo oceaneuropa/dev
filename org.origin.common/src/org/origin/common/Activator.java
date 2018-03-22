@@ -6,7 +6,7 @@ import java.util.Map;
 import org.origin.common.annotation.DependencyConfigurator;
 import org.origin.common.command.IEditingDomain;
 import org.origin.common.deploy.WebServiceDeployer;
-import org.origin.common.rest.server.WebServiceAwareRegistry;
+import org.origin.common.rest.util.WebServiceAwareRegistry;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

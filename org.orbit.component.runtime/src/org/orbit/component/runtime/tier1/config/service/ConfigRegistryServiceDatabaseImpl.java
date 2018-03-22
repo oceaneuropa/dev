@@ -10,11 +10,12 @@ import java.util.Properties;
 
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService {
+public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService, LifecycleAware {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -34,6 +35,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 	 * Start ConfigRegistryService
 	 * 
 	 */
+	@Override
 	public void start(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".start()");
 
@@ -43,8 +45,8 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 		}
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL);
@@ -63,6 +65,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService 
 	 * Stop ConfigRegistryService
 	 * 
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".stop()");
 

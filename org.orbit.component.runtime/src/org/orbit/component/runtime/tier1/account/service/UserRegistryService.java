@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.orbit.component.model.tier1.account.rto.UserAccount;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.server.WebServiceAware;
+import org.origin.common.rest.util.WebServiceAware;
 
 public interface UserRegistryService extends WebServiceAware {
 

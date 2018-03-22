@@ -1,1 +1,1 @@
-java -jar /Users/denmark/origin/orbit1/components/nodeos_1.0.0/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar -configuration /Users/denmark/origin/orbit1/nodespaces/nodespace1/node11/configuration -console
+java -jar /Users/ocean/origin/orbit1/components/nodeos_1.0.0/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar -configuration /Users/ocean/origin/orbit1/nodespaces/nodespace1/node11/configuration -console

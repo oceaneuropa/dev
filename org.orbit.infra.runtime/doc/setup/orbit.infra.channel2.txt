@@ -18,7 +18,7 @@ VM arguments:
 -Dcomponent.channel.context_root=/orbit/v1/channel 
 -Dcomponent.channel.http_port=7002 
 
--Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-Dlogback.configurationFile=/Users/ocean/origin/logback/orbit0.xml 
 -Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 
 -----------------------------------------------------------------------------------------------------------
 

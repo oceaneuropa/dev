@@ -20,7 +20,7 @@ public class OrbitConstants {
 	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
 
 	// ----------------------------------------------------------------------------------------
-	// UserRegistry
+	// User Registry Service
 	// ----------------------------------------------------------------------------------------
 	// config properties
 	public static String COMPONENT_USER_REGISTRY_AUTOSTART = "component.user_registry.autostart";
@@ -42,7 +42,7 @@ public class OrbitConstants {
 	public static String USER_REGISTRY_CONTEXT_ROOT = "user_registry.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// OAuth2
+	// OAuth2 Service
 	// ----------------------------------------------------------------------------------------
 	// config properties
 	public static String COMPONENT_OAUTH2_AUTOSTART = "component.oauth2.autostart";
@@ -64,7 +64,7 @@ public class OrbitConstants {
 	public static String OAUTH2_CONTEXT_ROOT = "oauth2.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// Auth
+	// Auth Service
 	// ----------------------------------------------------------------------------------------
 	// config properties
 	public static String COMPONENT_AUTH_AUTOSTART = "component.auth.autostart";
@@ -88,7 +88,7 @@ public class OrbitConstants {
 	public static String AUTH_CONTEXT_ROOT = "auth.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// ConfigRegistry
+	// Config Registry
 	// ----------------------------------------------------------------------------------------
 	// config properties
 	public static String COMPONENT_CONFIG_REGISTRY_AUTOSTART = "component.config_registry.autostart";
@@ -110,7 +110,7 @@ public class OrbitConstants {
 	public static String CONFIG_REGISTRY_CONTEXT_ROOT = "config_registry.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// AppStore
+	// App Store
 	// ----------------------------------------------------------------------------------------
 	// config properties
 	public static String COMPONENT_APP_STORE_AUTOSTART = "component.app_store.autostart";
@@ -132,52 +132,52 @@ public class OrbitConstants {
 	public static String APPSTORE_CONTEXT_ROOT = "app_store.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// DomainService
+	// Domain Management Service
 	// ----------------------------------------------------------------------------------------
 	// config properties
-	public static String COMPONENT_DOMAIN_SERVICE_AUTOSTART = "component.domain_service.autostart";
-	public static String COMPONENT_DOMAIN_SERVICE_NAME = "component.domain_service.name";
-	public static String COMPONENT_DOMAIN_SERVICE_HOST_URL = "component.domain_service.host.url";
-	public static String COMPONENT_DOMAIN_SERVICE_CONTEXT_ROOT = "component.domain_service.context_root";
-	public static String COMPONENT_DOMAIN_SERVICE_JDBC_DRIVER = "component.domain_service.jdbc.driver";
-	public static String COMPONENT_DOMAIN_SERVICE_JDBC_URL = "component.domain_service.jdbc.url";
-	public static String COMPONENT_DOMAIN_SERVICE_JDBC_USERNAME = "component.domain_service.jdbc.username";
-	public static String COMPONENT_DOMAIN_SERVICE_JDBC_PASSWORD = "component.domain_service.jdbc.password";
+	// public static String COMPONENT_DOMAIN_MANAGEMENT_AUTOSTART = "component.domain_management.autostart";
+	public static String COMPONENT_DOMAIN_MANAGEMENT_NAME = "component.domain_management.name";
+	public static String COMPONENT_DOMAIN_MANAGEMENT_HOST_URL = "component.domain_management.host.url";
+	public static String COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT = "component.domain_management.context_root";
+	public static String COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER = "component.domain_management.jdbc.driver";
+	public static String COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL = "component.domain_management.jdbc.url";
+	public static String COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME = "component.domain_management.jdbc.username";
+	public static String COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD = "component.domain_management.jdbc.password";
 
 	// index item values
-	public static String DOMAIN_SERVICE_INDEXER_ID = "component.domain_service.indexer"; // index provider id for DomainService
-	public static String DOMAIN_SERVICE_TYPE = "DomainService"; // type of index item for DomainService
+	public static String DOMAIN_SERVICE_INDEXER_ID = "component.domain_management.indexer"; // index provider id for DomainService
+	public static String DOMAIN_SERVICE_TYPE = "DomainManagement"; // type of index item for DomainService
 
 	// index item properties
-	public static String DOMAIN_SERVICE_NAME = "domain_service.name";
-	public static String DOMAIN_SERVICE_HOST_URL = "domain_service.host.url";
-	public static String DOMAIN_SERVICE_CONTEXT_ROOT = "domain_service.context_root";
+	public static String DOMAIN_SERVICE_NAME = "domain_management.name";
+	public static String DOMAIN_SERVICE_HOST_URL = "domain_management.host.url";
+	public static String DOMAIN_SERVICE_CONTEXT_ROOT = "domain_management.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// TransferAgent
+	// Node Management Service
 	// ----------------------------------------------------------------------------------------
-	public static String COMPONENT_TRANSFER_AGENT_AUTOSTART = "component.transfer_agent.autostart";
-	public static String COMPONENT_TRANSFER_AGENT_NAME = "component.transfer_agent.name";
-	public static String COMPONENT_TRANSFER_AGENT_HOST_URL = "component.transfer_agent.host.url";
-	public static String COMPONENT_TRANSFER_AGENT_CONTEXT_ROOT = "component.transfer_agent.context_root";
-	public static String COMPONENT_TRANSFER_AGENT_HOME = "component.transfer_agent.home";
-	public static String COMPONENT_TRANSFER_AGENT_JDBC_DRIVER = "component.transfer_agent.jdbc.driver";
-	public static String COMPONENT_TRANSFER_AGENT_JDBC_URL = "component.transfer_agent.jdbc.url";
-	public static String COMPONENT_TRANSFER_AGENT_JDBC_USERNAME = "component.transfer_agent.jdbc.username";
-	public static String COMPONENT_TRANSFER_AGENT_JDBC_PASSWORD = "component.transfer_agent.jdbc.password";
+	// public static String COMPONENT_NODE_MANAGEMENT_AUTOSTART = "component.node_management.autostart";
+	public static String COMPONENT_NODE_MANAGEMENT_NAME = "component.node_management.name";
+	public static String COMPONENT_NODE_MANAGEMENT_HOST_URL = "component.node_management.host.url";
+	public static String COMPONENT_NODE_MANAGEMENT_CONTEXT_ROOT = "component.node_management.context_root";
+	public static String COMPONENT_NODE_MANAGEMENT_HOME = "component.node_management.home";
+	public static String COMPONENT_NODE_MANAGEMENT_JDBC_DRIVER = "component.node_management.jdbc.driver";
+	public static String COMPONENT_NODE_MANAGEMENT_JDBC_URL = "component.node_management.jdbc.url";
+	public static String COMPONENT_NODE_MANAGEMENT_JDBC_USERNAME = "component.node_management.jdbc.username";
+	public static String COMPONENT_NODE_MANAGEMENT_JDBC_PASSWORD = "component.node_management.jdbc.password";
 
 	// index item values
-	public static String TRANSFER_AGENT_INDEXER_ID = "component.transfer_agent.indexer"; // index provider id for TransferAgent service
-	public static String TRANSFER_AGENT_TYPE = "TransferAgent"; // type of index item for TransferAgent service
+	public static String NODE_MANAGEMENT_INDEXER_ID = "component.node_management.indexer"; // index provider id for TransferAgent service
+	public static String NODE_MANAGEMENT_TYPE = "NodeManagement"; // type of index item for TransferAgent service
 
 	// index item properties
-	public static String TRANSFER_AGENT_NAME = "transfer_agent.name";
-	public static String TRANSFER_AGENT_HOST_URL = "transfer_agent.host.url";
-	public static String TRANSFER_AGENT_CONTEXT_ROOT = "transfer_agent.context_root";
-	public static String TRANSFER_AGENT_HOME = "transfer_agent.home";
+	public static String NODE_MANAGEMENT_NAME = "node_management.name";
+	public static String NODE_MANAGEMENT_HOST_URL = "node_management.host.url";
+	public static String NODE_MANAGEMENT_CONTEXT_ROOT = "node_management.context_root";
+	public static String NODE_MANAGEMENT_HOME = "node_management.home";
 
 	// ----------------------------------------------------------------------------------------
-	// MissionControl
+	// Mission Control
 	// ----------------------------------------------------------------------------------------
 	public static String COMPONENT_MISSION_CONTROL_AUTOSTART = "component.mission_control.autostart";
 	public static String COMPONENT_MISSION_CONTROL_NAME = "component.mission_control.name";

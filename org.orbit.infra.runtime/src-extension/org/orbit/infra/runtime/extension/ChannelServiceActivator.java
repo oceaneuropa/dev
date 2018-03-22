@@ -7,6 +7,7 @@ import org.orbit.infra.runtime.channel.service.ChannelServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ServiceActivator;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
 public class ChannelServiceActivator implements ServiceActivator {
@@ -33,8 +34,8 @@ public class ChannelServiceActivator implements ServiceActivator {
 
 		// Stop ChannelService
 		ChannelService channelService = process.getAdapter(ChannelService.class);
-		if (channelService instanceof ChannelServiceImpl) {
-			((ChannelServiceImpl) channelService).stop(bundleContext);
+		if (channelService instanceof LifecycleAware) {
+			((LifecycleAware) channelService).stop(bundleContext);
 		}
 	}
 

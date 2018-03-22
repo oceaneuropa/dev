@@ -8,6 +8,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.origin.common.adapter,
  org.origin.common.rest.client,
  org.origin.common.rest.server,
+ org.origin.common.rest.util,
  org.origin.common.service,
  org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1"

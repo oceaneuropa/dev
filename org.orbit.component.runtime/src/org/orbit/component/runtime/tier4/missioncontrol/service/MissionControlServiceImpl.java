@@ -18,13 +18,14 @@ import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MissionControlServiceImpl implements MissionControlService, ConnectionAware {
+public class MissionControlServiceImpl implements MissionControlService, ConnectionAware, LifecycleAware {
 
 	protected static Logger LOG = LoggerFactory.getLogger(MissionControlServiceImpl.class);
 
@@ -41,6 +42,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 		this.wsEditPolicies.setService(MissionControlService.class, this);
 	}
 
+	@Override
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (this.initProperties != null) {
@@ -48,8 +50,8 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 		}
 		// Service properties
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_DRIVER);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_URL);
@@ -62,6 +64,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 		this.serviceRegistry = bundleContext.registerService(MissionControlService.class, this, props);
 	}
 
+	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();

@@ -14,8 +14,6 @@ import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.sdk.URLProvider;
-import org.orbit.platform.sdk.URLProviderImpl;
 import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -104,11 +102,11 @@ public class AppStoreServiceAdapter {
 		this.indexTimer.start();
 
 		// Register URL provider extension
-		this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.APP_STORE_URL_PROVIDER_EXTENSION_ID);
-		this.urlProviderExtension.setName("App store URL provider");
-		this.urlProviderExtension.setDescription("App store URL provider description");
-		this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
-		Extensions.INSTANCE.addExtension(this.urlProviderExtension);
+		// this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.APP_STORE_URL_PROVIDER_EXTENSION_ID);
+		// this.urlProviderExtension.setName("App store URL provider");
+		// this.urlProviderExtension.setDescription("App store URL provider description");
+		// this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
+		// Extensions.INSTANCE.addExtension(this.urlProviderExtension);
 	}
 
 	/**

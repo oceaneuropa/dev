@@ -27,7 +27,7 @@ component.index_service.jdbc.password=admin
 backup:
 ------------------------------------------------------------------------------------------------
 -Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=10001 
--Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-Dlogback.configurationFile=/Users/ocean/origin/logback/orbit0.xml 
 -DNB_HOME=/Users/example/cluster 
 -Dcluster.persistence.local.dir=/Users/example/cluster/data 
 -Dcluster.home.dir=/Users/example/cluster/home1 

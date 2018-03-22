@@ -7,11 +7,12 @@ import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlSe
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ServiceActivator;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
 public class MissionControlServiceActivator implements ServiceActivator {
 
-	public static final String ID = "component.mission_control.service_activator";
+	public static final String ID = "org.orbit.component.runtime.MissionControlServiceActivator";
 
 	public static MissionControlServiceActivator INSTANCE = new MissionControlServiceActivator();
 
@@ -33,14 +34,9 @@ public class MissionControlServiceActivator implements ServiceActivator {
 
 		// Stop MissionControlService
 		MissionControlService missionControlService = process.getAdapter(MissionControlService.class);
-		if (missionControlService instanceof MissionControlServiceImpl) {
-			((MissionControlServiceImpl) missionControlService).stop(bundleContext);
+		if (missionControlService instanceof LifecycleAware) {
+			((LifecycleAware) missionControlService).stop(bundleContext);
 		}
 	}
 
 }
-
-// @Override
-// public String getName() {
-// return "MissionControl";
-// }

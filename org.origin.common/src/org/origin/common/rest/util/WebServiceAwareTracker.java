@@ -3,7 +3,6 @@ package org.origin.common.rest.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.origin.common.rest.server.WebServiceAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;

@@ -10,8 +10,8 @@ import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
-import org.orbit.component.runtime.tier3.domain.service.DomainManagementServiceImpl;
-import org.orbit.component.runtime.tier3.nodecontrol.service.NodeManagementServiceImpl;
+import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementServiceImpl;
+import org.orbit.component.runtime.tier3.nodemanagement.service.NodeManagementServiceImpl;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.util.PropertyUtil;
@@ -80,16 +80,16 @@ public class ServicesCommand {
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_AUTOSTART);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_AUTOSTART);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_SERVICE_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_TRANSFER_AGENT_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_SERVICE_AUTOSTART);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_AUTOSTART);
 
 		this.autoStartUserRegistryService = properties.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_AUTOSTART) ? true : false;
 		this.autoStartAuthService = properties.containsKey(OrbitConstants.COMPONENT_AUTH_AUTOSTART) ? true : false;
 		this.autoStartConfigRegistryService = properties.containsKey(OrbitConstants.COMPONENT_CONFIG_REGISTRY_AUTOSTART) ? true : false;
 		this.autoStartAppStoreService = properties.containsKey(OrbitConstants.COMPONENT_APP_STORE_AUTOSTART) ? true : false;
-		this.autoStartDomainMgmtService = properties.containsKey(OrbitConstants.COMPONENT_DOMAIN_SERVICE_AUTOSTART) ? true : false;
-		this.autoStartTransferAgentService = properties.containsKey(OrbitConstants.COMPONENT_TRANSFER_AGENT_AUTOSTART) ? true : false;
+		// this.autoStartDomainMgmtService = properties.containsKey(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_AUTOSTART) ? true : false;
+		// this.autoStartTransferAgentService = properties.containsKey(OrbitConstants.COMPONENT_NODE_SERVICE_AUTOSTART) ? true : false;
 		this.autoStartMissionControlService = properties.containsKey(OrbitConstants.COMPONENT_MISSION_CONTROL_AUTOSTART) ? true : false;
 
 		LOG.info("autoStartUserRegistryService = " + this.autoStartUserRegistryService);
@@ -97,7 +97,7 @@ public class ServicesCommand {
 		LOG.info("autoStartConfigRegistryService = " + this.autoStartConfigRegistryService);
 		LOG.info("autoStartAppStoreService = " + this.autoStartAppStoreService);
 		LOG.info("autoStartDomainMgmtService = " + this.autoStartDomainMgmtService);
-		LOG.info("autoStartTransferAgentService = " + this.autoStartTransferAgentService);
+		// LOG.info("autoStartTransferAgentService = " + this.autoStartTransferAgentService);
 		LOG.info("autoStartMissionControlService = " + this.autoStartMissionControlService);
 
 		// tier1

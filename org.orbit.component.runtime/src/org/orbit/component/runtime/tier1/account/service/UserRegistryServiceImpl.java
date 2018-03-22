@@ -13,11 +13,12 @@ import org.orbit.component.runtime.tier1.account.persistence.UserAccountPersiste
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class UserRegistryServiceImpl implements UserRegistryService {
+public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAware {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -28,6 +29,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 		this.initProperties = initProperties;
 	}
 
+	@Override
 	public void start(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".start()");
 
@@ -37,8 +39,8 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 		}
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_DRIVER);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_URL);
@@ -51,6 +53,7 @@ public class UserRegistryServiceImpl implements UserRegistryService {
 		this.serviceRegistry = bundleContext.registerService(UserRegistryService.class, this, props);
 	}
 
+	@Override
 	public void stop(BundleContext bundleContext) {
 		System.out.println(getClass().getSimpleName() + ".stop()");
 

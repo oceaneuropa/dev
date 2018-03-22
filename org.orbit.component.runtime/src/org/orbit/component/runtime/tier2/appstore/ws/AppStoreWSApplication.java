@@ -4,6 +4,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.origin.common.rest.server.FeatureConstants;
+import org.origin.common.rest.util.WebServiceAware;
 
 public class AppStoreWSApplication extends OrbitWSApplication {
 
@@ -15,6 +16,7 @@ public class AppStoreWSApplication extends OrbitWSApplication {
 	public AppStoreWSApplication(final AppStoreService service, int feature) {
 		super(service.getContextRoot(), feature);
 		adapt(AppStoreService.class, service);
+		adapt(WebServiceAware.class, service);
 
 		register(new AbstractBinder() {
 			@Override

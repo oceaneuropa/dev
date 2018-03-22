@@ -33,12 +33,12 @@
 -Dcomponent.app_store.jdbc.username=postgres 
 -Dcomponent.app_store.jdbc.password=admin 
 
--Dcomponent.domain_service.autostart=true 
--Dcomponent.domain_service.name=Domain2 
--Dcomponent.domain_service.context_root=/orbit/v1/domain 
--Dcomponent.domain_service.jdbc.driver=org.postgresql.Driver 
--Dcomponent.domain_service.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
--Dcomponent.domain_service.jdbc.username=postgres 
--Dcomponent.domain_service.jdbc.password=admin
+-Dcomponent.domain_management.autostart=true 
+-Dcomponent.domain_management.name=Domain2 
+-Dcomponent.domain_management.context_root=/orbit/v1/domain 
+-Dcomponent.domain_management.jdbc.driver=org.postgresql.Driver 
+-Dcomponent.domain_management.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
+-Dcomponent.domain_management.jdbc.username=postgres 
+-Dcomponent.domain_management.jdbc.password=admin
 
 -Dlogback.configurationFile=C:/dev/orgin/logback/orbit0.xml 

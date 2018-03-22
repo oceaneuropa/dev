@@ -2,7 +2,7 @@ V1 commands
 ------------------------------------------------------------------------------------
 listapps
 
-installapp -location "/Users/denmark/origin/ta1/temp/org.example.foo.editor_1.0.0.app"
+installapp -location "/Users/ocean/origin/ta1/temp/org.example.foo.editor_1.0.0.app"
 uninstallapp -id "org.example.foo.editor" -version "1.0.0"
 
 activateapp -id "org.example.foo.editor" -version "1.0.0"
@@ -20,7 +20,7 @@ V2 commands
 ------------------------------------------------------------------------------------
 listapps
 
-installapp -location "/Users/denmark/origin/ta1/temp/org.app.foo.editor_2.0.1.app"
+installapp -location "/Users/ocean/origin/ta1/temp/org.app.foo.editor_2.0.1.app"
 uninstallapp -id org.app.foo.editor -version 2.0.1
 
 activateapp -id "org.app.foo.editor" -version "2.0.1"

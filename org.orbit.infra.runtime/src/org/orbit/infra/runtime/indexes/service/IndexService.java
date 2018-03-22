@@ -5,31 +5,14 @@ import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexServiceException;
-import org.origin.common.rest.server.WebServiceAware;
-import org.osgi.framework.BundleContext;
+import org.origin.common.rest.util.WebServiceAware;
 
 public interface IndexService extends WebServiceAware {
 
-	public void start(BundleContext bundleContext);
-
-	public void stop(BundleContext bundleContext);
-
-	/**
-	 * 
-	 * @return
-	 */
 	public String getName();
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getHostURL();
 
-	/**
-	 * 
-	 * @return
-	 */
 	public String getContextRoot();
 
 	/**

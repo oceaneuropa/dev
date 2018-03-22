@@ -5,7 +5,7 @@ import java.util.List;
 import org.orbit.component.model.tier4.mission.rto.Mission;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.server.WebServiceAware;
+import org.origin.common.rest.util.WebServiceAware;
 
 public interface MissionControlService extends WebServiceAware {
 

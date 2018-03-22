@@ -8,12 +8,12 @@ VM arguments:
 -Declipse.ignoreApp=true 
 -Dosgi.noShutdown=true 
 -Dorg.osgi.service.http.port=10001 
--Dlogback.configurationFile=/Users/denmark/origin/logback/orbit0.xml 
+-Dlogback.configurationFile=/Users/ocean/origin/logback/orbit0.xml 
 
--DNB_HOME=/Users/denmark/cluster 
--Dcluster.persistence.local.dir=/Users/denmark/cluster/data 
--Dcluster.home.dir=/Users/denmark/cluster/home1 
--DORIGIN_HOME=/Users/denmark/origin 
+-DNB_HOME=/Users/ocean/cluster 
+-Dcluster.persistence.local.dir=/Users/ocean/cluster/data 
+-Dcluster.home.dir=/Users/ocean/cluster/home1 
+-DORIGIN_HOME=/Users/ocean/origin 
 -Dorbit.host.url=http://127.0.0.1:10001 
 
 -Dorg.orbit.service.http.port=20001 

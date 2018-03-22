@@ -8,8 +8,6 @@ import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlSe
 import org.orbit.component.runtime.tier4.missioncontrol.ws.editpolicy.MissionWSEditPolicy;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.sdk.URLProvider;
-import org.orbit.platform.sdk.URLProviderImpl;
 import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
@@ -103,11 +101,11 @@ public class MissionControlAdapter {
 		this.indexTimer.start();
 
 		// Register URL provider extension
-		this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.MISSION_CONTROL_URL_PROVIDER_EXTENSION_ID);
-		this.urlProviderExtension.setName("Mission control service URL provider");
-		this.urlProviderExtension.setDescription("Mission control service URL provider description");
-		this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
-		Extensions.INSTANCE.addExtension(this.urlProviderExtension);
+		// this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.MISSION_CONTROL_URL_PROVIDER_EXTENSION_ID);
+		// this.urlProviderExtension.setName("Mission control service URL provider");
+		// this.urlProviderExtension.setDescription("Mission control service URL provider description");
+		// this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
+		// Extensions.INSTANCE.addExtension(this.urlProviderExtension);
 	}
 
 	protected void doStop(BundleContext bundleContext, MissionControlService service) {

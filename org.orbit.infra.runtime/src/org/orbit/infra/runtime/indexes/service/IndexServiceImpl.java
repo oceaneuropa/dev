@@ -18,13 +18,14 @@ import org.orbit.infra.runtime.InfraConstants;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IndexServiceImpl implements IndexService {
+public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceImpl.class);
 
@@ -45,6 +46,7 @@ public class IndexServiceImpl implements IndexService {
 	 * Start IndexService
 	 * 
 	 */
+	@Override
 	public void start(BundleContext bundleContext) {
 		LOG.info("start()");
 
@@ -54,8 +56,8 @@ public class IndexServiceImpl implements IndexService {
 		}
 
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
@@ -72,6 +74,7 @@ public class IndexServiceImpl implements IndexService {
 	 * Stop IndexService
 	 * 
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 

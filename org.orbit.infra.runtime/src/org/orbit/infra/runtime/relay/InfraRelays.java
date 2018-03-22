@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.runtime.InfraConstants;
-import org.origin.common.rest.server.WebServiceAware;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
+import org.origin.common.rest.util.WebServiceAware;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.URIUtil;
 import org.osgi.framework.BundleContext;

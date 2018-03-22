@@ -100,12 +100,12 @@ public class TransferAgentCommandV1 implements Annotated {
 			TransferAgentConfig taConfig = domain.getTransferAgentConfig(machineId, transferAgentId);
 			if (taConfig != null) {
 				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(IndexConstants.TRANSFER_AGENT_MACHINE_ID, taConfig.getMachineId());
-				properties.put(IndexConstants.TRANSFER_AGENT_TRANSFER_AGENT_ID, taConfig.getId());
-				properties.put(IndexConstants.TRANSFER_AGENT_NAME, taConfig.getName());
-				properties.put(IndexConstants.TRANSFER_AGENT_HOST_URL, taConfig.getHostURL());
-				properties.put(IndexConstants.TRANSFER_AGENT_CONTEXT_ROOT, taConfig.getContextRoot());
-				properties.put(IndexConstants.TRANSFER_AGENT_HOME, taConfig.getHome());
+				properties.put(IndexConstants.NODE_SERVICE_MACHINE_ID, taConfig.getMachineId());
+				properties.put(IndexConstants.NODE_SERVICE_TRANSFER_AGENT_ID, taConfig.getId());
+				properties.put(IndexConstants.NODE_SERVICE_NAME, taConfig.getName());
+				properties.put(IndexConstants.NODE_SERVICE_HOST_URL, taConfig.getHostURL());
+				properties.put(IndexConstants.NODE_SERVICE_CONTEXT_ROOT, taConfig.getContextRoot());
+				properties.put(IndexConstants.NODE_SERVICE_HOME, taConfig.getHome());
 
 				NodeManagementClient transferAgent = taConnector.getService(properties);
 				return transferAgent;

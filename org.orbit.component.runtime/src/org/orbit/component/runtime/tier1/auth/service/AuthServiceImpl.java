@@ -17,6 +17,7 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.origin.common.Activator;
 import org.origin.common.rest.server.ServerException;
+import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.JWTUtil;
 import org.origin.common.util.PropertyUtil;
@@ -26,7 +27,7 @@ import org.osgi.framework.ServiceRegistration;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl implements AuthService, LifecycleAware {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -46,14 +47,15 @@ public class AuthServiceImpl implements AuthService {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (this.initProperties != null) {
 			properties.putAll(this.initProperties);
 		}
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_CONTEXT_ROOT);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_TOKEN_SECRET);
 
@@ -90,6 +92,7 @@ public class AuthServiceImpl implements AuthService {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		// Stop service
 		if (this.serviceRegistry != null) {

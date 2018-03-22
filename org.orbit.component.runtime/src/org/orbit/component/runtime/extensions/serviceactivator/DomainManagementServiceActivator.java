@@ -2,16 +2,17 @@ package org.orbit.component.runtime.extensions.serviceactivator;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domain.service.DomainManagementServiceImpl;
+import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
+import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ServiceActivator;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
 public class DomainManagementServiceActivator implements ServiceActivator {
 
-	public static final String ID = "component.domain_management.service_activator";
+	public static final String ID = "org.orbit.component.runtime.DomainManagementServiceActivator";
 
 	public static DomainManagementServiceActivator INSTANCE = new DomainManagementServiceActivator();
 
@@ -33,14 +34,9 @@ public class DomainManagementServiceActivator implements ServiceActivator {
 
 		// Stop DomainManagementService
 		DomainManagementService domainService = process.getAdapter(DomainManagementService.class);
-		if (domainService instanceof DomainManagementServiceImpl) {
-			((DomainManagementServiceImpl) domainService).stop(bundleContext);
+		if (domainService instanceof LifecycleAware) {
+			((LifecycleAware) domainService).stop(bundleContext);
 		}
 	}
 
 }
-
-// @Override
-// public String getName() {
-// return "DomainService";
-// }

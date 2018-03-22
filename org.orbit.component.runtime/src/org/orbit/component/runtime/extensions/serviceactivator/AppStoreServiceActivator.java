@@ -7,11 +7,12 @@ import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabas
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.ServiceActivator;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 
 public class AppStoreServiceActivator implements ServiceActivator {
 
-	public static final String ID = "component.app_store.service_activator";
+	public static final String ID = "org.orbit.component.runtime.AppStoreServiceActivator";
 
 	public static AppStoreServiceActivator INSTANCE = new AppStoreServiceActivator();
 
@@ -33,14 +34,9 @@ public class AppStoreServiceActivator implements ServiceActivator {
 
 		// Stop AppStoreService
 		AppStoreService appStore = process.getAdapter(AppStoreService.class);
-		if (appStore instanceof AppStoreServiceDatabaseImpl) {
-			((AppStoreServiceDatabaseImpl) appStore).stop(bundleContext);
+		if (appStore instanceof LifecycleAware) {
+			((LifecycleAware) appStore).stop(bundleContext);
 		}
 	}
 
 }
-
-// @Override
-// public String getName() {
-// return "AppStore";
-// }
