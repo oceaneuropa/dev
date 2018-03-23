@@ -42,7 +42,7 @@ public class InterfaceDescription {
 	 * @param interfaceImplClass
 	 */
 	public <I, IMPL extends I> InterfaceDescription(Class<I> interfaceClass, Class<IMPL> interfaceImplClass) {
-		this(interfaceClass.getSimpleName(), interfaceClass, interfaceImplClass);
+		this(interfaceImplClass.getSimpleName(), interfaceClass, interfaceImplClass);
 	}
 
 	/**
