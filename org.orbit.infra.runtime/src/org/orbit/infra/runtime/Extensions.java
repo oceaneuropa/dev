@@ -26,43 +26,10 @@ public class Extensions extends ProgramExtensions {
 
 	@Override
 	public void createExtensions() {
-		createPropertyTesterExtensions1();
-		createPropertyTesterExtensions2();
-
 		createServiceActivatorExtensions1();
 		createServiceActivatorExtensions2();
-	}
-
-	protected void createPropertyTesterExtensions1() {
-		String typeId = IPropertyTester.TYPE_ID;
-
-		// Index Service Property Tester
-		ProgramExtension extension1 = new ProgramExtension(typeId, IndexServicePropertyTester.ID, "Index Service Property Tester");
-		InterfaceDescription desc1 = new InterfaceDescription(IPropertyTester.class, IndexServicePropertyTester.class);
-		extension1.addInterface(desc1);
-		addExtension(extension1);
-
-		// Channel Service Property Tester
-		ProgramExtension extension2 = new ProgramExtension(typeId, ChannelServicePropertyTester.ID, "Channel Service Property Tester");
-		InterfaceDescription desc2 = new InterfaceDescription(IPropertyTester.class, ChannelServicePropertyTester.class);
-		extension2.addInterface(desc2);
-		addExtension(extension2);
-	}
-
-	protected void createPropertyTesterExtensions2() {
-		String typeId = IPropertyTester.TYPE_ID;
-
-		// Index Service Relay Property Tester
-		ProgramExtension extension3 = new ProgramExtension(typeId, IndexServiceRelayPropertyTester.ID, "Index Service Relay Property Tester");
-		InterfaceDescription desc3 = new InterfaceDescription(IPropertyTester.class, IndexServiceRelayPropertyTester.class);
-		extension3.addInterface(desc3);
-		addExtension(extension3);
-
-		// Channel Service Relay Property Tester
-		ProgramExtension extension4 = new ProgramExtension(typeId, ChannelServiceRelayPropertyTester.ID, "Channel Service Relay Property Tester");
-		InterfaceDescription desc4 = new InterfaceDescription(IPropertyTester.class, ChannelServiceRelayPropertyTester.class);
-		extension4.addInterface(desc4);
-		addExtension(extension4);
+		createPropertyTesterExtensions1();
+		createPropertyTesterExtensions2();
 	}
 
 	protected void createServiceActivatorExtensions1() {
@@ -96,6 +63,22 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension2);
 	}
 
+	protected void createPropertyTesterExtensions1() {
+		String typeId = IPropertyTester.TYPE_ID;
+
+		// Index Service Property Tester
+		ProgramExtension extension1 = new ProgramExtension(typeId, IndexServicePropertyTester.ID, "Index Service Property Tester");
+		InterfaceDescription desc1 = new InterfaceDescription(IPropertyTester.class, IndexServicePropertyTester.class);
+		extension1.addInterface(desc1);
+		addExtension(extension1);
+
+		// Channel Service Property Tester
+		ProgramExtension extension2 = new ProgramExtension(typeId, ChannelServicePropertyTester.ID, "Channel Service Property Tester");
+		InterfaceDescription desc2 = new InterfaceDescription(IPropertyTester.class, ChannelServicePropertyTester.class);
+		extension2.addInterface(desc2);
+		addExtension(extension2);
+	}
+
 	protected void createServiceActivatorExtensions2() {
 		String typeId = ServiceActivator.TYPE_ID;
 
@@ -118,6 +101,22 @@ public class Extensions extends ProgramExtensions {
 				new Parameter(InfraConstants.COMPONENT_CHANNEL_RELAY_URLS, "target urls") //
 		);
 		desc4.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ChannelServiceRelayPropertyTester.ID));
+		extension4.addInterface(desc4);
+		addExtension(extension4);
+	}
+
+	protected void createPropertyTesterExtensions2() {
+		String typeId = IPropertyTester.TYPE_ID;
+
+		// Index Service Relay Property Tester
+		ProgramExtension extension3 = new ProgramExtension(typeId, IndexServiceRelayPropertyTester.ID, "Index Service Relay Property Tester");
+		InterfaceDescription desc3 = new InterfaceDescription(IPropertyTester.class, IndexServiceRelayPropertyTester.class);
+		extension3.addInterface(desc3);
+		addExtension(extension3);
+
+		// Channel Service Relay Property Tester
+		ProgramExtension extension4 = new ProgramExtension(typeId, ChannelServiceRelayPropertyTester.ID, "Channel Service Relay Property Tester");
+		InterfaceDescription desc4 = new InterfaceDescription(IPropertyTester.class, ChannelServiceRelayPropertyTester.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);
 	}

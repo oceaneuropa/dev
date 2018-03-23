@@ -2,6 +2,7 @@ package org.orbit.component.runtime;
 
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.runtime.cli.ServicesCommand;
+import org.orbit.component.runtime.extensions.Extensions;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;

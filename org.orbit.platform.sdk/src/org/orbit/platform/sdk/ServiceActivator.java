@@ -12,19 +12,22 @@ public interface ServiceActivator {
 	public static final String TYPE_ID = "platform.sdk.ServiceActivator";
 
 	/**
-	 * Start service.
+	 * Start a service.
 	 * 
 	 * @param context
-	 * @return
+	 * @param process
+	 * @throws Exception
 	 */
-	void start(IPlatformContext context, IProcess process);
+	void start(IPlatformContext context, IProcess process) throws Exception;
 
 	/**
-	 * Stop service.
+	 * Stop a service.
 	 * 
 	 * @param context
+	 * @param process
+	 * @throws Exception
 	 */
-	void stop(IPlatformContext context, IProcess process);
+	void stop(IPlatformContext context, IProcess process) throws Exception;
 
 }
 

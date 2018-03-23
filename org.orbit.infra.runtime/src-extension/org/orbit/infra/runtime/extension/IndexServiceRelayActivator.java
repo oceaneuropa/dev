@@ -22,9 +22,10 @@ public class IndexServiceRelayActivator implements ServiceActivator {
 
 		// Start IndexService relay
 		IndexServiceWSApplicationRelay relay = InfraRelays.getInstance().createIndexServiceRelay(bundleContext, properties);
-		relay.start(bundleContext);
-
-		process.adapt(IndexServiceWSApplicationRelay.class, relay);
+		if (relay != null) {
+			relay.start(bundleContext);
+			process.adapt(IndexServiceWSApplicationRelay.class, relay);
+		}
 	}
 
 	@Override

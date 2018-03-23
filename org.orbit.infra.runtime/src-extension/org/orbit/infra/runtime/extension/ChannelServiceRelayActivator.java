@@ -22,9 +22,10 @@ public class ChannelServiceRelayActivator implements ServiceActivator {
 
 		// Start ChannelService relay
 		ChannelWSApplicationRelay relay = InfraRelays.getInstance().createChannelRelay(bundleContext, initProperties);
-		relay.start(bundleContext);
-
-		process.adapt(ChannelWSApplicationRelay.class, relay);
+		if (relay != null) {
+			relay.start(bundleContext);
+			process.adapt(ChannelWSApplicationRelay.class, relay);
+		}
 	}
 
 	@Override

@@ -9,8 +9,8 @@ package org.orbit.component.runtime.tier2.appstore.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.Extensions;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
+import org.orbit.component.runtime.extensions.Extensions;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;

@@ -56,6 +56,7 @@ public class WSRelayApplication extends AbstractJerseyWSApplication {
 	 */
 	public WSRelayApplication(WSApplicationDesc appDesc, Switcher<URI> switcher, WSClientFactory factory) {
 		this(appDesc.getContextRoot(), appDesc.getFeature(), switcher);
+		setWSClientFactory(factory);
 
 		List<Resource.Builder> wsResources = new ArrayList<Resource.Builder>();
 
@@ -70,7 +71,7 @@ public class WSRelayApplication extends AbstractJerseyWSApplication {
 				String produces = methodDesc.getProduces();
 				String methodPath = methodDesc.getPath();
 
-				new WSMethodInflector(wsResource, methodPath, methodName, produces, factory.createClient(null), switcher);
+				new WSMethodInflector(wsResource, methodPath, methodName, produces, createClient(), switcher);
 			}
 
 			wsResources.add(wsResource);

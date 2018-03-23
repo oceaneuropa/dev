@@ -9,8 +9,8 @@ package org.orbit.component.runtime.tier1.account.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.Extensions;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
+import org.orbit.component.runtime.extensions.Extensions;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
