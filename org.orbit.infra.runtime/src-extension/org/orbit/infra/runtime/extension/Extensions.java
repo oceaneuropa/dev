@@ -1,13 +1,14 @@
-package org.orbit.infra.runtime;
+package org.orbit.infra.runtime.extension;
 
-import org.orbit.infra.runtime.extension.ChannelServiceActivator;
-import org.orbit.infra.runtime.extension.ChannelServicePropertyTester;
-import org.orbit.infra.runtime.extension.ChannelServiceRelayActivator;
-import org.orbit.infra.runtime.extension.ChannelServiceRelayPropertyTester;
-import org.orbit.infra.runtime.extension.IndexServiceActivator;
-import org.orbit.infra.runtime.extension.IndexServicePropertyTester;
-import org.orbit.infra.runtime.extension.IndexServiceRelayActivator;
-import org.orbit.infra.runtime.extension.IndexServiceRelayPropertyTester;
+import org.orbit.infra.runtime.InfraConstants;
+import org.orbit.infra.runtime.extension.channelservice.ChannelServiceActivator;
+import org.orbit.infra.runtime.extension.channelservice.ChannelServicePropertyTester;
+import org.orbit.infra.runtime.extension.channelservice.ChannelServiceRelayActivator;
+import org.orbit.infra.runtime.extension.channelservice.ChannelServiceRelayPropertyTester;
+import org.orbit.infra.runtime.extension.indexservice.IndexServiceActivator;
+import org.orbit.infra.runtime.extension.indexservice.IndexServicePropertyTester;
+import org.orbit.infra.runtime.extension.indexservice.IndexServiceRelayActivator;
+import org.orbit.infra.runtime.extension.indexservice.IndexServiceRelayPropertyTester;
 import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.condition.ConditionFactory;
 import org.orbit.platform.sdk.extension.IPropertyTester;

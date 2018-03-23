@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.extension;
+package org.orbit.infra.runtime.extension.channelservice;
 
 import java.util.Map;
 

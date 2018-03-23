@@ -1,6 +1,7 @@
 package org.orbit.infra.runtime;
 
 import org.orbit.infra.runtime.cli.InfraCommand;
+import org.orbit.infra.runtime.extension.Extensions;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
