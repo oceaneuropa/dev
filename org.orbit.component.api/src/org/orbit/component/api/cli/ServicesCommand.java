@@ -19,8 +19,8 @@ import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.other.AuthConnector;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier2.appstore.other.AppStoreConnector;
-import org.orbit.component.api.tier3.domain.DomainManagementClient;
-import org.orbit.component.api.tier3.domain.other.DomainServiceConnector;
+import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.api.tier3.domainmanagement.other.DomainServiceConnector;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
@@ -49,7 +49,7 @@ public class ServicesCommand implements Annotated {
 	public static final String CONFIGR_EGISTRY = "configregistry";
 	public static final String APP_STORE = "appstore";
 	public static final String DOMAIN = "domain";
-	public static final String TRANSFER_AGENT = "transferagent";
+	public static final String NODE_CONTROL = "nodecontrol";
 
 	// Column names constants
 	protected static String[] USERREGISTRY_SERVICES_COLUMNS = new String[] { "index_item_id", "userregistry.namespace", "userregistry.name", "userregistry.host.url", "userregistry.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
@@ -92,7 +92,7 @@ public class ServicesCommand implements Annotated {
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_CONFIG_REGISTRY_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_APP_STORE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_NODE_CONTROL_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
 	}
 
@@ -146,7 +146,7 @@ public class ServicesCommand implements Annotated {
 		} else if (DOMAIN.equalsIgnoreCase(service)) {
 			listDomainServices();
 
-		} else if (TRANSFER_AGENT.equalsIgnoreCase(service)) {
+		} else if (NODE_CONTROL.equalsIgnoreCase(service)) {
 			listTransferAgents();
 
 		} else {
@@ -260,7 +260,7 @@ public class ServicesCommand implements Annotated {
 		try {
 			IndexService indexService = getIndexService();
 
-			List<IndexItem> indexItems = indexService.getIndexItems(IndexConstants.NODE_SERVICE_INDEXER_ID, IndexConstants.NODE_SERVICE_TYPE);
+			List<IndexItem> indexItems = indexService.getIndexItems(IndexConstants.NODE_CONTROL_INDEXER_ID, IndexConstants.NODE_CONTROL_TYPE);
 
 			String[][] rows = new String[indexItems.size()][TRANSFERAGENT_SERVICES_TITLES.length];
 			int rowIndex = 0;
@@ -269,9 +269,9 @@ public class ServicesCommand implements Annotated {
 				Map<String, Object> props = indexItem.getProperties();
 
 				// String namespace = (String) props.get(IndexConstants.NODE_SERVICE_NAMESPACE);
-				String name = (String) props.get(IndexConstants.NODE_SERVICE_NAME);
-				String hostUrl = (String) props.get(IndexConstants.NODE_SERVICE_HOST_URL);
-				String contextRoot = (String) props.get(IndexConstants.NODE_SERVICE_CONTEXT_ROOT);
+				String name = (String) props.get(IndexConstants.NODE_CONTROL_NAME);
+				String hostUrl = (String) props.get(IndexConstants.NODE_CONTROL_HOST_URL);
+				String contextRoot = (String) props.get(IndexConstants.NODE_CONTROL_CONTEXT_ROOT);
 				Object lastHeartbeatTime = props.get(IndexConstants.HEARTBEAT_EXPIRE_TIME);
 				Object heartbeatExpireTime = props.get(IndexConstants.LAST_HEARTBEAT_TIME);
 

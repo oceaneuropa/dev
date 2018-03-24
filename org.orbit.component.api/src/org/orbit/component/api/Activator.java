@@ -4,8 +4,8 @@ import org.orbit.component.api.cli.AppStoreCommand;
 import org.orbit.component.api.cli.AuthCommand;
 import org.orbit.component.api.cli.DomainManagementCommand;
 import org.orbit.component.api.cli.MissionControlCommand;
-import org.orbit.component.api.cli.NodeManagementCommand;
-import org.orbit.component.api.cli.NodeManagementCommandGeneric;
+import org.orbit.component.api.cli.NodeControlCommand;
+import org.orbit.component.api.cli.NodeControlCommandGeneric;
 import org.orbit.component.api.cli.ServicesCommand;
 import org.orbit.component.api.cli.UserRegistryCommand;
 import org.osgi.framework.BundleActivator;
@@ -40,8 +40,8 @@ public class Activator implements BundleActivator {
 
 	// tier3
 	protected DomainManagementCommand domainMgmtCommand;
-	protected NodeManagementCommand transferAgentCommand;
-	protected NodeManagementCommandGeneric transferAgentCommandGeneric;
+	protected NodeControlCommand transferAgentCommand;
+	protected NodeControlCommandGeneric transferAgentCommandGeneric;
 
 	// tier4
 	protected MissionControlCommand missionControlCommand;
@@ -73,10 +73,10 @@ public class Activator implements BundleActivator {
 		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
 		this.domainMgmtCommand.start();
 
-		this.transferAgentCommand = new NodeManagementCommand();
+		this.transferAgentCommand = new NodeControlCommand();
 		this.transferAgentCommand.start(bundleContext);
 
-		this.transferAgentCommandGeneric = new NodeManagementCommandGeneric();
+		this.transferAgentCommandGeneric = new NodeControlCommandGeneric();
 		this.transferAgentCommandGeneric.start(bundleContext);
 
 		// tier4

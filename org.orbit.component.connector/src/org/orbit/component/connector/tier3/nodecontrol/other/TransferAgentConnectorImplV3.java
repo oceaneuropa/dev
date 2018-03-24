@@ -2,24 +2,24 @@ package org.orbit.component.connector.tier3.nodecontrol.other;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier3.nodecontrol.NodeManagementClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.other.TransferAgentConnector;
-import org.orbit.component.connector.tier3.nodecontrol.NodeManagementClientImpl;
+import org.orbit.component.connector.tier3.nodecontrol.NodeControlClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.osgi.framework.ServiceRegistration;
 
-public class TransferAgentConnectorImplV3 extends ServiceConnector<NodeManagementClient> implements TransferAgentConnector {
+public class TransferAgentConnectorImplV3 extends ServiceConnector<NodeControlClient> implements TransferAgentConnector {
 
 	protected ServiceRegistration<?> serviceRegistration2;
 
 	public TransferAgentConnectorImplV3() {
 		// super("transfer_agent.connector");
-		super((Class<NodeManagementClient>) null);
+		super((Class<NodeControlClient>) null);
 	}
 
 	@Override
-	protected NodeManagementClient create(Map<String, Object> properties) {
-		return new NodeManagementClientImpl(null, properties);
+	protected NodeControlClient create(Map<String, Object> properties) {
+		return new NodeControlClientImpl(null, properties);
 	}
 
 }

@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -22,9 +21,6 @@ import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.switcher.Switcher;
-import org.origin.common.util.JSONUtils;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /*
  * 1. Why using ObjectNode to deserialize request body
@@ -155,7 +151,7 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 			System.err.println("New request URI is invalid. " + e.getMessage());
 			return Response.serverError().entity(new ErrorDTO("500", "New request URI is invalid. ", e.getMessage())).build();
 		}
-		// System.out.println(getClass().getSimpleName() + ".apply() newRequestUri = " + newRequestUri);
+		System.out.println(getClass().getSimpleName() + ".apply() newRequestUri = " + newRequestUri);
 
 		// Invocation.Builder newWSResource = this.client.target(newRequestUri).request(MediaType.APPLICATION_JSON);
 		Invocation.Builder newWSResource = this.client.target(newRequestUri).request();
@@ -186,7 +182,18 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 		try {
 			input = requestContext.getEntityStream();
 			if (input != null && input.available() > 0) {
-				payload = JSONUtils.getJsonReader(JsonNode.class).readValue(input);
+				// Note:
+				// - Read input stream into JsonNode causes issue for POST method, when the input stream is for the body parameter of the POST method.
+				// - The JsonNode deserialized from the input stream contains fields like "nodeType" and "array". Then such JsonNode data gets forwarded to
+				// target web service.
+				// - When target web services get the data and tries to deserialize it into specific DTO (e.g. IndexItemSetPropertiesRequestDTO), the
+				// deserialization of the data into the DTO fails.
+
+				// Do not do this:
+				// payload = JSONUtils.getJsonReader(JsonNode.class).readValue(input);
+
+				// Forward the input stream directly as payload to the target web service and it works just fine!
+				return input;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -240,8 +247,7 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 	 * 
 	 * - UriInfo.getPath() does not include query parameters. Need to check UriInfo.getPath(boolean)
 	 * 
-	 * - when there is path parameters, the path parameters values are already in the path. So there is no need to configure path parameters in
-	 * the path.
+	 * - when there is path parameters, the path parameters values are already in the path. So there is no need to configure path parameters in the path.
 	 * 
 	 * @param requestContext
 	 * @param newRequestURIstr
@@ -318,9 +324,10 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 
 			// Note:
 			// - Javax ws-rs Entity is the body parameter for POST and PUT method.
-			// - The Entity is created with com.fasterxml.jackson.databind.JsonNode
-			if (payload instanceof JsonNode) {
-				bodyParam = Entity.entity((JsonNode) payload, MediaType.APPLICATION_JSON_TYPE);
+			// - The Entity is created using com.fasterxml.jackson.databind.JsonNode deserialized from entity input stream from ContainerRequestContext (wrong)
+			// - The Entity is created using entity input stream from ContainerRequestContext directly.
+			if (payload != null) {
+				bodyParam = Entity.entity(payload, MediaType.APPLICATION_JSON_TYPE);
 			}
 
 			if ("GET".equalsIgnoreCase(this.methodType)) {

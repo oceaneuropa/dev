@@ -8,8 +8,8 @@ import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.config.ConfigRegistry;
 import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier3.domain.DomainManagementClient;
-import org.orbit.component.api.tier3.nodecontrol.NodeManagementClient;
+import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
@@ -46,7 +46,7 @@ public class OrbitClients {
 
 	// tier3
 	protected ServiceConnectorAdapter<DomainManagementClient> domainServiceConnector;
-	protected ServiceConnectorAdapter<NodeManagementClient> transferAgentConnector;
+	protected ServiceConnectorAdapter<NodeControlClient> transferAgentConnector;
 
 	// tier4
 	protected ServiceConnectorAdapter<MissionControlClient> missionControlConnector;
@@ -73,7 +73,7 @@ public class OrbitClients {
 		this.domainServiceConnector = new ServiceConnectorAdapter<DomainManagementClient>(DomainManagementClient.class);
 		this.domainServiceConnector.start(bundleContext);
 
-		this.transferAgentConnector = new ServiceConnectorAdapter<NodeManagementClient>(NodeManagementClient.class);
+		this.transferAgentConnector = new ServiceConnectorAdapter<NodeControlClient>(NodeControlClient.class);
 		this.transferAgentConnector.start(bundleContext);
 
 		// tier4
@@ -84,7 +84,7 @@ public class OrbitClients {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
 
 		PropertyUtil.loadProperty(bundleContext, configProps, org.orbit.component.api.OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, org.orbit.component.api.OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, org.orbit.component.api.OrbitConstants.ORBIT_NODE_CONTROL_URL);
 	}
 
 	public void stop(final BundleContext bundleContext) {
@@ -293,23 +293,23 @@ public class OrbitClients {
 		return domainService;
 	}
 
-	public NodeManagementClient getTransferAgent(Map<?, ?> properties) {
+	public NodeControlClient getTransferAgent(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
-			url = (String) properties.get(OrbitConstants.ORBIT_TRANSFER_AGENT_URL);
+			url = (String) properties.get(OrbitConstants.ORBIT_NODE_CONTROL_URL);
 		}
 		if (url == null) {
-			LOG.error("'" + OrbitConstants.ORBIT_TRANSFER_AGENT_URL + "' property is not found.");
-			throw new IllegalStateException("'" + OrbitConstants.ORBIT_TRANSFER_AGENT_URL + "' property is not found.");
+			LOG.error("'" + OrbitConstants.ORBIT_NODE_CONTROL_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_NODE_CONTROL_URL + "' property is not found.");
 		}
 		return getTransferAgent(url);
 	}
 
-	public NodeManagementClient getTransferAgent(String url) {
+	public NodeControlClient getTransferAgent(String url) {
 		return getTransferAgent(null, null, url);
 	}
 
-	public NodeManagementClient getTransferAgent(String realm, String username, String url) {
+	public NodeControlClient getTransferAgent(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -318,7 +318,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		NodeManagementClient transferAgent = this.transferAgentConnector.getService(properties);
+		NodeControlClient transferAgent = this.transferAgentConnector.getService(properties);
 		if (transferAgent == null) {
 			LOG.error("TransferAgent is not available.");
 			throw new IllegalStateException("TransferAgent is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");

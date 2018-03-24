@@ -2,6 +2,7 @@ package org.orbit.infra.runtime.indexes.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.infra.runtime.indexes.service.IndexService;
+import org.origin.common.rest.filter.TestRequestFilter;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
 import org.origin.common.rest.util.WebServiceAware;
 
@@ -22,6 +23,7 @@ public class IndexServiceWSApplication extends AbstractJerseyWSApplication {
 		register(IndexServiceWSResource.class);
 		register(IndexItemsWSResource.class);
 		register(IndexItemWSResource.class);
+		register(TestRequestFilter.class);
 	}
 
 }

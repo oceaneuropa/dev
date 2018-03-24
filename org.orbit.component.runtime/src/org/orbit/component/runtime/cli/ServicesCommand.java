@@ -1,20 +1,17 @@
 package org.orbit.component.runtime.cli;
 
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl;
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementServiceImpl;
-import org.orbit.component.runtime.tier3.nodemanagement.service.NodeManagementServiceImpl;
+import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlServiceImpl;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
 import org.origin.common.osgi.OSGiServiceUtil;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +26,7 @@ public class ServicesCommand {
 	public static final String CONFIGR_EGISTRY = "config_registry";
 	public static final String APP_STORE = "app_store";
 	public static final String DOMAIN_MANAGEMENT = "domain_management";
-	public static final String NODE_MANAGEMENT = "node_management";
+	public static final String NODE_CONTROL = "node_control";
 	public static final String MISSION_CONTROL = "mission_control";
 
 	protected BundleContext bundleContext;
@@ -52,7 +49,7 @@ public class ServicesCommand {
 	protected boolean autoStartTransferAgentService;
 
 	protected DomainManagementServiceImpl domainManagementService;
-	protected NodeManagementServiceImpl nodeManagementService;
+	protected NodeControlServiceImpl nodeControlService;
 
 	// tier4
 	protected boolean autoStartMissionControlService;
@@ -73,61 +70,61 @@ public class ServicesCommand {
 		OSGiServiceUtil.register(bundleContext, ServicesCommand.class.getName(), this, props);
 
 		// Get the available components
-		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		// Map<Object, Object> properties = new Hashtable<Object, Object>();
 		// TASetupUtil.loadConfigIniProperties(bundleContext, configProps);
 
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_CONFIG_REGISTRY_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_AUTOSTART);
 		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_AUTOSTART);
-		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_SERVICE_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_CONTROL_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_AUTOSTART);
 
-		this.autoStartUserRegistryService = properties.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_AUTOSTART) ? true : false;
-		this.autoStartAuthService = properties.containsKey(OrbitConstants.COMPONENT_AUTH_AUTOSTART) ? true : false;
-		this.autoStartConfigRegistryService = properties.containsKey(OrbitConstants.COMPONENT_CONFIG_REGISTRY_AUTOSTART) ? true : false;
-		this.autoStartAppStoreService = properties.containsKey(OrbitConstants.COMPONENT_APP_STORE_AUTOSTART) ? true : false;
+		// this.autoStartUserRegistryService = properties.containsKey(OrbitConstants.COMPONENT_USER_REGISTRY_AUTOSTART) ? true : false;
+		// this.autoStartAuthService = properties.containsKey(OrbitConstants.COMPONENT_AUTH_AUTOSTART) ? true : false;
+		// this.autoStartConfigRegistryService = properties.containsKey(OrbitConstants.COMPONENT_CONFIG_REGISTRY_AUTOSTART) ? true : false;
+		// this.autoStartAppStoreService = properties.containsKey(OrbitConstants.COMPONENT_APP_STORE_AUTOSTART) ? true : false;
 		// this.autoStartDomainMgmtService = properties.containsKey(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_AUTOSTART) ? true : false;
 		// this.autoStartTransferAgentService = properties.containsKey(OrbitConstants.COMPONENT_NODE_SERVICE_AUTOSTART) ? true : false;
-		this.autoStartMissionControlService = properties.containsKey(OrbitConstants.COMPONENT_MISSION_CONTROL_AUTOSTART) ? true : false;
+		// this.autoStartMissionControlService = properties.containsKey(OrbitConstants.COMPONENT_MISSION_CONTROL_AUTOSTART) ? true : false;
 
-		LOG.info("autoStartUserRegistryService = " + this.autoStartUserRegistryService);
-		LOG.info("autoStartAuthService = " + this.autoStartAuthService);
-		LOG.info("autoStartConfigRegistryService = " + this.autoStartConfigRegistryService);
-		LOG.info("autoStartAppStoreService = " + this.autoStartAppStoreService);
-		LOG.info("autoStartDomainMgmtService = " + this.autoStartDomainMgmtService);
+		// LOG.info("autoStartUserRegistryService = " + this.autoStartUserRegistryService);
+		// LOG.info("autoStartAuthService = " + this.autoStartAuthService);
+		// LOG.info("autoStartConfigRegistryService = " + this.autoStartConfigRegistryService);
+		// LOG.info("autoStartAppStoreService = " + this.autoStartAppStoreService);
+		// LOG.info("autoStartDomainMgmtService = " + this.autoStartDomainMgmtService);
 		// LOG.info("autoStartTransferAgentService = " + this.autoStartTransferAgentService);
-		LOG.info("autoStartMissionControlService = " + this.autoStartMissionControlService);
+		// LOG.info("autoStartMissionControlService = " + this.autoStartMissionControlService);
 
-		// tier1
-		if (autoStartUserRegistryService) {
-			startservice(ServicesCommand.USER_REGISTRY);
-		}
-		if (autoStartAuthService) {
-			startservice(ServicesCommand.AUTH);
-		}
-		if (autoStartConfigRegistryService) {
-			startservice(ServicesCommand.CONFIGR_EGISTRY);
-		}
-
-		// tier2
-		if (autoStartAppStoreService) {
-			startservice(ServicesCommand.APP_STORE);
-		}
-
-		// tier3
-		if (autoStartDomainMgmtService) {
-			startservice(ServicesCommand.DOMAIN_MANAGEMENT);
-		}
-		if (autoStartTransferAgentService) {
-			startservice(ServicesCommand.NODE_MANAGEMENT);
-		}
-
-		// tier4
-		if (autoStartMissionControlService) {
-			startservice(ServicesCommand.MISSION_CONTROL);
-		}
+		// // tier1
+		// if (autoStartUserRegistryService) {
+		// startservice(ServicesCommand.USER_REGISTRY);
+		// }
+		// if (autoStartAuthService) {
+		// startservice(ServicesCommand.AUTH);
+		// }
+		// if (autoStartConfigRegistryService) {
+		// startservice(ServicesCommand.CONFIGR_EGISTRY);
+		// }
+		//
+		// // tier2
+		// if (autoStartAppStoreService) {
+		// startservice(ServicesCommand.APP_STORE);
+		// }
+		//
+		// // tier3
+		// if (autoStartDomainMgmtService) {
+		// startservice(ServicesCommand.DOMAIN_MANAGEMENT);
+		// }
+		// if (autoStartTransferAgentService) {
+		// startservice(ServicesCommand.NODE_CONTROL);
+		// }
+		//
+		// // tier4
+		// if (autoStartMissionControlService) {
+		// startservice(ServicesCommand.MISSION_CONTROL);
+		// }
 	}
 
 	/**
@@ -139,20 +136,20 @@ public class ServicesCommand {
 
 		OSGiServiceUtil.unregister(ServicesCommand.class.getName(), this);
 
-		// tier4
-		stopservice(ServicesCommand.MISSION_CONTROL);
-
-		// tier3
-		stopservice(ServicesCommand.NODE_MANAGEMENT);
-		stopservice(ServicesCommand.DOMAIN_MANAGEMENT);
-
-		// tier2
-		stopservice(ServicesCommand.APP_STORE);
-
-		// tier1
-		stopservice(ServicesCommand.CONFIGR_EGISTRY);
-		stopservice(ServicesCommand.AUTH);
-		stopservice(ServicesCommand.USER_REGISTRY);
+		// // tier4
+		// stopservice(ServicesCommand.MISSION_CONTROL);
+		//
+		// // tier3
+		// stopservice(ServicesCommand.NODE_CONTROL);
+		// stopservice(ServicesCommand.DOMAIN_MANAGEMENT);
+		//
+		// // tier2
+		// stopservice(ServicesCommand.APP_STORE);
+		//
+		// // tier1
+		// stopservice(ServicesCommand.CONFIGR_EGISTRY);
+		// stopservice(ServicesCommand.AUTH);
+		// stopservice(ServicesCommand.USER_REGISTRY);
 
 		this.bundleContext = null;
 	}
@@ -188,8 +185,8 @@ public class ServicesCommand {
 		} else if (DOMAIN_MANAGEMENT.equalsIgnoreCase(service)) {
 			startDomainManagementService(this.bundleContext);
 
-		} else if (NODE_MANAGEMENT.equalsIgnoreCase(service)) {
-			startNodeManagementService(this.bundleContext);
+		} else if (NODE_CONTROL.equalsIgnoreCase(service)) {
+			startNodeControlService(this.bundleContext);
 
 		} else if (MISSION_CONTROL.equalsIgnoreCase(service)) {
 			startMissionControlService(this.bundleContext);
@@ -224,8 +221,8 @@ public class ServicesCommand {
 		} else if (DOMAIN_MANAGEMENT.equalsIgnoreCase(service)) {
 			stopDomainManagementService(this.bundleContext);
 
-		} else if (NODE_MANAGEMENT.equalsIgnoreCase(service)) {
-			stopNodeManagementService(this.bundleContext);
+		} else if (NODE_CONTROL.equalsIgnoreCase(service)) {
+			stopNodeControlService(this.bundleContext);
 
 		} else if (MISSION_CONTROL.equalsIgnoreCase(service)) {
 			stopMissionControlService(this.bundleContext);
@@ -300,16 +297,16 @@ public class ServicesCommand {
 		}
 	}
 
-	public void startNodeManagementService(BundleContext bundleContext) {
-		NodeManagementServiceImpl transferAgentService = new NodeManagementServiceImpl(null);
-		transferAgentService.start(bundleContext);
-		this.nodeManagementService = transferAgentService;
+	public void startNodeControlService(BundleContext bundleContext) {
+		NodeControlServiceImpl nodeControlService = new NodeControlServiceImpl(null);
+		nodeControlService.start(bundleContext);
+		this.nodeControlService = nodeControlService;
 	}
 
-	public void stopNodeManagementService(BundleContext bundleContext) {
-		if (this.nodeManagementService != null) {
-			this.nodeManagementService.stop(bundleContext);
-			this.nodeManagementService = null;
+	public void stopNodeControlService(BundleContext bundleContext) {
+		if (this.nodeControlService != null) {
+			this.nodeControlService.stop(bundleContext);
+			this.nodeControlService = null;
 		}
 	}
 

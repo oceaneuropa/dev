@@ -58,11 +58,13 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	// Relay
 	// ----------------------------------------------------------------------------------------
+	public static String COMPONENT_INDEX_SERVICE_RELAY_AUTOSTART = "component.index_service.relay.autostart";
 	public static String COMPONENT_INDEX_SERVICE_RELAY_NAME = "component.index_service.relay.name";
 	public static String COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT = "component.index_service.relay.context_root";
 	public static String COMPONENT_INDEX_SERVICE_RELAY_HOSTS = "component.index_service.relay.hosts";
 	public static String COMPONENT_INDEX_SERVICE_RELAY_URLS = "component.index_service.relay.urls";
 
+	public static String COMPONENT_CHANNEL_RELAY_AUTOSTART = "component.channel.relay.autostart";
 	public static String COMPONENT_CHANNEL_RELAY_NAME = "component.channel.relay.name";
 	public static String COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT = "component.channel.relay.context_root";
 	public static String COMPONENT_CHANNEL_RELAY_HOSTS = "component.channel.relay.hosts";

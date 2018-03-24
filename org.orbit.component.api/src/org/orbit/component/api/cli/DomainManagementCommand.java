@@ -12,7 +12,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier3.domain.DomainManagementClient;
+import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
 import org.orbit.component.model.tier3.domain.dto.ResponseConverter;

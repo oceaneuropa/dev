@@ -15,7 +15,7 @@ public class OrbitConstants {
 
 	// tier3
 	public static String ORBIT_DOMAIN_SERVICE_URL = "orbit.domain_service.url";
-	public static String ORBIT_TRANSFER_AGENT_URL = "orbit.transfer_agent.url";
+	public static String ORBIT_NODE_CONTROL_URL = "orbit.node_control.url";
 
 	// tier4
 	public static String ORBIT_MISSION_CONTROL_URL = "orbit.mission_control.url";

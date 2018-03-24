@@ -22,26 +22,14 @@ public class AuthServicePropertyTester implements IPropertyTester {
 			IPlatformContext platformContext = (IPlatformContext) context;
 			bundleContext = platformContext.getBundleContext();
 		}
-
 		if (bundleContext != null) {
 			Map<Object, Object> properties = new Hashtable<Object, Object>();
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_HOST_URL);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_NAME);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_CONTEXT_ROOT);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_TOKEN_SECRET);
-
-			String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
-			String hostURL = (String) properties.get(OrbitConstants.COMPONENT_AUTH_HOST_URL);
-			String name = (String) properties.get(OrbitConstants.COMPONENT_AUTH_NAME);
-			String contextRoot = (String) properties.get(OrbitConstants.COMPONENT_AUTH_CONTEXT_ROOT);
-			String tokenSecret = (String) properties.get(OrbitConstants.COMPONENT_AUTH_TOKEN_SECRET);
-
-			if ((globalHostURL != null || hostURL != null) && name != null && contextRoot != null && tokenSecret != null) {
+			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_AUTOSTART);
+			String autoStart = (String) properties.get(OrbitConstants.COMPONENT_AUTH_AUTOSTART);
+			if ("true".equalsIgnoreCase(autoStart)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 

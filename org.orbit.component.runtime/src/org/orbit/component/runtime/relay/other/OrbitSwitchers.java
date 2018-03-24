@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.runtime.relay.OrbitRelayConstants;
+import org.orbit.component.runtime.OrbitRelayConstants;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
@@ -311,9 +311,9 @@ public class OrbitSwitchers {
 	}
 
 	protected void startTransferAgentSwitcher(BundleContext bundleContext, WSClientFactory factory, Map<Object, Object> properties) {
-		String contextRoot = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_MANAGEMENT_RELAY_CONTEXT_ROOT);
-		String hosts = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_MANAGEMENT_RELAY_HOSTS);
-		String urls = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_MANAGEMENT_RELAY_URLS);
+		String contextRoot = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_RELAY_CONTEXT_ROOT);
+		String hosts = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_RELAY_HOSTS);
+		String urls = (String) properties.get(OrbitRelayConstants.COMPONENT_NODE_CONTROL_RELAY_URLS);
 
 		if (contextRoot == null) {
 			return;

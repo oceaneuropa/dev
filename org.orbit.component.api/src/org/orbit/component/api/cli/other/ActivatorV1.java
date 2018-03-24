@@ -6,7 +6,7 @@ import java.util.Map;
 import org.orbit.component.api.cli.AppStoreCommand;
 import org.orbit.component.api.cli.AuthCommand;
 import org.orbit.component.api.cli.DomainManagementCommand;
-import org.orbit.component.api.cli.NodeManagementCommand;
+import org.orbit.component.api.cli.NodeControlCommand;
 import org.orbit.component.api.cli.ServicesCommand;
 import org.orbit.component.api.cli.UserRegistryCommand;
 import org.orbit.infra.api.indexes.other.IndexServiceConnectorAdapterV1;
@@ -30,7 +30,7 @@ public class ActivatorV1 implements BundleActivator {
 	protected UserRegistryCommand userRegistryCommand;
 	protected AppStoreCommand appStoreCommand;
 	protected DomainManagementCommand domainMgmtCommand;
-	protected NodeManagementCommand transferAgentCommand;
+	protected NodeControlCommand nodeControlCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -81,8 +81,8 @@ public class ActivatorV1 implements BundleActivator {
 		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
 		this.domainMgmtCommand.start();
 
-		this.transferAgentCommand = new NodeManagementCommand();
-		this.transferAgentCommand.start(bundleContext);
+		this.nodeControlCommand = new NodeControlCommand();
+		this.nodeControlCommand.start(bundleContext);
 	}
 
 	protected void doStop(BundleContext bundleContext) {
@@ -112,9 +112,9 @@ public class ActivatorV1 implements BundleActivator {
 			this.domainMgmtCommand = null;
 		}
 
-		if (this.transferAgentCommand != null) {
-			this.transferAgentCommand.stop(bundleContext);
-			this.transferAgentCommand = null;
+		if (this.nodeControlCommand != null) {
+			this.nodeControlCommand.stop(bundleContext);
+			this.nodeControlCommand = null;
 		}
 	}
 

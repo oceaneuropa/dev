@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.api.tier3.nodecontrol.NodeManagementClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.other.TransferAgentConnector;
 import org.origin.common.rest.client.ClientException;
 import org.osgi.framework.BundleContext;
@@ -15,10 +15,10 @@ public class TransferAgentConnectorImplV2 implements TransferAgentConnector {
 	protected static final String KEY_PARTS_SEPARATOR = "::";
 
 	protected ServiceRegistration<?> serviceRegistration;
-	protected Map<String, NodeManagementClient> transferAgentMap;
+	protected Map<String, NodeControlClient> transferAgentMap;
 
 	public TransferAgentConnectorImplV2() {
-		this.transferAgentMap = new HashMap<String, NodeManagementClient>();
+		this.transferAgentMap = new HashMap<String, NodeControlClient>();
 	}
 
 	public void start(BundleContext bundleContext) {
@@ -52,17 +52,17 @@ public class TransferAgentConnectorImplV2 implements TransferAgentConnector {
 	// }
 
 	@Override
-	public boolean update(NodeManagementClient agent, Map<String, Object> properties) throws ClientException {
+	public boolean update(NodeControlClient agent, Map<String, Object> properties) throws ClientException {
 		return false;
 	}
 
 	@Override
-	public boolean close(NodeManagementClient agent) throws ClientException {
+	public boolean close(NodeControlClient agent) throws ClientException {
 		return false;
 	}
 
 	@Override
-	public NodeManagementClient getService(Map<String, Object> properties) throws ClientException {
+	public NodeControlClient getService(Map<String, Object> properties) throws ClientException {
 		return null;
 	}
 

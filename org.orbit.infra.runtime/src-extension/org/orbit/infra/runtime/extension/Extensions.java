@@ -1,14 +1,14 @@
 package org.orbit.infra.runtime.extension;
 
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.infra.runtime.extension.channelservice.ChannelServiceActivator;
-import org.orbit.infra.runtime.extension.channelservice.ChannelServicePropertyTester;
-import org.orbit.infra.runtime.extension.channelservice.ChannelServiceRelayActivator;
-import org.orbit.infra.runtime.extension.channelservice.ChannelServiceRelayPropertyTester;
-import org.orbit.infra.runtime.extension.indexservice.IndexServiceActivator;
-import org.orbit.infra.runtime.extension.indexservice.IndexServicePropertyTester;
-import org.orbit.infra.runtime.extension.indexservice.IndexServiceRelayActivator;
-import org.orbit.infra.runtime.extension.indexservice.IndexServiceRelayPropertyTester;
+import org.orbit.infra.runtime.extension.channel.ChannelServiceActivator;
+import org.orbit.infra.runtime.extension.channel.ChannelServicePropertyTester;
+import org.orbit.infra.runtime.extension.channel.ChannelServiceRelayActivator;
+import org.orbit.infra.runtime.extension.channel.ChannelServiceRelayPropertyTester;
+import org.orbit.infra.runtime.extension.indexes.IndexServiceActivator;
+import org.orbit.infra.runtime.extension.indexes.IndexServicePropertyTester;
+import org.orbit.infra.runtime.extension.indexes.IndexServiceRelayActivator;
+import org.orbit.infra.runtime.extension.indexes.IndexServiceRelayPropertyTester;
 import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.condition.ConditionFactory;
 import org.orbit.platform.sdk.extension.IPropertyTester;
@@ -68,13 +68,13 @@ public class Extensions extends ProgramExtensions {
 		String typeId = IPropertyTester.TYPE_ID;
 
 		// Index Service Property Tester
-		ProgramExtension extension1 = new ProgramExtension(typeId, IndexServicePropertyTester.ID, "Index Service Property Tester");
+		ProgramExtension extension1 = new ProgramExtension(typeId, IndexServicePropertyTester.ID);
 		InterfaceDescription desc1 = new InterfaceDescription(IPropertyTester.class, IndexServicePropertyTester.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
 		// Channel Service Property Tester
-		ProgramExtension extension2 = new ProgramExtension(typeId, ChannelServicePropertyTester.ID, "Channel Service Property Tester");
+		ProgramExtension extension2 = new ProgramExtension(typeId, ChannelServicePropertyTester.ID);
 		InterfaceDescription desc2 = new InterfaceDescription(IPropertyTester.class, ChannelServicePropertyTester.class);
 		extension2.addInterface(desc2);
 		addExtension(extension2);

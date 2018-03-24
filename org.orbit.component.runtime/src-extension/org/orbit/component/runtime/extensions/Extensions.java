@@ -27,10 +27,10 @@ import org.orbit.component.runtime.extensions.missioncontrol.MissionControlRelay
 import org.orbit.component.runtime.extensions.missioncontrol.MissionControlRelayPropertyTester;
 import org.orbit.component.runtime.extensions.missioncontrol.MissionControlServiceActivator;
 import org.orbit.component.runtime.extensions.missioncontrol.MissionControlServicePropertyTester;
-import org.orbit.component.runtime.extensions.nodemanagement.NodeManagementRelayActivator;
-import org.orbit.component.runtime.extensions.nodemanagement.NodeManagementRelayPropertyTester;
-import org.orbit.component.runtime.extensions.nodemanagement.NodeManagementServiceActivator;
-import org.orbit.component.runtime.extensions.nodemanagement.NodeManagementServicePropertyTester;
+import org.orbit.component.runtime.extensions.nodecontrol.NodeControlRelayActivator;
+import org.orbit.component.runtime.extensions.nodecontrol.NodeControlRelayPropertyTester;
+import org.orbit.component.runtime.extensions.nodecontrol.NodeControlServiceActivator;
+import org.orbit.component.runtime.extensions.nodecontrol.NodeControlServicePropertyTester;
 import org.orbit.component.runtime.extensions.userregistry.UserRegistryRelayActivator;
 import org.orbit.component.runtime.extensions.userregistry.UserRegistryRelayPropertyTester;
 import org.orbit.component.runtime.extensions.userregistry.UserRegistryServiceActivator;
@@ -94,9 +94,9 @@ public class Extensions extends ProgramExtensions {
 		extension5.addInterface(desc5);
 		addExtension(extension5);
 
-		ProgramExtension extension6 = new ProgramExtension(typeId, NodeManagementServiceActivator.ID, "Node management service activator");
-		InterfaceDescription desc6 = new InterfaceDescription(ServiceActivator.class, NodeManagementServiceActivator.class);
-		desc6.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(NodeManagementServicePropertyTester.ID));
+		ProgramExtension extension6 = new ProgramExtension(typeId, NodeControlServiceActivator.ID, "Node management service activator");
+		InterfaceDescription desc6 = new InterfaceDescription(ServiceActivator.class, NodeControlServiceActivator.class);
+		desc6.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(NodeControlServicePropertyTester.ID));
 		extension6.addInterface(desc6);
 		addExtension(extension6);
 
@@ -141,9 +141,9 @@ public class Extensions extends ProgramExtensions {
 		extension5.addInterface(desc5);
 		addExtension(extension5);
 
-		// Node Management Service Property Tester
-		ProgramExtension extension6 = new ProgramExtension(typeId, NodeManagementServicePropertyTester.ID);
-		InterfaceDescription desc6 = new InterfaceDescription(IPropertyTester.class, NodeManagementServicePropertyTester.class);
+		// Node Control Service Property Tester
+		ProgramExtension extension6 = new ProgramExtension(typeId, NodeControlServicePropertyTester.ID);
+		InterfaceDescription desc6 = new InterfaceDescription(IPropertyTester.class, NodeControlServicePropertyTester.class);
 		extension6.addInterface(desc6);
 		addExtension(extension6);
 
@@ -193,9 +193,9 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension5);
 
 		// Node Management Relay
-		ProgramExtension extension6 = new ProgramExtension(typeId, NodeManagementRelayActivator.ID);
-		InterfaceDescription desc6 = new InterfaceDescription(ServiceActivator.class, NodeManagementRelayActivator.class);
-		desc6.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(NodeManagementRelayPropertyTester.ID));
+		ProgramExtension extension6 = new ProgramExtension(typeId, NodeControlRelayActivator.ID);
+		InterfaceDescription desc6 = new InterfaceDescription(ServiceActivator.class, NodeControlRelayActivator.class);
+		desc6.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(NodeControlRelayPropertyTester.ID));
 		extension6.addInterface(desc6);
 		addExtension(extension6);
 
@@ -236,8 +236,8 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension5);
 
 		// Node Management Relay Property Tester
-		ProgramExtension extension6 = new ProgramExtension(typeId, NodeManagementRelayPropertyTester.ID);
-		extension6.addInterface(IPropertyTester.class, NodeManagementRelayPropertyTester.class);
+		ProgramExtension extension6 = new ProgramExtension(typeId, NodeControlRelayPropertyTester.ID);
+		extension6.addInterface(IPropertyTester.class, NodeControlRelayPropertyTester.class);
 		addExtension(extension6);
 
 		// Mission Control Relay Property Tester

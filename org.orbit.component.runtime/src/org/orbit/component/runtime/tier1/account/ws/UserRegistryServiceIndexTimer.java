@@ -57,7 +57,6 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexPr
 		props.put(OrbitConstants.USER_REGISTRY_NAME, name);
 		props.put(OrbitConstants.USER_REGISTRY_HOST_URL, hostURL);
 		props.put(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 		props.put(OrbitConstants.LAST_HEARTBEAT_TIME, now);
 		props.put(OrbitConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
@@ -74,15 +73,14 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexPr
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Integer indexItemId = indexItem.getIndexItemId();
-		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(OrbitConstants.USER_REGISTRY_NAME, name);
-		props.put(OrbitConstants.USER_REGISTRY_HOST_URL, hostURL);
-		props.put(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(OrbitConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(OrbitConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		Map<String, Object> newProperties = new Hashtable<String, Object>();
+		newProperties.put(OrbitConstants.USER_REGISTRY_NAME, name);
+		newProperties.put(OrbitConstants.USER_REGISTRY_HOST_URL, hostURL);
+		newProperties.put(OrbitConstants.USER_REGISTRY_CONTEXT_ROOT, contextRoot);
+		newProperties.put(OrbitConstants.LAST_HEARTBEAT_TIME, now);
+		newProperties.put(OrbitConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		indexProvider.setProperties(OrbitConstants.USER_REGISTRY_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(OrbitConstants.USER_REGISTRY_INDEXER_ID, indexItemId, newProperties);
 	}
 
 	@Override
@@ -93,3 +91,5 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexPr
 	}
 
 }
+
+// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());

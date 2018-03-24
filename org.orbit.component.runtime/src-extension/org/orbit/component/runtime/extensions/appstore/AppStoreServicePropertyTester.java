@@ -22,32 +22,14 @@ public class AppStoreServicePropertyTester implements IPropertyTester {
 			IPlatformContext platformContext = (IPlatformContext) context;
 			bundleContext = platformContext.getBundleContext();
 		}
-
 		if (bundleContext != null) {
 			Map<Object, Object> properties = new Hashtable<Object, Object>();
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_NAME);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_URL);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME);
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD);
-
-			String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
-			String hostURL = (String) properties.get(OrbitConstants.COMPONENT_APP_STORE_HOST_URL);
-			String name = (String) properties.get(OrbitConstants.COMPONENT_APP_STORE_NAME);
-			String contextRoot = (String) properties.get(OrbitConstants.COMPONENT_APP_STORE_CONTEXT_ROOT);
-			String jdbcDriver = (String) properties.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_DRIVER);
-			String jdbcURL = (String) properties.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_URL);
-			String jdbcUsername = (String) properties.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_USERNAME);
-			String jdbcPassword = (String) properties.get(OrbitConstants.COMPONENT_APP_STORE_JDBC_PASSWORD);
-
-			if ((globalHostURL != null || hostURL != null) && name != null && contextRoot != null && jdbcDriver != null && jdbcURL != null && jdbcUsername != null && jdbcPassword != null) {
+			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_APP_STORE_AUTOSTART);
+			String autoStart = (String) properties.get(OrbitConstants.COMPONENT_APP_STORE_AUTOSTART);
+			if ("true".equalsIgnoreCase(autoStart)) {
 				return true;
 			}
 		}
-
 		return false;
 	}
 

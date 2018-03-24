@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 public class MissionControlCommand extends ServiceClientCommand {
 
-	protected static Logger LOG = LoggerFactory.getLogger(NodeManagementCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(NodeControlCommand.class);
 
 	protected static String[] MISSION_COLUMN_NAMES = new String[] { "Name" };
 
@@ -52,11 +52,11 @@ public class MissionControlCommand extends ServiceClientCommand {
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
 		this.properties = properties;
 
-		OSGiServiceUtil.register(bundleContext, NodeManagementCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, MissionControlCommand.class.getName(), this, props);
 	}
 
 	public void stop(final BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(NodeManagementCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(MissionControlCommand.class.getName(), this);
 	}
 
 	@Override

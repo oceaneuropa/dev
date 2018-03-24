@@ -46,7 +46,7 @@ public class PropertyUtil {
 		}
 
 		if (stringValue == null) {
-			System.err.println("PropertyUtil.loadProperty() cannot find property value for '" + name + "'.");
+			// System.err.println("PropertyUtil.loadProperty() cannot find property value for '" + name + "'.");
 			return;
 		}
 

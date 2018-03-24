@@ -49,16 +49,16 @@ public class IndexConstants {
 	// TransferAgent
 	// ----------------------------------------------------------------------------------------
 	// index item values
-	public static String NODE_SERVICE_INDEXER_ID = "component.node_service.indexer"; // index provider id for Node management service
-	public static String NODE_SERVICE_TYPE = "NodeService"; // type of index item for Node management service
+	public static String NODE_CONTROL_INDEXER_ID = "component.node_control.indexer"; // index provider id for Node management service
+	public static String NODE_CONTROL_TYPE = "NodeControl"; // type of index item for Node management service
 
 	// index item properties
-	public static String NODE_SERVICE_MACHINE_ID = "node_service.machine_id";
-	public static String NODE_SERVICE_TRANSFER_AGENT_ID = "node_service.id";
-	public static String NODE_SERVICE_NAME = "node_service.name";
-	public static String NODE_SERVICE_HOST_URL = "node_service.host.url";
-	public static String NODE_SERVICE_CONTEXT_ROOT = "node_service.context_root";
-	public static String NODE_SERVICE_HOME = "node_service.home";
+	public static String NODE_CONTROL_MACHINE_ID = "node_control.machine_id";
+	public static String NODE_CONTROL_TRANSFER_AGENT_ID = "node_control.id";
+	public static String NODE_CONTROL_NAME = "node_control.name";
+	public static String NODE_CONTROL_HOST_URL = "node_control.host.url";
+	public static String NODE_CONTROL_CONTEXT_ROOT = "node_control.context_root";
+	public static String NODE_CONTROL_HOME = "node_control.home";
 
 }
 

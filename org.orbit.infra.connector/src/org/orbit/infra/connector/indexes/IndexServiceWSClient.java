@@ -17,7 +17,6 @@ import org.orbit.infra.model.indexes.IndexItemCommandRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertiesRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertyRequestDTO;
-import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -365,8 +364,9 @@ public class IndexServiceWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			String propertiesString = JSONUtil.toJsonString(properties);
-			IndexItemSetPropertiesRequestDTO setPropertiesRequest = new IndexItemSetPropertiesRequestDTO(indexItemId, propertiesString);
+			// String propertiesString = JSONUtil.toJsonString(properties);
+			// IndexItemSetPropertiesRequestDTO setPropertiesRequest = new IndexItemSetPropertiesRequestDTO(indexItemId, propertiesString);
+			IndexItemSetPropertiesRequestDTO setPropertiesRequest = new IndexItemSetPropertiesRequestDTO(indexItemId, properties);
 
 			WebTarget target = getRootPath().path("indexitems").path(indexProviderId).path(String.valueOf(indexItemId)).path("properties");
 			Builder builder = target.request(MediaType.APPLICATION_JSON);

@@ -1,6 +1,6 @@
 package org.orbit.component.api.tier3.nodecontrol.other;
 
-import org.orbit.component.api.tier3.nodecontrol.NodeManagementClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.origin.common.rest.client.ServiceConnector;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -16,7 +16,7 @@ public class TransferAgentConnectorAdapter {
 
 	protected static Logger LOG = LoggerFactory.getLogger(TransferAgentConnectorAdapter.class);
 
-	protected ServiceTracker<ServiceConnector<NodeManagementClient>, ServiceConnector<NodeManagementClient>> serviceTracker;
+	protected ServiceTracker<ServiceConnector<NodeControlClient>, ServiceConnector<NodeControlClient>> serviceTracker;
 	protected String connectorId;
 
 	public TransferAgentConnectorAdapter() {
@@ -35,22 +35,22 @@ public class TransferAgentConnectorAdapter {
 			e.printStackTrace();
 		}
 
-		this.serviceTracker = new ServiceTracker<ServiceConnector<NodeManagementClient>, ServiceConnector<NodeManagementClient>>(bundleContext, filter, new ServiceTrackerCustomizer<ServiceConnector<NodeManagementClient>, ServiceConnector<NodeManagementClient>>() {
+		this.serviceTracker = new ServiceTracker<ServiceConnector<NodeControlClient>, ServiceConnector<NodeControlClient>>(bundleContext, filter, new ServiceTrackerCustomizer<ServiceConnector<NodeControlClient>, ServiceConnector<NodeControlClient>>() {
 			@Override
-			public ServiceConnector<NodeManagementClient> addingService(ServiceReference<ServiceConnector<NodeManagementClient>> reference) {
-				ServiceConnector<NodeManagementClient> connector = bundleContext.getService(reference);
+			public ServiceConnector<NodeControlClient> addingService(ServiceReference<ServiceConnector<NodeControlClient>> reference) {
+				ServiceConnector<NodeControlClient> connector = bundleContext.getService(reference);
 				LOG.info("addingService() ServiceConnector is added: " + connector);
 				connectorAdded(connector);
 				return connector;
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<ServiceConnector<NodeManagementClient>> reference, ServiceConnector<NodeManagementClient> connector) {
+			public void modifiedService(ServiceReference<ServiceConnector<NodeControlClient>> reference, ServiceConnector<NodeControlClient> connector) {
 				LOG.info("removedService() ServiceConnector is modified: " + connector);
 			}
 
 			@Override
-			public void removedService(ServiceReference<ServiceConnector<NodeManagementClient>> reference, ServiceConnector<NodeManagementClient> connector) {
+			public void removedService(ServiceReference<ServiceConnector<NodeControlClient>> reference, ServiceConnector<NodeControlClient> connector) {
 				LOG.info("removedService() ServiceConnector is removed: " + connector);
 				connectorRemoved(connector);
 			}
@@ -69,11 +69,11 @@ public class TransferAgentConnectorAdapter {
 		}
 	}
 
-	public void connectorAdded(ServiceConnector<NodeManagementClient> connector) {
+	public void connectorAdded(ServiceConnector<NodeControlClient> connector) {
 
 	}
 
-	public void connectorRemoved(ServiceConnector<NodeManagementClient> connector) {
+	public void connectorRemoved(ServiceConnector<NodeControlClient> connector) {
 
 	}
 

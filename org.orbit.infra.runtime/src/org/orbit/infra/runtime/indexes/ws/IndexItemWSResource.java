@@ -26,7 +26,6 @@ import org.orbit.infra.model.indexes.IndexItemSetPropertyRequestDTO;
 import org.orbit.infra.model.indexes.IndexServiceException;
 import org.orbit.infra.model.indexes.ModelConverter;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -219,8 +218,9 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 		try {
 			// get the properties string from the query parameter
 			// Map<String, ?> propertiesToSet = setPropertiesRequest.getProperties();
-			String propertiesString = setPropertiesRequest.getPropertiesString();
-			Map<String, Object> propertiesToSet = JSONUtil.toProperties(propertiesString);
+			// String propertiesString = setPropertiesRequest.getPropertiesString();
+			// Map<String, Object> propertiesToSet = JSONUtil.toProperties(propertiesString);
+			Map<String, Object> propertiesToSet = setPropertiesRequest.getProperties();
 
 			// System.out.println(getClass().getSimpleName() + ".setProperties() " + indexProviderId);
 			// System.out.println(propertiesString);

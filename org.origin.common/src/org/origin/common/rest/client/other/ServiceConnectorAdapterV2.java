@@ -25,7 +25,7 @@ public class ServiceConnectorAdapterV2 {
 	/**
 	 * 
 	 * @param serviceId
-	 *            e.g. "transfer_agent.connector" or TransferAgent.class.getName()
+	 *            e.g. "node_control.connector" or NodeControl.class.getName()
 	 */
 	public ServiceConnectorAdapterV2(String serviceId) {
 		this.serviceId = serviceId;

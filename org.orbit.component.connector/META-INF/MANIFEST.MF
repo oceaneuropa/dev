@@ -24,6 +24,6 @@ Export-Package: org.orbit.component.connector,
  org.orbit.component.connector.tier1.config,
  org.orbit.component.connector.tier1.session,
  org.orbit.component.connector.tier2.appstore,
- org.orbit.component.connector.tier3.domain,
+ org.orbit.component.connector.tier3.domainmanagement,
  org.orbit.component.connector.tier3.nodecontrol,
  org.orbit.component.connector.tier4.mission

@@ -13,7 +13,7 @@ index_service (infra)
 user_registry, auth, config_registry, app_store, app_store, domain_service, mission_control (components)
 	11001, 11002 (,..., 11010)
 
-transfer_agent (agents)
+node_control (agents)
 	12001, 12002 (,..., 12010)
 
 node (nodes)

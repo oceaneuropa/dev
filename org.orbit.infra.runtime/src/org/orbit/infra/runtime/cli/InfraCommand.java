@@ -1,15 +1,12 @@
 package org.orbit.infra.runtime.cli;
 
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.channel.service.ChannelServiceImpl;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
 import org.origin.common.osgi.OSGiServiceUtil;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,28 +32,27 @@ public class InfraCommand {
 		this.bundleContext = bundleContext;
 
 		// Get the available components
-		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_AUTOSTART);
-
-		boolean autoStartIndexService = false;
-		if ("true".equals(properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_AUTOSTART))) {
-			autoStartIndexService = true;
-		}
-		boolean autoStartChannelService = false;
-		if ("true".equals(properties.get(InfraConstants.COMPONENT_CHANNEL_AUTOSTART))) {
-			autoStartChannelService = true;
-		}
-
-		LOG.info("autoStartIndexService = " + autoStartIndexService);
-		LOG.info("autoStartChannelService = " + autoStartChannelService);
-
-		if (autoStartIndexService) {
-			startservice(InfraCommand.INDEX_SERVICE);
-		}
-		if (autoStartChannelService) {
-			startservice(InfraCommand.CHANNEL);
-		}
+		// Map<Object, Object> properties = new Hashtable<Object, Object>();
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_INDEX_SERVICE_AUTOSTART);
+		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_AUTOSTART);
+		//
+		// boolean autoStartIndexService = false;
+		// if ("true".equals(properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_AUTOSTART))) {
+		// autoStartIndexService = true;
+		// }
+		// boolean autoStartChannelService = false;
+		// if ("true".equals(properties.get(InfraConstants.COMPONENT_CHANNEL_AUTOSTART))) {
+		// autoStartChannelService = true;
+		// }
+		//
+		// LOG.info("autoStartIndexService = " + autoStartIndexService);
+		// LOG.info("autoStartChannelService = " + autoStartChannelService);
+		// if (autoStartIndexService) {
+		// startservice(InfraCommand.INDEX_SERVICE);
+		// }
+		// if (autoStartChannelService) {
+		// startservice(InfraCommand.CHANNEL);
+		// }
 
 		Hashtable<String, Object> commandProps = new Hashtable<String, Object>();
 		commandProps.put("osgi.command.scope", "infra");
@@ -73,8 +69,8 @@ public class InfraCommand {
 
 		OSGiServiceUtil.unregister(InfraCommand.class.getName(), this);
 
-		stopservice(InfraCommand.INDEX_SERVICE);
-		stopservice(InfraCommand.CHANNEL);
+		// stopservice(InfraCommand.INDEX_SERVICE);
+		// stopservice(InfraCommand.CHANNEL);
 
 		this.bundleContext = null;
 	}

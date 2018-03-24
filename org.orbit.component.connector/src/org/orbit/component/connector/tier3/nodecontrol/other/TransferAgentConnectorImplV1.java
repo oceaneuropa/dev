@@ -2,18 +2,18 @@ package org.orbit.component.connector.tier3.nodecontrol.other;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier3.nodecontrol.NodeManagementClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.other.TransferAgentConnector;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class TransferAgentConnectorImplV1 extends ServiceConnector<NodeManagementClient> implements TransferAgentConnector {
+public class TransferAgentConnectorImplV1 extends ServiceConnector<NodeControlClient> implements TransferAgentConnector {
 
 	public TransferAgentConnectorImplV1() {
-		super((Class<NodeManagementClient>) null);
+		super((Class<NodeControlClient>) null);
 	}
 
 	@Override
-	protected NodeManagementClient create(Map<String, Object> properties) {
+	protected NodeControlClient create(Map<String, Object> properties) {
 		return null;
 	}
 
