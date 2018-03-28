@@ -7,10 +7,10 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.model.tier1.auth.dto.AuthorizationRequestDTO;
-import org.orbit.component.model.tier1.auth.dto.AuthorizationResponseDTO;
-import org.orbit.component.model.tier1.auth.dto.TokenRequestDTO;
-import org.orbit.component.model.tier1.auth.dto.TokenResponseDTO;
+import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
+import org.orbit.component.model.tier1.auth.AuthorizationResponseDTO;
+import org.orbit.component.model.tier1.auth.TokenRequestDTO;
+import org.orbit.component.model.tier1.auth.TokenResponseDTO;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;

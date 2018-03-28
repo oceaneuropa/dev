@@ -2,8 +2,6 @@ package org.orbit.component.api.tier1.account;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
-import org.orbit.component.api.tier1.account.request.UpdateUserAccountRequest;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 

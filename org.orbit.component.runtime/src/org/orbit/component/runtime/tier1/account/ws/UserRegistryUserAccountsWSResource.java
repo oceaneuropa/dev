@@ -18,10 +18,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier1.account.dto.UserAccountActionDTO;
-import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
-import org.orbit.component.model.tier1.account.rto.UserAccount;
-import org.orbit.component.model.tier1.account.rto.ModelConverter;
+import org.orbit.component.model.tier1.account.ModelConverter;
+import org.orbit.component.model.tier1.account.UserAccount;
+import org.orbit.component.model.tier1.account.UserAccountActionDTO;
+import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;

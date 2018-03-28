@@ -1,7 +1,6 @@
 package org.orbit.component.api;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.account.UserRegistry;
@@ -13,7 +12,6 @@ import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +49,7 @@ public class OrbitClients {
 	// tier4
 	protected ServiceConnectorAdapter<MissionControlClient> missionControlConnector;
 
-	public OrbitClients() {
+	private OrbitClients() {
 	}
 
 	public void start(final BundleContext bundleContext) {
@@ -79,12 +77,6 @@ public class OrbitClients {
 		// tier4
 		this.missionControlConnector = new ServiceConnectorAdapter<MissionControlClient>(MissionControlClient.class);
 		this.missionControlConnector.start(bundleContext);
-
-		// Client API properties for connecting to other remote services.
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-
-		PropertyUtil.loadProperty(bundleContext, configProps, org.orbit.component.api.OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, org.orbit.component.api.OrbitConstants.ORBIT_NODE_CONTROL_URL);
 	}
 
 	public void stop(final BundleContext bundleContext) {
@@ -364,7 +356,12 @@ public class OrbitClients {
 // public UserInfo getUserInfo() {
 // return this.threadUserInfo.get();
 // }
-//
+
 // public void setUserInfo(UserInfo userInfo) {
 // this.threadUserInfo.set(userInfo);
 // }
+
+// Client API properties for connecting to other remote services.
+// Map<Object, Object> properties = new Hashtable<Object, Object>();
+// PropertyUtil.loadProperty(bundleContext, properties, org.orbit.component.api.OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+// PropertyUtil.loadProperty(bundleContext, properties, org.orbit.component.api.OrbitConstants.ORBIT_NODE_CONTROL_URL);

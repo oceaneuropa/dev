@@ -17,10 +17,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.component.model.tier1.auth.AuthConverter;
 import org.orbit.component.model.tier1.auth.AuthException;
+import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
+import org.orbit.component.model.tier1.auth.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.TokenResponse;
-import org.orbit.component.model.tier1.auth.dto.AuthorizationRequestDTO;
-import org.orbit.component.model.tier1.auth.dto.TokenRequestDTO;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.util.CookieUtil;

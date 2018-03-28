@@ -6,10 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.model.tier1.account.rto.UserAccount;
+import org.orbit.component.model.tier1.account.UserAccount;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
-import org.orbit.component.runtime.tier1.account.persistence.UserAccountPersistence;
-import org.orbit.component.runtime.tier1.account.persistence.UserAccountPersistenceImpl;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;

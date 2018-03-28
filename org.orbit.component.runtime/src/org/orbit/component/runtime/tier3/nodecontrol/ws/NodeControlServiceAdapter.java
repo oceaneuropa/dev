@@ -5,7 +5,7 @@ import java.util.Map;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.extensions.Extensions;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.orbit.component.runtime.tier3.nodecontrol.ws.editpolicy.NodeControlWSEditPolicy;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlWSEditPolicy;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.platform.sdk.extension.desc.ProgramExtension;

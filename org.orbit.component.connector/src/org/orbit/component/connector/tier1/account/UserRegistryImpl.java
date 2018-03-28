@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
+import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserRegistry;
-import org.orbit.component.api.tier1.account.request.CreateUserAccountRequest;
-import org.orbit.component.api.tier1.account.request.UpdateUserAccountRequest;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.model.tier1.account.dto.UserAccountDTO;
+import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;

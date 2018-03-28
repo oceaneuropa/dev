@@ -4,9 +4,6 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.Map;
 
-import org.orbit.component.api.tier2.appstore.request.AppQuery;
-import org.orbit.component.api.tier2.appstore.request.CreateAppRequest;
-import org.orbit.component.api.tier2.appstore.request.UpdateAppRequest;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 

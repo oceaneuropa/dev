@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier4.missioncontrol.service;
 
 import java.util.List;
 
-import org.orbit.component.model.tier4.mission.rto.Mission;
+import org.orbit.component.model.tier4.mission.Mission;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAware;

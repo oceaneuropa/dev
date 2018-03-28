@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier2.appstore.AppManifest;
+import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier2.appstore.request.AppQuery;
-import org.orbit.component.api.tier2.appstore.request.CreateAppRequest;
-import org.orbit.component.api.tier2.appstore.request.UpdateAppRequest;
+import org.orbit.component.api.tier2.appstore.CreateAppRequest;
+import org.orbit.component.api.tier2.appstore.UpdateAppRequest;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;

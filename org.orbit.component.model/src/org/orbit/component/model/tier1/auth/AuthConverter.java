@@ -1,11 +1,5 @@
 package org.orbit.component.model.tier1.auth;
 
-import org.orbit.component.model.tier1.auth.dto.AuthorizationRequestDTO;
-import org.orbit.component.model.tier1.auth.dto.AuthorizationResponseDTO;
-import org.orbit.component.model.tier1.auth.dto.ErrorResponseDTO;
-import org.orbit.component.model.tier1.auth.dto.TokenRequestDTO;
-import org.orbit.component.model.tier1.auth.dto.TokenResponseDTO;
-
 public class AuthConverter {
 
 	protected static AuthConverter INSTANCE = new AuthConverter();
