@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.nodecontrol.dto.INodeDTO;
+import org.orbit.component.model.tier3.nodecontrol.INodeDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeHelper;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;

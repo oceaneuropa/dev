@@ -3,10 +3,10 @@ package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.NodeConfig;
-import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
+import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.ModelConverter;
+import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -41,10 +41,10 @@ public class NodeConfigsGetCommand extends AbstractCommand {
 			String machineId = (String) this.request.getParameter("machineId");
 			String platformId = (String) this.request.getParameter("platformId");
 
-			List<NodeConfig> nodeConfigs = this.service.getNodeConfigs(machineId, platformId);
+			List<NodeConfigRTO> nodeConfigs = this.service.getNodeConfigs(machineId, platformId);
 			if (nodeConfigs != null) {
-				for (NodeConfig nodeConfig : nodeConfigs) {
-					NodeConfigDTO nodeConfigDTO = ModelConverter.getInstance().toDTO(nodeConfig);
+				for (NodeConfigRTO nodeConfig : nodeConfigs) {
+					NodeConfigDTO nodeConfigDTO = DomainServiceModelConverter.getInstance().toDTO(nodeConfig);
 					nodeConfigDTO.setMachineId(machineId);
 					nodeConfigDTO.setPlatformId(platformId);
 					nodeConfigDTOs.add(nodeConfigDTO);

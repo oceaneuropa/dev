@@ -3,10 +3,10 @@ package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.MachineConfig;
-import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
+import org.orbit.component.model.tier3.domain.MachineConfigRTO;
+import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.ModelConverter;
+import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -38,10 +38,10 @@ public class MachineConfigsGetCommand extends AbstractCommand {
 
 		List<MachineConfigDTO> machineConfigDTOs = new ArrayList<MachineConfigDTO>();
 		try {
-			List<MachineConfig> machineConfigs = this.service.getMachineConfigs();
+			List<MachineConfigRTO> machineConfigs = this.service.getMachineConfigs();
 			if (machineConfigs != null) {
-				for (MachineConfig machineConfig : machineConfigs) {
-					MachineConfigDTO machineConfigDTO = ModelConverter.getInstance().toDTO(machineConfig);
+				for (MachineConfigRTO machineConfig : machineConfigs) {
+					MachineConfigDTO machineConfigDTO = DomainServiceModelConverter.getInstance().toDTO(machineConfig);
 					machineConfigDTOs.add(machineConfigDTO);
 				}
 			}

@@ -15,15 +15,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier1.auth.AuthConverter;
-import org.orbit.component.model.tier1.auth.AuthException;
 import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.TokenResponse;
+import org.orbit.component.runtime.tier1.auth.service.AuthModelConverter;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
+import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.CookieUtil;
+import org.origin.common.rest.util.ResponseUtil;
 
 /**
  * @see https://www.oauth.com/oauth2-servers/definitions
@@ -144,12 +146,14 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 			@Context HttpHeaders httpHeaders, //
 			AuthorizationRequestDTO authorizationRequestDTO) {
 		try {
-			AuthorizationResponse response = getService().authorize(AuthConverter.getInstance().toRequest(authorizationRequestDTO));
-			return Response.ok().entity(AuthConverter.getInstance().toResponseDTO(response)).build();
+			AuthorizationResponse response = getService().authorize(AuthModelConverter.getInstance().toRequest(authorizationRequestDTO));
+			return Response.ok().entity(AuthModelConverter.getInstance().toResponseDTO(response)).build();
 
-		} catch (AuthException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
-			return Response.status(Status.BAD_REQUEST).entity(AuthConverter.getInstance().toResponseDTO(e)).build();
+			// return Response.status(Status.BAD_REQUEST).entity(AuthConverter.getInstance().toResponseDTO(e)).build();
+			ErrorDTO error = ResponseUtil.toDTO(e, e.getCode());
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 	}
 
@@ -163,7 +167,7 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 			@Context HttpHeaders httpHeaders, //
 			TokenRequestDTO tokenRequestDTO) {
 		try {
-			TokenResponse response = getService().getToken(AuthConverter.getInstance().toRequest(tokenRequestDTO));
+			TokenResponse response = getService().getToken(AuthModelConverter.getInstance().toRequest(tokenRequestDTO));
 
 			if (response != null && response.getAccessToken() != null) {
 				String accessToken = response.getAccessToken();
@@ -179,11 +183,13 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 				response.setState("from '" + getService().getName() + "'");
 			}
 
-			return Response.ok().entity(AuthConverter.getInstance().toResponseDTO(response)).build();
+			return Response.ok().entity(AuthModelConverter.getInstance().toResponseDTO(response)).build();
 
-		} catch (AuthException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
-			return Response.status(Status.BAD_REQUEST).entity(AuthConverter.getInstance().toResponseDTO(e)).build();
+			// return Response.status(Status.BAD_REQUEST).entity(AuthConverter.getInstance().toResponseDTO(e)).build();
+			ErrorDTO error = ResponseUtil.toDTO(e, e.getCode());
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 	}
 

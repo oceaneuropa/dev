@@ -1,9 +1,9 @@
 package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
-import org.orbit.component.model.tier3.domain.PlatformConfig;
-import org.orbit.component.model.tier3.domain.dto.PlatformConfigDTO;
+import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
+import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.ModelConverter;
+import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -38,9 +38,9 @@ public class PlatformConfigGetCommand extends AbstractCommand {
 			String machineId = (String) this.request.getParameter("machineId");
 			String id = (String) this.request.getParameter("id");
 
-			PlatformConfig taConfig = this.service.getPlatformConfig(machineId, id);
+			PlatformConfigRTO taConfig = this.service.getPlatformConfig(machineId, id);
 			if (taConfig != null) {
-				taConfigDTO = ModelConverter.getInstance().toDTO(taConfig);
+				taConfigDTO = DomainServiceModelConverter.getInstance().toDTO(taConfig);
 				taConfigDTO.setMachineId(machineId);
 			}
 

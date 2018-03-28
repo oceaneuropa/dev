@@ -6,8 +6,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.orbit.component.model.tier1.account.UserAccount;
-import org.orbit.component.model.tier1.auth.AuthException;
+import org.orbit.component.model.tier1.account.UserAccountRTO;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
@@ -133,12 +132,12 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	}
 
 	@Override
-	public AuthorizationResponse authorize(AuthorizationRequest request) throws AuthException {
+	public AuthorizationResponse authorize(AuthorizationRequest request) throws ServerException {
 		return null;
 	}
 
 	@Override
-	public TokenResponse getToken(TokenRequest request) throws AuthException {
+	public TokenResponse getToken(TokenRequest request) throws ServerException {
 		String grantType = request.getGrantType();
 		TokenResponse response = null;
 		if (GRANT_TYPE__CLIENT_CREDENTIALS.equalsIgnoreCase(grantType)) {
@@ -154,7 +153,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 			response = handleRefreshToken(request);
 
 		} else {
-			throw new AuthException("Unsupported Grant Type", "Grant type is not supported: " + grantType);
+			throw new ServerException("Unsupported Grant Type", "Grant type is not supported: " + grantType);
 		}
 		return response;
 	}
@@ -163,9 +162,9 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	 * 
 	 * @param request
 	 * @return
-	 * @throws AuthException
+	 * @throws ServerException
 	 */
-	private TokenResponse handleAppAuthorization(TokenRequest request) throws AuthException {
+	private TokenResponse handleAppAuthorization(TokenRequest request) throws ServerException {
 		return null;
 	}
 
@@ -173,25 +172,25 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	 * 
 	 * @param request
 	 * @return
-	 * @throws AuthException
+	 * @throws ServerException
 	 */
-	private TokenResponse handleUserAuthorization(TokenRequest request) throws AuthException {
+	private TokenResponse handleUserAuthorization(TokenRequest request) throws ServerException {
 		String username = request.getUsername();
 		String password = request.getPassword();
 		if (username == null || username.isEmpty()) {
-			throw new AuthException("Bad Request", "Username is empty.");
+			throw new ServerException("Bad Request", "Username is empty.");
 		}
 		if (password == null || password.isEmpty()) {
-			throw new AuthException("Bad Request", "Password is empty.");
+			throw new ServerException("Bad Request", "Password is empty.");
 		}
 
 		// Step1. Check username and password against UserRegistry.
 		boolean matchUsernamePassword = false;
-		UserAccount userAccount = null;
+		UserAccountRTO userAccount = null;
 		try {
 			UserRegistryService userRegistryService = OrbitServices.getInstance().getUserRegistryService();
 			if (userRegistryService == null) {
-				throw new AuthException("Service Unavailable", "UserRegistry service is not available.");
+				throw new ServerException("Service Unavailable", "UserRegistry service is not available.");
 			}
 			userAccount = userRegistryService.getUserAccount(username);
 			if (userAccount != null) {
@@ -200,10 +199,10 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 
 		} catch (ServerException e) {
 			e.printStackTrace();
-			throw new AuthException(e, "Authentication Failed", e.getMessage());
+			throw new ServerException("Authentication Failed", e.getMessage(), e);
 		}
 		if (!matchUsernamePassword) {
-			throw new AuthException("Unauthorized", "Username and password combination is invalid.");
+			throw new ServerException("Unauthorized", "Username and password combination is invalid.");
 		}
 
 		// Step2. Create new UserToken and store it in the tokenManager
@@ -212,7 +211,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 			userToken = createAccessToken(userAccount);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new AuthException("Authentication Failed", e.getMessage());
+			throw new ServerException("Authentication Failed", e.getMessage());
 		}
 		this.tokenManager.setUserToken(username, userToken);
 
@@ -231,15 +230,15 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	 * 
 	 * @param request
 	 * @return
-	 * @throws AuthException
+	 * @throws ServerException
 	 */
-	private TokenResponse handleRefreshToken(TokenRequest request) throws AuthException {
+	private TokenResponse handleRefreshToken(TokenRequest request) throws ServerException {
 		// Step1. Decode the JWT object
 		// - Exception is thrown by JWT (JWTVerifier) API if the token has expired.
 		String issuer = getName();
 		String refreshToken = request.getRefreshToken();
 		if (refreshToken == null || refreshToken.isEmpty()) {
-			throw new AuthException("Bad Request", "Refresh token is empty.");
+			throw new ServerException("Bad Request", "Refresh token is empty.");
 		}
 		DecodedJWT jwt = null;
 		try {
@@ -249,7 +248,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		}
 
 		if (jwt == null) {
-			throw new AuthException("Unauthorized", "Refresh token is invalid.");
+			throw new ServerException("Unauthorized", "Refresh token is invalid.");
 		}
 
 		// Step2. Get username from JWT
@@ -266,23 +265,23 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 			}
 		}
 		if (username == null) {
-			throw new AuthException("Unauthorized", "Refresh token is invalid.");
+			throw new ServerException("Unauthorized", "Refresh token is invalid.");
 		}
 
 		// Step3. Find user account by username
-		UserAccount userAccount = null;
+		UserAccountRTO userAccount = null;
 		try {
 			UserRegistryService userRegistryService = OrbitServices.getInstance().getUserRegistryService();
 			if (userRegistryService == null) {
-				throw new AuthException("Service Unavailable", "UserRegistry service is not available.");
+				throw new ServerException("Service Unavailable", "UserRegistry service is not available.");
 			}
 			userAccount = userRegistryService.getUserAccount(username);
 		} catch (ServerException e) {
 			e.printStackTrace();
-			throw new AuthException(e, "User Registry Exception", e.getMessage());
+			throw new ServerException("User Registry Exception", e.getMessage(), e);
 		}
 		if (userAccount == null) {
-			throw new AuthException("Unauthorized", "Invalid username: " + username);
+			throw new ServerException("Unauthorized", "Invalid username: " + username);
 		}
 
 		// Step4. Create new UserToken and store it in the tokenManager
@@ -291,7 +290,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 			userToken = createAccessToken(userAccount);
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new AuthException("Authentication Failed", e.getMessage());
+			throw new ServerException("Authentication Failed", e.getMessage(), e);
 		}
 		this.tokenManager.setUserToken(username, userToken);
 
@@ -312,7 +311,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	 * @return
 	 * @throws Exception
 	 */
-	private UserToken createAccessToken(UserAccount userAccount) throws Exception {
+	private UserToken createAccessToken(UserAccountRTO userAccount) throws Exception {
 		UserToken userToken = null;
 		try {
 			// String issuer = getFullName();

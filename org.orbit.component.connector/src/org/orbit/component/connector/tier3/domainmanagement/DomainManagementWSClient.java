@@ -11,9 +11,9 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
-import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
-import org.orbit.component.model.tier3.domain.dto.PlatformConfigDTO;
+import org.orbit.component.model.tier3.domain.MachineConfigDTO;
+import org.orbit.component.model.tier3.domain.NodeConfigDTO;
+import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;

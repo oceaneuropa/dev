@@ -1,10 +1,10 @@
 package org.orbit.component.runtime.tier1.auth.service;
 
-import org.orbit.component.model.tier1.auth.AuthException;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAware;
 
 public interface AuthService extends WebServiceAware {
@@ -25,8 +25,8 @@ public interface AuthService extends WebServiceAware {
 
 	String getName();
 
-	AuthorizationResponse authorize(AuthorizationRequest request) throws AuthException;
+	AuthorizationResponse authorize(AuthorizationRequest request) throws ServerException;
 
-	TokenResponse getToken(TokenRequest request) throws AuthException;
+	TokenResponse getToken(TokenRequest request) throws ServerException;
 
 }

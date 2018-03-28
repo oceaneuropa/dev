@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.PlatformConfig;
+import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -58,14 +58,14 @@ public class PlatformConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected static PlatformConfig toRTO(ResultSet rs) throws SQLException {
+	protected static PlatformConfigRTO toRTO(ResultSet rs) throws SQLException {
 		String id = rs.getString("id");
 		String name = rs.getString("name");
 		String home = rs.getString("home");
 		String hostURL = rs.getString("hostURL");
 		String contextRoot = rs.getString("contextRoot");
 
-		return new PlatformConfig(id, name, home, hostURL, contextRoot);
+		return new PlatformConfigRTO(id, name, home, hostURL, contextRoot);
 	}
 
 	/**
@@ -75,11 +75,11 @@ public class PlatformConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<PlatformConfig> getPlatformConfigs(Connection conn, String machineId) throws SQLException {
+	public List<PlatformConfigRTO> getPlatformConfigs(Connection conn, String machineId) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE machineId=? ORDER BY id ASC";
-		ResultSetListHandler<PlatformConfig> handler = new ResultSetListHandler<PlatformConfig>() {
+		ResultSetListHandler<PlatformConfigRTO> handler = new ResultSetListHandler<PlatformConfigRTO>() {
 			@Override
-			protected PlatformConfig handleRow(ResultSet rs) throws SQLException {
+			protected PlatformConfigRTO handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -94,11 +94,11 @@ public class PlatformConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public PlatformConfig getPlatformConfig(Connection conn, String machineId, String id) throws SQLException {
+	public PlatformConfigRTO getPlatformConfig(Connection conn, String machineId, String id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE machineId=? AND id=?";
-		ResultSetSingleHandler<PlatformConfig> handler = new ResultSetSingleHandler<PlatformConfig>() {
+		ResultSetSingleHandler<PlatformConfigRTO> handler = new ResultSetSingleHandler<PlatformConfigRTO>() {
 			@Override
-			protected PlatformConfig handleRow(ResultSet rs) throws SQLException {
+			protected PlatformConfigRTO handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -136,7 +136,7 @@ public class PlatformConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public PlatformConfig add(Connection conn, String machineId, String id, String name, String home, String hostURL, String contextRoot) throws SQLException {
+	public PlatformConfigRTO add(Connection conn, String machineId, String id, String name, String home, String hostURL, String contextRoot) throws SQLException {
 		String insertSQL = "INSERT INTO " + getTableName() + " (id, machineId, name, home, hostURL, contextRoot) VALUES (?, ?, ?, ?, ?, ?)";
 		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { id, machineId, name, home, hostURL, contextRoot }, 1);
 		if (succeed) {

@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.PlatformConfig;
+import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -52,7 +52,7 @@ public class PlatformConfigUpdateCommand extends AbstractCommand {
 				return new CommandResult(response);
 			}
 
-			PlatformConfig updateTaRequest = new PlatformConfig();
+			PlatformConfigRTO updateTaRequest = new PlatformConfigRTO();
 			updateTaRequest.setId(id);
 			updateTaRequest.setName(name);
 			updateTaRequest.setHome(home);

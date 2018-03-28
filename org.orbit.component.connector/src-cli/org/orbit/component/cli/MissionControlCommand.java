@@ -11,8 +11,8 @@ import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier4.mission.MissionControlClient;
-import org.orbit.component.model.tier4.mission.dto.Mission;
-import org.orbit.component.model.tier4.mission.dto.ModelConverter;
+import org.orbit.component.connector.tier4.mission.MissionControlModelConverter;
+import org.orbit.component.model.tier4.mission.MissionRTO;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.client.ServiceClientCommand;
@@ -96,10 +96,10 @@ public class MissionControlCommand extends ServiceClientCommand {
 			Request request = new Request(Requests.GET_MISSIONS);
 			Response response = missionControl.sendRequest(request);
 
-			Mission[] missions = ModelConverter.INSTANCE.getMissions(response);
+			MissionRTO[] missions = MissionControlModelConverter.INSTANCE.getMissions(response);
 			String[][] rows = new String[missions.length][MISSION_COLUMN_NAMES.length];
 			int rowIndex = 0;
-			for (Mission mission : missions) {
+			for (MissionRTO mission : missions) {
 				String name = mission.getName();
 				rows[rowIndex++] = new String[] { name };
 			}

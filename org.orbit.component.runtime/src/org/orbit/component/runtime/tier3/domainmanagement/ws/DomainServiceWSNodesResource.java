@@ -16,8 +16,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.domain.NodeConfig;
-import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
+import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
@@ -72,10 +72,10 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 
 		List<NodeConfigDTO> nodeConfigDTOs = new ArrayList<NodeConfigDTO>();
 		try {
-			List<NodeConfig> nodeConfigs = service.getNodeConfigs(machineId, platformId);
+			List<NodeConfigRTO> nodeConfigs = service.getNodeConfigs(machineId, platformId);
 			if (nodeConfigs != null) {
-				for (NodeConfig nodeConfig : nodeConfigs) {
-					NodeConfigDTO nodeConfigDTO = ModelConverter.getInstance().toDTO(nodeConfig);
+				for (NodeConfigRTO nodeConfig : nodeConfigs) {
+					NodeConfigDTO nodeConfigDTO = DomainServiceModelConverter.getInstance().toDTO(nodeConfig);
 					nodeConfigDTOs.add(nodeConfigDTO);
 				}
 			}
@@ -104,13 +104,13 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 
 		DomainManagementService service = getService();
 		try {
-			NodeConfig nodeConfig = service.getNodeConfig(machineId, platformId, nodeId);
+			NodeConfigRTO nodeConfig = service.getNodeConfig(machineId, platformId, nodeId);
 			if (nodeConfig == null) {
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Node with id '%s' cannot be found.", platformId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
 
-			nodeConfigDTO = ModelConverter.getInstance().toDTO(nodeConfig);
+			nodeConfigDTO = DomainServiceModelConverter.getInstance().toDTO(nodeConfig);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -151,7 +151,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
-			NodeConfig addNodeRequest = ModelConverter.getInstance().toRTO(addNodeRequestDTO);
+			NodeConfigRTO addNodeRequest = DomainServiceModelConverter.getInstance().toRTO(addNodeRequestDTO);
 
 			succeed = service.addNodeConfig(machineId, platformId, addNodeRequest);
 
@@ -189,7 +189,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		boolean succeed = false;
 		DomainManagementService service = getService();
 		try {
-			NodeConfig updateNodeRequest = ModelConverter.getInstance().toRTO(updateNodeRequestDTO);
+			NodeConfigRTO updateNodeRequest = DomainServiceModelConverter.getInstance().toRTO(updateNodeRequestDTO);
 			List<String> fieldsToUpdate = updateNodeRequestDTO.getFieldsToUpdate();
 
 			succeed = service.updateNodeConfig(machineId, platformId, updateNodeRequest, fieldsToUpdate);

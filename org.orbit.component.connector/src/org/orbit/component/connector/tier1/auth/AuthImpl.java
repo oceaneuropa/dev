@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.model.tier1.auth.AuthConverter;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
@@ -94,11 +93,11 @@ public class AuthImpl implements Auth {
 	@Override
 	public AuthorizationResponse authorize(AuthorizationRequest authRequest) throws ClientException {
 		AuthorizationResponse authResponse = null;
-		AuthorizationRequestDTO authRequestDTO = AuthConverter.getInstance().toRequestDTO(authRequest);
+		AuthorizationRequestDTO authRequestDTO = AuthModelConverter.getInstance().toRequestDTO(authRequest);
 		try {
 			AuthorizationResponseDTO authResponseDTO = this.client.authorize(authRequestDTO);
 			if (authResponseDTO != null) {
-				authResponse = AuthConverter.getInstance().toResponseDTO(authResponseDTO);
+				authResponse = AuthModelConverter.getInstance().toResponseDTO(authResponseDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -109,11 +108,11 @@ public class AuthImpl implements Auth {
 	@Override
 	public TokenResponse getToken(TokenRequest tokenRequest) throws ClientException {
 		TokenResponse tokenResponse = null;
-		TokenRequestDTO tokenRequestDTO = AuthConverter.getInstance().toRequestDTO(tokenRequest);
+		TokenRequestDTO tokenRequestDTO = AuthModelConverter.getInstance().toRequestDTO(tokenRequest);
 		try {
 			TokenResponseDTO tokenResponseDTO = this.client.token(tokenRequestDTO);
 			if (tokenResponseDTO != null) {
-				tokenResponse = AuthConverter.getInstance().toResponseDTO(tokenResponseDTO);
+				tokenResponse = AuthModelConverter.getInstance().toResponseDTO(tokenResponseDTO);
 			}
 		} catch (ClientException e) {
 			throw e;

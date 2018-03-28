@@ -2,9 +2,9 @@ package org.orbit.component.runtime.tier3.domainmanagement.service;
 
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.MachineConfig;
-import org.orbit.component.model.tier3.domain.NodeConfig;
-import org.orbit.component.model.tier3.domain.PlatformConfig;
+import org.orbit.component.model.tier3.domain.MachineConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAware;
 import org.origin.core.resources.IWorkspaceService;
@@ -16,45 +16,45 @@ public interface DomainManagementService extends WebServiceAware {
 	// ------------------------------------------------------
 	// Machine management
 	// ------------------------------------------------------
-	List<MachineConfig> getMachineConfigs() throws ServerException;
+	List<MachineConfigRTO> getMachineConfigs() throws ServerException;
 
-	MachineConfig getMachineConfig(String machineId) throws ServerException;
+	MachineConfigRTO getMachineConfig(String machineId) throws ServerException;
 
 	boolean machineConfigExists(String machineId) throws ServerException;
 
-	boolean addMachineConfig(MachineConfig addMachineRequest) throws ServerException;
+	boolean addMachineConfig(MachineConfigRTO addMachineRequest) throws ServerException;
 
-	boolean updateMachineConfig(MachineConfig updateMachineRequest, List<String> fieldsToUpdate) throws ServerException;
+	boolean updateMachineConfig(MachineConfigRTO updateMachineRequest, List<String> fieldsToUpdate) throws ServerException;
 
 	boolean deleteMachineConfig(String machineId) throws ServerException;
 
 	// ------------------------------------------------------
 	// Platform management
 	// ------------------------------------------------------
-	List<PlatformConfig> getPlatformConfigs(String machineId) throws ServerException;
+	List<PlatformConfigRTO> getPlatformConfigs(String machineId) throws ServerException;
 
-	PlatformConfig getPlatformConfig(String machineId, String platformId) throws ServerException;
+	PlatformConfigRTO getPlatformConfig(String machineId, String platformId) throws ServerException;
 
 	boolean platformConfigExists(String machineId, String platformId) throws ServerException;
 
-	boolean addPlatformConfig(String machineId, PlatformConfig addPlatformRequest) throws ServerException;
+	boolean addPlatformConfig(String machineId, PlatformConfigRTO addPlatformRequest) throws ServerException;
 
-	boolean updatePlatformConfig(String machineId, PlatformConfig updatePlatformRequest, List<String> fieldsToUpdate) throws ServerException;
+	boolean updatePlatformConfig(String machineId, PlatformConfigRTO updatePlatformRequest, List<String> fieldsToUpdate) throws ServerException;
 
 	boolean deletePlatformConfig(String machineId, String platformId) throws ServerException;
 
 	// ------------------------------------------------------
 	// Node management
 	// ------------------------------------------------------
-	List<NodeConfig> getNodeConfigs(String machineId, String platformId) throws ServerException;
+	List<NodeConfigRTO> getNodeConfigs(String machineId, String platformId) throws ServerException;
 
-	NodeConfig getNodeConfig(String machineId, String platformId, String nodeId) throws ServerException;
+	NodeConfigRTO getNodeConfig(String machineId, String platformId, String nodeId) throws ServerException;
 
 	boolean nodeConfigExists(String machineId, String platformId, String nodeId) throws ServerException;
 
-	boolean addNodeConfig(String machineId, String platformId, NodeConfig addNodeRequest) throws ServerException;
+	boolean addNodeConfig(String machineId, String platformId, NodeConfigRTO addNodeRequest) throws ServerException;
 
-	boolean updateNodeConfig(String machineId, String platformId, NodeConfig updateNodeRequest, List<String> fieldsToUpdate) throws ServerException;
+	boolean updateNodeConfig(String machineId, String platformId, NodeConfigRTO updateNodeRequest, List<String> fieldsToUpdate) throws ServerException;
 
 	boolean deleteNodeConfig(String machineId, String platformId, String nodeId) throws ServerException;
 

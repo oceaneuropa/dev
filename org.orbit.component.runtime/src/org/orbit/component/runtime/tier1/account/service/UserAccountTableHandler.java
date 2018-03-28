@@ -7,7 +7,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.orbit.component.model.tier1.account.UserAccount;
+import org.orbit.component.model.tier1.account.UserAccountRTO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -75,7 +75,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected static UserAccount toRTO(ResultSet rs) throws SQLException {
+	protected static UserAccountRTO toRTO(ResultSet rs) throws SQLException {
 		String userId = rs.getString("userId");
 		String password = rs.getString("password");
 		String email = rs.getString("email");
@@ -89,7 +89,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 		Date creationTime = creationTimeString != null ? DateUtil.toDate(creationTimeString, DateUtil.getCommonDateFormats()) : null;
 		Date lastUpdateTime = lastUpdateTimeString != null ? DateUtil.toDate(lastUpdateTimeString, DateUtil.getCommonDateFormats()) : null;
 
-		return new UserAccount(userId, password, email, firstName, lastName, phone, creationTime, lastUpdateTime, activated);
+		return new UserAccountRTO(userId, password, email, firstName, lastName, phone, creationTime, lastUpdateTime, activated);
 	}
 
 	/**
@@ -98,11 +98,11 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<UserAccount> getUserAccounts(Connection conn) throws SQLException {
+	public List<UserAccountRTO> getUserAccounts(Connection conn) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " ORDER BY userId ASC";
-		ResultSetListHandler<UserAccount> handler = new ResultSetListHandler<UserAccount>() {
+		ResultSetListHandler<UserAccountRTO> handler = new ResultSetListHandler<UserAccountRTO>() {
 			@Override
-			protected UserAccount handleRow(ResultSet rs) throws SQLException {
+			protected UserAccountRTO handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -116,11 +116,11 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public UserAccount getUserAccount(Connection conn, String userId) throws SQLException {
+	public UserAccountRTO getUserAccount(Connection conn, String userId) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE userId=?";
-		ResultSetSingleHandler<UserAccount> handler = new ResultSetSingleHandler<UserAccount>() {
+		ResultSetSingleHandler<UserAccountRTO> handler = new ResultSetSingleHandler<UserAccountRTO>() {
 			@Override
-			protected UserAccount handleRow(ResultSet rs) throws SQLException {
+			protected UserAccountRTO handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -159,7 +159,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public UserAccount createUserAccount(Connection conn, String userId, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime) throws SQLException {
+	public UserAccountRTO createUserAccount(Connection conn, String userId, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime) throws SQLException {
 		if (creationTime == null) {
 			creationTime = new Date();
 		}
@@ -269,7 +269,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean setUserAccountActivated(Connection conn, String userId, boolean activated) throws SQLException {
-		UserAccount userAccount = getUserAccount(conn, userId);
+		UserAccountRTO userAccount = getUserAccount(conn, userId);
 		if (userAccount == null) {
 			return false;
 		}

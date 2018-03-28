@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.model.tier3.domain.MachineConfig;
-import org.orbit.component.model.tier3.domain.NodeConfig;
-import org.orbit.component.model.tier3.domain.PlatformConfig;
+import org.orbit.component.model.tier3.domain.MachineConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -229,7 +229,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	// Machine management
 	// ------------------------------------------------------
 	@Override
-	public List<MachineConfig> getMachineConfigs() throws ServerException {
+	public List<MachineConfigRTO> getMachineConfigs() throws ServerException {
 		Connection conn = getConnection();
 		try {
 			return this.machineConfigTableHandler.getMachineConfigs(conn);
@@ -242,7 +242,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public MachineConfig getMachineConfig(String machineId) throws ServerException {
+	public MachineConfigRTO getMachineConfig(String machineId) throws ServerException {
 		checkMachineId(machineId);
 
 		Connection conn = getConnection();
@@ -272,7 +272,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public boolean addMachineConfig(MachineConfig addMachineRequest) throws ServerException {
+	public boolean addMachineConfig(MachineConfigRTO addMachineRequest) throws ServerException {
 		String id = addMachineRequest.getId();
 		String name = addMachineRequest.getName();
 		String ipAddress = addMachineRequest.getIpAddress();
@@ -281,7 +281,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		Connection conn = getConnection();
 		try {
-			MachineConfig newMachineConfig = this.machineConfigTableHandler.addMachineConfig(conn, id, name, ipAddress);
+			MachineConfigRTO newMachineConfig = this.machineConfigTableHandler.addMachineConfig(conn, id, name, ipAddress);
 			if (newMachineConfig != null) {
 				return true;
 			}
@@ -294,7 +294,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public boolean updateMachineConfig(MachineConfig updateMachineRequest, List<String> fieldsToUpdate) throws ServerException {
+	public boolean updateMachineConfig(MachineConfigRTO updateMachineRequest, List<String> fieldsToUpdate) throws ServerException {
 		String id = updateMachineRequest.getId();
 		String newName = updateMachineRequest.getName();
 		String newIpAddress = updateMachineRequest.getIpAddress();
@@ -308,7 +308,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		Connection conn = getConnection();
 		try {
-			MachineConfig machineConfig = this.machineConfigTableHandler.getMachineConfig(conn, id);
+			MachineConfigRTO machineConfig = this.machineConfigTableHandler.getMachineConfig(conn, id);
 			if (machineConfig == null) {
 				throw new ServerException("404", "Machine with id '" + id + "' is not found.");
 			}
@@ -364,7 +364,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	// TransferAgent management
 	// ------------------------------------------------------
 	@Override
-	public List<PlatformConfig> getPlatformConfigs(String machineId) throws ServerException {
+	public List<PlatformConfigRTO> getPlatformConfigs(String machineId) throws ServerException {
 		checkMachineId(machineId);
 
 		Connection conn = getConnection();
@@ -380,7 +380,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public PlatformConfig getPlatformConfig(String machineId, String transferAgentId) throws ServerException {
+	public PlatformConfigRTO getPlatformConfig(String machineId, String transferAgentId) throws ServerException {
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 
@@ -412,7 +412,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public boolean addPlatformConfig(String machineId, PlatformConfig addTransferAgentRequest) throws ServerException {
+	public boolean addPlatformConfig(String machineId, PlatformConfigRTO addTransferAgentRequest) throws ServerException {
 		String id = addTransferAgentRequest.getId();
 		String name = addTransferAgentRequest.getName();
 		String home = addTransferAgentRequest.getHome();
@@ -424,7 +424,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		Connection conn = getConnection();
 		try {
-			PlatformConfig newTransferAgentConfig = this.platformConfigTableHandler.add(conn, machineId, id, name, home, hostURL, contextRoot);
+			PlatformConfigRTO newTransferAgentConfig = this.platformConfigTableHandler.add(conn, machineId, id, name, home, hostURL, contextRoot);
 			if (newTransferAgentConfig != null) {
 				return true;
 			}
@@ -437,7 +437,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public boolean updatePlatformConfig(String machineId, PlatformConfig updateTransferAgentRequest, List<String> fieldsToUpdate) throws ServerException {
+	public boolean updatePlatformConfig(String machineId, PlatformConfigRTO updateTransferAgentRequest, List<String> fieldsToUpdate) throws ServerException {
 		String id = updateTransferAgentRequest.getId();
 		String newName = updateTransferAgentRequest.getName();
 		String newHome = updateTransferAgentRequest.getHome();
@@ -451,7 +451,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		Connection conn = getConnection();
 		try {
-			PlatformConfig transferAgentConfig = this.platformConfigTableHandler.getPlatformConfig(conn, machineId, id);
+			PlatformConfigRTO transferAgentConfig = this.platformConfigTableHandler.getPlatformConfig(conn, machineId, id);
 			if (transferAgentConfig == null) {
 				throw new ServerException("404", "TransferAgent with id '" + id + "' is not found.");
 			}
@@ -530,7 +530,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	// Node management
 	// ------------------------------------------------------
 	@Override
-	public List<NodeConfig> getNodeConfigs(String machineId, String transferAgentId) throws ServerException {
+	public List<NodeConfigRTO> getNodeConfigs(String machineId, String transferAgentId) throws ServerException {
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 
@@ -546,7 +546,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public NodeConfig getNodeConfig(String machineId, String transferAgentId, String nodeId) throws ServerException {
+	public NodeConfigRTO getNodeConfig(String machineId, String transferAgentId, String nodeId) throws ServerException {
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 		checkNodeId(nodeId);
@@ -580,7 +580,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public boolean addNodeConfig(String machineId, String transferAgentId, NodeConfig addNodeRequest) throws ServerException {
+	public boolean addNodeConfig(String machineId, String transferAgentId, NodeConfigRTO addNodeRequest) throws ServerException {
 		String id = addNodeRequest.getId();
 		String name = addNodeRequest.getName();
 		String home = addNodeRequest.getHome();
@@ -593,7 +593,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		Connection conn = getConnection();
 		try {
-			NodeConfig newNodeConfig = this.nodeConfigTableHandler.add(conn, machineId, transferAgentId, id, name, home, hostURL, contextRoot);
+			NodeConfigRTO newNodeConfig = this.nodeConfigTableHandler.add(conn, machineId, transferAgentId, id, name, home, hostURL, contextRoot);
 			if (newNodeConfig != null) {
 				return true;
 			}
@@ -606,7 +606,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	}
 
 	@Override
-	public boolean updateNodeConfig(String machineId, String transferAgentId, NodeConfig updateNodeRequest, List<String> fieldsToUpdate) throws ServerException {
+	public boolean updateNodeConfig(String machineId, String transferAgentId, NodeConfigRTO updateNodeRequest, List<String> fieldsToUpdate) throws ServerException {
 		String id = updateNodeRequest.getId();
 		String newName = updateNodeRequest.getName();
 		String newHome = updateNodeRequest.getHome();
@@ -621,7 +621,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		Connection conn = getConnection();
 		try {
-			NodeConfig nodeConfig = this.nodeConfigTableHandler.getNodeConfig(conn, machineId, transferAgentId, id);
+			NodeConfigRTO nodeConfig = this.nodeConfigTableHandler.getNodeConfig(conn, machineId, transferAgentId, id);
 			if (nodeConfig == null) {
 				throw new ServerException("404", "NodeAgent with id '" + id + "' is not found.");
 			}

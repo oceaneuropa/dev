@@ -1,8 +1,5 @@
 package org.orbit.component.api.tier3.domainmanagement;
 
-import org.orbit.component.model.tier3.domain.dto.MachineConfig;
-import org.orbit.component.model.tier3.domain.dto.NodeConfig;
-import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;

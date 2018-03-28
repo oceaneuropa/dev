@@ -5,14 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
+import org.orbit.component.api.tier3.domainmanagement.NodeConfig;
+import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.model.tier3.domain.dto.MachineConfig;
-import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
-import org.orbit.component.model.tier3.domain.dto.ModelConverter;
-import org.orbit.component.model.tier3.domain.dto.NodeConfig;
-import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
-import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
-import org.orbit.component.model.tier3.domain.dto.PlatformConfigDTO;
+import org.orbit.component.model.tier3.domain.MachineConfigDTO;
+import org.orbit.component.model.tier3.domain.NodeConfigDTO;
+import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
@@ -72,7 +71,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			List<MachineConfigDTO> machineDTOs = this.client.getMachines();
 			for (MachineConfigDTO machineDTO : machineDTOs) {
-				machines.add(ModelConverter.INSTANCE.toMachineConfig(machineDTO));
+				machines.add(DomainManagementConverter.INSTANCE.toMachineConfig(machineDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -88,7 +87,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			MachineConfigDTO machineDTO = this.client.getMachine(machineId);
 			if (machineDTO != null) {
-				machine = ModelConverter.INSTANCE.toMachineConfig(machineDTO);
+				machine = DomainManagementConverter.INSTANCE.toMachineConfig(machineDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -102,7 +101,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkMachineId(machineId);
 
 		try {
-			MachineConfigDTO addMachineRequestDTO = ModelConverter.INSTANCE.toDTO(addMachineRequest);
+			MachineConfigDTO addMachineRequestDTO = DomainManagementConverter.INSTANCE.toDTO(addMachineRequest);
 			StatusDTO status = this.client.addMachine(addMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -119,7 +118,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkMachineId(machineId);
 
 		try {
-			MachineConfigDTO updateMachineRequestDTO = ModelConverter.INSTANCE.toDTO(updateMachineRequest);
+			MachineConfigDTO updateMachineRequestDTO = DomainManagementConverter.INSTANCE.toDTO(updateMachineRequest);
 			StatusDTO status = this.client.updateMachine(updateMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -167,7 +166,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			List<PlatformConfigDTO> platformConfigDTOs = this.client.getPlatformConfigs(machineId);
 			for (PlatformConfigDTO platformConfigDTO : platformConfigDTOs) {
-				platformConfigs.add(ModelConverter.INSTANCE.toPlatformConfig(machineId, platformConfigDTO));
+				platformConfigs.add(DomainManagementConverter.INSTANCE.toPlatformConfig(machineId, platformConfigDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -184,7 +183,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			PlatformConfigDTO platformConfigDTO = this.client.getPlatformConfig(machineId, platformId);
 			if (platformConfigDTO != null) {
-				platformConfig = ModelConverter.INSTANCE.toPlatformConfig(machineId, platformConfigDTO);
+				platformConfig = DomainManagementConverter.INSTANCE.toPlatformConfig(machineId, platformConfigDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -199,7 +198,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkPlatformId(platformId);
 
 		try {
-			PlatformConfigDTO addPlatformConfigDTO = ModelConverter.INSTANCE.toDTO(addPlatformConfigRequest);
+			PlatformConfigDTO addPlatformConfigDTO = DomainManagementConverter.INSTANCE.toDTO(addPlatformConfigRequest);
 			StatusDTO status = this.client.addPlatformConfig(machineId, addPlatformConfigDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -217,7 +216,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkPlatformId(platformId);
 
 		try {
-			PlatformConfigDTO updatePlatformConfigDTO = ModelConverter.INSTANCE.toDTO(updatePlatformConfigRequest);
+			PlatformConfigDTO updatePlatformConfigDTO = DomainManagementConverter.INSTANCE.toDTO(updatePlatformConfigRequest);
 			StatusDTO status = this.client.updatePlatformConfig(machineId, updatePlatformConfigDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -267,7 +266,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			List<NodeConfigDTO> nodeConfigDTOs = this.client.getNodes(machineId, platformId);
 			for (NodeConfigDTO nodeConfigDTO : nodeConfigDTOs) {
-				nodeConfigs.add(ModelConverter.INSTANCE.toNodeConfig(machineId, platformId, nodeConfigDTO));
+				nodeConfigs.add(DomainManagementConverter.INSTANCE.toNodeConfig(machineId, platformId, nodeConfigDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -285,7 +284,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		try {
 			NodeConfigDTO nodeConfigDTO = this.client.getNode(machineId, platformId, nodeId);
 			if (nodeConfigDTO != null) {
-				nodeConfig = ModelConverter.INSTANCE.toNodeConfig(machineId, platformId, nodeConfigDTO);
+				nodeConfig = DomainManagementConverter.INSTANCE.toNodeConfig(machineId, platformId, nodeConfigDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -301,7 +300,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkNodeId(nodeId);
 
 		try {
-			NodeConfigDTO addNodeRequestDTO = ModelConverter.INSTANCE.toDTO(addNodeRequest);
+			NodeConfigDTO addNodeRequestDTO = DomainManagementConverter.INSTANCE.toDTO(addNodeRequest);
 			StatusDTO status = this.client.addNode(machineId, platformId, addNodeRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -320,7 +319,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		checkNodeId(nodeId);
 
 		try {
-			NodeConfigDTO updateNodeRequestDTO = ModelConverter.INSTANCE.toDTO(updateNodeRequest);
+			NodeConfigDTO updateNodeRequestDTO = DomainManagementConverter.INSTANCE.toDTO(updateNodeRequest);
 			StatusDTO status = this.client.updateNode(machineId, platformId, updateNodeRequestDTO);
 			if (status != null && status.success()) {
 				return true;

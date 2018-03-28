@@ -3,7 +3,7 @@ package org.orbit.component.runtime.tier4.missioncontrol.service;
 import java.io.IOException;
 import java.util.List;
 
-import org.orbit.component.model.tier4.mission.Mission;
+import org.orbit.component.model.tier4.mission.MissionRTO;
 
 public interface MissionPersistenceHandler {
 
@@ -14,7 +14,7 @@ public interface MissionPersistenceHandler {
 	 * @return
 	 * @throws IOException
 	 */
-	List<Mission> getMissions(String typeId) throws IOException;
+	List<MissionRTO> getMissions(String typeId) throws IOException;
 
 	/**
 	 * Get a list of mission names.
@@ -33,7 +33,7 @@ public interface MissionPersistenceHandler {
 	 * @return
 	 * @throws IOException
 	 */
-	Mission getMission(String typeId, Integer id) throws IOException;
+	MissionRTO getMission(String typeId, Integer id) throws IOException;
 
 	/**
 	 * Get a mission by name.
@@ -43,7 +43,7 @@ public interface MissionPersistenceHandler {
 	 * @return
 	 * @throws IOException
 	 */
-	Mission getMission(String typeId, String name) throws IOException;
+	MissionRTO getMission(String typeId, String name) throws IOException;
 
 	/**
 	 * Check whether mission name exists.
@@ -62,7 +62,7 @@ public interface MissionPersistenceHandler {
 	 * @return
 	 * @throws IOException
 	 */
-	Mission insert(String typeId, String name) throws IOException;
+	MissionRTO insert(String typeId, String name) throws IOException;
 
 	/**
 	 * Delete a mission by id.

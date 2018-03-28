@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.orbit.component.model.tier1.account.UserAccount;
+import org.orbit.component.model.tier1.account.UserAccountRTO;
 import org.origin.common.jdbc.DatabaseUtil;
 
 public class UserAccountPersistenceImpl implements UserAccountPersistence {
@@ -45,8 +45,8 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public List<UserAccount> getUserAccounts() throws IOException {
-		List<UserAccount> userAccounts = null;
+	public List<UserAccountRTO> getUserAccounts() throws IOException {
+		List<UserAccountRTO> userAccounts = null;
 		Connection conn = getConnection();
 		try {
 			userAccounts = this.userAccountTableHandler.getUserAccounts(conn);
@@ -56,14 +56,14 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		if (userAccounts == null) {
-			userAccounts = new ArrayList<UserAccount>();
+			userAccounts = new ArrayList<UserAccountRTO>();
 		}
 		return userAccounts;
 	}
 
 	@Override
-	public UserAccount getUserAccount(String userId) throws IOException {
-		UserAccount userAccount = null;
+	public UserAccountRTO getUserAccount(String userId) throws IOException {
+		UserAccountRTO userAccount = null;
 		Connection conn = getConnection();
 		try {
 			return this.userAccountTableHandler.getUserAccount(conn, userId);
@@ -76,8 +76,8 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public UserAccount createUserAccount(String userId, String password, String email, String firstName, String lastName, String phone) throws IOException {
-		UserAccount userAccount = null;
+	public UserAccountRTO createUserAccount(String userId, String password, String email, String firstName, String lastName, String phone) throws IOException {
+		UserAccountRTO userAccount = null;
 		Connection conn = getConnection();
 		try {
 			userAccount = this.userAccountTableHandler.createUserAccount(conn, userId, password, email, firstName, lastName, phone, null, null);
