@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  */
 @XmlRootElement
-public class TransferAgentConfigDTO {
+public class PlatformConfigDTO {
 
 	@XmlElement
 	protected String machineId;

@@ -1,6 +1,6 @@
 package org.orbit.component.model.tier3.domain.dto;
 
-public class TransferAgentConfigImpl implements TransferAgentConfig {
+public class PlatformConfigImpl implements PlatformConfig {
 
 	protected String machineId;
 	protected String id;
@@ -9,7 +9,7 @@ public class TransferAgentConfigImpl implements TransferAgentConfig {
 	protected String hostURL;
 	protected String contextRoot;
 
-	public TransferAgentConfigImpl() {
+	public PlatformConfigImpl() {
 	}
 
 	public String getMachineId() {

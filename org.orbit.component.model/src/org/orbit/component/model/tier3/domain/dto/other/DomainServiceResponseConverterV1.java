@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.component.model.tier3.domain.dto.ModelConverter;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
 
@@ -53,8 +53,8 @@ public class DomainServiceResponseConverterV1 {
 		return machineConfig;
 	}
 
-	public TransferAgentConfig[] convertToTransferAgentConfigs(Responses responses) {
-		List<TransferAgentConfig> taConfigs = new ArrayList<TransferAgentConfig>();
+	public PlatformConfig[] convertToTransferAgentConfigs(Responses responses) {
+		List<PlatformConfig> taConfigs = new ArrayList<PlatformConfig>();
 		Response response = responses.getResponse(Response.class);
 		if (response != null) {
 			Object bodyObj = response.getBody();
@@ -63,7 +63,7 @@ public class DomainServiceResponseConverterV1 {
 				for (Object element : elements) {
 					if (element instanceof Map<?, ?>) {
 						Map<?, ?> map = (Map<?, ?>) element;
-						TransferAgentConfig ta = ModelConverter.INSTANCE.toTransferAgentConfig(map);
+						PlatformConfig ta = ModelConverter.INSTANCE.toPlatformConfig(map);
 						if (ta != null) {
 							taConfigs.add(ta);
 						}
@@ -71,17 +71,17 @@ public class DomainServiceResponseConverterV1 {
 				}
 			}
 		}
-		return taConfigs.toArray(new TransferAgentConfig[taConfigs.size()]);
+		return taConfigs.toArray(new PlatformConfig[taConfigs.size()]);
 	}
 
-	public TransferAgentConfig convertToTransferAgentConfig(Responses responses) {
-		TransferAgentConfig taConfig = null;
+	public PlatformConfig convertToTransferAgentConfig(Responses responses) {
+		PlatformConfig taConfig = null;
 		Response response = responses.getResponse(Response.class);
 		if (response != null) {
 			Object bodyObj = response.getBody();
 			if (bodyObj instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) bodyObj;
-				taConfig = ModelConverter.INSTANCE.toTransferAgentConfig(map);
+				taConfig = ModelConverter.INSTANCE.toPlatformConfig(map);
 			}
 		}
 		return taConfig;

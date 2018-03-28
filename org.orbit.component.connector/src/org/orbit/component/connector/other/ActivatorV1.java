@@ -8,7 +8,7 @@ import org.orbit.component.connector.tier1.account.other.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnector;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
-import org.orbit.component.connector.tier3.domainmanagement.DomainServiceConnector;
+import org.orbit.component.connector.tier3.domainmanagement.DomainManagementConnector;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
 import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
 import org.orbit.infra.api.indexes.IndexServiceUtil;
@@ -43,7 +43,7 @@ public class ActivatorV1 implements BundleActivator {
 	protected UserRegistryConnector userRegistryConnector;
 	protected AuthConnector authConnector;
 	protected AppStoreConnector appStoreConnector;
-	protected DomainServiceConnector domainMgmtConnector;
+	protected DomainManagementConnector domainMgmtConnector;
 	protected NodeControlConnector transferAgentConnector;
 
 	@Override
@@ -99,7 +99,7 @@ public class ActivatorV1 implements BundleActivator {
 
 		// tier3
 		// this.domainMgmtConnector = new DomainServiceConnectorImpl(indexServiceLoadBalancer.createLoadBalancableIndexService());
-		this.domainMgmtConnector = new DomainServiceConnector();
+		this.domainMgmtConnector = new DomainManagementConnector();
 		this.domainMgmtConnector.start(bundleContext);
 
 		this.transferAgentConnector = new NodeControlConnector();

@@ -12,7 +12,7 @@ import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.domainmanagement.other.DomainServiceConnector;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.other.TransferAgentConnector;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -97,7 +97,7 @@ public class TransferAgentCommandV1 implements Annotated {
 	public NodeControlClient getTransferAgent(DomainServiceConnector domainConnector, TransferAgentConnector taConnector, String machineId, String transferAgentId) throws ClientException {
 		DomainManagementClient domain = domainConnector.getService();
 		if (domain != null) {
-			TransferAgentConfig taConfig = domain.getTransferAgentConfig(machineId, transferAgentId);
+			PlatformConfig taConfig = domain.getPlatformConfig(machineId, transferAgentId);
 			if (taConfig != null) {
 				Map<String, Object> properties = new HashMap<String, Object>();
 				properties.put(IndexConstants.NODE_CONTROL_MACHINE_ID, taConfig.getMachineId());

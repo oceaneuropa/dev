@@ -5,7 +5,7 @@ import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
-import org.origin.common.rest.util.WebServiceAware;
+import org.origin.common.service.WebServiceAware;
 
 public interface AuthService extends WebServiceAware {
 

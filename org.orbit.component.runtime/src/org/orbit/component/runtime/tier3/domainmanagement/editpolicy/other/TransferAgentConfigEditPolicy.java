@@ -1,11 +1,11 @@
 package org.orbit.component.runtime.tier3.domainmanagement.editpolicy.other;
 
 import org.orbit.component.runtime.common.ws.Requests;
-import org.orbit.component.runtime.tier3.domainmanagement.command.other.TransferAgentConfigAddCommand;
-import org.orbit.component.runtime.tier3.domainmanagement.command.other.TransferAgentConfigGetCommand;
-import org.orbit.component.runtime.tier3.domainmanagement.command.other.TransferAgentConfigRemoveCommand;
-import org.orbit.component.runtime.tier3.domainmanagement.command.other.TransferAgentConfigUpdateCommand;
-import org.orbit.component.runtime.tier3.domainmanagement.command.other.TransferAgentConfigsGetCommand;
+import org.orbit.component.runtime.tier3.domainmanagement.command.other.PlatformConfigAddCommand;
+import org.orbit.component.runtime.tier3.domainmanagement.command.other.PlatformConfigGetCommand;
+import org.orbit.component.runtime.tier3.domainmanagement.command.other.PlatformConfigRemoveCommand;
+import org.orbit.component.runtime.tier3.domainmanagement.command.other.PlatformConfigUpdateCommand;
+import org.orbit.component.runtime.tier3.domainmanagement.command.other.PlatformConfigsGetCommand;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.ICommand;
 import org.origin.common.rest.editpolicy.AbstractWSEditPolicyV1;
@@ -21,19 +21,19 @@ public class TransferAgentConfigEditPolicy extends AbstractWSEditPolicyV1 {
 		String requestName = request.getRequestName();
 
 		if (Requests.GET_TA_CONFIGS.equals(requestName)) {
-			return new TransferAgentConfigsGetCommand(service, request);
+			return new PlatformConfigsGetCommand(service, request);
 
 		} else if (Requests.GET_TA_CONFIG.equals(requestName)) {
-			return new TransferAgentConfigGetCommand(service, request);
+			return new PlatformConfigGetCommand(service, request);
 
 		} else if (Requests.ADD_TA_CONFIG.equals(requestName)) {
-			return new TransferAgentConfigAddCommand(service, request);
+			return new PlatformConfigAddCommand(service, request);
 
 		} else if (Requests.UPDATE_TA_CONFIG.equals(requestName)) {
-			return new TransferAgentConfigUpdateCommand(service, request);
+			return new PlatformConfigUpdateCommand(service, request);
 
 		} else if (Requests.REMOVE_TA_CONFIG.equals(requestName)) {
-			return new TransferAgentConfigRemoveCommand(service, request);
+			return new PlatformConfigRemoveCommand(service, request);
 		}
 
 		return null;

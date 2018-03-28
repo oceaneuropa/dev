@@ -23,14 +23,14 @@ public class DomainServiceWSApplicationDesc extends WSApplicationDesc {
 		new WSMethodDesc(machinesWSResource, WSMethodDesc.PUT, WSMethodDesc.JSON, "");
 		new WSMethodDesc(machinesWSResource, WSMethodDesc.DELETE, WSMethodDesc.JSON, "{machineId}");
 
-		WSResourceDesc transferAgentsWSResource = new WSResourceDesc(this, "/machines/{machineId}/transferagents");
-		new WSMethodDesc(transferAgentsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");
-		new WSMethodDesc(transferAgentsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{transferAgentId}");
-		new WSMethodDesc(transferAgentsWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "");
-		new WSMethodDesc(transferAgentsWSResource, WSMethodDesc.PUT, WSMethodDesc.JSON, "");
-		new WSMethodDesc(transferAgentsWSResource, WSMethodDesc.DELETE, WSMethodDesc.JSON, "{transferAgentId}");
+		WSResourceDesc platformsWSResource = new WSResourceDesc(this, "/machines/{machineId}/platforms");
+		new WSMethodDesc(platformsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");
+		new WSMethodDesc(platformsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{platformId}");
+		new WSMethodDesc(platformsWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "");
+		new WSMethodDesc(platformsWSResource, WSMethodDesc.PUT, WSMethodDesc.JSON, "");
+		new WSMethodDesc(platformsWSResource, WSMethodDesc.DELETE, WSMethodDesc.JSON, "{platformId}");
 
-		WSResourceDesc nodesWSResource = new WSResourceDesc(this, "/machines/{machineId}/transferagents/{transferAgentId}/nodes");
+		WSResourceDesc nodesWSResource = new WSResourceDesc(this, "/machines/{machineId}/platforms/{platformId}/nodes");
 		new WSMethodDesc(nodesWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");
 		new WSMethodDesc(nodesWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{nodeId}");
 		new WSMethodDesc(nodesWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "");

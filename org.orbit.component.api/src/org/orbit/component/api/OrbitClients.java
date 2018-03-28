@@ -46,7 +46,7 @@ public class OrbitClients {
 
 	// tier3
 	protected ServiceConnectorAdapter<DomainManagementClient> domainServiceConnector;
-	protected ServiceConnectorAdapter<NodeControlClient> transferAgentConnector;
+	protected ServiceConnectorAdapter<NodeControlClient> nodeControlConnector;
 
 	// tier4
 	protected ServiceConnectorAdapter<MissionControlClient> missionControlConnector;
@@ -73,8 +73,8 @@ public class OrbitClients {
 		this.domainServiceConnector = new ServiceConnectorAdapter<DomainManagementClient>(DomainManagementClient.class);
 		this.domainServiceConnector.start(bundleContext);
 
-		this.transferAgentConnector = new ServiceConnectorAdapter<NodeControlClient>(NodeControlClient.class);
-		this.transferAgentConnector.start(bundleContext);
+		this.nodeControlConnector = new ServiceConnectorAdapter<NodeControlClient>(NodeControlClient.class);
+		this.nodeControlConnector.start(bundleContext);
 
 		// tier4
 		this.missionControlConnector = new ServiceConnectorAdapter<MissionControlClient>(MissionControlClient.class);
@@ -116,9 +116,9 @@ public class OrbitClients {
 			this.domainServiceConnector = null;
 		}
 
-		if (this.transferAgentConnector != null) {
-			this.transferAgentConnector.stop(bundleContext);
-			this.transferAgentConnector = null;
+		if (this.nodeControlConnector != null) {
+			this.nodeControlConnector.stop(bundleContext);
+			this.nodeControlConnector = null;
 		}
 
 		// tier4
@@ -293,7 +293,7 @@ public class OrbitClients {
 		return domainService;
 	}
 
-	public NodeControlClient getTransferAgent(Map<?, ?> properties) {
+	public NodeControlClient getNodeControl(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_NODE_CONTROL_URL);
@@ -302,14 +302,14 @@ public class OrbitClients {
 			LOG.error("'" + OrbitConstants.ORBIT_NODE_CONTROL_URL + "' property is not found.");
 			throw new IllegalStateException("'" + OrbitConstants.ORBIT_NODE_CONTROL_URL + "' property is not found.");
 		}
-		return getTransferAgent(url);
+		return getNodeControl(url);
 	}
 
-	public NodeControlClient getTransferAgent(String url) {
-		return getTransferAgent(null, null, url);
+	public NodeControlClient getNodeControl(String url) {
+		return getNodeControl(null, null, url);
 	}
 
-	public NodeControlClient getTransferAgent(String realm, String username, String url) {
+	public NodeControlClient getNodeControl(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -318,12 +318,12 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		NodeControlClient transferAgent = this.transferAgentConnector.getService(properties);
-		if (transferAgent == null) {
+		NodeControlClient nodeControlClient = this.nodeControlConnector.getService(properties);
+		if (nodeControlClient == null) {
 			LOG.error("TransferAgent is not available.");
 			throw new IllegalStateException("TransferAgent is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
 		}
-		return transferAgent;
+		return nodeControlClient;
 	}
 
 	public MissionControlClient getMissionControl(Map<?, ?> properties) {

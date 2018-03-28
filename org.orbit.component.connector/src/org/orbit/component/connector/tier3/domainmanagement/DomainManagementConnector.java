@@ -5,15 +5,15 @@ import java.util.Map;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class DomainServiceConnector extends ServiceConnector<DomainManagementClient> {
+public class DomainManagementConnector extends ServiceConnector<DomainManagementClient> {
 
-	public DomainServiceConnector() {
+	public DomainManagementConnector() {
 		super(DomainManagementClient.class);
 	}
 
 	@Override
 	protected DomainManagementClient create(Map<String, Object> properties) {
-		return new DomainServiceClientImpl(this, properties);
+		return new DomainManagementClientImpl(this, properties);
 	}
 
 }

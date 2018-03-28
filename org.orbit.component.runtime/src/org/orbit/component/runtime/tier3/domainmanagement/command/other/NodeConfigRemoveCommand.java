@@ -33,17 +33,17 @@ public class NodeConfigRemoveCommand extends AbstractCommand {
 		boolean succeed = false;
 		try {
 			String machineId = (String) this.request.getParameter("machineId");
-			String transferAgentId = (String) this.request.getParameter("transferAgentId");
+			String platformId = (String) this.request.getParameter("platformId");
 			String id = (String) this.request.getParameter("id");
 
-			if (!this.service.nodeConfigExists(machineId, transferAgentId, id)) {
+			if (!this.service.nodeConfigExists(machineId, platformId, id)) {
 				ServerException exception = new ServerException("404", "Node config is not found.");
 				Response response = new Response(Response.FAILURE, "Node config does not exist.", exception);
 				responses.setResponse(response);
 				return new CommandResult(response);
 			}
 
-			succeed = this.service.deleteNodeConfig(machineId, transferAgentId, id);
+			succeed = this.service.deleteNodeConfig(machineId, platformId, id);
 
 		} catch (ServerException e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);

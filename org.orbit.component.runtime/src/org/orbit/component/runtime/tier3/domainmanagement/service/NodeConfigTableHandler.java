@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfig;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -60,7 +60,7 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected static NodeConfigRTO toRTO(ResultSet rs) throws SQLException {
+	protected static NodeConfig toRTO(ResultSet rs) throws SQLException {
 		String id = rs.getString("id");
 		String machineId = rs.getString("machineId");
 		String transferAgentId = rs.getString("transferAgentId");
@@ -69,7 +69,7 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 		String hostURL = rs.getString("hostURL");
 		String contextRoot = rs.getString("contextRoot");
 
-		return new NodeConfigRTO(id, machineId, transferAgentId, name, home, hostURL, contextRoot);
+		return new NodeConfig(id, machineId, transferAgentId, name, home, hostURL, contextRoot);
 	}
 
 	/**
@@ -80,11 +80,11 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<NodeConfigRTO> getNodeConfigs(Connection conn, String machineId, String transferAgentId) throws SQLException {
+	public List<NodeConfig> getNodeConfigs(Connection conn, String machineId, String transferAgentId) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE machineId=? AND transferAgentId=? ORDER BY id ASC";
-		ResultSetListHandler<NodeConfigRTO> handler = new ResultSetListHandler<NodeConfigRTO>() {
+		ResultSetListHandler<NodeConfig> handler = new ResultSetListHandler<NodeConfig>() {
 			@Override
-			protected NodeConfigRTO handleRow(ResultSet rs) throws SQLException {
+			protected NodeConfig handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -100,11 +100,11 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public NodeConfigRTO getNodeConfig(Connection conn, String machineId, String transferAgentId, String id) throws SQLException {
+	public NodeConfig getNodeConfig(Connection conn, String machineId, String transferAgentId, String id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE machineId=? AND transferAgentId=? AND id=?";
-		ResultSetSingleHandler<NodeConfigRTO> handler = new ResultSetSingleHandler<NodeConfigRTO>() {
+		ResultSetSingleHandler<NodeConfig> handler = new ResultSetSingleHandler<NodeConfig>() {
 			@Override
-			protected NodeConfigRTO handleRow(ResultSet rs) throws SQLException {
+			protected NodeConfig handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -120,7 +120,7 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean nodeConfigExists(Connection conn, String machineId, String transferAgentId, String id) throws SQLException {
+	public boolean exists(Connection conn, String machineId, String transferAgentId, String id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE machineId=? AND transferAgentId=? AND id=?";
 		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
 			@Override
@@ -144,7 +144,7 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public NodeConfigRTO addNodeConfig(Connection conn, String machineId, String transferAgentId, String id, String name, String home, String hostURL, String contextRoot) throws SQLException {
+	public NodeConfig add(Connection conn, String machineId, String transferAgentId, String id, String name, String home, String hostURL, String contextRoot) throws SQLException {
 		String insertSQL = "INSERT INTO " + getTableName() + " (id, machineId, transferAgentId, name, home, hostURL, contextRoot) VALUES (?, ?, ?, ?, ?, ?, ?)";
 		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { id, machineId, transferAgentId, name, home, hostURL, contextRoot }, 1);
 		if (succeed) {
@@ -218,7 +218,7 @@ public class NodeConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean deleteNodeConfig(Connection conn, String machineId, String transferAgentId, String id) throws SQLException {
+	public boolean delete(Connection conn, String machineId, String transferAgentId, String id) throws SQLException {
 		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE machineId=? AND transferAgentId=? AND id=?", new Object[] { machineId, transferAgentId, id }, 1);
 	}
 

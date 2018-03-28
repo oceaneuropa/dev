@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexServiceException;
-import org.origin.common.rest.util.WebServiceAware;
+import org.origin.common.service.WebServiceAware;
 
 public interface IndexService extends WebServiceAware {
 

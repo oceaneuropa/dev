@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
-import org.orbit.component.model.tier3.domain.MachineConfigRTO;
+import org.orbit.component.model.tier3.domain.MachineConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -43,7 +43,7 @@ public class MachineConfigAddCommand extends AbstractCommand {
 				return new CommandResult(response);
 			}
 
-			MachineConfigRTO addMachineRequest = new MachineConfigRTO();
+			MachineConfig addMachineRequest = new MachineConfig();
 			addMachineRequest.setId(machineId);
 			addMachineRequest.setName(name);
 			addMachineRequest.setIpAddress(ipAddress);

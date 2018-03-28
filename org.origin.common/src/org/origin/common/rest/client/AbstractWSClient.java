@@ -30,6 +30,7 @@ public abstract class AbstractWSClient implements Pingable {
 
 	protected ClientConfiguration config;
 	protected Client client;
+	protected boolean debug = false;
 
 	/**
 	 * 
@@ -313,13 +314,15 @@ public abstract class AbstractWSClient implements Pingable {
 					cookieManager.setCookies(uri, setCookieString);
 				}
 
-				String targetBaseURI = response.getHeaderString("switcher.targetURI");
-				if (targetBaseURI != null) {
-					System.out.println("switcher.targetURI:");
-					System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
-					System.out.println(uri.toString() + " -> " + targetBaseURI);
-					System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------");
-					System.out.println();
+				if (debug) {
+					String targetBaseURI = response.getHeaderString("switcher.targetURI");
+					if (targetBaseURI != null) {
+						System.out.println(getClass().getSimpleName() + "(AbstractWSClient).handleResponseHeaders() switcher.targetURI:");
+						System.out.println(uri.toString());
+						System.out.println(" -> ");
+						System.out.println(targetBaseURI);
+						System.out.println();
+					}
 				}
 			}
 		} catch (Exception e) {

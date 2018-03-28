@@ -3,7 +3,7 @@ package org.orbit.component.runtime.tier3.domainmanagement.ws;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.origin.common.rest.util.WebServiceAware;
+import org.origin.common.service.WebServiceAware;
 
 public class DomainServiceWSApplication extends OrbitWSApplication {
 
@@ -24,7 +24,7 @@ public class DomainServiceWSApplication extends OrbitWSApplication {
 			}
 		});
 		register(DomainServiceWSMachinesResource.class);
-		register(DomainServiceWSTransferAgentsResource.class);
+		register(DomainServiceWSPlatformsResource.class);
 		register(DomainServiceWSNodesResource.class);
 	}
 

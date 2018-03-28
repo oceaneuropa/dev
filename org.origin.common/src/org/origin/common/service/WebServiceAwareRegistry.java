@@ -1,4 +1,4 @@
-package org.origin.common.rest.util;
+package org.origin.common.service;
 
 import org.osgi.framework.BundleContext;
 
@@ -34,10 +34,9 @@ public abstract class WebServiceAwareRegistry {
 	 * 
 	 * @return
 	 */
-	public abstract WebServiceAware[] getWebServiceAwares();
+	public abstract WebServiceAware[] getServices();
 
 	/**
-	 * Register a WebServiceAware.
 	 * 
 	 * @param bundleContext
 	 * @param webServiceAware
@@ -45,7 +44,6 @@ public abstract class WebServiceAwareRegistry {
 	public abstract void register(BundleContext bundleContext, WebServiceAware webServiceAware);
 
 	/**
-	 * Unregister a WebServiceAware.
 	 * 
 	 * @param bundleContext
 	 * @param webServiceAware

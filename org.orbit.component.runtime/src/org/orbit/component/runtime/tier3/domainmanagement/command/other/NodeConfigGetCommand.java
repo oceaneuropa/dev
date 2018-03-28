@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domainmanagement.ws.ModelConverter;
@@ -36,10 +36,10 @@ public class NodeConfigGetCommand extends AbstractCommand {
 		NodeConfigDTO nodeConfigDTO = null;
 		try {
 			String machineId = (String) this.request.getParameter("machineId");
-			String transferAgentId = (String) this.request.getParameter("transferAgentId");
+			String platformId = (String) this.request.getParameter("platformId");
 			String id = (String) this.request.getParameter("id");
 
-			NodeConfigRTO nodeConfig = this.service.getNodeConfig(machineId, transferAgentId, id);
+			NodeConfig nodeConfig = this.service.getNodeConfig(machineId, platformId, id);
 			if (nodeConfig != null) {
 				nodeConfigDTO = ModelConverter.getInstance().toDTO(nodeConfig);
 			}

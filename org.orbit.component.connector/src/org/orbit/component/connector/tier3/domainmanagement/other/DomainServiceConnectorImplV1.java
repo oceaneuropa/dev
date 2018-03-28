@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.domainmanagement.other.DomainServiceConnector;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier3.domainmanagement.DomainServiceClientImpl;
+import org.orbit.component.connector.tier3.domainmanagement.DomainManagementClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
@@ -29,7 +29,7 @@ public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceC
 
 	@Override
 	protected DomainManagementClient createService(Map<String, Object> properties) {
-		return new DomainServiceClientImpl(null, properties);
+		return new DomainManagementClientImpl(null, properties);
 	}
 
 	@Override

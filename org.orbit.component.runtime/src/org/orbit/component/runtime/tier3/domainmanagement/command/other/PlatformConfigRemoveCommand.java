@@ -1,6 +1,5 @@
 package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
-import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -12,7 +11,7 @@ import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
 import org.origin.common.rest.server.ServerException;
 
-public class TransferAgentConfigAddCommand extends AbstractCommand {
+public class PlatformConfigRemoveCommand extends AbstractCommand {
 
 	protected DomainManagementService service;
 	protected Request request;
@@ -22,7 +21,7 @@ public class TransferAgentConfigAddCommand extends AbstractCommand {
 	 * @param service
 	 * @param request
 	 */
-	public TransferAgentConfigAddCommand(DomainManagementService service, Request request) {
+	public PlatformConfigRemoveCommand(DomainManagementService service, Request request) {
 		this.service = service;
 		this.request = request;
 	}
@@ -35,33 +34,29 @@ public class TransferAgentConfigAddCommand extends AbstractCommand {
 		try {
 			String machineId = (String) this.request.getParameter("machineId");
 			String id = (String) this.request.getParameter("id");
-			String name = (String) this.request.getParameter("name");
-			String home = (String) this.request.getParameter("home");
-			String hostURL = (String) this.request.getParameter("hostURL");
-			String contextRoot = (String) this.request.getParameter("contextRoot");
 
-			if (this.service.transferAgentConfigExists(machineId, id)) {
-				Response response = new Response(Response.FAILURE, "Transfer agent already exists.");
+			if (!this.service.platformConfigExists(machineId, id)) {
+				ServerException exception = new ServerException("404", "Transfer agent is not found.");
+				Response response = new Response(Response.FAILURE, "Transfer agent does not exist.", exception);
 				responses.setResponse(response);
 				return new CommandResult(response);
 			}
 
-			TransferAgentConfigRTO addTransferAgentRequest = new TransferAgentConfigRTO(id, name, home, hostURL, contextRoot);
-			succeed = this.service.addTransferAgentConfig(machineId, addTransferAgentRequest);
+			succeed = this.service.deletePlatformConfig(machineId, id);
 
 		} catch (ServerException e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);
-			responses.setResponse("response", response);
+			responses.setResponse(response);
 			return new CommandResult(response);
 		}
 
 		Response response = null;
 		if (succeed) {
-			response = new Response(Response.SUCCESS, "Transfer agent config is added.");
+			response = new Response(Response.SUCCESS, "Transfer agent config is removed.");
 		} else {
-			response = new Response(Response.FAILURE, "Transfer agent config is not added.");
+			response = new Response(Response.FAILURE, "Transfer agent config is not removed.");
 		}
-		responses.setResponse("response", response);
+		responses.setResponse(response);
 
 		return new CommandResult(response);
 	}

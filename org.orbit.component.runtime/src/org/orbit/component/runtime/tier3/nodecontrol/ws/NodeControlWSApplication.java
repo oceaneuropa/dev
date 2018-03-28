@@ -8,7 +8,7 @@ import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.model.Resource;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.origin.common.rest.util.WebServiceAware;
+import org.origin.common.service.WebServiceAware;
 
 /**
  * https://www.programcreek.com/java-api-examples/index.php?source_dir=para-master/para-server/src/main/java/com/erudika/para/rest/Api1.java

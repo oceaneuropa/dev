@@ -4,7 +4,7 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.origin.common.rest.server.FeatureConstants;
-import org.origin.common.rest.util.WebServiceAware;
+import org.origin.common.service.WebServiceAware;
 
 public class AppStoreWSApplication extends OrbitWSApplication {
 

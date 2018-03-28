@@ -1,11 +1,11 @@
 package org.orbit.component.runtime.tier3.domainmanagement.ws;
 
-import org.orbit.component.model.tier3.domain.MachineConfigRTO;
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
-import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
+import org.orbit.component.model.tier3.domain.MachineConfig;
+import org.orbit.component.model.tier3.domain.NodeConfig;
+import org.orbit.component.model.tier3.domain.PlatformConfig;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfigDTO;
 
 public class ModelConverter {
 
@@ -24,7 +24,7 @@ public class ModelConverter {
 	 * @param machineConfig
 	 * @return
 	 */
-	public MachineConfigDTO toDTO(MachineConfigRTO machineConfig) {
+	public MachineConfigDTO toDTO(MachineConfig machineConfig) {
 		if (machineConfig == null) {
 			return null;
 		}
@@ -43,11 +43,11 @@ public class ModelConverter {
 	 * @param transferAgentConfig
 	 * @return
 	 */
-	public TransferAgentConfigDTO toDTO(TransferAgentConfigRTO transferAgentConfig) {
+	public PlatformConfigDTO toDTO(PlatformConfig transferAgentConfig) {
 		if (transferAgentConfig == null) {
 			return null;
 		}
-		TransferAgentConfigDTO dto = new TransferAgentConfigDTO();
+		PlatformConfigDTO dto = new PlatformConfigDTO();
 
 		dto.setId(transferAgentConfig.getId());
 		dto.setName(transferAgentConfig.getName());
@@ -64,7 +64,7 @@ public class ModelConverter {
 	 * @param nodeConfig
 	 * @return
 	 */
-	public NodeConfigDTO toDTO(NodeConfigRTO nodeConfig) {
+	public NodeConfigDTO toDTO(NodeConfig nodeConfig) {
 		if (nodeConfig == null) {
 			return null;
 		}
@@ -72,7 +72,7 @@ public class ModelConverter {
 
 		dto.setId(nodeConfig.getId());
 		dto.setMachineId(nodeConfig.getMachineId());
-		dto.setTransferAgentId(nodeConfig.getTransferAgentId());
+		dto.setPlatformId(nodeConfig.getPlatformId());
 		dto.setName(nodeConfig.getName());
 		dto.setHome(nodeConfig.getHome());
 		dto.setHostURL(nodeConfig.getHostURL());
@@ -90,11 +90,11 @@ public class ModelConverter {
 	 * @param machineConfigDTO
 	 * @return
 	 */
-	public MachineConfigRTO toRTO(MachineConfigDTO machineConfigDTO) {
+	public MachineConfig toRTO(MachineConfigDTO machineConfigDTO) {
 		if (machineConfigDTO == null) {
 			return null;
 		}
-		MachineConfigRTO machineConfig = new MachineConfigRTO();
+		MachineConfig machineConfig = new MachineConfig();
 
 		machineConfig.setId(machineConfigDTO.getId());
 		machineConfig.setName(machineConfigDTO.getName());
@@ -109,11 +109,11 @@ public class ModelConverter {
 	 * @param transferAgentConfigDTO
 	 * @return
 	 */
-	public TransferAgentConfigRTO toRTO(TransferAgentConfigDTO transferAgentConfigDTO) {
+	public PlatformConfig toRTO(PlatformConfigDTO transferAgentConfigDTO) {
 		if (transferAgentConfigDTO == null) {
 			return null;
 		}
-		TransferAgentConfigRTO transferAgentConfig = new TransferAgentConfigRTO();
+		PlatformConfig transferAgentConfig = new PlatformConfig();
 
 		transferAgentConfig.setId(transferAgentConfigDTO.getId());
 		transferAgentConfig.setName(transferAgentConfigDTO.getName());
@@ -130,15 +130,15 @@ public class ModelConverter {
 	 * @param nodeConfigDTO
 	 * @return
 	 */
-	public NodeConfigRTO toRTO(NodeConfigDTO nodeConfigDTO) {
+	public NodeConfig toRTO(NodeConfigDTO nodeConfigDTO) {
 		if (nodeConfigDTO == null) {
 			return null;
 		}
-		NodeConfigRTO nodeConfig = new NodeConfigRTO();
+		NodeConfig nodeConfig = new NodeConfig();
 
 		nodeConfig.setId(nodeConfigDTO.getId());
 		nodeConfig.setMachineId(nodeConfigDTO.getMachineId());
-		nodeConfig.setTransferAgentId(nodeConfigDTO.getTransferAgentId());
+		nodeConfig.setPlatformId(nodeConfigDTO.getPlatformId());
 		nodeConfig.setName(nodeConfigDTO.getName());
 		nodeConfig.setHome(nodeConfigDTO.getHome());
 		nodeConfig.setHostURL(nodeConfigDTO.getHostURL());

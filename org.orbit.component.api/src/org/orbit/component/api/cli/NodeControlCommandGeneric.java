@@ -43,7 +43,7 @@ public class NodeControlCommandGeneric {
 	}
 
 	protected NodeControlClient getTransferAgent(String url) {
-		NodeControlClient transferAgent = OrbitClients.getInstance().getTransferAgent(url);
+		NodeControlClient transferAgent = OrbitClients.getInstance().getNodeControl(url);
 		if (transferAgent == null) {
 			throw new IllegalStateException("TransferAgent is null.");
 		}

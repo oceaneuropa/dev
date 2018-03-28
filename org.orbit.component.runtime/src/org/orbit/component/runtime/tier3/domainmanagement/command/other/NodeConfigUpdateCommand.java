@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -36,7 +36,7 @@ public class NodeConfigUpdateCommand extends AbstractCommand {
 		boolean succeed = false;
 		try {
 			String machineId = (String) this.request.getParameter("machineId");
-			String transferAgentId = (String) this.request.getParameter("transferAgentId");
+			String platformId = (String) this.request.getParameter("platformId");
 			String id = (String) this.request.getParameter("id");
 			String name = (String) this.request.getParameter("name");
 			String home = (String) this.request.getParameter("home");
@@ -46,23 +46,23 @@ public class NodeConfigUpdateCommand extends AbstractCommand {
 			@SuppressWarnings("unchecked")
 			List<String> fieldsToUpdate = (List<String>) this.request.getParameter("fieldsToUpdate");
 
-			if (!this.service.nodeConfigExists(machineId, transferAgentId, id)) {
+			if (!this.service.nodeConfigExists(machineId, platformId, id)) {
 				ServerException exception = new ServerException("404", "Node config is not found.");
 				Response response = new Response(Response.FAILURE, "Node config does not exist.", exception);
 				responses.setResponse(response);
 				return new CommandResult(response);
 			}
 
-			NodeConfigRTO updateNodeRequest = new NodeConfigRTO();
+			NodeConfig updateNodeRequest = new NodeConfig();
 			updateNodeRequest.setMachineId(machineId);
-			updateNodeRequest.setTransferAgentId(transferAgentId);
+			updateNodeRequest.setPlatformId(platformId);
 			updateNodeRequest.setId(id);
 			updateNodeRequest.setName(name);
 			updateNodeRequest.setHome(home);
 			updateNodeRequest.setHostURL(hostURL);
 			updateNodeRequest.setContextRoot(contextRoot);
 
-			succeed = this.service.updateNodeConfig(machineId, transferAgentId, updateNodeRequest, fieldsToUpdate);
+			succeed = this.service.updateNodeConfig(machineId, platformId, updateNodeRequest, fieldsToUpdate);
 
 		} catch (ServerException e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);

@@ -12,7 +12,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
 import org.orbit.component.model.tier3.nodecontrol.dto.ModelConverter;
 import org.orbit.component.model.tier3.nodecontrol.dto.NodeInfo;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -52,7 +52,7 @@ public class NodeControlCommand extends ServiceClientCommand {
 		props.put("osgi.command.function",
 				new String[] { //
 						"ping", "echo", //
-						"ta_ping", "list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
+						"platform_ping", "list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
 		});
 
 		OSGiServiceUtil.register(bundleContext, NodeControlCommand.class.getName(), this, props);
@@ -83,38 +83,39 @@ public class NodeControlCommand extends ServiceClientCommand {
 		return domainService;
 	}
 
-	protected NodeControlClient getTransferAgent(String machineId, String transferAgentId) throws ClientException {
+	protected NodeControlClient getNodeControl(String machineId, String platformId) throws ClientException {
 		DomainManagementClient domainService = getDomainService();
-		TransferAgentConfig taConfig = domainService.getTransferAgentConfig(machineId, transferAgentId);
-		if (taConfig != null) {
-			String url = taConfig.getHostURL() + taConfig.getContextRoot();
-			NodeControlClient transferAgent = OrbitClients.getInstance().getTransferAgent(url);
-			if (transferAgent == null) {
-				throw new IllegalStateException("TransferAgent is null.");
+		PlatformConfig platformConfig = domainService.getPlatformConfig(machineId, platformId);
+		if (platformConfig != null) {
+			String url = platformConfig.getHostURL() + platformConfig.getContextRoot();
+			NodeControlClient nodeControlClient = OrbitClients.getInstance().getNodeControl(url);
+			if (nodeControlClient == null) {
+				throw new IllegalStateException("NodeControl is null.");
 			}
-			return transferAgent;
+			return nodeControlClient;
 		}
 		return null;
 	}
 
 	// -----------------------------------------------------------------------------------------
-	// Service
-	// ta_ping
+	// Platforms
+	//
+	// platform_ping
 	// -----------------------------------------------------------------------------------------
 	/**
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 */
-	@Descriptor("ta_ping")
-	public void ta_ping( //
+	@Descriptor("platform_ping")
+	public void platform_ping( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId //
 	) {
-		CLIHelper.getInstance().printCommand(getScheme(), "ping", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
+		CLIHelper.getInstance().printCommand(getScheme(), "ping", new String[] { "machineId", machineId }, new String[] { "platformId", platformId });
 		try {
-			NodeControlClient transferAgent = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
-			boolean ping = transferAgent.ping();
+			boolean ping = nodeControl.ping();
 			System.out.println("ping result = " + ping);
 
 		} catch (Exception e) {
@@ -124,6 +125,7 @@ public class NodeControlCommand extends ServiceClientCommand {
 
 	// -----------------------------------------------------------------------------------------
 	// Nodes
+	//
 	// list_nodes
 	// node_exist
 	// create_node
@@ -135,23 +137,23 @@ public class NodeControlCommand extends ServiceClientCommand {
 	@Descriptor("List nodes")
 	public void list_nodes( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId //
 	) {
-		CLIHelper.getInstance().printCommand(getScheme(), "list_nodes", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId });
+		CLIHelper.getInstance().printCommand(getScheme(), "list_nodes", new String[] { "machineId", machineId }, new String[] { "platformId", platformId });
 		if (Parameter.UNSPECIFIED.equals(machineId)) {
 			LOG.error("'-machineId' parameter is not set.");
 			return;
 		}
-		if (Parameter.UNSPECIFIED.equals(transferAgentId)) {
-			LOG.error("'-transferAgentId' parameter is not set.");
+		if (Parameter.UNSPECIFIED.equals(platformId)) {
+			LOG.error("'-platformId' parameter is not set.");
 			return;
 		}
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(Requests.GET_NODES);
-			Response response = transferAgent.sendRequest(request);
+			Response response = nodeControl.sendRequest(request);
 
 			NodeInfo[] nodeInfos = ModelConverter.INSTANCE.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
@@ -171,19 +173,19 @@ public class NodeControlCommand extends ServiceClientCommand {
 	@Descriptor("Get node")
 	public void get_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
 		LOG.info("get_node()");
-		CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
+		CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(Requests.GET_NODE);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = transferAgent.sendRequest(request);
+			Response response = nodeControl.sendRequest(request);
 
 			NodeInfo nodeInfo = ModelConverter.INSTANCE.getNode(response);
 			NodeInfo[] nodeInfos = (nodeInfo != null) ? new NodeInfo[] { nodeInfo } : new NodeInfo[] {};
@@ -204,19 +206,19 @@ public class NodeControlCommand extends ServiceClientCommand {
 	@Descriptor("Check whether node exists")
 	public void node_exist( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
 		LOG.info("node_exist()");
-		CLIHelper.getInstance().printCommand(getScheme(), "node_exist", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
+		CLIHelper.getInstance().printCommand(getScheme(), "node_exist", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(Requests.NODE_EXIST);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = transferAgent.sendRequest(request);
+			Response response = nodeControl.sendRequest(request);
 			boolean exists = ModelConverter.INSTANCE.exists(response);
 			LOG.info("exists: " + exists);
 
@@ -228,19 +230,19 @@ public class NodeControlCommand extends ServiceClientCommand {
 	@Descriptor("Create a node")
 	public void create_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
 		LOG.info("create_node()");
-		CLIHelper.getInstance().printCommand(getScheme(), "create_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
+		CLIHelper.getInstance().printCommand(getScheme(), "create_node", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(Requests.CREATE_NODE);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = transferAgent.sendRequest(request);
+			Response response = nodeControl.sendRequest(request);
 
 			boolean succeed = ModelConverter.INSTANCE.isCreated(response);
 			LOG.info("succeed: " + succeed);
@@ -253,19 +255,19 @@ public class NodeControlCommand extends ServiceClientCommand {
 	@Descriptor("Delete a node")
 	public void delete_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
 		LOG.info("delete_node()");
-		CLIHelper.getInstance().printCommand(getScheme(), "delete_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
+		CLIHelper.getInstance().printCommand(getScheme(), "delete_node", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(Requests.DELETE_NODE);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = transferAgent.sendRequest(request);
+			Response response = nodeControl.sendRequest(request);
 
 			boolean succeed = ModelConverter.INSTANCE.isDeleted(response);
 			LOG.info("succeed: " + succeed);
@@ -278,19 +280,19 @@ public class NodeControlCommand extends ServiceClientCommand {
 	@Descriptor("Get the status of a node")
 	public void node_status( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
 		LOG.info("node_status()");
-		CLIHelper.getInstance().printCommand(getScheme(), "node_status", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
+		CLIHelper.getInstance().printCommand(getScheme(), "node_status", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(Requests.NODE_STATUS);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = transferAgent.sendRequest(request);
+			Response response = nodeControl.sendRequest(request);
 
 			String status = ModelConverter.INSTANCE.getStatus(response);
 			LOG.info("status: " + status);
@@ -303,14 +305,14 @@ public class NodeControlCommand extends ServiceClientCommand {
 	@Descriptor("Start a node")
 	public void start_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
 		LOG.info("start_node()");
-		CLIHelper.getInstance().printCommand(getScheme(), "start_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodeId", nodeId });
+		CLIHelper.getInstance().printCommand(getScheme(), "start_node", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
 		try {
-			NodeControlClient taClient = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -320,15 +322,15 @@ public class NodeControlCommand extends ServiceClientCommand {
 	@Descriptor("Stop a node")
 	public void stop_node( //
 			@Descriptor("Machine ID") @Parameter(names = { "-machineId", "--machineId" }, absentValue = Parameter.UNSPECIFIED) String machineId, //
-			@Descriptor("Transfer Agent ID") @Parameter(names = { "-transferAgentId", "--transferAgentId" }, absentValue = Parameter.UNSPECIFIED) String transferAgentId, //
+			@Descriptor("Platform ID") @Parameter(names = { "-platformId", "--platformId" }, absentValue = Parameter.UNSPECIFIED) String platformId, //
 			@Descriptor("Nodespace") @Parameter(names = { "-nodespace", "--nodespace" }, absentValue = Parameter.UNSPECIFIED) String nodespace, //
 			@Descriptor("Node ID") @Parameter(names = { "-nodeId", "--nodeId" }, absentValue = Parameter.UNSPECIFIED) String nodeId //
 	) {
 		LOG.info("stop_node()");
-		CLIHelper.getInstance().printCommand(getScheme(), "stop_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
+		CLIHelper.getInstance().printCommand(getScheme(), "stop_node", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodespace", nodespace }, new String[] { "nodeId", nodeId });
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(machineId, transferAgentId);
+			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 		} catch (Exception e) {
 			e.printStackTrace();

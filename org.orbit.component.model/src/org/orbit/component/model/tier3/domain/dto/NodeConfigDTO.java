@@ -17,7 +17,7 @@ public class NodeConfigDTO {
 	@XmlElement
 	protected String machineId;
 	@XmlElement
-	protected String transferAgentId;
+	protected String platformId;
 	@XmlElement
 	protected String name;
 	@XmlElement
@@ -32,7 +32,7 @@ public class NodeConfigDTO {
 
 	@XmlElement
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(String id) {
@@ -41,7 +41,7 @@ public class NodeConfigDTO {
 
 	@XmlElement
 	public String getMachineId() {
-		return machineId;
+		return this.machineId;
 	}
 
 	public void setMachineId(String machineId) {
@@ -49,17 +49,17 @@ public class NodeConfigDTO {
 	}
 
 	@XmlElement
-	public String getTransferAgentId() {
-		return transferAgentId;
+	public String getPlatformId() {
+		return this.platformId;
 	}
 
-	public void setTransferAgentId(String transferAgentId) {
-		this.transferAgentId = transferAgentId;
+	public void setPlatformId(String platformId) {
+		this.platformId = platformId;
 	}
 
 	@XmlElement
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -77,7 +77,7 @@ public class NodeConfigDTO {
 
 	@XmlElement
 	public String getHostURL() {
-		return hostURL;
+		return this.hostURL;
 	}
 
 	public void setHostURL(String hostURL) {
@@ -86,7 +86,7 @@ public class NodeConfigDTO {
 
 	@XmlElement
 	public String getContextRoot() {
-		return contextRoot;
+		return this.contextRoot;
 	}
 
 	public void setContextRoot(String contextRoot) {

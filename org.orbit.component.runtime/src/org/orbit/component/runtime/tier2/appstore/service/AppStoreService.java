@@ -6,7 +6,7 @@ import java.util.List;
 import org.orbit.component.model.tier2.appstore.AppManifestRTO;
 import org.orbit.component.model.tier2.appstore.AppQueryRTO;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.rest.util.WebServiceAware;
+import org.origin.common.service.WebServiceAware;
 
 public interface AppStoreService extends WebServiceAware {
 

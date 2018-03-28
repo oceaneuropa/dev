@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfigDTO;
 import org.origin.common.rest.client.AbstractWSClient;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -33,30 +33,30 @@ import org.origin.common.rest.util.ResponseUtil;
  * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines (Body parameter: MachineConfigDTO)
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}
  * 
- * TransferAgents
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents (Body parameter: TransferAgentConfigDTO)
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents (Body parameter: TransferAgentConfigDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}
+ * Platforms
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms (Body parameter: PlatformConfigDTO)
+ * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms (Body parameter: PlatformConfigDTO)
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}
  * 
  * Nodes
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes (Body parameter: NodeConfigDTO)
+ * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes (Body parameter: NodeConfigDTO)
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
  * 
  * @see TransferAgentWSClient
  * 
  */
-public class DomainServiceWSClient extends AbstractWSClient {
+public class DomainManagementWSClient extends AbstractWSClient {
 
-	public static String PATH_MACHINES = "machines";
-	public static String PATH_TRANSFER_AGENTS = "transferagents";
-	public static String PATH_NODES = "nodes";
+	public static String MACHINES = "machines";
+	public static String PLATFORMS = "platforms";
+	public static String NODES = "nodes";
 
-	public DomainServiceWSClient(ClientConfiguration config) {
+	public DomainManagementWSClient(ClientConfiguration config) {
 		super(config);
 	}
 
@@ -75,7 +75,7 @@ public class DomainServiceWSClient extends AbstractWSClient {
 		List<MachineConfigDTO> machines = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES);
+			WebTarget target = getRootPath().path(MACHINES);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
@@ -106,7 +106,7 @@ public class DomainServiceWSClient extends AbstractWSClient {
 		MachineConfigDTO machine = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
@@ -134,7 +134,7 @@ public class DomainServiceWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES);
+			WebTarget target = getRootPath().path(MACHINES);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<MachineConfigDTO>(addMachineRequestDTO) {
 			}));
@@ -164,7 +164,7 @@ public class DomainServiceWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES);
+			WebTarget target = getRootPath().path(MACHINES);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).put(Entity.json(new GenericEntity<MachineConfigDTO>(updateMachineRequestDTO) {
 			}));
@@ -192,7 +192,7 @@ public class DomainServiceWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
 			checkResponse(target, response);
@@ -207,85 +207,85 @@ public class DomainServiceWSClient extends AbstractWSClient {
 	}
 
 	// ------------------------------------------------------
-	// TransferAgent management
+	// Platform management
 	// ------------------------------------------------------
 	/**
-	 * Get transfer agent configurations.
+	 * Get platform configurations.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms
 	 * 
 	 * @param machineId
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<TransferAgentConfigDTO> getTransferAgents(String machineId) throws ClientException {
-		List<TransferAgentConfigDTO> transferAgents = null;
+	public List<PlatformConfigDTO> getPlatformConfigs(String machineId) throws ClientException {
+		List<PlatformConfigDTO> platformConfigDTOs = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
 
-			transferAgents = response.readEntity(new GenericType<List<TransferAgentConfigDTO>>() {
+			platformConfigDTOs = response.readEntity(new GenericType<List<PlatformConfigDTO>>() {
 			});
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
 		}
-		if (transferAgents == null) {
-			transferAgents = Collections.emptyList();
+		if (platformConfigDTOs == null) {
+			platformConfigDTOs = Collections.emptyList();
 		}
-		return transferAgents;
+		return platformConfigDTOs;
 	}
 
 	/**
-	 * Get a transfer agent configuration.
+	 * Get a platform configuration.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @return
 	 * @throws ClientException
 	 */
-	public TransferAgentConfigDTO getTransferAgent(String machineId, String transferAgentId) throws ClientException {
-		TransferAgentConfigDTO transferAgent = null;
+	public PlatformConfigDTO getPlatformConfig(String machineId, String platformId) throws ClientException {
+		PlatformConfigDTO platformConfigDTO = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS).path(platformId);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
 
-			transferAgent = response.readEntity(TransferAgentConfigDTO.class);
+			platformConfigDTO = response.readEntity(PlatformConfigDTO.class);
 		} catch (ClientException e) {
 			handleException(e);
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
 		}
-		return transferAgent;
+		return platformConfigDTO;
 	}
 
 	/**
-	 * Add a transfer agent configuration.
+	 * Add a platform configuration.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents (Body parameter: TransferAgentConfigDTO)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms (Body parameter: PlatformConfigDTO)
 	 * 
 	 * @param machineId
-	 * @param addTransferAgentRequestDTO
-	 *            Body parameter for adding a transfer agent.
+	 * @param addPlatformConfigDTO
+	 *            Body parameter for adding a platform.
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO addTransferAgent(String machineId, TransferAgentConfigDTO addTransferAgentRequestDTO) throws ClientException {
+	public StatusDTO addPlatformConfig(String machineId, PlatformConfigDTO addPlatformConfigDTO) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).post(Entity.json(new GenericEntity<TransferAgentConfigDTO>(addTransferAgentRequestDTO) {
+			response = updateHeaders(builder).post(Entity.json(new GenericEntity<PlatformConfigDTO>(addPlatformConfigDTO) {
 			}));
 			checkResponse(target, response);
 
@@ -299,23 +299,23 @@ public class DomainServiceWSClient extends AbstractWSClient {
 	}
 
 	/**
-	 * Update a transfer agent configuration.
+	 * Update a platform configuration.
 	 * 
-	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents (Body parameter: TransferAgentConfigDTO)
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms (Body parameter: PlatformConfigDTO)
 	 * 
 	 * @param machineId
-	 * @param updateTransferAgentRequestDTO
-	 *            Body parameter for updating a transfer agent.
+	 * @param updatePlatformRequestDTO
+	 *            Body parameter for updating a platform config.
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateTransferAgent(String machineId, TransferAgentConfigDTO updateTransferAgentRequestDTO) throws ClientException {
+	public StatusDTO updatePlatformConfig(String machineId, PlatformConfigDTO updatePlatformRequestDTO) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).put(Entity.json(new GenericEntity<TransferAgentConfigDTO>(updateTransferAgentRequestDTO) {
+			response = updateHeaders(builder).put(Entity.json(new GenericEntity<PlatformConfigDTO>(updatePlatformRequestDTO) {
 			}));
 			checkResponse(target, response);
 
@@ -329,20 +329,20 @@ public class DomainServiceWSClient extends AbstractWSClient {
 	}
 
 	/**
-	 * Remove a transfer agent configuration.
+	 * Remove a platform configuration.
 	 * 
-	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO removeTransferAgent(String machineId, String transferAgentId) throws ClientException {
+	public StatusDTO removePlatformConfig(String machineId, String platformId) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS).path(platformId);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
 			checkResponse(target, response);
@@ -362,18 +362,18 @@ public class DomainServiceWSClient extends AbstractWSClient {
 	/**
 	 * Get node configurations.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<NodeConfigDTO> getNodes(String machineId, String transferAgentId) throws ClientException {
+	public List<NodeConfigDTO> getNodes(String machineId, String platformId) throws ClientException {
 		List<NodeConfigDTO> nodeConfigs = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS).path(platformId).path(NODES);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
@@ -394,19 +394,19 @@ public class DomainServiceWSClient extends AbstractWSClient {
 	/**
 	 * Get a node configuration.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @param nodeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public NodeConfigDTO getNode(String machineId, String transferAgentId, String nodeId) throws ClientException {
+	public NodeConfigDTO getNode(String machineId, String platformId, String nodeId) throws ClientException {
 		NodeConfigDTO nodeConfigDTO = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES).path(nodeId);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS).path(platformId).path(NODES).path(nodeId);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
@@ -423,20 +423,20 @@ public class DomainServiceWSClient extends AbstractWSClient {
 	/**
 	 * Add a node configuration.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes (Body parameter: NodeConfigDTO)
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @param addNodeRequestDTO
 	 *            Body parameter for adding a node.
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO addNode(String machineId, String transferAgentId, NodeConfigDTO addNodeRequestDTO) throws ClientException {
+	public StatusDTO addNode(String machineId, String platformId, NodeConfigDTO addNodeRequestDTO) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS).path(platformId).path(NODES);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<NodeConfigDTO>(addNodeRequestDTO) {
 			}));
@@ -454,20 +454,20 @@ public class DomainServiceWSClient extends AbstractWSClient {
 	/**
 	 * Update a node configuration.
 	 * 
-	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes (Body parameter: NodeConfigDTO)
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @param updateNodeRequestDTO
 	 *            Body parameter for updating a node.
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateNode(String machineId, String transferAgentId, NodeConfigDTO updateNodeRequestDTO) throws ClientException {
+	public StatusDTO updateNode(String machineId, String platformId, NodeConfigDTO updateNodeRequestDTO) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS).path(platformId).path(NODES);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).put(Entity.json(new GenericEntity<NodeConfigDTO>(updateNodeRequestDTO) {
 			}));
@@ -485,19 +485,19 @@ public class DomainServiceWSClient extends AbstractWSClient {
 	/**
 	 * Remove a node configuration.
 	 * 
-	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @param nodeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO removeNode(String machineId, String transferAgentId, String nodeId) throws ClientException {
+	public StatusDTO removeNode(String machineId, String platformId, String nodeId) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path(PATH_MACHINES).path(machineId).path(PATH_TRANSFER_AGENTS).path(transferAgentId).path(PATH_NODES).path(nodeId);
+			WebTarget target = getRootPath().path(MACHINES).path(machineId).path(PLATFORMS).path(platformId).path(NODES).path(nodeId);
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
 			checkResponse(target, response);

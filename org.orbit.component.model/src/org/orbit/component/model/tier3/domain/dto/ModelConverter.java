@@ -4,10 +4,10 @@ import java.util.Map;
 
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
 
 public class ModelConverter {
 
@@ -46,17 +46,17 @@ public class ModelConverter {
 	/**
 	 * 
 	 * @param machineId
-	 * @param transferAgentDTO
+	 * @param platformConfigDTO
 	 * @return
 	 */
-	public TransferAgentConfig toTransferAgentConfig(String machineId, TransferAgentConfigDTO transferAgentDTO) {
-		TransferAgentConfigImpl impl = new TransferAgentConfigImpl();
+	public PlatformConfig toPlatformConfig(String machineId, PlatformConfigDTO platformConfigDTO) {
+		PlatformConfigImpl impl = new PlatformConfigImpl();
 		impl.setMachineId(machineId);
-		impl.setId(transferAgentDTO.getId());
-		impl.setName(transferAgentDTO.getName());
-		impl.setHome(transferAgentDTO.getHome());
-		impl.setHostURL(transferAgentDTO.getHostURL());
-		impl.setContextRoot(transferAgentDTO.getContextRoot());
+		impl.setId(platformConfigDTO.getId());
+		impl.setName(platformConfigDTO.getName());
+		impl.setHome(platformConfigDTO.getHome());
+		impl.setHostURL(platformConfigDTO.getHostURL());
+		impl.setContextRoot(platformConfigDTO.getContextRoot());
 		return impl;
 	}
 
@@ -65,7 +65,7 @@ public class ModelConverter {
 	 * @param map
 	 * @return
 	 */
-	public TransferAgentConfig toTransferAgentConfig(Map<?, ?> map) {
+	public PlatformConfig toPlatformConfig(Map<?, ?> map) {
 		String machineId = (String) map.get("machineId");
 		String id = (String) map.get("id");
 		String name = (String) map.get("name");
@@ -73,7 +73,7 @@ public class ModelConverter {
 		String hostURL = (String) map.get("hostURL");
 		String contextRoot = (String) map.get("contextRoot");
 
-		TransferAgentConfigImpl impl = new TransferAgentConfigImpl();
+		PlatformConfigImpl impl = new PlatformConfigImpl();
 		impl.setMachineId(machineId);
 		impl.setId(id);
 		impl.setName(name);
@@ -87,14 +87,14 @@ public class ModelConverter {
 	/**
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @param nodeConfigDTO
 	 * @return
 	 */
-	public NodeConfig toNodeConfig(String machineId, String transferAgentId, NodeConfigDTO nodeConfigDTO) {
+	public NodeConfig toNodeConfig(String machineId, String platformId, NodeConfigDTO nodeConfigDTO) {
 		NodeConfigImpl impl = new NodeConfigImpl();
 		impl.setMachineId(machineId);
-		impl.setTransferAgentId(transferAgentId);
+		impl.setPlatformId(platformId);
 		impl.setId(nodeConfigDTO.getId());
 		impl.setName(nodeConfigDTO.getName());
 		impl.setHome(nodeConfigDTO.getHome());
@@ -110,7 +110,7 @@ public class ModelConverter {
 	 */
 	public NodeConfig toNodeConfig(Map<?, ?> map) {
 		String machineId = (String) map.get("machineId");
-		String transferAgentId = (String) map.get("transferAgentId");
+		String platformId = (String) map.get("platformId");
 		String id = (String) map.get("id");
 		String name = (String) map.get("name");
 		String home = (String) map.get("home");
@@ -119,7 +119,7 @@ public class ModelConverter {
 
 		NodeConfigImpl impl = new NodeConfigImpl();
 		impl.setMachineId(machineId);
-		impl.setTransferAgentId(transferAgentId);
+		impl.setPlatformId(platformId);
 		impl.setId(id);
 		impl.setName(name);
 		impl.setHome(home);
@@ -158,32 +158,32 @@ public class ModelConverter {
 
 	/**
 	 * 
-	 * @param addTransferAgentRequest
+	 * @param addPlatformConfig
 	 * @return
 	 */
-	public TransferAgentConfigDTO toDTO(AddTransferAgentConfigRequest addTransferAgentRequest) {
-		TransferAgentConfigDTO addTransferAgentRequestDTO = new TransferAgentConfigDTO();
-		addTransferAgentRequestDTO.setId(addTransferAgentRequest.getTransferAgentId());
-		addTransferAgentRequestDTO.setName(addTransferAgentRequest.getName());
-		addTransferAgentRequestDTO.setHome(addTransferAgentRequest.getHome());
-		addTransferAgentRequestDTO.setHostURL(addTransferAgentRequest.getHostURL());
-		addTransferAgentRequestDTO.setContextRoot(addTransferAgentRequest.getContextRoot());
-		return addTransferAgentRequestDTO;
+	public PlatformConfigDTO toDTO(AddPlatformConfigRequest addPlatformConfig) {
+		PlatformConfigDTO addPlatformConfigDTO = new PlatformConfigDTO();
+		addPlatformConfigDTO.setId(addPlatformConfig.getPlatformId());
+		addPlatformConfigDTO.setName(addPlatformConfig.getName());
+		addPlatformConfigDTO.setHome(addPlatformConfig.getHome());
+		addPlatformConfigDTO.setHostURL(addPlatformConfig.getHostURL());
+		addPlatformConfigDTO.setContextRoot(addPlatformConfig.getContextRoot());
+		return addPlatformConfigDTO;
 	}
 
 	/**
 	 * 
-	 * @param updateTransferAgentRequest
+	 * @param updatePlatformConfig
 	 * @return
 	 */
-	public TransferAgentConfigDTO toDTO(UpdateTransferAgentConfigRequest updateTransferAgentRequest) {
-		TransferAgentConfigDTO updateTransferAgentRequestDTO = new TransferAgentConfigDTO();
-		updateTransferAgentRequestDTO.setId(updateTransferAgentRequest.getTransferAgentId());
-		updateTransferAgentRequestDTO.setName(updateTransferAgentRequest.getName());
-		updateTransferAgentRequestDTO.setHome(updateTransferAgentRequest.getHome());
-		updateTransferAgentRequestDTO.setHostURL(updateTransferAgentRequest.getHostURL());
-		updateTransferAgentRequestDTO.setContextRoot(updateTransferAgentRequest.getContextRoot());
-		return updateTransferAgentRequestDTO;
+	public PlatformConfigDTO toDTO(UpdatePlatformConfigRequest updatePlatformConfig) {
+		PlatformConfigDTO updatePlatformConfigDTO = new PlatformConfigDTO();
+		updatePlatformConfigDTO.setId(updatePlatformConfig.getPlatformId());
+		updatePlatformConfigDTO.setName(updatePlatformConfig.getName());
+		updatePlatformConfigDTO.setHome(updatePlatformConfig.getHome());
+		updatePlatformConfigDTO.setHostURL(updatePlatformConfig.getHostURL());
+		updatePlatformConfigDTO.setContextRoot(updatePlatformConfig.getContextRoot());
+		return updatePlatformConfigDTO;
 	}
 
 	/**

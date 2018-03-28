@@ -4,7 +4,7 @@ public class NodeConfigImpl implements NodeConfig {
 
 	protected String id;
 	protected String machineId;
-	protected String transferAgentId;
+	protected String platformId;
 	protected String name;
 	protected String home;
 	protected String hostURL;
@@ -12,7 +12,7 @@ public class NodeConfigImpl implements NodeConfig {
 
 	@Override
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(String id) {
@@ -21,7 +21,7 @@ public class NodeConfigImpl implements NodeConfig {
 
 	@Override
 	public String getMachineId() {
-		return machineId;
+		return this.machineId;
 	}
 
 	public void setMachineId(String machineId) {
@@ -29,17 +29,17 @@ public class NodeConfigImpl implements NodeConfig {
 	}
 
 	@Override
-	public String getTransferAgentId() {
-		return transferAgentId;
+	public String getPlatformId() {
+		return this.platformId;
 	}
 
-	public void setTransferAgentId(String transferAgentId) {
-		this.transferAgentId = transferAgentId;
+	public void setPlatformId(String platformId) {
+		this.platformId = platformId;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -48,7 +48,7 @@ public class NodeConfigImpl implements NodeConfig {
 
 	@Override
 	public String getHome() {
-		return home;
+		return this.home;
 	}
 
 	public void setHome(String home) {
@@ -57,7 +57,7 @@ public class NodeConfigImpl implements NodeConfig {
 
 	@Override
 	public String getHostURL() {
-		return hostURL;
+		return this.hostURL;
 	}
 
 	public void setHostURL(String hostURL) {
@@ -66,7 +66,7 @@ public class NodeConfigImpl implements NodeConfig {
 
 	@Override
 	public String getContextRoot() {
-		return contextRoot;
+		return this.contextRoot;
 	}
 
 	public void setContextRoot(String contextRoot) {
@@ -75,7 +75,7 @@ public class NodeConfigImpl implements NodeConfig {
 
 	@Override
 	public String toString() {
-		return "NodeConfigRTO [id=" + id + ", machineId=" + machineId + ", transferAgentId=" + transferAgentId + ", name=" + name + ", home=" + home + ", hostURL=" + hostURL + ", contextRoot=" + contextRoot + "]";
+		return "NodeConfigRTO [id=" + id + ", machineId=" + machineId + ", platformId=" + platformId + ", name=" + name + ", home=" + home + ", hostURL=" + hostURL + ", contextRoot=" + contextRoot + "]";
 	}
 
 }

@@ -5,20 +5,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
+import org.orbit.component.model.tier3.domain.PlatformConfig;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
 
-public class TransferAgentConfigTableHandler implements DatabaseTableAware {
+public class PlatformConfigTableHandler implements DatabaseTableAware {
 
-	public static TransferAgentConfigTableHandler INSTANCE = new TransferAgentConfigTableHandler();
+	public static PlatformConfigTableHandler INSTANCE = new PlatformConfigTableHandler();
 
 	@Override
 	public String getTableName() {
-		return "TransferAgentConfig";
+		return "PlatformConfig";
 	}
 
 	@Override
@@ -52,20 +52,20 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Convert a ResultSet record to a TransferAgentConfigRTO object.
+	 * Convert a ResultSet record to a PlatformConfig object.
 	 * 
 	 * @param rs
 	 * @return
 	 * @throws SQLException
 	 */
-	protected static TransferAgentConfigRTO toRTO(ResultSet rs) throws SQLException {
+	protected static PlatformConfig toRTO(ResultSet rs) throws SQLException {
 		String id = rs.getString("id");
 		String name = rs.getString("name");
 		String home = rs.getString("home");
 		String hostURL = rs.getString("hostURL");
 		String contextRoot = rs.getString("contextRoot");
 
-		return new TransferAgentConfigRTO(id, name, home, hostURL, contextRoot);
+		return new PlatformConfig(id, name, home, hostURL, contextRoot);
 	}
 
 	/**
@@ -75,11 +75,11 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<TransferAgentConfigRTO> getTransferAgentConfigs(Connection conn, String machineId) throws SQLException {
+	public List<PlatformConfig> getPlatformConfigs(Connection conn, String machineId) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE machineId=? ORDER BY id ASC";
-		ResultSetListHandler<TransferAgentConfigRTO> handler = new ResultSetListHandler<TransferAgentConfigRTO>() {
+		ResultSetListHandler<PlatformConfig> handler = new ResultSetListHandler<PlatformConfig>() {
 			@Override
-			protected TransferAgentConfigRTO handleRow(ResultSet rs) throws SQLException {
+			protected PlatformConfig handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -94,11 +94,11 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public TransferAgentConfigRTO getTransferAgentConfig(Connection conn, String machineId, String id) throws SQLException {
+	public PlatformConfig getPlatformConfig(Connection conn, String machineId, String id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE machineId=? AND id=?";
-		ResultSetSingleHandler<TransferAgentConfigRTO> handler = new ResultSetSingleHandler<TransferAgentConfigRTO>() {
+		ResultSetSingleHandler<PlatformConfig> handler = new ResultSetSingleHandler<PlatformConfig>() {
 			@Override
-			protected TransferAgentConfigRTO handleRow(ResultSet rs) throws SQLException {
+			protected PlatformConfig handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -113,7 +113,7 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean transferAgentConfigExists(Connection conn, String machineId, String id) throws SQLException {
+	public boolean exists(Connection conn, String machineId, String id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE machineId=? AND id=?";
 		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
 			@Override
@@ -136,11 +136,11 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public TransferAgentConfigRTO addTransferAgentConfig(Connection conn, String machineId, String id, String name, String home, String hostURL, String contextRoot) throws SQLException {
+	public PlatformConfig add(Connection conn, String machineId, String id, String name, String home, String hostURL, String contextRoot) throws SQLException {
 		String insertSQL = "INSERT INTO " + getTableName() + " (id, machineId, name, home, hostURL, contextRoot) VALUES (?, ?, ?, ?, ?, ?)";
 		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { id, machineId, name, home, hostURL, contextRoot }, 1);
 		if (succeed) {
-			return getTransferAgentConfig(conn, machineId, id);
+			return getPlatformConfig(conn, machineId, id);
 		}
 		return null;
 	}
@@ -205,7 +205,7 @@ public class TransferAgentConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean deleteTransferAgentConfig(Connection conn, String machineId, String id) throws SQLException {
+	public boolean delete(Connection conn, String machineId, String id) throws SQLException {
 		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE machineId=? AND id=?", new Object[] { machineId, id }, 1);
 	}
 

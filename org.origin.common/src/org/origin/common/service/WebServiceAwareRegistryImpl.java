@@ -1,4 +1,4 @@
-package org.origin.common.rest.util;
+package org.origin.common.service;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -9,7 +9,7 @@ import org.osgi.framework.ServiceRegistration;
 
 public class WebServiceAwareRegistryImpl extends WebServiceAwareRegistry {
 
-	protected Map<WebServiceAware, ServiceRegistration<?>> webServiceAwareToServiceRegistrationMap = new HashMap<WebServiceAware, ServiceRegistration<?>>();
+	protected Map<WebServiceAware, ServiceRegistration<?>> serviceRegistrationMap = new HashMap<WebServiceAware, ServiceRegistration<?>>();
 	protected WebServiceAwareTracker tracker;
 
 	@Override
@@ -27,7 +27,7 @@ public class WebServiceAwareRegistryImpl extends WebServiceAwareRegistry {
 	}
 
 	@Override
-	public WebServiceAware[] getWebServiceAwares() {
+	public WebServiceAware[] getServices() {
 		WebServiceAware[] webServiceAwares = null;
 		if (this.tracker != null) {
 			webServiceAwares = this.tracker.getWebServiceAwares();
@@ -40,7 +40,7 @@ public class WebServiceAwareRegistryImpl extends WebServiceAwareRegistry {
 
 	@Override
 	public void register(BundleContext bundleContext, WebServiceAware webServiceAware) {
-		if (webServiceAware == null || this.webServiceAwareToServiceRegistrationMap.containsKey(webServiceAware)) {
+		if (webServiceAware == null || this.serviceRegistrationMap.containsKey(webServiceAware)) {
 			return;
 		}
 
@@ -49,7 +49,7 @@ public class WebServiceAwareRegistryImpl extends WebServiceAwareRegistry {
 		props.put(WebServiceAware.PROP_HOST_URL, webServiceAware.getHostURL() != null ? webServiceAware.getHostURL() : "n/a");
 		props.put(WebServiceAware.PROP_CONTEXT_ROOT, webServiceAware.getContextRoot() != null ? webServiceAware.getContextRoot() : "n/a");
 		ServiceRegistration<?> serviceRegistration = bundleContext.registerService(WebServiceAware.class, webServiceAware, props);
-		this.webServiceAwareToServiceRegistrationMap.put(webServiceAware, serviceRegistration);
+		this.serviceRegistrationMap.put(webServiceAware, serviceRegistration);
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class WebServiceAwareRegistryImpl extends WebServiceAwareRegistry {
 		if (webServiceAware == null) {
 			return;
 		}
-		ServiceRegistration<?> serviceRegistration = this.webServiceAwareToServiceRegistrationMap.remove(webServiceAware);
+		ServiceRegistration<?> serviceRegistration = this.serviceRegistrationMap.remove(webServiceAware);
 		if (serviceRegistration != null) {
 			serviceRegistration.unregister();
 		}

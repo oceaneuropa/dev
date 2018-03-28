@@ -1,4 +1,4 @@
-package org.origin.common.rest.util;
+package org.origin.common.service;
 
 public interface WebServiceAware {
 

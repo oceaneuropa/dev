@@ -2,19 +2,17 @@ package org.orbit.component.api.tier3.domainmanagement;
 
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClient;
 
 public interface DomainManagementClient extends ServiceClient {
-
-	// String getName();
 
 	// ------------------------------------------------------
 	// Machine management
@@ -30,30 +28,30 @@ public interface DomainManagementClient extends ServiceClient {
 	boolean removeMachineConfig(String machineId) throws ClientException;
 
 	// ------------------------------------------------------
-	// TransferAgent management
+	// Platform management
 	// ------------------------------------------------------
-	TransferAgentConfig[] getTransferAgentConfigs(String machineId) throws ClientException;
+	PlatformConfig[] getPlatformConfigs(String machineId) throws ClientException;
 
-	TransferAgentConfig getTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
+	PlatformConfig getPlatformConfig(String machineId, String platformId) throws ClientException;
 
-	boolean addTransferAgentConfig(String machineId, AddTransferAgentConfigRequest addTransferAgentRequest) throws ClientException;
+	boolean addPlatformConfig(String machineId, AddPlatformConfigRequest addPlatformRequest) throws ClientException;
 
-	boolean updateTransferAgentConfig(String machineId, UpdateTransferAgentConfigRequest updateTransferAgentRequest) throws ClientException;
+	boolean updatPlatformConfig(String machineId, UpdatePlatformConfigRequest updatePlatformRequest) throws ClientException;
 
-	boolean removeTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
+	boolean removePlatformConfig(String machineId, String platformId) throws ClientException;
 
 	// ------------------------------------------------------
 	// Node management
 	// ------------------------------------------------------
-	NodeConfig[] getNodeConfigs(String machineId, String transferAgentId) throws ClientException;
+	NodeConfig[] getNodeConfigs(String machineId, String platformId) throws ClientException;
 
-	NodeConfig getNodeConfig(String machineId, String transferAgentId, String nodeId) throws ClientException;
+	NodeConfig getNodeConfig(String machineId, String platformId, String nodeId) throws ClientException;
 
-	boolean addNodeConfig(String machineId, String transferAgentId, AddNodeConfigRequest addNodeRequest) throws ClientException;
+	boolean addNodeConfig(String machineId, String platformId, AddNodeConfigRequest addNodeRequest) throws ClientException;
 
-	boolean updateNodeConfig(String machineId, String transferAgentId, UpdateNodeConfigRequest updateNodeRequest) throws ClientException;
+	boolean updateNodeConfig(String machineId, String platformId, UpdateNodeConfigRequest updateNodeRequest) throws ClientException;
 
-	boolean removeNodeConfig(String machineId, String transferAgentId, String nodeId) throws ClientException;
+	boolean removeNodeConfig(String machineId, String platformId, String nodeId) throws ClientException;
 
 }
 
@@ -72,3 +70,5 @@ public interface DomainManagementClient extends ServiceClient {
 // Life cycle
 // ------------------------------------------------------
 // public TransferAgent getTransferAgent(TransferAgentConfig taConfig) throws ClientException;
+
+// String getName();

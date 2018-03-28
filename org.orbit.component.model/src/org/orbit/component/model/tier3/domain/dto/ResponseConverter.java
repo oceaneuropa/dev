@@ -57,8 +57,8 @@ public class ResponseConverter {
 		return machineConfig;
 	}
 
-	public TransferAgentConfig[] convertToTransferAgentConfigs(Response response) {
-		List<TransferAgentConfig> taConfigs = new ArrayList<TransferAgentConfig>();
+	public PlatformConfig[] convertToPlatformConfigs(Response response) {
+		List<PlatformConfig> platformConfigs = new ArrayList<PlatformConfig>();
 		// Response response = responses.getResponse(Response.class);
 		// if (response != null) {
 		// Object bodyObj = response.getBody();
@@ -75,11 +75,11 @@ public class ResponseConverter {
 		// }
 		// }
 		// }
-		return taConfigs.toArray(new TransferAgentConfig[taConfigs.size()]);
+		return platformConfigs.toArray(new PlatformConfig[platformConfigs.size()]);
 	}
 
-	public TransferAgentConfig convertToTransferAgentConfig(Response response) {
-		TransferAgentConfig taConfig = null;
+	public PlatformConfig convertToPlatformConfig(Response response) {
+		PlatformConfig taConfig = null;
 		// Response response = responses.getResponse(Response.class);
 		// if (response != null) {
 		// Object bodyObj = response.getBody();

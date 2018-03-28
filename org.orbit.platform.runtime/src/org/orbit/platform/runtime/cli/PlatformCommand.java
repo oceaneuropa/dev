@@ -34,8 +34,8 @@ import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
-import org.origin.common.rest.util.WebServiceAware;
-import org.origin.common.rest.util.WebServiceAwareRegistry;
+import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.WebServiceAwareRegistry;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.URIUtil;
@@ -48,10 +48,10 @@ import org.osgi.framework.BundleContext;
  * @see AppStoreCommand
  * 
  */
-public class PlatformServerCommand implements Annotated {
+public class PlatformCommand implements Annotated {
 
 	protected static String[] EXTENSION_COLUMNS = new String[] { "Extension Type Id", "Extension Id", "Name", "Description" };
-	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Interface Class Name", "Interface Object", "Parameters" };
+	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Interface Class Name", "Interface Impl Class", "Parameters" };
 	protected static String[] PROCESS_COLUMNS = new String[] { "Process Id", "Name", "Runtime State" };
 	protected static String[] WEB_SERVICE_COLUMNS = new String[] { "Name", "URL" };
 
@@ -98,7 +98,7 @@ public class PlatformServerCommand implements Annotated {
 						"activateapp", "deactivateapp", //
 						"startapp", "stopapp" //
 		});
-		OSGiServiceUtil.register(bundleContext, PlatformServerCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, PlatformCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -110,7 +110,7 @@ public class PlatformServerCommand implements Annotated {
 	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
-		OSGiServiceUtil.unregister(PlatformServerCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(PlatformCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 
 		this.bundleContext = null;
@@ -155,7 +155,7 @@ public class PlatformServerCommand implements Annotated {
 	}
 
 	public void lendpoints() {
-		WebServiceAware[] webServiceAwares = WebServiceAwareRegistry.getInstance().getWebServiceAwares();
+		WebServiceAware[] webServiceAwares = WebServiceAwareRegistry.getInstance().getServices();
 		String[][] records = new String[webServiceAwares.length][WEB_SERVICE_COLUMNS.length];
 		int index = 0;
 		for (WebServiceAware webServiceAware : webServiceAwares) {
@@ -279,16 +279,18 @@ public class PlatformServerCommand implements Annotated {
 			String isSingleton = String.valueOf(desc.isSingleton());
 			String isAutoStart = String.valueOf(desc.isAutoStart());
 			String interfaceClassName = desc.getInterfaceClassName();
-			String interfaceObject = (desc.getInterfaceInstance() != null) ? desc.getInterfaceInstance().toString() : null;
+			Class<?> interfaceImplClass = desc.getInterfaceImplClass();
+			String interfaceImplClassName = interfaceImplClass != null ? interfaceImplClass.getName() : null;
+			// String interfaceObject = (desc.getInterfaceInstance() != null) ? desc.getInterfaceInstance().toString() : null;
 
 			if (parameters.length == 0) {
-				records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceObject, null };
+				records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceImplClassName, null };
 
 			} else {
 				for (int i = 0; i < parameters.length; i++) {
 					org.orbit.platform.sdk.extension.desc.Parameter parameter = parameters[i];
 					if (i == 0) {
-						records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceObject, parameter.getLabel() };
+						records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceImplClassName, parameter.getLabel() };
 					} else {
 						records[index++] = new String[] { "", "", "", "", "", parameter.getLabel() };
 					}

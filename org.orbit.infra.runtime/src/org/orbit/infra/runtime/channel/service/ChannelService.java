@@ -3,7 +3,7 @@ package org.orbit.infra.runtime.channel.service;
 import java.util.List;
 
 import org.orbit.infra.model.channel.ChannelException;
-import org.origin.common.rest.util.WebServiceAware;
+import org.origin.common.service.WebServiceAware;
 
 public interface ChannelService extends WebServiceAware {
 

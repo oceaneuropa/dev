@@ -151,7 +151,7 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 			System.err.println("New request URI is invalid. " + e.getMessage());
 			return Response.serverError().entity(new ErrorDTO("500", "New request URI is invalid. ", e.getMessage())).build();
 		}
-		System.out.println(getClass().getSimpleName() + ".apply() newRequestUri = " + newRequestUri);
+		// System.out.println(getClass().getSimpleName() + ".apply() newRequestUri = " + newRequestUri);
 
 		// Invocation.Builder newWSResource = this.client.target(newRequestUri).request(MediaType.APPLICATION_JSON);
 		Invocation.Builder newWSResource = this.client.target(newRequestUri).request();

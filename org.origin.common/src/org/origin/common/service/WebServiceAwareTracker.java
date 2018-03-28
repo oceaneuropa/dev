@@ -1,4 +1,4 @@
-package org.origin.common.rest.util;
+package org.origin.common.service;
 
 import java.util.ArrayList;
 import java.util.List;

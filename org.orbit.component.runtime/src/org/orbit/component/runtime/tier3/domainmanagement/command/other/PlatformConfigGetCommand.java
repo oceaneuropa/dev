@@ -1,7 +1,7 @@
 package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
-import org.orbit.component.model.tier3.domain.TransferAgentConfigRTO;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
+import org.orbit.component.model.tier3.domain.PlatformConfig;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domainmanagement.ws.ModelConverter;
 import org.origin.common.command.AbstractCommand;
@@ -14,7 +14,7 @@ import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
 import org.origin.common.rest.server.ServerException;
 
-public class TransferAgentConfigGetCommand extends AbstractCommand {
+public class PlatformConfigGetCommand extends AbstractCommand {
 
 	protected DomainManagementService service;
 	protected Request request;
@@ -24,7 +24,7 @@ public class TransferAgentConfigGetCommand extends AbstractCommand {
 	 * @param service
 	 * @param request
 	 */
-	public TransferAgentConfigGetCommand(DomainManagementService service, Request request) {
+	public PlatformConfigGetCommand(DomainManagementService service, Request request) {
 		this.service = service;
 		this.request = request;
 	}
@@ -33,12 +33,12 @@ public class TransferAgentConfigGetCommand extends AbstractCommand {
 	public ICommandResult execute(CommandContext context) throws CommandException {
 		Responses responses = context.getAdapter(Responses.class);
 
-		TransferAgentConfigDTO taConfigDTO = null;
+		PlatformConfigDTO taConfigDTO = null;
 		try {
 			String machineId = (String) this.request.getParameter("machineId");
 			String id = (String) this.request.getParameter("id");
 
-			TransferAgentConfigRTO taConfig = this.service.getTransferAgentConfig(machineId, id);
+			PlatformConfig taConfig = this.service.getPlatformConfig(machineId, id);
 			if (taConfig != null) {
 				taConfigDTO = ModelConverter.getInstance().toDTO(taConfig);
 				taConfigDTO.setMachineId(machineId);

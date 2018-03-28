@@ -1,15 +1,15 @@
 package org.orbit.component.model.tier3.domain;
 
-public class MachineConfigRTO {
+public class MachineConfig {
 
 	protected String id;
 	protected String name;
 	protected String ipAddress;
 
-	public MachineConfigRTO() {
+	public MachineConfig() {
 	}
 
-	public MachineConfigRTO(String id, String name, String ipAddress) {
+	public MachineConfig(String id, String name, String ipAddress) {
 		this.id = id;
 		this.name = name;
 		this.ipAddress = ipAddress;
@@ -55,7 +55,7 @@ public class MachineConfigRTO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		MachineConfigRTO other = (MachineConfigRTO) obj;
+		MachineConfig other = (MachineConfig) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

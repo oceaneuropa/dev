@@ -1,24 +1,21 @@
-package org.origin.common.rest.util;
+package org.orbit.component.model.tier3.domain.request;
 
-public class WebServiceAwareImpl implements WebServiceAware {
+public class UpdatePlatformConfigRequest {
 
+	protected String platformId;
 	protected String name;
+	protected String home;
 	protected String hostURL;
 	protected String contextRoot;
 
-	/**
-	 * 
-	 * @param name
-	 * @param hostURL
-	 * @param contextRoot
-	 */
-	public WebServiceAwareImpl(String name, String hostURL, String contextRoot) {
-		this.name = name;
-		this.hostURL = hostURL;
-		this.contextRoot = contextRoot;
+	public String getPlatformId() {
+		return this.platformId;
 	}
 
-	@Override
+	public void setPlatformId(String platformId) {
+		this.platformId = platformId;
+	}
+
 	public String getName() {
 		return this.name;
 	}
@@ -27,7 +24,14 @@ public class WebServiceAwareImpl implements WebServiceAware {
 		this.name = name;
 	}
 
-	@Override
+	public String getHome() {
+		return this.home;
+	}
+
+	public void setHome(String home) {
+		this.home = home;
+	}
+
 	public String getHostURL() {
 		return this.hostURL;
 	}
@@ -36,7 +40,6 @@ public class WebServiceAwareImpl implements WebServiceAware {
 		this.hostURL = hostURL;
 	}
 
-	@Override
 	public String getContextRoot() {
 		return this.contextRoot;
 	}

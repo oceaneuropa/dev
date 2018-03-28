@@ -1,6 +1,6 @@
 package org.orbit.platform.sdk;
 
-import org.origin.common.rest.util.WebServiceAware;
+import org.origin.common.service.WebServiceAware;
 
 public class URLProviderImpl implements URLProvider {
 

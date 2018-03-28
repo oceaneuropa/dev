@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
-import org.orbit.component.model.tier3.domain.MachineConfigRTO;
+import org.orbit.component.model.tier3.domain.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domainmanagement.ws.ModelConverter;
@@ -37,7 +37,7 @@ public class MachineConfigGetCommand extends AbstractCommand {
 		try {
 			String machineId = (String) this.request.getParameter("machineId");
 
-			MachineConfigRTO machineConfig = this.service.getMachineConfig(machineId);
+			MachineConfig machineConfig = this.service.getMachineConfig(machineId);
 			if (machineConfig != null) {
 				machineConfigDTO = ModelConverter.getInstance().toDTO(machineConfig);
 			}

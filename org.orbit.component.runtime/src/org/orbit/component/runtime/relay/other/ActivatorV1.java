@@ -3,9 +3,9 @@ package org.orbit.component.runtime.relay.other;
 import org.orbit.component.runtime.relay.other.extensions.AppStoreRelayExtension;
 import org.orbit.component.runtime.relay.other.extensions.AuthRelayExtension;
 import org.orbit.component.runtime.relay.other.extensions.ConfigRegistryRelayExtension;
-import org.orbit.component.runtime.relay.other.extensions.DomainServiceRelayExtension;
+import org.orbit.component.runtime.relay.other.extensions.DomainManagementRelayExtension;
 import org.orbit.component.runtime.relay.other.extensions.MissionControlRelayExtension;
-import org.orbit.component.runtime.relay.other.extensions.TransferAgentRelayExtension;
+import org.orbit.component.runtime.relay.other.extensions.NodeControlRelayExtension;
 import org.orbit.component.runtime.relay.other.extensions.UserRegistryRelayExtension;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -26,8 +26,8 @@ public class ActivatorV1 implements BundleActivator {
 	protected AppStoreRelayExtension appStoreRelayExtension;
 
 	// tier 3
-	protected DomainServiceRelayExtension domainServiceRelayExtension;
-	protected TransferAgentRelayExtension transferAgentRelayExtension;
+	protected DomainManagementRelayExtension domainServiceRelayExtension;
+	protected NodeControlRelayExtension transferAgentRelayExtension;
 
 	// tier 4
 	protected MissionControlRelayExtension missionControlRelayExtension;
@@ -51,10 +51,10 @@ public class ActivatorV1 implements BundleActivator {
 		this.appStoreRelayExtension.register(context);
 
 		// tier 3
-		this.domainServiceRelayExtension = new DomainServiceRelayExtension();
+		this.domainServiceRelayExtension = new DomainManagementRelayExtension();
 		this.domainServiceRelayExtension.register(context);
 
-		this.transferAgentRelayExtension = new TransferAgentRelayExtension();
+		this.transferAgentRelayExtension = new NodeControlRelayExtension();
 		this.transferAgentRelayExtension.register(context);
 
 		// tier 4

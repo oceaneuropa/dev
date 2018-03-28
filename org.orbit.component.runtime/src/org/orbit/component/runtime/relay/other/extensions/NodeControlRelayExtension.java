@@ -4,11 +4,11 @@ import org.orbit.component.runtime.extensions.other.TransferAgentRelayControl;
 import org.orbit.platform.sdk.WSRelayControl;
 import org.orbit.platform.sdk.extension.impl.other.ProgramExtensionImplV1;
 
-public class TransferAgentRelayExtension extends ProgramExtensionImplV1 {
+public class NodeControlRelayExtension extends ProgramExtensionImplV1 {
 
-	public static final String ID = "orbit.component.transfer_agent.relay";
+	public static final String ID = "orbit.component.node_control.relay";
 
-	public TransferAgentRelayExtension() {
+	public NodeControlRelayExtension() {
 		addInterface(WSRelayControl.class, TransferAgentRelayControl.INSTANCE);
 	}
 

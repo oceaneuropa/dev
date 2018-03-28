@@ -1,19 +1,19 @@
 package org.orbit.component.model.tier3.domain.request;
 
-public class UpdateTransferAgentConfigRequest {
+public class AddPlatformConfigRequest {
 
-	protected String transferAgentId;
+	protected String platformId;
 	protected String name;
 	protected String home;
 	protected String hostURL;
 	protected String contextRoot;
 
-	public String getTransferAgentId() {
-		return transferAgentId;
+	public String getPlatformId() {
+		return this.platformId;
 	}
 
-	public void setTransferAgentId(String transferAgentId) {
-		this.transferAgentId = transferAgentId;
+	public void setPlatformId(String platformId) {
+		this.platformId = platformId;
 	}
 
 	public String getName() {
@@ -33,7 +33,7 @@ public class UpdateTransferAgentConfigRequest {
 	}
 
 	public String getHostURL() {
-		return hostURL;
+		return this.hostURL;
 	}
 
 	public void setHostURL(String hostURL) {
@@ -41,7 +41,7 @@ public class UpdateTransferAgentConfigRequest {
 	}
 
 	public String getContextRoot() {
-		return contextRoot;
+		return this.contextRoot;
 	}
 
 	public void setContextRoot(String contextRoot) {

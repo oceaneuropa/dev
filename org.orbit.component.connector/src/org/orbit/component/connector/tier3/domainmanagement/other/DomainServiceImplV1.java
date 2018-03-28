@@ -9,20 +9,20 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier3.domainmanagement.DomainServiceWSClient;
+import org.orbit.component.connector.tier3.domainmanagement.DomainManagementWSClient;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.dto.ModelConverter;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfigDTO;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfigDTO;
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -34,7 +34,7 @@ import org.origin.common.util.StringUtil;
 public class DomainServiceImplV1 implements DomainManagementClient {
 
 	protected Map<String, Object> properties;
-	protected DomainServiceWSClient client;
+	protected DomainManagementWSClient client;
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
@@ -114,7 +114,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 
 	protected void initClient() {
 		ClientConfiguration clientConfig = getClientConfiguration(this.properties);
-		this.client = new DomainServiceWSClient(clientConfig);
+		this.client = new DomainManagementWSClient(clientConfig);
 	}
 
 	// ---------------------------------------------------------
@@ -251,31 +251,31 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	}
 
 	@Override
-	public TransferAgentConfig[] getTransferAgentConfigs(String machineId) throws ClientException {
+	public PlatformConfig[] getPlatformConfigs(String machineId) throws ClientException {
 		checkMachineId(machineId);
 
-		List<TransferAgentConfig> transferAgents = new ArrayList<TransferAgentConfig>();
+		List<PlatformConfig> transferAgents = new ArrayList<PlatformConfig>();
 		try {
-			List<TransferAgentConfigDTO> transferAgentDTOs = this.client.getTransferAgents(machineId);
-			for (TransferAgentConfigDTO transferAgentDTO : transferAgentDTOs) {
-				transferAgents.add(ModelConverter.INSTANCE.toTransferAgentConfig(machineId, transferAgentDTO));
+			List<PlatformConfigDTO> transferAgentDTOs = this.client.getPlatformConfigs(machineId);
+			for (PlatformConfigDTO transferAgentDTO : transferAgentDTOs) {
+				transferAgents.add(ModelConverter.INSTANCE.toPlatformConfig(machineId, transferAgentDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
 		}
-		return transferAgents.toArray(new TransferAgentConfig[transferAgents.size()]);
+		return transferAgents.toArray(new PlatformConfig[transferAgents.size()]);
 	}
 
 	@Override
-	public TransferAgentConfig getTransferAgentConfig(String machineId, String transferAgentId) throws ClientException {
+	public PlatformConfig getPlatformConfig(String machineId, String transferAgentId) throws ClientException {
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 
-		TransferAgentConfig transferAgent = null;
+		PlatformConfig transferAgent = null;
 		try {
-			TransferAgentConfigDTO transferAgentDTO = this.client.getTransferAgent(machineId, transferAgentId);
+			PlatformConfigDTO transferAgentDTO = this.client.getPlatformConfig(machineId, transferAgentId);
 			if (transferAgentDTO != null) {
-				transferAgent = ModelConverter.INSTANCE.toTransferAgentConfig(machineId, transferAgentDTO);
+				transferAgent = ModelConverter.INSTANCE.toPlatformConfig(machineId, transferAgentDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -284,14 +284,14 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	}
 
 	@Override
-	public boolean addTransferAgentConfig(String machineId, AddTransferAgentConfigRequest addTransferAgentRequest) throws ClientException {
+	public boolean addPlatformConfig(String machineId, AddPlatformConfigRequest addTransferAgentRequest) throws ClientException {
 		checkMachineId(machineId);
-		String transferAgentId = addTransferAgentRequest.getTransferAgentId();
+		String transferAgentId = addTransferAgentRequest.getPlatformId();
 		checkTransferAgentId(transferAgentId);
 
 		try {
-			TransferAgentConfigDTO addTransferAgentRequestDTO = ModelConverter.INSTANCE.toDTO(addTransferAgentRequest);
-			StatusDTO status = this.client.addTransferAgent(machineId, addTransferAgentRequestDTO);
+			PlatformConfigDTO addTransferAgentRequestDTO = ModelConverter.INSTANCE.toDTO(addTransferAgentRequest);
+			StatusDTO status = this.client.addPlatformConfig(machineId, addTransferAgentRequestDTO);
 			if (status != null && status.success()) {
 				return true;
 			}
@@ -302,14 +302,14 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	}
 
 	@Override
-	public boolean updateTransferAgentConfig(String machineId, UpdateTransferAgentConfigRequest updateTransferAgentRequest) throws ClientException {
+	public boolean updatPlatformConfig(String machineId, UpdatePlatformConfigRequest updateTransferAgentRequest) throws ClientException {
 		checkMachineId(machineId);
-		String transferAgentId = updateTransferAgentRequest.getTransferAgentId();
+		String transferAgentId = updateTransferAgentRequest.getPlatformId();
 		checkTransferAgentId(transferAgentId);
 
 		try {
-			TransferAgentConfigDTO updateTransferAgentRequestDTO = ModelConverter.INSTANCE.toDTO(updateTransferAgentRequest);
-			StatusDTO status = this.client.updateTransferAgent(machineId, updateTransferAgentRequestDTO);
+			PlatformConfigDTO updateTransferAgentRequestDTO = ModelConverter.INSTANCE.toDTO(updateTransferAgentRequest);
+			StatusDTO status = this.client.updatePlatformConfig(machineId, updateTransferAgentRequestDTO);
 			if (status != null && status.success()) {
 				return true;
 			}
@@ -320,12 +320,12 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	}
 
 	@Override
-	public boolean removeTransferAgentConfig(String machineId, String transferAgentId) throws ClientException {
+	public boolean removePlatformConfig(String machineId, String transferAgentId) throws ClientException {
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 
 		try {
-			StatusDTO status = this.client.removeTransferAgent(machineId, transferAgentId);
+			StatusDTO status = this.client.removePlatformConfig(machineId, transferAgentId);
 			if (status != null && status.success()) {
 				return true;
 			}

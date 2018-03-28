@@ -5,7 +5,7 @@ import org.orbit.component.connector.tier1.account.other.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnector;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
-import org.orbit.component.connector.tier3.domainmanagement.DomainServiceConnector;
+import org.orbit.component.connector.tier3.domainmanagement.DomainManagementConnector;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
 import org.orbit.component.connector.tier4.mission.MissionControlConnector;
 import org.osgi.framework.BundleContext;
@@ -45,7 +45,7 @@ public class Connectors {
 	protected AppStoreConnector appStoreConnector;
 
 	// tier3
-	protected DomainServiceConnector domainServiceConnector;
+	protected DomainManagementConnector domainServiceConnector;
 	protected NodeControlConnector transferAgentConnector;
 
 	// tier4
@@ -67,7 +67,7 @@ public class Connectors {
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
-		this.domainServiceConnector = new DomainServiceConnector();
+		this.domainServiceConnector = new DomainManagementConnector();
 		this.domainServiceConnector.start(bundleContext);
 
 		this.transferAgentConnector = new NodeControlConnector();

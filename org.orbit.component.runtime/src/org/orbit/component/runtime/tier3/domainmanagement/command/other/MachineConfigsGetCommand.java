@@ -3,7 +3,7 @@ package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.MachineConfigRTO;
+import org.orbit.component.model.tier3.domain.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.MachineConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domainmanagement.ws.ModelConverter;
@@ -38,9 +38,9 @@ public class MachineConfigsGetCommand extends AbstractCommand {
 
 		List<MachineConfigDTO> machineConfigDTOs = new ArrayList<MachineConfigDTO>();
 		try {
-			List<MachineConfigRTO> machineConfigs = this.service.getMachineConfigs();
+			List<MachineConfig> machineConfigs = this.service.getMachineConfigs();
 			if (machineConfigs != null) {
-				for (MachineConfigRTO machineConfig : machineConfigs) {
+				for (MachineConfig machineConfig : machineConfigs) {
 					MachineConfigDTO machineConfigDTO = ModelConverter.getInstance().toDTO(machineConfig);
 					machineConfigDTOs.add(machineConfigDTO);
 				}

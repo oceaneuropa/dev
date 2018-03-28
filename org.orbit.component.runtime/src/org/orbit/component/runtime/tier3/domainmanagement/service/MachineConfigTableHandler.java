@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.MachineConfigRTO;
+import org.orbit.component.model.tier3.domain.MachineConfig;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -52,12 +52,12 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected static MachineConfigRTO toRTO(ResultSet rs) throws SQLException {
+	protected static MachineConfig toRTO(ResultSet rs) throws SQLException {
 		String id = rs.getString("id");
 		String name = rs.getString("name");
 		String ipAddress = rs.getString("ipAddress");
 
-		return new MachineConfigRTO(id, name, ipAddress);
+		return new MachineConfig(id, name, ipAddress);
 	}
 
 	/**
@@ -66,11 +66,11 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<MachineConfigRTO> getMachineConfigs(Connection conn) throws SQLException {
+	public List<MachineConfig> getMachineConfigs(Connection conn) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " ORDER BY id ASC";
-		ResultSetListHandler<MachineConfigRTO> handler = new ResultSetListHandler<MachineConfigRTO>() {
+		ResultSetListHandler<MachineConfig> handler = new ResultSetListHandler<MachineConfig>() {
 			@Override
-			protected MachineConfigRTO handleRow(ResultSet rs) throws SQLException {
+			protected MachineConfig handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -84,11 +84,11 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public MachineConfigRTO getMachineConfig(Connection conn, String id) throws SQLException {
+	public MachineConfig getMachineConfig(Connection conn, String id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
-		ResultSetSingleHandler<MachineConfigRTO> handler = new ResultSetSingleHandler<MachineConfigRTO>() {
+		ResultSetSingleHandler<MachineConfig> handler = new ResultSetSingleHandler<MachineConfig>() {
 			@Override
-			protected MachineConfigRTO handleRow(ResultSet rs) throws SQLException {
+			protected MachineConfig handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -102,7 +102,7 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean machineConfigExists(Connection conn, String id) throws SQLException {
+	public boolean exists(Connection conn, String id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
 		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
 			@Override
@@ -122,7 +122,7 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public MachineConfigRTO addMachineConfig(Connection conn, String id, String name, String ipAddress) throws SQLException {
+	public MachineConfig addMachineConfig(Connection conn, String id, String name, String ipAddress) throws SQLException {
 		String insertSQL = "INSERT INTO " + getTableName() + " (id, name, ipAddress) VALUES (?, ?, ?)";
 		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { id, name, ipAddress }, 1);
 		if (succeed) {
@@ -162,7 +162,7 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean deleteMachineConfig(Connection conn, String id) throws SQLException {
+	public boolean delete(Connection conn, String id) throws SQLException {
 		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE id=?", new Object[] { id }, 1);
 	}
 

@@ -16,7 +16,7 @@ import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
 import org.orbit.component.model.tier3.domain.dto.ResponseConverter;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Request;
@@ -35,7 +35,7 @@ public class DomainManagementCommand implements Annotated {
 	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] AUTH_SERVICES_TITLES = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
 	protected static String[] MACHINE_CONFIG_TITLES = new String[] { "ID", "Name", "IP Address" };
-	protected static String[] TRANSFER_AGENT_CONFIG_TITLES = new String[] { "Machine ID", "ID", "Name", "hostURL", "contextRoot", "Home" };
+	protected static String[] PLATFORM_CONFIG_TITLES = new String[] { "Machine ID", "ID", "Name", "hostURL", "contextRoot", "Home" };
 	protected static String[] NODE_CONFIG_TITLES = new String[] { "Machine ID", "Transfer Agent ID", "ID", "Name", "hostURL", "contextRoot" };
 
 	protected BundleContext bundleContext;
@@ -293,20 +293,20 @@ public class DomainManagementCommand implements Annotated {
 
 			Response response = domainService.sendRequest(request);
 
-			TransferAgentConfig[] taConfigs = ResponseConverter.getInstance().convertToTransferAgentConfigs(response);
-			String[][] rows = new String[taConfigs.length][TRANSFER_AGENT_CONFIG_TITLES.length];
+			PlatformConfig[] platformConfigs = ResponseConverter.getInstance().convertToPlatformConfigs(response);
+			String[][] rows = new String[platformConfigs.length][PLATFORM_CONFIG_TITLES.length];
 			int rowIndex = 0;
-			for (TransferAgentConfig taConfig : taConfigs) {
-				String currMachineId = taConfig.getMachineId();
-				String id = taConfig.getId();
-				String name = taConfig.getName();
-				String hostURL = taConfig.getHostURL();
-				String contextRoot = taConfig.getContextRoot();
-				String home = taConfig.getHome();
+			for (PlatformConfig platformConfig : platformConfigs) {
+				String currMachineId = platformConfig.getMachineId();
+				String id = platformConfig.getId();
+				String name = platformConfig.getName();
+				String hostURL = platformConfig.getHostURL();
+				String contextRoot = platformConfig.getContextRoot();
+				String home = platformConfig.getHome();
 
 				rows[rowIndex++] = new String[] { currMachineId, id, name, hostURL, contextRoot, home };
 			}
-			PrettyPrinter.prettyPrint(TRANSFER_AGENT_CONFIG_TITLES, rows, taConfigs.length);
+			PrettyPrinter.prettyPrint(PLATFORM_CONFIG_TITLES, rows, platformConfigs.length);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -337,12 +337,12 @@ public class DomainManagementCommand implements Annotated {
 			request.setParameter("id", id);
 
 			Response response = domainService.sendRequest(request);
-			TransferAgentConfig resultTaConfig = ResponseConverter.getInstance().convertToTransferAgentConfig(response);
+			PlatformConfig resultTaConfig = ResponseConverter.getInstance().convertToPlatformConfig(response);
 
-			TransferAgentConfig[] taConfigs = (resultTaConfig != null) ? new TransferAgentConfig[] { resultTaConfig } : new TransferAgentConfig[] {};
-			String[][] rows = new String[taConfigs.length][TRANSFER_AGENT_CONFIG_TITLES.length];
+			PlatformConfig[] taConfigs = (resultTaConfig != null) ? new PlatformConfig[] { resultTaConfig } : new PlatformConfig[] {};
+			String[][] rows = new String[taConfigs.length][PLATFORM_CONFIG_TITLES.length];
 			int rowIndex = 0;
-			for (TransferAgentConfig taConfig : taConfigs) {
+			for (PlatformConfig taConfig : taConfigs) {
 				String taId = taConfig.getId();
 				String name = taConfig.getName();
 				String hostURL = taConfig.getHostURL();
@@ -351,7 +351,7 @@ public class DomainManagementCommand implements Annotated {
 
 				rows[rowIndex++] = new String[] { machineId, taId, name, hostURL, contextRoot, home };
 			}
-			PrettyPrinter.prettyPrint(TRANSFER_AGENT_CONFIG_TITLES, rows, taConfigs.length);
+			PrettyPrinter.prettyPrint(PLATFORM_CONFIG_TITLES, rows, taConfigs.length);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -517,7 +517,7 @@ public class DomainManagementCommand implements Annotated {
 			int rowIndex = 0;
 			for (NodeConfig nodeConfig : nodeConfigs) {
 				String currMachineId = nodeConfig.getMachineId();
-				String currTransferAgentId = nodeConfig.getTransferAgentId();
+				String currTransferAgentId = nodeConfig.getPlatformId();
 				String currId = nodeConfig.getId();
 				String name = nodeConfig.getName();
 				String home = nodeConfig.getHome();
@@ -570,7 +570,7 @@ public class DomainManagementCommand implements Annotated {
 			int rowIndex = 0;
 			for (NodeConfig nodeConfig : nodeConfigs) {
 				String currMachineId = nodeConfig.getMachineId();
-				String currTransferAgentId = nodeConfig.getTransferAgentId();
+				String currTransferAgentId = nodeConfig.getPlatformId();
 				String currId = nodeConfig.getId();
 				String name = nodeConfig.getName();
 				String hostURL = nodeConfig.getHostURL();

@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier3.domainmanagement.command.other;
 
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -34,7 +34,7 @@ public class NodeConfigAddCommand extends AbstractCommand {
 		boolean succeed = false;
 		try {
 			String machineId = (String) this.request.getParameter("machineId");
-			String transferAgentId = (String) this.request.getParameter("transferAgentId");
+			String platformId = (String) this.request.getParameter("platformId");
 
 			String id = (String) this.request.getParameter("id");
 			String name = (String) this.request.getParameter("name");
@@ -42,14 +42,14 @@ public class NodeConfigAddCommand extends AbstractCommand {
 			String hostURL = (String) this.request.getParameter("hostURL");
 			String contextRoot = (String) this.request.getParameter("contextRoot");
 
-			if (this.service.nodeConfigExists(machineId, transferAgentId, id)) {
+			if (this.service.nodeConfigExists(machineId, platformId, id)) {
 				Response response = new Response(Response.FAILURE, "Node config already exists.");
 				responses.setResponse(response);
 				return new CommandResult(response);
 			}
 
-			NodeConfigRTO addNodeRequest = new NodeConfigRTO(id, machineId, transferAgentId, name, home, hostURL, contextRoot);
-			succeed = this.service.addNodeConfig(machineId, transferAgentId, addNodeRequest);
+			NodeConfig addNodeRequest = new NodeConfig(id, machineId, platformId, name, home, hostURL, contextRoot);
+			succeed = this.service.addNodeConfig(machineId, platformId, addNodeRequest);
 
 		} catch (ServerException e) {
 			Response response = new Response(Response.EXCEPTION, e.getMessage(), e);

@@ -6,7 +6,8 @@ import java.util.Map;
 import org.origin.common.annotation.DependencyConfigurator;
 import org.origin.common.command.IEditingDomain;
 import org.origin.common.deploy.WebServiceDeployer;
-import org.origin.common.rest.util.WebServiceAwareRegistry;
+import org.origin.common.service.CLIAwareRegistry;
+import org.origin.common.service.WebServiceAwareRegistry;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -48,6 +49,7 @@ public class Activator implements BundleActivator {
 		this.properties = properties;
 
 		WebServiceAwareRegistry.getInstance().start(bundleContext);
+		CLIAwareRegistry.getInstance().start(bundleContext);
 
 		this.editingDomain = IEditingDomain.getEditingDomain(PLUGIN_ID);
 
@@ -75,6 +77,7 @@ public class Activator implements BundleActivator {
 		IEditingDomain.disposeEditingDomain(PLUGIN_ID);
 
 		WebServiceAwareRegistry.getInstance().stop(bundleContext);
+		CLIAwareRegistry.getInstance().stop(bundleContext);
 
 		this.editingDomain = null;
 		Activator.plugin = null;

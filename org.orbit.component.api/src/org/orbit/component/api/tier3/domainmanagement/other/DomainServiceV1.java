@@ -6,13 +6,13 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.model.tier3.domain.dto.MachineConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfig;
-import org.orbit.component.model.tier3.domain.dto.TransferAgentConfig;
+import org.orbit.component.model.tier3.domain.dto.PlatformConfig;
 import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateTransferAgentConfigRequest;
+import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.Pingable;
@@ -53,13 +53,13 @@ public interface DomainServiceV1 extends Pingable, IAdaptable {
 	// ------------------------------------------------------
 	// TransferAgent management
 	// ------------------------------------------------------
-	TransferAgentConfig[] getTransferAgentConfigs(String machineId) throws ClientException;
+	PlatformConfig[] getTransferAgentConfigs(String machineId) throws ClientException;
 
-	TransferAgentConfig getTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
+	PlatformConfig getTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
 
-	boolean addTransferAgentConfig(String machineId, AddTransferAgentConfigRequest addTransferAgentRequest) throws ClientException;
+	boolean addTransferAgentConfig(String machineId, AddPlatformConfigRequest addTransferAgentRequest) throws ClientException;
 
-	boolean updateTransferAgentConfig(String machineId, UpdateTransferAgentConfigRequest updateTransferAgentRequest) throws ClientException;
+	boolean updateTransferAgentConfig(String machineId, UpdatePlatformConfigRequest updateTransferAgentRequest) throws ClientException;
 
 	boolean removeTransferAgentConfig(String machineId, String transferAgentId) throws ClientException;
 

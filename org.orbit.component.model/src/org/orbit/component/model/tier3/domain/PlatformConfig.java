@@ -1,22 +1,18 @@
 package org.orbit.component.model.tier3.domain;
 
-public class NodeConfigRTO {
+public class PlatformConfig {
 
 	protected String id;
-	protected String machineId;
-	protected String transferAgentId;
 	protected String name;
 	protected String home;
 	protected String hostURL;
 	protected String contextRoot;
 
-	public NodeConfigRTO() {
+	public PlatformConfig() {
 	}
 
-	public NodeConfigRTO(String id, String machineId, String transferAgentId, String name, String home, String hostURL, String contextRoot) {
+	public PlatformConfig(String id, String name, String home, String hostURL, String contextRoot) {
 		this.id = id;
-		this.machineId = machineId;
-		this.transferAgentId = transferAgentId;
 		this.name = name;
 		this.home = home;
 		this.hostURL = hostURL;
@@ -24,31 +20,15 @@ public class NodeConfigRTO {
 	}
 
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public void setId(String id) {
 		this.id = id;
 	}
 
-	public String getMachineId() {
-		return machineId;
-	}
-
-	public void setMachineId(String machineId) {
-		this.machineId = machineId;
-	}
-
-	public String getTransferAgentId() {
-		return transferAgentId;
-	}
-
-	public void setTransferAgentId(String transferAgentId) {
-		this.transferAgentId = transferAgentId;
-	}
-
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -56,7 +36,7 @@ public class NodeConfigRTO {
 	}
 
 	public String getHome() {
-		return home;
+		return this.home;
 	}
 
 	public void setHome(String home) {
@@ -64,7 +44,7 @@ public class NodeConfigRTO {
 	}
 
 	public String getHostURL() {
-		return hostURL;
+		return this.hostURL;
 	}
 
 	public void setHostURL(String hostURL) {
@@ -72,7 +52,7 @@ public class NodeConfigRTO {
 	}
 
 	public String getContextRoot() {
-		return contextRoot;
+		return this.contextRoot;
 	}
 
 	public void setContextRoot(String contextRoot) {
@@ -95,16 +75,16 @@ public class NodeConfigRTO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NodeConfigRTO other = (NodeConfigRTO) obj;
-		if (contextRoot == null) {
-			if (other.contextRoot != null)
-				return false;
-		} else if (!contextRoot.equals(other.contextRoot))
-			return false;
+		PlatformConfig other = (PlatformConfig) obj;
 		if (home == null) {
 			if (other.home != null)
 				return false;
 		} else if (!home.equals(other.home))
+			return false;
+		if (contextRoot == null) {
+			if (other.contextRoot != null)
+				return false;
+		} else if (!contextRoot.equals(other.contextRoot))
 			return false;
 		if (hostURL == null) {
 			if (other.hostURL != null)
@@ -116,27 +96,17 @@ public class NodeConfigRTO {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
-		if (machineId == null) {
-			if (other.machineId != null)
-				return false;
-		} else if (!machineId.equals(other.machineId))
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
-			return false;
-		if (transferAgentId == null) {
-			if (other.transferAgentId != null)
-				return false;
-		} else if (!transferAgentId.equals(other.transferAgentId))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "NodeConfigRTO [id=" + id + ", machineId=" + machineId + ", transferAgentId=" + transferAgentId + ", name=" + name + ", home=" + home + ", hostURL=" + hostURL + ", contextRoot=" + contextRoot + "]";
+		return "TransferAgentConfigRTO [id=" + id + ", name=" + name + ", TAHome=" + home + ", hostURL=" + hostURL + ", contextRoot=" + contextRoot + "]";
 	}
 
 }

@@ -16,7 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.model.tier3.domain.NodeConfig;
 import org.orbit.component.model.tier3.domain.dto.NodeConfigDTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.rest.model.ErrorDTO;
@@ -27,20 +27,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
- * DomainService TransferAgents resource.
+ * DomainService Nodes resource.
  * 
  * {contextRoot} example:
  * /orbit/v1/domain
  * 
  * Nodes
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes (Body parameter: NodeConfigDTO)
+ * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes (Body parameter: NodeConfigDTO)
+ * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
  * 
  */
-@Path("/machines/{machineId}/transferagents/{transferAgentId}/nodes")
+@Path("/machines/{machineId}/platforms/{platformId}/nodes")
 @Produces(MediaType.APPLICATION_JSON)
 public class DomainServiceWSNodesResource extends AbstractWSApplicationResource {
 
@@ -59,22 +59,22 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	/**
 	 * Get node configurations.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNodes(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId) {
+	public Response getNodes(@PathParam("machineId") String machineId, @PathParam("platformId") String platformId) {
 		DomainManagementService service = getService();
 
 		List<NodeConfigDTO> nodeConfigDTOs = new ArrayList<NodeConfigDTO>();
 		try {
-			List<NodeConfigRTO> nodeConfigs = service.getNodeConfigs(machineId, transferAgentId);
+			List<NodeConfig> nodeConfigs = service.getNodeConfigs(machineId, platformId);
 			if (nodeConfigs != null) {
-				for (NodeConfigRTO nodeConfig : nodeConfigs) {
+				for (NodeConfig nodeConfig : nodeConfigs) {
 					NodeConfigDTO nodeConfigDTO = ModelConverter.getInstance().toDTO(nodeConfig);
 					nodeConfigDTOs.add(nodeConfigDTO);
 				}
@@ -90,23 +90,23 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	/**
 	 * Get a node configuration.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @return
 	 */
 	@GET
 	@Path("{nodeId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNode(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId, @PathParam("nodeId") String nodeId) {
+	public Response getNode(@PathParam("machineId") String machineId, @PathParam("platformId") String platformId, @PathParam("nodeId") String nodeId) {
 		NodeConfigDTO nodeConfigDTO = null;
 
 		DomainManagementService service = getService();
 		try {
-			NodeConfigRTO nodeConfig = service.getNodeConfig(machineId, transferAgentId, nodeId);
+			NodeConfig nodeConfig = service.getNodeConfig(machineId, platformId, nodeId);
 			if (nodeConfig == null) {
-				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Node with id '%s' cannot be found.", transferAgentId));
+				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Node with id '%s' cannot be found.", platformId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
 
@@ -123,16 +123,16 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	/**
 	 * Add a node configuration.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes (Body parameter: NodeConfigDTO)
 	 *
 	 * @param machineId
-	 * @param transferAgentId
-	 * @param addTransferAgentRequestDTO
+	 * @param platformId
+	 * @param addNodeRequestDTO
 	 * @return
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addNode(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId, NodeConfigDTO addNodeRequestDTO) {
+	public Response addNode(@PathParam("machineId") String machineId, @PathParam("platformId") String platformId, NodeConfigDTO addNodeRequestDTO) {
 		if (addNodeRequestDTO == null) {
 			ErrorDTO nullRequestDTOError = new ErrorDTO("addNodeRequestDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullRequestDTOError).build();
@@ -146,14 +146,14 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 				ErrorDTO emptyIdError = new ErrorDTO("nodeId Id is empty.");
 				return Response.status(Status.BAD_REQUEST).entity(emptyIdError).build();
 			}
-			if (service.nodeConfigExists(machineId, transferAgentId, nodeId)) {
+			if (service.nodeConfigExists(machineId, platformId, nodeId)) {
 				ErrorDTO alreadyExistsError = new ErrorDTO(String.format("Node with Id '%s' already exists.", nodeId));
 				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
-			NodeConfigRTO addNodeRequest = ModelConverter.getInstance().toRTO(addNodeRequestDTO);
+			NodeConfig addNodeRequest = ModelConverter.getInstance().toRTO(addNodeRequestDTO);
 
-			succeed = service.addNodeConfig(machineId, transferAgentId, addNodeRequest);
+			succeed = service.addNodeConfig(machineId, platformId, addNodeRequest);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -171,16 +171,16 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	/**
 	 * Update a node configuration.
 	 * 
-	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes (Body parameter: NodeConfigDTO)
+	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes (Body parameter: NodeConfigDTO)
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @param updateNodeRequestDTO
 	 * @return
 	 */
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateNode(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId, NodeConfigDTO updateNodeRequestDTO) {
+	public Response updateNode(@PathParam("machineId") String machineId, @PathParam("platformId") String platformId, NodeConfigDTO updateNodeRequestDTO) {
 		if (updateNodeRequestDTO == null) {
 			ErrorDTO nullRequestDTOError = new ErrorDTO("updateNodeRequestDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullRequestDTOError).build();
@@ -189,10 +189,10 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		boolean succeed = false;
 		DomainManagementService service = getService();
 		try {
-			NodeConfigRTO updateNodeRequest = ModelConverter.getInstance().toRTO(updateNodeRequestDTO);
+			NodeConfig updateNodeRequest = ModelConverter.getInstance().toRTO(updateNodeRequestDTO);
 			List<String> fieldsToUpdate = updateNodeRequestDTO.getFieldsToUpdate();
 
-			succeed = service.updateNodeConfig(machineId, transferAgentId, updateNodeRequest, fieldsToUpdate);
+			succeed = service.updateNodeConfig(machineId, platformId, updateNodeRequest, fieldsToUpdate);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -211,17 +211,17 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	/**
 	 * Remove a node configuration.
 	 * 
-	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/transferagents/{transferAgentId}/nodes/{nodeId}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
 	 * 
 	 * @param machineId
-	 * @param transferAgentId
+	 * @param platformId
 	 * @param nodeId
 	 * @return
 	 */
 	@DELETE
 	@Path("/{nodeId}")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response removeNode(@PathParam("machineId") String machineId, @PathParam("transferAgentId") String transferAgentId, @PathParam("nodeId") String nodeId) {
+	public Response removeNode(@PathParam("machineId") String machineId, @PathParam("platformId") String platformId, @PathParam("nodeId") String nodeId) {
 		if (nodeId == null || nodeId.isEmpty()) {
 			ErrorDTO emptyIdError = new ErrorDTO("nodeId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(emptyIdError).build();
@@ -230,7 +230,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		boolean succeed = false;
 		DomainManagementService service = getService();
 		try {
-			succeed = service.deleteNodeConfig(machineId, transferAgentId, nodeId);
+			succeed = service.deleteNodeConfig(machineId, platformId, nodeId);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

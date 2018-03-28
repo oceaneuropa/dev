@@ -10,11 +10,11 @@ public interface NodeConfig {
 	public String getMachineId();
 
 	/**
-	 * Get TransferAgent Id.
+	 * Get platform Id.
 	 * 
 	 * @return
 	 */
-	public String getTransferAgentId();
+	public String getPlatformId();
 
 	/**
 	 * Get Node Id.
