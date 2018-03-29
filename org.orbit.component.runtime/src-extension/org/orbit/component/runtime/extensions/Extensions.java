@@ -35,12 +35,12 @@ import org.orbit.component.runtime.extensions.userregistry.UserRegistryRelayActi
 import org.orbit.component.runtime.extensions.userregistry.UserRegistryRelayPropertyTester;
 import org.orbit.component.runtime.extensions.userregistry.UserRegistryServiceActivator;
 import org.orbit.component.runtime.extensions.userregistry.UserRegistryServicePropertyTester;
-import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.condition.ConditionFactory;
-import org.orbit.platform.sdk.extension.IPropertyTester;
-import org.orbit.platform.sdk.extension.desc.InterfaceDescription;
-import org.orbit.platform.sdk.extension.desc.ProgramExtension;
-import org.orbit.platform.sdk.extension.desc.ProgramExtensions;
+import org.orbit.platform.sdk.extensions.ServiceActivator;
+import org.origin.common.extensions.Extension;
+import org.origin.common.extensions.InterfaceDescription;
+import org.origin.common.extensions.ProgramExtensions;
+import org.origin.common.extensions.condition.ConditionFactory;
+import org.origin.common.extensions.condition.IPropertyTester;
 
 /**
  * Component extensions
@@ -49,6 +49,10 @@ import org.orbit.platform.sdk.extension.desc.ProgramExtensions;
 public class Extensions extends ProgramExtensions {
 
 	public static Extensions INSTANCE = new Extensions();
+
+	public Extensions() {
+		setBundleId("org.orbit.component.runtime");
+	}
 
 	@Override
 	public void createExtensions() {
@@ -62,48 +66,48 @@ public class Extensions extends ProgramExtensions {
 		String typeId = ServiceActivator.TYPE_ID;
 
 		// tier 1
-		ProgramExtension extension1 = new ProgramExtension(typeId, UserRegistryServiceActivator.ID, "User registration service activator");
+		Extension extension1 = new Extension(typeId, UserRegistryServiceActivator.ID, "User registration service activator");
 		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, UserRegistryServiceActivator.class);
-		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(UserRegistryServicePropertyTester.ID));
+		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), UserRegistryServicePropertyTester.ID));
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
-		ProgramExtension extension2 = new ProgramExtension(typeId, AuthServiceActivator.ID, "Auth service activator");
+		Extension extension2 = new Extension(typeId, AuthServiceActivator.ID, "Auth service activator");
 		InterfaceDescription desc2 = new InterfaceDescription(ServiceActivator.class, AuthServiceActivator.class);
-		desc2.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(AuthServicePropertyTester.ID));
+		desc2.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), AuthServicePropertyTester.ID));
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 
-		ProgramExtension extension3 = new ProgramExtension(typeId, ConfigRegistryServiceActivator.ID, "Config registration service activator");
+		Extension extension3 = new Extension(typeId, ConfigRegistryServiceActivator.ID, "Config registration service activator");
 		InterfaceDescription desc3 = new InterfaceDescription(ServiceActivator.class, ConfigRegistryServiceActivator.class);
-		desc3.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ConfigRegistryServicePropertyTester.ID));
+		desc3.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), ConfigRegistryServicePropertyTester.ID));
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 
 		// tier 2
-		ProgramExtension extension4 = new ProgramExtension(typeId, AppStoreServiceActivator.ID, "App store service activator");
+		Extension extension4 = new Extension(typeId, AppStoreServiceActivator.ID, "App store service activator");
 		InterfaceDescription desc4 = new InterfaceDescription(ServiceActivator.class, AppStoreServiceActivator.class);
-		desc4.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(AppStoreServicePropertyTester.ID));
+		desc4.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), AppStoreServicePropertyTester.ID));
 		extension4.addInterface(desc4);
 		addExtension(extension4);
 
 		// tier 3
-		ProgramExtension extension5 = new ProgramExtension(typeId, DomainManagementServiceActivator.ID, "Domain management service activator");
+		Extension extension5 = new Extension(typeId, DomainManagementServiceActivator.ID, "Domain management service activator");
 		InterfaceDescription desc5 = new InterfaceDescription(ServiceActivator.class, DomainManagementServiceActivator.class);
-		desc5.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DomainManagementServicePropertyTester.ID));
+		desc5.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), DomainManagementServicePropertyTester.ID));
 		extension5.addInterface(desc5);
 		addExtension(extension5);
 
-		ProgramExtension extension6 = new ProgramExtension(typeId, NodeControlServiceActivator.ID, "Node management service activator");
+		Extension extension6 = new Extension(typeId, NodeControlServiceActivator.ID, "Node management service activator");
 		InterfaceDescription desc6 = new InterfaceDescription(ServiceActivator.class, NodeControlServiceActivator.class);
-		desc6.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(NodeControlServicePropertyTester.ID));
+		desc6.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), NodeControlServicePropertyTester.ID));
 		extension6.addInterface(desc6);
 		addExtension(extension6);
 
 		// tier 4
-		ProgramExtension extension7 = new ProgramExtension(typeId, MissionControlServiceActivator.ID, "Mission control service activator");
+		Extension extension7 = new Extension(typeId, MissionControlServiceActivator.ID, "Mission control service activator");
 		InterfaceDescription desc7 = new InterfaceDescription(ServiceActivator.class, MissionControlServiceActivator.class);
-		desc7.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(MissionControlServicePropertyTester.ID));
+		desc7.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), MissionControlServicePropertyTester.ID));
 		extension7.addInterface(desc7);
 		addExtension(extension7);
 	}
@@ -112,43 +116,43 @@ public class Extensions extends ProgramExtensions {
 		String typeId = IPropertyTester.TYPE_ID;
 
 		// User Registry Service Property Tester
-		ProgramExtension extension1 = new ProgramExtension(typeId, UserRegistryServicePropertyTester.ID);
+		Extension extension1 = new Extension(typeId, UserRegistryServicePropertyTester.ID);
 		InterfaceDescription desc1 = new InterfaceDescription(IPropertyTester.class, UserRegistryServicePropertyTester.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
 		// Auth Service Property Tester
-		ProgramExtension extension2 = new ProgramExtension(typeId, AuthServicePropertyTester.ID);
+		Extension extension2 = new Extension(typeId, AuthServicePropertyTester.ID);
 		InterfaceDescription desc2 = new InterfaceDescription(IPropertyTester.class, AuthServicePropertyTester.class);
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 
 		// Config Registry Service Property Tester
-		ProgramExtension extension3 = new ProgramExtension(typeId, ConfigRegistryServicePropertyTester.ID);
+		Extension extension3 = new Extension(typeId, ConfigRegistryServicePropertyTester.ID);
 		InterfaceDescription desc3 = new InterfaceDescription(IPropertyTester.class, ConfigRegistryServicePropertyTester.class);
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 
 		// App Store Service Property Tester
-		ProgramExtension extension4 = new ProgramExtension(typeId, AppStoreServicePropertyTester.ID);
+		Extension extension4 = new Extension(typeId, AppStoreServicePropertyTester.ID);
 		InterfaceDescription desc4 = new InterfaceDescription(IPropertyTester.class, AppStoreServicePropertyTester.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);
 
 		// Domain Management Service Property Tester
-		ProgramExtension extension5 = new ProgramExtension(typeId, DomainManagementServicePropertyTester.ID);
+		Extension extension5 = new Extension(typeId, DomainManagementServicePropertyTester.ID);
 		InterfaceDescription desc5 = new InterfaceDescription(IPropertyTester.class, DomainManagementServicePropertyTester.class);
 		extension5.addInterface(desc5);
 		addExtension(extension5);
 
 		// Node Control Service Property Tester
-		ProgramExtension extension6 = new ProgramExtension(typeId, NodeControlServicePropertyTester.ID);
+		Extension extension6 = new Extension(typeId, NodeControlServicePropertyTester.ID);
 		InterfaceDescription desc6 = new InterfaceDescription(IPropertyTester.class, NodeControlServicePropertyTester.class);
 		extension6.addInterface(desc6);
 		addExtension(extension6);
 
 		// Mission Control Service Property Tester
-		ProgramExtension extension7 = new ProgramExtension(typeId, MissionControlServicePropertyTester.ID);
+		Extension extension7 = new Extension(typeId, MissionControlServicePropertyTester.ID);
 		InterfaceDescription desc7 = new InterfaceDescription(IPropertyTester.class, MissionControlServicePropertyTester.class);
 		extension7.addInterface(desc7);
 		addExtension(extension7);
@@ -158,51 +162,51 @@ public class Extensions extends ProgramExtensions {
 		String typeId = ServiceActivator.TYPE_ID;
 
 		// User Registry Relay
-		ProgramExtension extension1 = new ProgramExtension(typeId, UserRegistryRelayActivator.ID);
+		Extension extension1 = new Extension(typeId, UserRegistryRelayActivator.ID);
 		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, UserRegistryRelayActivator.class);
-		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(UserRegistryRelayPropertyTester.ID));
+		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), UserRegistryRelayPropertyTester.ID));
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
 		// Auth Relay
-		ProgramExtension extension2 = new ProgramExtension(typeId, AuthRelayActivator.ID);
+		Extension extension2 = new Extension(typeId, AuthRelayActivator.ID);
 		InterfaceDescription desc2 = new InterfaceDescription(ServiceActivator.class, AuthRelayActivator.class);
-		desc2.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(AuthRelayPropertyTester.ID));
+		desc2.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), AuthRelayPropertyTester.ID));
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 
 		// Config Registry Relay
-		ProgramExtension extension3 = new ProgramExtension(typeId, ConfigRegistryRelayActivator.ID);
+		Extension extension3 = new Extension(typeId, ConfigRegistryRelayActivator.ID);
 		InterfaceDescription desc3 = new InterfaceDescription(ServiceActivator.class, ConfigRegistryRelayActivator.class);
-		desc3.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ConfigRegistryRelayPropertyTester.ID));
+		desc3.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), ConfigRegistryRelayPropertyTester.ID));
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 
 		// App Store Relay
-		ProgramExtension extension4 = new ProgramExtension(typeId, AppStoreRelayActivator.ID);
+		Extension extension4 = new Extension(typeId, AppStoreRelayActivator.ID);
 		InterfaceDescription desc4 = new InterfaceDescription(ServiceActivator.class, AppStoreRelayActivator.class);
-		desc4.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(AppStoreRelayPropertyTester.ID));
+		desc4.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), AppStoreRelayPropertyTester.ID));
 		extension4.addInterface(desc4);
 		addExtension(extension4);
 
 		// Domain Management Relay
-		ProgramExtension extension5 = new ProgramExtension(typeId, DomainManagementRelayActivator.ID);
+		Extension extension5 = new Extension(typeId, DomainManagementRelayActivator.ID);
 		InterfaceDescription desc5 = new InterfaceDescription(ServiceActivator.class, DomainManagementRelayActivator.class);
-		desc5.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DomainManagementRelayPropertyTester.ID));
+		desc5.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), DomainManagementRelayPropertyTester.ID));
 		extension5.addInterface(desc5);
 		addExtension(extension5);
 
 		// Node Management Relay
-		ProgramExtension extension6 = new ProgramExtension(typeId, NodeControlRelayActivator.ID);
+		Extension extension6 = new Extension(typeId, NodeControlRelayActivator.ID);
 		InterfaceDescription desc6 = new InterfaceDescription(ServiceActivator.class, NodeControlRelayActivator.class);
-		desc6.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(NodeControlRelayPropertyTester.ID));
+		desc6.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), NodeControlRelayPropertyTester.ID));
 		extension6.addInterface(desc6);
 		addExtension(extension6);
 
 		// Mission Control Relay
-		ProgramExtension extension7 = new ProgramExtension(typeId, MissionControlRelayActivator.ID);
+		Extension extension7 = new Extension(typeId, MissionControlRelayActivator.ID);
 		InterfaceDescription desc7 = new InterfaceDescription(ServiceActivator.class, MissionControlRelayActivator.class);
-		desc7.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(MissionControlRelayPropertyTester.ID));
+		desc7.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), MissionControlRelayPropertyTester.ID));
 		extension7.addInterface(desc7);
 		addExtension(extension7);
 	}
@@ -211,37 +215,37 @@ public class Extensions extends ProgramExtensions {
 		String typeId = IPropertyTester.TYPE_ID;
 
 		// User Registry Relay Property Tester
-		ProgramExtension extension1 = new ProgramExtension(typeId, UserRegistryRelayPropertyTester.ID);
+		Extension extension1 = new Extension(typeId, UserRegistryRelayPropertyTester.ID);
 		extension1.addInterface(IPropertyTester.class, UserRegistryRelayPropertyTester.class);
 		addExtension(extension1);
 
 		// Auth Relay Property Tester
-		ProgramExtension extension2 = new ProgramExtension(typeId, AuthRelayPropertyTester.ID);
+		Extension extension2 = new Extension(typeId, AuthRelayPropertyTester.ID);
 		extension2.addInterface(IPropertyTester.class, AuthRelayPropertyTester.class);
 		addExtension(extension2);
 
 		// Config Registry Relay Property Tester
-		ProgramExtension extension3 = new ProgramExtension(typeId, ConfigRegistryRelayPropertyTester.ID);
+		Extension extension3 = new Extension(typeId, ConfigRegistryRelayPropertyTester.ID);
 		extension3.addInterface(IPropertyTester.class, ConfigRegistryRelayPropertyTester.class);
 		addExtension(extension3);
 
 		// App Store Relay Property Tester
-		ProgramExtension extension4 = new ProgramExtension(typeId, AppStoreRelayPropertyTester.ID);
+		Extension extension4 = new Extension(typeId, AppStoreRelayPropertyTester.ID);
 		extension4.addInterface(IPropertyTester.class, AppStoreRelayPropertyTester.class);
 		addExtension(extension4);
 
 		// Domain Management Relay Property Tester
-		ProgramExtension extension5 = new ProgramExtension(typeId, DomainManagementRelayPropertyTester.ID);
+		Extension extension5 = new Extension(typeId, DomainManagementRelayPropertyTester.ID);
 		extension5.addInterface(IPropertyTester.class, DomainManagementRelayPropertyTester.class);
 		addExtension(extension5);
 
 		// Node Management Relay Property Tester
-		ProgramExtension extension6 = new ProgramExtension(typeId, NodeControlRelayPropertyTester.ID);
+		Extension extension6 = new Extension(typeId, NodeControlRelayPropertyTester.ID);
 		extension6.addInterface(IPropertyTester.class, NodeControlRelayPropertyTester.class);
 		addExtension(extension6);
 
 		// Mission Control Relay Property Tester
-		ProgramExtension extension7 = new ProgramExtension(typeId, MissionControlRelayPropertyTester.ID);
+		Extension extension7 = new Extension(typeId, MissionControlRelayPropertyTester.ID);
 		extension7.addInterface(IPropertyTester.class, MissionControlRelayPropertyTester.class);
 		addExtension(extension7);
 	}

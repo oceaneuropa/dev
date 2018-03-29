@@ -25,20 +25,20 @@ import org.orbit.platform.runtime.util.ProcessHandlerFilterForProgramExtension;
 import org.orbit.platform.runtime.util.ProgramExtensionHelper;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.IProcessFilter;
 import org.orbit.platform.sdk.IProcessManager;
-import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.extension.IProgramExtension;
-import org.orbit.platform.sdk.extension.desc.InterfaceDescription;
-import org.orbit.platform.sdk.extension.util.ProgramExtensionTracker;
-import org.orbit.platform.sdk.extension.util.ProgramExtensionTracker.ProgramExtensionListener;
+import org.orbit.platform.sdk.extensions.ServiceActivator;
+import org.orbit.platform.sdk.util.IProcessFilter;
+import org.origin.common.extensions.InterfaceDescription;
+import org.origin.common.extensions.core.IExtension;
+import org.origin.common.extensions.util.ExtensionListener;
+import org.origin.common.extensions.util.ExtensionTracker;
 import org.osgi.framework.BundleContext;
 
-public class ProcessManagerImpl implements ProcessManager, IProcessManager, ProgramExtensionListener {
+public class ProcessManagerImpl implements ProcessManager, IProcessManager, ExtensionListener {
 
 	protected PlatformImpl platform;
 	protected BundleContext bundleContext;
-	protected ProgramExtensionTracker programExtensionTracker;
+	protected ExtensionTracker extensionTracker;
 
 	protected int numThreads;
 	protected ExecutorService executor;
@@ -68,9 +68,9 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 
 		// 2. Start tracking IProgramExtension services
 		// - for IProgramExtension service has a ServiceActivator, check whether it is auto start, if so, start the ServiceActivator.
-		this.programExtensionTracker = new ProgramExtensionTracker();
-		this.programExtensionTracker.addListener(this);
-		this.programExtensionTracker.start(bundleContext);
+		this.extensionTracker = new ExtensionTracker();
+		this.extensionTracker.addListener(this);
+		this.extensionTracker.start(bundleContext);
 	}
 
 	/**
@@ -81,10 +81,10 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	public void stop(BundleContext bundleContext) {
 		// 1. Stop tracking IProgramExtension services of ServiceActivator
 		// - for IProgramExtension service with ServiceActivator type, stop the ServiceActivator.
-		if (this.programExtensionTracker != null) {
-			this.programExtensionTracker.stop(bundleContext);
-			this.programExtensionTracker.removeListener(this);
-			this.programExtensionTracker = null;
+		if (this.extensionTracker != null) {
+			this.extensionTracker.stop(bundleContext);
+			this.extensionTracker.removeListener(this);
+			this.extensionTracker = null;
 		}
 
 		// 2. Shutdown thread executor
@@ -112,7 +112,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 
 	/** implements ProgramExtensionListener */
 	@Override
-	public void extensionAdded(final IProgramExtension extension) {
+	public void extensionAdded(final IExtension extension) {
 		if (extension == null) {
 			throw new IllegalArgumentException("extension is null");
 		}
@@ -151,7 +151,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	}
 
 	@Override
-	public void extensionRemoved(final IProgramExtension extension) {
+	public void extensionRemoved(final IExtension extension) {
 		if (extension == null) {
 			throw new IllegalArgumentException("extension is null");
 		}
@@ -200,7 +200,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	 * @param properties
 	 * @throws ProcessException
 	 */
-	public int createProcess(final IProgramExtension extension, final Map<Object, Object> properties) throws ProcessException {
+	public int createProcess(final IExtension extension, final Map<Object, Object> properties) throws ProcessException {
 		ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
 		if (serviceActivator == null) {
 			// Do not start process if ServiceActivator is not available.
@@ -256,7 +256,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 	 * @return
 	 * @throws ProcessException
 	 */
-	protected ProcessHandler doCreateProcess(IProgramExtension extension, ServiceActivator serviceActivator, Map<Object, Object> properties) throws ProcessException {
+	protected ProcessHandler doCreateProcess(IExtension extension, ServiceActivator serviceActivator, Map<Object, Object> properties) throws ProcessException {
 		this.processesLock.writeLock().lock();
 		try {
 			int pid = getNextPID();
@@ -266,7 +266,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Prog
 			context.setProperties(properties);
 
 			ProcessImpl process = new ProcessImpl(pid, name);
-			process.adapt(IProgramExtension.class, extension);
+			process.adapt(IExtension.class, extension);
 			process.adapt(IPlatformContext.class, context);
 
 			ProcessHandlerImpl processHandler = new ProcessHandlerImpl(this, extension, context, process);

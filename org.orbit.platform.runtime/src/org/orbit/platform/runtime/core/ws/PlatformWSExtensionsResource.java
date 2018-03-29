@@ -14,8 +14,8 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.platform.model.dto.ExtensionDTO;
 import org.orbit.platform.runtime.core.Platform;
-import org.orbit.platform.sdk.extension.IProgramExtension;
-import org.orbit.platform.sdk.extension.IProgramExtensionService;
+import org.origin.common.extensions.core.IExtension;
+import org.origin.common.extensions.core.IExtensionService;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 
 /*
@@ -58,24 +58,24 @@ public class PlatformWSExtensionsResource extends AbstractWSApplicationResource 
 		List<ExtensionDTO> extensionDTOs = new ArrayList<ExtensionDTO>();
 
 		Platform platform = getService();
-		IProgramExtensionService service = platform.getExtensionService();
+		IExtensionService service = platform.getExtensionService();
 
-		IProgramExtension[] extensions = null;
+		IExtension[] extensions = null;
 		if ((extensionTypeId == null || extensionTypeId.isEmpty()) && (extensionId == null || extensionId.isEmpty())) {
-			extensions = platform.getExtensionService().getExtensions();
+			extensions = platform.getExtensionService().getExtensions(platform.getRealm());
 
 		} else if (extensionId == null || extensionId.isEmpty()) {
 			extensions = service.getExtensions(extensionTypeId);
 
 		} else {
-			IProgramExtension extension = service.getExtension(extensionTypeId, extensionId);
+			IExtension extension = service.getExtension(platform.getRealm(), extensionTypeId, extensionId);
 			if (extension != null) {
-				extensions = new IProgramExtension[] { extension };
+				extensions = new IExtension[] { extension };
 			}
 		}
 
 		if (extensions != null) {
-			for (IProgramExtension extension : extensions) {
+			for (IExtension extension : extensions) {
 				ExtensionDTO extensionDTO = ModelConverter.getInstance().toDTO(extension);
 				extensionDTOs.add(extensionDTO);
 			}

@@ -7,6 +7,8 @@
  *******************************************************************************/
 package org.orbit.platform.sdk;
 
+import org.orbit.platform.sdk.util.IProcessFilter;
+
 public interface IProcessManager {
 
 	IProcess[] getProcesses();

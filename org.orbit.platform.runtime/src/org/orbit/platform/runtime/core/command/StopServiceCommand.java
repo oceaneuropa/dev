@@ -4,7 +4,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.platform.runtime.core.Platform;
-import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -31,7 +31,7 @@ public class StopServiceCommand extends AbstractWSCommand {
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		IProgramExtension extension = this.platform.getExtensionService().getExtension(extensionTypeId, extensionId);
+		IExtension extension = this.platform.getExtensionService().getExtension(platform.getRealm(), extensionTypeId, extensionId);
 		if (extension == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Extension does not exist.", null);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();

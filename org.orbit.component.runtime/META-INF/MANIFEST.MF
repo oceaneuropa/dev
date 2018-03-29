@@ -40,6 +40,7 @@ Import-Package: com.auth0.jwt.interfaces,
  org.slf4j;version="1.7.10"
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  org.origin.common;bundle-version="[0.0.0,2.0.0)",
+ org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)",
  org.orbit.component.model;bundle-version="1.0.0",
  org.orbit.component.api;bundle-version="1.0.0",
  org.orbit.platform.sdk;bundle-version="[0.0.0,2.0.0)"

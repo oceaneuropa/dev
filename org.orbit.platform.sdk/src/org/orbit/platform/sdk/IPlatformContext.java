@@ -3,9 +3,10 @@ package org.orbit.platform.sdk;
 import java.util.Map;
 
 import org.origin.common.adapter.IAdaptable;
+import org.origin.common.extensions.util.ExtensionServiceAware;
 import org.osgi.framework.BundleContext;
 
-public interface IPlatformContext extends IAdaptable {
+public interface IPlatformContext extends ExtensionServiceAware, IAdaptable {
 
 	IPlatform getPlatform();
 

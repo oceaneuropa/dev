@@ -10,11 +10,9 @@ package org.orbit.component.runtime.tier1.account.ws;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.extensions.Extensions;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -35,7 +33,7 @@ public class UserRegistryServiceAdapter {
 	protected ServiceTracker<UserRegistryService, UserRegistryService> serviceTracker;
 	protected UserRegistryWSApplication webApp;
 	protected UserRegistryServiceIndexTimer indexTimer;
-	protected ProgramExtension urlProviderExtension;
+	// protected Extension urlProviderExtension;
 
 	public UserRegistryServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -123,10 +121,10 @@ public class UserRegistryServiceAdapter {
 	 */
 	protected void doStop(BundleContext bundleContext, UserRegistryService service) {
 		// Unregister URL provider extension
-		if (this.urlProviderExtension != null) {
-			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
-			this.urlProviderExtension = null;
-		}
+		// if (this.urlProviderExtension != null) {
+		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+		// this.urlProviderExtension = null;
+		// }
 
 		// Stop indexing timer
 		if (this.indexTimer != null) {

@@ -1,20 +1,19 @@
 package org.orbit.platform.sdk.util;
 
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.IProcessFilter;
-import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.origin.common.extensions.core.IExtension;
 
 public class IProcessFilterByProgramExtension implements IProcessFilter {
 
-	protected IProgramExtension extension;
+	protected IExtension extension;
 
-	public IProcessFilterByProgramExtension(IProgramExtension extension) {
+	public IProcessFilterByProgramExtension(IExtension extension) {
 		this.extension = extension;
 	}
 
 	@Override
 	public boolean accept(IProcess process) {
-		IProgramExtension extensionOfProcess = process.getAdapter(IProgramExtension.class);
+		IExtension extensionOfProcess = process.getAdapter(IExtension.class);
 		if (this.extension.equals(extensionOfProcess)) {
 			return true;
 		}

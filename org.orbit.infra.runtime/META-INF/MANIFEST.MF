@@ -40,5 +40,6 @@ Export-Package: org.orbit.infra.runtime;version="1.0.0",
  org.orbit.infra.runtime.relay;version="1.0.0"
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="0.16.2",
  org.origin.common;bundle-version="1.0.0",
+ org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)",
  org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)"
 Bundle-ActivationPolicy: lazy

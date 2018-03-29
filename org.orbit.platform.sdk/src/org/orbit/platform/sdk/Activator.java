@@ -7,7 +7,7 @@
  *******************************************************************************/
 package org.orbit.platform.sdk;
 
-import org.orbit.platform.sdk.extension.impl.ProgramExtensionServiceImpl;
+import org.origin.common.extensions.core.impl.ExtensionServiceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -30,13 +30,13 @@ public class Activator implements BundleActivator {
 		Activator.instance = this;
 
 		// Start program extension service impl
-		ProgramExtensionServiceImpl.getInstance().start(bundleContext);
+		ExtensionServiceImpl.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		// Stop program extension service impl
-		ProgramExtensionServiceImpl.getInstance().stop(bundleContext);
+		ExtensionServiceImpl.getInstance().stop(bundleContext);
 
 		Activator.instance = null;
 		Activator.bundleContext = null;

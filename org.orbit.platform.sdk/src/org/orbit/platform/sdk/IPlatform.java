@@ -7,13 +7,13 @@
  *******************************************************************************/
 package org.orbit.platform.sdk;
 
-import org.orbit.platform.sdk.extension.IProgramExtensionService;
 import org.origin.common.adapter.IAdaptable;
+import org.origin.common.extensions.core.IExtensionService;
 
 public interface IPlatform extends IAdaptable {
 
 	IProcessManager getIProcessManager();
 
-	IProgramExtensionService getExtensionService();
+	IExtensionService getExtensionService();
 
 }

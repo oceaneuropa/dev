@@ -10,11 +10,9 @@ package org.orbit.component.runtime.tier1.auth.ws;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.extensions.Extensions;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -26,7 +24,7 @@ public class AuthServiceAdapter {
 	protected ServiceTracker<AuthService, AuthService> serviceTracker;
 	protected AuthWSApplication webApp;
 	protected AuthServiceIndexTimer indexTimer;
-	protected ProgramExtension urlProviderExtension;
+	// protected Extension urlProviderExtension;
 
 	public AuthServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -112,10 +110,10 @@ public class AuthServiceAdapter {
 	 */
 	protected void doStop(BundleContext bundleContext, AuthService service) {
 		// Unregister URL provider extension
-		if (this.urlProviderExtension != null) {
-			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
-			this.urlProviderExtension = null;
-		}
+		// if (this.urlProviderExtension != null) {
+		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+		// this.urlProviderExtension = null;
+		// }
 
 		// Stop indexing timer
 		if (this.indexTimer != null) {

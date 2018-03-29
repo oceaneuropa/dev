@@ -1,10 +1,10 @@
 package org.orbit.platform.runtime.util;
 
 import org.orbit.platform.sdk.IPlatformContext;
-import org.orbit.platform.sdk.condition.ICondition;
-import org.orbit.platform.sdk.extension.IProgramExtension;
-import org.orbit.platform.sdk.extension.desc.InterfaceDescription;
-import org.orbit.platform.sdk.extension.desc.Parameter;
+import org.origin.common.extensions.InterfaceDescription;
+import org.origin.common.extensions.Parameter;
+import org.origin.common.extensions.condition.ICondition;
+import org.origin.common.extensions.core.IExtension;
 
 public class ProgramExtensionHelper {
 
@@ -16,7 +16,7 @@ public class ProgramExtensionHelper {
 	 * @param clazz
 	 * @return
 	 */
-	public String getName(IProgramExtension extension, Class<?> clazz) {
+	public String getName(IExtension extension, Class<?> clazz) {
 		String name = null;
 		if (extension != null && clazz != null) {
 			InterfaceDescription desc = extension.getInterfaceDescription(clazz);
@@ -33,7 +33,7 @@ public class ProgramExtensionHelper {
 	 * @param clazz
 	 * @return
 	 */
-	public String getName(IProgramExtension extension, Object object) {
+	public String getName(IExtension extension, Object object) {
 		String name = null;
 		if (extension != null && object != null) {
 			InterfaceDescription desc = extension.getInterfaceDescription(object);
@@ -50,7 +50,7 @@ public class ProgramExtensionHelper {
 	 * @param clazz
 	 * @return
 	 */
-	public boolean isSingleton(IProgramExtension extension, Class<?> clazz) {
+	public boolean isSingleton(IExtension extension, Class<?> clazz) {
 		boolean isSingleton = false;
 		if (extension != null && clazz != null) {
 			InterfaceDescription desc = extension.getInterfaceDescription(clazz);
@@ -67,7 +67,7 @@ public class ProgramExtensionHelper {
 	 * @param object
 	 * @return
 	 */
-	public boolean isSingleton(IProgramExtension extension, Object object) {
+	public boolean isSingleton(IExtension extension, Object object) {
 		boolean isSingleton = false;
 		if (extension != null && object != null) {
 			InterfaceDescription desc = extension.getInterfaceDescription(object);

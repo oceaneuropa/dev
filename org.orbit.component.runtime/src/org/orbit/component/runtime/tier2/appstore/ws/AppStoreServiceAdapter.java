@@ -10,11 +10,9 @@ package org.orbit.component.runtime.tier2.appstore.ws;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.extensions.Extensions;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -34,7 +32,7 @@ public class AppStoreServiceAdapter {
 	protected ServiceTracker<AppStoreService, AppStoreService> serviceTracker;
 	protected AppStoreWSApplication webApp;
 	protected AppStoreServiceIndexTimer indexTimer;
-	protected ProgramExtension urlProviderExtension;
+	// protected Extension urlProviderExtension;
 
 	public AppStoreServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -116,12 +114,11 @@ public class AppStoreServiceAdapter {
 	 */
 	protected void doStop(BundleContext bundleContext, AppStoreService service) {
 		LOG.info("doStop()");
-
 		// Unregister URL provider extension
-		if (this.urlProviderExtension != null) {
-			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
-			this.urlProviderExtension = null;
-		}
+		// if (this.urlProviderExtension != null) {
+		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+		// this.urlProviderExtension = null;
+		// }
 
 		// Stop indexing timer
 		if (this.indexTimer != null) {

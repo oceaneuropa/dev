@@ -10,12 +10,12 @@ package org.orbit.platform.runtime.processes;
 import java.util.Map;
 
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.IProcessFilter;
-import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.orbit.platform.sdk.util.IProcessFilter;
+import org.origin.common.extensions.core.IExtension;
 
 public interface ProcessManager {
 
-	int createProcess(IProgramExtension extension, Map<Object, Object> properties) throws ProcessException;
+	int createProcess(IExtension extension, Map<Object, Object> properties) throws ProcessException;
 
 	boolean startProcess(int pid, boolean async) throws ProcessException;
 

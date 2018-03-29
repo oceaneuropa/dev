@@ -12,7 +12,7 @@ import java.util.Map;
 import org.orbit.component.runtime.OrbitRelays;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivator;
+import org.orbit.platform.sdk.extensions.ServiceActivator;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.osgi.framework.BundleContext;
 

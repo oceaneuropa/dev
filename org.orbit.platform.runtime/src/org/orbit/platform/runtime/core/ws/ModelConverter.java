@@ -3,7 +3,7 @@ package org.orbit.platform.runtime.core.ws;
 import org.orbit.platform.model.dto.ExtensionDTO;
 import org.orbit.platform.model.dto.ProcessDTO;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.origin.common.extensions.core.IExtension;
 
 public class ModelConverter {
 
@@ -22,7 +22,7 @@ public class ModelConverter {
 	 * @param extension
 	 * @return
 	 */
-	public ExtensionDTO toDTO(IProgramExtension extension) {
+	public ExtensionDTO toDTO(IExtension extension) {
 		if (extension == null) {
 			return null;
 		}

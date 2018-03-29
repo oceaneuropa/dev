@@ -8,6 +8,7 @@ public class PlatformConstants {
 	// Global
 	// ----------------------------------------------------------------------------------------
 	// config properties
+	public static String ORBIT_REALM = "orbit.realm";
 	public static String ORBIT_HOST_URL = "orbit.host.url";
 	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 

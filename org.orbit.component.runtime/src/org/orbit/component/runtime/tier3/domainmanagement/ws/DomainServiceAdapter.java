@@ -3,11 +3,9 @@ package org.orbit.component.runtime.tier3.domainmanagement.ws;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.extensions.Extensions;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -28,7 +26,7 @@ public class DomainServiceAdapter {
 	protected ServiceTracker<DomainManagementService, DomainManagementService> serviceTracker;
 	protected DomainServiceWSApplication webApp;
 	protected DomainServiceTimer indexTimer;
-	protected ProgramExtension urlProviderExtension;
+	// protected Extension urlProviderExtension;
 
 	public DomainServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -103,10 +101,10 @@ public class DomainServiceAdapter {
 
 	protected void doStop(BundleContext bundleContext, DomainManagementService service) {
 		// Unregister URL provider extension
-		if (this.urlProviderExtension != null) {
-			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
-			this.urlProviderExtension = null;
-		}
+		// if (this.urlProviderExtension != null) {
+		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+		// this.urlProviderExtension = null;
+		// }
 
 		// Stop indexing timer
 		if (this.indexTimer != null) {

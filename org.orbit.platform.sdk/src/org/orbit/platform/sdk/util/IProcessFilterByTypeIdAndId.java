@@ -1,8 +1,7 @@
 package org.orbit.platform.sdk.util;
 
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.IProcessFilter;
-import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.origin.common.extensions.core.IExtension;
 
 public class IProcessFilterByTypeIdAndId implements IProcessFilter {
 
@@ -21,7 +20,7 @@ public class IProcessFilterByTypeIdAndId implements IProcessFilter {
 
 	@Override
 	public boolean accept(IProcess process) {
-		IProgramExtension extension = process.getAdapter(IProgramExtension.class);
+		IExtension extension = process.getAdapter(IExtension.class);
 		String currTypeId = extension.getTypeId();
 		String currExtensionId = extension.getId();
 		if (this.typeId.equals(currTypeId) && this.extensionId.equals(currExtensionId)) {

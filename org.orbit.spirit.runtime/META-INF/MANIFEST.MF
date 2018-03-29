@@ -23,7 +23,8 @@ Import-Package: javax.inject;version="[1.0.0,2.0.0)",
  org.slf4j;version="[0.0.0,2.0.0)"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)",
- org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)"
+ org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)",
+ org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)"
 Export-Package: org.orbit.sprit.runtime;version="1.0.0",
  org.orbit.sprit.runtime.gaia;version="1.0.0",
  org.orbit.sprit.runtime.gaia.extensions;version="1.0.0",

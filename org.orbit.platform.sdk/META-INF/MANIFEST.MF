@@ -5,20 +5,13 @@ Bundle-SymbolicName: org.orbit.platform.sdk;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.platform.sdk.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.origin.common.adapter,
- org.origin.common.rest.client,
- org.origin.common.rest.server,
- org.origin.common.rest.util,
- org.origin.common.service,
- org.osgi.framework;version="1.3.0",
+Import-Package: org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.platform.sdk;version="1.0.0",
- org.orbit.platform.sdk.condition;version="1.0.0",
- org.orbit.platform.sdk.extension;version="1.0.0",
- org.orbit.platform.sdk.extension.desc;version="1.0.0",
- org.orbit.platform.sdk.extension.impl;version="1.0.0",
- org.orbit.platform.sdk.extension.impl.other;version="1.0.0",
- org.orbit.platform.sdk.extension.util;version="1.0.0",
+ org.orbit.platform.sdk.extensions;version="1.0.0",
+ org.orbit.platform.sdk.extensions.impl;version="1.0.0",
  org.orbit.platform.sdk.other;version="1.0.0",
  org.orbit.platform.sdk.util;version="1.0.0"
+Require-Bundle: org.origin.common;bundle-version="1.0.0",
+ org.origin.common.extensions;bundle-version="1.0.0"

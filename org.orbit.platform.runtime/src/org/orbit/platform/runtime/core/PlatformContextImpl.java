@@ -6,6 +6,7 @@ import java.util.Map;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.extensions.core.IExtensionService;
 import org.osgi.framework.BundleContext;
 
 public class PlatformContextImpl implements IPlatformContext {
@@ -35,6 +36,11 @@ public class PlatformContextImpl implements IPlatformContext {
 
 	public void setPlatform(IPlatform platform) {
 		this.platform = platform;
+	}
+
+	@Override
+	public IExtensionService getExtensionService() {
+		return this.platform != null ? this.platform.getExtensionService() : null;
 	}
 
 	@Override

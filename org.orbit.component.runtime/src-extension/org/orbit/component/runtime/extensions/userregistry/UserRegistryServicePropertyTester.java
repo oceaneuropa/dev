@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.platform.sdk.IPlatformContext;
-import org.orbit.platform.sdk.extension.IPropertyTester;
+import org.origin.common.extensions.condition.IPropertyTester;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 

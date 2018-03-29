@@ -6,7 +6,7 @@ import org.orbit.infra.runtime.relay.IndexServiceWSApplicationRelay;
 import org.orbit.infra.runtime.relay.InfraRelays;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivator;
+import org.orbit.platform.sdk.extensions.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
 public class IndexServiceRelayActivator implements ServiceActivator {

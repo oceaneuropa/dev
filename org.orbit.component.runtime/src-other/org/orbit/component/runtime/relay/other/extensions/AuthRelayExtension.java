@@ -1,8 +1,7 @@
 package org.orbit.component.runtime.relay.other.extensions;
 
 import org.orbit.component.runtime.extensions.other.AuthRelayControl;
-import org.orbit.platform.sdk.WSRelayControl;
-import org.orbit.platform.sdk.extension.impl.other.ProgramExtensionImplV1;
+import org.orbit.platform.sdk.extensions.WSRelayControl;
 
 public class AuthRelayExtension extends ProgramExtensionImplV1 {
 

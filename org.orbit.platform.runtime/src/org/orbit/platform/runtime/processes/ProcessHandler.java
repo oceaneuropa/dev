@@ -8,7 +8,7 @@
 package org.orbit.platform.runtime.processes;
 
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.origin.common.extensions.core.IExtension;
 
 public interface ProcessHandler {
 
@@ -45,7 +45,7 @@ public interface ProcessHandler {
 		}
 	}
 
-	IProgramExtension getExtension();
+	IExtension getExtension();
 
 	IProcess getProcess();
 

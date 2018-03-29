@@ -3,12 +3,10 @@ package org.orbit.component.runtime.tier4.missioncontrol.ws;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.extensions.Extensions;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.editpolicy.MissionWSEditPolicy;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.platform.sdk.extension.desc.ProgramExtension;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -30,7 +28,7 @@ public class MissionControlAdapter {
 	protected ServiceTracker<MissionControlService, MissionControlService> serviceTracker;
 	protected MissionControlWSApplication webApp;
 	protected MissionControlIndexer indexTimer;
-	protected ProgramExtension urlProviderExtension;
+	// protected Extension urlProviderExtension;
 
 	public MissionControlAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -110,10 +108,10 @@ public class MissionControlAdapter {
 
 	protected void doStop(BundleContext bundleContext, MissionControlService service) {
 		// Unregister URL provider extension
-		if (this.urlProviderExtension != null) {
-			Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
-			this.urlProviderExtension = null;
-		}
+		// if (this.urlProviderExtension != null) {
+		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+		// this.urlProviderExtension = null;
+		// }
 
 		// Stop indexing timer
 		if (this.indexTimer != null) {

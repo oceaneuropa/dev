@@ -9,13 +9,13 @@ package org.orbit.platform.runtime.processes;
 
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.extension.IProgramExtension;
+import org.orbit.platform.sdk.extensions.ServiceActivator;
+import org.origin.common.extensions.core.IExtension;
 
 public class ProcessHandlerImpl implements ProcessHandler {
 
 	protected ProcessManager processManager;
-	protected IProgramExtension extension;
+	protected IExtension extension;
 	protected IPlatformContext context;
 	protected IProcess process;
 
@@ -28,7 +28,7 @@ public class ProcessHandlerImpl implements ProcessHandler {
 	 * @param context
 	 * @param process
 	 */
-	public ProcessHandlerImpl(ProcessManager processManager, IProgramExtension extension, IPlatformContext context, IProcess process) {
+	public ProcessHandlerImpl(ProcessManager processManager, IExtension extension, IPlatformContext context, IProcess process) {
 		this.processManager = processManager;
 		this.extension = extension;
 		this.context = context;
@@ -36,7 +36,7 @@ public class ProcessHandlerImpl implements ProcessHandler {
 	}
 
 	@Override
-	public IProgramExtension getExtension() {
+	public IExtension getExtension() {
 		return this.extension;
 	}
 

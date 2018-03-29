@@ -21,10 +21,10 @@ import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.ProgramsAndFeaturesImpl;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.IProcessManager;
-import org.orbit.platform.sdk.extension.IProgramExtensionService;
-import org.orbit.platform.sdk.extension.util.ProgramExtensionServiceTracker;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.adapter.IAdaptable;
+import org.origin.common.extensions.core.IExtensionService;
+import org.origin.common.extensions.util.ExtensionServiceTracker;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
@@ -45,11 +45,12 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 
 	protected static Logger LOG = LoggerFactory.getLogger(PlatformImpl.class);
 
+	protected String realm;
 	protected ProcessManagerImpl processManager;
 	protected WSEditPolicies wsEditPolicies;
 
 	protected BundleContext bundleContext;
-	protected ProgramExtensionServiceTracker programExtensionServiceTracker;
+	protected ExtensionServiceTracker extensionServiceTracker;
 	protected CommandService commandService;
 	protected ProgramsAndFeatures programsAndFreatures;
 	protected WSClientFactory wsClientFactory = new WSClientFactoryImpl();
@@ -63,6 +64,13 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		this.wsEditPolicies.setService(Platform.class, this);
 	}
 
+	protected String checkRealm(String realm) {
+		if (realm == null) {
+			realm = "default";
+		}
+		return realm;
+	}
+
 	/**
 	 * 
 	 * @param bundleContext
@@ -72,19 +80,20 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		this.bundleContext = bundleContext;
 
 		// 1. load properties
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, PlatformConstants.PLATFORM_CONTEXT_ROOT);
-		updateProperties(configProps);
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_REALM);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_CONTEXT_ROOT);
+		updateProperties(properties);
 
 		// 2. Start managing processes
 		this.processManager = new ProcessManagerImpl(this);
 		this.processManager.start(bundleContext);
 
 		// 3. Start tracking program extension service
-		this.programExtensionServiceTracker = new ProgramExtensionServiceTracker();
-		this.programExtensionServiceTracker.start(bundleContext);
+		this.extensionServiceTracker = new ExtensionServiceTracker();
+		this.extensionServiceTracker.start(bundleContext);
 
 		// 4. Start command service
 		this.commandService = new CommandServiceImpl();
@@ -131,9 +140,9 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		}
 
 		// 3. Stop tracking program extension service
-		if (this.programExtensionServiceTracker != null) {
-			this.programExtensionServiceTracker.stop(bundleContext);
-			this.programExtensionServiceTracker = null;
+		if (this.extensionServiceTracker != null) {
+			this.extensionServiceTracker.stop(bundleContext);
+			this.extensionServiceTracker = null;
 		}
 
 		if (this.processManager != null) {
@@ -150,6 +159,12 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();
 		}
+
+		String realm = (String) this.properties.get(PlatformConstants.ORBIT_REALM);
+		if (realm != null) {
+			this.realm = realm;
+		}
+
 		this.properties = properties;
 	}
 
@@ -172,6 +187,11 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public String getRealm() {
+		return checkRealm(this.realm);
 	}
 
 	@Override
@@ -215,8 +235,8 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	}
 
 	@Override
-	public IProgramExtensionService getExtensionService() {
-		return (this.programExtensionServiceTracker != null) ? this.programExtensionServiceTracker.getService() : null;
+	public IExtensionService getExtensionService() {
+		return (this.extensionServiceTracker != null) ? this.extensionServiceTracker.getService() : null;
 	}
 
 	@Override

@@ -35,6 +35,7 @@ Import-Package: javax.inject;version="[1.0.0,2.0.0)",
  org.slf4j;version="1.7.25"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)",
+ org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)",
  org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)",
  org.apache.felix.gogo.runtime;bundle-version="[0.16.2,2.0.0)"
 Export-Package: org.orbit.platform.runtime;version="1.0.0",

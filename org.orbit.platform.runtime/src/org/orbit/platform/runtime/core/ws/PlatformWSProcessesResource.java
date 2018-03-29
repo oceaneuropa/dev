@@ -16,7 +16,7 @@ import org.orbit.platform.model.dto.ProcessDTO;
 import org.orbit.platform.runtime.core.Platform;
 import org.orbit.platform.runtime.processes.ProcessManager;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.IProcessFilter;
+import org.orbit.platform.sdk.util.IProcessFilter;
 import org.orbit.platform.sdk.util.IProcessFilterByTypeId;
 import org.orbit.platform.sdk.util.IProcessFilterByTypeIdAndId;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
