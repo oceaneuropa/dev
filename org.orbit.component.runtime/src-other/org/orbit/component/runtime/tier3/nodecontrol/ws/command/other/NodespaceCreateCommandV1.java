@@ -5,12 +5,12 @@ import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommandResult;
 import org.origin.common.command.impl.CommandResult;
+import org.origin.common.resources.IPath;
+import org.origin.common.resources.node.INodespace;
+import org.origin.common.resources.node.NodespaceDescription;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
-import org.origin.core.resources.IPath;
-import org.origin.core.resources.node.INodespace;
-import org.origin.core.resources.node.NodespaceDescription;
 
 public class NodespaceCreateCommandV1 extends AbstractTransferAgentCommandV1 {
 
@@ -31,10 +31,10 @@ public class NodespaceCreateCommandV1 extends AbstractTransferAgentCommandV1 {
 
 		Responses responses = context.getAdapter(Responses.class);
 		try {
-			INodespace nodespace = this.service.getNodeWorkspace().findRootMember(nodespaceName, INodespace.class);
+			INodespace nodespace = this.service.getWorkspace().findRootMember(nodespaceName, INodespace.class);
 			if (nodespace == null) {
 				IPath nodespaceFullpath = IPath.ROOT.append(nodespaceName);
-				nodespace = this.service.getNodeWorkspace().getFolder(nodespaceFullpath, INodespace.class);
+				nodespace = this.service.getWorkspace().getFolder(nodespaceFullpath, INodespace.class);
 			}
 
 			if (nodespace.exists()) {

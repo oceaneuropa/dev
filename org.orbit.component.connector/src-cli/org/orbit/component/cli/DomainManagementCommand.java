@@ -40,7 +40,6 @@ public class DomainManagementCommand implements Annotated {
 
 	protected BundleContext bundleContext;
 	protected Map<Object, Object> properties;
-
 	protected String scheme = "orbit";
 
 	/**
@@ -85,10 +84,10 @@ public class DomainManagementCommand implements Annotated {
 		OSGiServiceUtil.unregister(DomainManagementCommand.class.getName(), this);
 	}
 
-	protected DomainManagementClient getDomainService() {
+	protected DomainManagementClient getDomainManagementCLient() {
 		DomainManagementClient domainService = OrbitClients.getInstance().getDomainService(this.properties);
 		if (domainService == null) {
-			throw new IllegalStateException("DomainService is null.");
+			throw new IllegalStateException("DomainManagementClient is null.");
 		}
 		return domainService;
 	}
@@ -106,10 +105,10 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_machines");
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.GET_MACHINE_CONFIGS);
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 
 			MachineConfig[] machineConfigs = ResponseConverter.getInstance().convertToMachineConfigs(response);
 			String[][] rows = new String[machineConfigs.length][MACHINE_CONFIG_TITLES.length];
@@ -135,12 +134,12 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_machine", new String[] { "id", id });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.GET_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			MachineConfig resultMachineConfig = ResponseConverter.getInstance().convertToMachineConfig(response);
 
 			MachineConfig[] machineConfigs = (resultMachineConfig != null) ? new MachineConfig[] { resultMachineConfig } : new MachineConfig[] {};
@@ -169,14 +168,14 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "add_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.ADD_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
 			request.setParameter("name", name);
 			request.setParameter("ipAddress", ip);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			// if (response != null) {
 			// System.out.println(response.getSimpleLabel());
 			//
@@ -199,7 +198,7 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "update_machine", new String[] { "id", id }, new String[] { "name", name }, new String[] { "ip", ip });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.UPDATE_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
@@ -224,7 +223,7 @@ public class DomainManagementCommand implements Annotated {
 
 			request.setParameter("fieldsToUpdate", fieldsToUpdate);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			// if (response != null) {
 			// System.out.println(response.getSimpleLabel());
 			//
@@ -245,12 +244,12 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_machine", new String[] { "id", id });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.REMOVE_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			// if (response != null) {
 			// System.out.println(response.getSimpleLabel());
 			//
@@ -279,7 +278,7 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_tas", new String[] { "machineId", machineId });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.GET_TA_CONFIGS);
 			if (!Parameter.UNSPECIFIED.equals(machineId)) {
@@ -291,7 +290,7 @@ public class DomainManagementCommand implements Annotated {
 				}
 			}
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 
 			PlatformConfig[] platformConfigs = ResponseConverter.getInstance().convertToPlatformConfigs(response);
 			String[][] rows = new String[platformConfigs.length][PLATFORM_CONFIG_TITLES.length];
@@ -330,13 +329,13 @@ public class DomainManagementCommand implements Annotated {
 				return;
 			}
 
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.GET_TA_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("id", id);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			PlatformConfig resultTaConfig = ResponseConverter.getInstance().convertToPlatformConfig(response);
 
 			PlatformConfig[] taConfigs = (resultTaConfig != null) ? new PlatformConfig[] { resultTaConfig } : new PlatformConfig[] {};
@@ -369,7 +368,7 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "add_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.ADD_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -378,7 +377,7 @@ public class DomainManagementCommand implements Annotated {
 			request.setParameter("hostURL", hostURL);
 			request.setParameter("contextRoot", contextRoot);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			// if (response != null) {
 			// System.out.println(response.getSimpleLabel());
 			//
@@ -403,7 +402,7 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "update_ta", new String[] { "machineId", machineId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.UPDATE_TA_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -437,7 +436,7 @@ public class DomainManagementCommand implements Annotated {
 
 			request.setParameter("fieldsToUpdate", fieldsToUpdate);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			// if (response != null) {
 			// System.out.println(response.getSimpleLabel());
 			//
@@ -459,13 +458,13 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_ta", new String[] { "machineId", machineId }, new String[] { "id", id });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.REMOVE_TA_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("id", id);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			// if (response != null) {
 			// System.out.println(response.getSimpleLabel());
 			//
@@ -504,13 +503,13 @@ public class DomainManagementCommand implements Annotated {
 				return;
 			}
 
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.GET_NODE_CONFIGS);
 			request.setParameter("machineId", machineId);
 			request.setParameter("transferAgentId", transferAgentId);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 
 			NodeConfig[] nodeConfigs = ResponseConverter.getInstance().convertToNodeConfigs(response);
 			String[][] rows = new String[nodeConfigs.length][NODE_CONFIG_TITLES.length];
@@ -555,14 +554,14 @@ public class DomainManagementCommand implements Annotated {
 				return;
 			}
 
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.GET_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("transferAgentId", transferAgentId);
 			request.setParameter("id", id);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			NodeConfig resultNodeConfig = ResponseConverter.getInstance().convertToNodeConfig(response);
 
 			NodeConfig[] nodeConfigs = (resultNodeConfig != null) ? new NodeConfig[] { resultNodeConfig } : new NodeConfig[] {};
@@ -597,7 +596,7 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "add_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainService = getDomainManagementCLient();
 
 			Request addNodeConfigRequest = new Request(Requests.ADD_NODE_CONFIG);
 			addNodeConfigRequest.setParameter("machineId", machineId);
@@ -652,7 +651,7 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "update_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id }, new String[] { "name", name }, new String[] { "hostURL", hostURL }, new String[] { "contextRoot", contextRoot });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.UPDATE_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
@@ -687,7 +686,7 @@ public class DomainManagementCommand implements Annotated {
 
 			request.setParameter("fieldsToUpdate", fieldsToUpdate);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			// if (response != null) {
 			// System.out.println(response.getSimpleLabel());
 			//
@@ -710,14 +709,14 @@ public class DomainManagementCommand implements Annotated {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_node", new String[] { "machineId", machineId }, new String[] { "transferAgentId", transferAgentId }, new String[] { "id", id });
 
 		try {
-			DomainManagementClient domainService = getDomainService();
+			DomainManagementClient domainClient = getDomainManagementCLient();
 
 			Request request = new Request(Requests.REMOVE_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("transferAgentId", transferAgentId);
 			request.setParameter("id", id);
 
-			Response response = domainService.sendRequest(request);
+			Response response = domainClient.sendRequest(request);
 			// if (response != null) {
 			// System.out.println(response.getSimpleLabel());
 			//

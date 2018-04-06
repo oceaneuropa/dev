@@ -6,6 +6,7 @@ import java.util.Map;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.extensions.Activator;
 import org.origin.common.extensions.core.IExtensionService;
 import org.osgi.framework.BundleContext;
 
@@ -40,7 +41,7 @@ public class PlatformContextImpl implements IPlatformContext {
 
 	@Override
 	public IExtensionService getExtensionService() {
-		return this.platform != null ? this.platform.getExtensionService() : null;
+		return Activator.getDefault().getExtensionService();
 	}
 
 	@Override

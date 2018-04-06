@@ -2,29 +2,28 @@ package org.origin.common.extensions.core.impl;
 
 import java.util.Map;
 
-import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.Extension;
+import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.core.IExtension;
 
 public class ExtensionDescriptiveImpl extends ExtensionImpl implements IExtension {
 
-	protected String realm;
+	// protected String realm;
 	protected Extension extension;
 
 	/**
 	 * 
-	 * @param realm
 	 * @param extension
 	 */
-	public ExtensionDescriptiveImpl(String realm, Extension extension) {
-		this.realm = realm;
+	public ExtensionDescriptiveImpl(Extension extension) {
+		// this.realm = realm;
 		this.extension = extension;
 	}
 
-	@Override
-	public String getRealm() {
-		return this.realm;
-	}
+	// @Override
+	// public String getRealm() {
+	// return this.realm;
+	// }
 
 	@Override
 	public String getTypeId() {

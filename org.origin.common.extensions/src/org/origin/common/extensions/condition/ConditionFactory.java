@@ -24,8 +24,8 @@ public class ConditionFactory {
 	 * @param propertyTesterId
 	 * @return
 	 */
-	public ICondition newPropertyTesterCondition(String realm, String propertyTesterId) {
-		return new PropertyTesterCondition(realm, propertyTesterId);
+	public ICondition newPropertyTesterCondition(String propertyTesterId) {
+		return new PropertyTesterCondition(propertyTesterId);
 	}
 
 	/**

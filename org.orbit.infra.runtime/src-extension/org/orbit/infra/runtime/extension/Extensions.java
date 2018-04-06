@@ -51,7 +51,7 @@ public class Extensions extends ProgramExtensions {
 				new Parameter("component.index_service.jdbc.username", "JDBC username"), //
 				new Parameter("component.index_service.jdbc.password", "JDBC password") //
 		);
-		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), IndexServicePropertyTester.ID));
+		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(IndexServicePropertyTester.ID));
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
@@ -63,7 +63,7 @@ public class Extensions extends ProgramExtensions {
 				new Parameter("component.channel.context_root", "web service context root"), //
 				new Parameter("component.channel.http_port", "web socket http port") //
 		);
-		desc2.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), ChannelServicePropertyTester.ID));
+		desc2.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ChannelServicePropertyTester.ID));
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 	}
@@ -94,7 +94,7 @@ public class Extensions extends ProgramExtensions {
 				new Parameter(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT, "web service relay context root"), //
 				new Parameter(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS, "target urls") //
 		);
-		desc3.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), IndexServiceRelayPropertyTester.ID));
+		desc3.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(IndexServiceRelayPropertyTester.ID));
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 
@@ -105,7 +105,7 @@ public class Extensions extends ProgramExtensions {
 				new Parameter(InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT, "web service relay context root"), //
 				new Parameter(InfraConstants.COMPONENT_CHANNEL_RELAY_URLS, "target urls") //
 		);
-		desc4.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(getRealm(), ChannelServiceRelayPropertyTester.ID));
+		desc4.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ChannelServiceRelayPropertyTester.ID));
 		extension4.addInterface(desc4);
 		addExtension(extension4);
 	}

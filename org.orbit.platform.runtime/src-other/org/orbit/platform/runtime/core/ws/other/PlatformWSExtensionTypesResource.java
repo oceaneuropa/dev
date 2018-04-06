@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.platform.runtime.core.Platform;
+import org.origin.common.extensions.Activator;
 import org.origin.common.extensions.core.IExtensionService;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 
@@ -46,10 +47,8 @@ public class PlatformWSExtensionTypesResource extends AbstractWSApplicationResou
 	public Response getExtensionTypes() {
 		List<String> extensionTypeIds = new ArrayList<String>();
 
-		Platform platform = getService();
-		IExtensionService service = platform.getExtensionService();
-
-		String[] extensionTypeIdArrays = service.getExtensionTypeIds(null);
+		IExtensionService extensionService = Activator.getDefault().getExtensionService();
+		String[] extensionTypeIdArrays = extensionService.getExtensionTypeIds();
 		for (String extensionTypeId : extensionTypeIdArrays) {
 			extensionTypeIds.add(extensionTypeId);
 		}

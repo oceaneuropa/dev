@@ -1,19 +1,27 @@
 package org.orbit.component.runtime.tier3.nodecontrol.service;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.util.TASetupUtil;
+import org.origin.common.resources.IWorkspace;
+import org.origin.common.resources.ResourcesFactory;
+import org.origin.common.resources.node.INode;
+import org.origin.common.resources.node.NodeDescription;
+import org.origin.common.resources.util.WorkspaceHelper;
+import org.origin.common.resources.util.WorkspaceUtil;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
-import org.origin.core.resources.IWorkspace;
-import org.origin.core.resources.ResourcesFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -30,9 +38,13 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
-	protected IWorkspace nodespaceRoot;
+	protected IWorkspace workspace;
 	protected WSEditPolicies wsEditPolicies;
 
+	/**
+	 * 
+	 * @param initProperties
+	 */
 	public NodeControlServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
 		this.wsEditPolicies = new WSEditPoliciesImpl();
@@ -46,6 +58,8 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		if (this.initProperties != null) {
 			properties.putAll(this.initProperties);
 		}
+
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.PLATFORM_HOME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_CONTROL_NAME);
@@ -58,9 +72,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		this.serviceRegistry = bundleContext.registerService(NodeControlService.class, this, props);
 
 		Path taHome = Paths.get(getHome()).toAbsolutePath();
-		Path nodespacesPath = TASetupUtil.getNodespacesPath(taHome, true);
+		Path workspacePath = TASetupUtil.getNodespacesPath(taHome, true);
 
-		this.nodespaceRoot = ResourcesFactory.getInstance().createWorkspace(nodespacesPath.toFile());
+		this.workspace = ResourcesFactory.getInstance().createWorkspace(workspacePath.toFile());
 	}
 
 	@Override
@@ -70,41 +84,44 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			this.serviceRegistry = null;
 		}
 
-		if (this.nodespaceRoot != null) {
-			this.nodespaceRoot.dispose();
-			this.nodespaceRoot = null;
+		if (this.workspace != null) {
+			this.workspace.dispose();
+			this.workspace = null;
 		}
 	}
 
 	/**
 	 * 
-	 * @param configProps
+	 * @param properties
 	 */
-	public synchronized void update(Map<Object, Object> configProps) {
+	public synchronized void update(Map<Object, Object> properties) {
 		System.out.println(getClass().getSimpleName() + ".updateProperties()");
 
-		if (configProps == null) {
-			configProps = new HashMap<Object, Object>();
+		if (properties == null) {
+			properties = new HashMap<Object, Object>();
 		}
 
-		String globalHostURL = (String) configProps.get(OrbitConstants.ORBIT_HOST_URL);
-		String name = (String) configProps.get(OrbitConstants.COMPONENT_NODE_CONTROL_NAME);
-		String hostURL = (String) configProps.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL);
-		String contextRoot = (String) configProps.get(OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
-		String home = (String) configProps.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOME);
+		String platformHome = (String) properties.get(OrbitConstants.PLATFORM_HOME);
+		String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
+		String name = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_NAME);
+		String hostURL = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL);
+		String contextRoot = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
+		String home = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOME);
 
 		System.out.println();
 		System.out.println("Config properties:");
 		System.out.println("-----------------------------------------------------");
+		System.out.println(OrbitConstants.PLATFORM_HOME + " = " + platformHome);
 		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
 		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_NAME + " = " + name);
 		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL + " = " + hostURL);
 		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT + " = " + contextRoot);
 		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOME + " = " + home);
+		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOME + " = " + home);
 		System.out.println("-----------------------------------------------------");
 		System.out.println();
 
-		this.properties = configProps;
+		this.properties = properties;
 	}
 
 	@Override
@@ -135,17 +152,102 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	@Override
 	public String getHome() {
 		String home = (String) this.properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOME);
+		if (home == null || home.isEmpty()) {
+			home = (String) this.properties.get(OrbitConstants.PLATFORM_HOME);
+		}
 		return home;
 	}
 
 	@Override
-	public IWorkspace getNodeWorkspace() {
-		return this.nodespaceRoot;
+	public IWorkspace getWorkspace() {
+		return this.workspace;
 	}
 
 	@Override
 	public WSEditPolicies getEditPolicies() {
 		return this.wsEditPolicies;
+	}
+
+	@Override
+	public List<INode> getNodes() {
+		IWorkspace workspace = getWorkspace();
+		List<INode> resultNodes = WorkspaceHelper.INSTANCE.getRootNodes(workspace);
+		if (resultNodes == null) {
+			resultNodes = Collections.emptyList();
+		}
+		return resultNodes;
+	}
+
+	@Override
+	public List<INode> getNodes(String typeId) {
+		List<INode> resultNodes = new ArrayList<INode>();
+		if (typeId != null) {
+			IWorkspace workspace = getWorkspace();
+			List<INode> nodes = WorkspaceHelper.INSTANCE.getRootNodes(workspace);
+			if (nodes != null) {
+				for (INode currNode : nodes) {
+					String currTypeId = null;
+					try {
+						NodeDescription desc = currNode.getDescription();
+						if (desc != null) {
+							currTypeId = desc.getStringAttribute("typeId");
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+					if (typeId.equals(currTypeId)) {
+						resultNodes.add(currNode);
+					}
+				}
+			}
+		}
+		return resultNodes;
+	}
+
+	@Override
+	public boolean nodeExists(String id) {
+		IWorkspace workspace = getWorkspace();
+		return WorkspaceHelper.INSTANCE.rootNodeExists(workspace, id);
+	}
+
+	@Override
+	public INode getNode(String id) {
+		IWorkspace workspace = getWorkspace();
+		return WorkspaceHelper.INSTANCE.getRootNode(workspace, id);
+	}
+
+	@Override
+	public INode createNode(String id, String typeId, String name) throws IOException {
+		IWorkspace workspace = getWorkspace();
+		INode node = WorkspaceUtil.INSTANCE.createNode(workspace, id, typeId, name);
+		if (node != null) {
+			Object context = this;
+			WorkspaceUtil.INSTANCE.preConfigureFolder(context, workspace, node);
+		}
+		return node;
+	}
+
+	@Override
+	public boolean setNodeAttribute(String id, String attrName, String attrValue) throws IOException {
+		IWorkspace workspace = getWorkspace();
+		return WorkspaceUtil.INSTANCE.setNodeAttribute(workspace, id, attrName, attrValue);
+	}
+
+	@Override
+	public boolean deleteNode(String id) throws IOException {
+		IWorkspace workspace = getWorkspace();
+		boolean succeed = WorkspaceUtil.INSTANCE.deleteNode(workspace, id);
+		return succeed;
+	}
+
+	@Override
+	public boolean startNode(String id) throws IOException {
+		return false;
+	}
+
+	@Override
+	public boolean stopNode(String id) throws IOException {
+		return false;
 	}
 
 }

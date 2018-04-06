@@ -12,11 +12,11 @@ public interface IExtension extends IAdaptable, InterfacesAware {
 		Object getElement();
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
-	String getRealm();
+	// /**
+	// *
+	// * @return
+	// */
+	// String getRealm();
 
 	/**
 	 * Get extension type id.

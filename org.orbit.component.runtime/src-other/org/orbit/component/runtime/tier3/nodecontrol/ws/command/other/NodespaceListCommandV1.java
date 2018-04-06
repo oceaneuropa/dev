@@ -10,11 +10,11 @@ import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommandResult;
 import org.origin.common.command.impl.CommandResult;
+import org.origin.common.resources.IResource;
+import org.origin.common.resources.node.INodespace;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
-import org.origin.core.resources.IResource;
-import org.origin.core.resources.node.INodespace;
 
 public class NodespaceListCommandV1 extends AbstractTransferAgentCommandV1 {
 
@@ -34,7 +34,7 @@ public class NodespaceListCommandV1 extends AbstractTransferAgentCommandV1 {
 		Responses responses = context.getAdapter(Responses.class);
 		try {
 			List<INodespaceDTO> nodespaceDTOs = new ArrayList<INodespaceDTO>();
-			IResource[] resources = this.service.getNodeWorkspace().getRootMembers();
+			IResource[] resources = this.service.getWorkspace().getRootMembers();
 			for (IResource resource : resources) {
 				if (resource instanceof INodespace) {
 					INodespace nodespace = (INodespace) resource;

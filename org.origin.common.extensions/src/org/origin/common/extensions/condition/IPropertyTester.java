@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface IPropertyTester {
 
-	public static final String TYPE_ID = "origin.common.IPropertyTester";
+	public static final String TYPE_ID = "origin.common.condition.PropertyTester";
 
 	/**
 	 * 

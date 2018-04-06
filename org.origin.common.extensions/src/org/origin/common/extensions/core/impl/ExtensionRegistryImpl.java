@@ -21,7 +21,7 @@ public class ExtensionRegistryImpl extends IExtensionRegistry {
 		}
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(IExtensionService.PROP_REALM, extension.getRealm());
+		// props.put(IExtensionService.PROP_REALM, extension.getRealm());
 		props.put(IExtensionService.PROP_EXTENSION_TYPE_ID, extension.getTypeId());
 		props.put(IExtensionService.PROP_EXTENSION_ID, extension.getId());
 		ServiceRegistration<?> serviceRegistration = context.registerService(IExtension.class, extension, props);

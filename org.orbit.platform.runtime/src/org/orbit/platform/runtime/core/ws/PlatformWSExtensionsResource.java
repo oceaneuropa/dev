@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.platform.model.dto.ExtensionDTO;
 import org.orbit.platform.runtime.core.Platform;
+import org.origin.common.extensions.Activator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.core.IExtensionService;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -58,17 +59,17 @@ public class PlatformWSExtensionsResource extends AbstractWSApplicationResource 
 		List<ExtensionDTO> extensionDTOs = new ArrayList<ExtensionDTO>();
 
 		Platform platform = getService();
-		IExtensionService service = platform.getExtensionService();
+		IExtensionService service = Activator.getDefault().getExtensionService();
 
 		IExtension[] extensions = null;
 		if ((extensionTypeId == null || extensionTypeId.isEmpty()) && (extensionId == null || extensionId.isEmpty())) {
-			extensions = platform.getExtensionService().getExtensions(platform.getRealm());
+			extensions = service.getExtensions(platform.getRealm());
 
 		} else if (extensionId == null || extensionId.isEmpty()) {
 			extensions = service.getExtensions(extensionTypeId);
 
 		} else {
-			IExtension extension = service.getExtension(platform.getRealm(), extensionTypeId, extensionId);
+			IExtension extension = service.getExtension(extensionTypeId, extensionId);
 			if (extension != null) {
 				extensions = new IExtension[] { extension };
 			}

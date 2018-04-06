@@ -16,13 +16,13 @@ import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.resources.IWorkspaceService;
+import org.origin.common.resources.WorkspaceServiceFactory;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.StringUtil;
-import org.origin.core.resources.IWorkspaceService;
-import org.origin.core.resources.WorkspaceServiceFactory;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 

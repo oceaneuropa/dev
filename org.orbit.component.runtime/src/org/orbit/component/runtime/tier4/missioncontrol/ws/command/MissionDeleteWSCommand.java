@@ -7,14 +7,14 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeBuilder;
-import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeHelper;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
+import org.origin.common.resources.IWorkspace;
+import org.origin.common.resources.util.WorkspaceHelper;
+import org.origin.common.resources.util.WorkspaceUtil;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
-import org.origin.core.resources.IWorkspace;
 
 public class MissionDeleteWSCommand extends AbstractWSCommand {
 

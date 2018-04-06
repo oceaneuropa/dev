@@ -4,7 +4,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.platform.runtime.core.Platform;
+import org.origin.common.extensions.Activator;
 import org.origin.common.extensions.core.IExtension;
+import org.origin.common.extensions.core.IExtensionService;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -31,7 +33,8 @@ public class StartServiceCommand extends AbstractWSCommand {
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		IExtension extension = this.platform.getExtensionService().getExtension(platform.getRealm(), extensionTypeId, extensionId);
+		IExtensionService extensionService = Activator.getDefault().getExtensionService();
+		IExtension extension = extensionService.getExtension(extensionTypeId, extensionId);
 		if (extension == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Extension does not exist.", null);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();

@@ -14,6 +14,7 @@ import org.orbit.platform.runtime.cli.PlatformCommand;
 import org.orbit.platform.runtime.core.Platform;
 import org.orbit.platform.runtime.core.PlatformImpl;
 import org.orbit.platform.runtime.core.ws.PlatformAdapter;
+import org.orbit.platform.runtime.extension.Extensions;
 import org.orbit.platform.runtime.util.PlatformTracker;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
@@ -67,11 +68,15 @@ public class Activator implements BundleActivator {
 		// Start server CLI
 		this.command = new PlatformCommand();
 		this.command.start(bundleContext);
+
+		Extensions.INSTANCE.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.info("stop()");
+
+		Extensions.INSTANCE.stop(bundleContext);
 
 		// Stop server CLI
 		if (this.command != null) {

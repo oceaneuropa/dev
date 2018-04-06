@@ -80,29 +80,6 @@ public class ProgramExtensionHelper {
 
 	/**
 	 * 
-	 * @param context
-	 * @param desc
-	 * @return
-	 */
-	public boolean isAutoStart(IPlatformContext context, InterfaceDescription desc) {
-		boolean isAutoStart = false;
-		if (desc != null) {
-			isAutoStart = desc.isAutoStart();
-			if (!isAutoStart) {
-				ICondition condition = desc.getTriggerCondition();
-				if (condition != null) {
-					boolean succeed = condition.evaluate(context, desc, null, null);
-					if (succeed) {
-						isAutoStart = true;
-					}
-				}
-			}
-		}
-		return isAutoStart;
-	}
-
-	/**
-	 * 
 	 * @param parameters
 	 * @return
 	 */

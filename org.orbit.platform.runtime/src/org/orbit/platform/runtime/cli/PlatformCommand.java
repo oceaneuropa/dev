@@ -26,6 +26,7 @@ import org.orbit.platform.sdk.extensions.WSRelayControl;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
+import org.origin.common.extensions.Activator;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.core.IExtensionService;
@@ -140,8 +141,7 @@ public class PlatformCommand implements Annotated {
 	}
 
 	protected IExtensionService getExtensionService() {
-		checkPlatform();
-		return this.platform.getExtensionService();
+		return Activator.getDefault().getExtensionService();
 	}
 
 	protected ProcessManager getProcessManager() {
@@ -149,10 +149,10 @@ public class PlatformCommand implements Annotated {
 		return this.platform.getProcessManager();
 	}
 
-	protected String getRealm() {
-		checkPlatform();
-		return this.platform.getRealm();
-	}
+	// protected String getRealm() {
+	// checkPlatform();
+	// return this.platform.getRealm();
+	// }
 
 	public void lhost() {
 		String hostURL = this.platform.getHostURL();
@@ -180,7 +180,7 @@ public class PlatformCommand implements Annotated {
 	 * 
 	 */
 	public void lextensions() {
-		IExtension[] extensions = getExtensionService().getExtensions(getRealm());
+		IExtension[] extensions = getExtensionService().getExtensions();
 		String[][] records = new String[extensions.length][EXTENSION_COLUMNS.length];
 		int index = 0;
 		for (IExtension extension : extensions) {
@@ -201,7 +201,7 @@ public class PlatformCommand implements Annotated {
 			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
 	) {
 
-		IExtension extension = getExtensionService().getExtension(getRealm(), extensionTypeId, extensionId);
+		IExtension extension = getExtensionService().getExtension(extensionTypeId, extensionId);
 		if (extension == null) {
 			System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
 			return;
@@ -230,7 +230,7 @@ public class PlatformCommand implements Annotated {
 			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
 	) {
 		if ("".equals(extensionTypeId) || "".equals(extensionId)) {
-			IExtension[] extensions = getExtensionService().getExtensions(getRealm());
+			IExtension[] extensions = getExtensionService().getExtensions();
 			for (IExtension extension : extensions) {
 				linterfaces(extension);
 				System.out.println();
@@ -244,7 +244,7 @@ public class PlatformCommand implements Annotated {
 			}
 
 		} else if (!"".equals(extensionTypeId) && !"".equals(extensionId)) {
-			IExtension extension = getExtensionService().getExtension(getRealm(), extensionTypeId, extensionId);
+			IExtension extension = getExtensionService().getExtension(extensionTypeId, extensionId);
 			if (extension == null) {
 				System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
 				return;
@@ -341,7 +341,7 @@ public class PlatformCommand implements Annotated {
 			@Descriptor("Parameters") @Parameter(names = { "-params", "--params" }, absentValue = "") String params //
 	) throws ClientException {
 		try {
-			IExtension extension = getExtensionService().getExtension(getRealm(), extensionTypeId, extensionId);
+			IExtension extension = getExtensionService().getExtension(extensionTypeId, extensionId);
 			if (extension == null) {
 				System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
 				return;
@@ -769,7 +769,7 @@ public class PlatformCommand implements Annotated {
 		IExtensionService service = getExtensionService();
 
 		// Start ws relay
-		IExtension relayExtension = service.getExtension(getRealm(), WSRelayControl.EXTENSION_TYPE_ID, extensionId);
+		IExtension relayExtension = service.getExtension(WSRelayControl.EXTENSION_TYPE_ID, extensionId);
 		if (relayExtension == null) {
 			LOG.info("Program extension is not available.");
 			return;
@@ -794,7 +794,7 @@ public class PlatformCommand implements Annotated {
 		LOG.info("stoprelay('" + extensionId + "')");
 
 		IExtensionService service = getExtensionService();
-		IExtension extension = service.getExtension(getRealm(), WSRelayControl.EXTENSION_TYPE_ID, extensionId);
+		IExtension extension = service.getExtension(WSRelayControl.EXTENSION_TYPE_ID, extensionId);
 		if (extension == null) {
 			LOG.info("Program extension is not available.");
 			return;

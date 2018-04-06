@@ -1,6 +1,8 @@
 package org.origin.common.extensions.core.impl;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.core.IExtensionService;
@@ -65,59 +67,63 @@ public class ExtensionServiceImpl implements IExtensionService {
 	}
 
 	@Override
-	public String[] getExtensionTypeIds(String realm) {
-		realm = checkRealm(realm);
+	public String[] getExtensionTypeIds() {
+		// realm = checkRealm(realm);
 
-		return this.extensionTracker.getExtensionTypeIds(realm);
+		return this.extensionTracker.getExtensionTypeIds();
 	}
 
 	/**
 	 * 
-	 * @param realm
 	 * @return
 	 */
 	@Override
-	public IExtension[] getExtensions(String realm) {
-		realm = checkRealm(realm);
-
-		return this.extensionTracker.getExtensions(realm);
+	public IExtension[] getExtensions() {
+		List<IExtension> allExtensions = new ArrayList<IExtension>();
+		for (String typeId : getExtensionTypeIds()) {
+			IExtension[] currExtensions = getExtensions(typeId);
+			if (currExtensions != null) {
+				for (IExtension currExtension : currExtensions) {
+					allExtensions.add(currExtension);
+				}
+			}
+		}
+		return allExtensions.toArray(new IExtension[allExtensions.size()]);
 	}
 
 	/**
 	 * 
-	 * @param realm
 	 * @param typeId
 	 * @return
 	 */
 	@Override
-	public IExtension[] getExtensions(String realm, String typeId) {
-		realm = checkRealm(realm);
+	public IExtension[] getExtensions(String typeId) {
+		// realm = checkRealm(realm);
 		typeId = checkTypeId(typeId);
 
-		return this.extensionTracker.getExtensions(realm, typeId);
+		return this.extensionTracker.getExtensions(typeId);
 	}
 
 	/**
 	 * 
-	 * @param realm
 	 * @param typeId
 	 * @param extensionId
 	 * @return
 	 */
 	@Override
-	public IExtension getExtension(String realm, String typeId, String extensionId) {
-		realm = checkRealm(realm);
+	public IExtension getExtension(String typeId, String extensionId) {
+		// realm = checkRealm(realm);
 		typeId = checkTypeId(typeId);
 
-		return this.extensionTracker.getExtension(realm, typeId, extensionId);
+		return this.extensionTracker.getExtension(typeId, extensionId);
 	}
 
-	protected String checkRealm(String realm) {
-		if (realm == null) {
-			realm = "default";
-		}
-		return realm;
-	}
+	// protected String checkRealm(String realm) {
+	// if (realm == null) {
+	// realm = "default";
+	// }
+	// return realm;
+	// }
 
 	protected String checkTypeId(String typeId) {
 		if (typeId == null) {
@@ -134,3 +140,15 @@ public class ExtensionServiceImpl implements IExtensionService {
 	}
 
 }
+
+// /**
+// *
+// * @param realm
+// * @return
+// */
+// @Override
+// public IExtension[] getExtensions(String realm) {
+// realm = checkRealm(realm);
+//
+// return this.extensionTracker.getExtensions(realm);
+// }

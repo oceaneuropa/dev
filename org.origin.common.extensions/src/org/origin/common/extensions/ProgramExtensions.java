@@ -140,7 +140,7 @@ public abstract class ProgramExtensions {
 		this.extensionDescs.add(extensionDesc);
 
 		// Register IProgramExtension service
-		IExtension extension = new ExtensionDescriptiveImpl(this.realm, extensionDesc);
+		IExtension extension = new ExtensionDescriptiveImpl(extensionDesc);
 		extension.adapt(Extension.class, extensionDesc); // set (adapt) ProgramExtension in the IProgramExtension
 
 		this.extensions.add(extension);

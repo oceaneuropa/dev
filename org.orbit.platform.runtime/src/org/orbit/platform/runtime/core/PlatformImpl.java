@@ -23,8 +23,6 @@ import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.IProcessManager;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.adapter.IAdaptable;
-import org.origin.common.extensions.core.IExtensionService;
-import org.origin.common.extensions.util.ExtensionServiceTracker;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
@@ -50,7 +48,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	protected WSEditPolicies wsEditPolicies;
 
 	protected BundleContext bundleContext;
-	protected ExtensionServiceTracker extensionServiceTracker;
 	protected CommandService commandService;
 	protected ProgramsAndFeatures programsAndFreatures;
 	protected WSClientFactory wsClientFactory = new WSClientFactoryImpl();
@@ -90,10 +87,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		// 2. Start managing processes
 		this.processManager = new ProcessManagerImpl(this);
 		this.processManager.start(bundleContext);
-
-		// 3. Start tracking program extension service
-		this.extensionServiceTracker = new ExtensionServiceTracker();
-		this.extensionServiceTracker.start(bundleContext);
 
 		// 4. Start command service
 		this.commandService = new CommandServiceImpl();
@@ -137,12 +130,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		// 2. Stop command service
 		if (this.commandService != null) {
 			this.commandService.stop();
-		}
-
-		// 3. Stop tracking program extension service
-		if (this.extensionServiceTracker != null) {
-			this.extensionServiceTracker.stop(bundleContext);
-			this.extensionServiceTracker = null;
 		}
 
 		if (this.processManager != null) {
@@ -232,11 +219,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	@Override
 	public WSEditPolicies getEditPolicies() {
 		return this.wsEditPolicies;
-	}
-
-	@Override
-	public IExtensionService getExtensionService() {
-		return (this.extensionServiceTracker != null) ? this.extensionServiceTracker.getService() : null;
 	}
 
 	@Override

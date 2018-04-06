@@ -5,10 +5,10 @@ import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.ICommandResult;
 import org.origin.common.command.impl.CommandResult;
+import org.origin.common.resources.node.INodespace;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
-import org.origin.core.resources.node.INodespace;
 
 public class NodespaceExistCommandV1 extends AbstractTransferAgentCommandV1 {
 
@@ -30,7 +30,7 @@ public class NodespaceExistCommandV1 extends AbstractTransferAgentCommandV1 {
 		Responses responses = context.getAdapter(Responses.class);
 		try {
 			boolean exist = false;
-			INodespace nodespace = this.service.getNodeWorkspace().findRootMember(nodespaceName, INodespace.class);
+			INodespace nodespace = this.service.getWorkspace().findRootMember(nodespaceName, INodespace.class);
 			if (nodespace != null) {
 				exist = true;
 			}

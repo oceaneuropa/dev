@@ -27,6 +27,7 @@ import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.IProcessManager;
 import org.orbit.platform.sdk.extensions.ServiceActivator;
+import org.orbit.platform.sdk.extensions.ServiceActivatorHelper;
 import org.orbit.platform.sdk.util.IProcessFilter;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.core.IExtension;
@@ -122,7 +123,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 		InterfaceDescription desc = extension.getInterfaceDescription(ServiceActivator.class);
 		if (desc != null) {
 			IPlatformContext context = createContext();
-			isAutoStart = ProgramExtensionHelper.INSTANCE.isAutoStart(context, desc);
+			isAutoStart = ServiceActivatorHelper.INSTANCE.isServiceActivatorAutoStart(context, desc);
 		}
 		if (isAutoStart) {
 			final ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);

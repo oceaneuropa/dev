@@ -6,13 +6,11 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeBuilder;
-import org.orbit.component.runtime.tier3.nodecontrol.resource.WorkspaceNodeHelper;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.origin.common.resources.node.INode;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
-import org.origin.core.resources.IWorkspace;
 
 public class NodeCreateWSCommand extends AbstractWSCommand {
 
@@ -24,21 +22,29 @@ public class NodeCreateWSCommand extends AbstractWSCommand {
 
 	@Override
 	public Response execute(Request request) throws Exception {
-		String nodeId = (request.getParameter("nodeId") instanceof String) ? (String) request.getParameter("nodeId") : null;
-		if (nodeId == null || nodeId.isEmpty()) {
-			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "'nodeId' parameter is not set.", null);
+		String id = (request.getParameter("id") instanceof String) ? (String) request.getParameter("id") : null;
+		String typeId = (request.getParameter("typeId") instanceof String) ? (String) request.getParameter("typeId") : null;
+		String name = (request.getParameter("name") instanceof String) ? (String) request.getParameter("name") : null;
+
+		if (id == null || id.isEmpty()) {
+			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "'id' parameter is not set.", null);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
+		if (typeId == null) {
+			typeId = "platform";
+		}
+		if (name == null) {
+			name = id;
+		}
 
-		IWorkspace workspace = this.service.getNodeWorkspace();
-
-		boolean exists = WorkspaceNodeHelper.INSTANCE.nodeExists(workspace, nodeId);
+		boolean exists = this.service.nodeExists(id);
 		if (exists) {
-			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Node '" + nodeId + "' already exists.", null);
+			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Node with id '" + id + "' already exists.", null);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		boolean succeed = WorkspaceNodeBuilder.INSTANCE.createNode(workspace, nodeId);
+		INode node = this.service.createNode(id, typeId, name);
+		boolean succeed = (node != null) ? true : false;
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("succeed", succeed);

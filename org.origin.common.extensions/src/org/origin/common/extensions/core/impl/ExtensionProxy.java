@@ -11,7 +11,7 @@ public class ExtensionProxy implements IExtension {
 
 	protected BundleContext context;
 	protected ServiceReference<?> reference;
-	protected String realm;
+	// protected String realm;
 	protected String typeId;
 	protected String id;
 
@@ -19,24 +19,23 @@ public class ExtensionProxy implements IExtension {
 	 * 
 	 * @param context
 	 * @param reference
-	 * @param realm
 	 * @param typeId
 	 *            extension type id. e.g. "orbit.switcher"
 	 * @param id
 	 *            extension id. e.g. "UserRegistrySwitcher", "AuthSwitcher", "AppStoreSwitcher", etc.
 	 */
-	public ExtensionProxy(BundleContext context, ServiceReference<?> reference, String realm, String typeId, String id) {
+	public ExtensionProxy(BundleContext context, ServiceReference<?> reference, String typeId, String id) {
 		this.context = context;
 		this.reference = reference;
-		this.realm = realm;
+		// this.realm = realm;
 		this.typeId = typeId;
 		this.id = id;
 	}
 
-	@Override
-	public String getRealm() {
-		return this.realm;
-	}
+	// @Override
+	// public String getRealm() {
+	// return this.realm;
+	// }
 
 	@Override
 	public String getTypeId() {

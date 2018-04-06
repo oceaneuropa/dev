@@ -5,9 +5,9 @@ import java.util.List;
 import org.orbit.component.model.tier3.domain.MachineConfigRTO;
 import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
+import org.origin.common.resources.IWorkspaceService;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAware;
-import org.origin.core.resources.IWorkspaceService;
 
 public interface DomainManagementService extends WebServiceAware {
 

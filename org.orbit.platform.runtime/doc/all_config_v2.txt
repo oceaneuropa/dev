@@ -8,7 +8,7 @@ orbit.platform.front
 -Dcomponent.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice 
  
 -Dplatform.context_root=/orbit/v1/platform 
--Dplatform.home=/Users/ocean/origin
+-Dplatform.home=/Users/ocean/origin/ta1
 
 -Dcomponent.index_service.relay.autostart=true 
 -Dcomponent.index_service.relay.name=IndexServiceFront 
@@ -113,7 +113,7 @@ orbit.platform.components1
 -Dorbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice 
 
 -Dplatform.context_root=/orbit/v1/platform 
--Dplatform.home=/Users/ocean/origin 
+-Dplatform.home=/Users/ocean/origin/ta1 
 
 -Dcomponent.user_registry.autostart=true 
 -Dcomponent.user_registry.name=UserRegistry1 
@@ -152,6 +152,11 @@ orbit.platform.components1
 -Dcomponent.domain_management.jdbc.username=postgres 
 -Dcomponent.domain_management.jdbc.password=admin 
 
+-Dcomponent.node_control.autostart=true 
+-Dcomponent.node_control.name=NodeControl1 
+-Dcomponent.node_control.context_root=/orbit/v1/nodecontrol 
+-Dcomponent.node_control.home=/Users/ocean/origin/ta1 
+
 -Dcomponent.mission_control.autostart=true 
 -Dcomponent.mission_control.name=MissionControl1 
 -Dcomponent.mission_control.context_root=/orbit/v1/missioncontrol 
@@ -171,7 +176,7 @@ orbit.platform.components2
 -Dorbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice 
 
 -Dplatform.context_root=/orbit/v1/platform 
--Dplatform.home=/Users/ocean/origin 
+-Dplatform.home=/Users/ocean/origin/ta2 
 
 -Dcomponent.user_registry.autostart=true 
 -Dcomponent.user_registry.name=UserRegistry2 
@@ -209,6 +214,11 @@ orbit.platform.components2
 -Dcomponent.domain_management.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
 -Dcomponent.domain_management.jdbc.username=postgres 
 -Dcomponent.domain_management.jdbc.password=admin 
+
+-Dcomponent.node_control.autostart=true 
+-Dcomponent.node_control.name=NodeControl2 
+-Dcomponent.node_control.context_root=/orbit/v1/nodecontrol 
+-Dcomponent.node_control.home=/Users/ocean/origin/ta2 
 
 -Dcomponent.mission_control.autostart=true 
 -Dcomponent.mission_control.name=MissionControl2 
