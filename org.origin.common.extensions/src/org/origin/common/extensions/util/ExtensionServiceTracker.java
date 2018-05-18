@@ -14,18 +14,18 @@ public class ExtensionServiceTracker extends AbstractServiceTracker<IExtensionSe
 		ServiceTracker<IExtensionService, IExtensionService> serviceTracker = new ServiceTracker<IExtensionService, IExtensionService>(bundleContext, IExtensionService.class, new ServiceTrackerCustomizer<IExtensionService, IExtensionService>() {
 			@Override
 			public IExtensionService addingService(ServiceReference<IExtensionService> reference) {
-				IExtensionService programService = bundleContext.getService(reference);
-				notifyServiceAdded(programService, 1000);
-				return programService;
+				IExtensionService service = bundleContext.getService(reference);
+				notifyServiceAdded(service);
+				return service;
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<IExtensionService> reference, IExtensionService extensionService) {
+			public void modifiedService(ServiceReference<IExtensionService> reference, IExtensionService service) {
 			}
 
 			@Override
-			public void removedService(ServiceReference<IExtensionService> reference, IExtensionService extensionService) {
-				notifyServiceRemoved(extensionService, 1000);
+			public void removedService(ServiceReference<IExtensionService> reference, IExtensionService service) {
+				notifyServiceRemoved(service);
 			}
 		});
 		return serviceTracker;

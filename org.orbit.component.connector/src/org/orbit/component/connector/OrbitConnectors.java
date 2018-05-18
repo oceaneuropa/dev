@@ -1,7 +1,6 @@
 package org.orbit.component.connector;
 
 import org.orbit.component.connector.tier1.account.UserRegistryConnector;
-import org.orbit.component.connector.tier1.account.other.UserRegistryManager;
 import org.orbit.component.connector.tier1.auth.AuthConnector;
 import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
@@ -11,6 +10,8 @@ import org.orbit.component.connector.tier4.mission.MissionControlConnector;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import other.orbit.component.connector.tier1.account.UserRegistryManager;
 
 public class OrbitConnectors {
 

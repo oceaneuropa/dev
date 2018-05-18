@@ -12,12 +12,6 @@ public interface IExtension extends IAdaptable, InterfacesAware {
 		Object getElement();
 	}
 
-	// /**
-	// *
-	// * @return
-	// */
-	// String getRealm();
-
 	/**
 	 * Get extension type id.
 	 * 
@@ -53,7 +47,20 @@ public interface IExtension extends IAdaptable, InterfacesAware {
 	 */
 	Map<Object, Object> getProperties();
 
+	/**
+	 * 
+	 * @param propName
+	 * @return
+	 */
+	Object getProperty(Object propName);
+
 }
+
+// /**
+// *
+// * @return
+// */
+// String getRealm();
 
 // public interface Context extends IAdaptable {
 // Object getElement();

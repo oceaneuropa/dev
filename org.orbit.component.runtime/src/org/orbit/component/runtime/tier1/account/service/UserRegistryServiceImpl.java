@@ -29,7 +29,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public void start(BundleContext bundleContext) {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (this.initProperties != null) {
@@ -53,7 +53,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public void stop(BundleContext bundleContext) {
-		System.out.println(getClass().getSimpleName() + ".stop()");
+		// System.out.println(getClass().getSimpleName() + ".stop()");
 
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();
@@ -66,7 +66,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	 * @param properties
 	 */
 	public synchronized void update(Map<Object, Object> properties) {
-		System.out.println(getClass().getSimpleName() + ".updateProperties()");
+		// System.out.println(getClass().getSimpleName() + ".updateProperties()");
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();
 		}

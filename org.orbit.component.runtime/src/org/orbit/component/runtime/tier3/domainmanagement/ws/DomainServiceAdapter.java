@@ -49,7 +49,7 @@ public class DomainServiceAdapter {
 			@Override
 			public DomainManagementService addingService(ServiceReference<DomainManagementService> reference) {
 				DomainManagementService service = bundleContext.getService(reference);
-				LOG.info("DomainService [" + service + "] is added.");
+				// LOG.info("DomainService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
 				return service;
@@ -57,12 +57,12 @@ public class DomainServiceAdapter {
 
 			@Override
 			public void modifiedService(ServiceReference<DomainManagementService> reference, DomainManagementService service) {
-				LOG.info("DomainService [" + service + "] is modified.");
+				// LOG.info("DomainService [" + service + "] is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<DomainManagementService> reference, DomainManagementService service) {
-				LOG.info("DomainService [" + service + "] is removed.");
+				// LOG.info("DomainService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
 			}

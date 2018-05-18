@@ -37,7 +37,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService,
 	 */
 	@Override
 	public void start(BundleContext bundleContext) {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (this.initProperties != null) {
@@ -67,7 +67,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService,
 	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
-		System.out.println(getClass().getSimpleName() + ".stop()");
+		// System.out.println(getClass().getSimpleName() + ".stop()");
 
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();
@@ -80,7 +80,7 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService,
 	 * @param configProps
 	 */
 	public synchronized void updateProperties(Map<Object, Object> configProps) {
-		System.out.println(getClass().getSimpleName() + ".updateProperties()");
+		// System.out.println(getClass().getSimpleName() + ".updateProperties()");
 
 		if (configProps == null) {
 			configProps = new HashMap<Object, Object>();
@@ -95,19 +95,22 @@ public class ConfigRegistryServiceDatabaseImpl implements ConfigRegistryService,
 		String jdbcUsername = (String) configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME);
 		String jdbcPassword = (String) configProps.get(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD);
 
-		System.out.println();
-		System.out.println("Config properties:");
-		System.out.println("-----------------------------------------------------");
-		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME + " = " + name);
-		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL + " = " + hostURL);
-		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT + " = " + contextRoot);
-		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER + " = " + jdbcDriver);
-		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL + " = " + jdbcURL);
-		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME + " = " + jdbcUsername);
-		System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD + " = " + jdbcPassword);
-		System.out.println("-----------------------------------------------------");
-		System.out.println();
+		boolean printProps = false;
+		if (printProps) {
+			System.out.println();
+			System.out.println("Config properties:");
+			System.out.println("-----------------------------------------------------");
+			System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+			System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_NAME + " = " + name);
+			System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_HOST_URL + " = " + hostURL);
+			System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_CONTEXT_ROOT + " = " + contextRoot);
+			System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_DRIVER + " = " + jdbcDriver);
+			System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_URL + " = " + jdbcURL);
+			System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_USERNAME + " = " + jdbcUsername);
+			System.out.println(OrbitConstants.COMPONENT_CONFIG_REGISTRY_JDBC_PASSWORD + " = " + jdbcPassword);
+			System.out.println("-----------------------------------------------------");
+			System.out.println();
+		}
 
 		this.properties = configProps;
 		this.databaseProperties = getConnectionProperties(this.properties);

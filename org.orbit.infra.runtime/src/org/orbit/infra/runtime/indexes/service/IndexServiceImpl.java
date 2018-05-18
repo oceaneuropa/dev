@@ -89,7 +89,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	 * @param props
 	 */
 	public synchronized void update(Map<Object, Object> properties) {
-		System.out.println(getClass().getSimpleName() + ".update()");
+		// System.out.println(getClass().getSimpleName() + ".update()");
 
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();

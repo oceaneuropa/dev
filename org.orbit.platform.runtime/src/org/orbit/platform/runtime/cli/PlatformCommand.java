@@ -1,9 +1,12 @@
 package org.orbit.platform.runtime.cli;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,14 +25,17 @@ import org.orbit.platform.runtime.programs.manifest.ProgramManifest;
 import org.orbit.platform.runtime.util.CommonModelHelper;
 import org.orbit.platform.runtime.util.ProgramExtensionHelper;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.extensions.WSRelayControl;
+import org.orbit.platform.sdk.spi.WSRelayControl;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
-import org.origin.common.extensions.Activator;
+import org.origin.common.extensions.ExtensionActivator;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.core.IExtensionService;
+import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchService;
+import org.origin.common.launch.LaunchType;
 import org.origin.common.osgi.BundleHelper;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -55,11 +61,17 @@ public class PlatformCommand implements Annotated {
 	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Interface Class Name", "Interface Impl Class", "Parameters" };
 	protected static String[] PROCESS_COLUMNS = new String[] { "Process Id", "Name", "Runtime State" };
 	protected static String[] WEB_SERVICE_COLUMNS = new String[] { "Name", "URL" };
+	protected static String[] LAUNCH_TYPE_COLUMNS = new String[] { "Id", "Name" };
+	protected static String[] LAUNCH_CONFIG_COLUMNS = new String[] { "Name", "Type Id", "Location", "Attributes" };
 
 	// protected static Logger LOG = LoggerFactory.getLogger(AppCommand.class);
 	public static class LOG {
 		public static void info(String message) {
 			System.out.println(message);
+		}
+
+		public static void error(String message) {
+			System.err.println(message);
 		}
 	}
 
@@ -90,14 +102,16 @@ public class PlatformCommand implements Annotated {
 				new String[] { //
 						"lhost", "lendpoints", //
 
-						"lextensions", "linterfaces", //
+						// "lextensions", "linterfaces", //
 
 						"lprocs", "create_proc", "start_proc", "stop_proc", "exit_proc", //
 						"start_all_procs", "stop_all_procs", "exit_all_procs", //
 
 						"lprograms", "installapp", "uninstallapp", //
 						"activateapp", "deactivateapp", //
-						"startapp", "stopapp" //
+						"startapp", "stopapp", //
+
+				// "llaunchtypes", "llaunchconfigs", "createlaunchconfig", "deletelaunchconfig" //
 		});
 		OSGiServiceUtil.register(bundleContext, PlatformCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
@@ -141,7 +155,7 @@ public class PlatformCommand implements Annotated {
 	}
 
 	protected IExtensionService getExtensionService() {
-		return Activator.getDefault().getExtensionService();
+		return ExtensionActivator.getDefault().getExtensionService();
 	}
 
 	protected ProcessManager getProcessManager() {
@@ -808,6 +822,97 @@ public class PlatformCommand implements Annotated {
 
 		String hostURL = getHostURL();
 		relayControl.stop(bundleContext, hostURL, contextRoot);
+	}
+
+	@Descriptor("List launch types")
+	public void llaunchtypes() {
+		LaunchService launchService = org.origin.common.launch.LaunchActivator.getDefault().getLaunchService();
+		if (launchService == null) {
+			LOG.error("ILaunchService is null.");
+			return;
+		}
+
+		LaunchType[] launchTypes = launchService.getLaunchTypes();
+		String[][] records = new String[launchTypes.length][LAUNCH_TYPE_COLUMNS.length];
+		int index = 0;
+		for (LaunchType launchType : launchTypes) {
+			records[index++] = new String[] { launchType.getId(), launchType.getName() };
+		}
+		PrettyPrinter.prettyPrint(LAUNCH_TYPE_COLUMNS, records);
+	}
+
+	@Descriptor("List launch configurations")
+	public void llaunchconfigs() {
+		LaunchService launchService = org.origin.common.launch.LaunchActivator.getDefault().getLaunchService();
+		if (launchService == null) {
+			LOG.error("ILaunchService is null.");
+			return;
+		}
+
+		try {
+			LaunchConfiguration[] launchConfigs = launchService.getLaunchConfigurations();
+			String[][] records = new String[launchConfigs.length][LAUNCH_CONFIG_COLUMNS.length];
+			int index = 0;
+			for (LaunchConfiguration launchConfig : launchConfigs) {
+				String name = launchConfig.getName();
+				String typeId = launchConfig.getTypeId();
+				File file = launchConfig.getFile();
+				Map<String, Object> attributes = launchConfig.getAttributes();
+
+				String attrString = "";
+				if (attributes != null) {
+					int index1 = 0;
+					for (Iterator<String> itor = attributes.keySet().iterator(); itor.hasNext();) {
+						String attrName = itor.next();
+						Object attrValue = attributes.get(attrName);
+						if (index1 > 0) {
+							attrString += ",";
+						}
+						attrString += ((attrValue != null) ? "[" + attrValue.getClass().getSimpleName() + "] " + attrValue.toString() : "null");
+						index1++;
+					}
+				}
+				records[index++] = new String[] { name, typeId, file.getAbsolutePath(), attrString };
+			}
+			PrettyPrinter.prettyPrint(LAUNCH_CONFIG_COLUMNS, records);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Descriptor("Create launch configuration")
+	public void createlaunchconfig( //
+			// Parameters
+			@Descriptor("launch type id") @Parameter(absentValue = "", names = { "-typeId", "--typeId" }) String typeId, //
+			@Descriptor("launch config name") @Parameter(absentValue = "", names = { "-name", "--name" }) String name //
+	) {
+		LaunchService launchService = org.origin.common.launch.LaunchActivator.getDefault().getLaunchService();
+		if (launchService == null) {
+			LOG.error("ILaunchService is null.");
+			return;
+		}
+		try {
+			LaunchConfiguration launchConfig = launchService.createLaunchConfiguration(typeId, name);
+			if (launchConfig != null) {
+				LOG.info("Launch configuration is created.");
+			} else {
+				LOG.info("Launch configuration is not created.");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Descriptor("Delete launch configuration")
+	public void deletelaunchconfig( //
+			// Parameters
+			@Descriptor("launch config name") @Parameter(absentValue = "", names = { "-name", "--name" }) String name //
+	) {
+		LaunchService launchService = org.origin.common.launch.LaunchActivator.getDefault().getLaunchService();
+		if (launchService == null) {
+			LOG.error("ILaunchService is null.");
+			return;
+		}
 	}
 
 }

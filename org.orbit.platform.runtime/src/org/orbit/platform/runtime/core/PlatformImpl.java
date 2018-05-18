@@ -80,6 +80,7 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_REALM);
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOME);
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_CONTEXT_ROOT);
 		updateProperties(properties);
@@ -156,7 +157,7 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	}
 
 	protected String getProperty(String key) {
-		return getProperty(key, String.class);
+		return PropertyUtil.getProperty(this.properties, key, String.class);
 	}
 
 	@SuppressWarnings("unchecked")

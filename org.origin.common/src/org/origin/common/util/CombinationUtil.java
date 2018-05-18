@@ -244,7 +244,7 @@ public class CombinationUtil {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		// long size1 = getNumberOfCombinationV1(15, 4);
 		// long size2 = getNumberOfCombinationV2(15, 4);
 		// System.out.println("expected number of combinations 1: " + size1);

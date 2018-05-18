@@ -4,7 +4,6 @@ import org.orbit.component.api.OrbitClients;
 import org.orbit.component.runtime.cli.DomainManagementCommand;
 import org.orbit.component.runtime.cli.NodeControlCommand;
 import org.orbit.component.runtime.cli.ServicesCommand;
-import org.orbit.component.runtime.extensions.Extensions;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;

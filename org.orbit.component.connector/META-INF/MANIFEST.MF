@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Component Connector
+Bundle-Name: Orbit :: Components :: Connector
 Bundle-SymbolicName: org.orbit.component.connector;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.component.connector.Activator
@@ -19,12 +19,13 @@ Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,1.0.0)",
  org.orbit.component.model;bundle-version="1.0.0",
  lib.org.junit;bundle-version="1.0.0",
  org.orbit.infra.api;bundle-version="1.0.0"
-Export-Package: org.orbit.component.connector,
- org.orbit.component.connector.tier1.account,
- org.orbit.component.connector.tier1.auth,
- org.orbit.component.connector.tier1.config,
- org.orbit.component.connector.tier1.session,
- org.orbit.component.connector.tier2.appstore,
- org.orbit.component.connector.tier3.domainmanagement,
- org.orbit.component.connector.tier3.nodecontrol,
- org.orbit.component.connector.tier4.mission
+Export-Package: org.orbit.component.connector;version="1.0.0",
+ org.orbit.component.connector.tier1.account;version="1.0.0",
+ org.orbit.component.connector.tier1.auth;version="1.0.0",
+ org.orbit.component.connector.tier1.config;version="1.0.0",
+ org.orbit.component.connector.tier1.session;version="1.0.0",
+ org.orbit.component.connector.tier2.appstore;version="1.0.0",
+ org.orbit.component.connector.tier3.domainmanagement;version="1.0.0",
+ org.orbit.component.connector.tier3.nodecontrol;version="1.0.0",
+ org.orbit.component.connector.tier4.mission;version="1.0.0"
+Bundle-ActivationPolicy: lazy

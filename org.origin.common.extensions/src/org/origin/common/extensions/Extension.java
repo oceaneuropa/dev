@@ -91,8 +91,20 @@ public class Extension implements InterfacesAware {
 		return this.properties;
 	}
 
+	public Object getProperty(Object propName) {
+		return this.properties.get(propName);
+	}
+
 	public void setProperties(Map<Object, Object> properties) {
 		this.properties = properties;
+	}
+
+	public void setProperty(Object propName, Object propValue) {
+		this.properties.put(propName, propValue);
+	}
+
+	public void removeProperty(Object propName) {
+		this.properties.remove(propName);
 	}
 
 	@Override
@@ -103,6 +115,11 @@ public class Extension implements InterfacesAware {
 	@Override
 	public <T> T getInterface(Class<T> clazz) {
 		return this.interfacesSupport.getInterface(clazz);
+	}
+
+	@Override
+	public InterfaceDescription[] getInterfaceDescriptions() {
+		return this.interfacesSupport.getInterfaceDescriptions();
 	}
 
 	@Override

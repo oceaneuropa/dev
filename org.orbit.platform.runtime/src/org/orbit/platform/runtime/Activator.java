@@ -14,24 +14,18 @@ import org.orbit.platform.runtime.cli.PlatformCommand;
 import org.orbit.platform.runtime.core.Platform;
 import org.orbit.platform.runtime.core.PlatformImpl;
 import org.orbit.platform.runtime.core.ws.PlatformAdapter;
-import org.orbit.platform.runtime.extension.Extensions;
 import org.orbit.platform.runtime.util.PlatformTracker;
+import org.origin.common.osgi.AbstractBundleActivator;
 import org.origin.common.util.PropertyUtil;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Activator implements BundleActivator {
+public class Activator extends AbstractBundleActivator {
 
 	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
 
-	protected static BundleContext bundleContext;
 	protected static Activator instance;
-
-	static BundleContext getContext() {
-		return bundleContext;
-	}
 
 	public static Activator getInstance() {
 		return instance;
@@ -45,8 +39,8 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		LOG.info("start()");
+		super.start(bundleContext);
 
-		Activator.bundleContext = bundleContext;
 		Activator.instance = this;
 
 		// load config properties
@@ -100,7 +94,8 @@ public class Activator implements BundleActivator {
 		}
 
 		Activator.instance = null;
-		Activator.bundleContext = null;
+
+		super.stop(bundleContext);
 	}
 
 	public Platform getPlatform() {

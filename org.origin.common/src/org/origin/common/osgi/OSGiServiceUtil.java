@@ -87,7 +87,7 @@ public class OSGiServiceUtil {
 	 * @param properties
 	 */
 	public static void register(BundleContext bundleContext, String[] classNames, Object service, Dictionary<String, ?> properties) {
-		System.out.println("OSGiServiceUtil.register(" + service + ")");
+		// System.out.println("OSGiServiceUtil.register(" + service + ")");
 
 		checkBundleContext(bundleContext);
 		checkClassNames(classNames);
@@ -124,7 +124,7 @@ public class OSGiServiceUtil {
 	 * @param properties
 	 */
 	public static void register(BundleContext bundleContext, String className, Object service, Dictionary<String, ?> properties) {
-		System.out.println("OSGiServiceUtil.register(" + service + ")");
+		// System.out.println("OSGiServiceUtil.register(" + service + ")");
 
 		checkBundleContext(bundleContext);
 		checkService(service);
@@ -161,7 +161,7 @@ public class OSGiServiceUtil {
 	 * @param properties
 	 */
 	public static void register(BundleContext bundleContext, Class clazz, Object service, Dictionary<String, ?> properties) {
-		System.out.println("OSGiServiceUtil.register(" + service + ")");
+		// System.out.println("OSGiServiceUtil.register(" + service + ")");
 
 		checkBundleContext(bundleContext);
 		checkService(service);
@@ -185,11 +185,11 @@ public class OSGiServiceUtil {
 	 * @param service
 	 */
 	public static void unregister(Object service) {
-		System.out.println("OSGiServiceUtil.unregister(" + service + ")");
+		// System.out.println("OSGiServiceUtil.unregister(" + service + ")");
 
 		if (service == null) {
 			// fail without throwing exception
-			System.err.println("OSGiServiceUtil.unregister(). service is null.");
+			// System.err.println("OSGiServiceUtil.unregister(). service is null.");
 			return;
 		}
 
@@ -244,11 +244,11 @@ public class OSGiServiceUtil {
 	 * @param service
 	 */
 	private static void doUnregister(Object registrationType, Object service) {
-		System.out.println("OSGiServiceUtil.unregister(" + service + ")");
+		// System.out.println("OSGiServiceUtil.unregister(" + service + ")");
 
 		if (service == null) {
 			// fail without throwing exception
-			System.err.println("OSGiServiceUtil.unregister(). service is null.");
+			// System.err.println("OSGiServiceUtil.unregister(). service is null.");
 			return;
 		}
 
@@ -272,7 +272,7 @@ public class OSGiServiceUtil {
 	}
 
 	protected static void dispose() {
-		System.out.println("OSGiServiceUtil.dispose()");
+		// System.out.println("OSGiServiceUtil.dispose()");
 		rwLock.writeLock().lock();
 		try {
 			if (!serviceToRegistrationMap.isEmpty()) {

@@ -88,7 +88,7 @@ public class AppStoreServiceAdapter {
 	 * @param service
 	 */
 	protected void doStart(BundleContext bundleContext, AppStoreService service) {
-		LOG.info("doStart()");
+		// LOG.info("doStart()");
 
 		// Start web app
 		this.webApp = new AppStoreWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
@@ -113,7 +113,7 @@ public class AppStoreServiceAdapter {
 	 * @param service
 	 */
 	protected void doStop(BundleContext bundleContext, AppStoreService service) {
-		LOG.info("doStop()");
+		// LOG.info("doStop()");
 		// Unregister URL provider extension
 		// if (this.urlProviderExtension != null) {
 		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);

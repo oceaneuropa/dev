@@ -51,7 +51,7 @@ public class MissionControlAdapter {
 			@Override
 			public MissionControlService addingService(ServiceReference<MissionControlService> reference) {
 				MissionControlService service = bundleContext.getService(reference);
-				LOG.info("MissionControl [" + service + "] is added.");
+				// LOG.info("MissionControl [" + service + "] is added.");
 
 				doStart(bundleContext, service);
 				return service;
@@ -59,12 +59,12 @@ public class MissionControlAdapter {
 
 			@Override
 			public void modifiedService(ServiceReference<MissionControlService> reference, MissionControlService service) {
-				LOG.info("MissionControl [" + service + "] is modified.");
+				// LOG.info("MissionControl [" + service + "] is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<MissionControlService> reference, MissionControlService service) {
-				LOG.info("MissionControl [" + service + "] is removed.");
+				// LOG.info("MissionControl [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
 			}

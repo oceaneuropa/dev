@@ -47,7 +47,7 @@ public class AuthServiceAdapter {
 			@Override
 			public AuthService addingService(ServiceReference<AuthService> reference) {
 				AuthService service = bundleContext.getService(reference);
-				System.out.println("AuthService [" + service + "] is added.");
+				// System.out.println("AuthService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
 
@@ -56,12 +56,12 @@ public class AuthServiceAdapter {
 
 			@Override
 			public void modifiedService(ServiceReference<AuthService> reference, AuthService service) {
-				System.out.println("AuthService [" + service + "] is modified.");
+				// System.out.println("AuthService [" + service + "] is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<AuthService> reference, AuthService service) {
-				System.out.println("AuthService [" + service + "] is removed.");
+				// System.out.println("AuthService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
 			}

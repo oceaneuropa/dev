@@ -52,7 +52,7 @@ public class ConfigRegistryServiceAdapter {
 			@Override
 			public ConfigRegistryService addingService(ServiceReference<ConfigRegistryService> reference) {
 				ConfigRegistryService service = bundleContext.getService(reference);
-				System.out.println("ConfigRegistryService [" + service + "] is added.");
+				// System.out.println("ConfigRegistryService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
 				return service;
@@ -60,12 +60,12 @@ public class ConfigRegistryServiceAdapter {
 
 			@Override
 			public void modifiedService(ServiceReference<ConfigRegistryService> reference, ConfigRegistryService service) {
-				System.out.println("ConfigRegistryService [" + service + "] is modified.");
+				// System.out.println("ConfigRegistryService [" + service + "] is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<ConfigRegistryService> reference, ConfigRegistryService service) {
-				System.out.println("ConfigRegistryService [" + service + "] is removed.");
+				// System.out.println("ConfigRegistryService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
 			}

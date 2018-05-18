@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Platform Runtime
+Bundle-Name: Orbit :: Platform :: Runtime
 Bundle-SymbolicName: org.orbit.platform.runtime;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.platform.runtime.Activator
@@ -27,7 +27,7 @@ Import-Package: javax.inject;version="[1.0.0,2.0.0)",
  org.orbit.infra.api.indexes;version="[1.0.0,2.0.0)",
  org.orbit.infra.api.indexes.other;version="[1.0.0,2.0.0)",
  org.orbit.platform.model.dto;version="[1.0.0,2.0.0)",
- org.orbit.service,
+ org.orbit.service;version="[1.0.0,2.0.0)",
  org.osgi.framework;version="1.3.0",
  org.osgi.framework.launch;version="1.2.0",
  org.osgi.service.http;version="1.2.1",
@@ -38,7 +38,8 @@ Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,2.0.0)",
  org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)",
  org.origin.common;bundle-version="[1.0.0,2.0.0)",
  org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)",
- org.origin.common.resources;bundle-version="[1.0.0,2.0.0)"
+ org.origin.common.resources;bundle-version="[1.0.0,2.0.0)",
+ org.origin.common.launch;bundle-version="[1.0.0,2.0.0)"
 Package: org.orbit.platform.runtime;version="1.0.0",
  org.orbit.platform.runtime.cli;version="1.0.0",
  org.orbit.platform.runtime.command.service;version="1.0.0",

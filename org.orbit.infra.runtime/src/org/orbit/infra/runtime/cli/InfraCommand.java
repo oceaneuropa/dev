@@ -1,17 +1,28 @@
 package org.orbit.infra.runtime.cli;
 
+import java.util.Date;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.infra.model.indexes.IndexItem;
+import org.orbit.infra.runtime.InfraServices;
 import org.orbit.infra.runtime.channel.service.ChannelServiceImpl;
+import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
 import org.origin.common.osgi.OSGiServiceUtil;
+import org.origin.common.util.DateUtil;
+import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class InfraCommand {
+
+	protected static String[] INDEX_ITEM_COLUMNS = new String[] { "Index Item Id", "Name", "Type", "Last Upate Time", "Properties" };
 
 	protected static Logger LOG = LoggerFactory.getLogger(InfraCommand.class);
 
@@ -56,7 +67,11 @@ public class InfraCommand {
 
 		Hashtable<String, Object> commandProps = new Hashtable<String, Object>();
 		commandProps.put("osgi.command.scope", "infra");
-		commandProps.put("osgi.command.function", new String[] { "startservice", "stopservice" });
+		commandProps.put("osgi.command.function",
+				new String[] { //
+						"lindexitems", //
+						"startservice", "stopservice" //
+		});
 		OSGiServiceUtil.register(bundleContext, InfraCommand.class.getName(), this, commandProps);
 	}
 
@@ -79,6 +94,11 @@ public class InfraCommand {
 		if (this.bundleContext == null) {
 			throw new IllegalStateException("bundleContext is null.");
 		}
+	}
+
+	protected IndexService getIndexService() {
+		IndexService indexService = InfraServices.getInstance().getIndexService();
+		return indexService;
 	}
 
 	/**
@@ -146,6 +166,92 @@ public class InfraCommand {
 		if (this.channelService != null) {
 			this.channelService.stop(bundleContext);
 			this.channelService = null;
+		}
+	}
+
+	/**
+	 * <pre>
+	 * e.g.
+	 * lindexitems -providerId component.index_service.indexer
+	 * lindexitems -providerId component.channel.indexer
+	 * 
+	 * lindexitems -providerId component.user_registry.indexer
+	 * lindexitems -providerId component.oauth2.indexer
+	 * lindexitems -providerId component.auth.indexer
+	 * lindexitems -providerId component.config_registry.indexer
+	 * lindexitems -providerId component.app_store.indexer
+	 * lindexitems -providerId component.domain_management.indexer
+	 * lindexitems -providerId component.node_control.indexer
+	 * lindexitems -providerId component.mission_control.indexer
+	 * 
+	 * lindexitems -providerId platform.indexer
+	 * lindexitems -providerId command_service.indexer
+	 * 
+	 * </pre>
+	 * 
+	 * @param indexProviderId
+	 */
+	@Descriptor("List index items")
+	public void lindexitems( //
+			@Descriptor("Index provider id") @Parameter(names = { "-providerId", "--providerId" }, absentValue = "") String indexProviderId //
+	) {
+		LOG.info("lindexitems()");
+
+		try {
+			IndexService indexService = getIndexService();
+			if (indexService == null) {
+				LOG.debug("IndexService is null.");
+				return;
+			}
+			if (indexProviderId == null || indexProviderId.isEmpty()) {
+				LOG.debug("indexProviderId is null.");
+				return;
+			}
+
+			List<IndexItem> indexItems = indexService.getIndexItems(indexProviderId);
+
+			int numRecords = 0;
+			for (IndexItem indexItem : indexItems) {
+				Map<String, Object> properties = indexItem.getProperties();
+				if (properties.isEmpty()) {
+					numRecords += 1;
+				} else {
+					numRecords += properties.size();
+				}
+			}
+
+			String[][] records = new String[numRecords][INDEX_ITEM_COLUMNS.length];
+			int index = 0;
+			for (IndexItem indexItem : indexItems) {
+				Integer id = indexItem.getIndexItemId();
+				String type = indexItem.getType();
+				String name = indexItem.getName();
+				Date lastUpdateTime = indexItem.getLastUpdateTime();
+
+				Map<String, Object> properties = indexItem.getProperties();
+				String lastUpdateTimeStr = lastUpdateTime != null ? DateUtil.toString(lastUpdateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
+
+				if (properties.isEmpty()) {
+					records[index++] = new String[] { String.valueOf(id), type, name, lastUpdateTimeStr, null };
+				} else {
+					int i = 0;
+					for (Iterator<String> itor = properties.keySet().iterator(); itor.hasNext();) {
+						String key = itor.next();
+						Object value = properties.get(key);
+						String label = key + " = " + value;
+						if (i == 0) {
+							records[index++] = new String[] { String.valueOf(id), type, name, lastUpdateTimeStr, label };
+						} else {
+							records[index++] = new String[] { "", "", "", "", label };
+						}
+						i++;
+					}
+				}
+			}
+			PrettyPrinter.prettyPrint(INDEX_ITEM_COLUMNS, records);
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

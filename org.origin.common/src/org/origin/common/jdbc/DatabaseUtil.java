@@ -156,7 +156,7 @@ public class DatabaseUtil {
 		database = checkDB(database);
 
 		if (tableExist(conn, tableAware.getTableName())) {
-			System.out.println("DatabaseUtil.initialize() table '" + tableAware.getTableName() + "' already exists.");
+			// System.out.println("DatabaseUtil.initialize() table '" + tableAware.getTableName() + "' already exists.");
 			return true;
 		}
 
@@ -166,7 +166,7 @@ public class DatabaseUtil {
 		if (exists) {
 			System.out.println("DatabaseUtil.initialize() table '" + tableAware.getTableName() + "' is created.");
 		} else {
-			System.out.println("DatabaseUtil.initialize() table '" + tableAware.getTableName() + "' failed to be created.");
+			// System.out.println("DatabaseUtil.initialize() table '" + tableAware.getTableName() + "' failed to be created.");
 		}
 
 		// table exists --- table is created successfully

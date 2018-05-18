@@ -115,6 +115,20 @@ public class ExtensionProxy implements IExtension {
 	}
 
 	@Override
+	public Object getProperty(Object propName) {
+		Object propValue = null;
+		try {
+			IExtension extension = getTarget(IExtension.class);
+			if (extension != null) {
+				propValue = extension.getProperty(propName);
+			}
+		} finally {
+			ungetTarget();
+		}
+		return propValue;
+	}
+
+	@Override
 	public Object[] getInterfaces() {
 		Object[] interfaces = null;
 		try {
@@ -140,6 +154,20 @@ public class ExtensionProxy implements IExtension {
 			ungetTarget();
 		}
 		return t;
+	}
+
+	@Override
+	public InterfaceDescription[] getInterfaceDescriptions() {
+		InterfaceDescription[] descs = null;
+		try {
+			IExtension extension = getTarget(IExtension.class);
+			if (extension != null) {
+				descs = extension.getInterfaceDescriptions();
+			}
+		} finally {
+			ungetTarget();
+		}
+		return descs;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Resources
+Bundle-Name: Origin :: Resources
 Bundle-SymbolicName: org.origin.common.resources;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.origin.common.resources.Activator
@@ -14,16 +14,16 @@ Import-Package: org.json;version="2015.11.23",
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)",
  org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)"
-Export-Package: org.origin.common.resources,
- org.origin.common.resources.extension,
- org.origin.common.resources.impl,
- org.origin.common.resources.impl.database,
- org.origin.common.resources.impl.filesystem,
- org.origin.common.resources.impl.local,
- org.origin.common.resources.impl.misc,
- org.origin.common.resources.node,
- org.origin.common.resources.node.internal,
- org.origin.common.resources.node.internal.misc,
- org.origin.common.resources.node.internal.utils,
- org.origin.common.resources.test,
- org.origin.common.resources.util
+Export-Package: org.origin.common.resources;version="1.0.0",
+ org.origin.common.resources.extension;version="1.0.0",
+ org.origin.common.resources.impl;version="1.0.0",
+ org.origin.common.resources.impl.database;version="1.0.0",
+ org.origin.common.resources.impl.filesystem;version="1.0.0",
+ org.origin.common.resources.impl.local;version="1.0.0",
+ org.origin.common.resources.impl.misc;version="1.0.0",
+ org.origin.common.resources.node;version="1.0.0",
+ org.origin.common.resources.node.internal;version="1.0.0",
+ org.origin.common.resources.node.internal.misc;version="1.0.0",
+ org.origin.common.resources.node.internal.utils;version="1.0.0",
+ org.origin.common.resources.test;version="1.0.0",
+ org.origin.common.resources.util;version="1.0.0"

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Spirit Model
+Bundle-Name: Orbit :: Spirit :: Model
 Bundle-SymbolicName: org.orbit.spirit.model;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.spirit.model.Activator

@@ -84,6 +84,11 @@ public class InterfacesSupport implements InterfacesAware {
 	}
 
 	@Override
+	public InterfaceDescription[] getInterfaceDescriptions() {
+		return this.classToDescriptionMap.values().toArray(new InterfaceDescription[this.classToDescriptionMap.size()]);
+	}
+
+	@Override
 	public InterfaceDescription getInterfaceDescription(Class<?> clazz) {
 		InterfaceDescription desc = null;
 		if (clazz != null) {

@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Component :: Runtime
+Bundle-Name: Orbit :: Components :: Runtime
 Bundle-SymbolicName: org.orbit.component.runtime;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.component.runtime.Activator
@@ -66,3 +66,4 @@ Export-Package: org.orbit.component.runtime,
  org.orbit.component.runtime.tier3.nodecontrol.ws.command,
  org.orbit.component.runtime.tier4.missioncontrol.service,
  org.orbit.component.runtime.tier4.missioncontrol.ws
+Bundle-ActivationPolicy: lazy

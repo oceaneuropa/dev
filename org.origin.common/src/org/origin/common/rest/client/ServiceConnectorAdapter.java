@@ -71,7 +71,7 @@ public class ServiceConnectorAdapter<SERVICE> {
 			@Override
 			public ServiceConnector<Object> addingService(ServiceReference<ServiceConnector<Object>> reference) {
 				ServiceConnector<Object> connector = bundleContext.getService(reference);
-				LOG.info("addingService() ServiceConnector is added: " + connector);
+				LOG.debug("ServiceConnector [" + connector + "] is added.");
 
 				notifyConnectorAdded((ServiceConnector<SERVICE>) connector, 1000);
 
@@ -80,12 +80,12 @@ public class ServiceConnectorAdapter<SERVICE> {
 
 			@Override
 			public void modifiedService(ServiceReference<ServiceConnector<Object>> reference, ServiceConnector<Object> connector) {
-				LOG.info("removedService() ServiceConnector is modified: " + connector);
+				LOG.debug("ServiceConnector [" + connector + "] is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<ServiceConnector<Object>> reference, ServiceConnector<Object> connector) {
-				LOG.info("removedService() ServiceConnector is removed: " + connector);
+				LOG.debug("ServiceConnector [" + connector + "] is removed.");
 
 				notifyConnectorRemoved((ServiceConnector<SERVICE>) connector, 1000);
 			}

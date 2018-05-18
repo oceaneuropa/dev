@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Infra Runtime
+Bundle-Name: Orbit :: Infra :: Runtime
 Bundle-SymbolicName: org.orbit.infra.runtime;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.infra.runtime.Activator
@@ -34,7 +34,8 @@ Export-Package: org.orbit.infra.runtime;version="1.0.0",
  org.orbit.infra.runtime.channel.service;version="1.0.0",
  org.orbit.infra.runtime.channel.ws;version="1.0.0",
  org.orbit.infra.runtime.cli;version="1.0.0",
- org.orbit.infra.runtime.extension;version="1.0.0",
+ org.orbit.infra.runtime.extensions.channelservice;version="1.0.0",
+ org.orbit.infra.runtime.extensions.indexservice;version="1.0.0",
  org.orbit.infra.runtime.indexes.service;version="1.0.0",
  org.orbit.infra.runtime.indexes.ws;version="1.0.0",
  org.orbit.infra.runtime.relay;version="1.0.0"

@@ -51,7 +51,7 @@ public class NodeControlServiceAdapter {
 			@Override
 			public NodeControlService addingService(ServiceReference<NodeControlService> reference) {
 				NodeControlService service = bundleContext.getService(reference);
-				LOG.info("NodeControlService [" + service + "] is added.");
+				// LOG.info("NodeControlService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
 				return service;
@@ -59,12 +59,12 @@ public class NodeControlServiceAdapter {
 
 			@Override
 			public void modifiedService(ServiceReference<NodeControlService> reference, NodeControlService service) {
-				LOG.info("NodeControlService [" + service + "] is modified.");
+				// LOG.info("NodeControlService [" + service + "] is modified.");
 			}
 
 			@Override
 			public void removedService(ServiceReference<NodeControlService> reference, NodeControlService service) {
-				LOG.info("NodeControlService [" + service + "] is removed.");
+				// LOG.info("NodeControlService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
 			}

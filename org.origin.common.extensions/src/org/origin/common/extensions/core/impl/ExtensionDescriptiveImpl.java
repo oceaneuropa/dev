@@ -8,7 +8,6 @@ import org.origin.common.extensions.core.IExtension;
 
 public class ExtensionDescriptiveImpl extends ExtensionImpl implements IExtension {
 
-	// protected String realm;
 	protected Extension extension;
 
 	/**
@@ -16,14 +15,9 @@ public class ExtensionDescriptiveImpl extends ExtensionImpl implements IExtensio
 	 * @param extension
 	 */
 	public ExtensionDescriptiveImpl(Extension extension) {
-		// this.realm = realm;
+
 		this.extension = extension;
 	}
-
-	// @Override
-	// public String getRealm() {
-	// return this.realm;
-	// }
 
 	@Override
 	public String getTypeId() {
@@ -51,6 +45,11 @@ public class ExtensionDescriptiveImpl extends ExtensionImpl implements IExtensio
 	}
 
 	@Override
+	public Object getProperty(Object propName) {
+		return this.extension.getProperty(propName);
+	}
+
+	@Override
 	public Object[] getInterfaces() {
 		return this.extension.getInterfaces();
 	}
@@ -58,6 +57,11 @@ public class ExtensionDescriptiveImpl extends ExtensionImpl implements IExtensio
 	@Override
 	public <T> T getInterface(Class<T> clazz) {
 		return this.extension.getInterface(clazz);
+	}
+
+	@Override
+	public InterfaceDescription[] getInterfaceDescriptions() {
+		return this.extension.getInterfaceDescriptions();
 	}
 
 	@Override
@@ -96,3 +100,11 @@ public class ExtensionDescriptiveImpl extends ExtensionImpl implements IExtensio
 	}
 
 }
+
+// protected String realm;
+// this.realm = realm;
+
+// @Override
+// public String getRealm() {
+// return this.realm;
+// }

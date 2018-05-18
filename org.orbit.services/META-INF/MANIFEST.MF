@@ -1,12 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Services
+Bundle-Name: Orbit :: Services :: SDK
 Bundle-SymbolicName: org.orbit.services;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.orbit.service,
- org.orbit.service.websocket,
- org.orbit.service.websocket.impl
+Export-Package: org.orbit.service;version="1.0.0",
+ org.orbit.service.websocket;version="1.0.0",
+ org.orbit.service.websocket.impl;version="1.0.0"
 Import-Package: javax.servlet;version="3.1.0",
  javax.servlet.http;version="3.1.0",
  javax.websocket;version="1.1.0",

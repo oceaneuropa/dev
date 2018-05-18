@@ -75,7 +75,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	 * @param properties
 	 */
 	public synchronized void update(Map<Object, Object> properties) {
-		System.out.println(getClass().getSimpleName() + ".updateProperties()");
+		// System.out.println(getClass().getSimpleName() + ".updateProperties()");
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();
 		}

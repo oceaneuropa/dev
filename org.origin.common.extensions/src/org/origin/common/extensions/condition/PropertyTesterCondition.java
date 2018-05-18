@@ -43,9 +43,9 @@ public class PropertyTesterCondition implements ICondition {
 	public boolean evaluate(Object context, Object source, Object target, Map<String, Object> args) {
 		IExtensionService extensionService = ExtensionServiceHelper.INSTANCE.getExtensionService(context);
 		if (extensionService != null) {
-			IExtension extensions = extensionService.getExtension(IPropertyTester.TYPE_ID, this.propertyTesterId);
-			if (extensions != null) {
-				IPropertyTester propertyTester = extensions.getInterface(IPropertyTester.class);
+			IExtension extension = extensionService.getExtension(IPropertyTester.TYPE_ID, this.propertyTesterId);
+			if (extension != null) {
+				IPropertyTester propertyTester = extension.getInterface(IPropertyTester.class);
 				if (propertyTester != null && propertyTester.accept(context, source, target, args)) {
 					return true;
 				}

@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.platform.model.dto.ExtensionDTO;
 import org.orbit.platform.runtime.core.Platform;
-import org.origin.common.extensions.Activator;
+import org.origin.common.extensions.ExtensionActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.core.IExtensionService;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -59,7 +59,7 @@ public class PlatformWSExtensionsResource extends AbstractWSApplicationResource 
 		List<ExtensionDTO> extensionDTOs = new ArrayList<ExtensionDTO>();
 
 		Platform platform = getService();
-		IExtensionService service = Activator.getDefault().getExtensionService();
+		IExtensionService service = ExtensionActivator.getDefault().getExtensionService();
 
 		IExtension[] extensions = null;
 		if ((extensionTypeId == null || extensionTypeId.isEmpty()) && (extensionId == null || extensionId.isEmpty())) {

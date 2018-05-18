@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Platform API
+Bundle-Name: Orbit :: Platform :: API
 Bundle-SymbolicName: org.orbit.platform.api;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.platform.api.Activator

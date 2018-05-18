@@ -14,18 +14,18 @@ public class PlatformTracker extends AbstractServiceTracker<Platform> {
 		ServiceTracker<Platform, Platform> serviceTracker = new ServiceTracker<Platform, Platform>(bundleContext, Platform.class, new ServiceTrackerCustomizer<Platform, Platform>() {
 			@Override
 			public Platform addingService(ServiceReference<Platform> reference) {
-				Platform os = bundleContext.getService(reference);
-				notifyServiceAdded(os, 1000);
-				return os;
+				Platform platform = bundleContext.getService(reference);
+				notifyServiceAdded(platform);
+				return platform;
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<Platform> reference, Platform os) {
+			public void modifiedService(ServiceReference<Platform> reference, Platform platform) {
 			}
 
 			@Override
-			public void removedService(ServiceReference<Platform> reference, Platform os) {
-				notifyServiceRemoved(os, 1000);
+			public void removedService(ServiceReference<Platform> reference, Platform platform) {
+				notifyServiceRemoved(platform);
 			}
 		});
 		return serviceTracker;

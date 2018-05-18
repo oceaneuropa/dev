@@ -56,7 +56,7 @@ public class UserRegistryServiceAdapter {
 			@Override
 			public UserRegistryService addingService(ServiceReference<UserRegistryService> reference) {
 				UserRegistryService service = bundleContext.getService(reference);
-				System.out.println("UserRegistryService [" + service + "] is added.");
+				// System.out.println("UserRegistryService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
 				return service;
@@ -64,7 +64,7 @@ public class UserRegistryServiceAdapter {
 
 			@Override
 			public void modifiedService(ServiceReference<UserRegistryService> reference, UserRegistryService service) {
-				System.out.println("UserRegistryService [" + service + "] is modified.");
+				// System.out.println("UserRegistryService [" + service + "] is modified.");
 
 				doStop(bundleContext, service);
 				doStart(bundleContext, service);
@@ -72,7 +72,7 @@ public class UserRegistryServiceAdapter {
 
 			@Override
 			public void removedService(ServiceReference<UserRegistryService> reference, UserRegistryService service) {
-				System.out.println("UserRegistryService [" + service + "] is removed.");
+				// System.out.println("UserRegistryService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
 			}

@@ -197,7 +197,7 @@ public class JWTUtil {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		try {
 			Date expiresAt = DateUtil.addMinutes(new Date(), 30);
 

@@ -126,7 +126,7 @@ public class StringUtil {
 		return src;
 	}
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		List<String> partNamesList = new ArrayList<String>();
 		// partNamesList.add("item");
 		// partNamesList.add("item1");

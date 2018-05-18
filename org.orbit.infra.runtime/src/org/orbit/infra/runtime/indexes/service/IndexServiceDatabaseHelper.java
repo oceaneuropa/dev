@@ -1,6 +1,6 @@
 package org.orbit.infra.runtime.indexes.service;
 
-import static org.orbit.infra.runtime.indexes.service.IndexItemRequestTableHandler.STATUS_PENDING;
+import static other.orbit.infra.runtime.indexes.service.IndexItemRequestTableHandler.STATUS_PENDING;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,6 +20,10 @@ import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.StatusDTO;
+
+import other.orbit.infra.runtime.indexes.service.IndexItemDataTableHandler;
+import other.orbit.infra.runtime.indexes.service.IndexItemRequestTableHandler;
+import other.orbit.infra.runtime.indexes.service.IndexItemRevisionTableHandler;
 
 /**
  * Helper class that provides methods for accessing request, index items and revision data from database.

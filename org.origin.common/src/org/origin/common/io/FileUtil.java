@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
@@ -324,6 +325,20 @@ public class FileUtil {
 			IOUtils.closeQuietly(in);
 		}
 		return checksum;
+	}
+
+	// ------------------------------------------------------------------------------------
+	// Write to file
+	// ------------------------------------------------------------------------------------
+	/**
+	 * 
+	 * @param file
+	 * @param lines
+	 * @param append
+	 * @throws IOException
+	 */
+	public static void writeLines(File file, Collection<?> lines, boolean append) throws IOException {
+		org.apache.commons.io.FileUtils.writeLines(file, lines, append);
 	}
 
 	// ------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.osgi.framework.BundleContext;
 
@@ -301,7 +302,7 @@ public class PropertyUtil {
 		return defaultFile;
 	}
 
-	private static void printSystemProperties() {
+	public static void printSystemProperties() {
 		System.out.println("System Properties:");
 		System.out.println("----------------------------------------------------------------------------------------");
 		Properties props = System.getProperties();
@@ -312,9 +313,10 @@ public class PropertyUtil {
 			System.out.println(key + "=" + value);
 		}
 		System.out.println("----------------------------------------------------------------------------------------");
+		System.out.println();
 	}
 
-	private static void printSystemEnvironmentVariables() {
+	public static void printSystemEnvironmentVariables() {
 		System.out.println("System Environment Variables:");
 		System.out.println("----------------------------------------------------------------------------------------");
 		Map<String, String> envs = System.getenv();
@@ -325,6 +327,135 @@ public class PropertyUtil {
 			System.out.println(key + "=" + value);
 		}
 		System.out.println("----------------------------------------------------------------------------------------");
+		System.out.println();
+	}
+
+	public static void printSystemProperties(String[] prefixes, String[] fragments) {
+		boolean hasPrefixes = (prefixes != null && prefixes.length > 0) ? true : false;
+		boolean hasFragments = (fragments != null && fragments.length > 0) ? true : false;
+		if (!hasPrefixes && !hasFragments) {
+			printSystemProperties();
+			return;
+		}
+
+		TreeMap<Object, Object> resultMap = new TreeMap<Object, Object>();
+
+		Properties props = System.getProperties();
+		for (Iterator<Entry<Object, Object>> entryItor = props.entrySet().iterator(); entryItor.hasNext();) {
+			Entry<Object, Object> entry = entryItor.next();
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+
+			boolean matchPrefix = false;
+			if (hasPrefixes) {
+				for (String prefix : prefixes) {
+					if (key != null && key.toString().startsWith(prefix)) {
+						matchPrefix = true;
+						break;
+					}
+				}
+			}
+			boolean matchFragment = false;
+			if (hasFragments) {
+				for (String fragment : fragments) {
+					if (key != null && key.toString().contains(fragment)) {
+						matchFragment = true;
+						break;
+					}
+				}
+			}
+			if (matchPrefix || matchFragment) {
+				resultMap.put(key, value);
+			}
+		}
+
+		System.out.println("System Properties:");
+		System.out.println("----------------------------------------------------------------------------------------");
+		if (resultMap.isEmpty()) {
+			System.out.println("(n/a)");
+		} else {
+			for (Iterator<Object> keyItor = resultMap.keySet().iterator(); keyItor.hasNext();) {
+				Object key = keyItor.next();
+				Object value = resultMap.get(key);
+				System.out.println(key + "=" + value);
+			}
+		}
+		System.out.println("----------------------------------------------------------------------------------------");
+		System.out.println();
+	}
+
+	public static void printSystemEnvironmentVariables(String[] prefixes, String[] fragments) {
+		boolean hasPrefixes = (prefixes != null && prefixes.length > 0) ? true : false;
+		boolean hasFragments = (fragments != null && fragments.length > 0) ? true : false;
+		if (!hasPrefixes && !hasFragments) {
+			printSystemEnvironmentVariables();
+			return;
+		}
+
+		TreeMap<Object, Object> resultMap = new TreeMap<Object, Object>();
+
+		Map<String, String> envs = System.getenv();
+		for (Iterator<Entry<String, String>> entryItor = envs.entrySet().iterator(); entryItor.hasNext();) {
+			Entry<String, String> entry = entryItor.next();
+			String key = entry.getKey();
+			String value = entry.getValue();
+
+			boolean matchPrefix = false;
+			if (hasPrefixes) {
+				for (String prefix : prefixes) {
+					if (key != null && key.toString().startsWith(prefix)) {
+						matchPrefix = true;
+						break;
+					}
+				}
+			}
+			boolean matchFragment = false;
+			if (hasFragments) {
+				for (String fragment : fragments) {
+					if (key != null && key.toString().contains(fragment)) {
+						matchFragment = true;
+						break;
+					}
+				}
+			}
+			if (matchPrefix || matchFragment) {
+				resultMap.put(key, value);
+			}
+		}
+
+		System.out.println("System Environment Variables:");
+		System.out.println("----------------------------------------------------------------------------------------");
+		if (resultMap.isEmpty()) {
+			System.out.println("(n/a)");
+		} else {
+			for (Iterator<Object> keyItor = resultMap.keySet().iterator(); keyItor.hasNext();) {
+				Object key = keyItor.next();
+				Object value = resultMap.get(key);
+				System.out.println(key + "=" + value);
+			}
+		}
+		System.out.println("----------------------------------------------------------------------------------------");
+		System.out.println();
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T getProperty(Map<Object, Object> properties, String key, Class<T> valueClass) {
+		if (properties == null || properties.isEmpty()) {
+			return null;
+		}
+
+		Object object = properties.get(key);
+		if (object != null && valueClass.isAssignableFrom(object.getClass())) {
+			return (T) object;
+		}
+
+		if (String.class.equals(valueClass)) {
+			String value = (String) properties.get(key.toString());
+			if (value != null) {
+				return (T) value;
+			}
+		}
+		return null;
 	}
 
 	/**

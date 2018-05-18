@@ -6,11 +6,13 @@ public interface InterfacesAware {
 
 	Object[] getInterfaces();
 
-	<T> T getInterface(Class<T> clazz);
+	InterfaceDescription[] getInterfaceDescriptions();
 
 	InterfaceDescription getInterfaceDescription(Class<?> clazz);
 
 	InterfaceDescription getInterfaceDescription(Object object);
+
+	<T> T getInterface(Class<T> clazz);
 
 	<T> void addInterface(Class<?> clazz, T interfaceInstance);
 

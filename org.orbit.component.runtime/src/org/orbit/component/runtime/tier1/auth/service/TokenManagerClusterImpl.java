@@ -28,7 +28,7 @@ public class TokenManagerClusterImpl implements TokenManager {
 
 	@Override
 	public void activate() {
-		System.out.println(getClass().getSimpleName() + ".activate()");
+		// System.out.println(getClass().getSimpleName() + ".activate()");
 		if (!this.activated.compareAndSet(false, true)) {
 			return;
 		}

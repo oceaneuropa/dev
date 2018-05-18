@@ -232,16 +232,16 @@ public class WebServiceDeployer {
 	 * @param httpService
 	 */
 	public void deployApplication(ApplicationServiceReference applicationService, HttpService httpService) {
-		LOG.info("deployApplication()");
+		// LOG.info("deployApplication()");
 
 		lock.writeLock().lock();
 		try {
 			String contextRoot = applicationService.getContextRoot();
 			Application application = applicationService.getApplication();
 
-			LOG.info("\thttpService = " + httpService);
-			LOG.info("\tcontextRoot = " + contextRoot);
-			LOG.info("\tapplication = " + application);
+			// LOG.info("\thttpService = " + httpService);
+			// LOG.info("\tcontextRoot = " + contextRoot);
+			// LOG.info("\tapplication = " + application);
 
 			if (contextRoot == null || application == null || httpService == null) {
 				return;
@@ -270,7 +270,7 @@ public class WebServiceDeployer {
 						LOG.error("\tDeployCallback exception: " + e.getMessage());
 					}
 
-					LOG.info("\tApplication [" + application.getClass().getSimpleName() + "] is deployed to '" + contextRoot + "'.");
+					LOG.debug("Application [" + application.getClass().getSimpleName() + " (" + application + ")] is deployed to HttpService(" + httpService + ") with context root '" + contextRoot + "'");
 
 				} finally {
 					Thread.currentThread().setContextClassLoader(cl);

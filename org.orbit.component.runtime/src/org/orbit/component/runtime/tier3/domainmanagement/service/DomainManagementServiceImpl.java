@@ -45,7 +45,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 	@Override
 	public void start(BundleContext bundleContext) {
-		System.out.println(getClass().getSimpleName() + ".start()");
+		// System.out.println(getClass().getSimpleName() + ".start()");
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (this.initProperties != null) {
@@ -81,7 +81,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 	@Override
 	public void stop(BundleContext bundleContext) {
-		System.out.println(getClass().getSimpleName() + ".stop()");
+		// System.out.println(getClass().getSimpleName() + ".stop()");
 
 		// Stop service
 		if (this.serviceRegistry != null) {
@@ -105,7 +105,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	 * @param properties
 	 */
 	public synchronized void update(Map<Object, Object> properties) {
-		System.out.println(getClass().getSimpleName() + ".updateProperties()");
+		// System.out.println(getClass().getSimpleName() + ".updateProperties()");
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();
 		}
@@ -120,19 +120,22 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		String jdbcUsername = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
 		String jdbcPassword = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
 
-		System.out.println();
-		System.out.println("Config properties:");
-		System.out.println("-----------------------------------------------------");
-		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME + " = " + name);
-		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL + " = " + hostURL);
-		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT + " = " + contextRoot);
-		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER + " = " + jdbcDriver);
-		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL + " = " + jdbcURL);
-		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME + " = " + jdbcUsername);
-		System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD + " = " + jdbcPassword);
-		System.out.println("-----------------------------------------------------");
-		System.out.println();
+		boolean printProps = false;
+		if (printProps) {
+			System.out.println();
+			System.out.println("Config properties:");
+			System.out.println("-----------------------------------------------------");
+			System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME + " = " + name);
+			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL + " = " + hostURL);
+			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT + " = " + contextRoot);
+			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER + " = " + jdbcDriver);
+			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL + " = " + jdbcURL);
+			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME + " = " + jdbcUsername);
+			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD + " = " + jdbcPassword);
+			System.out.println("-----------------------------------------------------");
+			System.out.println();
+		}
 
 		this.databaseProperties = DatabaseUtil.getProperties(jdbcDriver, jdbcURL, jdbcUsername, jdbcPassword);
 		// Initialize database tables.

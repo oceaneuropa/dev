@@ -46,6 +46,10 @@ public abstract class AbstractServiceTracker<SERVICE> {
 		}
 	}
 
+	protected void notifyServiceAdded(final SERVICE service) {
+		notifyServiceAdded(service, 1000);
+	}
+
 	protected void notifyServiceAdded(final SERVICE service, final long delay) {
 		Thread t = new Thread(new Runnable() {
 			@Override
@@ -57,10 +61,14 @@ public abstract class AbstractServiceTracker<SERVICE> {
 						e.printStackTrace();
 					}
 				}
-				notifyServiceAdded(service);
+				serviceAdded(service);
 			}
 		});
 		t.start();
+	}
+
+	protected void notifyServiceRemoved(final SERVICE service) {
+		notifyServiceRemoved(service, 1000);
 	}
 
 	protected void notifyServiceRemoved(final SERVICE service, final long delay) {
@@ -74,17 +82,17 @@ public abstract class AbstractServiceTracker<SERVICE> {
 						e.printStackTrace();
 					}
 				}
-				notifyServiceRemoved(service);
+				serviceRemoved(service);
 			}
 		});
 		t.start();
 	}
 
-	protected void notifyServiceAdded(SERVICE service) {
+	protected void serviceAdded(SERVICE service) {
 
 	}
 
-	protected void notifyServiceRemoved(SERVICE service) {
+	protected void serviceRemoved(SERVICE service) {
 
 	}
 

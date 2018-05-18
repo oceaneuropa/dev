@@ -148,7 +148,7 @@ public class RangeTest {
 		System.out.println(MessageFormat.format("{0} overlap with {1} : {2}", new Object[] { r1, r2, r1.overlap(r2) }));
 	}
 
-	public static void main(String[] args) {
+	public static void main2(String[] args) {
 		Result result = JUnitCore.runClasses(RangeTest.class);
 		System.out.println("--- --- --- RangeTest.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {

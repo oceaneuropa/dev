@@ -95,7 +95,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	 * @param properties
 	 */
 	public synchronized void update(Map<Object, Object> properties) {
-		System.out.println(getClass().getSimpleName() + ".updateProperties()");
+		// System.out.println(getClass().getSimpleName() + ".updateProperties()");
 
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();
@@ -108,18 +108,21 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		String contextRoot = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
 		String home = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOME);
 
-		System.out.println();
-		System.out.println("Config properties:");
-		System.out.println("-----------------------------------------------------");
-		System.out.println(OrbitConstants.PLATFORM_HOME + " = " + platformHome);
-		System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_NAME + " = " + name);
-		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL + " = " + hostURL);
-		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT + " = " + contextRoot);
-		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOME + " = " + home);
-		System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOME + " = " + home);
-		System.out.println("-----------------------------------------------------");
-		System.out.println();
+		boolean printProps = false;
+		if (printProps) {
+			System.out.println();
+			System.out.println("Config properties:");
+			System.out.println("-----------------------------------------------------");
+			System.out.println(OrbitConstants.PLATFORM_HOME + " = " + platformHome);
+			System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_NAME + " = " + name);
+			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL + " = " + hostURL);
+			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT + " = " + contextRoot);
+			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOME + " = " + home);
+			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOME + " = " + home);
+			System.out.println("-----------------------------------------------------");
+			System.out.println();
+		}
 
 		this.properties = properties;
 	}

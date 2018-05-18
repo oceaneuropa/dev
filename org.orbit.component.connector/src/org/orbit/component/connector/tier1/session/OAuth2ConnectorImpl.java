@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.session.OAuth2;
-import org.orbit.component.api.tier1.session.other.OAuth2Connector;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
+
+import other.orbit.component.api.tier1.session.OAuth2Connector;
+
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
 public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<OAuth2> implements OAuth2Connector {

@@ -7,7 +7,7 @@
  *******************************************************************************/
 package org.orbit.sprit.runtime.gaia;
 
-import org.orbit.platform.sdk.extensions.ServiceActivator;
+import org.orbit.platform.sdk.spi.ServiceActivator;
 import org.orbit.sprit.runtime.gaia.extensions.GAIAServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;

@@ -18,11 +18,12 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- *
- */
 public class DependencyConfigurator {
+
+	protected static Logger LOG = LoggerFactory.getLogger(DependencyConfigurator.class);
 
 	protected BundleContext bundleContext;
 	protected ServiceTracker<Annotated, Annotated> annotatedTracker;
@@ -37,13 +38,15 @@ public class DependencyConfigurator {
 	}
 
 	public void start() {
-		System.out.println("DependencyConfigurator.start()");
+		// System.out.println("DependencyConfigurator.start()");
 		try {
 			Collection<ServiceReference<Annotated>> serviceReferences = bundleContext.getServiceReferences(Annotated.class, null);
 			for (ServiceReference<Annotated> serviceReference : serviceReferences) {
 				Annotated annotated = bundleContext.getService(serviceReference);
 				long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-				System.out.println("DependencyConfigurator.start() Existing Annotated (service.id='" + service_id + "')");
+
+				LOG.debug("Annotated service [" + annotated.getClass().getName() + "] (service.id='" + service_id + "') is added.");
+
 				addAnnotated(annotated);
 				bundleContext.ungetService(serviceReference);
 			}
@@ -57,7 +60,9 @@ public class DependencyConfigurator {
 			public Annotated addingService(ServiceReference<Annotated> serviceReference) {
 				Annotated annotated = super.addingService(serviceReference);
 				long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-				System.out.println("DependencyConfigurator.ServiceTracker.addingService() Annotated [" + annotated.getClass().getName() + "] (service.id='" + service_id + "') is added.");
+
+				LOG.debug("Annotated service [" + annotated.getClass().getName() + "] (service.id='" + service_id + "') is added.");
+
 				addAnnotated(annotated);
 				return annotated;
 			}
@@ -65,7 +70,9 @@ public class DependencyConfigurator {
 			@Override
 			public void removedService(ServiceReference<Annotated> serviceReference, Annotated annotated) {
 				long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-				System.out.println("DependencyConfigurator.ServiceTracker.removedService() Annotated [" + annotated.getClass().getName() + "] (service.id='" + service_id + "') is removed.");
+
+				LOG.debug("Annotated service [" + annotated.getClass().getName() + "] (service.id='" + service_id + "') is removed.");
+
 				removeAnnotated(annotated);
 				super.removedService(serviceReference, annotated);
 			}
@@ -74,7 +81,7 @@ public class DependencyConfigurator {
 	}
 
 	public void stop() {
-		System.out.println("DependencyConfigurator.stop()");
+		// System.out.println("DependencyConfigurator.stop()");
 		// Stops tracking annotated services.
 		if (this.annotatedTracker != null) {
 			this.annotatedTracker.close();
@@ -105,7 +112,7 @@ public class DependencyConfigurator {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addAnnotated(Annotated annotated) {
-		System.out.println("DependencyConfigurator.addAnnotated() " + annotated.getClass().getSimpleName());
+		// System.out.println("DependencyConfigurator.addAnnotated() " + annotated.getClass().getSimpleName());
 
 		if (annotated != null && !annotatedObjects.contains(annotated)) {
 			annotatedObjects.add(annotated);
@@ -130,7 +137,9 @@ public class DependencyConfigurator {
 									dependentService = bundleContext.getService(serviceReference);
 									if (dependentService != null) {
 										long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-										System.out.println("Service for " + dependentClass.getName() + " (service.id='" + service_id + "') already exists.");
+										// System.out.println("Service for " + dependentClass.getName() + " (service.id='" + service_id + "') already exists.");
+										LOG.debug("Annotated service [" + annotated.getClass().getName() + "] (service.id='" + service_id + "') is already exists.");
+
 										break;
 									}
 								} finally {
@@ -187,7 +196,7 @@ public class DependencyConfigurator {
 	 * @param annotated
 	 */
 	public void removeAnnotated(Annotated annotated) {
-		System.out.println("DependencyConfigurator.removeAnnotated() " + annotated.getClass().getSimpleName());
+		// System.out.println("DependencyConfigurator.removeAnnotated() " + annotated.getClass().getSimpleName());
 
 		if (annotated != null && annotatedObjects.contains(annotated)) {
 			annotatedObjects.remove(annotated);
@@ -251,7 +260,7 @@ public class DependencyConfigurator {
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> ServiceTracker<T, T> initDependentServiceTracker(final Class<T> dependentClass) {
-		System.out.println("DependencyConfigurator.initDependentServiceTracker() for " + dependentClass.getName());
+		// System.out.println("DependencyConfigurator.initDependentServiceTracker() for " + dependentClass.getName());
 
 		ServiceTracker<T, T> serviceTracker = dependentClassToServiceTrackerMap.get(dependentClass);
 		if (serviceTracker != null) {
@@ -265,7 +274,8 @@ public class DependencyConfigurator {
 				T dependentService = super.addingService(serviceReference);
 				try {
 					long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-					System.out.println("DependencyConfigurator.initDependentServiceTracker() " + dependentClass.getName() + " (service.id='" + service_id + "') is added.");
+					// System.out.println("DependencyConfigurator.initDependentServiceTracker() " + dependentClass.getName() + " (service.id='" + service_id +
+					// "') is added.");
 
 					for (Iterator<Annotated> annotatedItor = annotatedToDependencyFieldsMap.keySet().iterator(); annotatedItor.hasNext();) {
 						Annotated annotated = annotatedItor.next();
@@ -296,7 +306,8 @@ public class DependencyConfigurator {
 			public void removedService(ServiceReference<T> serviceReference, T dependentService) {
 				try {
 					long service_id = (Long) serviceReference.getProperty(Constants.SERVICE_ID);
-					System.out.println("DependencyConfigurator.initDependentServiceTracker() " + dependentClass.getName() + " (service.id='" + service_id + "') is removed.");
+					// System.out.println("DependencyConfigurator.initDependentServiceTracker() " + dependentClass.getName() + " (service.id='" + service_id +
+					// "') is removed.");
 
 					for (Iterator<Annotated> annotatedItor = annotatedToDependencyFieldsMap.keySet().iterator(); annotatedItor.hasNext();) {
 						Annotated annotated = annotatedItor.next();
@@ -336,7 +347,7 @@ public class DependencyConfigurator {
 	 * @param dependentClass
 	 */
 	protected <T> void disposeDependentServiceTracker(Class<?> dependentClass) {
-		System.out.println("DependencyConfigurator.disposeDependentServiceTracker() for " + dependentClass.getName());
+		// System.out.println("DependencyConfigurator.disposeDependentServiceTracker() for " + dependentClass.getName());
 		if (dependentClassToServiceTrackerMap.containsKey(dependentClass)) {
 			ServiceTracker<?, ?> serviceTracker = dependentClassToServiceTrackerMap.remove(dependentClass);
 			if (serviceTracker != null) {
@@ -352,7 +363,8 @@ public class DependencyConfigurator {
 	 * @param dependentClass
 	 */
 	protected <T> void dependentServiceAdded(Annotated annotated, Field field, T dependentService) {
-		System.out.println("DependencyConfigurator.dependentServiceAdded() Set [" + dependentService.getClass() + "] to Field [" + annotated.getClass().getSimpleName() + "." + field.getName() + "].");
+		// System.out.println("DependencyConfigurator.dependentServiceAdded() Set [" + dependentService.getClass() + "] to Field [" +
+		// annotated.getClass().getSimpleName() + "." + field.getName() + "].");
 		boolean originalIsAccessible = field.isAccessible();
 		try {
 			if (!originalIsAccessible) {
@@ -375,7 +387,8 @@ public class DependencyConfigurator {
 	 * @param dependentClass
 	 */
 	protected <T> void dependentServiceRemoved(Annotated annotated, Field field, T dependentService) {
-		System.out.println("DependencyConfigurator.dependentServiceRemoved() Remove [" + dependentService.getClass() + "] from Field [" + annotated.getClass().getSimpleName() + "." + field.getName() + "].");
+		// System.out.println("DependencyConfigurator.dependentServiceRemoved() Remove [" + dependentService.getClass() + "] from Field [" +
+		// annotated.getClass().getSimpleName() + "." + field.getName() + "].");
 		boolean originalIsAccessible = field.isAccessible();
 		try {
 			if (!originalIsAccessible) {
@@ -397,7 +410,7 @@ public class DependencyConfigurator {
 	 * @param annotated
 	 */
 	protected void evaluateDependendy(Annotated annotated) {
-		System.out.println("DependencyConfigurator.evaluateDependendy() for Annotated [" + annotated.getClass().getName() + "].");
+		// System.out.println("DependencyConfigurator.evaluateDependendy() for Annotated [" + annotated.getClass().getName() + "].");
 
 		Map<Field, Class> dependencyFieldsMap = annotatedToDependencyFieldsMap.get(annotated);
 		if (dependencyFieldsMap != null && !dependencyFieldsMap.isEmpty()) {
@@ -435,7 +448,7 @@ public class DependencyConfigurator {
 			}
 
 			if (allDependencyResolved) {
-				System.out.println("All dependencies have been resolved for Annotated [" + annotated.getClass().getName() + "].");
+				// System.out.println("All dependencies have been resolved for Annotated [" + annotated.getClass().getName() + "].");
 				// All dependencies have been resolved.
 				if (!existingAllDependencyResolved) {
 					// Call dependencyFullfilled callback methods when existing status is not resolved.
@@ -451,7 +464,7 @@ public class DependencyConfigurator {
 				}
 
 			} else {
-				System.out.println("Not all dependencies have been resolved for Annotated [" + annotated.getClass().getName() + "].");
+				// System.out.println("Not all dependencies have been resolved for Annotated [" + annotated.getClass().getName() + "].");
 				// Not all dependencies have been resolved.
 				if (existingAllDependencyResolved) {
 					// Call dependencyUnfullfilled callback methods when existing status is resolved.

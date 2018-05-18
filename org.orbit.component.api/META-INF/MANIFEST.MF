@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Component API
+Bundle-Name: Orbit :: Components :: API
 Bundle-SymbolicName: org.orbit.component.api;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.component.api.Activator
@@ -12,22 +12,22 @@ Import-Package: javax.ws.rs.core;version="2.0.0",
  org.osgi.framework;version="1.3.0",
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j;version="1.7.25"
-Export-Package: org.orbit.component.api,
- org.orbit.component.api.tier1.account,
- org.orbit.component.api.tier1.account.other,
- org.orbit.component.api.tier1.auth,
- org.orbit.component.api.tier1.auth.other,
- org.orbit.component.api.tier1.config,
- org.orbit.component.api.tier1.config.other,
- org.orbit.component.api.tier1.session,
- org.orbit.component.api.tier1.session.other,
- org.orbit.component.api.tier2.appstore,
- org.orbit.component.api.tier2.appstore.other,
- org.orbit.component.api.tier3.domainmanagement,
- org.orbit.component.api.tier3.domainmanagement.other,
- org.orbit.component.api.tier3.nodecontrol,
- org.orbit.component.api.tier3.nodecontrol.other,
- org.orbit.component.api.tier4.mission
+Export-Package: org.orbit.component.api;version="1.0.0",
+ org.orbit.component.api.tier1.account;version="1.0.0",
+ org.orbit.component.api.tier1.auth;version="1.0.0",
+ org.orbit.component.api.tier1.config;version="1.0.0",
+ org.orbit.component.api.tier1.session;version="1.0.0",
+ org.orbit.component.api.tier2.appstore;version="1.0.0",
+ org.orbit.component.api.tier3.domainmanagement;version="1.0.0",
+ org.orbit.component.api.tier3.nodecontrol;version="1.0.0",
+ org.orbit.component.api.tier4.mission;version="1.0.0",
+ other.orbit.component.api.tier1.account;version="1.0.0",
+ other.orbit.component.api.tier1.auth;version="1.0.0",
+ other.orbit.component.api.tier1.config;version="1.0.0",
+ other.orbit.component.api.tier1.session;version="1.0.0",
+ other.orbit.component.api.tier2.appstore;version="1.0.0",
+ other.orbit.component.api.tier3.domainmanagement;version="1.0.0",
+ other.orbit.component.api.tier3.nodecontrol;version="1.0.0"
 Require-Bundle: org.origin.common;bundle-version="1.0.0",
  org.orbit.component.model;bundle-version="1.0.0",
  org.apache.felix.gogo.runtime;bundle-version="[0.16.2,2.0.0)"

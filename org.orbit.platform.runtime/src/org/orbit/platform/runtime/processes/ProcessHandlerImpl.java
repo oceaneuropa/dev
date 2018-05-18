@@ -9,7 +9,7 @@ package org.orbit.platform.runtime.processes;
 
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.extensions.ServiceActivator;
+import org.orbit.platform.sdk.spi.ServiceActivator;
 import org.origin.common.extensions.core.IExtension;
 
 public class ProcessHandlerImpl implements ProcessHandler {

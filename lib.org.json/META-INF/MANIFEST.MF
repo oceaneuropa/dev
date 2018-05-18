@@ -11,5 +11,5 @@ Export-Package: org.codehaus.jettison;version="1.3.8",
  org.codehaus.jettison.mapped;version="1.3.8",
  org.codehaus.jettison.util;version="1.3.8",
  org.json;version="2015.11.23"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy

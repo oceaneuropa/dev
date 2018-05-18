@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Orbit :: Spirit Connector
+Bundle-Name: Orbit :: Spirit :: Connector
 Bundle-SymbolicName: org.orbit.spirit.connector;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.spirit.connector.Activator
