@@ -1,0 +1,76 @@
+<!-- https://eureka.ykyuen.info/2013/10/18/apache-ant-define-your-custom-ant-task-using-macrodef/ -->
+<project name="Ant MarcoDef Example" default="run" basedir=".">
+  <!-- Parameter as attribute -->
+  <macrodef name="attr-example">
+    <attribute name="who" default="mum"/>
+    <sequential>
+      <echo message="******************"/>
+      <echo message="*  attr-example  *"/>
+      <echo message="******************"/>
+      <echo message="Hello @{who}!"/>
+    </sequential>
+  </macrodef>
+ 
+  <!-- Parameter as text -->
+  <macrodef name="text-example">
+    <text name="who"/>
+    <sequential>
+      <echo message="******************"/>
+      <echo message="*  text-example  *"/>
+      <echo message="******************"/>
+      <echo message="Hello @{who}!"/>
+    </sequential>
+  </macrodef>
+ 
+  <!-- Parameter as element -->
+  <macrodef name="element-example">
+    <element name="args"/>
+    <sequential>
+      <echo message="*******************"/>
+      <echo message="* element-example *"/>
+      <echo message="*******************"/>
+      <exec executable="java">
+        <args />
+      </exec>
+    </sequential>
+  </macrodef>
+ 
+  <!-- Parameter as implicit element -->
+  <macrodef name="implicit-element-example">
+    <element name="args" implicit="yes"/>
+    <sequential>
+      <echo message="****************************"/>
+      <echo message="* implicit-element-example *"/>
+      <echo message="****************************"/>
+      <exec executable="java">
+        <args />
+      </exec>
+    </sequential>
+  </macrodef>
+ 
+  <!-- Run all task defined by MarcoDef above -->
+  <target name="run">
+    <attr-example who="Eureka!" />
+    <echo message=""/>
+ 
+    <text-example>World</text-example>
+    <echo message=""/>
+ 
+    <element-example>
+      <!-- Run "ant -version" in cmd -->
+      <args>
+        <!-- arg value="/c"/ -->
+        <!-- arg value="ant.bat"/ -->
+        <arg value="-version"/>
+      </args>
+    </element-example>
+    <echo message=""/>
+ 
+    <implicit-element-example>
+      <!-- Run "ant -version" in cmd -->
+      <!-- arg value="/c"/ -->
+      <!-- arg value="ant.bat"/ -->
+      <arg value="-version"/>
+    </implicit-element-example>
+  </target>
+</project>

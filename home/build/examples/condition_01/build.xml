@@ -1,0 +1,15 @@
+<!-- https://ideoplex.com/2003/05/06/conditional-execution-in-ant/ -->
+<project default="all">
+	<target name="hello" if="hello.set">
+		<echo message="Hello, World" />
+	</target>
+
+	<target name="goodbye" unless="hello.set">
+		<echo message="Goodbye, Cruel World" />
+	</target>
+
+	<target name="all" depends="hello,goodbye">
+		<echo message="END" />
+	</target>
+
+</project>
