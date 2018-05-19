@@ -187,7 +187,8 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId) throws IndexServiceException {
-		LOG.info("getIndexItems(String indexProviderId) indexProviderId = " + indexProviderId);
+		LOG.info("getIndexItems(String)");
+		LOG.info("    indexProviderId = " + indexProviderId);
 
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 		Connection conn = getConnection();
@@ -214,7 +215,9 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IndexServiceException {
-		LOG.info("getIndexItems(String indexProviderId, String type) indexProviderId = " + indexProviderId + ", type = " + type);
+		LOG.info("getIndexItems(String, String)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    type = " + type);
 
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 		Connection conn = getConnection();
@@ -241,7 +244,10 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IndexServiceException {
-		LOG.info("getIndexItem(String indexProviderId, String type, String name) indexProviderId = " + indexProviderId + ", type = " + type + ", name = " + name);
+		LOG.info("getIndexItem(String, String, String)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    type = " + type);
+		LOG.info("    name = " + name);
 
 		Connection conn = getConnection();
 		try {
@@ -266,7 +272,9 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IndexServiceException {
-		LOG.info("getIndexItem(String indexProviderId, Integer indexItemId) indexProviderId = " + indexProviderId + ", indexItemId = " + indexItemId);
+		LOG.info("getIndexItem(String, Integer)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    indexItemId = " + indexItemId);
 
 		Connection conn = getConnection();
 		try {
@@ -290,8 +298,10 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IndexServiceException {
-		LOG.info("addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) indexProviderId = " + indexProviderId + ", type = " + type + ", name = " + name);
-
+		LOG.info("addIndexItem(String, String, String, Map<String, Object>)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    type = " + type);
+		LOG.info("    name = " + name);
 		if (properties == null) {
 			LOG.info("    properties: n/a");
 		} else {
@@ -331,7 +341,9 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IndexServiceException {
-		LOG.info("removeIndexItem(String indexProviderId, Integer indexItemId) indexProviderId = " + indexProviderId + ", indexItemId = " + indexItemId);
+		LOG.info("removeIndexItem(String, Integer)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    indexItemId = " + indexItemId);
 
 		Connection conn = getConnection();
 		try {
@@ -348,7 +360,10 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws IndexServiceException {
-		LOG.info("hasProperty(String indexProviderId, Integer indexItemId, String propName) indexProviderId = " + indexProviderId + ", indexItemId = " + indexItemId + ", propName = " + propName);
+		LOG.info("hasProperty(String, Integer, String)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    indexItemId = " + indexItemId);
+		LOG.info("    propName = " + propName);
 
 		Connection conn = getConnection();
 		try {
@@ -375,7 +390,9 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public Map<String, Object> getProperties(String indexProviderId, Integer indexItemId) throws IndexServiceException {
-		LOG.info("getProperties(String indexProviderId, Integer indexItemId) indexProviderId = " + indexProviderId + ", indexItemId = " + indexItemId);
+		LOG.info("getProperties(String, Integer)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    indexItemId = " + indexItemId);
 
 		Connection conn = getConnection();
 		try {
@@ -400,7 +417,10 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public Object getProperty(String indexProviderId, Integer indexItemId, String propName) throws IndexServiceException {
-		LOG.info("getProperty(String indexProviderId, Integer indexItemId, String propName) indexProviderId = " + indexProviderId + ", indexItemId = " + indexItemId + ", propName = " + propName);
+		LOG.info("getProperty(String, Integer, String)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    indexItemId = " + indexItemId);
+		LOG.info("    propName = " + propName);
 
 		Connection conn = getConnection();
 		try {
@@ -427,8 +447,8 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IndexServiceException {
-		LOG.info("setProperties(String indexProviderId, Map<String, Object> properties) indexProviderId = " + indexProviderId);
-
+		LOG.info("setProperties(String, Map<String, Object>)");
+		LOG.info("    indexProviderId = " + indexProviderId);
 		if (properties == null) {
 			LOG.info("    properties: n/a");
 		} else {
@@ -473,8 +493,9 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 
 	@Override
 	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws IndexServiceException {
-		LOG.info("removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) indexProviderId = " + indexProviderId + ", indexItemId = " + indexItemId);
-
+		LOG.info("removeProperty(String, Integer, List<String>)");
+		LOG.info("    indexProviderId = " + indexProviderId);
+		LOG.info("    indexItemId = " + indexItemId);
 		if (properties == null) {
 			LOG.info("    propNames: n/a");
 		} else {

@@ -83,9 +83,9 @@ public class ThreadPoolTimer {
 
 		Runnable runner = new Runnable() {
 			public void run() {
-				if (debug) {
-					LOG.info(name + " -> run.");
-				}
+				// if (debug) {
+				LOG.debug(name + " -> run.");
+				// }
 				runnable.run();
 			}
 		};
