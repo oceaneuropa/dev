@@ -48,7 +48,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	 */
 	@Override
 	public void start(BundleContext bundleContext) {
-		LOG.info("start()");
+		LOG.debug("start()");
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (this.initProperties != null) {
@@ -76,7 +76,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
-		LOG.info("stop()");
+		LOG.debug("stop()");
 
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();
@@ -104,14 +104,17 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 		String jdbcUsername = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);
 		String jdbcPassword = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD);
 
-		LOG.info(InfraConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_NAME + " = " + name);
-		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL + " = " + hostURL);
-		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT + " = " + contextRoot);
-		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER + " = " + jdbcDriver);
-		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL + " = " + jdbcURL);
-		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME + " = " + jdbcUsername);
-		LOG.info(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD + " = " + jdbcPassword);
+		LOG.debug("Properties:");
+		LOG.debug("-----------------------------------------------------------------------------");
+		LOG.debug(InfraConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_NAME + " = " + name);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL + " = " + hostURL);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT + " = " + contextRoot);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER + " = " + jdbcDriver);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL + " = " + jdbcURL);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME + " = " + jdbcUsername);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_PASSWORD + " = " + jdbcPassword);
+		LOG.debug("-----------------------------------------------------------------------------");
 
 		this.properties = properties;
 		this.databaseProperties = getConnectionProperties(this.properties);

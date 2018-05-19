@@ -23,14 +23,12 @@ import org.orbit.platform.runtime.programs.ProgramHandler;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.manifest.ProgramManifest;
 import org.orbit.platform.runtime.util.CommonModelHelper;
-import org.orbit.platform.runtime.util.ProgramExtensionHelper;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.spi.WSRelayControl;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.extensions.ExtensionActivator;
-import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.core.IExtensionService;
 import org.origin.common.launch.LaunchConfiguration;
@@ -42,6 +40,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
 import org.origin.common.service.WebServiceAware;
+import org.origin.common.service.WebServiceAwareHelper;
 import org.origin.common.service.WebServiceAwareRegistry;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.PropertyUtil;
@@ -60,7 +59,7 @@ public class PlatformCommand implements Annotated {
 	protected static String[] EXTENSION_COLUMNS = new String[] { "Extension Type Id", "Extension Id", "Name", "Description" };
 	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Interface Class Name", "Interface Impl Class", "Parameters" };
 	protected static String[] PROCESS_COLUMNS = new String[] { "Process Id", "Name", "Runtime State" };
-	protected static String[] WEB_SERVICE_COLUMNS = new String[] { "Name", "URL" };
+	protected static String[] WEB_SERVICE_COLUMNS = new String[] { "Name", "Base URL" };
 	protected static String[] LAUNCH_TYPE_COLUMNS = new String[] { "Id", "Name" };
 	protected static String[] LAUNCH_CONFIG_COLUMNS = new String[] { "Name", "Type Id", "Location", "Attributes" };
 
@@ -178,151 +177,9 @@ public class PlatformCommand implements Annotated {
 		String[][] records = new String[webServiceAwares.length][WEB_SERVICE_COLUMNS.length];
 		int index = 0;
 		for (WebServiceAware webServiceAware : webServiceAwares) {
-			String hostURL = webServiceAware.getHostURL();
-			String contextRoot = webServiceAware.getContextRoot();
-			String url = hostURL + contextRoot;
-			if (!hostURL.endsWith("/") && !contextRoot.startsWith("/")) {
-				url = hostURL + "/" + contextRoot;
-			}
-			records[index++] = new String[] { webServiceAware.getName(), url };
+			records[index++] = new String[] { webServiceAware.getName(), WebServiceAwareHelper.INSTANCE.getURL(webServiceAware) };
 		}
 		PrettyPrinter.prettyPrint(WEB_SERVICE_COLUMNS, records);
-	}
-
-	/**
-	 * List all extensions.
-	 * 
-	 */
-	public void lextensions() {
-		IExtension[] extensions = getExtensionService().getExtensions();
-		String[][] records = new String[extensions.length][EXTENSION_COLUMNS.length];
-		int index = 0;
-		for (IExtension extension : extensions) {
-			records[index++] = new String[] { extension.getTypeId(), extension.getId(), extension.getName(), extension.getDescription() };
-		}
-		PrettyPrinter.prettyPrint(EXTENSION_COLUMNS, records);
-	}
-
-	/**
-	 * List interfaces of an extension.
-	 * 
-	 * @param extensionTypeId
-	 * @param extensionId
-	 */
-	public void lextensioninterfaces_v1( //
-			// Parameters
-			@Descriptor("Extension type id") @Parameter(names = { "-typeId", "--typeId" }, absentValue = "") String extensionTypeId, //
-			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
-	) {
-
-		IExtension extension = getExtensionService().getExtension(extensionTypeId, extensionId);
-		if (extension == null) {
-			System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
-			return;
-		}
-
-		Object[] interfaces = extension.getInterfaces();
-		String[][] records = new String[interfaces.length][INTERFACE_COLUMNS.length];
-		int index = 0;
-		for (Object interfaceObj : interfaces) {
-			InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
-			String parameters = ProgramExtensionHelper.INSTANCE.toParametersString(desc.getParameters());
-			records[index++] = new String[] { desc.getName(), String.valueOf(desc.isSingleton()), String.valueOf(desc.isAutoStart()), parameters };
-		}
-		PrettyPrinter.prettyPrint(INTERFACE_COLUMNS, records);
-	}
-
-	/**
-	 * List interfaces of an extension.
-	 * 
-	 * @param extensionTypeId
-	 * @param extensionId
-	 */
-	public void linterfaces( //
-			// Parameters
-			@Descriptor("Extension type id") @Parameter(names = { "-typeId", "--typeId" }, absentValue = "") String extensionTypeId, //
-			@Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
-	) {
-		if ("".equals(extensionTypeId) || "".equals(extensionId)) {
-			IExtension[] extensions = getExtensionService().getExtensions();
-			for (IExtension extension : extensions) {
-				linterfaces(extension);
-				System.out.println();
-			}
-
-		} else if (!"".equals(extensionTypeId) && "".equals(extensionId)) {
-			IExtension[] extensions = getExtensionService().getExtensions(extensionTypeId);
-			for (IExtension extension : extensions) {
-				linterfaces(extension);
-				System.out.println();
-			}
-
-		} else if (!"".equals(extensionTypeId) && !"".equals(extensionId)) {
-			IExtension extension = getExtensionService().getExtension(extensionTypeId, extensionId);
-			if (extension == null) {
-				System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
-				return;
-			}
-			linterfaces(extension);
-		}
-	}
-
-	/**
-	 * 
-	 * @param extension
-	 */
-	protected void linterfaces(IExtension extension) {
-		if (extension == null) {
-			return;
-		}
-		Object[] interfaces = extension.getInterfaces();
-
-		int numRecords = 0;
-		for (Object interfaceObj : interfaces) {
-			InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
-			org.origin.common.extensions.Parameter[] parameters = desc.getParameters();
-
-			if (parameters.length == 0) {
-				numRecords += 1;
-			} else {
-				numRecords += parameters.length;
-			}
-		}
-
-		String[][] records = new String[numRecords][INTERFACE_COLUMNS.length];
-		int index = 0;
-		for (Object interfaceObj : interfaces) {
-			InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
-			org.origin.common.extensions.Parameter[] parameters = desc.getParameters();
-
-			String name = desc.getName();
-			String isSingleton = String.valueOf(desc.isSingleton());
-			String isAutoStart = String.valueOf(desc.isAutoStart());
-			String interfaceClassName = desc.getInterfaceClassName();
-			Class<?> interfaceImplClass = desc.getInterfaceImplClass();
-			String interfaceImplClassName = interfaceImplClass != null ? interfaceImplClass.getName() : null;
-			// String interfaceObject = (desc.getInterfaceInstance() != null) ? desc.getInterfaceInstance().toString() : null;
-
-			if (parameters.length == 0) {
-				records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceImplClassName, null };
-
-			} else {
-				for (int i = 0; i < parameters.length; i++) {
-					org.origin.common.extensions.Parameter parameter = parameters[i];
-					if (i == 0) {
-						records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceImplClassName, parameter.getLabel() };
-					} else {
-						records[index++] = new String[] { "", "", "", "", "", parameter.getLabel() };
-					}
-				}
-			}
-		}
-
-		System.out.println("Extension:");
-		System.out.println(extension);
-
-		System.out.println("\r\nInterfaces:");
-		PrettyPrinter.prettyPrint(INTERFACE_COLUMNS, records);
 	}
 
 	/**
@@ -916,3 +773,139 @@ public class PlatformCommand implements Annotated {
 	}
 
 }
+
+/// **
+// * List all extensions.
+// *
+// */
+// public void lextensions() {
+// IExtension[] extensions = getExtensionService().getExtensions();
+// String[][] records = new String[extensions.length][EXTENSION_COLUMNS.length];
+// int index = 0;
+// for (IExtension extension : extensions) {
+// records[index++] = new String[] { extension.getTypeId(), extension.getId(), extension.getName(), extension.getDescription() };
+// }
+// PrettyPrinter.prettyPrint(EXTENSION_COLUMNS, records);
+// }
+//
+/// **
+// * List interfaces of an extension.
+// *
+// * @param extensionTypeId
+// * @param extensionId
+// */
+// public void lextensioninterfaces_v1( //
+// // Parameters
+// @Descriptor("Extension type id") @Parameter(names = { "-typeId", "--typeId" }, absentValue = "") String extensionTypeId, //
+// @Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
+// ) {
+//
+// IExtension extension = getExtensionService().getExtension(extensionTypeId, extensionId);
+// if (extension == null) {
+// System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
+// return;
+// }
+//
+// Object[] interfaces = extension.getInterfaces();
+// String[][] records = new String[interfaces.length][INTERFACE_COLUMNS.length];
+// int index = 0;
+// for (Object interfaceObj : interfaces) {
+// InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
+// String parameters = ProgramExtensionHelper.INSTANCE.toParametersString(desc.getParameters());
+// records[index++] = new String[] { desc.getName(), String.valueOf(desc.isSingleton()), String.valueOf(desc.isAutoStart()), parameters };
+// }
+// PrettyPrinter.prettyPrint(INTERFACE_COLUMNS, records);
+// }
+//
+/// **
+// * List interfaces of an extension.
+// *
+// * @param extensionTypeId
+// * @param extensionId
+// */
+// public void linterfaces( //
+// // Parameters
+// @Descriptor("Extension type id") @Parameter(names = { "-typeId", "--typeId" }, absentValue = "") String extensionTypeId, //
+// @Descriptor("Extension id") @Parameter(names = { "-id", "--id" }, absentValue = "") String extensionId //
+// ) {
+// if ("".equals(extensionTypeId) || "".equals(extensionId)) {
+// IExtension[] extensions = getExtensionService().getExtensions();
+// for (IExtension extension : extensions) {
+// linterfaces(extension);
+// System.out.println();
+// }
+//
+// } else if (!"".equals(extensionTypeId) && "".equals(extensionId)) {
+// IExtension[] extensions = getExtensionService().getExtensions(extensionTypeId);
+// for (IExtension extension : extensions) {
+// linterfaces(extension);
+// System.out.println();
+// }
+//
+// } else if (!"".equals(extensionTypeId) && !"".equals(extensionId)) {
+// IExtension extension = getExtensionService().getExtension(extensionTypeId, extensionId);
+// if (extension == null) {
+// System.out.println("Extension (typeId='" + extensionTypeId + "', id='" + extensionId + "') does not exist.");
+// return;
+// }
+// linterfaces(extension);
+// }
+// }
+//
+/// **
+// *
+// * @param extension
+// */
+// protected void linterfaces(IExtension extension) {
+// if (extension == null) {
+// return;
+// }
+// Object[] interfaces = extension.getInterfaces();
+//
+// int numRecords = 0;
+// for (Object interfaceObj : interfaces) {
+// InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
+// org.origin.common.extensions.Parameter[] parameters = desc.getParameters();
+//
+// if (parameters.length == 0) {
+// numRecords += 1;
+// } else {
+// numRecords += parameters.length;
+// }
+// }
+//
+// String[][] records = new String[numRecords][INTERFACE_COLUMNS.length];
+// int index = 0;
+// for (Object interfaceObj : interfaces) {
+// InterfaceDescription desc = extension.getInterfaceDescription(interfaceObj);
+// org.origin.common.extensions.Parameter[] parameters = desc.getParameters();
+//
+// String name = desc.getName();
+// String isSingleton = String.valueOf(desc.isSingleton());
+// String isAutoStart = String.valueOf(desc.isAutoStart());
+// String interfaceClassName = desc.getInterfaceClassName();
+// Class<?> interfaceImplClass = desc.getInterfaceImplClass();
+// String interfaceImplClassName = interfaceImplClass != null ? interfaceImplClass.getName() : null;
+// // String interfaceObject = (desc.getInterfaceInstance() != null) ? desc.getInterfaceInstance().toString() : null;
+//
+// if (parameters.length == 0) {
+// records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceImplClassName, null };
+//
+// } else {
+// for (int i = 0; i < parameters.length; i++) {
+// org.origin.common.extensions.Parameter parameter = parameters[i];
+// if (i == 0) {
+// records[index++] = new String[] { name, isSingleton, isAutoStart, interfaceClassName, interfaceImplClassName, parameter.getLabel() };
+// } else {
+// records[index++] = new String[] { "", "", "", "", "", parameter.getLabel() };
+// }
+// }
+// }
+// }
+//
+// System.out.println("Extension:");
+// System.out.println(extension);
+//
+// System.out.println("\r\nInterfaces:");
+// PrettyPrinter.prettyPrint(INTERFACE_COLUMNS, records);
+// }

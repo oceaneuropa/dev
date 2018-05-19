@@ -9,6 +9,9 @@ public class InfraConstants {
 	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 
 	// global index item properties
+	public static String NAME = "name";
+	public static String URL = "url";
+	public static String BASE_URL = "base_url";
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
 	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
 	public static String PINGABLE = "pingable";

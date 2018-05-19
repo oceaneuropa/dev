@@ -15,12 +15,16 @@ import org.origin.common.extensions.Parameter;
 import org.origin.common.extensions.ProgramExtensions;
 import org.origin.common.extensions.condition.ConditionFactory;
 import org.origin.common.extensions.condition.IPropertyTester;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Infra extensions
  *
  */
 public class Extensions extends ProgramExtensions {
+
+	protected static Logger LOG = LoggerFactory.getLogger(Extensions.class);
 
 	public static Extensions INSTANCE = new Extensions();
 
@@ -30,6 +34,8 @@ public class Extensions extends ProgramExtensions {
 
 	@Override
 	public void createExtensions() {
+		LOG.debug("createExtensions()");
+
 		createServiceActivatorExtensions1();
 		createServiceActivatorExtensions2();
 		createPropertyTesterExtensions1();

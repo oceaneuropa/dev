@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class InfraCommand {
 
-	protected static String[] INDEX_ITEM_COLUMNS = new String[] { "Index Item Id", "Name", "Type", "Last Upate Time", "Properties" };
+	protected static String[] INDEX_ITEM_COLUMNS = new String[] { "Id", "Type", "Name", "Last Upate Time", "Properties" };
 
 	protected static Logger LOG = LoggerFactory.getLogger(InfraCommand.class);
 
@@ -39,7 +39,7 @@ public class InfraCommand {
 	 * @param bundleContext
 	 */
 	public void start(BundleContext bundleContext) {
-		LOG.info("start()");
+		LOG.debug("start()");
 		this.bundleContext = bundleContext;
 
 		// Get the available components
@@ -69,7 +69,7 @@ public class InfraCommand {
 		commandProps.put("osgi.command.scope", "infra");
 		commandProps.put("osgi.command.function",
 				new String[] { //
-						"lindexitems", //
+						"lserver_indexitems", //
 						"startservice", "stopservice" //
 		});
 		OSGiServiceUtil.register(bundleContext, InfraCommand.class.getName(), this, commandProps);
@@ -80,7 +80,7 @@ public class InfraCommand {
 	 * @param bundleContext
 	 */
 	public void stop(BundleContext bundleContext) {
-		LOG.info("stop()");
+		LOG.debug("stop()");
 
 		OSGiServiceUtil.unregister(InfraCommand.class.getName(), this);
 
@@ -172,30 +172,31 @@ public class InfraCommand {
 	/**
 	 * <pre>
 	 * e.g.
-	 * lindexitems -providerId component.index_service.indexer
-	 * lindexitems -providerId component.channel.indexer
+	 * lserver_indexitems -providerId component.index_service.indexer
+	 * lserver_indexitems -providerId component.channel.indexer
 	 * 
-	 * lindexitems -providerId component.user_registry.indexer
-	 * lindexitems -providerId component.oauth2.indexer
-	 * lindexitems -providerId component.auth.indexer
-	 * lindexitems -providerId component.config_registry.indexer
-	 * lindexitems -providerId component.app_store.indexer
-	 * lindexitems -providerId component.domain_management.indexer
-	 * lindexitems -providerId component.node_control.indexer
-	 * lindexitems -providerId component.mission_control.indexer
+	 * lserver_indexitems -providerId component.user_registry.indexer
+	 * lserver_indexitems -providerId component.oauth2.indexer
+	 * lserver_indexitems -providerId component.auth.indexer
+	 * lserver_indexitems -providerId component.config_registry.indexer
+	 * lserver_indexitems -providerId component.app_store.indexer
+	 * lserver_indexitems -providerId component.domain_management.indexer
+	 * lserver_indexitems -providerId component.node_control.indexer
+	 * lserver_indexitems -providerId component.mission_control.indexer
 	 * 
-	 * lindexitems -providerId platform.indexer
-	 * lindexitems -providerId command_service.indexer
+	 * lserver_indexitems -providerId platform.indexer
+	 * lserver_indexitems -providerId command_service.indexer
 	 * 
 	 * </pre>
 	 * 
 	 * @param indexProviderId
 	 */
 	@Descriptor("List index items")
-	public void lindexitems( //
+	public void lserver_indexitems( //
 			@Descriptor("Index provider id") @Parameter(names = { "-providerId", "--providerId" }, absentValue = "") String indexProviderId //
 	) {
 		LOG.info("lindexitems()");
+		LOG.info("indexProviderId = " + indexProviderId);
 
 		try {
 			IndexService indexService = getIndexService();
@@ -204,7 +205,6 @@ public class InfraCommand {
 				return;
 			}
 			if (indexProviderId == null || indexProviderId.isEmpty()) {
-				LOG.debug("indexProviderId is null.");
 				return;
 			}
 
@@ -238,7 +238,18 @@ public class InfraCommand {
 					for (Iterator<String> itor = properties.keySet().iterator(); itor.hasNext();) {
 						String key = itor.next();
 						Object value = properties.get(key);
+						// String label = key + " = " + value + " (" + value.getClass().getName() + ")";
 						String label = key + " = " + value;
+
+						if (value instanceof Long) {
+							long longValue = ((Long) value).longValue();
+							Date date = DateUtil.toDate(longValue);
+							String dateStr = DateUtil.toString(date, DateUtil.SIMPLE_DATE_FORMAT2);
+							if (dateStr != null) {
+								label += " (" + dateStr + ")";
+							}
+						}
+
 						if (i == 0) {
 							records[index++] = new String[] { String.valueOf(id), type, name, lastUpdateTimeStr, label };
 						} else {

@@ -32,7 +32,7 @@ public class Extensions extends ProgramExtensions {
 
 		// GAIA
 		Extension gaiaExtension = new Extension(typeId, GAIAServiceActivator.ID, "GAIA activator", "GAIA activator description");
-		InterfaceDescription gaiaDesc = new InterfaceDescription("GAIA", ServiceActivator.class, GAIAServiceActivator.class.getName());
+		InterfaceDescription gaiaDesc = new InterfaceDescription("GAIA", ServiceActivator.class, GAIAServiceActivator.class);
 		gaiaDesc.setParameters( //
 				new Parameter("gaia.name", "GAIA instance name"), //
 				new Parameter("gaia.context_root", "web service context root") //

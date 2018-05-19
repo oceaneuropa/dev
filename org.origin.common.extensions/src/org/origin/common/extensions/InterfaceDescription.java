@@ -13,11 +13,8 @@ public class InterfaceDescription {
 	protected ICondition triggerCondition;
 	protected Class<?> interfaceClass;
 	protected Class<?> interfaceImplClass;
-	protected Object interfaceInstance;
-	protected String interfaceClassName;
-
-	public InterfaceDescription() {
-	}
+	protected Object interfaceImplInstance;
+	protected String interfaceImplClassName;
 
 	/**
 	 * 
@@ -30,31 +27,15 @@ public class InterfaceDescription {
 	/**
 	 * 
 	 * @param interfaceClass
-	 * @param interfaceClassName
-	 */
-	public InterfaceDescription(Class<?> interfaceClass, String interfaceClassName) {
-		this(interfaceClass.getSimpleName(), interfaceClass, interfaceClassName);
-	}
-
-	/**
-	 * 
-	 * @param interfaceClass
 	 * @param interfaceImplClass
 	 */
 	public <I, IMPL extends I> InterfaceDescription(Class<I> interfaceClass, Class<IMPL> interfaceImplClass) {
-		this(interfaceImplClass.getSimpleName(), interfaceClass, interfaceImplClass);
-	}
-
-	/**
-	 * 
-	 * @param name
-	 * @param interfaceClass
-	 * @param interfaceClassName
-	 */
-	public InterfaceDescription(String name, Class<?> interfaceClass, String interfaceClassName) {
-		this.name = name;
+		this.name = interfaceImplClass.getSimpleName();
 		this.interfaceClass = interfaceClass;
-		this.interfaceClassName = interfaceClassName;
+		this.interfaceImplClass = interfaceImplClass;
+		if (interfaceImplClass != null) {
+			this.interfaceImplClassName = interfaceImplClass.getName();
+		}
 	}
 
 	/**
@@ -63,21 +44,13 @@ public class InterfaceDescription {
 	 * @param interfaceClass
 	 * @param interfaceImplClass
 	 */
-	public InterfaceDescription(String name, Class<?> interfaceClass, Class<?> interfaceImplClass) {
+	public <I, IMPL extends I> InterfaceDescription(String name, Class<?> interfaceClass, Class<IMPL> interfaceImplClass) {
 		this.name = name;
 		this.interfaceClass = interfaceClass;
 		this.interfaceImplClass = interfaceImplClass;
-	}
-
-	/**
-	 * 
-	 * @param interfaceClass
-	 * @param interfaceInstance
-	 */
-	public InterfaceDescription(Class<?> interfaceClass, Object interfaceInstance) {
-		this.name = interfaceClass.getSimpleName();
-		this.interfaceClass = interfaceClass;
-		this.interfaceInstance = interfaceInstance;
+		if (interfaceImplClass != null) {
+			this.interfaceImplClassName = interfaceImplClass.getName();
+		}
 	}
 
 	public String getName() {
@@ -139,20 +112,63 @@ public class InterfaceDescription {
 		this.interfaceImplClass = interfaceImplClass;
 	}
 
-	public Object getInterfaceInstance() {
-		return this.interfaceInstance;
+	public Object getInterfaceImplInstance() {
+		return this.interfaceImplInstance;
 	}
 
-	public void setInterfaceInstance(Object interfaceInstance) {
-		this.interfaceInstance = interfaceInstance;
+	public void setInterfaceImplInstance(Object interfaceImplInstance) {
+		this.interfaceImplInstance = interfaceImplInstance;
 	}
 
-	public String getInterfaceClassName() {
-		return interfaceClassName;
+	public String getInterfaceImplClassName() {
+		if (this.interfaceImplClassName == null) {
+			if (this.interfaceImplClass != null) {
+				return interfaceImplClass.getName();
+			}
+			if (this.interfaceImplInstance != null) {
+				return this.interfaceImplInstance.getClass().getName();
+			}
+		}
+		return this.interfaceImplClassName;
 	}
 
-	public void setInterfaceClassName(String interfaceClassName) {
-		this.interfaceClassName = interfaceClassName;
+	public void setInterfaceImplClassName(String interfaceImplClassName) {
+		this.interfaceImplClassName = interfaceImplClassName;
 	}
 
 }
+
+// public InterfaceDescription() {
+// }
+
+// /**
+// *
+// * @param interfaceClass
+// * @param interfaceClassName
+// */
+// public InterfaceDescription(Class<?> interfaceClass, String interfaceClassName) {
+// this(interfaceClass.getSimpleName(), interfaceClass, interfaceClassName);
+// }
+
+// /**
+// *
+// * @param name
+// * @param interfaceClass
+// * @param interfaceImplClass
+// */
+// public InterfaceDescription(String name, Class<?> interfaceClass, Class<?> interfaceImplClass) {
+// this.name = name;
+// this.interfaceClass = interfaceClass;
+// this.interfaceImplClass = interfaceImplClass;
+// }
+
+// /**
+// *
+// * @param interfaceClass
+// * @param interfaceInstance
+// */
+// public InterfaceDescription(Class<?> interfaceClass, Object interfaceInstance) {
+// this.name = interfaceClass.getSimpleName();
+// this.interfaceClass = interfaceClass;
+// this.interfaceInstance = interfaceInstance;
+// }

@@ -25,6 +25,8 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		LOG.debug("start()");
+
 		Activator.bundleContext = bundleContext;
 		Activator.instance = this;
 
@@ -44,6 +46,8 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		LOG.debug("stop");
+
 		Activator.instance = null;
 		Activator.bundleContext = null;
 

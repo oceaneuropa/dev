@@ -34,7 +34,7 @@ public class InterfacesSupport implements InterfacesAware {
 			InterfaceDescription desc = this.classToDescriptionMap.get(clazz);
 
 			if (desc != null) {
-				Object object = desc.getInterfaceInstance();
+				Object object = desc.getInterfaceImplInstance();
 				if (object != null && clazz.isAssignableFrom(object.getClass())) {
 					t = (T) object;
 				}
@@ -46,7 +46,7 @@ public class InterfacesSupport implements InterfacesAware {
 					} else {
 						Class<?> implClass = desc.getInterfaceImplClass();
 						if (implClass == null) {
-							String className = desc.getInterfaceClassName();
+							String className = desc.getInterfaceImplClassName();
 							if (className != null) {
 								ClassLoader cl = Thread.currentThread().getContextClassLoader();
 								try {
@@ -105,7 +105,7 @@ public class InterfacesSupport implements InterfacesAware {
 				Class<?> interfaceClass = itor.next();
 				InterfaceDescription currDesc = this.classToDescriptionMap.get(interfaceClass);
 				if (currDesc != null) {
-					Object interfaceObject = currDesc.getInterfaceInstance();
+					Object interfaceObject = currDesc.getInterfaceImplInstance();
 					if (object.equals(interfaceObject)) {
 						desc = currDesc;
 						break;
@@ -135,7 +135,7 @@ public class InterfacesSupport implements InterfacesAware {
 		if (clazz != null) {
 			InterfaceDescription desc = new InterfaceDescription(clazz.getSimpleName());
 			desc.setInterfaceClass(clazz);
-			desc.setInterfaceInstance(interfaceInstance);
+			desc.setInterfaceImplInstance(interfaceInstance);
 			addInterface(desc);
 		}
 	}
@@ -145,7 +145,7 @@ public class InterfacesSupport implements InterfacesAware {
 		if (clazz != null) {
 			InterfaceDescription desc = new InterfaceDescription(clazz.getSimpleName());
 			desc.setInterfaceClass(clazz);
-			desc.setInterfaceClassName(interfaceClassName);
+			desc.setInterfaceImplClassName(interfaceClassName);
 			addInterface(desc);
 		}
 	}

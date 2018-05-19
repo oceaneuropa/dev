@@ -9,8 +9,9 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexServiceException;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.origin.common.thread.ServiceIndexTimerImpl;
+import org.origin.common.service.WebServiceAwareHelper;
 import org.origin.common.thread.ServiceIndexTimer;
+import org.origin.common.thread.ServiceIndexTimerImpl;
 
 public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, IndexService, IndexItem> implements ServiceIndexTimer<IndexService, IndexService, IndexItem> {
 
@@ -47,15 +48,16 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 	public IndexItem addIndex(IndexService indexProvider, IndexService service) throws IOException {
 		try {
 			String name = service.getName();
-			String hostURL = service.getHostURL();
-			String contextRoot = service.getContextRoot();
+			String url = WebServiceAwareHelper.INSTANCE.getURL(service);
+			// String hostURL = service.getHostURL();
+			// String contextRoot = service.getContextRoot();
 
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(InfraConstants.INDEX_SERVICE_NAME, name);
-			props.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
-			props.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
+			props.put(InfraConstants.NAME, name);
+			props.put(InfraConstants.BASE_URL, url);
+			// props.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
+			// props.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
 			props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-
 			return indexProvider.addIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name, props);
 
 		} catch (IndexServiceException e) {
@@ -67,10 +69,25 @@ public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, 
 	public void updateIndex(IndexService indexProvider, IndexService service, IndexItem indexItem) throws IOException {
 		try {
 			Integer indexItemId = indexItem.getIndexItemId();
-			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			String name = service.getName();
+			String url = WebServiceAwareHelper.INSTANCE.getURL(service);
+			// String hostURL = service.getHostURL();
+			// String contextRoot = service.getContextRoot();
 
+			Map<String, Object> props = new Hashtable<String, Object>();
+			props.put(InfraConstants.NAME, name);
+			props.put(InfraConstants.BASE_URL, url);
+			props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			// props.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
+			// props.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
 			indexProvider.setProperties(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, props);
+
+			// List<String> propNames = new ArrayList<String>();
+			// propNames.add(InfraConstants.URL);
+			// propNames.add(InfraConstants.INDEX_SERVICE_NAME);
+			// propNames.add(InfraConstants.INDEX_SERVICE_HOST_URL);
+			// propNames.add(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
+			// indexProvider.removeProperty(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, propNames);
 
 		} catch (IndexServiceException e) {
 			throw new IOException(e);

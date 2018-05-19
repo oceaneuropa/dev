@@ -9,6 +9,8 @@ import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.spi.ServiceActivator;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IndexServiceActivator implements ServiceActivator {
 
@@ -16,8 +18,12 @@ public class IndexServiceActivator implements ServiceActivator {
 
 	public static IndexServiceActivator INSTANCE = new IndexServiceActivator();
 
+	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceActivator.class);
+
 	@Override
 	public void start(IPlatformContext context, IProcess process) {
+		LOG.debug("start()");
+
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
@@ -30,6 +36,8 @@ public class IndexServiceActivator implements ServiceActivator {
 
 	@Override
 	public void stop(IPlatformContext context, IProcess process) {
+		LOG.debug("stop()");
+
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop IndexService
