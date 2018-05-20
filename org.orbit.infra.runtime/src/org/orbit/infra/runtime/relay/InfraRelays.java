@@ -41,6 +41,8 @@ public class InfraRelays {
 	 * @return
 	 */
 	public IndexServiceWSApplicationRelay createIndexServiceRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
+		LOG.debug("createIndexServiceRelay()");
+
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (initProperties != null) {
 			properties.putAll(initProperties);
@@ -56,6 +58,15 @@ public class InfraRelays {
 		final String contextRoot = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT);
 		String hosts = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS);
 		String urls = (String) properties.get(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS);
+
+		LOG.debug("Properties:");
+		LOG.debug("-----------------------------------------------------------------------------");
+		LOG.debug(InfraConstants.ORBIT_HOST_URL + " = " + hostURL);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_NAME + " = " + name);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT + " = " + contextRoot);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_HOSTS + " = " + hosts);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_URLS + " = " + urls);
+		LOG.debug("-----------------------------------------------------------------------------");
 
 		if (contextRoot == null) {
 			return null;
@@ -84,6 +95,8 @@ public class InfraRelays {
 	 * @return
 	 */
 	public ChannelWSApplicationRelay createChannelRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
+		LOG.debug("createChannelRelay()");
+
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (initProperties != null) {
 			properties.putAll(initProperties);
@@ -99,6 +112,16 @@ public class InfraRelays {
 		final String contextRoot = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT);
 		String hosts = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS);
 		String urls = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_RELAY_URLS);
+
+		LOG.debug("Properties:");
+		LOG.debug("-----------------------------------------------------------------------------");
+		LOG.debug(InfraConstants.ORBIT_HOST_URL + " = " + hostURL);
+		LOG.debug(InfraConstants.COMPONENT_CHANNEL_RELAY_NAME + " = " + name);
+		LOG.debug(InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT + " = " + hostURL);
+		LOG.debug(InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT + " = " + contextRoot);
+		LOG.debug(InfraConstants.COMPONENT_CHANNEL_RELAY_HOSTS + " = " + hosts);
+		LOG.debug(InfraConstants.COMPONENT_CHANNEL_RELAY_URLS + " = " + urls);
+		LOG.debug("-----------------------------------------------------------------------------");
 
 		if (contextRoot == null) {
 			return null;

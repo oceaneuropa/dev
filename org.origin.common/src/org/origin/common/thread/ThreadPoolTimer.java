@@ -86,7 +86,11 @@ public class ThreadPoolTimer {
 				// if (debug) {
 				LOG.debug(name + " -> run.");
 				// }
-				runnable.run();
+				try {
+					runnable.run();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		};
 		this.scheduleHandle = this.scheduler.scheduleAtFixedRate(runner, 0, this.timerInterval, TimeUnit.MILLISECONDS);

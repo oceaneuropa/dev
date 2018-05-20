@@ -138,7 +138,7 @@ public class AbstractJerseyWSApplication extends ResourceConfig implements IAdap
 	 * @param bundleContext
 	 */
 	public void start(BundleContext bundleContext) {
-		LOG.debug("start()");
+		LOG.debug("start() (" + getClass().getName() + ")");
 		if (!this.isStarted.compareAndSet(false, true)) {
 			return;
 		}

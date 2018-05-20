@@ -17,6 +17,8 @@ import javax.ws.rs.core.Response.Status.Family;
 
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.util.ResponseUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +30,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public abstract class AbstractWSClient implements Pingable {
 
+	protected static Logger LOG = LoggerFactory.getLogger(AbstractWSClient.class);
+
 	protected ClientConfiguration config;
 	protected Client client;
-	protected boolean debug = false;
+	protected boolean debug = true;
 
 	/**
 	 * 
@@ -314,16 +318,23 @@ public abstract class AbstractWSClient implements Pingable {
 					cookieManager.setCookies(uri, setCookieString);
 				}
 
-				if (debug) {
-					String targetBaseURI = response.getHeaderString("switcher.targetURI");
-					if (targetBaseURI != null) {
-						System.out.println(getClass().getSimpleName() + "(AbstractWSClient).handleResponseHeaders() switcher.targetURI:");
-						System.out.println(uri.toString());
-						System.out.println(" -> ");
-						System.out.println(targetBaseURI);
-						System.out.println();
-					}
+				// if (debug) {
+				String targetBaseURI = response.getHeaderString("switcher.targetURI");
+				if (targetBaseURI != null) {
+					LOG.debug("handleResponseHeaders()");
+					LOG.debug("    switcher.targetURI:");
+					LOG.debug("    " + uri.toString());
+					LOG.debug("    ->");
+					LOG.debug("    " + targetBaseURI);
+					LOG.debug("    ");
+
+					// System.out.println(getClass().getSimpleName() + "(AbstractWSClient).handleResponseHeaders() switcher.targetURI:");
+					// System.out.println(uri.toString());
+					// System.out.println(" -> ");
+					// System.out.println(targetBaseURI);
+					// System.out.println();
 				}
+				// }
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -21,6 +21,8 @@ import org.glassfish.jersey.process.Inflector;
 import org.glassfish.jersey.server.model.Resource;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.switcher.Switcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * 1. Why using ObjectNode to deserialize request body
@@ -41,6 +43,8 @@ import org.origin.common.rest.switcher.Switcher;
  * 
  */
 public class WSMethodInflector implements Inflector<ContainerRequestContext, Response> {
+
+	protected static Logger LOG = LoggerFactory.getLogger(WSMethodInflector.class);
 
 	protected String methodType;
 	protected String methodPath;
@@ -124,6 +128,8 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 
 	@Override
 	public Response apply(ContainerRequestContext requestContext) {
+		LOG.debug("apply()");
+
 		selfCheck();
 
 		// Step1. load the bullet
@@ -151,7 +157,9 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 			System.err.println("New request URI is invalid. " + e.getMessage());
 			return Response.serverError().entity(new ErrorDTO("500", "New request URI is invalid. ", e.getMessage())).build();
 		}
+
 		// System.out.println(getClass().getSimpleName() + ".apply() newRequestUri = " + newRequestUri);
+		LOG.debug("    newRequestUri = " + newRequestUri);
 
 		// Invocation.Builder newWSResource = this.client.target(newRequestUri).request(MediaType.APPLICATION_JSON);
 		Invocation.Builder newWSResource = this.client.target(newRequestUri).request();
@@ -318,6 +326,8 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 	 * @return
 	 */
 	protected Response sendRequest(Invocation.Builder wsResource, Object payload) {
+		LOG.debug("sendRequest()");
+
 		Response response = null;
 		try {
 			Entity<?> bodyParam = null;
@@ -331,6 +341,7 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 			}
 
 			if ("GET".equalsIgnoreCase(this.methodType)) {
+				// e.g. http://127.0.0.1:8002/orbit/v1/indexservice/indexitems/platform.indexer?name=Sun&type=Platform
 				response = wsResource.get(Response.class);
 
 			} else if ("POST".equalsIgnoreCase(this.methodType)) {
@@ -344,7 +355,9 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOG.debug("sendRequest() " + e.getClass().getName() + ": " + e.getMessage());
+			// e.printStackTrace();
+			System.err.println(e.toString());
 
 			if (response != null) {
 				return response;
