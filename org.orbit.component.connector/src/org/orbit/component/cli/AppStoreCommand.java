@@ -9,6 +9,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.AppStore;
+import org.orbit.platform.sdk.command.ICommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -17,23 +18,18 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AppStoreCommand implements Annotated {
+public class AppStoreCommand implements Annotated, ICommandActivator {
+
+	public static final String ID = "org.orbit.component.cli.AppStoreCommand";
 
 	protected static Logger LOG = LoggerFactory.getLogger(AppStoreCommand.class);
 
 	protected BundleContext bundleContext;
 	protected Map<Object, Object> properties;
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
-	public AppStoreCommand(BundleContext bundleContext) {
-		this.bundleContext = bundleContext;
-	}
-
-	public void start() {
+	public void start(BundleContext bundleContext) {
 		LOG.info("start()");
+		this.bundleContext = bundleContext;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
@@ -46,10 +42,12 @@ public class AppStoreCommand implements Annotated {
 		OSGiServiceUtil.register(this.bundleContext, AppStoreCommand.class.getName(), this, props);
 	}
 
-	public void stop() {
+	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
 		OSGiServiceUtil.unregister(AppStoreCommand.class.getName(), this);
+
+		this.bundleContext = null;
 	}
 
 	protected AppStore getAppStore() {

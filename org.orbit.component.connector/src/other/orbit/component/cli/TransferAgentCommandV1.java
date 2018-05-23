@@ -23,8 +23,8 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnector;
-import other.orbit.component.api.tier3.nodecontrol.TransferAgentConnector;
+import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
+import other.orbit.component.api.tier3.nodecontrol.TransferAgentConnectorV1;
 
 public class TransferAgentCommandV1 implements Annotated {
 
@@ -37,9 +37,9 @@ public class TransferAgentCommandV1 implements Annotated {
 	protected String scheme = "ta";
 
 	@Dependency
-	protected DomainServiceConnector domainMgmtConnector;
+	protected DomainServiceConnectorV1 domainMgmtConnector;
 	@Dependency
-	protected TransferAgentConnector transferAgentConnector;
+	protected TransferAgentConnectorV1 transferAgentConnector;
 
 	/**
 	 * 
@@ -95,7 +95,7 @@ public class TransferAgentCommandV1 implements Annotated {
 		return transferAgent;
 	}
 
-	public NodeControlClient getTransferAgent(DomainServiceConnector domainConnector, TransferAgentConnector taConnector, String machineId, String transferAgentId) throws ClientException {
+	public NodeControlClient getTransferAgent(DomainServiceConnectorV1 domainConnector, TransferAgentConnectorV1 taConnector, String machineId, String transferAgentId) throws ClientException {
 		DomainManagementClient domain = domainConnector.getService();
 		if (domain != null) {
 			PlatformConfig taConfig = domain.getPlatformConfig(machineId, transferAgentId);

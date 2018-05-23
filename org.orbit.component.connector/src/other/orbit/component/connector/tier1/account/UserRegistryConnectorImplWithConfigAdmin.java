@@ -15,9 +15,9 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
-import other.orbit.component.api.tier1.account.UserRegistryConnector;
+import other.orbit.component.api.tier1.account.UserRegistryConnectorV1;
 
-public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBalancedServiceConnectorImpl<UserRegistry> implements UserRegistryConnector {
+public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBalancedServiceConnectorImpl<UserRegistry> implements UserRegistryConnectorV1 {
 
 	@Dependency
 	protected ConfigurationAdmin configAdmin;
@@ -27,7 +27,7 @@ public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBala
 	 * @param indexService
 	 */
 	public UserRegistryConnectorImplWithConfigAdmin(IndexService indexService) {
-		super(indexService, UserRegistryConnector.class);
+		super(indexService, UserRegistryConnectorV1.class);
 	}
 
 	@Override

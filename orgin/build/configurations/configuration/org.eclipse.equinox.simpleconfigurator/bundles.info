@@ -121,33 +121,54 @@ slf4j.api,1.7.25,log/slf4j-api-1.7.25.jar,4,false
 # System
 # ----------------------------------------------------------------------------------------
 # 1. system/orbit.components
-org.orbit.component.api,1.0.0,../system/orbit.components/org.orbit.component.api_1.0.0.jar,4,true
-org.orbit.component.connector,1.0.0,../system/orbit.components/org.orbit.component.connector_1.0.0.jar,4,true
-org.orbit.component.model,1.0.0,../system/orbit.components/org.orbit.component.model_1.0.0.jar,4,true
-org.orbit.component.runtime,1.0.0,../system/orbit.components/org.orbit.component.runtime_1.0.0.jar,4,true
+# org.orbit.component.api,1.0.0,../system/orbit.components/org.orbit.component.api_1.0.0.jar,4,true
+# org.orbit.component.connector,1.0.0,../system/orbit.components/org.orbit.component.connector_1.0.0.jar,4,true
+# org.orbit.component.model,1.0.0,../system/orbit.components/org.orbit.component.model_1.0.0.jar,4,true
+# org.orbit.component.runtime,1.0.0,../system/orbit.components/org.orbit.component.runtime_1.0.0.jar,4,true
 
 # 2. system/orbit.infra
-org.orbit.infra.api,1.0.0,../system/orbit.infra/org.orbit.infra.api_1.0.0.jar,4,true
-org.orbit.infra.connector,1.0.0,../system/orbit.infra/org.orbit.infra.connector_1.0.0.jar,4,true
-org.orbit.infra.model,1.0.0,../system/orbit.infra/org.orbit.infra.model_1.0.0.jar,4,true
-org.orbit.infra.runtime,1.0.0,../system/orbit.infra/org.orbit.infra.runtime_1.0.0.jar,4,true
+# org.orbit.infra.api,1.0.0,../system/orbit.infra/org.orbit.infra.api_1.0.0.jar,4,true
+# org.orbit.infra.connector,1.0.0,../system/orbit.infra/org.orbit.infra.connector_1.0.0.jar,4,true
+# org.orbit.infra.model,1.0.0,../system/orbit.infra/org.orbit.infra.model_1.0.0.jar,4,true
+# org.orbit.infra.runtime,1.0.0,../system/orbit.infra/org.orbit.infra.runtime_1.0.0.jar,4,true
 
 # 3. system/orbit.platform
-org.orbit.platform.api,1.0.0,../system/orbit.platform/org.orbit.platform.api_1.0.0.jar,4,true
-org.orbit.platform.connector,1.0.0,../system/orbit.platform/org.orbit.platform.connector_1.0.0.jar,4,true
-org.orbit.platform.model,1.0.0,../system/orbit.platform/org.orbit.platform.model_1.0.0.jar,4,true
-org.orbit.platform.runtime,1.0.0,../system/orbit.platform/org.orbit.platform.runtime_1.0.0.jar,4,true
-org.orbit.platform.sdk,1.0.0,../system/orbit.platform/org.orbit.platform.sdk_1.0.0.jar,4,true
+# org.orbit.platform.api,1.0.0,../system/orbit.platform/org.orbit.platform.api_1.0.0.jar,4,true
+# org.orbit.platform.connector,1.0.0,../system/orbit.platform/org.orbit.platform.connector_1.0.0.jar,4,true
+# org.orbit.platform.model,1.0.0,../system/orbit.platform/org.orbit.platform.model_1.0.0.jar,4,true
+# org.orbit.platform.runtime,1.0.0,../system/orbit.platform/org.orbit.platform.runtime_1.0.0.jar,4,true
+# org.orbit.platform.sdk,1.0.0,../system/orbit.platform/org.orbit.platform.sdk_1.0.0.jar,4,true
 
 # 4. system/orbit.services
-org.orbit.services,1.0.0,../system/orbit.services/org.orbit.services_1.0.0.jar,4,false
-org.orbit.services.http.jetty,1.0.0,../system/orbit.services/org.orbit.services.http.jetty_1.0.0.jar,4,false
+# org.orbit.services,1.0.0,../system/orbit.services/org.orbit.services_1.0.0.jar,4,false
+# org.orbit.services.http.jetty,1.0.0,../system/orbit.services/org.orbit.services.http.jetty_1.0.0.jar,4,false
 
 # 5. system/origin.common
-org.origin.common,1.0.0,../system/origin.common/org.origin.common_1.0.0.jar,4,true
-org.origin.common.extensions,1.0.0,../system/origin.common/org.origin.common.extensions_1.0.0.jar,4,true
-org.origin.common.launch,1.0.0,../system/origin.common/org.origin.common.launch_1.0.0.jar,4,true
-org.origin.common.resources,1.0.0,../system/origin.common/org.origin.common.resources_1.0.0.jar,4,true
+# org.origin.common,1.0.0,../system/origin.common/org.origin.common_1.0.0.jar,4,true
+# org.origin.common.extensions,1.0.0,../system/origin.common/org.origin.common.extensions_1.0.0.jar,4,true
+# org.origin.common.launch,1.0.0,../system/origin.common/org.origin.common.launch_1.0.0.jar,4,true
+# org.origin.common.resources,1.0.0,../system/origin.common/org.origin.common.resources_1.0.0.jar,4,true
+
+
+org.orbit.component.api,1.0.0,system/org.orbit.component.api_1.0.0.jar,5,true
+org.orbit.component.connector,1.0.0,system/org.orbit.component.connector_1.0.0.jar,5,true
+org.orbit.component.model,1.0.0,system/org.orbit.component.model_1.0.0.jar,5,true
+org.orbit.component.runtime,1.0.0,system/org.orbit.component.runtime_1.0.0.jar,5,true
+org.orbit.infra.api,1.0.0,system/org.orbit.infra.api_1.0.0.jar,5,true
+org.orbit.infra.connector,1.0.0,system/org.orbit.infra.connector_1.0.0.jar,5,true
+org.orbit.infra.model,1.0.0,system/org.orbit.infra.model_1.0.0.jar,5,true
+org.orbit.infra.runtime,1.0.0,system/org.orbit.infra.runtime_1.0.0.jar,5,true
+org.orbit.platform.api,1.0.0,system/org.orbit.platform.api_1.0.0.jar,5,true
+org.orbit.platform.connector,1.0.0,system/org.orbit.platform.connector_1.0.0.jar,5,true
+org.orbit.platform.model,1.0.0,system/org.orbit.platform.model_1.0.0.jar,5,true
+org.orbit.platform.runtime,1.0.0,system/org.orbit.platform.runtime_1.0.0.jar,5,true
+org.orbit.platform.sdk,1.0.0,system/org.orbit.platform.sdk_1.0.0.jar,5,true
+org.orbit.services,1.0.0,system/org.orbit.services_1.0.0.jar,4,false
+org.orbit.services.http.jetty,1.0.0,system/org.orbit.services.http.jetty_1.0.0.jar,4,false
+org.origin.common,1.0.0,system/org.origin.common_1.0.0.jar,4,true
+org.origin.common.extensions,1.0.0,system/org.origin.common.extensions_1.0.0.jar,4,true
+org.origin.common.launch,1.0.0,system/org.origin.common.launch_1.0.0.jar,4,true
+org.origin.common.resources,1.0.0,system/org.origin.common.resources_1.0.0.jar,4,true
 
 
 # ----------------------------------------------------------------------------------------

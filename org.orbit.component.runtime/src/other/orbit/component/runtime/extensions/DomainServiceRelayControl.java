@@ -6,7 +6,7 @@ import java.util.List;
 import org.orbit.component.runtime.Extensions;
 import org.orbit.component.runtime.relay.desc.DomainServiceWSApplicationDesc;
 import org.orbit.component.runtime.relay.util.SwitcherUtil;
-import org.orbit.platform.sdk.spi.impl.WSRelayControlImpl;
+import org.orbit.platform.sdk.relaycontrol.WSRelayControlImpl;
 import org.origin.common.extensions.Extension;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSRelayApplication;

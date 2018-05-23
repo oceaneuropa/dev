@@ -1,6 +1,6 @@
 package other.orbit.component.runtime.relay.extensions;
 
-import org.orbit.platform.sdk.spi.WSRelayControl;
+import org.orbit.platform.sdk.relaycontrol.WSRelayControl;
 
 import other.orbit.component.runtime.extensions.ConfigRegistryRelayControl;
 

@@ -9,9 +9,9 @@ import org.origin.common.rest.client.ClientException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import other.orbit.component.api.tier3.nodecontrol.TransferAgentConnector;
+import other.orbit.component.api.tier3.nodecontrol.TransferAgentConnectorV1;
 
-public class TransferAgentConnectorImplV2 implements TransferAgentConnector {
+public class TransferAgentConnectorImplV2 implements TransferAgentConnectorV1 {
 
 	protected static final String KEY_PARTS_SEPARATOR = "::";
 
@@ -24,7 +24,7 @@ public class TransferAgentConnectorImplV2 implements TransferAgentConnector {
 
 	public void start(BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		this.serviceRegistration = bundleContext.registerService(TransferAgentConnector.class, this, props);
+		this.serviceRegistration = bundleContext.registerService(TransferAgentConnectorV1.class, this, props);
 	}
 
 	public void stop(BundleContext bundleContext) {

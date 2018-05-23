@@ -7,9 +7,9 @@ import org.orbit.component.connector.tier3.nodecontrol.NodeControlClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.osgi.framework.ServiceRegistration;
 
-import other.orbit.component.api.tier3.nodecontrol.TransferAgentConnector;
+import other.orbit.component.api.tier3.nodecontrol.TransferAgentConnectorV1;
 
-public class TransferAgentConnectorImplV3 extends ServiceConnector<NodeControlClient> implements TransferAgentConnector {
+public class TransferAgentConnectorImplV3 extends ServiceConnector<NodeControlClient> implements TransferAgentConnectorV1 {
 
 	protected ServiceRegistration<?> serviceRegistration2;
 

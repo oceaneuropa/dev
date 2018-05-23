@@ -10,7 +10,7 @@ import org.orbit.component.connector.tier1.auth.AuthImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
-import other.orbit.component.api.tier1.auth.AuthConnector;
+import other.orbit.component.api.tier1.auth.AuthConnectorV0;
 import other.orbit.component.api.tier1.auth.AuthConnectorV1;
 
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
@@ -22,7 +22,7 @@ public class AuthConnectorLoadBalanceImpl extends IndexBasedLoadBalancedServiceC
 	 * @param indexService
 	 */
 	public AuthConnectorLoadBalanceImpl(IndexService indexService) {
-		super(indexService, AuthConnector.class);
+		super(indexService, AuthConnectorV0.class);
 	}
 
 	@Override

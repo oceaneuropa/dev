@@ -1,9 +1,7 @@
 package org.orbit.platform.runtime.util;
 
-import org.orbit.platform.sdk.IPlatformContext;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.Parameter;
-import org.origin.common.extensions.condition.ICondition;
 import org.origin.common.extensions.core.IExtension;
 
 public class ProgramExtensionHelper {

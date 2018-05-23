@@ -10,7 +10,6 @@ package org.orbit.platform.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.platform.runtime.cli.PlatformCommand;
 import org.orbit.platform.runtime.core.Platform;
 import org.orbit.platform.runtime.core.PlatformImpl;
 import org.orbit.platform.runtime.core.ws.PlatformAdapter;
@@ -34,7 +33,6 @@ public class Activator extends AbstractBundleActivator {
 	protected PlatformTracker platformTracker;
 	protected PlatformAdapter platformAdapter;
 	protected PlatformImpl platform;
-	protected PlatformCommand command;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -59,10 +57,6 @@ public class Activator extends AbstractBundleActivator {
 		this.platform = new PlatformImpl();
 		this.platform.start(bundleContext);
 
-		// Start server CLI
-		this.command = new PlatformCommand();
-		this.command.start(bundleContext);
-
 		Extensions.INSTANCE.start(bundleContext);
 	}
 
@@ -71,12 +65,6 @@ public class Activator extends AbstractBundleActivator {
 		LOG.info("stop()");
 
 		Extensions.INSTANCE.stop(bundleContext);
-
-		// Stop server CLI
-		if (this.command != null) {
-			this.command.stop(bundleContext);
-			this.command = null;
-		}
 
 		// Stop Platform impl
 		this.platform.stop(bundleContext);
@@ -105,3 +93,15 @@ public class Activator extends AbstractBundleActivator {
 }
 
 // SetupUtil.loadNodeConfigIniProperties(bundleContext, indexProviderProps);
+
+// protected PlatformCommand command;
+
+// Start server CLI
+// this.command = new PlatformCommand();
+// this.command.start(bundleContext);
+
+// Stop server CLI
+// if (this.command != null) {
+// this.command.stop(bundleContext);
+// this.command = null;
+// }

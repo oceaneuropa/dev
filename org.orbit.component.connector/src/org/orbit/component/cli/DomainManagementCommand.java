@@ -17,6 +17,7 @@ import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.NodeConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.connector.tier3.domainmanagement.ResponseConverter;
+import org.orbit.platform.sdk.command.ICommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Request;
@@ -27,7 +28,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DomainManagementCommand implements Annotated {
+public class DomainManagementCommand implements Annotated, ICommandActivator {
+
+	public static final String ID = "org.orbit.component.cli.DomainManagementCommand";
 
 	protected static Logger LOG = LoggerFactory.getLogger(DomainManagementCommand.class);
 
@@ -42,20 +45,13 @@ public class DomainManagementCommand implements Annotated {
 	protected Map<Object, Object> properties;
 	protected String scheme = "orbit";
 
-	/**
-	 * 
-	 * @param bundleContext
-	 */
-	public DomainManagementCommand(BundleContext bundleContext) {
-		this.bundleContext = bundleContext;
-	}
-
 	protected String getScheme() {
 		return this.scheme;
 	}
 
-	public void start() {
+	public void start(BundleContext bundleContext) {
 		LOG.info("start()");
+		this.bundleContext = bundleContext;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
@@ -78,10 +74,12 @@ public class DomainManagementCommand implements Annotated {
 		OSGiServiceUtil.register(this.bundleContext, DomainManagementCommand.class.getName(), this, props);
 	}
 
-	public void stop() {
+	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
 		OSGiServiceUtil.unregister(DomainManagementCommand.class.getName(), this);
+
+		this.bundleContext = null;
 	}
 
 	protected DomainManagementClient getDomainManagementCLient() {

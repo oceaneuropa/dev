@@ -7,6 +7,9 @@
  *******************************************************************************/
 package org.orbit.component.runtime;
 
+import org.orbit.component.runtime.cli.DomainManagementCommand;
+import org.orbit.component.runtime.cli.NodeControlCommand;
+import org.orbit.component.runtime.cli.ServicesCommand;
 import org.orbit.component.runtime.extension.appstore.AppStoreRelayActivator;
 import org.orbit.component.runtime.extension.appstore.AppStoreRelayPropertyTester;
 import org.orbit.component.runtime.extension.appstore.AppStoreServiceActivator;
@@ -35,18 +38,23 @@ import org.orbit.component.runtime.extension.userregistry.UserRegistryRelayActiv
 import org.orbit.component.runtime.extension.userregistry.UserRegistryRelayPropertyTester;
 import org.orbit.component.runtime.extension.userregistry.UserRegistryServiceActivator;
 import org.orbit.component.runtime.extension.userregistry.UserRegistryServicePropertyTester;
-import org.orbit.platform.sdk.spi.ServiceActivator;
+import org.orbit.platform.sdk.ServiceActivator;
+import org.orbit.platform.sdk.command.ICommandActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
 import org.origin.common.extensions.condition.ConditionFactory;
 import org.origin.common.extensions.condition.IPropertyTester;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Component extensions
  * 
  */
 public class Extensions extends ProgramExtensions {
+
+	protected static Logger LOG = LoggerFactory.getLogger(Extensions.class);
 
 	public static Extensions INSTANCE = new Extensions();
 
@@ -56,10 +64,15 @@ public class Extensions extends ProgramExtensions {
 
 	@Override
 	public void createExtensions() {
+		LOG.debug("createExtensions()");
+
 		createServiceActivatorExtensions1();
 		createServiceActivatorExtensions2();
+
 		createPropertyTesterExtensions1();
 		createPropertyTesterExtensions2();
+
+		createCommandExtensions();
 	}
 
 	protected void createServiceActivatorExtensions1() {
@@ -248,6 +261,28 @@ public class Extensions extends ProgramExtensions {
 		Extension extension7 = new Extension(typeId, MissionControlRelayPropertyTester.ID);
 		extension7.addInterface(IPropertyTester.class, MissionControlRelayPropertyTester.class);
 		addExtension(extension7);
+	}
+
+	protected void createCommandExtensions() {
+		String typeId = ICommandActivator.TYPE_ID;
+
+		// Services command
+		Extension extension1 = new Extension(typeId, ServicesCommand.ID, "Services Command", "Services command description");
+		InterfaceDescription desc1 = new InterfaceDescription(ICommandActivator.class, ServicesCommand.class);
+		extension1.addInterface(desc1);
+		addExtension(extension1);
+
+		// Domain Management command
+		Extension extension2 = new Extension(typeId, DomainManagementCommand.ID, "Domain Management Command", "Domain Management command description");
+		InterfaceDescription desc2 = new InterfaceDescription(ICommandActivator.class, DomainManagementCommand.class);
+		extension2.addInterface(desc2);
+		addExtension(extension2);
+
+		// Node Control command
+		Extension extension3 = new Extension(typeId, NodeControlCommand.ID, "Node Control Command", "Node Control command description");
+		InterfaceDescription desc3 = new InterfaceDescription(ICommandActivator.class, NodeControlCommand.class);
+		extension3.addInterface(desc3);
+		addExtension(extension3);
 	}
 
 }

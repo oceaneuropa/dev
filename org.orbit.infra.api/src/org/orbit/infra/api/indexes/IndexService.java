@@ -20,14 +20,20 @@ public interface IndexService extends ProxyService, IAdaptable {
 
 	Map<String, Object> getProperties();
 
-	// void update(Map<Object, Object> properties);
-
 	/**
 	 * Ping the index service. Use integer as return value to allow more status of the server.
 	 * 
 	 * @return result larger than 0 means service is available. result equals or smaller than 0 means service is not available.
 	 */
 	boolean ping();
+
+	/**
+	 * 
+	 * @param message
+	 * @return
+	 * @throws IOException
+	 */
+	String echo(String message) throws IOException;
 
 	/**
 	 * Execute an action with optional parameters.
@@ -44,7 +50,7 @@ public interface IndexService extends ProxyService, IAdaptable {
 	 * 
 	 * @return
 	 */
-	List<IndexItem> getIndexItems() throws IOException;
+	// List<IndexItem> getIndexItems() throws IOException;
 
 	/**
 	 * Get all index items created by specified indexer provider.
@@ -87,6 +93,8 @@ public interface IndexService extends ProxyService, IAdaptable {
 	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
 
 }
+
+// void update(Map<Object, Object> properties);
 
 /// **
 // * Whether whether an index item exists.

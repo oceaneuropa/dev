@@ -1,5 +1,6 @@
 package org.orbit.infra.runtime;
 
+import org.orbit.infra.runtime.cli.InfraCommand;
 import org.orbit.infra.runtime.extensions.channelservice.ChannelServiceActivator;
 import org.orbit.infra.runtime.extensions.channelservice.ChannelServicePropertyTester;
 import org.orbit.infra.runtime.extensions.channelservice.ChannelServiceRelayActivator;
@@ -8,7 +9,8 @@ import org.orbit.infra.runtime.extensions.indexservice.IndexServiceActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServicePropertyTester;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayPropertyTester;
-import org.orbit.platform.sdk.spi.ServiceActivator;
+import org.orbit.platform.sdk.ServiceActivator;
+import org.orbit.platform.sdk.command.ICommandActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.Parameter;
@@ -38,8 +40,11 @@ public class Extensions extends ProgramExtensions {
 
 		createServiceActivatorExtensions1();
 		createServiceActivatorExtensions2();
+
 		createPropertyTesterExtensions1();
 		createPropertyTesterExtensions2();
+
+		createCommandExtensions();
 	}
 
 	protected void createServiceActivatorExtensions1() {
@@ -129,6 +134,16 @@ public class Extensions extends ProgramExtensions {
 		InterfaceDescription desc4 = new InterfaceDescription(IPropertyTester.class, ChannelServiceRelayPropertyTester.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);
+	}
+
+	protected void createCommandExtensions() {
+		String typeId = ICommandActivator.TYPE_ID;
+
+		// Infra server side command
+		Extension extension1 = new Extension(typeId, InfraCommand.ID, "Infra server side command", "Infra server side command description");
+		InterfaceDescription desc1 = new InterfaceDescription(ICommandActivator.class, InfraCommand.class);
+		extension1.addInterface(desc1);
+		addExtension(extension1);
 	}
 
 }

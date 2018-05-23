@@ -10,18 +10,18 @@ import org.orbit.component.connector.tier2.appstore.AppStoreImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
-import other.orbit.component.api.tier2.appstore.AppStoreConnector;
+import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
 
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class AppStoreConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<AppStore> implements AppStoreConnector {
+public class AppStoreConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<AppStore> implements AppStoreConnectorV1 {
 
 	/**
 	 * 
 	 * @param indexService
 	 */
 	public AppStoreConnectorImplV1(IndexService indexService) {
-		super(indexService, AppStoreConnector.class);
+		super(indexService, AppStoreConnectorV1.class);
 	}
 
 	@Override

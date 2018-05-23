@@ -50,9 +50,14 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public List<IndexItem> getIndexItems() throws IOException {
-			return next().getIndexItems();
+		public String echo(String message) throws IOException {
+			return next().echo(message);
 		}
+
+		// @Override
+		// public List<IndexItem> getIndexItems() throws IOException {
+		// return next().getIndexItems();
+		// }
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
@@ -147,9 +152,14 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public List<IndexItem> getIndexItems() throws IOException {
+		public String echo(String message) {
 			throw new UnsupportedOperationException();
 		}
+
+		// @Override
+		// public List<IndexItem> getIndexItems() throws IOException {
+		// throw new UnsupportedOperationException();
+		// }
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {

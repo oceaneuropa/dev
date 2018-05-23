@@ -10,18 +10,18 @@ import org.orbit.component.connector.tier3.domainmanagement.DomainManagementClie
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
-import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnector;
+import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
 
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<DomainManagementClient> implements DomainServiceConnector {
+public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<DomainManagementClient> implements DomainServiceConnectorV1 {
 
 	/**
 	 * 
 	 * @param indexService
 	 */
 	public DomainServiceConnectorImplV1(IndexService indexService) {
-		super(indexService, DomainServiceConnector.class);
+		super(indexService, DomainServiceConnectorV1.class);
 	}
 
 	@Override

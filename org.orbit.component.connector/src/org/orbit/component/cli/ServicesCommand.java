@@ -18,6 +18,7 @@ import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.platform.sdk.command.ICommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -33,12 +34,14 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import other.orbit.component.api.tier1.account.UserRegistryConnector;
-import other.orbit.component.api.tier1.auth.AuthConnector;
-import other.orbit.component.api.tier2.appstore.AppStoreConnector;
-import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnector;
+import other.orbit.component.api.tier1.account.UserRegistryConnectorV1;
+import other.orbit.component.api.tier1.auth.AuthConnectorV0;
+import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
+import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
 
-public class ServicesCommand implements Annotated {
+public class ServicesCommand implements Annotated, ICommandActivator {
+
+	public static final String ID = "org.orbit.component.cli.ServicesCommand";
 
 	protected static Logger LOG = LoggerFactory.getLogger(ServicesCommand.class);
 
@@ -61,13 +64,13 @@ public class ServicesCommand implements Annotated {
 	protected Map<Object, Object> properties;
 
 	@Dependency
-	protected UserRegistryConnector userRegistryConnector;
+	protected UserRegistryConnectorV1 userRegistryConnector;
 	@Dependency
-	protected AuthConnector authConnector;
+	protected AuthConnectorV0 authConnector;
 	@Dependency
-	protected AppStoreConnector appStoreConnector;
+	protected AppStoreConnectorV1 appStoreConnector;
 	@Dependency
-	protected DomainServiceConnector domainServiceConnector;
+	protected DomainServiceConnectorV1 domainServiceConnector;
 
 	protected String getScheme() {
 		return this.scheme;
@@ -128,7 +131,7 @@ public class ServicesCommand implements Annotated {
 	// lservices
 	// -----------------------------------------------------------------------------------------
 	@Descriptor("List services")
-	public void lservices(@Descriptor("The service to list") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) throws ClientException {
+	public void lservices(@Descriptor("The service to list") @Parameter(names = { "-s", "--service" }, absentValue = "") String service) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "lservices", new String[] { "-service", service });
 
 		if (USER_REGISTRY.equalsIgnoreCase(service)) {

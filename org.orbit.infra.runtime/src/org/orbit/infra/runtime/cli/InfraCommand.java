@@ -13,6 +13,7 @@ import org.orbit.infra.runtime.InfraServices;
 import org.orbit.infra.runtime.channel.service.ChannelServiceImpl;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
+import org.orbit.platform.sdk.command.ICommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
@@ -20,7 +21,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InfraCommand {
+public class InfraCommand implements ICommandActivator {
+
+	public static final String ID = "org.orbit.infra.runtime.InfraCommand";
 
 	protected static String[] INDEX_ITEM_COLUMNS = new String[] { "Id", "Type", "Name", "Last Upate Time", "Properties" };
 

@@ -26,9 +26,9 @@ import org.orbit.platform.runtime.util.ProgramExtensionHelper;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.IProcessManager;
-import org.orbit.platform.sdk.spi.ServiceActivator;
-import org.orbit.platform.sdk.spi.ServiceActivatorHelper;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.platform.sdk.util.IProcessFilter;
+import org.orbit.platform.sdk.util.ServiceActivatorHelper;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.util.ExtensionListener;
@@ -120,32 +120,36 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 
 		// Autostart process of the extension
 		boolean isAutoStart = false;
+		final ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
 		InterfaceDescription desc = extension.getInterfaceDescription(ServiceActivator.class);
-		if (desc != null) {
+		if (serviceActivator != null && desc != null) {
 			IPlatformContext context = createContext();
 			isAutoStart = ServiceActivatorHelper.INSTANCE.isServiceActivatorAutoStart(context, desc);
-		}
-		if (isAutoStart) {
-			final ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
-			if (serviceActivator != null) {
-				boolean sync = false;
-				Callable<ProcessHandler> callable = new Callable<ProcessHandler>() {
-					@Override
-					public ProcessHandler call() throws Exception {
-						return doCreateProcess(extension, serviceActivator, null);
-					}
-				};
-				Future<?> future = this.executor.submit(callable);
-				if (sync) {
-					try {
-						future.get();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-						future.cancel(true);
 
-					} catch (ExecutionException e) {
-						e.printStackTrace();
-					}
+			if (isAutoStart) {
+				// boolean sync = false;
+				// Callable<ProcessHandler> callable = new Callable<ProcessHandler>() {
+				// @Override
+				// public ProcessHandler call() throws Exception {
+				// return createProcess(extension, serviceActivator, null);
+				// }
+				// };
+				// Future<?> future = this.executor.submit(callable);
+				// if (sync) {
+				// try {
+				// future.get();
+				// } catch (InterruptedException e) {
+				// e.printStackTrace();
+				// future.cancel(true);
+				//
+				// } catch (ExecutionException e) {
+				// e.printStackTrace();
+				// }
+				// }
+				try {
+					createProcess(extension, serviceActivator, null);
+				} catch (ProcessException e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -202,14 +206,14 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 	 * @throws ProcessException
 	 */
 	public int createProcess(final IExtension extension, final Map<Object, Object> properties) throws ProcessException {
-		ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
-		if (serviceActivator == null) {
+		ServiceActivator activator = extension.getInterface(ServiceActivator.class);
+		if (activator == null) {
 			// Do not start process if ServiceActivator is not available.
 			throw new ProcessException("ServiceActivator is not available from the extension.");
 		}
 
 		ProcessHandler processHandler = null;
-		if (ProgramExtensionHelper.INSTANCE.isSingleton(extension, serviceActivator)) {
+		if (ProgramExtensionHelper.INSTANCE.isSingleton(extension, activator)) {
 			// Do not start if process already exists for the extension
 			ProcessHandlerFilterForProgramExtension filter = new ProcessHandlerFilterForProgramExtension(extension);
 			ProcessHandler[] processHandlers = getProcessHandlers(filter);
@@ -223,7 +227,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 			Callable<ProcessHandler> callable = new Callable<ProcessHandler>() {
 				@Override
 				public ProcessHandler call() throws Exception {
-					return doCreateProcess(extension, serviceActivator, properties);
+					return createProcess(extension, activator, properties);
 				}
 			};
 			Future<ProcessHandler> future = this.executor.submit(callable);
@@ -257,7 +261,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 	 * @return
 	 * @throws ProcessException
 	 */
-	protected ProcessHandler doCreateProcess(IExtension extension, ServiceActivator serviceActivator, Map<Object, Object> properties) throws ProcessException {
+	public ProcessHandler createProcess(IExtension extension, ServiceActivator serviceActivator, Map<Object, Object> properties) throws ProcessException {
 		this.processesLock.writeLock().lock();
 		try {
 			int pid = getNextPID();
@@ -270,7 +274,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 			process.adapt(IExtension.class, extension);
 			process.adapt(IPlatformContext.class, context);
 
-			ProcessHandlerImpl processHandler = new ProcessHandlerImpl(this, extension, context, process);
+			ProcessHandlerForServiceActivator processHandler = new ProcessHandlerForServiceActivator(this, extension, context, process);
 			processHandler.start();
 
 			this.processHandlers.add(processHandler);
@@ -444,8 +448,8 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 		try {
 			ProcessHandler processHandler = getProcessHandler(pid);
 			if (processHandler != null) {
-				if (((ProcessHandlerImpl) processHandler).canStop()) {
-					((ProcessHandlerImpl) processHandler).stop();
+				if (((ProcessHandlerForServiceActivator) processHandler).canStop()) {
+					((ProcessHandlerForServiceActivator) processHandler).stop();
 				}
 
 				boolean doRemoveProcessHandler = false;

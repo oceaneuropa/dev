@@ -7,11 +7,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.indexes.other.IndexProviderConnectorV1;
-import org.orbit.infra.api.indexes.other.IndexServiceConnectorV1;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalanceResourceImpl;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
+
+import other.orbit.infra.api.indexes.IndexProviderConnectorV1;
+import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
 
 public class IndexServiceUtil {
 

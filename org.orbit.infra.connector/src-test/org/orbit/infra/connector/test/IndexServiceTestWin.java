@@ -35,11 +35,11 @@ public class IndexServiceTestWin {
 	public void test001_getIndexItems() {
 		System.out.println("--- --- --- getIndexItems() --- --- ---");
 		try {
-			List<IndexItem> indexItems = indexService.getIndexItems();
-			for (IndexItem indexItem : indexItems) {
-				System.out.println(indexItem.toString());
-			}
-		} catch (IOException e) {
+			// List<IndexItem> indexItems = indexService.getIndexItems();
+			// for (IndexItem indexItem : indexItems) {
+			// System.out.println(indexItem.toString());
+			// }
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println();

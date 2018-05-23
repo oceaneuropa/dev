@@ -9,11 +9,12 @@ import org.orbit.component.cli.DomainManagementCommand;
 import org.orbit.component.cli.NodeControlCommand;
 import org.orbit.component.cli.ServicesCommand;
 import org.orbit.component.cli.UserRegistryCommand;
-import org.orbit.infra.api.indexes.other.IndexServiceConnectorAdapterV1;
-import org.orbit.infra.api.indexes.other.IndexServiceConnectorV1;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+
+import other.orbit.infra.api.indexes.IndexServiceConnectorAdapterV1;
+import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
 
 public class ActivatorV1 implements BundleActivator {
 
@@ -75,11 +76,11 @@ public class ActivatorV1 implements BundleActivator {
 		this.userRegistryCommand = new UserRegistryCommand();
 		this.userRegistryCommand.start(bundleContext);
 
-		this.appStoreCommand = new AppStoreCommand(bundleContext);
-		this.appStoreCommand.start();
+		this.appStoreCommand = new AppStoreCommand();
+		this.appStoreCommand.start(bundleContext);
 
-		this.domainMgmtCommand = new DomainManagementCommand(bundleContext);
-		this.domainMgmtCommand.start();
+		this.domainMgmtCommand = new DomainManagementCommand();
+		this.domainMgmtCommand.start(bundleContext);
 
 		this.nodeControlCommand = new NodeControlCommand();
 		this.nodeControlCommand.start(bundleContext);
@@ -103,12 +104,12 @@ public class ActivatorV1 implements BundleActivator {
 		}
 
 		if (this.appStoreCommand != null) {
-			this.appStoreCommand.stop();
+			this.appStoreCommand.stop(bundleContext);
 			this.appStoreCommand = null;
 		}
 
 		if (this.domainMgmtCommand != null) {
-			this.domainMgmtCommand.stop();
+			this.domainMgmtCommand.stop(bundleContext);
 			this.domainMgmtCommand = null;
 		}
 

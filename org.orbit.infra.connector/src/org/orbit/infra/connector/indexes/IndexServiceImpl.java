@@ -115,9 +115,18 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 	}
 
 	@Override
-	public List<IndexItem> getIndexItems() throws IOException {
-		return doGetIndexItems(null, null);
+	public String echo(String message) throws IOException {
+		try {
+			return this.client.echo(message);
+		} catch (ClientException e) {
+			throw new IOException(e);
+		}
 	}
+
+	// @Override
+	// public List<IndexItem> getIndexItems() throws IOException {
+	// return doGetIndexItems(null, null);
+	// }
 
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {

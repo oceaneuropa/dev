@@ -21,7 +21,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import other.orbit.component.api.tier1.account.UserRegistryConnector;
+import other.orbit.component.api.tier1.account.UserRegistryConnectorV1;
 
 public class UserRegistryCommandV1 implements Annotated {
 
@@ -30,7 +30,7 @@ public class UserRegistryCommandV1 implements Annotated {
 	protected static String[] USER_ACCOUNT_COLUMNS = new String[] { "User Id", "Email", "Password", "First Name", "Last Name", "Phone", "Activated", "Creation Time", "Last Update Time" };
 
 	@Dependency
-	protected UserRegistryConnector connector;
+	protected UserRegistryConnectorV1 connector;
 
 	protected String getScheme() {
 		return "orbit";

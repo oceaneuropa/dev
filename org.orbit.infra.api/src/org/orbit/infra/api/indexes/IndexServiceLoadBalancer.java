@@ -47,20 +47,20 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 			return next().getProperties();
 		}
 
-		// @Override
-		// public void update(Map<Object, Object> properties) {
-		// getNextIndexService().update(properties);
-		// }
-
 		@Override
 		public boolean ping() {
 			return next().ping();
 		}
 
 		@Override
-		public List<IndexItem> getIndexItems() throws IOException {
-			return next().getIndexItems();
+		public String echo(String message) throws IOException {
+			return next().echo(message);
 		}
+
+		// @Override
+		// public List<IndexItem> getIndexItems() throws IOException {
+		// return next().getIndexItems();
+		// }
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
@@ -124,20 +124,20 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 			throw new UnsupportedOperationException();
 		}
 
-		// @Override
-		// public void update(Map<Object, Object> properties) {
-		// throw new UnsupportedOperationException();
-		// }
-
 		@Override
 		public boolean ping() {
 			throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public List<IndexItem> getIndexItems() throws IOException {
+		public String echo(String message) {
 			throw new UnsupportedOperationException();
 		}
+
+		// @Override
+		// public List<IndexItem> getIndexItems() throws IOException {
+		// throw new UnsupportedOperationException();
+		// }
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
@@ -189,6 +189,16 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 
 // public static final String INDEX_SERVICE_INDEXER_ID = "component_.index_service.indexer";
 // protected ThreadPoolTimer indexServicesMonitor;
+
+// @Override
+// public void update(Map<Object, Object> properties) {
+// throw new UnsupportedOperationException();
+// }
+
+// @Override
+// public void update(Map<Object, Object> properties) {
+// getNextIndexService().update(properties);
+// }
 
 // @Override
 // public void start() {

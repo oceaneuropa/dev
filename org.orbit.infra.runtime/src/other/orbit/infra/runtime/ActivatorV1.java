@@ -5,8 +5,6 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.infra.api.indexes.IndexServiceUtil;
-import org.orbit.infra.api.indexes.other.IndexProviderConnectorAdapterV1;
-import org.orbit.infra.api.indexes.other.IndexProviderConnectorV1;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.orbit.infra.runtime.cli.InfraCommand;
@@ -18,6 +16,8 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import other.orbit.infra.api.indexes.IndexProviderConnectorAdapterV1;
+import other.orbit.infra.api.indexes.IndexProviderConnectorV1;
 import other.orbit.infra.runtime.channel.ws.ChannelServiceAdapterV1;
 
 public class ActivatorV1 implements BundleActivator {

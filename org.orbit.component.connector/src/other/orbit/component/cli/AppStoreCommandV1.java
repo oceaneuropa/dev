@@ -19,14 +19,14 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.Printer;
 import org.osgi.framework.BundleContext;
 
-import other.orbit.component.api.tier2.appstore.AppStoreConnector;
+import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
 
 public class AppStoreCommandV1 implements Annotated {
 
 	protected BundleContext bundleContext;
 
 	@Dependency
-	protected AppStoreConnector appStoreConnector;
+	protected AppStoreConnectorV1 appStoreConnector;
 
 	/**
 	 * 

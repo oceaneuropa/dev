@@ -24,7 +24,7 @@ import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.manifest.ProgramManifest;
 import org.orbit.platform.runtime.util.CommonModelHelper;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.spi.WSRelayControl;
+import org.orbit.platform.sdk.relaycontrol.WSRelayControl;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
 import org.origin.common.annotation.DependencyUnfullfilled;

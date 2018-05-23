@@ -3,9 +3,12 @@ package org.orbit.component.connector.tier1.config;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.config.ConfigRegistry;
+import org.orbit.platform.sdk.connector.IConnectorActivator;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class ConfigRegistryConnector extends ServiceConnector<ConfigRegistry> {
+public class ConfigRegistryConnector extends ServiceConnector<ConfigRegistry> implements IConnectorActivator {
+
+	public static final String ID = "org.orbit.component.connector.ConfigRegistryConnector";
 
 	public ConfigRegistryConnector() {
 		super(ConfigRegistry.class);

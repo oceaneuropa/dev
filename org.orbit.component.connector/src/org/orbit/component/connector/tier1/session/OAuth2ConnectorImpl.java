@@ -9,18 +9,18 @@ import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
-import other.orbit.component.api.tier1.session.OAuth2Connector;
+import other.orbit.component.api.tier1.session.OAuth2ConnectorV1;
 
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<OAuth2> implements OAuth2Connector {
+public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<OAuth2> implements OAuth2ConnectorV1 {
 
 	/**
 	 * 
 	 * @param indexService
 	 */
 	public OAuth2ConnectorImpl(IndexService indexService) {
-		super(indexService, OAuth2Connector.class);
+		super(indexService, OAuth2ConnectorV1.class);
 	}
 
 	@Override

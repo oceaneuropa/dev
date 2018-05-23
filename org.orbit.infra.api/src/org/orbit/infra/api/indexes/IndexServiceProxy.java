@@ -73,14 +73,19 @@ public class IndexServiceProxy implements IndexService {
 	}
 
 	@Override
+	public String echo(String message) throws IOException {
+		return resolve().echo(message);
+	}
+
+	@Override
 	public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
 		return resolve().sendCommand(action, params);
 	}
 
-	@Override
-	public List<IndexItem> getIndexItems() throws IOException {
-		return resolve().getIndexItems();
-	}
+	// @Override
+	// public List<IndexItem> getIndexItems() throws IOException {
+	// return resolve().getIndexItems();
+	// }
 
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
@@ -145,9 +150,14 @@ public class IndexServiceProxy implements IndexService {
 		}
 
 		@Override
-		public List<IndexItem> getIndexItems() throws IOException {
+		public String echo(String message) {
 			return null;
 		}
+
+		// @Override
+		// public List<IndexItem> getIndexItems() throws IOException {
+		// return null;
+		// }
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {

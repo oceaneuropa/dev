@@ -7,12 +7,14 @@
  *******************************************************************************/
 package org.orbit.sprit.runtime.gaia;
 
-import org.orbit.platform.sdk.spi.ServiceActivator;
+import org.orbit.platform.sdk.ServiceActivator;
 import org.orbit.sprit.runtime.gaia.extensions.GAIAServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.Parameter;
 import org.origin.common.extensions.ProgramExtensions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Spirit extensions
@@ -20,10 +22,18 @@ import org.origin.common.extensions.ProgramExtensions;
  */
 public class Extensions extends ProgramExtensions {
 
+	protected static Logger LOG = LoggerFactory.getLogger(Extensions.class);
+
 	public static Extensions INSTANCE = new Extensions();
+
+	public Extensions() {
+		setBundleId("org.orbit.spirit.runtime");
+	}
 
 	@Override
 	public void createExtensions() {
+		LOG.debug("createExtensions()");
+
 		createServiceActivatorExtensions();
 	}
 

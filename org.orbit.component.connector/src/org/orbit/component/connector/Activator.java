@@ -1,10 +1,13 @@
 package org.orbit.component.connector;
 
-import org.orbit.component.cli.OrbitCLI;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
+
+	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
 
 	protected static BundleContext context;
 	protected static Activator instance;
@@ -19,20 +22,30 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
+		LOG.debug("start()");
+
 		Activator.context = bundleContext;
 		Activator.instance = this;
 
-		OrbitConnectors.getInstance().start(bundleContext);
-		OrbitCLI.getInstance().start(bundleContext);
+		// Register extensions
+		Extensions.INSTANCE.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		OrbitCLI.getInstance().stop(bundleContext);
-		OrbitConnectors.getInstance().stop(bundleContext);
+		LOG.debug("stop()");
+
+		// Unregister extensions
+		Extensions.INSTANCE.stop(bundleContext);
 
 		Activator.instance = null;
 		Activator.context = null;
 	}
 
 }
+
+// OrbitConnectors.getInstance().start(bundleContext);
+// OrbitConnectors.getInstance().stop(bundleContext);
+
+// OrbitCLIV1.getInstance().start(bundleContext);
+// OrbitCLIV1.getInstance().stop(bundleContext);

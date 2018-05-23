@@ -9,9 +9,9 @@ import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.rest.client.ClientException;
 
-import other.orbit.component.api.tier1.account.UserRegistryConnector;
-import other.orbit.component.api.tier2.appstore.AppStoreConnector;
-import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnector;
+import other.orbit.component.api.tier1.account.UserRegistryConnectorV1;
+import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
+import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
 
 public class ServicesCommandHelper {
 
@@ -39,7 +39,7 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public AppStore getAppStore(AppStoreConnector connector) throws ClientException {
+	public AppStore getAppStore(AppStoreConnectorV1 connector) throws ClientException {
 		AppStore appStore = connector.getService();
 		if (appStore == null) {
 			System.err.println(getClass().getSimpleName() + ".getAppStore() appStore is not available.");
@@ -55,7 +55,7 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public DomainManagementClient getDomainService(DomainServiceConnector connector) throws ClientException {
+	public DomainManagementClient getDomainService(DomainServiceConnectorV1 connector) throws ClientException {
 		DomainManagementClient domainService = connector.getService();
 		if (domainService == null) {
 			System.err.println(getClass().getSimpleName() + ".getDomainService() domainService is not available.");
@@ -72,7 +72,7 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<LoadBalanceResource<UserRegistry>> getUserRegistryResources(UserRegistryConnector connector) throws ClientException {
+	public List<LoadBalanceResource<UserRegistry>> getUserRegistryResources(UserRegistryConnectorV1 connector) throws ClientException {
 		if (connector == null) {
 			System.out.println("UserRegistryConnector is not available.");
 			throw new ClientException(500, "UserRegistryConnector is not available.");
@@ -120,7 +120,7 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<LoadBalanceResource<AppStore>> getAppStoreResources(AppStoreConnector connector) throws ClientException {
+	public List<LoadBalanceResource<AppStore>> getAppStoreResources(AppStoreConnectorV1 connector) throws ClientException {
 		if (connector == null) {
 			System.out.println("AppStoreConnector is not available.");
 			throw new ClientException(500, "AppStoreConnector is not available.");
@@ -144,7 +144,7 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<LoadBalanceResource<DomainManagementClient>> getDomainServiceResources(DomainServiceConnector connector) throws ClientException {
+	public List<LoadBalanceResource<DomainManagementClient>> getDomainServiceResources(DomainServiceConnectorV1 connector) throws ClientException {
 		if (connector == null) {
 			System.out.println("DomainServiceConnector is not available.");
 			throw new ClientException(500, "DomainServiceConnector is not available.");

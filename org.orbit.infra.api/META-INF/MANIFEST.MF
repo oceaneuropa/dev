@@ -21,6 +21,6 @@ Import-Package: org.origin.common.adapter,
 Export-Package: org.orbit.infra.api;version="1.0.0",
  org.orbit.infra.api.channel;version="1.0.0",
  org.orbit.infra.api.indexes;version="1.0.0",
- org.orbit.infra.api.indexes.other;version="1.0.0"
+ other.orbit.infra.api.channel;version="1.0.0",
+ other.orbit.infra.api.indexes;version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,2.0.0)"

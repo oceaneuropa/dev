@@ -13,6 +13,7 @@ import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier4.mission.MissionControlClient;
 import org.orbit.component.connector.tier4.mission.MissionControlModelConverter;
 import org.orbit.component.model.tier4.mission.MissionRTO;
+import org.orbit.platform.sdk.command.ICommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.client.ServiceClientCommand;
@@ -24,7 +25,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MissionControlCommand extends ServiceClientCommand {
+public class MissionControlCommand extends ServiceClientCommand implements ICommandActivator {
+
+	public static final String ID = "org.orbit.component.cli.MissionControlCommand";
 
 	protected static Logger LOG = LoggerFactory.getLogger(NodeControlCommand.class);
 

@@ -22,8 +22,7 @@
 		init_target_folder, 
 		init_bin_folder,
 		init_configurations_folder,
-		init_plugins_folder,
-		init_system_folder
+		init_plugins_folder
 		">
 		<antcall target="print_completion_time" />
 	</target>
@@ -59,7 +58,6 @@
 		<mkdir dir="${target.dir}/downloads" />
 		<mkdir dir="${target.dir}/nodespaces" />
 		<mkdir dir="${target.dir}/plugins" />
-		<mkdir dir="${target.dir}/system" />
 
 		<check-dir-exists path="${target.dir}/apps" />
 		<check-dir-exists path="${target.dir}/bin" />
@@ -67,7 +65,6 @@
 		<check-dir-exists path="${target.dir}/downloads" />
 		<check-dir-exists path="${target.dir}/nodespaces" />
 		<check-dir-exists path="${target.dir}/plugins" />
-		<check-dir-exists path="${target.dir}/system" />
 	</target>
 
 	<!-- method to copy/paste files to ${target.dir}/bin folder -->
@@ -135,19 +132,22 @@
 		<copy todir="${target.dir}/plugins/log">
 			<fileset dir="${target.platform.dir}/log" includes="*.jar" />
 		</copy>
+		<copy todir="${target.dir}/plugins/system">
+			<fileset dir="${target.platform.dir}/system" includes="*.jar" />
+		</copy>
 		<copy todir="${target.dir}/plugins">
 			<fileset dir="${target.platform.dir}" includes="org.eclipse.osgi_*.jar" />
 		</copy>
 	</target>
 
 	<!-- method to copy/paste jar files to ${target.dir}/system folder -->
-	<target name="init_system_folder">
+	<!-- target name="init_system_folder">
 		<println message="init_system_folder()" />
 
 		<copy todir="${target.dir}/system">
 			<fileset dir="${target.platform.dir}/system" includes="**/*.jar" />
 		</copy>
-	</target>
+	</target -->
 
 	<!--
 		clean the build:
@@ -165,7 +165,6 @@
 		<delete dir="${target.dir}/downloads" />
 		<delete dir="${target.dir}/nodespaces" />
 		<delete dir="${target.dir}/plugins" />
-		<delete dir="${target.dir}/system" />
 
 		<check-dir-exists path="${target.dir}/apps" />
 		<check-dir-exists path="${target.dir}/bin" />
@@ -173,7 +172,6 @@
 		<check-dir-exists path="${target.dir}/downloads" />
 		<check-dir-exists path="${target.dir}/nodespaces" />
 		<check-dir-exists path="${target.dir}/plugins" />
-		<check-dir-exists path="${target.dir}/system" />
 	</target>
 
 </project>

@@ -11,13 +11,13 @@ import org.orbit.component.connector.tier3.domainmanagement.DomainManagementConn
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
 import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
 import org.orbit.infra.api.indexes.IndexServiceUtil;
-import org.orbit.infra.api.indexes.other.IndexServiceConnectorAdapterV1;
-import org.orbit.infra.api.indexes.other.IndexServiceConnectorV1;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import other.orbit.component.connector.tier1.account.UserRegistryManager;
+import other.orbit.infra.api.indexes.IndexServiceConnectorAdapterV1;
+import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
 
 public class ActivatorV1 implements BundleActivator {
 

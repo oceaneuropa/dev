@@ -23,7 +23,7 @@ import org.origin.common.util.DateUtil;
 import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
 
-import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnector;
+import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
 
 public class DomainServiceCommandV1 implements Annotated {
 
@@ -42,7 +42,7 @@ public class DomainServiceCommandV1 implements Annotated {
 	protected BundleContext bundleContext;
 
 	@Dependency
-	protected DomainServiceConnector domainServiceConnector;
+	protected DomainServiceConnectorV1 domainServiceConnector;
 
 	protected boolean debug = true;
 

@@ -11,12 +11,15 @@ import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabas
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementServiceImpl;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlServiceImpl;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
+import org.orbit.platform.sdk.command.ICommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServicesCommand {
+public class ServicesCommand implements ICommandActivator {
+
+	public static final String ID = "org.orbit.component.runtime.cli.ServicesCommand";
 
 	protected static Logger LOG = LoggerFactory.getLogger(ServicesCommand.class);
 

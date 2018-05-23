@@ -10,18 +10,18 @@ import org.orbit.component.connector.tier1.account.UserRegistryImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
-import other.orbit.component.api.tier1.account.UserRegistryConnector;
+import other.orbit.component.api.tier1.account.UserRegistryConnectorV1;
 
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class UserRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<UserRegistry> implements UserRegistryConnector {
+public class UserRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<UserRegistry> implements UserRegistryConnectorV1 {
 
 	/**
 	 * 
 	 * @param indexService
 	 */
 	public UserRegistryConnectorImplV1(IndexService indexService) {
-		super(indexService, UserRegistryConnector.class);
+		super(indexService, UserRegistryConnectorV1.class);
 	}
 
 	@Override

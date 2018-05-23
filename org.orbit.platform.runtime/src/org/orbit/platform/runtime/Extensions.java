@@ -1,15 +1,19 @@
 package org.orbit.platform.runtime;
 
-import org.orbit.platform.runtime.extension.PlatformNodePreConfigurator;
-import org.orbit.platform.runtime.extension.PlatformNodePreConfiguratorPropertyTester;
+import org.orbit.platform.runtime.extensions.PlatformNodePreConfigurator;
+import org.orbit.platform.runtime.extensions.PlatformNodePreConfiguratorPropertyTester;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
 import org.origin.common.extensions.condition.ConditionFactory;
 import org.origin.common.extensions.condition.IPropertyTester;
 import org.origin.common.resources.extension.ResourceConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Extensions extends ProgramExtensions {
+
+	protected static Logger LOG = LoggerFactory.getLogger(Extensions.class);
 
 	public static Extensions INSTANCE = new Extensions();
 
@@ -19,6 +23,8 @@ public class Extensions extends ProgramExtensions {
 
 	@Override
 	public void createExtensions() {
+		LOG.debug("createExtensions()");
+
 		createFolderConfiguratorExtensions();
 		createPropertyTesterExtensions();
 	}

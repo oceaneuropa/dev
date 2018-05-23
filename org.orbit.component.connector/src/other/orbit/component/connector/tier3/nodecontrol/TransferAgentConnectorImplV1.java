@@ -5,9 +5,9 @@ import java.util.Map;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.origin.common.rest.client.ServiceConnector;
 
-import other.orbit.component.api.tier3.nodecontrol.TransferAgentConnector;
+import other.orbit.component.api.tier3.nodecontrol.TransferAgentConnectorV1;
 
-public class TransferAgentConnectorImplV1 extends ServiceConnector<NodeControlClient> implements TransferAgentConnector {
+public class TransferAgentConnectorImplV1 extends ServiceConnector<NodeControlClient> implements TransferAgentConnectorV1 {
 
 	public TransferAgentConnectorImplV1() {
 		super((Class<NodeControlClient>) null);
