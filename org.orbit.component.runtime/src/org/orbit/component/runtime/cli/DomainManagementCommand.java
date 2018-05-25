@@ -12,7 +12,7 @@ import org.orbit.component.model.tier3.domain.MachineConfigRTO;
 import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -23,7 +23,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DomainManagementCommand implements Annotated, ICommandActivator {
+public class DomainManagementCommand implements Annotated, CommandActivator {
 
 	public static final String ID = "org.orbit.component.runtime.cli.DomainManagementCommand";
 

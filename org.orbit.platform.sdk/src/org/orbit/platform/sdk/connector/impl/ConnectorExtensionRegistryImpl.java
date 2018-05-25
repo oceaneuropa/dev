@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.platform.sdk.Activator;
 import org.orbit.platform.sdk.connector.ConnectorDescriptor;
 import org.orbit.platform.sdk.connector.ConnectorExtensionRegistry;
-import org.orbit.platform.sdk.connector.IConnectorActivator;
+import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.util.ExtensionListener;
 import org.origin.common.extensions.util.ExtensionTracker;
@@ -71,7 +71,7 @@ public class ConnectorExtensionRegistryImpl implements ConnectorExtensionRegistr
 			String id = itor.next();
 			ConnectorDescriptor descriptor = this.idToDescriptorMap.get(id);
 			if (descriptor != null) {
-				IConnectorActivator connectorActivator = descriptor.getConnector();
+				ConnectorActivator connectorActivator = descriptor.getConnector();
 				if (connectorActivator != null) {
 					BundleContext bundleContext = Activator.getInstance().getBundleContext(connectorActivator);
 					connectorActivator.stop(bundleContext);
@@ -90,13 +90,13 @@ public class ConnectorExtensionRegistryImpl implements ConnectorExtensionRegistr
 
 		String typeId = extension.getTypeId();
 		String id = extension.getId();
-		if (IConnectorActivator.TYPE_ID.equals(typeId)) {
+		if (ConnectorActivator.TYPE_ID.equals(typeId)) {
 			ConnectorDescriptor descriptor = this.idToDescriptorMap.get(id);
 			if (descriptor == null) {
 				descriptor = new ConnectorDescriptorImpl(extension);
 				this.idToDescriptorMap.put(id, descriptor);
 
-				IConnectorActivator connectorActivator = descriptor.getConnector();
+				ConnectorActivator connectorActivator = descriptor.getConnector();
 				if (connectorActivator != null) {
 					BundleContext bundleContext = Activator.getInstance().getBundleContext(connectorActivator);
 					connectorActivator.start(bundleContext);
@@ -111,11 +111,11 @@ public class ConnectorExtensionRegistryImpl implements ConnectorExtensionRegistr
 
 		String typeId = extension.getTypeId();
 		String id = extension.getId();
-		if (IConnectorActivator.TYPE_ID.equals(typeId)) {
+		if (ConnectorActivator.TYPE_ID.equals(typeId)) {
 			ConnectorDescriptor descriptor = this.idToDescriptorMap.remove(id);
 			if (descriptor != null) {
 
-				IConnectorActivator connectorActivator = descriptor.getConnector();
+				ConnectorActivator connectorActivator = descriptor.getConnector();
 				if (connectorActivator != null) {
 					BundleContext bundleContext = Activator.getInstance().getBundleContext(connectorActivator);
 					connectorActivator.stop(bundleContext);

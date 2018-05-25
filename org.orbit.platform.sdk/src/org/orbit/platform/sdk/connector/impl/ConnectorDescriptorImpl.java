@@ -1,13 +1,13 @@
 package org.orbit.platform.sdk.connector.impl;
 
 import org.orbit.platform.sdk.connector.ConnectorDescriptor;
-import org.orbit.platform.sdk.connector.IConnectorActivator;
+import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.extensions.core.IExtension;
 
 public class ConnectorDescriptorImpl implements ConnectorDescriptor {
 
 	protected IExtension extension;
-	protected IConnectorActivator connector;
+	protected ConnectorActivator connector;
 
 	/**
 	 * 
@@ -18,9 +18,9 @@ public class ConnectorDescriptorImpl implements ConnectorDescriptor {
 	}
 
 	@Override
-	public synchronized IConnectorActivator getConnector() {
+	public synchronized ConnectorActivator getConnector() {
 		if (this.connector == null) {
-			this.connector = this.extension.getInterface(IConnectorActivator.class);
+			this.connector = this.extension.getInterface(ConnectorActivator.class);
 		}
 		return this.connector;
 	}

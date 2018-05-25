@@ -128,10 +128,13 @@ public class InfraClients {
 		properties.put(InfraConstants.USERNAME, username);
 		properties.put(InfraConstants.URL, url);
 
-		IndexService indexService = this.indexServiceConnector.getService(properties);
+		IndexService indexService = null;
+		if (this.indexServiceConnector != null) {
+			indexService = this.indexServiceConnector.getService(properties);
+		}
 		if (indexService == null) {
 			LOG.error("IndexService is not available.");
-			throw new IllegalStateException("IndexService is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+			// throw new IllegalStateException("IndexService is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
 		}
 		return indexService;
 	}
@@ -149,7 +152,10 @@ public class InfraClients {
 		properties.put(InfraConstants.USERNAME, username);
 		properties.put(InfraConstants.URL, url);
 
-		Channels channels = this.channelsConnector.getService(properties);
+		Channels channels = null;
+		if (this.channelsConnector != null) {
+			channels = this.channelsConnector.getService(properties);
+		}
 		if (channels == null) {
 			LOG.error("Channels is not available.");
 			// throw new IllegalStateException("Channels is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");

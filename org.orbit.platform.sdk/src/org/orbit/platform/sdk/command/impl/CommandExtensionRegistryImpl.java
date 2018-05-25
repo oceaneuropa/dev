@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.platform.sdk.Activator;
 import org.orbit.platform.sdk.command.CommandDescriptor;
 import org.orbit.platform.sdk.command.CommandExtensionRegistry;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.util.ExtensionListener;
 import org.origin.common.extensions.util.ExtensionTracker;
@@ -71,7 +71,7 @@ public class CommandExtensionRegistryImpl implements CommandExtensionRegistry, E
 			String id = itor.next();
 			CommandDescriptor descriptor = this.idToDescriptorMap.get(id);
 			if (descriptor != null) {
-				ICommandActivator commandActivator = descriptor.getCommand();
+				CommandActivator commandActivator = descriptor.getCommand();
 				if (commandActivator != null) {
 					BundleContext bundleContext = Activator.getInstance().getBundleContext(commandActivator);
 					commandActivator.stop(bundleContext);
@@ -90,13 +90,13 @@ public class CommandExtensionRegistryImpl implements CommandExtensionRegistry, E
 
 		String typeId = extension.getTypeId();
 		String id = extension.getId();
-		if (ICommandActivator.TYPE_ID.equals(typeId)) {
+		if (CommandActivator.TYPE_ID.equals(typeId)) {
 			CommandDescriptor descriptor = this.idToDescriptorMap.get(id);
 			if (descriptor == null) {
 				descriptor = new CommandDescriptorImpl(extension);
 				this.idToDescriptorMap.put(id, descriptor);
 
-				ICommandActivator commandActivator = descriptor.getCommand();
+				CommandActivator commandActivator = descriptor.getCommand();
 				if (commandActivator != null) {
 					BundleContext bundleContext = Activator.getInstance().getBundleContext(commandActivator);
 					commandActivator.start(bundleContext);
@@ -111,10 +111,10 @@ public class CommandExtensionRegistryImpl implements CommandExtensionRegistry, E
 
 		String typeId = extension.getTypeId();
 		String id = extension.getId();
-		if (ICommandActivator.TYPE_ID.equals(typeId)) {
+		if (CommandActivator.TYPE_ID.equals(typeId)) {
 			CommandDescriptor descriptor = this.idToDescriptorMap.remove(id);
 			if (descriptor != null) {
-				ICommandActivator commandActivator = descriptor.getCommand();
+				CommandActivator commandActivator = descriptor.getCommand();
 				if (commandActivator != null) {
 					BundleContext bundleContext = Activator.getInstance().getBundleContext(commandActivator);
 					commandActivator.stop(bundleContext);

@@ -3,10 +3,10 @@ package org.orbit.component.connector.tier3.nodecontrol;
 import java.util.Map;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
-import org.orbit.platform.sdk.connector.IConnectorActivator;
+import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class NodeControlConnector extends ServiceConnector<NodeControlClient> implements IConnectorActivator {
+public class NodeControlConnector extends ServiceConnector<NodeControlClient> implements ConnectorActivator {
 
 	public static final String ID = "org.orbit.component.connector.NodeControlConnector";
 

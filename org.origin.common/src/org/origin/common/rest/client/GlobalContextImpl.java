@@ -56,7 +56,10 @@ public class GlobalContextImpl extends GlobalContext {
 	}
 
 	protected String getDefaultRealm() {
-		String defaultRealm = Activator.getDefault().getRealm();
+		String defaultRealm = null;
+		if (Activator.getDefault() != null) {
+			defaultRealm = Activator.getDefault().getRealm();
+		}
 		if (defaultRealm == null || defaultRealm.isEmpty()) {
 			defaultRealm = DEFAULT_REALM;
 		}

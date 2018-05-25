@@ -9,7 +9,7 @@ import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier1.auth.GrantTypes;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.GlobalContext;
@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AuthCommand implements ICommandActivator {
+public class AuthCommand implements CommandActivator {
 
 	public static final String ID = "org.orbit.component.cli.AuthCommand";
 

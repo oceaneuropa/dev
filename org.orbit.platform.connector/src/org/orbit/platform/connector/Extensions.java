@@ -1,7 +1,7 @@
 package org.orbit.platform.connector;
 
 import org.orbit.platform.connector.impl.PlatformConnector;
-import org.orbit.platform.sdk.connector.IConnectorActivator;
+import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
@@ -26,11 +26,11 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createConnectorExtensions() {
-		String typeId = IConnectorActivator.TYPE_ID;
+		String typeId = ConnectorActivator.TYPE_ID;
 
 		// Platform connector
 		Extension extension1 = new Extension(typeId, PlatformConnector.ID, "Platform Connector", "Platform connector description");
-		InterfaceDescription desc1 = new InterfaceDescription(IConnectorActivator.class, PlatformConnector.class);
+		InterfaceDescription desc1 = new InterfaceDescription(ConnectorActivator.class, PlatformConnector.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 	}

@@ -18,7 +18,7 @@ import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -39,7 +39,7 @@ import other.orbit.component.api.tier1.auth.AuthConnectorV0;
 import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
 import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
 
-public class ServicesCommand implements Annotated, ICommandActivator {
+public class ServicesCommand implements Annotated, CommandActivator {
 
 	public static final String ID = "org.orbit.component.cli.ServicesCommand";
 

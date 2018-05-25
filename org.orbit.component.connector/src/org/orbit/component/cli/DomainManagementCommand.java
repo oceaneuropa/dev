@@ -17,7 +17,7 @@ import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.NodeConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.connector.tier3.domainmanagement.ResponseConverter;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Request;
@@ -28,7 +28,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DomainManagementCommand implements Annotated, ICommandActivator {
+public class DomainManagementCommand implements Annotated, CommandActivator {
 
 	public static final String ID = "org.orbit.component.cli.DomainManagementCommand";
 

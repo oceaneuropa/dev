@@ -6,7 +6,7 @@ import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivator;
+import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 

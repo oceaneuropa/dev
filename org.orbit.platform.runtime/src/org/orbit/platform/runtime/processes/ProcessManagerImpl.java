@@ -26,7 +26,7 @@ import org.orbit.platform.runtime.util.ProgramExtensionHelper;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.IProcessManager;
-import org.orbit.platform.sdk.ServiceActivator;
+import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.orbit.platform.sdk.util.IProcessFilter;
 import org.orbit.platform.sdk.util.ServiceActivatorHelper;
 import org.origin.common.extensions.InterfaceDescription;

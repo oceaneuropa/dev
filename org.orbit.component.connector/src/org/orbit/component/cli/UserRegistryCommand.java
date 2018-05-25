@@ -11,7 +11,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserRegistry;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserRegistryCommand implements ICommandActivator {
+public class UserRegistryCommand implements CommandActivator {
 
 	public static final String ID = "org.orbit.component.cli.UserRegistryCommand";
 

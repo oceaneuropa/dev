@@ -2,7 +2,7 @@ package org.orbit.platform.sdk.connector;
 
 public interface ConnectorDescriptor {
 
-	IConnectorActivator getConnector();
+	ConnectorActivator getConnector();
 
 	void dispose();
 

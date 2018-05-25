@@ -5,7 +5,10 @@
  * Contributors:
  *     OceanEuropa - initial API and implementation
  *******************************************************************************/
-package org.orbit.platform.sdk;
+package org.orbit.platform.sdk.serviceactivator;
+
+import org.orbit.platform.sdk.IPlatformContext;
+import org.orbit.platform.sdk.IProcess;
 
 public interface ServiceActivator {
 

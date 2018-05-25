@@ -9,7 +9,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AppStoreCommand implements Annotated, ICommandActivator {
+public class AppStoreCommand implements Annotated, CommandActivator {
 
 	public static final String ID = "org.orbit.component.cli.AppStoreCommand";
 

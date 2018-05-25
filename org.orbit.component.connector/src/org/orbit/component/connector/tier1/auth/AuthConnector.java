@@ -3,10 +3,10 @@ package org.orbit.component.connector.tier1.auth;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.auth.Auth;
-import org.orbit.platform.sdk.connector.IConnectorActivator;
+import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class AuthConnector extends ServiceConnector<Auth> implements IConnectorActivator {
+public class AuthConnector extends ServiceConnector<Auth> implements ConnectorActivator {
 
 	public static final String ID = "org.orbit.component.connector.AuthConnector";
 

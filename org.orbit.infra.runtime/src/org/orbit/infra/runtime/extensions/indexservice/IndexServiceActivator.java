@@ -6,7 +6,7 @@ import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivator;
+import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;

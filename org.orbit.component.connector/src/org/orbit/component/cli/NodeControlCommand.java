@@ -15,7 +15,7 @@ import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlModelConverter;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClient;
@@ -28,7 +28,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeControlCommand extends ServiceClientCommand implements ICommandActivator {
+public class NodeControlCommand extends ServiceClientCommand implements CommandActivator {
 
 	public static final String ID = "org.orbit.component.cli.NodeControlCommand";
 

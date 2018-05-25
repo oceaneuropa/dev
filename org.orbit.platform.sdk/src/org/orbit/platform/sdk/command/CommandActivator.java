@@ -1,10 +1,10 @@
-package org.orbit.platform.sdk.connector;
+package org.orbit.platform.sdk.command;
 
 import org.osgi.framework.BundleContext;
 
-public interface IConnectorActivator {
+public interface CommandActivator {
 
-	public static final String TYPE_ID = "platform.extension.ConnectorActivator";
+	public static final String TYPE_ID = "platform.extension.CommandActivator";
 
 	/**
 	 * 

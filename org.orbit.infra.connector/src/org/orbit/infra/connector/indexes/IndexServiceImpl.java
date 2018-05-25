@@ -16,8 +16,12 @@ import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.service.InternalProxyService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class IndexServiceImpl implements IndexService, InternalProxyService {
+
+	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceImpl.class);
 
 	protected Map<String, Object> properties;
 	protected IndexServiceWSClient client;
@@ -165,7 +169,7 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 				indexItems.add(indexItem);
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new IOException(e);
 		}
 		return indexItems;
@@ -191,7 +195,9 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 				indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			LOG.error("ClientException: getIndexItem(String indexProviderId, String type, String name) indexProviderId = " + indexProviderId + ", type = " + type + ", name = " + name);
+			LOG.error("ClientException: " + e.getCause() + " " + e.getMessage());
+			// e.printStackTrace();
 			throw new IOException(e);
 		}
 		return indexItem;
@@ -217,7 +223,7 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 				indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new IOException(e);
 		}
 		return indexItem;
@@ -230,7 +236,7 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 			return (status != null && status.success()) ? true : false;
 
 		} catch (ClientException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new IOException(e);
 		}
 	}

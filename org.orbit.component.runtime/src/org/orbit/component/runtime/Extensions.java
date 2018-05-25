@@ -38,8 +38,8 @@ import org.orbit.component.runtime.extension.userregistry.UserRegistryRelayActiv
 import org.orbit.component.runtime.extension.userregistry.UserRegistryRelayPropertyTester;
 import org.orbit.component.runtime.extension.userregistry.UserRegistryServiceActivator;
 import org.orbit.component.runtime.extension.userregistry.UserRegistryServicePropertyTester;
-import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
+import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
@@ -264,23 +264,23 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createCommandExtensions() {
-		String typeId = ICommandActivator.TYPE_ID;
+		String typeId = CommandActivator.TYPE_ID;
 
 		// Services command
 		Extension extension1 = new Extension(typeId, ServicesCommand.ID, "Services Command", "Services command description");
-		InterfaceDescription desc1 = new InterfaceDescription(ICommandActivator.class, ServicesCommand.class);
+		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, ServicesCommand.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
 		// Domain Management command
 		Extension extension2 = new Extension(typeId, DomainManagementCommand.ID, "Domain Management Command", "Domain Management command description");
-		InterfaceDescription desc2 = new InterfaceDescription(ICommandActivator.class, DomainManagementCommand.class);
+		InterfaceDescription desc2 = new InterfaceDescription(CommandActivator.class, DomainManagementCommand.class);
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 
 		// Node Control command
 		Extension extension3 = new Extension(typeId, NodeControlCommand.ID, "Node Control Command", "Node Control command description");
-		InterfaceDescription desc3 = new InterfaceDescription(ICommandActivator.class, NodeControlCommand.class);
+		InterfaceDescription desc3 = new InterfaceDescription(CommandActivator.class, NodeControlCommand.class);
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 	}

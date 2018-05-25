@@ -1,13 +1,13 @@
 package org.orbit.platform.sdk.command.impl;
 
 import org.orbit.platform.sdk.command.CommandDescriptor;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.extensions.core.IExtension;
 
 public class CommandDescriptorImpl implements CommandDescriptor {
 
 	protected IExtension extension;
-	protected ICommandActivator command;
+	protected CommandActivator command;
 
 	/**
 	 * 
@@ -18,9 +18,9 @@ public class CommandDescriptorImpl implements CommandDescriptor {
 	}
 
 	@Override
-	public synchronized ICommandActivator getCommand() {
+	public synchronized CommandActivator getCommand() {
 		if (this.command == null) {
-			this.command = this.extension.getInterface(ICommandActivator.class);
+			this.command = this.extension.getInterface(CommandActivator.class);
 		}
 		return this.command;
 	}

@@ -9,7 +9,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeControlCommand implements Annotated, ICommandActivator {
+public class NodeControlCommand implements Annotated, CommandActivator {
 
 	public static final String ID = "org.orbit.component.runtime.cli.NodeControlCommand";
 

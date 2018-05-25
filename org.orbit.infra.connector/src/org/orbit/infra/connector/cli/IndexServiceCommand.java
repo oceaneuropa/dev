@@ -9,7 +9,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.infra.connector.InfraConstants;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -19,7 +19,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IndexServiceCommand implements Annotated, ICommandActivator {
+public class IndexServiceCommand implements Annotated, CommandActivator {
 
 	public static final String ID = "org.orbit.infra.connector.IndexServiceCommand";
 

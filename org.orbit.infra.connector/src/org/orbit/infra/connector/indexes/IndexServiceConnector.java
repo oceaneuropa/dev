@@ -3,10 +3,10 @@ package org.orbit.infra.connector.indexes;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.platform.sdk.connector.IConnectorActivator;
+import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class IndexServiceConnector extends ServiceConnector<IndexService> implements IConnectorActivator {
+public class IndexServiceConnector extends ServiceConnector<IndexService> implements ConnectorActivator {
 
 	public static final String ID = "org.orbit.infra.connector.IndexServiceConnector";
 

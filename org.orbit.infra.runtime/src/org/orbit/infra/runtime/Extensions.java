@@ -9,8 +9,8 @@ import org.orbit.infra.runtime.extensions.indexservice.IndexServiceActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServicePropertyTester;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayPropertyTester;
-import org.orbit.platform.sdk.ServiceActivator;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
+import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.Parameter;
@@ -137,11 +137,11 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createCommandExtensions() {
-		String typeId = ICommandActivator.TYPE_ID;
+		String typeId = CommandActivator.TYPE_ID;
 
 		// Infra server side command
 		Extension extension1 = new Extension(typeId, InfraCommand.ID, "Infra server side command", "Infra server side command description");
-		InterfaceDescription desc1 = new InterfaceDescription(ICommandActivator.class, InfraCommand.class);
+		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, InfraCommand.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 	}

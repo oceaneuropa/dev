@@ -11,7 +11,7 @@ import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServicesCommand implements Annotated, ICommandActivator {
+public class ServicesCommand implements Annotated, CommandActivator {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ServicesCommand.class);
 

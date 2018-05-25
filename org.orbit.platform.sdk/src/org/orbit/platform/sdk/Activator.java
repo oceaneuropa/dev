@@ -14,8 +14,12 @@ import org.orbit.platform.sdk.connector.impl.ConnectorExtensionRegistryImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Activator implements BundleActivator {
+
+	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
 
 	protected static BundleContext bundleContext;
 	protected static Activator instance;
@@ -33,6 +37,8 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
+		LOG.info("start()");
+
 		Activator.bundleContext = bundleContext;
 		Activator.instance = this;
 
@@ -47,6 +53,8 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		LOG.info("stop()");
+
 		this.connectorExtensionRegistry = null;
 		ConnectorExtensionRegistryImpl.INSTANCE.dispose();
 		ConnectorExtensionRegistryImpl.INSTANCE.stop(bundleContext);

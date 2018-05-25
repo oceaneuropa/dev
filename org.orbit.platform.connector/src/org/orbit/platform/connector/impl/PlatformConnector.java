@@ -3,10 +3,10 @@ package org.orbit.platform.connector.impl;
 import java.util.Map;
 
 import org.orbit.platform.api.PlatformClient;
-import org.orbit.platform.sdk.connector.IConnectorActivator;
+import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class PlatformConnector extends ServiceConnector<PlatformClient> implements IConnectorActivator {
+public class PlatformConnector extends ServiceConnector<PlatformClient> implements ConnectorActivator {
 
 	public static final String ID = "org.orbit.platform.connector.PlatformConnector";
 

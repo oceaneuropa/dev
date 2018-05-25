@@ -2,7 +2,7 @@ package org.orbit.platform.sdk.command;
 
 public interface CommandDescriptor {
 
-	ICommandActivator getCommand();
+	CommandActivator getCommand();
 
 	void dispose();
 

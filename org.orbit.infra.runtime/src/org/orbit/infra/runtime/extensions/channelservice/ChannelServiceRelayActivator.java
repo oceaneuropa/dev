@@ -6,7 +6,7 @@ import org.orbit.infra.runtime.relay.ChannelWSApplicationRelay;
 import org.orbit.infra.runtime.relay.InfraRelays;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
-import org.orbit.platform.sdk.ServiceActivator;
+import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.osgi.framework.BundleContext;
 
 public class ChannelServiceRelayActivator implements ServiceActivator {

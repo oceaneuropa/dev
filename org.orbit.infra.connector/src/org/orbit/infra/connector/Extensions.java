@@ -5,8 +5,8 @@ import org.orbit.infra.connector.cli.ChannelCommand;
 import org.orbit.infra.connector.cli.IndexServiceCommand;
 import org.orbit.infra.connector.indexes.IndexProviderConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
-import org.orbit.platform.sdk.command.ICommandActivator;
-import org.orbit.platform.sdk.connector.IConnectorActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
+import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
@@ -32,39 +32,39 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createConnectorExtensions() {
-		String typeId = IConnectorActivator.TYPE_ID;
+		String typeId = ConnectorActivator.TYPE_ID;
 
 		// Index Service connector
 		Extension extension1 = new Extension(typeId, IndexServiceConnector.ID, "Index Service Connector", "Index Service connector description");
-		InterfaceDescription desc1 = new InterfaceDescription(IConnectorActivator.class, IndexServiceConnector.class);
+		InterfaceDescription desc1 = new InterfaceDescription(ConnectorActivator.class, IndexServiceConnector.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
 		// Index Provider connector
 		Extension extension2 = new Extension(typeId, IndexProviderConnector.ID, "Index Provider Connector", "Index Provider connector description");
-		InterfaceDescription desc2 = new InterfaceDescription(IConnectorActivator.class, IndexProviderConnector.class);
+		InterfaceDescription desc2 = new InterfaceDescription(ConnectorActivator.class, IndexProviderConnector.class);
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 
 		// Channel connector
 		Extension extension3 = new Extension(typeId, ChannelsConnector.ID, "Cannel Connector", "Cannel connector description");
-		InterfaceDescription desc3 = new InterfaceDescription(IConnectorActivator.class, ChannelsConnector.class);
+		InterfaceDescription desc3 = new InterfaceDescription(ConnectorActivator.class, ChannelsConnector.class);
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 	}
 
 	protected void createCommandExtensions() {
-		String typeId = ICommandActivator.TYPE_ID;
+		String typeId = CommandActivator.TYPE_ID;
 
 		// Index Service command
 		Extension extension1 = new Extension(typeId, IndexServiceCommand.ID, "Index Service Command", "Index Service command description");
-		InterfaceDescription desc1 = new InterfaceDescription(ICommandActivator.class, IndexServiceCommand.class);
+		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, IndexServiceCommand.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
 		// Channel command
 		Extension extension2 = new Extension(typeId, ChannelCommand.ID, "Channel Command", "Channel command description");
-		InterfaceDescription desc2 = new InterfaceDescription(ICommandActivator.class, ChannelCommand.class);
+		InterfaceDescription desc2 = new InterfaceDescription(CommandActivator.class, ChannelCommand.class);
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 	}

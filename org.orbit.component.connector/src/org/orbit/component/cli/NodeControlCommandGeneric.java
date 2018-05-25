@@ -11,7 +11,7 @@ import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlModelConverter;
-import org.orbit.platform.sdk.command.ICommandActivator;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Request;
 import org.origin.common.util.CLIHelper;
@@ -20,7 +20,7 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeControlCommandGeneric implements ICommandActivator {
+public class NodeControlCommandGeneric implements CommandActivator {
 
 	public static final String ID = "org.orbit.component.cli.NodeControlCommandGeneric";
 
