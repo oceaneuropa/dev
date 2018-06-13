@@ -24,6 +24,7 @@ import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.manifest.ProgramManifest;
 import org.orbit.platform.runtime.util.CommonModelHelper;
 import org.orbit.platform.sdk.IProcess;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.relaycontrol.WSRelayControl;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -54,7 +55,9 @@ import org.osgi.framework.BundleContext;
  * @see AppStoreCommand
  * 
  */
-public class PlatformCommand implements Annotated {
+public class PlatformCommand implements Annotated, CommandActivator {
+
+	public static final String ID = "org.orbit.platform.runtime.cli.PlatformCommand";
 
 	protected static String[] EXTENSION_COLUMNS = new String[] { "Extension Type Id", "Extension Id", "Name", "Description" };
 	protected static String[] INTERFACE_COLUMNS = new String[] { "Name", "Singleton", "Autostart", "Interface Class Name", "Interface Impl Class", "Parameters" };
@@ -111,7 +114,7 @@ public class PlatformCommand implements Annotated {
 						"startapp", "stopapp", //
 
 				// "llaunchtypes", "llaunchconfigs", "createlaunchconfig", "deletelaunchconfig" //
-		});
+				});
 		OSGiServiceUtil.register(bundleContext, PlatformCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}

@@ -21,7 +21,10 @@ public class Activator implements BundleActivator {
 		Activator.plugin = this;
 		Activator.context = bundleContext;
 
-		InfraClients.getInstance().start(bundleContext);
+		InfraClients infraClients = InfraClients.getInstance();
+		ClassLoader loader1 = this.getClass().getClassLoader();
+		ClassLoader loader2 = infraClients.getClass().getClassLoader();
+		infraClients.start(bundleContext);
 	}
 
 	@Override

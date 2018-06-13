@@ -15,7 +15,6 @@ public class ExtensionDescriptiveImpl extends ExtensionImpl implements IExtensio
 	 * @param extension
 	 */
 	public ExtensionDescriptiveImpl(Extension extension) {
-
 		this.extension = extension;
 	}
 

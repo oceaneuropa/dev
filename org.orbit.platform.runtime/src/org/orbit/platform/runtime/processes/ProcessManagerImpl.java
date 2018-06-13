@@ -122,8 +122,9 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 		boolean isAutoStart = false;
 		final ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
 		InterfaceDescription desc = extension.getInterfaceDescription(ServiceActivator.class);
+
 		if (serviceActivator != null && desc != null) {
-			IPlatformContext context = createContext();
+			IPlatformContext context = createContext(extension);
 			isAutoStart = ServiceActivatorHelper.INSTANCE.isServiceActivatorAutoStart(context, desc);
 
 			if (isAutoStart) {
@@ -192,8 +193,12 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 		}
 	}
 
-	protected IPlatformContext createContext() {
-		PlatformContextImpl context = new PlatformContextImpl(this.bundleContext, this.platform);
+	protected IPlatformContext createContext(IExtension extension) {
+		BundleContext bundleContext = extension.getAdapter(BundleContext.class);
+		if (bundleContext == null) {
+			bundleContext = this.bundleContext;
+		}
+		PlatformContextImpl context = new PlatformContextImpl(bundleContext, this.platform);
 		return context;
 	}
 
@@ -267,7 +272,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 			int pid = getNextPID();
 			String name = ProgramExtensionHelper.INSTANCE.getName(extension, serviceActivator);
 
-			IPlatformContext context = createContext();
+			IPlatformContext context = createContext(extension);
 			context.setProperties(properties);
 
 			ProcessImpl process = new ProcessImpl(pid, name);

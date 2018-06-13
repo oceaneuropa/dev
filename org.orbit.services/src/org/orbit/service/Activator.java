@@ -27,6 +27,7 @@ public class Activator implements BundleActivator {
 
 	protected WebSocketDeployer webSocketDeployer;
 	protected ServerContainerAdapter webSocketServerContainerAdapter;
+	// protected HttpServletDeployer httpServletDeployer;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -38,10 +39,18 @@ public class Activator implements BundleActivator {
 
 		this.webSocketServerContainerAdapter = new ServerContainerAdapter();
 		this.webSocketServerContainerAdapter.start(bundleContext);
+
+		// this.httpServletDeployer = new HttpServletDeployer();
+		// this.httpServletDeployer.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		// if (this.httpServletDeployer != null) {
+		// this.httpServletDeployer.stop(bundleContext);
+		// this.httpServletDeployer = null;
+		// }
+
 		if (this.webSocketServerContainerAdapter != null) {
 			this.webSocketServerContainerAdapter.stop(bundleContext);
 			this.webSocketServerContainerAdapter = null;

@@ -7,6 +7,10 @@
  *******************************************************************************/
 package org.origin.common.service;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -22,6 +26,27 @@ public abstract class AbstractServiceTracker<SERVICE> {
 			service = this.serviceTracker.getService();
 		}
 		return service;
+	}
+
+	public SERVICE[] getServices(Class<SERVICE> clazz) {
+		SERVICE[] array = null;
+		if (this.serviceTracker != null) {
+			Object[] objects = this.serviceTracker.getServices();
+			if (objects != null) {
+				List<SERVICE> services = new ArrayList<SERVICE>();
+				array = (SERVICE[]) Array.newInstance(clazz, objects.length);
+
+				for (Object object : objects) {
+					if (clazz.isAssignableFrom(object.getClass())) {
+						SERVICE s = (SERVICE) object;
+						services.add(s);
+					}
+				}
+				services.toArray(array);
+			}
+		}
+
+		return array;
 	}
 
 	/**

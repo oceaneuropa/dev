@@ -18,18 +18,21 @@ public class InfraClients {
 
 	protected static Logger LOG = LoggerFactory.getLogger(InfraClients.class);
 
-	private static Object lock = new Object[0];
-	private static InfraClients instance = null;
+	// private static Object lock = new Object[0];
+	public static InfraClients INSTANCE = new InfraClients();
 
+	// public static InfraClients getInstance() {
+	// if (instance == null) {
+	// synchronized (lock) {
+	// if (instance == null) {
+	// instance = new InfraClients();
+	// }
+	// }
+	// }
+	// return instance;
+	// }
 	public static InfraClients getInstance() {
-		if (instance == null) {
-			synchronized (lock) {
-				if (instance == null) {
-					instance = new InfraClients();
-				}
-			}
-		}
-		return instance;
+		return INSTANCE;
 	}
 
 	protected ServiceConnectorAdapter<IndexProvider> indexProviderConnector;

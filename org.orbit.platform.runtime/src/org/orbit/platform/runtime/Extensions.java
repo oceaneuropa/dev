@@ -1,7 +1,9 @@
 package org.orbit.platform.runtime;
 
+import org.orbit.platform.runtime.cli.PlatformCommand;
 import org.orbit.platform.runtime.extensions.PlatformNodePreConfigurator;
 import org.orbit.platform.runtime.extensions.PlatformNodePreConfiguratorPropertyTester;
+import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
@@ -27,6 +29,7 @@ public class Extensions extends ProgramExtensions {
 
 		createFolderConfiguratorExtensions();
 		createPropertyTesterExtensions();
+		createCommandExtensions();
 	}
 
 	protected void createFolderConfiguratorExtensions() {
@@ -41,6 +44,16 @@ public class Extensions extends ProgramExtensions {
 		Extension extension = new Extension(IPropertyTester.TYPE_ID, PlatformNodePreConfiguratorPropertyTester.ID);
 		extension.addInterface(IPropertyTester.class, PlatformNodePreConfiguratorPropertyTester.class);
 		addExtension(extension);
+	}
+
+	protected void createCommandExtensions() {
+		String typeId = CommandActivator.TYPE_ID;
+
+		// Services command
+		Extension extension1 = new Extension(typeId, PlatformCommand.ID, "Services Command", "Services command description");
+		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, PlatformCommand.class);
+		extension1.addInterface(desc1);
+		addExtension(extension1);
 	}
 
 }

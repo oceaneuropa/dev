@@ -12,7 +12,12 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TestRequestFilter implements ContainerRequestFilter {
+
+	protected static Logger LOG = LoggerFactory.getLogger(TestRequestFilter.class);
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -22,38 +27,38 @@ public class TestRequestFilter implements ContainerRequestFilter {
 		MultivaluedMap<String, String> requestHeaders = requestContext.getHeaders();
 		Map<String, Cookie> requestCookies = requestContext.getCookies();
 
-		System.out.println(getClass().getSimpleName() + ".filter()");
-		System.out.println("\tmethod = " + method);
+		LOG.debug(getClass().getSimpleName() + ".filter()");
+		LOG.debug("\tmethod = " + method);
 
-		System.out.println("\trequest = " + request);
+		LOG.debug("\trequest = " + request);
 		String reqMethod = request.getMethod();
-		System.out.println("\t\treqMethod = " + reqMethod);
+		LOG.debug("\t\treqMethod = " + reqMethod);
 
-		System.out.println("\turiInfo = " + uriInfo);
+		LOG.debug("\turiInfo = " + uriInfo);
 		URI absPath = uriInfo.getAbsolutePath();
 		URI baseUri = uriInfo.getBaseUri();
 		String path = uriInfo.getPath();
 		URI reqUri = uriInfo.getRequestUri();
-		System.out.println("\t\tabsPath = " + absPath);
-		System.out.println("\t\tbaseUri = " + baseUri);
-		System.out.println("\t\treqUri = " + reqUri);
-		System.out.println("\t\tpath = " + path);
+		LOG.debug("\t\tabsPath = " + absPath);
+		LOG.debug("\t\tbaseUri = " + baseUri);
+		LOG.debug("\t\treqUri = " + reqUri);
+		LOG.debug("\t\tpath = " + path);
 
-		System.out.println("\trequest headers = ");
+		LOG.debug("\trequest headers = ");
 		if (requestHeaders != null) {
 			for (Iterator<String> itor = requestHeaders.keySet().iterator(); itor.hasNext();) {
 				String headerName = itor.next();
 				String headerValueString = requestContext.getHeaderString(headerName);
-				System.out.println("\t\t" + headerName + " = " + headerValueString);
+				LOG.debug("\t\t" + headerName + " = " + headerValueString);
 			}
 		}
 
-		System.out.println("\trequest cookies = ");
+		LOG.debug("\trequest cookies = ");
 		if (requestCookies != null) {
 			for (Iterator<String> itor = requestCookies.keySet().iterator(); itor.hasNext();) {
 				String cookieName = itor.next();
 				Cookie cookie = requestCookies.get(cookieName);
-				System.out.println("\t\t" + cookieName + " = " + cookie.toString());
+				LOG.debug("\t\t" + cookieName + " = " + cookie.toString());
 			}
 		}
 	}

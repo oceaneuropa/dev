@@ -29,6 +29,4 @@ Export-Package: com.auth0,
  com.auth0.jwt.interfaces,
  com.auth0.net,
  com.auth0.utils
-Require-Bundle: lib.jersey;bundle-version="2.22.2",
- lib.org.apache.commons;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

@@ -13,7 +13,7 @@ public abstract class ProgramExtensions {
 
 	protected String bundleId;
 	protected String realm = "default";
-	protected BundleContext context;
+	protected BundleContext bundleContext;
 	protected List<Extension> extensionDescs = new ArrayList<Extension>();
 	protected List<IExtension> extensions = new ArrayList<IExtension>();
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
@@ -43,15 +43,15 @@ public abstract class ProgramExtensions {
 	/**
 	 * Register program extensions.
 	 * 
-	 * @param context
+	 * @param bundleContext
 	 */
-	public synchronized void start(BundleContext context) {
+	public synchronized void start(BundleContext bundleContext) {
 		if (this.isStarted.get()) {
 			System.err.println(getClass().getName() + " is already started.");
 			return;
 		}
 		this.isStarted.set(true);
-		this.context = context;
+		this.bundleContext = bundleContext;
 
 		createExtensions();
 	}
@@ -59,9 +59,9 @@ public abstract class ProgramExtensions {
 	/**
 	 * Unregister program extensions.
 	 * 
-	 * @param context
+	 * @param bundleContext
 	 */
-	public synchronized void stop(BundleContext context) {
+	public synchronized void stop(BundleContext bundleContext) {
 		if (!isStarted()) {
 			System.err.println(getClass().getName() + " is not started.");
 		}
@@ -72,14 +72,14 @@ public abstract class ProgramExtensions {
 
 		// Unregister IProgramExtensions
 		for (IExtension extension : this.extensions) {
-			IExtensionRegistry.getInstance().unregister(context, extension);
+			IExtensionRegistry.getInstance().unregister(bundleContext, extension);
 		}
 
 		// clear up data
 		this.extensionDescs.clear();
 		this.extensions.clear();
 
-		this.context = null;
+		this.bundleContext = null;
 	}
 
 	public synchronized boolean isStarted() {
@@ -143,8 +143,12 @@ public abstract class ProgramExtensions {
 		IExtension extension = new ExtensionDescriptiveImpl(extensionDesc);
 		extension.adapt(Extension.class, extensionDesc); // set (adapt) ProgramExtension in the IProgramExtension
 
+		if (this.bundleContext != null) {
+			extension.adapt(BundleContext.class, this.bundleContext);
+		}
+
 		this.extensions.add(extension);
-		IExtensionRegistry.getInstance().register(this.context, extension);
+		IExtensionRegistry.getInstance().register(this.bundleContext, extension);
 	}
 
 	/**
@@ -170,7 +174,7 @@ public abstract class ProgramExtensions {
 		}
 		if (extensionToRemove != null) {
 			this.extensions.remove(extensionToRemove);
-			IExtensionRegistry.getInstance().unregister(this.context, extensionToRemove);
+			IExtensionRegistry.getInstance().unregister(this.bundleContext, extensionToRemove);
 		}
 	}
 
