@@ -1,8 +1,8 @@
 package org.orbit.platform.webconsole;
 
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
-import org.orbit.platform.webconsole.extension.PlatformWebApplicationActivator;
-import org.orbit.platform.webconsole.extension.PlatformWebApplicationPropertyTester;
+import org.orbit.platform.webconsole.extension.WebApplicationActivator;
+import org.orbit.platform.webconsole.extension.WebApplicationPropertyTester;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
@@ -33,9 +33,9 @@ public class Extensions extends ProgramExtensions {
 		String typeId = ServiceActivator.TYPE_ID;
 
 		// Platform Web Application Activator
-		Extension extension1 = new Extension(typeId, PlatformWebApplicationActivator.ID, "Platform Web Application Activator");
-		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, PlatformWebApplicationActivator.class);
-		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(PlatformWebApplicationPropertyTester.ID));
+		Extension extension1 = new Extension(typeId, WebApplicationActivator.ID, "Platform Web Application Activator");
+		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, WebApplicationActivator.class);
+		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(WebApplicationPropertyTester.ID));
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 	}
@@ -44,8 +44,8 @@ public class Extensions extends ProgramExtensions {
 		String typeId = IPropertyTester.TYPE_ID;
 
 		// Platform Web Application Property Tester
-		Extension extension1 = new Extension(typeId, PlatformWebApplicationPropertyTester.ID);
-		extension1.addInterface(IPropertyTester.class, PlatformWebApplicationPropertyTester.class);
+		Extension extension1 = new Extension(typeId, WebApplicationPropertyTester.ID);
+		extension1.addInterface(IPropertyTester.class, WebApplicationPropertyTester.class);
 		addExtension(extension1);
 	}
 

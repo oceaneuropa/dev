@@ -13,7 +13,6 @@ import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.platform.webconsole.WebConstants;
-import org.orbit.platform.webconsole.common.ServiceAwareServlet;
 
 /**
  * Servlet implementation class IndexServiceServlet

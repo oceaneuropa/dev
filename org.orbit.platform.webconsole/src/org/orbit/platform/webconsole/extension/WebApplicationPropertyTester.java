@@ -9,11 +9,11 @@ import org.origin.common.extensions.condition.IPropertyTester;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 
-public class PlatformWebApplicationPropertyTester implements IPropertyTester {
+public class WebApplicationPropertyTester implements IPropertyTester {
 
 	public static String ID = "org.orbit.platform.webconsole.WebApplicationPropertyTester";
 
-	public static PlatformWebApplicationPropertyTester INSTANCE = new PlatformWebApplicationPropertyTester();
+	public static WebApplicationPropertyTester INSTANCE = new WebApplicationPropertyTester();
 
 	@Override
 	public boolean accept(Object context, Object source, Object target, Map<String, Object> args) {

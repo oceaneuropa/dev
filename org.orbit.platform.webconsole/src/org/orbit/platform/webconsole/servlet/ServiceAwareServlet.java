@@ -1,4 +1,4 @@
-package org.orbit.platform.webconsole.common;
+package org.orbit.platform.webconsole.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

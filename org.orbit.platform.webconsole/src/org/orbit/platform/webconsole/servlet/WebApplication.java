@@ -19,13 +19,13 @@ import org.osgi.framework.BundleContext;
  * 
  * See org.eclipse.packagedrone.web.dispatcher.JspServletInitializer for usage of org.eclipse.equinox.jsp.jasper.JspServlet
  */
-public class PlatformWebApplication extends WebApplicationImpl {
+public class WebApplication extends WebApplicationImpl {
 
 	/**
 	 * 
 	 * @param initProperties
 	 */
-	public PlatformWebApplication(Map<Object, Object> initProperties) {
+	public WebApplication(Map<Object, Object> initProperties) {
 		super(initProperties);
 	}
 

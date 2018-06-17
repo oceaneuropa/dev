@@ -1,4 +1,4 @@
-package org.orbit.platform.webconsole.common;
+package org.orbit.platform.webconsole.servlet;
 
 public interface ServiceResolver<T> {
 
