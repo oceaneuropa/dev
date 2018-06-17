@@ -13,11 +13,10 @@ Import-Package: javax.servlet;version="[3.1.0,4.0.0)",
  org.osgi.service.http;version="1.2.1",
  org.slf4j;version="[1.7.25,2.0.0)"
 Export-Package: org.orbit.platform.webconsole.servlet;version="1.0.0"
-Require-Bundle: org.orbit.infra.api;bundle-version="[1.0.0,2.0.0)",
+Require-Bundle: org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)",
+ org.orbit.infra.api;bundle-version="[1.0.0,2.0.0)",
+ org.orbit.infra.model;bundle-version="[1.0.0,2.0.0)",
  org.orbit.services;bundle-version="[1.0.0,2.0.0)",
- org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)",
  org.origin.common;bundle-version="[1.0.0,2.0.0)",
- org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)",
- org.origin.common;bundle-version="1.0.0",
- org.orbit.infra.model
+ org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)"
 Bundle-Activator: org.orbit.platform.webconsole.Activator

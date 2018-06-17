@@ -27,7 +27,7 @@
 </script>
 </head>
 <body>
-	<div id="tabs" class="center1">
+	<div id="tabs" class="div01">
 		<ul>
 			<%
 				for (Iterator<String> itor = indexerIdToIndexItems.keySet().iterator(); itor.hasNext();) {

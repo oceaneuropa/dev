@@ -22,16 +22,16 @@
 			String indexerId = itor.next();
 			List<IndexItem> indexItems = indexerIdToIndexItems.get(indexerId);
 	%>
-	<div class="center1">
+	<div class="div01">
 		<h2>
 			Indexer [<%=indexerId%>]
 		</h2>
 		<table id="table01">
 			<tr>
-				<th width="30">Id</th>
-				<th width="200">Type</th>
-				<th width="200">Name</th>
-				<th width="500">Properties</th>
+				<th width="50">Id</th>
+				<th width="250">Type</th>
+				<th width="250">Name</th>
+				<th width="600">Properties</th>
 			</tr>
 			<%
 				if (indexItems.isEmpty()) {

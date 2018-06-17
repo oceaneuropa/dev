@@ -13,7 +13,7 @@ public class OrbitWSApplication extends AbstractJerseyWSApplication {
 		super(contextRoot, feature);
 
 		if (hasFeature(OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER)) {
-			register(OrbitAuthTokenRequestFilter.class);
+			// register(OrbitAuthTokenRequestFilter.class);
 		}
 
 		if (hasFeature(OrbitFeatureConstants.SET_COOKIE_RESPONSE_FILTER)) {

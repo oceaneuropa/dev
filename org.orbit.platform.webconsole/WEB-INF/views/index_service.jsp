@@ -22,7 +22,7 @@
 			String indexerId = itor.next();
 			List<IndexItem> indexItems = indexerIdToIndexItems.get(indexerId);
 	%>
-	<div class="center1">
+	<div class="div01">
 		<h2>
 			Indexer [<%=indexerId%>]
 		</h2>

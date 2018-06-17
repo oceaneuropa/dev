@@ -11,6 +11,28 @@ public class StringUtil {
 
 	/**
 	 * 
+	 * @param value
+	 * @return
+	 */
+	public static String get(String value) {
+		return get(value, "n/a");
+	}
+
+	/**
+	 * 
+	 * @param value
+	 * @param defaultValue
+	 * @return
+	 */
+	public static String get(String value, String defaultValue) {
+		if (value == null) {
+			return defaultValue;
+		}
+		return value;
+	}
+
+	/**
+	 * 
 	 * @param value1
 	 * @param value2
 	 * @return
