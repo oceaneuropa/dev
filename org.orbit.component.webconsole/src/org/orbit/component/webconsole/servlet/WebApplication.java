@@ -13,6 +13,10 @@ import org.osgi.framework.BundleContext;
 
 public class WebApplication extends WebApplicationImpl {
 
+	/**
+	 * 
+	 * @param initProperties
+	 */
 	public WebApplication(Map<Object, Object> initProperties) {
 		super(initProperties);
 	}
@@ -55,6 +59,7 @@ public class WebApplication extends WebApplicationImpl {
 		// Add servlets
 		addServlet(new ServletMetadataImpl("/userregistry", new UserRegistryServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain", new DomainMachinesServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/platforms", new DomainPlatformsServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

@@ -159,7 +159,7 @@ public class WSMethodInflector implements Inflector<ContainerRequestContext, Res
 		}
 
 		// System.out.println(getClass().getSimpleName() + ".apply() newRequestUri = " + newRequestUri);
-		LOG.debug("    newRequestUri = " + newRequestUri);
+		LOG.debug("newRequestUri = " + newRequestUri);
 
 		// Invocation.Builder newWSResource = this.client.target(newRequestUri).request(MediaType.APPLICATION_JSON);
 		Invocation.Builder newWSResource = this.client.target(newRequestUri).request();

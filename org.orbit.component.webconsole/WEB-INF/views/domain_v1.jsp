@@ -24,9 +24,10 @@
 		<h2>Machines</h2>
 		<table id="table01">
 			<tr>
-				<th width="300">Id</th>
-				<th width="300">Name</th>
-				<th width="300">IP Address</th>
+				<th width="200">Id</th>
+				<th width="250">Name</th>
+				<th width="250">IP Address</th>
+				<th width="200">Actions</th>
 			</tr>
 			<%
 				if (machineConfigs.length == 0) {
@@ -49,6 +50,7 @@
 				<td id="td1"><%=id%></td>
 				<td id="td2"><%=name%>s</td>
 				<td id="td2"><%=ip%></td>
+				<td id="td1"><a href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">View Platforms</a></td>
 			</tr>
 			<%
 				}

@@ -321,12 +321,13 @@ public abstract class AbstractWSClient implements Pingable {
 				// if (debug) {
 				String targetBaseURI = response.getHeaderString("switcher.targetURI");
 				if (targetBaseURI != null) {
-					LOG.debug("handleResponseHeaders()");
-					LOG.debug("    switcher.targetURI:");
-					LOG.debug("    " + uri.toString());
-					LOG.debug("    ->");
-					LOG.debug("    " + targetBaseURI);
-					LOG.debug("    ");
+					// LOG.debug("handleResponseHeaders()");
+					// LOG.debug("    switcher.targetURI:");
+					// LOG.debug("    " + uri.toString());
+					// LOG.debug("    ->");
+					// LOG.debug("    " + targetBaseURI);
+					// LOG.debug("    ");
+					// LOG.info("handleResponseHeaders() switcher.targetURI: " + targetBaseURI);
 
 					// System.out.println(getClass().getSimpleName() + "(AbstractWSClient).handleResponseHeaders() switcher.targetURI:");
 					// System.out.println(uri.toString());
