@@ -10,7 +10,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.servlet.Servlet;
 
+import org.eclipse.equinox.jsp.jasper.JspServlet;
 import org.orbit.service.util.HttpServiceTracker;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.http.HttpContext;
 import org.osgi.service.http.HttpService;
@@ -181,6 +183,25 @@ public class HttpServletSelfDeployer {
 				}
 			}
 
+			// Register JSPs
+			JspMetadata[] jspMetadatas = webApp.getJSPs();
+			if (jspMetadatas != null) {
+				for (JspMetadata jspMetadata : jspMetadatas) {
+					Bundle bundle = jspMetadata.getBundle();
+					String path = jspMetadata.getPath();
+					String fullPath = getFullPath(contextRoot, path);
+					// String fullPath = path;
+					String bundleResourcePath = jspMetadata.getBundleResourcePath();
+					// String alias = jspMetadata.getContextRoot();
+					Dictionary<?, ?> properties = jspMetadata.getProperties();
+					HttpContext httpContext = jspMetadata.getHttpContext(defaultHttpContext);
+
+					JspServlet jspServlet = new JspServlet(bundle, bundleResourcePath, contextRoot);
+					httpService.registerServlet(fullPath, jspServlet, properties, httpContext);
+					LOG.info("    Deployed JSP: \"" + fullPath + "\"");
+				}
+			}
+
 			succeed = true;
 
 		} catch (Exception e) {
@@ -235,6 +256,18 @@ public class HttpServletSelfDeployer {
 					String fullPath = getFullPath(contextRoot, path);
 					httpService.unregister(fullPath);
 					LOG.info("    Undeployed servlet: \"" + fullPath + "\"");
+				}
+			}
+
+			// Unregister JSPs
+			JspMetadata[] jspMetadatas = webApp.getJSPs();
+			if (jspMetadatas != null) {
+				for (JspMetadata jspMetadata : jspMetadatas) {
+					String path = jspMetadata.getPath();
+					String fullPath = getFullPath(contextRoot, path);
+					// String fullPath = path;
+					httpService.unregister(fullPath);
+					LOG.info("    Undeployed JSP: \"" + fullPath + "\"");
 				}
 			}
 

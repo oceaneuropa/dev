@@ -26,8 +26,9 @@ public abstract class WebApplicationImpl implements WebApplication {
 	protected HashMap<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistration;
 
-	protected List<ServletMetadata> servlets = new ArrayList<ServletMetadata>();
 	protected List<ResourceMetadata> resources = new ArrayList<ResourceMetadata>();
+	protected List<ServletMetadata> servlets = new ArrayList<ServletMetadata>();
+	protected List<JspMetadata> jsps = new ArrayList<JspMetadata>();
 	protected HttpContext httpContext;
 
 	protected HttpServletSelfDeployer servletDeployer;
@@ -53,7 +54,7 @@ public abstract class WebApplicationImpl implements WebApplication {
 
 		loadProperties(bundleContext);
 
-		addResources();
+		addResources(bundleContext);
 
 		// Register WebApplication service.
 		// Hashtable<String, Object> props = new Hashtable<String, Object>();
@@ -96,7 +97,7 @@ public abstract class WebApplicationImpl implements WebApplication {
 
 	protected abstract String[] getPropertyNames();
 
-	protected abstract void addResources();
+	protected abstract void addResources(BundleContext bundleContext);
 
 	public Map<Object, Object> getInitProperties() {
 		return this.initProperties;
@@ -104,6 +105,23 @@ public abstract class WebApplicationImpl implements WebApplication {
 
 	public Map<Object, Object> getProperties() {
 		return this.properties;
+	}
+
+	@Override
+	public ResourceMetadata[] getResources() {
+		return this.resources.toArray(new ResourceMetadata[this.resources.size()]);
+	}
+
+	protected void addResource(ResourceMetadata resourceMetadata) {
+		if (resourceMetadata != null && !this.resources.contains(resourceMetadata)) {
+			this.resources.add(resourceMetadata);
+		}
+	}
+
+	protected void removeResource(ResourceMetadata resourceMetadata) {
+		if (resourceMetadata != null && this.resources.contains(resourceMetadata)) {
+			this.resources.remove(resourceMetadata);
+		}
 	}
 
 	@Override
@@ -124,19 +142,19 @@ public abstract class WebApplicationImpl implements WebApplication {
 	}
 
 	@Override
-	public ResourceMetadata[] getResources() {
-		return this.resources.toArray(new ResourceMetadata[this.resources.size()]);
+	public JspMetadata[] getJSPs() {
+		return this.jsps.toArray(new JspMetadata[this.jsps.size()]);
 	}
 
-	protected void addResource(ResourceMetadata resourceMetadata) {
-		if (resourceMetadata != null && !this.resources.contains(resourceMetadata)) {
-			this.resources.add(resourceMetadata);
+	protected void addJSP(JspMetadata jspMetadata) {
+		if (jspMetadata != null && !this.servlets.contains(jspMetadata)) {
+			this.jsps.add(jspMetadata);
 		}
 	}
 
-	protected void removeResource(ResourceMetadata resourceMetadata) {
-		if (resourceMetadata != null && this.resources.contains(resourceMetadata)) {
-			this.resources.remove(resourceMetadata);
+	protected void removeJSP(JspMetadata jspMetadata) {
+		if (jspMetadata != null && this.jsps.contains(jspMetadata)) {
+			this.jsps.remove(jspMetadata);
 		}
 	}
 
@@ -147,7 +165,9 @@ public abstract class WebApplicationImpl implements WebApplication {
 	@Override
 	public synchronized HttpContext getHttpContext(HttpService httpService) {
 		if (this.httpContext == null) {
-			this.httpContext = httpService.createDefaultHttpContext();
+			// this.httpContext = httpService.createDefaultHttpContext();
+			this.httpContext = new DefaultHttpContext(httpService.createDefaultHttpContext());
+
 		}
 		return this.httpContext;
 	}

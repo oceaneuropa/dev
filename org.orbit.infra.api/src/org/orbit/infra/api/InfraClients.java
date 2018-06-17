@@ -18,19 +18,8 @@ public class InfraClients {
 
 	protected static Logger LOG = LoggerFactory.getLogger(InfraClients.class);
 
-	// private static Object lock = new Object[0];
 	public static InfraClients INSTANCE = new InfraClients();
 
-	// public static InfraClients getInstance() {
-	// if (instance == null) {
-	// synchronized (lock) {
-	// if (instance == null) {
-	// instance = new InfraClients();
-	// }
-	// }
-	// }
-	// return instance;
-	// }
 	public static InfraClients getInstance() {
 		return INSTANCE;
 	}
@@ -39,6 +28,10 @@ public class InfraClients {
 	protected ServiceConnectorAdapter<IndexService> indexServiceConnector;
 	protected ServiceConnectorAdapter<Channels> channelsConnector;
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void start(final BundleContext bundleContext) {
 		this.indexProviderConnector = new ServiceConnectorAdapter<IndexProvider>(IndexProvider.class);
 		this.indexProviderConnector.start(bundleContext);
@@ -50,6 +43,10 @@ public class InfraClients {
 		this.channelsConnector.start(bundleContext);
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void stop(final BundleContext bundleContext) {
 		if (this.channelsConnector != null) {
 			this.channelsConnector.stop(bundleContext);
@@ -67,6 +64,11 @@ public class InfraClients {
 		}
 	}
 
+	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
 	public IndexProvider getIndexProviderProxy(Map<?, ?> properties) {
 		return new IndexProviderProxy(properties);
 	}
@@ -82,10 +84,22 @@ public class InfraClients {
 		return getIndexProvider(url);
 	}
 
+	/**
+	 * 
+	 * @param url
+	 * @return
+	 */
 	public IndexProvider getIndexProvider(String url) {
 		return getIndexProvider(null, null, url);
 	}
 
+	/**
+	 * 
+	 * @param realm
+	 * @param username
+	 * @param url
+	 * @return
+	 */
 	public IndexProvider getIndexProvider(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
@@ -102,10 +116,20 @@ public class InfraClients {
 		return indexProvider;
 	}
 
+	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
 	public IndexService getIndexServiceProxy(Map<?, ?> properties) {
 		return new IndexServiceProxy(properties);
 	}
 
+	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
 	public IndexService getIndexService(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
@@ -118,10 +142,22 @@ public class InfraClients {
 		return getIndexService(url);
 	}
 
+	/**
+	 * 
+	 * @param url
+	 * @return
+	 */
 	public IndexService getIndexService(String url) {
 		return getIndexService(null, null, url);
 	}
 
+	/**
+	 * 
+	 * @param realm
+	 * @param username
+	 * @param url
+	 * @return
+	 */
 	public IndexService getIndexService(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
@@ -142,10 +178,22 @@ public class InfraClients {
 		return indexService;
 	}
 
+	/**
+	 * 
+	 * @param url
+	 * @return
+	 */
 	public Channels getChannels(String url) {
 		return getChannels(null, null, url);
 	}
 
+	/**
+	 * 
+	 * @param realm
+	 * @param username
+	 * @param url
+	 * @return
+	 */
 	public Channels getChannels(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
@@ -167,3 +215,15 @@ public class InfraClients {
 	}
 
 }
+
+// private static Object lock = new Object[0];
+// public static InfraClients getInstance() {
+// if (instance == null) {
+// synchronized (lock) {
+// if (instance == null) {
+// instance = new InfraClients();
+// }
+// }
+// }
+// return instance;
+// }

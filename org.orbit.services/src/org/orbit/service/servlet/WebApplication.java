@@ -7,9 +7,11 @@ public interface WebApplication {
 
 	String getContextRoot();
 
+	ResourceMetadata[] getResources();
+
 	ServletMetadata[] getServlets();
 
-	ResourceMetadata[] getResources();
+	JspMetadata[] getJSPs();
 
 	HttpContext getHttpContext(HttpService httpService);
 
