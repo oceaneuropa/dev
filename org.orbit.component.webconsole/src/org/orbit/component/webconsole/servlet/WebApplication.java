@@ -23,6 +23,12 @@ public class WebApplication extends WebApplicationImpl {
 				WebConstants.ORBIT_INDEX_SERVICE_URL, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				OrbitConstants.ORBIT_USER_REGISTRY_URL, //
+				OrbitConstants.ORBIT_AUTH_URL, //
+				OrbitConstants.ORBIT_CONFIG_REGISTRY_URL, //
+				OrbitConstants.ORBIT_APP_STORE_URL, //
+				OrbitConstants.ORBIT_DOMAIN_SERVICE_URL, //
+				OrbitConstants.ORBIT_NODE_CONTROL_URL, //
+				OrbitConstants.ORBIT_MISSION_CONTROL_URL, //
 		};
 		return propNames;
 	}
@@ -48,6 +54,7 @@ public class WebApplication extends WebApplicationImpl {
 
 		// Add servlets
 		addServlet(new ServletMetadataImpl("/userregistry", new UserRegistryServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain", new DomainMachinesServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

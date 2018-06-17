@@ -29,9 +29,9 @@
 		<table id="table01">
 			<tr>
 				<th width="50">Id</th>
-				<th width="250">Type</th>
-				<th width="250">Name</th>
-				<th width="600">Properties</th>
+				<th width="200">Type</th>
+				<th width="200">Name</th>
+				<th width="650">Properties</th>
 			</tr>
 			<%
 				if (indexItems.isEmpty()) {

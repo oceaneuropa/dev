@@ -28,10 +28,10 @@
 				<th width="100">Password</th>
 				<th width="100">First Name</th>
 				<th width="100">Last Name</th>
-				<th width="100">Email</th>
-				<th width="200">Phone</th>
-				<th width="200">Creation Time</th>
-				<th width="200">Last Update Time</th>
+				<th width="200">Email</th>
+				<th width="120">Phone</th>
+				<th width="160">Creation Time</th>
+				<th width="160">Last Update Time</th>
 			</tr>
 			<%
 				if (userAccounts.length == 0) {
@@ -67,8 +67,8 @@
 				<td id="td2"><%=lastName%></td>
 				<td id="td2"><%=email%></td>
 				<td id="td2"><%=phone%>s</td>
-				<td id="td2"><%=creationTimeStr%></td>
-				<td id="td2"><%=lastUpdateTimeStr%></td>
+				<td id="td1"><%=creationTimeStr%></td>
+				<td id="td1"><%=lastUpdateTimeStr%></td>
 			</tr>
 			<%
 				}
