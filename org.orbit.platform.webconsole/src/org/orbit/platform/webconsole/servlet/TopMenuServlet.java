@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.orbit.platform.webconsole.WebConstants;
 
 /**
+ * @see https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_dropdown_navbar
+ * 
  * @see https://stackoverflow.com/questions/9110148/include-another-jsp-file
  * @see https://stackoverflow.com/questions/35455627/how-include-servlet-output-to-jsp-file
  * 
@@ -31,7 +33,7 @@ public class TopMenuServlet extends ServiceAwareServlet {
 		servicesURLMap.put("Domain", contextRoot2 + "/domain");
 
 		request.setAttribute("servicesURLMap", servicesURLMap);
-		request.getRequestDispatcher(contextRoot + "/views/menu/top_menu.jsp").include(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/menu/top_menu_v2.jsp").include(request, response);
 	}
 
 	@Override
