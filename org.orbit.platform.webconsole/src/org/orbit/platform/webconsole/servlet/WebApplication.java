@@ -34,6 +34,7 @@ public class WebApplication extends WebApplicationImpl {
 		String[] propNames = new String[] { //
 				WebConstants.ORBIT_INDEX_SERVICE_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
+				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 		};
 		return propNames;
 	}
@@ -56,13 +57,16 @@ public class WebApplication extends WebApplicationImpl {
 
 		// Add resources
 		addResource(new ResourceMetadataImpl("/views/css", "/WEB-INF/views/css"));
+		// addResource(new ResourceMetadataImpl("/views/menu", "/WEB-INF/views/menu"));
 
 		// Add servlets
 		addServlet(new ServletMetadataImpl("/hello", new HelloWorldServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/top_menu", new TopMenuServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/indexservice", new IndexServiceServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));
+		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views/menu", "/WEB-INF", dicts));
 	}
 
 }

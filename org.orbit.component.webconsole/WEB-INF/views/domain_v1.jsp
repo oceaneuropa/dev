@@ -4,6 +4,7 @@
 <%@ page import="org.orbit.component.api.tier3.domainmanagement.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
 <%
+	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 	MachineConfig[] machineConfigs = (MachineConfig[]) request.getAttribute("machineConfigs");
 	if (machineConfigs == null) {
@@ -20,6 +21,7 @@
 %>
 </head>
 <body>
+	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
 	<div class="div01">
 		<h2>Machines</h2>
 		<table id="table01">
@@ -48,7 +50,7 @@
 			%>
 			<tr>
 				<td id="td1"><%=id%></td>
-				<td id="td2"><%=name%>s</td>
+				<td id="td2"><%=name%></td>
 				<td id="td2"><%=ip%></td>
 				<td id="td1"><a href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">View Platforms</a></td>
 			</tr>

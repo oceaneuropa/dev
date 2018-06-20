@@ -17,6 +17,7 @@
 %>
 </head>
 <body>
+	<jsp:include page="<%=contextRoot + "/top_menu"%>" />
 	<%
 		for (Iterator<String> itor = indexerIdToIndexItems.keySet().iterator(); itor.hasNext();) {
 			String indexerId = itor.next();

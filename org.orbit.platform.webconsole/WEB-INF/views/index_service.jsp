@@ -17,6 +17,8 @@
 %>
 </head>
 <body>
+<jsp:include page="myservlet" />
+
 	<%
 		for (Iterator<String> itor = indexerIdToIndexItems.keySet().iterator(); itor.hasNext();) {
 			String indexerId = itor.next();

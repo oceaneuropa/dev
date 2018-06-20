@@ -25,6 +25,7 @@ public class WebApplication extends WebApplicationImpl {
 	protected String[] getPropertyNames() {
 		String[] propNames = new String[] { //
 				WebConstants.ORBIT_INDEX_SERVICE_URL, //
+				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				OrbitConstants.ORBIT_USER_REGISTRY_URL, //
 				OrbitConstants.ORBIT_AUTH_URL, //

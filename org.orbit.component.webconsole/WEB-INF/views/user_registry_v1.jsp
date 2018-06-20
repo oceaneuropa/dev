@@ -4,6 +4,7 @@
 <%@ page import="org.orbit.component.api.tier1.account.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
 <%
+	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 	UserAccount[] userAccounts = (UserAccount[]) request.getAttribute("userAccounts");
 	if (userAccounts == null) {
@@ -20,6 +21,7 @@
 %>
 </head>
 <body>
+	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
 	<div class="div01">
 		<h2>User Accounts</h2>
 		<table id="table01">
@@ -62,7 +64,7 @@
 			%>
 			<tr>
 				<td id="td1"><%=userId%></td>
-				<td id="td2"><%=password%>s</td>
+				<td id="td2"><%=password%></td>
 				<td id="td2"><%=firstName%></td>
 				<td id="td2"><%=lastName%></td>
 				<td id="td2"><%=email%></td>

@@ -6,6 +6,7 @@ public class WebConstants {
 
 	public static final String PLATFORM_WEB_CONSOLE_AUTOSTART = "platform.web_console.autostart";
 	public static final String PLATFORM_WEB_CONSOLE_CONTEXT_ROOT = "platform.web_console.context_root";
+	public static final String COMPONENT_WEB_CONSOLE_CONTEXT_ROOT = "component.web_console.context_root";
 
 	public static String INDEX_SERVICE_INDEXER_ID = "component.index_service.indexer"; // index provider id for IndexService
 	public static String CHANNEL_INDEXER_ID = "component.channel.indexer"; // index provider id for ChannelService
