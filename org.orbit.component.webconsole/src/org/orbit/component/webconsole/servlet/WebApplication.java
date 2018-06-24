@@ -64,7 +64,11 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/userregistryupdate", new UserRegistryUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/userregistrydelete", new UserRegistryDeleteServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/domain", new DomainMachinesServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain", new DomainMachineGetServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domainmachineadd", new DomainMachineAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domainmachineupdate", new DomainMachineUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domainmachinedelete", new DomainMachineDeleteServlet(), dicts));
+
 		addServlet(new ServletMetadataImpl("/domain/platforms", new DomainPlatformsServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/appstore", new AppStoreServlet(), dicts));
 

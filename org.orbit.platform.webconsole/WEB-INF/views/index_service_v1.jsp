@@ -30,7 +30,7 @@
 				<th width="50">Id</th>
 				<th width="200">Type</th>
 				<th width="200">Name</th>
-				<th width="650">Properties</th>
+				<th width="750">Properties</th>
 			</tr>
 			<%
 				if (indexItems.isEmpty()) {

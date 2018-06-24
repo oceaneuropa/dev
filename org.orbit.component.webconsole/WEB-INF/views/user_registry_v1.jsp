@@ -32,7 +32,7 @@
 		<table class="main_table01">
 			<form id="main_list">
 			<tr>
-				<th class="th1" width="20"></th>
+				<th class="th1" width="11"></th>
 				<th class="th1" width="150">Id</th>
 				<th class="th1" width="150">Name</th>
 				<th class="th1" width="150">Email</th>
@@ -78,6 +78,7 @@
 				<td class="td2"><%=email%></td>
 				<td class="td1"><%=phone%></td>
 				<td class="td1">
+					<!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details -->
 					<details>
   						<summary>More</summary>
   						<div style="text-align: left;">

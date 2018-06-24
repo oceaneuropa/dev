@@ -57,6 +57,7 @@ public class WebApplication extends WebApplicationImpl {
 
 		// Add resources
 		addResource(new ResourceMetadataImpl("/views/css", "/WEB-INF/views/css"));
+		addResource(new ResourceMetadataImpl("/views/js", "/WEB-INF/views/js"));
 		// addResource(new ResourceMetadataImpl("/views/menu", "/WEB-INF/views/menu"));
 
 		// Add servlets

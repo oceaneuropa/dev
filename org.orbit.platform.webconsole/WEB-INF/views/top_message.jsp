@@ -6,21 +6,12 @@
 	String message = (String) request.getAttribute("message");
 	if (message != null && !message.isEmpty()) {
 %>
+<script type="text/javascript" src="<%=contextRoot + "/views/js/top_message.js"%>"></script>
 <div id="message_div" class="message_div01">
 	<%=message%>
 	<a href="javascript:showHide('message_div')" style="float: right">Dismiss</a>
 </div>
 <p></p>
-<script>
-	function showHide(elementId) {
-		var x = document.getElementById(elementId);
-		if (x.style.display === "none") {
-			x.style.display = "block";
-		} else {
-			x.style.display = "none";
-		}
-	}
-</script>
 <%
 	}
 %>
