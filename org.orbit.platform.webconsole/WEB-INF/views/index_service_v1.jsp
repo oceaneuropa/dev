@@ -12,9 +12,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Index Services</title>
-<%
-	out.print("<link rel=\"stylesheet\" href=\"" + contextRoot + "/views/css/style.css\">");
-%>
+<link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 </head>
 <body>
 	<jsp:include page="<%=contextRoot + "/top_menu"%>" />

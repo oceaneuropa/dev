@@ -6,6 +6,8 @@
 <%
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 	MachineConfig machineConfig = (MachineConfig) request.getAttribute("machineConfig");
+
+	String message = (String) request.getAttribute("message");
 	PlatformConfig[] platformConfigs = (PlatformConfig[]) request.getAttribute("platformConfigs");
 	if (platformConfigs == null) {
 		platformConfigs = new PlatformConfig[0];
@@ -18,9 +20,17 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Domain Management (Platforms)</title>
-<%
-	out.print("<link rel=\"stylesheet\" href=\"" + contextRoot + "/views/css/style.css\">");
-%>
+<link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
+<script>
+	function showHide(elementId) {
+		var x = document.getElementById(elementId);
+		if (x.style.display === "none") {
+			x.style.display = "block";
+		} else {
+			x.style.display = "none";
+		}
+	}
+</script>
 </head>
 <body>
 	<div class="div01">

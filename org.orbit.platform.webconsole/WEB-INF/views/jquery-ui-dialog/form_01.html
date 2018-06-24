@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="../assets/styles.min.css" rel="stylesheet">
+<title>jQuery UI Dialog: Modal Dialog with Buttons</title>
+<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/start/jquery-ui.min.css" rel="stylesheet">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<script>
+		if (top !== self) {
+			$.ui.dialog.prototype._focusTabbable = $.noop;
+		}
+	</script>
+</head>
+<body>
+	<!--  https://stackoverflow.com/questions/5582593/submitting-html-form-in-jquery-dialog -->
+	<form id="modalform" style="display: none">
+		<input type="text" name="something"> <input type="text" name="somethingelse">
+	</form>
+
+	<script>
+$("#modalform").dialog({                                                            //Shows dialog
+        height: 250,
+        width: 450,
+        modal: true,
+        buttons: {
+            "Cancel": function() {
+                $( this ).dialog( "close" );
+            },
+            "Save": function() {
+                $.ajax({
+                    url: "/url/to/submit",                   //
+                    timeout: 30000,
+                    type: "POST",
+                    data: $('#modalform').serialize(),
+                    dataType: 'json',
+                    error: function(XMLHttpRequest, textStatus, errorThrown)  {
+                        alert("An error has occurred making the request: " + errorThrown)
+                    },
+                    success: function(data){                                                        
+                         //Do stuff here on success such as modal info      
+                             $( this ).dialog( "close" );
+            }
+        }
+    });
+    </script>
+
+	<div id="dialog" title="Cookie Monster Says">
+		<p>
+			Hey, me just met you, and this is crazy<br> But you got cookie, so share it maybe?
+		</p>
+	</div>
+	<script>
+		/*
+		 * jQuery UI Dialog: Modal Dialog with Buttons
+		 * https://salman-w.blogspot.com/2013/05/jquery-ui-dialog-examples.html
+		 */
+		$(function() {
+			$("#dialog").dialog({
+				modal: true,
+				resizable: false,
+				buttons: {
+					"Yeah!": function() {
+						$(this).dialog("close");
+					},
+					"Sure, Why Not": function() {
+						$(this).dialog("close");
+					}
+				}
+			});
+		});
+	</script>
+</body>
+</html>

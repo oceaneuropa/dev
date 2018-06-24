@@ -56,11 +56,17 @@ public class WebApplication extends WebApplicationImpl {
 
 		// Add resources
 		addResource(new ResourceMetadataImpl("/views/css", "/WEB-INF/views/css"));
+		addResource(new ResourceMetadataImpl("/views/js", "/WEB-INF/views/js"));
 
 		// Add servlets
-		addServlet(new ServletMetadataImpl("/userregistry", new UserRegistryServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/userregistry", new UserRegistryGetServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/userregistryadd", new UserRegistryAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/userregistryupdate", new UserRegistryUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/userregistrydelete", new UserRegistryDeleteServlet(), dicts));
+
 		addServlet(new ServletMetadataImpl("/domain", new DomainMachinesServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platforms", new DomainPlatformsServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/appstore", new AppStoreServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

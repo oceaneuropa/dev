@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
@@ -14,7 +15,7 @@ import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class UserRegistryServlet extends HttpServlet {
+public class UserRegistryGetServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5360399058993136274L;
 
@@ -24,6 +25,15 @@ public class UserRegistryServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_REGISTRY_URL);
+
+		String message = null;
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			message = (String) session.getAttribute("message");
+			if (message != null) {
+				session.removeAttribute("message");
+			}
+		}
 
 		UserAccount[] userAccounts = null;
 		UserRegistry userRegistry = OrbitClients.getInstance().getUserRegistry(userRegistryUrl);
@@ -38,13 +48,13 @@ public class UserRegistryServlet extends HttpServlet {
 			userAccounts = EMPTY_USER_ACCOUNTS;
 		}
 
+		if (message != null) {
+			request.setAttribute("message", message);
+		}
 		request.setAttribute("userAccounts", userAccounts);
 		request.getRequestDispatcher(contextRoot + "/views/user_registry_v1.jsp").forward(request, response);
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
-
 }
+
+// <script src="<%=contextRoot + "/views/js/userregistry.js"%>"></script>

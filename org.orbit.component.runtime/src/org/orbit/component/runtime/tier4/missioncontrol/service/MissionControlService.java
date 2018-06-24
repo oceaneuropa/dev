@@ -19,10 +19,10 @@ public interface MissionControlService extends WebServiceAware {
 
 	MissionRTO createMission(String typeId, String name) throws ServerException;
 
-	boolean deleteMission(String typeId, String name) throws ServerException;
-
 	boolean startMission(String typeId, String name) throws ServerException;
 
 	boolean stopMission(String typeId, String name) throws ServerException;
+
+	boolean deleteMission(String typeId, String name) throws ServerException;
 
 }

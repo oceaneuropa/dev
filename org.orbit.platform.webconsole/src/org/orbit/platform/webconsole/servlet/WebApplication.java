@@ -62,11 +62,15 @@ public class WebApplication extends WebApplicationImpl {
 		// Add servlets
 		addServlet(new ServletMetadataImpl("/hello", new HelloWorldServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/top_menu", new TopMenuServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/top_message", new TopMessageServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/indexservice", new IndexServiceServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views/menu", "/WEB-INF", dicts));
+		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views/dialog", "/WEB-INF", dicts));
+		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views/jquery-ui-dialog", "/WEB-INF", dicts));
+		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views/html5", "/WEB-INF", dicts));
 	}
 
 }

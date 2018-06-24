@@ -6,6 +6,8 @@
 <%
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
+
+	String message = (String) request.getAttribute("message");
 	MachineConfig[] machineConfigs = (MachineConfig[]) request.getAttribute("machineConfigs");
 	if (machineConfigs == null) {
 		machineConfigs = new MachineConfig[0];
@@ -16,20 +18,42 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Domain Management</title>
-<%
-	out.print("<link rel=\"stylesheet\" href=\"" + contextRoot + "/views/css/style.css\">");
-%>
+<link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
+<script>
+	function showHide(elementId) {
+		var x = document.getElementById(elementId);
+		if (x.style.display === "none") {
+			x.style.display = "block";
+		} else {
+			x.style.display = "none";
+		}
+	}
+</script>
 </head>
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
-	<div class="div01">
+	<%
+		if (message != null && !message.isEmpty()) {
+	%>
+	<div id="message_div" class="message_div01">
+		<%=message%>
+		<a href="javascript:showHide('message_div')" style="float: right">Dismiss</a>
+	</div>
+	<p></p>
+	<%
+		}
+	%>
+	<div class="main_div01">
 		<h2>Machines</h2>
-		<table id="table01">
+		<div class="top_tools_div01">
+			<button id="addDomain">Add</button>
+		</div>
+		<table class="main_table01">
 			<tr>
-				<th width="200">Id</th>
-				<th width="250">Name</th>
-				<th width="250">IP Address</th>
-				<th width="200">Actions</th>
+				<th class="th1" width="200">Id</th>
+				<th class="th1" width="250">Name</th>
+				<th class="th1" width="250">IP Address</th>
+				<th class="th1" width="200">Actions</th>
 			</tr>
 			<%
 				if (machineConfigs.length == 0) {
@@ -49,10 +73,10 @@
 						ip = StringUtil.get(ip);
 			%>
 			<tr>
-				<td id="td1"><%=id%></td>
-				<td id="td2"><%=name%></td>
-				<td id="td2"><%=ip%></td>
-				<td id="td1"><a href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">View Platforms</a></td>
+				<td class="td1"><%=id%></td>
+				<td class="td2"><%=name%></td>
+				<td class="td2"><%=ip%></td>
+				<td class="td1"><a href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">View Platforms</a></td>
 			</tr>
 			<%
 				}

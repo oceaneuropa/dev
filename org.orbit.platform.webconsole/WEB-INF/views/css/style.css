@@ -1,3 +1,14 @@
+body {
+	/* font-family: Algerian; */
+	/* font-family: Arial, Helvetica, sans-serif;*/
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+	font-size: 14px;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 400;
+	line-height: 20px;
+}
+
 h1 {
 	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 	font-size: 24px;
@@ -54,7 +65,7 @@ pre {
 
 .div01 {
 	margin: auto;
-	width: 80%;
+	width: 90%;
 	border: 2px solid #73AD21;
 	padding: 10px;
 	padding-top: 0px;
@@ -74,17 +85,6 @@ table, td, th {
 #table01 {
 	border-collapse: collapse;
 	margin: auto;
-}
-
-body {
-	/* font-family: Algerian; */
-	/* font-family: Arial, Helvetica, sans-serif;*/
-	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
-	font-size: 14px;
-	font-style: normal;
-	font-variant: normal;
-	font-weight: 400;
-	line-height: 20px;
 }
 
 #td1 {

@@ -9,4 +9,6 @@ public class WebConstants {
 	public static final String COMPONENT_WEB_CONSOLE_AUTOSTART = "component.web_console.autostart";
 	public static final String COMPONENT_WEB_CONSOLE_CONTEXT_ROOT = "component.web_console.context_root";
 
+	public static final String MESSAGE = "message";
+
 }
