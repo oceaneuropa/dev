@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet;
+package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
 
@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
@@ -15,16 +16,24 @@ import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class DomainPlatformsServlet extends HttpServlet {
+public class DomainPlatformGetServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -7293566426088740431L;
-
+	private static final long serialVersionUID = -8366157200926964290L;
 	private static final PlatformConfig[] EMPTY_PLATFORM_CONFIGS = new PlatformConfig[0];
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+
+		String message = null;
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			message = (String) session.getAttribute("message");
+			if (message != null) {
+				session.removeAttribute("message");
+			}
+		}
 
 		String machineId = request.getParameter("machineId");
 
@@ -35,6 +44,7 @@ public class DomainPlatformsServlet extends HttpServlet {
 			try {
 				machineConfig = domainMgmt.getMachineConfig(machineId);
 				platformConfigs = domainMgmt.getPlatformConfigs(machineId);
+
 			} catch (ClientException e) {
 				e.printStackTrace();
 			}
@@ -43,6 +53,9 @@ public class DomainPlatformsServlet extends HttpServlet {
 			platformConfigs = EMPTY_PLATFORM_CONFIGS;
 		}
 
+		if (message != null) {
+			request.setAttribute("message", message);
+		}
 		if (machineConfig != null) {
 			request.setAttribute("machineConfig", machineConfig);
 		}

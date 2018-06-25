@@ -7,7 +7,6 @@
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 
-	String message = (String) request.getAttribute("message");
 	MachineConfig[] machineConfigs = (MachineConfig[]) request.getAttribute("machineConfigs");
 	if (machineConfigs == null) {
 		machineConfigs = new MachineConfig[0];
@@ -19,7 +18,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
-<script type="text/javascript" src="<%=contextRoot + "/views/js/domain.js"%>" defer></script>
+<script type="text/javascript" src="<%=contextRoot + "/views/js/domain_machines.js"%>" defer></script>
 </head>
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
@@ -27,8 +26,14 @@
 	<div class="main_div01">
 		<h2>Machines</h2>
 		<div class="top_tools_div01">
+			<!-- 
 			<button onclick="addMachine()">Add</button>
 			<button onclick="deleteMachines()">Delete</button>
+			<button onclick="location.href='<%=contextRoot + "/domain"%>'">Refresh</button>
+			 -->
+			<a class="button01" href="javascript:addMachine()">Add</a>
+			<a class="button01" href="javascript:deleteMachines()">Delete</a>
+			<a class="button01" href="<%=contextRoot + "/domain"%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<form id="main_list" method="post" action="<%=contextRoot + "/domainmachinedelete"%>">
@@ -37,7 +42,7 @@
 				<th class="th1" width="200">Id</th>
 				<th class="th1" width="200">Name</th>
 				<th class="th1" width="200">IP Address</th>
-				<th class="th1" width="300">Actions</th>
+				<th class="th1" width="200">Actions</th>
 			</tr>
 			<%
 				if (machineConfigs.length == 0) {
@@ -64,7 +69,7 @@
 				<td class="td2"><%=name%></td>
 				<td class="td2"><%=ip%></td>
 				<td class="td1">
-					<a href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">View Platforms</a> |
+					<a href="<%=contextRoot%>/domain/platform?machineId=<%=id%>">Platforms</a> |
 					<a href="javascript:changeMachine('<%=id%>', '<%=name%>', '<%=ip%>')">Change</a> | 
 					<a href="javascript:deleteMachine('<%=contextRoot + "/domainmachinedelete"%>', '<%=id%>')">Delete</a>
 				</td>

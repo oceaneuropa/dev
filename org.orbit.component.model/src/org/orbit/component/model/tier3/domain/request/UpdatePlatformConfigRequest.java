@@ -1,5 +1,8 @@
 package org.orbit.component.model.tier3.domain.request;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UpdatePlatformConfigRequest {
 
 	protected String platformId;
@@ -7,6 +10,7 @@ public class UpdatePlatformConfigRequest {
 	protected String home;
 	protected String hostURL;
 	protected String contextRoot;
+	protected List<String> fieldsToUpdate = new ArrayList<String>();
 
 	public String getPlatformId() {
 		return this.platformId;
@@ -22,6 +26,7 @@ public class UpdatePlatformConfigRequest {
 
 	public void setName(String name) {
 		this.name = name;
+		this.fieldsToUpdate.add("name");
 	}
 
 	public String getHome() {
@@ -30,6 +35,7 @@ public class UpdatePlatformConfigRequest {
 
 	public void setHome(String home) {
 		this.home = home;
+		this.fieldsToUpdate.add("home");
 	}
 
 	public String getHostURL() {
@@ -38,6 +44,7 @@ public class UpdatePlatformConfigRequest {
 
 	public void setHostURL(String hostURL) {
 		this.hostURL = hostURL;
+		this.fieldsToUpdate.add("hostUrl");
 	}
 
 	public String getContextRoot() {
@@ -46,6 +53,15 @@ public class UpdatePlatformConfigRequest {
 
 	public void setContextRoot(String contextRoot) {
 		this.contextRoot = contextRoot;
+		this.fieldsToUpdate.add("contextRoot");
+	}
+
+	public List<String> getFieldsToUpdate() {
+		return this.fieldsToUpdate;
+	}
+
+	public void setFieldsToUpdate(List<String> fieldsToUpdate) {
+		this.fieldsToUpdate = fieldsToUpdate;
 	}
 
 }

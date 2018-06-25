@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet;
+package org.orbit.component.webconsole.servlet.userregistry;
 
 import java.io.IOException;
 
@@ -10,18 +10,18 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class DomainMachineDeleteServlet extends HttpServlet {
+public class UserRegistryDeleteServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 3763741024191509965L;
+	private static final long serialVersionUID = -7886418026610926872L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_REGISTRY_URL);
 		String message = "";
 
 		// String id = request.getParameter("id");
@@ -36,11 +36,11 @@ public class DomainMachineDeleteServlet extends HttpServlet {
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 		if (ids != null) {
-			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainMgmt != null) {
+			UserRegistry userRegistry = OrbitClients.getInstance().getUserRegistry(userRegistryUrl);
+			if (userRegistry != null) {
 				try {
 					for (String currId : ids) {
-						boolean currSucceed = domainMgmt.removeMachineConfig(currId);
+						boolean currSucceed = userRegistry.delete(currId);
 						if (currSucceed) {
 							hasSucceed = true;
 						} else {
@@ -58,16 +58,16 @@ public class DomainMachineDeleteServlet extends HttpServlet {
 		}
 		if (succeed) {
 			if (ids != null && ids.length > 1) {
-				message = "Machines are deleted successfully.";
+				message = "Users are deleted successfully.";
 			} else {
-				message = "Machine is deleted successfully.";
+				message = "User is deleted successfully.";
 			}
 		}
 
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain");
+		response.sendRedirect(contextRoot + "/userregistry");
 	}
 
 }

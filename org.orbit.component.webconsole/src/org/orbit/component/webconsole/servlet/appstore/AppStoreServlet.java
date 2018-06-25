@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet;
+package org.orbit.component.webconsole.servlet.appstore;
 
 import java.io.IOException;
 

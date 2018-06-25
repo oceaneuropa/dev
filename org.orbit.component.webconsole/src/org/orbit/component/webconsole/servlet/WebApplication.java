@@ -5,6 +5,19 @@ import java.util.Map;
 
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.servlet.appstore.AppStoreServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainMachineAddServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainMachineDeleteServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainMachineGetServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainMachineUpdateServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainPlatformAddServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainPlatformDeleteServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainPlatformGetServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainPlatformUpdateServlet;
+import org.orbit.component.webconsole.servlet.userregistry.UserRegistryAddServlet;
+import org.orbit.component.webconsole.servlet.userregistry.UserRegistryDeleteServlet;
+import org.orbit.component.webconsole.servlet.userregistry.UserRegistryGetServlet;
+import org.orbit.component.webconsole.servlet.userregistry.UserRegistryUpdateServlet;
 import org.orbit.service.servlet.WebApplicationImpl;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -69,7 +82,11 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/domainmachineupdate", new DomainMachineUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domainmachinedelete", new DomainMachineDeleteServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/domain/platforms", new DomainPlatformsServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/platform", new DomainPlatformGetServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/platformadd", new DomainPlatformAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/platformupdate", new DomainPlatformUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/platformdelete", new DomainPlatformDeleteServlet(), dicts));
+
 		addServlet(new ServletMetadataImpl("/appstore", new AppStoreServlet(), dicts));
 
 		// Add JSPs

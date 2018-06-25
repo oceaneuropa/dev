@@ -484,7 +484,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 				}
 			}
 
-			if (fieldsToUpdate.contains("hostURL")) {
+			if (fieldsToUpdate.contains("hostUrl")) {
 				boolean needToUpdate = (!StringUtil.equals(newHostURL, oldHostURL)) ? true : false;
 				if (needToUpdate) {
 					boolean succeed = this.platformConfigTableHandler.updateHostURL(conn, machineId, id, newHostURL);

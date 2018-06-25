@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet;
+package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
 
@@ -52,7 +52,7 @@ public class DomainMachineGetServlet extends HttpServlet {
 			request.setAttribute("message", message);
 		}
 		request.setAttribute("machineConfigs", machineConfigs);
-		request.getRequestDispatcher(contextRoot + "/views/domain_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/domain_machines_v1.jsp").forward(request, response);
 	}
 
 	@Override

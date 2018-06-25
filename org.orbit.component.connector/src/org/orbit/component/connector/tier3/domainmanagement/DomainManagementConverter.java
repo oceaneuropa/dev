@@ -192,6 +192,7 @@ public class DomainManagementConverter {
 		updatePlatformConfigDTO.setHome(updatePlatformConfig.getHome());
 		updatePlatformConfigDTO.setHostURL(updatePlatformConfig.getHostURL());
 		updatePlatformConfigDTO.setContextRoot(updatePlatformConfig.getContextRoot());
+		updatePlatformConfigDTO.setFieldsToUpdate(updatePlatformConfig.getFieldsToUpdate());
 		return updatePlatformConfigDTO;
 	}
 

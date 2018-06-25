@@ -1,5 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
@@ -9,12 +7,13 @@
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 
-	// String message = (String) request.getAttribute("message");
 	UserAccount[] userAccounts = (UserAccount[]) request.getAttribute("userAccounts");
 	if (userAccounts == null) {
 		userAccounts = new UserAccount[0];
 	}
 %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>User Registry</title>
@@ -26,8 +25,14 @@
 	<div class="main_div01">
 		<h2>User Accounts</h2>
 		<div class="top_tools_div01">
+			<!-- 
 			<button onclick="addUser()">Add</button>
 			<button onclick="deleteUsers()">Delete</button>
+			<button onclick="location.href='<%=contextRoot + "/userregistry"%>'">Refresh</button>
+			 -->
+			<a class="button01" href="javascript:addUser()">Add</a>
+			<a class="button01" href="javascript:deleteUsers()">Delete</a>
+			<a class="button01" href="<%=contextRoot + "/userregistry"%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<form id="main_list">

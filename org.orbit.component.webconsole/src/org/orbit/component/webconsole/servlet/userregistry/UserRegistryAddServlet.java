@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet;
+package org.orbit.component.webconsole.servlet.userregistry;
 
 import java.io.IOException;
 
@@ -10,11 +10,12 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserRegistry;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class UserRegistryDeleteServlet extends HttpServlet {
+public class UserRegistryAddServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -7886418026610926872L;
 
@@ -24,44 +25,39 @@ public class UserRegistryDeleteServlet extends HttpServlet {
 		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_REGISTRY_URL);
 		String message = "";
 
-		// String id = request.getParameter("id");
-		String[] ids = request.getParameterValues("id");
+		String id = request.getParameter("id");
+		String password = request.getParameter("password");
+		String firstName = request.getParameter("firstName");
+		String lastName = request.getParameter("lastName");
+		String email = request.getParameter("email");
+		String phone = request.getParameter("phone");
 
-		// if (id == null || id.isEmpty()) {
-		if (ids == null || ids.length == 0) {
+		if (id == null || id.isEmpty()) {
 			message = "'id' parameter is not set.";
 		}
 
 		boolean succeed = false;
-		boolean hasSucceed = false;
-		boolean hasFailed = false;
-		if (ids != null) {
+		if (id != null) {
 			UserRegistry userRegistry = OrbitClients.getInstance().getUserRegistry(userRegistryUrl);
 			if (userRegistry != null) {
 				try {
-					for (String currId : ids) {
-						boolean currSucceed = userRegistry.delete(currId);
-						if (currSucceed) {
-							hasSucceed = true;
-						} else {
-							hasFailed = true;
-						}
-					}
+					CreateUserAccountRequest createUserAccountRequest = new CreateUserAccountRequest();
+					createUserAccountRequest.setUserId(id);
+					createUserAccountRequest.setPassword(password);
+					createUserAccountRequest.setFirstName(firstName);
+					createUserAccountRequest.setLastName(lastName);
+					createUserAccountRequest.setEmail(email);
+					createUserAccountRequest.setPhone(phone);
+					succeed = userRegistry.register(createUserAccountRequest);
+
 				} catch (ClientException e) {
 					e.printStackTrace();
 					message = e.getMessage();
 				}
 			}
 		}
-		if (hasSucceed && !hasFailed) {
-			succeed = true;
-		}
 		if (succeed) {
-			if (ids != null && ids.length > 1) {
-				message = "Users are deleted successfully.";
-			} else {
-				message = "User is deleted successfully.";
-			}
+			message = "User is added successfully.";
 		}
 
 		HttpSession session = request.getSession(true);
@@ -71,3 +67,7 @@ public class UserRegistryDeleteServlet extends HttpServlet {
 	}
 
 }
+
+// request.setAttribute("message", message);
+// request.getRequestDispatcher(contextRoot + "/userregistry").forward(request, response);
+// response.sendRedirect(contextRoot + "/userregistry?message=" + message);

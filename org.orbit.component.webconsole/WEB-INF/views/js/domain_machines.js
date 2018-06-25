@@ -1,6 +1,3 @@
-function doMessage(message) {
-	alert(message);
-}
 
 function addMachine() {
 	var addMachineDialog = document.getElementById('newMachineDialog');

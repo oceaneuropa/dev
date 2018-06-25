@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet;
+package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
 
@@ -11,13 +11,14 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
+import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
+import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class DomainMachineAddServlet extends HttpServlet {
+public class DomainMachineUpdateServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -8369457157390475521L;
+	private static final long serialVersionUID = -6229931528096900487L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -38,11 +39,17 @@ public class DomainMachineAddServlet extends HttpServlet {
 			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 			if (domainMgmt != null) {
 				try {
-					AddMachineConfigRequest addMachineRequest = new AddMachineConfigRequest();
-					addMachineRequest.setMachineId(id);
-					addMachineRequest.setName(name);
-					addMachineRequest.setIpAddress(ip);
-					succeed = domainMgmt.addMachineConfig(addMachineRequest);
+					MachineConfig machineConfig = domainMgmt.getMachineConfig(id);
+					if (machineConfig == null) {
+						message = "Machine configuration is not found.";
+
+					} else {
+						UpdateMachineConfigRequest updateMachineRequest = new UpdateMachineConfigRequest();
+						updateMachineRequest.setMachineId(id);
+						updateMachineRequest.setName(name);
+						updateMachineRequest.setIpAddress(ip);
+						succeed = domainMgmt.updateMachineConfig(updateMachineRequest);
+					}
 
 				} catch (ClientException e) {
 					e.printStackTrace();
@@ -51,7 +58,7 @@ public class DomainMachineAddServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = "Machine is added successfully.";
+			message = "Machine is changed successfully.";
 		}
 
 		HttpSession session = request.getSession(true);

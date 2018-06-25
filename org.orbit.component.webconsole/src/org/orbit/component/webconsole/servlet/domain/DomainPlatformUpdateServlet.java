@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet;
+package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
 
@@ -11,14 +11,14 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
-import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
+import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
+import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class DomainMachineUpdateServlet extends HttpServlet {
+public class DomainPlatformUpdateServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -6229931528096900487L;
+	private static final long serialVersionUID = -251759560621225982L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -26,10 +26,15 @@ public class DomainMachineUpdateServlet extends HttpServlet {
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 		String message = "";
 
+		String machineId = request.getParameter("machineId");
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
-		String ip = request.getParameter("ip");
+		String hostUrl = request.getParameter("hostUrl");
+		String theContextRoot = request.getParameter("contextRoot");
 
+		if (machineId == null || machineId.isEmpty()) {
+			message = "'machineId' parameter is not set.";
+		}
 		if (id == null || id.isEmpty()) {
 			message = "'id' parameter is not set.";
 		}
@@ -39,16 +44,17 @@ public class DomainMachineUpdateServlet extends HttpServlet {
 			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 			if (domainMgmt != null) {
 				try {
-					MachineConfig machineConfig = domainMgmt.getMachineConfig(id);
-					if (machineConfig == null) {
-						message = "Machine configuration is not found.";
+					PlatformConfig platformConfig = domainMgmt.getPlatformConfig(machineId, id);
+					if (platformConfig == null) {
+						message = "Platform configuration is not found.";
 
 					} else {
-						UpdateMachineConfigRequest updateMachineRequest = new UpdateMachineConfigRequest();
-						updateMachineRequest.setMachineId(id);
-						updateMachineRequest.setName(name);
-						updateMachineRequest.setIpAddress(ip);
-						succeed = domainMgmt.updateMachineConfig(updateMachineRequest);
+						UpdatePlatformConfigRequest updatePlatformRequest = new UpdatePlatformConfigRequest();
+						updatePlatformRequest.setPlatformId(id);
+						updatePlatformRequest.setName(name);
+						updatePlatformRequest.setHostURL(hostUrl);
+						updatePlatformRequest.setContextRoot(theContextRoot);
+						succeed = domainMgmt.updatPlatformConfig(machineId, updatePlatformRequest);
 					}
 
 				} catch (ClientException e) {
@@ -58,13 +64,13 @@ public class DomainMachineUpdateServlet extends HttpServlet {
 			}
 		}
 		if (succeed) {
-			message = "Machine is changed successfully.";
+			message = "Platform is changed successfully.";
 		}
 
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain");
+		response.sendRedirect(contextRoot + "/domain/platform?machineId=" + machineId);
 	}
 
 }
