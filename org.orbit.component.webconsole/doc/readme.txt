@@ -18,3 +18,12 @@ https://www.w3schools.com/colors/colors_picker.asp (html color picker)
 
 Servlet
 https://stackoverflow.com/questions/17001185/pass-hidden-parameters-using-response-sendredirect (pass hidden parameter)
+
+CSS
+https://css-tricks.com/triangle-breadcrumbs/ (breadcrumbs)
+http://css3buttongenerator.com/ (button)
+
+
+
+
+
