@@ -1,11 +1,31 @@
-package org.orbit.component.api.tier1.config;
+package org.orbit.component.api.tier1.registry;
 
 import java.util.Map;
 
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface ConfigRegistry extends IAdaptable {
+/**
+ * @see com.sun.jna.platform.win32.Advapi32Util (jna-platform-4.1.0.jar)
+ *
+ *      <pre>
+ * 		/FileSystem/{fs_id}/	Key; Type; Value;	
+ * 		/Software/{app_id}/		Key; Type; Value;
+ *      </pre>
+ * 
+ *      <pre>
+ *      Types:
+ *      string,
+ *      boolean,
+ *      int,
+ *      long,
+ *      float,
+ *      double,
+ *      date
+ *      </pre>
+ * 
+ */
+public interface Registry extends IAdaptable {
 
 	String getName();
 
@@ -16,6 +36,8 @@ public interface ConfigRegistry extends IAdaptable {
 	void update(Map<String, Object> properties);
 
 	boolean ping();
+
+	// setString();
 
 	/**
 	 * Get the properties in a path.

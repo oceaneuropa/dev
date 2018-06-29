@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.api.tier1.config.ConfigRegistry;
-import org.orbit.component.api.tier1.config.EPath;
+import org.orbit.component.api.tier1.registry.Registry;
+import org.orbit.component.api.tier1.registry.EPath;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier1.config.ConfigRegistryWSClient;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.StringUtil;
 
-public class ConfigRegistryImplV1 implements ConfigRegistry {
+public class ConfigRegistryImplV1 implements Registry {
 
 	protected Map<String, Object> properties;
 	protected ConfigRegistryWSClient client;

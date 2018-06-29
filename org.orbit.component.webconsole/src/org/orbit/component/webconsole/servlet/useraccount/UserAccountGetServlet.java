@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet.userregistry;
+package org.orbit.component.webconsole.servlet.useraccount;
 
 import java.io.IOException;
 
@@ -11,11 +11,11 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class UserRegistryGetServlet extends HttpServlet {
+public class UserAccountGetServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5360399058993136274L;
 
@@ -24,7 +24,7 @@ public class UserRegistryGetServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_REGISTRY_URL);
+		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
 
 		String message = null;
 		HttpSession session = request.getSession(false);
@@ -36,7 +36,7 @@ public class UserRegistryGetServlet extends HttpServlet {
 		}
 
 		UserAccount[] userAccounts = null;
-		UserRegistry userRegistry = OrbitClients.getInstance().getUserRegistry(userRegistryUrl);
+		UserAccounts userRegistry = OrbitClients.getInstance().getUserAccounts(userRegistryUrl);
 		if (userRegistry != null) {
 			try {
 				userAccounts = userRegistry.getUserAccounts();
@@ -52,7 +52,7 @@ public class UserRegistryGetServlet extends HttpServlet {
 			request.setAttribute("message", message);
 		}
 		request.setAttribute("userAccounts", userAccounts);
-		request.getRequestDispatcher(contextRoot + "/views/user_registry_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/user_accounts_v1.jsp").forward(request, response);
 	}
 
 }

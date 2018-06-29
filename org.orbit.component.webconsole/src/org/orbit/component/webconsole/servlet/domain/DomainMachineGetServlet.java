@@ -13,7 +13,6 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.webconsole.WebConstants;
-import org.origin.common.rest.client.ClientException;
 
 public class DomainMachineGetServlet extends HttpServlet {
 
@@ -23,6 +22,9 @@ public class DomainMachineGetServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// ---------------------------------------------------------------
+		// Get parameters
+		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
@@ -35,12 +37,15 @@ public class DomainMachineGetServlet extends HttpServlet {
 			}
 		}
 
+		// ---------------------------------------------------------------
+		// Handle data
+		// ---------------------------------------------------------------
 		MachineConfig[] machineConfigs = null;
 		DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 		if (domainMgmt != null) {
 			try {
 				machineConfigs = domainMgmt.getMachineConfigs();
-			} catch (ClientException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -48,6 +53,9 @@ public class DomainMachineGetServlet extends HttpServlet {
 			machineConfigs = EMPTY_MACHINE_CONFIGS;
 		}
 
+		// ---------------------------------------------------------------
+		// Render data
+		// ---------------------------------------------------------------
 		if (message != null) {
 			request.setAttribute("message", message);
 		}
@@ -55,9 +63,9 @@ public class DomainMachineGetServlet extends HttpServlet {
 		request.getRequestDispatcher(contextRoot + "/views/domain_machines_v1.jsp").forward(request, response);
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
-
 }
+
+// @Override
+// protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+// doGet(request, response);
+// }

@@ -11,7 +11,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.component.api.tier1.auth.Auth;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
@@ -89,9 +89,9 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 
 		this.properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_USER_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_AUTH_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_CONFIG_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_REGISTRY_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_APP_STORE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_NODE_CONTROL_URL);
@@ -162,11 +162,11 @@ public class ServicesCommand implements Annotated, CommandActivator {
 	}
 
 	protected void listUserRegistryServices() throws ClientException {
-		List<LoadBalanceResource<UserRegistry>> resources = ServicesCommandHelper.INSTANCE.getUserRegistryResources(this.userRegistryConnector);
+		List<LoadBalanceResource<UserAccounts>> resources = ServicesCommandHelper.INSTANCE.getUserRegistryResources(this.userRegistryConnector);
 
 		String[][] rows = new String[resources.size()][USERREGISTRY_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
-		for (LoadBalanceResource<UserRegistry> resource : resources) {
+		for (LoadBalanceResource<UserAccounts> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
 			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_NAMESPACE);
 			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_NAME);

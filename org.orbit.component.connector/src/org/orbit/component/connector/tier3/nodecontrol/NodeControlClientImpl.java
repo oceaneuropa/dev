@@ -4,7 +4,9 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
+import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.connector.OrbitConstants;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -13,6 +15,8 @@ import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.Request;
 
 public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, NodeControlWSClient> implements NodeControlClient {
+
+	private static final NodeInfo[] EMPTY_NODE_INFOS = new NodeInfo[0];
 
 	/**
 	 * 
@@ -36,6 +40,20 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
 		return new NodeControlWSClient(config);
+	}
+
+	@Override
+	public NodeInfo[] getNodes() throws ClientException {
+		NodeInfo[] nodeInfos = null;
+		Request listNodeRequest = new Request(Requests.GET_NODES);
+		Response listNodeResponse = sendRequest(listNodeRequest);
+		if (listNodeResponse != null) {
+			nodeInfos = NodeControlModelConverter.INSTANCE.getNodes(listNodeResponse);
+		}
+		if (nodeInfos == null) {
+			nodeInfos = EMPTY_NODE_INFOS;
+		}
+		return nodeInfos;
 	}
 
 	// private Map<String, Object> checkProperties(Map<String, Object> properties) {

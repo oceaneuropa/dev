@@ -19,7 +19,7 @@ function deleteMachine(actionURL, machineId) {
 	var messageDiv = document.getElementById('deleteMachineDialogMessageDiv');
 	messageDiv.innerHTML = "Are you sure you want to delete machine '" + machineId + "'?";
 
-	var okButton = document.getElementById('doDeleteMachine');
+	var okButton = document.getElementById('okDeleteMachine');
 	okButton.addEventListener('click', function() {
 		var form = document.createElement("form");
 		form.setAttribute("method", "post");
@@ -46,7 +46,7 @@ function deleteMachines() {
 	var messageDiv = document.getElementById('deleteMachinesDialogMessageDiv');
 	messageDiv.innerHTML = "Are you sure you want to delete selected machines?";
 
-	var okButton = document.getElementById('doDeleteMachines');
+	var okButton = document.getElementById('okDeleteMachines');
 	okButton.addEventListener('click', function() {
 		var form = document.getElementById("main_list");
 		form.submit();

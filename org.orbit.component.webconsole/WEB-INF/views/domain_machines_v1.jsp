@@ -31,9 +31,9 @@
 			<button onclick="deleteMachines()">Delete</button>
 			<button onclick="location.href='<%=contextRoot + "/domain"%>'">Refresh</button>
 			 -->
-			<a class="button01" href="javascript:addMachine()">Add</a>
-			<a class="button01" href="javascript:deleteMachines()">Delete</a>
-			<a class="button01" href="<%=contextRoot + "/domain"%>">Refresh</a>
+			<a class="button02" href="javascript:addMachine()">Add</a>
+			<a class="button02" href="javascript:deleteMachines()">Delete</a>
+			<a class="button02" href="<%=contextRoot + "/domain"%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<form id="main_list" method="post" action="<%=contextRoot + "/domainmachinedelete"%>">
@@ -69,9 +69,9 @@
 				<td class="td2"><%=name%></td>
 				<td class="td2"><%=ip%></td>
 				<td class="td1">
-					<a href="<%=contextRoot%>/domain/platform?machineId=<%=id%>">Platforms</a> |
-					<a href="javascript:changeMachine('<%=id%>', '<%=name%>', '<%=ip%>')">Change</a> | 
-					<a href="javascript:deleteMachine('<%=contextRoot + "/domainmachinedelete"%>', '<%=id%>')">Delete</a>
+					<a class="action01" href="<%=contextRoot%>/domain/platform?machineId=<%=id%>">View Platforms</a> |
+					<a class="action01" href="javascript:changeMachine('<%=id%>', '<%=name%>', '<%=ip%>')">Change</a> | 
+					<a class="action01" href="javascript:deleteMachine('<%=contextRoot + "/domainmachinedelete"%>', '<%=id%>')">Delete</a>
 				</td>
 			</tr>
 			<%
@@ -84,7 +84,7 @@
 
 	<dialog id="newMachineDialog">
 	<div class="dialog_title_div01">Add Machine</div>
-		<form method="post" action="<%=contextRoot + "/domainmachineadd"%>">
+		<form id="new_form" method="post" action="<%=contextRoot + "/domainmachineadd"%>">
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
@@ -102,15 +102,17 @@
 			</table>
 		</div>
 		<div class="dialog_button_div01">
-			<button type="submit">OK</button>
-			<button id="cancelAddMachine" type="reset">Cancel</button>
+			<!-- <button class="button02" type="submit">OK</button> -->
+			<!-- <button class="button02" id="cancelAddMachine" type="reset">Cancel</button> -->
+			<a class="button02" href="javascript:document.getElementById('new_form').submit();">OK</a>
+			<a class="button02b" id="cancelAddMachine" href="javascript:document.getElementById('new_form').reset();">Cancel</a>
 		</div>
 		</form>
 	</dialog>
 
 	<dialog id="changeMachineDialog">
 	<div class="dialog_title_div01">Change Machine</div>
-		<form method="post" action="<%=contextRoot + "/domainmachineupdate"%>">
+		<form id="update_form" method="post" action="<%=contextRoot + "/domainmachineupdate"%>">
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
@@ -128,8 +130,10 @@
 			</table>
 		</div>
 		<div class="dialog_button_div01">
-			<button type="submit">OK</button>
-			<button id="cancelChangeMachine" type="reset">Cancel</button>
+			<!-- <button type="submit">OK</button> -->
+			<!-- <button id="cancelChangeMachine" type="reset">Cancel</button> -->
+			<a class="button02" href="javascript:document.getElementById('update_form').submit();">OK</a>
+			<a id="cancelChangeMachine" class="button02b" href="javascript:document.getElementById('update_form').reset();">Cancel</a>
 		</div>
 		</form>
 	</dialog>
@@ -138,8 +142,10 @@
 		<div class="dialog_title_div01">Delete Machine</div>
 		<div class="dialog_main_div01" id="deleteMachineDialogMessageDiv">Are you sure you want to delete the machine?</div>
 		<div class="dialog_button_div01">
-			<button id="doDeleteMachine">OK</button>
-			<button id="cancelDeleteMachine">Cancel</button>
+			<!-- <button id="doDeleteMachine">OK</button> -->
+			<!-- <button id="cancelDeleteMachine">Cancel</button> -->
+			<a id="okDeleteMachine" class="button02">OK</a>
+			<a id="cancelDeleteMachine" class="button02b">Cancel</a>
 		</div>
 	</dialog>
 
@@ -147,8 +153,10 @@
 		<div class="dialog_title_div01">Delete Machine</div>
 		<div class="dialog_main_div01" id="deleteMachinesDialogMessageDiv">Are you sure you want to delete selected machines?</div>
 		<div class="dialog_button_div01">
-			<button id="doDeleteMachines">OK</button>
-			<button id="cancelDeleteMachines">Cancel</button>
+			<!-- <button id="doDeleteMachines">OK</button> -->
+			<!-- <button id="cancelDeleteMachines">Cancel</button> -->
+			<a id="okDeleteMachines" class="button02">OK</a>
+			<a id="cancelDeleteMachines" class="button02b">Cancel</a>
 		</div>
 	</dialog>
 

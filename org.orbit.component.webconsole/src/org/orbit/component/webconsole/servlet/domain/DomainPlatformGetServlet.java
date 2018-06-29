@@ -63,9 +63,9 @@ public class DomainPlatformGetServlet extends HttpServlet {
 		request.getRequestDispatcher(contextRoot + "/views/domain_platforms_v1.jsp").forward(request, response);
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
-
 }
+
+// @Override
+// protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+// doGet(request, response);
+// }

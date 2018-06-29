@@ -63,12 +63,17 @@ pre {
 	line-height: 18.5714px;
 }
 
-.div01 {
+.main_div01 {
 	margin: auto;
 	width: 90%;
-	border: 2px solid #73AD21;
+	/* border: 2px solid #73AD21; */
+	/* 73AD21 #b3b3b3 */
+	border: 1px solid #b3b3b3;
 	padding: 10px;
 	padding-top: 0px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
 }
 
 table, td, th {

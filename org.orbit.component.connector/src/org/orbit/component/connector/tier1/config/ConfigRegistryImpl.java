@@ -3,15 +3,15 @@ package org.orbit.component.connector.tier1.config;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.config.ConfigRegistry;
-import org.orbit.component.api.tier1.config.EPath;
+import org.orbit.component.api.tier1.registry.Registry;
+import org.orbit.component.api.tier1.registry.EPath;
 import org.orbit.component.connector.OrbitConstants;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class ConfigRegistryImpl implements ConfigRegistry {
+public class ConfigRegistryImpl implements Registry {
 
 	protected Map<String, Object> properties;
 	protected ConfigRegistryWSClient client;
@@ -22,7 +22,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	 * @param connector
 	 * @param properties
 	 */
-	public ConfigRegistryImpl(ServiceConnector<ConfigRegistry> connector, Map<String, Object> properties) {
+	public ConfigRegistryImpl(ServiceConnector<Registry> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
@@ -40,7 +40,7 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	@Override
 	public boolean close() throws ClientException {
 		@SuppressWarnings("unchecked")
-		ServiceConnector<ConfigRegistry> connector = getAdapter(ServiceConnector.class);
+		ServiceConnector<Registry> connector = getAdapter(ServiceConnector.class);
 		if (connector != null) {
 			return connector.close(this);
 		}

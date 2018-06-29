@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet.userregistry;
+package org.orbit.component.webconsole.servlet.useraccount;
 
 import java.io.IOException;
 
@@ -10,18 +10,18 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class UserRegistryDeleteServlet extends HttpServlet {
+public class UserAccountDeleteServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -7886418026610926872L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_REGISTRY_URL);
+		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
 		String message = "";
 
 		// String id = request.getParameter("id");
@@ -36,7 +36,7 @@ public class UserRegistryDeleteServlet extends HttpServlet {
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 		if (ids != null) {
-			UserRegistry userRegistry = OrbitClients.getInstance().getUserRegistry(userRegistryUrl);
+			UserAccounts userRegistry = OrbitClients.getInstance().getUserAccounts(userRegistryUrl);
 			if (userRegistry != null) {
 				try {
 					for (String currId : ids) {
@@ -67,7 +67,7 @@ public class UserRegistryDeleteServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/userregistry");
+		response.sendRedirect(contextRoot + "/useraccount");
 	}
 
 }

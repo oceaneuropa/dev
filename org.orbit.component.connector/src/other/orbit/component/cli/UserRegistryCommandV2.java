@@ -8,7 +8,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserAccounts;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
@@ -55,8 +55,8 @@ public class UserRegistryCommandV2 {
 		OSGiServiceUtil.unregister(UserRegistryCommandV2.class.getName(), this);
 	}
 
-	protected UserRegistry getUserRegistry(String url) {
-		return OrbitClients.getInstance().getUserRegistry(url);
+	protected UserAccounts getUserRegistry(String url) {
+		return OrbitClients.getInstance().getUserAccounts(url);
 	}
 
 	@Descriptor("list_users")
@@ -65,7 +65,7 @@ public class UserRegistryCommandV2 {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_users", new String[] { "url", url });
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserAccounts userRegistry = getUserRegistry(url);
 
 		UserAccount[] userAccounts = userRegistry.getUserAccounts();
 
@@ -103,7 +103,7 @@ public class UserRegistryCommandV2 {
 			return;
 		}
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserAccounts userRegistry = getUserRegistry(url);
 
 		UserAccount userAccount = userRegistry.getUserAccount(username);
 
@@ -148,7 +148,7 @@ public class UserRegistryCommandV2 {
 				new String[] { "phone", phone } //
 		);
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserAccounts userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("userId is not set.");
@@ -188,7 +188,7 @@ public class UserRegistryCommandV2 {
 				new String[] { "newpassword", newPassword } //
 		);
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserAccounts userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
@@ -210,7 +210,7 @@ public class UserRegistryCommandV2 {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "activate_user", new String[] { "url", url }, new String[] { "username", username });
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserAccounts userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
@@ -231,7 +231,7 @@ public class UserRegistryCommandV2 {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "deactivate_user", new String[] { "url", url }, new String[] { "username", username });
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserAccounts userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");
@@ -252,7 +252,7 @@ public class UserRegistryCommandV2 {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_user", new String[] { "url", url }, new String[] { "username", username });
 
-		UserRegistry userRegistry = getUserRegistry(url);
+		UserAccounts userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
 			System.out.println("username is not set.");

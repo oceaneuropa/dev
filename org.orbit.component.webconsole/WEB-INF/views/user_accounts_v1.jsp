@@ -16,7 +16,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>User Registry</title>
+<title>User Accounts</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 </head>
 <body>
@@ -28,11 +28,11 @@
 			<!-- 
 			<button onclick="addUser()">Add</button>
 			<button onclick="deleteUsers()">Delete</button>
-			<button onclick="location.href='<%=contextRoot + "/userregistry"%>'">Refresh</button>
+			<button onclick="location.href='<%=contextRoot + "/useraccount"%>'">Refresh</button>
 			 -->
 			<a class="button01" href="javascript:addUser()">Add</a>
 			<a class="button01" href="javascript:deleteUsers()">Delete</a>
-			<a class="button01" href="<%=contextRoot + "/userregistry"%>">Refresh</a>
+			<a class="button01" href="<%=contextRoot + "/useraccount"%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<form id="main_list">
@@ -119,7 +119,7 @@
 
 	<dialog id="newUserDialog">
 	<div class="dialog_title_div01">Add User</div>
-		<form method="post" action="<%=contextRoot + "/userregistryadd"%>">
+		<form method="post" action="<%=contextRoot + "/useraccountadd"%>">
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
@@ -157,7 +157,7 @@
 
 	<dialog id="changeUserDialog">
 	<div class="dialog_title_div01">Change User</div>
-		<form method="post" action="<%=contextRoot + "/userregistryupdate"%>">
+		<form method="post" action="<%=contextRoot + "/useraccountupdate"%>">
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
@@ -230,7 +230,7 @@
 	}
 
 	function deleteUser(userId) {
-		var actionURL = "<%=contextRoot + "/userregistrydelete"%>";
+		var actionURL = "<%=contextRoot + "/useraccountdelete"%>";
 		var dialog = document.getElementById('deleteUserDialog');
 
 		var messageDiv = document.getElementById('deleteUserDialogMessageDiv');
@@ -258,7 +258,7 @@
 	}
 
 	function deleteUsers() {
-		var actionURL = "<%=contextRoot + "/userregistrydelete"%>";
+		var actionURL = "<%=contextRoot + "/useraccountdelete"%>";
 		var dialog = document.getElementById('deleteUsersDialog');
 
 		var messageDiv = document.getElementById('deleteUsersDialogMessageDiv');

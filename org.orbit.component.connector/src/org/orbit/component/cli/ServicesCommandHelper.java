@@ -2,7 +2,7 @@ package org.orbit.component.cli;
 
 import java.util.List;
 
-import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.origin.common.loadbalance.LoadBalanceResource;
@@ -72,17 +72,17 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<LoadBalanceResource<UserRegistry>> getUserRegistryResources(UserRegistryConnectorV1 connector) throws ClientException {
+	public List<LoadBalanceResource<UserAccounts>> getUserRegistryResources(UserRegistryConnectorV1 connector) throws ClientException {
 		if (connector == null) {
 			System.out.println("UserRegistryConnector is not available.");
 			throw new ClientException(500, "UserRegistryConnector is not available.");
 		}
-		LoadBalancer<UserRegistry> balancer = connector.getLoadBalancer();
+		LoadBalancer<UserAccounts> balancer = connector.getLoadBalancer();
 		if (balancer == null) {
 			System.out.println("load balancer is not available.");
 			return null;
 		}
-		List<LoadBalanceResource<UserRegistry>> resources = balancer.getResources();
+		List<LoadBalanceResource<UserAccounts>> resources = balancer.getResources();
 		if (resources == null) {
 			System.out.println("load balancer's resource is null.");
 			return null;

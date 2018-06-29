@@ -33,7 +33,7 @@ public class TopMenuServlet extends HttpServlet {
 
 		servicesURLMap.put("User Registry", contextRoot2 + "/userregistry");
 		servicesURLMap.put("App Store", contextRoot2 + "/appstore");
-		servicesURLMap.put("Domain", contextRoot2 + "/domain");
+		servicesURLMap.put("Domain", contextRoot2 + "/domain/machine");
 
 		request.setAttribute("servicesURLMap", servicesURLMap);
 		request.getRequestDispatcher(contextRoot + "/views/menu/top_menu_v2.jsp").include(request, response);

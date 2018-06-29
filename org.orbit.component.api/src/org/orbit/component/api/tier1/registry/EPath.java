@@ -1,4 +1,4 @@
-package org.orbit.component.api.tier1.config;
+package org.orbit.component.api.tier1.registry;
 
 import org.origin.common.util.StringUtil;
 

@@ -5,7 +5,7 @@ import java.util.Map;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface UserRegistry extends IAdaptable {
+public interface UserAccounts extends IAdaptable {
 
 	String getName();
 

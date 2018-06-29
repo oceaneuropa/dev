@@ -3,9 +3,9 @@ package org.orbit.component.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.component.api.tier1.auth.Auth;
-import org.orbit.component.api.tier1.config.ConfigRegistry;
+import org.orbit.component.api.tier1.registry.Registry;
 import org.orbit.component.api.tier2.appstore.AppStore;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
@@ -35,9 +35,9 @@ public class OrbitClients {
 	}
 
 	// tier1
-	protected ServiceConnectorAdapter<UserRegistry> userRegistryConnector;
 	protected ServiceConnectorAdapter<Auth> authConnector;
-	protected ServiceConnectorAdapter<ConfigRegistry> configRegistryConnector;
+	protected ServiceConnectorAdapter<UserAccounts> userAccountsConnector;
+	protected ServiceConnectorAdapter<Registry> registryConnector;
 
 	// tier2
 	protected ServiceConnectorAdapter<AppStore> appStoreConnector;
@@ -57,11 +57,11 @@ public class OrbitClients {
 		this.authConnector = new ServiceConnectorAdapter<Auth>(Auth.class);
 		this.authConnector.start(bundleContext);
 
-		this.userRegistryConnector = new ServiceConnectorAdapter<UserRegistry>(UserRegistry.class);
-		this.userRegistryConnector.start(bundleContext);
+		this.userAccountsConnector = new ServiceConnectorAdapter<UserAccounts>(UserAccounts.class);
+		this.userAccountsConnector.start(bundleContext);
 
-		this.configRegistryConnector = new ServiceConnectorAdapter<ConfigRegistry>(ConfigRegistry.class);
-		this.configRegistryConnector.start(bundleContext);
+		this.registryConnector = new ServiceConnectorAdapter<Registry>(Registry.class);
+		this.registryConnector.start(bundleContext);
 
 		// tier2
 		this.appStoreConnector = new ServiceConnectorAdapter<AppStore>(AppStore.class);
@@ -81,19 +81,19 @@ public class OrbitClients {
 
 	public void stop(final BundleContext bundleContext) {
 		// tier1
-		if (this.userRegistryConnector != null) {
-			this.userRegistryConnector.stop(bundleContext);
-			this.userRegistryConnector = null;
-		}
-
 		if (this.authConnector != null) {
 			this.authConnector.stop(bundleContext);
 			this.authConnector = null;
 		}
 
-		if (this.configRegistryConnector != null) {
-			this.configRegistryConnector.stop(bundleContext);
-			this.configRegistryConnector = null;
+		if (this.userAccountsConnector != null) {
+			this.userAccountsConnector.stop(bundleContext);
+			this.userAccountsConnector = null;
+		}
+
+		if (this.registryConnector != null) {
+			this.registryConnector.stop(bundleContext);
+			this.registryConnector = null;
 		}
 
 		// tier2
@@ -118,39 +118,6 @@ public class OrbitClients {
 			this.missionControlConnector.stop(bundleContext);
 			this.missionControlConnector = null;
 		}
-	}
-
-	public UserRegistry getUserRegistry(Map<?, ?> properties) {
-		String url = null;
-		if (properties != null) {
-			url = (String) properties.get(OrbitConstants.ORBIT_USER_REGISTRY_URL);
-		}
-		if (url == null) {
-			LOG.error("'" + OrbitConstants.ORBIT_USER_REGISTRY_URL + "' property is not found.");
-			throw new IllegalStateException("'" + OrbitConstants.ORBIT_USER_REGISTRY_URL + "' property is not found.");
-		}
-		return getUserRegistry(url);
-	}
-
-	public UserRegistry getUserRegistry(String url) {
-		return getUserRegistry(null, null, url);
-	}
-
-	public UserRegistry getUserRegistry(String realm, String username, String url) {
-		realm = GlobalContext.getInstance().checkRealm(realm);
-		username = GlobalContext.getInstance().checkUsername(realm, username);
-
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put(OrbitConstants.REALM, realm);
-		properties.put(OrbitConstants.USERNAME, username);
-		properties.put(OrbitConstants.URL, url);
-
-		UserRegistry userRegistry = this.userRegistryConnector.getService(properties);
-		if (userRegistry == null) {
-			LOG.error("UserRegistry is not available.");
-			throw new IllegalStateException("UserRegistry is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
-		}
-		return userRegistry;
 	}
 
 	public Auth getAuth(Map<?, ?> properties) {
@@ -186,23 +153,23 @@ public class OrbitClients {
 		return auth;
 	}
 
-	public ConfigRegistry getConfigRegistry(Map<?, ?> properties) {
+	public UserAccounts getUserAccounts(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
-			url = (String) properties.get(OrbitConstants.ORBIT_CONFIG_REGISTRY_URL);
+			url = (String) properties.get(OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
 		}
 		if (url == null) {
-			LOG.error("'" + OrbitConstants.ORBIT_CONFIG_REGISTRY_URL + "' property is not found.");
-			throw new IllegalStateException("'" + OrbitConstants.ORBIT_CONFIG_REGISTRY_URL + "' property is not found.");
+			LOG.error("'" + OrbitConstants.ORBIT_USER_ACCOUNTS_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_USER_ACCOUNTS_URL + "' property is not found.");
 		}
-		return getConfigRegistry(url);
+		return getUserAccounts(url);
 	}
 
-	public ConfigRegistry getConfigRegistry(String url) {
-		return getConfigRegistry(null, null, url);
+	public UserAccounts getUserAccounts(String url) {
+		return getUserAccounts(null, null, url);
 	}
 
-	public ConfigRegistry getConfigRegistry(String realm, String username, String url) {
+	public UserAccounts getUserAccounts(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -211,7 +178,40 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		ConfigRegistry configRegistry = this.configRegistryConnector.getService(properties);
+		UserAccounts userRegistry = this.userAccountsConnector.getService(properties);
+		if (userRegistry == null) {
+			LOG.error("UserRegistry is not available.");
+			throw new IllegalStateException("UserRegistry is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+		}
+		return userRegistry;
+	}
+
+	public Registry getRegistry(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(OrbitConstants.ORBIT_REGISTRY_URL);
+		}
+		if (url == null) {
+			LOG.error("'" + OrbitConstants.ORBIT_REGISTRY_URL + "' property is not found.");
+			throw new IllegalStateException("'" + OrbitConstants.ORBIT_REGISTRY_URL + "' property is not found.");
+		}
+		return getRegistry(url);
+	}
+
+	public Registry getRegistry(String url) {
+		return getRegistry(null, null, url);
+	}
+
+	public Registry getRegistry(String realm, String username, String url) {
+		realm = GlobalContext.getInstance().checkRealm(realm);
+		username = GlobalContext.getInstance().checkUsername(realm, username);
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(OrbitConstants.REALM, realm);
+		properties.put(OrbitConstants.USERNAME, username);
+		properties.put(OrbitConstants.URL, url);
+
+		Registry configRegistry = this.registryConnector.getService(properties);
 		if (configRegistry == null) {
 			LOG.error("ConfigRegistry is not available.");
 			throw new IllegalStateException("ConfigRegistry is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");

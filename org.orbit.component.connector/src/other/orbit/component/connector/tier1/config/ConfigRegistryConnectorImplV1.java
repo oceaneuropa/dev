@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.config.ConfigRegistry;
+import org.orbit.component.api.tier1.registry.Registry;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier1.config.ConfigRegistryImpl;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -14,7 +14,7 @@ import other.orbit.component.api.tier1.config.ConfigRegistryConnectorV1;
 
 import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class ConfigRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<ConfigRegistry> implements ConfigRegistryConnectorV1 {
+public class ConfigRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<Registry> implements ConfigRegistryConnectorV1 {
 
 	/**
 	 * 
@@ -30,12 +30,12 @@ public class ConfigRegistryConnectorImplV1 extends IndexBasedLoadBalancedService
 	}
 
 	@Override
-	protected ConfigRegistry createService(Map<String, Object> properties) {
+	protected Registry createService(Map<String, Object> properties) {
 		return new ConfigRegistryImpl(null, properties);
 	}
 
 	@Override
-	protected void updateService(ConfigRegistry configRegistry, Map<String, Object> properties) {
+	protected void updateService(Registry configRegistry, Map<String, Object> properties) {
 		configRegistry.update(properties);
 	}
 

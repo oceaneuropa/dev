@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier1.account.UserAccountImpl;
 import org.orbit.component.connector.tier1.account.UserRegistryWSClient;
@@ -19,7 +19,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.StatusDTO;
 
-public class UserRegistryImplV1 implements UserRegistry {
+public class UserRegistryImplV1 implements UserAccounts {
 
 	protected Map<String, Object> properties;
 	protected UserRegistryWSClient client;
@@ -30,7 +30,7 @@ public class UserRegistryImplV1 implements UserRegistry {
 	 * @param connector
 	 * @param properties
 	 */
-	public UserRegistryImplV1(ServiceConnector<UserRegistry> connector, Map<String, Object> properties) {
+	public UserRegistryImplV1(ServiceConnector<UserAccounts> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
@@ -48,7 +48,7 @@ public class UserRegistryImplV1 implements UserRegistry {
 	@Override
 	public boolean close() throws ClientException {
 		@SuppressWarnings("unchecked")
-		ServiceConnector<UserRegistry> connector = getAdapter(ServiceConnector.class);
+		ServiceConnector<UserAccounts> connector = getAdapter(ServiceConnector.class);
 		if (connector != null) {
 			return connector.close(this);
 		}

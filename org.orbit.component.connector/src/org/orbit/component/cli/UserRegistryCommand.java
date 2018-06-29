@@ -10,7 +10,7 @@ import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.tier1.account.UserRegistry;
+import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -55,7 +55,7 @@ public class UserRegistryCommand implements CommandActivator {
 		});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_USER_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(bundleContext, UserRegistryCommand.class.getName(), this, props);
@@ -67,8 +67,8 @@ public class UserRegistryCommand implements CommandActivator {
 		OSGiServiceUtil.unregister(UserRegistryCommand.class.getName(), this);
 	}
 
-	protected UserRegistry getUserRegistry() {
-		UserRegistry userRegistry = OrbitClients.getInstance().getUserRegistry(this.properties);
+	protected UserAccounts getUserRegistry() {
+		UserAccounts userRegistry = OrbitClients.getInstance().getUserAccounts(this.properties);
 		if (userRegistry == null) {
 			throw new IllegalStateException("UserRegistry is null.");
 		}
@@ -79,7 +79,7 @@ public class UserRegistryCommand implements CommandActivator {
 	public void list_users() throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_users");
 
-		UserRegistry userRegistry = getUserRegistry();
+		UserAccounts userRegistry = getUserRegistry();
 
 		UserAccount[] userAccounts = userRegistry.getUserAccounts();
 
@@ -114,7 +114,7 @@ public class UserRegistryCommand implements CommandActivator {
 			return;
 		}
 
-		UserRegistry userRegistry = getUserRegistry();
+		UserAccounts userRegistry = getUserRegistry();
 
 		UserAccount userAccount = userRegistry.getUserAccount(username);
 
@@ -171,7 +171,7 @@ public class UserRegistryCommand implements CommandActivator {
 			return;
 		}
 
-		UserRegistry userRegistry = getUserRegistry();
+		UserAccounts userRegistry = getUserRegistry();
 
 		CreateUserAccountRequest request = new CreateUserAccountRequest();
 		request.setUserId(username);
@@ -206,7 +206,7 @@ public class UserRegistryCommand implements CommandActivator {
 			return;
 		}
 
-		UserRegistry userRegistry = getUserRegistry();
+		UserAccounts userRegistry = getUserRegistry();
 
 		boolean succeed = userRegistry.changePassword(username, oldPassword, newPassword);
 		System.out.println("Password is updated: " + succeed);
@@ -223,7 +223,7 @@ public class UserRegistryCommand implements CommandActivator {
 			return;
 		}
 
-		UserRegistry userRegistry = getUserRegistry();
+		UserAccounts userRegistry = getUserRegistry();
 
 		boolean succeed = userRegistry.activate(username);
 		boolean activated = userRegistry.isActivated(username);
@@ -243,7 +243,7 @@ public class UserRegistryCommand implements CommandActivator {
 			return;
 		}
 
-		UserRegistry userRegistry = getUserRegistry();
+		UserAccounts userRegistry = getUserRegistry();
 
 		boolean succeed = userRegistry.deactivate(username);
 		boolean activated = userRegistry.isActivated(username);
@@ -263,7 +263,7 @@ public class UserRegistryCommand implements CommandActivator {
 			return;
 		}
 
-		UserRegistry userRegistry = getUserRegistry();
+		UserAccounts userRegistry = getUserRegistry();
 
 		boolean succeed = userRegistry.delete(username);
 		System.out.println("User deletion result: " + succeed);
