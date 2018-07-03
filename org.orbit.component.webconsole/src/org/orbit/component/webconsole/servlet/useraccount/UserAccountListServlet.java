@@ -15,7 +15,7 @@ import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class UserAccountGetServlet extends HttpServlet {
+public class UserAccountListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 5360399058993136274L;
 

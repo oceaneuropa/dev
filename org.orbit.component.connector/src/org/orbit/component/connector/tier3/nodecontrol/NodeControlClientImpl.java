@@ -44,11 +44,13 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public NodeInfo[] getNodes() throws ClientException {
+		Request request = new Request(Requests.GET_NODES);
+
+		Response response = sendRequest(request);
+
 		NodeInfo[] nodeInfos = null;
-		Request listNodeRequest = new Request(Requests.GET_NODES);
-		Response listNodeResponse = sendRequest(listNodeRequest);
-		if (listNodeResponse != null) {
-			nodeInfos = NodeControlModelConverter.INSTANCE.getNodes(listNodeResponse);
+		if (response != null) {
+			nodeInfos = NodeControlModelConverter.INSTANCE.getNodes(response);
 		}
 		if (nodeInfos == null) {
 			nodeInfos = EMPTY_NODE_INFOS;
@@ -56,12 +58,58 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		return nodeInfos;
 	}
 
-	// private Map<String, Object> checkProperties(Map<String, Object> properties) {
-	// if (properties == null) {
-	// properties = new HashMap<String, Object>();
-	// }
-	// return properties;
-	// }
+	@Override
+	public boolean createNode(String id, String name, String typeId) throws ClientException {
+		Request request = new Request(Requests.CREATE_NODE);
+		request.setParameter("id", id);
+		request.setParameter("name", name);
+		request.setParameter("typeId", typeId);
+
+		Response response = sendRequest(request);
+
+		boolean succeed = false;
+		if (response != null) {
+			succeed = NodeControlModelConverter.INSTANCE.isCreated(response);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateNode(String id, String name, String typeId) throws ClientException {
+		Request request = new Request(Requests.UPDATE_NODE);
+		request.setParameter("id", id);
+		request.setParameter("name", name);
+		request.setParameter("typeId", typeId);
+
+		if (name != null) {
+			request.setParameter("update_name", true);
+		}
+		if (typeId != null) {
+			request.setParameter("update_type", true);
+		}
+
+		Response response = sendRequest(request);
+
+		boolean succeed = false;
+		if (response != null) {
+			succeed = NodeControlModelConverter.INSTANCE.isDeleted(response);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteNode(String id) throws ClientException {
+		Request request = new Request(Requests.DELETE_NODE);
+		request.setParameter("id", id);
+
+		Response response = sendRequest(request);
+
+		boolean succeed = false;
+		if (response != null) {
+			succeed = NodeControlModelConverter.INSTANCE.isDeleted(response);
+		}
+		return succeed;
+	}
 
 	@Override
 	public boolean close() throws ClientException {
@@ -135,3 +183,10 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 	}
 
 }
+
+// private Map<String, Object> checkProperties(Map<String, Object> properties) {
+// if (properties == null) {
+// properties = new HashMap<String, Object>();
+// }
+// return properties;
+// }

@@ -32,7 +32,7 @@
 			 -->
 			<a class="button01" href="javascript:addUser()">Add</a>
 			<a class="button01" href="javascript:deleteUsers()">Delete</a>
-			<a class="button01" href="<%=contextRoot + "/useraccount"%>">Refresh</a>
+			<a class="button01" href="<%=contextRoot + "/useraccounts"%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<form id="main_list">

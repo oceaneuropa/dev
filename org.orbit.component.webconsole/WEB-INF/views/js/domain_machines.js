@@ -56,6 +56,16 @@ function deleteMachines() {
 }
 
 (function() {
+	// add action.addMachine click listener
+	document.getElementById('action.addMachine').addEventListener('click', function() {
+		addMachine();
+	});
+
+	// add action.deleteMachines click listener
+	document.getElementById('action.deleteMachines').addEventListener('click', function() {
+		deleteMachines();
+	});
+
 	var addMachineDialog = document.getElementById('newMachineDialog');
 	var cancelAddMachineButton = document.getElementById('cancelAddMachine');
 	cancelAddMachineButton.addEventListener('click', function() {

@@ -20,6 +20,8 @@ public interface IResource extends IAdaptable {
 
 	boolean delete() throws IOException;
 
+	boolean rename(String newName) throws IOException;
+
 	void dispose();
 
 }

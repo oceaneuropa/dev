@@ -51,6 +51,16 @@ function deletePlatforms() {
 }
 
 (function() {
+	// add action.addPlatform click listener
+	document.getElementById('action.addPlatform').addEventListener('click', function() {
+		addPlatform();
+	});
+
+	// add action.deletePlatforms click listener
+	document.getElementById('action.deletePlatforms').addEventListener('click', function() {
+		deletePlatforms();
+	});
+
 	document.getElementById('cancelAddPlatform').addEventListener('click', function() {
 		document.getElementById('newPlatformDialog').close();
 	});

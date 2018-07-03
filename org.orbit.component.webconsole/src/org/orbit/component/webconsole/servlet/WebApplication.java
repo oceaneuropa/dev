@@ -8,15 +8,19 @@ import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.appstore.AppStoreServlet;
 import org.orbit.component.webconsole.servlet.domain.DomainMachineAddServlet;
 import org.orbit.component.webconsole.servlet.domain.DomainMachineDeleteServlet;
-import org.orbit.component.webconsole.servlet.domain.DomainMachineGetServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainMachineListServlet;
 import org.orbit.component.webconsole.servlet.domain.DomainMachineUpdateServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainNodeCreateServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainNodeDeleteServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainNodeListServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainNodeUpdateServlet;
 import org.orbit.component.webconsole.servlet.domain.DomainPlatformAddServlet;
 import org.orbit.component.webconsole.servlet.domain.DomainPlatformDeleteServlet;
-import org.orbit.component.webconsole.servlet.domain.DomainPlatformGetServlet;
+import org.orbit.component.webconsole.servlet.domain.DomainPlatformListServlet;
 import org.orbit.component.webconsole.servlet.domain.DomainPlatformUpdateServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountAddServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountDeleteServlet;
-import org.orbit.component.webconsole.servlet.useraccount.UserAccountGetServlet;
+import org.orbit.component.webconsole.servlet.useraccount.UserAccountListServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountUpdateServlet;
 import org.orbit.service.servlet.WebApplicationImpl;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
@@ -72,26 +76,28 @@ public class WebApplication extends WebApplicationImpl {
 		addResource(new ResourceMetadataImpl("/views/js", "/WEB-INF/views/js"));
 
 		// Add servlets
-		addServlet(new ServletMetadataImpl("/useraccount", new UserAccountGetServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/useraccounts", new UserAccountListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountadd", new UserAccountAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountupdate", new UserAccountUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountdelete", new UserAccountDeleteServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/domain/machine", new DomainMachineGetServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/machines", new DomainMachineListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/machineadd", new DomainMachineAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/machineupdate", new DomainMachineUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/machinedelete", new DomainMachineDeleteServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/domain/platform", new DomainPlatformGetServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/platforms", new DomainPlatformListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformadd", new DomainPlatformAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformupdate", new DomainPlatformUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformdelete", new DomainPlatformDeleteServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/domain/node", new DomainPlatformGetServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/domain/nodecreate", new DomainPlatformGetServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/domain/nodestart", new DomainPlatformGetServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/domain/nodestop", new DomainPlatformGetServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/domain/nodedelete", new DomainPlatformGetServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodes", new DomainNodeListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodecreate", new DomainNodeCreateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeupdate", new DomainNodeUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodedelete", new DomainNodeDeleteServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodestart", new DomainNodeListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodestop", new DomainNodeListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodestatus", new DomainNodeListServlet(), dicts));
 
 		addServlet(new ServletMetadataImpl("/appstore", new AppStoreServlet(), dicts));
 

@@ -67,7 +67,7 @@ public class UserAccountDeleteServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/useraccount");
+		response.sendRedirect(contextRoot + "/useraccounts");
 	}
 
 }

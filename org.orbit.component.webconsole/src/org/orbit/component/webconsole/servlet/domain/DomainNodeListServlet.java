@@ -16,9 +16,9 @@ import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
-import org.origin.common.rest.client.ClientException;
+import org.orbit.component.webconsole.servlet.ServletHelper;
 
-public class DomainNodeGetServlet extends HttpServlet {
+public class DomainNodeListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2782056562245686399L;
 
@@ -43,11 +43,11 @@ public class DomainNodeGetServlet extends HttpServlet {
 			}
 		}
 		if (machineId == null) {
-			message = checkMessage(message);
+			message = ServletHelper.INSTANCE.checkMessage(message);
 			message += "'machineId' parameter is not set.";
 		}
 		if (platformId == null) {
-			message = checkMessage(message);
+			message = ServletHelper.INSTANCE.checkMessage(message);
 			message += "'platformId' parameter is not set.";
 		}
 
@@ -58,24 +58,26 @@ public class DomainNodeGetServlet extends HttpServlet {
 		PlatformConfig platformConfig = null;
 		NodeInfo[] nodeInfos = null;
 
-		DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-		if (domainClient != null && machineId != null && platformId != null) {
-			try {
-				machineConfig = domainClient.getMachineConfig(machineId);
-				platformConfig = domainClient.getPlatformConfig(machineId, platformId);
+		if (machineId != null && platformId != null) {
+			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
+			if (domainClient != null && machineId != null && platformId != null) {
+				try {
+					machineConfig = domainClient.getMachineConfig(machineId);
+					platformConfig = domainClient.getPlatformConfig(machineId, platformId);
 
-				if (platformConfig != null) {
-					NodeControlClient nodeControlClient = getNodeControlClient(platformConfig);
+					if (platformConfig != null) {
+						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
 
-					if (nodeControlClient != null) {
-						nodeInfos = nodeControlClient.getNodes();
+						if (nodeControlClient != null) {
+							nodeInfos = nodeControlClient.getNodes();
+						}
 					}
-				}
 
-			} catch (Exception e) {
-				message = checkMessage(message);
-				message += "Exception occurs: '" + e.getMessage() + "'.";
-				e.printStackTrace();
+				} catch (Exception e) {
+					message = ServletHelper.INSTANCE.checkMessage(message);
+					message += "Exception occurs: '" + e.getMessage() + "'.";
+					e.printStackTrace();
+				}
 			}
 		}
 
@@ -99,36 +101,6 @@ public class DomainNodeGetServlet extends HttpServlet {
 		request.setAttribute("nodeInfos", nodeInfos);
 
 		request.getRequestDispatcher(contextRoot + "/views/domain_nodes_v1.jsp").forward(request, response);
-	}
-
-	/**
-	 * 
-	 * @param platformConfig
-	 * @return
-	 * @throws ClientException
-	 */
-	public static NodeControlClient getNodeControlClient(PlatformConfig platformConfig) throws ClientException {
-		NodeControlClient nodeControlClient = null;
-		if (platformConfig != null) {
-			String url = platformConfig.getHostURL() + platformConfig.getContextRoot();
-			nodeControlClient = OrbitClients.getInstance().getNodeControl(url);
-		}
-		return nodeControlClient;
-	}
-
-	/**
-	 * 
-	 * @param message
-	 * @return
-	 */
-	protected String checkMessage(String message) {
-		if (message == null) {
-			message = "";
-		}
-		if (!message.isEmpty()) {
-			message += " ";
-		}
-		return message;
 	}
 
 }

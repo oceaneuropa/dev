@@ -29,7 +29,8 @@
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
 	<div class="top_breadcrumbs_div01">
-		<a href="<%=contextRoot%>/domain/machine">Domain Management</a> > <%=machineName%>
+		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
+		<a href="<%=contextRoot + "/domain/platforms?machineId=" + machineId%>"><%=machineName%></a>
 	</div>
 	<div class="main_div01">
 		<h2>Platforms</h2>
@@ -37,13 +38,13 @@
 			<!-- 
 			<button onclick="addPlatform()">Add</button>
 			<button onclick="deletePlatforms()">Delete</button>
-			<button onclick="location.href='<%=contextRoot + "/domain/platform?machineId=" + machineId%>'">Refresh</button>
+			<button onclick="location.href='<%=contextRoot + "/domain/platforms?machineId=" + machineId%>'">Refresh</button>
 			<a href="http://google.com" class="button6A">Go to Google</a>
 			-->
-			<a class="button02" href="javascript:addPlatform()">Add</a>
-			<a class="button02" href="javascript:deletePlatforms()">Delete</a>
-			<a class="button02" href="<%=contextRoot + "/domain/platform?machineId=" + machineId%>">Refresh</a>
-			<a class="button02" href="<%=contextRoot%>/domain/machine">View Machines</a>
+			<a id="action.addPlatform" class="button02">Add</a>
+			<a id="action.deletePlatforms" class="button02">Delete</a>
+			<a class="button02" href="<%=contextRoot + "/domain/platforms?machineId=" + machineId%>">Refresh</a>
+			<!-- <a class="button02" href="<%=contextRoot%>/domain/machines">View Machines</a> -->
 		</div>
 		<table class="main_table01">
 			<form id="main_list" method="post" action="<%=contextRoot + "/domain/platformdelete"%>">

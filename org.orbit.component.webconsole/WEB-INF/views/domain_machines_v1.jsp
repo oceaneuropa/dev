@@ -23,6 +23,9 @@
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
+	<div class="top_breadcrumbs_div01">
+		<a href="<%=contextRoot%>/domain/machines">Machines</a> 
+	</div>
 	<div class="main_div01">
 		<h2>Machines</h2>
 		<div class="top_tools_div01">
@@ -31,12 +34,12 @@
 			<button onclick="deleteMachines()">Delete</button>
 			<button onclick="location.href='<%=contextRoot + "/domain"%>'">Refresh</button>
 			 -->
-			<a class="button02" href="javascript:addMachine()">Add</a>
-			<a class="button02" href="javascript:deleteMachines()">Delete</a>
-			<a class="button02" href="<%=contextRoot + "/domain"%>">Refresh</a>
+			<a id="action.addMachine" class="button02">Add</a>
+			<a id="action.deleteMachines" class="button02">Delete</a>
+			<a class="button02" href="<%=contextRoot + "/domain/machines"%>">Refresh</a>
 		</div>
 		<table class="main_table01">
-			<form id="main_list" method="post" action="<%=contextRoot + "/domainmachinedelete"%>">
+			<form id="main_list" method="post" action="<%=contextRoot + "/domain/machinedelete"%>">
 			<tr>
 				<th class="th1" width="11"></th>
 				<th class="th1" width="200">Id</th>
@@ -69,9 +72,9 @@
 				<td class="td2"><%=name%></td>
 				<td class="td2"><%=ip%></td>
 				<td class="td1">
-					<a class="action01" href="<%=contextRoot%>/domain/platform?machineId=<%=id%>">View Platforms</a> |
+					<a class="action01" href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">View Platforms</a> |
 					<a class="action01" href="javascript:changeMachine('<%=id%>', '<%=name%>', '<%=ip%>')">Change</a> | 
-					<a class="action01" href="javascript:deleteMachine('<%=contextRoot + "/domainmachinedelete"%>', '<%=id%>')">Delete</a>
+					<a class="action01" href="javascript:deleteMachine('<%=contextRoot + "/domain/machinedelete"%>', '<%=id%>')">Delete</a>
 				</td>
 			</tr>
 			<%
@@ -84,7 +87,7 @@
 
 	<dialog id="newMachineDialog">
 	<div class="dialog_title_div01">Add Machine</div>
-		<form id="new_form" method="post" action="<%=contextRoot + "/domainmachineadd"%>">
+		<form id="new_form" method="post" action="<%=contextRoot + "/domain/machineadd"%>">
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
@@ -112,7 +115,7 @@
 
 	<dialog id="changeMachineDialog">
 	<div class="dialog_title_div01">Change Machine</div>
-		<form id="update_form" method="post" action="<%=contextRoot + "/domainmachineupdate"%>">
+		<form id="update_form" method="post" action="<%=contextRoot + "/domain/machineupdate"%>">
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>

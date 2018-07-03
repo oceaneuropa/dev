@@ -44,6 +44,10 @@ public abstract class ResourceImpl implements IResource {
 		return this.fullpath;
 	}
 
+	public void setFullPath(IPath fullpath) {
+		this.fullpath = fullpath;
+	}
+
 	@Override
 	public boolean exists() {
 		return getWorkspace().underlyingResourceExists(getFullPath());
@@ -55,6 +59,14 @@ public abstract class ResourceImpl implements IResource {
 	@Override
 	public boolean delete() throws IOException {
 		return getWorkspace().deleteUnderlyingResource(getFullPath());
+	}
+
+	@Override
+	public boolean rename(String newName) throws IOException {
+		if (newName == null || newName.isEmpty()) {
+			throw new IOException("New file name '" + newName + "' is invalid.");
+		}
+		return getWorkspace().renameUnderlyingResource(getFullPath(), newName);
 	}
 
 	@Override

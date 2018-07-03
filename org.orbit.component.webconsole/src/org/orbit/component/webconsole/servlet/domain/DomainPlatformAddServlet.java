@@ -39,7 +39,7 @@ public class DomainPlatformAddServlet extends HttpServlet {
 		}
 
 		boolean succeed = false;
-		if (id != null) {
+		if (machineId != null && id != null) {
 			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 			if (domainMgmt != null) {
 				try {
@@ -64,7 +64,7 @@ public class DomainPlatformAddServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain/platform?machineId=" + machineId);
+		response.sendRedirect(contextRoot + "/domain/platforms?machineId=" + machineId);
 	}
 
 }

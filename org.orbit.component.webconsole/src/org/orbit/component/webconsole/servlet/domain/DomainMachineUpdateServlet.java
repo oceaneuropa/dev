@@ -64,7 +64,7 @@ public class DomainMachineUpdateServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain/machine");
+		response.sendRedirect(contextRoot + "/domain/machines");
 	}
 
 }

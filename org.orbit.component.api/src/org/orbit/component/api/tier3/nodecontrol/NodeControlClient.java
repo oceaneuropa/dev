@@ -19,6 +19,12 @@ public interface NodeControlClient extends ServiceClient {
 
 	NodeInfo[] getNodes() throws ClientException;
 
+	boolean createNode(String id, String name, String typeId) throws ClientException;
+
+	boolean updateNode(String id, String name, String typeId) throws ClientException;
+
+	boolean deleteNode(String id) throws ClientException;
+
 	boolean close() throws ClientException;
 
 }

@@ -37,7 +37,7 @@ public class DomainPlatformDeleteServlet extends HttpServlet {
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
-		if (ids != null) {
+		if (machineId != null && ids != null) {
 			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 			if (domainMgmt != null) {
 				try {
@@ -69,7 +69,7 @@ public class DomainPlatformDeleteServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain/platform?machineId=" + machineId);
+		response.sendRedirect(contextRoot + "/domain/platforms?machineId=" + machineId);
 	}
 
 }

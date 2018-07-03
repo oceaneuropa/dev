@@ -1,21 +1,35 @@
 package org.orbit.component.model.tier3.nodecontrol;
 
 import java.net.URI;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * Design time object for NodespaceInfo on TA.
+ * Design time object for NodeInfo on TA.
  *
  */
 @XmlRootElement
-public class INodespaceDTO {
+public class NodeDTO {
 
+	@XmlElement
+	protected String id;
 	@XmlElement
 	protected String name;
 	@XmlElement
 	protected URI uri;
+	@XmlElement
+	Map<String, Object> attributes;
+
+	@XmlElement
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	@XmlElement
 	public String getName() {
@@ -33,6 +47,15 @@ public class INodespaceDTO {
 
 	public void setUri(URI uri) {
 		this.uri = uri;
+	}
+
+	@XmlElement
+	public Map<String, Object> getAttributes() {
+		return this.attributes;
+	}
+
+	public void setAttributes(Map<String, Object> attributes) {
+		this.attributes = attributes;
 	}
 
 }

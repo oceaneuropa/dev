@@ -2,11 +2,13 @@ package org.orbit.component.runtime.tier3.nodecontrol.util;
 
 import java.net.URI;
 
-import org.orbit.component.model.tier3.nodecontrol.INodeDTO;
-import org.orbit.component.model.tier3.nodecontrol.INodespaceDTO;
+import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
+import org.orbit.component.model.tier3.nodecontrol.NodespaceDTO;
 import org.origin.common.resources.IPath;
 import org.origin.common.resources.node.INode;
 import org.origin.common.resources.node.INodespace;
+import org.origin.common.resources.node.NodeDescription;
+import org.origin.common.resources.node.NodespaceDescription;
 
 public class NodeControlConverter {
 
@@ -21,13 +23,20 @@ public class NodeControlConverter {
 	 * @param nodespace
 	 * @return
 	 */
-	public INodespaceDTO toDTO(INodespace nodespace) {
-		INodespaceDTO dto = new INodespaceDTO();
-		dto.setName(nodespace.getName());
+	public NodespaceDTO toDTO(INodespace nodespace) {
+		NodespaceDTO dto = new NodespaceDTO();
 		try {
+			NodespaceDescription desc = nodespace.getDescription();
+			dto.setId(desc.getId());
+
+			dto.setAttributes(desc.getAttributes());
+
+			dto.setName(nodespace.getName());
+
 			IPath fullpath = nodespace.getFullPath();
-			URI uri = new URI(fullpath.toString());
+			URI uri = new URI(fullpath.getPathString());
 			dto.setUri(uri);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -39,13 +48,20 @@ public class NodeControlConverter {
 	 * @param node
 	 * @return
 	 */
-	public INodeDTO toDTO(INode node) {
-		INodeDTO dto = new INodeDTO();
-		dto.setName(node.getName());
+	public NodeDTO toDTO(INode node) {
+		NodeDTO dto = new NodeDTO();
 		try {
+			NodeDescription desc = node.getDescription();
+			dto.setId(desc.getId());
+
+			dto.setAttributes(desc.getAttributes());
+
+			dto.setName(node.getName());
+
 			IPath fullpath = node.getFullPath();
-			URI uri = new URI(fullpath.toString());
+			URI uri = new URI(fullpath.getPathString());
 			dto.setUri(uri);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -3,7 +3,7 @@ package other.orbit.component.runtime.tier3.nodecontrol.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.component.model.tier3.nodecontrol.INodeDTO;
+import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;
 import org.origin.common.command.CommandContext;
@@ -44,12 +44,12 @@ public class NodeListCommandV1 extends AbstractTransferAgentCommandV1 {
 				return new CommandResult(response);
 			}
 
-			List<INodeDTO> nodeDTOs = new ArrayList<INodeDTO>();
+			List<NodeDTO> nodeDTOs = new ArrayList<NodeDTO>();
 			IResource[] resources = nodespace.getMembers();
 			for (IResource resource : resources) {
 				if (resource instanceof INode) {
 					INode node = (INode) resource;
-					INodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
+					NodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
 					nodeDTOs.add(nodeDTO);
 				}
 			}

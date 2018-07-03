@@ -3,7 +3,7 @@ package org.orbit.component.runtime.tier3.nodecontrol.ws.command;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.nodecontrol.INodeDTO;
+import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;
 import org.origin.common.resources.node.INode;
@@ -33,7 +33,7 @@ public class NodeGetWSCommand implements WSCommand {
 			return Response.status(Status.NOT_FOUND).entity(error).build();
 		}
 
-		INodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
+		NodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
 		return Response.status(Status.OK).entity(nodeDTO).build();
 	}
 

@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.nodecontrol.INodeDTO;
+import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;
 import org.origin.common.resources.node.INode;
@@ -24,11 +24,11 @@ public class NodeListWSCommand extends AbstractWSCommand {
 
 	@Override
 	public Response execute(Request request) throws Exception {
-		List<INodeDTO> nodeDTOs = new ArrayList<INodeDTO>();
+		List<NodeDTO> nodeDTOs = new ArrayList<NodeDTO>();
 
 		List<INode> nodes = WorkspaceHelper.INSTANCE.getRootNodes(this.service.getWorkspace());
 		for (INode node : nodes) {
-			INodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
+			NodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
 			nodeDTOs.add(nodeDTO);
 		}
 

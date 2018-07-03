@@ -17,7 +17,7 @@
 	}
 
 	function deleteUser(userId) {
-		var actionURL = "<%=contextRoot + "/userregistrydelete"%>";
+		var actionURL = "<%=contextRoot + "/useraccountdelete"%>";
 		var dialog = document.getElementById('deleteUserDialog');
 
 		var messageDiv = document.getElementById('deleteUserDialogMessageDiv');
@@ -45,7 +45,7 @@
 	}
 
 	function deleteUsers() {
-		var actionURL = "<%=contextRoot + "/userregistrydelete"%>";
+		var actionURL = "<%=contextRoot + "/useraccountdelete"%>";
 		var dialog = document.getElementById('deleteUsersDialog');
 
 		var messageDiv = document.getElementById('deleteUsersDialogMessageDiv');

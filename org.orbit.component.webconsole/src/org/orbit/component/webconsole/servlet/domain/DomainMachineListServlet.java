@@ -12,17 +12,19 @@ import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.webconsole.WebConstants;
-import org.origin.common.rest.client.ClientException;
 
-public class DomainPlatformGetServlet extends HttpServlet {
+public class DomainMachineListServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -8366157200926964290L;
-	private static final PlatformConfig[] EMPTY_PLATFORM_CONFIGS = new PlatformConfig[0];
+	private static final long serialVersionUID = -7293566426088740431L;
+
+	private static final MachineConfig[] EMPTY_MACHINE_CONFIGS = new MachineConfig[0];
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// ---------------------------------------------------------------
+		// Get parameters
+		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
@@ -35,32 +37,30 @@ public class DomainPlatformGetServlet extends HttpServlet {
 			}
 		}
 
-		String machineId = request.getParameter("machineId");
-
-		MachineConfig machineConfig = null;
-		PlatformConfig[] platformConfigs = null;
+		// ---------------------------------------------------------------
+		// Handle data
+		// ---------------------------------------------------------------
+		MachineConfig[] machineConfigs = null;
 		DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-		if (domainMgmt != null && machineId != null) {
+		if (domainMgmt != null) {
 			try {
-				machineConfig = domainMgmt.getMachineConfig(machineId);
-				platformConfigs = domainMgmt.getPlatformConfigs(machineId);
-
-			} catch (ClientException e) {
+				machineConfigs = domainMgmt.getMachineConfigs();
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		if (platformConfigs == null) {
-			platformConfigs = EMPTY_PLATFORM_CONFIGS;
+		if (machineConfigs == null) {
+			machineConfigs = EMPTY_MACHINE_CONFIGS;
 		}
 
+		// ---------------------------------------------------------------
+		// Render data
+		// ---------------------------------------------------------------
 		if (message != null) {
 			request.setAttribute("message", message);
 		}
-		if (machineConfig != null) {
-			request.setAttribute("machineConfig", machineConfig);
-		}
-		request.setAttribute("platformConfigs", platformConfigs);
-		request.getRequestDispatcher(contextRoot + "/views/domain_platforms_v1.jsp").forward(request, response);
+		request.setAttribute("machineConfigs", machineConfigs);
+		request.getRequestDispatcher(contextRoot + "/views/domain_machines_v1.jsp").forward(request, response);
 	}
 
 }

@@ -1,6 +1,6 @@
 package other.orbit.component.runtime.tier3.nodecontrol.command;
 
-import org.orbit.component.model.tier3.nodecontrol.INodespaceDTO;
+import org.orbit.component.model.tier3.nodecontrol.NodespaceDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;
 import org.origin.common.command.CommandContext;
@@ -39,7 +39,7 @@ public class NodespaceGetCommandV1 extends AbstractTransferAgentCommandV1 {
 				return new CommandResult(response);
 			}
 
-			INodespaceDTO nodespaceDTO = NodeControlConverter.getInstance().toDTO(nodespace);
+			NodespaceDTO nodespaceDTO = NodeControlConverter.getInstance().toDTO(nodespace);
 
 			Response response = new Response(Response.SUCCESS, "Nodespace is retrieved.");
 			response.setBody(nodespaceDTO);

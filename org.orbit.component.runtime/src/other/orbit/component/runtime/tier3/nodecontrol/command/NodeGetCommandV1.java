@@ -1,6 +1,6 @@
 package other.orbit.component.runtime.tier3.nodecontrol.command;
 
-import org.orbit.component.model.tier3.nodecontrol.INodeDTO;
+import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;
 import org.origin.common.command.CommandContext;
@@ -50,7 +50,7 @@ public class NodeGetCommandV1 extends AbstractTransferAgentCommandV1 {
 				return new CommandResult(response);
 			}
 
-			INodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
+			NodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
 
 			Response response = new Response(Response.SUCCESS, "Nodes is retrieved.");
 			response.setBody(nodeDTO);

@@ -60,4 +60,6 @@ public interface IWorkspace {
 
 	boolean deleteUnderlyingResource(IPath fullpath) throws IOException;
 
+	boolean renameUnderlyingResource(IPath fullpath, String newName) throws IOException;
+
 }

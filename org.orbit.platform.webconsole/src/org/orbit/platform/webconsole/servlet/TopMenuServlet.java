@@ -24,19 +24,19 @@ public class TopMenuServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String contextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
-		String contextRoot2 = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
+		String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
+		String componentContextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 
 		Map<String, String> servicesURLMap = new LinkedHashMap<String, String>();
 		// hard code for now
-		servicesURLMap.put("Index Service", contextRoot + "/indexservice");
+		servicesURLMap.put("Index Service", platformContextRoot + "/indexservice");
 
-		servicesURLMap.put("User Registry", contextRoot2 + "/userregistry");
-		servicesURLMap.put("App Store", contextRoot2 + "/appstore");
-		servicesURLMap.put("Domain", contextRoot2 + "/domain/machine");
+		servicesURLMap.put("User Accounts", componentContextRoot + "/useraccounts");
+		servicesURLMap.put("App Store", componentContextRoot + "/appstore");
+		servicesURLMap.put("Domain", componentContextRoot + "/domain/machines");
 
 		request.setAttribute("servicesURLMap", servicesURLMap);
-		request.getRequestDispatcher(contextRoot + "/views/menu/top_menu_v2.jsp").include(request, response);
+		request.getRequestDispatcher(platformContextRoot + "/views/menu/top_menu_v2.jsp").include(request, response);
 	}
 
 	@Override

@@ -181,6 +181,11 @@ public class WorkspaceDatabaseImpl implements IWorkspace {
 	}
 
 	@Override
+	public boolean renameUnderlyingResource(IPath fullpath, String newName) throws IOException {
+		return false;
+	}
+
+	@Override
 	public boolean deleteUnderlyingResource(IPath fullpath) {
 		return false;
 	}

@@ -41,6 +41,7 @@ public class Requests {
 	public static String GET_NODE = "get_node";
 	public static String NODE_EXIST = "node_exist";
 	public static String CREATE_NODE = "create_node";
+	public static String UPDATE_NODE = "update_node";
 	public static String DELETE_NODE = "delete_node";
 	public static String START_NODE = "start_node";
 	public static String STOP_NODE = "stop_node";

@@ -23,17 +23,17 @@ public class NodeCreateWSCommand extends AbstractWSCommand {
 	@Override
 	public Response execute(Request request) throws Exception {
 		String id = (request.getParameter("id") instanceof String) ? (String) request.getParameter("id") : null;
-		String typeId = (request.getParameter("typeId") instanceof String) ? (String) request.getParameter("typeId") : null;
 		String name = (request.getParameter("name") instanceof String) ? (String) request.getParameter("name") : null;
+		String typeId = (request.getParameter("typeId") instanceof String) ? (String) request.getParameter("typeId") : null;
 
 		if (id == null || id.isEmpty()) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "'id' parameter is not set.", null);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
-		if (typeId == null) {
+		if (typeId == null || typeId.isEmpty()) {
 			typeId = "platform";
 		}
-		if (name == null) {
+		if (name == null || name.isEmpty()) {
 			name = id;
 		}
 

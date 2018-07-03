@@ -22,6 +22,7 @@ import org.origin.common.resources.ResourcesFactory;
 import org.origin.common.resources.WorkspaceDescription;
 import org.origin.common.resources.impl.FolderImpl;
 import org.origin.common.resources.impl.PathImpl;
+import org.origin.common.resources.impl.ResourceImpl;
 import org.origin.common.resources.impl.misc.WorkspaceDescriptionPersistence;
 
 public class WorkspaceLocalImpl implements IWorkspace {
@@ -414,6 +415,59 @@ public class WorkspaceLocalImpl implements IWorkspace {
 		}
 
 		return false;
+	}
+
+	@Override
+	public synchronized boolean renameUnderlyingResource(IPath fullpath, String newName) throws IOException {
+		boolean succeed = false;
+		if (fullpath != null && newName != null) {
+			// check old file name and new file name
+			// - no need to rename if they are equal
+			String oldName = fullpath.getLastSegment();
+			if (oldName != null && oldName.equals(newName)) {
+				return true;
+			}
+
+			File oldFsFile = getUnderlyingFileFromFileSystem(fullpath);
+
+			// check whether new file exists in file system
+			// - cannot rename if new file alredy exists in file system
+			File newFsFile = new File(oldFsFile.getParent(), newName);
+			if (newFsFile.exists()) {
+				throw new IOException("File with name '" + newName + "' already exists.");
+			}
+
+			if (oldFsFile.exists()) {
+				// old file already exists in file system
+				// - rename the old file to new file in the file system
+				succeed = oldFsFile.renameTo(newFsFile);
+			} else {
+				// old file doesn't exist yet in file system
+				// - there is no need for the new file to exist in the file system.
+				// - file system operation can be considered as being done
+				succeed = true;
+			}
+
+			if (succeed) {
+				synchronized (this.allResourcesMap) {
+					IResource iResource = this.allResourcesMap.remove(fullpath);
+					if (iResource != null) {
+						IPath newFullpath = null;
+						IPath parent = fullpath.getParent();
+						if (parent != null) {
+							newFullpath = parent.append(new PathImpl(newName));
+						} else {
+							newFullpath = new PathImpl(newName);
+						}
+						if (iResource instanceof ResourceImpl) {
+							((ResourceImpl) iResource).setFullPath(newFullpath);
+						}
+						this.allResourcesMap.put(newFullpath, iResource);
+					}
+				}
+			}
+		}
+		return succeed;
 	}
 
 	@Override

@@ -7,7 +7,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.model.tier3.nodecontrol.INodeDTO;
+import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 
@@ -15,10 +15,12 @@ public class NodeControlModelConverter {
 
 	public static NodeControlModelConverter INSTANCE = new NodeControlModelConverter();
 
-	public NodeInfo toNode(INodeDTO nodeDTO) {
+	public NodeInfo toNode(NodeDTO nodeDTO) {
 		NodeInfoImpl nodeInfo = new NodeInfoImpl();
 		nodeInfo.setId(nodeDTO.getId());
 		nodeInfo.setName(nodeDTO.getName());
+		nodeInfo.setUri(nodeDTO.getUri());
+		nodeInfo.setAttributes(nodeDTO.getAttributes());
 		return nodeInfo;
 	}
 
@@ -27,9 +29,9 @@ public class NodeControlModelConverter {
 			throw new ClientException(response);
 		}
 		List<NodeInfo> nodes = new ArrayList<NodeInfo>();
-		List<INodeDTO> nodeDTOs = response.readEntity(new GenericType<List<INodeDTO>>() {
+		List<NodeDTO> nodeDTOs = response.readEntity(new GenericType<List<NodeDTO>>() {
 		});
-		for (INodeDTO nodeDTO : nodeDTOs) {
+		for (NodeDTO nodeDTO : nodeDTOs) {
 			NodeInfo node = toNode(nodeDTO);
 			nodes.add(node);
 		}
@@ -41,7 +43,7 @@ public class NodeControlModelConverter {
 			throw new ClientException(response);
 		}
 		NodeInfo node = null;
-		INodeDTO nodeDTO = response.readEntity(INodeDTO.class);
+		NodeDTO nodeDTO = response.readEntity(NodeDTO.class);
 		if (nodeDTO != null) {
 			node = toNode(nodeDTO);
 		}
@@ -62,6 +64,10 @@ public class NodeControlModelConverter {
 	}
 
 	public boolean isCreated(Response response) throws ClientException {
+		return isSucceed(response);
+	}
+
+	public boolean isUpdated(Response response) throws ClientException {
 		return isSucceed(response);
 	}
 
