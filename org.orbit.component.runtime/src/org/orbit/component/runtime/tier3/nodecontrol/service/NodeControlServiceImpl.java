@@ -261,6 +261,54 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		return false;
 	}
 
+	@Override
+	public boolean addAttribute(String id, String name, Object value) throws IOException {
+		INode node = getNode(id);
+		if (node != null && name != null) {
+			NodeDescription desc = node.getDescription();
+			if (!desc.hasAttribute(name)) {
+				desc.setAttirbute(name, value);
+				node.setDescription(desc);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateAttribute(String id, String oldName, String name, Object value) throws IOException {
+		INode node = getNode(id);
+		if (node != null && name != null) {
+			NodeDescription desc = node.getDescription();
+			boolean isNameChanged = (oldName != null && !oldName.equals(name)) ? true : false;
+			if (isNameChanged) {
+				if (desc.hasAttribute(name)) {
+					// attribute with new name already exists.
+					return false;
+				}
+				desc.removeAttribute(oldName);
+			}
+			desc.setAttirbute(name, value);
+			node.setDescription(desc);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteAttribute(String id, String name) throws IOException {
+		INode node = getNode(id);
+		if (node != null && name != null) {
+			NodeDescription desc = node.getDescription();
+			if (desc.hasAttribute(name)) {
+				desc.removeAttribute(name);
+				node.setDescription(desc);
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
 
 // protected IEditingDomain editingDomain;

@@ -50,6 +50,15 @@ public class NodeControlWSEditPolicy extends AbstractWSEditPolicy {
 
 		} else if (Requests.NODE_STATUS.equals(requestName)) {
 			return new NodeStatusWSCommand(service);
+
+		} else if (Requests.ADD_NODE_ATTR.equals(requestName)) {
+			return new NodeAttributeAddWSCommand(service);
+
+		} else if (Requests.UPDATE_NODE_ATTR.equals(requestName)) {
+			return new NodeAttributeUpdateWSCommand(service);
+
+		} else if (Requests.DELETE_NODE_ATTR.equals(requestName)) {
+			return new NodeAttributeDeleteWSCommand(service);
 		}
 
 		return null;

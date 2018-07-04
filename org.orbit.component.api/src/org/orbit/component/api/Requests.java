@@ -46,6 +46,9 @@ public class Requests {
 	public static String START_NODE = "start_node";
 	public static String STOP_NODE = "stop_node";
 	public static String NODE_STATUS = "node_status";
+	public static String ADD_NODE_ATTR = "add_node_attr";
+	public static String UPDATE_NODE_ATTR = "update_node_attr";
+	public static String DELETE_NODE_ATTR = "delete_node_attr";
 
 	// ---------------------------------------------------------------
 	// Mission control request constants

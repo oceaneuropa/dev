@@ -8,6 +8,24 @@ public class RequestUtil {
 	 * 
 	 * @param request
 	 * @param paramName
+	 * @param defaultValue
+	 * @return
+	 */
+	public static Object getParameter(Request request, String paramName, Object defaultValue) {
+		Object paramValue = null;
+		if (request != null && paramName != null) {
+			paramValue = request.getParameter(paramName);
+		}
+		if (paramValue == null && defaultValue != null) {
+			paramValue = defaultValue;
+		}
+		return paramValue;
+	}
+
+	/**
+	 * 
+	 * @param request
+	 * @param paramName
 	 * @param clazz
 	 * @param defaultValue
 	 * @return

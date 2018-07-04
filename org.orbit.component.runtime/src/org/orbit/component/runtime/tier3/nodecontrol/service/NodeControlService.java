@@ -36,4 +36,10 @@ public interface NodeControlService extends WebServiceAware {
 
 	boolean stopNode(String id) throws IOException;
 
+	boolean addAttribute(String id, String name, Object value) throws IOException;
+
+	boolean updateAttribute(String id, String oldName, String name, Object value) throws IOException;
+
+	boolean deleteAttribute(String id, String name) throws IOException;
+
 }

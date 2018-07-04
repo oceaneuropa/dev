@@ -19,11 +19,9 @@ import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.ServletHelper;
 import org.origin.common.util.ServletUtil;
 
-public class NodeListServlet extends HttpServlet {
+public class NodeAttributeListServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 2782056562245686399L;
-
-	private static final NodeInfo[] EMPTY_NODE_INFOS = new NodeInfo[0];
+	private static final long serialVersionUID = 2333552536533608770L;
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -34,6 +32,7 @@ public class NodeListServlet extends HttpServlet {
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
+		String id = ServletUtil.getParameter(request, "id", "");
 
 		String message = null;
 		HttpSession session = request.getSession(false);
@@ -43,13 +42,17 @@ public class NodeListServlet extends HttpServlet {
 				session.removeAttribute("message");
 			}
 		}
-		if (machineId == null) {
+		if (machineId.isEmpty()) {
 			message = ServletHelper.INSTANCE.checkMessage(message);
 			message += "'machineId' parameter is not set.";
 		}
-		if (platformId == null) {
+		if (platformId.isEmpty()) {
 			message = ServletHelper.INSTANCE.checkMessage(message);
 			message += "'platformId' parameter is not set.";
+		}
+		if (id.isEmpty()) {
+			message = ServletHelper.INSTANCE.checkMessage(message);
+			message += "'id' parameter is not set.";
 		}
 
 		// ---------------------------------------------------------------
@@ -57,9 +60,8 @@ public class NodeListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
-		NodeInfo[] nodeInfos = null;
-
-		if (machineId != null && platformId != null) {
+		NodeInfo nodeInfo = null;
+		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
 			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 			if (domainClient != null && machineId != null && platformId != null) {
 				try {
@@ -70,7 +72,7 @@ public class NodeListServlet extends HttpServlet {
 						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
 
 						if (nodeControlClient != null) {
-							nodeInfos = nodeControlClient.getNodes();
+							nodeInfo = nodeControlClient.getNode(id);
 						}
 					}
 
@@ -82,8 +84,9 @@ public class NodeListServlet extends HttpServlet {
 			}
 		}
 
-		if (nodeInfos == null) {
-			nodeInfos = EMPTY_NODE_INFOS;
+		if (nodeInfo == null) {
+			message = ServletHelper.INSTANCE.checkMessage(message);
+			message += "Node with id '" + id + "' is not found.";
 		}
 
 		// ---------------------------------------------------------------
@@ -98,18 +101,11 @@ public class NodeListServlet extends HttpServlet {
 		if (platformConfig != null) {
 			request.setAttribute("platformConfig", platformConfig);
 		}
+		if (nodeInfo != null) {
+			request.setAttribute("nodeInfo", nodeInfo);
+		}
 
-		request.setAttribute("nodeInfos", nodeInfos);
-
-		request.getRequestDispatcher(contextRoot + "/views/domain_nodes_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/domain_node_attributes_v1.jsp").forward(request, response);
 	}
 
 }
-
-// private static final NodeConfig[] EMPTY_NODE_CONFIGS = new NodeConfig[0];
-// NodeConfig[] nodeConfigs = null;
-// nodeConfigs = domainClient.getNodeConfigs(machineId, platformId);
-// if (nodeConfigs == null) {
-// nodeConfigs = EMPTY_NODE_CONFIGS;
-// }
-// request.setAttribute("nodeConfigs", nodeConfigs);

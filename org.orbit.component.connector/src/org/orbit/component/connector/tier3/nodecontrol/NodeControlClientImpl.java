@@ -59,6 +59,20 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 	}
 
 	@Override
+	public NodeInfo getNode(String id) throws ClientException {
+		Request request = new Request(Requests.GET_NODE);
+		request.setParameter("id", id);
+
+		Response response = sendRequest(request);
+
+		NodeInfo nodeInfo = null;
+		if (response != null) {
+			nodeInfo = NodeControlModelConverter.INSTANCE.getNode(response);
+		}
+		return nodeInfo;
+	}
+
+	@Override
 	public boolean createNode(String id, String name, String typeId) throws ClientException {
 		Request request = new Request(Requests.CREATE_NODE);
 		request.setParameter("id", id);
@@ -135,6 +149,51 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 	}
 
 	@Override
+	public boolean addNodeAttribute(String id, String name, Object value) throws ClientException {
+		Request request = new Request(Requests.ADD_NODE_ATTR);
+		request.setParameter("id", id);
+		request.setParameter("name", name);
+		request.setParameter("value", value);
+
+		boolean succeed = false;
+		Response response = sendRequest(request);
+		if (response != null) {
+			succeed = NodeControlModelConverter.INSTANCE.isSucceed(response);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean updateNodeAttribute(String id, String oldName, String name, Object value) throws ClientException {
+		Request request = new Request(Requests.UPDATE_NODE_ATTR);
+		request.setParameter("id", id);
+		request.setParameter("oldName", oldName);
+		request.setParameter("name", name);
+		request.setParameter("value", value);
+
+		boolean succeed = false;
+		Response response = sendRequest(request);
+		if (response != null) {
+			succeed = NodeControlModelConverter.INSTANCE.isSucceed(response);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteNodeAttribute(String id, String name) throws ClientException {
+		Request request = new Request(Requests.DELETE_NODE_ATTR);
+		request.setParameter("id", id);
+		request.setParameter("name", name);
+
+		boolean succeed = false;
+		Response response = sendRequest(request);
+		if (response != null) {
+			succeed = NodeControlModelConverter.INSTANCE.isSucceed(response);
+		}
+		return succeed;
+	}
+
+	@Override
 	public boolean close() throws ClientException {
 		@SuppressWarnings("unchecked")
 		ServiceConnector<NodeControlClient> connector = getAdapter(ServiceConnector.class);
@@ -206,6 +265,9 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 	}
 
 }
+
+// boolean ping() throws ClientException;
+// Response sendRequest(Request request) throws ClientException;
 
 // private Map<String, Object> checkProperties(Map<String, Object> properties) {
 // if (properties == null) {

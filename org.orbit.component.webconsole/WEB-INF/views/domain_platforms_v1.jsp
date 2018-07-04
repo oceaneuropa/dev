@@ -30,7 +30,8 @@
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
 	<div class="top_breadcrumbs_div01">
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
-		<a href="<%=contextRoot + "/domain/platforms?machineId=" + machineId%>"><%=machineName%></a>
+		<!-- <a href="<%=contextRoot + "/domain/platforms?machineId=" + machineId%>"><%=machineName%></a> -->
+		<%=machineName%>
 	</div>
 	<div class="main_div01">
 		<h2>Platforms</h2>
@@ -51,11 +52,11 @@
 			<input type="hidden" name="machineId" value="<%=machineId%>">
 			<tr>
 				<th class="th1" width="11"></th>
-				<th class="th1" width="100">Id</th>
-				<th class="th1" width="100">Name</th>
-				<th class="th1" width="150">Host URL</th>
-				<th class="th1" width="150">Context Root</th>
-				<th class="th1" width="150">Actions</th>
+				<th class="th1" width="150">Id</th>
+				<th class="th1" width="150">Name</th>
+				<th class="th1" width="160">Host URL</th>
+				<th class="th1" width="160">Context Root</th>
+				<th class="th1" width="100">Actions</th>
 			</tr>
 			<%
 				if (platformConfigs.length == 0) {
@@ -85,7 +86,7 @@
 				<td class="td2"><%=hostURL%></td>
 				<td class="td2"><%=currContextRoot%></td>
 				<td class="td1">
-					<a class="action01" href="<%=contextRoot%>/domain/nodes?machineId=<%=machineId%>&platformId=<%=id%>">View Nodes</a> |
+					<a class="action01" href="<%=contextRoot%>/domain/nodes?machineId=<%=machineId%>&platformId=<%=id%>">Nodes</a> |
 					<a class="action01" href="javascript:changePlatform('<%=id%>', '<%=name%>', '<%=hostURL%>', '<%=currContextRoot%>')">Change</a> | 
 					<a class="action01" href="javascript:deletePlatform('<%=contextRoot + "/domain/platformdelete"%>', '<%=machineId%>', '<%=id%>')">Delete</a>
 				</td>

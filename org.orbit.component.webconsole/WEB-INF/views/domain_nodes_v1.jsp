@@ -36,12 +36,14 @@
 	<div class="top_breadcrumbs_div01">
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
 		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>"><%=machineName%></a> >
-		<a href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>"><%=platformName%></a>
+		<!-- <a href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>"><%=platformName%></a> -->
+		<%=platformName%>
 	</div>
 	<div class="main_div01">
 		<h2>Nodes</h2>
 		<div class="top_tools_div01">
-			<a id="action.addNode" class="button02">Create</a> <a id="action.deleteNodes" class="button02">Delete</a> 
+			<a id="action.addNode" class="button02">Create</a>
+			<a id="action.deleteNodes" class="button02">Delete</a> 
 			<a class="button02" href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>">Refresh</a>
 			<!-- <a class="button02" href="<%=contextRoot + "/domain/platforms?machineId=" + machineId%>">View Platforms</a> -->
 		</div>
@@ -52,16 +54,15 @@
 				<tr>
 					<th class="th1" width="11"></th>
 					<th class="th1" width="100">Id</th>
-					<th class="th1" width="100">Name</th>
+					<th class="th1" width="200">Name</th>
 					<th class="th1" width="200">Path</th>
-					<th class="th1" width="100">Type</th>
-					<th class="th1" width="100">Actions</th>
+					<th class="th1" width="130">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
 				%>
 				<tr>
-					<td colspan="6">(n/a)</td>
+					<td colspan="5">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -69,8 +70,6 @@
 							String id = nodeInfo.getId();
 							String name = nodeInfo.getName();
 							URI uri = nodeInfo.getUri();
-							Object typeObj = nodeInfo.getAttributes().get("typeId");
-							String typeId = (typeObj != null) ? typeObj.toString() : "";
 
 							id = StringUtil.get(id);
 							name = StringUtil.get(name);
@@ -81,9 +80,9 @@
 					<td class="td1"><%=id%></td>
 					<td class="td2"><%=name%></td>
 					<td class="td2"><%=path%></td>
-					<td class="td2"><%=typeId%></td>
 					<td class="td1">
-						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Change</a> | 
+						<a class="action01" href="<%=contextRoot%>/domain/nodeattributes?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Attributes</a> |
+						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>')">Change</a> | 
 						<a class="action01" href="javascript:deleteNode('<%=contextRoot + "/domain/nodedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Delete</a> | 
 						<a class="action01" href="javascript:startNode('<%=contextRoot + "/domain/nodestart"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Start</a> | 
 						<a class="action01" href="javascript:stopNode('<%=contextRoot + "/domain/nodestop"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Stop</a></td>
@@ -99,7 +98,8 @@
 	<dialog id="newNodeDialog">
 	<div class="dialog_title_div01">Create Node</div>
 	<form id="new_form" method="post" action="<%=contextRoot + "/domain/nodecreate"%>">
-		<input type="hidden" name="machineId" value="<%=machineId%>"> <input type="hidden" name="platformId" value="<%=platformId%>">
+		<input type="hidden" name="machineId" value="<%=machineId%>">
+		<input type="hidden" name="platformId" value="<%=platformId%>">
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
@@ -179,7 +179,7 @@
 	</dialog>
 
 	<dialog id="deleteNodesDialog">
-	<div class="dialog_title_div01">Delete Node</div>
+	<div class="dialog_title_div01">Delete Nodes</div>
 	<div class="dialog_main_div01" id="deleteNodesDialogMessageDiv">Are you sure you want to delete selected nodes?</div>
 	<div class="dialog_button_div01">
 		<a id="okDeleteNodes" class="button02">OK</a> 

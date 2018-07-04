@@ -19,6 +19,8 @@ public interface NodeControlClient extends ServiceClient {
 
 	NodeInfo[] getNodes() throws ClientException;
 
+	NodeInfo getNode(String id) throws ClientException;
+
 	boolean createNode(String id, String name, String typeId) throws ClientException;
 
 	boolean updateNode(String id, String name, String typeId) throws ClientException;
@@ -29,9 +31,12 @@ public interface NodeControlClient extends ServiceClient {
 
 	boolean stopNode(String id) throws ClientException;
 
+	boolean addNodeAttribute(String id, String name, Object value) throws ClientException;
+
+	boolean updateNodeAttribute(String id, String oldName, String name, Object value) throws ClientException;
+
+	boolean deleteNodeAttribute(String id, String name) throws ClientException;
+
 	boolean close() throws ClientException;
 
 }
-
-// boolean ping() throws ClientException;
-// Response sendRequest(Request request) throws ClientException;
