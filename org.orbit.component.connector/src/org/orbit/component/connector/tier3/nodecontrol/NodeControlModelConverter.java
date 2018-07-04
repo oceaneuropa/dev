@@ -75,6 +75,14 @@ public class NodeControlModelConverter {
 		return isSucceed(response);
 	}
 
+	public boolean isStarted(Response response) throws ClientException {
+		return isSucceed(response);
+	}
+
+	public boolean isStopped(Response response) throws ClientException {
+		return isSucceed(response);
+	}
+
 	public boolean isSucceed(Response response) throws ClientException {
 		if (!ResponseUtil.isSuccessful(response)) {
 			throw new ClientException(response);

@@ -23,7 +23,7 @@
 	%>
 	<div class="main_div01">
 		<h2>
-			Indexer [<%=indexerId%>]
+			[<%=indexerId%>]
 		</h2>
 		<table id="table01">
 			<tr>

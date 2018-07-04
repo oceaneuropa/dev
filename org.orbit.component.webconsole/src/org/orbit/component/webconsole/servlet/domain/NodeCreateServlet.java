@@ -17,9 +17,9 @@ import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.ServletHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DomainNodeUpdateServlet extends HttpServlet {
+public class NodeCreateServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -5634345204413047819L;
+	private static final long serialVersionUID = 622843047753833977L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,10 +58,12 @@ public class DomainNodeUpdateServlet extends HttpServlet {
 					PlatformConfig platformConfig = domainClient.getPlatformConfig(machineId, platformId);
 					if (platformConfig != null) {
 						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
+
 						if (nodeControlClient != null) {
-							succeed = nodeControlClient.updateNode(id, name, typeId);
+							succeed = nodeControlClient.createNode(id, name, typeId);
 						}
 					}
+
 				} catch (Exception e) {
 					message = ServletHelper.INSTANCE.checkMessage(message);
 					message += "Exception occurs: '" + e.getMessage() + "'.";

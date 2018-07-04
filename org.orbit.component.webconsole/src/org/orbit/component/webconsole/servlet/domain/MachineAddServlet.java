@@ -15,7 +15,7 @@ import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class DomainMachineAddServlet extends HttpServlet {
+public class MachineAddServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -8369457157390475521L;
 

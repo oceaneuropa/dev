@@ -65,9 +65,8 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		request.setParameter("name", name);
 		request.setParameter("typeId", typeId);
 
-		Response response = sendRequest(request);
-
 		boolean succeed = false;
+		Response response = sendRequest(request);
 		if (response != null) {
 			succeed = NodeControlModelConverter.INSTANCE.isCreated(response);
 		}
@@ -88,9 +87,8 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 			request.setParameter("update_type", true);
 		}
 
-		Response response = sendRequest(request);
-
 		boolean succeed = false;
+		Response response = sendRequest(request);
 		if (response != null) {
 			succeed = NodeControlModelConverter.INSTANCE.isDeleted(response);
 		}
@@ -102,11 +100,36 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		Request request = new Request(Requests.DELETE_NODE);
 		request.setParameter("id", id);
 
-		Response response = sendRequest(request);
-
 		boolean succeed = false;
+		Response response = sendRequest(request);
 		if (response != null) {
 			succeed = NodeControlModelConverter.INSTANCE.isDeleted(response);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean startNode(String id) throws ClientException {
+		Request request = new Request(Requests.START_NODE);
+		request.setParameter("id", id);
+
+		boolean succeed = false;
+		Response response = sendRequest(request);
+		if (response != null) {
+			succeed = NodeControlModelConverter.INSTANCE.isStarted(response);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean stopNode(String id) throws ClientException {
+		Request request = new Request(Requests.STOP_NODE);
+		request.setParameter("id", id);
+
+		boolean succeed = false;
+		Response response = sendRequest(request);
+		if (response != null) {
+			succeed = NodeControlModelConverter.INSTANCE.isStopped(response);
 		}
 		return succeed;
 	}

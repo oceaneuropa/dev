@@ -39,8 +39,10 @@ public class IndexProviderImpl extends IndexServiceImpl implements IndexProvider
 				newIndexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
-			throw new IOException(e);
+			LOG.error("ClientException: getIndexItem(String indexProviderId, String type, String name) indexProviderId = " + indexProviderId + ", type = " + type + ", name = " + name);
+			LOG.error("ClientException: " + e.getMessage());
+			// e.printStackTrace();
+			// throw new IOException(e);
 		}
 		return newIndexItem;
 	}

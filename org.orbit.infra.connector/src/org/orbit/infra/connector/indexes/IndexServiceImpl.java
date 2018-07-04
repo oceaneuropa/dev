@@ -196,9 +196,9 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 			}
 		} catch (ClientException e) {
 			LOG.error("ClientException: getIndexItem(String indexProviderId, String type, String name) indexProviderId = " + indexProviderId + ", type = " + type + ", name = " + name);
-			LOG.error("ClientException: " + e.getCause() + " " + e.getMessage());
+			LOG.error("ClientException: " + e.getMessage());
 			// e.printStackTrace();
-			throw new IOException(e);
+			// throw new IOException(e);
 		}
 		return indexItem;
 	}

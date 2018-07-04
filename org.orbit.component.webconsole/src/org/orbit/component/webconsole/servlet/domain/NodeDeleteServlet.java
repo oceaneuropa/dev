@@ -16,7 +16,7 @@ import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.ServletHelper;
 
-public class DomainNodeDeleteServlet extends HttpServlet {
+public class NodeDeleteServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2116303378035252009L;
 
@@ -83,6 +83,12 @@ public class DomainNodeDeleteServlet extends HttpServlet {
 				message = "Nodes are deleted successfully.";
 			} else {
 				message = "Node is deleted successfully.";
+			}
+		} else {
+			if (ids != null && ids.length > 1) {
+				message = "Nodes are not deleted.";
+			} else {
+				message = "Node is not deleted.";
 			}
 		}
 

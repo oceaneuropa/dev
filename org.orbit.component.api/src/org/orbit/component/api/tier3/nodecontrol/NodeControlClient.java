@@ -25,6 +25,10 @@ public interface NodeControlClient extends ServiceClient {
 
 	boolean deleteNode(String id) throws ClientException;
 
+	boolean startNode(String id) throws ClientException;
+
+	boolean stopNode(String id) throws ClientException;
+
 	boolean close() throws ClientException;
 
 }

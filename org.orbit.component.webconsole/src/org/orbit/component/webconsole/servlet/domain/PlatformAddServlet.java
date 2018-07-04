@@ -11,12 +11,13 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
-public class DomainPlatformDeleteServlet extends HttpServlet {
+public class PlatformAddServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -4244239907467552141L;
+	private static final long serialVersionUID = 8803928159322859632L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,45 +26,39 @@ public class DomainPlatformDeleteServlet extends HttpServlet {
 		String message = "";
 
 		String machineId = request.getParameter("machineId");
-		String[] ids = request.getParameterValues("id");
+		String id = request.getParameter("id");
+		String name = request.getParameter("name");
+		String hostUrl = request.getParameter("hostUrl");
+		String theContextRoot = request.getParameter("contextRoot");
 
 		if (machineId == null || machineId.isEmpty()) {
 			message = "'machineId' parameter is not set.";
 		}
-		if (ids == null || ids.length == 0) {
+		if (id == null || id.isEmpty()) {
 			message = "'id' parameter is not set.";
 		}
 
 		boolean succeed = false;
-		boolean hasSucceed = false;
-		boolean hasFailed = false;
-		if (machineId != null && ids != null) {
+		if (machineId != null && id != null) {
 			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 			if (domainMgmt != null) {
 				try {
-					for (String currId : ids) {
-						boolean currSucceed = domainMgmt.removePlatformConfig(machineId, currId);
-						if (currSucceed) {
-							hasSucceed = true;
-						} else {
-							hasFailed = true;
-						}
-					}
+					AddPlatformConfigRequest addPlatformRequest = new AddPlatformConfigRequest();
+					addPlatformRequest.setPlatformId(id);
+					addPlatformRequest.setName(name);
+					addPlatformRequest.setHostURL(hostUrl);
+					addPlatformRequest.setContextRoot(theContextRoot);
+
+					succeed = domainMgmt.addPlatformConfig(machineId, addPlatformRequest);
+
 				} catch (ClientException e) {
 					e.printStackTrace();
 					message = e.getMessage();
 				}
 			}
 		}
-		if (hasSucceed && !hasFailed) {
-			succeed = true;
-		}
 		if (succeed) {
-			if (ids != null && ids.length > 1) {
-				message = "Platforms are deleted successfully.";
-			} else {
-				message = "Platform is deleted successfully.";
-			}
+			message = "Platform is added successfully.";
 		}
 
 		HttpSession session = request.getSession(true);

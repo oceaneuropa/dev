@@ -245,11 +245,19 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public boolean startNode(String id) throws IOException {
+		INode node = getNode(id);
+		if (node == null) {
+			return false;
+		}
 		return false;
 	}
 
 	@Override
 	public boolean stopNode(String id) throws IOException {
+		INode node = getNode(id);
+		if (node == null) {
+			return false;
+		}
 		return false;
 	}
 

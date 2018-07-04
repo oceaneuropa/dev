@@ -18,7 +18,7 @@ import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.ServletHelper;
 
-public class DomainNodeListServlet extends HttpServlet {
+public class NodeListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2782056562245686399L;
 

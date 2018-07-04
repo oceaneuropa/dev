@@ -29,6 +29,24 @@ public class ServletUtil {
 
 	/**
 	 * 
+	 * @param request
+	 * @param paramName
+	 * @param defaultValues
+	 * @return
+	 */
+	public static String[] getParameterValues(HttpServletRequest request, String paramName, String[] defaultValues) {
+		String[] paramValues = null;
+		if (request != null && paramName != null) {
+			paramValues = request.getParameterValues(paramName);
+		}
+		if (paramValues == null && defaultValues != null) {
+			paramValues = defaultValues;
+		}
+		return paramValues;
+	}
+
+	/**
+	 * 
 	 * @param context
 	 * @return
 	 */
