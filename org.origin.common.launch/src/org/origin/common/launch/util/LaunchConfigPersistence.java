@@ -14,7 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.origin.common.launch.impl.LaunchConfigAttributes;
+import org.origin.common.launch.impl.LaunchConfigData;
 import org.w3c.dom.Document;
 
 public class LaunchConfigPersistence {
@@ -28,7 +28,7 @@ public class LaunchConfigPersistence {
 	 * @return
 	 * @throws IOException
 	 */
-	public LaunchConfigAttributes load(File file) throws IOException {
+	public LaunchConfigData load(File file) throws IOException {
 		LaunchConfigReader reader = new LaunchConfigReader();
 		return reader.read(file);
 	}
@@ -38,7 +38,7 @@ public class LaunchConfigPersistence {
 	 * @param data
 	 * @param file
 	 */
-	public void save(LaunchConfigAttributes data, File file) {
+	public void save(LaunchConfigData data, File file) {
 		LaunchConfigWriter writer = new LaunchConfigWriter();
 		writer.write(data, file);
 	}

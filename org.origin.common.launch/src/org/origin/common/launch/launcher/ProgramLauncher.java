@@ -1,4 +1,4 @@
-package org.origin.common.launch.impl;
+package org.origin.common.launch.launcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,20 +8,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
-import org.origin.common.launch.LaunchHandler;
+import org.origin.common.launch.LaunchInstance;
 import org.origin.common.launch.Launcher;
-import org.origin.common.launch.impl.ProgramRunner.ProgramConfiguration;
+import org.origin.common.launch.runner.ProgramRunner;
+import org.origin.common.launch.runner.ProgramRunner.ProgramConfiguration;
 import org.origin.common.launch.util.LaunchArgumentsHelper;
 import org.origin.common.launch.util.LaunchConfigurationHelper;
 
-public abstract class AbstractLauncher implements Launcher {
+public abstract class ProgramLauncher implements Launcher {
 
 	@Override
-	public void launch(LaunchConfiguration launchConfig, LaunchHandler launchHandler) throws IOException {
+	public void launch(LaunchConfig launchConfig, LaunchInstance launchInstance) throws IOException {
 		try {
-			preLaunch(launchConfig, launchHandler);
+			preLaunch(launchConfig, launchInstance);
 
 			String program = getProgram(launchConfig);
 			String mainClass = getMainClass(launchConfig);
@@ -41,31 +42,31 @@ public abstract class AbstractLauncher implements Launcher {
 			if (runner == null) {
 				throw new IOException("ProgramRunner cannot be null.");
 			}
-			runner.run(runnerConfig, launchHandler);
+			runner.run(runnerConfig, launchInstance);
 
 		} catch (final IOException e) {
 			throw e;
 		}
 	}
 
-	protected void preLaunch(LaunchConfiguration launchConfig, LaunchHandler launchHandler) throws IOException {
+	protected void preLaunch(LaunchConfig launchConfig, LaunchInstance launchInstance) throws IOException {
 		// String workingDirLocation = configuration.getAttribute(LaunchConstants.WORKING_DIRECTORY, (String) null);
 		String workingDirectory = getWorkingDirectory(launchConfig).getAbsolutePath();
-		launchHandler.setAttribute(LaunchConstants.WORKING_DIRECTORY, workingDirectory);
-		launchHandler.setAttribute(LaunchConstants.CONFIG_LOCATION, getConfigurationDirectory(launchConfig).toString());
+		launchInstance.setAttribute(LaunchConstants.WORKING_DIRECTORY, workingDirectory);
+		launchInstance.setAttribute(LaunchConstants.CONFIG_LOCATION, getConfigurationDirectory(launchConfig).toString());
 	}
 
-	protected abstract ProgramRunner getProgramRunner(LaunchConfiguration configuration) throws IOException;
+	protected abstract ProgramRunner getProgramRunner(LaunchConfig launchConfig) throws IOException;
 
-	protected abstract String getProgram(LaunchConfiguration configuration) throws IOException;
+	protected abstract String getProgram(LaunchConfig launchConfig) throws IOException;
 
-	public String getMainClass(LaunchConfiguration configuration) {
+	public String getMainClass(LaunchConfig launchConfig) {
 		// return "org.eclipse.equinox.launcher.Main"; //$NON-NLS-1$
 		return "org.eclipse.core.launcher.Main"; //$NON-NLS-1$
 	}
 
-	public String[] getClasspath(LaunchConfiguration configuration) throws IOException {
-		String[] classpath = LaunchArgumentsHelper.constructClasspath(configuration);
+	public String[] getClasspath(LaunchConfig launchConfig) throws IOException {
+		String[] classpath = LaunchArgumentsHelper.constructClasspath(launchConfig);
 		// if (classpath == null) {
 		// String message = PDEMessages.WorkbenchLauncherConfigurationDelegate_noStartup;
 		// throw new CoreException(LauncherUtils.createErrorStatus(message));
@@ -73,10 +74,10 @@ public abstract class AbstractLauncher implements Launcher {
 		return classpath;
 	}
 
-	public String[] getSystemArguments(LaunchConfiguration configuration) throws IOException {
+	public String[] getSystemArguments(LaunchConfig launchConfig) throws IOException {
 		List<String> systemArgumentsList = new ArrayList<String>();
 
-		Map<String, String> systemArgumentsMap = configuration.getAttribute(LaunchConstants.SYSTEM_ARGUMENTS_MAP, new HashMap<String, String>());
+		Map<String, String> systemArgumentsMap = launchConfig.getAttribute(LaunchConstants.SYSTEM_ARGUMENTS_MAP, new HashMap<String, String>());
 		for (Iterator<String> itor = systemArgumentsMap.keySet().iterator(); itor.hasNext();) {
 			String vmArgName = itor.next();
 			String vmArgValue = systemArgumentsMap.get(vmArgName);
@@ -87,10 +88,10 @@ public abstract class AbstractLauncher implements Launcher {
 		return systemArgumentsList.toArray(new String[systemArgumentsList.size()]);
 	}
 
-	public String[] getVMArguments(LaunchConfiguration configuration) throws IOException {
+	public String[] getVMArguments(LaunchConfig launchConfig) throws IOException {
 		List<String> vmArgumentsList = new ArrayList<String>();
 
-		Map<String, String> vmArgumentsMap = configuration.getAttribute(LaunchConstants.VM_ARGUMENTS_MAP, new HashMap<String, String>());
+		Map<String, String> vmArgumentsMap = launchConfig.getAttribute(LaunchConstants.VM_ARGUMENTS_MAP, new HashMap<String, String>());
 		for (Iterator<String> itor = vmArgumentsMap.keySet().iterator(); itor.hasNext();) {
 			String vmArgName = itor.next();
 			String vmArgValue = vmArgumentsMap.get(vmArgName);
@@ -100,17 +101,17 @@ public abstract class AbstractLauncher implements Launcher {
 		return vmArgumentsList.toArray(new String[vmArgumentsList.size()]);
 	}
 
-	public String[] getProgramArguments(LaunchConfiguration configuration) throws IOException {
-		List<String> programArgs = configuration.getAttribute(LaunchConstants.PROGRAM_ARGUMENTS_LIST, new ArrayList<String>());
+	public String[] getProgramArguments(LaunchConfig launchConfig) throws IOException {
+		List<String> programArgs = launchConfig.getAttribute(LaunchConstants.PROGRAM_ARGUMENTS_LIST, new ArrayList<String>());
 		return programArgs.toArray(new String[programArgs.size()]);
 	}
 
-	public File getWorkingDirectory(LaunchConfiguration configuration) throws IOException {
-		return LaunchArgumentsHelper.getWorkingDirectory(configuration);
+	public File getWorkingDirectory(LaunchConfig launchConfig) throws IOException {
+		return LaunchArgumentsHelper.getWorkingDirectory(launchConfig);
 	}
 
-	public File getConfigurationDirectory(LaunchConfiguration configuration) throws IOException {
-		return LaunchConfigurationHelper.getConfigurationFolder(configuration);
+	public File getConfigurationDirectory(LaunchConfig launchConfig) throws IOException {
+		return LaunchConfigurationHelper.getConfigurationFolder(launchConfig);
 	}
 
 }

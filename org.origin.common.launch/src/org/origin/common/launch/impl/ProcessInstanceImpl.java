@@ -3,18 +3,18 @@ package org.origin.common.launch.impl;
 import java.io.IOException;
 import java.util.Map;
 
-import org.origin.common.launch.LaunchHandler;
-import org.origin.common.launch.ProcessHandler;
+import org.origin.common.launch.LaunchInstance;
+import org.origin.common.launch.ProcessInstance;
 import org.origin.common.launch.stream.NullStreamProxyImpl;
 import org.origin.common.launch.stream.StreamProxy;
 import org.origin.common.launch.stream.StreamProxyImpl;
 
-public class ProcessHandlerImpl implements ProcessHandler {
+public class ProcessInstanceImpl implements ProcessInstance {
 
 	private static final int MAX_WAIT_FOR_DEATH_ATTEMPTS = 10;
 	private static final int TIME_TO_WAIT_FOR_THREAD_DEATH = 500; // ms
 
-	protected LaunchHandler launch;
+	protected LaunchInstance launchInstance;
 	protected Process process;
 	protected String label;
 	protected Map<String, String> attributes;
@@ -26,13 +26,13 @@ public class ProcessHandlerImpl implements ProcessHandler {
 
 	/**
 	 * 
-	 * @param launch
+	 * @param launchInstance
 	 * @param process
 	 * @param label
 	 * @param attributes
 	 */
-	public ProcessHandlerImpl(LaunchHandler launch, Process process, String label, Map<String, String> attributes) {
-		this.launch = launch;
+	public ProcessInstanceImpl(LaunchInstance launchInstance, Process process, String label, Map<String, String> attributes) {
+		this.launchInstance = launchInstance;
 		this.process = process;
 		this.label = label;
 		this.attributes = attributes;
@@ -46,15 +46,15 @@ public class ProcessHandlerImpl implements ProcessHandler {
 
 		// String captureOutput = launch.getAttribute(DebugPlugin.ATTR_CAPTURE_OUTPUT);
 		// this.captureOutput = !("false".equals(captureOutput)); //$NON-NLS-1$
-		streamProxy = createStreamProxy();
-		processMonitor = new ProcessMonitorThread(this);
-		processMonitor.start();
+		this.streamProxy = createStreamProxy();
+		this.processMonitor = new ProcessMonitorThread(this);
+		this.processMonitor.start();
 
-		launch.addProcess(this);
+		launchInstance.addProcessInstance(this);
 	}
 
 	protected StreamProxy createStreamProxy() {
-		if (!captureOutput) {
+		if (!this.captureOutput) {
 			return new NullStreamProxyImpl(getSystemProcess());
 		} else {
 			// String encoding = getLaunch().getAttribute(DebugPlugin.ATTR_CONSOLE_ENCODING);
@@ -63,13 +63,13 @@ public class ProcessHandlerImpl implements ProcessHandler {
 	}
 
 	@Override
-	public Process getSystemProcess() {
-		return this.process;
+	public LaunchInstance getLaunchInstsance() {
+		return this.launchInstance;
 	}
 
 	@Override
-	public LaunchHandler getLaunch() {
-		return this.launch;
+	public Process getSystemProcess() {
+		return this.process;
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class ProcessHandlerImpl implements ProcessHandler {
 
 	@Override
 	public boolean canTerminate() {
-		return !terminated;
+		return !this.terminated;
 	}
 
 	@Override
@@ -107,6 +107,7 @@ public class ProcessHandlerImpl implements ProcessHandler {
 						exitValue = process.exitValue(); // throws exception if process not exited
 					}
 					return;
+
 				} catch (IllegalThreadStateException ie) {
 				}
 				try {
@@ -121,60 +122,57 @@ public class ProcessHandlerImpl implements ProcessHandler {
 	}
 
 	class ProcessMonitorThread extends Thread {
-		protected boolean fExit;
-		protected Process fOSProcess;
-		protected ProcessHandler fRuntimeProcess;
-		protected Thread fThread;
+		protected boolean exit;
+		protected Process process;
+		protected ProcessInstance processInstance;
+		protected Thread thread;
 
-		/**
-		 * A lock protecting access to <code>fThread</code>.
-		 */
-		private final Object fThreadLock = new Object();
-
-		/**
-		 * @see Thread#run()
-		 */
-		@Override
-		public void run() {
-			synchronized (fThreadLock) {
-				if (fExit) {
-					return;
-				}
-				fThread = Thread.currentThread();
-			}
-			while (fOSProcess != null) {
-				try {
-					fOSProcess.waitFor();
-				} catch (InterruptedException ie) {
-					// clear interrupted state
-					Thread.interrupted();
-				} finally {
-					fOSProcess = null;
-					fRuntimeProcess.isTerminated();
-				}
-			}
-			fThread = null;
-		}
+		protected Object threadLock = new Object();
 
 		/**
 		 * Creates a new process monitor and starts monitoring the process for termination.
 		 *
-		 * @param process
+		 * @param processInstance
 		 *            process to monitor for termination
 		 */
-		public ProcessMonitorThread(ProcessHandler process) {
+		public ProcessMonitorThread(ProcessInstance processInstance) {
 			super("Process monitor");
 			setDaemon(true);
-			fRuntimeProcess = process;
-			fOSProcess = process.getSystemProcess();
+
+			this.processInstance = processInstance;
+			this.process = processInstance.getSystemProcess();
+		}
+
+		@Override
+		public void run() {
+			synchronized (this.threadLock) {
+				if (this.exit) {
+					return;
+				}
+				this.thread = Thread.currentThread();
+			}
+
+			while (this.process != null) {
+				try {
+					this.process.waitFor();
+
+				} catch (InterruptedException ie) {
+					// clear interrupted state
+					Thread.interrupted();
+				} finally {
+					this.process = null;
+					this.processInstance.isTerminated();
+				}
+			}
+			this.thread = null;
 		}
 
 		protected void killThread() {
-			synchronized (fThreadLock) {
-				if (fThread == null) {
-					fExit = true;
+			synchronized (this.threadLock) {
+				if (this.thread == null) {
+					this.exit = true;
 				} else {
-					fThread.interrupt();
+					this.thread.interrupt();
 				}
 			}
 		}

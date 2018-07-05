@@ -10,7 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.origin.common.launch.impl.LaunchConfigAttributes;
+import org.origin.common.launch.impl.LaunchConfigData;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -27,8 +27,8 @@ public class LaunchConfigReader {
 		throw new IOException(e.getMessage() + " exception occurs, while reading launch configuration: " + file.getName(), e);
 	}
 
-	public LaunchConfigAttributes read(File file) throws IOException {
-		LaunchConfigAttributes configData = null;
+	public LaunchConfigData read(File file) throws IOException {
+		LaunchConfigData configData = null;
 		InputStream input = null;
 		try {
 			input = new FileInputStream(file);
@@ -62,12 +62,12 @@ public class LaunchConfigReader {
 	 * @throws IOException
 	 * @throws SAXException
 	 */
-	public LaunchConfigAttributes createInfoFromXML(InputStream input) throws ParserConfigurationException, IOException, SAXException {
+	public LaunchConfigData createInfoFromXML(InputStream input) throws ParserConfigurationException, IOException, SAXException {
 		DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		parser.setErrorHandler(new DefaultHandler());
 		Element root = parser.parse(new InputSource(input)).getDocumentElement();
 
-		LaunchConfigAttributes configData = new LaunchConfigAttributes();
+		LaunchConfigData configData = new LaunchConfigData();
 
 		initializeFromXML(configData, root);
 
@@ -81,16 +81,16 @@ public class LaunchConfigReader {
 	 * @throws IOException
 	 * @see LaunchConfigurationInfo.initializeFromXML(Element root)
 	 */
-	protected void initializeFromXML(LaunchConfigAttributes data, Element root) throws IOException {
+	protected void initializeFromXML(LaunchConfigData data, Element root) throws IOException {
 		// read root
-		if (!root.getNodeName().equalsIgnoreCase(LaunchConfigAttributes.LAUNCH_CONFIGURATION)) {
-			throw new IOException("Invalid Format. " + LaunchConfigAttributes.LAUNCH_CONFIGURATION + " is not available.");
+		if (!root.getNodeName().equalsIgnoreCase(LaunchConfigData.LAUNCH_CONFIGURATION)) {
+			throw new IOException("Invalid Format. " + LaunchConfigData.LAUNCH_CONFIGURATION + " is not available.");
 		}
 
 		// read type
-		String typeId = root.getAttribute(LaunchConfigAttributes.TYPE);
+		String typeId = root.getAttribute(LaunchConfigData.TYPE);
 		if (typeId == null) {
-			throw new IOException("Invalid Format. " + LaunchConfigAttributes.TYPE + " is not available.");
+			throw new IOException("Invalid Format. " + LaunchConfigData.TYPE + " is not available.");
 		}
 
 		data.setTypeId(typeId);
@@ -105,17 +105,17 @@ public class LaunchConfigReader {
 			if (nodeType == Node.ELEMENT_NODE) {
 				element = (Element) node;
 				nodeName = element.getNodeName();
-				if (nodeName.equalsIgnoreCase(LaunchConfigAttributes.STRING_ATTRIBUTE)) {
+				if (nodeName.equalsIgnoreCase(LaunchConfigData.STRING_ATTRIBUTE)) {
 					data.setStringAttribute(element);
-				} else if (nodeName.equalsIgnoreCase(LaunchConfigAttributes.INT_ATTRIBUTE)) {
+				} else if (nodeName.equalsIgnoreCase(LaunchConfigData.INT_ATTRIBUTE)) {
 					data.setIntegerAttribute(element);
-				} else if (nodeName.equalsIgnoreCase(LaunchConfigAttributes.BOOLEAN_ATTRIBUTE)) {
+				} else if (nodeName.equalsIgnoreCase(LaunchConfigData.BOOLEAN_ATTRIBUTE)) {
 					data.setBooleanAttribute(element);
-				} else if (nodeName.equalsIgnoreCase(LaunchConfigAttributes.LIST_ATTRIBUTE)) {
+				} else if (nodeName.equalsIgnoreCase(LaunchConfigData.LIST_ATTRIBUTE)) {
 					data.setListAttribute(element);
-				} else if (nodeName.equalsIgnoreCase(LaunchConfigAttributes.MAP_ATTRIBUTE)) {
+				} else if (nodeName.equalsIgnoreCase(LaunchConfigData.MAP_ATTRIBUTE)) {
 					data.setMapAttribute(element);
-				} else if (nodeName.equalsIgnoreCase(LaunchConfigAttributes.SET_ATTRIBUTE)) {
+				} else if (nodeName.equalsIgnoreCase(LaunchConfigData.SET_ATTRIBUTE)) {
 					data.setSetAttribute(element);
 				}
 			}

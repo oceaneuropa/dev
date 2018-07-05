@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import org.origin.common.launch.stream.StreamProxy;
 
-public interface ProcessHandler {
+public interface ProcessInstance {
 
-	LaunchHandler getLaunch();
+	LaunchInstance getLaunchInstsance();
+
+	Process getSystemProcess();
 
 	StreamProxy getStreamProxy();
 
@@ -15,7 +17,5 @@ public interface ProcessHandler {
 	boolean isTerminated();
 
 	void terminate() throws IOException;
-
-	Process getSystemProcess();
 
 }

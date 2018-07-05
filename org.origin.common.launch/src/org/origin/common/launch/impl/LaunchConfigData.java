@@ -15,7 +15,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class LaunchConfigAttributes {
+public class LaunchConfigData {
 
 	/**
 	 * Constants for XML element names and attributes
@@ -43,7 +43,7 @@ public class LaunchConfigAttributes {
 	/**
 	 * Constructs a new empty info
 	 */
-	public LaunchConfigAttributes() {
+	public LaunchConfigData() {
 		setAttributeMap(new LinkedHashMap<String, Object>());
 	}
 
@@ -225,8 +225,8 @@ public class LaunchConfigAttributes {
 	 *
 	 * @return copy of this info
 	 */
-	public LaunchConfigAttributes getCopy() {
-		LaunchConfigAttributes copy = new LaunchConfigAttributes();
+	public LaunchConfigData getCopy() {
+		LaunchConfigData copy = new LaunchConfigData();
 		copy.setTypeId(getTypeId());
 		copy.setAttributeMap(getAttributes());
 		return copy;
@@ -591,12 +591,12 @@ public class LaunchConfigAttributes {
 	@Override
 	public boolean equals(Object obj) {
 		// Make sure it's a LaunchConfigurationInfo object
-		if (!(obj instanceof LaunchConfigAttributes)) {
+		if (!(obj instanceof LaunchConfigData)) {
 			return false;
 		}
 
 		// Make sure the types are the same
-		LaunchConfigAttributes other = (LaunchConfigAttributes) obj;
+		LaunchConfigData other = (LaunchConfigData) obj;
 		if (!typeId.equals(other.getTypeId())) {
 			return false;
 		}

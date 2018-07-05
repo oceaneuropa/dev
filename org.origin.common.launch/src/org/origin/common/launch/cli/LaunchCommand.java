@@ -9,13 +9,13 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.launch.LaunchActivator;
-import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
-import org.origin.common.launch.LaunchHandler;
+import org.origin.common.launch.LaunchInstance;
 import org.origin.common.launch.LaunchService;
 import org.origin.common.launch.LaunchType;
 import org.origin.common.launch.Launcher;
-import org.origin.common.launch.ProcessHandler;
+import org.origin.common.launch.ProcessInstance;
 import org.origin.common.launch.util.LaunchExtensionHelper;
 import org.origin.common.launch.util.LaunchExtensionHelper.LauncherExtension;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -75,7 +75,7 @@ public class LaunchCommand implements Annotated {
 						"llaunchtypes", "llaunchers", //
 						"llaunchconfigs", "createlaunchconfig", "deletelaunchconfig", //
 						"launch", "terminate", "llaunches", //
-		});
+				});
 		OSGiServiceUtil.register(bundleContext, LaunchCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
@@ -147,10 +147,10 @@ public class LaunchCommand implements Annotated {
 				return;
 			}
 
-			LaunchConfiguration[] launchConfigs = launchService.getLaunchConfigurations();
+			LaunchConfig[] launchConfigs = launchService.getLaunchConfigurations();
 
 			int totalLength = 0;
-			for (LaunchConfiguration launchConfig : launchConfigs) {
+			for (LaunchConfig launchConfig : launchConfigs) {
 				Map<String, Object> attributes = launchConfig.getAttributes();
 				if (attributes.isEmpty()) {
 					totalLength += 1;
@@ -161,7 +161,7 @@ public class LaunchCommand implements Annotated {
 
 			String[][] records = new String[totalLength][LAUNCH_CONFIG_COLUMNS.length];
 			int index = 0;
-			for (LaunchConfiguration launchConfig : launchConfigs) {
+			for (LaunchConfig launchConfig : launchConfigs) {
 				String name = launchConfig.getName();
 				String typeId = launchConfig.getTypeId();
 				File file = launchConfig.getFile();
@@ -206,7 +206,7 @@ public class LaunchCommand implements Annotated {
 				return;
 			}
 
-			LaunchConfiguration launchConfig = launchService.createLaunchConfiguration(typeId, name);
+			LaunchConfig launchConfig = launchService.createLaunchConfiguration(typeId, name);
 			if (launchConfig != null) {
 				LOG.info("Launch configuration is created.");
 			} else {
@@ -242,11 +242,11 @@ public class LaunchCommand implements Annotated {
 				return;
 			}
 
-			LaunchHandler[] launchHandlers = launchService.getLaunchHandlers();
+			LaunchInstance[] launchHandlers = launchService.getLaunchInstances();
 
 			int totalLength = 0;
-			for (LaunchHandler currLaunchHandler : launchHandlers) {
-				ProcessHandler[] runtimeProcesses = currLaunchHandler.getProcesses();
+			for (LaunchInstance currLaunchHandler : launchHandlers) {
+				ProcessInstance[] runtimeProcesses = currLaunchHandler.getProcessInstances();
 				if (runtimeProcesses.length == 0) {
 					totalLength += 1;
 				} else {
@@ -256,9 +256,9 @@ public class LaunchCommand implements Annotated {
 
 			String[][] records = new String[totalLength][RUNTIME_LAUNCH_COLUMNS.length];
 			int index = 0;
-			for (LaunchHandler currLaunchHandler : launchHandlers) {
+			for (LaunchInstance currLaunchHandler : launchHandlers) {
 				String launchConfigName = currLaunchHandler.getLaunchConfiguration().getName();
-				String runtimeLaunchId = currLaunchHandler.getAttribute(LaunchConstants.RUNTIME_LAUNCH_ID);
+				String runtimeLaunchId = currLaunchHandler.getAttribute(LaunchConstants.LAUNCH_INSTANCE_ID);
 				String workingDirLocation = currLaunchHandler.getAttribute(LaunchConstants.WORKING_DIRECTORY);
 
 				if (workingDirLocation == null) {
@@ -269,13 +269,13 @@ public class LaunchCommand implements Annotated {
 					configLocation = "(n/a)";
 				}
 
-				ProcessHandler[] processHandlers = currLaunchHandler.getProcesses();
+				ProcessInstance[] processHandlers = currLaunchHandler.getProcessInstances();
 				if (processHandlers.length == 0) {
 					records[index++] = new String[] { runtimeLaunchId, launchConfigName, workingDirLocation, configLocation, "" };
 
 				} else {
 					int index1 = 0;
-					for (ProcessHandler currRuntimeProcesse : processHandlers) {
+					for (ProcessInstance currRuntimeProcesse : processHandlers) {
 						Process currSysProcess = currRuntimeProcesse.getSystemProcess();
 						boolean isAlive = currSysProcess.isAlive();
 						String processStr = currSysProcess.toString() + " (Alive: " + isAlive + ")";
@@ -314,13 +314,13 @@ public class LaunchCommand implements Annotated {
 				return;
 			}
 
-			LaunchConfiguration launchConfig = launchService.getLaunchConfiguration(typeId, name);
+			LaunchConfig launchConfig = launchService.getLaunchConfiguration(typeId, name);
 			if (launchConfig == null) {
 				LOG.error("LaunchConfiguration is not found.");
 				return;
 			}
 
-			LaunchHandler launchHandler = launchConfig.launch();
+			LaunchInstance launchHandler = launchConfig.launch();
 			if (launchHandler != null) {
 				System.out.println("Launch is created.");
 			} else {
@@ -352,7 +352,7 @@ public class LaunchCommand implements Annotated {
 			}
 
 			if (all) {
-				for (LaunchHandler launchHandler : launchService.getLaunchHandlers()) {
+				for (LaunchInstance launchHandler : launchService.getLaunchInstances()) {
 					String currId = launchHandler.getId();
 					try {
 						launchHandler.terminate();
@@ -365,7 +365,7 @@ public class LaunchCommand implements Annotated {
 				}
 
 			} else {
-				LaunchHandler launchHandler = launchService.getLaunchHandler(id);
+				LaunchInstance launchHandler = launchService.getLaunchInstance(id);
 				if (launchHandler == null) {
 					LOG.error("Launch handler is not found.");
 					return;

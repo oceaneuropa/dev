@@ -5,24 +5,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.origin.common.env.OS;
-import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchConfig;
+import org.origin.common.launch.LaunchInstance;
 import org.origin.common.launch.Launcher;
-import org.origin.common.launch.LaunchHandler;
+import org.origin.common.launch.launcher.ScriptLauncher;
 
-public class NodeLauncher implements Launcher {
+public class NodeScriptLauncher extends ScriptLauncher implements Launcher {
 
-	public static String ID = "org.orbit.platform.runtime.PlatformLauncher";
+	public static String ID = "org.orbit.platform.runtime.NodeScriptLauncher";
 
 	@Override
-	public void launch(LaunchConfiguration config, LaunchHandler launch) throws IOException {
+	public void launch(LaunchConfig launchConfig, LaunchInstance launchInstance) throws IOException {
 		Path path = null;
 
-		config.getFile();
+		launchConfig.getFile();
 
 		String[] command = null;
 		if (OS.isWindows()) {
 			Path startFile = path.resolve("start.bat");
 			command = new String[] { "cmd.exe", "/C", startFile.toAbsolutePath().toString() };
+
 		} else {
 			Path startFile = path.resolve("start.sh");
 			if (!Files.isExecutable(startFile)) {

@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
-import org.origin.common.launch.LaunchHandler;
+import org.origin.common.launch.LaunchInstance;
+import org.origin.common.launch.LaunchInternalService;
 import org.origin.common.launch.LaunchService;
 import org.origin.common.launch.LaunchType;
 import org.origin.common.launch.Launcher;
@@ -17,12 +18,12 @@ import org.origin.common.launch.util.LaunchConfigPersistence;
 import org.origin.common.launch.util.LaunchExtensionHelper;
 import org.origin.common.launch.util.LaunchExtensionHelper.LauncherExtension;
 
-public class LaunchConfigurationImpl implements LaunchConfiguration {
+public class LaunchConfigImpl implements LaunchConfig {
 
 	protected LaunchService launchService;
 	protected Path configFilePath;
 	protected String name;
-	protected LaunchConfigAttributes data;
+	protected LaunchConfigData data;
 
 	/**
 	 * 
@@ -30,12 +31,13 @@ public class LaunchConfigurationImpl implements LaunchConfiguration {
 	 * @param typeId
 	 * @param configFilePath
 	 */
-	public LaunchConfigurationImpl(LaunchService launchService, String typeId, Path configFilePath) {
+	public LaunchConfigImpl(LaunchService launchService, String typeId, Path configFilePath) {
 		this.launchService = launchService;
 		this.configFilePath = configFilePath;
 
-		LaunchConfigAttributes data = new LaunchConfigAttributes();
+		LaunchConfigData data = new LaunchConfigData();
 		data.setTypeId(typeId);
+
 		setData(data);
 	}
 
@@ -44,10 +46,34 @@ public class LaunchConfigurationImpl implements LaunchConfiguration {
 	 * @param launchService
 	 * @param configFilePath
 	 */
-	public LaunchConfigurationImpl(LaunchService launchService, Path configFilePath) {
+	public LaunchConfigImpl(LaunchService launchService, Path configFilePath) {
 		this.launchService = launchService;
 		this.configFilePath = configFilePath;
+
 		this.name = getSimpleName();
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	protected synchronized LaunchConfigData getData() {
+		if (this.data == null) {
+			try {
+				this.data = LaunchConfigPersistence.INSTANCE.load(getFile());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return this.data;
+	}
+
+	/**
+	 * 
+	 * @param data
+	 */
+	protected synchronized void setData(LaunchConfigData data) {
+		this.data = data;
 	}
 
 	/**
@@ -84,37 +110,8 @@ public class LaunchConfigurationImpl implements LaunchConfiguration {
 	}
 
 	@Override
-	public boolean delete() throws IOException {
-		this.data = null;
-		return getFile().delete();
-	}
-
-	@Override
 	public void load() throws IOException {
 		getData();
-	}
-
-	/**
-	 * 
-	 * @return
-	 */
-	protected synchronized LaunchConfigAttributes getData() {
-		if (this.data == null) {
-			try {
-				this.data = LaunchConfigPersistence.INSTANCE.load(getFile());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return this.data;
-	}
-
-	/**
-	 * 
-	 * @param data
-	 */
-	protected synchronized void setData(LaunchConfigAttributes data) {
-		this.data = data;
 	}
 
 	@Override
@@ -123,9 +120,15 @@ public class LaunchConfigurationImpl implements LaunchConfiguration {
 	}
 
 	@Override
-	public LaunchConfiguration getCopy(String name) {
+	public boolean delete() throws IOException {
+		this.data = null;
+		return getFile().delete();
+	}
+
+	@Override
+	public LaunchConfig getCopy(String name) {
 		Path newPath = this.configFilePath.getParent().resolve(name);
-		LaunchConfigurationImpl copy = new LaunchConfigurationImpl(this.launchService, newPath);
+		LaunchConfigImpl copy = new LaunchConfigImpl(this.launchService, newPath);
 		copy.setData(getData().getCopy());
 		return copy;
 	}
@@ -201,8 +204,9 @@ public class LaunchConfigurationImpl implements LaunchConfiguration {
 	}
 
 	@Override
-	public LaunchHandler launch() throws IOException {
+	public LaunchInstance launch() throws IOException {
 		String typeId = getData().getTypeId();
+
 		LaunchType launchType = this.launchService.getLaunchType(typeId);
 		if (launchType == null) {
 			throw new IOException("LaunchType is not found for '" + typeId + "'.");
@@ -214,7 +218,7 @@ public class LaunchConfigurationImpl implements LaunchConfiguration {
 		}
 
 		LauncherExtension launcherExtension = null;
-		String launcherId = getAttribute(PROP_LAUNCHER_ID, (String) null);
+		String launcherId = getAttribute(LAUNCHER_ID, (String) null);
 		if (launcherId != null) {
 			for (LauncherExtension currLauncherExtension : launcherExtensions) {
 				if (launcherId.equals(currLauncherExtension.getId())) {
@@ -227,27 +231,29 @@ public class LaunchConfigurationImpl implements LaunchConfiguration {
 			launcherExtension = launcherExtensions[0];
 		}
 
-		LaunchHandler launchHandler = createLaunchHandler();
+		LaunchInstance launchInstance = createLaunchInstance();
 
 		Launcher launcher = launcherExtension.getLauncher();
 		if (launcher == null) {
 			throw new IOException("Launcher is null from extension '" + launcherExtension.getId() + "'.");
 		}
-		launcher.launch(this, launchHandler);
+		launcher.launch(this, launchInstance);
 
 		if (this.launchService instanceof LaunchInternalService) {
-			((LaunchInternalService) this.launchService).launchAdded(launchHandler);
+			((LaunchInternalService) this.launchService).launchInstanceAdded(launchInstance);
 		}
 
-		return launchHandler;
+		return launchInstance;
 	}
 
-	protected LaunchHandler createLaunchHandler() {
-		LaunchHandler launchHandler = new LaunchHandlerImpl(this);
-		return launchHandler;
+	protected LaunchInstance createLaunchInstance() {
+		return new LaunchInstanceImpl(this);
 	}
 
 }
+
+// ILaunchService getLaunchService();
+// boolean isDirty();
 
 // protected boolean isDirty;
 

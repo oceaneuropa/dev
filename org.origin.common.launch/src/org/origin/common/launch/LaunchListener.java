@@ -2,10 +2,10 @@ package org.origin.common.launch;
 
 public interface LaunchListener {
 
-	void launchRemoved(LaunchHandler launch);
+	void launchRemoved(LaunchInstance launch);
 
-	void launchAdded(LaunchHandler launch);
+	void launchAdded(LaunchInstance launch);
 
-	void launchChanged(LaunchHandler launch);
+	void launchChanged(LaunchInstance launch);
 
 }

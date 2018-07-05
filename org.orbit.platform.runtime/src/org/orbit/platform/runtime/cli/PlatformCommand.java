@@ -32,7 +32,7 @@ import org.origin.common.annotation.DependencyUnfullfilled;
 import org.origin.common.extensions.ExtensionActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.core.IExtensionService;
-import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchService;
 import org.origin.common.launch.LaunchType;
 import org.origin.common.osgi.BundleHelper;
@@ -710,10 +710,10 @@ public class PlatformCommand implements Annotated, CommandActivator {
 		}
 
 		try {
-			LaunchConfiguration[] launchConfigs = launchService.getLaunchConfigurations();
+			LaunchConfig[] launchConfigs = launchService.getLaunchConfigurations();
 			String[][] records = new String[launchConfigs.length][LAUNCH_CONFIG_COLUMNS.length];
 			int index = 0;
-			for (LaunchConfiguration launchConfig : launchConfigs) {
+			for (LaunchConfig launchConfig : launchConfigs) {
 				String name = launchConfig.getName();
 				String typeId = launchConfig.getTypeId();
 				File file = launchConfig.getFile();
@@ -752,7 +752,7 @@ public class PlatformCommand implements Annotated, CommandActivator {
 			return;
 		}
 		try {
-			LaunchConfiguration launchConfig = launchService.createLaunchConfiguration(typeId, name);
+			LaunchConfig launchConfig = launchService.createLaunchConfiguration(typeId, name);
 			if (launchConfig != null) {
 				LOG.info("Launch configuration is created.");
 			} else {

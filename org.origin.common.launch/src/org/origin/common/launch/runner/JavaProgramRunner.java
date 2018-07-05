@@ -1,4 +1,4 @@
-package org.origin.common.launch.impl;
+package org.origin.common.launch.runner;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,20 +6,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.origin.common.launch.LaunchHandler;
+import org.origin.common.launch.LaunchInstance;
 
 /**
  * @see org.eclipse.jdt.internal.launching.StandardVMRunner
  * @see org.eclipse.jdt.internal.launching.StandardVMDebugger
  *
  */
-public class JavaRunnerImpl extends AbstractProgramRunner {
+public class JavaProgramRunner extends AbstractProgramRunner {
 
-	public JavaRunnerImpl() {
+	public JavaProgramRunner() {
 	}
 
 	@Override
-	public void run(ProgramConfiguration config, LaunchHandler launchHandler) throws IOException {
+	public void run(ProgramConfiguration config, LaunchInstance launchInstance) throws IOException {
 		// String program = constructProgramString(config);
 		String program = config.getProgram();
 
@@ -87,7 +87,7 @@ public class JavaRunnerImpl extends AbstractProgramRunner {
 
 		// String timestamp = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(System.currentTimeMillis()));
 		// newProcess(launchHandler, process, renderProcessLabel(cmdLine, timestamp), getDefaultProcessMap());
-		newProcessHandler(launchHandler, process, cmdLine[0], getDefaultProcessAttributes());
+		newProcessInstance(launchInstance, process, cmdLine[0], getDefaultProcessAttributes());
 
 		// process.setAttribute(DebugPlugin.ATTR_PATH, cmdLine[0]);
 		// process.setAttribute(RuntimeProcess.ATTR_CMDLINE, renderCommandLine(cmdLine));

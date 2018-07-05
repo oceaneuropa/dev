@@ -1,8 +1,8 @@
-package org.origin.common.launch.impl;
+package org.origin.common.launch.runner;
 
 import java.io.IOException;
 
-import org.origin.common.launch.LaunchHandler;
+import org.origin.common.launch.LaunchInstance;
 
 public interface ProgramRunner {
 
@@ -90,6 +90,6 @@ public interface ProgramRunner {
 	 * @param launchHandler
 	 * @throws IOException
 	 */
-	void run(ProgramConfiguration config, LaunchHandler launchHandler) throws IOException;
+	void run(ProgramConfiguration config, LaunchInstance launchHandler) throws IOException;
 
 }

@@ -1,4 +1,4 @@
-package org.origin.common.launch.impl;
+package org.origin.common.launch.runner;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,8 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.origin.common.launch.LaunchConstants;
-import org.origin.common.launch.LaunchHandler;
-import org.origin.common.launch.ProcessHandler;
+import org.origin.common.launch.LaunchInstance;
+import org.origin.common.launch.ProcessInstance;
+import org.origin.common.launch.impl.ProcessInstanceImpl;
 
 /**
  * @see org.eclipse.jdt.launching.AbstractVMRunner
@@ -17,20 +18,21 @@ import org.origin.common.launch.ProcessHandler;
 public abstract class AbstractProgramRunner implements ProgramRunner {
 
 	@Override
-	public void run(ProgramConfiguration configuration, LaunchHandler launch) throws IOException {
-		String program = configuration.getProgram();
+	public void run(ProgramConfiguration launchConfig, LaunchInstance launchInstsance) throws IOException {
+		String program = launchConfig.getProgram();
 
-		String workingDirectoryLocation = configuration.getWorkingDirectory();
+		String workingDirectoryLocation = launchConfig.getWorkingDirectory();
 		File workingDirectory = new File(workingDirectoryLocation);
 
 		String[] cmdLine = new String[] { program };
+
 		Process process = exec(cmdLine, workingDirectory);
 		if (process == null) {
 			throw new IOException("System process cannot be created.");
 		}
 
 		Map<String, String> processAttributes = getDefaultProcessAttributes();
-		newProcessHandler(launch, process, program, processAttributes);
+		newProcessInstance(launchInstsance, process, program, processAttributes);
 	}
 
 	protected Process exec(String[] cmdLine, File workingDirectory) throws IOException {
@@ -59,9 +61,8 @@ public abstract class AbstractProgramRunner implements ProgramRunner {
 		return processAttributes;
 	}
 
-	protected ProcessHandler newProcessHandler(LaunchHandler launchHandler, Process process, String label, Map<String, String> attributes) throws IOException {
-		ProcessHandler processHandler = new ProcessHandlerImpl(launchHandler, process, label, attributes);
-		return processHandler;
+	protected ProcessInstance newProcessInstance(LaunchInstance launchInstance, Process process, String label, Map<String, String> attributes) throws IOException {
+		return new ProcessInstanceImpl(launchInstance, process, label, attributes);
 	}
 
 }

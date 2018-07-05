@@ -13,8 +13,8 @@ public interface LaunchConstants {
 	String LAUNCH_EXTENSION = "launch";
 	String DOT_LAUNCH_EXTENSION = ".launch";
 
-	String RUNTIME_LAUNCH_ID = "runtime_launch_id";
-	String RUNTIME_PROCESS_ID = "runtime_process_id";
+	String LAUNCH_INSTANCE_ID = "launch_instance_id";
+	String PROCESS_INSTANCE_ID = "process_instance_id";
 
 	String PROGRAM = "program";
 

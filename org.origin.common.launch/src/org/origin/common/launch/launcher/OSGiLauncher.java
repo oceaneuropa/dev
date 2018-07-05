@@ -1,4 +1,4 @@
-package org.origin.common.launch.impl;
+package org.origin.common.launch.launcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,10 +7,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
-import org.origin.common.launch.LaunchHandler;
+import org.origin.common.launch.LaunchInstance;
 import org.origin.common.launch.Launcher;
+import org.origin.common.launch.runner.JavaProgramRunner;
+import org.origin.common.launch.runner.ProgramRunner;
 import org.origin.common.launch.util.LaunchConfigurationHelper;
 import org.origin.common.util.PropertiesPreserveOrder;
 
@@ -19,13 +21,13 @@ import org.origin.common.util.PropertiesPreserveOrder;
  * @see org.eclipse.pde.launching.AbstractPDELaunchConfiguration
  * 
  */
-public class OSGiLauncher extends AbstractLauncher implements Launcher {
+public class OSGiLauncher extends ProgramLauncher implements Launcher {
 
 	public static String ID = "org.origin.launch.OSGiLauncher";
 
 	@Override
-	protected void preLaunch(LaunchConfiguration launchConfig, LaunchHandler launchHandler) throws IOException {
-		super.preLaunch(launchConfig, launchHandler);
+	protected void preLaunch(LaunchConfig launchConfig, LaunchInstance launchInstance) throws IOException {
+		super.preLaunch(launchConfig, launchInstance);
 
 		// Create start.sh file
 		// saveScriptFile(configuration);
@@ -35,13 +37,13 @@ public class OSGiLauncher extends AbstractLauncher implements Launcher {
 	}
 
 	@Override
-	protected ProgramRunner getProgramRunner(LaunchConfiguration configuration) throws IOException {
-		return new JavaRunnerImpl();
+	protected ProgramRunner getProgramRunner(LaunchConfig launchConfig) throws IOException {
+		return new JavaProgramRunner();
 	}
 
 	@Override
-	public String getProgram(LaunchConfiguration configuration) throws IOException {
-		return configuration.getAttribute(LaunchConstants.PROGRAM, "java");
+	public String getProgram(LaunchConfig launchConfig) throws IOException {
+		return launchConfig.getAttribute(LaunchConstants.PROGRAM, "java");
 	}
 
 	// Sample start.sh file
@@ -94,24 +96,24 @@ public class OSGiLauncher extends AbstractLauncher implements Launcher {
 	//
 	// TA_HOME=/Users/yayang/origin/ta1
 	// ---------------------------------------------------------------------------------------------------------------------------------------------------
-	protected void saveConfigIniFile(LaunchConfiguration configuration) throws IOException {
+	protected void saveConfigIniFile(LaunchConfig launchConfig) throws IOException {
 		Properties properties = new PropertiesPreserveOrder();
 
-		Map<String, String> configPropertiesMap = configuration.getAttribute(LaunchConstants.OSGI_CONFIG_PROPERTIES_MAP, new HashMap<String, String>());
+		Map<String, String> configPropertiesMap = launchConfig.getAttribute(LaunchConstants.OSGI_CONFIG_PROPERTIES_MAP, new HashMap<String, String>());
 		for (Iterator<String> itor = configPropertiesMap.keySet().iterator(); itor.hasNext();) {
 			String vmArgName = itor.next();
 			String vmArgValue = configPropertiesMap.get(vmArgName);
 			properties.put(vmArgName, vmArgValue);
 		}
 
-		Map<String, String> configVMArgumentsMap = configuration.getAttribute(LaunchConstants.OSGI_CONFIG_VM_ARGUMENTS_MAP, new HashMap<String, String>());
+		Map<String, String> configVMArgumentsMap = launchConfig.getAttribute(LaunchConstants.OSGI_CONFIG_VM_ARGUMENTS_MAP, new HashMap<String, String>());
 		for (Iterator<String> itor = configVMArgumentsMap.keySet().iterator(); itor.hasNext();) {
 			String vmArgName = itor.next();
 			String vmArgValue = configVMArgumentsMap.get(vmArgName);
 			properties.put(vmArgName, vmArgValue);
 		}
 
-		File dir = getConfigurationDirectory(configuration);
+		File dir = getConfigurationDirectory(launchConfig);
 		File configIniFile = new File(dir, "config.ini");
 
 		LaunchConfigurationHelper.save(configIniFile, properties); // $NON-NLS-1$

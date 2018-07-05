@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
 
 public class LaunchConfigurationHelper {
@@ -36,7 +36,7 @@ public class LaunchConfigurationHelper {
 		}
 	}
 
-	public static File getBinFolder(LaunchConfiguration config) throws IOException {
+	public static File getBinFolder(LaunchConfig config) throws IOException {
 		File binFolder = null;
 		String location = config.getAttribute(LaunchConstants.WORKING_DIRECTORY, (String) null);
 		if (location != null && !location.isEmpty()) {
@@ -49,7 +49,7 @@ public class LaunchConfigurationHelper {
 	}
 
 	// public static File getConfigurationArea(LaunchConfiguration config) throws IOException {
-	public static File getConfigurationFolder(LaunchConfiguration config) throws IOException {
+	public static File getConfigurationFolder(LaunchConfig config) throws IOException {
 		File dir = getConfigurationLocation(config);
 		if (dir != null && !dir.exists()) {
 			dir.mkdirs();
@@ -57,7 +57,7 @@ public class LaunchConfigurationHelper {
 		return dir;
 	}
 
-	public static File getConfigurationLocation(LaunchConfiguration config) throws IOException {
+	public static File getConfigurationLocation(LaunchConfig config) throws IOException {
 		String configName = config.getName();
 		configName = configName.replace('#', 'h');
 		// File dir = new File(PDECore.getDefault().getStateLocation().toOSString(), configName);

@@ -5,13 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import org.origin.common.launch.LaunchConfiguration;
+import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
 // import org.origin.common.launch.impl.AbstractLauncher.ExecutionArguments;
 
 public class LaunchArgumentsHelper {
 
-	public static File getWorkingDirectory(LaunchConfiguration configuration) throws IOException {
+	public static File getWorkingDirectory(LaunchConfig configuration) throws IOException {
 		String working;
 		try {
 			working = configuration.getAttribute(LaunchConstants.WORKING_DIRECTORY, new File(".").getCanonicalPath()); //$NON-NLS-1$
@@ -34,7 +34,7 @@ public class LaunchArgumentsHelper {
 		return text;
 	}
 
-	public static String getUserVMArguments(LaunchConfiguration configuration) throws IOException {
+	public static String getUserVMArguments(LaunchConfig configuration) throws IOException {
 		String args = configuration.getAttribute(LaunchConstants.ATTR_VM_ARGUMENTS, (String) null);
 		if (args == null) {
 			// backward compatibility
@@ -46,7 +46,7 @@ public class LaunchArgumentsHelper {
 				// } else {
 				// wc = configuration.getWorkingCopy();
 				// }
-				LaunchConfiguration wc = configuration;
+				LaunchConfig wc = configuration;
 				wc.setAttribute("vmargs", (String) null); //$NON-NLS-1$
 				wc.setAttribute(LaunchConstants.ATTR_VM_ARGUMENTS, args);
 				// wc.doSave();
@@ -83,7 +83,7 @@ public class LaunchArgumentsHelper {
 	// return new ExecutionArguments("", args).getProgramArgumentsArray(); //$NON-NLS-1$
 	// }
 
-	public static String getUserProgramArguments(LaunchConfiguration configuration) throws IOException {
+	public static String getUserProgramArguments(LaunchConfig configuration) throws IOException {
 		String args = configuration.getAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, (String) null);
 		if (args == null) {
 			// backward compatibility
@@ -95,7 +95,7 @@ public class LaunchArgumentsHelper {
 				// } else {
 				// wc = configuration.getWorkingCopy();
 				// }
-				LaunchConfiguration wc = configuration;
+				LaunchConfig wc = configuration;
 				wc = configuration;
 				wc.setAttribute("progargs", (String) null); //$NON-NLS-1$
 				wc.setAttribute(LaunchConstants.ATTR_PROGRAM_ARGUMENTS, args);
@@ -105,7 +105,7 @@ public class LaunchArgumentsHelper {
 		return args == null ? "" : getSubstitutedString(args); //$NON-NLS-1$
 	}
 
-	public static String[] constructClasspath(LaunchConfiguration configuration) throws IOException {
+	public static String[] constructClasspath(LaunchConfig configuration) throws IOException {
 		// double targetVersion = TargetPlatformHelper.getTargetVersion();
 		// String jarPath = targetVersion >= 3.3 ? getEquinoxStartupPath(IPDEBuildConstants.BUNDLE_EQUINOX_LAUNCHER) : getStartupJarPath();
 		// if (jarPath == null && targetVersion < 3.3)

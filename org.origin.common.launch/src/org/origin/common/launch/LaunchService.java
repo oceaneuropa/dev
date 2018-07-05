@@ -12,26 +12,18 @@ public interface LaunchService {
 
 	Launcher[] getLaunchers(String typeId);
 
-	LaunchConfiguration[] getLaunchConfigurations() throws IOException;
+	LaunchConfig[] getLaunchConfigurations() throws IOException;
 
-	LaunchConfiguration[] getLaunchConfigurations(String typeId) throws IOException;
+	LaunchConfig[] getLaunchConfigurations(String typeId) throws IOException;
 
-	LaunchConfiguration getLaunchConfiguration(String typeId, String name) throws IOException;
+	LaunchConfig getLaunchConfiguration(String typeId, String name) throws IOException;
 
-	LaunchConfiguration createLaunchConfiguration(String typeId, String name) throws IOException;
+	LaunchConfig createLaunchConfiguration(String typeId, String name) throws IOException;
 
 	boolean launchConfigurationExists(String name);
 
-	LaunchHandler[] getLaunchHandlers();
+	LaunchInstance[] getLaunchInstances();
 
-	LaunchHandler getLaunchHandler(String id);
-
-	ProcessHandler[] getProcessHandlers();
-
-	String[] getEnvironment(LaunchConfiguration configuration) throws IOException;
+	LaunchInstance getLaunchInstance(String id);
 
 }
-
-// void addLaunchListener(ILaunchListener listener);
-
-// void removeLaunchListener(ILaunchListener listener);

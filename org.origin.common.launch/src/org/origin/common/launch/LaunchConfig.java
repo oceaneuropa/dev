@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface LaunchConfiguration {
+public interface LaunchConfig {
 
-	public static String PROP_LAUNCHER_ID = "launcherId";
+	public static String LAUNCHER_ID = "launcherId";
 
 	LaunchService getLaunchService();
 
@@ -18,13 +18,13 @@ public interface LaunchConfiguration {
 
 	boolean exists();
 
-	boolean delete() throws IOException;
-
 	void load() throws IOException;
 
 	void save() throws IOException;
 
-	LaunchConfiguration getCopy(String name);
+	boolean delete() throws IOException;
+
+	LaunchConfig getCopy(String name);
 
 	// --------------------------------------------------------
 	// Get
@@ -63,9 +63,6 @@ public interface LaunchConfiguration {
 	// --------------------------------------------------------
 	// Launch
 	// --------------------------------------------------------
-	LaunchHandler launch() throws IOException;
+	LaunchInstance launch() throws IOException;
 
 }
-
-// ILaunchService getLaunchService();
-// boolean isDirty();

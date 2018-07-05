@@ -12,6 +12,8 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.origin.common.launch;version="1.0.0",
  org.origin.common.launch.cli;version="1.0.0",
  org.origin.common.launch.impl;version="1.0.0",
+ org.origin.common.launch.launcher;version="1.0.0",
+ org.origin.common.launch.runner;version="1.0.0",
  org.origin.common.launch.stream;version="1.0.0",
  org.origin.common.launch.util;version="1.0.0"
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,1.0.0)",

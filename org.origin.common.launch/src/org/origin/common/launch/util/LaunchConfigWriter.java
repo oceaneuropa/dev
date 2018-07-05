@@ -10,7 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.origin.common.io.FileUtil;
-import org.origin.common.launch.impl.LaunchConfigAttributes;
+import org.origin.common.launch.impl.LaunchConfigData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -21,7 +21,7 @@ public class LaunchConfigWriter {
 	 * @param configData
 	 * @param file
 	 */
-	public void write(LaunchConfigAttributes configData, File file) {
+	public void write(LaunchConfigData configData, File file) {
 		String xml = null;
 		try {
 			xml = getAsXML(configData);
@@ -59,12 +59,12 @@ public class LaunchConfigWriter {
 	 *             * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public String getAsXML(LaunchConfigAttributes data) throws IOException, ParserConfigurationException, TransformerException {
+	public String getAsXML(LaunchConfigData data) throws IOException, ParserConfigurationException, TransformerException {
 		Document doc = LaunchConfigPersistence.INSTANCE.getDocument();
-		Element configRootElement = doc.createElement(LaunchConfigAttributes.LAUNCH_CONFIGURATION);
+		Element configRootElement = doc.createElement(LaunchConfigData.LAUNCH_CONFIGURATION);
 		doc.appendChild(configRootElement);
 
-		configRootElement.setAttribute(LaunchConfigAttributes.TYPE, data.getTypeId());
+		configRootElement.setAttribute(LaunchConfigData.TYPE, data.getTypeId());
 
 		for (String key : data.getAttributeMap().keySet()) {
 			if (key == null) {
@@ -81,19 +81,19 @@ public class LaunchConfigWriter {
 			String valueString = null;
 			if (value instanceof String) {
 				valueString = (String) value;
-				element = data.createKeyValueElement(doc, LaunchConfigAttributes.STRING_ATTRIBUTE, key, valueString);
+				element = data.createKeyValueElement(doc, LaunchConfigData.STRING_ATTRIBUTE, key, valueString);
 			} else if (value instanceof Integer) {
 				valueString = ((Integer) value).toString();
-				element = data.createKeyValueElement(doc, LaunchConfigAttributes.INT_ATTRIBUTE, key, valueString);
+				element = data.createKeyValueElement(doc, LaunchConfigData.INT_ATTRIBUTE, key, valueString);
 			} else if (value instanceof Boolean) {
 				valueString = ((Boolean) value).toString();
-				element = data.createKeyValueElement(doc, LaunchConfigAttributes.BOOLEAN_ATTRIBUTE, key, valueString);
+				element = data.createKeyValueElement(doc, LaunchConfigData.BOOLEAN_ATTRIBUTE, key, valueString);
 			} else if (value instanceof List) {
-				element = data.createListElement(doc, LaunchConfigAttributes.LIST_ATTRIBUTE, key, (List<String>) value);
+				element = data.createListElement(doc, LaunchConfigData.LIST_ATTRIBUTE, key, (List<String>) value);
 			} else if (value instanceof Map) {
-				element = data.createMapElement(doc, LaunchConfigAttributes.MAP_ATTRIBUTE, key, (Map<String, String>) value);
+				element = data.createMapElement(doc, LaunchConfigData.MAP_ATTRIBUTE, key, (Map<String, String>) value);
 			} else if (value instanceof Set) {
-				element = data.createSetElement(doc, LaunchConfigAttributes.SET_ATTRIBUTE, key, (Set<String>) value);
+				element = data.createSetElement(doc, LaunchConfigData.SET_ATTRIBUTE, key, (Set<String>) value);
 			}
 			configRootElement.appendChild(element);
 		}

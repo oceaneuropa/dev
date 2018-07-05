@@ -3,7 +3,7 @@ package org.origin.common.launch;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
-import org.origin.common.launch.impl.OSGiLauncher;
+import org.origin.common.launch.launcher.OSGiLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
