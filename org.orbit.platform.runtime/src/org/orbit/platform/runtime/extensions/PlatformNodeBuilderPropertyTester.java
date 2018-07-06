@@ -7,11 +7,11 @@ import org.origin.common.extensions.condition.IPropertyTester;
 import org.origin.common.resources.FolderDescription;
 import org.origin.common.resources.node.INode;
 
-public class PlatformNodePreConfiguratorPropertyTester implements IPropertyTester {
+public class PlatformNodeBuilderPropertyTester implements IPropertyTester {
 
-	public static String ID = "org.orbit.platform.runtime.PlatformNodeConfiguratorPropertyTester";
+	public static String ID = "org.orbit.platform.runtime.PlatformNodeBuilderPropertyTester";
 
-	public static PlatformNodePreConfiguratorPropertyTester INSTANCE = new PlatformNodePreConfiguratorPropertyTester();
+	public static PlatformNodeBuilderPropertyTester INSTANCE = new PlatformNodeBuilderPropertyTester();
 
 	@Override
 	public boolean accept(Object context, Object source, Object target, Map<String, Object> args) {

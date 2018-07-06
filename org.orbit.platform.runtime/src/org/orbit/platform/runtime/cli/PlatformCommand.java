@@ -48,6 +48,8 @@ import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.URIUtil;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -66,16 +68,7 @@ public class PlatformCommand implements Annotated, CommandActivator {
 	protected static String[] LAUNCH_TYPE_COLUMNS = new String[] { "Id", "Name" };
 	protected static String[] LAUNCH_CONFIG_COLUMNS = new String[] { "Name", "Type Id", "Location", "Attributes" };
 
-	// protected static Logger LOG = LoggerFactory.getLogger(AppCommand.class);
-	public static class LOG {
-		public static void info(String message) {
-			System.out.println(message);
-		}
-
-		public static void error(String message) {
-			System.err.println(message);
-		}
-	}
+	protected static Logger LOG = LoggerFactory.getLogger(PlatformCommand.class);
 
 	protected BundleContext bundleContext;
 	protected Map<Object, Object> properties;
@@ -135,7 +128,7 @@ public class PlatformCommand implements Annotated, CommandActivator {
 
 	@DependencyFullfilled
 	public void platformSet() {
-		LOG.info("Platform service is set.");
+		LOG.info("platformSet()");
 		LOG.info("Platform is " + this.platform);
 	}
 

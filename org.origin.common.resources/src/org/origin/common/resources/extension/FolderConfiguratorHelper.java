@@ -26,9 +26,9 @@ public class FolderConfiguratorHelper {
 	 * @throws IOException
 	 */
 	public void preConfigureFolder(Object context, IWorkspace workspace, IFolder folder) throws IOException {
-		List<ResourceConfigurator> configurators = getFolderConfigurators(context, folder, "preconfig");
-		for (ResourceConfigurator configurator : configurators) {
-			configurator.configure(workspace, folder);
+		List<ResourceBuilder> configurators = getFolderConfigurators(context, folder, "preconfig");
+		for (ResourceBuilder configurator : configurators) {
+			configurator.build(workspace, folder);
 		}
 	}
 
@@ -39,14 +39,14 @@ public class FolderConfiguratorHelper {
 	 * @param action
 	 * @return
 	 */
-	public List<ResourceConfigurator> getFolderConfigurators(Object context, IFolder folder, String action) {
-		List<ResourceConfigurator> configurators = new ArrayList<ResourceConfigurator>();
+	public List<ResourceBuilder> getFolderConfigurators(Object context, IFolder folder, String action) {
+		List<ResourceBuilder> configurators = new ArrayList<ResourceBuilder>();
 		IExtensionService extensionService = ExtensionServiceHelper.INSTANCE.getExtensionService(context);
 		if (extensionService != null) {
-			IExtension[] extensions = extensionService.getExtensions(ResourceConfigurator.TYPE_ID);
+			IExtension[] extensions = extensionService.getExtensions(ResourceBuilder.TYPE_ID);
 			for (IExtension extension : extensions) {
 				if (isFolderConfiguratorTriggered(context, extension, folder, action)) {
-					ResourceConfigurator configurator = extension.getInterface(ResourceConfigurator.class);
+					ResourceBuilder configurator = extension.getInterface(ResourceBuilder.class);
 					if (configurator != null && !configurators.contains(configurator)) {
 						configurators.add(configurator);
 					}
@@ -67,7 +67,7 @@ public class FolderConfiguratorHelper {
 	public boolean isFolderConfiguratorTriggered(Object context, IExtension extension, IFolder folder, String action) {
 		boolean isTriggered = false;
 		if (extension != null) {
-			InterfaceDescription desc = extension.getInterfaceDescription(ResourceConfigurator.class);
+			InterfaceDescription desc = extension.getInterfaceDescription(ResourceBuilder.class);
 			if (desc != null) {
 				ICondition condition = desc.getTriggerCondition();
 				if (condition != null) {

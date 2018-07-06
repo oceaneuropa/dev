@@ -23,6 +23,7 @@ public class PlatformConstants {
 	public static String PLATFORM_TYPE = "Platform"; // type of index item for Platform
 
 	// index item properties
+	public static String PLATFORM_ID = "platform.id";
 	public static String PLATFORM_NAME = "platform.name";
 	public static String PLATFORM_VERSION = "platform.version";
 	public static String PLATFORM_HOST_URL = "platform.host.url";

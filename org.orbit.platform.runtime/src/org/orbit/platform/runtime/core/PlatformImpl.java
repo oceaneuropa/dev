@@ -38,9 +38,6 @@ import org.slf4j.LoggerFactory;
  */
 public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 
-	public static final String PLATFORM__NAME = "Sun";
-	public static final String PLATFORM__VERSION = "1.0.0";
-
 	protected static Logger LOG = LoggerFactory.getLogger(PlatformImpl.class);
 
 	protected String realm;
@@ -61,13 +58,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		this.wsEditPolicies.setService(Platform.class, this);
 	}
 
-	protected String checkRealm(String realm) {
-		if (realm == null) {
-			realm = "default";
-		}
-		return realm;
-	}
-
 	/**
 	 * 
 	 * @param bundleContext
@@ -80,6 +70,9 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_REALM);
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_ID);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_VERSION);
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOME);
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_CONTEXT_ROOT);
@@ -147,12 +140,10 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();
 		}
-
 		String realm = (String) this.properties.get(PlatformConstants.ORBIT_REALM);
 		if (realm != null) {
 			this.realm = realm;
 		}
-
 		this.properties = properties;
 	}
 
@@ -178,18 +169,21 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	}
 
 	@Override
-	public String getRealm() {
-		return checkRealm(this.realm);
+	public String getId() {
+		String id = (String) this.properties.get(PlatformConstants.PLATFORM_ID);
+		return id;
 	}
 
 	@Override
 	public String getName() {
-		return PLATFORM__NAME;
+		String name = (String) this.properties.get(PlatformConstants.PLATFORM_NAME);
+		return name;
 	}
 
 	@Override
 	public String getVersion() {
-		return PLATFORM__VERSION;
+		String version = (String) this.properties.get(PlatformConstants.PLATFORM_VERSION);
+		return version;
 	}
 
 	@Override
@@ -263,6 +257,23 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 
 // public static final String PROP_PLATFORM_NAME = "platform.name";
 // public static final String PROP_PLATFORM_VERSION = "platform.version";
+
+// public static final String PLATFORM__NAME = "Sun";
+// public static final String PLATFORM__VERSION = "1.0.0";
+
+// String getRealm();
+
+// @Override
+// public String getRealm() {
+// return checkRealm(this.realm);
+// }
+
+// protected String checkRealm(String realm) {
+// if (realm == null) {
+// realm = "default";
+// }
+// return realm;
+// }
 
 // 3. Start command and services
 // this.platformCommand = new PlatformCommand();

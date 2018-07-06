@@ -389,12 +389,12 @@ public class LaunchCommand implements Annotated {
 
 // boolean init = false;
 // if (init) {
-// config.setAttribute(LaunchConstants.WORKING_DIRECTORY, "/Users/yayang/origin/ta1/nodespaces/node0");
-// config.setAttribute(LaunchConstants.CONFIG_LOCATION, "/Users/yayang/origin/ta1/nodespaces/node0/configuration");
+// config.setAttribute(LaunchConstants.WORKING_DIRECTORY, "/Users/oceaneuropa/origin/ta1/nodespaces/node0");
+// config.setAttribute(LaunchConstants.CONFIG_LOCATION, "/Users/oceaneuropa/origin/ta1/nodespaces/node0/configuration");
 //
 // Map<String, String> systemArguments = new LinkedHashMap<String, String>();
-// systemArguments.put("-jar", "/Users/yayang/origin/ta1/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar");
-// systemArguments.put("-configuration", "file:/Users/yayang/origin/ta1/nodespaces/node0/configuration");
+// systemArguments.put("-jar", "/Users/oceaneuropa/origin/ta1/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar");
+// systemArguments.put("-configuration", "file:/Users/oceaneuropa/origin/ta1/nodespaces/node0/configuration");
 // config.setAttribute(LaunchConstants.SYSTEM_ARGUMENTS_MAP, systemArguments);
 //
 // Map<String, String> vmArguments = new LinkedHashMap<String, String>();
@@ -408,7 +408,7 @@ public class LaunchCommand implements Annotated {
 // configProperties.put("osgi.bundles.defaultStartLevel", "4");
 // configProperties.put("osgi.bundles", "reference:file:eclipse.equinox/org.eclipse.equinox.simpleconfigurator_1.1.0.v20131217-1203.jar@1:start");
 // configProperties.put("org.eclipse.equinox.simpleconfigurator.configUrl",
-// "file:/Users/yayang/origin/ta1/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
+// "file:/Users/oceaneuropa/origin/ta1/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info");
 // config.setAttribute(LaunchConstants.OSGI_CONFIG_PROPERTIES_MAP, configProperties);
 //
 // Map<String, String> configVMArguments = new LinkedHashMap<String, String>();
@@ -416,7 +416,7 @@ public class LaunchCommand implements Annotated {
 // configVMArguments.put("com.sun.management.jmxremote.authenticate", "false");
 // configVMArguments.put("com.sun.management.jmxremote.ssl", "false");
 // configVMArguments.put("org.osgi.service.http.port", "12001");
-// configVMArguments.put("platform.home", "/Users/yayang/origin/ta1");
+// configVMArguments.put("platform.home", "/Users/oceaneuropa/origin/ta1");
 // config.setAttribute(LaunchConstants.OSGI_CONFIG_VM_ARGUMENTS_MAP, configVMArguments);
 //
 // List<String> programArguments = new ArrayList<String>();

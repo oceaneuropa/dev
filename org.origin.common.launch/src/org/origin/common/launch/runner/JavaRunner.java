@@ -26,14 +26,14 @@ public class JavaRunner extends DefaultProgramRunner {
 		// Normal
 		// [/Library/Java/JavaVirtualMachines/jdk1.8.0_05.jdk/Contents/Home/jre/bin/java, -XstartOnFirstThread, -Declipse.ignoreApp=true,
 		// -Dosgi.noShutdown=true, -Dfile.encoding=UTF-8, -classpath,
-		// /Users/yayang/tibco-build/bw/tibco.home/bw/6.5/devutils/design/../../../../../eclipse/4.4/plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar,
-		// org.eclipse.equinox.launcher.Main, -dev, file:/Users/yayang/tibco/workspaces/BW642_V2/.metadata/.plugins/org.eclipse.pde.core/config1/dev.properties,
-		// -configuration, file:/Users/yayang/tibco/workspaces/BW642_V2/.metadata/.plugins/org.eclipse.pde.core/config1/, -os, macosx, -ws, cocoa, -arch,
+		// /Users/oceaneuropa/tibco-build/bw/tibco.home/bw/6.5/devutils/design/../../../../../eclipse/4.4/plugins/org.eclipse.equinox.launcher_1.3.0.v20140415-2008.jar,
+		// org.eclipse.equinox.launcher.Main, -dev, file:/Users/oceaneuropa/tibco/workspaces/BW642_V2/.metadata/.plugins/org.eclipse.pde.core/config1/dev.properties,
+		// -configuration, file:/Users/oceaneuropa/tibco/workspaces/BW642_V2/.metadata/.plugins/org.eclipse.pde.core/config1/, -os, macosx, -ws, cocoa, -arch,
 		// x86_64, -nl, en_US, -consoleLog, -console]
 
 		// Created
-		// [java, -Declipse.ignoreApp=true, -Dosgi.noShutdown=true, -jar, /Users/yayang/origin/ta1/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar,
-		// -configuration, file:/Users/yayang/origin/ta1/nodespaces/node0/configuration, -consoleLog, -console]
+		// [java, -Declipse.ignoreApp=true, -Dosgi.noShutdown=true, -jar, /Users/oceaneuropa/origin/ta1/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar,
+		// -configuration, file:/Users/oceaneuropa/origin/ta1/nodespaces/node0/configuration, -consoleLog, -console]
 
 		List<String> arguments = new ArrayList<String>();
 
@@ -54,9 +54,9 @@ public class JavaRunner extends DefaultProgramRunner {
 		// System arguments
 		// e.g.
 		// -jar,
-		// "/Users/yayang/origin/ta1/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar,
+		// "/Users/oceaneuropa/origin/ta1/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar,
 		// -configuration,
-		// "/Users/yayang/origin/ta1/nodespaces/node0/configuration
+		// "/Users/oceaneuropa/origin/ta1/nodespaces/node0/configuration
 		String[] systemArguments = config.getSystemArguments();
 		for (String systemArgument : systemArguments) {
 			arguments.add(systemArgument);

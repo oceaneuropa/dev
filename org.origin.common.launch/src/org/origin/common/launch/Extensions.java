@@ -32,17 +32,17 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createLauncherExtensions() {
-		Extension extension2 = new Extension(Launcher.TYPE_ID, ScriptLauncher.ID, "Script Launcher");
-		extension2.setProperty(Launcher.PROP_TYPE_ID, LaunchType.Types.NODE.getId());
-		InterfaceDescription desc2 = new InterfaceDescription(Launcher.class, ScriptLauncher.class);
-		extension2.addInterface(desc2);
-		addExtension(extension2);
-
 		Extension extension1 = new Extension(Launcher.TYPE_ID, OSGiLauncher.ID, "OSGi Launcher");
 		extension1.setProperty(Launcher.PROP_TYPE_ID, LaunchType.Types.NODE.getId());
 		InterfaceDescription desc1 = new InterfaceDescription(Launcher.class, OSGiLauncher.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
+
+		Extension extension2 = new Extension(Launcher.TYPE_ID, ScriptLauncher.ID, "Script Launcher");
+		extension2.setProperty(Launcher.PROP_TYPE_ID, LaunchType.Types.NODE.getId());
+		InterfaceDescription desc2 = new InterfaceDescription(Launcher.class, ScriptLauncher.class);
+		extension2.addInterface(desc2);
+		addExtension(extension2);
 	}
 
 }

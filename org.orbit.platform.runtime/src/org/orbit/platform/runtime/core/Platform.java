@@ -18,7 +18,7 @@ import org.origin.common.service.WebServiceAware;
 
 public interface Platform extends WebServiceAware, IAdaptable {
 
-	String getRealm();
+	String getId();
 
 	String getName();
 

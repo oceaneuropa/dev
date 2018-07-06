@@ -1,0 +1,24 @@
+-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dorg.osgi.service.http.port=8001 
+-Dlogback.configurationFile=/Users/oceaneuropa/origin/logback/orbit0.xml 
+
+-Dorbit.index_service.url=http://127.0.0.1:8001/orbit/v1/indexservice 
+-Dorbit.host.url=http://127.0.0.1:8001 
+
+-Dplatform.id=p91 
+-Dplatform.name=infra1 
+-Dplatform.version=1.0.0 
+-Dplatform.context_root=/orbit/v1/platform 
+-Dplatform.home=/Users/oceaneuropa/origin/ta1 
+
+-Dcomponent.index_service.autostart=true 
+-Dcomponent.index_service.name=IndexService1 
+-Dcomponent.index_service.context_root=/orbit/v1/indexservice 
+-Dcomponent.index_service.jdbc.driver=org.postgresql.Driver 
+-Dcomponent.index_service.jdbc.url=jdbc:postgresql://127.0.0.1:5432/origin 
+-Dcomponent.index_service.jdbc.username=postgres 
+-Dcomponent.index_service.jdbc.password=password 
+
+-Dcomponent.channel.autostart=true 
+-Dcomponent.channel.name=Channel1 
+-Dcomponent.channel.context_root=/orbit/v1/channel 
+-Dcomponent.channel.http_port=7001 

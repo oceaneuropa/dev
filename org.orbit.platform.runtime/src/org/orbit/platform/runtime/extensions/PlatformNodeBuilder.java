@@ -9,14 +9,14 @@ import org.origin.common.resources.IFolder;
 import org.origin.common.resources.IPath;
 import org.origin.common.resources.IResource;
 import org.origin.common.resources.IWorkspace;
-import org.origin.common.resources.extension.ResourceConfigurator;
+import org.origin.common.resources.extension.ResourceBuilder;
 
-public class PlatformNodePreConfigurator implements ResourceConfigurator {
+public class PlatformNodeBuilder implements ResourceBuilder {
 
 	public static final String ID = "org.orbit.platform.runtime.PlatformNodeConfigurator";
 
 	@Override
-	public void configure(IWorkspace workspace, IResource resource) throws IOException {
+	public void build(IWorkspace workspace, IResource resource) throws IOException {
 		if (!(resource instanceof IFolder)) {
 			return;
 		}
@@ -80,7 +80,7 @@ public class PlatformNodePreConfigurator implements ResourceConfigurator {
 
 	protected String getStartFileContent() {
 		String text = "";
-		text += "PLATFORM_HOME=/Users/yayang/origin/ta1\r\n";
+		text += "PLATFORM_HOME=/Users/oceaneuropa/origin/ta1\r\n";
 		text += "CURRENT_DIR=$(dirname $0)\r\n";
 		text += "PARENT_DIR=\"$(dirname ${CURRENT_DIR})\"\r\n";
 		text += "java -jar ${PLATFORM_HOME}/system/org.eclipse.osgi.jar -configuration ${PARENT_DIR}/configuration_v1 -console\r\n";
@@ -97,8 +97,8 @@ public class PlatformNodePreConfigurator implements ResourceConfigurator {
 		text += "org.foo.hello.client.jar@start\r\n";
 		text += "eclipse.ignoreApp=true\r\n";
 		text += "org.osgi.service.http.port=12001\r\n";
-		text += "TA_HOME=/Users/yayang/origin/ta1\r\n";
-		text += "NODE_HOME=/Users/yayang/origin/ta1/nodespaces/node1\r\n";
+		text += "TA_HOME=/Users/oceaneuropa/origin/ta1\r\n";
+		text += "NODE_HOME=/Users/oceaneuropa/origin/ta1/nodespaces/node1\r\n";
 		return text;
 	}
 

@@ -58,12 +58,12 @@ public class PlatformWSExtensionsResource extends AbstractWSApplicationResource 
 	public Response get(@QueryParam("extensionTypeId") String extensionTypeId, @QueryParam("extensionId") String extensionId) {
 		List<ExtensionDTO> extensionDTOs = new ArrayList<ExtensionDTO>();
 
-		Platform platform = getService();
+		// Platform platform = getService();
 		IExtensionService service = ExtensionActivator.getDefault().getExtensionService();
 
 		IExtension[] extensions = null;
 		if ((extensionTypeId == null || extensionTypeId.isEmpty()) && (extensionId == null || extensionId.isEmpty())) {
-			extensions = service.getExtensions(platform.getRealm());
+			extensions = service.getExtensions();
 
 		} else if (extensionId == null || extensionId.isEmpty()) {
 			extensions = service.getExtensions(extensionTypeId);

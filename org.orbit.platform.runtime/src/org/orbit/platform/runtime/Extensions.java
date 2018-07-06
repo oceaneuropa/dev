@@ -1,15 +1,15 @@
 package org.orbit.platform.runtime;
 
 import org.orbit.platform.runtime.cli.PlatformCommand;
-import org.orbit.platform.runtime.extensions.PlatformNodePreConfigurator;
-import org.orbit.platform.runtime.extensions.PlatformNodePreConfiguratorPropertyTester;
+import org.orbit.platform.runtime.extensions.PlatformNodeBuilder;
+import org.orbit.platform.runtime.extensions.PlatformNodeBuilderPropertyTester;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
 import org.origin.common.extensions.condition.ConditionFactory;
 import org.origin.common.extensions.condition.IPropertyTester;
-import org.origin.common.resources.extension.ResourceConfigurator;
+import org.origin.common.resources.extension.ResourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,16 +33,16 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createFolderConfiguratorExtensions() {
-		Extension extension = new Extension(ResourceConfigurator.TYPE_ID, PlatformNodePreConfigurator.ID, "Platform Node Configurator");
-		InterfaceDescription desc = new InterfaceDescription(ResourceConfigurator.class, PlatformNodePreConfigurator.class);
-		desc.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(PlatformNodePreConfiguratorPropertyTester.ID));
+		Extension extension = new Extension(ResourceBuilder.TYPE_ID, PlatformNodeBuilder.ID, "Platform Node Configurator");
+		InterfaceDescription desc = new InterfaceDescription(ResourceBuilder.class, PlatformNodeBuilder.class);
+		desc.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(PlatformNodeBuilderPropertyTester.ID));
 		extension.addInterface(desc);
 		addExtension(extension);
 	}
 
 	protected void createPropertyTesterExtensions() {
-		Extension extension = new Extension(IPropertyTester.TYPE_ID, PlatformNodePreConfiguratorPropertyTester.ID);
-		extension.addInterface(IPropertyTester.class, PlatformNodePreConfiguratorPropertyTester.class);
+		Extension extension = new Extension(IPropertyTester.TYPE_ID, PlatformNodeBuilderPropertyTester.ID);
+		extension.addInterface(IPropertyTester.class, PlatformNodeBuilderPropertyTester.class);
 		addExtension(extension);
 	}
 

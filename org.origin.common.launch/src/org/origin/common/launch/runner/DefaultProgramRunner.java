@@ -35,10 +35,25 @@ public class DefaultProgramRunner implements ProgramRunner {
 		newProcessInstance(launchInstsance, process, program, processAttributes);
 	}
 
+	/**
+	 * 
+	 * @param cmdLine
+	 * @param workingDirectory
+	 * @return
+	 * @throws IOException
+	 */
 	protected Process exec(String[] cmdLine, File workingDirectory) throws IOException {
 		return exec(cmdLine, workingDirectory, null);
 	}
 
+	/**
+	 * 
+	 * @param cmdLine
+	 * @param workingDirectory
+	 * @param envp
+	 * @return
+	 * @throws IOException
+	 */
 	protected Process exec(String[] cmdLine, File workingDirectory, String[] envp) throws IOException {
 		Process process = null;
 		try {

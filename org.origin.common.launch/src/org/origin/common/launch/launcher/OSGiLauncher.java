@@ -57,7 +57,7 @@ public class OSGiLauncher extends ProgramLauncher implements Launcher {
 	// # echo ".sh script location: '${CURRENT_DIR}'"
 	// # echo ".sh script parent dir: '${PARENT_DIR}'"
 	//
-	// # java -jar /Users/yayang/origin/ta1/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar -configuration /Users/yayang/origin/ta1/configuration -console
+	// # java -jar /Users/oceaneuropa/origin/ta1/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar -configuration /Users/oceaneuropa/origin/ta1/configuration -console
 	// # java -jar ${CURRENT_DIR}/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar -configuration ${CURRENT_DIR}/configuration -console
 	// java -jar ${PARENT_DIR3}/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar -configuration ${PARENT_DIR1}/configuration -console
 	// ---------------------------------------------------------------------------------------------------------------------------------------------------
@@ -88,13 +88,13 @@ public class OSGiLauncher extends ProgramLauncher implements Launcher {
 	// osgi.bundles=reference\:file\:eclipse.equinox/org.eclipse.equinox.simpleconfigurator_1.1.0.v20131217-1203.jar@1\:start
 	//
 	// #org.eclipse.equinox.simpleconfigurator.configUrl=file\:org.eclipse.equinox.simpleconfigurator/bundles.info
-	// org.eclipse.equinox.simpleconfigurator.configUrl=file\:/Users/yayang/origin/ta1/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info
+	// org.eclipse.equinox.simpleconfigurator.configUrl=file\:/Users/oceaneuropa/origin/ta1/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info
 	//
 	// eclipse.ignoreApp=true
 	//
 	// org.osgi.service.http.port=12001
 	//
-	// TA_HOME=/Users/yayang/origin/ta1
+	// TA_HOME=/Users/oceaneuropa/origin/ta1
 	// ---------------------------------------------------------------------------------------------------------------------------------------------------
 	protected void saveConfigIniFile(LaunchConfig launchConfig) throws IOException {
 		Properties properties = new PropertiesPreserveOrder();
@@ -135,9 +135,9 @@ public class OSGiLauncher extends ProgramLauncher implements Launcher {
 // // The bundles.info file is shared by all nodes and come from fixed location from the home.
 // // e.g. {HOME}/configuration/org.eclipse.equinox.simpleconfigurator/bundles.info
 // properties.put("org.eclipse.equinox.simpleconfigurator.configUrl",
-// "file:/Users/yayang/origin/ta1/configuration/org.eclipse.equinox.simpleconfigurator/bundles_v04.info");
+// "file:/Users/oceaneuropa/origin/ta1/configuration/org.eclipse.equinox.simpleconfigurator/bundles_v04.info");
 //
 // // VM arguments
 // // - Need to parse string to get all of VM arguments configured by users
 // properties.put("org.osgi.service.http.port", "12001");
-// properties.put("platform.home", "/Users/yayang/origin/ta1");
+// properties.put("platform.home", "/Users/oceaneuropa/origin/ta1");

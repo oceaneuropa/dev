@@ -34,37 +34,52 @@ public class PlatformIndexTimer extends ServiceIndexTimerImpl<IndexProvider, Pla
 
 	@Override
 	public IndexItem getIndex(IndexProvider indexProvider, Platform platform) throws IOException {
-		String name = platform.getName();
-
-		return indexProvider.getIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_TYPE, name);
+		String id = platform.getId();
+		return indexProvider.getIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_TYPE, id);
 	}
 
 	@Override
 	public IndexItem addIndex(IndexProvider indexProvider, Platform platform) throws IOException {
+		String id = platform.getId();
 		String name = platform.getName();
 		String version = platform.getVersion();
 		String hostURL = platform.getHostURL();
 		String contextRoot = platform.getContextRoot();
 		String home = platform.getHome();
 
-		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(PlatformConstants.PLATFORM_NAME, name);
-		props.put(PlatformConstants.PLATFORM_VERSION, version);
-		props.put(PlatformConstants.PLATFORM_HOST_URL, hostURL);
-		props.put(PlatformConstants.PLATFORM_CONTEXT_ROOT, contextRoot);
-		props.put(PlatformConstants.PLATFORM_HOME, home);
-		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		Map<String, Object> properties = new Hashtable<String, Object>();
+		properties.put(PlatformConstants.PLATFORM_ID, id);
+		properties.put(PlatformConstants.PLATFORM_NAME, name);
+		properties.put(PlatformConstants.PLATFORM_VERSION, version);
+		properties.put(PlatformConstants.PLATFORM_HOST_URL, hostURL);
+		properties.put(PlatformConstants.PLATFORM_CONTEXT_ROOT, contextRoot);
+		properties.put(PlatformConstants.PLATFORM_HOME, home);
+		properties.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		return indexProvider.addIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_TYPE, name, props);
+		return indexProvider.addIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_TYPE, id, properties);
 	}
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, Platform platform, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		indexProvider.setProperties(PlatformConstants.PLATFORM_INDEXER_ID, indexItemId, props);
+		String id = platform.getId();
+		String name = platform.getName();
+		String version = platform.getVersion();
+		String hostURL = platform.getHostURL();
+		String contextRoot = platform.getContextRoot();
+		String home = platform.getHome();
+
+		Map<String, Object> properties = new Hashtable<String, Object>();
+		properties.put(PlatformConstants.PLATFORM_ID, id);
+		properties.put(PlatformConstants.PLATFORM_NAME, name);
+		properties.put(PlatformConstants.PLATFORM_VERSION, version);
+		properties.put(PlatformConstants.PLATFORM_HOST_URL, hostURL);
+		properties.put(PlatformConstants.PLATFORM_CONTEXT_ROOT, contextRoot);
+		properties.put(PlatformConstants.PLATFORM_HOME, home);
+		properties.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+
+		indexProvider.setProperties(PlatformConstants.PLATFORM_INDEXER_ID, indexItemId, properties);
 	}
 
 	@Override
