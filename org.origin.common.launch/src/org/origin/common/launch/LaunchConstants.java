@@ -3,6 +3,7 @@ package org.origin.common.launch;
 public interface LaunchConstants {
 
 	String PLATFORM_HOME = "platform.home";
+	String NODESPACE_LOCATION = "nodespace.location";
 
 	// "1 << 1" -> 0010 -> 2
 	int RUN = 1 << 1;

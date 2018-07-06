@@ -20,6 +20,14 @@ public interface ProgramRunner {
 		/**
 		 * 
 		 * @param program
+		 */
+		public ProgramConfiguration(String program) {
+			this.program = program;
+		}
+
+		/**
+		 * 
+		 * @param program
 		 * @param mainClass
 		 * @param classPath
 		 */

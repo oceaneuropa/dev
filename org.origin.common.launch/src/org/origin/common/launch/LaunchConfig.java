@@ -10,6 +10,9 @@ public interface LaunchConfig {
 
 	public static String LAUNCHER_ID = "launcherId";
 
+	// -------------------------------------------------
+	// Access
+	// -------------------------------------------------
 	LaunchService getLaunchService();
 
 	String getName();
@@ -26,9 +29,14 @@ public interface LaunchConfig {
 
 	LaunchConfig getCopy(String name);
 
-	// --------------------------------------------------------
-	// Get
-	// --------------------------------------------------------
+	// -------------------------------------------------
+	// Launch
+	// -------------------------------------------------
+	LaunchInstance launch() throws IOException;
+
+	// -------------------------------------------------
+	// Configuration data
+	// -------------------------------------------------
 	String getTypeId();
 
 	boolean getAttribute(String attributeName, boolean defaultValue) throws IOException;
@@ -45,9 +53,6 @@ public interface LaunchConfig {
 
 	Map<String, Object> getAttributes() throws IOException;
 
-	// --------------------------------------------------------
-	// Set
-	// --------------------------------------------------------
 	void setAttribute(String attributeName, int value);
 
 	void setAttribute(String attributeName, String value);
@@ -59,10 +64,5 @@ public interface LaunchConfig {
 	void setAttribute(String attributeName, Set<String> value);
 
 	void setAttribute(String attributeName, boolean value);
-
-	// --------------------------------------------------------
-	// Launch
-	// --------------------------------------------------------
-	LaunchInstance launch() throws IOException;
 
 }

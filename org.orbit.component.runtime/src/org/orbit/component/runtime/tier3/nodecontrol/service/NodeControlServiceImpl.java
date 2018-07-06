@@ -11,7 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitConstants;
-import org.orbit.component.runtime.tier3.nodecontrol.util.TASetupUtil;
+import org.orbit.component.runtime.tier3.nodecontrol.util.NodeHelper;
+import org.orbit.component.runtime.tier3.nodecontrol.util.PlatformSetupUtil;
+import org.origin.common.launch.LaunchConfig;
+import org.origin.common.launch.LaunchInstance;
+import org.origin.common.launch.LaunchService;
+import org.origin.common.launch.launcher.ScriptLauncher;
 import org.origin.common.resources.IWorkspace;
 import org.origin.common.resources.ResourcesFactory;
 import org.origin.common.resources.node.INode;
@@ -54,27 +59,29 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	@Override
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		TASetupUtil.loadConfigIniProperties(bundleContext, properties);
+
+		PlatformSetupUtil.loadPlatformConfigProperties(bundleContext, properties);
 		if (this.initProperties != null) {
 			properties.putAll(this.initProperties);
 		}
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.PLATFORM_HOME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.NODESPACE_LOCATION);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_CONTROL_NAME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_NODE_CONTROL_HOME);
 
 		update(properties);
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(NodeControlService.class, this, props);
 
-		Path taHome = Paths.get(getHome()).toAbsolutePath();
-		Path workspacePath = TASetupUtil.getNodespacesPath(taHome, true);
+		// Path homePath = Paths.get(getHome()).toAbsolutePath();
+		// Path nodespacePath = TASetupUtil.getNodespacesPath(homePath, true);
+		Path nodespacePath = Paths.get(getNodespaceLocation()).toAbsolutePath();
 
-		this.workspace = ResourcesFactory.getInstance().createWorkspace(workspacePath.toFile());
+		this.workspace = ResourcesFactory.getInstance().createWorkspace(nodespacePath.toFile());
 	}
 
 	@Override
@@ -96,17 +103,16 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	 */
 	public synchronized void update(Map<Object, Object> properties) {
 		// System.out.println(getClass().getSimpleName() + ".updateProperties()");
-
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();
 		}
 
 		String platformHome = (String) properties.get(OrbitConstants.PLATFORM_HOME);
+		String nodespaceHome = (String) properties.get(OrbitConstants.NODESPACE_LOCATION);
 		String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
 		String name = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_NAME);
 		String hostURL = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL);
 		String contextRoot = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
-		String home = (String) properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOME);
 
 		boolean printProps = false;
 		if (printProps) {
@@ -114,12 +120,11 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			System.out.println("Config properties:");
 			System.out.println("-----------------------------------------------------");
 			System.out.println(OrbitConstants.PLATFORM_HOME + " = " + platformHome);
+			System.out.println(OrbitConstants.NODESPACE_LOCATION + " = " + nodespaceHome);
 			System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
 			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_NAME + " = " + name);
 			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOST_URL + " = " + hostURL);
 			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT + " = " + contextRoot);
-			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOME + " = " + home);
-			System.out.println(OrbitConstants.COMPONENT_NODE_CONTROL_HOME + " = " + home);
 			System.out.println("-----------------------------------------------------");
 			System.out.println();
 		}
@@ -154,11 +159,21 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public String getHome() {
-		String home = (String) this.properties.get(OrbitConstants.COMPONENT_NODE_CONTROL_HOME);
-		if (home == null || home.isEmpty()) {
-			home = (String) this.properties.get(OrbitConstants.PLATFORM_HOME);
-		}
+		String home = (String) this.properties.get(OrbitConstants.PLATFORM_HOME);
 		return home;
+	}
+
+	@Override
+	public String getNodespaceLocation() {
+		String nodespaceLocation = (String) this.properties.get(OrbitConstants.NODESPACE_LOCATION);
+		if (nodespaceLocation == null || nodespaceLocation.isEmpty()) {
+			String home = getHome();
+			if (!home.endsWith("/")) {
+				home += "/";
+			}
+			nodespaceLocation = home + "nodespace";
+		}
+		return nodespaceLocation;
 	}
 
 	@Override
@@ -243,17 +258,59 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		return succeed;
 	}
 
+	protected String getNodeLocation(String nodespaceLocation, INode node) {
+		if (!nodespaceLocation.endsWith("/")) {
+			nodespaceLocation += "/";
+		}
+		String nodeLocation = nodespaceLocation + node.getName();
+		return nodeLocation;
+	}
+
+	protected Map<String, String> nodeIdToLaunchInstasnceIdMap = new HashMap<String, String>();
+
 	@Override
-	public boolean startNode(String id) throws IOException {
-		INode node = getNode(id);
-		if (node == null) {
+	public synchronized boolean startNode(String id) throws IOException {
+		LaunchService launchService = NodeHelper.INSTANCE.getLaunchService();
+		if (launchService == null) {
+			LOG.error("LaunchService is null.");
 			return false;
 		}
+		INode node = getNode(id);
+		if (node == null) {
+			LOG.error("Node with id '" + id + "' is not found.");
+			return false;
+		}
+
+		// 1. Create launch configuration
+		String launchTypeId = NodeHelper.INSTANCE.getLaunchTypeId();
+		String launchConfigName = NodeHelper.INSTANCE.getLaunchConfigName(id);
+
+		String launcherId = ScriptLauncher.ID;
+		String nodespaceLocation = getNodespaceLocation();
+		String nodeLocation = getNodeLocation(nodespaceLocation, node);
+		String startNodeScriptLocation = nodeLocation + "/bin/start_node.sh";
+
+		LaunchConfig launchConfig = launchService.getLaunchConfiguration(launchTypeId, launchConfigName);
+		if (launchConfig == null) {
+			launchConfig = launchService.createLaunchConfiguration(launchTypeId, launchConfigName);
+		}
+		launchConfig.setAttribute(LaunchConfig.LAUNCHER_ID, launcherId);
+		launchConfig.setAttribute(ScriptLauncher.WORKING_DIRECTORY_LOCATION, nodeLocation);
+		launchConfig.setAttribute(ScriptLauncher.START_SCRIPT_LOCATION, startNodeScriptLocation);
+		launchConfig.save();
+
+		// 2. Launch the node with launch configuration
+		LaunchInstance launchInstance = launchConfig.launch();
+		if (launchInstance != null) {
+			this.nodeIdToLaunchInstasnceIdMap.put(id, launchInstance.getId());
+			return true;
+		}
+
 		return false;
 	}
 
 	@Override
-	public boolean stopNode(String id) throws IOException {
+	public synchronized boolean stopNode(String id) throws IOException {
 		INode node = getNode(id);
 		if (node == null) {
 			return false;
@@ -361,4 +418,11 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 // public WSCommand getCommand(Request request) {
 // return this.editPoliciesSupport.getCommand(request);
 // }
+// }
+
+// String configIniLocation = nodeLocation + "/configuration/config.ini";
+
+// String oldConfigIniLocation = launchConfig.getAttribute(ScriptLauncher.CONFIG_INI_LOCATION, (String) null);
+// if (!configIniLocation.equals(oldConfigIniLocation)) {
+// launchConfig.setAttribute(ScriptLauncher.CONFIG_INI_LOCATION, configIniLocation);
 // }

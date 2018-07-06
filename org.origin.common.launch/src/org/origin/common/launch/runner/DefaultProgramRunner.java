@@ -15,7 +15,7 @@ import org.origin.common.launch.impl.ProcessInstanceImpl;
  * @see org.eclipse.debug.core.DebugPlugin
  * 
  */
-public abstract class AbstractProgramRunner implements ProgramRunner {
+public class DefaultProgramRunner implements ProgramRunner {
 
 	@Override
 	public void run(ProgramConfiguration launchConfig, LaunchInstance launchInstsance) throws IOException {

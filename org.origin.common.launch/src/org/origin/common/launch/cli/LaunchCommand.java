@@ -320,8 +320,8 @@ public class LaunchCommand implements Annotated {
 				return;
 			}
 
-			LaunchInstance launchHandler = launchConfig.launch();
-			if (launchHandler != null) {
+			LaunchInstance launchInstance = launchConfig.launch();
+			if (launchInstance != null) {
 				System.out.println("Launch is created.");
 			} else {
 				System.out.println("Launch is not created.");

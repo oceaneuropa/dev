@@ -67,7 +67,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimerImpl<IndexProvider
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String taHome = service.getHome();
+		String platformHome = service.getHome();
 
 		Date now = new Date();
 		Date expire = DateUtil.addSeconds(now, 30);
@@ -77,7 +77,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimerImpl<IndexProvider
 		props.put(OrbitConstants.NODE_CONTROL_NAME, name);
 		props.put(OrbitConstants.NODE_CONTROL_HOST_URL, hostURL);
 		props.put(OrbitConstants.NODE_CONTROL_CONTEXT_ROOT, contextRoot);
-		props.put(OrbitConstants.NODE_CONTROL_HOME, taHome);
+		props.put(OrbitConstants.NODE_CONTROL_HOME, platformHome);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 		props.put(OrbitConstants.LAST_HEARTBEAT_TIME, now);
 		props.put(OrbitConstants.HEARTBEAT_EXPIRE_TIME, expire);

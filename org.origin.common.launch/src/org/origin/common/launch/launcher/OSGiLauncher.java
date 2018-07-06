@@ -11,7 +11,7 @@ import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
 import org.origin.common.launch.LaunchInstance;
 import org.origin.common.launch.Launcher;
-import org.origin.common.launch.runner.JavaProgramRunner;
+import org.origin.common.launch.runner.JavaRunner;
 import org.origin.common.launch.runner.ProgramRunner;
 import org.origin.common.launch.util.LaunchConfigurationHelper;
 import org.origin.common.util.PropertiesPreserveOrder;
@@ -38,7 +38,7 @@ public class OSGiLauncher extends ProgramLauncher implements Launcher {
 
 	@Override
 	protected ProgramRunner getProgramRunner(LaunchConfig launchConfig) throws IOException {
-		return new JavaProgramRunner();
+		return new JavaRunner();
 	}
 
 	@Override

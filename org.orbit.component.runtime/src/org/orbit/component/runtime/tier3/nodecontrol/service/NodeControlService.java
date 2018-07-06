@@ -16,6 +16,8 @@ public interface NodeControlService extends WebServiceAware {
 
 	String getHome();
 
+	String getNodespaceLocation();
+
 	IWorkspace getWorkspace();
 
 	List<INode> getNodes();

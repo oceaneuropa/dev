@@ -13,9 +13,9 @@ import org.origin.common.launch.LaunchInstance;
  * @see org.eclipse.jdt.internal.launching.StandardVMDebugger
  *
  */
-public class JavaProgramRunner extends AbstractProgramRunner {
+public class JavaRunner extends DefaultProgramRunner {
 
-	public JavaProgramRunner() {
+	public JavaRunner() {
 	}
 
 	@Override

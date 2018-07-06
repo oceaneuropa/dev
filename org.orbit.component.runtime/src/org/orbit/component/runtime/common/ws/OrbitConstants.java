@@ -23,6 +23,7 @@ public class OrbitConstants {
 	// Platform
 	// ----------------------------------------------------------------------------------------
 	public static String PLATFORM_HOME = "platform.home";
+	public static String NODESPACE_LOCATION = "nodespace.location";
 
 	// ----------------------------------------------------------------------------------------
 	// User Registry Service
@@ -159,13 +160,12 @@ public class OrbitConstants {
 	public static String DOMAIN_SERVICE_CONTEXT_ROOT = "domain_management.context_root";
 
 	// ----------------------------------------------------------------------------------------
-	// Transfer Agent
+	// Node Control
 	// ----------------------------------------------------------------------------------------
 	public static String COMPONENT_NODE_CONTROL_AUTOSTART = "component.node_control.autostart";
 	public static String COMPONENT_NODE_CONTROL_HOST_URL = "component.node_control.host.url";
 	public static String COMPONENT_NODE_CONTROL_NAME = "component.node_control.name";
 	public static String COMPONENT_NODE_CONTROL_CONTEXT_ROOT = "component.node_control.context_root";
-	public static String COMPONENT_NODE_CONTROL_HOME = "component.node_control.home";
 	public static String COMPONENT_NODE_CONTROL_JDBC_DRIVER = "component.node_control.jdbc.driver";
 	public static String COMPONENT_NODE_CONTROL_JDBC_URL = "component.node_control.jdbc.url";
 	public static String COMPONENT_NODE_CONTROL_JDBC_USERNAME = "component.node_control.jdbc.username";

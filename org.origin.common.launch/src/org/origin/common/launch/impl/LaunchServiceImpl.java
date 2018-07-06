@@ -60,17 +60,21 @@ public class LaunchServiceImpl implements LaunchInternalService, LaunchService {
 		// load properties
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, LaunchConstants.PLATFORM_HOME);
+		PropertyUtil.loadProperty(bundleContext, properties, LaunchConstants.NODESPACE_LOCATION);
 		this.properties = properties;
 
-		String homeLocation = getProperty(LaunchConstants.PLATFORM_HOME);
 		String bundleName = LaunchActivator.getDefault().getBundleName();
 
-		LOG.info(LaunchConstants.PLATFORM_HOME + " = " + homeLocation);
-		LOG.info("bundleName = " + bundleName);
+		String homeLocation = getProperty(LaunchConstants.PLATFORM_HOME);
+		String nodespaceLocation = getProperty(LaunchConstants.NODESPACE_LOCATION);
+
+		// LOG.info("bundleName = " + bundleName);
+		// LOG.info(LaunchConstants.PLATFORM_HOME + " = " + homeLocation);
+		// LOG.info(LaunchConstants.NODESPACE_LOCATION + " = " + nodespaceLocation);
 
 		if (homeLocation != null) {
-			String launchConfigurationLocation = homeLocation + "/.metadata/" + bundleName + "/launchconfigs";
-			LOG.info("launchConfigurationLocation = " + launchConfigurationLocation);
+			String launchConfigurationLocation = nodespaceLocation + "/.metadata/" + bundleName + "/launchconfigs";
+			LOG.info(".start(BundleContext) launchConfigurationLocation = " + launchConfigurationLocation);
 
 			Path launchConfigurationPath = FileSystems.getDefault().getPath(launchConfigurationLocation);
 			if (!Files.exists(launchConfigurationPath)) {
