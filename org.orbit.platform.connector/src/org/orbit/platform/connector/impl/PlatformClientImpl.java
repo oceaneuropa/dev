@@ -144,6 +144,12 @@ public class PlatformClientImpl extends ServiceClientImpl<PlatformClient, Platfo
 		return false;
 	}
 
+	@Override
+	public void shutdown(long timeout, boolean force) throws ClientException {
+		Request request = new Request();
+		request.setRequestName(Constants.SHUTDOWN_PLATFORM);
+	}
+
 }
 
 // @Override

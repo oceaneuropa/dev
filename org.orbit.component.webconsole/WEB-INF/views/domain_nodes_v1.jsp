@@ -54,15 +54,16 @@
 				<tr>
 					<th class="th1" width="11"></th>
 					<th class="th1" width="100">Id</th>
-					<th class="th1" width="200">Name</th>
-					<th class="th1" width="200">Path</th>
+					<th class="th1" width="100">Name</th>
+					<th class="th1" width="100">Path</th>
+					<th class="th1" width="100">Status</th>
 					<th class="th1" width="130">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
 				%>
 				<tr>
-					<td colspan="5">(n/a)</td>
+					<td colspan="6">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -74,14 +75,24 @@
 							id = StringUtil.get(id);
 							name = StringUtil.get(name);
 							String path = (uri != null) ? uri.getPath() : "(n/a)";
+
+							String statusStr = "";
+							boolean isActivate = nodeInfo.getStatus().isActivate();
+							String runtimeState = nodeInfo.getStatus().getRuntimeState();
+							statusStr += (isActivate)? "activate" : "inactivate";
+							if (!statusStr.isEmpty()) {
+								statusStr += " | ";
+							}
+							statusStr += runtimeState;
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
 					<td class="td1"><%=id%></td>
 					<td class="td2"><%=name%></td>
 					<td class="td2"><%=path%></td>
+					<td class="td2"><%=statusStr%></td>
 					<td class="td1">
-						<a class="action01" href="<%=contextRoot%>/domain/nodeattributes?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Attributes</a> |
+						<a class="action01" href="<%=contextRoot%>/domain/nodeattributes?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Configuration</a> |
 						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>')">Change</a> | 
 						<a class="action01" href="javascript:deleteNode('<%=contextRoot + "/domain/nodedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Delete</a> | 
 						<a class="action01" href="javascript:startNode('<%=contextRoot + "/domain/nodestart"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Start</a> | 

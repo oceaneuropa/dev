@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
+import org.orbit.component.api.tier3.nodecontrol.NodeStatus;
 
 public class NodeInfoImpl implements NodeInfo {
 
@@ -12,6 +13,7 @@ public class NodeInfoImpl implements NodeInfo {
 	protected String name;
 	protected URI uri;
 	protected Map<String, Object> attributes;
+	protected NodeStatus status = new NodeStatusImpl();
 
 	@Override
 	public String getId() {
@@ -50,6 +52,11 @@ public class NodeInfoImpl implements NodeInfo {
 
 	public synchronized void setAttributes(Map<String, Object> attributes) {
 		this.attributes = attributes;
+	}
+
+	@Override
+	public NodeStatus getStatus() {
+		return this.status;
 	}
 
 }

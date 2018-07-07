@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, java.net.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
+<%@ page import="org.orbit.infra.api.indexes.*"%>
 <%@ page import="org.orbit.component.api.tier3.domainmanagement.*"%>
 <%@ page import="org.orbit.component.api.tier3.nodecontrol.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
@@ -11,6 +12,7 @@
 	MachineConfig machineConfig = (MachineConfig) request.getAttribute("machineConfig");
 	PlatformConfig platformConfig = (PlatformConfig) request.getAttribute("platformConfig");
 	NodeInfo nodeInfo = (NodeInfo) request.getAttribute("nodeInfo");
+	IndexItem nodeIndexItem = (IndexItem) request.getAttribute("nodeIndexItem");
 
 	String machineName = (machineConfig != null) ? machineConfig.getName() : "n/a";
 	String machineId = (machineConfig != null) ? machineConfig.getId() : "";
@@ -44,7 +46,45 @@
 		<%=name%>
 	</div>
 	<div class="main_div01">
-		<h2>Attributes</h2>
+		<h2>Indexed Properties</h2>
+		<div class="top_tools_div01"> 
+			<a class="button02" href="<%=contextRoot + "/domain/nodeattributes?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
+		</div>
+		<table class="main_table01">
+			<tr>
+				<th class="th1" width="22.3%">Name</th>
+				<th class="th1" width="76.7%">Value</th>
+			</tr>
+			<%
+				if (nodeIndexItem == null || nodeIndexItem.getProperties().isEmpty()) {
+			%>
+			<tr>
+				<td colspan="2">(n/a)</td>
+			</tr>
+			<%
+				} else {
+					Map<String, Object> indexItemProperties = nodeIndexItem.getProperties();
+					for (Iterator<String> itor = indexItemProperties.keySet().iterator(); itor.hasNext(); ) {
+						String propName = itor.next();
+						Object propValue = indexItemProperties.get(propName);
+			%>
+				<tr>
+					<td class="td2">
+						<%=propName%>
+					</td>
+					<td class="td2">
+						<%=propValue%>
+					</td>
+				</tr>
+			<%
+					}
+				}
+			%>
+		</table>
+	</div>
+	<br/>
+	<div class="main_div01">
+		<h2>Node Attributes</h2>
 		<div class="top_tools_div01">
 			<a id="action.addAttribute" class="button02">Add</a> 
 			<a id="action.deleteAttributes" class="button02">Delete</a> 
@@ -119,6 +159,7 @@
 			</form>
 		</table>
 	</div>
+	<br/>
 
 	<dialog id="newAttributeDialog">
 	<div class="dialog_title_div01">Add Attribute</div>

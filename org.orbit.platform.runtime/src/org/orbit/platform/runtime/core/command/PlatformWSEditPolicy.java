@@ -29,6 +29,9 @@ public class PlatformWSEditPolicy extends AbstractWSEditPolicy {
 
 		} else if (PlatformConstants.STOP_SERVICE.equals(requestName)) {
 			return new StopServiceCommand(platform);
+
+		} else if (PlatformConstants.SHUTDOWN_PLATFORM.equals(requestName)) {
+			return new ShutdownPlatformCommand(platform);
 		}
 
 		return null;

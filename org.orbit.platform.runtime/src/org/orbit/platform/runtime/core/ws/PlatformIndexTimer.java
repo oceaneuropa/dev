@@ -32,31 +32,57 @@ public class PlatformIndexTimer extends ServiceIndexTimerImpl<IndexProvider, Pla
 		return this.platform;
 	}
 
+	protected String getIndexItemName(Platform platform) {
+		String name = "";
+
+		String platformParentId = platform.getParentId();
+		if (platformParentId != null) {
+			name += platformParentId + "_";
+		}
+
+		String platformId = platform.getId();
+		name += platformId;
+
+		return name;
+	}
+
 	@Override
 	public IndexItem getIndex(IndexProvider indexProvider, Platform platform) throws IOException {
-		String id = platform.getId();
-		return indexProvider.getIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_TYPE, id);
+		String idxName = getIndexItemName(platform);
+		return indexProvider.getIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE, idxName);
 	}
 
 	@Override
 	public IndexItem addIndex(IndexProvider indexProvider, Platform platform) throws IOException {
+		String idxName = getIndexItemName(platform);
+
 		String id = platform.getId();
 		String name = platform.getName();
 		String version = platform.getVersion();
+		String parentId = platform.getParentId();
+		String type = platform.getType();
 		String hostURL = platform.getHostURL();
 		String contextRoot = platform.getContextRoot();
 		String home = platform.getHome();
+		String runtimeState = platform.getRuntimeState().toString();
 
 		Map<String, Object> properties = new Hashtable<String, Object>();
 		properties.put(PlatformConstants.PLATFORM_ID, id);
 		properties.put(PlatformConstants.PLATFORM_NAME, name);
 		properties.put(PlatformConstants.PLATFORM_VERSION, version);
+		if (parentId != null) {
+			properties.put(PlatformConstants.PLATFORM_PARENT_ID, parentId);
+		}
+		if (type != null) {
+			properties.put(PlatformConstants.PLATFORM_TYPE, type);
+		}
 		properties.put(PlatformConstants.PLATFORM_HOST_URL, hostURL);
 		properties.put(PlatformConstants.PLATFORM_CONTEXT_ROOT, contextRoot);
 		properties.put(PlatformConstants.PLATFORM_HOME, home);
-		properties.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		properties.put(PlatformConstants.PLATFORM_RUNTIME_STATE, runtimeState);
+		properties.put(IndexItem.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		return indexProvider.addIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_TYPE, id, properties);
+		return indexProvider.addIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE, idxName, properties);
 	}
 
 	@Override
@@ -66,18 +92,28 @@ public class PlatformIndexTimer extends ServiceIndexTimerImpl<IndexProvider, Pla
 		String id = platform.getId();
 		String name = platform.getName();
 		String version = platform.getVersion();
+		String parentId = platform.getParentId();
+		String type = platform.getType();
 		String hostURL = platform.getHostURL();
 		String contextRoot = platform.getContextRoot();
 		String home = platform.getHome();
+		String runtimeState = platform.getRuntimeState().toString();
 
 		Map<String, Object> properties = new Hashtable<String, Object>();
 		properties.put(PlatformConstants.PLATFORM_ID, id);
 		properties.put(PlatformConstants.PLATFORM_NAME, name);
 		properties.put(PlatformConstants.PLATFORM_VERSION, version);
+		if (parentId != null) {
+			properties.put(PlatformConstants.PLATFORM_PARENT_ID, parentId);
+		}
+		if (type != null) {
+			properties.put(PlatformConstants.PLATFORM_TYPE, type);
+		}
 		properties.put(PlatformConstants.PLATFORM_HOST_URL, hostURL);
 		properties.put(PlatformConstants.PLATFORM_CONTEXT_ROOT, contextRoot);
 		properties.put(PlatformConstants.PLATFORM_HOME, home);
-		properties.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		properties.put(PlatformConstants.PLATFORM_RUNTIME_STATE, runtimeState);
+		properties.put(IndexItem.LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		indexProvider.setProperties(PlatformConstants.PLATFORM_INDEXER_ID, indexItemId, properties);
 	}

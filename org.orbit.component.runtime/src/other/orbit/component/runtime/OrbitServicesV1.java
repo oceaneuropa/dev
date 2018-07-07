@@ -13,7 +13,6 @@ import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManageme
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
-import org.orbit.infra.api.indexes.IndexServiceUtil;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -28,6 +27,7 @@ import other.orbit.component.runtime.tier3.nodecontrol.ws.TransferAgentServiceAd
 import other.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlAdapterV1;
 import other.orbit.infra.api.indexes.IndexProviderConnectorAdapterV1;
 import other.orbit.infra.api.indexes.IndexProviderConnectorV1;
+import other.orbit.infra.api.indexes.IndexServiceUtil;
 
 public class OrbitServicesV1 {
 

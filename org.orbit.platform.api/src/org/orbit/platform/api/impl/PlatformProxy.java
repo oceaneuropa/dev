@@ -148,6 +148,11 @@ public class PlatformProxy implements PlatformClient {
 	}
 
 	@Override
+	public void shutdown(long timeout, boolean force) throws ClientException {
+		resolve().shutdown(timeout, force);
+	}
+
+	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
 		resolve().adapt(clazz, object);
 	}
@@ -259,6 +264,10 @@ public class PlatformProxy implements PlatformClient {
 		@Override
 		public boolean isProxy() {
 			return true;
+		}
+
+		@Override
+		public void shutdown(long timeout, boolean force) throws ClientException {
 		}
 	}
 

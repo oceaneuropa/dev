@@ -14,17 +14,9 @@ public class Clients {
 
 	protected static Logger LOG = LoggerFactory.getLogger(Clients.class);
 
-	private static Object lock = new Object[0];
-	private static Clients instance = null;
+	private static Clients instance = new Clients();
 
 	public static Clients getInstance() {
-		if (instance == null) {
-			synchronized (lock) {
-				if (instance == null) {
-					instance = new Clients();
-				}
-			}
-		}
 		return instance;
 	}
 

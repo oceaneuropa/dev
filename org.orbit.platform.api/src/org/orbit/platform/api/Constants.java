@@ -19,6 +19,7 @@ public class Constants {
 	// ---------------------------------------------------------------
 	public static String START_SERVICE = "start_service";
 	public static String STOP_SERVICE = "stop_service";
+	public static String SHUTDOWN_PLATFORM = "shutdown_platform";
 
 	// ---------------------------------------------------------------
 	// World request constants

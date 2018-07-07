@@ -13,4 +13,6 @@ public interface NodeInfo {
 
 	Map<String, Object> getAttributes();
 
+	NodeStatus getStatus();
+
 }

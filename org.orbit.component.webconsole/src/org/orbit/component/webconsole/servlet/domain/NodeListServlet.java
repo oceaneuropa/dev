@@ -1,6 +1,7 @@
 package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -17,6 +18,10 @@ import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.ServletHelper;
+import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemHelper;
+import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.util.ServletUtil;
 
 public class NodeListServlet extends HttpServlet {
@@ -31,7 +36,9 @@ public class NodeListServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
+		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
 
@@ -59,7 +66,7 @@ public class NodeListServlet extends HttpServlet {
 		PlatformConfig platformConfig = null;
 		NodeInfo[] nodeInfos = null;
 
-		if (machineId != null && platformId != null) {
+		if (!machineId.isEmpty() && !platformId.isEmpty()) {
 			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 			if (domainClient != null && machineId != null && platformId != null) {
 				try {
@@ -80,6 +87,26 @@ public class NodeListServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
+
+			// Get index items for platforms with type "node" and parent platform id equals the platformId
+			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
+			if (indexService != null) {
+				Map<String, IndexItem> platformIdToIndexItem = NodeHelper.INSTANCE.getNodePlatformIdToIndexItem(indexService, platformId);
+
+				for (NodeInfo nodeInfo : nodeInfos) {
+					String nodeId = nodeInfo.getId();
+					boolean isActivate = false;
+					String runtimeState = "";
+					IndexItem indexItem = platformIdToIndexItem.get(nodeId);
+					if (indexItem != null) {
+						isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
+						runtimeState = (String) indexItem.getProperties().get(WebConstants.PLATFORM_RUNTIME_STATE);
+					}
+					nodeInfo.getStatus().setActivate(isActivate);
+					nodeInfo.getStatus().setRuntimeState(runtimeState);
+				}
+			}
+
 		}
 
 		if (nodeInfos == null) {

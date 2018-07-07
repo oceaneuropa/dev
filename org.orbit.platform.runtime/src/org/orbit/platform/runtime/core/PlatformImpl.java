@@ -16,7 +16,6 @@ import org.orbit.platform.runtime.command.service.CommandService;
 import org.orbit.platform.runtime.command.service.CommandServiceImpl;
 import org.orbit.platform.runtime.processes.ProcessManager;
 import org.orbit.platform.runtime.processes.ProcessManagerImpl;
-import org.orbit.platform.runtime.programs.ProgramException;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.ProgramsAndFeaturesImpl;
 import org.orbit.platform.sdk.IPlatform;
@@ -53,6 +52,8 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
+	protected RUNTIME_STATE runtimeState = RUNTIME_STATE.STOPPED;
+
 	public PlatformImpl() {
 		this.wsEditPolicies = new WSEditPoliciesImpl();
 		this.wsEditPolicies.setService(Platform.class, this);
@@ -64,39 +65,45 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	 * @throws Exception
 	 */
 	public void start(BundleContext bundleContext) throws Exception {
-		this.bundleContext = bundleContext;
-
-		// 1. load properties
-		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_REALM);
-		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_ID);
-		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_NAME);
-		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_VERSION);
-		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOME);
-		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_CONTEXT_ROOT);
-		updateProperties(properties);
-
-		// 2. Start managing processes
-		this.processManager = new ProcessManagerImpl(this);
-		this.processManager.start(bundleContext);
-
-		// 4. Start command service
-		this.commandService = new CommandServiceImpl();
-		this.commandService.start();
-
-		// 5. Start programs and features service
 		try {
+			this.bundleContext = bundleContext;
+
+			// 1. load properties
+			Map<Object, Object> properties = new Hashtable<Object, Object>();
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_REALM);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_HOST_URL);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_ID);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_NAME);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_VERSION);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_TYPE);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_PARENT_ID);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOME);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_HOST_URL);
+			PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.PLATFORM_CONTEXT_ROOT);
+			updateProperties(properties);
+
+			// 2. Start managing processes
+			this.processManager = new ProcessManagerImpl(this);
+			this.processManager.start(bundleContext);
+
+			// 4. Start command service
+			this.commandService = new CommandServiceImpl();
+			this.commandService.start();
+
+			// 5. Start programs and features service
 			this.programsAndFreatures = new ProgramsAndFeaturesImpl(bundleContext);
 			this.programsAndFreatures.start();
-		} catch (ProgramException e) {
+
+			// 6. Register as Platform service
+			Hashtable<String, Object> props = new Hashtable<String, Object>();
+			this.serviceRegistry = bundleContext.registerService(Platform.class, this, props);
+
+			setRuntimeState(RUNTIME_STATE.STARTED);
+
+		} catch (Exception e) {
+			setRuntimeState(RUNTIME_STATE.START_FAILED);
 			e.printStackTrace();
 		}
-
-		// 6. Register as Platform service
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		this.serviceRegistry = bundleContext.registerService(Platform.class, this, props);
 	}
 
 	/**
@@ -105,33 +112,45 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	 * @throws Exception
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
-		// Stop Platform service
-		if (this.serviceRegistry != null) {
-			this.serviceRegistry.unregister();
-			this.serviceRegistry = null;
-		}
-
-		// 1. Stop programs and features service
-		if (this.programsAndFreatures != null) {
-			try {
-				this.programsAndFreatures.stop();
-			} catch (ProgramException e) {
-				e.printStackTrace();
+		try {
+			// Stop Platform service
+			if (this.serviceRegistry != null) {
+				this.serviceRegistry.unregister();
+				this.serviceRegistry = null;
 			}
-			this.programsAndFreatures = null;
-		}
 
-		// 2. Stop command service
-		if (this.commandService != null) {
-			this.commandService.stop();
-		}
+			// 1. Stop programs and features service
+			if (this.programsAndFreatures != null) {
+				this.programsAndFreatures.stop();
+				this.programsAndFreatures = null;
+			}
 
-		if (this.processManager != null) {
-			this.processManager.stop(bundleContext);
-			this.processManager = null;
-		}
+			// 2. Stop command service
+			if (this.commandService != null) {
+				this.commandService.stop();
+			}
 
-		this.bundleContext = null;
+			if (this.processManager != null) {
+				this.processManager.stop(bundleContext);
+				this.processManager = null;
+			}
+
+			this.bundleContext = null;
+
+			setRuntimeState(RUNTIME_STATE.STOPPED);
+
+		} catch (Exception e) {
+			setRuntimeState(RUNTIME_STATE.STOP_FAILED);
+			e.printStackTrace();
+		}
+	}
+
+	public RUNTIME_STATE getRuntimeState() {
+		return this.runtimeState;
+	}
+
+	public void setRuntimeState(RUNTIME_STATE runtimeState) {
+		this.runtimeState = runtimeState;
 	}
 
 	@Override
@@ -184,6 +203,18 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	public String getVersion() {
 		String version = (String) this.properties.get(PlatformConstants.PLATFORM_VERSION);
 		return version;
+	}
+
+	@Override
+	public String getParentId() {
+		String parentId = (String) this.properties.get(PlatformConstants.PLATFORM_PARENT_ID);
+		return parentId;
+	}
+
+	@Override
+	public String getType() {
+		String type = (String) this.properties.get(PlatformConstants.PLATFORM_TYPE);
+		return type;
 	}
 
 	@Override
@@ -313,4 +344,68 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 // this.processesService.removeProcess(process);
 // }
 // }
+// }
+
+// public boolean canStart() {
+// return false;
+// }
+//
+// public boolean canStop() {
+// return false;
+// }
+//
+// public void start() {
+//
+// }
+//
+// public void stop() {
+//
+// }
+
+/// **
+// *
+// * @param fromState
+// * @param toState
+// * @return
+// */
+// protected boolean canChangeState(RUNTIME_STATE fromState, RUNTIME_STATE toState) {
+// if (fromState == null) {
+// throw new RuntimeException("fromState is null");
+// }
+// if (toState == null) {
+// throw new RuntimeException("toState is null");
+// }
+//
+// if (RUNTIME_STATE.STOPPED.equals(fromState)) {
+// // Stopped -> Started
+// // Stopped -> StartFailed
+// if (RUNTIME_STATE.STARTED.equals(toState) || RUNTIME_STATE.START_FAILED.equals(toState)) {
+// return true;
+// }
+//
+// } else if (RUNTIME_STATE.STOP_FAILED.equals(fromState)) {
+// // StopFailed -> Started
+// // StopFailed -> StartFailed
+// // StopFailed -> Stopped
+// if (RUNTIME_STATE.STARTED.equals(toState) || RUNTIME_STATE.START_FAILED.equals(toState) || RUNTIME_STATE.STOPPED.equals(toState)) {
+// return true;
+// }
+//
+// } else if (RUNTIME_STATE.STARTED.equals(fromState)) {
+// // Started -> Stopped
+// // Started -> StopFailed
+// if (RUNTIME_STATE.STOPPED.equals(toState) || RUNTIME_STATE.STOP_FAILED.equals(toState)) {
+// return true;
+// }
+//
+// } else if (RUNTIME_STATE.START_FAILED.equals(fromState)) {
+// // StartFailed -> Stopped
+// // StartFailed -> StopFailed
+// // StartFailed -> Started
+// if (RUNTIME_STATE.STOPPED.equals(toState) || RUNTIME_STATE.STOP_FAILED.equals(toState) || RUNTIME_STATE.STARTED.equals(toState)) {
+// return true;
+// }
+// }
+//
+// return false;
 // }

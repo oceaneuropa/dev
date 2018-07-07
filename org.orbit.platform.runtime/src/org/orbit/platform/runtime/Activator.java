@@ -9,6 +9,8 @@ package org.orbit.platform.runtime;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.orbit.platform.runtime.core.Platform;
 import org.orbit.platform.runtime.core.PlatformImpl;
@@ -33,13 +35,14 @@ public class Activator extends AbstractBundleActivator {
 	protected PlatformTracker platformTracker;
 	protected PlatformAdapter platformAdapter;
 	protected PlatformImpl platform;
+	protected ExecutorService executorService;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		LOG.info("start()");
 		super.start(bundleContext);
 
-		Activator.instance = this;
+		this.executorService = Executors.newSingleThreadExecutor();
 
 		// load config properties
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
@@ -58,11 +61,15 @@ public class Activator extends AbstractBundleActivator {
 		this.platform.start(bundleContext);
 
 		Extensions.INSTANCE.start(bundleContext);
+
+		Activator.instance = this;
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.info("stop()");
+
+		Activator.instance = null;
 
 		Extensions.INSTANCE.stop(bundleContext);
 
@@ -81,13 +88,20 @@ public class Activator extends AbstractBundleActivator {
 			this.platformTracker = null;
 		}
 
-		Activator.instance = null;
+		if (this.executorService != null) {
+			this.executorService.shutdown();
+			this.executorService = null;
+		}
 
 		super.stop(bundleContext);
 	}
 
 	public Platform getPlatform() {
 		return (this.platformTracker != null) ? this.platformTracker.getService() : null;
+	}
+
+	public ExecutorService getExecutorService() {
+		return this.executorService;
 	}
 
 }

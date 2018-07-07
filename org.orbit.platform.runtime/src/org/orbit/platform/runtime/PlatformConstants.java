@@ -12,23 +12,26 @@ public class PlatformConstants {
 	public static String ORBIT_HOST_URL = "orbit.host.url";
 	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 
-	// index item properties
-	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
-
 	// ----------------------------------------------------------------------------------------
 	// Platform
 	// ----------------------------------------------------------------------------------------
 	// index item values
 	public static String PLATFORM_INDEXER_ID = "platform.indexer"; // index provider id for Platform
-	public static String PLATFORM_TYPE = "Platform"; // type of index item for Platform
+	public static String PLATFORM_INDEXER_TYPE = "Platform"; // type of index item for Platform
 
 	// index item properties
 	public static String PLATFORM_ID = "platform.id";
 	public static String PLATFORM_NAME = "platform.name";
 	public static String PLATFORM_VERSION = "platform.version";
+	public static String PLATFORM_PARENT_ID = "platform.parent.id";
+	public static String PLATFORM_TYPE = "platform.type";
 	public static String PLATFORM_HOST_URL = "platform.host.url";
 	public static String PLATFORM_CONTEXT_ROOT = "platform.context_root";
 	public static String PLATFORM_HOME = "platform.home";
+	public static String PLATFORM_RUNTIME_STATE = "platform.runtime_state";
+
+	// index item property values
+	public static String PLATFORM_TYPE__NODE = "node";
 
 	// ----------------------------------------------------------------------------------------
 	// Platform CommandService
@@ -53,6 +56,7 @@ public class PlatformConstants {
 	// ---------------------------------------------------------------
 	public static String START_SERVICE = "start_service";
 	public static String STOP_SERVICE = "stop_service";
+	public static String SHUTDOWN_PLATFORM = "shutdown_platform";
 
 	// ---------------------------------------------------------------
 	// World request constants

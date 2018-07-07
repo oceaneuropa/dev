@@ -47,7 +47,7 @@ public class CommandServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvide
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(PlatformConstants.COMMAND_SERVICE_NAME, name);
 		props.put(PlatformConstants.COMMAND_SERVICE_CONTEXT_ROOT, contextRoot);
-		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(IndexItem.LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		return indexProvider.addIndexItem(PlatformConstants.COMMAND_SERVICE_INDEXER_ID, PlatformConstants.COMMAND_SERVICE_TYPE, name, props);
 	}
@@ -56,7 +56,7 @@ public class CommandServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvide
 	public void updateIndex(IndexProvider indexProvider, CommandService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(PlatformConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(IndexItem.LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		indexProvider.setProperties(PlatformConstants.COMMAND_SERVICE_INDEXER_ID, indexItemId, props);
 	}

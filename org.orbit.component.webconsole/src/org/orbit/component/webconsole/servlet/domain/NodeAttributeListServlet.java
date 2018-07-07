@@ -17,6 +17,9 @@ import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.ServletHelper;
+import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.util.ServletUtil;
 
 public class NodeAttributeListServlet extends HttpServlet {
@@ -29,7 +32,9 @@ public class NodeAttributeListServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
+		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
 		String id = ServletUtil.getParameter(request, "id", "");
@@ -61,6 +66,7 @@ public class NodeAttributeListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		NodeInfo nodeInfo = null;
+		IndexItem nodeIndexItem = null;
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
 			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
 			if (domainClient != null && machineId != null && platformId != null) {
@@ -80,6 +86,14 @@ public class NodeAttributeListServlet extends HttpServlet {
 					message = ServletHelper.INSTANCE.checkMessage(message);
 					message += "Exception occurs: '" + e.getMessage() + "'.";
 					e.printStackTrace();
+				}
+			}
+
+			if (nodeInfo != null) {
+				IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
+				if (indexService != null) {
+					String nodeId = nodeInfo.getId();
+					nodeIndexItem = NodeHelper.INSTANCE.getNodeIndexItem(indexService, platformId, nodeId);
 				}
 			}
 		}
@@ -103,6 +117,9 @@ public class NodeAttributeListServlet extends HttpServlet {
 		}
 		if (nodeInfo != null) {
 			request.setAttribute("nodeInfo", nodeInfo);
+		}
+		if (nodeIndexItem != null) {
+			request.setAttribute("nodeIndexItem", nodeIndexItem);
 		}
 
 		request.getRequestDispatcher(contextRoot + "/views/domain_node_attributes_v1.jsp").forward(request, response);

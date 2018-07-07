@@ -68,7 +68,7 @@
 			%>
 			<tr>
 				<td id="td1"><%=id%></td>
-				<td id="td2"><%=type%>s</td>
+				<td id="td2"><%=type%></td>
 				<td id="td2"><%=name%></td>
 				<td id="td2"><%=props%></td>
 			</tr>

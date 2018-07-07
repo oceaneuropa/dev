@@ -8,8 +8,11 @@
 -Dorbit.app_store.url=http://127.0.0.1:8000/orbit/v1/appstore 
 -Dorbit.domain_service.url=http://127.0.0.1:8000/orbit/v1/domain/machines 
 
+-Dplatform.id=webconsole1 
+-Dplatform.name=WebConsole1 
+-Dplatform.version=1.0.0 
 -Dplatform.context_root=/orbit/v1/platform 
--Dplatform.home=/Users/oceaneuropa/origin 
+-Dplatform.home=/Users/oceaneuropa/origin/ta1 
 
 -Dplatform.web_console.autostart=true 
 -Dplatform.web_console.context_root=/orbit/webconsole/platform 

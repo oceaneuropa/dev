@@ -76,4 +76,12 @@ public interface PlatformClient extends ServiceClient {
 	 */
 	boolean stopService(int pid) throws ClientException;
 
+	/**
+	 * 
+	 * @param timeout
+	 * @param force
+	 * @throws ClientException
+	 */
+	void shutdown(long timeout, boolean force) throws ClientException;
+
 }
