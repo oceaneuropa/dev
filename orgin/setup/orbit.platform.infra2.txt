@@ -7,6 +7,7 @@
 -Dplatform.id=p92 
 -Dplatform.name=infra2 
 -Dplatform.version=1.0.0 
+-Dplatform.type=server 
 -Dplatform.context_root=/orbit/v1/platform 
 -Dplatform.home=/Users/oceaneuropa/origin 
 

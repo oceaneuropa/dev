@@ -7,12 +7,11 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.platform.runtime.PlatformConstants;
 import org.orbit.platform.runtime.command.service.CommandService;
-import org.origin.common.thread.ServiceIndexTimer;
-import org.origin.common.thread.ServiceIndexTimerImpl;
 
-public class CommandServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, CommandService, IndexItem> implements ServiceIndexTimer<IndexProvider, CommandService, IndexItem> {
+public class CommandServiceIndexTimer extends ServiceIndexTimer<CommandService> {
 
 	protected CommandService service;
 

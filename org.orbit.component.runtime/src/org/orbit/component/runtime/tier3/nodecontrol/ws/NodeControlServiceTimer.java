@@ -9,11 +9,10 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.ServiceIndexTimer;
-import org.origin.common.thread.ServiceIndexTimerImpl;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
-public class NodeControlServiceTimer extends ServiceIndexTimerImpl<IndexProvider, NodeControlService, IndexItem> implements ServiceIndexTimer<IndexProvider, NodeControlService, IndexItem> {
+public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlService> {
 
 	protected NodeControlService service;
 

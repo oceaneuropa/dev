@@ -52,11 +52,11 @@
 				<input type="hidden" name="machineId" value="<%=machineId%>"> 
 				<input type="hidden" name="platformId" value="<%=platformId%>">
 				<tr>
-					<th class="th1" width="11"></th>
-					<th class="th1" width="100">Id</th>
-					<th class="th1" width="100">Name</th>
-					<th class="th1" width="100">Path</th>
-					<th class="th1" width="100">Status</th>
+					<th class="th1" width="10"></th>
+					<th class="th1" width="120">Id</th>
+					<th class="th1" width="120">Name</th>
+					<th class="th1" width="120">Path</th>
+					<th class="th1" width="120">Status</th>
 					<th class="th1" width="130">Actions</th>
 				</tr>
 				<%
@@ -76,9 +76,11 @@
 							name = StringUtil.get(name);
 							String path = (uri != null) ? uri.getPath() : "(n/a)";
 
+							String typeId = (String) nodeInfo.getAttributes().get("typeId");
+
 							String statusStr = "";
-							boolean isActivate = nodeInfo.getStatus().isActivate();
-							String runtimeState = nodeInfo.getStatus().getRuntimeState();
+							boolean isActivate = nodeInfo.getRuntimeStatus().isActivate();
+							String runtimeState = nodeInfo.getRuntimeStatus().getRuntimeState();
 							statusStr += (isActivate)? "activate" : "inactivate";
 							if (!statusStr.isEmpty()) {
 								statusStr += " | ";
@@ -92,8 +94,8 @@
 					<td class="td2"><%=path%></td>
 					<td class="td2"><%=statusStr%></td>
 					<td class="td1">
-						<a class="action01" href="<%=contextRoot%>/domain/nodeattributes?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Configuration</a> |
-						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>')">Change</a> | 
+						<a class="action01" href="<%=contextRoot%>/domain/nodeattributes?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a> |
+						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Change</a> | 
 						<a class="action01" href="javascript:deleteNode('<%=contextRoot + "/domain/nodedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Delete</a> | 
 						<a class="action01" href="javascript:startNode('<%=contextRoot + "/domain/nodestart"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Start</a> | 
 						<a class="action01" href="javascript:stopNode('<%=contextRoot + "/domain/nodestop"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Stop</a></td>

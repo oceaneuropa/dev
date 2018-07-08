@@ -21,6 +21,7 @@ import org.orbit.component.webconsole.servlet.domain.NodeStartServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeStopServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeUpdateServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformAddServlet;
+import org.orbit.component.webconsole.servlet.domain.PlatformAttributeListServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformListServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformUpdateServlet;
@@ -96,6 +97,8 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/domain/platformadd", new PlatformAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformupdate", new PlatformUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformdelete", new PlatformDeleteServlet(), dicts));
+
+		addServlet(new ServletMetadataImpl("/domain/platformattributes", new PlatformAttributeListServlet(), dicts));
 
 		addServlet(new ServletMetadataImpl("/domain/nodes", new NodeListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodecreate", new NodeCreateServlet(), dicts));

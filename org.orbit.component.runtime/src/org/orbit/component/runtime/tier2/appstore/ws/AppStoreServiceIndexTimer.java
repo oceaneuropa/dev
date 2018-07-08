@@ -9,15 +9,14 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.ServiceIndexTimerImpl;
-import org.origin.common.thread.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
 /**
  * AppStore service indexing timer.
  *
  */
-public class AppStoreServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, AppStoreService, IndexItem> implements ServiceIndexTimer<IndexProvider, AppStoreService, IndexItem> {
+public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService> {
 
 	protected AppStoreService service;
 

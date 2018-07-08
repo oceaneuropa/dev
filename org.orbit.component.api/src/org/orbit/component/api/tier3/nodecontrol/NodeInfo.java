@@ -3,6 +3,8 @@ package org.orbit.component.api.tier3.nodecontrol;
 import java.net.URI;
 import java.util.Map;
 
+import org.orbit.component.api.RuntimeStatus;
+
 public interface NodeInfo {
 
 	String getId();
@@ -13,6 +15,6 @@ public interface NodeInfo {
 
 	Map<String, Object> getAttributes();
 
-	NodeStatus getStatus();
+	RuntimeStatus getRuntimeStatus();
 
 }

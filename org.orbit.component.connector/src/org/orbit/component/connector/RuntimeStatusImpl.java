@@ -1,8 +1,8 @@
-package org.orbit.component.connector.tier3.nodecontrol;
+package org.orbit.component.connector;
 
-import org.orbit.component.api.tier3.nodecontrol.NodeStatus;
+import org.orbit.component.api.RuntimeStatus;
 
-public class NodeStatusImpl implements NodeStatus {
+public class RuntimeStatusImpl implements RuntimeStatus {
 
 	protected boolean isActivate = false;
 	protected String runtimeState;

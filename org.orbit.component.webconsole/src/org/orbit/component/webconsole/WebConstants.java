@@ -29,6 +29,7 @@ public class WebConstants {
 	public static String PLATFORM_RUNTIME_STATE = "platform.runtime_state";
 
 	// index item property values
+	public static String PLATFORM_TYPE__SERVER = "server";
 	public static String PLATFORM_TYPE__NODE = "node";
 
 }

@@ -9,11 +9,10 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.ServiceIndexTimer;
-import org.origin.common.thread.ServiceIndexTimerImpl;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
-public class MissionControlIndexer extends ServiceIndexTimerImpl<IndexProvider, MissionControlService, IndexItem> implements ServiceIndexTimer<IndexProvider, MissionControlService, IndexItem> {
+public class MissionControlIndexer extends ServiceIndexTimer<MissionControlService> {
 
 	protected MissionControlService service;
 

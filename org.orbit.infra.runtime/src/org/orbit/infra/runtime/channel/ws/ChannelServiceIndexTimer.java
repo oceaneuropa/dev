@@ -7,13 +7,12 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.origin.common.service.WebServiceAwareHelper;
-import org.origin.common.thread.ServiceIndexTimer;
-import org.origin.common.thread.ServiceIndexTimerImpl;
 
-public class ChannelServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, ChannelService, IndexItem> implements ServiceIndexTimer<IndexProvider, ChannelService, IndexItem> {
+public class ChannelServiceIndexTimer extends ServiceIndexTimer<ChannelService> {
 
 	protected ChannelService service;
 

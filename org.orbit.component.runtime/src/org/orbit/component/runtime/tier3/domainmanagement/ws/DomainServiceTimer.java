@@ -9,11 +9,10 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.ServiceIndexTimerImpl;
-import org.origin.common.thread.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
-public class DomainServiceTimer extends ServiceIndexTimerImpl<IndexProvider, DomainManagementService, IndexItem> implements ServiceIndexTimer<IndexProvider, DomainManagementService, IndexItem> {
+public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementService> {
 
 	protected DomainManagementService service;
 

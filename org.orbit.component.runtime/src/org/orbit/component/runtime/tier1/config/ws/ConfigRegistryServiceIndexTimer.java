@@ -9,15 +9,14 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.ServiceIndexTimer;
-import org.origin.common.thread.ServiceIndexTimerImpl;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
 /**
  * ConfigRegistry service timer to update index item for the service.
  *
  */
-public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, ConfigRegistryService, IndexItem> implements ServiceIndexTimer<IndexProvider, ConfigRegistryService, IndexItem> {
+public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigRegistryService> {
 
 	protected ConfigRegistryService service;
 

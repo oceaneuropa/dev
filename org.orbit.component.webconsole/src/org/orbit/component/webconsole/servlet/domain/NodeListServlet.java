@@ -17,6 +17,7 @@ import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.servlet.DomainIndexItemHelper;
 import org.orbit.component.webconsole.servlet.ServletHelper;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -50,11 +51,11 @@ public class NodeListServlet extends HttpServlet {
 				session.removeAttribute("message");
 			}
 		}
-		if (machineId == null) {
+		if (machineId.isEmpty()) {
 			message = ServletHelper.INSTANCE.checkMessage(message);
 			message += "'machineId' parameter is not set.";
 		}
-		if (platformId == null) {
+		if (platformId.isEmpty()) {
 			message = ServletHelper.INSTANCE.checkMessage(message);
 			message += "'platformId' parameter is not set.";
 		}
@@ -91,7 +92,7 @@ public class NodeListServlet extends HttpServlet {
 			// Get index items for platforms with type "node" and parent platform id equals the platformId
 			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
 			if (indexService != null) {
-				Map<String, IndexItem> platformIdToIndexItem = NodeHelper.INSTANCE.getNodePlatformIdToIndexItem(indexService, platformId);
+				Map<String, IndexItem> platformIdToIndexItem = DomainIndexItemHelper.INSTANCE.getNodePlatformIdToIndexItem(indexService, platformId);
 
 				for (NodeInfo nodeInfo : nodeInfos) {
 					String nodeId = nodeInfo.getId();
@@ -102,8 +103,8 @@ public class NodeListServlet extends HttpServlet {
 						isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
 						runtimeState = (String) indexItem.getProperties().get(WebConstants.PLATFORM_RUNTIME_STATE);
 					}
-					nodeInfo.getStatus().setActivate(isActivate);
-					nodeInfo.getStatus().setRuntimeState(runtimeState);
+					nodeInfo.getRuntimeStatus().setActivate(isActivate);
+					nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);
 				}
 			}
 

@@ -7,12 +7,11 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.sprit.runtime.Constants;
 import org.orbit.sprit.runtime.gaia.service.GAIA;
-import org.origin.common.thread.ServiceIndexTimer;
-import org.origin.common.thread.ServiceIndexTimerImpl;
 
-public class GaiaIndexTimer extends ServiceIndexTimerImpl<IndexProvider, GAIA, IndexItem> implements ServiceIndexTimer<IndexProvider, GAIA, IndexItem> {
+public class GaiaIndexTimer extends ServiceIndexTimer<GAIA> {
 
 	protected GAIA gaia;
 

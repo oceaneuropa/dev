@@ -3,9 +3,10 @@ function addNode() {
 	document.getElementById('newNodeDialog').showModal();
 }
 
-function changeNode(id, name) {
+function changeNode(id, name, typeId) {
 	document.getElementById("node_id").setAttribute('value', id);
 	document.getElementById("node_name").setAttribute('value', name);
+	document.getElementById("node_typeId").setAttribute('value', typeId);
 	document.getElementById('changeNodeDialog').showModal();
 }
 

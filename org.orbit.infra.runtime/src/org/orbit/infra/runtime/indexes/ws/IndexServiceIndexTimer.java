@@ -10,10 +10,10 @@ import org.orbit.infra.model.indexes.IndexServiceException;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.origin.common.service.WebServiceAwareHelper;
-import org.origin.common.thread.ServiceIndexTimer;
-import org.origin.common.thread.ServiceIndexTimerImpl;
+import org.origin.common.thread.IndexTimer;
+import org.origin.common.thread.IndexTimerImpl;
 
-public class IndexServiceIndexTimer extends ServiceIndexTimerImpl<IndexService, IndexService, IndexItem> implements ServiceIndexTimer<IndexService, IndexService, IndexItem> {
+public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexService, IndexItem> implements IndexTimer<IndexService, IndexService, IndexItem> {
 
 	protected IndexService service;
 

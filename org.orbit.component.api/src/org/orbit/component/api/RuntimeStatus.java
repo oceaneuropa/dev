@@ -1,6 +1,6 @@
-package org.orbit.component.api.tier3.nodecontrol;
+package org.orbit.component.api;
 
-public interface NodeStatus {
+public interface RuntimeStatus {
 
 	boolean isActivate();
 

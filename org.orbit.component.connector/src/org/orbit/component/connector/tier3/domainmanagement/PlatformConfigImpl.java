@@ -1,6 +1,8 @@
 package org.orbit.component.connector.tier3.domainmanagement;
 
+import org.orbit.component.api.RuntimeStatus;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
+import org.orbit.component.connector.RuntimeStatusImpl;
 
 public class PlatformConfigImpl implements PlatformConfig {
 
@@ -10,6 +12,7 @@ public class PlatformConfigImpl implements PlatformConfig {
 	protected String home;
 	protected String hostURL;
 	protected String contextRoot;
+	protected RuntimeStatus status = new RuntimeStatusImpl();
 
 	public PlatformConfigImpl() {
 	}
@@ -60,6 +63,11 @@ public class PlatformConfigImpl implements PlatformConfig {
 
 	public void setContextRoot(String contextRoot) {
 		this.contextRoot = contextRoot;
+	}
+
+	@Override
+	public RuntimeStatus getRuntimeStatus() {
+		return this.status;
 	}
 
 	@Override

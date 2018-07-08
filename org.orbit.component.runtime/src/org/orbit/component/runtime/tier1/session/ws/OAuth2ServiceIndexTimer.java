@@ -9,10 +9,9 @@ import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.thread.ServiceIndexTimerImpl;
-import org.origin.common.thread.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 
-public class OAuth2ServiceIndexTimer extends ServiceIndexTimerImpl<IndexProvider, OAuth2Service, IndexItem> implements ServiceIndexTimer<IndexProvider, OAuth2Service, IndexItem> {
+public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 
 	protected OAuth2Service service;
 

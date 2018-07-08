@@ -51,18 +51,19 @@
 			<form id="main_list" method="post" action="<%=contextRoot + "/domain/platformdelete"%>">
 			<input type="hidden" name="machineId" value="<%=machineId%>">
 			<tr>
-				<th class="th1" width="11"></th>
-				<th class="th1" width="150">Id</th>
-				<th class="th1" width="150">Name</th>
-				<th class="th1" width="160">Host URL</th>
-				<th class="th1" width="160">Context Root</th>
-				<th class="th1" width="100">Actions</th>
+				<th class="th1" width="10"></th>
+				<th class="th1" width="100">Id</th>
+				<th class="th1" width="100">Name</th>
+				<th class="th1" width="150">Host URL</th>
+				<th class="th1" width="150">Context Root</th>
+				<th class="th1" width="100">Status</th>
+				<th class="th1" width="200">Actions</th>
 			</tr>
 			<%
 				if (platformConfigs.length == 0) {
 			%>
 			<tr>
-				<td colspan="6">(n/a)</td>
+				<td colspan="7">(n/a)</td>
 			</tr>
 			<%
 				} else {
@@ -76,6 +77,15 @@
 						name = StringUtil.get(name);
 						hostURL = StringUtil.get(hostURL);
 						currContextRoot = StringUtil.get(currContextRoot);
+
+						String statusStr = "";
+						boolean isActivate = platformConfig.getRuntimeStatus().isActivate();
+						String runtimeState = platformConfig.getRuntimeStatus().getRuntimeState();
+						statusStr += (isActivate)? "activate" : "inactivate";
+						if (!statusStr.isEmpty()) {
+							statusStr += " | ";
+						}
+						statusStr += runtimeState;
 			%>
 			<tr>
 				<td class="td1">
@@ -85,7 +95,9 @@
 				<td class="td2"><%=name%></td>
 				<td class="td2"><%=hostURL%></td>
 				<td class="td2"><%=currContextRoot%></td>
+				<td class="td2"><%=statusStr%></td>
 				<td class="td1">
+					<a class="action01" href="<%=contextRoot%>/domain/platformattributes?machineId=<%=machineId%>&id=<%=id%>">Properties</a> |
 					<a class="action01" href="<%=contextRoot%>/domain/nodes?machineId=<%=machineId%>&platformId=<%=id%>">Nodes</a> |
 					<a class="action01" href="javascript:changePlatform('<%=id%>', '<%=name%>', '<%=hostURL%>', '<%=currContextRoot%>')">Change</a> | 
 					<a class="action01" href="javascript:deletePlatform('<%=contextRoot + "/domain/platformdelete"%>', '<%=machineId%>', '<%=id%>')">Delete</a>

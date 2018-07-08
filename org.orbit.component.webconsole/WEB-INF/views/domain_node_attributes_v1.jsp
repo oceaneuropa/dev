@@ -46,7 +46,7 @@
 		<%=name%>
 	</div>
 	<div class="main_div01">
-		<h2>Indexed Properties</h2>
+		<h2>Index Properties</h2>
 		<div class="top_tools_div01"> 
 			<a class="button02" href="<%=contextRoot + "/domain/nodeattributes?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
 		</div>

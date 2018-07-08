@@ -1,21 +1,25 @@
 package org.orbit.component.api.tier3.domainmanagement;
 
+import org.orbit.component.api.RuntimeStatus;
+
 /**
  * Platform configuration
  * 
  */
 public interface PlatformConfig {
 
-	public String getMachineId();
+	String getMachineId();
 
-	public String getId();
+	String getId();
 
-	public String getName();
+	String getName();
 
-	public String getHome();
+	String getHome();
 
-	public String getHostURL();
+	String getHostURL();
 
-	public String getContextRoot();
+	String getContextRoot();
+
+	RuntimeStatus getRuntimeStatus();
 
 }

@@ -4,8 +4,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.orbit.component.api.RuntimeStatus;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.api.tier3.nodecontrol.NodeStatus;
+import org.orbit.component.connector.RuntimeStatusImpl;
 
 public class NodeInfoImpl implements NodeInfo {
 
@@ -13,7 +14,7 @@ public class NodeInfoImpl implements NodeInfo {
 	protected String name;
 	protected URI uri;
 	protected Map<String, Object> attributes;
-	protected NodeStatus status = new NodeStatusImpl();
+	protected RuntimeStatus status = new RuntimeStatusImpl();
 
 	@Override
 	public String getId() {
@@ -55,7 +56,7 @@ public class NodeInfoImpl implements NodeInfo {
 	}
 
 	@Override
-	public NodeStatus getStatus() {
+	public RuntimeStatus getRuntimeStatus() {
 		return this.status;
 	}
 
