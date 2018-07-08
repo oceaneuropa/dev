@@ -6,8 +6,8 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.orbit.platform.api.Constants;
 import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.model.dto.ExtensionDTO;
 import org.orbit.platform.model.dto.ExtensionInfo;
 import org.orbit.platform.model.dto.ProcessDTO;
@@ -33,9 +33,9 @@ public class PlatformClientImpl extends ServiceClientImpl<PlatformClient, Platfo
 
 	@Override
 	protected PlatformWSClient createWSClient(Map<String, Object> properties) {
-		String realm = (String) properties.get(Constants.REALM);
-		String username = (String) properties.get(Constants.USERNAME);
-		String fullUrl = (String) properties.get(Constants.URL);
+		String realm = (String) properties.get(PlatformConstants.REALM);
+		String username = (String) properties.get(PlatformConstants.USERNAME);
+		String fullUrl = (String) properties.get(PlatformConstants.URL);
 
 		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
 		return new PlatformWSClient(config);
@@ -43,7 +43,7 @@ public class PlatformClientImpl extends ServiceClientImpl<PlatformClient, Platfo
 
 	@Override
 	public String getURL() {
-		String fullUrl = (String) this.properties.get(Constants.URL);
+		String fullUrl = (String) this.properties.get(PlatformConstants.URL);
 		return fullUrl;
 	}
 
@@ -98,7 +98,7 @@ public class PlatformClientImpl extends ServiceClientImpl<PlatformClient, Platfo
 		Response response = null;
 		try {
 			Request request = new Request();
-			request.setRequestName(Constants.START_SERVICE);
+			request.setRequestName(PlatformConstants.START_SERVICE);
 			if (parameters == null) {
 				parameters = new HashMap<String, Object>();
 			}
@@ -126,7 +126,7 @@ public class PlatformClientImpl extends ServiceClientImpl<PlatformClient, Platfo
 		Response response = null;
 		try {
 			Request request = new Request();
-			request.setRequestName(Constants.STOP_SERVICE);
+			request.setRequestName(PlatformConstants.STOP_SERVICE);
 
 			Map<String, Object> parameters = new HashMap<String, Object>();
 			parameters.put("pid", pid);
@@ -147,7 +147,16 @@ public class PlatformClientImpl extends ServiceClientImpl<PlatformClient, Platfo
 	@Override
 	public void shutdown(long timeout, boolean force) throws ClientException {
 		Request request = new Request();
-		request.setRequestName(Constants.SHUTDOWN_PLATFORM);
+		request.setParameter("timeout", timeout);
+		request.setParameter("force", force);
+		request.setRequestName(PlatformConstants.SHUTDOWN_PLATFORM);
+
+		Response response = null;
+		try {
+			response = this.client.sendRequest(request);
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
 	}
 
 }

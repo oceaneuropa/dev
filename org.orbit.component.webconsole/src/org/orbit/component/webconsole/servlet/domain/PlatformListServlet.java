@@ -20,6 +20,7 @@ import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.platform.api.PlatformConstants;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -62,7 +63,7 @@ public class PlatformListServlet extends HttpServlet {
 			// Get index items for platforms with type "server"
 			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
 			if (indexService != null) {
-				Map<String, IndexItem> platformIdToIndexItem = DomainIndexItemHelper.INSTANCE.getPlatformIdToIndexItem(indexService, null, WebConstants.PLATFORM_TYPE__SERVER);
+				Map<String, IndexItem> platformIdToIndexItem = DomainIndexItemHelper.INSTANCE.getPlatformIdToIndexItem(indexService, null, PlatformConstants.PLATFORM_TYPE__SERVER);
 
 				if (platformConfigs != null) {
 					for (PlatformConfig platformConfig : platformConfigs) {
@@ -72,7 +73,7 @@ public class PlatformListServlet extends HttpServlet {
 						IndexItem indexItem = platformIdToIndexItem.get(platformId);
 						if (indexItem != null) {
 							isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
-							runtimeState = (String) indexItem.getProperties().get(WebConstants.PLATFORM_RUNTIME_STATE);
+							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 						}
 						platformConfig.getRuntimeStatus().setActivate(isActivate);
 						platformConfig.getRuntimeStatus().setRuntimeState(runtimeState);

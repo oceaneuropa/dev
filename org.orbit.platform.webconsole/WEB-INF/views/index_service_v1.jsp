@@ -30,13 +30,14 @@
 				<th width="50">Id</th>
 				<th width="200">Type</th>
 				<th width="200">Name</th>
-				<th width="750">Properties</th>
+				<th width="200">Status</th>
+				<th width="550">Properties</th>
 			</tr>
 			<%
 				if (indexItems.isEmpty()) {
 			%>
 			<tr>
-				<td colspan="4">(n/a)</td>
+				<td colspan="5">(n/a)</td>
 			</tr>
 			<%
 				} else {
@@ -65,11 +66,16 @@
 									pIndex++;
 								}
 							}
+
+							boolean isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
+							String statusText = isActivate ? "active" : "inactive";
+							String statusColor = isActivate ? "#2eb82e" : "#cccccc";
 			%>
 			<tr>
 				<td id="td1"><%=id%></td>
 				<td id="td2"><%=type%></td>
 				<td id="td2"><%=name%></td>
+				<td id="td2"><font color="<%=statusColor%>"><%=statusText%></font></td>
 				<td id="td2"><%=props%></td>
 			</tr>
 			<%

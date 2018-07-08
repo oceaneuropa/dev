@@ -115,14 +115,43 @@ function deleteNode(actionURL, machineId, platformId, id) {
 	document.getElementById('deleteNodeDialog').showModal();
 }
 
-function deleteNodes() {
-	document.getElementById('deleteNodesDialogMessageDiv').innerHTML = "Are you sure you want to delete selected nodes?";
+function deleteNodes(formId, actionURL) {
+	document.getElementById('submitNodesDialogTitleDiv').innerHTML = "Delete Nodes";
+	document.getElementById('submitNodesDialogMessageDiv').innerHTML = "Are you sure you want to delete selected nodes?";
 
-	document.getElementById('okDeleteNodes').addEventListener('click', function() {
-		document.getElementById("main_list").submit();
+	document.getElementById('okSubmitNodes').addEventListener('click', function() {
+		var mainForm = document.getElementById(formId);
+		mainForm.setAttribute("action", actionURL);
+		mainForm.submit();
 	});
 
-	document.getElementById('deleteNodesDialog').showModal();
+	document.getElementById('submitNodesDialog').showModal();
+}
+
+function startNodes(formId, actionURL) {
+	document.getElementById('submitNodesDialogTitleDiv').innerHTML = "Start Nodes";
+	document.getElementById('submitNodesDialogMessageDiv').innerHTML = "Are you sure you want to start selected nodes?";
+
+	document.getElementById('okSubmitNodes').addEventListener('click', function() {
+		var mainForm = document.getElementById(formId);
+		mainForm.setAttribute("action", actionURL);
+		mainForm.submit();
+	});
+
+	document.getElementById('submitNodesDialog').showModal();
+}
+
+function stopNodes(formId, actionURL) {
+	document.getElementById('submitNodesDialogTitleDiv').innerHTML = "Stop Nodes";
+	document.getElementById('submitNodesDialogMessageDiv').innerHTML = "Are you sure you want to stop selected nodes?";
+
+	document.getElementById('okSubmitNodes').addEventListener('click', function() {
+		var mainForm = document.getElementById(formId);
+		mainForm.setAttribute("action", actionURL);
+		mainForm.submit();
+	});
+
+	document.getElementById('submitNodesDialog').showModal();
 }
 
 (function() {
@@ -133,7 +162,23 @@ function deleteNodes() {
 
 	// add action.deleteNodes click listener
 	document.getElementById('action.deleteNodes').addEventListener('click', function() {
-		deleteNodes();
+		var formId = document.getElementById('action.deleteNodes').getAttribute('targetFormId');
+		var url = document.getElementById('action.deleteNodes').getAttribute('targetFormUrl');
+		deleteNodes(formId, url);
+	});
+
+	// add action.startsNodes click listener
+	document.getElementById('action.startNodes').addEventListener('click', function() {
+		var formId = document.getElementById('action.startNodes').getAttribute('targetFormId');
+		var url = document.getElementById('action.startNodes').getAttribute('targetFormUrl');
+		startNodes(formId, url);
+	});
+
+	// add action.stopNodes click listener
+	document.getElementById('action.stopNodes').addEventListener('click', function() {
+		var formId = document.getElementById('action.stopNodes').getAttribute('targetFormId');
+		var url = document.getElementById('action.stopNodes').getAttribute('targetFormUrl');
+		stopNodes(formId, url);
 	});
 
 	document.getElementById('cancelAddNode').addEventListener('click', function() {
@@ -156,8 +201,8 @@ function deleteNodes() {
 		document.getElementById('deleteNodeDialog').close();
 	});
 
-	document.getElementById('cancelDeleteNodes').addEventListener('click', function() {
+	document.getElementById('cancelSubmitNodes').addEventListener('click', function() {
 		document.getElementById("main_list").reset();
-		document.getElementById('deleteNodesDialog').close();
+		document.getElementById('submitNodesDialog').close();
 	});
 })();

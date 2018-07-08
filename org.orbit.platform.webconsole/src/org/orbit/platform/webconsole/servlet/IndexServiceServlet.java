@@ -50,11 +50,6 @@ public class IndexServiceServlet extends ServiceAwareServlet {
 		request.getRequestDispatcher(contextRoot + "/views/index_service_v1.jsp").forward(request, response);
 	}
 
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
-	}
-
 }
 
 // import javax.servlet.annotation.WebInitParam;
@@ -101,3 +96,8 @@ public class IndexServiceServlet extends ServiceAwareServlet {
 // }
 
 // getServletConfig().getServletContext().getRequestDispatcher(contextRoot + "/views/helloWorld.jsp").forward(request, response);
+
+// @Override
+// protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+// doGet(request, response);
+// }

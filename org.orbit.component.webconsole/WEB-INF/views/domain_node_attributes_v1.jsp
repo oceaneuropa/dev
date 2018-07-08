@@ -122,12 +122,10 @@
 									String[] array = valueString.split("\r\n");
 									rowNum = array.length;
 
-									if (valueString.startsWith("\r\n")) {
-										rowNum += 1;
-									}
 									if (valueString.endsWith("\r\n")) {
 										rowNum += 1;
 									}
+									rowNum += 1;
 
 									attrValueForEdit = valueString.replace("\r\n", "\\r\\n");
 								}

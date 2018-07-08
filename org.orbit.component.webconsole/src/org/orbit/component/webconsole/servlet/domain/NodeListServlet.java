@@ -23,6 +23,7 @@ import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.platform.api.PlatformConstants;
 import org.origin.common.util.ServletUtil;
 
 public class NodeListServlet extends HttpServlet {
@@ -92,16 +93,16 @@ public class NodeListServlet extends HttpServlet {
 			// Get index items for platforms with type "node" and parent platform id equals the platformId
 			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
 			if (indexService != null) {
-				Map<String, IndexItem> platformIdToIndexItem = DomainIndexItemHelper.INSTANCE.getNodePlatformIdToIndexItem(indexService, platformId);
+				Map<String, IndexItem> nodeIdToIndexItem = DomainIndexItemHelper.INSTANCE.getPlatformIdToIndexItem(indexService, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
 
 				for (NodeInfo nodeInfo : nodeInfos) {
 					String nodeId = nodeInfo.getId();
 					boolean isActivate = false;
 					String runtimeState = "";
-					IndexItem indexItem = platformIdToIndexItem.get(nodeId);
+					IndexItem indexItem = nodeIdToIndexItem.get(nodeId);
 					if (indexItem != null) {
 						isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
-						runtimeState = (String) indexItem.getProperties().get(WebConstants.PLATFORM_RUNTIME_STATE);
+						runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 					}
 					nodeInfo.getRuntimeStatus().setActivate(isActivate);
 					nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);

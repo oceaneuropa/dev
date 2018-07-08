@@ -59,11 +59,11 @@ public class Clients {
 	public PlatformClient getPlatformClient(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
-			url = (String) properties.get(Constants.ORBIT_PLATFORM_URL);
+			url = (String) properties.get(PlatformConstants.ORBIT_PLATFORM_URL);
 		}
 		if (url == null) {
-			LOG.error("'" + Constants.ORBIT_PLATFORM_URL + "' property is not found.");
-			throw new IllegalStateException("'" + Constants.ORBIT_PLATFORM_URL + "' property is not found.");
+			LOG.error("'" + PlatformConstants.ORBIT_PLATFORM_URL + "' property is not found.");
+			throw new IllegalStateException("'" + PlatformConstants.ORBIT_PLATFORM_URL + "' property is not found.");
 		}
 		return getPlatformClient(url);
 	}
@@ -89,9 +89,9 @@ public class Clients {
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
 		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put(Constants.REALM, realm);
-		properties.put(Constants.USERNAME, username);
-		properties.put(Constants.URL, url);
+		properties.put(PlatformConstants.REALM, realm);
+		properties.put(PlatformConstants.USERNAME, username);
+		properties.put(PlatformConstants.URL, url);
 
 		PlatformClient platform = this.platformConnectorAdapter.getService(properties);
 		if (platform == null) {

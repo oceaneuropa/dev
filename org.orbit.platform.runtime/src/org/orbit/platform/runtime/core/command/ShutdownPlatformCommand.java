@@ -21,6 +21,10 @@ public class ShutdownPlatformCommand extends AbstractWSCommand {
 	protected Timer timer;
 	protected TimerTask timerTask;
 
+	/**
+	 * 
+	 * @param platform
+	 */
 	public ShutdownPlatformCommand(Platform platform) {
 		this.platform = platform;
 	}
@@ -41,6 +45,8 @@ public class ShutdownPlatformCommand extends AbstractWSCommand {
 
 						// Stop the framework
 						bundleContext.getBundle(0).stop();
+
+						System.exit(1);
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

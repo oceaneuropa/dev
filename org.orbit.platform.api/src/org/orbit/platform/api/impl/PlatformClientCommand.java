@@ -7,7 +7,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.platform.api.Clients;
 import org.orbit.platform.api.PlatformClient;
-import org.orbit.platform.api.Constants;
+import org.orbit.platform.api.PlatformConstants;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.client.ServiceClientCommand;
@@ -32,7 +32,7 @@ public class PlatformClientCommand extends ServiceClientCommand {
 		LOG.info("start()");
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, Constants.ORBIT_PLATFORM_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, PlatformConstants.ORBIT_PLATFORM_URL);
 		this.properties = properties;
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();

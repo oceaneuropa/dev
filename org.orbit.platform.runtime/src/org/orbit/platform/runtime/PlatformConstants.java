@@ -15,11 +15,10 @@ public class PlatformConstants {
 	// ----------------------------------------------------------------------------------------
 	// Platform
 	// ----------------------------------------------------------------------------------------
-	// index item values
-	public static String PLATFORM_INDEXER_ID = "platform.indexer"; // index provider id for Platform
-	public static String PLATFORM_INDEXER_TYPE = "Platform"; // type of index item for Platform
+	public static String PLATFORM_INDEXER_ID = "platform.indexer";
+	public static String PLATFORM_INDEXER_TYPE = "Platform";
 
-	// index item properties
+	// index item property names
 	public static String PLATFORM_ID = "platform.id";
 	public static String PLATFORM_NAME = "platform.name";
 	public static String PLATFORM_VERSION = "platform.version";

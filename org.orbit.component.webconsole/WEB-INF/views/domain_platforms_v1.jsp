@@ -52,10 +52,10 @@
 			<input type="hidden" name="machineId" value="<%=machineId%>">
 			<tr>
 				<th class="th1" width="10"></th>
-				<th class="th1" width="100">Id</th>
-				<th class="th1" width="100">Name</th>
-				<th class="th1" width="150">Host URL</th>
-				<th class="th1" width="150">Context Root</th>
+				<th class="th1" width="90">Id</th>
+				<th class="th1" width="90">Name</th>
+				<th class="th1" width="160">Host URL</th>
+				<th class="th1" width="160">Node Control Context Root</th>
 				<th class="th1" width="100">Status</th>
 				<th class="th1" width="200">Actions</th>
 			</tr>
@@ -78,14 +78,11 @@
 						hostURL = StringUtil.get(hostURL);
 						currContextRoot = StringUtil.get(currContextRoot);
 
-						String statusStr = "";
 						boolean isActivate = platformConfig.getRuntimeStatus().isActivate();
 						String runtimeState = platformConfig.getRuntimeStatus().getRuntimeState();
-						statusStr += (isActivate)? "activate" : "inactivate";
-						if (!statusStr.isEmpty()) {
-							statusStr += " | ";
-						}
-						statusStr += runtimeState;
+						String statusStr1 = (isActivate)? "activate" : "inactivate";
+						String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
+						String statusColor = isActivate ? "#2eb82e" : "#cccccc";
 			%>
 			<tr>
 				<td class="td1">
@@ -95,7 +92,7 @@
 				<td class="td2"><%=name%></td>
 				<td class="td2"><%=hostURL%></td>
 				<td class="td2"><%=currContextRoot%></td>
-				<td class="td2"><%=statusStr%></td>
+				<td class="td2"><font color="<%=statusColor%>"><%=statusStr1%><%=statusStr2%></font></td>
 				<td class="td1">
 					<a class="action01" href="<%=contextRoot%>/domain/platformattributes?machineId=<%=machineId%>&id=<%=id%>">Properties</a> |
 					<a class="action01" href="<%=contextRoot%>/domain/nodes?machineId=<%=machineId%>&platformId=<%=id%>">Nodes</a> |
@@ -104,7 +101,7 @@
 				</td>
 			</tr>
 			<%
-				}
+					}
 				}
 			%>
 			</form>

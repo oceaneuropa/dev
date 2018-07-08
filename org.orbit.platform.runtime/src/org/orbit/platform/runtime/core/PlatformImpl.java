@@ -94,7 +94,7 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 			this.programsAndFreatures = new ProgramsAndFeaturesImpl(bundleContext);
 			this.programsAndFreatures.start();
 
-			// 6. Register as Platform service
+			// 6. Register Platform service
 			Hashtable<String, Object> props = new Hashtable<String, Object>();
 			this.serviceRegistry = bundleContext.registerService(Platform.class, this, props);
 
@@ -113,12 +113,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		try {
-			// Stop Platform service
-			if (this.serviceRegistry != null) {
-				this.serviceRegistry.unregister();
-				this.serviceRegistry = null;
-			}
-
 			// 1. Stop programs and features service
 			if (this.programsAndFreatures != null) {
 				this.programsAndFreatures.stop();
@@ -135,9 +129,15 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 				this.processManager = null;
 			}
 
-			this.bundleContext = null;
-
 			setRuntimeState(RUNTIME_STATE.STOPPED);
+
+			// Unregister Platform service
+			if (this.serviceRegistry != null) {
+				this.serviceRegistry.unregister();
+				this.serviceRegistry = null;
+			}
+
+			this.bundleContext = null;
 
 		} catch (Exception e) {
 			setRuntimeState(RUNTIME_STATE.STOP_FAILED);

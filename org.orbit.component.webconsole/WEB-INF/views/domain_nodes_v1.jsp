@@ -43,21 +43,22 @@
 		<h2>Nodes</h2>
 		<div class="top_tools_div01">
 			<a id="action.addNode" class="button02">Create</a>
-			<a id="action.deleteNodes" class="button02">Delete</a> 
+			<a id="action.deleteNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodedelete"%>" class="button02">Delete</a>
+			<a id="action.startNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestart"%>" class="button02">Start</a> 
+			<a id="action.stopNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestop"%>" class="button02">Stop</a> 
 			<a class="button02" href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>">Refresh</a>
-			<!-- <a class="button02" href="<%=contextRoot + "/domain/platforms?machineId=" + machineId%>">View Platforms</a> -->
 		</div>
 		<table class="main_table01">
-			<form id="main_list" method="post" action="<%=contextRoot + "/domain/nodedelete"%>">
+			<form id="main_list" method="post">
 				<input type="hidden" name="machineId" value="<%=machineId%>"> 
 				<input type="hidden" name="platformId" value="<%=platformId%>">
 				<tr>
-					<th class="th1" width="10"></th>
-					<th class="th1" width="120">Id</th>
-					<th class="th1" width="120">Name</th>
-					<th class="th1" width="120">Path</th>
-					<th class="th1" width="120">Status</th>
-					<th class="th1" width="130">Actions</th>
+					<th class="th1" width="11"></th>
+					<th class="th1" width="100">Id</th>
+					<th class="th1" width="150">Name</th>
+					<th class="th1" width="150">Path</th>
+					<th class="th1" width="100">Status</th>
+					<th class="th1" width="160">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
@@ -78,21 +79,18 @@
 
 							String typeId = (String) nodeInfo.getAttributes().get("typeId");
 
-							String statusStr = "";
 							boolean isActivate = nodeInfo.getRuntimeStatus().isActivate();
 							String runtimeState = nodeInfo.getRuntimeStatus().getRuntimeState();
-							statusStr += (isActivate)? "activate" : "inactivate";
-							if (!statusStr.isEmpty()) {
-								statusStr += " | ";
-							}
-							statusStr += runtimeState;
+							String statusStr1 = (isActivate)? "activate" : "inactivate";
+							String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
+							String statusColor = isActivate ? "#2eb82e" : "#cccccc";
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
 					<td class="td1"><%=id%></td>
 					<td class="td2"><%=name%></td>
 					<td class="td2"><%=path%></td>
-					<td class="td2"><%=statusStr%></td>
+					<td class="td2"><font color="<%=statusColor%>"><%=statusStr1%><%=statusStr2%></font></td>
 					<td class="td1">
 						<a class="action01" href="<%=contextRoot%>/domain/nodeattributes?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a> |
 						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Change</a> | 
@@ -101,7 +99,7 @@
 						<a class="action01" href="javascript:stopNode('<%=contextRoot + "/domain/nodestop"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Stop</a></td>
 				</tr>
 				<%
-					}
+						}
 					}
 				%>
 			</form>
@@ -191,12 +189,12 @@
 	</div>
 	</dialog>
 
-	<dialog id="deleteNodesDialog">
-	<div class="dialog_title_div01">Delete Nodes</div>
-	<div class="dialog_main_div01" id="deleteNodesDialogMessageDiv">Are you sure you want to delete selected nodes?</div>
+	<dialog id="submitNodesDialog">
+	<div class="dialog_title_div01" id="submitNodesDialogTitleDiv">Submit Nodes</div>
+	<div class="dialog_main_div01" id="submitNodesDialogMessageDiv">Are you sure you want to submit selected nodes?</div>
 	<div class="dialog_button_div01">
-		<a id="okDeleteNodes" class="button02">OK</a> 
-		<a id="cancelDeleteNodes" class="button02b">Cancel</a>
+		<a id="okSubmitNodes" class="button02">OK</a> 
+		<a id="cancelSubmitNodes" class="button02b">Cancel</a>
 	</div>
 	</dialog>
 
