@@ -9,20 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.DomainIndexItemHelper;
-import org.orbit.component.webconsole.servlet.ServletHelper;
-import org.orbit.infra.api.InfraClients;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitIndexHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.platform.api.PlatformConstants;
 import org.origin.common.util.ServletUtil;
 
@@ -52,13 +48,12 @@ public class NodeListServlet extends HttpServlet {
 				session.removeAttribute("message");
 			}
 		}
+
 		if (machineId.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'machineId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
 		if (platformId.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'platformId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
@@ -69,46 +64,34 @@ public class NodeListServlet extends HttpServlet {
 		NodeInfo[] nodeInfos = null;
 
 		if (!machineId.isEmpty() && !platformId.isEmpty()) {
-			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainClient != null && machineId != null && platformId != null) {
-				try {
-					machineConfig = domainClient.getMachineConfig(machineId);
-					platformConfig = domainClient.getPlatformConfig(machineId, platformId);
+			try {
+				machineConfig = OrbitHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
 
-					if (platformConfig != null) {
-						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
+				platformConfig = OrbitHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
 
-						if (nodeControlClient != null) {
-							nodeInfos = nodeControlClient.getNodes();
+				nodeInfos = OrbitHelper.INSTANCE.getNodes(domainServiceUrl, machineId, platformId);
+
+				// Get index items for platforms with type "node" and parent platform id equals the platformId
+				if (nodeInfos != null) {
+					Map<String, IndexItem> nodeIdToIndexItem = OrbitIndexHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
+					for (NodeInfo nodeInfo : nodeInfos) {
+						String nodeId = nodeInfo.getId();
+						boolean isActivate = false;
+						String runtimeState = "";
+						IndexItem indexItem = nodeIdToIndexItem.get(nodeId);
+						if (indexItem != null) {
+							isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
+							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 						}
+						nodeInfo.getRuntimeStatus().setActivate(isActivate);
+						nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);
 					}
-
-				} catch (Exception e) {
-					message = ServletHelper.INSTANCE.checkMessage(message);
-					message += "Exception occurs: '" + e.getMessage() + "'.";
-					e.printStackTrace();
 				}
+
+			} catch (Exception e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
-
-			// Get index items for platforms with type "node" and parent platform id equals the platformId
-			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
-			if (indexService != null) {
-				Map<String, IndexItem> nodeIdToIndexItem = DomainIndexItemHelper.INSTANCE.getPlatformIdToIndexItem(indexService, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
-
-				for (NodeInfo nodeInfo : nodeInfos) {
-					String nodeId = nodeInfo.getId();
-					boolean isActivate = false;
-					String runtimeState = "";
-					IndexItem indexItem = nodeIdToIndexItem.get(nodeId);
-					if (indexItem != null) {
-						isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
-						runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
-					}
-					nodeInfo.getRuntimeStatus().setActivate(isActivate);
-					nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);
-				}
-			}
-
 		}
 
 		if (nodeInfos == null) {
@@ -127,7 +110,6 @@ public class NodeListServlet extends HttpServlet {
 		if (platformConfig != null) {
 			request.setAttribute("platformConfig", platformConfig);
 		}
-
 		request.setAttribute("nodeInfos", nodeInfos);
 
 		request.getRequestDispatcher(contextRoot + "/views/domain_nodes_v1.jsp").forward(request, response);

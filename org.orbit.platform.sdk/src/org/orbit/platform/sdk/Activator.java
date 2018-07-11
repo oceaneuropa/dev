@@ -11,6 +11,7 @@ import org.orbit.platform.sdk.command.CommandExtensionRegistry;
 import org.orbit.platform.sdk.command.impl.CommandExtensionRegistryImpl;
 import org.orbit.platform.sdk.connector.ConnectorExtensionRegistry;
 import org.orbit.platform.sdk.connector.impl.ConnectorExtensionRegistryImpl;
+import org.orbit.platform.sdk.ui.IPlatformTracker;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -34,6 +35,7 @@ public class Activator implements BundleActivator {
 
 	protected ConnectorExtensionRegistry connectorExtensionRegistry;
 	protected CommandExtensionRegistry commandExtensionRegistry;
+	protected IPlatformTracker platformTracker;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -41,6 +43,10 @@ public class Activator implements BundleActivator {
 
 		Activator.bundleContext = bundleContext;
 		Activator.instance = this;
+
+		// Start tracking IPlatform service
+		this.platformTracker = new IPlatformTracker();
+		this.platformTracker.start(bundleContext);
 
 		// Handle connector extensions
 		ConnectorExtensionRegistryImpl.INSTANCE.start(bundleContext);
@@ -63,8 +69,22 @@ public class Activator implements BundleActivator {
 		CommandExtensionRegistryImpl.INSTANCE.dispose();
 		CommandExtensionRegistryImpl.INSTANCE.stop(bundleContext);
 
+		// Stop tracking IPlatform service
+		if (this.platformTracker != null) {
+			this.platformTracker.stop(bundleContext);
+			this.platformTracker = null;
+		}
+
 		Activator.instance = null;
 		Activator.bundleContext = null;
+	}
+
+	public IPlatform getPlatform() {
+		IPlatform platform = null;
+		if (this.platformTracker != null) {
+			platform = this.platformTracker.getService();
+		}
+		return platform;
 	}
 
 	public ConnectorExtensionRegistry getConnectorExtensionRegistry() {

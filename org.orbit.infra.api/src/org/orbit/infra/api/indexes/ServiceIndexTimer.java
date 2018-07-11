@@ -24,7 +24,7 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexPro
 				if (time1.equals(time2)) {
 					super.performIndexing();
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}

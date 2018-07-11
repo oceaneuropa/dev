@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 
 public class MachineListServlet extends HttpServlet {
 
@@ -41,14 +41,15 @@ public class MachineListServlet extends HttpServlet {
 		// Handle data
 		// ---------------------------------------------------------------
 		MachineConfig[] machineConfigs = null;
-		DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-		if (domainMgmt != null) {
-			try {
-				machineConfigs = domainMgmt.getMachineConfigs();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+
+		try {
+			machineConfigs = OrbitHelper.INSTANCE.getMachineConfigs(domainServiceUrl);
+
+		} catch (Exception e) {
+			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+			e.printStackTrace();
 		}
+
 		if (machineConfigs == null) {
 			machineConfigs = EMPTY_MACHINE_CONFIGS;
 		}
@@ -60,6 +61,7 @@ public class MachineListServlet extends HttpServlet {
 			request.setAttribute("message", message);
 		}
 		request.setAttribute("machineConfigs", machineConfigs);
+
 		request.getRequestDispatcher(contextRoot + "/views/domain_machines_v1.jsp").forward(request, response);
 	}
 

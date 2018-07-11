@@ -8,13 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.ServletHelper;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeAttributeDeleteServlet extends HttpServlet {
@@ -39,20 +36,16 @@ public class NodeAttributeDeleteServlet extends HttpServlet {
 
 		String message = "";
 		if (machineId.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'machineId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
 		if (platformId.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'platformId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
 		if (id.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'id' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 		if (names == null || names.length == 0) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'id' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
@@ -61,41 +54,32 @@ public class NodeAttributeDeleteServlet extends HttpServlet {
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
-		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && names.length > 0) {
-			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainClient != null && machineId != null && platformId != null) {
-				try {
-					PlatformConfig platformConfig = domainClient.getPlatformConfig(machineId, platformId);
-					if (platformConfig != null) {
-						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
-						if (nodeControlClient != null) {
-							for (String currName : names) {
-								boolean currSucceed = nodeControlClient.deleteNodeAttribute(id, currName);
-								if (currSucceed) {
-									hasSucceed = true;
-								} else {
-									hasFailed = true;
-								}
-							}
-						}
-					}
 
-				} catch (Exception e) {
-					message = ServletHelper.INSTANCE.checkMessage(message);
-					message += "Exception occurs: '" + e.getMessage() + "'.";
-					e.printStackTrace();
+		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && names.length > 0) {
+			try {
+				for (String currName : names) {
+					boolean currSucceed = OrbitHelper.INSTANCE.deleteNodeAttribute(domainServiceUrl, machineId, platformId, id, currName);
+					if (currSucceed) {
+						hasSucceed = true;
+					} else {
+						hasFailed = true;
+					}
 				}
+
+			} catch (Exception e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
+
 		if (hasSucceed && !hasFailed) {
 			succeed = true;
 		}
 
-		message = ServletHelper.INSTANCE.checkMessage(message);
 		if (succeed) {
-			message += (names != null && names.length > 1) ? "Attributes are deleted successfully." : "Attribute is deleted successfully.";
+			message = MessageHelper.INSTANCE.add(message, (names != null && names.length > 1) ? "Attributes are deleted successfully." : "Attribute is deleted successfully.");
 		} else {
-			message += (names != null && names.length > 1) ? "Attributes are not deleted." : "Attribute is not deleted.";
+			message = MessageHelper.INSTANCE.add(message, (names != null && names.length > 1) ? "Attributes are not deleted." : "Attribute is not deleted.");
 		}
 
 		// ---------------------------------------------------------------

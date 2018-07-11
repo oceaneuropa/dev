@@ -8,13 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.ServletHelper;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeStartServlet extends HttpServlet {
@@ -33,17 +30,17 @@ public class NodeStartServlet extends HttpServlet {
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
-		String[] ids = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
+		String[] nodeIds = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
 
 		String message = "";
-		if (machineId == null || machineId.isEmpty()) {
-			message = "'machineId' parameter is not set.";
+		if (machineId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
-		if (platformId == null || platformId.isEmpty()) {
-			message = "'platformId' parameter is not set.";
+		if (platformId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
-		if (ids == null || ids.length == 0) {
-			message = "'id' parameter is not set.";
+		if (nodeIds.length == 0) {
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
@@ -52,47 +49,32 @@ public class NodeStartServlet extends HttpServlet {
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
-		if (machineId != null && platformId != null && ids != null) {
-			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainClient != null && machineId != null && platformId != null) {
-				try {
-					PlatformConfig platformConfig = domainClient.getPlatformConfig(machineId, platformId);
-					if (platformConfig != null) {
-						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
-						if (nodeControlClient != null) {
-							for (String currId : ids) {
-								boolean currSucceed = nodeControlClient.startNode(currId);
-								if (currSucceed) {
-									hasSucceed = true;
-								} else {
-									hasFailed = true;
-								}
-							}
-						}
-					}
 
-				} catch (Exception e) {
-					message = ServletHelper.INSTANCE.checkMessage(message);
-					message += "Exception occurs: '" + e.getMessage() + "'.";
-					e.printStackTrace();
+		if (!machineId.isEmpty() && !platformId.isEmpty() && nodeIds.length > 0) {
+			try {
+				for (String currNodeId : nodeIds) {
+					boolean currSucceed = OrbitHelper.INSTANCE.startNode(domainServiceUrl, machineId, platformId, currNodeId);
+					if (currSucceed) {
+						hasSucceed = true;
+					} else {
+						hasFailed = true;
+					}
 				}
+
+			} catch (Exception e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
+
 		if (hasSucceed && !hasFailed) {
 			succeed = true;
 		}
+
 		if (succeed) {
-			if (ids != null && ids.length > 1) {
-				message = "Nodes are started successfully.";
-			} else {
-				message = "Node is started successfully.";
-			}
+			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are being started." : "Node is being started.");
 		} else {
-			if (ids != null && ids.length > 1) {
-				message = "Nodes are not started.";
-			} else {
-				message = "Node is not started.";
-			}
+			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are not started." : "Node is not started.");
 		}
 
 		// ---------------------------------------------------------------

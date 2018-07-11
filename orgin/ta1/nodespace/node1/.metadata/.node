@@ -1,0 +1,7 @@
+{"NodeDescription": {
+    "attributes": [
+        {"typeId": "platform"},
+        {"config.ini": "eclipse.ignoreApp=true\r\nosgi.noShutdown=true\r\nosgi.bundles=reference:file:eclipse.equinox/org.eclipse.equinox.simpleconfigurator_1.1.0.v20131217-1203.jar@1:start\r\norg.eclipse.equinox.simpleconfigurator.configUrl=file:../../../configurations/node/org.eclipse.equinox.simpleconfigurator/bundles.info\r\n\r\nsun.net.http.allowRestrictedHeaders=true\r\n\r\norg.osgi.service.http.port=9001\r\nlogback.configurationFile=file:/Users/yayang/origin/logback/orbit0.xml\r\n\r\norbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice\r\n\r\nplatform.home=/Users/yayang/origin/ta1\r\nnode.home=/Users/yayang/origin/ta1/nodespace/node1\r\n\r\nplatform.context_root=/orbit/v1/platform\r\norbit.host.url=http://127.0.0.1:9001\r\n\r\norbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice\r\n"}
+    ],
+    "id": "node1"
+}}

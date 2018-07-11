@@ -8,12 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.util.ServletUtil;
 
 public class PlatformAddServlet extends HttpServlet {
 
@@ -23,42 +23,37 @@ public class PlatformAddServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+
+		String machineId = ServletUtil.getParameter(request, "machineId", "");
+		String id = ServletUtil.getParameter(request, "id", "");
+		String name = ServletUtil.getParameter(request, "name", "");
+		String hostUrl = ServletUtil.getParameter(request, "hostUrl", "");
+		String theContextRoot = ServletUtil.getParameter(request, "contextRoot", "");
+
 		String message = "";
-
-		String machineId = request.getParameter("machineId");
-		String id = request.getParameter("id");
-		String name = request.getParameter("name");
-		String hostUrl = request.getParameter("hostUrl");
-		String theContextRoot = request.getParameter("contextRoot");
-
-		if (machineId == null || machineId.isEmpty()) {
-			message = "'machineId' parameter is not set.";
+		if (machineId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
-		if (id == null || id.isEmpty()) {
-			message = "'id' parameter is not set.";
+		if (id.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
 		boolean succeed = false;
-		if (machineId != null && id != null) {
-			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainMgmt != null) {
-				try {
-					AddPlatformConfigRequest addPlatformRequest = new AddPlatformConfigRequest();
-					addPlatformRequest.setPlatformId(id);
-					addPlatformRequest.setName(name);
-					addPlatformRequest.setHostURL(hostUrl);
-					addPlatformRequest.setContextRoot(theContextRoot);
 
-					succeed = domainMgmt.addPlatformConfig(machineId, addPlatformRequest);
+		if (!machineId.isEmpty() && !id.isEmpty()) {
+			try {
+				succeed = OrbitHelper.INSTANCE.addPlatformConfig(domainServiceUrl, machineId, id, name, hostUrl, theContextRoot);
 
-				} catch (ClientException e) {
-					e.printStackTrace();
-					message = e.getMessage();
-				}
+			} catch (ClientException e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
+
 		if (succeed) {
-			message = "Platform is added successfully.";
+			message = MessageHelper.INSTANCE.add(message, "Platform is added successfully.");
+		} else {
+			message = MessageHelper.INSTANCE.add(message, "Platform is not added.");
 		}
 
 		HttpSession session = request.getSession(true);

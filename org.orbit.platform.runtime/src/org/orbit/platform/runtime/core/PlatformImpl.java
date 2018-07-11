@@ -19,7 +19,6 @@ import org.orbit.platform.runtime.processes.ProcessManagerImpl;
 import org.orbit.platform.runtime.programs.ProgramsAndFeatures;
 import org.orbit.platform.runtime.programs.ProgramsAndFeaturesImpl;
 import org.orbit.platform.sdk.IPlatform;
-import org.orbit.platform.sdk.IProcessManager;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.WSClientFactory;
@@ -48,7 +47,8 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	protected ProgramsAndFeatures programsAndFreatures;
 	protected WSClientFactory wsClientFactory = new WSClientFactoryImpl();
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
-	protected ServiceRegistration<?> serviceRegistry;
+	protected ServiceRegistration<?> serviceRegistry1;
+	protected ServiceRegistration<?> serviceRegistry2;
 
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
@@ -96,7 +96,8 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 
 			// 6. Register Platform service
 			Hashtable<String, Object> props = new Hashtable<String, Object>();
-			this.serviceRegistry = bundleContext.registerService(Platform.class, this, props);
+			this.serviceRegistry1 = bundleContext.registerService(Platform.class, this, props);
+			this.serviceRegistry2 = bundleContext.registerService(IPlatform.class, this, props);
 
 			setRuntimeState(RUNTIME_STATE.STARTED);
 
@@ -132,9 +133,13 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 			setRuntimeState(RUNTIME_STATE.STOPPED);
 
 			// Unregister Platform service
-			if (this.serviceRegistry != null) {
-				this.serviceRegistry.unregister();
-				this.serviceRegistry = null;
+			if (this.serviceRegistry1 != null) {
+				this.serviceRegistry1.unregister();
+				this.serviceRegistry1 = null;
+			}
+			if (this.serviceRegistry2 != null) {
+				this.serviceRegistry2.unregister();
+				this.serviceRegistry2 = null;
 			}
 
 			this.bundleContext = null;
@@ -263,11 +268,6 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 	}
 
 	/** Implements IPlatform SDK interface */
-	@Override
-	public IProcessManager getIProcessManager() {
-		return this.processManager;
-	}
-
 	/** Implements IAdaptable interface */
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
@@ -408,4 +408,10 @@ public class PlatformImpl implements Platform, IPlatform, IAdaptable {
 // }
 //
 // return false;
+// }
+
+// IProcessManager getIProcessManager();
+// @Override
+// public IProcessManager getIProcessManager() {
+// return this.processManager;
 // }

@@ -80,7 +80,7 @@ slf4j.api,1.7.25,log/slf4j-api-1.7.25.jar,4,false
 # orbit
 org.orbit.services,1.0.0,orbit/org.orbit.services_1.0.0.jar,4,false
 org.orbit.services.http.jetty,1.0.0,orbit/org.orbit.services.http.jetty_1.0.0.jar,4,false
-org.origin.common,1.0.0,orbit/org.origin.common_1.0.0.jar,4,false
+org.origin.common,1.0.0,orbit/org.origin.common_1.0.0.jar,4,true
 
 # other (as examples)
 org.foo.hello,1.0.0.201708221012,other/org.foo.hello.jar,4,true

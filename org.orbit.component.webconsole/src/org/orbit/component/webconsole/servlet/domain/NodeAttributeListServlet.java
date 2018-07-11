@@ -8,19 +8,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.DomainIndexItemHelper;
-import org.orbit.component.webconsole.servlet.ServletHelper;
-import org.orbit.infra.api.InfraClients;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitIndexHelper;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.util.ServletUtil;
 
 public class NodeAttributeListServlet extends HttpServlet {
@@ -49,16 +45,13 @@ public class NodeAttributeListServlet extends HttpServlet {
 			}
 		}
 		if (machineId.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'machineId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
 		if (platformId.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'platformId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
 		if (id.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'id' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
@@ -68,40 +61,25 @@ public class NodeAttributeListServlet extends HttpServlet {
 		PlatformConfig platformConfig = null;
 		NodeInfo nodeInfo = null;
 		IndexItem nodeIndexItem = null;
+
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
-			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainClient != null && machineId != null && platformId != null) {
-				try {
-					machineConfig = domainClient.getMachineConfig(machineId);
-					platformConfig = domainClient.getPlatformConfig(machineId, platformId);
+			try {
+				machineConfig = OrbitHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
 
-					if (platformConfig != null) {
-						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
+				platformConfig = OrbitHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
 
-						if (nodeControlClient != null) {
-							nodeInfo = nodeControlClient.getNode(id);
-						}
-					}
+				nodeInfo = OrbitHelper.INSTANCE.getNode(domainServiceUrl, machineId, platformId, id);
 
-				} catch (Exception e) {
-					message = ServletHelper.INSTANCE.checkMessage(message);
-					message += "Exception occurs: '" + e.getMessage() + "'.";
-					e.printStackTrace();
-				}
-			}
+				nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
 
-			if (nodeInfo != null) {
-				IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
-				if (indexService != null) {
-					String nodeId = nodeInfo.getId();
-					nodeIndexItem = DomainIndexItemHelper.INSTANCE.getNodeIndexItem(indexService, platformId, nodeId);
-				}
+			} catch (Exception e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
 
 		if (nodeInfo == null) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "Node with id '" + id + "' is not found.";
+			message = MessageHelper.INSTANCE.add(message, "Node with id '" + id + "' is not found.");
 		}
 
 		// ---------------------------------------------------------------

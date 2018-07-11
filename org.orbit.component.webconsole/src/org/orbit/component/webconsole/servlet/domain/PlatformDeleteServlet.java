@@ -8,62 +8,64 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.util.ServletUtil;
 
 public class PlatformDeleteServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4244239907467552141L;
 
+	private static String[] EMPTY_IDS = new String[] {};
+
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+
+		String machineId = ServletUtil.getParameter(request, "machineId", "");
+		String[] ids = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
+
 		String message = "";
-
-		String machineId = request.getParameter("machineId");
-		String[] ids = request.getParameterValues("id");
-
-		if (machineId == null || machineId.isEmpty()) {
-			message = "'machineId' parameter is not set.";
+		if (machineId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
-		if (ids == null || ids.length == 0) {
-			message = "'id' parameter is not set.";
+		if (ids.length == 0) {
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
-		if (machineId != null && ids != null) {
-			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainMgmt != null) {
-				try {
-					for (String currId : ids) {
-						boolean currSucceed = domainMgmt.removePlatformConfig(machineId, currId);
-						if (currSucceed) {
-							hasSucceed = true;
-						} else {
-							hasFailed = true;
-						}
+
+		if (!machineId.isEmpty() && ids.length > 0) {
+			try {
+				for (String currId : ids) {
+					boolean currSucceed = OrbitHelper.INSTANCE.removePlatformConfig(domainServiceUrl, machineId, currId);
+					if (currSucceed) {
+						hasSucceed = true;
+					} else {
+						hasFailed = true;
 					}
-				} catch (ClientException e) {
-					e.printStackTrace();
-					message = e.getMessage();
 				}
+
+			} catch (ClientException e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
+
 		if (hasSucceed && !hasFailed) {
 			succeed = true;
 		}
+
 		if (succeed) {
-			if (ids != null && ids.length > 1) {
-				message = "Platforms are deleted successfully.";
-			} else {
-				message = "Platform is deleted successfully.";
-			}
+			MessageHelper.INSTANCE.add(message, (ids.length > 1) ? "Platforms are deleted successfully." : "Platform is deleted successfully.");
+		} else {
+			MessageHelper.INSTANCE.add(message, (ids.length > 1) ? "Platforms are not deleted." : "Platform is not deleted.");
 		}
 
 		HttpSession session = request.getSession(true);

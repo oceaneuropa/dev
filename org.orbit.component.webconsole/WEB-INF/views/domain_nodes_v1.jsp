@@ -55,8 +55,8 @@
 				<tr>
 					<th class="th1" width="11"></th>
 					<th class="th1" width="100">Id</th>
-					<th class="th1" width="150">Name</th>
-					<th class="th1" width="150">Path</th>
+					<th class="th1" width="120">Name</th>
+					<th class="th1" width="120">Path</th>
 					<th class="th1" width="100">Status</th>
 					<th class="th1" width="160">Actions</th>
 				</tr>

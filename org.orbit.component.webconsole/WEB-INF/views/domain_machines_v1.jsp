@@ -42,10 +42,10 @@
 			<form id="main_list" method="post" action="<%=contextRoot + "/domain/machinedelete"%>">
 			<tr>
 				<th class="th1" width="11"></th>
-				<th class="th1" width="180">Id</th>
-				<th class="th1" width="200">Name</th>
-				<th class="th1" width="200">IP Address</th>
-				<th class="th1" width="100">Actions</th>
+				<th class="th1" width="160">Id</th>
+				<th class="th1" width="160">Name</th>
+				<th class="th1" width="160">IP Address</th>
+				<th class="th1" width="160">Actions</th>
 			</tr>
 			<%
 				if (machineConfigs.length == 0) {

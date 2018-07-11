@@ -11,6 +11,20 @@ import org.origin.common.adapter.IAdaptable;
 
 public interface IPlatform extends IAdaptable {
 
-	IProcessManager getIProcessManager();
+	String getId();
+
+	String getName();
+
+	String getVersion();
+
+	String getParentId();
+
+	String getType();
+
+	String getHostURL();
+
+	String getContextRoot();
+
+	String getHome();
 
 }

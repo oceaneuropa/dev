@@ -8,16 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.util.ServletUtil;
 
 public class MachineAddServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -8369457157390475521L;
+	private static final long serialVersionUID = 4041603008346216011L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -25,31 +25,26 @@ public class MachineAddServlet extends HttpServlet {
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 		String message = "";
 
-		String id = request.getParameter("id");
-		String name = request.getParameter("name");
-		String ip = request.getParameter("ip");
+		String id = ServletUtil.getParameter(request, "id", "");
+		String name = ServletUtil.getParameter(request, "name", "");
+		String ip = ServletUtil.getParameter(request, "ip", "");
 
-		if (id == null || id.isEmpty()) {
+		if (id.isEmpty()) {
 			message = "'id' parameter is not set.";
 		}
 
 		boolean succeed = false;
-		if (id != null) {
-			DomainManagementClient domainMgmt = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainMgmt != null) {
-				try {
-					AddMachineConfigRequest addMachineRequest = new AddMachineConfigRequest();
-					addMachineRequest.setMachineId(id);
-					addMachineRequest.setName(name);
-					addMachineRequest.setIpAddress(ip);
-					succeed = domainMgmt.addMachineConfig(addMachineRequest);
 
-				} catch (ClientException e) {
-					e.printStackTrace();
-					message = e.getMessage();
-				}
+		if (!id.isEmpty()) {
+			try {
+				succeed = OrbitHelper.INSTANCE.addMachineConfig(domainServiceUrl, id, name, ip);
+
+			} catch (ClientException e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
+
 		if (succeed) {
 			message = "Machine is added successfully.";
 		}

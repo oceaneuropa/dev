@@ -11,8 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.common.ws.OrbitConstants;
-import org.orbit.component.runtime.tier3.nodecontrol.util.NodeHelper;
-import org.orbit.component.runtime.tier3.nodecontrol.util.PlatformSetupUtil;
+import org.orbit.component.runtime.util.LaunchServiceHelper;
+import org.orbit.component.runtime.util.OrbitClientHelper;
+import org.orbit.component.runtime.util.OrbitIndexHelper;
+import org.orbit.component.runtime.util.PlatformSetupUtil;
+import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.IPlatform;
 import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchInstance;
 import org.origin.common.launch.LaunchService;
@@ -23,6 +31,7 @@ import org.origin.common.resources.node.INode;
 import org.origin.common.resources.node.NodeDescription;
 import org.origin.common.resources.util.WorkspaceHelper;
 import org.origin.common.resources.util.WorkspaceUtil;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
 import org.origin.common.rest.util.LifecycleAware;
@@ -65,6 +74,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			properties.putAll(this.initProperties);
 		}
 
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_INDEX_SERVICE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.PLATFORM_HOME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.NODESPACE_LOCATION);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
@@ -107,6 +117,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			properties = new HashMap<Object, Object>();
 		}
 
+		String indexServiceUrl = (String) properties.get(OrbitConstants.ORBIT_INDEX_SERVICE_URL);
 		String platformHome = (String) properties.get(OrbitConstants.PLATFORM_HOME);
 		String nodespaceHome = (String) properties.get(OrbitConstants.NODESPACE_LOCATION);
 		String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
@@ -119,6 +130,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			System.out.println();
 			System.out.println("Config properties:");
 			System.out.println("-----------------------------------------------------");
+			System.out.println(OrbitConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
 			System.out.println(OrbitConstants.PLATFORM_HOME + " = " + platformHome);
 			System.out.println(OrbitConstants.NODESPACE_LOCATION + " = " + nodespaceHome);
 			System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
@@ -158,22 +170,27 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	}
 
 	@Override
-	public String getHome() {
-		String home = (String) this.properties.get(OrbitConstants.PLATFORM_HOME);
-		return home;
+	public String getPlatformHome() {
+		String platformHome = (String) this.properties.get(OrbitConstants.PLATFORM_HOME);
+		return platformHome;
 	}
 
 	@Override
 	public String getNodespaceLocation() {
 		String nodespaceLocation = (String) this.properties.get(OrbitConstants.NODESPACE_LOCATION);
 		if (nodespaceLocation == null || nodespaceLocation.isEmpty()) {
-			String home = getHome();
+			String home = getPlatformHome();
 			if (!home.endsWith("/")) {
 				home += "/";
 			}
 			nodespaceLocation = home + "nodespace";
 		}
 		return nodespaceLocation;
+	}
+
+	protected String getIndexServiceURL() {
+		String indexServiceUrl = (String) this.properties.get(OrbitConstants.ORBIT_INDEX_SERVICE_URL);
+		return indexServiceUrl;
 	}
 
 	@Override
@@ -270,7 +287,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public synchronized boolean startNode(String id) throws IOException {
-		LaunchService launchService = NodeHelper.INSTANCE.getLaunchService();
+		LaunchService launchService = LaunchServiceHelper.INSTANCE.getLaunchService();
 		if (launchService == null) {
 			LOG.error("LaunchService is null.");
 			return false;
@@ -281,9 +298,20 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			return false;
 		}
 
-		// 1. Create launch configuration
-		String launchTypeId = NodeHelper.INSTANCE.getLaunchTypeId();
-		String launchConfigName = NodeHelper.INSTANCE.getLaunchConfigName(id);
+		// String launchInstanceId = this.nodeIdToLaunchInstasnceIdMap.remove(id);
+		// if (launchInstanceId != null) {
+		// LOG.error("Node with id '" + id + "' is already started.");
+		// return false;
+		// }
+
+		// 1. Create {node_path}/bin/start_node.sh file and {node_path}/configuration/config.ini file
+		// (Ideally should use resource builder to generate both when .node file is changed. Then only need to trigger a build here.)
+		LaunchServiceHelper.INSTANCE.generateStartNodeScript(node);
+		LaunchServiceHelper.INSTANCE.generateConfigIni(node);
+
+		// 2. Create launch configuration
+		String launchTypeId = LaunchServiceHelper.INSTANCE.getLaunchTypeId();
+		String launchConfigName = LaunchServiceHelper.INSTANCE.getLaunchConfigName(id);
 
 		String launcherId = ScriptLauncher.ID;
 		String nodespaceLocation = getNodespaceLocation();
@@ -299,7 +327,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		launchConfig.setAttribute(ScriptLauncher.START_SCRIPT_LOCATION, startNodeScriptLocation);
 		launchConfig.save();
 
-		// 2. Launch the node with launch configuration
+		// 3. Launch the node with launch configuration
 		LaunchInstance launchInstance = launchConfig.launch();
 		if (launchInstance != null) {
 			this.nodeIdToLaunchInstasnceIdMap.put(id, launchInstance.getId());
@@ -311,11 +339,60 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public synchronized boolean stopNode(String id) throws IOException {
-		INode node = getNode(id);
-		if (node == null) {
+		LaunchService launchService = LaunchServiceHelper.INSTANCE.getLaunchService();
+		if (launchService == null) {
+			LOG.error("LaunchService is null.");
 			return false;
 		}
-		return false;
+		INode node = getNode(id);
+		if (node == null) {
+			LOG.error("Node with id '" + id + "' is not found.");
+			return false;
+		}
+
+		// 1. Terminate launch instance
+		String launchInstanceId = this.nodeIdToLaunchInstasnceIdMap.remove(id);
+		if (launchInstanceId != null) {
+			LaunchInstance launchInstance = launchService.getLaunchInstance(launchInstanceId);
+			if (launchInstance != null) {
+				if (launchInstance.canTerminate()) {
+					boolean isLaunchInstanceTerminated = launchInstance.terminate();
+					if (isLaunchInstanceTerminated) {
+						LOG.info("LaunchInstance with id '" + launchInstanceId + "' is terminated.");
+					} else {
+						LOG.error("LaunchInstance with id '" + launchInstanceId + "' is not terminated.");
+					}
+				} else {
+					LOG.error("LaunchInstance with id '" + launchInstanceId + "' cannot be terminated.");
+				}
+			} else {
+				LOG.error("LaunchInstance with id '" + launchInstanceId + "' is not found.");
+			}
+		}
+
+		// 2. Direct shutdown node platform
+		PlatformClient nodePlatformClient = null;
+		IPlatform currPlatform = Activator.getInstance().getPlatform();
+		String indexServiceUrl = getIndexServiceURL();
+		IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
+		if (currPlatform != null && indexService != null) {
+			String platformId = currPlatform.getId();
+			IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
+			if (nodeIndexItem != null) {
+				nodePlatformClient = OrbitClientHelper.INSTANCE.getNodePlatformClient(nodeIndexItem);
+			}
+		}
+
+		boolean succeed = false;
+		if (nodePlatformClient != null) {
+			try {
+				nodePlatformClient.shutdown(10 * 1000, false);
+				succeed = true;
+			} catch (ClientException e) {
+				e.printStackTrace();
+			}
+		}
+		return succeed;
 	}
 
 	@Override

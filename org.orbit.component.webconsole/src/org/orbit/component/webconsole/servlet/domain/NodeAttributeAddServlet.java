@@ -8,13 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.ServletHelper;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeAttributeAddServlet extends HttpServlet {
@@ -38,20 +35,16 @@ public class NodeAttributeAddServlet extends HttpServlet {
 
 		String message = "";
 		if (machineId.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'machineId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
 		if (platformId.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'platformId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
 		if (id.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'id' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 		if (name.isEmpty()) {
-			message = ServletHelper.INSTANCE.checkMessage(message);
-			message += "'name' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'name' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
@@ -59,29 +52,19 @@ public class NodeAttributeAddServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		boolean succeed = false;
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && !name.isEmpty()) {
-			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainClient != null && machineId != null && platformId != null) {
-				try {
-					PlatformConfig platformConfig = domainClient.getPlatformConfig(machineId, platformId);
-					if (platformConfig != null) {
-						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
-						if (nodeControlClient != null) {
-							succeed = nodeControlClient.addNodeAttribute(id, name, value);
-						}
-					}
-				} catch (Exception e) {
-					message = ServletHelper.INSTANCE.checkMessage(message);
-					message += "Exception occurs: '" + e.getMessage() + "'.";
-					e.printStackTrace();
-				}
+			try {
+				succeed = OrbitHelper.INSTANCE.addNodeAttribute(domainServiceUrl, machineId, platformId, id, name, value);
+
+			} catch (Exception e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
 
-		message = ServletHelper.INSTANCE.checkMessage(message);
 		if (succeed) {
-			message += "Attribute is added successfully.";
+			message = MessageHelper.INSTANCE.add(message, "Attribute is added successfully.");
 		} else {
-			message += "Attribute is not added.";
+			message = MessageHelper.INSTANCE.add(message, "Attribute is not added.");
 		}
 
 		// ---------------------------------------------------------------

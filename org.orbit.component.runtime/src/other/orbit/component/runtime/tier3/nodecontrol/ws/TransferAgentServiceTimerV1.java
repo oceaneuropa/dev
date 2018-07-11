@@ -31,7 +31,7 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String taHome = service.getHome();
+		String taHome = service.getPlatformHome();
 
 		this.indexItem = indexProvider.getIndexItem(OrbitConstants.NODE_CONTROL_INDEXER_ID, OrbitConstants.NODE_CONTROL_TYPE, name);
 		if (this.indexItem == null) {

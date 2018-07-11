@@ -44,7 +44,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String taHome = service.getHome();
+		String taHome = service.getPlatformHome();
 
 		Date now = new Date();
 		Date expire = DateUtil.addSeconds(now, 30);
@@ -66,7 +66,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String platformHome = service.getHome();
+		String platformHome = service.getPlatformHome();
 
 		Date now = new Date();
 		Date expire = DateUtil.addSeconds(now, 30);

@@ -1,1 +1,1 @@
-java -jar /Users/ocean/origin/orbit1/components/common/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar -configuration /Users/ocean/origin/orbit1/workspaces/workspace1/project1/node11/configuration -console
+java -jar /Users/yayang/origin/orbit1/components/common/plugins/org.eclipse.osgi_3.10.100.v20150529-1857.jar -configuration /Users/yayang/origin/orbit1/workspaces/workspace1/project1/node11/configuration -console

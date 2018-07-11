@@ -1,7 +1,6 @@
 package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,19 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.DomainIndexItemHelper;
-import org.orbit.component.webconsole.servlet.ServletHelper;
-import org.orbit.infra.api.InfraClients;
-import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.platform.api.Clients;
-import org.orbit.platform.api.PlatformClient;
-import org.orbit.platform.api.PlatformConstants;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeStopServlet extends HttpServlet {
@@ -36,22 +26,21 @@ public class NodeStopServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
-		String[] ids = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
+		String[] nodeIds = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
 
 		String message = "";
 		if (machineId.isEmpty()) {
-			message = "'machineId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
 		if (platformId.isEmpty()) {
-			message = "'platformId' parameter is not set.";
+			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
-		if (ids.length == 0) {
-			message = "'id' parameter is not set.";
+		if (nodeIds.length == 0) {
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
@@ -61,66 +50,35 @@ public class NodeStopServlet extends HttpServlet {
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 
-		if (!machineId.isEmpty() && !platformId.isEmpty() && ids.length > 0) {
-			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
-			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-
-			if (domainClient != null && indexService != null && machineId != null && platformId != null) {
-				try {
-					PlatformConfig platformConfig = domainClient.getPlatformConfig(machineId, platformId);
-
-					if (platformConfig != null) {
-						Map<String, IndexItem> nodeIdToIndexItem = DomainIndexItemHelper.INSTANCE.getPlatformIdToIndexItem(indexService, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
-
-						for (String currNodeId : ids) {
-							PlatformClient platformClient = null;
-
-							IndexItem indexItem = nodeIdToIndexItem.get(currNodeId);
-							if (indexItem != null) {
-								String platformHostURL = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
-								String platformContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
-								if (platformHostURL != null && platformContextRoot != null) {
-									String url = platformHostURL;
-									if (!url.endsWith("/") && !platformContextRoot.startsWith("/")) {
-										url += "/";
-									}
-									url += platformContextRoot;
-									platformClient = Clients.getInstance().getPlatformClient(url);
-								}
-							}
-
-							if (platformClient != null) {
-								platformClient.shutdown(10 * 1000, false);
-								hasSucceed = true;
-
-							} else {
-								hasFailed = true;
-							}
+		if (!machineId.isEmpty() && !platformId.isEmpty() && nodeIds.length > 0) {
+			try {
+				for (String currNodeId : nodeIds) {
+					try {
+						boolean currSucceed = OrbitHelper.INSTANCE.stopNode(domainServiceUrl, machineId, platformId, currNodeId);
+						if (currSucceed) {
+							hasSucceed = true;
+						} else {
+							hasFailed = true;
 						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-
-				} catch (Exception e) {
-					message = ServletHelper.INSTANCE.checkMessage(message);
-					message += "Exception occurs: '" + e.getMessage() + "'.";
-					e.printStackTrace();
 				}
+
+			} catch (Exception e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
+
 		if (hasSucceed && !hasFailed) {
 			succeed = true;
 		}
+
 		if (succeed) {
-			if (ids != null && ids.length > 1) {
-				message = "Nodes are stopped.";
-			} else {
-				message = "Node is stopped.";
-			}
+			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are stopped." : "Node is stopped.");
 		} else {
-			if (ids != null && ids.length > 1) {
-				message = "Nodes are not stopped.";
-			} else {
-				message = "Node is not stopped.";
-			}
+			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are not stopped." : "Node is not stopped.");
 		}
 
 		// ---------------------------------------------------------------
@@ -134,6 +92,8 @@ public class NodeStopServlet extends HttpServlet {
 
 }
 
+// String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
+
 // NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
 // if (nodeControlClient != null) {
 // for (String currNodeId : ids) {
@@ -144,4 +104,20 @@ public class NodeStopServlet extends HttpServlet {
 // hasFailed = true;
 // }
 // }
+// }
+
+// boolean launchInstanceShutdown = true;
+// boolean directShutdown = false;
+// try {
+// if (directShutdown) {
+// PlatformClient nodePlatformClient = ClientHelper.INSTANCE.getNodePlatformClient(nodeIdToIndexItem, currNodeId);
+// if (nodePlatformClient != null) {
+// nodePlatformClient.shutdown(10 * 1000, false);
+// hasSucceed = true;
+// } else {
+// hasFailed = true;
+// }
+// }
+// } catch (Exception e) {
+// e.printStackTrace();
 // }

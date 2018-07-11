@@ -8,13 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.ServletHelper;
+import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeCreateServlet extends HttpServlet {
@@ -37,42 +34,33 @@ public class NodeCreateServlet extends HttpServlet {
 		String typeId = ServletUtil.getParameter(request, "typeId", "");
 
 		String message = "";
-		if (machineId == null || machineId.isEmpty()) {
-			message = "'machineId' parameter is not set.";
+		if (machineId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
-		if (platformId == null || platformId.isEmpty()) {
-			message = "'platformId' parameter is not set.";
+		if (platformId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
-		if (id == null || id.isEmpty()) {
-			message = "'id' parameter is not set.";
+		if (id.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
 		boolean succeed = false;
-		if (machineId != null && platformId != null && id != null && !id.isEmpty()) {
-			DomainManagementClient domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
-			if (domainClient != null && machineId != null && platformId != null) {
-				try {
-					PlatformConfig platformConfig = domainClient.getPlatformConfig(machineId, platformId);
-					if (platformConfig != null) {
-						NodeControlClient nodeControlClient = ServletHelper.INSTANCE.getNodeControlClient(platformConfig);
 
-						if (nodeControlClient != null) {
-							succeed = nodeControlClient.createNode(id, name, typeId);
-						}
-					}
+		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
+			try {
+				succeed = OrbitHelper.INSTANCE.createNode(domainServiceUrl, machineId, platformId, id, name, typeId);
 
-				} catch (Exception e) {
-					message = ServletHelper.INSTANCE.checkMessage(message);
-					message += "Exception occurs: '" + e.getMessage() + "'.";
-					e.printStackTrace();
-				}
+			} catch (Exception e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
 		}
+
 		if (succeed) {
-			message = "Node is created successfully.";
+			message = MessageHelper.INSTANCE.add(message, "Node is created successfully.");
 		}
 
 		// ---------------------------------------------------------------
