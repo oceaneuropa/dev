@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Foo Editor
-Bundle-SymbolicName: org.app.foo.editor
-Bundle-Version: 2.0.1
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Bar
-

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<launchConfiguration type="node">
-<stringAttribute key="launcherId" value="org.origin.launch.ScriptLauncher"/>
-<stringAttribute key="workingDirectoryLocation" value="/Users/yayang/origin/ta1/nodespace/node3"/>
-<stringAttribute key="startScriptLocation" value="/Users/yayang/origin/ta1/nodespace/node3/bin/start_node.sh"/>
-</launchConfiguration>

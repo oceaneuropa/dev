@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<project default="callSub">
-    <target name="callSub">
-        <ant antfile="sub.xml" target="showMessage" inheritAll="false">
-            <property name="message" value="Hello from parent build"/>
-        </ant>
-    </target>
-</project>

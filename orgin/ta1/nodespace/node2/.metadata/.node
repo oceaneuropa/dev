@@ -1,7 +1,0 @@
-{"NodeDescription": {
-    "attributes": [
-        {"typeId": "platform"},
-        {"config.ini": "org.osgi.service.http.port=9002\r\norbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice\r\norbit.host.url=http://127.0.0.1:9002\r\n"}
-    ],
-    "id": "node2"
-}}

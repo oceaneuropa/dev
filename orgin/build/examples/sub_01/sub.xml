@@ -1,6 +1,0 @@
-<?xml version="1.0"?>
-<project default="showMessage">
-    <target name="showMessage">
-        <echo message="Message=${message}"/>
-    </target>
-</project>
