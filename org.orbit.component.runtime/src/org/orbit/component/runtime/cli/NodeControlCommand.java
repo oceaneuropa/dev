@@ -55,7 +55,7 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 				new String[] { //
 						// node
 						"lnodes", "lnode", "create_node", "delete_node", "set_node_attr", "remove_node_attr", "start_node", "stop_node" //
-		});
+				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
@@ -198,7 +198,7 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 
 		try {
 			NodeControlService service = getNodeControlService();
-			boolean succeed = service.setNodeAttribute(id, attrName, attrValue);
+			boolean succeed = service.addAttribute(id, attrName, attrValue);
 
 			if (succeed) {
 				System.out.println("Node attribute is successfully updated.");
@@ -222,7 +222,7 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 
 		try {
 			NodeControlService service = getNodeControlService();
-			boolean succeed = service.setNodeAttribute(id, attrName, null);
+			boolean succeed = service.deleteAttribute(id, attrName);
 
 			if (succeed) {
 				System.out.println("Node attribute is successfully removed.");

@@ -62,7 +62,7 @@ public class PlatformListServlet extends HttpServlet {
 						String runtimeState = "";
 						IndexItem indexItem = platformIdToIndexItem.get(platformId);
 						if (indexItem != null) {
-							isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
+							isActivate = IndexItemHelper.INSTANCE.isLastHeartbeatWithinSeconds(indexItem, 20);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 						}
 						platformConfig.getRuntimeStatus().setActivate(isActivate);

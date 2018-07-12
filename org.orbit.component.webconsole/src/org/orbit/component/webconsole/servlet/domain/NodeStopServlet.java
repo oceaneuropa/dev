@@ -51,23 +51,18 @@ public class NodeStopServlet extends HttpServlet {
 		boolean hasFailed = false;
 
 		if (!machineId.isEmpty() && !platformId.isEmpty() && nodeIds.length > 0) {
-			try {
-				for (String currNodeId : nodeIds) {
-					try {
-						boolean currSucceed = OrbitHelper.INSTANCE.stopNode(domainServiceUrl, machineId, platformId, currNodeId);
-						if (currSucceed) {
-							hasSucceed = true;
-						} else {
-							hasFailed = true;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
+			for (String currNodeId : nodeIds) {
+				try {
+					boolean currSucceed = OrbitHelper.INSTANCE.stopNode(domainServiceUrl, machineId, platformId, currNodeId);
+					if (currSucceed) {
+						hasSucceed = true;
+					} else {
+						hasFailed = true;
 					}
+				} catch (Exception e) {
+					message = MessageHelper.INSTANCE.add(message, e.getMessage());
+					e.printStackTrace();
 				}
-
-			} catch (Exception e) {
-				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
-				e.printStackTrace();
 			}
 		}
 

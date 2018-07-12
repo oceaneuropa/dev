@@ -34,7 +34,7 @@ public class MessageHelper {
 		}
 
 		if (!message.isEmpty()) {
-			message += " ";
+			message += "<br/>";
 		}
 		message += newMessage;
 

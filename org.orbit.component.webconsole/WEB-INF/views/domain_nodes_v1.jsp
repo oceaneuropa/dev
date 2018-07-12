@@ -53,7 +53,9 @@
 				<input type="hidden" name="machineId" value="<%=machineId%>"> 
 				<input type="hidden" name="platformId" value="<%=platformId%>">
 				<tr>
-					<th class="th1" width="11"></th>
+					<th class="th1" width="11">
+						<input type="checkbox" onClick="toggleSelection(this, 'id')" />
+					</th>
 					<th class="th1" width="100">Id</th>
 					<th class="th1" width="120">Name</th>
 					<th class="th1" width="120">Path</th>

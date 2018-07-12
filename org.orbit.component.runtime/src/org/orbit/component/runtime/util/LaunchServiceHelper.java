@@ -91,13 +91,10 @@ public class LaunchServiceHelper {
 	 * @return
 	 * @throws IOException
 	 */
-	public boolean generateConfigIni(INode node) throws IOException {
+	public boolean generateConfigIni(INode node, Map<Object, Object> properties) throws IOException {
 		if (node == null) {
 			return false;
 		}
-
-		// String port = "9003";
-		// String nodeFullPath = node.getFullPath().toString();
 
 		// Example config.ini
 		// -----------------------------------------------------------------------------------------------------------------------------------------
@@ -157,11 +154,37 @@ public class LaunchServiceHelper {
 		// orbit.index_service.url=http://127.0.0.1:8000/orbit/v1/indexservice
 		// orbit.host.url=http://127.0.0.1:9003
 		// -----------------------------------------------------------------------------------------------------------------------------------------
+
+		// Example Node attributes (for node4)
+		// -----------------------------------------------------------------------------------------------------------------------------------------
+		// org.osgi.service.http.port=9004
+		// orbit.host.url=http://127.0.0.1:9004
+		// -----------------------------------------------------------------------------------------------------------------------------------------
+
+		// Example Node attributes (for node5)
+		// -----------------------------------------------------------------------------------------------------------------------------------------
+		// org.osgi.service.http.port=9005
+		// orbit.host.url=http://127.0.0.1:9005
+		// -----------------------------------------------------------------------------------------------------------------------------------------
 		IPlatform platform = Activator.getInstance().getPlatform();
 		String platformId = platform.getId();
 		String platformHome = platform.getHome();
 
 		Map<String, String> allConfigs = new TreeMap<String, String>();
+
+		if (properties != null) {
+			for (Iterator<Object> itor = properties.keySet().iterator(); itor.hasNext();) {
+				Object propName = itor.next();
+				Object propValue = properties.get(propName);
+				if (propName instanceof String && propValue != null) {
+					// configuration for the components of the server platform should not be used by the node
+					if (((String) propName).startsWith("component.")) {
+						continue;
+					}
+					allConfigs.put((String) propName, propValue.toString());
+				}
+			}
+		}
 
 		allConfigs.put("eclipse.ignoreApp", "true");
 		allConfigs.put("osgi.noShutdown", "true");

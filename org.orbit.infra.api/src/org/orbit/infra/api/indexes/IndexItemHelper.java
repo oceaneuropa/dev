@@ -30,11 +30,11 @@ public class IndexItemHelper {
 	 * @param withinSeconds
 	 * @return
 	 */
-	public boolean isUpdatedWithinSeconds(IndexItem indexItem, long withinSeconds) {
-		Date lastUpdateTime = getLastUpdateTime(indexItem);
+	public boolean isLastHeartbeatWithinSeconds(IndexItem indexItem, long withinSeconds) {
+		Date lastHeartbeatTime = getLastUpdateTime(indexItem);
 		Date now = new Date();
-		if (lastUpdateTime != null) {
-			long milliseconds = now.getTime() - lastUpdateTime.getTime();
+		if (lastHeartbeatTime != null) {
+			long milliseconds = now.getTime() - lastHeartbeatTime.getTime();
 			long withinMilliseconds = withinSeconds * 1000;
 			if (milliseconds <= withinMilliseconds) {
 				return true;

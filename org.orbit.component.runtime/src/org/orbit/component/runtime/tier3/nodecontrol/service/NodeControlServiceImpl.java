@@ -17,13 +17,17 @@ import org.orbit.component.runtime.util.OrbitIndexHelper;
 import org.orbit.component.runtime.util.PlatformSetupUtil;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.sdk.Activator;
 import org.orbit.platform.sdk.IPlatform;
 import org.origin.common.launch.LaunchConfig;
+import org.origin.common.launch.LaunchConstants;
 import org.origin.common.launch.LaunchInstance;
 import org.origin.common.launch.LaunchService;
+import org.origin.common.launch.launcher.JavaLauncher;
 import org.origin.common.launch.launcher.ScriptLauncher;
 import org.origin.common.resources.IWorkspace;
 import org.origin.common.resources.ResourcesFactory;
@@ -54,6 +58,8 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	protected ServiceRegistration<?> serviceRegistry;
 	protected IWorkspace workspace;
 	protected WSEditPolicies wsEditPolicies;
+
+	protected boolean useScriptLaunch = false;
 
 	/**
 	 * 
@@ -262,138 +268,13 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		return node;
 	}
 
-	@Override
-	public boolean setNodeAttribute(String id, String attrName, String attrValue) throws IOException {
-		IWorkspace workspace = getWorkspace();
-		return WorkspaceUtil.INSTANCE.setNodeAttribute(workspace, id, attrName, attrValue);
-	}
+	// boolean setNodeAttribute(String id, String attrName, String attrValue) throws IOException;
 
-	@Override
-	public boolean deleteNode(String id) throws IOException {
-		IWorkspace workspace = getWorkspace();
-		boolean succeed = WorkspaceUtil.INSTANCE.deleteNode(workspace, id);
-		return succeed;
-	}
-
-	protected String getNodeLocation(String nodespaceLocation, INode node) {
-		if (!nodespaceLocation.endsWith("/")) {
-			nodespaceLocation += "/";
-		}
-		String nodeLocation = nodespaceLocation + node.getName();
-		return nodeLocation;
-	}
-
-	protected Map<String, String> nodeIdToLaunchInstasnceIdMap = new HashMap<String, String>();
-
-	@Override
-	public synchronized boolean startNode(String id) throws IOException {
-		LaunchService launchService = LaunchServiceHelper.INSTANCE.getLaunchService();
-		if (launchService == null) {
-			LOG.error("LaunchService is null.");
-			return false;
-		}
-		INode node = getNode(id);
-		if (node == null) {
-			LOG.error("Node with id '" + id + "' is not found.");
-			return false;
-		}
-
-		// String launchInstanceId = this.nodeIdToLaunchInstasnceIdMap.remove(id);
-		// if (launchInstanceId != null) {
-		// LOG.error("Node with id '" + id + "' is already started.");
-		// return false;
-		// }
-
-		// 1. Create {node_path}/bin/start_node.sh file and {node_path}/configuration/config.ini file
-		// (Ideally should use resource builder to generate both when .node file is changed. Then only need to trigger a build here.)
-		LaunchServiceHelper.INSTANCE.generateStartNodeScript(node);
-		LaunchServiceHelper.INSTANCE.generateConfigIni(node);
-
-		// 2. Create launch configuration
-		String launchTypeId = LaunchServiceHelper.INSTANCE.getLaunchTypeId();
-		String launchConfigName = LaunchServiceHelper.INSTANCE.getLaunchConfigName(id);
-
-		String launcherId = ScriptLauncher.ID;
-		String nodespaceLocation = getNodespaceLocation();
-		String nodeLocation = getNodeLocation(nodespaceLocation, node);
-		String startNodeScriptLocation = nodeLocation + "/bin/start_node.sh";
-
-		LaunchConfig launchConfig = launchService.getLaunchConfiguration(launchTypeId, launchConfigName);
-		if (launchConfig == null) {
-			launchConfig = launchService.createLaunchConfiguration(launchTypeId, launchConfigName);
-		}
-		launchConfig.setAttribute(LaunchConfig.LAUNCHER_ID, launcherId);
-		launchConfig.setAttribute(ScriptLauncher.WORKING_DIRECTORY_LOCATION, nodeLocation);
-		launchConfig.setAttribute(ScriptLauncher.START_SCRIPT_LOCATION, startNodeScriptLocation);
-		launchConfig.save();
-
-		// 3. Launch the node with launch configuration
-		LaunchInstance launchInstance = launchConfig.launch();
-		if (launchInstance != null) {
-			this.nodeIdToLaunchInstasnceIdMap.put(id, launchInstance.getId());
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
-	public synchronized boolean stopNode(String id) throws IOException {
-		LaunchService launchService = LaunchServiceHelper.INSTANCE.getLaunchService();
-		if (launchService == null) {
-			LOG.error("LaunchService is null.");
-			return false;
-		}
-		INode node = getNode(id);
-		if (node == null) {
-			LOG.error("Node with id '" + id + "' is not found.");
-			return false;
-		}
-
-		// 1. Terminate launch instance
-		String launchInstanceId = this.nodeIdToLaunchInstasnceIdMap.remove(id);
-		if (launchInstanceId != null) {
-			LaunchInstance launchInstance = launchService.getLaunchInstance(launchInstanceId);
-			if (launchInstance != null) {
-				if (launchInstance.canTerminate()) {
-					boolean isLaunchInstanceTerminated = launchInstance.terminate();
-					if (isLaunchInstanceTerminated) {
-						LOG.info("LaunchInstance with id '" + launchInstanceId + "' is terminated.");
-					} else {
-						LOG.error("LaunchInstance with id '" + launchInstanceId + "' is not terminated.");
-					}
-				} else {
-					LOG.error("LaunchInstance with id '" + launchInstanceId + "' cannot be terminated.");
-				}
-			} else {
-				LOG.error("LaunchInstance with id '" + launchInstanceId + "' is not found.");
-			}
-		}
-
-		// 2. Direct shutdown node platform
-		PlatformClient nodePlatformClient = null;
-		IPlatform currPlatform = Activator.getInstance().getPlatform();
-		String indexServiceUrl = getIndexServiceURL();
-		IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
-		if (currPlatform != null && indexService != null) {
-			String platformId = currPlatform.getId();
-			IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
-			if (nodeIndexItem != null) {
-				nodePlatformClient = OrbitClientHelper.INSTANCE.getNodePlatformClient(nodeIndexItem);
-			}
-		}
-
-		boolean succeed = false;
-		if (nodePlatformClient != null) {
-			try {
-				nodePlatformClient.shutdown(10 * 1000, false);
-				succeed = true;
-			} catch (ClientException e) {
-				e.printStackTrace();
-			}
-		}
-		return succeed;
-	}
+	// @Override
+	// public boolean setNodeAttribute(String id, String attrName, String attrValue) throws IOException {
+	// IWorkspace workspace = getWorkspace();
+	// return WorkspaceUtil.INSTANCE.setNodeAttribute(workspace, id, attrName, attrValue);
+	// }
 
 	@Override
 	public boolean addAttribute(String id, String name, Object value) throws IOException {
@@ -438,6 +319,239 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 				desc.removeAttribute(name);
 				node.setDescription(desc);
 				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean deleteNode(String id) throws IOException {
+		IWorkspace workspace = getWorkspace();
+		boolean succeed = WorkspaceUtil.INSTANCE.deleteNode(workspace, id);
+		return succeed;
+	}
+
+	protected String getNodeLocation(String nodespaceLocation, INode node) {
+		if (!nodespaceLocation.endsWith("/")) {
+			nodespaceLocation += "/";
+		}
+		String nodeLocation = nodespaceLocation + node.getName();
+		return nodeLocation;
+	}
+
+	protected Map<String, String> nodeIdToLaunchInstanceIdMap = new HashMap<String, String>();
+	protected boolean isNodeStarting = false;
+	protected boolean isNodeStopping = false;
+
+	@Override
+	public synchronized boolean startNode(String id) throws IOException {
+		if (isNodeStarted(id)) {
+			throw new IOException("Node with id '" + id + "' is already started.");
+		}
+		if (isNodeStarting(id)) {
+			throw new IOException("Node with id '" + id + "' is being started.");
+		}
+		if (isNodeStopping(id)) {
+			throw new IOException("Node with id '" + id + "' is being stopped.");
+		}
+
+		try {
+			this.isNodeStarting = true;
+
+			LaunchService launchService = LaunchServiceHelper.INSTANCE.getLaunchService();
+			if (launchService == null) {
+				LOG.error("LaunchService is null.");
+				return false;
+			}
+			INode node = getNode(id);
+			if (node == null) {
+				LOG.error("Node with id '" + id + "' is not found.");
+				return false;
+			}
+
+			String homeLocation = getPlatformHome();
+			String nodespaceLocation = getNodespaceLocation();
+			String nodeLocation = getNodeLocation(nodespaceLocation, node);
+
+			// 1. Create {node_path}/bin/start_node.sh file and {node_path}/configuration/config.ini file
+			// (Ideally should use resource builder to generate both when .node file is changed. Then only need to trigger a build here.)
+			LaunchServiceHelper.INSTANCE.generateStartNodeScript(node);
+			LaunchServiceHelper.INSTANCE.generateConfigIni(node, this.properties);
+
+			// 2. Create launch configuration
+			String launchTypeId = LaunchServiceHelper.INSTANCE.getLaunchTypeId();
+			String launchConfigName = LaunchServiceHelper.INSTANCE.getLaunchConfigName(id);
+			LaunchConfig launchConfig = launchService.getLaunchConfiguration(launchTypeId, launchConfigName);
+			if (launchConfig == null) {
+				launchConfig = launchService.createLaunchConfiguration(launchTypeId, launchConfigName);
+			}
+
+			if (this.useScriptLaunch) {
+				launchConfig.setAttribute(LaunchConfig.LAUNCHER_ID, ScriptLauncher.ID);
+
+				String scriptLocation = nodeLocation + "/bin/start_node.sh";
+				launchConfig.setAttribute(ScriptLauncher.START_SCRIPT_LOCATION, scriptLocation);
+
+			} else {
+				launchConfig.setAttribute(LaunchConfig.LAUNCHER_ID, JavaLauncher.ID);
+
+				Map<String, String> vmArgumentsMap = new HashMap<String, String>();
+				String jarFileLocation = homeLocation + "/plugins/org.eclipse.osgi_3.10.101.v20150820-1432.jar";
+				vmArgumentsMap.put("-jar", jarFileLocation);
+				launchConfig.setAttribute(LaunchConstants.VM_ARGUMENTS_MAP, vmArgumentsMap);
+
+				Map<String, String> systemArgumentsMap = new HashMap<String, String>();
+				String nodeConfigurationLocation = nodeLocation + "/configuration";
+				systemArgumentsMap.put("-configuration", nodeConfigurationLocation);
+				launchConfig.setAttribute(LaunchConstants.SYSTEM_ARGUMENTS_MAP, systemArgumentsMap);
+
+				List<String> programArgs = new ArrayList<String>();
+				programArgs.add("-console");
+				launchConfig.setAttribute(LaunchConstants.PROGRAM_ARGUMENTS_LIST, programArgs);
+			}
+			launchConfig.setAttribute(ScriptLauncher.WORKING_DIRECTORY_LOCATION, nodeLocation);
+			launchConfig.save();
+
+			// 3. Launch the node with launch configuration
+			LaunchInstance launchInstance = launchConfig.launch();
+			if (launchInstance != null) {
+				this.nodeIdToLaunchInstanceIdMap.put(id, launchInstance.getId());
+				return true;
+			}
+
+			return false;
+
+		} finally {
+			this.isNodeStarting = false;
+		}
+	}
+
+	@Override
+	public synchronized boolean stopNode(String id) throws IOException {
+		if (isNodeStopped(id)) {
+			throw new IOException("Node with id '" + id + "' is already stopped.");
+		}
+		if (isNodeStopping(id)) {
+			throw new IOException("Node with id '" + id + "' is being stopped.");
+		}
+		if (isNodeStarting(id)) {
+			throw new IOException("Node with id '" + id + "' is being started.");
+		}
+
+		try {
+			this.isNodeStopping = true;
+
+			LaunchService launchService = LaunchServiceHelper.INSTANCE.getLaunchService();
+			if (launchService == null) {
+				LOG.error("LaunchService is null.");
+				return false;
+			}
+			INode node = getNode(id);
+			if (node == null) {
+				LOG.error("Node with id '" + id + "' is not found.");
+				return false;
+			}
+
+			// 1. Direct shutdown node platform
+			boolean isDirectShutdownSucceed = false;
+			PlatformClient nodePlatformClient = null;
+			IPlatform currPlatform = Activator.getInstance().getPlatform();
+			String indexServiceUrl = getIndexServiceURL();
+			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
+			if (currPlatform != null && indexService != null) {
+				String platformId = currPlatform.getId();
+				IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
+				if (nodeIndexItem != null) {
+					nodePlatformClient = OrbitClientHelper.INSTANCE.getNodePlatformClient(nodeIndexItem);
+				}
+			}
+			if (nodePlatformClient != null) {
+				try {
+					nodePlatformClient.shutdown(10 * 1000, false);
+					isDirectShutdownSucceed = true;
+				} catch (ClientException e) {
+					e.printStackTrace();
+				}
+			}
+
+			// 2. Terminate launch instance
+			boolean isLaunchInstanceTerminated = false;
+			String launchInstanceId = this.nodeIdToLaunchInstanceIdMap.remove(id);
+			if (launchInstanceId != null) {
+				LaunchInstance launchInstance = launchService.getLaunchInstance(launchInstanceId);
+				if (launchInstance != null) {
+					if (this.useScriptLaunch) {
+						if (launchInstance.canTerminate()) {
+							isLaunchInstanceTerminated = launchInstance.terminate();
+							if (isLaunchInstanceTerminated) {
+								LOG.info("LaunchInstance with id '" + launchInstanceId + "' is terminated.");
+							} else {
+								LOG.error("LaunchInstance with id '" + launchInstanceId + "' is not terminated.");
+							}
+						} else {
+							LOG.error("LaunchInstance with id '" + launchInstanceId + "' cannot be terminated.");
+						}
+					} else {
+						launchInstance.remove();
+						isLaunchInstanceTerminated = true;
+					}
+				} else {
+					LOG.error("LaunchInstance with id '" + launchInstanceId + "' is not found.");
+				}
+			}
+
+			boolean succeed = isDirectShutdownSucceed;
+			return succeed;
+
+		} finally {
+			this.isNodeStopping = false;
+		}
+	}
+
+	@Override
+	public boolean isNodeStarting(String id) throws IOException {
+		return this.isNodeStarting;
+	}
+
+	@Override
+	public boolean isNodeStarted(String id) throws IOException {
+		IPlatform currPlatform = Activator.getInstance().getPlatform();
+		IndexService indexService = InfraClients.getInstance().getIndexService(getIndexServiceURL());
+		if (currPlatform != null && indexService != null) {
+			String platformId = currPlatform.getId();
+			IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
+			if (nodeIndexItem != null) {
+				boolean isActivate = IndexItemHelper.INSTANCE.isLastHeartbeatWithinSeconds(nodeIndexItem, 20);
+				if (isActivate) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean isNodeStopping(String id) throws IOException {
+		return this.isNodeStopping;
+	}
+
+	@Override
+	public boolean isNodeStopped(String id) throws IOException {
+		IPlatform currPlatform = Activator.getInstance().getPlatform();
+		IndexService indexService = InfraClients.getInstance().getIndexService(getIndexServiceURL());
+		if (currPlatform != null && indexService != null) {
+			String platformId = currPlatform.getId();
+			IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
+			if (nodeIndexItem != null) {
+				boolean isActivate = IndexItemHelper.INSTANCE.isLastHeartbeatWithinSeconds(nodeIndexItem, 20);
+				boolean isStopped = false;
+				String runtimeState = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
+				if ("stopped".equalsIgnoreCase(runtimeState)) {
+					isStopped = true;
+				}
+				if (!isActivate || isStopped) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -502,4 +616,10 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 // String oldConfigIniLocation = launchConfig.getAttribute(ScriptLauncher.CONFIG_INI_LOCATION, (String) null);
 // if (!configIniLocation.equals(oldConfigIniLocation)) {
 // launchConfig.setAttribute(ScriptLauncher.CONFIG_INI_LOCATION, configIniLocation);
+// }
+
+// String launchInstanceId = this.nodeIdToLaunchInstasnceIdMap.remove(id);
+// if (launchInstanceId != null) {
+// LOG.error("Node with id '" + id + "' is already started.");
+// return false;
 // }

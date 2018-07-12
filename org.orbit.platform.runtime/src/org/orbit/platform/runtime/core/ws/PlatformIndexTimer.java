@@ -119,23 +119,24 @@ public class PlatformIndexTimer extends ServiceIndexTimer<Platform> {
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
-		// Integer indexItemId = indexItem.getIndexItemId();
-		// indexProvider.removeIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, indexItemId);
-
 		Integer indexItemId = indexItem.getIndexItemId();
 		String runtimeState = this.platform.getRuntimeState().toString();
 		Map<String, Object> properties = new Hashtable<String, Object>();
 		properties.put(PlatformConstants.PLATFORM_RUNTIME_STATE, runtimeState);
 
-		if (Platform.RUNTIME_STATE.STOPPED.equals(this.platform.getRuntimeState()) //
-				|| Platform.RUNTIME_STATE.STOP_FAILED.equals(this.platform.getRuntimeState()) //
-		) {
-			long lastHeartBeatTime = (long) indexItem.getProperties().get(IndexItem.LAST_HEARTBEAT_TIME);
-			lastHeartBeatTime -= 15 * 1000;
-			properties.put(IndexItem.LAST_HEARTBEAT_TIME, lastHeartBeatTime);
-		}
-
 		indexProvider.setProperties(PlatformConstants.PLATFORM_INDEXER_ID, indexItemId, properties);
 	}
 
 }
+
+// Original code in removeIndex()
+// Integer indexItemId = indexItem.getIndexItemId();
+// indexProvider.removeIndexItem(PlatformConstants.PLATFORM_INDEXER_ID, indexItemId);
+
+// if (Platform.RUNTIME_STATE.STOPPED.equals(this.platform.getRuntimeState()) //
+// || Platform.RUNTIME_STATE.STOP_FAILED.equals(this.platform.getRuntimeState()) //
+// ) {
+// long lastHeartBeatTime = (long) indexItem.getProperties().get(IndexItem.LAST_HEARTBEAT_TIME);
+// lastHeartBeatTime -= 15 * 1000;
+// properties.put(IndexItem.LAST_HEARTBEAT_TIME, lastHeartBeatTime);
+// }

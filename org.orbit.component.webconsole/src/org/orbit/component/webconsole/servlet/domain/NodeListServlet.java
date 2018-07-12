@@ -80,7 +80,7 @@ public class NodeListServlet extends HttpServlet {
 						String runtimeState = "";
 						IndexItem indexItem = nodeIdToIndexItem.get(nodeId);
 						if (indexItem != null) {
-							isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
+							isActivate = IndexItemHelper.INSTANCE.isLastHeartbeatWithinSeconds(indexItem, 20);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 						}
 						nodeInfo.getRuntimeStatus().setActivate(isActivate);

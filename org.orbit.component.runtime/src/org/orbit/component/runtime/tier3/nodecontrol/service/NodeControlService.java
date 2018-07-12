@@ -30,7 +30,11 @@ public interface NodeControlService extends WebServiceAware {
 
 	INode createNode(String id, String typeId, String name) throws IOException;
 
-	boolean setNodeAttribute(String id, String attrName, String attrValue) throws IOException;
+	boolean addAttribute(String id, String name, Object value) throws IOException;
+
+	boolean updateAttribute(String id, String oldName, String name, Object value) throws IOException;
+
+	boolean deleteAttribute(String id, String name) throws IOException;
 
 	boolean deleteNode(String id) throws IOException;
 
@@ -38,10 +42,12 @@ public interface NodeControlService extends WebServiceAware {
 
 	boolean stopNode(String id) throws IOException;
 
-	boolean addAttribute(String id, String name, Object value) throws IOException;
+	boolean isNodeStarting(String id) throws IOException;
 
-	boolean updateAttribute(String id, String oldName, String name, Object value) throws IOException;
+	boolean isNodeStarted(String id) throws IOException;
 
-	boolean deleteAttribute(String id, String name) throws IOException;
+	boolean isNodeStopping(String id) throws IOException;
+
+	boolean isNodeStopped(String id) throws IOException;
 
 }
