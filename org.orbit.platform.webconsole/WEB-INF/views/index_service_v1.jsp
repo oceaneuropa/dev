@@ -67,9 +67,9 @@
 								}
 							}
 
-							boolean isActivate = IndexItemHelper.INSTANCE.isUpdatedWithinSeconds(indexItem, 20);
-							String statusText = isActivate ? "active" : "inactive";
-							String statusColor = isActivate ? "#2eb82e" : "#cccccc";
+							boolean isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
+							String statusText = isOnline ? "ONLINE" : "OFFLINE";
+							String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 			%>
 			<tr>
 				<td id="td1"><%=id%></td>

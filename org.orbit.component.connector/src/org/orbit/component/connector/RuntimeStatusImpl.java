@@ -4,15 +4,15 @@ import org.orbit.component.api.RuntimeStatus;
 
 public class RuntimeStatusImpl implements RuntimeStatus {
 
-	protected boolean isActivate = false;
+	protected boolean isOnline = false;
 	protected String runtimeState;
 
-	public boolean isActivate() {
-		return this.isActivate;
+	public boolean isOnline() {
+		return this.isOnline;
 	}
 
-	public void setActivate(boolean isActivate) {
-		this.isActivate = isActivate;
+	public void setOnline(boolean isOnline) {
+		this.isOnline = isOnline;
 	}
 
 	public String getRuntimeState() {

@@ -24,6 +24,13 @@ public class IndexItemHelper {
 		return date;
 	}
 
+	public boolean isOnline(IndexItem indexItem) {
+		if (indexItem != null && isLastHeartbeatWithinSeconds(indexItem, 20)) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * 
 	 * @param indexItem

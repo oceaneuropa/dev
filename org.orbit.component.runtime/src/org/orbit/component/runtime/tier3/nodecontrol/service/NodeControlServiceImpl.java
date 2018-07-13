@@ -521,8 +521,8 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			String platformId = currPlatform.getId();
 			IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
 			if (nodeIndexItem != null) {
-				boolean isActivate = IndexItemHelper.INSTANCE.isLastHeartbeatWithinSeconds(nodeIndexItem, 20);
-				if (isActivate) {
+				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
+				if (isOnline) {
 					return true;
 				}
 			}
@@ -543,13 +543,13 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			String platformId = currPlatform.getId();
 			IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
 			if (nodeIndexItem != null) {
-				boolean isActivate = IndexItemHelper.INSTANCE.isLastHeartbeatWithinSeconds(nodeIndexItem, 20);
+				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				boolean isStopped = false;
 				String runtimeState = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 				if ("stopped".equalsIgnoreCase(runtimeState)) {
 					isStopped = true;
 				}
-				if (!isActivate || isStopped) {
+				if (!isOnline || isStopped) {
 					return true;
 				}
 			}

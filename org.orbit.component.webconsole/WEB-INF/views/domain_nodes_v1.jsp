@@ -81,11 +81,11 @@
 
 							String typeId = (String) nodeInfo.getAttributes().get("typeId");
 
-							boolean isActivate = nodeInfo.getRuntimeStatus().isActivate();
+							boolean isOnline = nodeInfo.getRuntimeStatus().isOnline();
 							String runtimeState = nodeInfo.getRuntimeStatus().getRuntimeState();
-							String statusStr1 = (isActivate)? "activate" : "inactivate";
+							String statusStr1 = (isOnline)? "ONLINE" : "OFFLINE";
 							String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
-							String statusColor = isActivate ? "#2eb82e" : "#cccccc";
+							String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>

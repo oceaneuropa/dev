@@ -2,9 +2,9 @@ package org.orbit.component.api;
 
 public interface RuntimeStatus {
 
-	boolean isActivate();
+	boolean isOnline();
 
-	void setActivate(boolean isActivate);
+	void setOnline(boolean isOnline);
 
 	String getRuntimeState();
 

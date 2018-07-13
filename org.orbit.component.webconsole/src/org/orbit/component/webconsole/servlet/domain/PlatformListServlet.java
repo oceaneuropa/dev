@@ -58,14 +58,14 @@ public class PlatformListServlet extends HttpServlet {
 				if (platformConfigs != null) {
 					for (PlatformConfig platformConfig : platformConfigs) {
 						String platformId = platformConfig.getId();
-						boolean isActivate = false;
+						boolean isOnline = false;
 						String runtimeState = "";
 						IndexItem indexItem = platformIdToIndexItem.get(platformId);
 						if (indexItem != null) {
-							isActivate = IndexItemHelper.INSTANCE.isLastHeartbeatWithinSeconds(indexItem, 20);
+							isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 						}
-						platformConfig.getRuntimeStatus().setActivate(isActivate);
+						platformConfig.getRuntimeStatus().setOnline(isOnline);
 						platformConfig.getRuntimeStatus().setRuntimeState(runtimeState);
 					}
 				}

@@ -78,11 +78,11 @@
 						hostURL = StringUtil.get(hostURL);
 						currContextRoot = StringUtil.get(currContextRoot);
 
-						boolean isActivate = platformConfig.getRuntimeStatus().isActivate();
+						boolean isOnline = platformConfig.getRuntimeStatus().isOnline();
 						String runtimeState = platformConfig.getRuntimeStatus().getRuntimeState();
-						String statusStr1 = (isActivate)? "activate" : "inactivate";
+						String statusStr1 = (isOnline)? "ONLINE" : "OFFLINE";
 						String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
-						String statusColor = isActivate ? "#2eb82e" : "#cccccc";
+						String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 			%>
 			<tr>
 				<td class="td1">

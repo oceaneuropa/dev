@@ -76,14 +76,14 @@ public class NodeListServlet extends HttpServlet {
 					Map<String, IndexItem> nodeIdToIndexItem = OrbitIndexHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
 					for (NodeInfo nodeInfo : nodeInfos) {
 						String nodeId = nodeInfo.getId();
-						boolean isActivate = false;
+						boolean isOnline = false;
 						String runtimeState = "";
 						IndexItem indexItem = nodeIdToIndexItem.get(nodeId);
 						if (indexItem != null) {
-							isActivate = IndexItemHelper.INSTANCE.isLastHeartbeatWithinSeconds(indexItem, 20);
+							isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 						}
-						nodeInfo.getRuntimeStatus().setActivate(isActivate);
+						nodeInfo.getRuntimeStatus().setOnline(isOnline);
 						nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);
 					}
 				}
