@@ -11,7 +11,6 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.component.webconsole.servlet.OrbitHelper;
@@ -19,7 +18,7 @@ import org.orbit.component.webconsole.servlet.OrbitIndexHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.origin.common.util.ServletUtil;
 
-public class NodeAttributeListServlet extends HttpServlet {
+public class PlatformPropertyListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 2333552536533608770L;
 
@@ -33,7 +32,6 @@ public class NodeAttributeListServlet extends HttpServlet {
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
-		String platformId = ServletUtil.getParameter(request, "platformId", "");
 		String id = ServletUtil.getParameter(request, "id", "");
 
 		String message = null;
@@ -47,9 +45,6 @@ public class NodeAttributeListServlet extends HttpServlet {
 		if (machineId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
-		if (platformId.isEmpty()) {
-			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
-		}
 		if (id.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
@@ -59,27 +54,20 @@ public class NodeAttributeListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
-		NodeInfo nodeInfo = null;
-		IndexItem nodeIndexItem = null;
+		IndexItem platformIndexItem = null;
 
-		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
+		if (!machineId.isEmpty() && !id.isEmpty()) {
 			try {
 				machineConfig = OrbitHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
 
-				platformConfig = OrbitHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
+				platformConfig = OrbitHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, id);
 
-				nodeInfo = OrbitHelper.INSTANCE.getNode(domainServiceUrl, machineId, platformId, id);
-
-				nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
+				platformIndexItem = OrbitIndexHelper.INSTANCE.getPlatformIndexItem(indexServiceUrl, id);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
 			}
-		}
-
-		if (nodeInfo == null) {
-			message = MessageHelper.INSTANCE.add(message, "Node with id '" + id + "' is not found.");
 		}
 
 		// ---------------------------------------------------------------
@@ -94,14 +82,11 @@ public class NodeAttributeListServlet extends HttpServlet {
 		if (platformConfig != null) {
 			request.setAttribute("platformConfig", platformConfig);
 		}
-		if (nodeInfo != null) {
-			request.setAttribute("nodeInfo", nodeInfo);
-		}
-		if (nodeIndexItem != null) {
-			request.setAttribute("nodeIndexItem", nodeIndexItem);
+		if (platformIndexItem != null) {
+			request.setAttribute("platformIndexItem", platformIndexItem);
 		}
 
-		request.getRequestDispatcher(contextRoot + "/views/domain_node_attributes_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/domain_platform_properties_v1.jsp").forward(request, response);
 	}
 
 }

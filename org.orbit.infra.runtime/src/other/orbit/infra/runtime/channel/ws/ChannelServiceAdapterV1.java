@@ -1,7 +1,6 @@
 package other.orbit.infra.runtime.channel.ws;
 
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.orbit.infra.runtime.channel.ws.ChannelServiceIndexTimer;
 import org.orbit.infra.runtime.channel.ws.ChannelWSApplication;
@@ -13,6 +12,8 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 public class ChannelServiceAdapterV1 {
 

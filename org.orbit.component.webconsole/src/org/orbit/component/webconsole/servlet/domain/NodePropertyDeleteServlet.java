@@ -14,9 +14,11 @@ import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.util.ServletUtil;
 
-public class NodeAttributeAddServlet extends HttpServlet {
+public class NodePropertyDeleteServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -7390601515222168906L;
+	private static final long serialVersionUID = -294271532237816404L;
+
+	private static String[] EMPTY_NAMES = new String[] {};
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,8 +32,7 @@ public class NodeAttributeAddServlet extends HttpServlet {
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
 		String id = ServletUtil.getParameter(request, "id", "");
 
-		String name = ServletUtil.getParameter(request, "name", "");
-		String value = ServletUtil.getParameter(request, "value", "");
+		String[] names = ServletUtil.getParameterValues(request, "name", EMPTY_NAMES);
 
 		String message = "";
 		if (machineId.isEmpty()) {
@@ -43,17 +44,27 @@ public class NodeAttributeAddServlet extends HttpServlet {
 		if (id.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
-		if (name.isEmpty()) {
-			message = MessageHelper.INSTANCE.add(message, "'name' parameter is not set.");
+		if (names == null || names.length == 0) {
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
 		boolean succeed = false;
-		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && !name.isEmpty()) {
+		boolean hasSucceed = false;
+		boolean hasFailed = false;
+
+		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && names.length > 0) {
 			try {
-				succeed = OrbitHelper.INSTANCE.addNodeAttribute(domainServiceUrl, machineId, platformId, id, name, value);
+				for (String currName : names) {
+					boolean currSucceed = OrbitHelper.INSTANCE.deleteNodeAttribute(domainServiceUrl, machineId, platformId, id, currName);
+					if (currSucceed) {
+						hasSucceed = true;
+					} else {
+						hasFailed = true;
+					}
+				}
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -61,10 +72,14 @@ public class NodeAttributeAddServlet extends HttpServlet {
 			}
 		}
 
+		if (hasSucceed && !hasFailed) {
+			succeed = true;
+		}
+
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Attribute is added successfully.");
+			message = MessageHelper.INSTANCE.add(message, (names != null && names.length > 1) ? "Attributes are deleted successfully." : "Attribute is deleted successfully.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, "Attribute is not added.");
+			message = MessageHelper.INSTANCE.add(message, (names != null && names.length > 1) ? "Attributes are not deleted." : "Attribute is not deleted.");
 		}
 
 		// ---------------------------------------------------------------
@@ -73,7 +88,7 @@ public class NodeAttributeAddServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain/nodeattributes?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id);
+		response.sendRedirect(contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id);
 	}
 
 }

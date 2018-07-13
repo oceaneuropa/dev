@@ -10,10 +10,10 @@ import org.orbit.component.webconsole.servlet.domain.MachineAddServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineListServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineUpdateServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeAttributeAddServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeAttributeDeleteServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeAttributeListServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeAttributeUpdateServlet;
+import org.orbit.component.webconsole.servlet.domain.NodePropertyAddServlet;
+import org.orbit.component.webconsole.servlet.domain.NodePropertyDeleteServlet;
+import org.orbit.component.webconsole.servlet.domain.NodePropertyListServlet;
+import org.orbit.component.webconsole.servlet.domain.NodePropertyUpdateServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeCreateServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeListServlet;
@@ -21,7 +21,7 @@ import org.orbit.component.webconsole.servlet.domain.NodeStartServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeStopServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeUpdateServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformAddServlet;
-import org.orbit.component.webconsole.servlet.domain.PlatformAttributeListServlet;
+import org.orbit.component.webconsole.servlet.domain.PlatformPropertyListServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformListServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformUpdateServlet;
@@ -98,7 +98,7 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/domain/platformupdate", new PlatformUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformdelete", new PlatformDeleteServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/domain/platformattributes", new PlatformAttributeListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/platformproperties", new PlatformPropertyListServlet(), dicts));
 
 		addServlet(new ServletMetadataImpl("/domain/nodes", new NodeListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodecreate", new NodeCreateServlet(), dicts));
@@ -108,10 +108,10 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/domain/nodestop", new NodeStopServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodestatus", new NodeListServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/domain/nodeattributes", new NodeAttributeListServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/domain/nodeattributeadd", new NodeAttributeAddServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/domain/nodeattributeupdate", new NodeAttributeUpdateServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/domain/nodeattributedelete", new NodeAttributeDeleteServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeproperties", new NodePropertyListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeattributeadd", new NodePropertyAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeattributeupdate", new NodePropertyUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeattributedelete", new NodePropertyDeleteServlet(), dicts));
 
 		addServlet(new ServletMetadataImpl("/appstore", new AppStoreServlet(), dicts));
 

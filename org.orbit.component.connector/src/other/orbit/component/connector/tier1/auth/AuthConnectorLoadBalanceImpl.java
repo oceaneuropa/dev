@@ -12,8 +12,7 @@ import org.orbit.infra.api.indexes.IndexService;
 
 import other.orbit.component.api.tier1.auth.AuthConnectorV0;
 import other.orbit.component.api.tier1.auth.AuthConnectorV1;
-
-import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
+import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
 public class AuthConnectorLoadBalanceImpl extends IndexBasedLoadBalancedServiceConnectorImpl<Auth> implements AuthConnectorV1 {
 

@@ -23,7 +23,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Domain Management (Node Attributes)</title>
+<title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 </head>
 <body>
@@ -37,7 +37,7 @@
 	<div class="main_div01">
 		<h2>Index Properties</h2>
 		<div class="top_tools_div01"> 
-			<a class="button02" href="<%=contextRoot + "/domain/platformattributes?machineId=" + machineId + "&id=" + id%>">Refresh</a>
+			<a class="button02" href="<%=contextRoot + "/domain/platformproperties?machineId=" + machineId + "&id=" + id%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<tr>

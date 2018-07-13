@@ -11,8 +11,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
 import other.orbit.component.api.tier3.domainmanagement.DomainServiceConnectorV1;
-
-import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
+import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
 public class DomainServiceConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<DomainManagementClient> implements DomainServiceConnectorV1 {
 

@@ -5,13 +5,14 @@ import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlSe
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlIndexer;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start MissionControlWSApplication when MissionControl service becomes available and to stop MissionControlWSApplication when MissionControl

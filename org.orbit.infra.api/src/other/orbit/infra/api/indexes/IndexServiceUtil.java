@@ -8,9 +8,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalanceResourceImpl;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;

@@ -68,14 +68,14 @@
 							}
 
 							boolean isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
-							String statusText = isOnline ? "ONLINE" : "OFFLINE";
+							String statusText = isOnline ? "Online" : "Offline";
 							String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 			%>
 			<tr>
 				<td id="td1"><%=id%></td>
 				<td id="td2"><%=type%></td>
 				<td id="td2"><%=name%></td>
-				<td id="td2"><font color="<%=statusColor%>"><%=statusText%></font></td>
+				<td id="td1"><font color="<%=statusColor%>"><%=statusText%></font></td>
 				<td id="td2"><%=props%></td>
 			</tr>
 			<%

@@ -1,34 +1,39 @@
-package org.orbit.infra.api.indexes;
+package other.orbit.infra.api.indexes;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
 
-public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
+public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 
-	protected static IndexProviderUnsupportedImpl UNSUPPORTED_IMPL = new IndexProviderUnsupportedImpl();
+	protected static IndexServiceUnsupportedImpl UNSUPPORTED_IMPL = new IndexServiceUnsupportedImpl();
 
-	public IndexProviderLoadBalancer(List<LoadBalanceResource<IndexProvider>> services) {
+	/**
+	 * 
+	 * @param services
+	 */
+	public IndexServiceLoadBalancer(List<LoadBalanceResource<IndexService>> services) {
 		super(services);
 	}
 
-	public IndexProvider createLoadBalancableIndexProvider() {
-		return new IndexProviderLoadBalancableImpl();
+	public IndexService createLoadBalancableIndexService() {
+		return new IndexServiceLoadBalancableImpl();
 	}
 
-	public class IndexProviderLoadBalancableImpl implements IndexProvider {
-
-		protected IndexProvider next() {
-			LoadBalanceResource<IndexProvider> services = getNext();
-			if (services != null) {
-				return services.getService();
-			}
-			return UNSUPPORTED_IMPL;
+	protected IndexService next() {
+		LoadBalanceResource<IndexService> lbServices = this.getNext();
+		if (lbServices != null) {
+			return lbServices.getService();
 		}
+		return UNSUPPORTED_IMPL;
+	}
 
+	public class IndexServiceLoadBalancableImpl implements IndexService {
 		@Override
 		public String getName() {
 			return next().getName();
@@ -85,31 +90,6 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
-			return next().addIndexItem(indexProviderId, type, name, properties);
-		}
-
-		@Override
-		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-			return next().removeIndexItem(indexProviderId, indexItemId);
-		}
-
-		@Override
-		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
-			return next().setProperties(indexProviderId, indexItemId, properties);
-		}
-
-		@Override
-		public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
-			return next().setProperty(indexProviderId, indexItemId, propName, propValue, propType);
-		}
-
-		@Override
-		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
-			return next().removeProperties(indexProviderId, indexItemId, propertyNames);
-		}
-
-		@Override
 		public <T> void adapt(Class<T> clazz, T object) {
 			next().adapt(clazz, object);
 		}
@@ -130,7 +110,7 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 	}
 
-	public static class IndexProviderUnsupportedImpl implements IndexProvider {
+	public static class IndexServiceUnsupportedImpl implements IndexService {
 		@Override
 		public String getName() {
 			throw new UnsupportedOperationException();
@@ -202,34 +182,97 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
-		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public boolean isProxy() {
 			return false;
 		}
 	}
 
 }
+
+// public static final String INDEX_SERVICE_INDEXER_ID = "component_.index_service.indexer";
+// protected ThreadPoolTimer indexServicesMonitor;
+
+// @Override
+// public void update(Map<Object, Object> properties) {
+// throw new UnsupportedOperationException();
+// }
+
+// @Override
+// public void update(Map<Object, Object> properties) {
+// getNextIndexService().update(properties);
+// }
+
+// @Override
+// public void start() {
+// super.start();
+//
+// // Start checking the index items for index services themselves using the IndexService API.
+// // e.g. a remote IndexService is added to the indexing
+// // e.g. a remote IndexService is removed from the indexing
+// // For the refreshing of the properties of existing index items, the corresponding LoadBalanceService will do that by calling its referenced
+// IndexService.
+// if (this.indexServicesMonitor != null) {
+// this.indexServicesMonitor.stop();
+// }
+// this.indexServicesMonitor = new ThreadPoolTimer("IndexServiceLoadBalancer(IndexService) Monitor", new Runnable() {
+// @Override
+// public void run() {
+// monitor();
+// }
+// });
+// this.indexServicesMonitor.start();
+// }
+
+// @Override
+// public void stop() {
+// if (this.indexServicesMonitor != null) {
+// this.indexServicesMonitor.stop();
+// this.indexServicesMonitor = null;
+// }
+//
+// super.stop();
+// }
+
+// protected void monitor() {
+// // LoadBalanceService<IndexService> lbService = getFirstAvailableService();
+// LoadBalanceService<IndexService> lbService = null;
+// if (lbService == null) {
+// return;
+// }
+// try {
+// List<IndexItem> indexItems = lbService.getService().getIndexItems(INDEX_SERVICE_INDEXER_ID);
+//
+// } catch (IOException e) {
+// e.printStackTrace();
+// }
+// }
+
+// protected LoadBalanceService<IndexService> getFirstAvailableService() {
+// if (this.services.isEmpty()) {
+// return null;
+// } else if (this.services.size() == 1) {
+// return this.services.get(0);
+// }
+//
+// int latestPingIndex = -1;
+// Date latestPingTime = null;
+// for (int i = 0; i < this.services.size(); i++) {
+// LoadBalanceService<IndexService> lbService = this.services.get(i);
+// if (lbService.hasProperty("ping") && lbService.hasProperty("last_ping_time")) {
+// int ping = (int) lbService.getProperty("ping");
+// if (ping > 0) {
+// Date currPingTime = (Date) lbService.getProperty("last_ping_time");
+// if (latestPingTime == null || currPingTime.after(latestPingTime)) {
+// latestPingTime = currPingTime;
+// latestPingIndex = i;
+// }
+// }
+// }
+// }
+// if (latestPingIndex >= 0) {
+// return this.services.get(latestPingIndex);
+// }
+//
+// // none of the services have valid ping result.
+// return this.services.get(0);
+// }

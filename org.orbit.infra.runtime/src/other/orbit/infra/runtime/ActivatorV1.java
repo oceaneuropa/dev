@@ -3,7 +3,6 @@ package other.orbit.infra.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.orbit.infra.runtime.cli.InfraCommand;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import other.orbit.infra.api.indexes.IndexProviderConnectorAdapterV1;
 import other.orbit.infra.api.indexes.IndexProviderConnectorV1;
+import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import other.orbit.infra.api.indexes.IndexServiceUtil;
 import other.orbit.infra.runtime.channel.ws.ChannelServiceAdapterV1;
 

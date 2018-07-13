@@ -6,7 +6,8 @@ import java.util.List;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.ServiceMonitor;
+
+import other.orbit.infra.api.indexes.ServiceMonitor;
 
 public class UserRegistryServiceMonitor extends ServiceMonitor {
 

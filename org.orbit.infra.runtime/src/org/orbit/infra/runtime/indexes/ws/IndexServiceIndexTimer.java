@@ -9,6 +9,9 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexServiceException;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
+import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.IPlatform;
+import org.orbit.platform.sdk.PlatformConstants;
 import org.origin.common.service.WebServiceAwareHelper;
 import org.origin.common.thread.IndexTimer;
 import org.origin.common.thread.IndexTimerImpl;
@@ -32,6 +35,17 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 		return this.service;
 	}
 
+	protected String getPlatformId() {
+		String platformId = null;
+		if (Activator.getInstance() != null) {
+			IPlatform platform = Activator.getInstance().getPlatform();
+			if (platform != null) {
+				platformId = platform.getId();
+			}
+		}
+		return platformId;
+	}
+
 	@Override
 	public IndexItem getIndex(IndexService indexProvider, IndexService service) throws IOException {
 		try {
@@ -52,13 +66,17 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 			// String hostURL = service.getHostURL();
 			// String contextRoot = service.getContextRoot();
 
-			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(InfraConstants.NAME, name);
-			props.put(InfraConstants.BASE_URL, url);
+			Map<String, Object> properties = new Hashtable<String, Object>();
+			String platformId = getPlatformId();
+			if (platformId != null && properties != null) {
+				properties.put(PlatformConstants.PLATFORM_ID, platformId);
+			}
+			properties.put(InfraConstants.NAME, name);
+			properties.put(InfraConstants.BASE_URL, url);
 			// props.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
 			// props.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
-			props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-			return indexProvider.addIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name, props);
+			properties.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			return indexProvider.addIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name, properties);
 
 		} catch (IndexServiceException e) {
 			throw new IOException(e);
@@ -74,13 +92,17 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 			// String hostURL = service.getHostURL();
 			// String contextRoot = service.getContextRoot();
 
-			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(InfraConstants.NAME, name);
-			props.put(InfraConstants.BASE_URL, url);
-			props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			Map<String, Object> properties = new Hashtable<String, Object>();
+			String platformId = getPlatformId();
+			if (platformId != null && properties != null) {
+				properties.put(PlatformConstants.PLATFORM_ID, platformId);
+			}
+			properties.put(InfraConstants.NAME, name);
+			properties.put(InfraConstants.BASE_URL, url);
+			properties.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 			// props.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
 			// props.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
-			indexProvider.setProperties(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, props);
+			indexProvider.setProperties(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, properties);
 
 			// List<String> propNames = new ArrayList<String>();
 			// propNames.add(InfraConstants.URL);

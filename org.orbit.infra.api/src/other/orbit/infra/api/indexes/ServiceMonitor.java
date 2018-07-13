@@ -1,4 +1,4 @@
-package org.orbit.infra.api.indexes;
+package other.orbit.infra.api.indexes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.osgi.OSGiServiceUtil;

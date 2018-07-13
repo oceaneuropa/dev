@@ -14,9 +14,9 @@ import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.component.webconsole.servlet.OrbitHelper;
 import org.origin.common.util.ServletUtil;
 
-public class NodeAttributeUpdateServlet extends HttpServlet {
+public class NodePropertyAddServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -3078734229049103631L;
+	private static final long serialVersionUID = -7390601515222168906L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,7 +30,6 @@ public class NodeAttributeUpdateServlet extends HttpServlet {
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
 		String id = ServletUtil.getParameter(request, "id", "");
 
-		String oldName = ServletUtil.getParameter(request, "oldName", "");
 		String name = ServletUtil.getParameter(request, "name", "");
 		String value = ServletUtil.getParameter(request, "value", "");
 
@@ -52,10 +51,9 @@ public class NodeAttributeUpdateServlet extends HttpServlet {
 		// Handle data
 		// ---------------------------------------------------------------
 		boolean succeed = false;
-
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && !name.isEmpty()) {
 			try {
-				succeed = OrbitHelper.INSTANCE.updateNodeAttribute(domainServiceUrl, machineId, platformId, id, oldName, name, value);
+				succeed = OrbitHelper.INSTANCE.addNodeAttribute(domainServiceUrl, machineId, platformId, id, name, value);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -64,9 +62,9 @@ public class NodeAttributeUpdateServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Attribute is updated successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Attribute is added successfully.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, "Attribute is not updated.");
+			message = MessageHelper.INSTANCE.add(message, "Attribute is not added.");
 		}
 
 		// ---------------------------------------------------------------
@@ -75,7 +73,7 @@ public class NodeAttributeUpdateServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain/nodeattributes?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id);
+		response.sendRedirect(contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id);
 	}
 
 }

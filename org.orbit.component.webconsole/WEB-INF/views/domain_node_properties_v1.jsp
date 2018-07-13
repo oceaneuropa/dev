@@ -31,7 +31,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Domain Management (Node Attributes)</title>
+<title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 <script type="text/javascript" src="<%=contextRoot + "/views/js/domain_node_attributes.js"%>" defer></script>
 </head>
@@ -42,13 +42,13 @@
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
 		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>"><%=machineName%></a> >
 		<a href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>"><%=platformName%></a> >
-		<!-- <a href="<%=contextRoot + "/domain/nodeattributes?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>"><%=name%></a> -->
+		<!-- <a href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>"><%=name%></a> -->
 		<%=name%>
 	</div>
 	<div class="main_div01">
 		<h2>Index Properties</h2>
 		<div class="top_tools_div01"> 
-			<a class="button02" href="<%=contextRoot + "/domain/nodeattributes?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
+			<a class="button02" href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<tr>

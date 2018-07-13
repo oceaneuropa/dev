@@ -5,13 +5,14 @@ import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManageme
 import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceTimer;
 import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start DomainMgmtWSApplication when DomainMgmtService becomes available and to stop DomainMgmtWSApplication when DomainMgmtService becomes

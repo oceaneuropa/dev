@@ -1,9 +1,11 @@
-package org.orbit.infra.api.indexes;
+package other.orbit.infra.api.indexes;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.thread.ThreadPoolTimer;
 
 public abstract class IndexItemsMonitor extends ThreadPoolTimer {

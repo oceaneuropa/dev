@@ -26,7 +26,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Domain Management (Nodes)</title>
+<title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 <script type="text/javascript" src="<%=contextRoot + "/views/js/domain_nodes.js"%>" defer></script>
 </head>
@@ -56,11 +56,11 @@
 					<th class="th1" width="11">
 						<input type="checkbox" onClick="toggleSelection(this, 'id')" />
 					</th>
-					<th class="th1" width="100">Id</th>
-					<th class="th1" width="120">Name</th>
-					<th class="th1" width="120">Path</th>
-					<th class="th1" width="100">Status</th>
-					<th class="th1" width="160">Actions</th>
+					<th class="th1" width="150">Id</th>
+					<th class="th1" width="150">Name</th>
+					<th class="th1" width="150">Path</th>
+					<th class="th1" width="150">Status</th>
+					<th class="th1" width="150">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
@@ -83,7 +83,7 @@
 
 							boolean isOnline = nodeInfo.getRuntimeStatus().isOnline();
 							String runtimeState = nodeInfo.getRuntimeStatus().getRuntimeState();
-							String statusStr1 = (isOnline)? "ONLINE" : "OFFLINE";
+							String statusStr1 = (isOnline)? "Online" : "Offline";
 							String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
 							String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 				%>
@@ -92,13 +92,15 @@
 					<td class="td1"><%=id%></td>
 					<td class="td2"><%=name%></td>
 					<td class="td2"><%=path%></td>
-					<td class="td2"><font color="<%=statusColor%>"><%=statusStr1%><%=statusStr2%></font></td>
+					<td class="td1"><font color="<%=statusColor%>"><%=statusStr1%></font></td>
 					<td class="td1">
-						<a class="action01" href="<%=contextRoot%>/domain/nodeattributes?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a> |
-						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Change</a> | 
-						<a class="action01" href="javascript:deleteNode('<%=contextRoot + "/domain/nodedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Delete</a> | 
+						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Change</a> |
+						<a class="action01" href="<%=contextRoot%>/domain/nodeproperties?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a>
+						<!-- 
+						 | <a class="action01" href="javascript:deleteNode('<%=contextRoot + "/domain/nodedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Delete</a> | 
 						<a class="action01" href="javascript:startNode('<%=contextRoot + "/domain/nodestart"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Start</a> | 
 						<a class="action01" href="javascript:stopNode('<%=contextRoot + "/domain/nodestop"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Stop</a></td>
+						 -->
 				</tr>
 				<%
 						}

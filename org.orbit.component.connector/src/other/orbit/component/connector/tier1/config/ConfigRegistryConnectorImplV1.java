@@ -11,8 +11,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
 import other.orbit.component.api.tier1.config.ConfigRegistryConnectorV1;
-
-import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
+import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
 public class ConfigRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<Registry> implements ConfigRegistryConnectorV1 {
 

@@ -5,15 +5,7 @@ Bundle-SymbolicName: org.orbit.infra.api;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.infra.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.origin.common.adapter,
- org.origin.common.annotation,
- org.origin.common.loadbalance,
- org.origin.common.loadbalance.policy,
- org.origin.common.osgi,
- org.origin.common.rest.client,
- org.origin.common.service,
- org.origin.common.thread,
- org.origin.common.util,
+Import-Package: org.orbit.platform.sdk;version="[1.0.0,2.0.0)",
  org.osgi.framework;version="1.3.0",
  org.osgi.service.cm;version="1.5.0",
  org.osgi.util.tracker;version="1.5.1",
@@ -24,3 +16,4 @@ Export-Package: org.orbit.infra.api;version="1.0.0",
  other.orbit.infra.api.channel;version="1.0.0",
  other.orbit.infra.api.indexes;version="1.0.0"
 Bundle-ActivationPolicy: lazy
+Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)"

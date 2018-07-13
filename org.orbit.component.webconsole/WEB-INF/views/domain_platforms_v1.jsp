@@ -21,7 +21,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Domain Management (Platforms)</title>
+<title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
 <script type="text/javascript" src="<%=contextRoot + "/views/js/domain_platforms.js"%>" defer></script>
 </head>
@@ -80,7 +80,7 @@
 
 						boolean isOnline = platformConfig.getRuntimeStatus().isOnline();
 						String runtimeState = platformConfig.getRuntimeStatus().getRuntimeState();
-						String statusStr1 = (isOnline)? "ONLINE" : "OFFLINE";
+						String statusStr1 = (isOnline)? "Online" : "Offline";
 						String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
 						String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 			%>
@@ -92,12 +92,12 @@
 				<td class="td2"><%=name%></td>
 				<td class="td2"><%=hostURL%></td>
 				<td class="td2"><%=currContextRoot%></td>
-				<td class="td2"><font color="<%=statusColor%>"><%=statusStr1%><%=statusStr2%></font></td>
+				<td class="td1"><font color="<%=statusColor%>"><%=statusStr1%></font></td>
 				<td class="td1">
-					<a class="action01" href="<%=contextRoot%>/domain/platformattributes?machineId=<%=machineId%>&id=<%=id%>">Properties</a> |
-					<a class="action01" href="<%=contextRoot%>/domain/nodes?machineId=<%=machineId%>&platformId=<%=id%>">Nodes</a> |
-					<a class="action01" href="javascript:changePlatform('<%=id%>', '<%=name%>', '<%=hostURL%>', '<%=currContextRoot%>')">Change</a> | 
-					<a class="action01" href="javascript:deletePlatform('<%=contextRoot + "/domain/platformdelete"%>', '<%=machineId%>', '<%=id%>')">Delete</a>
+					<a class="action01" href="javascript:changePlatform('<%=id%>', '<%=name%>', '<%=hostURL%>', '<%=currContextRoot%>')">Change</a> |
+					<a class="action01" href="<%=contextRoot%>/domain/platformproperties?machineId=<%=machineId%>&id=<%=id%>">Properties</a> |
+					<a class="action01" href="<%=contextRoot%>/domain/nodes?machineId=<%=machineId%>&platformId=<%=id%>">Nodes</a>
+					<!-- | <a class="action01" href="javascript:deletePlatform('<%=contextRoot + "/domain/platformdelete"%>', '<%=machineId%>', '<%=id%>')">Delete</a> -->
 				</td>
 			</tr>
 			<%

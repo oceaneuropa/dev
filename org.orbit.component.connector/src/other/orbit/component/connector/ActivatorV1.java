@@ -9,7 +9,6 @@ import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
 import org.orbit.component.connector.tier3.domainmanagement.DomainManagementConnector;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
-import org.orbit.infra.api.indexes.IndexServiceLoadBalancer;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -17,6 +16,7 @@ import org.osgi.framework.BundleContext;
 import other.orbit.component.connector.tier1.account.UserRegistryManager;
 import other.orbit.infra.api.indexes.IndexServiceConnectorAdapterV1;
 import other.orbit.infra.api.indexes.IndexServiceConnectorV1;
+import other.orbit.infra.api.indexes.IndexServiceLoadBalancer;
 import other.orbit.infra.api.indexes.IndexServiceUtil;
 
 public class ActivatorV1 implements BundleActivator {

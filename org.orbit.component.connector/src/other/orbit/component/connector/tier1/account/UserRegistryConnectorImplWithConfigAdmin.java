@@ -9,13 +9,13 @@ import org.orbit.component.api.tier1.account.UserAccounts;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 import org.origin.common.annotation.Dependency;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import other.orbit.component.api.tier1.account.UserRegistryConnectorV1;
+import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
 public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBalancedServiceConnectorImpl<UserAccounts> implements UserRegistryConnectorV1 {
 

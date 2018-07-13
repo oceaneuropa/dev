@@ -1,4 +1,4 @@
-package org.orbit.infra.api.indexes;
+package other.orbit.infra.api.indexes;
 
 import java.util.Date;
 

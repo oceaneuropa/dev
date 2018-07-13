@@ -72,9 +72,9 @@
 				<td class="td2"><%=name%></td>
 				<td class="td2"><%=ip%></td>
 				<td class="td1">
-					<a class="action01" href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">Platforms</a> |
-					<a class="action01" href="javascript:changeMachine('<%=id%>', '<%=name%>', '<%=ip%>')">Change</a> | 
-					<a class="action01" href="javascript:deleteMachine('<%=contextRoot + "/domain/machinedelete"%>', '<%=id%>')">Delete</a>
+					<a class="action01" href="javascript:changeMachine('<%=id%>', '<%=name%>', '<%=ip%>')">Change</a> |
+					<a class="action01" href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">Platforms</a>
+					<!-- | <a class="action01" href="javascript:deleteMachine('<%=contextRoot + "/domain/machinedelete"%>', '<%=id%>')">Delete</a> -->
 				</td>
 			</tr>
 			<%

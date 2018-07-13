@@ -6,7 +6,6 @@ import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceTimer;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlWSApplication;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlWSEditPolicy;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -14,6 +13,8 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
  * Adapter to start TransferAgentWSApplication when TransferAgentService becomes available and to stop TransferAgentWSApplication when TransferAgentService
