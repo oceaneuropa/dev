@@ -38,4 +38,9 @@ public class InfraConstants {
 	public static String CHANNEL_HOST_URL = "channel.host.url";
 	public static String CHANNEL_CONTEXT_ROOT = "channel.context_root";
 
+	// ----------------------------------------------------------------------------------------
+	// Extensions
+	// ----------------------------------------------------------------------------------------
+	public static final String INDEX_PROVIDER_EXTENSION_TYPE_ID = "infra.extension.IndexProvider";
+
 }

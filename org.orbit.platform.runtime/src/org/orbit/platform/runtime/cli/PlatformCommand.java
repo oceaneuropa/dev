@@ -641,7 +641,7 @@ public class PlatformCommand implements Annotated, CommandActivator {
 			LOG.info("Program extension is not available.");
 			return;
 		}
-		WSRelayControl relayControl = relayExtension.getInterface(WSRelayControl.class);
+		WSRelayControl relayControl = relayExtension.createExecutableInstance(WSRelayControl.class);
 		if (relayControl == null) {
 			LOG.info("WSRelayControl is not available.");
 			return;
@@ -667,7 +667,7 @@ public class PlatformCommand implements Annotated, CommandActivator {
 			return;
 		}
 
-		WSRelayControl relayControl = extension.getInterface(WSRelayControl.class);
+		WSRelayControl relayControl = extension.createExecutableInstance(WSRelayControl.class);
 		if (relayControl == null) {
 			LOG.info("WSRelayControl is not available.");
 			return;

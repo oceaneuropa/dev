@@ -2,11 +2,17 @@ package org.orbit.component.runtime.tier4.missioncontrol.ws;
 
 import java.util.Map;
 
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.editpolicy.MissionWSEditPolicy;
 import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.platform.sdk.Activator;
+import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -27,8 +33,8 @@ public class MissionControlAdapter {
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<MissionControlService, MissionControlService> serviceTracker;
 	protected MissionControlWSApplication webApp;
-	protected MissionControlIndexer indexTimer;
-	// protected Extension urlProviderExtension;
+	// protected MissionControlIndexer indexTimer;
+	protected ServiceIndexTimer<MissionControlService> indexTimer;
 
 	public MissionControlAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -83,6 +89,11 @@ public class MissionControlAdapter {
 		}
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
 	protected void doStart(BundleContext bundleContext, MissionControlService service) {
 		// Install web service edit policies
 		WSEditPolicies editPolicies = service.getEditPolicies();
@@ -95,24 +106,29 @@ public class MissionControlAdapter {
 
 		// Start indexing timer
 		IndexProvider indexProvider = getIndexProvider();
-		this.indexTimer = new MissionControlIndexer(indexProvider, service);
-		this.indexTimer.start();
+		// this.indexTimer = new MissionControlIndexer(indexProvider, service);
+		// this.indexTimer.start();
 
-		// Register URL provider extension
-		// this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.MISSION_CONTROL_URL_PROVIDER_EXTENSION_ID);
-		// this.urlProviderExtension.setName("Mission control service URL provider");
-		// this.urlProviderExtension.setDescription("Mission control service URL provider description");
-		// this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
-		// Extensions.INSTANCE.addExtension(this.urlProviderExtension);
+		IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID, OrbitConstants.MISSION_CONTROL_INDEXER_ID);
+		if (extension != null) {
+			// String indexProviderId = extension.getId();
+			@SuppressWarnings("unchecked")
+			ServiceIndexTimerFactory<MissionControlService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			if (indexTimerFactory != null) {
+				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				if (this.indexTimer != null) {
+					this.indexTimer.start();
+				}
+			}
+		}
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param service
+	 */
 	protected void doStop(BundleContext bundleContext, MissionControlService service) {
-		// Unregister URL provider extension
-		// if (this.urlProviderExtension != null) {
-		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
-		// this.urlProviderExtension = null;
-		// }
-
 		// Stop indexing timer
 		if (this.indexTimer != null) {
 			this.indexTimer.stop();
@@ -131,3 +147,18 @@ public class MissionControlAdapter {
 	}
 
 }
+
+// protected Extension urlProviderExtension;
+
+// Register URL provider extension
+// this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.MISSION_CONTROL_URL_PROVIDER_EXTENSION_ID);
+// this.urlProviderExtension.setName("Mission control service URL provider");
+// this.urlProviderExtension.setDescription("Mission control service URL provider description");
+// this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
+// Extensions.INSTANCE.addExtension(this.urlProviderExtension);
+
+// Unregister URL provider extension
+// if (this.urlProviderExtension != null) {
+// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+// this.urlProviderExtension = null;
+// }

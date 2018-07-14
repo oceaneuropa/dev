@@ -68,7 +68,7 @@ public class ProcessHandlerForServiceActivator implements ProcessHandler {
 			throw new ProcessException("Cannot start process from current state '" + this.runtimeState.name() + "'.");
 		}
 
-		ServiceActivator serviceActivator = this.extension.getInterface(ServiceActivator.class);
+		ServiceActivator serviceActivator = this.extension.createExecutableInstance(ServiceActivator.class);
 		if (serviceActivator != null) {
 			if (!canChangeState(this.runtimeState, RUNTIME_STATE.STARTED) && !canChangeState(this.runtimeState, RUNTIME_STATE.START_FAILED)) {
 				throw new RuntimeException("Cannot start process from '" + this.runtimeState.name() + "' state.");
@@ -98,7 +98,7 @@ public class ProcessHandlerForServiceActivator implements ProcessHandler {
 			throw new ProcessException("Cannot stop process from current state '" + this.runtimeState.name() + "'.");
 		}
 
-		ServiceActivator serviceActivator = this.extension.getInterface(ServiceActivator.class);
+		ServiceActivator serviceActivator = this.extension.createExecutableInstance(ServiceActivator.class);
 		if (serviceActivator != null) {
 			try {
 				serviceActivator.stop(this.context, this.process);

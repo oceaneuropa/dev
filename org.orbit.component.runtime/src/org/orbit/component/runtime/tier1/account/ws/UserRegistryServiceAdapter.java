@@ -9,10 +9,16 @@ package org.orbit.component.runtime.tier1.account.ws;
 
 import java.util.Map;
 
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.platform.sdk.Activator;
+import org.origin.common.extensions.core.IExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -32,8 +38,8 @@ public class UserRegistryServiceAdapter {
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<UserRegistryService, UserRegistryService> serviceTracker;
 	protected UserRegistryWSApplication webApp;
-	protected UserRegistryServiceIndexTimer indexTimer;
-	// protected Extension urlProviderExtension;
+	// protected UserRegistryServiceIndexTimer indexTimer;
+	protected ServiceIndexTimer<UserRegistryService> indexTimer;
 
 	public UserRegistryServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -103,15 +109,21 @@ public class UserRegistryServiceAdapter {
 
 		// Start indexing timer
 		IndexProvider indexProvider = getIndexProvider();
-		this.indexTimer = new UserRegistryServiceIndexTimer(indexProvider, service);
-		this.indexTimer.start();
+		// this.indexTimer = new UserRegistryServiceIndexTimer(indexProvider, service);
+		// this.indexTimer.start();
 
-		// Register URL provider extension
-		// this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.USER_REGISTRY_URL_PROVIDER_EXTENSION_ID);
-		// this.urlProviderExtension.setName("User registration URL provider");
-		// this.urlProviderExtension.setDescription("User registration URL provider description");
-		// this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
-		// Extensions.INSTANCE.addExtension(this.urlProviderExtension);
+		IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID, OrbitConstants.USER_REGISTRY_INDEXER_ID);
+		if (extension != null) {
+			// String indexProviderId = extension.getId();
+			@SuppressWarnings("unchecked")
+			ServiceIndexTimerFactory<UserRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			if (indexTimerFactory != null) {
+				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				if (this.indexTimer != null) {
+					this.indexTimer.start();
+				}
+			}
+		}
 	}
 
 	/**
@@ -120,12 +132,6 @@ public class UserRegistryServiceAdapter {
 	 * @param service
 	 */
 	protected void doStop(BundleContext bundleContext, UserRegistryService service) {
-		// Unregister URL provider extension
-		// if (this.urlProviderExtension != null) {
-		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
-		// this.urlProviderExtension = null;
-		// }
-
 		// Stop indexing timer
 		if (this.indexTimer != null) {
 			this.indexTimer.stop();
@@ -140,3 +146,18 @@ public class UserRegistryServiceAdapter {
 	}
 
 }
+
+// protected Extension urlProviderExtension;
+
+// Register URL provider extension
+// this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.USER_REGISTRY_URL_PROVIDER_EXTENSION_ID);
+// this.urlProviderExtension.setName("User registration URL provider");
+// this.urlProviderExtension.setDescription("User registration URL provider description");
+// this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
+// Extensions.INSTANCE.addExtension(this.urlProviderExtension);
+
+// Unregister URL provider extension
+// if (this.urlProviderExtension != null) {
+// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+// this.urlProviderExtension = null;
+// }

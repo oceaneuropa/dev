@@ -7,8 +7,12 @@
  *******************************************************************************/
 package org.orbit.sprit.runtime.gaia;
 
+import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
+import org.orbit.sprit.runtime.Constants;
 import org.orbit.sprit.runtime.gaia.extensions.GAIAServiceActivator;
+import org.orbit.sprit.runtime.gaia.ws.GaiaIndexTimerFactory;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.Parameter;
@@ -35,6 +39,7 @@ public class Extensions extends ProgramExtensions {
 		LOG.debug("createExtensions()");
 
 		createServiceActivatorExtensions();
+		createIndexProvideExtensions();
 	}
 
 	protected void createServiceActivatorExtensions() {
@@ -49,6 +54,15 @@ public class Extensions extends ProgramExtensions {
 		);
 		gaiaExtension.addInterface(gaiaDesc);
 		addExtension(gaiaExtension);
+	}
+
+	protected void createIndexProvideExtensions() {
+		String typeId = InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID;
+		Class<?> factoryClass = ServiceIndexTimerFactory.class;
+
+		Extension extension11 = new Extension(typeId, Constants.GAIA_INDEXER_ID, "GAIA Index Provider");
+		extension11.addInterface(factoryClass, GaiaIndexTimerFactory.class);
+		addExtension(extension11);
 	}
 
 }

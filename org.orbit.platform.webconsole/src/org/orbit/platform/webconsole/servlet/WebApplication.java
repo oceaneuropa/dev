@@ -64,7 +64,7 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/hello", new HelloWorldServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/top_menu", new TopMenuServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/top_message", new TopMessageServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/indexservice", new IndexServiceServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/indexservice", new IndexServiceListServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

@@ -41,5 +41,4 @@ public class WebConstants {
 				MISSION_CONTROL_INDEXER_ID, //
 		};
 	}
-
 }

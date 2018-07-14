@@ -1,8 +1,14 @@
 package org.orbit.component.runtime.tier1.session.ws;
 
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.platform.sdk.Activator;
+import org.origin.common.extensions.core.IExtension;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -19,7 +25,8 @@ public class OAuth2ServiceAdapter {
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<OAuth2Service, OAuth2Service> serviceTracker;
 	protected OAuth2WSApplication webServiceApp;
-	protected OAuth2ServiceIndexTimer serviceIndexTimer;
+	// protected OAuth2ServiceIndexTimer indexTimer;
+	protected ServiceIndexTimer<OAuth2Service> indexTimer;
 
 	public OAuth2ServiceAdapter() {
 	}
@@ -95,8 +102,21 @@ public class OAuth2ServiceAdapter {
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
-		this.serviceIndexTimer = new OAuth2ServiceIndexTimer(indexProvider, service);
-		this.serviceIndexTimer.start();
+		// this.indexTimer = new OAuth2ServiceIndexTimer(indexProvider, service);
+		// this.indexTimer.start();
+
+		IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID, OrbitConstants.OAUTH2_INDEXER_ID);
+		if (extension != null) {
+			// String indexProviderId = extension.getId();
+			@SuppressWarnings("unchecked")
+			ServiceIndexTimerFactory<OAuth2Service> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			if (indexTimerFactory != null) {
+				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				if (this.indexTimer != null) {
+					this.indexTimer.start();
+				}
+			}
+		}
 	}
 
 	/**
@@ -106,9 +126,9 @@ public class OAuth2ServiceAdapter {
 	 */
 	protected void stopWebService(BundleContext bundleContext, OAuth2Service service) {
 		// Stop index timer
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
+		if (this.indexTimer != null) {
+			this.indexTimer.stop();
+			this.indexTimer = null;
 		}
 
 		// Stop web service

@@ -12,6 +12,8 @@ import org.orbit.platform.sdk.command.impl.CommandExtensionRegistryImpl;
 import org.orbit.platform.sdk.connector.ConnectorExtensionRegistry;
 import org.orbit.platform.sdk.connector.impl.ConnectorExtensionRegistryImpl;
 import org.orbit.platform.sdk.ui.IPlatformTracker;
+import org.orbit.platform.sdk.util.ExtensionRegistry;
+import org.orbit.platform.sdk.util.ExtensionRegistryImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
@@ -33,6 +35,7 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
+	protected ExtensionRegistry extensionRegistry;
 	protected ConnectorExtensionRegistry connectorExtensionRegistry;
 	protected CommandExtensionRegistry commandExtensionRegistry;
 	protected IPlatformTracker platformTracker;
@@ -48,11 +51,15 @@ public class Activator implements BundleActivator {
 		this.platformTracker = new IPlatformTracker();
 		this.platformTracker.start(bundleContext);
 
-		// Handle connector extensions
+		// Start registry for all extensions
+		ExtensionRegistryImpl.INSTANCE.start(bundleContext);
+		this.extensionRegistry = ExtensionRegistryImpl.INSTANCE;
+
+		// Start registry for connector extensions
 		ConnectorExtensionRegistryImpl.INSTANCE.start(bundleContext);
 		this.connectorExtensionRegistry = ConnectorExtensionRegistryImpl.INSTANCE;
 
-		// Handle command extensions
+		// Start registry command extensions
 		CommandExtensionRegistryImpl.INSTANCE.start(bundleContext);
 		this.commandExtensionRegistry = CommandExtensionRegistryImpl.INSTANCE;
 	}
@@ -61,13 +68,25 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.info("stop()");
 
-		this.connectorExtensionRegistry = null;
-		ConnectorExtensionRegistryImpl.INSTANCE.dispose();
-		ConnectorExtensionRegistryImpl.INSTANCE.stop(bundleContext);
+		// Stop registry command extensions
+		if (this.commandExtensionRegistry != null) {
+			this.commandExtensionRegistry = null;
+			CommandExtensionRegistryImpl.INSTANCE.dispose();
+			CommandExtensionRegistryImpl.INSTANCE.stop(bundleContext);
+		}
 
-		this.commandExtensionRegistry = null;
-		CommandExtensionRegistryImpl.INSTANCE.dispose();
-		CommandExtensionRegistryImpl.INSTANCE.stop(bundleContext);
+		// Stop registry for connector extensions
+		if (this.connectorExtensionRegistry != null) {
+			this.connectorExtensionRegistry = null;
+			ConnectorExtensionRegistryImpl.INSTANCE.dispose();
+			ConnectorExtensionRegistryImpl.INSTANCE.stop(bundleContext);
+		}
+
+		// Stop registry for all extensions
+		if (this.commandExtensionRegistry != null) {
+			this.commandExtensionRegistry = null;
+			ExtensionRegistryImpl.INSTANCE.stop(bundleContext);
+		}
 
 		// Stop tracking IPlatform service
 		if (this.platformTracker != null) {
@@ -85,6 +104,10 @@ public class Activator implements BundleActivator {
 			platform = this.platformTracker.getService();
 		}
 		return platform;
+	}
+
+	public ExtensionRegistry getExtensionRegistry() {
+		return this.extensionRegistry;
 	}
 
 	public ConnectorExtensionRegistry getConnectorExtensionRegistry() {

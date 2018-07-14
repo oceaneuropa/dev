@@ -12,7 +12,7 @@ import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
-public class MissionControlIndexer extends ServiceIndexTimer<MissionControlService> {
+public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlService> {
 
 	protected MissionControlService service;
 
@@ -21,7 +21,7 @@ public class MissionControlIndexer extends ServiceIndexTimer<MissionControlServi
 	 * @param indexProvider
 	 * @param service
 	 */
-	public MissionControlIndexer(IndexProvider indexProvider, MissionControlService service) {
+	public MissionControlIndexTimer(IndexProvider indexProvider, MissionControlService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);

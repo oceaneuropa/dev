@@ -20,7 +20,7 @@ public class ConnectorDescriptorImpl implements ConnectorDescriptor {
 	@Override
 	public synchronized ConnectorActivator getConnector() {
 		if (this.connector == null) {
-			this.connector = this.extension.getInterface(ConnectorActivator.class);
+			this.connector = this.extension.createExecutableInstance(ConnectorActivator.class);
 		}
 		return this.connector;
 	}

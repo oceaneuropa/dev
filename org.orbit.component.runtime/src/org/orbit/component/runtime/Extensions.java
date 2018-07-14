@@ -10,6 +10,7 @@ package org.orbit.component.runtime;
 import org.orbit.component.runtime.cli.DomainManagementCommand;
 import org.orbit.component.runtime.cli.NodeControlCommand;
 import org.orbit.component.runtime.cli.ServicesCommand;
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.extension.appstore.AppStoreRelayActivator;
 import org.orbit.component.runtime.extension.appstore.AppStoreRelayPropertyTester;
 import org.orbit.component.runtime.extension.appstore.AppStoreServiceActivator;
@@ -38,6 +39,16 @@ import org.orbit.component.runtime.extension.userregistry.UserRegistryRelayActiv
 import org.orbit.component.runtime.extension.userregistry.UserRegistryRelayPropertyTester;
 import org.orbit.component.runtime.extension.userregistry.UserRegistryServiceActivator;
 import org.orbit.component.runtime.extension.userregistry.UserRegistryServicePropertyTester;
+import org.orbit.component.runtime.tier1.account.ws.UserRegistryServiceIndexTimerFactory;
+import org.orbit.component.runtime.tier1.auth.ws.AuthServiceIndexTimerFactory;
+import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryServiceIndexTimerFactory;
+import org.orbit.component.runtime.tier1.session.ws.OAuth2ServiceIndexTimerFactory;
+import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceIndexTimerFactory;
+import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceTimerFactory;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceTimerFactory;
+import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlIndexTimeractory;
+import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
@@ -73,6 +84,7 @@ public class Extensions extends ProgramExtensions {
 		createPropertyTesterExtensions2();
 
 		createCommandExtensions();
+		createIndexProvideExtensions();
 	}
 
 	protected void createServiceActivatorExtensions1() {
@@ -283,6 +295,43 @@ public class Extensions extends ProgramExtensions {
 		InterfaceDescription desc3 = new InterfaceDescription(CommandActivator.class, NodeControlCommand.class);
 		extension3.addInterface(desc3);
 		addExtension(extension3);
+	}
+
+	protected void createIndexProvideExtensions() {
+		String typeId = InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID;
+		Class<?> factoryClass = ServiceIndexTimerFactory.class;
+
+		Extension extension11 = new Extension(typeId, OrbitConstants.USER_REGISTRY_INDEXER_ID, "User Account Service Index Provider");
+		extension11.addInterface(factoryClass, UserRegistryServiceIndexTimerFactory.class);
+		addExtension(extension11);
+
+		Extension extension12 = new Extension(typeId, OrbitConstants.AUTH_INDEXER_ID, "Auth Service Index Provider");
+		extension12.addInterface(factoryClass, AuthServiceIndexTimerFactory.class);
+		addExtension(extension12);
+
+		Extension extension13 = new Extension(typeId, OrbitConstants.CONFIG_REGISTRY_INDEXER_ID, "Config Registry Service Index Provider");
+		extension13.addInterface(factoryClass, ConfigRegistryServiceIndexTimerFactory.class);
+		addExtension(extension13);
+
+		Extension extension14 = new Extension(typeId, OrbitConstants.OAUTH2_INDEXER_ID, "OAuth2 Service Index Provider");
+		extension14.addInterface(factoryClass, OAuth2ServiceIndexTimerFactory.class);
+		addExtension(extension14);
+
+		Extension extension21 = new Extension(typeId, OrbitConstants.APP_STORE_INDEXER_ID, "App Store Service Index Provider");
+		extension21.addInterface(factoryClass, AppStoreServiceIndexTimerFactory.class);
+		addExtension(extension21);
+
+		Extension extension31 = new Extension(typeId, OrbitConstants.DOMAIN_SERVICE_INDEXER_ID, "Domain Management Service Index Provider");
+		extension31.addInterface(factoryClass, DomainServiceTimerFactory.class);
+		addExtension(extension31);
+
+		Extension extension32 = new Extension(typeId, OrbitConstants.NODE_CONTROL_INDEXER_ID, "Node Control Service Index Provider");
+		extension32.addInterface(factoryClass, NodeControlServiceTimerFactory.class);
+		addExtension(extension32);
+
+		Extension extension33 = new Extension(typeId, OrbitConstants.MISSION_CONTROL_INDEXER_ID, "Mission Control Service Index Provider");
+		extension33.addInterface(factoryClass, MissionControlIndexTimeractory.class);
+		addExtension(extension33);
 	}
 
 }

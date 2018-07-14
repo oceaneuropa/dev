@@ -2,7 +2,7 @@ package other.orbit.component.runtime.tier4.missioncontrol.ws;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
-import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlIndexer;
+import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlIndexTimer;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.osgi.framework.BundleContext;
@@ -26,7 +26,7 @@ public class MissionControlAdapterV1 {
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<MissionControlService, MissionControlService> serviceTracker;
 	protected MissionControlWSApplication webServiceApp;
-	protected MissionControlIndexer serviceIndexer;
+	protected MissionControlIndexTimer serviceIndexer;
 
 	public MissionControlAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
@@ -84,7 +84,7 @@ public class MissionControlAdapterV1 {
 
 		// Start index timer
 		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
-		this.serviceIndexer = new MissionControlIndexer(indexProvider, service);
+		this.serviceIndexer = new MissionControlIndexTimer(indexProvider, service);
 		this.serviceIndexer.start();
 	}
 

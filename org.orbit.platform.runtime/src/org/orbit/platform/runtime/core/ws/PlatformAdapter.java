@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.platform.runtime.core.Platform;
 import org.orbit.platform.runtime.core.command.PlatformWSEditPolicy;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
@@ -22,7 +23,8 @@ public class PlatformAdapter {
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<Platform, Platform> serviceTracker;
 	protected PlatformWSApplication wsApp;
-	protected PlatformIndexTimer indexTimer;
+	// protected PlatformIndexTimer indexTimer;
+	protected ServiceIndexTimer<Platform> indexTimer;
 
 	public PlatformAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -120,3 +122,20 @@ public class PlatformAdapter {
 	}
 
 }
+
+// IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.TYPE_ID,
+// "org.orbit.platform.PlatformIndexTimerFactory");
+// if (extension != null) {
+// String indexProviderId = extension.getProperty(ServiceIndexTimerFactory.PROP_INDEX_PROVIDER_ID, String.class);
+// if (indexProviderId != null) {
+//
+// }
+// @SuppressWarnings("unchecked")
+// ServiceIndexTimerFactory<Platform> indexTimerfactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+// if (indexTimerfactory != null) {
+// this.indexTimer = indexTimerfactory.create(indexProvider, service);
+// if (this.indexTimer != null) {
+// this.indexTimer.start();
+// }
+// }
+// }

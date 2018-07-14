@@ -28,7 +28,7 @@ import org.orbit.platform.webconsole.WebConstants;
  * @see https://jqueryui.com/tabs/
  * 
  */
-public class IndexServiceServlet extends ServiceAwareServlet {
+public class IndexServiceListServlet extends ServiceAwareServlet {
 
 	private static final long serialVersionUID = 5912224656258717859L;
 
@@ -37,6 +37,14 @@ public class IndexServiceServlet extends ServiceAwareServlet {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
 
+		// Map<String, String> indexerIdToName = new TreeMap<String, String>();
+		// IExtension[] extensions = Activator.getInstance().getExtensionRegistry().getExtensions(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID);
+		// for (IExtension extension : extensions) {
+		// String currIndexerId = extension.getId();
+		// String currIndexerName = extension.getName();
+		// indexerIdToName.put(currIndexerId, currIndexerName);
+		// }
+
 		Map<String, List<IndexItem>> indexerIdToIndexItems = new LinkedHashMap<String, List<IndexItem>>();
 		IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
 		if (indexService != null) {
@@ -44,8 +52,14 @@ public class IndexServiceServlet extends ServiceAwareServlet {
 				List<IndexItem> indexItems = indexService.getIndexItems(indexerId);
 				indexerIdToIndexItems.put(indexerId, indexItems);
 			}
+			// for (Iterator<String> idItor = indexerIdToName.keySet().iterator(); idItor.hasNext();) {
+			// String indexerId = idItor.next();
+			// List<IndexItem> indexItems = indexService.getIndexItems(indexerId);
+			// indexerIdToIndexItems.put(indexerId, indexItems);
+			// }
 		}
 
+		// request.setAttribute("indexerIdToName", indexerIdToName);
 		request.setAttribute("indexerIdToIndexItems", indexerIdToIndexItems);
 		request.getRequestDispatcher(contextRoot + "/views/index_service_v1.jsp").forward(request, response);
 	}

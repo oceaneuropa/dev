@@ -1,5 +1,7 @@
 package org.orbit.infra.runtime;
 
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.infra.runtime.channel.ws.ChannelServiceIndexTimerFactory;
 import org.orbit.infra.runtime.cli.InfraCommand;
 import org.orbit.infra.runtime.extensions.channelservice.ChannelServiceActivator;
 import org.orbit.infra.runtime.extensions.channelservice.ChannelServicePropertyTester;
@@ -45,6 +47,7 @@ public class Extensions extends ProgramExtensions {
 		createPropertyTesterExtensions2();
 
 		createCommandExtensions();
+		createIndexProvideExtensions();
 	}
 
 	protected void createServiceActivatorExtensions1() {
@@ -144,6 +147,18 @@ public class Extensions extends ProgramExtensions {
 		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, InfraCommand.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
+	}
+
+	protected void createIndexProvideExtensions() {
+		String typeId = org.orbit.infra.api.InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID;
+		Class<?> factoryClass = ServiceIndexTimerFactory.class;
+
+		Extension extension1 = new Extension(typeId, InfraConstants.INDEX_SERVICE_INDEXER_ID, "Index Service Index Provider");
+		addExtension(extension1);
+
+		Extension extension2 = new Extension(typeId, InfraConstants.CHANNEL_INDEXER_ID, "Channel Service Index Provider");
+		extension2.addInterface(factoryClass, ChannelServiceIndexTimerFactory.class);
+		addExtension(extension2);
 	}
 
 }

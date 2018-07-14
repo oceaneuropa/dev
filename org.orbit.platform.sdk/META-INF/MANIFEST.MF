@@ -14,6 +14,7 @@ Export-Package: org.orbit.platform.sdk;version="1.0.0",
  org.orbit.platform.sdk.connector;version="1.0.0",
  org.orbit.platform.sdk.relaycontrol;version="1.0.0",
  org.orbit.platform.sdk.serviceactivator;version="1.0.0",
+ org.orbit.platform.sdk.ui;version="1.0.0",
  org.orbit.platform.sdk.util;version="1.0.0"
 Require-Bundle: org.origin.common;bundle-version="1.0.0",
  org.origin.common.extensions;bundle-version="1.0.0"

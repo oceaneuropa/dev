@@ -5,7 +5,16 @@
 <%@ page import="org.origin.common.util.*"%>
 <%
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
+
+	Map<String, String> indexerIdToName = (Map<String, String>) request.getAttribute("indexerIdToName");
 	Map<String, List<IndexItem>> indexerIdToIndexItems = (Map<String, List<IndexItem>>) request.getAttribute("indexerIdToIndexItems");
+
+	if (indexerIdToName == null) {
+		indexerIdToName = new HashMap<String, String>();
+	}
+	if (indexerIdToIndexItems == null) {
+		indexerIdToIndexItems = new HashMap<String, List<IndexItem>>();
+	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

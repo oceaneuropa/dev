@@ -2,11 +2,17 @@ package org.orbit.component.runtime.tier3.nodecontrol.ws;
 
 import java.util.Map;
 
+import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlWSEditPolicy;
 import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.platform.sdk.Activator;
+import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -27,8 +33,8 @@ public class NodeControlServiceAdapter {
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<NodeControlService, NodeControlService> serviceTracker;
 	protected NodeControlWSApplication webApp;
-	protected NodeControlServiceTimer indexTimer;
-	// protected Extension urlProviderExtension;
+	// protected NodeControlServiceTimer indexTimer;
+	protected ServiceIndexTimer<NodeControlService> indexTimer;
 
 	public NodeControlServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -100,15 +106,21 @@ public class NodeControlServiceAdapter {
 
 		// Start indexing timer
 		IndexProvider indexProvider = getIndexProvider();
-		this.indexTimer = new NodeControlServiceTimer(indexProvider, service);
-		this.indexTimer.start();
+		// this.indexTimer = new NodeControlServiceTimer(indexProvider, service);
+		// this.indexTimer.start();
 
-		// Register URL provider extension
-		// this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.NODE_CONTROL_URL_PROVIDER_EXTENSION_ID);
-		// this.urlProviderExtension.setName("Node control service URL provider");
-		// this.urlProviderExtension.setDescription("Node control service URL provider description");
-		// this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
-		// Extensions.INSTANCE.addExtension(this.urlProviderExtension);
+		IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID, OrbitConstants.NODE_CONTROL_INDEXER_ID);
+		if (extension != null) {
+			// String indexProviderId = extension.getId();
+			@SuppressWarnings("unchecked")
+			ServiceIndexTimerFactory<NodeControlService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			if (indexTimerFactory != null) {
+				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				if (this.indexTimer != null) {
+					this.indexTimer.start();
+				}
+			}
+		}
 	}
 
 	/**
@@ -117,12 +129,6 @@ public class NodeControlServiceAdapter {
 	 * @param service
 	 */
 	protected void doStop(BundleContext bundleContext, NodeControlService service) {
-		// Unregister URL provider extension
-		// if (this.urlProviderExtension != null) {
-		// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
-		// this.urlProviderExtension = null;
-		// }
-
 		// Stop indexing timer
 		if (this.indexTimer != null) {
 			this.indexTimer.stop();
@@ -141,3 +147,18 @@ public class NodeControlServiceAdapter {
 	}
 
 }
+
+// protected Extension urlProviderExtension;
+
+// Register URL provider extension
+// this.urlProviderExtension = new ProgramExtension(URLProvider.EXTENSION_TYPE_ID, Extensions.NODE_CONTROL_URL_PROVIDER_EXTENSION_ID);
+// this.urlProviderExtension.setName("Node control service URL provider");
+// this.urlProviderExtension.setDescription("Node control service URL provider description");
+// this.urlProviderExtension.addInterface(URLProvider.class, new URLProviderImpl(service));
+// Extensions.INSTANCE.addExtension(this.urlProviderExtension);
+
+// Unregister URL provider extension
+// if (this.urlProviderExtension != null) {
+// Extensions.INSTANCE.removeExtension(this.urlProviderExtension);
+// this.urlProviderExtension = null;
+// }

@@ -1,6 +1,10 @@
 package org.orbit.platform.runtime;
 
+import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.runtime.cli.PlatformCommand;
+import org.orbit.platform.runtime.command.ws.CommandServiceIndexTimerFactory;
+import org.orbit.platform.runtime.core.ws.PlatformIndexTimerFactory;
 import org.orbit.platform.runtime.extensions.PlatformNodeBuilder;
 import org.orbit.platform.runtime.extensions.PlatformNodeBuilderPropertyTester;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -30,6 +34,7 @@ public class Extensions extends ProgramExtensions {
 		createFolderConfiguratorExtensions();
 		createPropertyTesterExtensions();
 		createCommandExtensions();
+		createIndexProviderExtensions();
 	}
 
 	protected void createFolderConfiguratorExtensions() {
@@ -47,12 +52,23 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createCommandExtensions() {
-		String typeId = CommandActivator.TYPE_ID;
-
 		// Services command
-		Extension extension1 = new Extension(typeId, PlatformCommand.ID, "Services Command", "Services command description");
+		Extension extension1 = new Extension(CommandActivator.TYPE_ID, PlatformCommand.ID, "Services Command", "Services command description");
 		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, PlatformCommand.class);
 		extension1.addInterface(desc1);
+		addExtension(extension1);
+	}
+
+	protected void createIndexProviderExtensions() {
+		String typeId = InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID;
+		Class<?> factoryClass = ServiceIndexTimerFactory.class;
+
+		Extension extension1 = new Extension(typeId, PlatformConstants.PLATFORM_INDEXER_ID, "Platform Index Provider");
+		extension1.addInterface(factoryClass, PlatformIndexTimerFactory.class);
+		addExtension(extension1);
+
+		Extension extension2 = new Extension(typeId, PlatformConstants.COMMAND_SERVICE_INDEXER_ID, "Command Service Index Provider");
+		extension2.addInterface(factoryClass, CommandServiceIndexTimerFactory.class);
 		addExtension(extension1);
 	}
 

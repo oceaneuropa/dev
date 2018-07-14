@@ -3,9 +3,15 @@ package org.orbit.sprit.runtime.gaia.ws;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.platform.sdk.Activator;
+import org.orbit.sprit.runtime.Constants;
 import org.orbit.sprit.runtime.gaia.service.GAIA;
 import org.orbit.sprit.runtime.gaia.ws.command.GaiaWSEditPolicy;
+import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
@@ -22,7 +28,8 @@ public class GaiaAdapter {
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<GAIA, GAIA> serviceTracker;
 	protected GaiaWSApplication webServiceApp;
-	protected GaiaIndexTimer serviceIndexTimer;
+	// protected GaiaIndexTimer indexTimer;
+	protected ServiceIndexTimer<GAIA> indexTimer;
 
 	public GaiaAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -91,8 +98,21 @@ public class GaiaAdapter {
 
 		// Start index timer
 		IndexProvider indexProvider = getIndexProvider();
-		this.serviceIndexTimer = new GaiaIndexTimer(indexProvider, gaia);
-		this.serviceIndexTimer.start();
+		// this.indexTimer = new GaiaIndexTimer(indexProvider, gaia);
+		// this.indexTimer.start();
+
+		IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID, Constants.GAIA_INDEXER_ID);
+		if (extension != null) {
+			// String indexProviderId = extension.getId();
+			@SuppressWarnings("unchecked")
+			ServiceIndexTimerFactory<GAIA> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			if (indexTimerFactory != null) {
+				this.indexTimer = indexTimerFactory.create(indexProvider, gaia);
+				if (this.indexTimer != null) {
+					this.indexTimer.start();
+				}
+			}
+		}
 	}
 
 	/**
@@ -104,9 +124,9 @@ public class GaiaAdapter {
 		LOG.info("doStop()");
 
 		// Start index timer
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
+		if (this.indexTimer != null) {
+			this.indexTimer.stop();
+			this.indexTimer = null;
 		}
 
 		// Stop webService

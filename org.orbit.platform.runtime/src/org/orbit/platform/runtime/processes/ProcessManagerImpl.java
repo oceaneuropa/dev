@@ -22,7 +22,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.orbit.platform.runtime.core.PlatformContextImpl;
 import org.orbit.platform.runtime.core.PlatformImpl;
 import org.orbit.platform.runtime.util.ProcessHandlerFilterForProgramExtension;
-import org.orbit.platform.runtime.util.ProgramExtensionHelper;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.IProcessManager;
@@ -31,6 +30,7 @@ import org.orbit.platform.sdk.util.IProcessFilter;
 import org.orbit.platform.sdk.util.ServiceActivatorHelper;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.core.IExtension;
+import org.origin.common.extensions.util.ExtensionHelper;
 import org.origin.common.extensions.util.ExtensionListener;
 import org.origin.common.extensions.util.ExtensionTracker;
 import org.osgi.framework.BundleContext;
@@ -120,7 +120,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 
 		// Autostart process of the extension
 		boolean isAutoStart = false;
-		final ServiceActivator serviceActivator = extension.getInterface(ServiceActivator.class);
+		final ServiceActivator serviceActivator = extension.createExecutableInstance(ServiceActivator.class);
 		InterfaceDescription desc = extension.getInterfaceDescription(ServiceActivator.class);
 
 		if (serviceActivator != null && desc != null) {
@@ -211,14 +211,14 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 	 * @throws ProcessException
 	 */
 	public int createProcess(final IExtension extension, final Map<Object, Object> properties) throws ProcessException {
-		ServiceActivator activator = extension.getInterface(ServiceActivator.class);
+		ServiceActivator activator = extension.createExecutableInstance(ServiceActivator.class);
 		if (activator == null) {
 			// Do not start process if ServiceActivator is not available.
 			throw new ProcessException("ServiceActivator is not available from the extension.");
 		}
 
 		ProcessHandler processHandler = null;
-		if (ProgramExtensionHelper.INSTANCE.isSingleton(extension, activator)) {
+		if (ExtensionHelper.INSTANCE.isSingleton(extension, activator)) {
 			// Do not start if process already exists for the extension
 			ProcessHandlerFilterForProgramExtension filter = new ProcessHandlerFilterForProgramExtension(extension);
 			ProcessHandler[] processHandlers = getProcessHandlers(filter);
@@ -270,7 +270,7 @@ public class ProcessManagerImpl implements ProcessManager, IProcessManager, Exte
 		this.processesLock.writeLock().lock();
 		try {
 			int pid = getNextPID();
-			String name = ProgramExtensionHelper.INSTANCE.getName(extension, serviceActivator);
+			String name = ExtensionHelper.INSTANCE.getName(extension, serviceActivator);
 
 			IPlatformContext context = createContext(extension);
 			context.setProperties(properties);

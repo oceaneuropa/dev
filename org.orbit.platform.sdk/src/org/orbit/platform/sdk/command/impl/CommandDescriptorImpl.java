@@ -20,7 +20,7 @@ public class CommandDescriptorImpl implements CommandDescriptor {
 	@Override
 	public synchronized CommandActivator getCommand() {
 		if (this.command == null) {
-			this.command = this.extension.getInterface(CommandActivator.class);
+			this.command = this.extension.createExecutableInstance(CommandActivator.class);
 		}
 		return this.command;
 	}

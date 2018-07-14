@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.platform.runtime.command.service.CommandService;
 import org.orbit.platform.runtime.command.ws.command.CommandServiceWSEditPolicy;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
@@ -22,7 +23,8 @@ public class CommandServiceAdapter {
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<CommandService, CommandService> serviceTracker;
 	protected CommandServiceWSApplication webServiceApp;
-	protected CommandServiceIndexTimer serviceIndexTimer;
+	// protected CommandServiceIndexTimer indexTimer;
+	protected ServiceIndexTimer<CommandService> indexTimer;
 
 	public CommandServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -91,8 +93,8 @@ public class CommandServiceAdapter {
 
 		// Start index timer
 		IndexProvider indexProvider = getIndexProvider();
-		this.serviceIndexTimer = new CommandServiceIndexTimer(indexProvider, service);
-		this.serviceIndexTimer.start();
+		this.indexTimer = new CommandServiceIndexTimer(indexProvider, service);
+		this.indexTimer.start();
 	}
 
 	/**
@@ -104,9 +106,9 @@ public class CommandServiceAdapter {
 		LOG.info("doStop()");
 
 		// Start index timer
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
+		if (this.indexTimer != null) {
+			this.indexTimer.stop();
+			this.indexTimer = null;
 		}
 
 		// Stop webService

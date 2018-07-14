@@ -4,8 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.runtime.channel.service.ChannelService;
+import org.orbit.platform.sdk.Activator;
+import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -22,7 +27,8 @@ public class ChannelServiceAdapter {
 	protected ServiceTracker<ChannelService, ChannelService> serviceTracker;
 	protected ChannelWebSocket webSocket;
 	protected ChannelWSApplication webService;
-	protected ChannelServiceIndexTimer serviceIndexTimer;
+	// protected ChannelServiceIndexTimer indexTimer;
+	protected ServiceIndexTimer<ChannelService> indexTimer;
 
 	public ChannelServiceAdapter(Map<Object, Object> properties) {
 		this.properties = checkProperties(properties);
@@ -95,16 +101,28 @@ public class ChannelServiceAdapter {
 		// 3. start index timer
 		LOG.debug("start index timer");
 		IndexProvider indexProvider = getIndexProvider();
-		this.serviceIndexTimer = new ChannelServiceIndexTimer(indexProvider, service);
-		this.serviceIndexTimer.start();
+		// this.indexTimer = new ChannelServiceIndexTimer(indexProvider, service);
+		// this.indexTimer.start();
+
+		IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID, InfraConstants.CHANNEL_INDEXER_ID);
+		if (extension != null) {
+			@SuppressWarnings("unchecked")
+			ServiceIndexTimerFactory<ChannelService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			if (indexTimerFactory != null) {
+				this.indexTimer = indexTimerFactory.create(indexProvider, service);
+				if (this.indexTimer != null) {
+					this.indexTimer.start();
+				}
+			}
+		}
 	}
 
 	protected void doStop(BundleContext bundleContext, ChannelService service) {
 		// 1. stop index timer
 		LOG.debug("stop index timer");
-		if (this.serviceIndexTimer != null) {
-			this.serviceIndexTimer.stop();
-			this.serviceIndexTimer = null;
+		if (this.indexTimer != null) {
+			this.indexTimer.stop();
+			this.indexTimer = null;
 		}
 
 		// 2. stop web service

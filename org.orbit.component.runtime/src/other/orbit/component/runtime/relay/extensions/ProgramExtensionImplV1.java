@@ -101,6 +101,11 @@ public abstract class ProgramExtensionImplV1 extends ExtensionImpl implements IE
 		return this.properties.get(propName);
 	}
 
+	@Override
+	public <T> T getProperty(Object propName, Class<T> clazz) {
+		return null;
+	}
+
 	// public void setFilter(IProgramExtensionFilter filter) {
 	// this.filter = filter;
 	// }
@@ -111,13 +116,13 @@ public abstract class ProgramExtensionImplV1 extends ExtensionImpl implements IE
 	// }
 
 	@Override
-	public Object[] getInterfaces() {
-		return this.interfacesSupport.getInterfaces();
+	public Object[] createExecutableInstances() {
+		return this.interfacesSupport.createExecutableInstances();
 	}
 
 	@Override
-	public <T> T getInterface(Class<T> clazz) {
-		return this.interfacesSupport.getInterface(clazz);
+	public <T> T createExecutableInstance(Class<T> clazz) {
+		return this.interfacesSupport.createExecutableInstance(clazz);
 	}
 
 	@Override
