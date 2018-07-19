@@ -6,12 +6,12 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
-import org.orbit.infra.model.indexes.IndexServiceException;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.platform.sdk.Activator;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAwareHelper;
 import org.origin.common.thread.IndexTimer;
 import org.origin.common.thread.IndexTimerImpl;
@@ -53,7 +53,7 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 
 			return indexProvider.getIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			throw new IOException(e);
 		}
 	}
@@ -78,7 +78,7 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 			properties.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 			return indexProvider.addIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name, properties);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			throw new IOException(e);
 		}
 	}
@@ -111,7 +111,7 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 			// propNames.add(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
 			// indexProvider.removeProperty(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, propNames);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			throw new IOException(e);
 		}
 	}
@@ -123,7 +123,7 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 
 			indexProvider.removeIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			throw new IOException(e);
 		}
 	}

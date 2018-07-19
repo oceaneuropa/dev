@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -40,7 +40,7 @@ public class MachineDeleteServlet extends HttpServlet {
 		if (ids != null) {
 			try {
 				for (String currId : ids) {
-					boolean currSucceed = OrbitHelper.INSTANCE.removeMachineConfig(domainServiceUrl, currId);
+					boolean currSucceed = OrbitComponentHelper.INSTANCE.removeMachineConfig(domainServiceUrl, currId);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {

@@ -3,6 +3,7 @@ package org.orbit.infra.connector;
 import org.orbit.infra.connector.channel.ChannelsConnector;
 import org.orbit.infra.connector.cli.ChannelCommand;
 import org.orbit.infra.connector.cli.IndexServiceCommand;
+import org.orbit.infra.connector.extensionregistry.ExtensionRegistryConnector;
 import org.orbit.infra.connector.indexes.IndexProviderConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -51,6 +52,12 @@ public class Extensions extends ProgramExtensions {
 		InterfaceDescription desc3 = new InterfaceDescription(ConnectorActivator.class, ChannelsConnector.class);
 		extension3.addInterface(desc3);
 		addExtension(extension3);
+
+		// Extension Registry
+		Extension extension4 = new Extension(typeId, ExtensionRegistryConnector.ID, "Extension Registry Connector");
+		InterfaceDescription desc4 = new InterfaceDescription(ConnectorActivator.class, ExtensionRegistryConnector.class);
+		extension4.addInterface(desc4);
+		addExtension(extension4);
 	}
 
 	protected void createCommandExtensions() {

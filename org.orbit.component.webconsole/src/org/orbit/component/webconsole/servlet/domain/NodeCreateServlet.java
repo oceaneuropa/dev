@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeCreateServlet extends HttpServlet {
@@ -51,7 +51,7 @@ public class NodeCreateServlet extends HttpServlet {
 
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
 			try {
-				succeed = OrbitHelper.INSTANCE.createNode(domainServiceUrl, machineId, platformId, id, name, typeId);
+				succeed = OrbitComponentHelper.INSTANCE.createNode(domainServiceUrl, machineId, platformId, id, name, typeId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

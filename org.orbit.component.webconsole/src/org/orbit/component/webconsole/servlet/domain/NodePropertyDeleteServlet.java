@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodePropertyDeleteServlet extends HttpServlet {
@@ -58,7 +58,7 @@ public class NodePropertyDeleteServlet extends HttpServlet {
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && names.length > 0) {
 			try {
 				for (String currName : names) {
-					boolean currSucceed = OrbitHelper.INSTANCE.deleteNodeAttribute(domainServiceUrl, machineId, platformId, id, currName);
+					boolean currSucceed = OrbitComponentHelper.INSTANCE.deleteNodeAttribute(domainServiceUrl, machineId, platformId, id, currName);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {

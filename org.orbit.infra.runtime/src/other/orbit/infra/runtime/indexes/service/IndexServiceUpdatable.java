@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
-import org.orbit.infra.model.indexes.IndexServiceException;
 import org.orbit.infra.runtime.indexes.service.IndexService;
+import org.origin.common.rest.server.ServerException;
 
 public interface IndexServiceUpdatable extends IndexService {
 
@@ -14,14 +14,14 @@ public interface IndexServiceUpdatable extends IndexService {
 	 * 
 	 * @param indexItem
 	 */
-	public void addCachedIndexItem(IndexItem indexItem) throws IndexServiceException;
+	public void addCachedIndexItem(IndexItem indexItem) throws ServerException;
 
 	/**
 	 * Remove a index item from the cached index items list.
 	 * 
 	 * @param indexItemId
 	 */
-	public void removeCachedIndexItem(Integer indexItemId) throws IndexServiceException;
+	public void removeCachedIndexItem(Integer indexItemId) throws ServerException;
 
 	/**
 	 * Update the properties and last update time of a index item.
@@ -30,6 +30,6 @@ public interface IndexServiceUpdatable extends IndexService {
 	 * @param properties
 	 * @param lastUpdateTime
 	 */
-	public void updateCachedIndexItemProperties(Integer indexItemId, Map<String, Object> properties, Date lastUpdateTime) throws IndexServiceException;
+	public void updateCachedIndexItemProperties(Integer indexItemId, Map<String, Object> properties, Date lastUpdateTime) throws ServerException;
 
 }

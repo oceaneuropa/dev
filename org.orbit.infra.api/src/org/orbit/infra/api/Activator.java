@@ -1,5 +1,6 @@
 package org.orbit.infra.api;
 
+import org.orbit.infra.api.util.ExtensionsRegister;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -16,6 +17,8 @@ public class Activator implements BundleActivator {
 		return context;
 	}
 
+	protected ExtensionsRegister extensionsRegister;
+
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.plugin = this;
@@ -25,10 +28,17 @@ public class Activator implements BundleActivator {
 		ClassLoader loader1 = this.getClass().getClassLoader();
 		ClassLoader loader2 = infraClients.getClass().getClassLoader();
 		infraClients.start(bundleContext);
+
+		this.extensionsRegister = new ExtensionsRegister();
+		this.extensionsRegister.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
+		if (this.extensionsRegister != null) {
+			this.extensionsRegister.stop(bundleContext);
+		}
+
 		InfraClients.getInstance().stop(bundleContext);
 
 		Activator.context = null;

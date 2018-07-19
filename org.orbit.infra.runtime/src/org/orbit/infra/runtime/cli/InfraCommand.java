@@ -11,6 +11,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.runtime.InfraServices;
 import org.orbit.infra.runtime.channel.service.ChannelServiceImpl;
+import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryServiceImpl;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -31,10 +32,12 @@ public class InfraCommand implements CommandActivator {
 
 	// service types
 	public static final String INDEX_SERVICE = "index_service";
+	public static final String EXTENSION_REGISTRY = "extension_registry";
 	public static final String CHANNEL = "channel";
 
 	protected BundleContext bundleContext;
 	protected IndexServiceImpl indexService;
+	protected ExtensionRegistryServiceImpl extensionRegistryService;
 	protected ChannelServiceImpl channelService;
 
 	/**
@@ -74,7 +77,7 @@ public class InfraCommand implements CommandActivator {
 				new String[] { //
 						"lserver_indexitems", //
 						"startservice", "stopservice" //
-		});
+				});
 		OSGiServiceUtil.register(bundleContext, InfraCommand.class.getName(), this, commandProps);
 	}
 

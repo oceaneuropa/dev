@@ -22,7 +22,6 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemRequestVO;
 import org.orbit.infra.model.indexes.IndexItemRevisionVO;
 import org.orbit.infra.model.indexes.IndexItemVO;
-import org.orbit.infra.model.indexes.IndexServiceException;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceDatabaseHelper;
@@ -36,6 +35,7 @@ import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.CommandRequestHandler;
 import org.origin.common.util.CompareUtil;
 import org.origin.common.util.DateUtil;
@@ -140,7 +140,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		if ("sync".equalsIgnoreCase(command)) {
 			try {
 				synchronize();
-			} catch (IndexServiceException e) {
+			} catch (ServerException e) {
 				e.printStackTrace();
 			}
 			return true;
@@ -184,7 +184,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		// Synchronize once when the index service is started, so that the cachedIndexItems and cachedRevisionId can be initialized.
 		try {
 			synchronize();
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
 		}
 
@@ -280,7 +280,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 				addIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name, properties);
 			}
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
 		}
 	}
@@ -314,7 +314,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			public void run() {
 				try {
 					synchronize();
-				} catch (IndexServiceException e) {
+				} catch (ServerException e) {
 					e.printStackTrace();
 				}
 			}
@@ -337,7 +337,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			public void run() {
 				try {
 					validate();
-				} catch (IndexServiceException e) {
+				} catch (ServerException e) {
 					e.printStackTrace();
 				}
 			}
@@ -400,7 +400,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	// ------------------------------------------------------------------------------------------------------------
 	// Methods for synchronization of the cached data
 	// ------------------------------------------------------------------------------------------------------------
-	public synchronized void synchronize() throws IndexServiceException {
+	public synchronized void synchronize() throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".synchronize()");
 			// System.out.println("\t\t\tcurrent cachedRevisionId is " + this.cachedRevisionId);
@@ -458,9 +458,9 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 	/**
 	 * 
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	protected synchronized void reloadCache() throws IndexServiceException {
+	protected synchronized void reloadCache() throws ServerException {
 		if (debug) {
 			System.out.println(getClassName() + ".reloadCache()");
 		}
@@ -505,7 +505,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		}
 
 		if (indexItems == null) {
-			throw new IndexServiceException(StatusDTO.RESP_500, " Cannot load index items from database.");
+			throw new ServerException(StatusDTO.RESP_500, " Cannot load index items from database.");
 		}
 
 		indexItemsRWLock.writeLock().lock();
@@ -534,9 +534,9 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 *            revision id to start with, inclusive
 	 * @param endRevisionId
 	 *            revision id to end with, inclusive
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	protected synchronized void appendRevisions(CommandContext context, int startRevisionId, int endRevisionId) throws IndexServiceException {
+	protected synchronized void appendRevisions(CommandContext context, int startRevisionId, int endRevisionId) throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".appendRevisions()");
 			// System.out.println(getClassName() + ".appendRevisions() startRevisionId=" + startRevisionId + ", endRevisionId=" + endRevisionId);
@@ -566,7 +566,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 				} catch (CommandException e) {
 					e.printStackTrace();
-					throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when a applying a revision with a synchronization command. Message: " + e.getMessage());
+					throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when a applying a revision with a synchronization command. Message: " + e.getMessage());
 				}
 			}
 
@@ -585,9 +585,9 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 *            context to execute revision command.
 	 * @param revisionId
 	 *            revision id to revert to, inclusive
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	protected synchronized void revertToRevision(CommandContext context, int toRevisionId) throws IndexServiceException {
+	protected synchronized void revertToRevision(CommandContext context, int toRevisionId) throws ServerException {
 		if (debug) {
 			System.out.println(getClassName() + ".revertToRevision()");
 			System.out.println("\t\t\trevertToRevision() toRevisionId=" + toRevisionId);
@@ -604,7 +604,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				ICommand command = this.revisionCommandStack.peekUndoCommand();
 
 				if (!(command instanceof RevisionCommand)) {
-					throw new IndexServiceException(StatusDTO.RESP_500, "Cannot revert a non-revision command '" + command.getClass().getName() + "'. A non-revision command is not expected in the command stack.");
+					throw new ServerException(StatusDTO.RESP_500, "Cannot revert a non-revision command '" + command.getClass().getName() + "'. A non-revision command is not expected in the command stack.");
 				}
 
 				int revisionId = ((RevisionCommand) command).getRevisionId();
@@ -620,7 +620,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 				} catch (CommandException e) {
 					e.printStackTrace();
-					throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when reverting a revision with a synchronization command. Message: " + e.getMessage());
+					throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when reverting a revision with a synchronization command. Message: " + e.getMessage());
 				}
 			}
 
@@ -632,7 +632,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		}
 	}
 
-	public void validate() throws IndexServiceException {
+	public void validate() throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".validate()");
 		}
@@ -819,8 +819,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 								String lastUpdateTimeCachedStr = lastUpdateTimeCached != null ? DateUtil.toString(lastUpdateTimeCached, DateUtil.getJdbcDateFormat()) : "null";
 								String lastUpdateTimeSnapshotStr = lastUpdateTimeSnapshot != null ? DateUtil.toString(lastUpdateTimeSnapshot, DateUtil.getJdbcDateFormat()) : "null";
 
-								System.err.println("\t\t\tvalidate() indexItemSnapshot (lastUpdateTime=" + lastUpdateTimeSnapshotStr + ") is out of sync with cachedIndexItem (lastUpdateTime=" + lastUpdateTimeCachedStr
-										+ "). The cachedIndexItem has been updated duirng validation. Update of the cachedIndexItem (indexItemId=" + cachedIndexItem.getIndexItemId() + ") is cancelled");
+								System.err.println("\t\t\tvalidate() indexItemSnapshot (lastUpdateTime=" + lastUpdateTimeSnapshotStr + ") is out of sync with cachedIndexItem (lastUpdateTime=" + lastUpdateTimeCachedStr + "). The cachedIndexItem has been updated duirng validation. Update of the cachedIndexItem (indexItemId=" + cachedIndexItem.getIndexItemId() + ") is cancelled");
 								continue;
 							}
 
@@ -837,7 +836,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		}
 	}
 
-	protected List<IndexItem> getIndexItems() throws IndexServiceException {
+	protected List<IndexItem> getIndexItems() throws ServerException {
 		this.indexItemsRWLock.readLock().lock();
 		try {
 			List<IndexItem> indexItems = new ArrayList<IndexItem>();
@@ -849,7 +848,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	}
 
 	@Override
-	public List<IndexItem> getIndexItems(String indexProviderId) throws IndexServiceException {
+	public List<IndexItem> getIndexItems(String indexProviderId) throws ServerException {
 		this.indexItemsRWLock.readLock().lock();
 		try {
 			List<IndexItem> indexItems = new ArrayList<IndexItem>();
@@ -865,7 +864,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	}
 
 	@Override
-	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IndexServiceException {
+	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws ServerException {
 		this.indexItemsRWLock.readLock().lock();
 		try {
 			List<IndexItem> indexItems = new ArrayList<IndexItem>();
@@ -881,7 +880,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	}
 
 	@Override
-	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IndexServiceException {
+	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws ServerException {
 		this.indexItemsRWLock.readLock().lock();
 		try {
 			IndexItem result = null;
@@ -898,7 +897,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	}
 
 	@Override
-	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IndexServiceException {
+	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws ServerException {
 		this.indexItemsRWLock.readLock().lock();
 		try {
 			IndexItem result = null;
@@ -920,10 +919,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * @param indexItemId
 	 * @param propName
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
 	@Override
-	public boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws IndexServiceException {
+	public boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException {
 		if (debug) {
 			System.out.println(getClassName() + ".hasProperty(" + indexItemId + ", '" + propName + "')");
 		}
@@ -960,10 +959,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * 
 	 * @param indexItemId
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
 	@Override
-	public Map<String, Object> getProperties(String indexProviderId, Integer indexItemId) throws IndexServiceException {
+	public Map<String, Object> getProperties(String indexProviderId, Integer indexItemId) throws ServerException {
 		if (debug) {
 			System.out.println(getClassName() + ".getProperties(indexItemId=" + indexItemId + ")");
 		}
@@ -1006,10 +1005,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * @param indexItemId
 	 * @param propName
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
 	@Override
-	public Object getProperty(String indexProviderId, Integer indexItemId, String propName) throws IndexServiceException {
+	public Object getProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException {
 		if (debug) {
 			System.out.println(getClassName() + ".getProperty(" + indexItemId + ", '" + propName + "')");
 		}
@@ -1050,9 +1049,9 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * @param requestCommand
 	 * @param requestArguments
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	protected Object[] createRequest(String indexProviderId, String requestCommand, Map<String, Object> requestArguments) throws IndexServiceException {
+	protected Object[] createRequest(String indexProviderId, String requestCommand, Map<String, Object> requestArguments) throws ServerException {
 		// -------------------------------------------------------------------------------------------------------
 		// Step1. Create a new request in database.
 		// -------------------------------------------------------------------------------------------------------
@@ -1100,7 +1099,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 					e.printStackTrace();
 				}
 			}
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			// Mark the request as cancelled and stops the requestUpdater.
 			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
 			throw e;
@@ -1145,13 +1144,13 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				// e.printStackTrace();
 				// }
 			}
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IndexServiceException {
+	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws ServerException {
 		boolean succeed = false;
 
 		// -------------------------------------------------------------------------------------------------------
@@ -1211,7 +1210,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				return indexItem;
 			}
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			// -------------------------------------------------------------------------------------------------------
 			// Step 5. Cancel the request
 			// -------------------------------------------------------------------------------------------------------
@@ -1253,10 +1252,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * 
 	 * @param indexProviderId
 	 * @param indexItemId
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
 	@Override
-	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IndexServiceException {
+	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws ServerException {
 		boolean succeed = false;
 
 		// 1. Retrieve index item data from database.
@@ -1316,7 +1315,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				succeed = true;
 			}
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			// Mark the request as cancelled and stops the requestUpdater.
 			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
 			throw e;
@@ -1347,10 +1346,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * @param indexProviderId
 	 * @param indexItemId
 	 * @param properties
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
 	@Override
-	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IndexServiceException {
+	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws ServerException {
 		boolean succeed = false;
 
 		// 1. Retrieve index item data from database.
@@ -1416,7 +1415,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				succeed = true;
 			}
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			// Mark the request as cancelled and stops the requestUpdater.
 			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
 			throw e;
@@ -1448,10 +1447,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * @param indexItemId
 	 * @param propNames
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
 	@Override
-	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws IndexServiceException {
+	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException {
 		boolean succeed = false;
 
 		// 1. Retrieve index item data from database.
@@ -1526,7 +1525,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				succeed = true;
 			}
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			// Mark the request as cancelled and stops the requestUpdater.
 			getDatabaseHelper().cancelRequestInDatabase(this, requestId, requestUpdaterHandle);
 			throw e;
@@ -1574,7 +1573,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	// ------------------------------------------------------------------------------------------------------------
 	/** implement IndexServiceUpdatable interface */
 	@Override
-	public void addCachedIndexItem(IndexItem indexItem) throws IndexServiceException {
+	public void addCachedIndexItem(IndexItem indexItem) throws ServerException {
 		if (debug) {
 			System.out.println(getClassName() + ".addCachedIndexItem()");
 		}
@@ -1589,7 +1588,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				}
 			}
 			if (indexItemIdExists) {
-				throw new IndexServiceException(ERROR_CODE_INDEX_ITEM_EXIST, "Index item with id '" + indexItem.getIndexItemId() + "' already exists.");
+				throw new ServerException(ERROR_CODE_INDEX_ITEM_EXIST, "Index item with id '" + indexItem.getIndexItemId() + "' already exists.");
 			}
 			this.cachedIndexItems.add(indexItem);
 
@@ -1602,7 +1601,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	}
 
 	@Override
-	public void removeCachedIndexItem(Integer indexItemId) throws IndexServiceException {
+	public void removeCachedIndexItem(Integer indexItemId) throws ServerException {
 		if (debug) {
 			System.out.println(getClassName() + ".removeCachedIndexItem()");
 		}
@@ -1618,7 +1617,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			}
 
 			if (indexItemToRemove == null) {
-				throw new IndexServiceException(ERROR_CODE_INDEX_ITEM_NOT_FOUND, "Index item with id '" + indexItemId + "' is not found.");
+				throw new ServerException(ERROR_CODE_INDEX_ITEM_NOT_FOUND, "Index item with id '" + indexItemId + "' is not found.");
 			}
 
 			this.cachedIndexItems.remove(indexItemToRemove);
@@ -1632,7 +1631,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	}
 
 	@Override
-	public void updateCachedIndexItemProperties(Integer indexItemId, Map<String, Object> properties, Date lastUpdateTime) throws IndexServiceException {
+	public void updateCachedIndexItemProperties(Integer indexItemId, Map<String, Object> properties, Date lastUpdateTime) throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".udpateCachedIndexItem()");
 		}
@@ -1648,7 +1647,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			}
 
 			if (indexItemToUpdate == null) {
-				throw new IndexServiceException(ERROR_CODE_INDEX_ITEM_NOT_FOUND, "Index item with id '" + indexItemId + "' is not found.");
+				throw new ServerException(ERROR_CODE_INDEX_ITEM_NOT_FOUND, "Index item with id '" + indexItemId + "' is not found.");
 			}
 
 			indexItemToUpdate.setProperties(properties);
@@ -1720,9 +1719,9 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * @param cachedIndexItem
 	 * @param indexItemFromDatabase
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	private boolean update(IndexItem cachedIndexItem, IndexItem indexItemFromDatabase) throws IndexServiceException {
+	private boolean update(IndexItem cachedIndexItem, IndexItem indexItemFromDatabase) throws ServerException {
 		if (cachedIndexItem == null) {
 			if (debug) {
 				System.err.println(getClassName() + ".update() cachedIndexItem is null.");
@@ -1756,7 +1755,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 		boolean matchIndexItemId = CompareUtil.equals(indexItemId1, indexItemId2, false);
 		if (!matchIndexItemId) {
-			throw new IndexServiceException(StatusDTO.RESP_500, "Cannot update cached index item (indexItemId=" + indexItemId1 + ") with an index item from database with different index item id (indexItemId=" + indexItemId2 + ").");
+			throw new ServerException(StatusDTO.RESP_500, "Cannot update cached index item (indexItemId=" + indexItemId1 + ") with an index item from database with different index item id (indexItemId=" + indexItemId2 + ").");
 		}
 
 		boolean matchIndexProviderId = CompareUtil.equals(indexProviderId1, indexProviderId2, true);

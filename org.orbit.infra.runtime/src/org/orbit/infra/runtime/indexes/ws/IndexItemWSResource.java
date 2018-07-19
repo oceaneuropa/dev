@@ -23,12 +23,11 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertiesRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertyRequestDTO;
-import org.orbit.infra.model.indexes.IndexServiceException;
-import org.orbit.infra.model.indexes.ModelConverter;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.StringUtil;
 import org.slf4j.Logger;
@@ -71,12 +70,12 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 	}
 
 	/**
-	 * Handle IndexServiceException and create ErrorDTO from it.
+	 * Handle ServerException and create ErrorDTO from it.
 	 * 
 	 * @param e
 	 * @return
 	 */
-	protected ErrorDTO handleError(IndexServiceException e) {
+	protected ErrorDTO handleError(ServerException e) {
 		e.printStackTrace();
 		this.logger.error(e.getMessage());
 		return ModelConverter.getInstance().toDTO(e);
@@ -107,7 +106,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 				indexItemDTO = ModelConverter.getInstance().toDTO(indexItem);
 			}
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -141,7 +140,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 			// delete IndexItem by indexItemId
 			succeed = indexService.removeIndexItem(indexProviderId, indexItemId);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -178,7 +177,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 		try {
 			properties = indexService.getProperties(indexProviderId, indexItemId);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -232,7 +231,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 
 			succeed = indexService.setProperties(indexProviderId, indexItemId, existingProperties);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -340,7 +339,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 
 			succeed = indexService.setProperties(indexProviderId, indexItemId, properties);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -386,7 +385,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 
 			indexService.removeProperty(indexProviderId, indexItemId, (List<String>) propNames);
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -457,4 +456,16 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 // System.err.println("\t\t " + propName + "=" + propValue);
 // }
 // }
+// }
+
+/// **
+// * Handle IndexServiceException and create ErrorDTO from it.
+// *
+// * @param e
+// * @return
+// */
+// protected ErrorDTO handleError(IndexServiceException e) {
+// e.printStackTrace();
+// this.logger.error(e.getMessage());
+// return ModelConverter.getInstance().toDTO(e);
 // }

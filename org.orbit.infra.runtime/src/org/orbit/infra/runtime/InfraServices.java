@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.orbit.infra.runtime.channel.ws.ChannelServiceAdapter;
+import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
+import org.orbit.infra.runtime.extensionregistry.ws.ExtensionRegistryAdapter;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.ws.IndexServiceAdapter;
 import org.origin.common.util.PropertyUtil;
@@ -31,26 +33,44 @@ public class InfraServices {
 	}
 
 	protected IndexServiceAdapter indexServiceAdapter;
+	protected ExtensionRegistryAdapter extensionRegistryAdapter;
 	protected ChannelServiceAdapter channelServiceAdapter;
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
 
 		// Start service adapters
 		this.indexServiceAdapter = new IndexServiceAdapter(properties);
 		this.indexServiceAdapter.start(bundleContext);
 
+		this.extensionRegistryAdapter = new ExtensionRegistryAdapter(properties);
+		this.extensionRegistryAdapter.start(bundleContext);
+
 		this.channelServiceAdapter = new ChannelServiceAdapter(properties);
 		this.channelServiceAdapter.start(bundleContext);
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void stop(BundleContext bundleContext) {
 		// Stop service adapters
 		if (this.channelServiceAdapter != null) {
 			this.channelServiceAdapter.stop(bundleContext);
 			this.channelServiceAdapter = null;
+		}
+
+		if (this.extensionRegistryAdapter != null) {
+			this.extensionRegistryAdapter.stop(bundleContext);
+			this.extensionRegistryAdapter = null;
 		}
 
 		if (this.indexServiceAdapter != null) {
@@ -61,6 +81,10 @@ public class InfraServices {
 
 	public IndexService getIndexService() {
 		return (this.indexServiceAdapter != null) ? this.indexServiceAdapter.getService() : null;
+	}
+
+	public ExtensionRegistryService getExtensionRegistryService() {
+		return (this.extensionRegistryAdapter != null) ? this.extensionRegistryAdapter.getService() : null;
 	}
 
 	public ChannelService getChannelService() {

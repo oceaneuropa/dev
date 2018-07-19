@@ -18,12 +18,11 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
-import org.orbit.infra.model.indexes.IndexServiceException;
-import org.orbit.infra.model.indexes.ModelConverter;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.util.Printer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +121,7 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 			}
 			// System.out.println("-------------------------------------------------------------------------------------------");
 
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
@@ -167,7 +166,7 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 			if (newIndexItem != null) {
 				newIndexItemDTO = ModelConverter.getInstance().toDTO(newIndexItem);
 			}
-		} catch (IndexServiceException e) {
+		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}

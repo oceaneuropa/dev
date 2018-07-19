@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeStartServlet extends HttpServlet {
@@ -53,7 +53,7 @@ public class NodeStartServlet extends HttpServlet {
 		if (!machineId.isEmpty() && !platformId.isEmpty() && nodeIds.length > 0) {
 			for (String currNodeId : nodeIds) {
 				try {
-					boolean currSucceed = OrbitHelper.INSTANCE.startNode(domainServiceUrl, machineId, platformId, currNodeId);
+					boolean currSucceed = OrbitComponentHelper.INSTANCE.startNode(domainServiceUrl, machineId, platformId, currNodeId);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {

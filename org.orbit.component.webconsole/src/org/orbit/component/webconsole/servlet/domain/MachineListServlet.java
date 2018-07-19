@@ -12,7 +12,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 
 public class MachineListServlet extends HttpServlet {
 
@@ -43,7 +43,7 @@ public class MachineListServlet extends HttpServlet {
 		MachineConfig[] machineConfigs = null;
 
 		try {
-			machineConfigs = OrbitHelper.INSTANCE.getMachineConfigs(domainServiceUrl);
+			machineConfigs = OrbitComponentHelper.INSTANCE.getMachineConfigs(domainServiceUrl);
 
 		} catch (Exception e) {
 			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

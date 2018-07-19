@@ -14,8 +14,8 @@ import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
-import org.orbit.component.webconsole.servlet.OrbitIndexHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
+import org.orbit.component.webconsole.servlet.OrbitInfraHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.platform.api.PlatformConstants;
@@ -49,12 +49,12 @@ public class PlatformListServlet extends HttpServlet {
 
 		if (!machineId.isEmpty()) {
 			try {
-				machineConfig = OrbitHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
+				machineConfig = OrbitComponentHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
 
-				platformConfigs = OrbitHelper.INSTANCE.getPlatformConfigs(domainServiceUrl, machineId);
+				platformConfigs = OrbitComponentHelper.INSTANCE.getPlatformConfigs(domainServiceUrl, machineId);
 
 				// Get index items for platforms with type "server"
-				Map<String, IndexItem> platformIdToIndexItem = OrbitIndexHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, null, PlatformConstants.PLATFORM_TYPE__SERVER);
+				Map<String, IndexItem> platformIdToIndexItem = OrbitInfraHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, null, PlatformConstants.PLATFORM_TYPE__SERVER);
 				if (platformConfigs != null) {
 					for (PlatformConfig platformConfig : platformConfigs) {
 						String platformId = platformConfig.getId();

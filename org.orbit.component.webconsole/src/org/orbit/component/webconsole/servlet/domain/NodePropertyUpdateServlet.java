@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodePropertyUpdateServlet extends HttpServlet {
@@ -55,7 +55,7 @@ public class NodePropertyUpdateServlet extends HttpServlet {
 
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && !name.isEmpty()) {
 			try {
-				succeed = OrbitHelper.INSTANCE.updateNodeAttribute(domainServiceUrl, machineId, platformId, id, oldName, name, value);
+				succeed = OrbitComponentHelper.INSTANCE.updateNodeAttribute(domainServiceUrl, machineId, platformId, id, oldName, name, value);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

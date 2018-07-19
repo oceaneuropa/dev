@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -44,7 +44,7 @@ public class PlatformDeleteServlet extends HttpServlet {
 		if (!machineId.isEmpty() && ids.length > 0) {
 			try {
 				for (String currId : ids) {
-					boolean currSucceed = OrbitHelper.INSTANCE.removePlatformConfig(domainServiceUrl, machineId, currId);
+					boolean currSucceed = OrbitComponentHelper.INSTANCE.removePlatformConfig(domainServiceUrl, machineId, currId);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {

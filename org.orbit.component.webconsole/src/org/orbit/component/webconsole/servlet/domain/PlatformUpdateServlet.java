@@ -12,7 +12,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -42,12 +42,12 @@ public class PlatformUpdateServlet extends HttpServlet {
 		boolean succeed = false;
 		if (machineId != null && id != null) {
 			try {
-				PlatformConfig platformConfig = OrbitHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, id);
+				PlatformConfig platformConfig = OrbitComponentHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, id);
 				if (platformConfig == null) {
 					message = MessageHelper.INSTANCE.add(message, "Platform configuration is not found.");
 
 				} else {
-					succeed = OrbitHelper.INSTANCE.updatePlatformConfig(domainServiceUrl, machineId, id, name, hostUrl, theContextRoot);
+					succeed = OrbitComponentHelper.INSTANCE.updatePlatformConfig(domainServiceUrl, machineId, id, name, hostUrl, theContextRoot);
 				}
 
 			} catch (ClientException e) {

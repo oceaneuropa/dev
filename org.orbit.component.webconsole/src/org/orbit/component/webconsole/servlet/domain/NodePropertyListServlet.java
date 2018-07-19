@@ -14,8 +14,8 @@ import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
-import org.orbit.component.webconsole.servlet.OrbitIndexHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
+import org.orbit.component.webconsole.servlet.OrbitInfraHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.origin.common.util.ServletUtil;
 
@@ -64,13 +64,13 @@ public class NodePropertyListServlet extends HttpServlet {
 
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
 			try {
-				machineConfig = OrbitHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
+				machineConfig = OrbitComponentHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
 
-				platformConfig = OrbitHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
+				platformConfig = OrbitComponentHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
 
-				nodeInfo = OrbitHelper.INSTANCE.getNode(domainServiceUrl, machineId, platformId, id);
+				nodeInfo = OrbitComponentHelper.INSTANCE.getNode(domainServiceUrl, machineId, platformId, id);
 
-				nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
+				nodeIndexItem = OrbitInfraHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

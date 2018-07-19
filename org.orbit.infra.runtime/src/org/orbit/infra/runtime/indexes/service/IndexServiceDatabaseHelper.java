@@ -15,11 +15,11 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemRequestVO;
 import org.orbit.infra.model.indexes.IndexItemRevisionVO;
 import org.orbit.infra.model.indexes.IndexItemVO;
-import org.orbit.infra.model.indexes.IndexServiceException;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.ServerException;
 
 import other.orbit.infra.runtime.indexes.service.IndexItemDataTableHandler;
 import other.orbit.infra.runtime.indexes.service.IndexItemRequestTableHandler;
@@ -45,9 +45,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param connAware
 	 * @param requestId
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public boolean hasActivePendingRequestsInDatabase(ConnectionAware connAware, Integer requestId) throws IndexServiceException {
+	public boolean hasActivePendingRequestsInDatabase(ConnectionAware connAware, Integer requestId) throws ServerException {
 		boolean hasActivePendingRequests = false;
 		Connection conn = null;
 		try {
@@ -60,7 +60,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting active pending requests from database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting active pending requests from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -75,9 +75,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param command
 	 * @param argumentsString
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public IndexItemRequestVO createNewRequestInDatabase(ConnectionAware connAware, String indexProviderId, String command, String argumentsString) throws IndexServiceException {
+	public IndexItemRequestVO createNewRequestInDatabase(ConnectionAware connAware, String indexProviderId, String command, String argumentsString) throws ServerException {
 		IndexItemRequestVO newRequestVO = null;
 		Connection conn = null;
 		try {
@@ -86,12 +86,12 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating a request for creating an index item in database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating a request for creating an index item in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		if (newRequestVO == null) {
-			throw new IndexServiceException(StatusDTO.RESP_500, "Cannot create request for creating an index item in database.");
+			throw new ServerException(StatusDTO.RESP_500, "Cannot create request for creating an index item in database.");
 		}
 		return newRequestVO;
 	}
@@ -121,9 +121,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param connAware
 	 * @param requestId
 	 * @param requestUpdaterHandle
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public void completeRequestInDatabase(ConnectionAware connAware, Integer requestId, ScheduledFuture<?> requestUpdaterHandle) throws IndexServiceException {
+	public void completeRequestInDatabase(ConnectionAware connAware, Integer requestId, ScheduledFuture<?> requestUpdaterHandle) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -138,7 +138,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating a request as completed in database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating a request as completed in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -150,9 +150,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param connAware
 	 * @param requestId
 	 * @param requestUpdaterHandle
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public void cancelRequestInDatabase(ConnectionAware connAware, Integer requestId, ScheduledFuture<?> requestUpdaterHandle) throws IndexServiceException {
+	public void cancelRequestInDatabase(ConnectionAware connAware, Integer requestId, ScheduledFuture<?> requestUpdaterHandle) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -167,7 +167,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating a request as cancelled in database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating a request as cancelled in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -178,9 +178,9 @@ public class IndexServiceDatabaseHelper {
 	 * 
 	 * @param connAware
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public List<IndexItem> getIndexItemsFromDatabase(ConnectionAware connAware) throws IndexServiceException {
+	public List<IndexItem> getIndexItemsFromDatabase(ConnectionAware connAware) throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".getIndexItemsFromDatabase()");
 		}
@@ -195,7 +195,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when loading index items from database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when loading index items from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -218,9 +218,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param connAware
 	 * @param indexItemId
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public IndexItemVO getIndexItemFromDatabase(ConnectionAware connAware, Integer indexItemId) throws IndexServiceException {
+	public IndexItemVO getIndexItemFromDatabase(ConnectionAware connAware, Integer indexItemId) throws ServerException {
 		IndexItemVO indexItemVO = null;
 		Connection conn = null;
 		try {
@@ -229,7 +229,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when loading index item (indexItemid=" + indexItemId + ") from database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when loading index item (indexItemid=" + indexItemId + ") from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -265,9 +265,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param name
 	 * @param propertiesString
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public IndexItemVO createIndexItemInDatabase(ConnectionAware connAware, String indexProviderId, String type, String name, String propertiesString) throws IndexServiceException {
+	public IndexItemVO createIndexItemInDatabase(ConnectionAware connAware, String indexProviderId, String type, String name, String propertiesString) throws ServerException {
 		IndexItemVO newIndexItemVO = null;
 		Connection conn = null;
 		try {
@@ -276,12 +276,12 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating an index item in database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating an index item in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		if (newIndexItemVO == null) {
-			throw new IndexServiceException(StatusDTO.RESP_500, "Cannot create index item in database.");
+			throw new ServerException(StatusDTO.RESP_500, "Cannot create index item in database.");
 		}
 		return newIndexItemVO;
 	}
@@ -291,9 +291,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param connAware
 	 * @param indexItemId
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public boolean deleteIndexItemInDatababse(ConnectionAware connAware, Integer indexItemId) throws IndexServiceException {
+	public boolean deleteIndexItemInDatababse(ConnectionAware connAware, Integer indexItemId) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = connAware.getConnection();
@@ -301,7 +301,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when deleting an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when deleting an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -314,9 +314,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param allProperties
 	 * @param lastUpdateTime
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public boolean updateIndexItemPropertiesInDatabase(ConnectionAware connAware, Integer indexItemId, Map<String, Object> allProperties, Date lastUpdateTime) throws IndexServiceException {
+	public boolean updateIndexItemPropertiesInDatabase(ConnectionAware connAware, Integer indexItemId, Map<String, Object> allProperties, Date lastUpdateTime) throws ServerException {
 		Connection conn = null;
 		try {
 			String propertiesString = JSONUtil.toJsonString(allProperties);
@@ -325,7 +325,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating the properties of an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when updating the properties of an index item (indexItemId=" + indexItemId + ") in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -335,9 +335,9 @@ public class IndexServiceDatabaseHelper {
 	 * 
 	 * @param connAware
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public int getLatestRevisionIdFromDatabase(ConnectionAware connAware) throws IndexServiceException {
+	public int getLatestRevisionIdFromDatabase(ConnectionAware connAware) throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".getLatestRevisionIdFromDatabase()");
 		}
@@ -352,7 +352,7 @@ public class IndexServiceDatabaseHelper {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting latest revision id from database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting latest revision id from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -365,9 +365,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param startRevisionId
 	 * @param endRevisionId
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public List<IndexItemRevisionVO> getRevisionsFromDatabase(ConnectionAware connAware, int startRevisionId, int endRevisionId) throws IndexServiceException {
+	public List<IndexItemRevisionVO> getRevisionsFromDatabase(ConnectionAware connAware, int startRevisionId, int endRevisionId) throws ServerException {
 		if (debug) {
 			// System.out.println(getClassName() + ".getRevisionsFromDatabase()");
 		}
@@ -380,7 +380,7 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting revisions from database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when getting revisions from database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
@@ -400,9 +400,9 @@ public class IndexServiceDatabaseHelper {
 	 * @param undoCommand
 	 * @param undoCommandArguments
 	 * @return
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	public IndexItemRevisionVO createRevisionInDatabase(ConnectionAware connAware, String indexProviderId, String command, Map<String, Object> commandArguments, String undoCommand, Map<String, Object> undoCommandArguments) throws IndexServiceException {
+	public IndexItemRevisionVO createRevisionInDatabase(ConnectionAware connAware, String indexProviderId, String command, Map<String, Object> commandArguments, String undoCommand, Map<String, Object> undoCommandArguments) throws ServerException {
 		IndexItemRevisionVO newRevisionVO = null;
 		Connection conn = null;
 		try {
@@ -416,12 +416,12 @@ public class IndexServiceDatabaseHelper {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new IndexServiceException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating a revision in database. Message: " + e.getMessage());
+			throw new ServerException(StatusDTO.RESP_500, e.getClass().getName() + " occurs when creating a revision in database. Message: " + e.getMessage());
 		} finally {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		if (newRevisionVO == null) {
-			throw new IndexServiceException(StatusDTO.RESP_500, "Cannot create revision in database.");
+			throw new ServerException(StatusDTO.RESP_500, "Cannot create revision in database.");
 		}
 		return newRevisionVO;
 	}

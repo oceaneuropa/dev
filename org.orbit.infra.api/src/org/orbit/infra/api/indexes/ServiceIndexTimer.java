@@ -97,7 +97,3 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexPro
 	}
 
 }
-
-// public MyIndexProviderWrapper(IndexProvider indexProvider) {
-// super(indexProvider);
-// }

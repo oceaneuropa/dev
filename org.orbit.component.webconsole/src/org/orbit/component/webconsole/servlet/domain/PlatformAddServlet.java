@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -42,7 +42,7 @@ public class PlatformAddServlet extends HttpServlet {
 
 		if (!machineId.isEmpty() && !id.isEmpty()) {
 			try {
-				succeed = OrbitHelper.INSTANCE.addPlatformConfig(domainServiceUrl, machineId, id, name, hostUrl, theContextRoot);
+				succeed = OrbitComponentHelper.INSTANCE.addPlatformConfig(domainServiceUrl, machineId, id, name, hostUrl, theContextRoot);
 
 			} catch (ClientException e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

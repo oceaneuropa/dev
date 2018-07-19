@@ -1,6 +1,7 @@
 package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,8 +14,9 @@ import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
-import org.orbit.component.webconsole.servlet.OrbitIndexHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
+import org.orbit.component.webconsole.servlet.OrbitInfraHelper;
+import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.origin.common.util.ServletUtil;
 
@@ -29,6 +31,7 @@ public class PlatformPropertyListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
+		String extensionRegistryUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_EXTENSION_REGISTRY_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -55,14 +58,17 @@ public class PlatformPropertyListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		IndexItem platformIndexItem = null;
+		List<ExtensionItem> extensionItems = null;
 
 		if (!machineId.isEmpty() && !id.isEmpty()) {
 			try {
-				machineConfig = OrbitHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
+				machineConfig = OrbitComponentHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
 
-				platformConfig = OrbitHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, id);
+				platformConfig = OrbitComponentHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, id);
 
-				platformIndexItem = OrbitIndexHelper.INSTANCE.getPlatformIndexItem(indexServiceUrl, id);
+				platformIndexItem = OrbitInfraHelper.INSTANCE.getPlatformIndexItem(indexServiceUrl, id);
+
+				extensionItems = OrbitInfraHelper.INSTANCE.getExtensionItems(extensionRegistryUrl, id);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -85,7 +91,9 @@ public class PlatformPropertyListServlet extends HttpServlet {
 		if (platformIndexItem != null) {
 			request.setAttribute("platformIndexItem", platformIndexItem);
 		}
-
+		if (extensionItems != null) {
+			request.setAttribute("extensionItems", extensionItems);
+		}
 		request.getRequestDispatcher(contextRoot + "/views/domain_platform_properties_v1.jsp").forward(request, response);
 	}
 

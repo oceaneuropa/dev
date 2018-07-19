@@ -4,11 +4,11 @@ import java.util.Date;
 import java.util.Map;
 
 import org.orbit.infra.model.indexes.IndexItem;
-import org.orbit.infra.model.indexes.IndexServiceException;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
 import org.origin.common.command.impl.CommandResult;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.runtime.Status;
 
 public class RevisionCommand extends AbstractCommand {
@@ -65,7 +65,7 @@ public class RevisionCommand extends AbstractCommand {
 			try {
 				IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, type, name, properties, createTime, lastUpdateTime);
 				this.indexServiceUpdatable.addCachedIndexItem(indexItem);
-			} catch (IndexServiceException e) {
+			} catch (ServerException e) {
 				e.printStackTrace();
 				throw new CommandException(e);
 			}
@@ -75,7 +75,7 @@ public class RevisionCommand extends AbstractCommand {
 
 			try {
 				this.indexServiceUpdatable.removeCachedIndexItem(indexItemId);
-			} catch (IndexServiceException e) {
+			} catch (ServerException e) {
 				e.printStackTrace();
 				throw new CommandException(e);
 			}
@@ -90,7 +90,7 @@ public class RevisionCommand extends AbstractCommand {
 
 			try {
 				this.indexServiceUpdatable.updateCachedIndexItemProperties(indexItemId, properties, lastUpdateTime);
-			} catch (IndexServiceException e) {
+			} catch (ServerException e) {
 				e.printStackTrace();
 				throw new CommandException(e);
 			}
@@ -120,7 +120,7 @@ public class RevisionCommand extends AbstractCommand {
 			IndexItem indexItem = new IndexItem(indexItemId, indexProviderId, type, name, properties, createTime, lastUpdateTime);
 			try {
 				this.indexServiceUpdatable.addCachedIndexItem(indexItem);
-			} catch (IndexServiceException e) {
+			} catch (ServerException e) {
 				e.printStackTrace();
 				throw new CommandException(e);
 			}
@@ -130,7 +130,7 @@ public class RevisionCommand extends AbstractCommand {
 
 			try {
 				this.indexServiceUpdatable.removeCachedIndexItem(indexItemId);
-			} catch (IndexServiceException e) {
+			} catch (ServerException e) {
 				e.printStackTrace();
 				throw new CommandException(e);
 			}
@@ -145,7 +145,7 @@ public class RevisionCommand extends AbstractCommand {
 
 			try {
 				this.indexServiceUpdatable.updateCachedIndexItemProperties(indexItemId, properties, lastUpdateTime);
-			} catch (IndexServiceException e) {
+			} catch (ServerException e) {
 				e.printStackTrace();
 				throw new CommandException(e);
 			}

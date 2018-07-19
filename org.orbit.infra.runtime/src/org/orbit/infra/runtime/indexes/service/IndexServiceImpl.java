@@ -13,11 +13,11 @@ import java.util.Properties;
 
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemVO;
-import org.orbit.infra.model.indexes.IndexServiceException;
 import org.orbit.infra.runtime.InfraConstants;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.StatusDTO;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -175,24 +175,35 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 		return contextRoot;
 	}
 
+	// /**
+	// *
+	// * @param e
+	// * @throws IndexServiceException
+	// */
+	// protected void handleSQLException(SQLException e) throws IndexServiceException {
+	// e.printStackTrace();
+	// throw new IndexServiceException(StatusDTO.RESP_500, e.getMessage(), e);
+	// }
+
 	/**
 	 * 
 	 * @param e
-	 * @throws IndexServiceException
+	 * @throws ServerException
 	 */
-	protected void handleSQLException(SQLException e) throws IndexServiceException {
+	protected void handleSQLException(SQLException e) throws ServerException {
 		e.printStackTrace();
-		throw new IndexServiceException(StatusDTO.RESP_500, e.getMessage(), e);
+		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	@Override
-	public List<IndexItem> getIndexItems(String indexProviderId) throws IndexServiceException {
+	public List<IndexItem> getIndexItems(String indexProviderId) throws ServerException {
 		LOG.debug("getIndexItems(String)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 			List<IndexItemVO> indexItemVOs = tableHandler.getIndexItems(conn);
 			LOG.debug("---------------------------------------------------------------------------");
@@ -214,14 +225,15 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IndexServiceException {
+	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws ServerException {
 		LOG.debug("getIndexItems(String, String)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    type = " + type);
 
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 			List<IndexItemVO> indexItemVOs = tableHandler.getIndexItems(conn, type);
 			LOG.debug("---------------------------------------------------------------------------");
@@ -243,14 +255,15 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws IndexServiceException {
+	public IndexItem getIndexItem(String indexProviderId, String type, String name) throws ServerException {
 		LOG.debug("getIndexItem(String, String, String)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    type = " + type);
 		LOG.debug("    name = " + name);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 			IndexItemVO indexItemVO = tableHandler.getIndexItem(conn, type, name);
 			if (indexItemVO != null) {
@@ -271,13 +284,14 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IndexServiceException {
+	public IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws ServerException {
 		LOG.debug("getIndexItem(String, Integer)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    indexItemId = " + indexItemId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 			IndexItemVO indexItemVO = tableHandler.getIndexItem(conn, indexItemId);
 			if (indexItemVO != null) {
@@ -297,7 +311,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IndexServiceException {
+	public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws ServerException {
 		LOG.debug("addIndexItem(String, String, String, Map<String, Object>)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    type = " + type);
@@ -313,8 +327,9 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 			}
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 
 			String propertiesString = JSONUtil.toJsonString(properties);
@@ -340,13 +355,14 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IndexServiceException {
+	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws ServerException {
 		LOG.debug("removeIndexItem(String, Integer)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    indexItemId = " + indexItemId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 			return tableHandler.delete(conn, indexItemId);
 
@@ -359,14 +375,15 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws IndexServiceException {
+	public boolean hasProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException {
 		LOG.debug("hasProperty(String, Integer, String)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    indexItemId = " + indexItemId);
 		LOG.debug("    propName = " + propName);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 
 			IndexItemVO indexItemVO = tableHandler.getIndexItem(conn, indexItemId);
@@ -389,13 +406,14 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public Map<String, Object> getProperties(String indexProviderId, Integer indexItemId) throws IndexServiceException {
+	public Map<String, Object> getProperties(String indexProviderId, Integer indexItemId) throws ServerException {
 		LOG.debug("getProperties(String, Integer)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    indexItemId = " + indexItemId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 
 			IndexItemVO indexItemVO = tableHandler.getIndexItem(conn, indexItemId);
@@ -416,14 +434,15 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public Object getProperty(String indexProviderId, Integer indexItemId, String propName) throws IndexServiceException {
+	public Object getProperty(String indexProviderId, Integer indexItemId, String propName) throws ServerException {
 		LOG.debug("getProperty(String, Integer, String)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    indexItemId = " + indexItemId);
 		LOG.debug("    propName = " + propName);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 
 			IndexItemVO indexItemVO = tableHandler.getIndexItem(conn, indexItemId);
@@ -446,7 +465,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IndexServiceException {
+	public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws ServerException {
 		LOG.debug("setProperties(String, Map<String, Object>)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		if (properties == null) {
@@ -460,8 +479,9 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 			}
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 
 			IndexItemVO indexItemVO = tableHandler.getIndexItem(conn, indexItemId);
@@ -492,7 +512,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws IndexServiceException {
+	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException {
 		LOG.debug("removeProperty(String, Integer, List<String>)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    indexItemId = " + indexItemId);
@@ -505,8 +525,9 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 			}
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			IndexItemsTableHandler tableHandler = IndexItemsTableHandler.getInstance(conn, indexProviderId);
 
 			IndexItemVO indexItemVO = tableHandler.getIndexItem(conn, indexItemId);

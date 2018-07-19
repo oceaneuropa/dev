@@ -1,4 +1,4 @@
-package org.orbit.infra.model.indexes;
+package other.orbit.infra.model.indexes;
 
 public class IndexServiceException extends Exception {
 

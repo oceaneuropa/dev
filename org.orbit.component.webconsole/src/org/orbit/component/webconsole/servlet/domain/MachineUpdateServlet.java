@@ -12,7 +12,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -38,12 +38,12 @@ public class MachineUpdateServlet extends HttpServlet {
 
 		if (!id.isEmpty()) {
 			try {
-				MachineConfig machineConfig = OrbitHelper.INSTANCE.getMachineConfig(domainServiceUrl, id);
+				MachineConfig machineConfig = OrbitComponentHelper.INSTANCE.getMachineConfig(domainServiceUrl, id);
 				if (machineConfig == null) {
 					message = MessageHelper.INSTANCE.add(message, "Machine configuration is not found.");
 
 				} else {
-					succeed = OrbitHelper.INSTANCE.updateMachineConfig(domainServiceUrl, id, name, ip);
+					succeed = OrbitComponentHelper.INSTANCE.updateMachineConfig(domainServiceUrl, id, name, ip);
 				}
 
 			} catch (ClientException e) {

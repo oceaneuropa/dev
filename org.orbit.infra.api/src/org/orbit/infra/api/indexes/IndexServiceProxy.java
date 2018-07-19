@@ -124,7 +124,7 @@ public class IndexServiceProxy implements IndexService {
 
 	@Override
 	public boolean isProxy() {
-		return false;
+		return resolve().isProxy();
 	}
 
 	public static class IndexServiceProxyImpl implements IndexService {

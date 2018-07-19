@@ -9,9 +9,9 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.platform.api.PlatformConstants;
 
-public class OrbitIndexHelper {
+public class OrbitInfraHelper {
 
-	public static OrbitIndexHelper INSTANCE = new OrbitIndexHelper();
+	public static OrbitInfraHelper INSTANCE = new OrbitInfraHelper();
 
 	/**
 	 * 

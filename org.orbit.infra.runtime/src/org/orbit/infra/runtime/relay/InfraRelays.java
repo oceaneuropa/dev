@@ -94,6 +94,60 @@ public class InfraRelays {
 	 * @param initProperties
 	 * @return
 	 */
+	public ExtensionRegistryWSApplicationRelay createExtensionRegistryRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
+		LOG.debug("createExtensionRegistryRelay()");
+
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (initProperties != null) {
+			properties.putAll(initProperties);
+		}
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_HOSTS);
+		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_URLS);
+
+		final String hostURL = (String) properties.get(InfraConstants.ORBIT_HOST_URL);
+		final String name = (String) properties.get(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_NAME);
+		final String contextRoot = (String) properties.get(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_CONTEXT_ROOT);
+		String hosts = (String) properties.get(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_HOSTS);
+		String urls = (String) properties.get(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_URLS);
+
+		LOG.debug("Properties:");
+		LOG.debug("-----------------------------------------------------------------------------");
+		LOG.debug(InfraConstants.ORBIT_HOST_URL + " = " + hostURL);
+		LOG.debug(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_NAME + " = " + name);
+		LOG.debug(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_CONTEXT_ROOT + " = " + contextRoot);
+		LOG.debug(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_HOSTS + " = " + hosts);
+		LOG.debug(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_URLS + " = " + urls);
+		LOG.debug("-----------------------------------------------------------------------------");
+
+		if (contextRoot == null) {
+			return null;
+		}
+		List<URI> uriList = null;
+		if (urls != null) {
+			uriList = toList(urls);
+		} else if (hosts != null) {
+			uriList = toList(hosts, contextRoot);
+		}
+		if (uriList == null || uriList.isEmpty()) {
+			return null;
+		}
+
+		WebServiceAware webServiceAware = new WebServiceAwareImpl(name, hostURL, contextRoot);
+		Switcher<URI> uriSwitcher = RelayHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
+
+		ExtensionRegistryWSApplicationRelay relay = new ExtensionRegistryWSApplicationRelay(webServiceAware, uriSwitcher);
+		return relay;
+	}
+
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param initProperties
+	 * @return
+	 */
 	public ChannelWSApplicationRelay createChannelRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
 		LOG.debug("createChannelRelay()");
 

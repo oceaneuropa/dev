@@ -15,8 +15,8 @@ import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitHelper;
-import org.orbit.component.webconsole.servlet.OrbitIndexHelper;
+import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
+import org.orbit.component.webconsole.servlet.OrbitInfraHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.platform.api.PlatformConstants;
@@ -65,15 +65,15 @@ public class NodeListServlet extends HttpServlet {
 
 		if (!machineId.isEmpty() && !platformId.isEmpty()) {
 			try {
-				machineConfig = OrbitHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
+				machineConfig = OrbitComponentHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
 
-				platformConfig = OrbitHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
+				platformConfig = OrbitComponentHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
 
-				nodeInfos = OrbitHelper.INSTANCE.getNodes(domainServiceUrl, machineId, platformId);
+				nodeInfos = OrbitComponentHelper.INSTANCE.getNodes(domainServiceUrl, machineId, platformId);
 
 				// Get index items for platforms with type "node" and parent platform id equals the platformId
 				if (nodeInfos != null) {
-					Map<String, IndexItem> nodeIdToIndexItem = OrbitIndexHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
+					Map<String, IndexItem> nodeIdToIndexItem = OrbitInfraHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
 					for (NodeInfo nodeInfo : nodeInfos) {
 						String nodeId = nodeInfo.getId();
 						boolean isOnline = false;

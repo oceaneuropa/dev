@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.channel.Channels;
+import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
+import org.orbit.infra.api.extensionregistry.ExtensionRegistryClientProxy;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.IndexProviderProxy;
 import org.orbit.infra.api.indexes.IndexService;
@@ -26,6 +28,7 @@ public class InfraClients {
 
 	protected ServiceConnectorAdapter<IndexProvider> indexProviderConnector;
 	protected ServiceConnectorAdapter<IndexService> indexServiceConnector;
+	protected ServiceConnectorAdapter<ExtensionRegistryClient> extensionRegistryConnector;
 	protected ServiceConnectorAdapter<Channels> channelsConnector;
 
 	/**
@@ -39,6 +42,9 @@ public class InfraClients {
 		this.indexServiceConnector = new ServiceConnectorAdapter<IndexService>(IndexService.class);
 		this.indexServiceConnector.start(bundleContext);
 
+		this.extensionRegistryConnector = new ServiceConnectorAdapter<ExtensionRegistryClient>(ExtensionRegistryClient.class);
+		this.extensionRegistryConnector.start(bundleContext);
+
 		this.channelsConnector = new ServiceConnectorAdapter<Channels>(Channels.class);
 		this.channelsConnector.start(bundleContext);
 	}
@@ -51,6 +57,11 @@ public class InfraClients {
 		if (this.channelsConnector != null) {
 			this.channelsConnector.stop(bundleContext);
 			this.channelsConnector = null;
+		}
+
+		if (this.extensionRegistryConnector != null) {
+			this.extensionRegistryConnector.stop(bundleContext);
+			this.extensionRegistryConnector = null;
 		}
 
 		if (this.indexServiceConnector != null) {
@@ -176,6 +187,68 @@ public class InfraClients {
 			// throw new IllegalStateException("IndexService is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
 		}
 		return indexService;
+	}
+
+	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
+	public ExtensionRegistryClient getExtensionRegistryProxy(Map<?, ?> properties) {
+		return new ExtensionRegistryClientProxy(properties);
+	}
+
+	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
+	public ExtensionRegistryClient getExtensionRegistry(Map<?, ?> properties) {
+		String url = null;
+		if (properties != null) {
+			url = (String) properties.get(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		}
+		if (url == null) {
+			LOG.error("'" + InfraConstants.ORBIT_EXTENSION_REGISTRY_URL + "' property is not found.");
+			throw new IllegalStateException("'" + InfraConstants.ORBIT_EXTENSION_REGISTRY_URL + "' property is not found.");
+		}
+		return getExtensionRegistry(url);
+	}
+
+	/**
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public ExtensionRegistryClient getExtensionRegistry(String url) {
+		return getExtensionRegistry(null, null, url);
+	}
+
+	/**
+	 * 
+	 * @param realm
+	 * @param username
+	 * @param url
+	 * @return
+	 */
+	public ExtensionRegistryClient getExtensionRegistry(String realm, String username, String url) {
+		realm = GlobalContext.getInstance().checkRealm(realm);
+		username = GlobalContext.getInstance().checkUsername(realm, username);
+
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(InfraConstants.REALM, realm);
+		properties.put(InfraConstants.USERNAME, username);
+		properties.put(InfraConstants.URL, url);
+
+		ExtensionRegistryClient extensionRegistry = null;
+		if (this.extensionRegistryConnector != null) {
+			extensionRegistry = this.extensionRegistryConnector.getService(properties);
+		}
+		if (extensionRegistry == null) {
+			LOG.error("ExtensionRegistry is not available.");
+			// throw new IllegalStateException("IndexService is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+		}
+		return extensionRegistry;
 	}
 
 	/**

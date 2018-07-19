@@ -1,18 +1,22 @@
 package org.orbit.component.webconsole.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.extensionregistry.ExtensionItem;
+import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.orbit.platform.api.PlatformConstants;
 
-public class OrbitIndexHelper {
+public class OrbitInfraHelper {
 
-	public static OrbitIndexHelper INSTANCE = new OrbitIndexHelper();
+	public static OrbitInfraHelper INSTANCE = new OrbitInfraHelper();
 
 	/**
 	 * 
@@ -96,14 +100,14 @@ public class OrbitIndexHelper {
 	 * 
 	 * @param indexServiceUrl
 	 * @param platformParentId
-	 * @param nodePlatformid
+	 * @param nodePlatformId
 	 * @return
 	 * @throws IOException
 	 */
-	public IndexItem getNodeIndexItem(String indexServiceUrl, String platformParentId, String nodePlatformid) throws IOException {
+	public IndexItem getNodeIndexItem(String indexServiceUrl, String platformParentId, String nodePlatformId) throws IOException {
 		IndexItem nodeIndexItem = null;
 
-		if (platformParentId != null && nodePlatformid != null) {
+		if (platformParentId != null && nodePlatformId != null) {
 			IndexService indexService = getIndexService(indexServiceUrl);
 			if (indexService != null) {
 				List<IndexItem> indexItems = indexService.getIndexItems(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE);
@@ -113,7 +117,7 @@ public class OrbitIndexHelper {
 						String currPlatformParentId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_PARENT_ID);
 						String currPlatformType = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_TYPE);
 
-						if (PlatformConstants.PLATFORM_TYPE__NODE.equalsIgnoreCase(currPlatformType) && platformParentId.equals(currPlatformParentId) && nodePlatformid.equals(currPlatformId)) {
+						if (PlatformConstants.PLATFORM_TYPE__NODE.equalsIgnoreCase(currPlatformType) && platformParentId.equals(currPlatformParentId) && nodePlatformId.equals(currPlatformId)) {
 							nodeIndexItem = indexItem;
 							break;
 						}
@@ -127,6 +131,33 @@ public class OrbitIndexHelper {
 
 	/**
 	 * 
+	 * @param extensionRegistryUrl
+	 * @param platformId
+	 * @return
+	 * @throws IOException
+	 */
+	public List<ExtensionItem> getExtensionItems(String extensionRegistryUrl, String platformId) throws IOException {
+		List<ExtensionItem> extensionItems = null;
+		if (extensionRegistryUrl != null && platformId != null) {
+			ExtensionRegistryClient extensionRegistry = getExtensionRegistry(extensionRegistryUrl);
+			if (extensionRegistry != null) {
+				extensionItems = extensionRegistry.getExtensionItems(platformId);
+			}
+		}
+		if (extensionItems == null) {
+			extensionItems = new ArrayList<ExtensionItem>();
+		}
+		return extensionItems;
+	}
+
+	public Map<String, List<ExtensionItem>> getExtensionItemMap(String extensionRegistryUrl, String platformId) throws IOException {
+		Map<String, List<ExtensionItem>> extensionItemMap = new TreeMap<String, List<ExtensionItem>>();
+
+		return extensionItemMap;
+	}
+
+	/**
+	 * 
 	 * @param indexServiceUrl
 	 * @return
 	 */
@@ -134,6 +165,19 @@ public class OrbitIndexHelper {
 		IndexService indexService = null;
 		if (indexServiceUrl != null) {
 			indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
+		}
+		return indexService;
+	}
+
+	/**
+	 * 
+	 * @param indexServiceUrl
+	 * @return
+	 */
+	protected ExtensionRegistryClient getExtensionRegistry(String extensionRegistryUrl) {
+		ExtensionRegistryClient indexService = null;
+		if (extensionRegistryUrl != null) {
+			indexService = InfraClients.getInstance().getExtensionRegistry(extensionRegistryUrl);
 		}
 		return indexService;
 	}

@@ -1,6 +1,9 @@
-package org.orbit.infra.model.indexes;
+package org.orbit.infra.runtime.indexes.ws;
 
+import org.orbit.infra.model.indexes.IndexItem;
+import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.server.ServerException;
 
 public class ModelConverter {
 
@@ -11,12 +14,12 @@ public class ModelConverter {
 	}
 
 	/**
-	 * Convert ManagementException object to Error DTO.
+	 * Convert ServerException object to Error DTO.
 	 * 
 	 * @param e
 	 * @return
 	 */
-	public ErrorDTO toDTO(IndexServiceException e) {
+	public ErrorDTO toDTO(ServerException e) {
 		if (e == null) {
 			return null;
 		}
@@ -59,3 +62,30 @@ public class ModelConverter {
 	}
 
 }
+
+// /**
+// * Convert ManagementException object to Error DTO.
+// *
+// * @param e
+// * @return
+// */
+// public ErrorDTO toDTO(IndexServiceException e) {
+// if (e == null) {
+// return null;
+// }
+//
+// ErrorDTO dto = new ErrorDTO();
+// dto.setCode(e.getCode());
+// dto.setMessage(e.getMessage());
+//
+// if (e.getCause() != null) {
+// String causeName = e.getCause().getClass().getName();
+// String causeMessage = e.getCause().getMessage();
+// dto.setDetail(causeName + " " + causeMessage);
+// } else {
+// String causeName = e.getClass().getName();
+// dto.setDetail(causeName);
+// }
+//
+// return dto;
+// }

@@ -13,7 +13,7 @@ import java.util.Map;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.util.LaunchServiceHelper;
 import org.orbit.component.runtime.util.OrbitClientHelper;
-import org.orbit.component.runtime.util.OrbitIndexHelper;
+import org.orbit.component.runtime.util.OrbitInfraHelper;
 import org.orbit.component.runtime.util.PlatformSetupUtil;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -460,7 +460,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
 			if (currPlatform != null && indexService != null) {
 				String platformId = currPlatform.getId();
-				IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
+				IndexItem nodeIndexItem = OrbitInfraHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
 				if (nodeIndexItem != null) {
 					nodePlatformClient = OrbitClientHelper.INSTANCE.getNodePlatformClient(nodeIndexItem);
 				}
@@ -519,7 +519,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		IndexService indexService = InfraClients.getInstance().getIndexService(getIndexServiceURL());
 		if (currPlatform != null && indexService != null) {
 			String platformId = currPlatform.getId();
-			IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
+			IndexItem nodeIndexItem = OrbitInfraHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
 			if (nodeIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				if (isOnline) {
@@ -541,7 +541,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		IndexService indexService = InfraClients.getInstance().getIndexService(getIndexServiceURL());
 		if (currPlatform != null && indexService != null) {
 			String platformId = currPlatform.getId();
-			IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
+			IndexItem nodeIndexItem = OrbitInfraHelper.INSTANCE.getNodeIndexItem(indexService, platformId, id);
 			if (nodeIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				boolean isStopped = false;

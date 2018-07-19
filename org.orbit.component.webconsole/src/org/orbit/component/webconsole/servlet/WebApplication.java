@@ -10,20 +10,20 @@ import org.orbit.component.webconsole.servlet.domain.MachineAddServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineListServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineUpdateServlet;
+import org.orbit.component.webconsole.servlet.domain.NodeCreateServlet;
+import org.orbit.component.webconsole.servlet.domain.NodeDeleteServlet;
+import org.orbit.component.webconsole.servlet.domain.NodeListServlet;
 import org.orbit.component.webconsole.servlet.domain.NodePropertyAddServlet;
 import org.orbit.component.webconsole.servlet.domain.NodePropertyDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.NodePropertyListServlet;
 import org.orbit.component.webconsole.servlet.domain.NodePropertyUpdateServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeCreateServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeDeleteServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeListServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeStartServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeStopServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeUpdateServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformAddServlet;
-import org.orbit.component.webconsole.servlet.domain.PlatformPropertyListServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformListServlet;
+import org.orbit.component.webconsole.servlet.domain.PlatformPropertyListServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformUpdateServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountAddServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountDeleteServlet;
@@ -49,6 +49,7 @@ public class WebApplication extends WebApplicationImpl {
 	protected String[] getPropertyNames() {
 		String[] propNames = new String[] { //
 				WebConstants.ORBIT_INDEX_SERVICE_URL, //
+				WebConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				OrbitConstants.ORBIT_USER_ACCOUNTS_URL, //
