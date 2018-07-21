@@ -20,6 +20,21 @@ public class InfraConstants {
 	public static String LAST_PING_SUCCEED = "last_ping_succeed";
 
 	// ----------------------------------------------------------------------------------------
+	// Platform
+	// ----------------------------------------------------------------------------------------
+	public static String PLATFORM_INDEXER_ID = "platform.indexer";
+	public static String PLATFORM_INDEXER_TYPE = "Platform";
+
+	// index item property names
+	public static String PLATFORM_ID = "platform.id";
+	public static String PLATFORM_PARENT_ID = "platform.parent.id";
+	public static String PLATFORM_TYPE = "platform.type";
+
+	// index item property values
+	public static String PLATFORM_TYPE__NODE = "node";
+	public static String PLATFORM_TYPE__SERVER = "server";
+
+	// ----------------------------------------------------------------------------------------
 	// IndexService
 	// ----------------------------------------------------------------------------------------
 	// index item properties

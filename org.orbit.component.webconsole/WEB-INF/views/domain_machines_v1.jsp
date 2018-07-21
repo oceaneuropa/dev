@@ -23,9 +23,11 @@
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
 	<jsp:include page="<%=platformContextRoot + "/top_message"%>" />
+	<!-- 
 	<div class="top_breadcrumbs_div01">
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> 
 	</div>
+	 -->
 	<div class="main_div01">
 		<h2>Machines</h2>
 		<div class="top_tools_div01">

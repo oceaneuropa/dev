@@ -2,6 +2,7 @@ package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,9 +16,9 @@ import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
-import org.orbit.component.webconsole.servlet.OrbitInfraHelper;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.util.OrbitInfraHelper;
 import org.origin.common.util.ServletUtil;
 
 public class PlatformPropertyListServlet extends HttpServlet {
@@ -59,6 +60,7 @@ public class PlatformPropertyListServlet extends HttpServlet {
 		PlatformConfig platformConfig = null;
 		IndexItem platformIndexItem = null;
 		List<ExtensionItem> extensionItems = null;
+		Map<String, List<ExtensionItem>> extensionItemMap = null;
 
 		if (!machineId.isEmpty() && !id.isEmpty()) {
 			try {
@@ -69,6 +71,9 @@ public class PlatformPropertyListServlet extends HttpServlet {
 				platformIndexItem = OrbitInfraHelper.INSTANCE.getPlatformIndexItem(indexServiceUrl, id);
 
 				extensionItems = OrbitInfraHelper.INSTANCE.getExtensionItems(extensionRegistryUrl, id);
+
+				// extensionItemMap = OrbitInfraHelper.INSTANCE.getExtensionItemMap(extensionRegistryUrl, id);
+				extensionItemMap = OrbitInfraHelper.INSTANCE.getExtensionItemMap(extensionItems);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -93,6 +98,9 @@ public class PlatformPropertyListServlet extends HttpServlet {
 		}
 		if (extensionItems != null) {
 			request.setAttribute("extensionItems", extensionItems);
+		}
+		if (extensionItemMap != null) {
+			request.setAttribute("extensionItemMap", extensionItemMap);
 		}
 		request.getRequestDispatcher(contextRoot + "/views/domain_platform_properties_v1.jsp").forward(request, response);
 	}

@@ -15,8 +15,8 @@ import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
-import org.orbit.component.webconsole.servlet.OrbitInfraHelper;
 import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.util.OrbitInfraHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodePropertyListServlet extends HttpServlet {
