@@ -10,9 +10,9 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
+import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 
 public class MachineListServlet extends HttpServlet {
 

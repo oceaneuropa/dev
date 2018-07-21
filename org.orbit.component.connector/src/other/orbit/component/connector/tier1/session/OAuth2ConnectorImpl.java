@@ -1,4 +1,4 @@
-package org.orbit.component.connector.tier1.session;
+package other.orbit.component.connector.tier1.session;
 
 import java.io.IOException;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.orbit.component.api.tier1.session.OAuth2;
 import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.tier1.session.OAuth2WSImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 

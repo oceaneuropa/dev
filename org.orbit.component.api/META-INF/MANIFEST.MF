@@ -18,6 +18,7 @@ Export-Package: org.orbit.component.api;version="1.0.0",
  org.orbit.component.api.tier3.domainmanagement;version="1.0.0",
  org.orbit.component.api.tier3.nodecontrol;version="1.0.0",
  org.orbit.component.api.tier4.mission;version="1.0.0",
+ org.orbit.component.api.util;version="1.0.0",
  other.orbit.component.api.tier1.account;version="1.0.0",
  other.orbit.component.api.tier1.auth;version="1.0.0",
  other.orbit.component.api.tier1.config;version="1.0.0",
@@ -26,7 +27,6 @@ Export-Package: org.orbit.component.api;version="1.0.0",
  other.orbit.component.api.tier3.domainmanagement;version="1.0.0",
  other.orbit.component.api.tier3.nodecontrol;version="1.0.0"
 Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,2.0.0)",
- org.orbit.infra.api;bundle-version="[1.0.0,2.0.0)",
  org.origin.common;bundle-version="1.0.0",
  org.orbit.component.model;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

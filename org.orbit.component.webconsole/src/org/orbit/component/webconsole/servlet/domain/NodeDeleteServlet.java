@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeDeleteServlet extends HttpServlet {

@@ -13,13 +13,13 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
+import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.webconsole.PlatformConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitComponentHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.OrbitInfraHelper;
-import org.orbit.platform.api.PlatformConstants;
 import org.origin.common.util.ServletUtil;
 
 public class NodeListServlet extends HttpServlet {

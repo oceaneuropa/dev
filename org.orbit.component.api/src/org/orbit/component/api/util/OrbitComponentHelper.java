@@ -1,6 +1,4 @@
-package org.orbit.component.webconsole.servlet;
-
-import java.util.Map;
+package org.orbit.component.api.util;
 
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
@@ -12,10 +10,6 @@ import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
-import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.platform.api.Clients;
-import org.orbit.platform.api.PlatformClient;
-import org.orbit.platform.api.PlatformConstants;
 import org.origin.common.rest.client.ClientException;
 
 public class OrbitComponentHelper {
@@ -492,49 +486,49 @@ public class OrbitComponentHelper {
 		return nodeControlClient;
 	}
 
-	/**
-	 * 
-	 * @param nodeIdToIndexItem
-	 * @param nodeId
-	 * @return
-	 */
-	public PlatformClient getNodePlatformClient(Map<String, IndexItem> nodeIdToIndexItem, String nodeId) {
-		PlatformClient nodePlatformClient = null;
-		if (nodeIdToIndexItem != null && nodeId != null) {
-			IndexItem nodeIndexItem = nodeIdToIndexItem.get(nodeId);
-			if (nodeIndexItem != null) {
-				nodePlatformClient = getNodePlatformClient(nodeIndexItem);
-			}
-		}
-		return nodePlatformClient;
-	}
-
-	/**
-	 * 
-	 * @param nodeIdToIndexItem
-	 * @param nodeId
-	 * @return
-	 */
-	public PlatformClient getNodePlatformClient(IndexItem nodeIndexItem) {
-		PlatformClient nodePlatformClient = null;
-		if (nodeIndexItem != null) {
-			String nodePlatformUrl = null;
-			String platformHostUrl = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
-			String platformContextRoot = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
-
-			if (platformHostUrl != null && platformContextRoot != null) {
-				nodePlatformUrl = platformHostUrl;
-				if (!nodePlatformUrl.endsWith("/") && !platformContextRoot.startsWith("/")) {
-					nodePlatformUrl += "/";
-				}
-				nodePlatformUrl += platformContextRoot;
-			}
-
-			if (nodePlatformUrl != null) {
-				nodePlatformClient = Clients.getInstance().getPlatformClient(nodePlatformUrl);
-			}
-		}
-		return nodePlatformClient;
-	}
+	// /**
+	// *
+	// * @param nodeIdToIndexItem
+	// * @param nodeId
+	// * @return
+	// */
+	// public PlatformClient getNodePlatformClient(Map<String, IndexItem> nodeIdToIndexItem, String nodeId) {
+	// PlatformClient nodePlatformClient = null;
+	// if (nodeIdToIndexItem != null && nodeId != null) {
+	// IndexItem nodeIndexItem = nodeIdToIndexItem.get(nodeId);
+	// if (nodeIndexItem != null) {
+	// nodePlatformClient = getNodePlatformClient(nodeIndexItem);
+	// }
+	// }
+	// return nodePlatformClient;
+	// }
+	//
+	// /**
+	// *
+	// * @param nodeIdToIndexItem
+	// * @param nodeId
+	// * @return
+	// */
+	// public PlatformClient getNodePlatformClient(IndexItem nodeIndexItem) {
+	// PlatformClient nodePlatformClient = null;
+	// if (nodeIndexItem != null) {
+	// String nodePlatformUrl = null;
+	// String platformHostUrl = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
+	// String platformContextRoot = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
+	//
+	// if (platformHostUrl != null && platformContextRoot != null) {
+	// nodePlatformUrl = platformHostUrl;
+	// if (!nodePlatformUrl.endsWith("/") && !platformContextRoot.startsWith("/")) {
+	// nodePlatformUrl += "/";
+	// }
+	// nodePlatformUrl += platformContextRoot;
+	// }
+	//
+	// if (nodePlatformUrl != null) {
+	// nodePlatformClient = Clients.getInstance().getPlatformClient(nodePlatformUrl);
+	// }
+	// }
+	// return nodePlatformClient;
+	// }
 
 }
