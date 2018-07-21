@@ -586,8 +586,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	/**
 	 * 
-	 * @param nodeIdToIndexItem
-	 * @param nodeId
+	 * @param indexItem
 	 * @return
 	 */
 	public PlatformClient getPlatformClient(IndexItem indexItem) {

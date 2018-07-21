@@ -21,6 +21,27 @@ public class OrbitInfraHelper {
 	/**
 	 * 
 	 * @param indexServiceUrl
+	 * @param indexerId
+	 * @return
+	 * @throws IOException
+	 */
+	public List<IndexItem> getIndexItems(String indexServiceUrl, String indexerId) throws IOException {
+		List<IndexItem> indexItems = null;
+		if (indexServiceUrl != null && indexerId != null) {
+			IndexService indexService = getIndexService(indexServiceUrl);
+			if (indexService != null) {
+				indexItems = indexService.getIndexItems(indexerId);
+			}
+		}
+		if (indexItems == null) {
+			indexItems = new ArrayList<IndexItem>();
+		}
+		return indexItems;
+	}
+
+	/**
+	 * 
+	 * @param indexServiceUrl
 	 * @param platformId
 	 * @return
 	 * @throws IOException
@@ -152,6 +173,28 @@ public class OrbitInfraHelper {
 
 	/**
 	 * 
+	 * @param extensionRegistryUrl
+	 * @param platformId
+	 * @param typeId
+	 * @return
+	 * @throws IOException
+	 */
+	public List<ExtensionItem> getExtensionItems(String extensionRegistryUrl, String platformId, String typeId) throws IOException {
+		List<ExtensionItem> extensionItems = null;
+		if (extensionRegistryUrl != null && platformId != null) {
+			ExtensionRegistryClient extensionRegistry = getExtensionRegistry(extensionRegistryUrl);
+			if (extensionRegistry != null) {
+				extensionItems = extensionRegistry.getExtensionItems(platformId, typeId);
+			}
+		}
+		if (extensionItems == null) {
+			extensionItems = new ArrayList<ExtensionItem>();
+		}
+		return extensionItems;
+	}
+
+	/**
+	 * 
 	 * @param extensionItems
 	 * @return
 	 * @throws IOException
@@ -217,11 +260,11 @@ public class OrbitInfraHelper {
 	 * @return
 	 */
 	protected ExtensionRegistryClient getExtensionRegistry(String extensionRegistryUrl) {
-		ExtensionRegistryClient indexService = null;
+		ExtensionRegistryClient extensionRegistry = null;
 		if (extensionRegistryUrl != null) {
-			indexService = InfraClients.getInstance().getExtensionRegistry(extensionRegistryUrl);
+			extensionRegistry = InfraClients.getInstance().getExtensionRegistry(extensionRegistryUrl);
 		}
-		return indexService;
+		return extensionRegistry;
 	}
 
 }
