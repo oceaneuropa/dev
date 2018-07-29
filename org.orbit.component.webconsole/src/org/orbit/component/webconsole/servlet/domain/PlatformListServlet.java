@@ -1,6 +1,9 @@
 package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -16,9 +19,11 @@ import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.PlatformConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.OrbitInfraHelper;
+import org.orbit.infra.api.util.OrbitExtensionHelper;
+import org.orbit.infra.api.util.OrbitIndexHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -29,8 +34,12 @@ public class PlatformListServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// ---------------------------------------------------------------
+		// Get parameters
+		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
+		String extensionRegistryUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_EXTENSION_REGISTRY_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String message = null;
@@ -44,8 +53,13 @@ public class PlatformListServlet extends HttpServlet {
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 
+		// ---------------------------------------------------------------
+		// Handle data
+		// ---------------------------------------------------------------
 		MachineConfig machineConfig = null;
 		PlatformConfig[] platformConfigs = null;
+		Map<String, IndexItem> platformIdToIndexItemMap = null;
+		Map<String, Map<String, List<IndexItem>>> platformIdToIndexerIdToIndexItemsMap = new HashMap<String, Map<String, List<IndexItem>>>();
 
 		if (!machineId.isEmpty()) {
 			try {
@@ -53,20 +67,30 @@ public class PlatformListServlet extends HttpServlet {
 
 				platformConfigs = OrbitComponentHelper.INSTANCE.getPlatformConfigs(domainServiceUrl, machineId);
 
-				// Get index items for platforms with type "server"
-				Map<String, IndexItem> platformIdToIndexItem = OrbitInfraHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, null, PlatformConstants.PLATFORM_TYPE__SERVER);
+				// Get index items for platforms
+				platformIdToIndexItemMap = OrbitIndexHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, null, PlatformConstants.PLATFORM_TYPE__SERVER);
+
 				if (platformConfigs != null) {
 					for (PlatformConfig platformConfig : platformConfigs) {
 						String platformId = platformConfig.getId();
 						boolean isOnline = false;
 						String runtimeState = "";
-						IndexItem indexItem = platformIdToIndexItem.get(platformId);
+						IndexItem indexItem = platformIdToIndexItemMap.get(platformId);
 						if (indexItem != null) {
 							isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
 						}
 						platformConfig.getRuntimeStatus().setOnline(isOnline);
 						platformConfig.getRuntimeStatus().setRuntimeState(runtimeState);
+
+						Map<String, List<IndexItem>> indexerIdToIndexItemsMap = new LinkedHashMap<String, List<IndexItem>>();
+						// Get extensions indexer ids from the platform
+						List<String> indexerIds = OrbitExtensionHelper.INSTANCE.getExtensionIdsOfPlatform(extensionRegistryUrl, platformId, InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID);
+						for (String indexerId : indexerIds) {
+							List<IndexItem> currIndexItems = OrbitIndexHelper.INSTANCE.getIndexItemsOfPlatform(indexServiceUrl, indexerId, platformId);
+							indexerIdToIndexItemsMap.put(indexerId, currIndexItems);
+						}
+						platformIdToIndexerIdToIndexItemsMap.put(platformId, indexerIdToIndexItemsMap);
 					}
 				}
 
@@ -80,6 +104,9 @@ public class PlatformListServlet extends HttpServlet {
 			platformConfigs = EMPTY_PLATFORM_CONFIGS;
 		}
 
+		// ---------------------------------------------------------------
+		// Render data
+		// ---------------------------------------------------------------
 		if (message != null) {
 			request.setAttribute("message", message);
 		}
@@ -87,6 +114,13 @@ public class PlatformListServlet extends HttpServlet {
 			request.setAttribute("machineConfig", machineConfig);
 		}
 		request.setAttribute("platformConfigs", platformConfigs);
+
+		if (platformIdToIndexItemMap != null) {
+			request.setAttribute("platformIdToIndexItemMap", platformIdToIndexItemMap);
+		}
+
+		request.setAttribute("platformIdToIndexerIdToIndexItemsMap", platformIdToIndexerIdToIndexItemsMap);
+
 		request.getRequestDispatcher(contextRoot + "/views/domain_platforms_v1.jsp").forward(request, response);
 	}
 

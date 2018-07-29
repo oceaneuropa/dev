@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitClientHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodePropertyAddServlet extends HttpServlet {
@@ -24,11 +25,11 @@ public class NodePropertyAddServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
-		String id = ServletUtil.getParameter(request, "id", "");
+		String nodeId = ServletUtil.getParameter(request, "id", "");
 
 		String name = ServletUtil.getParameter(request, "name", "");
 		String value = ServletUtil.getParameter(request, "value", "");
@@ -40,7 +41,7 @@ public class NodePropertyAddServlet extends HttpServlet {
 		if (platformId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
-		if (id.isEmpty()) {
+		if (nodeId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 		if (name.isEmpty()) {
@@ -51,9 +52,10 @@ public class NodePropertyAddServlet extends HttpServlet {
 		// Handle data
 		// ---------------------------------------------------------------
 		boolean succeed = false;
-		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && !name.isEmpty()) {
+		if (!machineId.isEmpty() && !platformId.isEmpty() && !nodeId.isEmpty() && !name.isEmpty()) {
 			try {
-				succeed = OrbitComponentHelper.INSTANCE.addNodeAttribute(domainServiceUrl, machineId, platformId, id, name, value);
+				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, platformId);
+				succeed = OrbitComponentHelper.INSTANCE.addNodeAttribute(nodeControlClient, nodeId, name, value);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -73,7 +75,7 @@ public class NodePropertyAddServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id);
+		response.sendRedirect(contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + nodeId);
 	}
 
 }

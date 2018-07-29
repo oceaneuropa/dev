@@ -13,6 +13,7 @@
 	PlatformConfig platformConfig = (PlatformConfig) request.getAttribute("platformConfig");
 	NodeInfo nodeInfo = (NodeInfo) request.getAttribute("nodeInfo");
 	IndexItem nodeIndexItem = (IndexItem) request.getAttribute("nodeIndexItem");
+	List<IndexItem> indexItems = (List<IndexItem>) request.getAttribute("indexItems");
 
 	String machineName = (machineConfig != null) ? machineConfig.getName() : "n/a";
 	String machineId = (machineConfig != null) ? machineConfig.getId() : "";
@@ -25,6 +26,9 @@
 	Map<String, Object> attributes = (nodeInfo != null) ? nodeInfo.getAttributes() : null;
 	if (attributes == null) {
 		attributes = new HashMap<String, Object>();
+	}
+	if (indexItems == null) {
+		indexItems = new ArrayList<IndexItem>();
 	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -46,7 +50,7 @@
 		<%=name%>
 	</div>
 	<div class="main_div01">
-		<h2>Index Properties</h2>
+		<h2>Properties</h2>
 		<div class="top_tools_div01"> 
 			<a class="button02" href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
 		</div>
@@ -83,12 +87,80 @@
 		</table>
 	</div>
 	<br/>
+
 	<div class="main_div01">
-		<h2>Node Attributes</h2>
+		<h2>Services</h2>
+		<div class="top_tools_div01"> 
+			<a class="button02" href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
+		</div>
+		<table class="main_table01">
+			<tr>
+				<th class="th1" width="200">Indexer</th>
+				<th class="th1" width="150">Type</th>
+				<th class="th1" width="150">Name</th>
+				<th class="th1" width="100">Status</th>
+				<th class="th1" width="400">Properties</th>
+			</tr>
+			<%
+				if (indexItems.isEmpty()) {
+			%>
+			<tr>
+				<td colspan="5">(n/a)</td>
+			</tr>
+			<%
+				} else {
+						for (IndexItem indexItem : indexItems) {
+							String indexProviderId = indexItem.getIndexProviderId();
+							int indexItemId = indexItem.getIndexItemId();
+							String indexItemType = indexItem.getType();
+							String indexItemName = indexItem.getName();
+							Map<String, Object> properties = indexItem.getProperties();
+
+							String props = "";
+							if (properties != null) {
+								int pIndex = 0;
+								for (Iterator<String> propItor = properties.keySet().iterator(); propItor.hasNext();) {
+									String propName = propItor.next();
+									Object propValue = properties.get(propName);
+
+									if (propName.endsWith("_time") && propValue instanceof Long) {
+										Date date = DateUtil.toDate((Long) propValue);
+										propValue = DateUtil.toString(date, DateUtil.SIMPLE_DATE_FORMAT2);
+									}
+
+									if (pIndex > 0) {
+										props += ", <br/>";
+									}
+									props += propName + " = " + propValue.toString();
+									pIndex++;
+								}
+							}
+
+							boolean isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
+							String statusText = isOnline ? "Online" : "Offline";
+							String statusColor = isOnline ? "#2eb82e" : "#cccccc";
+			%>
+			<tr>
+				<td class="td2"><%=indexProviderId%></td>
+				<td class="td2"><%=indexItemType%></td>
+				<td class="td2"><%=indexItemName%></td>
+				<td class="td1"><font color="<%=statusColor%>"><%=statusText%></font></td>
+				<td class="td2"><%=props%></td>
+			</tr>
+			<%
+					}
+				}
+			%>
+		</table>
+	</div>
+	<br>
+
+	<div class="main_div01">
+		<h2>Configurations</h2>
 		<div class="top_tools_div01">
 			<a id="action.addAttribute" class="button02">Add</a> 
 			<a id="action.deleteAttributes" class="button02">Delete</a> 
-			<a class="button02" href="<%=contextRoot + "/domain/nodeattributes?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
+			<a class="button02" href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<form id="main_list" method="post" action="<%=contextRoot + "/domain/nodeattributedelete"%>">

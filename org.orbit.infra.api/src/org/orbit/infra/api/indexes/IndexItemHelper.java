@@ -6,24 +6,6 @@ public class IndexItemHelper {
 
 	public static IndexItemHelper INSTANCE = new IndexItemHelper();
 
-	/**
-	 * 
-	 * @param indexItem
-	 * @return
-	 */
-	public Date getLastUpdateTime(IndexItem indexItem) {
-		Date date = null;
-		if (indexItem != null) {
-			Object value = indexItem.getProperties().get(IndexItem.LAST_HEARTBEAT_TIME);
-			if (value instanceof Long) {
-				date = new Date((Long) value);
-			} else if (value instanceof Date) {
-				date = (Date) value;
-			}
-		}
-		return date;
-	}
-
 	public boolean isOnline(IndexItem indexItem) {
 		if (indexItem != null && isLastHeartbeatWithinSeconds(indexItem, 20)) {
 			return true;
@@ -48,6 +30,24 @@ public class IndexItemHelper {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 
+	 * @param indexItem
+	 * @return
+	 */
+	public Date getLastUpdateTime(IndexItem indexItem) {
+		Date date = null;
+		if (indexItem != null) {
+			Object value = indexItem.getProperties().get(IndexItem.LAST_HEARTBEAT_TIME);
+			if (value instanceof Long) {
+				date = new Date((Long) value);
+			} else if (value instanceof Date) {
+				date = (Date) value;
+			}
+		}
+		return date;
 	}
 
 }

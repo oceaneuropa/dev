@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, java.net.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
+<%@ page import="org.orbit.infra.api.indexes.*"%>
 <%@ page import="org.orbit.component.api.tier3.domainmanagement.*"%>
 <%@ page import="org.orbit.component.api.tier3.nodecontrol.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
@@ -12,15 +13,20 @@
 	PlatformConfig platformConfig = (PlatformConfig) request.getAttribute("platformConfig");
 
 	NodeInfo[] nodeInfos = (NodeInfo[]) request.getAttribute("nodeInfos");
-	if (nodeInfos == null) {
-		nodeInfos = new NodeInfo[0];
-	}
-
+	Map<String, IndexItem> nodeIdToIndexItemMap = (Map<String, IndexItem>) request.getAttribute("nodeIdToIndexItemMap");
+	
 	String machineName = (machineConfig != null) ? machineConfig.getName() : "n/a";
 	String machineId = (machineConfig != null) ? machineConfig.getId() : "";
 
 	String platformName = (platformConfig != null) ? platformConfig.getName() : "n/a";
 	String platformId = (platformConfig != null) ? platformConfig.getId() : "";
+
+	if (nodeInfos == null) {
+		nodeInfos = new NodeInfo[0];
+	}
+	if (nodeIdToIndexItemMap == null) {
+		nodeIdToIndexItemMap = new HashMap<String, IndexItem>();
+	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -53,20 +59,22 @@
 				<input type="hidden" name="machineId" value="<%=machineId%>"> 
 				<input type="hidden" name="platformId" value="<%=platformId%>">
 				<tr>
-					<th class="th1" width="11">
+					<th class="th1" width="15">
 						<input type="checkbox" onClick="toggleSelection(this, 'id')" />
 					</th>
-					<th class="th1" width="150">Id</th>
-					<th class="th1" width="150">Name</th>
-					<th class="th1" width="150">Path</th>
-					<th class="th1" width="150">Status</th>
-					<th class="th1" width="150">Actions</th>
+					<th class="th1" width="50">Id</th>
+					<th class="th1" width="50">Name</th>
+					<th class="th1" width="50">Host URL</th>
+					<th class="th1" width="50">Context Root</th>
+					<th class="th1" width="100">Platform Home</th>
+					<th class="th1" width="50">Status</th>
+					<th class="th1" width="120">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
 				%>
 				<tr>
-					<td colspan="6">(n/a)</td>
+					<td colspan="8">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -74,11 +82,7 @@
 							String id = nodeInfo.getId();
 							String name = nodeInfo.getName();
 							URI uri = nodeInfo.getUri();
-
-							id = StringUtil.get(id);
-							name = StringUtil.get(name);
 							String path = (uri != null) ? uri.getPath() : "(n/a)";
-
 							String typeId = (String) nodeInfo.getAttributes().get("typeId");
 
 							boolean isOnline = nodeInfo.getRuntimeStatus().isOnline();
@@ -86,12 +90,30 @@
 							String statusStr1 = (isOnline)? "Online" : "Offline";
 							String statusStr2 = runtimeState != null && !runtimeState.isEmpty() ? (" | " + runtimeState) : "";
 							String statusColor = isOnline ? "#2eb82e" : "#cccccc";
+
+							String hostURL = null;
+							String currContextRoot = null;
+							String platformHome = null;
+							IndexItem indexItem = nodeIdToIndexItemMap.get(id);
+							if (indexItem != null) {
+								hostURL = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
+								currContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
+								platformHome = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOME);
+							}
+
+							id = StringUtil.get(id);
+							name = StringUtil.get(name);
+							hostURL = StringUtil.get(hostURL, "");
+							currContextRoot = StringUtil.get(currContextRoot, "");
+							platformHome = StringUtil.get(platformHome, "");
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
 					<td class="td1"><%=id%></td>
 					<td class="td2"><%=name%></td>
-					<td class="td2"><%=path%></td>
+					<td class="td2"><%=hostURL%></td>
+					<td class="td2"><%=currContextRoot%></td>
+					<td class="td2"><%=platformHome%></td>
 					<td class="td1"><font color="<%=statusColor%>"><%=statusStr1%></font></td>
 					<td class="td1">
 						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Change</a> |

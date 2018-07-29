@@ -12,14 +12,16 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.PlatformConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitClientHelper;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.OrbitInfraHelper;
+import org.orbit.infra.api.util.OrbitIndexHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodeListServlet extends HttpServlet {
@@ -62,6 +64,7 @@ public class NodeListServlet extends HttpServlet {
 		MachineConfig machineConfig = null;
 		PlatformConfig platformConfig = null;
 		NodeInfo[] nodeInfos = null;
+		Map<String, IndexItem> nodeIdToIndexItemMap = null;
 
 		if (!machineId.isEmpty() && !platformId.isEmpty()) {
 			try {
@@ -69,16 +72,17 @@ public class NodeListServlet extends HttpServlet {
 
 				platformConfig = OrbitComponentHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
 
-				nodeInfos = OrbitComponentHelper.INSTANCE.getNodes(domainServiceUrl, machineId, platformId);
+				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, platformId);
+				nodeInfos = OrbitComponentHelper.INSTANCE.getNodes(nodeControlClient);
 
 				// Get index items for platforms with type "node" and parent platform id equals the platformId
 				if (nodeInfos != null) {
-					Map<String, IndexItem> nodeIdToIndexItem = OrbitInfraHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
+					nodeIdToIndexItemMap = OrbitIndexHelper.INSTANCE.getPlatformIdToIndexItem(indexServiceUrl, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
 					for (NodeInfo nodeInfo : nodeInfos) {
 						String nodeId = nodeInfo.getId();
 						boolean isOnline = false;
 						String runtimeState = "";
-						IndexItem indexItem = nodeIdToIndexItem.get(nodeId);
+						IndexItem indexItem = nodeIdToIndexItemMap.get(nodeId);
 						if (indexItem != null) {
 							isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
@@ -111,6 +115,10 @@ public class NodeListServlet extends HttpServlet {
 			request.setAttribute("platformConfig", platformConfig);
 		}
 		request.setAttribute("nodeInfos", nodeInfos);
+
+		if (nodeIdToIndexItemMap != null) {
+			request.setAttribute("nodeIdToIndexItemMap", nodeIdToIndexItemMap);
+		}
 
 		request.getRequestDispatcher(contextRoot + "/views/domain_nodes_v1.jsp").forward(request, response);
 	}

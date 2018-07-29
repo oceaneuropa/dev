@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitClientHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodePropertyDeleteServlet extends HttpServlet {
@@ -26,11 +27,11 @@ public class NodePropertyDeleteServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
-		String id = ServletUtil.getParameter(request, "id", "");
+		String nodeId = ServletUtil.getParameter(request, "id", "");
 
 		String[] names = ServletUtil.getParameterValues(request, "name", EMPTY_NAMES);
 
@@ -41,7 +42,7 @@ public class NodePropertyDeleteServlet extends HttpServlet {
 		if (platformId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
-		if (id.isEmpty()) {
+		if (nodeId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 		if (names == null || names.length == 0) {
@@ -55,10 +56,11 @@ public class NodePropertyDeleteServlet extends HttpServlet {
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 
-		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && names.length > 0) {
+		if (!machineId.isEmpty() && !platformId.isEmpty() && !nodeId.isEmpty() && names.length > 0) {
 			try {
+				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, platformId);
 				for (String currName : names) {
-					boolean currSucceed = OrbitComponentHelper.INSTANCE.deleteNodeAttribute(domainServiceUrl, machineId, platformId, id, currName);
+					boolean currSucceed = OrbitComponentHelper.INSTANCE.deleteNodeAttribute(nodeControlClient, nodeId, currName);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {
@@ -88,7 +90,7 @@ public class NodePropertyDeleteServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id);
+		response.sendRedirect(contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + nodeId);
 	}
 
 }

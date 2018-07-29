@@ -16,6 +16,8 @@ public class OrbitComponentHelper {
 
 	public static OrbitComponentHelper INSTANCE = new OrbitComponentHelper();
 
+	private static final NodeInfo[] EMPTY_NODE_INFOS = new NodeInfo[0];
+
 	/**
 	 * 
 	 * @param domainServiceUrl
@@ -233,208 +235,162 @@ public class OrbitComponentHelper {
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @return
 	 * @throws ClientException
 	 */
-	public NodeInfo[] getNodes(String domainServiceUrl, String machineId, String platformId) throws ClientException {
+	public NodeInfo[] getNodes(NodeControlClient nodeControlClient) throws ClientException {
 		NodeInfo[] nodeInfos = null;
-		if (domainServiceUrl != null && machineId != null && platformId != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				nodeInfos = nodeControlClient.getNodes();
-			}
+		if (nodeControlClient != null) {
+			nodeInfos = nodeControlClient.getNodes();
+		}
+		if (nodeInfos == null) {
+			nodeInfos = EMPTY_NODE_INFOS;
 		}
 		return nodeInfos;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param nodeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public NodeInfo getNode(String domainServiceUrl, String machineId, String platformId, String nodeId) throws ClientException {
+	public NodeInfo getNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
 		NodeInfo nodeInfo = null;
-		if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				nodeInfo = nodeControlClient.getNode(nodeId);
-			}
+		if (nodeControlClient != null && nodeId != null) {
+			nodeInfo = nodeControlClient.getNode(nodeId);
 		}
 		return nodeInfo;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param id
 	 * @param name
 	 * @param typeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean createNode(String domainServiceUrl, String machineId, String platformId, String id, String name, String typeId) throws ClientException {
+	public boolean createNode(NodeControlClient nodeControlClient, String id, String name, String typeId) throws ClientException {
 		boolean succeed = false;
-		if (domainServiceUrl != null && machineId != null && platformId != null && id != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				succeed = nodeControlClient.createNode(id, name, typeId);
-			}
+		if (nodeControlClient != null && id != null) {
+			succeed = nodeControlClient.createNode(id, name, typeId);
 		}
 		return succeed;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param id
 	 * @param name
 	 * @param typeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean updateNode(String domainServiceUrl, String machineId, String platformId, String id, String name, String typeId) throws ClientException {
+	public boolean updateNode(NodeControlClient nodeControlClient, String id, String name, String typeId) throws ClientException {
 		boolean succeed = false;
-		if (domainServiceUrl != null && machineId != null && platformId != null && id != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				succeed = nodeControlClient.updateNode(id, name, typeId);
-			}
+		if (nodeControlClient != null && id != null) {
+			succeed = nodeControlClient.updateNode(id, name, typeId);
 		}
 		return succeed;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param nodeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean deleteNode(String domainServiceUrl, String machineId, String platformId, String nodeId) throws ClientException {
+	public boolean deleteNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
 		boolean succeed = false;
-		if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				succeed = nodeControlClient.deleteNode(nodeId);
-			}
+		if (nodeControlClient != null && nodeId != null) {
+			succeed = nodeControlClient.deleteNode(nodeId);
 		}
 		return succeed;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param nodeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean startNode(String domainServiceUrl, String machineId, String platformId, String nodeId) throws ClientException {
+	public boolean startNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
 		boolean succeed = false;
-		if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				succeed = nodeControlClient.startNode(nodeId);
-			}
+		if (nodeControlClient != null && nodeId != null) {
+			succeed = nodeControlClient.startNode(nodeId);
 		}
 		return succeed;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param nodeId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean stopNode(String domainServiceUrl, String machineId, String platformId, String nodeId) throws ClientException {
+	public boolean stopNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
 		boolean succeed = false;
-		if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				succeed = nodeControlClient.stopNode(nodeId);
-			}
+		if (nodeControlClient != null && nodeId != null) {
+			succeed = nodeControlClient.stopNode(nodeId);
 		}
 		return succeed;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param nodeId
 	 * @param name
 	 * @param value
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean addNodeAttribute(String domainServiceUrl, String machineId, String platformId, String nodeId, String name, Object value) throws ClientException {
+	public boolean addNodeAttribute(NodeControlClient nodeControlClient, String nodeId, String name, Object value) throws ClientException {
 		boolean succeed = false;
-		if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				succeed = nodeControlClient.addNodeAttribute(nodeId, name, value);
-			}
+		if (nodeControlClient != null && nodeId != null) {
+			succeed = nodeControlClient.addNodeAttribute(nodeId, name, value);
 		}
 		return succeed;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param nodeId
+	 * @param oldName
 	 * @param name
 	 * @param value
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean updateNodeAttribute(String domainServiceUrl, String machineId, String platformId, String nodeId, String oldName, String name, Object value) throws ClientException {
+	public boolean updateNodeAttribute(NodeControlClient nodeControlClient, String nodeId, String oldName, String name, Object value) throws ClientException {
 		boolean succeed = false;
-		if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				succeed = nodeControlClient.updateNodeAttribute(nodeId, oldName, name, value);
-			}
+		if (nodeControlClient != null && nodeId != null) {
+			succeed = nodeControlClient.updateNodeAttribute(nodeId, oldName, name, value);
 		}
 		return succeed;
 	}
 
 	/**
 	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
+	 * @param nodeControlClient
 	 * @param nodeId
 	 * @param name
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean deleteNodeAttribute(String domainServiceUrl, String machineId, String platformId, String nodeId, String name) throws ClientException {
+	public boolean deleteNodeAttribute(NodeControlClient nodeControlClient, String nodeId, String name) throws ClientException {
 		boolean succeed = false;
-		if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
-			NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
-			if (nodeControlClient != null) {
-				succeed = nodeControlClient.deleteNodeAttribute(nodeId, name);
-			}
+		if (nodeControlClient != null && nodeId != null) {
+			succeed = nodeControlClient.deleteNodeAttribute(nodeId, name);
 		}
 		return succeed;
 	}
@@ -449,86 +405,297 @@ public class OrbitComponentHelper {
 		return domainClient;
 	}
 
-	/**
-	 * 
-	 * @param domainServiceUrl
-	 * @param machineId
-	 * @param platformId
-	 * @return
-	 * @throws ClientException
-	 */
-	public NodeControlClient getNodeControlClient(String domainServiceUrl, String machineId, String platformId) throws ClientException {
-		NodeControlClient nodeControlClient = null;
-		if (domainServiceUrl != null && machineId != null && platformId != null) {
-			DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
-			if (domainClient != null) {
-				PlatformConfig platformConfig = domainClient.getPlatformConfig(machineId, platformId);
-				if (platformConfig != null) {
-					nodeControlClient = getNodeControlClient(platformConfig);
-				}
-			}
-		}
-		return nodeControlClient;
-	}
-
-	/**
-	 * 
-	 * @param platformConfig
-	 * @return
-	 * @throws ClientException
-	 */
-	protected NodeControlClient getNodeControlClient(PlatformConfig platformConfig) throws ClientException {
-		NodeControlClient nodeControlClient = null;
-		if (platformConfig != null) {
-			String url = platformConfig.getHostURL() + platformConfig.getContextRoot();
-			nodeControlClient = OrbitClients.getInstance().getNodeControl(url);
-		}
-		return nodeControlClient;
-	}
-
-	// /**
-	// *
-	// * @param nodeIdToIndexItem
-	// * @param nodeId
-	// * @return
-	// */
-	// public PlatformClient getNodePlatformClient(Map<String, IndexItem> nodeIdToIndexItem, String nodeId) {
-	// PlatformClient nodePlatformClient = null;
-	// if (nodeIdToIndexItem != null && nodeId != null) {
-	// IndexItem nodeIndexItem = nodeIdToIndexItem.get(nodeId);
-	// if (nodeIndexItem != null) {
-	// nodePlatformClient = getNodePlatformClient(nodeIndexItem);
-	// }
-	// }
-	// return nodePlatformClient;
-	// }
-	//
-	// /**
-	// *
-	// * @param nodeIdToIndexItem
-	// * @param nodeId
-	// * @return
-	// */
-	// public PlatformClient getNodePlatformClient(IndexItem nodeIndexItem) {
-	// PlatformClient nodePlatformClient = null;
-	// if (nodeIndexItem != null) {
-	// String nodePlatformUrl = null;
-	// String platformHostUrl = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
-	// String platformContextRoot = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
-	//
-	// if (platformHostUrl != null && platformContextRoot != null) {
-	// nodePlatformUrl = platformHostUrl;
-	// if (!nodePlatformUrl.endsWith("/") && !platformContextRoot.startsWith("/")) {
-	// nodePlatformUrl += "/";
-	// }
-	// nodePlatformUrl += platformContextRoot;
-	// }
-	//
-	// if (nodePlatformUrl != null) {
-	// nodePlatformClient = Clients.getInstance().getPlatformClient(nodePlatformUrl);
-	// }
-	// }
-	// return nodePlatformClient;
-	// }
-
 }
+
+// /**
+// *
+// * @param platformConfig
+// * @return
+// * @throws ClientException
+// */
+// protected NodeControlClient getNodeControlClient(PlatformConfig platformConfig) throws ClientException {
+// NodeControlClient nodeControlClient = null;
+// if (platformConfig != null) {
+// String url = platformConfig.getHostURL() + platformConfig.getContextRoot();
+// nodeControlClient = OrbitClients.getInstance().getNodeControl(url);
+// }
+// return nodeControlClient;
+// }
+
+// /**
+// *
+// * @param nodeIdToIndexItem
+// * @param nodeId
+// * @return
+// */
+// public PlatformClient getNodePlatformClient(Map<String, IndexItem> nodeIdToIndexItem, String nodeId) {
+// PlatformClient nodePlatformClient = null;
+// if (nodeIdToIndexItem != null && nodeId != null) {
+// IndexItem nodeIndexItem = nodeIdToIndexItem.get(nodeId);
+// if (nodeIndexItem != null) {
+// nodePlatformClient = getNodePlatformClient(nodeIndexItem);
+// }
+// }
+// return nodePlatformClient;
+// }
+//
+// /**
+// *
+// * @param nodeIdToIndexItem
+// * @param nodeId
+// * @return
+// */
+// public PlatformClient getNodePlatformClient(IndexItem nodeIndexItem) {
+// PlatformClient nodePlatformClient = null;
+// if (nodeIndexItem != null) {
+// String nodePlatformUrl = null;
+// String platformHostUrl = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
+// String platformContextRoot = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
+//
+// if (platformHostUrl != null && platformContextRoot != null) {
+// nodePlatformUrl = platformHostUrl;
+// if (!nodePlatformUrl.endsWith("/") && !platformContextRoot.startsWith("/")) {
+// nodePlatformUrl += "/";
+// }
+// nodePlatformUrl += platformContextRoot;
+// }
+//
+// if (nodePlatformUrl != null) {
+// nodePlatformClient = Clients.getInstance().getPlatformClient(nodePlatformUrl);
+// }
+// }
+// return nodePlatformClient;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @return
+// * @throws ClientException
+// */
+// public NodeControlClient getNodeControlClient(String domainServiceUrl, String machineId, String platformId) throws ClientException {
+// NodeControlClient nodeControlClient = null;
+// if (domainServiceUrl != null && machineId != null && platformId != null) {
+// DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
+// if (domainClient != null) {
+// PlatformConfig platformConfig = domainClient.getPlatformConfig(machineId, platformId);
+// if (platformConfig != null) {
+// String url = platformConfig.getHostURL() + platformConfig.getContextRoot();
+// nodeControlClient = OrbitClients.getInstance().getNodeControl(url);
+// }
+// }
+// }
+// return nodeControlClient;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @return
+// * @throws ClientException
+// */
+// public NodeInfo[] getNodes(String domainServiceUrl, String machineId, String platformId) throws ClientException {
+// NodeInfo[] nodeInfos = null;
+// if (domainServiceUrl != null && machineId != null && platformId != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// nodeInfos = nodeControlClient.getNodes();
+// }
+// }
+// return nodeInfos;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param nodeId
+// * @return
+// * @throws ClientException
+// */
+// public NodeInfo getNode(String domainServiceUrl, String machineId, String platformId, String nodeId) throws ClientException {
+// NodeInfo nodeInfo = null;
+// if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// nodeInfo = nodeControlClient.getNode(nodeId);
+// }
+// }
+// return nodeInfo;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param id
+// * @param name
+// * @param typeId
+// * @return
+// * @throws ClientException
+// */
+// public boolean createNode(String domainServiceUrl, String machineId, String platformId, String id, String name, String typeId) throws ClientException {
+// boolean succeed = false;
+// if (domainServiceUrl != null && machineId != null && platformId != null && id != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// succeed = nodeControlClient.createNode(id, name, typeId);
+// }
+// }
+// return succeed;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param id
+// * @param name
+// * @param typeId
+// * @return
+// * @throws ClientException
+// */
+// public boolean updateNode(String domainServiceUrl, String machineId, String platformId, String id, String name, String typeId) throws ClientException {
+// boolean succeed = false;
+// if (domainServiceUrl != null && machineId != null && platformId != null && id != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// succeed = nodeControlClient.updateNode(id, name, typeId);
+// }
+// }
+// return succeed;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param nodeId
+// * @return
+// * @throws ClientException
+// */
+// public boolean deleteNode(String domainServiceUrl, String machineId, String platformId, String nodeId) throws ClientException {
+// boolean succeed = false;
+// if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// succeed = nodeControlClient.deleteNode(nodeId);
+// }
+// }
+// return succeed;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param nodeId
+// * @return
+// * @throws ClientException
+// */
+// public boolean startNode(String domainServiceUrl, String machineId, String platformId, String nodeId) throws ClientException {
+// boolean succeed = false;
+// if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// succeed = nodeControlClient.startNode(nodeId);
+// }
+// }
+// return succeed;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param nodeId
+// * @return
+// * @throws ClientException
+// */
+// public boolean stopNode(String domainServiceUrl, String machineId, String platformId, String nodeId) throws ClientException {
+// boolean succeed = false;
+// if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// succeed = nodeControlClient.stopNode(nodeId);
+// }
+// }
+// return succeed;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param nodeId
+// * @param name
+// * @param value
+// * @return
+// * @throws ClientException
+// */
+// public boolean addNodeAttribute(String domainServiceUrl, String machineId, String platformId, String nodeId, String name, Object value) throws
+// ClientException {
+// boolean succeed = false;
+// if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// succeed = nodeControlClient.addNodeAttribute(nodeId, name, value);
+// }
+// }
+// return succeed;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param nodeId
+// * @param name
+// * @param value
+// * @return
+// * @throws ClientException
+// */
+// public boolean updateNodeAttribute(String domainServiceUrl, String machineId, String platformId, String nodeId, String oldName, String name, Object
+// value) throws ClientException {
+// boolean succeed = false;
+// if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// succeed = nodeControlClient.updateNodeAttribute(nodeId, oldName, name, value);
+// }
+// }
+// return succeed;
+// }
+
+// /**
+// *
+// * @param domainServiceUrl
+// * @param machineId
+// * @param platformId
+// * @param nodeId
+// * @param name
+// * @return
+// * @throws ClientException
+// */
+// public boolean deleteNodeAttribute(String domainServiceUrl, String machineId, String platformId, String nodeId, String name) throws ClientException {
+// boolean succeed = false;
+// if (domainServiceUrl != null && machineId != null && platformId != null && nodeId != null) {
+// NodeControlClient nodeControlClient = getNodeControlClient(domainServiceUrl, machineId, platformId);
+// if (nodeControlClient != null) {
+// succeed = nodeControlClient.deleteNodeAttribute(nodeId, name);
+// }
+// }
+// return succeed;
+// }

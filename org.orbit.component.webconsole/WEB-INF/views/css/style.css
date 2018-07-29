@@ -393,3 +393,20 @@ a.action01 {
 a.action01:active {
 	top: 0.1em;
 }
+
+a.action01b {
+	display: inline-block;
+	padding: 0.1em 0.5em 0.1em 0.5em;
+	border: 1px solid #bcbcbc;
+	border-radius: 3px;
+	box-sizing: border-box;
+	text-decoration: none;
+	font-weight: 200;
+	font-size: 13px;
+	color: #bcbcbc;
+	border-radius: 3px;
+	text-align: center;
+	position: relative;
+	cursor: pointer;
+	position: relative;
+}

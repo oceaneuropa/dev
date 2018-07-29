@@ -1,6 +1,8 @@
 package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,12 +13,18 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
 import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.webconsole.PlatformConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.servlet.OrbitClientHelper;
+import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.util.OrbitInfraHelper;
+import org.orbit.infra.api.util.OrbitExtensionHelper;
+import org.orbit.infra.api.util.OrbitIndexHelper;
 import org.origin.common.util.ServletUtil;
 
 public class NodePropertyListServlet extends HttpServlet {
@@ -30,11 +38,12 @@ public class NodePropertyListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
+		String extensionRegistryUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_EXTENSION_REGISTRY_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
-		String id = ServletUtil.getParameter(request, "id", "");
+		String nodeId = ServletUtil.getParameter(request, "id", "");
 
 		String message = null;
 		HttpSession session = request.getSession(false);
@@ -50,7 +59,7 @@ public class NodePropertyListServlet extends HttpServlet {
 		if (platformId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
-		if (id.isEmpty()) {
+		if (nodeId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
@@ -61,16 +70,34 @@ public class NodePropertyListServlet extends HttpServlet {
 		PlatformConfig platformConfig = null;
 		NodeInfo nodeInfo = null;
 		IndexItem nodeIndexItem = null;
+		List<IndexItem> indexItems = new ArrayList<IndexItem>();
 
-		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
+		if (!machineId.isEmpty() && !platformId.isEmpty() && !nodeId.isEmpty()) {
 			try {
 				machineConfig = OrbitComponentHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
 
 				platformConfig = OrbitComponentHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
 
-				nodeInfo = OrbitComponentHelper.INSTANCE.getNode(domainServiceUrl, machineId, platformId, id);
+				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, platformId);
+				nodeInfo = OrbitComponentHelper.INSTANCE.getNode(nodeControlClient, nodeId);
 
-				nodeIndexItem = OrbitInfraHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
+				nodeIndexItem = OrbitIndexHelper.INSTANCE.getIndexItem(indexServiceUrl, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+
+				String nodePlatformId = null;
+				if (nodeIndexItem != null) {
+					nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
+				}
+				if (nodePlatformId != null) {
+					List<ExtensionItem> indexerExtensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID);
+					for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
+						String indexerId = indexerExtensionItem.getExtensionId();
+
+						List<IndexItem> currIndexItems = OrbitIndexHelper.INSTANCE.getIndexItemsOfPlatform(indexServiceUrl, indexerId, platformId);
+						if (currIndexItems != null && !currIndexItems.isEmpty()) {
+							indexItems.addAll(currIndexItems);
+						}
+					}
+				}
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -79,7 +106,7 @@ public class NodePropertyListServlet extends HttpServlet {
 		}
 
 		if (nodeInfo == null) {
-			message = MessageHelper.INSTANCE.add(message, "Node with id '" + id + "' is not found.");
+			message = MessageHelper.INSTANCE.add(message, "Node with id '" + nodeId + "' is not found.");
 		}
 
 		// ---------------------------------------------------------------
@@ -99,6 +126,9 @@ public class NodePropertyListServlet extends HttpServlet {
 		}
 		if (nodeIndexItem != null) {
 			request.setAttribute("nodeIndexItem", nodeIndexItem);
+		}
+		if (indexItems != null) {
+			request.setAttribute("indexItems", indexItems);
 		}
 
 		request.getRequestDispatcher(contextRoot + "/views/domain_node_properties_v1.jsp").forward(request, response);
