@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, java.net.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
-<%@ page import="org.orbit.infra.api.indexes.*"%>
+<%@ page import="org.orbit.infra.api.indexes.*, org.orbit.infra.api.extensionregistry.*"%>
 <%@ page import="org.orbit.component.api.tier3.domainmanagement.*"%>
 <%@ page import="org.orbit.component.api.tier3.nodecontrol.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
@@ -14,6 +14,8 @@
 	NodeInfo nodeInfo = (NodeInfo) request.getAttribute("nodeInfo");
 	IndexItem nodeIndexItem = (IndexItem) request.getAttribute("nodeIndexItem");
 	List<IndexItem> indexItems = (List<IndexItem>) request.getAttribute("indexItems");
+	List<ExtensionItem> extensionItems = (List<ExtensionItem>) request.getAttribute("extensionItems");
+	Map<String, List<ExtensionItem>> extensionItemMap = (Map<String, List<ExtensionItem>>) request.getAttribute("extensionItemMap");
 
 	String machineName = (machineConfig != null) ? machineConfig.getName() : "n/a";
 	String machineId = (machineConfig != null) ? machineConfig.getId() : "";
@@ -37,6 +39,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
+<link rel="stylesheet" href="../views/css/treetable.css">
+
 <script type="text/javascript" src="<%=contextRoot + "/views/js/domain_node_attributes.js"%>" defer></script>
 </head>
 <body>
@@ -49,6 +53,83 @@
 		<!-- <a href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>"><%=name%></a> -->
 		<%=name%>
 	</div>
+
+	<div class="main_div01">
+		<h2>Configurations</h2>
+		<div class="top_tools_div01">
+			<a id="action.addAttribute" class="button02">Add</a> 
+			<a id="action.deleteAttributes" class="button02">Delete</a> 
+			<a class="button02" href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
+		</div>
+		<table class="main_table01">
+			<form id="main_list" method="post" action="<%=contextRoot + "/domain/nodeattributedelete"%>">
+				<input type="hidden" name="machineId" value="<%=machineId%>"> 
+				<input type="hidden" name="platformId" value="<%=platformId%>">
+				<input type="hidden" name="id" value="<%=id%>">
+				<tr>
+					<th class="th1" width="12"></th>
+					<th class="th1" width="200">Name</th>
+					<th class="th1" width="400">Value</th>
+					<th class="th1" width="150">Actions</th>
+				</tr>
+				<%
+					if (attributes.isEmpty()) {
+				%>
+				<tr>
+					<td colspan="4">(n/a)</td>
+				</tr>
+				<%
+					} else {
+						for (Iterator<String> itor = attributes.keySet().iterator(); itor.hasNext(); ) {
+							String attrName = itor.next();
+							Object attrValue = attributes.get(attrName);
+
+							Object attrValueForEdit = attrValue;
+
+							int rowNum = 1;
+							if (attrValue instanceof String) {
+								String valueString = (String) attrValue;
+								if (valueString.contains("\r\n")) {
+									String[] array = valueString.split("\r\n");
+									rowNum = array.length;
+
+									if (valueString.endsWith("\r\n")) {
+										rowNum += 1;
+									}
+									rowNum += 1;
+
+									attrValueForEdit = valueString.replace("\r\n", "\\r\\n");
+								}
+							}
+				%>
+				<tr>
+					<td class="td1">
+						<input type="checkbox" name="name" value="<%=attrName%>">
+					</td>
+					<td class="td1">
+						<%=attrName%>
+					</td>
+					<td class="td2">
+						<% if (rowNum > 1) { %>
+							<textarea rows="<%=rowNum%>" cols="100" readonly><%=attrValue%></textarea>
+						<% } else { %>
+							<%=attrValue%>
+						<% } %>
+					</td>
+					<td class="td1">
+						<a class="action01" href="javascript:changeAttribute('<%=attrName%>', '<%=attrValueForEdit%>', '<%=rowNum%>')">Change</a> | 
+						<a class="action01" href="javascript:deleteAttribute('<%=contextRoot + "/domain/nodeattributedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=attrName%>')">Delete</a> 
+					</td>
+				</tr>
+				<%
+					}
+					}
+				%>
+			</form>
+		</table>
+	</div>
+	<br/>
+
 	<div class="main_div01">
 		<h2>Properties</h2>
 		<div class="top_tools_div01"> 
@@ -156,77 +237,66 @@
 	<br>
 
 	<div class="main_div01">
-		<h2>Configurations</h2>
-		<div class="top_tools_div01">
-			<a id="action.addAttribute" class="button02">Add</a> 
-			<a id="action.deleteAttributes" class="button02">Delete</a> 
+		<h2>Extensions (<%=extensionItems.size()%>)</h2>
+		<div class="top_tools_div01"> 
 			<a class="button02" href="<%=contextRoot + "/domain/nodeproperties?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
 		</div>
-		<table class="main_table01">
-			<form id="main_list" method="post" action="<%=contextRoot + "/domain/nodeattributedelete"%>">
-				<input type="hidden" name="machineId" value="<%=machineId%>"> 
-				<input type="hidden" name="platformId" value="<%=platformId%>">
-				<input type="hidden" name="id" value="<%=id%>">
+		<table class="tree_table01">
+			<thead>
 				<tr>
-					<th class="th1" width="12"></th>
-					<th class="th1" width="200">Name</th>
-					<th class="th1" width="400">Value</th>
-					<th class="th1" width="150">Actions</th>
+					<th width="300" >Extension</th>
+					<th width="250" >Name</th>
+					<th width="250" >Description</th>
+					<th width="250" >Properties</th>
 				</tr>
-				<%
-					if (attributes.isEmpty()) {
-				%>
+			</thead>
+			<tbody>
+			<%
+				for (Iterator<String> typeIdItor = extensionItemMap.keySet().iterator(); typeIdItor.hasNext(); ) {
+					String currExtensionTypeId = typeIdItor.next();
+					List<ExtensionItem> currExtensionItems = extensionItemMap.get(currExtensionTypeId);
+			%>
 				<tr>
-					<td colspan="4">(n/a)</td>
+					<th colspan="3" style="font-weight: bold;"><%=currExtensionTypeId%> (<%=currExtensionItems.size()%>)</th>
 				</tr>
-				<%
-					} else {
-						for (Iterator<String> itor = attributes.keySet().iterator(); itor.hasNext(); ) {
-							String attrName = itor.next();
-							Object attrValue = attributes.get(attrName);
+			<%
+					for (ExtensionItem extensionItem : currExtensionItems) {
+						String extensionId = extensionItem.getExtensionId();
+						String extensionName = extensionItem.getName();
+						String extensionDesc = extensionItem.getDescription();
+						Map<String, Object> extensionProps = extensionItem.getProperties();
 
-							Object attrValueForEdit = attrValue;
-
-							int rowNum = 1;
-							if (attrValue instanceof String) {
-								String valueString = (String) attrValue;
-								if (valueString.contains("\r\n")) {
-									String[] array = valueString.split("\r\n");
-									rowNum = array.length;
-
-									if (valueString.endsWith("\r\n")) {
-										rowNum += 1;
-									}
-									rowNum += 1;
-
-									attrValueForEdit = valueString.replace("\r\n", "\\r\\n");
+						extensionId = StringUtil.get(extensionId, "");
+						extensionName = StringUtil.get(extensionName, "");
+						extensionDesc = StringUtil.get(extensionDesc, "");
+						
+						String extensionPropsString = "";
+						if (extensionProps != null) {
+							int index = 0;
+							for (Iterator<String> propNameItor = extensionProps.keySet().iterator(); propNameItor.hasNext(); ) {
+								String propName = propNameItor.next();
+								Object propValue = extensionProps.get(propName);
+								String propValueString = (propValue != null) ? propValue.toString() : "";
+								if (index > 0) {
+									extensionPropsString += "<br/>";
 								}
+								extensionPropsString += propName + "=" + propValueString;
+								index++;
 							}
-				%>
+						}
+						
+			%>
 				<tr>
-					<td class="td1">
-						<input type="checkbox" name="name" value="<%=attrName%>">
-					</td>
-					<td class="td1">
-						<%=attrName%>
-					</td>
-					<td class="td2">
-						<% if (rowNum > 1) { %>
-							<textarea rows="<%=rowNum%>" cols="100" readonly><%=attrValue%></textarea>
-						<% } else { %>
-							<%=attrValue%>
-						<% } %>
-					</td>
-					<td class="td1">
-						<a class="action01" href="javascript:changeAttribute('<%=attrName%>', '<%=attrValueForEdit%>', '<%=rowNum%>')">Change</a> | 
-						<a class="action01" href="javascript:deleteAttribute('<%=contextRoot + "/domain/nodeattributedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=attrName%>')">Delete</a> 
-					</td>
+					<th class="start"><%=extensionId%></th>
+					<td><%=extensionName%></td>
+					<td><%=extensionDesc%></td>
+					<td><%=extensionPropsString%></td>
 				</tr>
-				<%
+			<%
 					}
-					}
-				%>
-			</form>
+				}
+			%>
+			</tbody>
 		</table>
 	</div>
 	<br/>

@@ -3,6 +3,7 @@ package org.orbit.component.webconsole.servlet.domain;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -71,6 +72,8 @@ public class NodePropertyListServlet extends HttpServlet {
 		NodeInfo nodeInfo = null;
 		IndexItem nodeIndexItem = null;
 		List<IndexItem> indexItems = new ArrayList<IndexItem>();
+		List<ExtensionItem> extensionItems = null;
+		Map<String, List<ExtensionItem>> extensionItemMap = null;
 
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !nodeId.isEmpty()) {
 			try {
@@ -97,6 +100,10 @@ public class NodePropertyListServlet extends HttpServlet {
 							indexItems.addAll(currIndexItems);
 						}
 					}
+
+					// Get all extensions from the platform (of the Node)
+					extensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId);
+					extensionItemMap = OrbitExtensionHelper.INSTANCE.toExtensionItemMap(extensionItems);
 				}
 
 			} catch (Exception e) {
@@ -129,6 +136,12 @@ public class NodePropertyListServlet extends HttpServlet {
 		}
 		if (indexItems != null) {
 			request.setAttribute("indexItems", indexItems);
+		}
+		if (extensionItems != null) {
+			request.setAttribute("extensionItems", extensionItems);
+		}
+		if (extensionItemMap != null) {
+			request.setAttribute("extensionItemMap", extensionItemMap);
 		}
 
 		request.getRequestDispatcher(contextRoot + "/views/domain_node_properties_v1.jsp").forward(request, response);
