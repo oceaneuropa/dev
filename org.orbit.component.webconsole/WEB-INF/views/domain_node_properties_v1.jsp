@@ -32,6 +32,12 @@
 	if (indexItems == null) {
 		indexItems = new ArrayList<IndexItem>();
 	}
+	if (extensionItems == null) {
+		extensionItems = new ArrayList<ExtensionItem>();
+	}
+	if (extensionItemMap == null) {
+		extensionItemMap = new TreeMap<String, List<ExtensionItem>>();	
+	}
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

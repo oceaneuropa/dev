@@ -181,6 +181,12 @@ public class LaunchServiceHelper {
 					if (((String) propName).startsWith("component.")) {
 						continue;
 					}
+					// Need to validate required properties in config.ini attribute. If not set, node should not be started.
+					if ("org.osgi.service.http.port".equals((String) propName) //
+							|| "orbit.host.url".equals((String) propName)) //
+					{
+						continue;
+					}
 					allConfigs.put((String) propName, propValue.toString());
 				}
 			}

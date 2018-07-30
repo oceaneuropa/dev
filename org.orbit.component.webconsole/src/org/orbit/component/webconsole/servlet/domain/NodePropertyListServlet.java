@@ -43,7 +43,7 @@ public class NodePropertyListServlet extends HttpServlet {
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
-		String platformId = ServletUtil.getParameter(request, "platformId", "");
+		String parentPlatformId = ServletUtil.getParameter(request, "platformId", "");
 		String nodeId = ServletUtil.getParameter(request, "id", "");
 
 		String message = null;
@@ -57,7 +57,7 @@ public class NodePropertyListServlet extends HttpServlet {
 		if (machineId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
-		if (platformId.isEmpty()) {
+		if (parentPlatformId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
 		if (nodeId.isEmpty()) {
@@ -75,35 +75,33 @@ public class NodePropertyListServlet extends HttpServlet {
 		List<ExtensionItem> extensionItems = null;
 		Map<String, List<ExtensionItem>> extensionItemMap = null;
 
-		if (!machineId.isEmpty() && !platformId.isEmpty() && !nodeId.isEmpty()) {
+		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
 			try {
 				machineConfig = OrbitComponentHelper.INSTANCE.getMachineConfig(domainServiceUrl, machineId);
+				platformConfig = OrbitComponentHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, parentPlatformId);
 
-				platformConfig = OrbitComponentHelper.INSTANCE.getPlatformConfig(domainServiceUrl, machineId, platformId);
-
-				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, platformId);
+				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, parentPlatformId);
 				nodeInfo = OrbitComponentHelper.INSTANCE.getNode(nodeControlClient, nodeId);
 
-				nodeIndexItem = OrbitIndexHelper.INSTANCE.getIndexItem(indexServiceUrl, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
-
-				String nodePlatformId = null;
+				nodeIndexItem = OrbitIndexHelper.INSTANCE.getIndexItem(indexServiceUrl, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
-					nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
-				}
-				if (nodePlatformId != null) {
-					List<ExtensionItem> indexerExtensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID);
-					for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
-						String indexerId = indexerExtensionItem.getExtensionId();
+					String nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
 
-						List<IndexItem> currIndexItems = OrbitIndexHelper.INSTANCE.getIndexItemsOfPlatform(indexServiceUrl, indexerId, platformId);
-						if (currIndexItems != null && !currIndexItems.isEmpty()) {
-							indexItems.addAll(currIndexItems);
+					if (nodePlatformId != null) {
+						List<ExtensionItem> indexerExtensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID);
+						for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
+							String indexerId = indexerExtensionItem.getExtensionId();
+
+							List<IndexItem> currIndexItems = OrbitIndexHelper.INSTANCE.getIndexItemsOfPlatform(indexServiceUrl, indexerId, nodePlatformId);
+							if (currIndexItems != null && !currIndexItems.isEmpty()) {
+								indexItems.addAll(currIndexItems);
+							}
 						}
-					}
 
-					// Get all extensions from the platform (of the Node)
-					extensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId);
-					extensionItemMap = OrbitExtensionHelper.INSTANCE.toExtensionItemMap(extensionItems);
+						// Get all extensions from the platform (of the Node)
+						extensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId);
+						extensionItemMap = OrbitExtensionHelper.INSTANCE.toExtensionItemMap(extensionItems);
+					}
 				}
 
 			} catch (Exception e) {

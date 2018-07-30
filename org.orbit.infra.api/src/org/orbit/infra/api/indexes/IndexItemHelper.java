@@ -4,11 +4,16 @@ import java.util.Date;
 
 public class IndexItemHelper {
 
+	public static String PLATFORM_RUNTIME_STATE = "platform.runtime_state";
+
 	public static IndexItemHelper INSTANCE = new IndexItemHelper();
 
 	public boolean isOnline(IndexItem indexItem) {
 		if (indexItem != null && isLastHeartbeatWithinSeconds(indexItem, 20)) {
-			return true;
+			String runtimeState = (String) indexItem.getProperties().get(PLATFORM_RUNTIME_STATE);
+			if ("STARTED".equalsIgnoreCase(runtimeState)) {
+				return true;
+			}
 		}
 		return false;
 	}

@@ -80,6 +80,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		}
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_EXTENSION_REGISTRY_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.PLATFORM_HOME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.NODESPACE_LOCATION);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
@@ -123,6 +124,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		}
 
 		String indexServiceUrl = (String) properties.get(OrbitConstants.ORBIT_INDEX_SERVICE_URL);
+		String extensionRegistryUrl = (String) properties.get(OrbitConstants.ORBIT_EXTENSION_REGISTRY_URL);
 		String platformHome = (String) properties.get(OrbitConstants.PLATFORM_HOME);
 		String nodespaceHome = (String) properties.get(OrbitConstants.NODESPACE_LOCATION);
 		String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
@@ -136,6 +138,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			System.out.println("Config properties:");
 			System.out.println("-----------------------------------------------------");
 			System.out.println(OrbitConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
+			System.out.println(OrbitConstants.ORBIT_EXTENSION_REGISTRY_URL + " = " + extensionRegistryUrl);
 			System.out.println(OrbitConstants.PLATFORM_HOME + " = " + platformHome);
 			System.out.println(OrbitConstants.NODESPACE_LOCATION + " = " + nodespaceHome);
 			System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
@@ -480,6 +483,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 				LaunchInstance launchInstance = launchService.getLaunchInstance(launchInstanceId);
 				if (launchInstance != null) {
 					if (this.useScriptLaunch) {
+						// Terminate the system process instance directly.
 						if (launchInstance.canTerminate()) {
 							isLaunchInstanceTerminated = launchInstance.terminate();
 							if (isLaunchInstanceTerminated) {
@@ -491,6 +495,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 							LOG.error("LaunchInstance with id '" + launchInstanceId + "' cannot be terminated.");
 						}
 					} else {
+						// Remove the launch instance only, without terminating the system process instance.
+						// The System process instance is terminated by PlatformClient, which send shutdown request to the remote JVM (and the platform) of the
+						// node. So there is no need to terminating the system process instance directly here.
 						launchInstance.remove();
 						isLaunchInstanceTerminated = true;
 					}
