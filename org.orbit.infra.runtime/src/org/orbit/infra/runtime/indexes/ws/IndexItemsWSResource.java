@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.runtime.indexes.service.IndexService;
+import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -111,7 +112,7 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 			// System.out.println("-------------------------------------------------------------------------------------------");
 			if (indexItems != null) {
 				for (IndexItem indexItem : indexItems) {
-					IndexItemDTO indexItemDTO = ModelConverter.getInstance().toDTO(indexItem);
+					IndexItemDTO indexItemDTO = ModelConverter.Indexes.toDTO(indexItem);
 					indexItemDTOs.add(indexItemDTO);
 					// System.out.println(indexItemDTO.getIndexItemId() + " - " + indexItemDTO.getIndexProviderId() + " - " + indexItemDTO.getType() + " - " +
 					// indexItemDTO.getName());
@@ -164,7 +165,7 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 
 			IndexItem newIndexItem = indexService.addIndexItem(indexProviderId, type, name, properties);
 			if (newIndexItem != null) {
-				newIndexItemDTO = ModelConverter.getInstance().toDTO(newIndexItem);
+				newIndexItemDTO = ModelConverter.Indexes.toDTO(newIndexItem);
 			}
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

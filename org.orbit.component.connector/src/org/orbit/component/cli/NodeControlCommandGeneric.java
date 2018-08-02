@@ -10,7 +10,7 @@ import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.connector.tier3.nodecontrol.NodeControlModelConverter;
+import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Request;
@@ -161,7 +161,7 @@ public class NodeControlCommandGeneric implements CommandActivator {
 			Request request = new Request(Requests.GET_NODES);
 			Response response = transferAgent.sendRequest(request);
 
-			NodeInfo[] nodeInfos = NodeControlModelConverter.INSTANCE.getNodes(response);
+			NodeInfo[] nodeInfos = ModelConverter.NodeControl.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
 			for (NodeInfo nodeInfo : nodeInfos) {

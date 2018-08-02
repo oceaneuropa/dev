@@ -3,7 +3,7 @@
 <%@ page import="org.origin.common.util.*"%>
 <%@ page import="org.orbit.infra.api.indexes.*"%>
 <%@ page import="org.orbit.component.api.*"%>
-<%@ page import="org.orbit.component.api.tier3.domainmanagement.*"%>
+<%@ page import="org.orbit.component.api.tier3.domain.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
 <%
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);

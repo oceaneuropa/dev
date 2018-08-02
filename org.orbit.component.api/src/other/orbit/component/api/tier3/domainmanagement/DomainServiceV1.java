@@ -4,15 +4,15 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
-import org.orbit.component.api.tier3.domainmanagement.NodeConfig;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
+import org.orbit.component.api.tier3.domain.MachineConfig;
+import org.orbit.component.api.tier3.domain.NodeConfig;
+import org.orbit.component.api.tier3.domain.PlatformConfig;
+import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.AddNodeConfigRequest;
+import org.orbit.component.model.tier3.domain.AddPlatformConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdateNodeConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdatePlatformConfigRequest;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.Pingable;

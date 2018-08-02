@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
+import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
@@ -41,7 +41,6 @@ public class MachineListServlet extends HttpServlet {
 		// Handle data
 		// ---------------------------------------------------------------
 		MachineConfig[] machineConfigs = null;
-
 		try {
 			machineConfigs = OrbitComponentHelper.INSTANCE.getMachineConfigs(domainServiceUrl);
 
@@ -49,7 +48,6 @@ public class MachineListServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 			e.printStackTrace();
 		}
-
 		if (machineConfigs == null) {
 			machineConfigs = EMPTY_MACHINE_CONFIGS;
 		}

@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.session.OAuth2;
+import org.orbit.component.api.tier1.session.OAuth2Client;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier1.session.OAuth2WSImpl;
+import org.orbit.component.connector.tier1.session.OAuth2ClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
 import other.orbit.component.api.tier1.session.OAuth2ConnectorV1;
 import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<OAuth2> implements OAuth2ConnectorV1 {
+public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorImpl<OAuth2Client> implements OAuth2ConnectorV1 {
 
 	/**
 	 * 
@@ -29,12 +29,12 @@ public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorI
 	}
 
 	@Override
-	protected OAuth2 createService(Map<String, Object> properties) {
-		return new OAuth2WSImpl(properties);
+	protected OAuth2Client createService(Map<String, Object> properties) {
+		return new OAuth2ClientImpl(properties);
 	}
 
 	@Override
-	protected void updateService(OAuth2 oauth2, Map<String, Object> properties) {
+	protected void updateService(OAuth2Client oauth2, Map<String, Object> properties) {
 		oauth2.update(properties);
 	}
 

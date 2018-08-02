@@ -3,7 +3,7 @@ package org.orbit.component.runtime.tier1.config.service;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.model.tier1.config.EPath;
+import org.orbit.component.runtime.model.configregistry.EPath;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.server.ServerException;
 

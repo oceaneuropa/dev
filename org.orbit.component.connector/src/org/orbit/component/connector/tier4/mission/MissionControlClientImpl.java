@@ -2,7 +2,7 @@ package org.orbit.component.connector.tier4.mission;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier4.mission.MissionControlClient;
+import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
 import org.orbit.component.connector.OrbitConstants;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ServiceClientImpl;

@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.model.tier1.account.UserAccountRTO;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.model.account.UserAccount;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
@@ -150,7 +150,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	}
 
 	@Override
-	public List<UserAccountRTO> getUserAccounts() throws ServerException {
+	public List<UserAccount> getUserAccounts() throws ServerException {
 		try {
 			return this.userAccountPersistence.getUserAccounts();
 		} catch (Exception e) {
@@ -160,7 +160,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	}
 
 	@Override
-	public UserAccountRTO getUserAccount(String userId) throws ServerException {
+	public UserAccount getUserAccount(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
 			return this.userAccountPersistence.getUserAccount(userId);
@@ -185,7 +185,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	public boolean matchUsernamePassword(String userId, String password) throws ServerException {
 		checkUserId(userId);
 		try {
-			UserAccountRTO userAccount = this.userAccountPersistence.getUserAccount(userId);
+			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount != null) {
 				String existingPassword = userAccount.getPassword();
 
@@ -206,7 +206,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	}
 
 	@Override
-	public UserAccountRTO registerUserAccount(UserAccountRTO newAccountRequest) throws ServerException {
+	public UserAccount registerUserAccount(UserAccount newAccountRequest) throws ServerException {
 		String userId = newAccountRequest.getUserId();
 		String password = newAccountRequest.getPassword();
 		String email = newAccountRequest.getEmail();
@@ -227,7 +227,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	}
 
 	@Override
-	public boolean updateUserAccount(UserAccountRTO updateAccountRequest) throws ServerException {
+	public boolean updateUserAccount(UserAccount updateAccountRequest) throws ServerException {
 		String userId = updateAccountRequest.getUserId();
 		String newPassword = updateAccountRequest.getPassword();
 		String newEmail = updateAccountRequest.getEmail();
@@ -240,7 +240,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 		boolean isUpdated = false;
 
 		try {
-			UserAccountRTO userAccount = this.userAccountPersistence.getUserAccount(userId);
+			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
 				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
@@ -326,7 +326,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	public boolean changePassword(String userId, String oldPassword, String newPassword) throws ServerException {
 		checkUserId(userId);
 		try {
-			UserAccountRTO userAccount = this.userAccountPersistence.getUserAccount(userId);
+			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
 				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
@@ -357,7 +357,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	public boolean isUserAccountActivated(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
-			UserAccountRTO userAccount = this.userAccountPersistence.getUserAccount(userId);
+			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
 				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
@@ -373,7 +373,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	public boolean activateUserAccount(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
-			UserAccountRTO userAccount = this.userAccountPersistence.getUserAccount(userId);
+			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
 				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}
@@ -394,7 +394,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	public boolean deactivateUserAccount(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
-			UserAccountRTO userAccount = this.userAccountPersistence.getUserAccount(userId);
+			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
 				throw new ServerException("404", "User account with userId '" + userId + "' is not found.");
 			}

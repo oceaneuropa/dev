@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.model.tier2.appstore.AppCategoryRTO;
+import org.orbit.component.runtime.model.appstore.AppCategory;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -57,13 +57,13 @@ public class AppCategoryTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected AppCategoryRTO toRTO(ResultSet rs) throws SQLException {
+	protected AppCategory toRTO(ResultSet rs) throws SQLException {
 		String categoryId = rs.getString("categoryId");
 		String parentId = rs.getString("parentId");
 		String name = rs.getString("name");
 		String description = rs.getString("description");
 
-		return new AppCategoryRTO(categoryId, parentId, name, description);
+		return new AppCategory(categoryId, parentId, name, description);
 	}
 
 	/**
@@ -73,11 +73,11 @@ public class AppCategoryTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<AppCategoryRTO> getRootCategories(Connection conn) throws SQLException {
+	public List<AppCategory> getRootCategories(Connection conn) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " ORDER BY categoryId ASC WHERE parentId='-1'";
-		ResultSetListHandler<AppCategoryRTO> handler = new ResultSetListHandler<AppCategoryRTO>() {
+		ResultSetListHandler<AppCategory> handler = new ResultSetListHandler<AppCategory>() {
 			@Override
-			protected AppCategoryRTO handleRow(ResultSet rs) throws SQLException {
+			protected AppCategory handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -92,14 +92,14 @@ public class AppCategoryTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<AppCategoryRTO> getCategories(Connection conn, String parentId) throws SQLException {
+	public List<AppCategory> getCategories(Connection conn, String parentId) throws SQLException {
 		if (parentId == null || parentId.isEmpty() || parentId.equals("-1")) {
 			return getRootCategories(conn);
 		}
 		String querySQL = "SELECT * FROM " + getTableName() + " ORDER BY categoryId ASC WHERE parentId=?";
-		ResultSetListHandler<AppCategoryRTO> handler = new ResultSetListHandler<AppCategoryRTO>() {
+		ResultSetListHandler<AppCategory> handler = new ResultSetListHandler<AppCategory>() {
 			@Override
-			protected AppCategoryRTO handleRow(ResultSet rs) throws SQLException {
+			protected AppCategory handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -114,11 +114,11 @@ public class AppCategoryTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public AppCategoryRTO getCategory(Connection conn, String categoryId) throws SQLException {
+	public AppCategory getCategory(Connection conn, String categoryId) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE categoryId=?";
-		ResultSetSingleHandler<AppCategoryRTO> handler = new ResultSetSingleHandler<AppCategoryRTO>() {
+		ResultSetSingleHandler<AppCategory> handler = new ResultSetSingleHandler<AppCategory>() {
 			@Override
-			protected AppCategoryRTO handleRow(ResultSet rs) throws SQLException {
+			protected AppCategory handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
@@ -172,7 +172,7 @@ public class AppCategoryTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public AppCategoryRTO insert(Connection conn, String categoryId, String parentId, String name, String description) throws SQLException {
+	public AppCategory insert(Connection conn, String categoryId, String parentId, String name, String description) throws SQLException {
 		String insertSQL = "INSERT INTO " + getTableName() + " (categoryId, parentId, name, description) VALUES (?, ?, ?, ?)";
 		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { categoryId, parentId, name, description }, 1);
 		if (succeed) {

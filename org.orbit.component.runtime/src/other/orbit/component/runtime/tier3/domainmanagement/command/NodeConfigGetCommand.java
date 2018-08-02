@@ -1,9 +1,9 @@
 package other.orbit.component.runtime.tier3.domainmanagement.command;
 
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
 import org.orbit.component.model.tier3.domain.NodeConfigDTO;
+import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceModelConverter;
+import org.orbit.component.runtime.util.ModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -39,9 +39,9 @@ public class NodeConfigGetCommand extends AbstractCommand {
 			String platformId = (String) this.request.getParameter("platformId");
 			String id = (String) this.request.getParameter("id");
 
-			NodeConfigRTO nodeConfig = this.service.getNodeConfig(machineId, platformId, id);
+			NodeConfig nodeConfig = this.service.getNodeConfig(machineId, platformId, id);
 			if (nodeConfig != null) {
-				nodeConfigDTO = DomainServiceModelConverter.getInstance().toDTO(nodeConfig);
+				nodeConfigDTO = ModelConverter.Domain.toDTO(nodeConfig);
 			}
 
 		} catch (ServerException e) {

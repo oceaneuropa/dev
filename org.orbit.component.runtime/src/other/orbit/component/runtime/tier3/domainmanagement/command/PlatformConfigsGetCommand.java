@@ -3,11 +3,11 @@ package other.orbit.component.runtime.tier3.domainmanagement.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.MachineConfigRTO;
-import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
 import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
+import org.orbit.component.runtime.model.domain.MachineConfig;
+import org.orbit.component.runtime.model.domain.PlatformConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceModelConverter;
+import org.orbit.component.runtime.util.ModelConverter;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;
@@ -43,13 +43,13 @@ public class PlatformConfigsGetCommand extends AbstractCommand {
 
 			if (machineId == null) {
 				// When machineId is not specified, get all transfer agents from all machines.
-				List<MachineConfigRTO> machineConfigs = this.service.getMachineConfigs();
-				for (MachineConfigRTO machineConfig : machineConfigs) {
+				List<MachineConfig> machineConfigs = this.service.getMachineConfigs();
+				for (MachineConfig machineConfig : machineConfigs) {
 					String currMachineId = machineConfig.getId();
-					List<PlatformConfigRTO> taConfigs = this.service.getPlatformConfigs(currMachineId);
+					List<PlatformConfig> taConfigs = this.service.getPlatformConfigs(currMachineId);
 					if (taConfigs != null && !taConfigs.isEmpty()) {
-						for (PlatformConfigRTO taConfig : taConfigs) {
-							PlatformConfigDTO taConfigDTO = DomainServiceModelConverter.getInstance().toDTO(taConfig);
+						for (PlatformConfig taConfig : taConfigs) {
+							PlatformConfigDTO taConfigDTO = ModelConverter.Domain.toDTO(taConfig);
 							taConfigDTO.setMachineId(currMachineId);
 							taConfigDTOs.add(taConfigDTO);
 						}
@@ -58,10 +58,10 @@ public class PlatformConfigsGetCommand extends AbstractCommand {
 
 			} else {
 				// When machineId is specified, get transfer agents from the machine.
-				List<PlatformConfigRTO> taConfigs = this.service.getPlatformConfigs(machineId);
+				List<PlatformConfig> taConfigs = this.service.getPlatformConfigs(machineId);
 				if (taConfigs != null) {
-					for (PlatformConfigRTO taConfig : taConfigs) {
-						PlatformConfigDTO taConfigDTO = DomainServiceModelConverter.getInstance().toDTO(taConfig);
+					for (PlatformConfig taConfig : taConfigs) {
+						PlatformConfigDTO taConfigDTO = ModelConverter.Domain.toDTO(taConfig);
 						taConfigDTO.setMachineId(machineId);
 						taConfigDTOs.add(taConfigDTO);
 					}

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier1.account.UserAccounts;
+import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
@@ -36,7 +36,7 @@ public class UserAccountDeleteServlet extends HttpServlet {
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 		if (ids != null) {
-			UserAccounts userRegistry = OrbitClients.getInstance().getUserAccounts(userRegistryUrl);
+			UserAccountClient userRegistry = OrbitClients.getInstance().getUserAccounts(userRegistryUrl);
 			if (userRegistry != null) {
 				try {
 					for (String currId : ids) {

@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.registry.Registry;
+import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier1.config.ConfigRegistryImpl;
+import org.orbit.component.connector.tier1.configregistry.ConfigRegistryClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
 import other.orbit.component.api.tier1.config.ConfigRegistryConnectorV1;
 import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class ConfigRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<Registry> implements ConfigRegistryConnectorV1 {
+public class ConfigRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<ConfigRegistryClient> implements ConfigRegistryConnectorV1 {
 
 	/**
 	 * 
@@ -29,12 +29,12 @@ public class ConfigRegistryConnectorImplV1 extends IndexBasedLoadBalancedService
 	}
 
 	@Override
-	protected Registry createService(Map<String, Object> properties) {
-		return new ConfigRegistryImpl(null, properties);
+	protected ConfigRegistryClient createService(Map<String, Object> properties) {
+		return new ConfigRegistryClientImpl(null, properties);
 	}
 
 	@Override
-	protected void updateService(Registry configRegistry, Map<String, Object> properties) {
+	protected void updateService(ConfigRegistryClient configRegistry, Map<String, Object> properties) {
 		configRegistry.update(properties);
 	}
 

@@ -6,8 +6,8 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier4.mission.MissionRTO;
-import org.orbit.component.model.tier4.mission.MissionDTO;
+import org.orbit.component.model.tier4.missioncontrol.MissionDTO;
+import org.orbit.component.runtime.model.missioncontrol.Mission;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionConverter;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
@@ -33,8 +33,8 @@ public class MissionListWSCommand extends AbstractWSCommand {
 
 		List<MissionDTO> missionDTOs = new ArrayList<MissionDTO>();
 		try {
-			List<MissionRTO> missions = this.service.getMissions(typeId);
-			for (MissionRTO mission : missions) {
+			List<Mission> missions = this.service.getMissions(typeId);
+			for (Mission mission : missions) {
 				MissionDTO missionDTO = MissionConverter.INSTANCE.toDTO(mission);
 				missionDTOs.add(missionDTO);
 			}

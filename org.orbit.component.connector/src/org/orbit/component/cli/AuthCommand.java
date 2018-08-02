@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.tier1.auth.Auth;
+import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.api.tier1.auth.GrantTypes;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
@@ -60,7 +60,7 @@ public class AuthCommand implements CommandActivator {
 			return;
 		}
 
-		Auth auth = OrbitClients.getInstance().getAuth(url);
+		AuthClient auth = OrbitClients.getInstance().getAuth(url);
 
 		boolean result = auth.ping();
 		System.out.println("Result is: " + result);
@@ -77,7 +77,7 @@ public class AuthCommand implements CommandActivator {
 			return;
 		}
 
-		Auth auth = OrbitClients.getInstance().getAuth(url);
+		AuthClient auth = OrbitClients.getInstance().getAuth(url);
 
 		String result = auth.echo(message);
 		System.out.println("Result is: " + result);
@@ -119,7 +119,7 @@ public class AuthCommand implements CommandActivator {
 		}
 
 		try {
-			Auth auth = OrbitClients.getInstance().getAuth(realm, username, url);
+			AuthClient auth = OrbitClients.getInstance().getAuth(realm, username, url);
 
 			TokenRequest request = new TokenRequest();
 

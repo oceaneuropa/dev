@@ -6,13 +6,13 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.orbit.component.model.tier1.account.UserAccountRTO;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.origin.common.Activator;
 import org.origin.common.rest.server.ServerException;
@@ -186,7 +186,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 
 		// Step1. Check username and password against UserRegistry.
 		boolean matchUsernamePassword = false;
-		UserAccountRTO userAccount = null;
+		UserAccount userAccount = null;
 		try {
 			UserRegistryService userRegistryService = OrbitServices.getInstance().getUserRegistryService();
 			if (userRegistryService == null) {
@@ -269,7 +269,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		}
 
 		// Step3. Find user account by username
-		UserAccountRTO userAccount = null;
+		UserAccount userAccount = null;
 		try {
 			UserRegistryService userRegistryService = OrbitServices.getInstance().getUserRegistryService();
 			if (userRegistryService == null) {
@@ -311,7 +311,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	 * @return
 	 * @throws Exception
 	 */
-	private UserToken createAccessToken(UserAccountRTO userAccount) throws Exception {
+	private UserToken createAccessToken(UserAccount userAccount) throws Exception {
 		UserToken userToken = null;
 		try {
 			// String issuer = getFullName();

@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
+import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.cli.ResourcePropertyHelper;
-import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;

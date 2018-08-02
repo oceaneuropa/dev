@@ -12,7 +12,7 @@ import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.tier1.account.UserAccounts;
+import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
@@ -39,7 +39,7 @@ public class UserAccountUpdateServlet extends HttpServlet {
 
 		boolean succeed = false;
 		if (id != null) {
-			UserAccounts userRegistry = OrbitClients.getInstance().getUserAccounts(userRegistryUrl);
+			UserAccountClient userRegistry = OrbitClients.getInstance().getUserAccounts(userRegistryUrl);
 			if (userRegistry != null) {
 				try {
 					UserAccount userAccount = userRegistry.getUserAccount(id);

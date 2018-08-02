@@ -8,11 +8,11 @@ import org.orbit.component.cli.NodeControlCommand;
 import org.orbit.component.cli.NodeControlCommandGeneric;
 import org.orbit.component.cli.ServicesCommand;
 import org.orbit.component.cli.UserRegistryCommand;
-import org.orbit.component.connector.tier1.account.UserRegistryConnector;
+import org.orbit.component.connector.tier1.account.UserAccountConnector;
 import org.orbit.component.connector.tier1.auth.AuthConnector;
-import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
+import org.orbit.component.connector.tier1.configregistry.ConfigRegistryConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
-import org.orbit.component.connector.tier3.domainmanagement.DomainManagementConnector;
+import org.orbit.component.connector.tier3.domain.DomainManagementConnector;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
 import org.orbit.component.connector.tier4.mission.MissionControlConnector;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -46,8 +46,8 @@ public class Extensions extends ProgramExtensions {
 
 		// tier 1
 		// User registry connector
-		Extension extension1 = new Extension(typeId, UserRegistryConnector.ID, "User Registry Connector", "User Registry connector description");
-		InterfaceDescription desc1 = new InterfaceDescription(ConnectorActivator.class, UserRegistryConnector.class);
+		Extension extension1 = new Extension(typeId, UserAccountConnector.ID, "User Registry Connector", "User Registry connector description");
+		InterfaceDescription desc1 = new InterfaceDescription(ConnectorActivator.class, UserAccountConnector.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 

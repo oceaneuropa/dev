@@ -18,11 +18,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier1.account.UserAccountRTO;
 import org.orbit.component.model.tier1.account.UserAccountActionDTO;
 import org.orbit.component.model.tier1.account.UserAccountDTO;
-import org.orbit.component.runtime.tier1.account.service.UserAccountModelConverter;
+import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
+import org.orbit.component.runtime.util.ModelConverter;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -75,10 +75,10 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 
 		List<UserAccountDTO> userAccountDTOs = new ArrayList<UserAccountDTO>();
 		try {
-			List<UserAccountRTO> userAccounts = service.getUserAccounts();
+			List<UserAccount> userAccounts = service.getUserAccounts();
 			if (userAccounts != null) {
-				for (UserAccountRTO userAccount : userAccounts) {
-					UserAccountDTO userAccountDTO = UserAccountModelConverter.getInstance().toDTO(userAccount);
+				for (UserAccount userAccount : userAccounts) {
+					UserAccountDTO userAccountDTO = ModelConverter.Account.toDTO(userAccount);
 					userAccountDTOs.add(userAccountDTO);
 				}
 			}
@@ -105,12 +105,12 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 
 		UserRegistryService service = getService();
 		try {
-			UserAccountRTO userAccount = service.getUserAccount(userId);
+			UserAccount userAccount = service.getUserAccount(userId);
 			if (userAccount == null) {
 				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", userId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
-			userAccountDTO = UserAccountModelConverter.getInstance().toDTO(userAccount);
+			userAccountDTO = ModelConverter.Account.toDTO(userAccount);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -165,8 +165,8 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 		boolean succeed = false;
 		UserRegistryService service = getService();
 		try {
-			UserAccountRTO newUserAccountRequest = UserAccountModelConverter.getInstance().toRTO(newUserAccountRequestDTO);
-			UserAccountRTO newUserAccount = service.registerUserAccount(newUserAccountRequest);
+			UserAccount newUserAccountRequest = ModelConverter.Account.toRTO(newUserAccountRequestDTO);
+			UserAccount newUserAccount = service.registerUserAccount(newUserAccountRequest);
 			if (newUserAccount != null) {
 				succeed = true;
 			}
@@ -204,7 +204,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 		boolean succeed = false;
 		UserRegistryService service = getService();
 		try {
-			UserAccountRTO updateUserAccountRequest = UserAccountModelConverter.getInstance().toRTO(updateUserAccountRequestDTO);
+			UserAccount updateUserAccountRequest = ModelConverter.Account.toRTO(updateUserAccountRequestDTO);
 			succeed = service.updateUserAccount(updateUserAccountRequest);
 
 		} catch (ServerException e) {
@@ -275,7 +275,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 
-			UserAccountRTO userAccount = service.getUserAccount(userId);
+			UserAccount userAccount = service.getUserAccount(userId);
 			if (userAccount == null) {
 				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", userId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();

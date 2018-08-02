@@ -7,7 +7,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.tier1.account.UserAccounts;
+import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -74,12 +74,12 @@ public class UserRegistryCommandV1 implements Annotated {
 		System.out.println("UserRegistryConnector is unset.");
 	}
 
-	protected UserAccounts getUserRegistryService() throws ClientException {
+	protected UserAccountClient getUserRegistryService() throws ClientException {
 		if (this.connector == null) {
 			System.out.println("AuthConnector service is not available.");
 			return null;
 		}
-		UserAccounts userRegistry = this.connector.getService();
+		UserAccountClient userRegistry = this.connector.getService();
 		if (userRegistry == null) {
 			System.out.println("UserRegistry service is not available.");
 			return null;
@@ -91,7 +91,7 @@ public class UserRegistryCommandV1 implements Annotated {
 	public void list_users() throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_users");
 
-		UserAccounts userRegistry = getUserRegistryService();
+		UserAccountClient userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}
@@ -126,7 +126,7 @@ public class UserRegistryCommandV1 implements Annotated {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "get_user", new String[] { "username", username });
 
-		UserAccounts userRegistry = getUserRegistryService();
+		UserAccountClient userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}
@@ -184,7 +184,7 @@ public class UserRegistryCommandV1 implements Annotated {
 				new String[] { "phone", phone } //
 		);
 
-		UserAccounts userRegistry = getUserRegistryService();
+		UserAccountClient userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}
@@ -226,7 +226,7 @@ public class UserRegistryCommandV1 implements Annotated {
 				new String[] { "newpassword", newPassword } //
 		);
 
-		UserAccounts userRegistry = getUserRegistryService();
+		UserAccountClient userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}
@@ -250,7 +250,7 @@ public class UserRegistryCommandV1 implements Annotated {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "activate_user", new String[] { "username", username });
 
-		UserAccounts userRegistry = getUserRegistryService();
+		UserAccountClient userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}
@@ -273,7 +273,7 @@ public class UserRegistryCommandV1 implements Annotated {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "deactivate_user", new String[] { "username", username });
 
-		UserAccounts userRegistry = getUserRegistryService();
+		UserAccountClient userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}
@@ -296,7 +296,7 @@ public class UserRegistryCommandV1 implements Annotated {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "remove_user", new String[] { "username", username });
 
-		UserAccounts userRegistry = getUserRegistryService();
+		UserAccountClient userRegistry = getUserRegistryService();
 		if (userRegistry == null) {
 			return;
 		}

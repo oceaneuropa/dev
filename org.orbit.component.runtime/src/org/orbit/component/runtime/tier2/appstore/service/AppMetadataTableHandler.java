@@ -13,8 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.model.tier2.appstore.AppManifestRTO;
-import org.orbit.component.model.tier2.appstore.AppQueryRTO;
+import org.orbit.component.runtime.model.appstore.AppManifest;
+import org.orbit.component.runtime.model.appstore.AppQuery;
 import org.origin.common.io.IOUtil;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
@@ -64,10 +64,10 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    id int NOT NULL AUTO_INCREMENT,"); // unique id
 			sb.append("    appId varchar(500) NOT NULL,");
 			sb.append("    appVersion varchar(100) NOT NULL,");
+			sb.append("    type varchar(500),");
 			sb.append("    name varchar(500),");
-			sb.append("    type varchar(500) NOT NULL,");
-			sb.append("    priority int DEFAULT 1000,");
 			sb.append("    appManifest varchar(2000),");
+			sb.append("    appFileName varchar(500),");
 			sb.append("    appContent mediumblob,");
 			sb.append("    description varchar(2000),");
 			sb.append("    dateCreated bigint DEFAULT 0,");
@@ -80,10 +80,10 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    id serial NOT NULL,"); // unique id
 			sb.append("    appId varchar(500) NOT NULL,");
 			sb.append("    appVersion varchar(100) NOT NULL,");
+			sb.append("    type varchar(500),");
 			sb.append("    name varchar(500),");
-			sb.append("    type varchar(500) NOT NULL,");
-			sb.append("    priority int DEFAULT 1000,");
 			sb.append("    appManifest varchar(2000),");
+			sb.append("    appFileName varchar(500),");
 			sb.append("    appContent bytea,");
 			sb.append("    description varchar(2000),");
 			sb.append("    dateCreated bigint DEFAULT 0,");
@@ -102,19 +102,19 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected AppManifestRTO toRTO(ResultSet rs) throws SQLException {
+	protected AppManifest toApp(ResultSet rs) throws SQLException {
 		int id = rs.getInt("id");
 		String appId = rs.getString("appId");
 		String appVersion = rs.getString("appVersion");
 		String name = rs.getString("name");
-		int priority = rs.getInt("priority");
 		String type = rs.getString("type");
 		String appManifest = rs.getString("appManifest");
+		String appFileName = rs.getString("appFileName");
 		String description = rs.getString("description");
 		long dateCreated = rs.getLong("dateCreated");
 		long dateModified = rs.getLong("dateModified");
 
-		return new AppManifestRTO(id, appId, appVersion, name, type, priority, appManifest, description, dateCreated, dateModified);
+		return new AppManifest(id, appId, appVersion, name, type, appManifest, appFileName, description, dateCreated, dateModified);
 	}
 
 	/**
@@ -125,12 +125,12 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<AppManifestRTO> getApps(Connection conn) throws SQLException {
-		String querySQL = "SELECT * FROM " + getTableName() + " ORDER BY priority ASC";
-		ResultSetListHandler<AppManifestRTO> handler = new ResultSetListHandler<AppManifestRTO>() {
+	public List<AppManifest> getApps(Connection conn) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " ORDER BY appId ASC";
+		ResultSetListHandler<AppManifest> handler = new ResultSetListHandler<AppManifest>() {
 			@Override
-			protected AppManifestRTO handleRow(ResultSet rs) throws SQLException {
-				return toRTO(rs);
+			protected AppManifest handleRow(ResultSet rs) throws SQLException {
+				return toApp(rs);
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, null, handler);
@@ -144,7 +144,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<AppManifestRTO> getApps(Connection conn, AppQueryRTO query) throws SQLException {
+	public List<AppManifest> getApps(Connection conn, AppQuery query) throws SQLException {
 		if (query.isEmpty()) {
 			return getApps(conn);
 		}
@@ -155,7 +155,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 		String type = query.getType();
 		String description = query.getDescription();
 
-		String querySQL = "SELECT * FROM " + getTableName() + " ORDER BY priority ASC WHERE";
+		String querySQL = "SELECT * FROM " + getTableName() + " ORDER BY appId ASC WHERE";
 		List<Object> params = new ArrayList<Object>();
 
 		boolean appendANDPrefix = false;
@@ -180,10 +180,10 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			appendANDPrefix = true;
 		}
 
-		ResultSetListHandler<AppManifestRTO> handler = new ResultSetListHandler<AppManifestRTO>() {
+		ResultSetListHandler<AppManifest> handler = new ResultSetListHandler<AppManifest>() {
 			@Override
-			protected AppManifestRTO handleRow(ResultSet rs) throws SQLException {
-				return toRTO(rs);
+			protected AppManifest handleRow(ResultSet rs) throws SQLException {
+				return toApp(rs);
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, params.toArray(new Object[params.size()]), handler);
@@ -218,15 +218,15 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public AppManifestRTO getApp(Connection conn, String appId, String appVersion) throws SQLException {
+	public AppManifest getApp(Connection conn, String appId, String appVersion) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE appId=? AND appVersion=?";
-		ResultSetSingleHandler<AppManifestRTO> handler = new ResultSetSingleHandler<AppManifestRTO>() {
+		ResultSetSingleHandler<AppManifest> handler = new ResultSetSingleHandler<AppManifest>() {
 			@Override
-			protected AppManifestRTO handleRow(ResultSet rs) throws SQLException {
-				return toRTO(rs);
+			protected AppManifest handleRow(ResultSet rs) throws SQLException {
+				return toApp(rs);
 			}
 		};
-		return DatabaseUtil.query(conn, querySQL, new Object[] { appId }, handler);
+		return DatabaseUtil.query(conn, querySQL, new Object[] { appId, appVersion }, handler);
 	}
 
 	/**
@@ -237,34 +237,15 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public AppManifestRTO getApp(Connection conn, int id) throws SQLException {
+	public AppManifest getApp(Connection conn, int id) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE id=?";
-		ResultSetSingleHandler<AppManifestRTO> handler = new ResultSetSingleHandler<AppManifestRTO>() {
+		ResultSetSingleHandler<AppManifest> handler = new ResultSetSingleHandler<AppManifest>() {
 			@Override
-			protected AppManifestRTO handleRow(ResultSet rs) throws SQLException {
-				return toRTO(rs);
+			protected AppManifest handleRow(ResultSet rs) throws SQLException {
+				return toApp(rs);
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, new Object[] { id }, handler);
-	}
-
-	/**
-	 * 
-	 * @param conn
-	 * @param appToAdd
-	 * @return
-	 * @throws SQLException
-	 */
-	public AppManifestRTO insert(Connection conn, AppManifestRTO appToAdd) throws SQLException {
-		String appId = appToAdd.getAppId();
-		String appVersion = appToAdd.getAppVersion();
-		String name = appToAdd.getName();
-		String type = appToAdd.getType();
-		int priority = appToAdd.getPriority();
-		String appManifest = appToAdd.getAppManifest();
-		String description = appToAdd.getDescription();
-		long dateCreated = appToAdd.getDateCreated();
-		return insert(conn, appId, appVersion, name, type, priority, appManifest, description, dateCreated);
 	}
 
 	/**
@@ -273,18 +254,19 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @param conn
 	 * @param appId
 	 * @param appVersion
-	 * @param name
 	 * @param type
-	 * @param priority
+	 * @param name
 	 * @param appManifest
+	 * @param appFileName
 	 * @param description
 	 * @param dateCreated
+	 * @param dateModified
 	 * @return
 	 * @throws SQLException
 	 */
-	public AppManifestRTO insert(Connection conn, String appId, String appVersion, String name, String type, int priority, String appManifest, String description, long dateCreated) throws SQLException {
-		String insertSQL = "INSERT INTO " + getTableName() + " (appId, appVersion, name, type, priority, appManifest, description, dateCreated) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { appId, appVersion, name, type, priority, appManifest, description, dateCreated }, 1);
+	public AppManifest insert(Connection conn, String appId, String appVersion, String type, String name, String appManifest, String appFileName, String description, long dateCreated, long dateModified) throws SQLException {
+		String insertSQL = "INSERT INTO " + getTableName() + " (appId, appVersion, type, name, appManifest, appFilename, description, dateCreated, dateModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { appId, appVersion, type, name, appManifest, appFileName, description, dateCreated, dateModified }, 1);
 		if (succeed) {
 			return getApp(conn, appId, appVersion);
 		}
@@ -295,43 +277,41 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * Update an app.
 	 * 
 	 * @param conn
-	 * @param updateAppRequestDTO
+	 * @param updateAppRequest
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean update(Connection conn, AppManifestRTO updateAppRequestDTO) throws SQLException {
-		int id = updateAppRequestDTO.getId();
-		String appId = updateAppRequestDTO.getAppId();
-		String appVersion = updateAppRequestDTO.getAppVersion();
+	public boolean update(Connection conn, AppManifest updateAppRequest) throws SQLException {
+		int id = updateAppRequest.getId();
+		String appId = updateAppRequest.getAppId();
+		String appVersion = updateAppRequest.getAppVersion();
 
 		Map<String, Object> columnToValueMap = new LinkedHashMap<String, Object>();
 
 		if (id > 0) {
 			// update app by id, which means appId and appVersion could be changed in this context.
-			AppManifestRTO existingApp = getApp(conn, id);
+			AppManifest existingApp = getApp(conn, id);
 			if (existingApp == null) {
 				return false;
 			}
 
 			String oldAppId = existingApp.getAppId();
 			String oldAppVersion = existingApp.getAppVersion();
-			String oldName = existingApp.getName();
 			String oldType = existingApp.getType();
-			int oldPriority = existingApp.getPriority();
+			String oldName = existingApp.getName();
 			String oldManifest = existingApp.getAppManifest();
+			String oldFileName = existingApp.getAppFileName();
 			String oldDescription = existingApp.getDescription();
-			long oldDateCreated = existingApp.getDateCreated();
 			long oldDateModified = existingApp.getDateModified();
 
-			String newAppId = updateAppRequestDTO.getAppId();
-			String newAppVersion = updateAppRequestDTO.getAppVersion();
-			String newName = updateAppRequestDTO.getName();
-			String newType = updateAppRequestDTO.getType();
-			int newPriority = updateAppRequestDTO.getPriority();
-			String newManifest = updateAppRequestDTO.getAppManifest();
-			String newDescription = updateAppRequestDTO.getDescription();
-			long newDateCreated = updateAppRequestDTO.getDateCreated();
-			long newDateModified = updateAppRequestDTO.getDateModified();
+			String newAppId = updateAppRequest.getAppId();
+			String newAppVersion = updateAppRequest.getAppVersion();
+			String newType = updateAppRequest.getType();
+			String newName = updateAppRequest.getName();
+			String newManifest = updateAppRequest.getAppManifest();
+			String newFileName = updateAppRequest.getAppFileName();
+			String newDescription = updateAppRequest.getDescription();
+			long newDateModified = updateAppRequest.getDateModified();
 
 			if (!StringUtil.equals(oldAppId, newAppId)) {
 				columnToValueMap.put("appId", newAppId);
@@ -345,17 +325,14 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			if (!StringUtil.equals(oldType, newType)) {
 				columnToValueMap.put("type", newType);
 			}
-			if (oldPriority != newPriority) {
-				columnToValueMap.put("priority", newPriority);
-			}
 			if (!StringUtil.equals(oldManifest, newManifest)) {
 				columnToValueMap.put("appManifest", newManifest);
 			}
+			if (!StringUtil.equals(oldFileName, newFileName)) {
+				columnToValueMap.put("appFileName", newFileName);
+			}
 			if (!StringUtil.equals(oldDescription, newDescription)) {
 				columnToValueMap.put("description", newDescription);
-			}
-			if (oldDateCreated != newDateCreated) {
-				columnToValueMap.put("dateCreated", newDateCreated);
 			}
 			if (newDateModified <= 0) {
 				newDateModified = new Date().getTime();
@@ -375,33 +352,31 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 				columnToValueMap.put("dateModified", newDateModified);
 			}
 
-			return DatabaseUtil.update(conn, getTableName(), "id", String.valueOf(id), columnToValueMap);
+			return DatabaseUtil.update(conn, getTableName(), "id", id, columnToValueMap);
 
 		} else {
 			// update app by appId and appVersion, which means appId and appVersion are not changed in this context.
 			assert (appId != null) : "appId is null";
 			assert (appVersion != null) : "appVersion is null";
 
-			AppManifestRTO existingApp = getApp(conn, appId, appVersion);
+			AppManifest existingApp = getApp(conn, appId, appVersion);
 			if (existingApp == null) {
 				return false;
 			}
 
 			String oldName = existingApp.getName();
 			String oldType = existingApp.getType();
-			int oldPriority = existingApp.getPriority();
 			String oldManifest = existingApp.getAppManifest();
+			String oldFileName = existingApp.getAppFileName();
 			String oldDescription = existingApp.getDescription();
-			long oldDateCreated = existingApp.getDateCreated();
 			long oldDateModified = existingApp.getDateModified();
 
-			String newName = updateAppRequestDTO.getName();
-			String newType = updateAppRequestDTO.getType();
-			int newPriority = updateAppRequestDTO.getPriority();
-			String newManifest = updateAppRequestDTO.getAppManifest();
-			String newDescription = updateAppRequestDTO.getDescription();
-			long newDateCreated = updateAppRequestDTO.getDateCreated();
-			long newDateModified = updateAppRequestDTO.getDateModified();
+			String newName = updateAppRequest.getName();
+			String newType = updateAppRequest.getType();
+			String newManifest = updateAppRequest.getAppManifest();
+			String newFileName = updateAppRequest.getAppFileName();
+			String newDescription = updateAppRequest.getDescription();
+			long newDateModified = updateAppRequest.getDateModified();
 
 			if (!StringUtil.equals(oldName, newName)) {
 				columnToValueMap.put("name", newName);
@@ -409,17 +384,14 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			if (!StringUtil.equals(oldType, newType)) {
 				columnToValueMap.put("type", newType);
 			}
-			if (oldPriority != newPriority) {
-				columnToValueMap.put("priority", newPriority);
-			}
 			if (!StringUtil.equals(oldManifest, newManifest)) {
 				columnToValueMap.put("appManifest", newManifest);
 			}
+			if (!StringUtil.equals(oldFileName, newFileName)) {
+				columnToValueMap.put("appFileName", newFileName);
+			}
 			if (!StringUtil.equals(oldDescription, newDescription)) {
 				columnToValueMap.put("description", newDescription);
-			}
-			if (oldDateCreated != newDateCreated) {
-				columnToValueMap.put("dateCreated", newDateCreated);
 			}
 			if (newDateModified <= 0) {
 				newDateModified = new Date().getTime();
@@ -492,22 +464,6 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Update priority.
-	 * 
-	 * @param conn
-	 * @param appId
-	 * @param appVersion
-	 * @param priority
-	 * @return
-	 * @throws SQLException
-	 */
-	public boolean updatePriority(Connection conn, String appId, String appVersion, int priority) throws SQLException {
-		String updateSQL = "UPDATE " + getTableName() + " SET priority=?, dateModified=? WHERE appId=? AND appVersion=?";
-		long dateModified = new Date().getTime();
-		return DatabaseUtil.update(conn, updateSQL, new Object[] { priority, dateModified, appId, appVersion }, 1);
-	}
-
-	/**
 	 * Update manifest.
 	 * 
 	 * @param conn
@@ -534,7 +490,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateFileName(Connection conn, String appId, String appVersion, String fileName) throws SQLException {
-		String updateSQL = "UPDATE " + getTableName() + " SET fileName=?, dateModified=? WHERE appId=? AND appVersion=?";
+		String updateSQL = "UPDATE " + getTableName() + " SET appFileName=?, dateModified=? WHERE appId=? AND appVersion=?";
 		long dateModified = new Date().getTime();
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { fileName, dateModified, appId, appVersion }, 1);
 	}
@@ -758,7 +714,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean delete(Connection conn, String appId, String appVersion) throws SQLException {
-		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE appId=? && appVersion=?";
+		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE appId=? AND appVersion=?";
 		return DatabaseUtil.update(conn, deleteSQL, new Object[] { appId, appVersion }, 1);
 	}
 
@@ -786,4 +742,20 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 // columnToValueMap.put("dateModified", newDateModified);
 // }
 // return DatabaseUtil.update(conn, getTableName(), "id", id, columnToValueMap);
+// }
+
+// /**
+// * Update ranking.
+// *
+// * @param conn
+// * @param appId
+// * @param appVersion
+// * @param ranking
+// * @return
+// * @throws SQLException
+// */
+// public boolean updateRanking(Connection conn, String appId, String appVersion, int ranking) throws SQLException {
+// String updateSQL = "UPDATE " + getTableName() + " SET ranking=?, dateModified=? WHERE appId=? AND appVersion=?";
+// long dateModified = new Date().getTime();
+// return DatabaseUtil.update(conn, updateSQL, new Object[] { ranking, dateModified, appId, appVersion }, 1);
 // }

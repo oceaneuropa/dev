@@ -11,10 +11,10 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier1.account.UserAccounts;
-import org.orbit.component.api.tier1.auth.Auth;
-import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.api.tier1.account.UserAccountClient;
+import org.orbit.component.api.tier1.auth.AuthClient;
+import org.orbit.component.api.tier2.appstore.AppStoreClient;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
@@ -162,11 +162,11 @@ public class ServicesCommand implements Annotated, CommandActivator {
 	}
 
 	protected void listUserRegistryServices() throws ClientException {
-		List<LoadBalanceResource<UserAccounts>> resources = ServicesCommandHelper.INSTANCE.getUserRegistryResources(this.userRegistryConnector);
+		List<LoadBalanceResource<UserAccountClient>> resources = ServicesCommandHelper.INSTANCE.getUserRegistryResources(this.userRegistryConnector);
 
 		String[][] rows = new String[resources.size()][USERREGISTRY_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
-		for (LoadBalanceResource<UserAccounts> resource : resources) {
+		for (LoadBalanceResource<UserAccountClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
 			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_NAMESPACE);
 			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_NAME);
@@ -187,11 +187,11 @@ public class ServicesCommand implements Annotated, CommandActivator {
 
 	protected void listAuthServices() throws ClientException {
 		// List<LoadBalanceResource<Auth>> resources = ServicesCommandHelper.INSTANCE.getAuthResources(this.authConnector);
-		List<LoadBalanceResource<Auth>> resources = new ArrayList<LoadBalanceResource<Auth>>();
+		List<LoadBalanceResource<AuthClient>> resources = new ArrayList<LoadBalanceResource<AuthClient>>();
 
 		String[][] rows = new String[resources.size()][AUTH_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
-		for (LoadBalanceResource<Auth> resource : resources) {
+		for (LoadBalanceResource<AuthClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
 			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_NAMESPACE);
 			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_NAME);
@@ -211,11 +211,11 @@ public class ServicesCommand implements Annotated, CommandActivator {
 	}
 
 	protected void listAppStoreServices() throws ClientException {
-		List<LoadBalanceResource<AppStore>> resources = ServicesCommandHelper.INSTANCE.getAppStoreResources(this.appStoreConnector);
+		List<LoadBalanceResource<AppStoreClient>> resources = ServicesCommandHelper.INSTANCE.getAppStoreResources(this.appStoreConnector);
 
 		String[][] rows = new String[resources.size()][APPSTORE_SERVICES_COLUMNS.length];
 		int rowIndex = 0;
-		for (LoadBalanceResource<AppStore> resource : resources) {
+		for (LoadBalanceResource<AppStoreClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
 			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_NAMESPACE);
 			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_NAME);

@@ -10,9 +10,9 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier4.mission.MissionControlClient;
-import org.orbit.component.connector.tier4.mission.MissionControlModelConverter;
-import org.orbit.component.model.tier4.mission.MissionRTO;
+import org.orbit.component.api.tier4.missioncontrol.Mission;
+import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
+import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
@@ -49,7 +49,7 @@ public class MissionControlCommand extends ServiceClientCommand implements Comma
 						"ping", //
 						"echo", "level", //
 						"list_missions", "get_mission", "mission_exist", "create_mission", "delete_mission", "start_mission", "stop_mission", "mission_status"//
-		});
+				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
@@ -99,10 +99,10 @@ public class MissionControlCommand extends ServiceClientCommand implements Comma
 			Request request = new Request(Requests.GET_MISSIONS);
 			Response response = missionControl.sendRequest(request);
 
-			MissionRTO[] missions = MissionControlModelConverter.INSTANCE.getMissions(response);
+			Mission[] missions = ModelConverter.MissionControl.getMissions(response);
 			String[][] rows = new String[missions.length][MISSION_COLUMN_NAMES.length];
 			int rowIndex = 0;
-			for (MissionRTO mission : missions) {
+			for (Mission mission : missions) {
 				String name = mission.getName();
 				rows[rowIndex++] = new String[] { name };
 			}

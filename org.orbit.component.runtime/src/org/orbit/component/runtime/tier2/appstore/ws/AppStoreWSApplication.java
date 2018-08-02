@@ -25,6 +25,7 @@ public class AppStoreWSApplication extends OrbitWSApplication {
 			}
 		});
 		register(AppStoreWSAppsResource.class);
+		register(AppStoreWSAppResource.class);
 	}
 
 	@Override

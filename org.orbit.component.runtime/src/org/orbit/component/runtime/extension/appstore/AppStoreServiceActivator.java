@@ -3,7 +3,7 @@ package org.orbit.component.runtime.extension.appstore;
 import java.util.Map;
 
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
-import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
+import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
@@ -22,7 +22,7 @@ public class AppStoreServiceActivator implements ServiceActivator {
 		Map<Object, Object> properties = context.getProperties();
 
 		// Start AppStoreService
-		AppStoreServiceDatabaseImpl appStore = new AppStoreServiceDatabaseImpl(properties);
+		AppStoreServiceImpl appStore = new AppStoreServiceImpl(properties);
 		appStore.start(bundleContext);
 
 		process.adapt(AppStoreService.class, appStore);

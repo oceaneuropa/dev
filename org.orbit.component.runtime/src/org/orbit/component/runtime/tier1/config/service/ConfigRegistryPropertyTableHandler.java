@@ -5,8 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.orbit.component.model.tier1.config.EPath;
-import org.orbit.component.model.tier1.config.RegistryPropertyVO;
+import org.orbit.component.runtime.model.configregistry.EPath;
+import org.orbit.component.runtime.model.configregistry.RegistryPropertyVO;
 import org.origin.common.jdbc.AbstractResultSetHandler;
 import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;

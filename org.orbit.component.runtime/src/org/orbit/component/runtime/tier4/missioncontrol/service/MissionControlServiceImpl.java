@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.model.tier4.mission.MissionRTO;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.model.missioncontrol.Mission;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.editpolicy.WSEditPolicies;
@@ -141,22 +141,22 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public List<MissionRTO> getMissions(String typeId) throws ServerException {
-		List<MissionRTO> missions = null;
+	public List<Mission> getMissions(String typeId) throws ServerException {
+		List<Mission> missions = null;
 		try {
 			missions = getPersistenceHandler().getMissions(typeId);
 		} catch (Exception e) {
 			handleException(e);
 		}
 		if (missions == null) {
-			missions = new ArrayList<MissionRTO>();
+			missions = new ArrayList<Mission>();
 		}
 		return missions;
 	}
 
 	@Override
-	public MissionRTO getMission(String typeId, String name) throws ServerException {
-		MissionRTO mission = null;
+	public Mission getMission(String typeId, String name) throws ServerException {
+		Mission mission = null;
 		try {
 			mission = getPersistenceHandler().getMission(typeId, name);
 
@@ -167,8 +167,8 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public MissionRTO createMission(String typeId, String name) throws ServerException {
-		MissionRTO mission = null;
+	public Mission createMission(String typeId, String name) throws ServerException {
+		Mission mission = null;
 		try {
 			// 1. Check and create mission record
 			boolean nameExists = getPersistenceHandler().nameExists(typeId, name);

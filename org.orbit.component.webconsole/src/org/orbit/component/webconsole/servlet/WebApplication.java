@@ -5,7 +5,10 @@ import java.util.Map;
 
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.appstore.AppStoreServlet;
+import org.orbit.component.webconsole.servlet.appstore.AppAddServlet;
+import org.orbit.component.webconsole.servlet.appstore.AppDeleteServlet;
+import org.orbit.component.webconsole.servlet.appstore.AppListServlet;
+import org.orbit.component.webconsole.servlet.appstore.AppUpdateServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineAddServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineListServlet;
@@ -79,29 +82,33 @@ public class WebApplication extends WebApplicationImpl {
 		String contextRoot = (String) this.properties.get(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		dicts.put("contextPath", contextRoot);
 
-		// Add resources
+		// Web resources
 		addResource(new ResourceMetadataImpl("/views/css", "/WEB-INF/views/css"));
 		addResource(new ResourceMetadataImpl("/views/icons", "/WEB-INF/views/icons"));
 		addResource(new ResourceMetadataImpl("/views/js", "/WEB-INF/views/js"));
 
-		// Add servlets
+		// User accounts
 		addServlet(new ServletMetadataImpl("/useraccounts", new UserAccountListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountadd", new UserAccountAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountupdate", new UserAccountUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/useraccountdelete", new UserAccountDeleteServlet(), dicts));
 
+		// Machines
 		addServlet(new ServletMetadataImpl("/domain/machines", new MachineListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/machineadd", new MachineAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/machineupdate", new MachineUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/machinedelete", new MachineDeleteServlet(), dicts));
 
+		// Platforms
 		addServlet(new ServletMetadataImpl("/domain/platforms", new PlatformListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformadd", new PlatformAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformupdate", new PlatformUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/platformdelete", new PlatformDeleteServlet(), dicts));
 
+		// Platform properties
 		addServlet(new ServletMetadataImpl("/domain/platformproperties", new PlatformPropertyListServlet(), dicts));
 
+		// Nodes
 		addServlet(new ServletMetadataImpl("/domain/nodes", new NodeListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodecreate", new NodeCreateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeupdate", new NodeUpdateServlet(), dicts));
@@ -110,12 +117,17 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/domain/nodestop", new NodeStopServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodestatus", new NodeListServlet(), dicts));
 
+		// Node properties
 		addServlet(new ServletMetadataImpl("/domain/nodeproperties", new NodePropertyListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeattributeadd", new NodePropertyAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeattributeupdate", new NodePropertyUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeattributedelete", new NodePropertyDeleteServlet(), dicts));
 
-		addServlet(new ServletMetadataImpl("/appstore", new AppStoreServlet(), dicts));
+		// AppStore
+		addServlet(new ServletMetadataImpl("/appstore/apps", new AppListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/appstore/appadd", new AppAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/appstore/appupdate", new AppUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/appstore/appdelete", new AppDeleteServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

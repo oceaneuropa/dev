@@ -1,5 +1,6 @@
 package org.orbit.spirit.connector;
 
+import org.orbit.spirit.cli.GAIAClientCommand;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -20,6 +21,8 @@ public class Activator implements BundleActivator {
 		return instance;
 	}
 
+	protected GAIAClientCommand gaiaCommand;
+
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		LOG.debug("start()");
@@ -30,11 +33,18 @@ public class Activator implements BundleActivator {
 		// Register extensions
 		Extensions.INSTANCE.start(bundleContext);
 
+		this.gaiaCommand = new GAIAClientCommand();
+		this.gaiaCommand.start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.debug("stop()");
+
+		if (this.gaiaCommand != null) {
+			this.gaiaCommand.stop(bundleContext);
+			this.gaiaCommand = null;
+		}
 
 		// Unregister extensions
 		Extensions.INSTANCE.stop(bundleContext);

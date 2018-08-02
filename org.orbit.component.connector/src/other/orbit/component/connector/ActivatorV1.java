@@ -3,11 +3,11 @@ package other.orbit.component.connector;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.connector.tier1.account.UserRegistryConnector;
+import org.orbit.component.connector.tier1.account.UserAccountConnector;
 import org.orbit.component.connector.tier1.auth.AuthConnector;
-import org.orbit.component.connector.tier1.config.ConfigRegistryConnector;
+import org.orbit.component.connector.tier1.configregistry.ConfigRegistryConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
-import org.orbit.component.connector.tier3.domainmanagement.DomainManagementConnector;
+import org.orbit.component.connector.tier3.domain.DomainManagementConnector;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
@@ -41,7 +41,7 @@ public class ActivatorV1 implements BundleActivator {
 
 	// Connectors
 	protected ConfigRegistryConnector configRegistryConnector;
-	protected UserRegistryConnector userRegistryConnector;
+	protected UserAccountConnector userRegistryConnector;
 	protected AuthConnector authConnector;
 	protected AppStoreConnector appStoreConnector;
 	protected DomainManagementConnector domainMgmtConnector;
@@ -88,7 +88,7 @@ public class ActivatorV1 implements BundleActivator {
 		this.userRegistryManager = new UserRegistryManager();
 		this.userRegistryManager.start(bundleContext);
 
-		this.userRegistryConnector = new UserRegistryConnector();
+		this.userRegistryConnector = new UserAccountConnector();
 		this.userRegistryConnector.start(bundleContext);
 
 		this.authConnector = new AuthConnector();

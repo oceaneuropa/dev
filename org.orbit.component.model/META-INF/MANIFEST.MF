@@ -13,11 +13,9 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.orbit.component.model;version="1.0.0",
  org.orbit.component.model.tier1.account;version="1.0.0",
  org.orbit.component.model.tier1.auth;version="1.0.0",
- org.orbit.component.model.tier1.config;version="1.0.0",
+ org.orbit.component.model.tier1.configregistry;version="1.0.0",
  org.orbit.component.model.tier2.appstore;version="1.0.0",
  org.orbit.component.model.tier3.domain;version="1.0.0",
- org.orbit.component.model.tier3.domain.request;version="1.0.0",
  org.orbit.component.model.tier3.nodecontrol;version="1.0.0",
- org.orbit.component.model.tier3.nodecontrol.request;version="1.0.0",
- org.orbit.component.model.tier4.mission;version="1.0.0"
+ org.orbit.component.model.tier4.missioncontrol;version="1.0.0"
 Require-Bundle: org.origin.common;bundle-version="1.0.0"

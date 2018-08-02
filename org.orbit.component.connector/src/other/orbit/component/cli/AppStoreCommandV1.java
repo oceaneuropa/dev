@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.felix.service.command.Descriptor;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
-import org.orbit.component.api.tier2.appstore.AppStore;
+import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -75,22 +75,22 @@ public class AppStoreCommandV1 implements Annotated {
 	public void lappstores() throws ClientException {
 		checkConnector();
 
-		LoadBalancer<AppStore> lb = this.appStoreConnector.getLoadBalancer();
+		LoadBalancer<AppStoreClient> lb = this.appStoreConnector.getLoadBalancer();
 		if (lb == null) {
 			System.out.println("AppStore LoadBalancer is not available.");
 			return;
 		}
 
-		List<LoadBalanceResource<AppStore>> resources = lb.getResources();
+		List<LoadBalanceResource<AppStoreClient>> resources = lb.getResources();
 		if (resources == null) {
 			System.out.println("AppStore LoadBalancer's resource is null.");
 			return;
 		}
 
 		System.out.println("Number of AppStores: " + resources.size());
-		for (LoadBalanceResource<AppStore> resource : resources) {
+		for (LoadBalanceResource<AppStoreClient> resource : resources) {
 			// String id = resource.getId();
-			AppStore appStore = resource.getService();
+			AppStoreClient appStore = resource.getService();
 			String name = appStore.getName();
 			String url = appStore.getURL();
 			// System.out.println(name + " (id = '" + id + "', url = '" + url + "')");
@@ -106,7 +106,7 @@ public class AppStoreCommandV1 implements Annotated {
 	public void lapps() throws ClientException {
 		checkConnector();
 
-		AppStore appStore = this.appStoreConnector.getService();
+		AppStoreClient appStore = this.appStoreConnector.getService();
 		if (appStore == null) {
 			System.out.println("AppStore is not available.");
 			return;
@@ -120,7 +120,7 @@ public class AppStoreCommandV1 implements Annotated {
 		for (AppManifest appManifest : appManifests) {
 			String appId = appManifest.getAppId();
 			String name = appManifest.getName();
-			String version = appManifest.getVersion();
+			String version = appManifest.getAppVersion();
 			String type = appManifest.getType();
 			String fileName = appManifest.getFileName();
 

@@ -8,9 +8,9 @@ import java.util.Map;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.model.tier3.domain.MachineConfigRTO;
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
-import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
+import org.orbit.component.runtime.model.domain.MachineConfig;
+import org.orbit.component.runtime.model.domain.NodeConfig;
+import org.orbit.component.runtime.model.domain.PlatformConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -112,10 +112,10 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			List<MachineConfigRTO> machineConfigs = domainService.getMachineConfigs();
+			List<MachineConfig> machineConfigs = domainService.getMachineConfigs();
 			String[][] rows = new String[machineConfigs.size()][MACHINE_CONFIG_TITLES.length];
 			int rowIndex = 0;
-			for (MachineConfigRTO currMachineConfig : machineConfigs) {
+			for (MachineConfig currMachineConfig : machineConfigs) {
 				String machineId = currMachineConfig.getId();
 				String machineName = currMachineConfig.getName();
 				String ipAddress = currMachineConfig.getIpAddress();
@@ -138,15 +138,15 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			MachineConfigRTO machineConfig = domainService.getMachineConfig(id);
+			MachineConfig machineConfig = domainService.getMachineConfig(id);
 
-			List<MachineConfigRTO> machineConfigs = new ArrayList<MachineConfigRTO>();
+			List<MachineConfig> machineConfigs = new ArrayList<MachineConfig>();
 			if (machineConfig != null) {
 				machineConfigs.add(machineConfig);
 			}
 			String[][] rows = new String[machineConfigs.size()][MACHINE_CONFIG_TITLES.length];
 			int rowIndex = 0;
-			for (MachineConfigRTO currMachineConfig : machineConfigs) {
+			for (MachineConfig currMachineConfig : machineConfigs) {
 				String machineId = currMachineConfig.getId();
 				String machineName = currMachineConfig.getName();
 				String ipAddress = currMachineConfig.getIpAddress();
@@ -171,7 +171,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			MachineConfigRTO addMachineRequest = new MachineConfigRTO();
+			MachineConfig addMachineRequest = new MachineConfig();
 			addMachineRequest.setId(id);
 			addMachineRequest.setName(name);
 			addMachineRequest.setIpAddress(ip);
@@ -195,7 +195,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			MachineConfigRTO updateMachineRequest = new MachineConfigRTO();
+			MachineConfig updateMachineRequest = new MachineConfig();
 			updateMachineRequest.setId(id);
 			List<String> fieldsToUpdate = new ArrayList<String>();
 			if (!Parameter.UNSPECIFIED.equals(name)) {
@@ -256,11 +256,11 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			List<PlatformConfigRTO> platformConfigs = domainService.getPlatformConfigs(machineId);
+			List<PlatformConfig> platformConfigs = domainService.getPlatformConfigs(machineId);
 
 			String[][] rows = new String[platformConfigs.size()][PLATFORM_CONFIG_TITLES.length];
 			int rowIndex = 0;
-			for (PlatformConfigRTO platformConfig : platformConfigs) {
+			for (PlatformConfig platformConfig : platformConfigs) {
 				// String currMachineId = platformConfig.getMachineId();
 				String id = platformConfig.getId();
 				String name = platformConfig.getName();
@@ -296,16 +296,16 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 			DomainManagementService domainService = getDomainManagementService();
 
-			PlatformConfigRTO platformConfig = domainService.getPlatformConfig(machineId, id);
+			PlatformConfig platformConfig = domainService.getPlatformConfig(machineId, id);
 
-			List<PlatformConfigRTO> platformConfigs = new ArrayList<PlatformConfigRTO>();
+			List<PlatformConfig> platformConfigs = new ArrayList<PlatformConfig>();
 			if (platformConfig != null) {
 				platformConfigs.add(platformConfig);
 			}
 
 			String[][] rows = new String[platformConfigs.size()][PLATFORM_CONFIG_TITLES.length];
 			int rowIndex = 0;
-			for (PlatformConfigRTO currPlatformConfig : platformConfigs) {
+			for (PlatformConfig currPlatformConfig : platformConfigs) {
 				String platformId = currPlatformConfig.getId();
 				String name = currPlatformConfig.getName();
 				String hostURL = currPlatformConfig.getHostURL();
@@ -334,7 +334,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			PlatformConfigRTO addPlatformRequest = new PlatformConfigRTO();
+			PlatformConfig addPlatformRequest = new PlatformConfig();
 			addPlatformRequest.setId(id);
 			addPlatformRequest.setName(name);
 			addPlatformRequest.setHostURL(hostURL);
@@ -361,7 +361,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			PlatformConfigRTO updatePlatformRequest = new PlatformConfigRTO();
+			PlatformConfig updatePlatformRequest = new PlatformConfig();
 
 			List<String> fieldsToUpdate = new ArrayList<String>();
 
@@ -442,11 +442,11 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 			DomainManagementService domainService = getDomainManagementService();
 
-			List<NodeConfigRTO> nodeConfigs = domainService.getNodeConfigs(machineId, platformId);
+			List<NodeConfig> nodeConfigs = domainService.getNodeConfigs(machineId, platformId);
 
 			String[][] rows = new String[nodeConfigs.size()][NODE_CONFIG_TITLES.length];
 			int rowIndex = 0;
-			for (NodeConfigRTO nodeConfig : nodeConfigs) {
+			for (NodeConfig nodeConfig : nodeConfigs) {
 				String currMachineId = nodeConfig.getMachineId();
 				String currPlatformId = nodeConfig.getPlatformId();
 				String currId = nodeConfig.getId();
@@ -488,15 +488,15 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 			DomainManagementService domainService = getDomainManagementService();
 
-			List<NodeConfigRTO> nodeConfigs = new ArrayList<NodeConfigRTO>();
-			NodeConfigRTO nodeConfig = domainService.getNodeConfig(machineId, platformId, id);
+			List<NodeConfig> nodeConfigs = new ArrayList<NodeConfig>();
+			NodeConfig nodeConfig = domainService.getNodeConfig(machineId, platformId, id);
 			if (nodeConfig != null) {
 				nodeConfigs.add(nodeConfig);
 			}
 
 			String[][] rows = new String[nodeConfigs.size()][NODE_CONFIG_TITLES.length];
 			int rowIndex = 0;
-			for (NodeConfigRTO currNodeConfig : nodeConfigs) {
+			for (NodeConfig currNodeConfig : nodeConfigs) {
 				String currMachineId = currNodeConfig.getMachineId();
 				String currPlatformId = currNodeConfig.getPlatformId();
 				String currId = currNodeConfig.getId();
@@ -528,7 +528,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			NodeConfigRTO addNodeRequest = new NodeConfigRTO();
+			NodeConfig addNodeRequest = new NodeConfig();
 			addNodeRequest.setMachineId(machineId);
 			addNodeRequest.setPlatformId(platformId);
 			addNodeRequest.setId(id);
@@ -560,7 +560,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementService domainService = getDomainManagementService();
 
-			NodeConfigRTO updateNodeRequest = new NodeConfigRTO();
+			NodeConfig updateNodeRequest = new NodeConfig();
 			updateNodeRequest.setMachineId(machineId);
 			updateNodeRequest.setPlatformId(platformId);
 			updateNodeRequest.setId(id);

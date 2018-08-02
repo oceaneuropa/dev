@@ -36,25 +36,21 @@ import org.origin.common.rest.util.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
- * AppSore client.
+ * AppSore web service client.
  * 
- * {contextRoot} example:
- * /orbit/v1/appstore
+ * {contextRoot}: /orbit/v1/appstore
  * 
  * App metadata.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps?type={type}
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/exists
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
- * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
- * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/apps?type={type}
+ * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
+ * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
+ * URL (PUT):    {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
+ * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/apps?appId={appId}&appVersion={appVersion}
  * 
- * Upload an app.
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
- * 
- * Download an app.
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app?appId={appId}&appVersion={appVersion}
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app/exists?appId={appId}&appVersion={appVersion}
+ * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition) // Upload an app.
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content //Download an app.
  * 
  */
 public class AppStoreWSClient extends AbstractWSClient {
@@ -101,7 +97,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Get apps.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
 	 * 
 	 * @param queryDTO
 	 * @return
@@ -112,6 +108,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("apps/query");
+
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<AppQueryDTO>(queryDTO) {
 			}));
@@ -134,7 +131,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Get an app.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}
 	 * 
 	 * @param appId
 	 * @param appVersion
@@ -145,7 +142,10 @@ public class AppStoreWSClient extends AbstractWSClient {
 		AppManifestDTO app = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion);
+			WebTarget target = getRootPath().path("app");
+			target = target.queryParam("appId", appId);
+			target = target.queryParam("appVersion", appVersion);
+
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
@@ -163,7 +163,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Check whether an app exists.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/app/exists?appId={appId}&appVersion={appVersion}
 	 * 
 	 * @param appId
 	 * @param appVersion
@@ -173,7 +173,10 @@ public class AppStoreWSClient extends AbstractWSClient {
 	public boolean appExists(String appId, String appVersion) throws ClientException {
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion).path("exists");
+			WebTarget target = getRootPath().path("app").path("exists");
+			target = target.queryParam("appId", appId);
+			target = target.queryParam("appVersion", appVersion);
+
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
 			checkResponse(target, response);
@@ -200,7 +203,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Add an app.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
 	 * 
 	 * @param newAppRequestDTO
 	 * @return
@@ -211,6 +214,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("apps");
+
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).post(Entity.json(new GenericEntity<AppManifestDTO>(newAppRequestDTO) {
 			}));
@@ -242,6 +246,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("apps");
+
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).put(Entity.json(new GenericEntity<AppManifestDTO>(updateAppRequestDTO) {
 			}));
@@ -260,7 +265,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Upload an app file.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
 	 * 
 	 * @param appId
 	 * @param appVersion
@@ -292,7 +297,8 @@ public class AppStoreWSClient extends AbstractWSClient {
 				multipart.bodyPart(filePart);
 			}
 
-			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion).path("content");
+			WebTarget target = getRootPath().path("app").path(appId).path(appVersion).path("content");
+
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			Response response = updateHeaders(builder).post(Entity.entity(multipart, multipart.getMediaType()));
 			checkResponse(target, response);
@@ -310,7 +316,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Download app file.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}/content
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/app/content?appId={appId}&appVersion={appVersion}
 	 * 
 	 * @param appId
 	 * @param appVersion
@@ -321,7 +327,10 @@ public class AppStoreWSClient extends AbstractWSClient {
 	public boolean downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException {
 		InputStream input = null;
 		try {
-			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion).path("content");
+			WebTarget target = getRootPath().path("app").path("content");
+			target = target.queryParam("appId", appId);
+			target = target.queryParam("appVersion", appVersion);
+
 			Builder builder = target.request(MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM);
 			Response response = updateHeaders(builder).get();
 			checkResponse(target, response);
@@ -343,7 +352,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Delete an app.
 	 * 
-	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/apps/{appId}/{appVersion}
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/apps?appId={appId}&appVersion={appVersion}
 	 * 
 	 * @param appId
 	 * @param appVersion
@@ -355,7 +364,10 @@ public class AppStoreWSClient extends AbstractWSClient {
 		StatusDTO status = null;
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path("apps").path(appId).path(appVersion);
+			WebTarget target = getRootPath().path("apps");
+			target = target.queryParam("appId", appId);
+			target = target.queryParam("appVersion", appVersion);
+
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
 			checkResponse(target, response);

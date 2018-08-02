@@ -1,22 +1,132 @@
 package org.orbit.component.api.util;
 
 import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
+import org.orbit.component.api.tier2.appstore.AppManifest;
+import org.orbit.component.api.tier2.appstore.AppQuery;
+import org.orbit.component.api.tier2.appstore.AppStoreClient;
+import org.orbit.component.api.tier2.appstore.CreateAppRequest;
+import org.orbit.component.api.tier2.appstore.UpdateAppRequest;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
+import org.orbit.component.api.tier3.domain.MachineConfig;
+import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
+import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.AddPlatformConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdatePlatformConfigRequest;
 import org.origin.common.rest.client.ClientException;
 
 public class OrbitComponentHelper {
 
 	public static OrbitComponentHelper INSTANCE = new OrbitComponentHelper();
 
+	private static final AppManifest[] EMPTY_APPS = new AppManifest[0];
 	private static final NodeInfo[] EMPTY_NODE_INFOS = new NodeInfo[0];
+
+	/**
+	 * 
+	 * @param appStoreUrl
+	 * @return
+	 * @throws ClientException
+	 */
+	public AppManifest[] getApps(String appStoreUrl) throws ClientException {
+		AppManifest[] appManifests = null;
+		if (appStoreUrl != null) {
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			if (appStore != null) {
+				AppQuery query = new AppQuery();
+				appManifests = appStore.getApps(query);
+			}
+		}
+		if (appManifests == null) {
+			appManifests = EMPTY_APPS;
+		}
+		return appManifests;
+	}
+
+	/**
+	 * 
+	 * @param appStoreUrl
+	 * @param id
+	 * @param version
+	 * @param type
+	 * @param name
+	 * @param desc
+	 * @param fileName
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean addApp(String appStoreUrl, String id, String version, String type, String name, String desc, String fileName) throws ClientException {
+		boolean succeed = false;
+		if (appStoreUrl != null) {
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			if (appStore != null) {
+				CreateAppRequest createAppRequest = new CreateAppRequest();
+				createAppRequest.setAppId(id);
+				createAppRequest.setAppVersion(version);
+				createAppRequest.setType(type);
+				createAppRequest.setName(name);
+				createAppRequest.setDescription(desc);
+				createAppRequest.setFileName(fileName);
+
+				succeed = appStore.create(createAppRequest);
+			}
+		}
+		return succeed;
+	}
+
+	/**
+	 * 
+	 * @param appStoreUrl
+	 * @param id
+	 * @param appId
+	 * @param appVersion
+	 * @param type
+	 * @param name
+	 * @param desc
+	 * @param fileName
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean updateApp(String appStoreUrl, int id, String appId, String appVersion, String type, String name, String desc, String fileName) throws ClientException {
+		boolean succeed = false;
+		if (appStoreUrl != null) {
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			if (appStore != null) {
+				UpdateAppRequest updateAppRequest = new UpdateAppRequest();
+				updateAppRequest.setId(id);
+				updateAppRequest.setAppId(appId);
+				updateAppRequest.setAppVersion(appVersion);
+				updateAppRequest.setType(type);
+				updateAppRequest.setName(name);
+				updateAppRequest.setDescription(desc);
+				updateAppRequest.setFileName(fileName);
+
+				succeed = appStore.update(updateAppRequest);
+			}
+		}
+		return succeed;
+	}
+
+	/**
+	 * 
+	 * @param appStoreUrl
+	 * @param id
+	 * @param version
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean deleteApp(String appStoreUrl, String id, String version) throws ClientException {
+		boolean succeed = false;
+		if (appStoreUrl != null) {
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			if (appStore != null) {
+				succeed = appStore.delete(id, version);
+			}
+		}
+		return succeed;
+	}
 
 	/**
 	 * 
@@ -393,6 +503,16 @@ public class OrbitComponentHelper {
 			succeed = nodeControlClient.deleteNodeAttribute(nodeId, name);
 		}
 		return succeed;
+	}
+
+	/**
+	 * 
+	 * @param appStoreUrl
+	 * @return
+	 */
+	public AppStoreClient getAppStoreClient(String appStoreUrl) {
+		AppStoreClient appStoreClient = OrbitClients.getInstance().getAppStore(appStoreUrl);
+		return appStoreClient;
 	}
 
 	/**

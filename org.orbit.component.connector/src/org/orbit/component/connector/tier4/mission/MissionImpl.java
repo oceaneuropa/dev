@@ -1,6 +1,6 @@
 package org.orbit.component.connector.tier4.mission;
 
-import org.orbit.component.api.tier4.mission.Mission;
+import org.orbit.component.api.tier4.missioncontrol.Mission;
 
 public class MissionImpl implements Mission {
 

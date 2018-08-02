@@ -7,7 +7,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl;
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
-import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceDatabaseImpl;
+import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceImpl;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementServiceImpl;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlServiceImpl;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
@@ -45,7 +45,7 @@ public class ServicesCommand implements CommandActivator {
 
 	// tier2
 	protected boolean autoStartAppStoreService;
-	protected AppStoreServiceDatabaseImpl appStoreService;
+	protected AppStoreServiceImpl appStoreService;
 
 	// tier3
 	protected boolean autoStartDomainMgmtService;
@@ -275,7 +275,7 @@ public class ServicesCommand implements CommandActivator {
 	}
 
 	public void startAppStoreService(BundleContext bundleContext) {
-		AppStoreServiceDatabaseImpl appStoreService = new AppStoreServiceDatabaseImpl(null);
+		AppStoreServiceImpl appStoreService = new AppStoreServiceImpl(null);
 		appStoreService.start(bundleContext);
 		this.appStoreService = appStoreService;
 	}

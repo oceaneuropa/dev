@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.model.tier1.config.EPath;
-import org.orbit.component.model.tier1.config.RegistryPathVO;
-import org.orbit.component.model.tier1.config.RegistryPropertyVO;
+import org.orbit.component.runtime.model.configregistry.EPath;
+import org.orbit.component.runtime.model.configregistry.RegistryPathVO;
+import org.orbit.component.runtime.model.configregistry.RegistryPropertyVO;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;

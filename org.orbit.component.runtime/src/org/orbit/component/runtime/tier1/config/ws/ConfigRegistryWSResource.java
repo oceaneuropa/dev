@@ -16,8 +16,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier1.config.EPath;
-import org.orbit.component.model.tier1.config.SetPropertiesDTO;
+import org.orbit.component.model.tier1.configregistry.SetPropertiesDTO;
+import org.orbit.component.runtime.model.configregistry.EPath;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistry;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.origin.common.rest.model.ErrorDTO;

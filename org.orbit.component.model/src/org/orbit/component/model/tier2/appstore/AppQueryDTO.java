@@ -15,11 +15,11 @@ public class AppQueryDTO {
 	@XmlElement
 	protected String appId;
 	@XmlElement
+	protected String appVersion;
+	@XmlElement
 	protected String type;
 	@XmlElement
 	protected String name;
-	@XmlElement
-	protected String version;
 	@XmlElement
 	protected String description;
 
@@ -32,7 +32,7 @@ public class AppQueryDTO {
 	@XmlElement
 	protected String name_oper;
 	@XmlElement
-	protected String version_oper;
+	protected String appVersion_oper;
 	@XmlElement
 	protected String description_oper;
 
@@ -52,6 +52,15 @@ public class AppQueryDTO {
 	}
 
 	@XmlElement
+	public String getAppVersion() {
+		return this.appVersion;
+	}
+
+	public void setAppVersion(String version) {
+		this.appVersion = version;
+	}
+
+	@XmlElement
 	public String getType() {
 		return this.type;
 	}
@@ -67,15 +76,6 @@ public class AppQueryDTO {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	@XmlElement
-	public String getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
 	}
 
 	@XmlElement
@@ -100,6 +100,15 @@ public class AppQueryDTO {
 	}
 
 	@XmlElement
+	public String getAppVersion_oper() {
+		return this.appVersion_oper;
+	}
+
+	public void setAppVersion_oper(String version_oper) {
+		this.appVersion_oper = SQLWhereOperator.isEqual(version_oper) ? null : version_oper;
+	}
+
+	@XmlElement
 	public String getType_oper() {
 		return this.type_oper;
 	}
@@ -115,15 +124,6 @@ public class AppQueryDTO {
 
 	public void setName_oper(String name_oper) {
 		this.name_oper = SQLWhereOperator.isEqual(name_oper) ? null : name_oper;
-	}
-
-	@XmlElement
-	public String getVersion_oper() {
-		return this.version_oper;
-	}
-
-	public void setVersion_oper(String version_oper) {
-		this.version_oper = SQLWhereOperator.isEqual(version_oper) ? null : version_oper;
 	}
 
 	@XmlElement

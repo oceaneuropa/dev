@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier3.domainmanagement.DomainManagementClientImpl;
+import org.orbit.component.connector.tier3.domain.DomainManagementClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 

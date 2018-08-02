@@ -16,8 +16,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
 import org.orbit.sprit.runtime.gaia.service.GAIA;
+import org.orbit.sprit.runtime.gaia.util.ModelConverter;
 import org.orbit.sprit.runtime.gaia.world.World;
-import org.orbit.sprit.runtime.gaia.world.WorldModelConverter;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
@@ -62,7 +62,7 @@ public class WorldsWSResource extends AbstractWSApplicationResource {
 		try {
 			List<World> worlds = gaia.getWorlds().getWorlds();
 			for (World world : worlds) {
-				WorldDTO worldDTO = WorldModelConverter.getInstance().toDTO(world);
+				WorldDTO worldDTO = ModelConverter.GAIA.toDTO(world);
 				worldDTOs.add(worldDTO);
 			}
 
@@ -93,7 +93,7 @@ public class WorldsWSResource extends AbstractWSApplicationResource {
 				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("World '%s' does not exist.", name));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
-			worldDTO = WorldModelConverter.getInstance().toDTO(world);
+			worldDTO = ModelConverter.GAIA.toDTO(world);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

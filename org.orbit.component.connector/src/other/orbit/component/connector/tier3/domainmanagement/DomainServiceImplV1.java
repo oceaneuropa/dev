@@ -7,22 +7,22 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
-import org.orbit.component.api.tier3.domainmanagement.NodeConfig;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
+import org.orbit.component.api.tier3.domain.MachineConfig;
+import org.orbit.component.api.tier3.domain.NodeConfig;
+import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier3.domainmanagement.DomainManagementWSClient;
-import org.orbit.component.connector.tier3.domainmanagement.DomainManagementConverter;
+import org.orbit.component.connector.tier3.domain.DomainManagementWSClient;
+import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.AddNodeConfigRequest;
+import org.orbit.component.model.tier3.domain.AddPlatformConfigRequest;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
-import org.orbit.component.model.tier3.domain.request.AddMachineConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.AddPlatformConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateMachineConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdateNodeConfigRequest;
-import org.orbit.component.model.tier3.domain.request.UpdatePlatformConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdateNodeConfigRequest;
+import org.orbit.component.model.tier3.domain.UpdatePlatformConfigRequest;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
@@ -163,7 +163,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		try {
 			List<MachineConfigDTO> machineDTOs = this.client.getMachines();
 			for (MachineConfigDTO machineDTO : machineDTOs) {
-				machines.add(DomainManagementConverter.INSTANCE.toMachineConfig(machineDTO));
+				machines.add(ModelConverter.Domain.toMachineConfig(machineDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -179,7 +179,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		try {
 			MachineConfigDTO machineDTO = this.client.getMachine(machineId);
 			if (machineDTO != null) {
-				machine = DomainManagementConverter.INSTANCE.toMachineConfig(machineDTO);
+				machine = ModelConverter.Domain.toMachineConfig(machineDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -193,7 +193,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		checkMachineId(machineId);
 
 		try {
-			MachineConfigDTO addMachineRequestDTO = DomainManagementConverter.INSTANCE.toDTO(addMachineRequest);
+			MachineConfigDTO addMachineRequestDTO = ModelConverter.Domain.toDTO(addMachineRequest);
 			StatusDTO status = this.client.addMachine(addMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -210,7 +210,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		checkMachineId(machineId);
 
 		try {
-			MachineConfigDTO updateMachineRequestDTO = DomainManagementConverter.INSTANCE.toDTO(updateMachineRequest);
+			MachineConfigDTO updateMachineRequestDTO = ModelConverter.Domain.toDTO(updateMachineRequest);
 			StatusDTO status = this.client.updateMachine(updateMachineRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -258,7 +258,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		try {
 			List<PlatformConfigDTO> transferAgentDTOs = this.client.getPlatformConfigs(machineId);
 			for (PlatformConfigDTO transferAgentDTO : transferAgentDTOs) {
-				transferAgents.add(DomainManagementConverter.INSTANCE.toPlatformConfig(machineId, transferAgentDTO));
+				transferAgents.add(ModelConverter.Domain.toPlatformConfig(machineId, transferAgentDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -275,7 +275,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		try {
 			PlatformConfigDTO transferAgentDTO = this.client.getPlatformConfig(machineId, transferAgentId);
 			if (transferAgentDTO != null) {
-				transferAgent = DomainManagementConverter.INSTANCE.toPlatformConfig(machineId, transferAgentDTO);
+				transferAgent = ModelConverter.Domain.toPlatformConfig(machineId, transferAgentDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -290,7 +290,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		checkTransferAgentId(transferAgentId);
 
 		try {
-			PlatformConfigDTO addTransferAgentRequestDTO = DomainManagementConverter.INSTANCE.toDTO(addTransferAgentRequest);
+			PlatformConfigDTO addTransferAgentRequestDTO = ModelConverter.Domain.toDTO(addTransferAgentRequest);
 			StatusDTO status = this.client.addPlatformConfig(machineId, addTransferAgentRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -308,7 +308,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		checkTransferAgentId(transferAgentId);
 
 		try {
-			PlatformConfigDTO updateTransferAgentRequestDTO = DomainManagementConverter.INSTANCE.toDTO(updateTransferAgentRequest);
+			PlatformConfigDTO updateTransferAgentRequestDTO = ModelConverter.Domain.toDTO(updateTransferAgentRequest);
 			StatusDTO status = this.client.updatePlatformConfig(machineId, updateTransferAgentRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -358,7 +358,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		try {
 			List<NodeConfigDTO> nodeConfigDTOs = this.client.getNodes(machineId, transferAgentId);
 			for (NodeConfigDTO nodeConfigDTO : nodeConfigDTOs) {
-				nodeConfigs.add(DomainManagementConverter.INSTANCE.toNodeConfig(machineId, transferAgentId, nodeConfigDTO));
+				nodeConfigs.add(ModelConverter.Domain.toNodeConfig(machineId, transferAgentId, nodeConfigDTO));
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -376,7 +376,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		try {
 			NodeConfigDTO nodeConfigDTO = this.client.getNode(machineId, transferAgentId, nodeId);
 			if (nodeConfigDTO != null) {
-				nodeConfig = DomainManagementConverter.INSTANCE.toNodeConfig(machineId, transferAgentId, nodeConfigDTO);
+				nodeConfig = ModelConverter.Domain.toNodeConfig(machineId, transferAgentId, nodeConfigDTO);
 			}
 		} catch (ClientException e) {
 			throw e;
@@ -392,7 +392,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		checkNodeId(nodeId);
 
 		try {
-			NodeConfigDTO addNodeRequestDTO = DomainManagementConverter.INSTANCE.toDTO(addNodeRequest);
+			NodeConfigDTO addNodeRequestDTO = ModelConverter.Domain.toDTO(addNodeRequest);
 			StatusDTO status = this.client.addNode(machineId, transferAgentId, addNodeRequestDTO);
 			if (status != null && status.success()) {
 				return true;
@@ -411,7 +411,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 		checkNodeId(nodeId);
 
 		try {
-			NodeConfigDTO updateNodeRequestDTO = DomainManagementConverter.INSTANCE.toDTO(updateNodeRequest);
+			NodeConfigDTO updateNodeRequestDTO = ModelConverter.Domain.toDTO(updateNodeRequest);
 			StatusDTO status = this.client.updateNode(machineId, transferAgentId, updateNodeRequestDTO);
 			if (status != null && status.success()) {
 				return true;

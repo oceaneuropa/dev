@@ -8,10 +8,10 @@ import java.util.Map;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.tier1.account.UserAccounts;
+import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier1.account.UserAccountImpl;
-import org.orbit.component.connector.tier1.account.UserRegistryWSClient;
+import org.orbit.component.connector.tier1.account.UserAccountWSClient;
 import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
@@ -19,10 +19,10 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.StatusDTO;
 
-public class UserRegistryImplV1 implements UserAccounts {
+public class UserRegistryImplV1 implements UserAccountClient {
 
 	protected Map<String, Object> properties;
-	protected UserRegistryWSClient client;
+	protected UserAccountWSClient client;
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
@@ -30,7 +30,7 @@ public class UserRegistryImplV1 implements UserAccounts {
 	 * @param connector
 	 * @param properties
 	 */
-	public UserRegistryImplV1(ServiceConnector<UserAccounts> connector, Map<String, Object> properties) {
+	public UserRegistryImplV1(ServiceConnector<UserAccountClient> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
@@ -48,7 +48,7 @@ public class UserRegistryImplV1 implements UserAccounts {
 	@Override
 	public boolean close() throws ClientException {
 		@SuppressWarnings("unchecked")
-		ServiceConnector<UserAccounts> connector = getAdapter(ServiceConnector.class);
+		ServiceConnector<UserAccountClient> connector = getAdapter(ServiceConnector.class);
 		if (connector != null) {
 			return connector.close(this);
 		}
@@ -72,7 +72,7 @@ public class UserRegistryImplV1 implements UserAccounts {
 		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
 
 		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, fullUrl);
-		this.client = new UserRegistryWSClient(clientConfig);
+		this.client = new UserAccountWSClient(clientConfig);
 	}
 
 	@Override

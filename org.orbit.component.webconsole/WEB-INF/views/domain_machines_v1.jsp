@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
-<%@ page import="org.orbit.component.api.tier3.domainmanagement.*"%>
+<%@ page import="org.orbit.component.api.tier3.domain.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
 <%
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);

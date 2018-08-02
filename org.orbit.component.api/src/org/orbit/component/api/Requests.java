@@ -1,6 +1,6 @@
 package org.orbit.component.api;
 
-public class Requests {
+public interface Requests {
 
 	// ---------------------------------------------------------------
 	// Management request constants

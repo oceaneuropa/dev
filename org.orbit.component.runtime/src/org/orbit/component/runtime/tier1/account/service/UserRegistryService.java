@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier1.account.service;
 
 import java.util.List;
 
-import org.orbit.component.model.tier1.account.UserAccountRTO;
+import org.orbit.component.runtime.model.account.UserAccount;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAware;
 
@@ -10,17 +10,17 @@ public interface UserRegistryService extends WebServiceAware {
 
 	public String getName();
 
-	List<UserAccountRTO> getUserAccounts() throws ServerException;
+	List<UserAccount> getUserAccounts() throws ServerException;
 
-	UserAccountRTO getUserAccount(String userId) throws ServerException;
+	UserAccount getUserAccount(String userId) throws ServerException;
 
 	boolean userAccountExists(String userId) throws ServerException;
 
 	boolean matchUsernamePassword(String userId, String password) throws ServerException;
 
-	UserAccountRTO registerUserAccount(UserAccountRTO newUserAccountRequest) throws ServerException;
+	UserAccount registerUserAccount(UserAccount newUserAccountRequest) throws ServerException;
 
-	boolean updateUserAccount(UserAccountRTO updateUserAccountRequest) throws ServerException;
+	boolean updateUserAccount(UserAccount updateUserAccountRequest) throws ServerException;
 
 	boolean changePassword(String userId, String oldPassword, String newPassword) throws ServerException;
 

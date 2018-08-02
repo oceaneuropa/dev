@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.account.UserAccounts;
+import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.connector.OrbitConstants;
-import org.orbit.component.connector.tier1.account.UserRegistryImpl;
+import org.orbit.component.connector.tier1.account.UserAccountClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
 import other.orbit.component.api.tier1.account.UserRegistryConnectorV1;
 import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class UserRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<UserAccounts> implements UserRegistryConnectorV1 {
+public class UserRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<UserAccountClient> implements UserRegistryConnectorV1 {
 
 	/**
 	 * 
@@ -29,12 +29,12 @@ public class UserRegistryConnectorImplV1 extends IndexBasedLoadBalancedServiceCo
 	}
 
 	@Override
-	protected UserAccounts createService(Map<String, Object> properties) {
-		return new UserRegistryImpl(null, properties);
+	protected UserAccountClient createService(Map<String, Object> properties) {
+		return new UserAccountClientImpl(null, properties);
 	}
 
 	@Override
-	protected void updateService(UserAccounts userRegistry, Map<String, Object> properties) {
+	protected void updateService(UserAccountClient userRegistry, Map<String, Object> properties) {
 		userRegistry.update(properties);
 	}
 

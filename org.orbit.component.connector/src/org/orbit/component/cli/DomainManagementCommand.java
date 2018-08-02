@@ -12,11 +12,11 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
-import org.orbit.component.api.tier3.domainmanagement.NodeConfig;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.connector.tier3.domainmanagement.ResponseConverter;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
+import org.orbit.component.api.tier3.domain.MachineConfig;
+import org.orbit.component.api.tier3.domain.NodeConfig;
+import org.orbit.component.api.tier3.domain.PlatformConfig;
+import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -65,7 +65,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 						// node configurations
 						"list_nodes", "list_node", "add_node", "update_node", "remove_node", //
-		});
+				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
@@ -108,7 +108,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 			Request request = new Request(Requests.GET_MACHINE_CONFIGS);
 			Response response = domainClient.sendRequest(request);
 
-			MachineConfig[] machineConfigs = ResponseConverter.getInstance().convertToMachineConfigs(response);
+			MachineConfig[] machineConfigs = ModelConverter.Domain.convertToMachineConfigs(response);
 			String[][] rows = new String[machineConfigs.length][MACHINE_CONFIG_TITLES.length];
 			int rowIndex = 0;
 			for (MachineConfig machineConfig : machineConfigs) {
@@ -138,7 +138,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 			request.setParameter("machineId", id);
 
 			Response response = domainClient.sendRequest(request);
-			MachineConfig resultMachineConfig = ResponseConverter.getInstance().convertToMachineConfig(response);
+			MachineConfig resultMachineConfig = ModelConverter.Domain.convertToMachineConfig(response);
 
 			MachineConfig[] machineConfigs = (resultMachineConfig != null) ? new MachineConfig[] { resultMachineConfig } : new MachineConfig[] {};
 			String[][] rows = new String[machineConfigs.length][MACHINE_CONFIG_TITLES.length];
@@ -290,7 +290,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 			Response response = domainClient.sendRequest(request);
 
-			PlatformConfig[] platformConfigs = ResponseConverter.getInstance().convertToPlatformConfigs(response);
+			PlatformConfig[] platformConfigs = ModelConverter.Domain.convertToPlatformConfigs(response);
 			String[][] rows = new String[platformConfigs.length][PLATFORM_CONFIG_TITLES.length];
 			int rowIndex = 0;
 			for (PlatformConfig platformConfig : platformConfigs) {
@@ -334,7 +334,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 			request.setParameter("id", id);
 
 			Response response = domainClient.sendRequest(request);
-			PlatformConfig resultTaConfig = ResponseConverter.getInstance().convertToPlatformConfig(response);
+			PlatformConfig resultTaConfig = ModelConverter.Domain.convertToPlatformConfig(response);
 
 			PlatformConfig[] taConfigs = (resultTaConfig != null) ? new PlatformConfig[] { resultTaConfig } : new PlatformConfig[] {};
 			String[][] rows = new String[taConfigs.length][PLATFORM_CONFIG_TITLES.length];
@@ -509,7 +509,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 			Response response = domainClient.sendRequest(request);
 
-			NodeConfig[] nodeConfigs = ResponseConverter.getInstance().convertToNodeConfigs(response);
+			NodeConfig[] nodeConfigs = ModelConverter.Domain.convertToNodeConfigs(response);
 			String[][] rows = new String[nodeConfigs.length][NODE_CONFIG_TITLES.length];
 			int rowIndex = 0;
 			for (NodeConfig nodeConfig : nodeConfigs) {
@@ -560,7 +560,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 			request.setParameter("id", id);
 
 			Response response = domainClient.sendRequest(request);
-			NodeConfig resultNodeConfig = ResponseConverter.getInstance().convertToNodeConfig(response);
+			NodeConfig resultNodeConfig = ModelConverter.Domain.convertToNodeConfig(response);
 
 			NodeConfig[] nodeConfigs = (resultNodeConfig != null) ? new NodeConfig[] { resultNodeConfig } : new NodeConfig[] {};
 			String[][] rows = new String[nodeConfigs.length][NODE_CONFIG_TITLES.length];

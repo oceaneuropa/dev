@@ -10,7 +10,7 @@ import java.util.Map;
 
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
-import org.orbit.component.api.tier2.appstore.AppStore;
+import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.api.tier2.appstore.CreateAppRequest;
 import org.orbit.component.api.tier2.appstore.UpdateAppRequest;
 import org.orbit.component.connector.OrbitConstants;
@@ -29,7 +29,7 @@ import org.origin.common.rest.model.StatusDTO;
  * App store client connector implementation.
  * 
  */
-public class AppStoreImplV1 implements AppStore {
+public class AppStoreImplV1 implements AppStoreClient {
 
 	protected Map<String, Object> properties;
 	protected AppStoreWSClient client;
@@ -40,7 +40,7 @@ public class AppStoreImplV1 implements AppStore {
 	 * @param connector
 	 * @param properties
 	 */
-	public AppStoreImplV1(ServiceConnector<AppStore> connector, Map<String, Object> properties) {
+	public AppStoreImplV1(ServiceConnector<AppStoreClient> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
@@ -58,7 +58,7 @@ public class AppStoreImplV1 implements AppStore {
 	@Override
 	public boolean close() throws ClientException {
 		@SuppressWarnings("unchecked")
-		ServiceConnector<AppStore> connector = getAdapter(ServiceConnector.class);
+		ServiceConnector<AppStoreClient> connector = getAdapter(ServiceConnector.class);
 		if (connector != null) {
 			return connector.close(this);
 		}
@@ -149,7 +149,7 @@ public class AppStoreImplV1 implements AppStore {
 	@Override
 	public boolean create(CreateAppRequest createAppRequest) throws ClientException {
 		String appId = createAppRequest.getAppId();
-		String appVersion = createAppRequest.getVersion();
+		String appVersion = createAppRequest.getAppVersion();
 		if (this.client.appExists(appId, appVersion)) {
 			throw new ClientException(400, String.format("App with appId '%s' and appVersion '%s' already exists.", appId, appVersion));
 		}
@@ -164,7 +164,7 @@ public class AppStoreImplV1 implements AppStore {
 	@Override
 	public boolean create(CreateAppRequest createAppRequest, Path filePath) throws ClientException {
 		String appId = createAppRequest.getAppId();
-		String appVersion = createAppRequest.getVersion();
+		String appVersion = createAppRequest.getAppVersion();
 		if (this.client.appExists(appId, appVersion)) {
 			throw new ClientException(400, String.format("App with appId '%s' and appVersion '%s' already exists.", appId, appVersion));
 		}
@@ -176,7 +176,7 @@ public class AppStoreImplV1 implements AppStore {
 		AppManifestDTO newAppDTO = this.client.addApp(toDTO(createAppRequest));
 
 		if (newAppDTO != null && filePath != null) {
-			return uploadAppArchive(newAppDTO.getAppId(), newAppDTO.getVersion(), filePath);
+			return uploadAppArchive(newAppDTO.getAppId(), newAppDTO.getAppVersion(), filePath);
 		}
 		return false;
 	}
@@ -184,7 +184,7 @@ public class AppStoreImplV1 implements AppStore {
 	@Override
 	public boolean update(UpdateAppRequest updateAppRequest) throws ClientException {
 		String appId = updateAppRequest.getAppId();
-		String appVersion = updateAppRequest.getVersion();
+		String appVersion = updateAppRequest.getAppVersion();
 		if (!this.client.appExists(appId, appVersion)) {
 			throw new ClientException(400, String.format("App with appId '%s' and version '%s' does not exists.", appId, appVersion));
 		}
@@ -251,16 +251,15 @@ public class AppStoreImplV1 implements AppStore {
 	 * @return
 	 */
 	protected AppManifestDTO toDTO(CreateAppRequest createAppRequest) {
-		AppManifestDTO createAppRequestDTO = new AppManifestDTO();
-		createAppRequestDTO.setAppId(createAppRequest.getAppId());
-		createAppRequestDTO.setType(createAppRequest.getType());
-		createAppRequestDTO.setName(createAppRequest.getName());
-		createAppRequestDTO.setVersion(createAppRequest.getVersion());
-		createAppRequestDTO.setPriority(createAppRequest.getPriority());
-		createAppRequestDTO.setAppManifest(createAppRequest.getManifest());
-		createAppRequestDTO.setFileName(createAppRequest.getFileName());
-		createAppRequestDTO.setDescription(createAppRequest.getDescription());
-		return createAppRequestDTO;
+		AppManifestDTO DTO = new AppManifestDTO();
+		DTO.setAppId(createAppRequest.getAppId());
+		DTO.setAppVersion(createAppRequest.getAppVersion());
+		DTO.setType(createAppRequest.getType());
+		DTO.setName(createAppRequest.getName());
+		DTO.setAppManifest(createAppRequest.getManifest());
+		DTO.setAppFileName(createAppRequest.getFileName());
+		DTO.setDescription(createAppRequest.getDescription());
+		return DTO;
 	}
 
 	/**
@@ -270,17 +269,15 @@ public class AppStoreImplV1 implements AppStore {
 	 * @return
 	 */
 	protected AppManifestDTO toDTO(UpdateAppRequest updateAppRequest) {
-		AppManifestDTO updateAppRequestDTO = new AppManifestDTO();
-		updateAppRequestDTO.setAppId(updateAppRequest.getAppId());
-		updateAppRequestDTO.setName(updateAppRequest.getName());
-		updateAppRequestDTO.setVersion(updateAppRequest.getVersion());
-		updateAppRequestDTO.setType(updateAppRequest.getType());
-		updateAppRequestDTO.setPriority(updateAppRequest.getPriority());
-		updateAppRequestDTO.setAppManifest(updateAppRequest.getManifest());
-		updateAppRequestDTO.setFileName(updateAppRequest.getFileName());
-		updateAppRequestDTO.setDescription(updateAppRequest.getDescription());
-
-		return updateAppRequestDTO;
+		AppManifestDTO DTO = new AppManifestDTO();
+		DTO.setAppId(updateAppRequest.getAppId());
+		DTO.setAppVersion(updateAppRequest.getAppVersion());
+		DTO.setType(updateAppRequest.getType());
+		DTO.setName(updateAppRequest.getName());
+		DTO.setAppManifest(updateAppRequest.getManifest());
+		DTO.setAppFileName(updateAppRequest.getFileName());
+		DTO.setDescription(updateAppRequest.getDescription());
+		return DTO;
 	}
 
 	/**
@@ -292,13 +289,13 @@ public class AppStoreImplV1 implements AppStore {
 		AppQueryDTO queryDTO = new AppQueryDTO();
 		queryDTO.setAppId(query.getAppId());
 		queryDTO.setName(query.getName());
-		queryDTO.setVersion(query.getVersion());
+		queryDTO.setAppVersion(query.getAppVersion());
 		queryDTO.setType(query.getType());
 		queryDTO.setDescription(query.getDescription());
 
 		queryDTO.setAppId_oper(SQLWhereOperator.isEqual(query.getAppId_oper()) ? null : query.getAppId_oper());
 		queryDTO.setName_oper(SQLWhereOperator.isEqual(query.getName_oper()) ? null : query.getName_oper());
-		queryDTO.setVersion_oper(SQLWhereOperator.isEqual(query.getVersion_oper()) ? null : query.getVersion_oper());
+		queryDTO.setAppVersion_oper(SQLWhereOperator.isEqual(query.getAppVersion_oper()) ? null : query.getAppVersion_oper());
 		queryDTO.setType_oper(SQLWhereOperator.isEqual(query.getType_oper()) ? null : query.getType_oper());
 		queryDTO.setDescription_oper(SQLWhereOperator.isEqual(query.getDescription_oper()) ? null : query.getDescription_oper());
 
@@ -310,19 +307,18 @@ public class AppStoreImplV1 implements AppStore {
 	 * 
 	 * @param dto
 	 */
-	protected AppManifestImpl toAppManifestImpl(AppManifestDTO dto) {
-		AppManifestImpl impl = new AppManifestImpl();
-		impl.setAppId(dto.getAppId());
-		impl.setName(dto.getName());
-		impl.setVersion(dto.getVersion());
-		impl.setType(dto.getType());
-		impl.setPriority(dto.getPriority());
-		impl.setManifestString(dto.getAppManifest());
-		impl.setFileName(dto.getFileName());
-		impl.setDescription(dto.getDescription());
-		impl.setDateCreated(new Date(dto.getDateCreated()));
-		impl.setDateModified(new Date(dto.getDateModified()));
-		return impl;
+	public AppManifestImpl toAppManifestImpl(AppManifestDTO dto) {
+		AppManifestImpl app = new AppManifestImpl();
+		app.setAppId(dto.getAppId());
+		app.setAppVersion(dto.getAppVersion());
+		app.setType(dto.getType());
+		app.setName(dto.getName());
+		app.setManifest(dto.getAppManifest());
+		app.setFileName(dto.getAppFileName());
+		app.setDescription(dto.getDescription());
+		app.setDateCreated(new Date(dto.getDateCreated()));
+		app.setDateModified(new Date(dto.getDateModified()));
+		return app;
 	}
 
 	@Override

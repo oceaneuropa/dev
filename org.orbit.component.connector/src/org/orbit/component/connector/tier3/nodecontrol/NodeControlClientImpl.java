@@ -8,6 +8,7 @@ import org.orbit.component.api.Requests;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.util.ModelConverter;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
@@ -50,7 +51,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 		NodeInfo[] nodeInfos = null;
 		if (response != null) {
-			nodeInfos = NodeControlModelConverter.INSTANCE.getNodes(response);
+			nodeInfos = ModelConverter.NodeControl.getNodes(response);
 		}
 		if (nodeInfos == null) {
 			nodeInfos = EMPTY_NODE_INFOS;
@@ -67,7 +68,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 		NodeInfo nodeInfo = null;
 		if (response != null) {
-			nodeInfo = NodeControlModelConverter.INSTANCE.getNode(response);
+			nodeInfo = ModelConverter.NodeControl.getNode(response);
 		}
 		return nodeInfo;
 	}
@@ -82,7 +83,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		boolean succeed = false;
 		Response response = sendRequest(request);
 		if (response != null) {
-			succeed = NodeControlModelConverter.INSTANCE.isCreated(response);
+			succeed = ModelConverter.NodeControl.isCreated(response);
 		}
 		return succeed;
 	}
@@ -104,7 +105,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		boolean succeed = false;
 		Response response = sendRequest(request);
 		if (response != null) {
-			succeed = NodeControlModelConverter.INSTANCE.isDeleted(response);
+			succeed = ModelConverter.NodeControl.isDeleted(response);
 		}
 		return succeed;
 	}
@@ -117,7 +118,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		boolean succeed = false;
 		Response response = sendRequest(request);
 		if (response != null) {
-			succeed = NodeControlModelConverter.INSTANCE.isDeleted(response);
+			succeed = ModelConverter.NodeControl.isDeleted(response);
 		}
 		return succeed;
 	}
@@ -130,7 +131,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		boolean succeed = false;
 		Response response = sendRequest(request);
 		if (response != null) {
-			succeed = NodeControlModelConverter.INSTANCE.isStarted(response);
+			succeed = ModelConverter.NodeControl.isStarted(response);
 		}
 		return succeed;
 	}
@@ -143,7 +144,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		boolean succeed = false;
 		Response response = sendRequest(request);
 		if (response != null) {
-			succeed = NodeControlModelConverter.INSTANCE.isStopped(response);
+			succeed = ModelConverter.NodeControl.isStopped(response);
 		}
 		return succeed;
 	}
@@ -158,7 +159,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		boolean succeed = false;
 		Response response = sendRequest(request);
 		if (response != null) {
-			succeed = NodeControlModelConverter.INSTANCE.isSucceed(response);
+			succeed = ModelConverter.NodeControl.isSucceed(response);
 		}
 		return succeed;
 	}
@@ -174,7 +175,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		boolean succeed = false;
 		Response response = sendRequest(request);
 		if (response != null) {
-			succeed = NodeControlModelConverter.INSTANCE.isSucceed(response);
+			succeed = ModelConverter.NodeControl.isSucceed(response);
 		}
 		return succeed;
 	}
@@ -188,7 +189,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		boolean succeed = false;
 		Response response = sendRequest(request);
 		if (response != null) {
-			succeed = NodeControlModelConverter.INSTANCE.isSucceed(response);
+			succeed = ModelConverter.NodeControl.isSucceed(response);
 		}
 		return succeed;
 	}

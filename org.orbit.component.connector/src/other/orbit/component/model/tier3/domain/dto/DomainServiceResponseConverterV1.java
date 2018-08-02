@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
-import org.orbit.component.api.tier3.domainmanagement.NodeConfig;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
-import org.orbit.component.connector.tier3.domainmanagement.DomainManagementConverter;
+import org.orbit.component.api.tier3.domain.MachineConfig;
+import org.orbit.component.api.tier3.domain.NodeConfig;
+import org.orbit.component.api.tier3.domain.PlatformConfig;
+import org.orbit.component.connector.util.ModelConverter;
 import org.origin.common.rest.model.Response;
 import org.origin.common.rest.model.Responses;
 
@@ -29,7 +29,7 @@ public class DomainServiceResponseConverterV1 {
 				for (Object element : elements) {
 					if (element instanceof Map<?, ?>) {
 						Map<?, ?> map = (Map<?, ?>) element;
-						MachineConfig machine = DomainManagementConverter.INSTANCE.toMachineConfig(map);
+						MachineConfig machine = ModelConverter.Domain.toMachineConfig(map);
 						if (machine != null) {
 							machineConfigs.add(machine);
 						}
@@ -47,7 +47,7 @@ public class DomainServiceResponseConverterV1 {
 			Object bodyObj = response.getBody();
 			if (bodyObj instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) bodyObj;
-				machineConfig = DomainManagementConverter.INSTANCE.toMachineConfig(map);
+				machineConfig = ModelConverter.Domain.toMachineConfig(map);
 			}
 		}
 		return machineConfig;
@@ -63,7 +63,7 @@ public class DomainServiceResponseConverterV1 {
 				for (Object element : elements) {
 					if (element instanceof Map<?, ?>) {
 						Map<?, ?> map = (Map<?, ?>) element;
-						PlatformConfig ta = DomainManagementConverter.INSTANCE.toPlatformConfig(map);
+						PlatformConfig ta = ModelConverter.Domain.toPlatformConfig(map);
 						if (ta != null) {
 							taConfigs.add(ta);
 						}
@@ -81,7 +81,7 @@ public class DomainServiceResponseConverterV1 {
 			Object bodyObj = response.getBody();
 			if (bodyObj instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) bodyObj;
-				taConfig = DomainManagementConverter.INSTANCE.toPlatformConfig(map);
+				taConfig = ModelConverter.Domain.toPlatformConfig(map);
 			}
 		}
 		return taConfig;
@@ -97,7 +97,7 @@ public class DomainServiceResponseConverterV1 {
 				for (Object element : elements) {
 					if (element instanceof Map<?, ?>) {
 						Map<?, ?> map = (Map<?, ?>) element;
-						NodeConfig nodeConfig = DomainManagementConverter.INSTANCE.toNodeConfig(map);
+						NodeConfig nodeConfig = ModelConverter.Domain.toNodeConfig(map);
 						if (nodeConfig != null) {
 							nodeConfigs.add(nodeConfig);
 						}
@@ -115,7 +115,7 @@ public class DomainServiceResponseConverterV1 {
 			Object bodyObj = response.getBody();
 			if (bodyObj instanceof Map<?, ?>) {
 				Map<?, ?> map = (Map<?, ?>) bodyObj;
-				nodeConfig = DomainManagementConverter.INSTANCE.toNodeConfig(map);
+				nodeConfig = ModelConverter.Domain.toNodeConfig(map);
 			}
 		}
 		return nodeConfig;

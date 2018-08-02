@@ -24,6 +24,7 @@ import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertiesRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertyRequestDTO;
 import org.orbit.infra.runtime.indexes.service.IndexService;
+import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -78,7 +79,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 	protected ErrorDTO handleError(ServerException e) {
 		e.printStackTrace();
 		this.logger.error(e.getMessage());
-		return ModelConverter.getInstance().toDTO(e);
+		return ModelConverter.Indexes.toDTO(e);
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 		try {
 			IndexItem indexItem = indexService.getIndexItem(indexProviderId, indexItemId);
 			if (indexItem != null) {
-				indexItemDTO = ModelConverter.getInstance().toDTO(indexItem);
+				indexItemDTO = ModelConverter.Indexes.toDTO(indexItem);
 			}
 
 		} catch (ServerException e) {

@@ -3,15 +3,15 @@ package org.orbit.component.runtime.tier1.account.service;
 import java.io.IOException;
 import java.util.List;
 
-import org.orbit.component.model.tier1.account.UserAccountRTO;
+import org.orbit.component.runtime.model.account.UserAccount;
 
 public interface UserAccountPersistence {
 
-	List<UserAccountRTO> getUserAccounts() throws IOException;
+	List<UserAccount> getUserAccounts() throws IOException;
 
-	UserAccountRTO getUserAccount(String userId) throws IOException;
+	UserAccount getUserAccount(String userId) throws IOException;
 
-	UserAccountRTO createUserAccount(String userId, String password, String email, String firstName, String lastName, String phone) throws IOException;
+	UserAccount createUserAccount(String userId, String password, String email, String firstName, String lastName, String phone) throws IOException;
 
 	boolean setUserAccountActivated(String userId, boolean activated) throws IOException;
 

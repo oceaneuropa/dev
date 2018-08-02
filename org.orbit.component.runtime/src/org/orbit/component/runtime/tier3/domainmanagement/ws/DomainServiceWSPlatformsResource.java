@@ -16,9 +16,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
 import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
+import org.orbit.component.runtime.model.domain.PlatformConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
+import org.orbit.component.runtime.util.ModelConverter;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -67,10 +68,10 @@ public class DomainServiceWSPlatformsResource extends AbstractWSApplicationResou
 
 		List<PlatformConfigDTO> platformConfigDTOs = new ArrayList<PlatformConfigDTO>();
 		try {
-			List<PlatformConfigRTO> platformConfigs = service.getPlatformConfigs(machineId);
+			List<PlatformConfig> platformConfigs = service.getPlatformConfigs(machineId);
 			if (platformConfigs != null) {
-				for (PlatformConfigRTO platformConfig : platformConfigs) {
-					PlatformConfigDTO platformConfigDTO = DomainServiceModelConverter.getInstance().toDTO(platformConfig);
+				for (PlatformConfig platformConfig : platformConfigs) {
+					PlatformConfigDTO platformConfigDTO = ModelConverter.Domain.toDTO(platformConfig);
 					platformConfigDTOs.add(platformConfigDTO);
 				}
 			}
@@ -97,12 +98,12 @@ public class DomainServiceWSPlatformsResource extends AbstractWSApplicationResou
 
 		DomainManagementService service = getService();
 		try {
-			PlatformConfigRTO platformConfig = service.getPlatformConfig(machineId, platformId);
+			PlatformConfig platformConfig = service.getPlatformConfig(machineId, platformId);
 			if (platformConfig == null) {
 				ErrorDTO notFoundError = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("Platform with id '%s' cannot be found.", platformId));
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
-			platformConfigDTO = DomainServiceModelConverter.getInstance().toDTO(platformConfig);
+			platformConfigDTO = ModelConverter.Domain.toDTO(platformConfig);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -142,7 +143,7 @@ public class DomainServiceWSPlatformsResource extends AbstractWSApplicationResou
 				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
-			PlatformConfigRTO addPlatformConfig = DomainServiceModelConverter.getInstance().toRTO(addPlatformConfigDTO);
+			PlatformConfig addPlatformConfig = ModelConverter.Domain.toRTO(addPlatformConfigDTO);
 			succeed = service.addPlatformConfig(machineId, addPlatformConfig);
 
 		} catch (ServerException e) {
@@ -178,7 +179,7 @@ public class DomainServiceWSPlatformsResource extends AbstractWSApplicationResou
 		boolean succeed = false;
 		DomainManagementService service = getService();
 		try {
-			PlatformConfigRTO updatePlatformConfig = DomainServiceModelConverter.getInstance().toRTO(updatePlatformConfigDTO);
+			PlatformConfig updatePlatformConfig = ModelConverter.Domain.toRTO(updatePlatformConfigDTO);
 			List<String> fieldsToUpdate = updatePlatformConfigDTO.getFieldsToUpdate();
 			succeed = service.updatePlatformConfig(machineId, updatePlatformConfig, fieldsToUpdate);
 

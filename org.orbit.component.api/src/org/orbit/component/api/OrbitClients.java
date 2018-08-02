@@ -3,13 +3,13 @@ package org.orbit.component.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.account.UserAccounts;
-import org.orbit.component.api.tier1.auth.Auth;
-import org.orbit.component.api.tier1.registry.Registry;
-import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.api.tier1.account.UserAccountClient;
+import org.orbit.component.api.tier1.auth.AuthClient;
+import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
+import org.orbit.component.api.tier2.appstore.AppStoreClient;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
-import org.orbit.component.api.tier4.mission.MissionControlClient;
+import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.osgi.framework.BundleContext;
@@ -35,12 +35,12 @@ public class OrbitClients {
 	}
 
 	// tier1
-	protected ServiceConnectorAdapter<Auth> authConnector;
-	protected ServiceConnectorAdapter<UserAccounts> userAccountsConnector;
-	protected ServiceConnectorAdapter<Registry> registryConnector;
+	protected ServiceConnectorAdapter<AuthClient> authConnector;
+	protected ServiceConnectorAdapter<UserAccountClient> userAccountsConnector;
+	protected ServiceConnectorAdapter<ConfigRegistryClient> registryConnector;
 
 	// tier2
-	protected ServiceConnectorAdapter<AppStore> appStoreConnector;
+	protected ServiceConnectorAdapter<AppStoreClient> appStoreConnector;
 
 	// tier3
 	protected ServiceConnectorAdapter<DomainManagementClient> domainServiceConnector;
@@ -54,17 +54,17 @@ public class OrbitClients {
 
 	public void start(final BundleContext bundleContext) {
 		// tier1
-		this.authConnector = new ServiceConnectorAdapter<Auth>(Auth.class);
+		this.authConnector = new ServiceConnectorAdapter<AuthClient>(AuthClient.class);
 		this.authConnector.start(bundleContext);
 
-		this.userAccountsConnector = new ServiceConnectorAdapter<UserAccounts>(UserAccounts.class);
+		this.userAccountsConnector = new ServiceConnectorAdapter<UserAccountClient>(UserAccountClient.class);
 		this.userAccountsConnector.start(bundleContext);
 
-		this.registryConnector = new ServiceConnectorAdapter<Registry>(Registry.class);
+		this.registryConnector = new ServiceConnectorAdapter<ConfigRegistryClient>(ConfigRegistryClient.class);
 		this.registryConnector.start(bundleContext);
 
 		// tier2
-		this.appStoreConnector = new ServiceConnectorAdapter<AppStore>(AppStore.class);
+		this.appStoreConnector = new ServiceConnectorAdapter<AppStoreClient>(AppStoreClient.class);
 		this.appStoreConnector.start(bundleContext);
 
 		// tier3
@@ -120,7 +120,7 @@ public class OrbitClients {
 		}
 	}
 
-	public Auth getAuth(Map<?, ?> properties) {
+	public AuthClient getAuth(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_AUTH_URL);
@@ -132,11 +132,11 @@ public class OrbitClients {
 		return getAuth(url);
 	}
 
-	public Auth getAuth(String url) {
+	public AuthClient getAuth(String url) {
 		return getAuth(null, null, url);
 	}
 
-	public Auth getAuth(String realm, String username, String url) {
+	public AuthClient getAuth(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -145,7 +145,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		Auth auth = this.authConnector.getService(properties);
+		AuthClient auth = this.authConnector.getService(properties);
 		if (auth == null) {
 			LOG.error("Auth is not available.");
 			throw new IllegalStateException("Auth is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
@@ -153,7 +153,7 @@ public class OrbitClients {
 		return auth;
 	}
 
-	public UserAccounts getUserAccounts(Map<?, ?> properties) {
+	public UserAccountClient getUserAccounts(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
@@ -165,11 +165,11 @@ public class OrbitClients {
 		return getUserAccounts(url);
 	}
 
-	public UserAccounts getUserAccounts(String url) {
+	public UserAccountClient getUserAccounts(String url) {
 		return getUserAccounts(null, null, url);
 	}
 
-	public UserAccounts getUserAccounts(String realm, String username, String url) {
+	public UserAccountClient getUserAccounts(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -178,7 +178,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		UserAccounts userRegistry = this.userAccountsConnector.getService(properties);
+		UserAccountClient userRegistry = this.userAccountsConnector.getService(properties);
 		if (userRegistry == null) {
 			LOG.error("UserRegistry is not available.");
 			throw new IllegalStateException("UserRegistry is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
@@ -186,7 +186,7 @@ public class OrbitClients {
 		return userRegistry;
 	}
 
-	public Registry getRegistry(Map<?, ?> properties) {
+	public ConfigRegistryClient getRegistry(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_REGISTRY_URL);
@@ -198,11 +198,11 @@ public class OrbitClients {
 		return getRegistry(url);
 	}
 
-	public Registry getRegistry(String url) {
+	public ConfigRegistryClient getRegistry(String url) {
 		return getRegistry(null, null, url);
 	}
 
-	public Registry getRegistry(String realm, String username, String url) {
+	public ConfigRegistryClient getRegistry(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -211,7 +211,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		Registry configRegistry = this.registryConnector.getService(properties);
+		ConfigRegistryClient configRegistry = this.registryConnector.getService(properties);
 		if (configRegistry == null) {
 			LOG.error("ConfigRegistry is not available.");
 			throw new IllegalStateException("ConfigRegistry is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
@@ -219,7 +219,7 @@ public class OrbitClients {
 		return configRegistry;
 	}
 
-	public AppStore getAppStore(Map<?, ?> properties) {
+	public AppStoreClient getAppStore(Map<?, ?> properties) {
 		String url = null;
 		if (properties != null) {
 			url = (String) properties.get(OrbitConstants.ORBIT_APP_STORE_URL);
@@ -231,11 +231,11 @@ public class OrbitClients {
 		return getAppStore(url);
 	}
 
-	public AppStore getAppStore(String url) {
+	public AppStoreClient getAppStore(String url) {
 		return getAppStore(null, null, url);
 	}
 
-	public AppStore getAppStore(String realm, String username, String url) {
+	public AppStoreClient getAppStore(String realm, String username, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
 		username = GlobalContext.getInstance().checkUsername(realm, username);
 
@@ -244,7 +244,7 @@ public class OrbitClients {
 		properties.put(OrbitConstants.USERNAME, username);
 		properties.put(OrbitConstants.URL, url);
 
-		AppStore auth = this.appStoreConnector.getService(properties);
+		AppStoreClient auth = this.appStoreConnector.getService(properties);
 		if (auth == null) {
 			LOG.error("AppStore is not available.");
 			throw new IllegalStateException("AppStore is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");

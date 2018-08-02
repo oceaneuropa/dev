@@ -11,8 +11,8 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.tier1.registry.Registry;
-import org.orbit.component.api.tier1.registry.EPath;
+import org.orbit.component.api.tier1.configregistry.EPath;
+import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
 import org.orbit.component.webconsole.WebConstants;
 import org.origin.common.rest.client.ClientException;
 
@@ -39,7 +39,7 @@ public class RegistryGetServlet extends HttpServlet {
 		String userId = null;
 		UserAccount[] userAccounts = null;
 
-		Registry registry = OrbitClients.getInstance().getRegistry(registryUrl);
+		ConfigRegistryClient registry = OrbitClients.getInstance().getRegistry(registryUrl);
 		if (registry != null) {
 			try {
 				registry.getProperties();

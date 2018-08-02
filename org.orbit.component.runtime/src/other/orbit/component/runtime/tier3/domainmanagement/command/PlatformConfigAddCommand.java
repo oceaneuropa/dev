@@ -1,6 +1,6 @@
 package other.orbit.component.runtime.tier3.domainmanagement.command;
 
-import org.orbit.component.model.tier3.domain.PlatformConfigRTO;
+import org.orbit.component.runtime.model.domain.PlatformConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -46,7 +46,7 @@ public class PlatformConfigAddCommand extends AbstractCommand {
 				return new CommandResult(response);
 			}
 
-			PlatformConfigRTO addTransferAgentRequest = new PlatformConfigRTO(id, name, home, hostURL, contextRoot);
+			PlatformConfig addTransferAgentRequest = new PlatformConfig(id, name, home, hostURL, contextRoot);
 			succeed = this.service.addPlatformConfig(machineId, addTransferAgentRequest);
 
 		} catch (ServerException e) {

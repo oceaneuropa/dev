@@ -8,7 +8,7 @@ import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
-import org.orbit.component.api.tier2.appstore.AppStore;
+import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -50,8 +50,8 @@ public class AppStoreCommand implements Annotated, CommandActivator {
 		this.bundleContext = null;
 	}
 
-	protected AppStore getAppStore() {
-		AppStore appStore = OrbitClients.getInstance().getAppStore(this.properties);
+	protected AppStoreClient getAppStore() {
+		AppStoreClient appStore = OrbitClients.getInstance().getAppStore(this.properties);
 		if (appStore == null) {
 			throw new IllegalStateException("AppStore is null.");
 		}
@@ -60,7 +60,7 @@ public class AppStoreCommand implements Annotated, CommandActivator {
 
 	@Descriptor("List Apps")
 	public void list_apps() throws ClientException {
-		AppStore appStore = getAppStore();
+		AppStoreClient appStore = getAppStore();
 
 		AppQuery query = new AppQuery();
 		AppManifest[] appManifests = appStore.getApps(query);
@@ -70,7 +70,7 @@ public class AppStoreCommand implements Annotated, CommandActivator {
 		for (AppManifest appManifest : appManifests) {
 			String appId = appManifest.getAppId();
 			String name = appManifest.getName();
-			String version = appManifest.getVersion();
+			String version = appManifest.getAppVersion();
 			String type = appManifest.getType();
 			String fileName = appManifest.getFileName();
 

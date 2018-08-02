@@ -6,18 +6,53 @@ import org.orbit.component.api.tier2.appstore.AppManifest;
 
 public class AppManifestImpl implements AppManifest {
 
+	protected int id;
 	protected String appId;
-	protected String name;
-	protected String version;
+	protected String appVersion;
 	protected String type;
-	protected int priority;
-	protected String manifestString;
+	protected String name;
+	protected String manifest;
 	protected String fileName;
 	protected String description;
 	protected Date dateCreated;
 	protected Date dateModified;
 
 	public AppManifestImpl() {
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param appId
+	 * @param appVersion
+	 * @param type
+	 * @param name
+	 * @param manifest
+	 * @param fileName
+	 * @param description
+	 * @param dateCreated
+	 * @param dateModified
+	 */
+	public AppManifestImpl(int id, String appId, String appVersion, String type, String name, String manifest, String fileName, String description, Date dateCreated, Date dateModified) {
+		this.id = id;
+		this.appId = appId;
+		this.appVersion = appVersion;
+		this.type = type;
+		this.name = name;
+		this.manifest = manifest;
+		this.fileName = fileName;
+		this.description = description;
+		this.dateCreated = dateCreated;
+		this.dateModified = dateModified;
+	}
+
+	@Override
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Override
@@ -30,21 +65,12 @@ public class AppManifestImpl implements AppManifest {
 	}
 
 	@Override
-	public String getName() {
-		return name;
+	public String getAppVersion() {
+		return this.appVersion;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public String getVersion() {
-		return version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
 	}
 
 	@Override
@@ -57,26 +83,26 @@ public class AppManifestImpl implements AppManifest {
 	}
 
 	@Override
-	public int getPriority() {
-		return priority;
+	public String getName() {
+		return name;
 	}
 
-	public void setPriority(int priority) {
-		this.priority = priority;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override
-	public String getManifestString() {
-		return manifestString;
+	public String getManifest() {
+		return this.manifest;
 	}
 
-	public void setManifestString(String manifestString) {
-		this.manifestString = manifestString;
+	public void setManifest(String manifestString) {
+		this.manifest = manifestString;
 	}
 
 	@Override
 	public String getFileName() {
-		return fileName;
+		return this.fileName;
 	}
 
 	public void setFileName(String fileName) {
@@ -85,7 +111,7 @@ public class AppManifestImpl implements AppManifest {
 
 	@Override
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
@@ -94,7 +120,7 @@ public class AppManifestImpl implements AppManifest {
 
 	@Override
 	public Date getDateCreated() {
-		return dateCreated;
+		return this.dateCreated;
 	}
 
 	public void setDateCreated(Date dateCreated) {
@@ -103,7 +129,7 @@ public class AppManifestImpl implements AppManifest {
 
 	@Override
 	public Date getDateModified() {
-		return dateModified;
+		return this.dateModified;
 	}
 
 	public void setDateModified(Date dateModified) {
@@ -133,11 +159,10 @@ public class AppManifestImpl implements AppManifest {
 		StringBuilder sb = new StringBuilder();
 		sb.append("AppManifest(");
 		sb.append("appId=").append(this.appId);
-		sb.append(", name=").append(this.name);
-		sb.append(", version=").append(this.version);
+		sb.append(", appVersion=").append(this.appVersion);
 		sb.append(", type=").append(this.type);
-		sb.append(", priority=").append(this.priority);
-		sb.append(", manifest=").append(this.manifestString);
+		sb.append(", name=").append(this.name);
+		sb.append(", manifest=").append(this.manifest);
 		sb.append(", fileName=").append(this.fileName);
 		sb.append(", description=").append(this.description);
 		sb.append(", dateCreated=").append(this.dateCreated);

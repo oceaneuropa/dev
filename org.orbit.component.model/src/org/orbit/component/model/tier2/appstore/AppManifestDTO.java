@@ -11,19 +11,19 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AppManifestDTO {
 
 	@XmlElement
+	protected int id;
+	@XmlElement
 	protected String appId;
+	@XmlElement
+	protected String appVersion;
 	@XmlElement
 	protected String type;
 	@XmlElement
 	protected String name;
 	@XmlElement
-	protected String version;
-	@XmlElement
-	protected int priority;
-	@XmlElement
 	protected String appManifest;
 	@XmlElement
-	protected String fileName;
+	protected String appFileName;
 	@XmlElement
 	protected String description;
 	@XmlElement
@@ -32,7 +32,15 @@ public class AppManifestDTO {
 	protected long dateModified;
 
 	public AppManifestDTO() {
+	}
 
+	@XmlElement
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@XmlElement
@@ -42,6 +50,15 @@ public class AppManifestDTO {
 
 	public void setAppId(String appId) {
 		this.appId = appId;
+	}
+
+	@XmlElement
+	public String getAppVersion() {
+		return this.appVersion;
+	}
+
+	public void setAppVersion(String version) {
+		this.appVersion = version;
 	}
 
 	@XmlElement
@@ -63,24 +80,6 @@ public class AppManifestDTO {
 	}
 
 	@XmlElement
-	public String getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
-	}
-
-	@XmlElement
-	public int getPriority() {
-		return this.priority;
-	}
-
-	public void setPriority(int priority) {
-		this.priority = priority;
-	}
-
-	@XmlElement
 	public String getAppManifest() {
 		return this.appManifest;
 	}
@@ -90,12 +89,12 @@ public class AppManifestDTO {
 	}
 
 	@XmlElement
-	public String getFileName() {
-		return this.fileName;
+	public String getAppFileName() {
+		return this.appFileName;
 	}
 
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
+	public void setAppFileName(String fileName) {
+		this.appFileName = fileName;
 	}
 
 	@XmlElement

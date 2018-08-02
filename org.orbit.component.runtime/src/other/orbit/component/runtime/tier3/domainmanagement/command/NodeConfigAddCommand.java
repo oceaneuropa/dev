@@ -1,6 +1,6 @@
 package other.orbit.component.runtime.tier3.domainmanagement.command;
 
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -48,7 +48,7 @@ public class NodeConfigAddCommand extends AbstractCommand {
 				return new CommandResult(response);
 			}
 
-			NodeConfigRTO addNodeRequest = new NodeConfigRTO(id, machineId, platformId, name, home, hostURL, contextRoot);
+			NodeConfig addNodeRequest = new NodeConfig(id, machineId, platformId, name, home, hostURL, contextRoot);
 			succeed = this.service.addNodeConfig(machineId, platformId, addNodeRequest);
 
 		} catch (ServerException e) {

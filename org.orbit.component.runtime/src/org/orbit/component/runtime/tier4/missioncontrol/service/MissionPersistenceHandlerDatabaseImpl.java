@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.orbit.component.model.tier4.mission.MissionRTO;
-import org.orbit.component.model.tier4.mission.MissionVO;
+import org.orbit.component.runtime.model.missioncontrol.Mission;
+import org.orbit.component.runtime.model.missioncontrol.MissionVO;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
 
@@ -47,13 +47,13 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	}
 
 	@Override
-	public List<MissionRTO> getMissions(String typeId) throws IOException {
-		List<MissionRTO> missions = new ArrayList<MissionRTO>();
+	public List<Mission> getMissions(String typeId) throws IOException {
+		List<Mission> missions = new ArrayList<Mission>();
 		Connection conn = getConnection();
 		try {
 			List<MissionVO> missionVOs = MissionTableHandler.getInstance(conn, typeId).getMissions(conn);
 			for (MissionVO missionVO : missionVOs) {
-				MissionRTO mission = MissionConverter.INSTANCE.toMission(missionVO);
+				Mission mission = MissionConverter.INSTANCE.toMission(missionVO);
 				missions.add(mission);
 			}
 
@@ -86,8 +86,8 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	}
 
 	@Override
-	public MissionRTO getMission(String typeId, Integer id) throws IOException {
-		MissionRTO mission = null;
+	public Mission getMission(String typeId, Integer id) throws IOException {
+		Mission mission = null;
 		Connection conn = getConnection();
 		try {
 			MissionVO missionVO = MissionTableHandler.getInstance(conn, typeId).getMission(conn, id);
@@ -105,8 +105,8 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	}
 
 	@Override
-	public MissionRTO getMission(String typeId, String name) throws IOException {
-		MissionRTO mission = null;
+	public Mission getMission(String typeId, String name) throws IOException {
+		Mission mission = null;
 		Connection conn = getConnection();
 		try {
 			MissionVO missionVO = MissionTableHandler.getInstance(conn, typeId).getMission(conn, name);
@@ -140,8 +140,8 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	}
 
 	@Override
-	public MissionRTO insert(String typeId, String name) throws IOException {
-		MissionRTO mission = null;
+	public Mission insert(String typeId, String name) throws IOException {
+		Mission mission = null;
 		Connection conn = getConnection();
 		try {
 			MissionVO missionVO = MissionTableHandler.getInstance(conn, typeId).insert(conn, name);

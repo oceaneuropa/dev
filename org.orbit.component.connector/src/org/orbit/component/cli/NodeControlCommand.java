@@ -10,11 +10,11 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.Requests;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
+import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.connector.tier3.nodecontrol.NodeControlModelConverter;
+import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -56,7 +56,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 				new String[] { //
 						"ping", "echo", //
 						"platform_ping", "list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
-		});
+				});
 
 		OSGiServiceUtil.register(bundleContext, NodeControlCommand.class.getName(), this, props);
 
@@ -158,7 +158,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 			Request request = new Request(Requests.GET_NODES);
 			Response response = nodeControl.sendRequest(request);
 
-			NodeInfo[] nodeInfos = NodeControlModelConverter.INSTANCE.getNodes(response);
+			NodeInfo[] nodeInfos = ModelConverter.NodeControl.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
 			for (NodeInfo nodeInfo : nodeInfos) {
@@ -190,7 +190,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 
 			Response response = nodeControl.sendRequest(request);
 
-			NodeInfo nodeInfo = NodeControlModelConverter.INSTANCE.getNode(response);
+			NodeInfo nodeInfo = ModelConverter.NodeControl.getNode(response);
 			NodeInfo[] nodeInfos = (nodeInfo != null) ? new NodeInfo[] { nodeInfo } : new NodeInfo[] {};
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
 			int rowIndex = 0;
@@ -222,7 +222,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 			request.setParameter("nodeId", nodeId);
 
 			Response response = nodeControl.sendRequest(request);
-			boolean exists = NodeControlModelConverter.INSTANCE.exists(response);
+			boolean exists = ModelConverter.NodeControl.exists(response);
 			LOG.info("exists: " + exists);
 
 		} catch (Exception e) {
@@ -247,7 +247,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 
 			Response response = nodeControl.sendRequest(request);
 
-			boolean succeed = NodeControlModelConverter.INSTANCE.isCreated(response);
+			boolean succeed = ModelConverter.NodeControl.isCreated(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
@@ -272,7 +272,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 
 			Response response = nodeControl.sendRequest(request);
 
-			boolean succeed = NodeControlModelConverter.INSTANCE.isDeleted(response);
+			boolean succeed = ModelConverter.NodeControl.isDeleted(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
@@ -297,7 +297,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 
 			Response response = nodeControl.sendRequest(request);
 
-			String status = NodeControlModelConverter.INSTANCE.getStatus(response);
+			String status = ModelConverter.NodeControl.getStatus(response);
 			LOG.info("status: " + status);
 
 		} catch (Exception e) {

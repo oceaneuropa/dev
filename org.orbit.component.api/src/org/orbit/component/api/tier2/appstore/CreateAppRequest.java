@@ -3,36 +3,27 @@ package org.orbit.component.api.tier2.appstore;
 public class CreateAppRequest {
 
 	protected String appId;
-	protected String name;
-	protected String version;
+	protected String appVersion;
 	protected String type;
-	protected int priority = 1000;
+	protected String name;
 	protected String manifest;
 	protected String fileName;
 	protected String description;
 
 	public String getAppId() {
-		return appId;
+		return this.appId;
 	}
 
 	public void setAppId(String appId) {
 		this.appId = appId;
 	}
 
-	public String getName() {
-		return this.name;
+	public String getAppVersion() {
+		return this.appVersion;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
 	}
 
 	public String getType() {
@@ -43,12 +34,12 @@ public class CreateAppRequest {
 		this.type = type;
 	}
 
-	public int getPriority() {
-		return this.priority;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setPriority(int priority) {
-		this.priority = priority;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getManifest() {

@@ -2,14 +2,47 @@ package org.orbit.component.api.tier2.appstore;
 
 public class UpdateAppRequest {
 
+	protected int id;
 	protected String appId;
-	protected String name;
-	protected String version;
+	protected String appVersion;
 	protected String type;
-	protected int priority = 1000;
+	protected String name;
 	protected String manifest;
 	protected String fileName;
 	protected String description;
+
+	public UpdateAppRequest() {
+	}
+
+	/**
+	 * 
+	 * @param id
+	 * @param appId
+	 * @param appVersion
+	 * @param type
+	 * @param name
+	 * @param manifest
+	 * @param fileName
+	 * @param description
+	 */
+	public UpdateAppRequest(int id, String appId, String appVersion, String type, String name, String manifest, String fileName, String description) {
+		this.id = id;
+		this.appId = appId;
+		this.appVersion = appVersion;
+		this.type = type;
+		this.name = name;
+		this.manifest = manifest;
+		this.fileName = fileName;
+		this.description = description;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
 	public String getAppId() {
 		return this.appId;
@@ -19,20 +52,12 @@ public class UpdateAppRequest {
 		this.appId = appId;
 	}
 
-	public String getName() {
-		return this.name;
+	public String getAppVersion() {
+		return this.appVersion;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getVersion() {
-		return this.version;
-	}
-
-	public void setVersion(String version) {
-		this.version = version;
+	public void setAppVersion(String appVersion) {
+		this.appVersion = appVersion;
 	}
 
 	public String getType() {
@@ -43,12 +68,12 @@ public class UpdateAppRequest {
 		this.type = type;
 	}
 
-	public int getPriority() {
-		return this.priority;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setPriority(int priority) {
-		this.priority = priority;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getManifest() {

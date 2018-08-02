@@ -5,7 +5,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.account.UserAccounts;
+import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
@@ -17,7 +17,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import other.orbit.component.api.tier1.account.UserRegistryConnectorV1;
 import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
-public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBalancedServiceConnectorImpl<UserAccounts> implements UserRegistryConnectorV1 {
+public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBalancedServiceConnectorImpl<UserAccountClient> implements UserRegistryConnectorV1 {
 
 	@Dependency
 	protected ConfigurationAdmin configAdmin;
@@ -36,7 +36,7 @@ public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBala
 	}
 
 	@Override
-	protected UserAccounts createService(Map<String, Object> properties) {
+	protected UserAccountClient createService(Map<String, Object> properties) {
 		try {
 			// Unique key to identify a service and Configuration
 			String indexItemId = properties.get(org.orbit.infra.api.InfraConstants.INDEX_ITEM_ID).toString(); // "index_item_id"
@@ -71,7 +71,7 @@ public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBala
 	}
 
 	@Override
-	protected void updateService(UserAccounts userRegistry, Map<String, Object> properties) {
+	protected void updateService(UserAccountClient userRegistry, Map<String, Object> properties) {
 		userRegistry.update(properties);
 	}
 

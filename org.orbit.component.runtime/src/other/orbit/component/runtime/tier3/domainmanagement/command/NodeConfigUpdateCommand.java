@@ -2,7 +2,7 @@ package other.orbit.component.runtime.tier3.domainmanagement.command;
 
 import java.util.List;
 
-import org.orbit.component.model.tier3.domain.NodeConfigRTO;
+import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
@@ -53,7 +53,7 @@ public class NodeConfigUpdateCommand extends AbstractCommand {
 				return new CommandResult(response);
 			}
 
-			NodeConfigRTO updateNodeRequest = new NodeConfigRTO();
+			NodeConfig updateNodeRequest = new NodeConfig();
 			updateNodeRequest.setMachineId(machineId);
 			updateNodeRequest.setPlatformId(platformId);
 			updateNodeRequest.setId(id);

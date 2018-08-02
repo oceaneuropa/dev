@@ -19,8 +19,8 @@ import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.TokenResponse;
-import org.orbit.component.runtime.tier1.auth.service.AuthModelConverter;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
+import org.orbit.component.runtime.util.ModelConverter;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
@@ -146,8 +146,8 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 			@Context HttpHeaders httpHeaders, //
 			AuthorizationRequestDTO authorizationRequestDTO) {
 		try {
-			AuthorizationResponse response = getService().authorize(AuthModelConverter.getInstance().toRequest(authorizationRequestDTO));
-			return Response.ok().entity(AuthModelConverter.getInstance().toResponseDTO(response)).build();
+			AuthorizationResponse response = getService().authorize(ModelConverter.Auth.toRequest(authorizationRequestDTO));
+			return Response.ok().entity(ModelConverter.Auth.toResponseDTO(response)).build();
 
 		} catch (ServerException e) {
 			e.printStackTrace();
@@ -167,7 +167,7 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 			@Context HttpHeaders httpHeaders, //
 			TokenRequestDTO tokenRequestDTO) {
 		try {
-			TokenResponse response = getService().getToken(AuthModelConverter.getInstance().toRequest(tokenRequestDTO));
+			TokenResponse response = getService().getToken(ModelConverter.Auth.toRequest(tokenRequestDTO));
 
 			if (response != null && response.getAccessToken() != null) {
 				String accessToken = response.getAccessToken();
@@ -183,7 +183,7 @@ public class AuthWSResource extends AbstractWSApplicationResource {
 				response.setState("from '" + getService().getName() + "'");
 			}
 
-			return Response.ok().entity(AuthModelConverter.getInstance().toResponseDTO(response)).build();
+			return Response.ok().entity(ModelConverter.Auth.toResponseDTO(response)).build();
 
 		} catch (ServerException e) {
 			e.printStackTrace();

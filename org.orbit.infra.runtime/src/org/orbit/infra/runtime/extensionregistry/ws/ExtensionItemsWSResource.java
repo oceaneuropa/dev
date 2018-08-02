@@ -22,6 +22,7 @@ import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemUpdateRequest;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
+import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -94,7 +95,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 			}
 			if (items != null) {
 				for (ExtensionItem item : items) {
-					ExtensionItemDTO DTO = ModelConverter.INSTANCE.toDTO(item);
+					ExtensionItemDTO DTO = ModelConverter.Extensions.toDTO(item);
 					DTOs.add(DTO);
 				}
 			}
@@ -136,7 +137,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 
 			ExtensionItem newItem = service.addExtensionItem(platformId, typeId, extensionId, name, description, properties);
 			if (newItem != null) {
-				newDTO = ModelConverter.INSTANCE.toDTO(newItem);
+				newDTO = ModelConverter.Extensions.toDTO(newItem);
 			}
 
 		} catch (ServerException e) {
@@ -215,7 +216,6 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 		boolean succeed = false;
 		try {
 			ExtensionRegistryService service = getService();
-
 			succeed = service.removeExtensionItems(platformId);
 
 		} catch (ServerException e) {
@@ -232,4 +232,5 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 			return Response.ok().entity(statusDTO).build();
 		}
 	}
+
 }

@@ -4,69 +4,24 @@ import java.util.Date;
 
 public interface AppManifest {
 
-	/**
-	 * Get app id.
-	 * 
-	 * @return
-	 */
+	int getId();
+
 	String getAppId();
 
-	/**
-	 * Get app name.
-	 * 
-	 * @return
-	 */
-	String getName();
+	String getAppVersion();
 
-	/**
-	 * Get app version.
-	 * 
-	 * @return
-	 */
-	String getVersion();
-
-	/**
-	 * Get app type.
-	 * 
-	 * @return
-	 */
 	String getType();
 
-	/**
-	 * 
-	 * @return
-	 */
-	int getPriority();
+	String getName();
 
-	/**
-	 * 
-	 * @return
-	 */
+	String getManifest();
+
 	String getFileName();
 
-	/**
-	 * Get app description.
-	 * 
-	 * @return
-	 */
 	String getDescription();
 
-	/**
-	 * 
-	 * @return
-	 */
 	Date getDateCreated();
 
-	/**
-	 * 
-	 * @return
-	 */
 	Date getDateModified();
-
-	/**
-	 * 
-	 * @return
-	 */
-	String getManifestString();
 
 }

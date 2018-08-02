@@ -3,8 +3,8 @@ package org.orbit.component.runtime.tier2.appstore.service;
 import java.io.InputStream;
 import java.util.List;
 
-import org.orbit.component.model.tier2.appstore.AppManifestRTO;
-import org.orbit.component.model.tier2.appstore.AppQueryRTO;
+import org.orbit.component.runtime.model.appstore.AppManifest;
+import org.orbit.component.runtime.model.appstore.AppQuery;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAware;
 
@@ -19,7 +19,7 @@ public interface AppStoreService extends WebServiceAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	List<AppManifestRTO> getApps(String type) throws ServerException;
+	List<AppManifest> getApps(String type) throws ServerException;
 
 	/**
 	 * Get apps.
@@ -28,7 +28,7 @@ public interface AppStoreService extends WebServiceAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	List<AppManifestRTO> getApps(AppQueryRTO query) throws ServerException;
+	List<AppManifest> getApps(AppQuery query) throws ServerException;
 
 	/**
 	 * Get an app.
@@ -38,7 +38,7 @@ public interface AppStoreService extends WebServiceAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	AppManifestRTO getApp(String appId, String appVersion) throws ServerException;
+	AppManifest getApp(String appId, String appVersion) throws ServerException;
 
 	/**
 	 * Check whether an app exists.
@@ -57,7 +57,7 @@ public interface AppStoreService extends WebServiceAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	AppManifestRTO addApp(AppManifestRTO newAppRequest) throws ServerException;
+	AppManifest addApp(AppManifest newAppRequest) throws ServerException;
 
 	/**
 	 * Update an app.
@@ -66,7 +66,7 @@ public interface AppStoreService extends WebServiceAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	boolean updateApp(AppManifestRTO updateAppRequest) throws ServerException;
+	boolean updateApp(AppManifest updateAppRequest) throws ServerException;
 
 	/**
 	 * Delete an app.

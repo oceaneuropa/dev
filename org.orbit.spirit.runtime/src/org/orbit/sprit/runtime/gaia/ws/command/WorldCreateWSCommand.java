@@ -5,8 +5,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
 import org.orbit.sprit.runtime.gaia.service.GAIA;
+import org.orbit.sprit.runtime.gaia.util.ModelConverter;
 import org.orbit.sprit.runtime.gaia.world.World;
-import org.orbit.sprit.runtime.gaia.world.WorldModelConverter;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -38,7 +38,7 @@ public class WorldCreateWSCommand extends AbstractWSCommand {
 			return Response.status(Status.NOT_FOUND).entity(error).build();
 		}
 
-		WorldDTO worldDTO = WorldModelConverter.getInstance().toDTO(newWorld);
+		WorldDTO worldDTO = ModelConverter.GAIA.toDTO(newWorld);
 		return Response.status(Status.OK).entity(worldDTO).build();
 	}
 

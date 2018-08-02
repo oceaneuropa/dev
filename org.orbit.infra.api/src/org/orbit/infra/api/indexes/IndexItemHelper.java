@@ -2,16 +2,34 @@ package org.orbit.infra.api.indexes;
 
 import java.util.Date;
 
+import org.orbit.infra.api.InfraConstants;
+
 public class IndexItemHelper {
 
 	public static String PLATFORM_RUNTIME_STATE = "platform.runtime_state";
 
 	public static IndexItemHelper INSTANCE = new IndexItemHelper();
 
+	/**
+	 * 
+	 * @param indexItem
+	 * @return
+	 */
 	public boolean isOnline(IndexItem indexItem) {
 		if (indexItem != null && isLastHeartbeatWithinSeconds(indexItem, 20)) {
-			String runtimeState = (String) indexItem.getProperties().get(PLATFORM_RUNTIME_STATE);
-			if ("STARTED".equalsIgnoreCase(runtimeState)) {
+			String indexerId = indexItem.getIndexProviderId();
+
+			boolean checkStarted = false;
+			if (InfraConstants.PLATFORM_INDEXER_ID.equals(indexerId)) {
+				checkStarted = true;
+			}
+
+			if (checkStarted) {
+				String runtimeState = (String) indexItem.getProperties().get(PLATFORM_RUNTIME_STATE);
+				if ("STARTED".equalsIgnoreCase(runtimeState)) {
+					return true;
+				}
+			} else {
 				return true;
 			}
 		}

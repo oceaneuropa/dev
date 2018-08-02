@@ -6,8 +6,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.orbit.component.api.tier1.account.UserAccounts;
-import org.orbit.component.connector.tier1.account.UserRegistryImpl;
+import org.orbit.component.api.tier1.account.UserAccountClient;
+import org.orbit.component.connector.tier1.account.UserAccountClientImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
@@ -23,7 +23,7 @@ public class UserRegistryManager implements ManagedServiceFactory {
 	public static final String MANAGED_SERVICE_FACTORY_PID = "component.userregistry.manager"; //$NON-NLS-1$
 
 	protected String name;
-	protected Map<String, UserAccounts> pidToUserRegistryMap = new HashMap<String, UserAccounts>();
+	protected Map<String, UserAccountClient> pidToUserRegistryMap = new HashMap<String, UserAccountClient>();
 	protected Map<String, ServiceRegistration<?>> pidToUserRegistryRegistrationMap = new HashMap<String, ServiceRegistration<?>>();
 	protected BundleContext bundleContext;
 	protected ServiceRegistration<?> factoryRegistration;
@@ -83,10 +83,10 @@ public class UserRegistryManager implements ManagedServiceFactory {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void updated(String pid, Dictionary<String, ?> dictionary) throws ConfigurationException {
-		UserAccounts userRegistry = this.pidToUserRegistryMap.get(pid);
+		UserAccountClient userRegistry = this.pidToUserRegistryMap.get(pid);
 		if (userRegistry == null) {
 			// Create new UserRegistry instance
-			userRegistry = new UserRegistryImpl(null, (Map<String, Object>) dictionary);
+			userRegistry = new UserAccountClientImpl(null, (Map<String, Object>) dictionary);
 			this.pidToUserRegistryMap.put(pid, userRegistry);
 
 			registerUserRegistry(pid, userRegistry, dictionary);
@@ -111,8 +111,8 @@ public class UserRegistryManager implements ManagedServiceFactory {
 	 * @param userRegistry
 	 * @param dictionary
 	 */
-	protected void registerUserRegistry(String pid, UserAccounts userRegistry, Dictionary<String, ?> dictionary) {
-		ServiceRegistration<?> registration = this.bundleContext.registerService(UserAccounts.class.getName(), userRegistry, dictionary);
+	protected void registerUserRegistry(String pid, UserAccountClient userRegistry, Dictionary<String, ?> dictionary) {
+		ServiceRegistration<?> registration = this.bundleContext.registerService(UserAccountClient.class.getName(), userRegistry, dictionary);
 		this.pidToUserRegistryRegistrationMap.put(pid, registration);
 	}
 
@@ -127,7 +127,7 @@ public class UserRegistryManager implements ManagedServiceFactory {
 			registration.unregister();
 		}
 
-		UserAccounts userRegistry = this.pidToUserRegistryMap.get(pid);
+		UserAccountClient userRegistry = this.pidToUserRegistryMap.get(pid);
 		if (userRegistry != null) {
 			// dispose the userRegistry, if it can be disposed
 		}

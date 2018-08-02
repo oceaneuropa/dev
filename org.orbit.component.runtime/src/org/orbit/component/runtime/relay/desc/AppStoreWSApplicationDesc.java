@@ -19,13 +19,21 @@ public class AppStoreWSApplicationDesc extends WSApplicationDesc {
 		WSResourceDesc appsWSResource = new WSResourceDesc(this, "/apps");
 		new WSMethodDesc(appsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");
 		new WSMethodDesc(appsWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "query");
-		new WSMethodDesc(appsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{appId}/{appVersion}");
-		new WSMethodDesc(appsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{appId}/{appVersion}/exists");
 		new WSMethodDesc(appsWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "");
 		new WSMethodDesc(appsWSResource, WSMethodDesc.PUT, WSMethodDesc.JSON, "");
-		new WSMethodDesc(appsWSResource, WSMethodDesc.DELETE, WSMethodDesc.JSON, "{appId}/{appVersion}");
-		new WSMethodDesc(appsWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "{appId}/{appVersion}/content");
-		new WSMethodDesc(appsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{appId}/{appVersion}/content");
+		new WSMethodDesc(appsWSResource, WSMethodDesc.DELETE, WSMethodDesc.JSON, "");
+
+		WSResourceDesc appWSResource = new WSResourceDesc(this, "/app");
+		new WSMethodDesc(appWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");
+		new WSMethodDesc(appWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "/exists");
+		new WSMethodDesc(appWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "{appId}/{appVersion}/content");
+		new WSMethodDesc(appWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "/content");
 	}
 
 }
+
+// new WSMethodDesc(appsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{appId}/{appVersion}");
+// new WSMethodDesc(appsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{appId}/{appVersion}/exists");
+// new WSMethodDesc(appsWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "{appId}/{appVersion}/content");
+// new WSMethodDesc(appsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{appId}/{appVersion}/content");
+// new WSMethodDesc(appsWSResource, WSMethodDesc.DELETE, WSMethodDesc.JSON, "{appId}/{appVersion}");

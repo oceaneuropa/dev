@@ -1,6 +1,6 @@
 package other.orbit.component.api.tier1.auth;
 
-import org.orbit.component.api.tier1.auth.Auth;
+import org.orbit.component.api.tier1.auth.AuthClient;
 import org.origin.common.rest.client.ServiceConnector;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -16,7 +16,7 @@ public class AuthConnectorAdapterV0 {
 
 	protected static Logger LOG = LoggerFactory.getLogger(AuthConnectorAdapterV0.class);
 
-	protected ServiceTracker<ServiceConnector<Auth>, ServiceConnector<Auth>> serviceTracker;
+	protected ServiceTracker<ServiceConnector<AuthClient>, ServiceConnector<AuthClient>> serviceTracker;
 	protected String connectorId;
 
 	public AuthConnectorAdapterV0() {
@@ -35,22 +35,22 @@ public class AuthConnectorAdapterV0 {
 			e.printStackTrace();
 		}
 
-		this.serviceTracker = new ServiceTracker<ServiceConnector<Auth>, ServiceConnector<Auth>>(bundleContext, filter, new ServiceTrackerCustomizer<ServiceConnector<Auth>, ServiceConnector<Auth>>() {
+		this.serviceTracker = new ServiceTracker<ServiceConnector<AuthClient>, ServiceConnector<AuthClient>>(bundleContext, filter, new ServiceTrackerCustomizer<ServiceConnector<AuthClient>, ServiceConnector<AuthClient>>() {
 			@Override
-			public ServiceConnector<Auth> addingService(ServiceReference<ServiceConnector<Auth>> reference) {
-				ServiceConnector<Auth> connector = bundleContext.getService(reference);
+			public ServiceConnector<AuthClient> addingService(ServiceReference<ServiceConnector<AuthClient>> reference) {
+				ServiceConnector<AuthClient> connector = bundleContext.getService(reference);
 				LOG.info("addingService() ServiceConnector is added: " + connector);
 				connectorAdded(connector);
 				return connector;
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<ServiceConnector<Auth>> reference, ServiceConnector<Auth> connector) {
+			public void modifiedService(ServiceReference<ServiceConnector<AuthClient>> reference, ServiceConnector<AuthClient> connector) {
 				LOG.info("removedService() ServiceConnector is modified: " + connector);
 			}
 
 			@Override
-			public void removedService(ServiceReference<ServiceConnector<Auth>> reference, ServiceConnector<Auth> connector) {
+			public void removedService(ServiceReference<ServiceConnector<AuthClient>> reference, ServiceConnector<AuthClient> connector) {
 				LOG.info("removedService() ServiceConnector is removed: " + connector);
 				connectorRemoved(connector);
 			}
@@ -69,11 +69,11 @@ public class AuthConnectorAdapterV0 {
 		}
 	}
 
-	public void connectorAdded(ServiceConnector<Auth> connector) {
+	public void connectorAdded(ServiceConnector<AuthClient> connector) {
 
 	}
 
-	public void connectorRemoved(ServiceConnector<Auth> connector) {
+	public void connectorRemoved(ServiceConnector<AuthClient> connector) {
 
 	}
 

@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier3.domainmanagement.MachineConfig;
-import org.orbit.component.api.tier3.domainmanagement.PlatformConfig;
+import org.orbit.component.api.tier3.domain.MachineConfig;
+import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.PlatformConstants;
 import org.orbit.component.webconsole.WebConstants;

@@ -2,9 +2,9 @@ package org.orbit.component.cli;
 
 import java.util.List;
 
-import org.orbit.component.api.tier1.account.UserAccounts;
-import org.orbit.component.api.tier2.appstore.AppStore;
-import org.orbit.component.api.tier3.domainmanagement.DomainManagementClient;
+import org.orbit.component.api.tier1.account.UserAccountClient;
+import org.orbit.component.api.tier2.appstore.AppStoreClient;
+import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
 import org.origin.common.rest.client.ClientException;
@@ -39,8 +39,8 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public AppStore getAppStore(AppStoreConnectorV1 connector) throws ClientException {
-		AppStore appStore = connector.getService();
+	public AppStoreClient getAppStore(AppStoreConnectorV1 connector) throws ClientException {
+		AppStoreClient appStore = connector.getService();
 		if (appStore == null) {
 			System.err.println(getClass().getSimpleName() + ".getAppStore() appStore is not available.");
 			throw new ClientException(500, "appStore is not available.");
@@ -72,17 +72,17 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<LoadBalanceResource<UserAccounts>> getUserRegistryResources(UserRegistryConnectorV1 connector) throws ClientException {
+	public List<LoadBalanceResource<UserAccountClient>> getUserRegistryResources(UserRegistryConnectorV1 connector) throws ClientException {
 		if (connector == null) {
 			System.out.println("UserRegistryConnector is not available.");
 			throw new ClientException(500, "UserRegistryConnector is not available.");
 		}
-		LoadBalancer<UserAccounts> balancer = connector.getLoadBalancer();
+		LoadBalancer<UserAccountClient> balancer = connector.getLoadBalancer();
 		if (balancer == null) {
 			System.out.println("load balancer is not available.");
 			return null;
 		}
-		List<LoadBalanceResource<UserAccounts>> resources = balancer.getResources();
+		List<LoadBalanceResource<UserAccountClient>> resources = balancer.getResources();
 		if (resources == null) {
 			System.out.println("load balancer's resource is null.");
 			return null;
@@ -120,17 +120,17 @@ public class ServicesCommandHelper {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<LoadBalanceResource<AppStore>> getAppStoreResources(AppStoreConnectorV1 connector) throws ClientException {
+	public List<LoadBalanceResource<AppStoreClient>> getAppStoreResources(AppStoreConnectorV1 connector) throws ClientException {
 		if (connector == null) {
 			System.out.println("AppStoreConnector is not available.");
 			throw new ClientException(500, "AppStoreConnector is not available.");
 		}
-		LoadBalancer<AppStore> balancer = connector.getLoadBalancer();
+		LoadBalancer<AppStoreClient> balancer = connector.getLoadBalancer();
 		if (balancer == null) {
 			System.out.println("load balancer is not available.");
 			return null;
 		}
-		List<LoadBalanceResource<AppStore>> resources = balancer.getResources();
+		List<LoadBalanceResource<AppStoreClient>> resources = balancer.getResources();
 		if (resources == null) {
 			System.out.println("load balancer's resource is null.");
 			return null;

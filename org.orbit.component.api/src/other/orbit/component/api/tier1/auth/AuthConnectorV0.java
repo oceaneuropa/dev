@@ -2,15 +2,15 @@ package other.orbit.component.api.tier1.auth;
 
 import java.util.Map;
 
-import org.orbit.component.api.tier1.auth.Auth;
+import org.orbit.component.api.tier1.auth.AuthClient;
 import org.origin.common.rest.client.ClientException;
 
 public interface AuthConnectorV0 {
 
-	Auth getService(Map<String, Object> properties) throws ClientException;
+	AuthClient getService(Map<String, Object> properties) throws ClientException;
 
-	boolean update(Auth auth, Map<String, Object> properties) throws ClientException;
+	boolean update(AuthClient auth, Map<String, Object> properties) throws ClientException;
 
-	boolean close(Auth auth) throws ClientException;
+	boolean close(AuthClient auth) throws ClientException;
 
 }
