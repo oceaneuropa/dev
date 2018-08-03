@@ -18,6 +18,8 @@ public interface AppManifest {
 
 	String getFileName();
 
+	long getFileLength();
+
 	String getDescription();
 
 	Date getDateCreated();

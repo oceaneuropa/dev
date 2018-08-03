@@ -32,22 +32,20 @@
 		<table class="main_table01">
 			<form id="main_list" method="post" action="<%=contextRoot + "/appstore/appdelete"%>">
 			<tr>
-				<th class="th1" width="15">
+				<th class="th1" width="12">
 					<input type="checkbox" onClick="toggleSelection(this, 'appId_appVersion')" />
 				</th>
-				<th class="th1" width="50">Type</th>
+				<th class="th1" width="100">Type</th>
 				<th class="th1" width="150">Id/Version</th>
 				<th class="th1" width="150">Name</th>
-				<th class="th1" width="150">File Name</th>
-				<th class="th1" width="100">Date Created</th>
-				<th class="th1" width="100">Date Modified</th>
-				<th class="th1" width="150">Actions</th>
+				<th class="th1" width="200">File Name</th>
+				<th class="th1" width="120">Actions</th>
 			</tr>
 			<%
 				if (appManifests.length == 0) {
 			%>
 			<tr>
-				<td colspan="8">(n/a)</td>
+				<td colspan="6">(n/a)</td>
 			</tr>
 			<%
 				} else {
@@ -58,9 +56,10 @@
 						String type = appManifest.getType();
 						String name = appManifest.getName();
 						String fileName = appManifest.getFileName();
+						long fileLength = appManifest.getFileLength();
 						String desc = appManifest.getDescription();
-						Date dateCreated = appManifest.getDateCreated();
-						Date dateModified = appManifest.getDateModified();
+						// Date dateCreated = appManifest.getDateCreated();
+						// Date dateModified = appManifest.getDateModified();
 
 						appId = StringUtil.get(appId);
 						appVersion = StringUtil.get(appVersion);
@@ -69,22 +68,30 @@
 						fileName = StringUtil.get(fileName);
 						desc = StringUtil.get(desc);
 
-						String dateCreatedStr = (dateCreated != null) ? DateUtil.toString(dateCreated, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
-						String dateModifiedStr = (dateModified != null) ? DateUtil.toString(dateModified, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
+						// String dateCreatedStr = (dateCreated != null) ? DateUtil.toString(dateCreated, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
+						// String dateModifiedStr = (dateModified != null) ? DateUtil.toString(dateModified, DateUtil.SIMPLE_DATE_FORMAT2) : "(n/a)";
 			%>
 			<tr>
 				<td class="td1">
 					<input type="checkbox" name="appId_appVersion" value="<%=appId + "|" + appVersion%>">
 				</td>
-				<td class="td2"><%=type%></td>
+				<td class="td1"><%=type%></td>
 				<td class="td2"><%=appId%>_<%=appVersion%></td>
 				<td class="td2"><%=name%></td>
-				<td class="td2"><%=fileName%></td>
-				<td class="td1"><%=dateCreatedStr%></td>
-				<td class="td1"><%=dateModifiedStr%></td>
+				<td class="td2">
+					<% if (fileLength > 0) { %>
+						<a class="action01" href="<%=contextRoot%>/appstore/appdownload?appId=<%=appId%>&appVersion=<%=appVersion%>" target="_blank"><%=fileName%></a>
+					<% } else { %>
+						<%=fileName%>
+					<% } %>
+				</td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeApp('<%=id%>', '<%=appId%>', '<%=appVersion%>', '<%=type%>', '<%=name%>', '<%=fileName%>', '<%=desc%>')">Change</a> | 
-					<a class="action01" href="<%=contextRoot%>/appstore/appproperties?appId=<%=appId%>&appVersion=<%=appVersion%>">Properties</a>
+					<a class="action01" href="<%=contextRoot%>/appstore/appproperties?appId=<%=appId%>&appVersion=<%=appVersion%>">Properties</a> |
+					<a class="action01" href="javascript:uploadApp('<%=id%>', '<%=appId%>', '<%=appVersion%>')">Upload</a>
+					<!-- 
+					<a class="action01" href="<%=contextRoot%>/appstore/appdownload?appId=<%=appId%>&appVersion=<%=appVersion%>" target="_blank">Download</a>
+					 -->
 				</td>
 			</tr>
 			<%
@@ -172,6 +179,26 @@
 		<div class="dialog_button_div01">
 			<a class="button02" href="javascript:document.getElementById('update_form').submit();">OK</a>
 			<a id="cancelChangeApp" class="button02b" href="javascript:document.getElementById('update_form').reset();">Cancel</a>
+		</div>
+		</form>
+	</dialog>
+
+	<dialog id="uploadAppDialog">
+	<div class="dialog_title_div01">Upload App File</div>
+		<form id="upload_form" method="post" action="<%=contextRoot + "/appstore/appupload"%>" enctype="multipart/form-data">
+		<input id="upload_id" type="hidden" name="id">
+		<input id="upload_app_id" type="hidden" name="appId">
+		<input id="upload_app_version" type="hidden" name="appVersion">
+		<div class="dialog_main_div01">
+			<table class="dialog_table01">
+				<tr>
+					<input type="file" name="uploadFile" />
+				</tr>
+			</table>
+		</div>
+		<div class="dialog_button_div01">
+			<a class="button02" href="javascript:document.getElementById('upload_form').submit();">OK</a>
+			<a id="cancelUploadApp" class="button02b" href="javascript:document.getElementById('upload_form').reset();">Cancel</a>
 		</div>
 		</form>
 	</dialog>

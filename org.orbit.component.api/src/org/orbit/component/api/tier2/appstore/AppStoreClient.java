@@ -92,13 +92,14 @@ public interface AppStoreClient extends IAdaptable {
 	/**
 	 * Upload app archive.
 	 * 
+	 * @param id
 	 * @param appId
 	 * @param appVersion
 	 * @param filePath
 	 * @return
 	 * @throws ClientException
 	 */
-	boolean uploadAppArchive(String appId, String appVersion, Path filePath) throws ClientException;
+	boolean uploadAppArchive(int id, String appId, String appVersion, Path filePath) throws ClientException;
 
 	/**
 	 * Download app archive.

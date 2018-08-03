@@ -13,6 +13,7 @@ public class AppManifestImpl implements AppManifest {
 	protected String name;
 	protected String manifest;
 	protected String fileName;
+	protected long fileLength;
 	protected String description;
 	protected Date dateCreated;
 	protected Date dateModified;
@@ -29,11 +30,12 @@ public class AppManifestImpl implements AppManifest {
 	 * @param name
 	 * @param manifest
 	 * @param fileName
+	 * @param fileLength
 	 * @param description
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public AppManifestImpl(int id, String appId, String appVersion, String type, String name, String manifest, String fileName, String description, Date dateCreated, Date dateModified) {
+	public AppManifestImpl(int id, String appId, String appVersion, String type, String name, String manifest, String fileName, long fileLength, String description, Date dateCreated, Date dateModified) {
 		this.id = id;
 		this.appId = appId;
 		this.appVersion = appVersion;
@@ -41,6 +43,7 @@ public class AppManifestImpl implements AppManifest {
 		this.name = name;
 		this.manifest = manifest;
 		this.fileName = fileName;
+		this.fileLength = fileLength;
 		this.description = description;
 		this.dateCreated = dateCreated;
 		this.dateModified = dateModified;
@@ -107,6 +110,15 @@ public class AppManifestImpl implements AppManifest {
 
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
+	}
+
+	@Override
+	public long getFileLength() {
+		return this.fileLength;
+	}
+
+	public void setFileLength(long fileLength) {
+		this.fileLength = fileLength;
 	}
 
 	@Override

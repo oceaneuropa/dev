@@ -1,5 +1,7 @@
 package org.orbit.component.runtime.relay.desc;
 
+import javax.ws.rs.core.MediaType;
+
 import org.origin.common.rest.server.WSApplicationDesc;
 import org.origin.common.rest.server.WSMethodDesc;
 import org.origin.common.rest.server.WSResourceDesc;
@@ -26,8 +28,9 @@ public class AppStoreWSApplicationDesc extends WSApplicationDesc {
 		WSResourceDesc appWSResource = new WSResourceDesc(this, "/app");
 		new WSMethodDesc(appWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");
 		new WSMethodDesc(appWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "/exists");
-		new WSMethodDesc(appWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "{appId}/{appVersion}/content");
 		new WSMethodDesc(appWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "/content");
+		new WSMethodDesc(appWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "/content", MediaType.MULTIPART_FORM_DATA_TYPE);
+		// new WSMethodDesc(appWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "{appId}/{appVersion}/content");
 	}
 
 }

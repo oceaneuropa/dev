@@ -336,6 +336,7 @@ public class ModelConverter {
 			dto.setName(app.getName());
 			dto.setAppManifest(app.getAppManifest());
 			dto.setAppFileName(app.getAppFileName());
+			dto.setAppFileLength(app.getAppFileLength());
 			dto.setDescription(app.getDescription());
 			dto.setDateCreated(app.getDateCreated());
 			dto.setDateModified(app.getDateModified());

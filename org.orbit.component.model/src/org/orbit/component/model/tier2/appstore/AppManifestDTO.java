@@ -25,6 +25,8 @@ public class AppManifestDTO {
 	@XmlElement
 	protected String appFileName;
 	@XmlElement
+	protected long appFileLength;
+	@XmlElement
 	protected String description;
 	@XmlElement
 	protected long dateCreated;
@@ -95,6 +97,15 @@ public class AppManifestDTO {
 
 	public void setAppFileName(String fileName) {
 		this.appFileName = fileName;
+	}
+
+	@XmlElement
+	public long getAppFileLength() {
+		return this.appFileLength;
+	}
+
+	public void setAppFileLength(long appFileLength) {
+		this.appFileLength = appFileLength;
 	}
 
 	@XmlElement

@@ -33,6 +33,15 @@ public interface AppStoreService extends WebServiceAware {
 	/**
 	 * Get an app.
 	 * 
+	 * @param id
+	 * @return
+	 * @throws ServerException
+	 */
+	AppManifest getApp(int id) throws ServerException;
+
+	/**
+	 * Get an app.
+	 * 
 	 * @param appId
 	 * @param appVersion
 	 * @return
@@ -86,7 +95,7 @@ public interface AppStoreService extends WebServiceAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	byte[] downloadApp(String appId, String appVersion) throws ServerException;
+	byte[] getContent(String appId, String appVersion) throws ServerException;
 
 	/**
 	 * Download app input stream.
@@ -96,7 +105,7 @@ public interface AppStoreService extends WebServiceAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	InputStream downloadAppInputStream(String appId, String appVersion) throws ServerException;
+	InputStream getContentInputStream(String appId, String appVersion) throws ServerException;
 
 	/**
 	 * Upload app.
@@ -107,6 +116,6 @@ public interface AppStoreService extends WebServiceAware {
 	 * @param fileInputStream
 	 * @throws ServerException
 	 */
-	boolean uploadApp(String appId, String appVersion, String fileName, InputStream fileInputStream) throws ServerException;
+	boolean setContent(String appId, String appVersion, String fileName, InputStream fileInputStream) throws ServerException;
 
 }

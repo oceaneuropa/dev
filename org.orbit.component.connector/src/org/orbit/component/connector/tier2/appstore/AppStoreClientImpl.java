@@ -173,7 +173,7 @@ public class AppStoreClientImpl implements AppStoreClient {
 		AppManifestDTO newAppDTO = this.client.addApp(ModelConverter.AppStore.toDTO(createAppRequest));
 
 		if (newAppDTO != null && filePath != null) {
-			return uploadAppArchive(newAppDTO.getAppId(), newAppDTO.getAppVersion(), filePath);
+			return uploadAppArchive(-1, newAppDTO.getAppId(), newAppDTO.getAppVersion(), filePath);
 		}
 		return false;
 	}
@@ -206,8 +206,8 @@ public class AppStoreClientImpl implements AppStoreClient {
 	}
 
 	@Override
-	public boolean uploadAppArchive(String appId, String appVersion, Path filePath) throws ClientException {
-		StatusDTO status = this.client.uploadAppArchive(appId, appVersion, filePath);
+	public boolean uploadAppArchive(int id, String appId, String appVersion, Path filePath) throws ClientException {
+		StatusDTO status = this.client.uploadAppArchive(id, appId, appVersion, filePath);
 		if (status != null && status.success()) {
 			return true;
 		}

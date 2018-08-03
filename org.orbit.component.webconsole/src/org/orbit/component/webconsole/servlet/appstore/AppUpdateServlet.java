@@ -21,6 +21,9 @@ public class AppUpdateServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// ---------------------------------------------------------------
+		// Get parameters
+		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
 		String message = "";
@@ -40,11 +43,13 @@ public class AppUpdateServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		if (id == -1) {
-			message = "'id' parameter is valid.";
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is valid.");
 		}
 
+		// ---------------------------------------------------------------
+		// Handle data
+		// ---------------------------------------------------------------
 		boolean succeed = false;
-
 		if (!appId.isEmpty()) {
 			try {
 				succeed = OrbitComponentHelper.INSTANCE.updateApp(appStoreUrl, id, appId, appVersion, type, name, desc, fileName);
@@ -54,11 +59,13 @@ public class AppUpdateServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-
 		if (succeed) {
-			message = "App is updated successfully.";
+			message = MessageHelper.INSTANCE.add(message, "App is updated successfully.");
 		}
 
+		// ---------------------------------------------------------------
+		// Render data
+		// ---------------------------------------------------------------
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 

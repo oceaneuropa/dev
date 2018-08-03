@@ -9,6 +9,7 @@ public class AppManifest {
 	protected String name;
 	protected String appManifest;
 	protected String appFileName;
+	protected long appFileLength;
 	protected String description;
 	protected long dateCreated;
 	protected long dateModified;
@@ -25,11 +26,12 @@ public class AppManifest {
 	 * @param type
 	 * @param appManifest
 	 * @param appFileName
+	 * @param appFileLength
 	 * @param description
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public AppManifest(int id, String appId, String appVersion, String name, String type, String appManifest, String appFileName, String description, long dateCreated, long dateModified) {
+	public AppManifest(int id, String appId, String appVersion, String name, String type, String appManifest, String appFileName, long appFileLength, String description, long dateCreated, long dateModified) {
 		assert (appId != null) : "appId is null";
 		assert (appVersion != null) : "appVersion is null";
 
@@ -40,6 +42,7 @@ public class AppManifest {
 		this.name = name;
 		this.appManifest = appManifest;
 		this.appFileName = appFileName;
+		this.appFileLength = appFileLength;
 		this.description = description;
 		this.dateCreated = dateCreated;
 		this.dateModified = dateModified;
@@ -99,6 +102,14 @@ public class AppManifest {
 
 	public void setAppFileName(String fileName) {
 		this.appFileName = fileName;
+	}
+
+	public long getAppFileLength() {
+		return this.appFileLength;
+	}
+
+	public void setAppFileLength(long appFileLength) {
+		this.appFileLength = appFileLength;
 	}
 
 	public String getDescription() {

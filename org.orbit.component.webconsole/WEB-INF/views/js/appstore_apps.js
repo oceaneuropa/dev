@@ -18,12 +18,19 @@ function changeApp(id, appId, appVersion, type, name, fileName, desc) {
 	document.getElementById("app_type").setAttribute('value', type);
 	document.getElementById("app_name").setAttribute('value', name);
 	document.getElementById("app_fileName").setAttribute('value', fileName);
-
-	// document.getElementById("app_desc").setAttribute('value', desc);
-	document.getElementById("app_desc").value = desc; // for setting value to textarea
+	document.getElementById("app_desc").value = desc; // for textarea
 
 	var changeAppDialog = document.getElementById('changeAppDialog');
 	changeAppDialog.showModal();
+}
+
+function uploadApp(id, appId, appVersion) {
+	document.getElementById("upload_id").setAttribute('value', id);
+	document.getElementById("upload_app_id").setAttribute('value', appId);
+	document.getElementById("upload_app_version").setAttribute('value', appVersion);
+
+	var uploadAppDialog = document.getElementById('uploadAppDialog');
+	uploadAppDialog.showModal();
 }
 
 function deleteApp(actionURL, id, version) {
@@ -95,6 +102,12 @@ function deleteApps() {
 	var cancelChangeAppButton = document.getElementById('cancelChangeApp');
 	cancelChangeAppButton.addEventListener('click', function() {
 		changeAppDialog.close();
+	});
+
+	var uploadAppDialog = document.getElementById('uploadAppDialog');
+	var cancelUploadAppButton = document.getElementById('cancelUploadApp');
+	cancelUploadAppButton.addEventListener('click', function() {
+		uploadAppDialog.close();
 	});
 
 	var deleteAppDialog = document.getElementById('deleteAppDialog');

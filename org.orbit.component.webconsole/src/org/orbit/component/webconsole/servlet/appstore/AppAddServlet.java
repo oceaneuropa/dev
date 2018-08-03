@@ -21,39 +21,49 @@ public class AppAddServlet extends HttpServlet {
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// ---------------------------------------------------------------
+		// Get parameters
+		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
 		String message = "";
 
-		String id = ServletUtil.getParameter(request, "id", "");
-		String version = ServletUtil.getParameter(request, "version", "");
+		String appId = ServletUtil.getParameter(request, "id", "");
+		String appVersion = ServletUtil.getParameter(request, "version", "");
 		String type = ServletUtil.getParameter(request, "type", "");
 		String name = ServletUtil.getParameter(request, "name", "");
 		String desc = ServletUtil.getParameter(request, "desc", "");
 		String fileName = ServletUtil.getParameter(request, "fileName", "");
 
-		if (id.isEmpty()) {
+		if (appId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
-		if (version.isEmpty()) {
+		if (appVersion.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'version' parameter is not set.");
 		}
 
+		// ---------------------------------------------------------------
+		// Handle data
+		// ---------------------------------------------------------------
 		boolean succeed = false;
-		if (!id.isEmpty()) {
+		if (!appId.isEmpty()) {
 			try {
-				succeed = OrbitComponentHelper.INSTANCE.addApp(appStoreUrl, id, version, type, name, desc, fileName);
+				succeed = OrbitComponentHelper.INSTANCE.addApp(appStoreUrl, appId, appVersion, type, name, desc, fileName);
 
 			} catch (ClientException e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
 			}
 		}
-
 		if (succeed) {
-			message = "App is added successfully.";
+			message = MessageHelper.INSTANCE.add(message, "App is added successfully!");
+		} else {
+			message = MessageHelper.INSTANCE.add(message, "App is not added.");
 		}
 
+		// ---------------------------------------------------------------
+		// Render data
+		// ---------------------------------------------------------------
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 

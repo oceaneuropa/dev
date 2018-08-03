@@ -1,5 +1,9 @@
 package org.orbit.component.api.util;
 
+import java.io.File;
+import java.io.OutputStream;
+import java.util.List;
+
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
@@ -43,6 +47,25 @@ public class OrbitComponentHelper {
 			appManifests = EMPTY_APPS;
 		}
 		return appManifests;
+	}
+
+	/**
+	 * 
+	 * @param appStoreUrl
+	 * @param appId
+	 * @param appVersion
+	 * @return
+	 * @throws ClientException
+	 */
+	public AppManifest getApp(String appStoreUrl, String appId, String appVersion) throws ClientException {
+		AppManifest appManifest = null;
+		if (appStoreUrl != null) {
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			if (appStore != null) {
+				appManifest = appStore.getApp(appId, appVersion);
+			}
+		}
+		return appManifest;
 	}
 
 	/**
@@ -143,6 +166,47 @@ public class OrbitComponentHelper {
 			}
 		}
 		return machineConfigs;
+	}
+
+	/**
+	 * 
+	 * @param appStoreUrl
+	 * @param id
+	 * @param appId
+	 * @param appVersion
+	 * @param files
+	 * @return
+	 * @throws ClientException
+	 */
+	public boolean uploadAppFile(String appStoreUrl, int id, String appId, String appVersion, List<File> files) throws ClientException {
+		boolean succeed = false;
+		if (appStoreUrl != null) {
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			if (appStore != null) {
+				File file = (files != null && !files.isEmpty()) ? files.get(0) : null;
+				if (file != null && file.exists()) {
+					succeed = appStore.uploadAppArchive(id, appId, appVersion, file.toPath());
+				}
+			}
+		}
+		return succeed;
+	}
+
+	/**
+	 * 
+	 * @param appStoreUrl
+	 * @param appId
+	 * @param appVersion
+	 * @param output
+	 * @throws ClientException
+	 */
+	public void downloadAppFile(String appStoreUrl, String appId, String appVersion, OutputStream output) throws ClientException {
+		if (appStoreUrl != null) {
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			if (appStore != null) {
+				appStore.downloadAppArchive(appId, appVersion, output);
+			}
+		}
 	}
 
 	/**

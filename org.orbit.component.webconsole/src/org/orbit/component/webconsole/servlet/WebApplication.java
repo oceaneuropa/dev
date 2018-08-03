@@ -7,8 +7,11 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.appstore.AppAddServlet;
 import org.orbit.component.webconsole.servlet.appstore.AppDeleteServlet;
+import org.orbit.component.webconsole.servlet.appstore.AppDownloadServlet;
+import org.orbit.component.webconsole.servlet.appstore.AppUploadServlet;
 import org.orbit.component.webconsole.servlet.appstore.AppListServlet;
 import org.orbit.component.webconsole.servlet.appstore.AppUpdateServlet;
+import org.orbit.component.webconsole.servlet.appstore.FileUploadServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineAddServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineListServlet;
@@ -127,7 +130,11 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/appstore/apps", new AppListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/appstore/appadd", new AppAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/appstore/appupdate", new AppUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/appstore/appupload", new AppUploadServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/appstore/appdownload", new AppDownloadServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/appstore/appdelete", new AppDeleteServlet(), dicts));
+
+		addServlet(new ServletMetadataImpl("/upload", new FileUploadServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

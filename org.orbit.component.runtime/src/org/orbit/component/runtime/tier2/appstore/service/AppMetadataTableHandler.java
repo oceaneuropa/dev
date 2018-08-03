@@ -68,6 +68,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    name varchar(500),");
 			sb.append("    appManifest varchar(2000),");
 			sb.append("    appFileName varchar(500),");
+			sb.append("    appFileLength bigint DEFAULT 0,");
 			sb.append("    appContent mediumblob,");
 			sb.append("    description varchar(2000),");
 			sb.append("    dateCreated bigint DEFAULT 0,");
@@ -84,6 +85,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    name varchar(500),");
 			sb.append("    appManifest varchar(2000),");
 			sb.append("    appFileName varchar(500),");
+			sb.append("    appFileLength bigint DEFAULT 0,");
 			sb.append("    appContent bytea,");
 			sb.append("    description varchar(2000),");
 			sb.append("    dateCreated bigint DEFAULT 0,");
@@ -110,11 +112,12 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 		String type = rs.getString("type");
 		String appManifest = rs.getString("appManifest");
 		String appFileName = rs.getString("appFileName");
+		long appFileLength = rs.getLong("appFileLength");
 		String description = rs.getString("description");
 		long dateCreated = rs.getLong("dateCreated");
 		long dateModified = rs.getLong("dateModified");
 
-		return new AppManifest(id, appId, appVersion, name, type, appManifest, appFileName, description, dateCreated, dateModified);
+		return new AppManifest(id, appId, appVersion, name, type, appManifest, appFileName, appFileLength, description, dateCreated, dateModified);
 	}
 
 	/**
@@ -198,7 +201,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean appExists(Connection conn, String appId, String appVersion) throws SQLException {
+	public boolean exists(Connection conn, String appId, String appVersion) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE appId=? AND appVersion=?";
 		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
 			@Override
@@ -496,6 +499,22 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	}
 
 	/**
+	 * Update file length.
+	 * 
+	 * @param conn
+	 * @param appId
+	 * @param appVersion
+	 * @param fileLength
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateFileLength(Connection conn, String appId, String appVersion, long fileLength) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET appFileLength=?, dateModified=? WHERE appId=? AND appVersion=?";
+		long dateModified = new Date().getTime();
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { fileLength, dateModified, appId, appVersion }, 1);
+	}
+
+	/**
 	 * Update description.
 	 * 
 	 * @param conn
@@ -526,6 +545,19 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	}
 
 	/**
+	 * Delete an app.
+	 * 
+	 * @param conn
+	 * @param appId
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean delete(Connection conn, String appId, String appVersion) throws SQLException {
+		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE appId=? AND appVersion=?";
+		return DatabaseUtil.update(conn, deleteSQL, new Object[] { appId, appVersion }, 1);
+	}
+
+	/**
 	 * Get app content.
 	 * 
 	 * @param conn
@@ -533,8 +565,12 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @param appVersion
 	 * @return
 	 * @throws SQLException
+	 * @see FileContentResource
+	 * @see DatabaseFileSystem
+	 * @see FsFileContentTableHandler
+	 * @see FsTableUtil
 	 */
-	public byte[] getAppContent(Connection conn, String appId, String appVersion) throws SQLException {
+	public byte[] getContent(Connection conn, String appId, String appVersion) throws SQLException {
 		byte[] bytes = null;
 
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(this.database)) {
@@ -551,7 +587,6 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 				if (rs.next()) {
 					inputStream = rs.getBinaryStream("appContent");
 				}
-
 				if (inputStream != null) {
 					try {
 						bytes = IOUtil.toByteArray(inputStream);
@@ -602,8 +637,12 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @param appVersion
 	 * @return
 	 * @throws SQLException
+	 * @see FileContentResource
+	 * @see DatabaseFileSystem
+	 * @see FsFileContentTableHandler
+	 * @see FsTableUtil
 	 */
-	public InputStream getAppContentInputStream(Connection conn, String appId, String appVersion) throws SQLException {
+	public InputStream getContentInputStream(Connection conn, String appId, String appVersion) throws SQLException {
 		InputStream inputStream = null;
 
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(this.database)) {
@@ -661,21 +700,36 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 	 * @param inputStream
 	 * @return
 	 * @throws SQLException
+	 * @see FsFileContentTableHandler
+	 * @see FsTableUtil
 	 */
-	public boolean setAppContent(Connection conn, String appId, String appVersion, InputStream inputStream) throws SQLException {
+	public long setContent(Connection conn, String appId, String appVersion, InputStream inputStream) throws SQLException {
+		byte[] bytes = null;
+		ByteArrayInputStream bais = null;
+		try {
+			bytes = IOUtil.toByteArray(inputStream);
+			bais = new ByteArrayInputStream(bytes);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		if (bytes == null) {
+			bytes = new byte[0];
+		}
+		int contentLength = bytes.length;
+
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(this.database)) {
 			PreparedStatement pstmt = null;
 			try {
 				String updateSQL = "UPDATE " + getTableName() + " SET appContent=? WHERE appId=? AND appVersion=?";
 
 				pstmt = conn.prepareStatement(updateSQL);
-				pstmt.setBinaryStream(1, inputStream);
+				pstmt.setBinaryStream(1, bais, contentLength);
 				pstmt.setString(2, appId);
 				pstmt.setString(3, appVersion);
 
 				int updatedRowCount = pstmt.executeUpdate();
 				if (updatedRowCount == 1) {
-					return true;
+					return contentLength;
 				}
 			} finally {
 				DatabaseUtil.closeQuietly(pstmt, true);
@@ -684,38 +738,24 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(this.database)) {
 			PreparedStatement pstmt = null;
 			try {
-				String updateSQL = "UPDATE " + getTableName() + " SET appContent=? WHERE appId=?";
-
+				String updateSQL = "UPDATE " + getTableName() + " SET appContent=? WHERE appId=? AND appVersion=?";
 				pstmt = conn.prepareStatement(updateSQL);
-				try {
-					pstmt.setBinaryStream(1, inputStream, inputStream.available());
-				} catch (IOException e) {
-					e.printStackTrace();
-				} // need to specify length of the input stream.
+
+				pstmt.setBinaryStream(1, bais, contentLength); // need to specify length of the input stream.
 				pstmt.setString(2, appId);
+				pstmt.setString(3, appVersion);
 
 				int updatedRowCount = pstmt.executeUpdate();
 				if (updatedRowCount == 1) {
-					return true;
+					return contentLength;
 				}
 			} finally {
 				DatabaseUtil.closeQuietly(pstmt, true);
 			}
 		}
-		return false;
-	}
 
-	/**
-	 * Delete an app.
-	 * 
-	 * @param conn
-	 * @param appId
-	 * @return
-	 * @throws SQLException
-	 */
-	public boolean delete(Connection conn, String appId, String appVersion) throws SQLException {
-		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE appId=? AND appVersion=?";
-		return DatabaseUtil.update(conn, deleteSQL, new Object[] { appId, appVersion }, 1);
+		IOUtil.closeQuietly(bais, true);
+		return 0;
 	}
 
 }

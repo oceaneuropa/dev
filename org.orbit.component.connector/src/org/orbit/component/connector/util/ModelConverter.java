@@ -360,6 +360,7 @@ public class ModelConverter {
 			app.setName(appDTO.getName());
 			app.setManifest(appDTO.getAppManifest());
 			app.setFileName(appDTO.getAppFileName());
+			app.setFileLength(appDTO.getAppFileLength());
 			app.setDescription(appDTO.getDescription());
 			app.setDateCreated(new Date(appDTO.getDateCreated()));
 			app.setDateModified(new Date(appDTO.getDateModified()));

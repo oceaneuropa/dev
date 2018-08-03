@@ -280,8 +280,8 @@ public class FsFileContentTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Get the input stream of a file content record with specified file content id. Client which calls this method is responsible for closing the
-	 * InputStream object.
+	 * Get the input stream of a file content record with specified file content id. Client which calls this method is responsible for closing the InputStream
+	 * object.
 	 * 
 	 * @param conn
 	 * @param fileContentId

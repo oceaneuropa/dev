@@ -274,7 +274,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @throws ClientException
 	 * @throws IOException
 	 */
-	public StatusDTO uploadAppArchive(String appId, String appVersion, Path filePath) throws ClientException {
+	public StatusDTO uploadAppArchive0(int id, String appId, String appVersion, Path filePath) throws ClientException {
 		File file = filePath.toFile();
 		if (file == null || !file.exists()) {
 			throw new ClientException(401, "File doesn't exist.");
@@ -299,8 +299,65 @@ public class AppStoreWSClient extends AbstractWSClient {
 
 			WebTarget target = getRootPath().path("app").path(appId).path(appVersion).path("content");
 
-			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			// Builder builder = target.request(MediaType.APPLICATION_JSON);
+			Builder builder = target.request(MediaType.MULTIPART_FORM_DATA_TYPE);
 			Response response = updateHeaders(builder).post(Entity.entity(multipart, multipart.getMediaType()));
+			checkResponse(target, response);
+
+			StatusDTO status = response.readEntity(StatusDTO.class);
+			return status;
+
+		} catch (ClientException | UnsupportedEncodingException e) {
+			handleException(e);
+		}
+
+		return null;
+	}
+
+	/**
+	 * Upload an app file.
+	 * 
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/app/content?id={id}&appId={appId}&appVersion={appVersion} (FormData: InputStream and
+	 * FormDataContentDisposition)
+	 * 
+	 * @param appId
+	 * @param appVersion
+	 * @param filePath
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	public StatusDTO uploadAppArchive(int id, String appId, String appVersion, Path filePath) throws ClientException {
+		File file = filePath.toFile();
+		if (file == null || !file.exists()) {
+			throw new ClientException(401, "File doesn't exist.");
+		}
+		if (!file.isFile()) {
+			throw new ClientException(401, "File " + file.getAbsolutePath() + " is not a single file.");
+		}
+
+		try {
+			MultiPart multipart = new FormDataMultiPart();
+			{
+				FileDataBodyPart filePart = new FileDataBodyPart("file", file, MediaType.APPLICATION_OCTET_STREAM_TYPE);
+				{
+					FormDataContentDisposition.FormDataContentDispositionBuilder formBuilder = FormDataContentDisposition.name("file");
+					formBuilder.fileName(URLEncoder.encode(file.getName(), "UTF-8"));
+					formBuilder.size(file.length());
+					formBuilder.modificationDate(new Date(file.lastModified()));
+					filePart.setFormDataContentDisposition(formBuilder.build());
+				}
+				multipart.bodyPart(filePart);
+			}
+
+			WebTarget target = getRootPath().path("app").path("content");
+			target = target.queryParam("id", id);
+			target = target.queryParam("appId", appId);
+			target = target.queryParam("appVersion", appVersion);
+
+			Builder builder = target.request(MediaType.APPLICATION_JSON);
+			MediaType requestContentType = multipart.getMediaType(); // multipart/form-data
+			Response response = updateHeaders(builder).post(Entity.entity(multipart, requestContentType));
 			checkResponse(target, response);
 
 			StatusDTO status = response.readEntity(StatusDTO.class);

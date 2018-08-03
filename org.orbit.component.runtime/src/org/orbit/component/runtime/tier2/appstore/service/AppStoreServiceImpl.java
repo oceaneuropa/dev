@@ -239,7 +239,7 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return this.appTableHandler.appExists(conn, appId, appVersion);
+			return this.appTableHandler.exists(conn, appId, appVersion);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -247,6 +247,21 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return false;
+	}
+
+	@Override
+	public AppManifest getApp(int id) throws ServerException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return this.appTableHandler.getApp(conn, id);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return null;
 	}
 
 	@Override
@@ -325,11 +340,11 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 	}
 
 	@Override
-	public byte[] downloadApp(String appId, String appVersion) throws ServerException {
+	public byte[] getContent(String appId, String appVersion) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return this.appTableHandler.getAppContent(conn, appId, appVersion);
+			return this.appTableHandler.getContent(conn, appId, appVersion);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -340,11 +355,11 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 	}
 
 	@Override
-	public InputStream downloadAppInputStream(String appId, String appVersion) throws ServerException {
+	public InputStream getContentInputStream(String appId, String appVersion) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return this.appTableHandler.getAppContentInputStream(conn, appId, appVersion);
+			return this.appTableHandler.getContentInputStream(conn, appId, appVersion);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -355,15 +370,16 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 	}
 
 	@Override
-	public boolean uploadApp(String appId, String appVersion, String fileName, InputStream fileInputStream) throws ServerException {
+	public boolean setContent(String appId, String appVersion, String fileName, InputStream fileInputStream) throws ServerException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			boolean succeed = this.appTableHandler.setAppContent(conn, appId, appVersion, fileInputStream);
-			if (succeed) {
+			long contentLength = this.appTableHandler.setContent(conn, appId, appVersion, fileInputStream);
+			if (contentLength > 0) {
 				this.appTableHandler.updateFileName(conn, appId, appVersion, fileName);
+				this.appTableHandler.updateFileLength(conn, appId, appVersion, contentLength);
+				return true;
 			}
-			return succeed;
 
 		} catch (SQLException e) {
 			handleSQLException(e);
