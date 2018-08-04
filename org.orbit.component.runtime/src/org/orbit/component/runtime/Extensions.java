@@ -276,7 +276,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createCommandExtensions() {
-		String typeId = CommandActivator.TYPE_ID;
+		String typeId = CommandActivator.EXTENSION_TYPE_ID;
 
 		// Services command
 		Extension extension1 = new Extension(typeId, ServicesCommand.ID, "Services Command", "Services command description");

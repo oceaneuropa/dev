@@ -10,16 +10,14 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.runtime.PlatformConstants;
 import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.util.LaunchServiceHelper;
+import org.orbit.component.runtime.util.OrbitClientHelper;
 import org.orbit.component.runtime.util.PlatformSetupUtil;
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.platform.api.Clients;
 import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.sdk.Activator;
 import org.orbit.platform.sdk.IPlatform;
 import org.origin.common.launch.LaunchConfig;
@@ -454,17 +452,18 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 				return false;
 			}
 
+			String indexServiceUrl = getIndexServiceURL();
+
 			// 1. Direct shutdown node platform
 			boolean isDirectShutdownSucceed = false;
 			PlatformClient nodePlatformClient = null;
+
 			IPlatform currPlatform = Activator.getInstance().getPlatform();
-			String indexServiceUrl = getIndexServiceURL();
-			IndexService indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
-			if (currPlatform != null && indexService != null) {
+			if (currPlatform != null) {
 				String platformId = currPlatform.getId();
-				IndexItem nodeIndexItem = getNodeIndexItem(indexService, platformId, id);
+				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
 				if (nodeIndexItem != null) {
-					nodePlatformClient = getPlatformClient(nodeIndexItem);
+					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem);
 				}
 			}
 			if (nodePlatformClient != null) {
@@ -521,11 +520,12 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public boolean isNodeStarted(String id) throws IOException {
+		String indexServiceUrl = getIndexServiceURL();
+
 		IPlatform currPlatform = Activator.getInstance().getPlatform();
-		IndexService indexService = InfraClients.getInstance().getIndexService(getIndexServiceURL());
-		if (currPlatform != null && indexService != null) {
+		if (currPlatform != null) {
 			String platformId = currPlatform.getId();
-			IndexItem nodeIndexItem = getNodeIndexItem(indexService, platformId, id);
+			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
 			if (nodeIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				if (isOnline) {
@@ -543,11 +543,12 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public boolean isNodeStopped(String id) throws IOException {
+		String indexServiceUrl = getIndexServiceURL();
+
 		IPlatform currPlatform = Activator.getInstance().getPlatform();
-		IndexService indexService = InfraClients.getInstance().getIndexService(getIndexServiceURL());
-		if (currPlatform != null && indexService != null) {
+		if (currPlatform != null) {
 			String platformId = currPlatform.getId();
-			IndexItem nodeIndexItem = getNodeIndexItem(indexService, platformId, id);
+			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
 			if (nodeIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				boolean isStopped = false;
@@ -561,61 +562,6 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * 
-	 * @param indexService
-	 * @param platformParentId
-	 * @param nodePlatformid
-	 * @return
-	 * @throws IOException
-	 */
-	public IndexItem getNodeIndexItem(IndexService indexService, String platformParentId, String nodePlatformid) throws IOException {
-		IndexItem nodeIndexItem = null;
-		if (indexService != null && platformParentId != null && nodePlatformid != null) {
-			List<IndexItem> indexItems = indexService.getIndexItems(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE);
-			if (indexItems != null) {
-				for (IndexItem indexItem : indexItems) {
-					String currPlatformId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
-					String currPlatformParentId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_PARENT_ID);
-					String currPlatformType = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_TYPE);
-
-					if (PlatformConstants.PLATFORM_TYPE__NODE.equalsIgnoreCase(currPlatformType) && platformParentId.equals(currPlatformParentId) && nodePlatformid.equals(currPlatformId)) {
-						nodeIndexItem = indexItem;
-						break;
-					}
-				}
-			}
-		}
-		return nodeIndexItem;
-	}
-
-	/**
-	 * 
-	 * @param indexItem
-	 * @return
-	 */
-	public PlatformClient getPlatformClient(IndexItem indexItem) {
-		PlatformClient platformClient = null;
-		if (indexItem != null) {
-			String platformUrl = null;
-			String platformHostUrl = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
-			String platformContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
-
-			if (platformHostUrl != null && platformContextRoot != null) {
-				platformUrl = platformHostUrl;
-				if (!platformUrl.endsWith("/") && !platformContextRoot.startsWith("/")) {
-					platformUrl += "/";
-				}
-				platformUrl += platformContextRoot;
-			}
-
-			if (platformUrl != null) {
-				platformClient = Clients.getInstance().getPlatformClient(platformUrl);
-			}
-		}
-		return platformClient;
 	}
 
 }

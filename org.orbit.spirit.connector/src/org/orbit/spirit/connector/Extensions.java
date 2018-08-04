@@ -26,7 +26,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createConnectorExtensions() {
-		String typeId = ConnectorActivator.TYPE_ID;
+		String typeId = ConnectorActivator.EXTENSION_TYPE_ID;
 
 		// GAIA connector
 		Extension extension1 = new Extension(typeId, GAIAConnector.ID, "GAIA Connector", "GAIA connector description");

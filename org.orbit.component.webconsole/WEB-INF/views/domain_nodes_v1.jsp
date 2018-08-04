@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, java.net.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
+<%@ page import="org.orbit.platform.api.*"%>
 <%@ page import="org.orbit.infra.api.indexes.*"%>
 <%@ page import="org.orbit.component.api.tier3.domain.*"%>
 <%@ page import="org.orbit.component.api.tier3.nodecontrol.*"%>
@@ -66,9 +67,9 @@
 					<th class="th1" width="50">Name</th>
 					<th class="th1" width="50">Host URL</th>
 					<th class="th1" width="50">Context Root</th>
-					<th class="th1" width="100">Platform Home</th>
+					<th class="th1" width="80">Platform Home</th>
 					<th class="th1" width="50">Status</th>
-					<th class="th1" width="120">Actions</th>
+					<th class="th1" width="180">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
@@ -109,7 +110,7 @@
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
-					<td class="td1"><%=id%></td>
+					<td class="td2"><%=id%></td>
 					<td class="td2"><%=name%></td>
 					<td class="td2"><%=hostURL%></td>
 					<td class="td2"><%=currContextRoot%></td>
@@ -118,6 +119,7 @@
 					<td class="td1">
 						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Change</a> |
 						<a class="action01" href="<%=contextRoot%>/domain/nodeproperties?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a>
+						<a class="action01" href="<%=contextRoot%>/domain/nodeprograms?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Programs</a>
 						<!-- 
 						 | <a class="action01" href="javascript:deleteNode('<%=contextRoot + "/domain/nodedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Delete</a> | 
 						<a class="action01" href="javascript:startNode('<%=contextRoot + "/domain/nodestart"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>')">Start</a> | 

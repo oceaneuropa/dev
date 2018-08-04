@@ -1,9 +1,6 @@
 package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,16 +18,17 @@ import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.component.webconsole.servlet.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.util.OrbitExtensionHelper;
 import org.orbit.infra.api.util.OrbitIndexHelper;
-import org.orbit.platform.api.PlatformConstants;
+import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.api.model.ProgramManifest;
 import org.origin.common.util.ServletUtil;
 
-public class NodePropertyListServlet extends HttpServlet {
+public class NodeProgramListServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 2333552536533608770L;
+	private static final long serialVersionUID = 2284649451336905223L;
+
+	private static final ProgramManifest[] EMPTY_PROGRAMS = new ProgramManifest[0];
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -39,7 +37,6 @@ public class NodePropertyListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		String extensionRegistryUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
 		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
@@ -71,9 +68,7 @@ public class NodePropertyListServlet extends HttpServlet {
 		PlatformConfig platformConfig = null;
 		NodeInfo nodeInfo = null;
 		IndexItem nodeIndexItem = null;
-		List<IndexItem> indexItems = new ArrayList<IndexItem>();
-		List<ExtensionItem> extensionItems = null;
-		Map<String, List<ExtensionItem>> extensionItemMap = null;
+		ProgramManifest[] programs = null;
 
 		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
 			try {
@@ -85,22 +80,9 @@ public class NodePropertyListServlet extends HttpServlet {
 
 				nodeIndexItem = OrbitIndexHelper.INSTANCE.getIndexItem(indexServiceUrl, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
-					String nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
-
-					if (nodePlatformId != null) {
-						List<ExtensionItem> indexerExtensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID);
-						for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
-							String indexerId = indexerExtensionItem.getExtensionId();
-
-							List<IndexItem> currIndexItems = OrbitIndexHelper.INSTANCE.getIndexItemsOfPlatform(indexServiceUrl, indexerId, nodePlatformId);
-							if (currIndexItems != null && !currIndexItems.isEmpty()) {
-								indexItems.addAll(currIndexItems);
-							}
-						}
-
-						// Get all extensions from the platform (of the Node)
-						extensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId);
-						extensionItemMap = OrbitExtensionHelper.INSTANCE.toExtensionItemMap(extensionItems);
+					PlatformClient nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem);
+					if (nodePlatformClient != null) {
+						programs = nodePlatformClient.getPrograms();
 					}
 				}
 
@@ -109,9 +91,11 @@ public class NodePropertyListServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-
 		if (nodeInfo == null) {
 			message = MessageHelper.INSTANCE.add(message, "Node with id '" + nodeId + "' is not found.");
+		}
+		if (programs == null) {
+			programs = EMPTY_PROGRAMS;
 		}
 
 		// ---------------------------------------------------------------
@@ -129,20 +113,9 @@ public class NodePropertyListServlet extends HttpServlet {
 		if (nodeInfo != null) {
 			request.setAttribute("nodeInfo", nodeInfo);
 		}
-		if (nodeIndexItem != null) {
-			request.setAttribute("nodeIndexItem", nodeIndexItem);
-		}
-		if (indexItems != null) {
-			request.setAttribute("indexItems", indexItems);
-		}
-		if (extensionItems != null) {
-			request.setAttribute("extensionItems", extensionItems);
-		}
-		if (extensionItemMap != null) {
-			request.setAttribute("extensionItemMap", extensionItemMap);
-		}
+		request.setAttribute("programs", programs);
 
-		request.getRequestDispatcher(contextRoot + "/views/domain_node_properties_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/domain_node_programs_v1.jsp").forward(request, response);
 	}
 
 }

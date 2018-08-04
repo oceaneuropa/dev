@@ -1,20 +1,18 @@
 package org.orbit.component.connector;
 
+import org.orbit.component.api.OrbitConstants;
+import org.orbit.infra.api.InfraConstants;
+import org.origin.common.osgi.AbstractBundleActivator;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Activator implements BundleActivator {
+public class Activator extends AbstractBundleActivator implements BundleActivator {
 
 	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
 
-	protected static BundleContext context;
 	protected static Activator instance;
-
-	public static BundleContext getContext() {
-		return context;
-	}
 
 	public static Activator getInstance() {
 		return instance;
@@ -23,8 +21,8 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(final BundleContext bundleContext) throws Exception {
 		LOG.debug("start()");
+		super.start(bundleContext);
 
-		Activator.context = bundleContext;
 		Activator.instance = this;
 
 		// Register extensions
@@ -39,13 +37,24 @@ public class Activator implements BundleActivator {
 		Extensions.INSTANCE.stop(bundleContext);
 
 		Activator.instance = null;
-		Activator.context = null;
+
+		super.stop(bundleContext);
+	}
+
+	@Override
+	protected String[] getPropertyNames() {
+		String[] propNames = new String[] { //
+				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
+				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
+				OrbitConstants.ORBIT_USER_ACCOUNTS_URL, //
+				OrbitConstants.ORBIT_AUTH_URL, //
+				OrbitConstants.ORBIT_REGISTRY_URL, //
+				OrbitConstants.ORBIT_APP_STORE_URL, //
+				OrbitConstants.ORBIT_DOMAIN_SERVICE_URL, //
+				OrbitConstants.ORBIT_NODE_CONTROL_URL, //
+				OrbitConstants.ORBIT_MISSION_CONTROL_URL, //
+		};
+		return propNames;
 	}
 
 }
-
-// OrbitConnectors.getInstance().start(bundleContext);
-// OrbitConnectors.getInstance().stop(bundleContext);
-
-// OrbitCLIV1.getInstance().start(bundleContext);
-// OrbitCLIV1.getInstance().stop(bundleContext);

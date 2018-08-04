@@ -261,6 +261,13 @@ dialog.dialog-scale {
 	height: 22px;
 }
 
+.dialog_main_div02 {
+	padding-left: 5px;
+	padding-right: 5px;
+	min-width: 800px;
+	min-height: 350px;
+}
+
 /*---------------------------------------------------------------
 Button
 ---------------------------------------------------------------*/

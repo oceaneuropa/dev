@@ -13,6 +13,7 @@ import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.component.webconsole.servlet.OrbitClientHelper;
+import org.orbit.infra.api.InfraConstants;
 import org.origin.common.util.ServletUtil;
 
 public class NodeDeleteServlet extends HttpServlet {
@@ -27,7 +28,7 @@ public class NodeDeleteServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String indexServiceUrl = getServletConfig().getInitParameter(WebConstants.ORBIT_INDEX_SERVICE_URL);
+		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
@@ -50,7 +51,6 @@ public class NodeDeleteServlet extends HttpServlet {
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
-
 		if (!machineId.isEmpty() && !platformId.isEmpty() && nodeIds.length > 0) {
 			try {
 				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, platformId);
@@ -72,7 +72,6 @@ public class NodeDeleteServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 		}
-
 		if (hasSucceed && !hasFailed) {
 			succeed = true;
 		}

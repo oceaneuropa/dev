@@ -19,8 +19,8 @@ package org.orbit.component.api.tier1.session;
  * ----------------------------------------------------------------------
  * {
  *     "client_id": "ropc_ipass" // application id
- *     "firstName": "TIBCO",
- *     "lastName": "INC",
+ *     "firstName": "MyFirstName",
+ *     "lastName": "MyLastName",
  *     "email": "dapa@postonline.me",
  *     "subject": "8AA18727-FCF9-9CB4-117B-B5E7AB92C38C", // ?
  *     "dplStatus": "Pass", // ?

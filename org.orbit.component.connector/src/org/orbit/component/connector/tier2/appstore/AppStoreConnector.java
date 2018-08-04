@@ -8,7 +8,7 @@ import org.origin.common.rest.client.ServiceConnector;
 
 public class AppStoreConnector extends ServiceConnector<AppStoreClient> implements ConnectorActivator {
 
-	public static final String ID = "org.orbit.component.connector.AppStoreConnector";
+	public static final String ID = "org.orbit.component.appstore.AppStoreConnector";
 
 	public AppStoreConnector() {
 		super(AppStoreClient.class);

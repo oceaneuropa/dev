@@ -33,7 +33,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createConnectorExtensions() {
-		String typeId = ConnectorActivator.TYPE_ID;
+		String typeId = ConnectorActivator.EXTENSION_TYPE_ID;
 
 		// Index Service connector
 		Extension extension1 = new Extension(typeId, IndexServiceConnector.ID, "Index Service Connector", "Index Service connector description");
@@ -61,7 +61,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createCommandExtensions() {
-		String typeId = CommandActivator.TYPE_ID;
+		String typeId = CommandActivator.EXTENSION_TYPE_ID;
 
 		// Index Service command
 		Extension extension1 = new Extension(typeId, IndexServiceCommand.ID, "Index Service Command", "Index Service command description");

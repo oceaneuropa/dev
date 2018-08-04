@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet.appstore;
+package org.orbit.component.webconsole.servlet.domain;
 
 import java.io.IOException;
 
@@ -15,9 +15,8 @@ import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
-public class AppDeleteServlet extends HttpServlet {
-
-	private static final long serialVersionUID = -1743125235880795958L;
+@SuppressWarnings("serial")
+public class NodeProgramUninstallServlet extends HttpServlet {
 
 	private static String[] EMPTY_IDS = new String[] {};
 
@@ -26,19 +25,20 @@ public class AppDeleteServlet extends HttpServlet {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
 
-		String[] appIdVersions = ServletUtil.getParameterValues(request, "appId_appVersion", EMPTY_IDS);
+		String[] idVersions = ServletUtil.getParameterValues(request, "id_version", EMPTY_IDS);
 
 		String message = "";
-		if (appIdVersions.length == 0) {
-			message = MessageHelper.INSTANCE.add(message, "'appIdVersions' parameter is not set.");
+		if (idVersions.length == 0) {
+			message = MessageHelper.INSTANCE.add(message, "'id_version' parameter is not set.");
 		}
 
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
+
 		try {
-			for (int i = 0; i < appIdVersions.length; i++) {
-				String currIdVersion = appIdVersions[i];
+			for (int i = 0; i < idVersions.length; i++) {
+				String currIdVersion = idVersions[i];
 				int index = currIdVersion.lastIndexOf("|");
 				String currId = currIdVersion.substring(0, index);
 				String currVersion = currIdVersion.substring(index + 1);
@@ -50,18 +50,20 @@ public class AppDeleteServlet extends HttpServlet {
 					hasFailed = true;
 				}
 			}
+
 		} catch (ClientException e) {
 			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 			e.printStackTrace();
 		}
+
 		if (hasSucceed && !hasFailed) {
 			succeed = true;
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (appIdVersions.length > 1) ? "Apps are deleted successfully." : "App is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Apps are deleted successfully." : "App is deleted successfully.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, (appIdVersions.length > 1) ? "Apps are not deleted." : "App is not deleted.");
+			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Apps are not deleted." : "App is not deleted.");
 		}
 
 		HttpSession session = request.getSession(true);

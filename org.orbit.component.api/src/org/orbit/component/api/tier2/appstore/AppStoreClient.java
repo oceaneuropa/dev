@@ -109,7 +109,7 @@ public interface AppStoreClient extends IAdaptable {
 	 * @param output
 	 * @throws ClientException
 	 */
-	void downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException;
+	boolean downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException;
 
 	boolean close() throws ClientException;
 

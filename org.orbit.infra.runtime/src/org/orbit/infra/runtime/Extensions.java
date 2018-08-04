@@ -183,7 +183,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createCommandExtensions() {
-		String typeId = CommandActivator.TYPE_ID;
+		String typeId = CommandActivator.EXTENSION_TYPE_ID;
 
 		// Infra server side command
 		Extension extension1 = new Extension(typeId, InfraCommand.ID, "Infra server side command", "Infra server side command description");

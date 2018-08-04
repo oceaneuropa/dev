@@ -219,12 +219,14 @@ public class AppStoreImplV1 implements AppStoreClient {
 	}
 
 	@Override
-	public void downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException {
+	public boolean downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException {
+		boolean succeed = false;
 		try {
-			this.client.downloadAppArchive(appId, appVersion, output);
+			succeed = this.client.downloadAppArchive(appId, appVersion, output);
 		} catch (ClientException e) {
 			throw e;
 		}
+		return succeed;
 	}
 
 	// ------------------------------------------------------------------------------------------------

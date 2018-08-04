@@ -9,10 +9,40 @@ import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.OrbitIndexHelper;
+import org.orbit.platform.api.Clients;
+import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.api.PlatformConstants;
 
 public class OrbitClientHelper {
 
 	public static OrbitClientHelper INSTANCE = new OrbitClientHelper();
+
+	/**
+	 * 
+	 * @param indexItem
+	 * @return
+	 */
+	public PlatformClient getPlatformClient(IndexItem indexItem) {
+		PlatformClient platformClient = null;
+		if (indexItem != null) {
+			String platformUrl = null;
+			String platformHostUrl = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
+			String platformContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
+
+			if (platformHostUrl != null && platformContextRoot != null) {
+				platformUrl = platformHostUrl;
+				if (!platformUrl.endsWith("/") && !platformContextRoot.startsWith("/")) {
+					platformUrl += "/";
+				}
+				platformUrl += platformContextRoot;
+			}
+
+			if (platformUrl != null) {
+				platformClient = Clients.getInstance().getPlatformClient(platformUrl);
+			}
+		}
+		return platformClient;
+	}
 
 	/**
 	 * 

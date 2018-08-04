@@ -8,10 +8,10 @@ import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.appstore.AppAddServlet;
 import org.orbit.component.webconsole.servlet.appstore.AppDeleteServlet;
 import org.orbit.component.webconsole.servlet.appstore.AppDownloadServlet;
-import org.orbit.component.webconsole.servlet.appstore.AppUploadServlet;
 import org.orbit.component.webconsole.servlet.appstore.AppListServlet;
 import org.orbit.component.webconsole.servlet.appstore.AppUpdateServlet;
-import org.orbit.component.webconsole.servlet.appstore.FileUploadServlet;
+import org.orbit.component.webconsole.servlet.appstore.AppUploadServlet;
+import org.orbit.component.webconsole.servlet.appstore.other.FileUploadServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineAddServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.MachineListServlet;
@@ -19,6 +19,9 @@ import org.orbit.component.webconsole.servlet.domain.MachineUpdateServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeCreateServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeListServlet;
+import org.orbit.component.webconsole.servlet.domain.NodeProgramInstallServlet;
+import org.orbit.component.webconsole.servlet.domain.NodeProgramListServlet;
+import org.orbit.component.webconsole.servlet.domain.NodeProgramUninstallServlet;
 import org.orbit.component.webconsole.servlet.domain.NodePropertyAddServlet;
 import org.orbit.component.webconsole.servlet.domain.NodePropertyDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.NodePropertyListServlet;
@@ -31,10 +34,12 @@ import org.orbit.component.webconsole.servlet.domain.PlatformDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformListServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformPropertyListServlet;
 import org.orbit.component.webconsole.servlet.domain.PlatformUpdateServlet;
+import org.orbit.component.webconsole.servlet.domain.ProgramsProviderServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountAddServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountDeleteServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountListServlet;
 import org.orbit.component.webconsole.servlet.useraccount.UserAccountUpdateServlet;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.service.servlet.WebApplicationImpl;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -54,8 +59,8 @@ public class WebApplication extends WebApplicationImpl {
 	@Override
 	protected String[] getPropertyNames() {
 		String[] propNames = new String[] { //
-				WebConstants.ORBIT_INDEX_SERVICE_URL, //
-				WebConstants.ORBIT_EXTENSION_REGISTRY_URL, //
+				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
+				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				OrbitConstants.ORBIT_USER_ACCOUNTS_URL, //
@@ -126,6 +131,11 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/domain/nodeattributeupdate", new NodePropertyUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeattributedelete", new NodePropertyDeleteServlet(), dicts));
 
+		// Node programs
+		addServlet(new ServletMetadataImpl("/domain/nodeprograms", new NodeProgramListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeprograminstall", new NodeProgramInstallServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeprogramuninstall", new NodeProgramUninstallServlet(), dicts));
+
 		// AppStore
 		addServlet(new ServletMetadataImpl("/appstore/apps", new AppListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/appstore/appadd", new AppAddServlet(), dicts));
@@ -134,6 +144,9 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/appstore/appdownload", new AppDownloadServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/appstore/appdelete", new AppDeleteServlet(), dicts));
 
+		addServlet(new ServletMetadataImpl("/appstore/programsprovider", new ProgramsProviderServlet(), dicts));
+
+		// Other
 		addServlet(new ServletMetadataImpl("/upload", new FileUploadServlet(), dicts));
 
 		// Add JSPs
