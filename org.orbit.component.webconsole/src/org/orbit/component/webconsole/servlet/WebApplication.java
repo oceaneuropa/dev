@@ -19,6 +19,7 @@ import org.orbit.component.webconsole.servlet.domain.MachineUpdateServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeCreateServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeDeleteServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeListServlet;
+import org.orbit.component.webconsole.servlet.domain.NodeProgramActionServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeProgramInstallServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeProgramListServlet;
 import org.orbit.component.webconsole.servlet.domain.NodeProgramUninstallServlet;
@@ -135,6 +136,7 @@ public class WebApplication extends WebApplicationImpl {
 		addServlet(new ServletMetadataImpl("/domain/nodeprograms", new NodeProgramListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeprograminstall", new NodeProgramInstallServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodeprogramuninstall", new NodeProgramUninstallServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodeprogramaction", new NodeProgramActionServlet(), dicts));
 
 		// AppStore
 		addServlet(new ServletMetadataImpl("/appstore/apps", new AppListServlet(), dicts));

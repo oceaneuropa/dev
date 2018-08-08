@@ -7,7 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.origin.common.command.IEditingDomain;
-import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
+import org.origin.common.rest.editpolicy.other.EditpolicyWSApplicationResource;
 
 import other.orbit.component.runtime.tier3.nodecontrol.editpolicy.NodeEditPolicyV1;
 import other.orbit.component.runtime.tier3.nodecontrol.editpolicy.NodespaceEditPolicyV1;

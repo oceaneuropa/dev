@@ -10,7 +10,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.component.runtime.util.LaunchServiceHelper;
 import org.orbit.component.runtime.util.OrbitClientHelper;
 import org.orbit.component.runtime.util.PlatformSetupUtil;
@@ -18,7 +18,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
-import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.IPlatform;
 import org.origin.common.launch.LaunchConfig;
 import org.origin.common.launch.LaunchConstants;
@@ -33,8 +33,8 @@ import org.origin.common.resources.node.NodeDescription;
 import org.origin.common.resources.util.WorkspaceHelper;
 import org.origin.common.resources.util.WorkspaceUtil;
 import org.origin.common.rest.client.ClientException;
-import org.origin.common.rest.editpolicy.WSEditPolicies;
-import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -54,7 +54,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected IWorkspace workspace;
-	protected WSEditPolicies wsEditPolicies;
+	protected ServiceEditPolicies wsEditPolicies;
 
 	protected boolean useScriptLaunch = false;
 
@@ -64,7 +64,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	 */
 	public NodeControlServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.wsEditPolicies = new WSEditPoliciesImpl();
+		this.wsEditPolicies = new ServiceEditPoliciesImpl();
 		this.wsEditPolicies.setService(NodeControlService.class, this);
 	}
 
@@ -79,6 +79,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_INDEX_SERVICE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_APP_STORE_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.PLATFORM_HOME);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.NODESPACE_LOCATION);
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
@@ -123,6 +124,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 		String indexServiceUrl = (String) properties.get(OrbitConstants.ORBIT_INDEX_SERVICE_URL);
 		String extensionRegistryUrl = (String) properties.get(OrbitConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		String appStoreUrl = (String) properties.get(OrbitConstants.ORBIT_APP_STORE_URL);
 		String platformHome = (String) properties.get(OrbitConstants.PLATFORM_HOME);
 		String nodespaceHome = (String) properties.get(OrbitConstants.NODESPACE_LOCATION);
 		String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
@@ -137,6 +139,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			System.out.println("-----------------------------------------------------");
 			System.out.println(OrbitConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
 			System.out.println(OrbitConstants.ORBIT_EXTENSION_REGISTRY_URL + " = " + extensionRegistryUrl);
+			System.out.println(OrbitConstants.ORBIT_APP_STORE_URL + " = " + appStoreUrl);
 			System.out.println(OrbitConstants.PLATFORM_HOME + " = " + platformHome);
 			System.out.println(OrbitConstants.NODESPACE_LOCATION + " = " + nodespaceHome);
 			System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
@@ -205,7 +208,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	}
 
 	@Override
-	public WSEditPolicies getEditPolicies() {
+	public ServiceEditPolicies getEditPolicies() {
 		return this.wsEditPolicies;
 	}
 
@@ -458,7 +461,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			boolean isDirectShutdownSucceed = false;
 			PlatformClient nodePlatformClient = null;
 
-			IPlatform currPlatform = Activator.getInstance().getPlatform();
+			IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
 			if (currPlatform != null) {
 				String platformId = currPlatform.getId();
 				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
@@ -522,7 +525,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	public boolean isNodeStarted(String id) throws IOException {
 		String indexServiceUrl = getIndexServiceURL();
 
-		IPlatform currPlatform = Activator.getInstance().getPlatform();
+		IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
 		if (currPlatform != null) {
 			String platformId = currPlatform.getId();
 			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);
@@ -545,7 +548,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	public boolean isNodeStopped(String id) throws IOException {
 		String indexServiceUrl = getIndexServiceURL();
 
-		IPlatform currPlatform = Activator.getInstance().getPlatform();
+		IPlatform currPlatform = PlatformSDKActivator.getInstance().getPlatform();
 		if (currPlatform != null) {
 			String platformId = currPlatform.getId();
 			IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, platformId, id);

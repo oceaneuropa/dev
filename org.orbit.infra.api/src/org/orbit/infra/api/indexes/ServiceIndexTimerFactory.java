@@ -2,9 +2,8 @@ package org.orbit.infra.api.indexes;
 
 public interface ServiceIndexTimerFactory<SERVICE> {
 
+	public static final String EXTENSION_TYPE_ID = "infra.extension.IndexProvider";
+
 	ServiceIndexTimer<SERVICE> create(IndexProvider indexProvider, SERVICE service);
 
 }
-
-// public static final String TYPE_ID = "infra.extension.IndexProvider";
-// public static final String PROP_INDEX_PROVIDER_ID = "indexProviderId";

@@ -5,12 +5,12 @@ import java.util.List;
 
 import org.origin.common.resources.IWorkspace;
 import org.origin.common.resources.node.INode;
-import org.origin.common.rest.editpolicy.WSEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.service.WebServiceAware;
 
 public interface NodeControlService extends WebServiceAware {
 
-	WSEditPolicies getEditPolicies();
+	ServiceEditPolicies getEditPolicies();
 
 	String getName();
 

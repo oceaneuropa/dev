@@ -1,9 +1,9 @@
 package other.orbit.component.runtime.tier3.domainmanagement.ws;
 
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
-import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceTimer;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceWSApplication;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceTimer;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

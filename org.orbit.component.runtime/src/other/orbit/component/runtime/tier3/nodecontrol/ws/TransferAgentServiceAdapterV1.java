@@ -4,9 +4,9 @@ import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceTimer;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlWSApplication;
-import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlWSEditPolicy;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlEditPolicy;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.rest.editpolicy.WSEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -86,9 +86,9 @@ public class TransferAgentServiceAdapterV1 {
 	 */
 	protected void doStart(BundleContext bundleContext, NodeControlService service) {
 		// Install web service edit policies
-		WSEditPolicies editPolicies = service.getEditPolicies();
-		editPolicies.uninstallEditPolicy(NodeControlWSEditPolicy.ID); // ensure NodeWSEditPolicy instance is not duplicated
-		editPolicies.installEditPolicy(new NodeControlWSEditPolicy());
+		ServiceEditPolicies editPolicies = service.getEditPolicies();
+		editPolicies.uninstall(NodeControlEditPolicy.ID); // ensure NodeWSEditPolicy instance is not duplicated
+		editPolicies.install(new NodeControlEditPolicy());
 
 		// Start web service
 		this.webService = new NodeControlWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
@@ -119,8 +119,8 @@ public class TransferAgentServiceAdapterV1 {
 		}
 
 		// Uninstall web service edit policies
-		WSEditPolicies editPolicies = service.getEditPolicies();
-		editPolicies.uninstallEditPolicy(NodeControlWSEditPolicy.ID);
+		ServiceEditPolicies editPolicies = service.getEditPolicies();
+		editPolicies.uninstall(NodeControlEditPolicy.ID);
 	}
 
 }

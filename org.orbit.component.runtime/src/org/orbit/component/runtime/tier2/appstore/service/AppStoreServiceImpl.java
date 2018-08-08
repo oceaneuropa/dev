@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
 import org.origin.common.jdbc.DatabaseUtil;

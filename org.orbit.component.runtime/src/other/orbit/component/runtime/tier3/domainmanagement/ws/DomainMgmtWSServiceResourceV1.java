@@ -7,8 +7,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
+import org.origin.common.rest.editpolicy.other.EditpolicyWSApplicationResource;
 
 import other.orbit.component.runtime.tier3.domainmanagement.editpolicy.MachineConfigEditPolicy;
 import other.orbit.component.runtime.tier3.domainmanagement.editpolicy.NodeConfigEditPolicy;

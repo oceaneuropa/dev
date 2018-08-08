@@ -9,7 +9,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.Requests;
+import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier4.missioncontrol.Mission;
 import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
 import org.orbit.component.connector.util.ModelConverter;
@@ -96,7 +96,7 @@ public class MissionControlCommand extends ServiceClientCommand implements Comma
 		try {
 			MissionControlClient missionControl = getMissionControl();
 
-			Request request = new Request(Requests.GET_MISSIONS);
+			Request request = new Request(RequestConstants.GET_MISSIONS);
 			Response response = missionControl.sendRequest(request);
 
 			Mission[] missions = ModelConverter.MissionControl.getMissions(response);

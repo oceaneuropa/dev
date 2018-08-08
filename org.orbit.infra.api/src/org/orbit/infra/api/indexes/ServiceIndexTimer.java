@@ -3,7 +3,7 @@ package org.orbit.infra.api.indexes;
 import java.io.IOException;
 import java.util.Map;
 
-import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.origin.common.thread.IndexTimerImpl;
@@ -16,8 +16,8 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexPro
 
 		protected String getPlatformId() {
 			String platformId = null;
-			if (Activator.getInstance() != null) {
-				IPlatform platform = Activator.getInstance().getPlatform();
+			if (PlatformSDKActivator.getInstance() != null) {
+				IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
 				if (platform != null) {
 					platformId = platform.getId();
 				}

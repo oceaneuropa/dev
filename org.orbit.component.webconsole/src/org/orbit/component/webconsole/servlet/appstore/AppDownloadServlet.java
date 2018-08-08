@@ -15,7 +15,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.MimeTypes;
@@ -57,7 +57,7 @@ public class AppDownloadServlet extends HttpServlet {
 
 			} else {
 				// Prepare download directory
-				String platformHome = Activator.getInstance().getPlatform().getHome();
+				String platformHome = PlatformSDKActivator.getInstance().getPlatform().getHome();
 				String downloadPath = platformHome + File.separator + DOWNLOAD_DIRECTORY;
 
 				File downloadDir = new File(downloadPath);

@@ -2,7 +2,7 @@ package org.orbit.component.connector.tier3.domain;
 
 import org.orbit.component.api.RuntimeStatus;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.connector.RuntimeStatusImpl;
+import org.orbit.component.connector.util.RuntimeStatusImpl;
 
 public class PlatformConfigImpl implements PlatformConfig {
 

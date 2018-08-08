@@ -20,6 +20,7 @@ import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.OrbitExtensionHelper;
 import org.orbit.infra.api.util.OrbitIndexHelper;
 import org.origin.common.util.ServletUtil;
@@ -84,7 +85,7 @@ public class PlatformPropertyListServlet extends HttpServlet {
 				extensionItemMap = OrbitExtensionHelper.INSTANCE.toExtensionItemMap(extensionItems);
 
 				// Get indexer extensions from the platform
-				List<ExtensionItem> indexerExtensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, platformId, InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID);
+				List<ExtensionItem> indexerExtensionItems = OrbitExtensionHelper.INSTANCE.getExtensionItemsOfPlatform(extensionRegistryUrl, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 
 				// Get index items from the platform
 				for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {

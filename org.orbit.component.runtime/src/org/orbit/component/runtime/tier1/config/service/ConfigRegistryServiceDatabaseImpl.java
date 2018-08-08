@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.OrbitConstants;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;

@@ -21,7 +21,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.util.OrbitIndexHelper;
 import org.orbit.platform.api.PlatformClient;
-import org.orbit.platform.api.model.ProgramManifest;
+import org.orbit.platform.api.ProgramManifest;
 import org.origin.common.util.ServletUtil;
 
 public class NodeProgramListServlet extends HttpServlet {

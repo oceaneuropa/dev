@@ -2,8 +2,8 @@ package other.orbit.component.runtime.tier3.nodecontrol.editpolicy;
 
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.origin.common.command.ICommand;
-import org.origin.common.rest.editpolicy.AbstractWSEditPolicyV1;
-import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
+import org.origin.common.rest.editpolicy.other.AbstractWSEditPolicyV1;
+import org.origin.common.rest.editpolicy.other.EditpolicyWSApplicationResource;
 import org.origin.common.rest.model.Request;
 
 /**

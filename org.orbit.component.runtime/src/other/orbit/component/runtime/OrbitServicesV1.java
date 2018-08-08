@@ -4,12 +4,12 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.Activator;
-import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
-import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.origin.common.util.PropertyUtil;

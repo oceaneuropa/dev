@@ -1,7 +1,7 @@
 package other.orbit.component.runtime.tier3.domainmanagement.command;
 
 import org.orbit.component.runtime.model.domain.NodeConfig;
-import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.origin.common.command.AbstractCommand;
 import org.origin.common.command.CommandContext;
 import org.origin.common.command.CommandException;

@@ -1,10 +1,10 @@
 package other.orbit.component.runtime.tier3.nodecontrol.editpolicy;
 
-import org.orbit.component.runtime.common.ws.Requests;
+import org.orbit.component.runtime.RequestConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.origin.common.command.ICommand;
-import org.origin.common.rest.editpolicy.AbstractWSEditPolicyV1;
-import org.origin.common.rest.editpolicy.EditpolicyWSApplicationResource;
+import org.origin.common.rest.editpolicy.other.AbstractWSEditPolicyV1;
+import org.origin.common.rest.editpolicy.other.EditpolicyWSApplicationResource;
 import org.origin.common.rest.model.Request;
 
 import other.orbit.component.runtime.tier3.nodecontrol.command.NodespaceCreateCommandV1;
@@ -24,19 +24,19 @@ public class NodespaceEditPolicyV1 extends AbstractWSEditPolicyV1 {
 	@Override
 	public ICommand getCommand(EditpolicyWSApplicationResource resource, Request request) {
 		String requestName = request.getRequestName();
-		if (Requests.GET_NODESPACES.equals(requestName)) {
+		if (RequestConstants.GET_NODESPACES.equals(requestName)) {
 			return new NodespaceListCommandV1(service, request);
 
-		} else if (Requests.GET_NODESPACE.equals(requestName)) {
+		} else if (RequestConstants.GET_NODESPACE.equals(requestName)) {
 			return new NodespaceGetCommandV1(service, request);
 
-		} else if (Requests.NODESPACE_EXIST.equals(requestName)) {
+		} else if (RequestConstants.NODESPACE_EXIST.equals(requestName)) {
 			return new NodespaceExistCommandV1(service, request);
 
-		} else if (Requests.CREATE_NODESPACE.equals(requestName)) {
+		} else if (RequestConstants.CREATE_NODESPACE.equals(requestName)) {
 			return new NodespaceCreateCommandV1(service, request);
 
-		} else if (Requests.DELETE_NODESPACE.equals(requestName)) {
+		} else if (RequestConstants.DELETE_NODESPACE.equals(requestName)) {
 			return new NodespaceDeleteCommandV1(service, request);
 		}
 

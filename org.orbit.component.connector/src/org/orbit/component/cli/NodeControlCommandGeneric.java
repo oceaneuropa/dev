@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.Requests;
+import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.connector.util.ModelConverter;
@@ -158,7 +158,7 @@ public class NodeControlCommandGeneric implements CommandActivator {
 		try {
 			NodeControlClient transferAgent = getTransferAgent(url);
 
-			Request request = new Request(Requests.GET_NODES);
+			Request request = new Request(RequestConstants.GET_NODES);
 			Response response = transferAgent.sendRequest(request);
 
 			NodeInfo[] nodeInfos = ModelConverter.NodeControl.getNodes(response);

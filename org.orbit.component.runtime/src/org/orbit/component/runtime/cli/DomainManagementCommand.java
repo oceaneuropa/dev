@@ -7,11 +7,11 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.model.domain.PlatformConfig;
-import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
@@ -67,7 +67,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 						// node configurations
 						"lnodeconfigs", "lnodeconfig", "add_nodeconfig", "update_nodeconfig", "remove_nodeconfig", //
-		});
+				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);

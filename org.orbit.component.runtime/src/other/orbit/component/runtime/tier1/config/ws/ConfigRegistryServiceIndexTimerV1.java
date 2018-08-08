@@ -5,8 +5,8 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.component.runtime.OrbitServices;
-import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;

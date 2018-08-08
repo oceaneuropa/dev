@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.origin.common.rest.server.ServerException;
@@ -37,8 +37,8 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 
 	protected String getPlatformId() {
 		String platformId = null;
-		if (Activator.getInstance() != null) {
-			IPlatform platform = Activator.getInstance().getPlatform();
+		if (PlatformSDKActivator.getInstance() != null) {
+			IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
 			if (platform != null) {
 				platformId = platform.getId();
 			}

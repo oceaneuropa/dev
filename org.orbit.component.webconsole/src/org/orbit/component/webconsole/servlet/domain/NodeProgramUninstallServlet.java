@@ -8,11 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.origin.common.rest.client.ClientException;
+import org.orbit.component.webconsole.servlet.OrbitClientHelper;
+import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.util.OrbitIndexHelper;
+import org.orbit.platform.api.PlatformClient;
 import org.origin.common.util.ServletUtil;
 
 @SuppressWarnings("serial")
@@ -23,56 +25,74 @@ public class NodeProgramUninstallServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
-
-		String[] idVersions = ServletUtil.getParameterValues(request, "id_version", EMPTY_IDS);
-
+		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String message = "";
+
+		String machineId = ServletUtil.getParameter(request, "machineId", "");
+		String parentPlatformId = ServletUtil.getParameter(request, "platformId", "");
+		String nodeId = ServletUtil.getParameter(request, "id", "");
+		String[] idVersions = ServletUtil.getParameterValues(request, "appId_appVersion", EMPTY_IDS);
+
+		if (machineId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
+		}
+		if (parentPlatformId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
+		}
+		if (nodeId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
+		}
 		if (idVersions.length == 0) {
-			message = MessageHelper.INSTANCE.add(message, "'id_version' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "'appId_appVersion' parameter is not set.");
 		}
 
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
-
-		try {
-			for (int i = 0; i < idVersions.length; i++) {
-				String currIdVersion = idVersions[i];
-				int index = currIdVersion.lastIndexOf("|");
-				String currId = currIdVersion.substring(0, index);
-				String currVersion = currIdVersion.substring(index + 1);
-
-				boolean currSucceed = OrbitComponentHelper.INSTANCE.deleteApp(appStoreUrl, currId, currVersion);
-				if (currSucceed) {
-					hasSucceed = true;
-				} else {
-					hasFailed = true;
+		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
+			try {
+				// Get platform client of the node
+				PlatformClient nodePlatformClient = null;
+				IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getIndexItem(indexServiceUrl, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				if (nodeIndexItem != null) {
+					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem);
 				}
+
+				// Instruct the node to self install the program
+				if (nodePlatformClient != null) {
+					for (int i = 0; i < idVersions.length; i++) {
+						String currIdVersion = idVersions[i];
+						int index = currIdVersion.lastIndexOf("|");
+						String currAppId = currIdVersion.substring(0, index);
+						String currAppVersion = currIdVersion.substring(index + 1);
+
+						boolean currSucceed = nodePlatformClient.uninstallProgram(currAppId, currAppVersion, true);
+						if (currSucceed) {
+							hasSucceed = true;
+						} else {
+							hasFailed = true;
+						}
+					}
+				}
+			} catch (Exception e) {
+				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				e.printStackTrace();
 			}
-
-		} catch (ClientException e) {
-			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
-			e.printStackTrace();
 		}
-
 		if (hasSucceed && !hasFailed) {
 			succeed = true;
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Apps are deleted successfully." : "App is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are being uninstalled." : "Program is being uninstalled.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Apps are not deleted." : "App is not deleted.");
+			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are not uninstalled." : "Program is not uninstalled.");
 		}
 
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/appstore/apps");
+		response.sendRedirect(contextRoot + "/domain/nodeprograms?machineId=" + machineId + "&platformId=" + parentPlatformId + "&id=" + nodeId);
 	}
 
 }
-
-// if (id == null || id.isEmpty()) {
-// String id = request.getParameter("id");

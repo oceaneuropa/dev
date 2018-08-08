@@ -1,5 +1,6 @@
 package org.orbit.infra.runtime.util;
 
+import org.orbit.infra.model.channel.ChannelException;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
@@ -11,6 +12,7 @@ public class ModelConverter {
 
 	public static Indexes Indexes = new Indexes();
 	public static Extensions Extensions = new Extensions();
+	public static Channel Channel = new Channel();
 
 	public static class Indexes {
 		/**
@@ -83,6 +85,40 @@ public class ModelConverter {
 			DTO.setDescription(item.getDescription());
 			DTO.setProperties(item.getProperties());
 			return DTO;
+		}
+	}
+
+	public static class Channel {
+
+		// ------------------------------------------------------------------------------------------
+		// RTO -> DTO
+		// ------------------------------------------------------------------------------------------
+		/**
+		 * Convert ChannelException object to Error DTO.
+		 * 
+		 * @param e
+		 * @return
+		 */
+		public ErrorDTO toDTO(ChannelException e) {
+			if (e == null) {
+				return null;
+			}
+
+			ErrorDTO dto = new ErrorDTO();
+
+			dto.setCode(e.getCode());
+			dto.setMessage(e.getMessage());
+
+			if (e.getCause() != null) {
+				String causeName = e.getCause().getClass().getName();
+				String causeMessage = e.getCause().getMessage();
+				dto.setDetail(causeName + " " + causeMessage);
+
+			} else {
+				String causeName = e.getClass().getName();
+				dto.setDetail(causeName);
+			}
+			return dto;
 		}
 	}
 

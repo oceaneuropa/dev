@@ -3,7 +3,7 @@ package org.orbit.component.runtime.extension.nodecontrol;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.origin.common.extensions.condition.IPropertyTester;
 import org.origin.common.util.PropertyUtil;

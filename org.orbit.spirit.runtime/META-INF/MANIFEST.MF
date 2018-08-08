@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Orbit :: Spirit :: Runtime
 Bundle-SymbolicName: org.orbit.spirit.runtime;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.orbit.sprit.runtime.Activator
+Bundle-Activator: org.orbit.spirit.runtime.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.inject;version="[1.0.0,2.0.0)",
  javax.json;version="[1.1.2,2.0.0)",
@@ -25,11 +25,11 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)",
  org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)",
  org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)"
-Export-Package: org.orbit.sprit.runtime;version="1.0.0",
- org.orbit.sprit.runtime.gaia;version="1.0.0",
- org.orbit.sprit.runtime.gaia.extensions;version="1.0.0",
- org.orbit.sprit.runtime.gaia.service;version="1.0.0",
- org.orbit.sprit.runtime.gaia.world;version="1.0.0",
- org.orbit.sprit.runtime.gaia.ws;version="1.0.0",
- org.orbit.sprit.runtime.gaia.ws.command;version="1.0.0",
- org.orbit.sprit.runtime.gaia.ws.other;version="1.0.0"
+Export-Package: org.orbit.spirit.runtime;version="1.0.0",
+ org.orbit.spirit.runtime.gaia;version="1.0.0",
+ org.orbit.spirit.runtime.gaia.extensions;version="1.0.0",
+ org.orbit.spirit.runtime.gaia.service;version="1.0.0",
+ org.orbit.spirit.runtime.gaia.world;version="1.0.0",
+ org.orbit.spirit.runtime.gaia.ws;version="1.0.0",
+ org.orbit.spirit.runtime.gaia.ws.command;version="1.0.0",
+ org.orbit.spirit.runtime.gaia.ws.other;version="1.0.0"

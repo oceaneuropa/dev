@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.api.Requests;
+import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.connector.OrbitConstants;
@@ -45,7 +45,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public NodeInfo[] getNodes() throws ClientException {
-		Request request = new Request(Requests.GET_NODES);
+		Request request = new Request(RequestConstants.GET_NODES);
 
 		Response response = sendRequest(request);
 
@@ -61,7 +61,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public NodeInfo getNode(String id) throws ClientException {
-		Request request = new Request(Requests.GET_NODE);
+		Request request = new Request(RequestConstants.GET_NODE);
 		request.setParameter("id", id);
 
 		Response response = sendRequest(request);
@@ -75,7 +75,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public boolean createNode(String id, String name, String typeId) throws ClientException {
-		Request request = new Request(Requests.CREATE_NODE);
+		Request request = new Request(RequestConstants.CREATE_NODE);
 		request.setParameter("id", id);
 		request.setParameter("name", name);
 		request.setParameter("typeId", typeId);
@@ -90,7 +90,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public boolean updateNode(String id, String name, String typeId) throws ClientException {
-		Request request = new Request(Requests.UPDATE_NODE);
+		Request request = new Request(RequestConstants.UPDATE_NODE);
 		request.setParameter("id", id);
 		request.setParameter("name", name);
 		request.setParameter("typeId", typeId);
@@ -112,7 +112,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public boolean deleteNode(String id) throws ClientException {
-		Request request = new Request(Requests.DELETE_NODE);
+		Request request = new Request(RequestConstants.DELETE_NODE);
 		request.setParameter("id", id);
 
 		boolean succeed = false;
@@ -125,7 +125,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public boolean startNode(String id) throws ClientException {
-		Request request = new Request(Requests.START_NODE);
+		Request request = new Request(RequestConstants.START_NODE);
 		request.setParameter("id", id);
 
 		boolean succeed = false;
@@ -138,7 +138,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public boolean stopNode(String id) throws ClientException {
-		Request request = new Request(Requests.STOP_NODE);
+		Request request = new Request(RequestConstants.STOP_NODE);
 		request.setParameter("id", id);
 
 		boolean succeed = false;
@@ -151,7 +151,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public boolean addNodeAttribute(String id, String name, Object value) throws ClientException {
-		Request request = new Request(Requests.ADD_NODE_ATTR);
+		Request request = new Request(RequestConstants.ADD_NODE_ATTR);
 		request.setParameter("id", id);
 		request.setParameter("name", name);
 		request.setParameter("value", value);
@@ -166,7 +166,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public boolean updateNodeAttribute(String id, String oldName, String name, Object value) throws ClientException {
-		Request request = new Request(Requests.UPDATE_NODE_ATTR);
+		Request request = new Request(RequestConstants.UPDATE_NODE_ATTR);
 		request.setParameter("id", id);
 		request.setParameter("oldName", oldName);
 		request.setParameter("name", name);
@@ -182,7 +182,7 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 
 	@Override
 	public boolean deleteNodeAttribute(String id, String name) throws ClientException {
-		Request request = new Request(Requests.DELETE_NODE_ATTR);
+		Request request = new Request(RequestConstants.DELETE_NODE_ATTR);
 		request.setParameter("id", id);
 		request.setParameter("name", name);
 

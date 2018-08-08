@@ -1,6 +1,5 @@
 package org.orbit.component.runtime;
 
-import org.orbit.component.api.OrbitClients;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -31,10 +30,7 @@ public class Activator implements BundleActivator {
 		// Register extensions
 		Extensions.INSTANCE.start(bundleContext);
 
-		// Start tracking web service connector services
-		OrbitClients.getInstance().start(bundleContext);
-
-		// Start tracking services for starting web service and indexer
+		// Start service adapters
 		OrbitServices.getInstance().start(bundleContext);
 	}
 
@@ -42,11 +38,8 @@ public class Activator implements BundleActivator {
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.debug("stop()");
 
-		// Stop tracking services for stopping web service and indexer
+		// Stop service adapters
 		OrbitServices.getInstance().stop(bundleContext);
-
-		// Stop tracking web service connector services
-		OrbitClients.getInstance().stop(bundleContext);
 
 		// Unregister extensions
 		Extensions.INSTANCE.stop(bundleContext);
@@ -86,3 +79,11 @@ public class Activator implements BundleActivator {
 // this.nodeControlCommand.stop(bundleContext);
 // this.nodeControlCommand = null;
 // }
+
+// import org.orbit.component.api.OrbitClients;
+
+// Start tracking web service connector services
+// OrbitClients.getInstance().start(bundleContext);
+
+// Stop tracking web service connector services
+// OrbitClients.getInstance().stop(bundleContext);

@@ -3,6 +3,13 @@ package org.orbit.component.api;
 public class OrbitConstants {
 
 	// ----------------------------------------------------------------------------------------
+	// Connector property names
+	// ----------------------------------------------------------------------------------------
+	public static String REALM = "realm";
+	public static String USERNAME = "username";
+	public static String URL = "url";
+
+	// ----------------------------------------------------------------------------------------
 	// orbit service config properties
 	// ----------------------------------------------------------------------------------------
 	// tier1
@@ -19,12 +26,5 @@ public class OrbitConstants {
 
 	// tier4
 	public static String ORBIT_MISSION_CONTROL_URL = "orbit.mission_control.url";
-
-	// ----------------------------------------------------------------------------------------
-	// orbit connector runtime properties
-	// ----------------------------------------------------------------------------------------
-	public static String REALM = "realm";
-	public static String USERNAME = "username";
-	public static String URL = "url";
 
 }

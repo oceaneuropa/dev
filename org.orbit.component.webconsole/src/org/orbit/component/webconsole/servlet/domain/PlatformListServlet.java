@@ -21,6 +21,7 @@ import org.orbit.component.webconsole.servlet.MessageHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
+import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.OrbitExtensionHelper;
 import org.orbit.infra.api.util.OrbitIndexHelper;
 import org.orbit.platform.api.PlatformConstants;
@@ -85,7 +86,7 @@ public class PlatformListServlet extends HttpServlet {
 
 						Map<String, List<IndexItem>> indexerIdToIndexItemsMap = new LinkedHashMap<String, List<IndexItem>>();
 						// Get extensions indexer ids from the platform
-						List<String> indexerIds = OrbitExtensionHelper.INSTANCE.getExtensionIdsOfPlatform(extensionRegistryUrl, platformId, InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID);
+						List<String> indexerIds = OrbitExtensionHelper.INSTANCE.getExtensionIdsOfPlatform(extensionRegistryUrl, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 						for (String indexerId : indexerIds) {
 							List<IndexItem> currIndexItems = OrbitIndexHelper.INSTANCE.getIndexItemsOfPlatform(indexServiceUrl, indexerId, platformId);
 							indexerIdToIndexItemsMap.put(indexerId, currIndexItems);

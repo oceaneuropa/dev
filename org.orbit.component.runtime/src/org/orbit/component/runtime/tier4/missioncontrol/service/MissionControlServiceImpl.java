@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.component.runtime.model.missioncontrol.Mission;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
-import org.origin.common.rest.editpolicy.WSEditPolicies;
-import org.origin.common.rest.editpolicy.WSEditPoliciesImpl;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
@@ -28,7 +28,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	protected static Logger LOG = LoggerFactory.getLogger(MissionControlServiceImpl.class);
 
 	protected Map<Object, Object> initProperties;
-	protected WSEditPolicies wsEditPolicies;
+	protected ServiceEditPolicies wsEditPolicies;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
@@ -36,7 +36,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 
 	public MissionControlServiceImpl(Map<Object, Object> initProperties) {
 		this.initProperties = initProperties;
-		this.wsEditPolicies = new WSEditPoliciesImpl();
+		this.wsEditPolicies = new ServiceEditPoliciesImpl();
 		this.wsEditPolicies.setService(MissionControlService.class, this);
 	}
 
@@ -122,7 +122,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public WSEditPolicies getEditPolicies() {
+	public ServiceEditPolicies getEditPolicies() {
 		return this.wsEditPolicies;
 	}
 

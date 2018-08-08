@@ -2,18 +2,17 @@ package org.orbit.component.runtime.tier4.missioncontrol.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.common.ws.OrbitConstants;
+import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
-import org.orbit.component.runtime.tier4.missioncontrol.ws.editpolicy.MissionWSEditPolicy;
+import org.orbit.component.runtime.tier4.missioncontrol.ws.command.MissionControlEditPolicy;
 import org.orbit.infra.api.InfraClients;
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
-import org.origin.common.rest.editpolicy.WSEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -96,9 +95,9 @@ public class MissionControlAdapter {
 	 */
 	protected void doStart(BundleContext bundleContext, MissionControlService service) {
 		// Install web service edit policies
-		WSEditPolicies editPolicies = service.getEditPolicies();
-		editPolicies.uninstallEditPolicy(MissionWSEditPolicy.ID); // ensure MissionWSEditPolicy instance is not duplicated
-		editPolicies.installEditPolicy(new MissionWSEditPolicy());
+		ServiceEditPolicies editPolicies = service.getEditPolicies();
+		editPolicies.uninstall(MissionControlEditPolicy.ID); // ensure MissionWSEditPolicy instance is not duplicated
+		editPolicies.install(new MissionControlEditPolicy());
 
 		// Start web app
 		this.webApp = new MissionControlWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
@@ -109,7 +108,7 @@ public class MissionControlAdapter {
 		// this.indexTimer = new MissionControlIndexer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID, OrbitConstants.MISSION_CONTROL_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, OrbitConstants.MISSION_CONTROL_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")
@@ -142,8 +141,8 @@ public class MissionControlAdapter {
 		}
 
 		// Uninstall web service edit policies
-		WSEditPolicies editPolicies = service.getEditPolicies();
-		editPolicies.uninstallEditPolicy(MissionWSEditPolicy.ID);
+		ServiceEditPolicies editPolicies = service.getEditPolicies();
+		editPolicies.uninstall(MissionControlEditPolicy.ID);
 	}
 
 }

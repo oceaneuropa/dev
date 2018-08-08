@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.orbit.component.api.RuntimeStatus;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
-import org.orbit.component.connector.RuntimeStatusImpl;
+import org.orbit.component.connector.util.RuntimeStatusImpl;
 
 public class NodeInfoImpl implements NodeInfo {
 

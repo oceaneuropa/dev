@@ -7,9 +7,9 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceWSMachinesResource;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceWSNodesResource;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceWSPlatformsResource;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSMachinesResource;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSNodesResource;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSPlatformsResource;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.origin.common.rest.Constants;
 import org.origin.common.rest.server.AbstractApplication;

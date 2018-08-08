@@ -12,7 +12,7 @@ import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
-import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.IPlatform;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.util.ExtensionListener;
@@ -84,8 +84,8 @@ public class ExtensionsRegister implements ExtensionListener {
 
 	protected String getPlatformId() {
 		String platformId = null;
-		if (Activator.getInstance() != null) {
-			IPlatform platform = Activator.getInstance().getPlatform();
+		if (PlatformSDKActivator.getInstance() != null) {
+			IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
 			if (platform != null) {
 				platformId = platform.getId();
 			}

@@ -7,11 +7,12 @@ import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;
 import org.origin.common.resources.node.INode;
+import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class NodeGetWSCommand implements WSCommand {
+public class NodeGetWSCommand extends AbstractWSCommand implements WSCommand {
 
 	protected NodeControlService service;
 

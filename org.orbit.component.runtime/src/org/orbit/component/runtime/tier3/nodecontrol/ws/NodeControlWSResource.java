@@ -36,7 +36,7 @@ import org.origin.common.rest.server.ServerException;
  * 
  * Transfer agent web service resource.
  * 
- * {contextRoot} example: /orbit/v1/ta
+ * {contextRoot} example: /orbit/v1/nodecontrol
  *
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/request (body parameter: Request)
  *

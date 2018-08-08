@@ -18,7 +18,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 
 /**
  * Upon receiving file upload submission, parses the request to read upload data and saves the file on disk.
@@ -54,7 +54,7 @@ public class AppUploadServlet extends HttpServlet {
 			File appUploadDir = null;
 			try {
 				// 2. Prepare upload directory
-				String platformHome = Activator.getInstance().getPlatform().getHome();
+				String platformHome = PlatformSDKActivator.getInstance().getPlatform().getHome();
 				String uploadPath = platformHome + File.separator + UPLOAD_DIRECTORY;
 
 				File uploadDir = new File(uploadPath);

@@ -44,7 +44,7 @@ public class NodeProgramInstallServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 		if (idVersions.length == 0) {
-			message = MessageHelper.INSTANCE.add(message, "'id_version' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "'appId_appVersion' parameter is not set.");
 		}
 
 		boolean succeed = false;

@@ -56,10 +56,10 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createServiceActivatorExtensions1() {
-		String typeId = ServiceActivator.TYPE_ID;
+		String extensionTypeId = ServiceActivator.EXTENSION_TYPE_ID;
 
 		// Index Service
-		Extension extension1 = new Extension(typeId, IndexServiceActivator.ID, "Index Service Activator", "Index Service activator description");
+		Extension extension1 = new Extension(extensionTypeId, IndexServiceActivator.ID, "Index Service Activator", "Index Service activator description");
 		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, IndexServiceActivator.class);
 		desc1.setParameters( //
 				new Parameter("component.index_service.name", "instance name"), //
@@ -74,7 +74,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension1);
 
 		// ExtensionRegistry Service
-		Extension extension2 = new Extension(typeId, ExtensionRegistryActivator.ID, "Extension Registry Service Activator", "Extension Registry Service activator description");
+		Extension extension2 = new Extension(extensionTypeId, ExtensionRegistryActivator.ID, "Extension Registry Service Activator", "Extension Registry Service activator description");
 		InterfaceDescription desc2 = new InterfaceDescription(ServiceActivator.class, ExtensionRegistryActivator.class);
 		desc2.setParameters( //
 				new Parameter("component.extension_registry.name", "instance name"), //
@@ -89,7 +89,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension2);
 
 		// Channel Service
-		Extension extension3 = new Extension(typeId, ChannelServiceActivator.ID, "Channel Service Activator", "Channel Service activator description");
+		Extension extension3 = new Extension(extensionTypeId, ChannelServiceActivator.ID, "Channel Service Activator", "Channel Service activator description");
 		InterfaceDescription desc3 = new InterfaceDescription(ServiceActivator.class, ChannelServiceActivator.class);
 		desc3.setParameters( //
 				new Parameter("component.channel.name", "instance name"), //
@@ -102,32 +102,32 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createPropertyTesterExtensions1() {
-		String typeId = IPropertyTester.TYPE_ID;
+		String extensionTypeId = IPropertyTester.EXTENSION_TYPE_ID;
 
 		// Index Service Property Tester
-		Extension extension1 = new Extension(typeId, IndexServicePropertyTester.ID);
+		Extension extension1 = new Extension(extensionTypeId, IndexServicePropertyTester.ID);
 		InterfaceDescription desc1 = new InterfaceDescription(IPropertyTester.class, IndexServicePropertyTester.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
 		// Extension Registry Service Property Tester
-		Extension extension2 = new Extension(typeId, ExtensionRegistryPropertyTester.ID);
+		Extension extension2 = new Extension(extensionTypeId, ExtensionRegistryPropertyTester.ID);
 		InterfaceDescription desc2 = new InterfaceDescription(IPropertyTester.class, ExtensionRegistryPropertyTester.class);
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 
 		// Channel Service Property Tester
-		Extension extension3 = new Extension(typeId, ChannelServicePropertyTester.ID);
+		Extension extension3 = new Extension(extensionTypeId, ChannelServicePropertyTester.ID);
 		InterfaceDescription desc3 = new InterfaceDescription(IPropertyTester.class, ChannelServicePropertyTester.class);
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 	}
 
 	protected void createServiceActivatorExtensions2() {
-		String typeId = ServiceActivator.TYPE_ID;
+		String extensionTypeId = ServiceActivator.EXTENSION_TYPE_ID;
 
 		// Index Service Relay
-		Extension extension4 = new Extension(typeId, IndexServiceRelayActivator.ID, "Index Service Relay Activator");
+		Extension extension4 = new Extension(extensionTypeId, IndexServiceRelayActivator.ID, "Index Service Relay Activator");
 		InterfaceDescription desc4 = new InterfaceDescription(ServiceActivator.class, IndexServiceRelayActivator.class);
 		desc4.setParameters( //
 				new Parameter(InfraConstants.COMPONENT_INDEX_SERVICE_RELAY_CONTEXT_ROOT, "web service relay context root"), //
@@ -138,7 +138,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension4);
 
 		// Extension Registry Service Relay
-		Extension extension5 = new Extension(typeId, ExtensionRegistryRelayActivator.ID, "Extension Registry Service Relay Activator");
+		Extension extension5 = new Extension(extensionTypeId, ExtensionRegistryRelayActivator.ID, "Extension Registry Service Relay Activator");
 		InterfaceDescription desc5 = new InterfaceDescription(ServiceActivator.class, ExtensionRegistryRelayActivator.class);
 		desc5.setParameters( //
 				new Parameter(InfraConstants.COMPONENT_EXTENSION_REGISTRY_RELAY_CONTEXT_ROOT, "web service relay context root"), //
@@ -149,7 +149,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension5);
 
 		// Channel Service Relay
-		Extension extension6 = new Extension(typeId, ChannelServiceRelayActivator.ID, "Channel Service Relay Activator");
+		Extension extension6 = new Extension(extensionTypeId, ChannelServiceRelayActivator.ID, "Channel Service Relay Activator");
 		InterfaceDescription desc6 = new InterfaceDescription(ServiceActivator.class, ChannelServiceRelayActivator.class);
 		desc6.setParameters( //
 				new Parameter(InfraConstants.COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT, "web service relay context root"), //
@@ -161,49 +161,49 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createPropertyTesterExtensions2() {
-		String typeId = IPropertyTester.TYPE_ID;
+		String extensionTypeId = IPropertyTester.EXTENSION_TYPE_ID;
 
 		// Index Service Relay Property Tester
-		Extension extension4 = new Extension(typeId, IndexServiceRelayPropertyTester.ID, "Index Service Relay Property Tester");
+		Extension extension4 = new Extension(extensionTypeId, IndexServiceRelayPropertyTester.ID, "Index Service Relay Property Tester");
 		InterfaceDescription desc4 = new InterfaceDescription(IPropertyTester.class, IndexServiceRelayPropertyTester.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);
 
 		// Extension Registry Service Relay Property Tester
-		Extension extension5 = new Extension(typeId, ExtensionRegistryRelayPropertyTester.ID, "Extension Registry Service Relay Property Tester");
+		Extension extension5 = new Extension(extensionTypeId, ExtensionRegistryRelayPropertyTester.ID, "Extension Registry Service Relay Property Tester");
 		InterfaceDescription desc5 = new InterfaceDescription(IPropertyTester.class, ExtensionRegistryRelayPropertyTester.class);
 		extension5.addInterface(desc5);
 		addExtension(extension5);
 
 		// Channel Service Relay Property Tester
-		Extension extension6 = new Extension(typeId, ChannelServiceRelayPropertyTester.ID, "Channel Service Relay Property Tester");
+		Extension extension6 = new Extension(extensionTypeId, ChannelServiceRelayPropertyTester.ID, "Channel Service Relay Property Tester");
 		InterfaceDescription desc6 = new InterfaceDescription(IPropertyTester.class, ChannelServiceRelayPropertyTester.class);
 		extension6.addInterface(desc6);
 		addExtension(extension6);
 	}
 
 	protected void createCommandExtensions() {
-		String typeId = CommandActivator.EXTENSION_TYPE_ID;
+		String extensionTypeId = CommandActivator.EXTENSION_TYPE_ID;
 
 		// Infra server side command
-		Extension extension1 = new Extension(typeId, InfraCommand.ID, "Infra server side command", "Infra server side command description");
+		Extension extension1 = new Extension(extensionTypeId, InfraCommand.ID, "Infra server side command", "Infra server side command description");
 		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, InfraCommand.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 	}
 
 	protected void createIndexProvideExtensions() {
-		String typeId = org.orbit.infra.api.InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID;
+		String extensionTypeId = ServiceIndexTimerFactory.EXTENSION_TYPE_ID;
 		Class<?> factoryClass = ServiceIndexTimerFactory.class;
 
-		Extension extension1 = new Extension(typeId, InfraConstants.INDEX_SERVICE_INDEXER_ID, "Index Service Index Provider");
+		Extension extension1 = new Extension(extensionTypeId, InfraConstants.INDEX_SERVICE_INDEXER_ID, "Index Service Index Provider");
 		addExtension(extension1);
 
-		Extension extension2 = new Extension(typeId, InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, "Extension Registry Service Index Provider");
+		Extension extension2 = new Extension(extensionTypeId, InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, "Extension Registry Service Index Provider");
 		extension2.addInterface(factoryClass, ExtensionRegistryServiceIndexTimerFactory.class);
 		addExtension(extension2);
 
-		Extension extension3 = new Extension(typeId, InfraConstants.CHANNEL_INDEXER_ID, "Channel Service Index Provider");
+		Extension extension3 = new Extension(extensionTypeId, InfraConstants.CHANNEL_INDEXER_ID, "Channel Service Index Provider");
 		extension3.addInterface(factoryClass, ChannelServiceIndexTimerFactory.class);
 		addExtension(extension3);
 	}

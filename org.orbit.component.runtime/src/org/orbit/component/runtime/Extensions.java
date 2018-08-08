@@ -10,7 +10,6 @@ package org.orbit.component.runtime;
 import org.orbit.component.runtime.cli.DomainManagementCommand;
 import org.orbit.component.runtime.cli.NodeControlCommand;
 import org.orbit.component.runtime.cli.ServicesCommand;
-import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.extension.appstore.AppStoreRelayActivator;
 import org.orbit.component.runtime.extension.appstore.AppStoreRelayPropertyTester;
 import org.orbit.component.runtime.extension.appstore.AppStoreServiceActivator;
@@ -23,10 +22,10 @@ import org.orbit.component.runtime.extension.configregistry.ConfigRegistryRelayA
 import org.orbit.component.runtime.extension.configregistry.ConfigRegistryRelayPropertyTester;
 import org.orbit.component.runtime.extension.configregistry.ConfigRegistryServiceActivator;
 import org.orbit.component.runtime.extension.configregistry.ConfigRegistryServicePropertyTester;
-import org.orbit.component.runtime.extension.domainmanagement.DomainManagementRelayActivator;
-import org.orbit.component.runtime.extension.domainmanagement.DomainManagementRelayPropertyTester;
-import org.orbit.component.runtime.extension.domainmanagement.DomainManagementServiceActivator;
-import org.orbit.component.runtime.extension.domainmanagement.DomainManagementServicePropertyTester;
+import org.orbit.component.runtime.extension.domain.DomainManagementRelayActivator;
+import org.orbit.component.runtime.extension.domain.DomainManagementRelayPropertyTester;
+import org.orbit.component.runtime.extension.domain.DomainManagementServiceActivator;
+import org.orbit.component.runtime.extension.domain.DomainManagementServicePropertyTester;
 import org.orbit.component.runtime.extension.missioncontrol.MissionControlRelayActivator;
 import org.orbit.component.runtime.extension.missioncontrol.MissionControlRelayPropertyTester;
 import org.orbit.component.runtime.extension.missioncontrol.MissionControlServiceActivator;
@@ -44,10 +43,9 @@ import org.orbit.component.runtime.tier1.auth.ws.AuthServiceIndexTimerFactory;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryServiceIndexTimerFactory;
 import org.orbit.component.runtime.tier1.session.ws.OAuth2ServiceIndexTimerFactory;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceIndexTimerFactory;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceTimerFactory;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceTimerFactory;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceTimerFactory;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlIndexTimeractory;
-import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
@@ -88,7 +86,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createServiceActivatorExtensions1() {
-		String typeId = ServiceActivator.TYPE_ID;
+		String typeId = ServiceActivator.EXTENSION_TYPE_ID;
 
 		// tier 1
 		Extension extension1 = new Extension(typeId, UserRegistryServiceActivator.ID, "User registration service activator");
@@ -138,7 +136,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createPropertyTesterExtensions1() {
-		String typeId = IPropertyTester.TYPE_ID;
+		String typeId = IPropertyTester.EXTENSION_TYPE_ID;
 
 		// User Registry Service Property Tester
 		Extension extension1 = new Extension(typeId, UserRegistryServicePropertyTester.ID);
@@ -184,7 +182,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createServiceActivatorExtensions2() {
-		String typeId = ServiceActivator.TYPE_ID;
+		String typeId = ServiceActivator.EXTENSION_TYPE_ID;
 
 		// User Registry Relay
 		Extension extension1 = new Extension(typeId, UserRegistryRelayActivator.ID);
@@ -237,7 +235,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createPropertyTesterExtensions2() {
-		String typeId = IPropertyTester.TYPE_ID;
+		String typeId = IPropertyTester.EXTENSION_TYPE_ID;
 
 		// User Registry Relay Property Tester
 		Extension extension1 = new Extension(typeId, UserRegistryRelayPropertyTester.ID);
@@ -298,7 +296,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createIndexProvideExtensions() {
-		String typeId = InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID;
+		String typeId = ServiceIndexTimerFactory.EXTENSION_TYPE_ID;
 		Class<?> factoryClass = ServiceIndexTimerFactory.class;
 
 		Extension extension11 = new Extension(typeId, OrbitConstants.USER_REGISTRY_INDEXER_ID, "User Account Service Index Provider");

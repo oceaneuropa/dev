@@ -3,7 +3,6 @@ package org.orbit.component.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.common.ws.OrbitConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryServiceAdapter;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
@@ -12,8 +11,8 @@ import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryServiceAdapter;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceAdapter;
-import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementService;
-import org.orbit.component.runtime.tier3.domainmanagement.ws.DomainServiceAdapter;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
+import org.orbit.component.runtime.tier3.domain.ws.DomainServiceAdapter;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceAdapter;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
@@ -57,11 +56,15 @@ public class OrbitServices {
 
 	// tier3
 	protected DomainServiceAdapter domainServiceAdapter;
-	protected NodeControlServiceAdapter transferAgentServiceAdapter;
+	protected NodeControlServiceAdapter nodeControlServiceAdapter;
 
 	// tier4
 	protected MissionControlAdapter missionControlServiceAdapter;
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void start(final BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_INDEX_SERVICE_URL);
@@ -80,6 +83,10 @@ public class OrbitServices {
 		this.indexProviderConnector.start(bundleContext);
 	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 */
 	public void stop(final BundleContext bundleContext) {
 		doStop(bundleContext);
 	}
@@ -104,8 +111,8 @@ public class OrbitServices {
 		this.domainServiceAdapter = new DomainServiceAdapter(properties);
 		this.domainServiceAdapter.start(bundleContext);
 
-		this.transferAgentServiceAdapter = new NodeControlServiceAdapter(properties);
-		this.transferAgentServiceAdapter.start(bundleContext);
+		this.nodeControlServiceAdapter = new NodeControlServiceAdapter(properties);
+		this.nodeControlServiceAdapter.start(bundleContext);
 
 		// tier4
 		this.missionControlServiceAdapter = new MissionControlAdapter(properties);
@@ -125,9 +132,9 @@ public class OrbitServices {
 			this.domainServiceAdapter.stop(bundleContext);
 			this.domainServiceAdapter = null;
 		}
-		if (this.transferAgentServiceAdapter != null) {
-			this.transferAgentServiceAdapter.stop(bundleContext);
-			this.transferAgentServiceAdapter = null;
+		if (this.nodeControlServiceAdapter != null) {
+			this.nodeControlServiceAdapter.stop(bundleContext);
+			this.nodeControlServiceAdapter = null;
 		}
 
 		// tier2
@@ -175,7 +182,7 @@ public class OrbitServices {
 	}
 
 	public NodeControlService getTransferAgentService() {
-		return (this.transferAgentServiceAdapter != null) ? this.transferAgentServiceAdapter.getService() : null;
+		return (this.nodeControlServiceAdapter != null) ? this.nodeControlServiceAdapter.getService() : null;
 	}
 
 	// tier4

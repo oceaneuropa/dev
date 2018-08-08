@@ -9,7 +9,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.Requests;
+import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
@@ -155,7 +155,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
-			Request request = new Request(Requests.GET_NODES);
+			Request request = new Request(RequestConstants.GET_NODES);
 			Response response = nodeControl.sendRequest(request);
 
 			NodeInfo[] nodeInfos = ModelConverter.NodeControl.getNodes(response);
@@ -185,7 +185,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
-			Request request = new Request(Requests.GET_NODE);
+			Request request = new Request(RequestConstants.GET_NODE);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = nodeControl.sendRequest(request);
@@ -218,7 +218,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
-			Request request = new Request(Requests.NODE_EXIST);
+			Request request = new Request(RequestConstants.NODE_EXIST);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = nodeControl.sendRequest(request);
@@ -242,7 +242,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
-			Request request = new Request(Requests.CREATE_NODE);
+			Request request = new Request(RequestConstants.CREATE_NODE);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = nodeControl.sendRequest(request);
@@ -267,7 +267,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
-			Request request = new Request(Requests.DELETE_NODE);
+			Request request = new Request(RequestConstants.DELETE_NODE);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = nodeControl.sendRequest(request);
@@ -292,7 +292,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
-			Request request = new Request(Requests.NODE_STATUS);
+			Request request = new Request(RequestConstants.NODE_STATUS);
 			request.setParameter("nodeId", nodeId);
 
 			Response response = nodeControl.sendRequest(request);

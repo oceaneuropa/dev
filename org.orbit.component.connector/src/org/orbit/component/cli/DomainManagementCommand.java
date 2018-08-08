@@ -11,7 +11,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.Requests;
+import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
@@ -105,7 +105,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.GET_MACHINE_CONFIGS);
+			Request request = new Request(RequestConstants.GET_MACHINE_CONFIGS);
 			Response response = domainClient.sendRequest(request);
 
 			MachineConfig[] machineConfigs = ModelConverter.Domain.convertToMachineConfigs(response);
@@ -134,7 +134,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.GET_MACHINE_CONFIG);
+			Request request = new Request(RequestConstants.GET_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
 
 			Response response = domainClient.sendRequest(request);
@@ -168,7 +168,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.ADD_MACHINE_CONFIG);
+			Request request = new Request(RequestConstants.ADD_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
 			request.setParameter("name", name);
 			request.setParameter("ipAddress", ip);
@@ -198,7 +198,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.UPDATE_MACHINE_CONFIG);
+			Request request = new Request(RequestConstants.UPDATE_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
 
 			List<String> fieldsToUpdate = new ArrayList<String>();
@@ -244,7 +244,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.REMOVE_MACHINE_CONFIG);
+			Request request = new Request(RequestConstants.REMOVE_MACHINE_CONFIG);
 			request.setParameter("machineId", id);
 
 			Response response = domainClient.sendRequest(request);
@@ -278,7 +278,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.GET_TA_CONFIGS);
+			Request request = new Request(RequestConstants.GET_TA_CONFIGS);
 			if (!Parameter.UNSPECIFIED.equals(machineId)) {
 				if ("null".equals(machineId)) {
 					machineId = null;
@@ -329,7 +329,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.GET_TA_CONFIG);
+			Request request = new Request(RequestConstants.GET_TA_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("id", id);
 
@@ -368,7 +368,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.ADD_TA_CONFIG);
+			Request request = new Request(RequestConstants.ADD_TA_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("id", id);
 			request.setParameter("name", name);
@@ -402,7 +402,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.UPDATE_TA_CONFIG);
+			Request request = new Request(RequestConstants.UPDATE_TA_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("id", id);
 
@@ -458,7 +458,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.REMOVE_TA_CONFIG);
+			Request request = new Request(RequestConstants.REMOVE_TA_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("id", id);
 
@@ -503,7 +503,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.GET_NODE_CONFIGS);
+			Request request = new Request(RequestConstants.GET_NODE_CONFIGS);
 			request.setParameter("machineId", machineId);
 			request.setParameter("transferAgentId", transferAgentId);
 
@@ -554,7 +554,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.GET_NODE_CONFIG);
+			Request request = new Request(RequestConstants.GET_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("transferAgentId", transferAgentId);
 			request.setParameter("id", id);
@@ -596,7 +596,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainService = getDomainManagementCLient();
 
-			Request addNodeConfigRequest = new Request(Requests.ADD_NODE_CONFIG);
+			Request addNodeConfigRequest = new Request(RequestConstants.ADD_NODE_CONFIG);
 			addNodeConfigRequest.setParameter("machineId", machineId);
 			addNodeConfigRequest.setParameter("transferAgentId", transferAgentId);
 			addNodeConfigRequest.setParameter("id", id);
@@ -651,7 +651,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.UPDATE_NODE_CONFIG);
+			Request request = new Request(RequestConstants.UPDATE_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("transferAgentId", transferAgentId);
 			request.setParameter("id", id);
@@ -709,7 +709,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		try {
 			DomainManagementClient domainClient = getDomainManagementCLient();
 
-			Request request = new Request(Requests.REMOVE_NODE_CONFIG);
+			Request request = new Request(RequestConstants.REMOVE_NODE_CONFIG);
 			request.setParameter("machineId", machineId);
 			request.setParameter("transferAgentId", transferAgentId);
 			request.setParameter("id", id);

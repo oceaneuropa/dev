@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, java.net.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
-<%@ page import="org.orbit.platform.api.model.*"%>
+<%@ page import="org.orbit.platform.api.*"%>
 <%@ page import="org.orbit.component.api.tier3.domain.*"%>
 <%@ page import="org.orbit.component.api.tier3.nodecontrol.*"%>
 <%@ page import="org.orbit.component.webconsole.*"%>
@@ -71,15 +71,17 @@
 				<input type="hidden" name="id" value="<%=id%>">
 				<tr>
 					<th class="th1" width="12"></th>
-					<th class="th1" width="200">Type</th>
-					<th class="th1" width="400">Id/Version</th>
+					<th class="th1" width="100">Type</th>
+					<th class="th1" width="150">Id/Version</th>
 					<th class="th1" width="150">Name</th>
+					<th class="th1" width="100">State</th>
+					<th class="th1" width="150">Actions</th>
 				</tr>
 				<%
 					if (programs.length == 0) {
 				%>
 				<tr>
-					<td colspan="4">(n/a)</td>
+					<td colspan="6">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -88,6 +90,13 @@
 							String appId = program.getId();
 							String appVersion = program.getVersion();
 							String appName = program.getName();
+							String activationStateLabel = program.getActivationState().getLabel();
+							String runtimeStateLabel = program.getRuntimeState().getLabel();
+
+							String statusColor = "#cccccc";
+							if (ProgramManifest.RUNTIME_STATE.STARTED.equals(program.getRuntimeState())) {
+								statusColor = "#2eb82e";
+							}
 				%>
 				<tr>
 					<td class="td1">
@@ -96,8 +105,13 @@
 					<td class="td1"><%=appType%></td>
 					<td class="td2"><%=appId + "_" + appVersion%></td>
 					<td class="td2"><%=appName%></td>
+					<td class="td1"><font color="<%=statusColor%>"><%=activationStateLabel + " | " + runtimeStateLabel%></font></td>
 					<td class="td1">
-						<a class="action01" href="javascript:deleteAttribute('<%=contextRoot + "/domain/nodeprogramuninstall"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>')">Uninstall</a>  
+						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'activate')">Activate</a>
+						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'deactivate')">Deactivate</a>
+						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'start')">Start</a>
+						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'stop')">Stop</a>
+						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'uninstall')">Uninstall</a>  
 					</td>
 				</tr>
 				<%
@@ -124,42 +138,12 @@
 	</form>
 	</dialog>
 
-	<dialog id="changeAttributeDialog">
-	<div class="dialog_title_div01">Set Attribute</div>
-	<form id="update_form" method="post" action="<%=contextRoot + "/domain/nodeattributeupdate"%>">
-		<input type="hidden" name="machineId" value="<%=machineId%>"> 
-		<input type="hidden" name="platformId" value="<%=platformId%>">
-		<input type="hidden" name="id" value="<%=id%>">
-		<input type="hidden" id="attribute_oldName" name="oldName">
-		<div class="dialog_main_div01">
-			<table class="dialog_table01">
-				<tr>
-					<td width="25%">Name:</td>
-					<td width="75%">
-						<input type="text" id="attribute_name" name="name" class="input01" size="20">
-					</td>
-				</tr>
-				<tr>
-					<td>Value:</td>
-					<td>
-						<textarea id="attribute_value" name="value" rows="10" cols="100"></textarea>
-					</td>
-				</tr>
-			</table>
-		</div>
-		<div class="dialog_button_div01">
-			<a id="okChangeAttribute" class="button02" href="javascript:document.getElementById('update_form').submit();">OK</a> 
-			<a id="cancelChangeAttribute" class="button02b" href="javascript:document.getElementById('update_form').reset();">Cancel</a>
-		</div>
-	</form>
-	</dialog>
-
-	<dialog id="deleteAttributeDialog">
-	<div class="dialog_title_div01">Delete Attribute</div>
-	<div class="dialog_main_div01" id="deleteAttributeDialogMessageDiv">Are you sure you want to delete the attribute?</div>
+	<dialog id="programActionDialog">
+	<div class="dialog_title_div01" id="programActionDialogTitleDiv" >{Action} Program</div>
+	<div class="dialog_main_div01" id="programActionDialogMessageDiv">Are you sure you want to {action} the program?</div>
 	<div class="dialog_button_div01">
-		<a id="okDeleteAttribute" class="button02">OK</a> 
-		<a id="cancelDeleteAttribute" class="button02b">Cancel</a>
+		<a id="okProgramAction" class="button02">OK</a> 
+		<a id="cancelProgramAction" class="button02b">Cancel</a>
 	</div>
 	</dialog>
 

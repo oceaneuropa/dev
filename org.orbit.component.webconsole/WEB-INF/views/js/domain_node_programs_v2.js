@@ -24,3 +24,6 @@ $(document).on("click", "#cancelInstallProgram", function() {
 	var dialog = document.getElementById('programsSelectionDialog');
 	dialog.close();
 });
+
+
+

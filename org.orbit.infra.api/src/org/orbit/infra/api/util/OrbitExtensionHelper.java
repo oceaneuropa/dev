@@ -41,16 +41,16 @@ public class OrbitExtensionHelper {
 	 * 
 	 * @param extensionRegistryUrl
 	 * @param platformId
-	 * @param typeId
+	 * @param extensionTypeId
 	 * @return
 	 * @throws IOException
 	 */
-	public List<ExtensionItem> getExtensionItemsOfPlatform(String extensionRegistryUrl, String platformId, String typeId) throws IOException {
+	public List<ExtensionItem> getExtensionItemsOfPlatform(String extensionRegistryUrl, String platformId, String extensionTypeId) throws IOException {
 		List<ExtensionItem> extensionItems = null;
 		if (extensionRegistryUrl != null && platformId != null) {
 			ExtensionRegistryClient extensionRegistry = getExtensionRegistry(extensionRegistryUrl);
 			if (extensionRegistry != null) {
-				extensionItems = extensionRegistry.getExtensionItems(platformId, typeId);
+				extensionItems = extensionRegistry.getExtensionItems(platformId, extensionTypeId);
 			}
 		}
 		if (extensionItems == null) {

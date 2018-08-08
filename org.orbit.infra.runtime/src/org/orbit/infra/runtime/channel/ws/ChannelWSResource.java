@@ -9,10 +9,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.infra.model.channel.ChannelConverter;
 import org.orbit.infra.model.channel.ChannelException;
 import org.orbit.infra.model.channel.ChannelMessageDTO;
 import org.orbit.infra.runtime.channel.service.ChannelService;
+import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class ChannelWSResource extends AbstractWSApplicationResource {
 
 		} catch (ChannelException e) {
 			e.printStackTrace();
-			return Response.status(Status.BAD_REQUEST).entity(ChannelConverter.getInstance().toDTO(e)).build();
+			return Response.status(Status.BAD_REQUEST).entity(ModelConverter.Channel.toDTO(e)).build();
 		}
 	}
 

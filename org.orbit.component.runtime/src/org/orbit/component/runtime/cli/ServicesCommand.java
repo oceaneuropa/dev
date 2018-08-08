@@ -8,7 +8,7 @@ import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceImpl;
-import org.orbit.component.runtime.tier3.domainmanagement.service.DomainManagementServiceImpl;
+import org.orbit.component.runtime.tier3.domain.service.DomainManagementServiceImpl;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlServiceImpl;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlServiceImpl;
 import org.orbit.platform.sdk.command.CommandActivator;

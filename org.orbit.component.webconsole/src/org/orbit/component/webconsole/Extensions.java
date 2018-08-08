@@ -30,7 +30,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createServiceActivatorExtensions() {
-		String typeId = ServiceActivator.TYPE_ID;
+		String typeId = ServiceActivator.EXTENSION_TYPE_ID;
 
 		// Component Web Application Activator
 		Extension extension1 = new Extension(typeId, WebApplicationActivator.ID, "Component Web Application Activator");
@@ -41,7 +41,7 @@ public class Extensions extends ProgramExtensions {
 	}
 
 	protected void createPropertyTesterExtensions() {
-		String typeId = IPropertyTester.TYPE_ID;
+		String typeId = IPropertyTester.EXTENSION_TYPE_ID;
 
 		// Component Web Application Property Tester
 		Extension extension1 = new Extension(typeId, WebApplicationPropertyTester.ID);

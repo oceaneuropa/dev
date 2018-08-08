@@ -9,7 +9,7 @@ import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
-import org.orbit.platform.sdk.Activator;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
@@ -109,7 +109,7 @@ public class ExtensionRegistryAdapter {
 		// this.indexTimer = new ExtensionRegistryServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = Activator.getInstance().getExtensionRegistry().getExtension(InfraConstants.INDEX_PROVIDER_EXTENSION_TYPE_ID, InfraConstants.EXTENSION_REGISTRY_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.EXTENSION_REGISTRY_INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<ExtensionRegistryService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
