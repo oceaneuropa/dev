@@ -11,7 +11,7 @@ import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSMachinesResour
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSNodesResource;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSPlatformsResource;
 import org.orbit.infra.api.indexes.IndexProvider;
-import org.origin.common.rest.Constants;
+import org.origin.common.rest.RestConstants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.osgi.framework.ServiceRegistration;
 
@@ -45,7 +45,7 @@ public class DomainMgmtWSApplicationV1 extends AbstractApplication {
 
 		// Register the service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(Constants.CONTEXT_ROOT, this.contextRoot);
+		props.put(RestConstants.CONTEXT_ROOT, this.contextRoot);
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 
 		// Start timer for indexing the service

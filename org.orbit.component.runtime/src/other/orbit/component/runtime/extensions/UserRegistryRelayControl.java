@@ -12,6 +12,7 @@ import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
+import org.origin.common.service.WebServiceAwareImpl;
 import org.osgi.framework.BundleContext;
 
 public class UserRegistryRelayControl extends WSRelayControlImpl {
@@ -25,7 +26,7 @@ public class UserRegistryRelayControl extends WSRelayControlImpl {
 		// Start relay ws app
 		WSRelayApplication wsApp = this.wsAppMap.get(url);
 		if (wsApp == null) {
-			UserRegistryWSApplicationDesc wsAppDesc = new UserRegistryWSApplicationDesc(contextRoot);
+			UserRegistryWSApplicationDesc wsAppDesc = new UserRegistryWSApplicationDesc(new WebServiceAwareImpl(null, null, contextRoot));
 			Switcher<URI> switcher = SwitcherUtil.INSTANCE.createURISwitcher(targetURLs, SwitcherPolicy.MODE_ROUND_ROBIN);
 			WSRelayApplication newWsApp = new WSRelayApplication(wsAppDesc, switcher, factory);
 			newWsApp.start(bundleContext);

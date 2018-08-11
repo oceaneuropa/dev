@@ -39,7 +39,7 @@ public class FsFileContentTableHandlerTestMac {
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.properties);
 	}
 
@@ -54,7 +54,7 @@ public class FsFileContentTableHandlerTestMac {
 	public void test001_writeFileContent_Postgres_mac() {
 		System.out.println("--- --- --- test001_writeFileContent_Postgres_mac() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		FileInputStream is1 = null;
 		FileInputStream is2 = null;
 		FileInputStream is3 = null;
@@ -62,6 +62,7 @@ public class FsFileContentTableHandlerTestMac {
 		FileInputStream is5 = null;
 		FileInputStream is6 = null;
 		try {
+			conn = getConnection();
 			File file1 = new File("/Users/example/Downloads/test/source/readme1.txt");
 			File file2 = new File("/Users/example/Downloads/test/source/readme2.txt");
 			File file3 = new File("/Users/example/Downloads/test/source/readme3.txt");
@@ -122,8 +123,9 @@ public class FsFileContentTableHandlerTestMac {
 	public void test005_readFileContent_Postgres_mac() {
 		System.out.println("--- --- --- test005_readFileContent_Postgres_mac() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			File file1 = new File("/Users/example/Downloads/test/target/readme1.txt");
 			File file2 = new File("/Users/example/Downloads/test/target/readme2.txt");
 			File file3 = new File("/Users/example/Downloads/test/target/readme3.txt");

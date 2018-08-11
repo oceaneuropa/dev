@@ -8,8 +8,6 @@ import org.origin.common.service.WebServiceAware;
 
 public interface UserRegistryService extends WebServiceAware {
 
-	public String getName();
-
 	List<UserAccount> getUserAccounts() throws ServerException;
 
 	UserAccount getUserAccount(String userId) throws ServerException;

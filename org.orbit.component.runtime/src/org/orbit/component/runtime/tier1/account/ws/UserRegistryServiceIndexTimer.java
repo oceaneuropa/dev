@@ -13,7 +13,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
 /**
- * UserRegistry service timer to update index item for the service.
+ * Indexer for UserRegistry service.
  *
  */
 public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistryService> {

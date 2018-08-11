@@ -25,7 +25,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  * Adapter to start UserRegistryWSApplication when UserRegistryService becomes available and to stop UserRegistryWSApplication when UserRegistryService becomes
  * unavailable.
  * 
@@ -82,7 +82,7 @@ public class UserRegistryServiceAdapter {
 				doStop(bundleContext, service);
 			}
 		});
-		serviceTracker.open();
+		this.serviceTracker.open();
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class UserRegistryServiceAdapter {
 	 */
 	protected void doStart(BundleContext bundleContext, UserRegistryService service) {
 		// Start ws app
-		this.webApp = new UserRegistryWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webApp = new UserRegistryWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer

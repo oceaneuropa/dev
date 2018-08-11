@@ -14,7 +14,7 @@ public class AppStoreWSApplication extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public AppStoreWSApplication(final AppStoreService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(AppStoreService.class, service);
 		adapt(WebServiceAware.class, service);
 

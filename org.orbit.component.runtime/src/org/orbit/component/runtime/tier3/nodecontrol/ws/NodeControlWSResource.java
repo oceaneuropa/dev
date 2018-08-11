@@ -25,6 +25,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.platform.sdk.token.OrbitRoles;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
@@ -48,6 +50,7 @@ import org.origin.common.rest.server.ServerException;
  *      /auth/RestSecurityInterceptor.java
  * 
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.DOMAIN_MANAGEMENT_ADMIN })
 @javax.ws.rs.Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class NodeControlWSResource extends AbstractWSApplicationResource {

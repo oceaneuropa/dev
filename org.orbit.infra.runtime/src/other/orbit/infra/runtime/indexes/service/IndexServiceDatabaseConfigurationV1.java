@@ -1,6 +1,7 @@
 package other.orbit.infra.runtime.indexes.service;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.orbit.infra.runtime.InfraConstants;
@@ -26,7 +27,7 @@ public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurati
 	}
 
 	@Override
-	public Connection getConnection() {
+	public Connection getConnection() throws SQLException {
 		String driver = (String) this.props.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_DRIVER);
 		String url = (String) this.props.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_URL);
 		String username = (String) this.props.get(InfraConstants.COMPONENT_INDEX_SERVICE_JDBC_USERNAME);

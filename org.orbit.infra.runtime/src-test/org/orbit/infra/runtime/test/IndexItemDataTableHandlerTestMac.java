@@ -40,7 +40,7 @@ public class IndexItemDataTableHandlerTestMac {
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.properties);
 	}
 
@@ -48,8 +48,9 @@ public class IndexItemDataTableHandlerTestMac {
 	public void test001_select() {
 		System.out.println("--- --- --- test001_select() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			List<IndexItemVO> vos = this.dataTableHandler.getIndexItems(conn);
 			System.out.println("vos.size()=" + vos.size());
 			for (IndexItemVO vo : vos) {
@@ -74,8 +75,9 @@ public class IndexItemDataTableHandlerTestMac {
 	public void test002_delete() {
 		System.out.println("--- --- --- test002_delete() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			List<IndexItemVO> vos = this.dataTableHandler.getIndexItems(conn);
 			System.out.println("vos.size()=" + vos.size());
 			for (IndexItemVO vo : vos) {
@@ -100,8 +102,9 @@ public class IndexItemDataTableHandlerTestMac {
 
 		String indexProviderId = "origin.index.provider";
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			Map<String, Object> properties1 = new HashMap<String, Object>();
 			properties1.put("indexProviderId", indexProviderId);
 			properties1.put("type", "tns1");
@@ -156,11 +159,11 @@ public class IndexItemDataTableHandlerTestMac {
 		properties.setProperty(DatabaseUtil.JDBC_USERNAME, "root");
 		properties.setProperty(DatabaseUtil.JDBC_PASSWORD, "admin");
 
-		Connection conn = DatabaseUtil.getConnection(properties);
+		Connection conn = null;
 		IndexItemDataTableHandler handler = new IndexItemDataTableHandler();
 		try {
+			conn = DatabaseUtil.getConnection(properties);
 			// DatabaseUtil.dropTable(conn, dataTableHandler);
-
 			DatabaseUtil.initialize(conn, handler);
 
 			Map<String, Object> props1 = new LinkedHashMap<String, Object>();

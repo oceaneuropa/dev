@@ -2,7 +2,7 @@ package org.orbit.infra.runtime.extensionregistry.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
-import org.origin.common.rest.filter.TestRequestFilter;
+import org.origin.common.rest.auth.TestRequestFilter;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
 import org.origin.common.service.WebServiceAware;
 import org.slf4j.Logger;
@@ -18,7 +18,7 @@ public class ExtensionRegistryWSApplication extends AbstractJerseyWSApplication 
 	 * @param feature
 	 */
 	public ExtensionRegistryWSApplication(final ExtensionRegistryService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		LOG.debug("ExtensionRegistryServiceWSApplication()");
 
 		adapt(ExtensionRegistryService.class, service);

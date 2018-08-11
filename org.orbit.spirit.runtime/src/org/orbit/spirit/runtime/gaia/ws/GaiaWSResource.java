@@ -9,12 +9,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.orbit.platform.sdk.token.OrbitRoles;
 import org.orbit.spirit.runtime.gaia.service.GAIA;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN })
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class GaiaWSResource extends AbstractWSApplicationResource {

@@ -4,14 +4,9 @@ import java.util.Map;
 
 import org.orbit.spirit.runtime.gaia.world.Worlds;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.service.WebServiceAware;
 
-public interface GAIA {
-
-	String getName();
-
-	String getHostURL();
-
-	String getContextRoot();
+public interface GAIA extends WebServiceAware {
 
 	void updateProperties(Map<Object, Object> configProps);
 

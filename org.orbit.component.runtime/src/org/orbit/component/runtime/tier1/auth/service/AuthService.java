@@ -23,8 +23,6 @@ public interface AuthService extends WebServiceAware {
 	public static final String GRANT_TYPE__USER_CREDENTIALS = "user_credentials"; //$NON-NLS-1$
 	public static final String GRANT_TYPE__REFRESH_TOKEN = "refresh_token"; //$NON-NLS-1$
 
-	String getName();
-
 	AuthorizationResponse authorize(AuthorizationRequest request) throws ServerException;
 
 	TokenResponse getToken(TokenRequest request) throws ServerException;

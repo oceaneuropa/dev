@@ -46,12 +46,6 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 		return new DomainManagementWSClient(config);
 	}
 
-	@Override
-	public String getURL() {
-		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
-		return fullUrl;
-	}
-
 	// ---------------------------------------------------------
 	// Machine management
 	// ---------------------------------------------------------
@@ -349,6 +343,12 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 	}
 
 }
+
+// @Override
+// public String getURL() {
+// String fullUrl = (String) this.properties.get(OrbitConstants.URL);
+// return fullUrl;
+// }
 
 // @Override
 // public String getName() {

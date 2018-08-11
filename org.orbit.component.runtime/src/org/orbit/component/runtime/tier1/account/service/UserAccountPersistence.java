@@ -11,11 +11,15 @@ public interface UserAccountPersistence {
 
 	UserAccount getUserAccount(String userId) throws IOException;
 
+	UserAccount getUserAccountByEmail(String email) throws IOException;
+
 	UserAccount createUserAccount(String userId, String password, String email, String firstName, String lastName, String phone) throws IOException;
 
 	boolean setUserAccountActivated(String userId, boolean activated) throws IOException;
 
-	boolean userAccountExists(String userId) throws IOException;
+	boolean userIdExists(String userId) throws IOException;
+
+	boolean emailExists(String email) throws IOException;
 
 	boolean updatePassword(String userId, String password) throws IOException;
 

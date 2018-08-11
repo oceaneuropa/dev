@@ -11,7 +11,7 @@ import org.orbit.infra.runtime.indexes.ws.IndexItemsWSResource;
 import org.orbit.infra.runtime.indexes.ws.IndexServiceIndexTimer;
 import org.orbit.infra.runtime.indexes.ws.IndexServiceWSResource;
 import org.origin.common.osgi.OSGiServiceUtil;
-import org.origin.common.rest.Constants;
+import org.origin.common.rest.RestConstants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -53,7 +53,7 @@ public class IndexServiceWSApplicationV1 extends AbstractApplication {
 
 		// Register web application
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(Constants.CONTEXT_ROOT, contextRoot);
+		props.put(RestConstants.CONTEXT_ROOT, contextRoot);
 		OSGiServiceUtil.register(this.bundleContext, Application.class, this, props);
 
 		// Start timer for indexing the service

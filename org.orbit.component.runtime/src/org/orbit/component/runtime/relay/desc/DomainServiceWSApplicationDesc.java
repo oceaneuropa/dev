@@ -3,18 +3,20 @@ package org.orbit.component.runtime.relay.desc;
 import org.origin.common.rest.server.WSApplicationDesc;
 import org.origin.common.rest.server.WSMethodDesc;
 import org.origin.common.rest.server.WSResourceDesc;
+import org.origin.common.service.WebServiceAware;
 
 public class DomainServiceWSApplicationDesc extends WSApplicationDesc {
 
 	/**
 	 * 
-	 * @param contextRoot
+	 * @param webServiceAware
 	 */
-	public DomainServiceWSApplicationDesc(String contextRoot) {
-		super(contextRoot);
+	public DomainServiceWSApplicationDesc(WebServiceAware webServiceAware) {
+		super(webServiceAware);
 
 		WSResourceDesc rootWSResource = new WSResourceDesc(this, "/");
 		new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "echo");
+		new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "name");
 
 		WSResourceDesc machinesWSResource = new WSResourceDesc(this, "/machines");
 		new WSMethodDesc(machinesWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");

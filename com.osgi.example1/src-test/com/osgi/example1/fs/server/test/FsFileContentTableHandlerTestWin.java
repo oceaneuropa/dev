@@ -40,7 +40,7 @@ public class FsFileContentTableHandlerTestWin {
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.properties);
 	}
 
@@ -54,7 +54,7 @@ public class FsFileContentTableHandlerTestWin {
 	public void test001_writeFileContent_Postgres() {
 		System.out.println("--- --- --- test001_writeFileContent_Postgres() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		FileInputStream is1 = null;
 		FileInputStream is2 = null;
 		FileInputStream is3 = null;
@@ -62,6 +62,7 @@ public class FsFileContentTableHandlerTestWin {
 		FileInputStream is5 = null;
 		FileInputStream is6 = null;
 		try {
+			conn = getConnection();
 			File file1 = new File("C:/downloads/test_source/DownloadAllNumbers.txt");
 			File file2 = new File("C:/downloads/test_source/ldiag.log");
 			File file3 = new File("C:/downloads/test_source/leaftexture.png");
@@ -128,7 +129,7 @@ public class FsFileContentTableHandlerTestWin {
 	public void test001_writeFileContent_MySQL() {
 		System.out.println("--- --- --- test001_writeFileContent_MySQL() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		FileInputStream is1 = null;
 		FileInputStream is2 = null;
 		FileInputStream is3 = null;
@@ -136,6 +137,7 @@ public class FsFileContentTableHandlerTestWin {
 		FileInputStream is5 = null;
 		FileInputStream is6 = null;
 		try {
+			conn = getConnection();
 			File file1 = new File("C:/downloads/test_source/DownloadAllNumbers.txt");
 			File file2 = new File("C:/downloads/test_source/ldiag.log");
 			File file3 = new File("C:/downloads/test_source/leaftexture.png");
@@ -195,8 +197,9 @@ public class FsFileContentTableHandlerTestWin {
 	public void test002_readFileContent_Postgres() {
 		System.out.println("--- --- --- test002_readFileContent_Postgres() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			File file1 = new File("C:/downloads/test_target/DownloadAllNumbers.txt");
 			File file2 = new File("C:/downloads/test_target/ldiag.log");
 			File file3 = new File("C:/downloads/test_target/leaftexture.png");
@@ -240,8 +243,9 @@ public class FsFileContentTableHandlerTestWin {
 	public void test002_readFileContent_MySQL() {
 		System.out.println("--- --- --- test002_readFileContent_MySQL() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			File file1 = new File("C:/downloads/test_target/DownloadAllNumbers.txt");
 			File file2 = new File("C:/downloads/test_target/ldiag.log");
 			File file3 = new File("C:/downloads/test_target/leaftexture.png");

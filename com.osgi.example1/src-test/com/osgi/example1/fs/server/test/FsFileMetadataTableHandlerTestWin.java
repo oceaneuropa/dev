@@ -34,7 +34,7 @@ public class FsFileMetadataTableHandlerTestWin {
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.properties);
 	}
 
@@ -46,8 +46,9 @@ public class FsFileMetadataTableHandlerTestWin {
 	}
 
 	protected void doSelect() {
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			List<FileMetadataVO> vos = this.metaHandler.getAll(conn);
 			System.out.println("vos.size()=" + vos.size());
 			for (FileMetadataVO vo : vos) {
@@ -64,8 +65,9 @@ public class FsFileMetadataTableHandlerTestWin {
 	@Test
 	public void test002_insert() {
 		System.out.println("--- --- --- test002_insert() --- --- ---");
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			this.metaHandler.insert(conn, -1, "DownloadAllNumbers.txt", false, 0);
 			this.metaHandler.insert(conn, -1, "ldiag.log", false, 0);
 			this.metaHandler.insert(conn, -1, "leaftexture.png", false, 0);
@@ -87,8 +89,9 @@ public class FsFileMetadataTableHandlerTestWin {
 	@Test
 	public void test003_update() {
 		System.out.println("--- --- --- test003_update() --- --- ---");
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			// this.handler.updateParentId(conn, 1, 2);
 			this.metaHandler.updateName(conn, 1, "root1a.text");
 			this.metaHandler.updateIsDirectory(conn, 1, true);
@@ -112,8 +115,9 @@ public class FsFileMetadataTableHandlerTestWin {
 	@Test
 	public void test004_delete() {
 		System.out.println("--- --- --- test004_delete() --- --- ---");
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			// this.handler.delete(conn, 7);
 			// this.handler.delete(conn, -1, "root1.txt");
 			// this.handler.delete(conn, -1, "root2.txt");

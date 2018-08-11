@@ -8,8 +8,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
+import org.orbit.platform.sdk.token.OrbitRoles;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN })
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class OAuth2ServiceWSResource extends AbstractWSApplicationResource {

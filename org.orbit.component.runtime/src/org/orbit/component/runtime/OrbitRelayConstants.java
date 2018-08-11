@@ -18,6 +18,15 @@ public class OrbitRelayConstants {
 	public static String COMPONENT_USER_REGISTRY_RELAY_URLS = "component.user_registry.relay.urls";
 
 	// ----------------------------------------------------------------------------------------
+	// Identity
+	// ----------------------------------------------------------------------------------------
+	public static String COMPONENT_IDENTITY_RELAY_AUTOSTART = "component.identity.relay.autostart";
+	public static String COMPONENT_IDENTITY_RELAY_NAME = "component.identity.relay.name";
+	public static String COMPONENT_IDENTITY_RELAY_CONTEXTY_ROOT = "component.identity.relay.context_root";
+	public static String COMPONENT_IDENTITY_RELAY_HOSTS = "component.identity.relay.hosts";
+	public static String COMPONENT_IDENTITY_RELAY_URLS = "component.identity.relay.urls";
+
+	// ----------------------------------------------------------------------------------------
 	// Auth
 	// ----------------------------------------------------------------------------------------
 	public static String COMPONENT_AUTH_RELAY_AUTOSTART = "component.auth.relay.autostart";

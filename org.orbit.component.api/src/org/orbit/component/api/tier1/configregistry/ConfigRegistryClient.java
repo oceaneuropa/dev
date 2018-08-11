@@ -2,8 +2,8 @@ package org.orbit.component.api.tier1.configregistry;
 
 import java.util.Map;
 
-import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceClient;
 
 /*
  * @see com.sun.jna.platform.win32.Advapi32Util (jna-platform-4.1.0.jar)
@@ -25,19 +25,7 @@ import org.origin.common.rest.client.ClientException;
  *      </pre>
  * 
  */
-public interface ConfigRegistryClient extends IAdaptable {
-
-	String getName();
-
-	String getURL();
-
-	Map<String, Object> getProperties();
-
-	void update(Map<String, Object> properties);
-
-	boolean ping();
-
-	// setString();
+public interface ConfigRegistryClient extends ServiceClient {
 
 	/**
 	 * Get the properties in a path.
@@ -106,7 +94,5 @@ public interface ConfigRegistryClient extends IAdaptable {
 	 * @throws ClientException
 	 */
 	void removeAll(String userId) throws ClientException;
-
-	boolean close() throws ClientException;
 
 }

@@ -9,6 +9,7 @@ import org.orbit.component.runtime.relay.desc.AppStoreWSApplicationDesc;
 import org.orbit.component.runtime.relay.desc.AuthWSApplicationDesc;
 import org.orbit.component.runtime.relay.desc.ConfigRegistryWSApplicationDesc;
 import org.orbit.component.runtime.relay.desc.DomainServiceWSApplicationDesc;
+import org.orbit.component.runtime.relay.desc.IdentityWSApplicationDesc;
 import org.orbit.component.runtime.relay.desc.MissionControlWSApplicationDesc;
 import org.orbit.component.runtime.relay.desc.NodeControlWSApplicationDesc;
 import org.orbit.component.runtime.relay.desc.UserRegistryWSApplicationDesc;
@@ -16,7 +17,6 @@ import org.orbit.component.runtime.relay.util.SwitcherUtil;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
-import org.origin.common.service.WebServiceAware;
 import org.origin.common.service.WebServiceAwareImpl;
 import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.URIUtil;
@@ -73,12 +73,52 @@ public class OrbitRelays {
 			return null;
 		}
 
-		UserRegistryWSApplicationDesc desc = new UserRegistryWSApplicationDesc(contextRoot);
+		UserRegistryWSApplicationDesc desc = new UserRegistryWSApplicationDesc(new WebServiceAwareImpl(name, hostURL, contextRoot));
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
 		WSRelayApplication relay = new WSRelayApplication(desc, uriSwitcher, null);
-		relay.adapt(WebServiceAware.class, new WebServiceAwareImpl(name, hostURL, contextRoot));
+		return relay;
+	}
 
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param initProperties
+	 * @return
+	 */
+	public WSRelayApplication createIdentityRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
+		Map<Object, Object> properties = new Hashtable<Object, Object>();
+		if (initProperties != null) {
+			properties.putAll(initProperties);
+		}
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_IDENTITY_RELAY_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_IDENTITY_RELAY_CONTEXTY_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_IDENTITY_RELAY_HOSTS);
+		PropertyUtil.loadProperty(bundleContext, properties, OrbitRelayConstants.COMPONENT_IDENTITY_RELAY_URLS);
+
+		String hostURL = (String) properties.get(OrbitRelayConstants.ORBIT_HOST_URL);
+		String name = (String) properties.get(OrbitRelayConstants.COMPONENT_IDENTITY_RELAY_NAME);
+		String contextRoot = (String) properties.get(OrbitRelayConstants.COMPONENT_IDENTITY_RELAY_CONTEXTY_ROOT);
+		String hosts = (String) properties.get(OrbitRelayConstants.COMPONENT_IDENTITY_RELAY_HOSTS);
+		String urls = (String) properties.get(OrbitRelayConstants.COMPONENT_IDENTITY_RELAY_URLS);
+		if (contextRoot == null) {
+			return null;
+		}
+		List<URI> uriList = null;
+		if (urls != null) {
+			uriList = toList(urls);
+		} else if (hosts != null) {
+			uriList = toList(hosts, contextRoot);
+		}
+		if (uriList == null || uriList.isEmpty()) {
+			return null;
+		}
+
+		IdentityWSApplicationDesc desc = new IdentityWSApplicationDesc(new WebServiceAwareImpl(name, hostURL, contextRoot));
+		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
+
+		WSRelayApplication relay = new WSRelayApplication(desc, uriSwitcher, null);
 		return relay;
 	}
 
@@ -118,12 +158,10 @@ public class OrbitRelays {
 			return null;
 		}
 
-		AuthWSApplicationDesc desc = new AuthWSApplicationDesc(contextRoot);
+		AuthWSApplicationDesc desc = new AuthWSApplicationDesc(new WebServiceAwareImpl(name, hostURL, contextRoot));
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
 		WSRelayApplication relay = new WSRelayApplication(desc, uriSwitcher, null);
-		relay.adapt(WebServiceAware.class, new WebServiceAwareImpl(name, hostURL, contextRoot));
-
 		return relay;
 	}
 
@@ -162,12 +200,10 @@ public class OrbitRelays {
 			return null;
 		}
 
-		ConfigRegistryWSApplicationDesc desc = new ConfigRegistryWSApplicationDesc(contextRoot);
+		ConfigRegistryWSApplicationDesc desc = new ConfigRegistryWSApplicationDesc(new WebServiceAwareImpl(name, hostURL, contextRoot));
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
 
 		WSRelayApplication relay = new WSRelayApplication(desc, uriSwitcher, null);
-		relay.adapt(WebServiceAware.class, new WebServiceAwareImpl(name, hostURL, contextRoot));
-
 		return relay;
 	}
 
@@ -207,12 +243,10 @@ public class OrbitRelays {
 			return null;
 		}
 
-		AppStoreWSApplicationDesc desc = new AppStoreWSApplicationDesc(contextRoot);
+		AppStoreWSApplicationDesc desc = new AppStoreWSApplicationDesc(new WebServiceAwareImpl(name, hostURL, contextRoot));
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
 		WSRelayApplication relay = new WSRelayApplication(desc, uriSwitcher, null);
-		relay.adapt(WebServiceAware.class, new WebServiceAwareImpl(name, hostURL, contextRoot));
-
 		return relay;
 	}
 
@@ -252,12 +286,10 @@ public class OrbitRelays {
 			return null;
 		}
 
-		DomainServiceWSApplicationDesc desc = new DomainServiceWSApplicationDesc(contextRoot);
+		DomainServiceWSApplicationDesc desc = new DomainServiceWSApplicationDesc(new WebServiceAwareImpl(name, hostURL, contextRoot));
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
 
 		WSRelayApplication relay = new WSRelayApplication(desc, uriSwitcher, null);
-		relay.adapt(WebServiceAware.class, new WebServiceAwareImpl(name, hostURL, contextRoot));
-
 		return relay;
 	}
 
@@ -297,12 +329,10 @@ public class OrbitRelays {
 			return null;
 		}
 
-		NodeControlWSApplicationDesc desc = new NodeControlWSApplicationDesc(contextRoot);
+		NodeControlWSApplicationDesc desc = new NodeControlWSApplicationDesc(new WebServiceAwareImpl(name, hostURL, contextRoot));
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_STICKY);
 
 		WSRelayApplication relay = new WSRelayApplication(desc, uriSwitcher, null);
-		relay.adapt(WebServiceAware.class, new WebServiceAwareImpl(name, hostURL, contextRoot));
-
 		return relay;
 	}
 
@@ -342,12 +372,10 @@ public class OrbitRelays {
 			return null;
 		}
 
-		MissionControlWSApplicationDesc desc = new MissionControlWSApplicationDesc(contextRoot);
+		MissionControlWSApplicationDesc desc = new MissionControlWSApplicationDesc(new WebServiceAwareImpl(name, hostURL, contextRoot));
 		Switcher<URI> uriSwitcher = SwitcherUtil.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
 		WSRelayApplication relay = new WSRelayApplication(desc, uriSwitcher, null);
-		relay.adapt(WebServiceAware.class, new WebServiceAwareImpl(name, hostURL, contextRoot));
-
 		return relay;
 	}
 

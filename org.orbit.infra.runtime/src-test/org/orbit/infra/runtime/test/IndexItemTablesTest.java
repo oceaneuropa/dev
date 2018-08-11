@@ -33,7 +33,7 @@ public class IndexItemTablesTest {
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.properties);
 	}
 
@@ -42,8 +42,9 @@ public class IndexItemTablesTest {
 	public void test001_listTables() {
 		System.out.println("--- --- --- test001_listTables() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			List<String> tableNames = DatabaseUtil.getTableNames(conn);
 			System.out.println("Num of tables: " + tableNames.size());
 			for (String tableName : tableNames) {
@@ -63,8 +64,9 @@ public class IndexItemTablesTest {
 	public void test002_initializeTables() {
 		System.out.println("--- --- --- test002_initializeTables() --- --- ---");
 
-		Connection conn = DatabaseUtil.getConnection(properties);
+		Connection conn = null;
 		try {
+			conn = DatabaseUtil.getConnection(properties);
 			DatabaseUtil.initialize(conn, requestHandler);
 			DatabaseUtil.initialize(conn, dataHandler);
 			DatabaseUtil.initialize(conn, revisionHandler);
@@ -82,8 +84,9 @@ public class IndexItemTablesTest {
 	public void test003_disposeTables() {
 		System.out.println("--- --- --- test003_disposeTables() --- --- ---");
 
-		Connection conn = DatabaseUtil.getConnection(properties);
+		Connection conn = null;
 		try {
+			conn = DatabaseUtil.getConnection(properties);
 			DatabaseUtil.dispose(conn, requestHandler);
 			DatabaseUtil.dispose(conn, dataHandler);
 			DatabaseUtil.dispose(conn, revisionHandler);
@@ -100,8 +103,9 @@ public class IndexItemTablesTest {
 	public void test004_clearTables() {
 		System.out.println("--- --- --- test004_clearTables() --- --- ---");
 
-		Connection conn = DatabaseUtil.getConnection(properties);
+		Connection conn = null;
 		try {
+			conn = DatabaseUtil.getConnection(properties);
 			DatabaseUtil.clear(conn, requestHandler);
 			DatabaseUtil.clear(conn, dataHandler);
 			DatabaseUtil.clear(conn, revisionHandler);

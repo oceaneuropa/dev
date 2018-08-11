@@ -28,7 +28,7 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 		this.connAware = connAware;
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		Connection conn = this.connAware.getConnection();
 		if (conn == null) {
 			throw new IllegalStateException("Connection is null.");
@@ -49,8 +49,9 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	@Override
 	public List<Mission> getMissions(String typeId) throws IOException {
 		List<Mission> missions = new ArrayList<Mission>();
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			List<MissionVO> missionVOs = MissionTableHandler.getInstance(conn, typeId).getMissions(conn);
 			for (MissionVO missionVO : missionVOs) {
 				Mission mission = MissionConverter.INSTANCE.toMission(missionVO);
@@ -69,8 +70,9 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	@Override
 	public List<String> getMissionNames(String typeId) throws IOException {
 		List<String> names = new ArrayList<String>();
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			List<MissionVO> missionVOs = MissionTableHandler.getInstance(conn, typeId).getMissions(conn);
 			for (MissionVO missionVO : missionVOs) {
 				names.add(missionVO.getName());
@@ -88,8 +90,9 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	@Override
 	public Mission getMission(String typeId, Integer id) throws IOException {
 		Mission mission = null;
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			MissionVO missionVO = MissionTableHandler.getInstance(conn, typeId).getMission(conn, id);
 			if (missionVO != null) {
 				mission = MissionConverter.INSTANCE.toMission(missionVO);
@@ -107,8 +110,9 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	@Override
 	public Mission getMission(String typeId, String name) throws IOException {
 		Mission mission = null;
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			MissionVO missionVO = MissionTableHandler.getInstance(conn, typeId).getMission(conn, name);
 			if (missionVO != null) {
 				mission = MissionConverter.INSTANCE.toMission(missionVO);
@@ -126,8 +130,9 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	@Override
 	public boolean nameExists(String typeId, String name) throws IOException {
 		boolean exists = false;
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			exists = MissionTableHandler.getInstance(conn, typeId).delete(conn, name);
 
 		} catch (SQLException e) {
@@ -142,8 +147,9 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	@Override
 	public Mission insert(String typeId, String name) throws IOException {
 		Mission mission = null;
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			MissionVO missionVO = MissionTableHandler.getInstance(conn, typeId).insert(conn, name);
 			if (missionVO != null) {
 				mission = MissionConverter.INSTANCE.toMission(missionVO);
@@ -161,8 +167,9 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	@Override
 	public boolean delete(String typeId, Integer id) throws IOException {
 		boolean succeed = false;
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			succeed = MissionTableHandler.getInstance(conn, typeId).delete(conn, id);
 
 		} catch (SQLException e) {
@@ -177,8 +184,9 @@ public class MissionPersistenceHandlerDatabaseImpl implements MissionPersistence
 	@Override
 	public boolean delete(String typeId, String name) throws IOException {
 		boolean succeed = false;
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			succeed = MissionTableHandler.getInstance(conn, typeId).delete(conn, name);
 
 		} catch (SQLException e) {

@@ -1,6 +1,5 @@
 package org.orbit.component.runtime.tier1.auth.service;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -12,12 +11,15 @@ import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.runtime.OrbitConstants;
 import org.orbit.component.runtime.OrbitServices;
+import org.orbit.component.runtime.common.token.TokenManager;
+import org.orbit.component.runtime.common.token.TokenManagerClusterImpl;
+import org.orbit.component.runtime.common.token.TokenUtil;
+import org.orbit.component.runtime.common.token.UserToken;
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.origin.common.Activator;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
-import org.origin.common.util.DateUtil;
 import org.origin.common.util.JWTUtil;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -208,7 +210,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		// Step2. Create new UserToken and store it in the tokenManager
 		UserToken userToken = null;
 		try {
-			userToken = createAccessToken(userAccount);
+			userToken = TokenUtil.createAccessTokenObject(this.tokenSecret, userAccount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ServerException("Authentication Failed", e.getMessage());
@@ -287,7 +289,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		// Step4. Create new UserToken and store it in the tokenManager
 		UserToken userToken = null;
 		try {
-			userToken = createAccessToken(userAccount);
+			userToken = TokenUtil.createAccessTokenObject(this.tokenSecret, userAccount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new ServerException("Authentication Failed", e.getMessage(), e);
@@ -303,52 +305,6 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		response.setState(request.getState());
 		response.setScope(request.getScope());
 		return response;
-	}
-
-	/**
-	 * 
-	 * @param userAccount
-	 * @return
-	 * @throws Exception
-	 */
-	private UserToken createAccessToken(UserAccount userAccount) throws Exception {
-		UserToken userToken = null;
-		try {
-			// String issuer = getFullName();
-			String issuer = "orbit.auth";
-			String subject1 = "user_access_token";
-			String subject2 = "user_refresh_token";
-			String audiences = userAccount.getUserId();
-
-			// Access token expires in 30 minutes
-			// Refresh token expires in 24 hours
-			// - The access token should be updated/refreshed with each access to web services. Accessing web services should return response header for
-			// the new
-			// access token with updated expiration time.
-			Date now = new Date();
-			Date accessTokenExpiresAt = DateUtil.addMinutes(now, 30);
-			Date refreshTokenExpiresAt = DateUtil.addHours(now, 24);
-
-			String username = userAccount.getUserId();
-			String email = userAccount.getEmail();
-			String firstName = userAccount.getFirstName();
-			String lastName = userAccount.getLastName();
-			String[][] keyValuePairs = new String[][] { new String[] { "username", username }, new String[] { "email", email }, new String[] { "firstName", firstName }, new String[] { "lastName", lastName } };
-
-			String accessToken = JWTUtil.createToken(this.tokenSecret, issuer, subject1, audiences, accessTokenExpiresAt, keyValuePairs);
-			String refreshToken = JWTUtil.createToken(this.tokenSecret, issuer, subject2, audiences, refreshTokenExpiresAt, keyValuePairs);
-
-			userToken = new UserToken();
-			userToken.setUsername(username);
-			userToken.setAccessToken(accessToken);
-			userToken.setRefreshToken(refreshToken);
-			userToken.setAccessTokenExpireTime(accessTokenExpiresAt);
-			userToken.setRefreshTokenExpireTime(refreshTokenExpiresAt);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return userToken;
 	}
 
 }

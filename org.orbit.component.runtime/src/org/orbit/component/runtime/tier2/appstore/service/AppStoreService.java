@@ -10,8 +10,6 @@ import org.origin.common.service.WebServiceAware;
 
 public interface AppStoreService extends WebServiceAware {
 
-	public String getName();
-
 	/**
 	 * Get apps.
 	 * 

@@ -3,6 +3,8 @@ package other.orbit.component.connector.tier1.auth;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier1.auth.AuthWSClient;
@@ -17,6 +19,7 @@ import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.model.tier1.auth.TokenResponseDTO;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.Request;
 
 public class AuthImplClientV1 implements AuthClient {
 
@@ -142,6 +145,21 @@ public class AuthImplClientV1 implements AuthClient {
 
 	@Override
 	public boolean close() throws ClientException {
+		return false;
+	}
+
+	@Override
+	public String getName() throws ClientException {
+		return null;
+	}
+
+	@Override
+	public Response sendRequest(Request request) throws ClientException {
+		return null;
+	}
+
+	@Override
+	public boolean isProxy() {
 		return false;
 	}
 

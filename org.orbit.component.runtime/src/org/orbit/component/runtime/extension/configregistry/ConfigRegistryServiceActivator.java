@@ -3,7 +3,7 @@ package org.orbit.component.runtime.extension.configregistry;
 import java.util.Map;
 
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
-import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceDatabaseImpl;
+import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
@@ -22,7 +22,7 @@ public class ConfigRegistryServiceActivator implements ServiceActivator {
 		Map<Object, Object> properties = context.getProperties();
 
 		// Start ConfigRegistryService
-		ConfigRegistryServiceDatabaseImpl configRegistryService = new ConfigRegistryServiceDatabaseImpl(properties);
+		ConfigRegistryServiceImpl configRegistryService = new ConfigRegistryServiceImpl(properties);
 		configRegistryService.start(bundleContext);
 
 		process.adapt(ConfigRegistryService.class, configRegistryService);

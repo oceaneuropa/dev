@@ -24,7 +24,7 @@ public class NodeControlWSApplication extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public NodeControlWSApplication(final NodeControlService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(NodeControlService.class, service);
 		adapt(WebServiceAware.class, service);
 

@@ -41,7 +41,7 @@ public class NodeConfigGetCommand extends AbstractCommand {
 
 			NodeConfig nodeConfig = this.service.getNodeConfig(machineId, platformId, id);
 			if (nodeConfig != null) {
-				nodeConfigDTO = ModelConverter.Domain.toDTO(nodeConfig);
+				nodeConfigDTO = ModelConverter.Domain.toNodeConfigDTO(nodeConfig);
 			}
 
 		} catch (ServerException e) {

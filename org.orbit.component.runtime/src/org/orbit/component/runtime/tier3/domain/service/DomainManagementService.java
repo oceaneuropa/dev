@@ -11,8 +11,6 @@ import org.origin.common.service.WebServiceAware;
 
 public interface DomainManagementService extends WebServiceAware {
 
-	String getName();
-
 	// ------------------------------------------------------
 	// Machine management
 	// ------------------------------------------------------

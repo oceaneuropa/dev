@@ -8,7 +8,7 @@ import org.origin.common.service.WebServiceAware;
 public class ChannelWSApplication extends AbstractJerseyWSApplication {
 
 	public ChannelWSApplication(final ChannelService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(ChannelService.class, service);
 		adapt(WebServiceAware.class, service);
 

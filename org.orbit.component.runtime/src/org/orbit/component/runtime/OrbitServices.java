@@ -9,6 +9,8 @@ import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.component.runtime.tier1.auth.ws.AuthServiceAdapter;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.component.runtime.tier1.config.ws.ConfigRegistryServiceAdapter;
+import org.orbit.component.runtime.tier1.identity.service.IdentityService;
+import org.orbit.component.runtime.tier1.identity.ws.IdentityServiceAdapter;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceAdapter;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
@@ -48,6 +50,7 @@ public class OrbitServices {
 
 	// tier1
 	protected UserRegistryServiceAdapter userRegistryServiceAdapter;
+	protected IdentityServiceAdapter identityServiceAdapter;
 	protected AuthServiceAdapter authServiceAdapter;
 	protected ConfigRegistryServiceAdapter configRegistryServiceAdapter;
 
@@ -94,28 +97,31 @@ public class OrbitServices {
 	public void doStart(BundleContext bundleContext) {
 		// Start service adapters
 		// tier1
-		this.userRegistryServiceAdapter = new UserRegistryServiceAdapter(properties);
+		this.userRegistryServiceAdapter = new UserRegistryServiceAdapter(this.properties);
 		this.userRegistryServiceAdapter.start(bundleContext);
 
-		this.authServiceAdapter = new AuthServiceAdapter(properties);
+		this.identityServiceAdapter = new IdentityServiceAdapter(this.properties);
+		this.identityServiceAdapter.start(bundleContext);
+
+		this.authServiceAdapter = new AuthServiceAdapter(this.properties);
 		this.authServiceAdapter.start(bundleContext);
 
-		this.configRegistryServiceAdapter = new ConfigRegistryServiceAdapter(properties);
+		this.configRegistryServiceAdapter = new ConfigRegistryServiceAdapter(this.properties);
 		this.configRegistryServiceAdapter.start(bundleContext);
 
 		// tier2
-		this.appStoreServiceAdapter = new AppStoreServiceAdapter(properties);
+		this.appStoreServiceAdapter = new AppStoreServiceAdapter(this.properties);
 		this.appStoreServiceAdapter.start(bundleContext);
 
 		// tier3
-		this.domainServiceAdapter = new DomainServiceAdapter(properties);
+		this.domainServiceAdapter = new DomainServiceAdapter(this.properties);
 		this.domainServiceAdapter.start(bundleContext);
 
-		this.nodeControlServiceAdapter = new NodeControlServiceAdapter(properties);
+		this.nodeControlServiceAdapter = new NodeControlServiceAdapter(this.properties);
 		this.nodeControlServiceAdapter.start(bundleContext);
 
 		// tier4
-		this.missionControlServiceAdapter = new MissionControlAdapter(properties);
+		this.missionControlServiceAdapter = new MissionControlAdapter(this.properties);
 		this.missionControlServiceAdapter.start(bundleContext);
 	}
 
@@ -148,6 +154,10 @@ public class OrbitServices {
 			this.userRegistryServiceAdapter.stop(bundleContext);
 			this.userRegistryServiceAdapter = null;
 		}
+		if (this.identityServiceAdapter != null) {
+			this.identityServiceAdapter.stop(bundleContext);
+			this.identityServiceAdapter = null;
+		}
 		if (this.authServiceAdapter != null) {
 			this.authServiceAdapter.stop(bundleContext);
 			this.authServiceAdapter = null;
@@ -161,6 +171,10 @@ public class OrbitServices {
 	// tier1
 	public UserRegistryService getUserRegistryService() {
 		return (this.userRegistryServiceAdapter != null) ? this.userRegistryServiceAdapter.getService() : null;
+	}
+
+	public IdentityService getIdentityService() {
+		return (this.identityServiceAdapter != null) ? this.identityServiceAdapter.getService() : null;
 	}
 
 	public AuthService getAuthService() {

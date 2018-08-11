@@ -1,21 +1,16 @@
 package org.orbit.component.connector.tier1.configregistry;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
 import org.orbit.component.api.tier1.configregistry.EPath;
 import org.orbit.component.connector.OrbitConstants;
-import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 
-public class ConfigRegistryClientImpl implements ConfigRegistryClient {
-
-	protected Map<String, Object> properties;
-	protected ConfigRegistryWSClient client;
-	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
+public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryClient, ConfigRegistryWSClient> implements ConfigRegistryClient {
 
 	/**
 	 * 
@@ -23,71 +18,17 @@ public class ConfigRegistryClientImpl implements ConfigRegistryClient {
 	 * @param properties
 	 */
 	public ConfigRegistryClientImpl(ServiceConnector<ConfigRegistryClient> connector, Map<String, Object> properties) {
-		if (connector != null) {
-			adapt(ServiceConnector.class, connector);
-		}
-		this.properties = checkProperties(properties);
-		initClient();
-	}
-
-	protected Map<String, Object> checkProperties(Map<String, Object> properties) {
-		if (properties == null) {
-			properties = new HashMap<String, Object>();
-		}
-		return properties;
+		super(connector, properties);
 	}
 
 	@Override
-	public boolean close() throws ClientException {
-		@SuppressWarnings("unchecked")
-		ServiceConnector<ConfigRegistryClient> connector = getAdapter(ServiceConnector.class);
-		if (connector != null) {
-			return connector.close(this);
-		}
-		return false;
-	}
-
-	@Override
-	public Map<String, Object> getProperties() {
-		return this.properties;
-	}
-
-	@Override
-	public void update(Map<String, Object> properties) {
-		this.properties = checkProperties(properties);
-		initClient();
-	}
-
-	protected void initClient() {
+	protected ConfigRegistryWSClient createWSClient(Map<String, Object> properties) {
 		String realm = (String) properties.get(OrbitConstants.REALM);
 		String username = (String) properties.get(OrbitConstants.USERNAME);
 		String fullUrl = (String) properties.get(OrbitConstants.URL);
 
 		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, fullUrl);
-		this.client = new ConfigRegistryWSClient(clientConfig);
-	}
-
-	// ------------------------------------------------------------------------------------------------
-	// Configuration methods
-	// ------------------------------------------------------------------------------------------------
-	@Override
-	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.CONFIG_REGISTRY_NAME);
-		return name;
-	}
-
-	@Override
-	public String getURL() {
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
-		return fullUrl;
-	}
-
-	// ------------------------------------------------------------------------------------------------
-	// Web service client methods
-	// ------------------------------------------------------------------------------------------------
-	@Override
-	public boolean ping() {
-		return this.client.doPing();
+		return new ConfigRegistryWSClient(clientConfig);
 	}
 
 	@Override
@@ -123,21 +64,6 @@ public class ConfigRegistryClientImpl implements ConfigRegistryClient {
 	@Override
 	public void removeAll(String userId) throws ClientException {
 
-	}
-
-	@Override
-	public <T> void adapt(Class<T> clazz, T object) {
-		this.adaptorSupport.adapt(clazz, object);
-	}
-
-	@Override
-	public <T> void adapt(Class<T>[] classes, T object) {
-		this.adaptorSupport.adapt(classes, object);
-	}
-
-	@Override
-	public <T> T getAdapter(Class<T> adapter) {
-		return this.adaptorSupport.getAdapter(adapter);
 	}
 
 }

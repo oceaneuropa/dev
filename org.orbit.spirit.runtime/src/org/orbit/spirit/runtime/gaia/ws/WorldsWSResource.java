@@ -14,10 +14,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.orbit.platform.sdk.token.OrbitRoles;
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
 import org.orbit.spirit.runtime.gaia.service.GAIA;
 import org.orbit.spirit.runtime.gaia.util.ModelConverter;
 import org.orbit.spirit.runtime.gaia.world.World;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
@@ -33,6 +35,7 @@ import org.origin.common.rest.server.ServerException;
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/worlds/{name}
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/worlds/{name}/exists
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN })
 @Path("/worlds")
 @Produces(MediaType.APPLICATION_JSON)
 public class WorldsWSResource extends AbstractWSApplicationResource {

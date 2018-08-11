@@ -15,6 +15,18 @@ public class OrbitConstants {
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
 
 	// ----------------------------------------------------------------------------------------
+	// Identity
+	// ----------------------------------------------------------------------------------------
+	// index item values
+	public static String IDENITY_INDEXER_ID = "component.identity.indexer"; // index provider id for Identity service
+	public static String IDENITY_TYPE = "Identity"; // type of index item for Identity service
+
+	// index item properties
+	public static String IDENITY_NAME = "identity.name";
+	public static String IDENITY_HOST_URL = "identity.host.url";
+	public static String IDENITY_CONTEXT_ROOT = "identity.context_root";
+
+	// ----------------------------------------------------------------------------------------
 	// UserRegistry
 	// ----------------------------------------------------------------------------------------
 	// index item values

@@ -13,8 +13,8 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
 
 /**
- * Adapter to start UserRegistryWSApplication when UserRegistryService becomes available and to stop UserRegistryWSApplication when
- * UserRegistryService becomes unavailable.
+ * Adapter to start UserRegistryWSApplication when UserRegistryService becomes available and to stop UserRegistryWSApplication when UserRegistryService becomes
+ * unavailable.
  * 
  */
 public class UserRegistryServiceAdapterV1 {
@@ -82,7 +82,7 @@ public class UserRegistryServiceAdapterV1 {
 	 * @param service
 	 */
 	protected void doStart(BundleContext bundleContext, UserRegistryService service) {
-		this.webApp = new UserRegistryWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webApp = new UserRegistryWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webApp.start(bundleContext);
 
 		// Start a timer to update the indexing of the service

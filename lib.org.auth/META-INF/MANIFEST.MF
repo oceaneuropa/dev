@@ -30,3 +30,11 @@ Export-Package: com.auth0,
  com.auth0.net,
  com.auth0.utils
 Bundle-ActivationPolicy: lazy
+Import-Package: com.fasterxml.jackson.annotation,
+ com.fasterxml.jackson.core,
+ com.fasterxml.jackson.core.type,
+ com.fasterxml.jackson.databind,
+ com.fasterxml.jackson.databind.deser.std,
+ com.fasterxml.jackson.databind.module,
+ com.fasterxml.jackson.databind.ser.std,
+ org.apache.commons.codec.binary;version="1.11.0"

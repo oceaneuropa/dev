@@ -58,7 +58,7 @@ public class DatabaseFileSystem implements FileSystem {
 		}
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return this.config.getConnection();
 	}
 
@@ -77,8 +77,9 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public FileMetadata getFileMetaData(Path path) {
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			String[] segments = path.getSegments();
 			if (segments == null || segments.length == 0) {
 				// empty path --- which belongs to relative path --- which cannot be used to resolve a file --- return non-exists FileMetadata.
@@ -117,8 +118,9 @@ public class DatabaseFileSystem implements FileSystem {
 
 	@Override
 	public Path[] listRoots() {
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			// get member files in the root folder (not including in-trash file records)
 			List<FileMetadataVO> rootVOs = getFileMetadataHandler().get(conn, -1, false);
 			if (rootVOs != null) {
@@ -149,8 +151,9 @@ public class DatabaseFileSystem implements FileSystem {
 			return EMPTY_PATHS;
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			int currParentFileId = -1;
 
 			String[] segments = parent.getSegments();
@@ -202,8 +205,9 @@ public class DatabaseFileSystem implements FileSystem {
 			return false;
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			int currParentFileId = -1;
 
 			String[] segments = path.getSegments();
@@ -249,8 +253,9 @@ public class DatabaseFileSystem implements FileSystem {
 			return false;
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			int currParentFileId = -1;
 
 			String[] segments = path.getSegments();
@@ -311,8 +316,9 @@ public class DatabaseFileSystem implements FileSystem {
 			return false;
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			int currParentFileId = -1;
 
 			String[] segments = path.getSegments();
@@ -391,8 +397,9 @@ public class DatabaseFileSystem implements FileSystem {
 			return false;
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			int currParentFileId = -1;
 
 			String[] segments = path.getSegments();
@@ -434,8 +441,9 @@ public class DatabaseFileSystem implements FileSystem {
 			return null;
 		}
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			int currParentFileId = -1;
 
 			String[] segments = path.getSegments();
@@ -503,8 +511,9 @@ public class DatabaseFileSystem implements FileSystem {
 		}
 
 		// Check target file
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			if (destFilePath.isEmpty()) {
 				throw new IOException("Path '" + destFilePath.getPathString() + "' is empty.");
 			}
@@ -584,8 +593,9 @@ public class DatabaseFileSystem implements FileSystem {
 		}
 
 		// Check target file
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			if (destFilePath.isEmpty()) {
 				throw new IOException("Path '" + destFilePath.getPathString() + "' is empty.");
 			}

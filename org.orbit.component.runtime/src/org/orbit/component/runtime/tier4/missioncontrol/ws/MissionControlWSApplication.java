@@ -8,7 +8,7 @@ import org.origin.common.service.WebServiceAware;
 public class MissionControlWSApplication extends OrbitWSApplication {
 
 	public MissionControlWSApplication(final MissionControlService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(MissionControlService.class, service);
 		adapt(WebServiceAware.class, service);
 

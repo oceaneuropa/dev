@@ -9,6 +9,10 @@ import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.model.tier1.auth.TokenResponseDTO;
+import org.orbit.component.model.tier1.identity.LoginRequestDTO;
+import org.orbit.component.model.tier1.identity.LoginResponseDTO;
+import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
+import org.orbit.component.model.tier1.identity.RegisterRequestDTO;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
@@ -20,25 +24,28 @@ import org.orbit.component.runtime.model.appstore.AppQuery;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.model.domain.PlatformConfig;
+import org.orbit.component.runtime.model.identity.LoginRequest;
+import org.orbit.component.runtime.model.identity.LoginResponse;
+import org.orbit.component.runtime.model.identity.LogoutRequest;
+import org.orbit.component.runtime.model.identity.RegisterRequest;
 
 public class ModelConverter {
 
 	public static Account Account = new Account();
-	public static AppStore AppStore = new AppStore();
+	public static Identity Identity = new Identity();
 	public static Auth Auth = new Auth();
+	public static AppStore AppStore = new AppStore();
 	public static Domain Domain = new Domain();
 
 	public static class Account {
-		// ------------------------------------------------------------------------------------------
-		// RTO -> DTO
-		// ------------------------------------------------------------------------------------------
+
 		/**
 		 * Convert UserAccountRTO to UserAccountDTO.
 		 * 
 		 * @param userAccount
 		 * @return
 		 */
-		public UserAccountDTO toDTO(UserAccount userAccount) {
+		public UserAccountDTO toUserAccountDTO(UserAccount userAccount) {
 			if (userAccount == null) {
 				return null;
 			}
@@ -57,16 +64,13 @@ public class ModelConverter {
 			return dto;
 		}
 
-		// ------------------------------------------------------------------------------------------
-		// DTO -> RTO
-		// ------------------------------------------------------------------------------------------
 		/**
 		 * Convert UserAccountDTO to UserAccountRTO.
 		 * 
 		 * @param userAccountDTO
 		 * @return
 		 */
-		public UserAccount toRTO(UserAccountDTO userAccountDTO) {
+		public UserAccount toUserAccount(UserAccountDTO userAccountDTO) {
 			if (userAccountDTO == null) {
 				return null;
 			}
@@ -86,10 +90,102 @@ public class ModelConverter {
 		}
 	}
 
+	public static class Identity {
+
+		/**
+		 * 
+		 * @param requestDTO
+		 * @return
+		 */
+		public RegisterRequest toRequest(RegisterRequestDTO requestDTO) {
+			if (requestDTO == null) {
+				return null;
+			}
+
+			String username = requestDTO.getUsername();
+			String email = requestDTO.getEmail();
+			String password = requestDTO.getPassword();
+
+			RegisterRequest request = new RegisterRequest();
+			request.setUsername(username);
+			request.setEmail(email);
+			request.setPassword(password);
+
+			return request;
+		}
+
+		/**
+		 * 
+		 * @param requestDTO
+		 * @return
+		 */
+		public LoginRequest toRequest(LoginRequestDTO requestDTO) {
+			if (requestDTO == null) {
+				return null;
+			}
+			String clientId = requestDTO.getClientId();
+			String grantType = requestDTO.getGrantType();
+			String username = requestDTO.getUsername();
+			String email = requestDTO.getEmail();
+			String password = requestDTO.getPassword();
+
+			LoginRequest request = new LoginRequest();
+			request.setClientId(clientId);
+			request.setGrantType(grantType);
+			request.setUsername(username);
+			request.setEmail(email);
+			request.setPassword(password);
+
+			return request;
+		}
+
+		/**
+		 * 
+		 * @param requestDTO
+		 * @return
+		 */
+		public LogoutRequest toRequest(LogoutRequestDTO requestDTO) {
+			if (requestDTO == null) {
+				return null;
+			}
+
+			String tokenType = requestDTO.getTokenType();
+			String tokenValue = requestDTO.getTokenValue();
+
+			LogoutRequest request = new LogoutRequest();
+			request.setTokenType(tokenType);
+			request.setTokenValue(tokenValue);
+
+			return request;
+		}
+
+		/**
+		 * 
+		 * @param loginResponse
+		 * @return
+		 */
+		public LoginResponseDTO toResponse(LoginResponse loginResponse) {
+			if (loginResponse == null) {
+				return null;
+			}
+
+			boolean succeed = loginResponse.isSucceed();
+			String message = loginResponse.getMessage();
+			String tokenType = loginResponse.getTokenType();
+			String tokenValue = loginResponse.getTokenValue();
+
+			LoginResponseDTO responseDTO = new LoginResponseDTO();
+			responseDTO.setSucceed(succeed);
+			responseDTO.setMessage(message);
+			responseDTO.setTokenType(tokenType);
+			responseDTO.setTokenValue(tokenValue);
+
+			return responseDTO;
+		}
+	}
+
 	public static class Auth {
-		// ----------------------------------------------------------------------
-		// Use on client side
-		// ----------------------------------------------------------------------
+
 		/**
 		 * Convert AuthorizationRequest object to AuthorizationRequestDTO object.
 		 * 
@@ -189,28 +285,6 @@ public class ModelConverter {
 
 			return response;
 		}
-
-		// ----------------------------------------------------------------------
-		// Use on server side
-		// ----------------------------------------------------------------------
-		// /**
-		// * Convert ServerException object to ErrorResponseDTO object.
-		// *
-		// * @param e
-		// * @return
-		// */
-		// public ErrorResponseDTO toResponseDTO(ServerException e) {
-		// String error = e.getError();
-		// String error_description = e.getError_description();
-		// String error_url = e.getError_url();
-		//
-		// ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
-		// errorResponseDTO.setError(error);
-		// errorResponseDTO.setError_description(error_description);
-		// errorResponseDTO.setError_uri(error_url);
-		//
-		// return errorResponseDTO;
-		// }
 
 		/**
 		 * Convert AuthorizationRequestDTO object to AuthorizationRequest object.
@@ -314,16 +388,13 @@ public class ModelConverter {
 	}
 
 	public static class AppStore {
-		// ------------------------------------------------------------------------------------------
-		// RTO to DTO
-		// ------------------------------------------------------------------------------------------
 		/**
 		 * Convert AppManifestRTO to AppManifestDTO.
 		 * 
 		 * @param app
 		 * @return
 		 */
-		public AppManifestDTO toDTO(AppManifest app) {
+		public AppManifestDTO toAppDTO(AppManifest app) {
 			if (app == null) {
 				return null;
 			}
@@ -344,16 +415,13 @@ public class ModelConverter {
 			return dto;
 		}
 
-		// ------------------------------------------------------------------------------------------
-		// DTO to RTO
-		// ------------------------------------------------------------------------------------------
 		/**
 		 * Convert AppManifestDTO to AppManifestRTO.
 		 * 
 		 * @param app
 		 * @return
 		 */
-		public AppManifest toRTO(AppManifestDTO appDTO) {
+		public AppManifest toApp(AppManifestDTO appDTO) {
 			if (appDTO == null) {
 				return null;
 			}
@@ -379,7 +447,7 @@ public class ModelConverter {
 		 * @param app
 		 * @return
 		 */
-		public AppQuery toRTO(AppQueryDTO queryDTO) {
+		public AppQuery toAppQuery(AppQueryDTO queryDTO) {
 			if (queryDTO == null) {
 				return null;
 			}
@@ -404,16 +472,14 @@ public class ModelConverter {
 	}
 
 	public static class Domain {
-		// ------------------------------------------------------------------------------------------
-		// RTO to DTO
-		// ------------------------------------------------------------------------------------------
+
 		/**
 		 * Convert MachineConfigRTO to MachineConfigDTO.
 		 * 
 		 * @param machineConfig
 		 * @return
 		 */
-		public MachineConfigDTO toDTO(MachineConfig machineConfig) {
+		public MachineConfigDTO toMachineConfigDTO(MachineConfig machineConfig) {
 			if (machineConfig == null) {
 				return null;
 			}
@@ -432,7 +498,7 @@ public class ModelConverter {
 		 * @param transferAgentConfig
 		 * @return
 		 */
-		public PlatformConfigDTO toDTO(PlatformConfig transferAgentConfig) {
+		public PlatformConfigDTO toPlatformConfigDTO(PlatformConfig transferAgentConfig) {
 			if (transferAgentConfig == null) {
 				return null;
 			}
@@ -453,7 +519,7 @@ public class ModelConverter {
 		 * @param nodeConfig
 		 * @return
 		 */
-		public NodeConfigDTO toDTO(NodeConfig nodeConfig) {
+		public NodeConfigDTO toNodeConfigDTO(NodeConfig nodeConfig) {
 			if (nodeConfig == null) {
 				return null;
 			}
@@ -470,16 +536,13 @@ public class ModelConverter {
 			return dto;
 		}
 
-		// ------------------------------------------------------------------------------------------
-		// DTO to RTO
-		// ------------------------------------------------------------------------------------------
 		/**
 		 * Convert MachineConfigDTO to MachineConfigRTO.
 		 * 
 		 * @param machineConfigDTO
 		 * @return
 		 */
-		public MachineConfig toRTO(MachineConfigDTO machineConfigDTO) {
+		public MachineConfig toMachineConfig(MachineConfigDTO machineConfigDTO) {
 			if (machineConfigDTO == null) {
 				return null;
 			}
@@ -493,22 +556,22 @@ public class ModelConverter {
 		}
 
 		/**
-		 * Convert TransferAgentConfigDTO to TransferAgentConfigRTO.
+		 * Convert PlatformConfigDTO to PlatformConfig.
 		 * 
-		 * @param transferAgentConfigDTO
+		 * @param platformConfigDTO
 		 * @return
 		 */
-		public PlatformConfig toRTO(PlatformConfigDTO transferAgentConfigDTO) {
-			if (transferAgentConfigDTO == null) {
+		public PlatformConfig toPlatformConfig(PlatformConfigDTO platformConfigDTO) {
+			if (platformConfigDTO == null) {
 				return null;
 			}
 			PlatformConfig transferAgentConfig = new PlatformConfig();
 
-			transferAgentConfig.setId(transferAgentConfigDTO.getId());
-			transferAgentConfig.setName(transferAgentConfigDTO.getName());
-			transferAgentConfig.setHome(transferAgentConfigDTO.getHome());
-			transferAgentConfig.setHostURL(transferAgentConfigDTO.getHostURL());
-			transferAgentConfig.setContextRoot(transferAgentConfigDTO.getContextRoot());
+			transferAgentConfig.setId(platformConfigDTO.getId());
+			transferAgentConfig.setName(platformConfigDTO.getName());
+			transferAgentConfig.setHome(platformConfigDTO.getHome());
+			transferAgentConfig.setHostURL(platformConfigDTO.getHostURL());
+			transferAgentConfig.setContextRoot(platformConfigDTO.getContextRoot());
 
 			return transferAgentConfig;
 		}
@@ -519,7 +582,7 @@ public class ModelConverter {
 		 * @param nodeConfigDTO
 		 * @return
 		 */
-		public NodeConfig toRTO(NodeConfigDTO nodeConfigDTO) {
+		public NodeConfig toNodeConfig(NodeConfigDTO nodeConfigDTO) {
 			if (nodeConfigDTO == null) {
 				return null;
 			}
@@ -565,4 +628,26 @@ public class ModelConverter {
 // dto.setDetail(causeName);
 // }
 // return dto;
+// }
+
+// ----------------------------------------------------------------------
+// Use on server side
+// ----------------------------------------------------------------------
+// /**
+// * Convert ServerException object to ErrorResponseDTO object.
+// *
+// * @param e
+// * @return
+// */
+// public ErrorResponseDTO toResponseDTO(ServerException e) {
+// String error = e.getError();
+// String error_description = e.getError_description();
+// String error_url = e.getError_url();
+//
+// ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO();
+// errorResponseDTO.setError(error);
+// errorResponseDTO.setError_description(error_description);
+// errorResponseDTO.setError_uri(error_url);
+//
+// return errorResponseDTO;
 // }

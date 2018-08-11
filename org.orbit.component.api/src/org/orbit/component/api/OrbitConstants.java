@@ -13,8 +13,9 @@ public class OrbitConstants {
 	// orbit service config properties
 	// ----------------------------------------------------------------------------------------
 	// tier1
-	public static String ORBIT_AUTH_URL = "orbit.auth.url";
+	public static String ORBIT_IDENTITY_SERVICE_URL = "orbit.identity_service.url";
 	public static String ORBIT_USER_ACCOUNTS_URL = "orbit.user_registry.url";
+	public static String ORBIT_AUTH_URL = "orbit.auth.url";
 	public static String ORBIT_REGISTRY_URL = "orbit.config_registry.url";
 
 	// tier2

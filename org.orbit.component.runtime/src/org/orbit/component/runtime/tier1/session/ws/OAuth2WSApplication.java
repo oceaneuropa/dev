@@ -13,7 +13,7 @@ public class OAuth2WSApplication extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public OAuth2WSApplication(final OAuth2Service service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(OAuth2Service.class, service);
 		adapt(WebServiceAware.class, service);
 
@@ -23,7 +23,8 @@ public class OAuth2WSApplication extends OrbitWSApplication {
 				bind(service).to(OAuth2Service.class);
 			}
 		});
-		// register(OAuth2ServiceWSResource.class);
 	}
 
 }
+
+// register(OAuth2ServiceWSResource.class);

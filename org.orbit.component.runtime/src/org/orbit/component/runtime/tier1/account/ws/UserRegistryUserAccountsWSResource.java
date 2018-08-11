@@ -23,13 +23,15 @@ import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.platform.sdk.token.OrbitRoles;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
 
 /*
- * User registry resource.
+ * User registry web service resource.
  * 
  * {contextRoot} example: 
  * /orbit/v1/userregistry
@@ -46,9 +48,12 @@ import org.origin.common.rest.server.ServerException;
  * User account activation
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccounts/{userId}/activated
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.USER_ACCOUNTS_ADMIN })
 @Path("/useraccounts")
 @Produces(MediaType.APPLICATION_JSON)
 public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationResource {
+
+	public static String admin = "admin";
 
 	@Inject
 	public UserRegistryService service;
@@ -70,15 +75,13 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserAccounts() {
-		// UserRegistryService service = getService(UserRegistryService.class);
-		UserRegistryService service = getService();
-
 		List<UserAccountDTO> userAccountDTOs = new ArrayList<UserAccountDTO>();
 		try {
+			UserRegistryService service = getService();
 			List<UserAccount> userAccounts = service.getUserAccounts();
 			if (userAccounts != null) {
 				for (UserAccount userAccount : userAccounts) {
-					UserAccountDTO userAccountDTO = ModelConverter.Account.toDTO(userAccount);
+					UserAccountDTO userAccountDTO = ModelConverter.Account.toUserAccountDTO(userAccount);
 					userAccountDTOs.add(userAccountDTO);
 				}
 			}
@@ -102,21 +105,19 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserAccount(@PathParam("userId") String userId) {
 		UserAccountDTO userAccountDTO = null;
-
-		UserRegistryService service = getService();
 		try {
+			UserRegistryService service = getService();
 			UserAccount userAccount = service.getUserAccount(userId);
 			if (userAccount == null) {
 				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", userId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
-			userAccountDTO = ModelConverter.Account.toDTO(userAccount);
+			userAccountDTO = ModelConverter.Account.toUserAccountDTO(userAccount);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
-
 		return Response.ok().entity(userAccountDTO).build();
 	}
 
@@ -133,9 +134,8 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response userAccountExists(@PathParam("userId") String userId) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
-
-		UserRegistryService service = getService();
 		try {
+			UserRegistryService service = getService();
 			boolean exists = service.userAccountExists(userId);
 			result.put("exists", exists);
 
@@ -163,9 +163,9 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 		}
 
 		boolean succeed = false;
-		UserRegistryService service = getService();
 		try {
-			UserAccount newUserAccountRequest = ModelConverter.Account.toRTO(newUserAccountRequestDTO);
+			UserRegistryService service = getService();
+			UserAccount newUserAccountRequest = ModelConverter.Account.toUserAccount(newUserAccountRequestDTO);
 			UserAccount newUserAccount = service.registerUserAccount(newUserAccountRequest);
 			if (newUserAccount != null) {
 				succeed = true;
@@ -204,7 +204,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 		boolean succeed = false;
 		UserRegistryService service = getService();
 		try {
-			UserAccount updateUserAccountRequest = ModelConverter.Account.toRTO(updateUserAccountRequestDTO);
+			UserAccount updateUserAccountRequest = ModelConverter.Account.toUserAccount(updateUserAccountRequestDTO);
 			succeed = service.updateUserAccount(updateUserAccountRequest);
 
 		} catch (ServerException e) {
@@ -251,7 +251,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/useraccounts/action/ (Body parameter: UserAccountActionDTO)
 	 * 
-	 * @param userId
+	 * @param username
 	 * @return
 	 */
 	@PUT

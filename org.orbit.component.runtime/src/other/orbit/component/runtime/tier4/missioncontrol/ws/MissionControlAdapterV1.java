@@ -79,7 +79,7 @@ public class MissionControlAdapterV1 {
 
 	protected void doStart(BundleContext bundleContext, MissionControlService service) {
 		// Start web service
-		this.webServiceApp = new MissionControlWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webServiceApp = new MissionControlWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer

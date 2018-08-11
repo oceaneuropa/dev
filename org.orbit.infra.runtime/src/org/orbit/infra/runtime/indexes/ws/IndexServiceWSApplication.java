@@ -2,7 +2,7 @@ package org.orbit.infra.runtime.indexes.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.origin.common.rest.filter.TestRequestFilter;
+import org.origin.common.rest.auth.TestRequestFilter;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
 import org.origin.common.service.WebServiceAware;
 import org.slf4j.Logger;
@@ -13,7 +13,7 @@ public class IndexServiceWSApplication extends AbstractJerseyWSApplication {
 	private Logger LOG = LoggerFactory.getLogger(IndexServiceWSApplication.class);
 
 	public IndexServiceWSApplication(final IndexService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		LOG.debug("IndexServiceWSApplication()");
 
 		adapt(IndexService.class, service);

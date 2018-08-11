@@ -21,6 +21,8 @@ import org.orbit.infra.model.extensionregistry.ExtensionItemSetPropertiesRequest
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
 import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.platform.sdk.token.OrbitRoles;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -54,6 +56,7 @@ import org.slf4j.LoggerFactory;
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/extensionitem/properties?platformId={platformId}&typeId={typeId}&extensionId={extensionId}&propertyNames={propertyNames}
  * 
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.EXTENSIONS_ADMIN })
 @Path("/extensionitem")
 @Produces(MediaType.APPLICATION_JSON)
 public class ExtensionItemWSResource extends AbstractWSApplicationResource {

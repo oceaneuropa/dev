@@ -5,18 +5,20 @@ import javax.ws.rs.core.MediaType;
 import org.origin.common.rest.server.WSApplicationDesc;
 import org.origin.common.rest.server.WSMethodDesc;
 import org.origin.common.rest.server.WSResourceDesc;
+import org.origin.common.service.WebServiceAware;
 
 public class AppStoreWSApplicationDesc extends WSApplicationDesc {
 
 	/**
 	 * 
-	 * @param contextRoot
+	 * @param webServiceAware
 	 */
-	public AppStoreWSApplicationDesc(String contextRoot) {
-		super(contextRoot);
+	public AppStoreWSApplicationDesc(WebServiceAware webServiceAware) {
+		super(webServiceAware);
 
 		WSResourceDesc rootWSResource = new WSResourceDesc(this, "/");
 		new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "echo");
+		new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "name");
 
 		WSResourceDesc appsWSResource = new WSResourceDesc(this, "/apps");
 		new WSMethodDesc(appsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");

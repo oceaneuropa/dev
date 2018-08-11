@@ -20,6 +20,8 @@ import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.platform.sdk.token.OrbitRoles;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -41,6 +43,7 @@ import org.slf4j.LoggerFactory;
  * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/machines/{machineId}/platforms/{platformId}/nodes/{nodeId}
  * 
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.DOMAIN_MANAGEMENT_ADMIN })
 @Path("/machines/{machineId}/platforms/{platformId}/nodes")
 @Produces(MediaType.APPLICATION_JSON)
 public class DomainServiceWSNodesResource extends AbstractWSApplicationResource {
@@ -76,7 +79,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 			List<NodeConfig> nodeConfigs = service.getNodeConfigs(machineId, platformId);
 			if (nodeConfigs != null) {
 				for (NodeConfig nodeConfig : nodeConfigs) {
-					NodeConfigDTO nodeConfigDTO = ModelConverter.Domain.toDTO(nodeConfig);
+					NodeConfigDTO nodeConfigDTO = ModelConverter.Domain.toNodeConfigDTO(nodeConfig);
 					nodeConfigDTOs.add(nodeConfigDTO);
 				}
 			}
@@ -111,7 +114,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 				return Response.status(Status.NOT_FOUND).entity(notFoundError).build();
 			}
 
-			nodeConfigDTO = ModelConverter.Domain.toDTO(nodeConfig);
+			nodeConfigDTO = ModelConverter.Domain.toNodeConfigDTO(nodeConfig);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -152,7 +155,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 				return Response.status(Status.BAD_REQUEST).entity(alreadyExistsError).build();
 			}
 
-			NodeConfig addNodeRequest = ModelConverter.Domain.toRTO(addNodeRequestDTO);
+			NodeConfig addNodeRequest = ModelConverter.Domain.toNodeConfig(addNodeRequestDTO);
 
 			succeed = service.addNodeConfig(machineId, platformId, addNodeRequest);
 
@@ -190,7 +193,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 		boolean succeed = false;
 		DomainManagementService service = getService();
 		try {
-			NodeConfig updateNodeRequest = ModelConverter.Domain.toRTO(updateNodeRequestDTO);
+			NodeConfig updateNodeRequest = ModelConverter.Domain.toNodeConfig(updateNodeRequestDTO);
 			List<String> fieldsToUpdate = updateNodeRequestDTO.getFieldsToUpdate();
 
 			succeed = service.updateNodeConfig(machineId, platformId, updateNodeRequest, fieldsToUpdate);

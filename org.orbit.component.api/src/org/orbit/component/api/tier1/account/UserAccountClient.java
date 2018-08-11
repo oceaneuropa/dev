@@ -1,21 +1,9 @@
 package org.orbit.component.api.tier1.account;
 
-import java.util.Map;
-
-import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceClient;
 
-public interface UserAccountClient extends IAdaptable {
-
-	String getName();
-
-	String getURL();
-
-	Map<String, Object> getProperties();
-
-	boolean ping();
-
-	void update(Map<String, Object> properties);
+public interface UserAccountClient extends ServiceClient {
 
 	UserAccount[] getUserAccounts() throws ClientException;
 
@@ -36,7 +24,5 @@ public interface UserAccountClient extends IAdaptable {
 	boolean deactivate(String userId) throws ClientException;
 
 	boolean delete(String userId) throws ClientException;
-
-	boolean close() throws ClientException;
 
 }

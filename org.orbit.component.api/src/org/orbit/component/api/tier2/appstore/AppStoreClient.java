@@ -2,26 +2,15 @@ package org.orbit.component.api.tier2.appstore;
 
 import java.io.OutputStream;
 import java.nio.file.Path;
-import java.util.Map;
 
-import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceClient;
 
 /**
  * App store client interface.
  *
  */
-public interface AppStoreClient extends IAdaptable {
-
-	String getName();
-
-	String getURL();
-
-	Map<String, Object> getProperties();
-
-	void update(Map<String, Object> properties);
-
-	boolean ping();
+public interface AppStoreClient extends ServiceClient {
 
 	/**
 	 * Get apps.
@@ -110,7 +99,5 @@ public interface AppStoreClient extends IAdaptable {
 	 * @throws ClientException
 	 */
 	boolean downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException;
-
-	boolean close() throws ClientException;
 
 }

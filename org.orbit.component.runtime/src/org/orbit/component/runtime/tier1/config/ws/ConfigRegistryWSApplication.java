@@ -13,7 +13,7 @@ public class ConfigRegistryWSApplication extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public ConfigRegistryWSApplication(final ConfigRegistryService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(ConfigRegistryService.class, service);
 		adapt(WebServiceAware.class, service);
 

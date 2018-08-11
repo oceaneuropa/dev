@@ -37,7 +37,7 @@ public class IndexItemRevisionTableHandlerTestMac {
 		// this.properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.properties);
 	}
 
@@ -45,8 +45,9 @@ public class IndexItemRevisionTableHandlerTestMac {
 	public void test001_select() {
 		System.out.println("--- --- --- test001_select() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			List<IndexItemRevisionVO> vos = this.revisionTableHandler.getRevisions(conn);
 			System.out.println("vos.size()=" + vos.size());
 			for (IndexItemRevisionVO vo : vos) {
@@ -76,8 +77,9 @@ public class IndexItemRevisionTableHandlerTestMac {
 	public void test002_delete() {
 		System.out.println("--- --- --- test002_delete() --- --- ---");
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			List<IndexItemRevisionVO> vos = this.revisionTableHandler.getRevisions(conn);
 			System.out.println("vos.size()=" + vos.size());
 			for (IndexItemRevisionVO vo : vos) {
@@ -102,8 +104,9 @@ public class IndexItemRevisionTableHandlerTestMac {
 
 		String indexProviderId = "origin.index.provider";
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			// ---------------------------------------------------------------------------------------------------------------------------------------------------
 			Map<String, Object> arguments1 = new HashMap<String, Object>();
 			arguments1.put("indexProviderId", indexProviderId);

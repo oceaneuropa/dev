@@ -21,7 +21,7 @@ public class TransferAgentWSApplicationV1 extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public TransferAgentWSApplicationV1(final BundleContext bundleContext, final NodeControlService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		this.service = service;
 
 		register(new AbstractBinder() {

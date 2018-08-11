@@ -17,7 +17,7 @@ public class UserRegistryWSApplication extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public UserRegistryWSApplication(final UserRegistryService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(UserRegistryService.class, service);
 		adapt(WebServiceAware.class, service);
 

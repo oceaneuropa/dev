@@ -29,7 +29,7 @@ public class NodeOSWSApplicationV1 extends AbstractApplication {
 
 		// Register Application service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(org.origin.common.rest.Constants.CONTEXT_ROOT, this.contextRoot);
+		props.put(org.origin.common.rest.RestConstants.CONTEXT_ROOT, this.contextRoot);
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 	}
 

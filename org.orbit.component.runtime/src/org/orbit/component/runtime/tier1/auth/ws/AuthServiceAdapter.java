@@ -92,7 +92,7 @@ public class AuthServiceAdapter {
 	 */
 	protected void doStart(BundleContext bundleContext, AuthService service) {
 		// Start web app
-		this.webApp = new AuthWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.ECHO);
+		this.webApp = new AuthWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO);
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer

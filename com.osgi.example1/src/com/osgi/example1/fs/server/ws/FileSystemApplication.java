@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
-import org.origin.common.rest.Constants;
+import org.origin.common.rest.RestConstants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -37,7 +37,7 @@ public class FileSystemApplication extends AbstractApplication {
 		// System.out.println("FileSystemApplication.start()");
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		props.put(Constants.CONTEXT_ROOT, this.contextRoot);
+		props.put(RestConstants.CONTEXT_ROOT, this.contextRoot);
 		this.serviceRegistration = this.bundleContext.registerService(Application.class, this, props);
 	}
 

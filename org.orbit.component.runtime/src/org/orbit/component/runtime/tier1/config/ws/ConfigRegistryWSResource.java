@@ -20,6 +20,8 @@ import org.orbit.component.model.tier1.configregistry.SetPropertiesDTO;
 import org.orbit.component.runtime.model.configregistry.EPath;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistry;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.platform.sdk.token.OrbitRoles;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
@@ -32,6 +34,7 @@ import org.origin.common.rest.server.ServerException;
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{userid}/properties?path={path} (Body parameter: PropertiesDTO)
  * 
  */
+@Secured(roles = { OrbitRoles.USER })
 @Path("/{userid}")
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigRegistryWSResource extends AbstractWSApplicationResource {

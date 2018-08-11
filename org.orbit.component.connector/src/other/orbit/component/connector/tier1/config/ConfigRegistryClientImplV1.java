@@ -4,11 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.api.tier1.configregistry.EPath;
+import javax.ws.rs.core.Response;
+
 import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
+import org.orbit.component.api.tier1.configregistry.EPath;
 import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.tier1.configregistry.ConfigRegistryWSClient;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.Request;
 import org.origin.common.util.StringUtil;
 
 public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
@@ -156,6 +159,21 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 
 	@Override
 	public boolean close() throws ClientException {
+		return false;
+	}
+
+	@Override
+	public String echo(String message) throws ClientException {
+		return null;
+	}
+
+	@Override
+	public Response sendRequest(Request request) throws ClientException {
+		return null;
+	}
+
+	@Override
+	public boolean isProxy() {
 		return false;
 	}
 

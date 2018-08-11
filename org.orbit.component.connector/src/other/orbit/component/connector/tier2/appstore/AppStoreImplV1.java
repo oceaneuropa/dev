@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
@@ -23,6 +25,7 @@ import org.origin.common.jdbc.SQLWhereOperator;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.StatusDTO;
 
 /**
@@ -336,6 +339,24 @@ public class AppStoreImplV1 implements AppStoreClient {
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return this.adaptorSupport.getAdapter(adapter);
+	}
+
+	@Override
+	public String echo(String message) throws ClientException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Response sendRequest(Request request) throws ClientException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isProxy() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

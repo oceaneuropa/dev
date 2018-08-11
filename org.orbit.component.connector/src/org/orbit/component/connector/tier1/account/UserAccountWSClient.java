@@ -25,10 +25,9 @@ import org.origin.common.rest.util.ResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
- * User registry resource client.
+ * User registry web service client.
  * 
- * {contextRoot} example: 
- * /orbit/v1/userregistry
+ * {contextRoot}: /orbit/v1/userregistry
  * 
  * User accounts: 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccounts 

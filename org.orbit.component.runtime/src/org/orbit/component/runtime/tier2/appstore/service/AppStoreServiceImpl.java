@@ -141,7 +141,7 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 

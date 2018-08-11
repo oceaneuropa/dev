@@ -139,8 +139,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		this.databaseProperties = DatabaseUtil.getProperties(jdbcDriver, jdbcURL, jdbcUsername, jdbcPassword);
 		// Initialize database tables.
-		Connection conn = DatabaseUtil.getConnection(this.databaseProperties);
+		Connection conn = null;
 		try {
+			conn = DatabaseUtil.getConnection(this.databaseProperties);
 			DatabaseUtil.initialize(conn, MachineConfigTableHandler.INSTANCE);
 			DatabaseUtil.initialize(conn, PlatformConfigTableHandler.INSTANCE);
 			DatabaseUtil.initialize(conn, NodeConfigTableHandler.INSTANCE);
@@ -158,7 +159,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		// this.workspaceProperties.put(Constants.CONTENT_TABLE_NAME, tableNamePrefix + "_" + Constants.CONTENT_TABLE_NAME_DEFAULT_VALUE);
 	}
 
-	protected Connection getConnection() {
+	protected Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
@@ -233,8 +234,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	// ------------------------------------------------------
 	@Override
 	public List<MachineConfig> getMachineConfigs() throws ServerException {
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.machineConfigTableHandler.getMachineConfigs(conn);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -248,8 +250,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	public MachineConfig getMachineConfig(String machineId) throws ServerException {
 		checkMachineId(machineId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.machineConfigTableHandler.getMachineConfig(conn, machineId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -263,8 +266,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	public boolean machineConfigExists(String machineId) throws ServerException {
 		checkMachineId(machineId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.machineConfigTableHandler.exists(conn, machineId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -282,8 +286,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		checkMachineId(id);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			MachineConfig newMachineConfig = this.machineConfigTableHandler.addMachineConfig(conn, id, name, ipAddress);
 			if (newMachineConfig != null) {
 				return true;
@@ -309,8 +314,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		boolean isUpdated = false;
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			MachineConfig machineConfig = this.machineConfigTableHandler.getMachineConfig(conn, id);
 			if (machineConfig == null) {
 				throw new ServerException("404", "Machine with id '" + id + "' is not found.");
@@ -352,8 +358,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	public boolean deleteMachineConfig(String machineId) throws ServerException {
 		checkMachineId(machineId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.machineConfigTableHandler.delete(conn, machineId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -370,8 +377,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 	public List<PlatformConfig> getPlatformConfigs(String machineId) throws ServerException {
 		checkMachineId(machineId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.platformConfigTableHandler.getPlatformConfigs(conn, machineId);
 
 		} catch (SQLException e) {
@@ -387,8 +395,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.platformConfigTableHandler.getPlatformConfig(conn, machineId, transferAgentId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -403,8 +412,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.platformConfigTableHandler.exists(conn, machineId, transferAgentId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -425,8 +435,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkMachineId(machineId);
 		checkTransferAgentId(id);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			PlatformConfig newTransferAgentConfig = this.platformConfigTableHandler.add(conn, machineId, id, name, home, hostURL, contextRoot);
 			if (newTransferAgentConfig != null) {
 				return true;
@@ -452,8 +463,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		boolean isUpdated = false;
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			PlatformConfig transferAgentConfig = this.platformConfigTableHandler.getPlatformConfig(conn, machineId, id);
 			if (transferAgentConfig == null) {
 				throw new ServerException("404", "TransferAgent with id '" + id + "' is not found.");
@@ -518,8 +530,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.platformConfigTableHandler.delete(conn, machineId, transferAgentId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -537,8 +550,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkMachineId(machineId);
 		checkTransferAgentId(transferAgentId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.nodeConfigTableHandler.getNodeConfigs(conn, machineId, transferAgentId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -554,8 +568,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkTransferAgentId(transferAgentId);
 		checkNodeId(nodeId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.nodeConfigTableHandler.getNodeConfig(conn, machineId, transferAgentId, nodeId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -571,8 +586,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkTransferAgentId(transferAgentId);
 		checkNodeId(nodeId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.nodeConfigTableHandler.exists(conn, machineId, transferAgentId, nodeId);
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -594,8 +610,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkTransferAgentId(transferAgentId);
 		checkNodeId(id);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			NodeConfig newNodeConfig = this.nodeConfigTableHandler.add(conn, machineId, transferAgentId, id, name, home, hostURL, contextRoot);
 			if (newNodeConfig != null) {
 				return true;
@@ -622,8 +639,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 		boolean isUpdated = false;
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			NodeConfig nodeConfig = this.nodeConfigTableHandler.getNodeConfig(conn, machineId, transferAgentId, id);
 			if (nodeConfig == null) {
 				throw new ServerException("404", "NodeAgent with id '" + id + "' is not found.");
@@ -689,8 +707,9 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		checkTransferAgentId(transferAgentId);
 		checkNodeId(nodeId);
 
-		Connection conn = getConnection();
+		Connection conn = null;
 		try {
+			conn = getConnection();
 			return this.nodeConfigTableHandler.delete(conn, machineId, transferAgentId, nodeId);
 		} catch (SQLException e) {
 			handleSQLException(e);

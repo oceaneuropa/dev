@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
@@ -17,6 +19,7 @@ import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.StatusDTO;
 
 public class UserRegistryImplV1 implements UserAccountClient {
@@ -88,8 +91,23 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	}
 
 	@Override
+	public boolean isProxy() {
+		return false;
+	}
+
+	@Override
 	public boolean ping() {
 		return this.client.doPing();
+	}
+
+	@Override
+	public String echo(String message) throws ClientException {
+		return null;
+	}
+
+	@Override
+	public Response sendRequest(Request request) throws ClientException {
+		return null;
 	}
 
 	@Override

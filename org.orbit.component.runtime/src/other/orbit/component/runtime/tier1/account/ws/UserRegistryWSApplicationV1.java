@@ -25,7 +25,7 @@ public class UserRegistryWSApplicationV1 extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public UserRegistryWSApplicationV1(final UserRegistryService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		this.service = service;
 
 		register(new AbstractBinder() {

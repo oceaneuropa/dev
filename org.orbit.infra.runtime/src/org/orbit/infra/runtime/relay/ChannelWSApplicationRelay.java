@@ -17,7 +17,7 @@ public class ChannelWSApplicationRelay extends WSRelayApplication {
 	 * @param switcher
 	 */
 	public ChannelWSApplicationRelay(WebServiceAware webServiceAware, Switcher<URI> switcher) {
-		super(webServiceAware.getContextRoot(), FeatureConstants.PING, switcher);
+		super(webServiceAware, FeatureConstants.PING, switcher);
 
 		adapt(WebServiceAware.class, webServiceAware);
 

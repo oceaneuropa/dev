@@ -20,7 +20,9 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.platform.sdk.token.OrbitRoles;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
@@ -42,6 +44,7 @@ import org.slf4j.LoggerFactory;
  *     URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/indexitem?type={type}&name={name}
  * 
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.INDEX_ADMIN })
 @Path("/indexitems/{indexproviderid}")
 @Produces(MediaType.APPLICATION_JSON)
 public class IndexItemsWSResource extends AbstractWSApplicationResource {

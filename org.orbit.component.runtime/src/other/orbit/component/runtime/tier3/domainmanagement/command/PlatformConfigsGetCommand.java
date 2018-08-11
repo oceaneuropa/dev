@@ -49,7 +49,7 @@ public class PlatformConfigsGetCommand extends AbstractCommand {
 					List<PlatformConfig> taConfigs = this.service.getPlatformConfigs(currMachineId);
 					if (taConfigs != null && !taConfigs.isEmpty()) {
 						for (PlatformConfig taConfig : taConfigs) {
-							PlatformConfigDTO taConfigDTO = ModelConverter.Domain.toDTO(taConfig);
+							PlatformConfigDTO taConfigDTO = ModelConverter.Domain.toPlatformConfigDTO(taConfig);
 							taConfigDTO.setMachineId(currMachineId);
 							taConfigDTOs.add(taConfigDTO);
 						}
@@ -61,7 +61,7 @@ public class PlatformConfigsGetCommand extends AbstractCommand {
 				List<PlatformConfig> taConfigs = this.service.getPlatformConfigs(machineId);
 				if (taConfigs != null) {
 					for (PlatformConfig taConfig : taConfigs) {
-						PlatformConfigDTO taConfigDTO = ModelConverter.Domain.toDTO(taConfig);
+						PlatformConfigDTO taConfigDTO = ModelConverter.Domain.toPlatformConfigDTO(taConfig);
 						taConfigDTO.setMachineId(machineId);
 						taConfigDTOs.add(taConfigDTO);
 					}

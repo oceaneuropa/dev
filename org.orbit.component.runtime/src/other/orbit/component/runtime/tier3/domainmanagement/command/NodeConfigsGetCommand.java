@@ -44,7 +44,7 @@ public class NodeConfigsGetCommand extends AbstractCommand {
 			List<NodeConfig> nodeConfigs = this.service.getNodeConfigs(machineId, platformId);
 			if (nodeConfigs != null) {
 				for (NodeConfig nodeConfig : nodeConfigs) {
-					NodeConfigDTO nodeConfigDTO = ModelConverter.Domain.toDTO(nodeConfig);
+					NodeConfigDTO nodeConfigDTO = ModelConverter.Domain.toNodeConfigDTO(nodeConfig);
 					nodeConfigDTO.setMachineId(machineId);
 					nodeConfigDTO.setPlatformId(platformId);
 					nodeConfigDTOs.add(nodeConfigDTO);

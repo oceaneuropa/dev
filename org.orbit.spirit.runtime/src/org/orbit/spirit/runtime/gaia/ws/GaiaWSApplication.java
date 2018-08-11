@@ -8,7 +8,7 @@ import org.origin.common.rest.server.FeatureConstants;
 public class GaiaWSApplication extends AbstractJerseyWSApplication {
 
 	public GaiaWSApplication(final GAIA gaia, int feature) {
-		super(gaia.getContextRoot(), feature);
+		super(gaia, feature);
 		adapt(GAIA.class, gaia);
 
 		AbstractBinder serviceBinder = new AbstractBinder() {

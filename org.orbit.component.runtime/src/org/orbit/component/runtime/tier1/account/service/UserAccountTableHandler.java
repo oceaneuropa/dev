@@ -75,7 +75,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	protected static UserAccount toRTO(ResultSet rs) throws SQLException {
+	protected static UserAccount toUserAccount(ResultSet rs) throws SQLException {
 		String userId = rs.getString("userId");
 		String password = rs.getString("password");
 		String email = rs.getString("email");
@@ -103,7 +103,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 		ResultSetListHandler<UserAccount> handler = new ResultSetListHandler<UserAccount>() {
 			@Override
 			protected UserAccount handleRow(ResultSet rs) throws SQLException {
-				return toRTO(rs);
+				return toUserAccount(rs);
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, new Object[] {}, handler);
@@ -121,10 +121,28 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 		ResultSetSingleHandler<UserAccount> handler = new ResultSetSingleHandler<UserAccount>() {
 			@Override
 			protected UserAccount handleRow(ResultSet rs) throws SQLException {
-				return toRTO(rs);
+				return toUserAccount(rs);
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, new Object[] { userId }, handler);
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param email
+	 * @return
+	 * @throws SQLException
+	 */
+	public UserAccount getUserAccountByEmail(Connection conn, String email) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE email=?";
+		ResultSetSingleHandler<UserAccount> handler = new ResultSetSingleHandler<UserAccount>() {
+			@Override
+			protected UserAccount handleRow(ResultSet rs) throws SQLException {
+				return toUserAccount(rs);
+			}
+		};
+		return DatabaseUtil.query(conn, querySQL, new Object[] { email }, handler);
 	}
 
 	/**
@@ -134,7 +152,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean userAccountExists(Connection conn, String userId) throws SQLException {
+	public boolean userIdExists(Connection conn, String userId) throws SQLException {
 		String querySQL = "SELECT * FROM " + getTableName() + " WHERE userId=?";
 		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
 			@Override
@@ -143,6 +161,24 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, new Object[] { userId }, handler);
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param email
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean emailExists(Connection conn, String email) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE email=?";
+		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
+			@Override
+			public Boolean handle(ResultSet rs) throws SQLException {
+				return rs.next() ? true : false;
+			}
+		};
+		return DatabaseUtil.query(conn, querySQL, new Object[] { email }, handler);
 	}
 
 	/**

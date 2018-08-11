@@ -17,7 +17,7 @@ public class AuthWSApplication extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public AuthWSApplication(final AuthService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(AuthService.class, service);
 		adapt(WebServiceAware.class, service);
 

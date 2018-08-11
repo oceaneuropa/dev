@@ -35,25 +35,18 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
-		// Get the resource class which matches with the requested URL
-		// Extract the roles declared by it
+		// Get the resource class which matches with the requested URL. Extract the roles declared by it.
 		Class<?> resourceClass = resourceInfo.getResourceClass();
-		List<Role> classRoles = extractRoles(resourceClass);
+		List<Role> resourceRequiredRoles = extractRequiredRoles(resourceClass);
 
-		// Get the resource method which matches with the requested URL
-		// Extract the roles declared by it
+		// Get the resource method which matches with the requested URL. Extract the roles declared by it.
 		Method resourceMethod = resourceInfo.getResourceMethod();
-		List<Role> methodRoles = extractRoles(resourceMethod);
+		List<Role> methodRequiredRoles = extractRequiredRoles(resourceMethod);
 
 		try {
-
-			// Check if the user is allowed to execute the method
-			// The method annotations override the class annotations
-			if (methodRoles.isEmpty()) {
-				checkPermissions(requestContext, classRoles);
-			} else {
-				checkPermissions(requestContext, methodRoles);
-			}
+			// Check if the user is allowed to execute the method. The method annotations override the class annotations.
+			List<Role> requiredRoles = methodRequiredRoles.isEmpty() ? resourceRequiredRoles : methodRequiredRoles;
+			checkPermissions(requestContext, requiredRoles);
 
 		} catch (Exception e) {
 			throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).build());
@@ -61,36 +54,41 @@ public class AuthorizationFilter implements ContainerRequestFilter {
 	}
 
 	// Extract the roles from the annotated element
-	private List<Role> extractRoles(AnnotatedElement annotatedElement) {
-		if (annotatedElement == null) {
-			return new ArrayList<>();
-		} else {
+	private List<Role> extractRequiredRoles(AnnotatedElement annotatedElement) {
+		List<Role> roles = null;
+		if (annotatedElement != null) {
 			Secured secured = annotatedElement.getAnnotation(Secured.class);
-			if (secured == null) {
-				return new ArrayList<>();
-			} else {
+			if (secured != null) {
 				Role[] allowedRoles = secured.value();
-				return Arrays.asList(allowedRoles);
+				roles = Arrays.asList(allowedRoles);
 			}
 		}
+		if (roles == null) {
+			roles = new ArrayList<Role>();
+		}
+		return roles;
 	}
 
-	private void checkPermissions(ContainerRequestContext requestContext, List<Role> allowedRoles) throws Exception {
+	private void checkPermissions(ContainerRequestContext requestContext, List<Role> requiredRoles) throws Exception {
 		// Check if the user contains one of the allowed roles
 		// Throw an Exception if the user has not permission to execute the method
-		if (allowedRoles.isEmpty())
+		if (requiredRoles.isEmpty()) {
 			return;
+		}
+
 		String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
 		String token = authorizationHeader.substring(AUTHENTICATION_SCHEME.length()).trim();
-		List<String> roles = new ArrayList<String>();
+
+		List<String> userRoles = new ArrayList<String>();
 		if (!JWT.decode(token).getClaim("gty").isNull() && JWT.decode(token).getClaim("gty").asString().equals("client-credentials")) {
-			roles.add("service");
+			userRoles.add("service");
 		} else {
-			roles = JWT.decode(token).getClaim("roles").asList(String.class);
+			userRoles = JWT.decode(token).getClaim("roles").asList(String.class);
 		}
-		for (String role : roles) {
-			if (allowedRoles.contains(Role.valueOf(role)))
+		for (String userRole : userRoles) {
+			if (requiredRoles.contains(Role.valueOf(userRole))) {
 				return;
+			}
 		}
 		throw new WebApplicationException(Response.status(Response.Status.FORBIDDEN).build());
 	}

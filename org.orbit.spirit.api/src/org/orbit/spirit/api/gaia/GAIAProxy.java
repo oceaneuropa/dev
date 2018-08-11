@@ -79,6 +79,11 @@ public class GAIAProxy implements GAIAClient {
 	}
 
 	@Override
+	public String getName() throws ClientException {
+		return resolve().getName();
+	}
+
+	@Override
 	public String echo(String message) throws ClientException {
 		return resolve().echo(message);
 	}
@@ -132,6 +137,11 @@ public class GAIAProxy implements GAIAClient {
 		@Override
 		public boolean ping() {
 			return false;
+		}
+
+		@Override
+		public String getName() throws ClientException {
+			return null;
 		}
 
 		@Override

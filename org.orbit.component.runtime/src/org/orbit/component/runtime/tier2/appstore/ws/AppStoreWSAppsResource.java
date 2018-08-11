@@ -22,6 +22,8 @@ import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.model.appstore.AppQuery;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.platform.sdk.token.OrbitRoles;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -40,6 +42,7 @@ import org.origin.common.rest.server.ServerException;
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/apps?appId={appId}&appVersion={appVersion}
  * 
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.APP_STORE_ADMIN })
 @Path("/apps")
 @Produces(MediaType.APPLICATION_JSON)
 public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
@@ -62,6 +65,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	 * @param type
 	 * @return
 	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.USER })
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getApps(@QueryParam("type") String type) {
@@ -72,7 +76,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 			List<AppManifest> apps = service.getApps(type);
 			if (apps != null) {
 				for (AppManifest app : apps) {
-					AppManifestDTO appDTO = ModelConverter.AppStore.toDTO(app);
+					AppManifestDTO appDTO = ModelConverter.AppStore.toAppDTO(app);
 					appDTOs.add(appDTO);
 				}
 			}
@@ -91,6 +95,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	 * @param queryDTO
 	 * @return
 	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.USER })
 	@POST
 	@Path("query")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -99,11 +104,11 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 
 		List<AppManifestDTO> appDTOs = new ArrayList<AppManifestDTO>();
 		try {
-			AppQuery query = ModelConverter.AppStore.toRTO(queryDTO);
+			AppQuery query = ModelConverter.AppStore.toAppQuery(queryDTO);
 			List<AppManifest> apps = service.getApps(query);
 			if (apps != null) {
 				for (AppManifest app : apps) {
-					AppManifestDTO appDTO = ModelConverter.AppStore.toDTO(app);
+					AppManifestDTO appDTO = ModelConverter.AppStore.toAppDTO(app);
 					appDTOs.add(appDTO);
 				}
 			}
@@ -122,6 +127,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	 * @param newAppRequestDTO
 	 * @return
 	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_ADMIN, OrbitRoles.APP_STORE_ADMIN })
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response addApp(AppManifestDTO newAppRequestDTO) {
@@ -142,14 +148,14 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
 			}
 
-			AppManifest appToAdd = ModelConverter.AppStore.toRTO(newAppRequestDTO);
+			AppManifest appToAdd = ModelConverter.AppStore.toApp(newAppRequestDTO);
 			AppManifest newApp = service.addApp(appToAdd);
 			if (newApp == null) {
 				ErrorDTO newAppNotCreated = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "App is not added.");
 				return Response.status(Status.NOT_FOUND).entity(newAppNotCreated).build();
 			}
 
-			newAppDTO = ModelConverter.AppStore.toDTO(newApp);
+			newAppDTO = ModelConverter.AppStore.toAppDTO(newApp);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -167,6 +173,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	 * @param updateAppRequestDTO
 	 * @return
 	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_ADMIN })
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response updateApp(AppManifestDTO updateAppRequestDTO) {
@@ -178,7 +185,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 		boolean succeed = false;
 		AppStoreService service = getService();
 		try {
-			AppManifest appToUpdate = ModelConverter.AppStore.toRTO(updateAppRequestDTO);
+			AppManifest appToUpdate = ModelConverter.AppStore.toApp(updateAppRequestDTO);
 			succeed = service.updateApp(appToUpdate);
 
 		} catch (ServerException e) {
@@ -204,6 +211,7 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	 * @param appVersion
 	 * @return
 	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_ADMIN })
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response deleteApp(@QueryParam("appId") String appId, @QueryParam("appVersion") String appVersion) {

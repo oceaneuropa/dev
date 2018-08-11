@@ -4,6 +4,4 @@ import org.origin.common.service.WebServiceAware;
 
 public interface OAuth2Service extends WebServiceAware {
 
-	public String getName();
-
 }

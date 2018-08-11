@@ -11,8 +11,6 @@ public interface MissionControlService extends WebServiceAware {
 
 	ServiceEditPolicies getEditPolicies();
 
-	String getName();
-
 	List<Mission> getMissions(String typeId) throws ServerException;
 
 	Mission getMission(String typeId, String name) throws ServerException;

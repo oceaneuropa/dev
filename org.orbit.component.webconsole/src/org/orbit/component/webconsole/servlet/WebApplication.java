@@ -5,41 +5,46 @@ import java.util.Map;
 
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.appstore.AppAddServlet;
-import org.orbit.component.webconsole.servlet.appstore.AppDeleteServlet;
-import org.orbit.component.webconsole.servlet.appstore.AppDownloadServlet;
-import org.orbit.component.webconsole.servlet.appstore.AppListServlet;
-import org.orbit.component.webconsole.servlet.appstore.AppUpdateServlet;
-import org.orbit.component.webconsole.servlet.appstore.AppUploadServlet;
-import org.orbit.component.webconsole.servlet.appstore.other.FileUploadServlet;
-import org.orbit.component.webconsole.servlet.domain.MachineAddServlet;
-import org.orbit.component.webconsole.servlet.domain.MachineDeleteServlet;
-import org.orbit.component.webconsole.servlet.domain.MachineListServlet;
-import org.orbit.component.webconsole.servlet.domain.MachineUpdateServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeCreateServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeDeleteServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeListServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeProgramActionServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeProgramInstallServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeProgramListServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeProgramUninstallServlet;
-import org.orbit.component.webconsole.servlet.domain.NodePropertyAddServlet;
-import org.orbit.component.webconsole.servlet.domain.NodePropertyDeleteServlet;
-import org.orbit.component.webconsole.servlet.domain.NodePropertyListServlet;
-import org.orbit.component.webconsole.servlet.domain.NodePropertyUpdateServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeStartServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeStopServlet;
-import org.orbit.component.webconsole.servlet.domain.NodeUpdateServlet;
-import org.orbit.component.webconsole.servlet.domain.PlatformAddServlet;
-import org.orbit.component.webconsole.servlet.domain.PlatformDeleteServlet;
-import org.orbit.component.webconsole.servlet.domain.PlatformListServlet;
-import org.orbit.component.webconsole.servlet.domain.PlatformPropertyListServlet;
-import org.orbit.component.webconsole.servlet.domain.PlatformUpdateServlet;
-import org.orbit.component.webconsole.servlet.domain.ProgramsProviderServlet;
-import org.orbit.component.webconsole.servlet.useraccount.UserAccountAddServlet;
-import org.orbit.component.webconsole.servlet.useraccount.UserAccountDeleteServlet;
-import org.orbit.component.webconsole.servlet.useraccount.UserAccountListServlet;
-import org.orbit.component.webconsole.servlet.useraccount.UserAccountUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignInPage;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignInServlet;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignOutServlet;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignUpPage;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignUpServlet;
+import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountAddServlet;
+import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountDeleteServlet;
+import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountListServlet;
+import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier2.appstore.AppAddServlet;
+import org.orbit.component.webconsole.servlet.tier2.appstore.AppDeleteServlet;
+import org.orbit.component.webconsole.servlet.tier2.appstore.AppDownloadServlet;
+import org.orbit.component.webconsole.servlet.tier2.appstore.AppListServlet;
+import org.orbit.component.webconsole.servlet.tier2.appstore.AppUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier2.appstore.AppUploadServlet;
+import org.orbit.component.webconsole.servlet.tier2.other.FileUploadServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.MachineAddServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.MachineDeleteServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.MachineListServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.MachineUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.PlatformAddServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.PlatformDeleteServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.PlatformListServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.PlatformPropertyListServlet;
+import org.orbit.component.webconsole.servlet.tier3.domain.PlatformUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeCreateServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeDeleteServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeListServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramActionServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramInstallServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramListServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeProgramUninstallServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyAddServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyDeleteServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyListServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStartServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStopServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.ProgramsProviderServlet;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.service.servlet.WebApplicationImpl;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
@@ -64,6 +69,7 @@ public class WebApplication extends WebApplicationImpl {
 				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
+				OrbitConstants.ORBIT_IDENTITY_SERVICE_URL, //
 				OrbitConstants.ORBIT_USER_ACCOUNTS_URL, //
 				OrbitConstants.ORBIT_AUTH_URL, //
 				OrbitConstants.ORBIT_REGISTRY_URL, //
@@ -95,6 +101,14 @@ public class WebApplication extends WebApplicationImpl {
 		addResource(new ResourceMetadataImpl("/views/css", "/WEB-INF/views/css"));
 		addResource(new ResourceMetadataImpl("/views/icons", "/WEB-INF/views/icons"));
 		addResource(new ResourceMetadataImpl("/views/js", "/WEB-INF/views/js"));
+
+		// Identity
+		addServlet(new ServletMetadataImpl("/signup", new SignUpPage(), dicts));
+		addServlet(new ServletMetadataImpl("/signin", new SignInPage(), dicts));
+
+		addServlet(new ServletMetadataImpl("/signup_req", new SignUpServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/signin_req", new SignInServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/signout_req", new SignOutServlet(), dicts));
 
 		// User accounts
 		addServlet(new ServletMetadataImpl("/useraccounts", new UserAccountListServlet(), dicts));

@@ -8,6 +8,7 @@ import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSMethodInflector;
 import org.origin.common.rest.switcher.Switcher;
+import org.origin.common.service.WebServiceAwareImpl;
 
 public class AppStoreWSApplicationRelay extends WSRelayApplication {
 
@@ -18,7 +19,7 @@ public class AppStoreWSApplicationRelay extends WSRelayApplication {
 	 * @param factory
 	 */
 	public AppStoreWSApplicationRelay(String contextRoot, Switcher<URI> switcher, WSClientFactory factory) {
-		super(contextRoot, FeatureConstants.PING, switcher);
+		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, switcher);
 
 		Resource.Builder wsResource = Resource.builder("/");
 		new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);

@@ -1,6 +1,7 @@
 package org.orbit.component.runtime.tier4.missioncontrol.service;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -92,7 +93,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 	}
 
 	@Override
-	public Connection getConnection() {
+	public Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 

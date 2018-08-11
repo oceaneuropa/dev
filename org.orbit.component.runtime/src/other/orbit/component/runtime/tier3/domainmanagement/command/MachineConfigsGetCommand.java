@@ -41,7 +41,7 @@ public class MachineConfigsGetCommand extends AbstractCommand {
 			List<MachineConfig> machineConfigs = this.service.getMachineConfigs();
 			if (machineConfigs != null) {
 				for (MachineConfig machineConfig : machineConfigs) {
-					MachineConfigDTO machineConfigDTO = ModelConverter.Domain.toDTO(machineConfig);
+					MachineConfigDTO machineConfigDTO = ModelConverter.Domain.toMachineConfigDTO(machineConfig);
 					machineConfigDTOs.add(machineConfigDTO);
 				}
 			}

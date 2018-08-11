@@ -22,7 +22,9 @@ import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.util.ModelConverter;
+import org.orbit.platform.sdk.token.OrbitRoles;
 import org.origin.common.io.IOUtil;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -41,6 +43,7 @@ import org.origin.common.rest.server.ServerException;
  * 
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/app/upload?id={id}&appId={appId}&appVersion={appVersion} (FormData: InputStream and FormDataContentDisposition) // Upload an app.
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.APP_STORE_ADMIN })
 @Path("/app")
 @Produces(MediaType.APPLICATION_JSON)
 public class AppStoreWSAppResource extends AbstractWSApplicationResource {
@@ -64,6 +67,7 @@ public class AppStoreWSAppResource extends AbstractWSApplicationResource {
 	 * @param appVersion
 	 * @return
 	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.USER })
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getApp(@QueryParam("appId") String appId, @QueryParam("appVersion") String appVersion) {
@@ -76,7 +80,7 @@ public class AppStoreWSAppResource extends AbstractWSApplicationResource {
 				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("App cannot be found for '%s'.", appId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
-			appDTO = ModelConverter.AppStore.toDTO(app);
+			appDTO = ModelConverter.AppStore.toAppDTO(app);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -95,6 +99,7 @@ public class AppStoreWSAppResource extends AbstractWSApplicationResource {
 	 * @param appVersion
 	 * @return
 	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.USER })
 	@GET
 	@Path("/exists")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -246,6 +251,7 @@ public class AppStoreWSAppResource extends AbstractWSApplicationResource {
 	 * @param appVersion
 	 * @return
 	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.USER })
 	@GET
 	@Path("/content")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })

@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.tier1.account.service;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -15,8 +16,12 @@ import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAware {
+
+	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryServiceImpl.class);
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -29,8 +34,6 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public void start(BundleContext bundleContext) {
-		// System.out.println(getClass().getSimpleName() + ".start()");
-
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		if (this.initProperties != null) {
 			properties.putAll(this.initProperties);
@@ -53,8 +56,6 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public void stop(BundleContext bundleContext) {
-		// System.out.println(getClass().getSimpleName() + ".stop()");
-
 		if (this.serviceRegistry != null) {
 			this.serviceRegistry.unregister();
 			this.serviceRegistry = null;
@@ -66,7 +67,6 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	 * @param properties
 	 */
 	public synchronized void update(Map<Object, Object> properties) {
-		// System.out.println(getClass().getSimpleName() + ".updateProperties()");
 		if (properties == null) {
 			properties = new HashMap<Object, Object>();
 		}
@@ -78,7 +78,11 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 		String password = (String) this.properties.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_PASSWORD);
 		Properties databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
 
-		this.userAccountPersistence = new UserAccountPersistenceImpl(databaseProperties);
+		try {
+			this.userAccountPersistence = UserAccountPersistenceFactory.getInstance().create(databaseProperties);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -129,23 +133,23 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	/**
 	 * 
-	 * @param password
-	 * @throws ServerException
-	 */
-	protected void checkPassword(String password) throws ServerException {
-		if (password == null || password.isEmpty()) {
-			throw new ServerException("400", "password is empty.");
-		}
-	}
-
-	/**
-	 * 
 	 * @param email
 	 * @throws ServerException
 	 */
 	protected void checkEmail(String email) throws ServerException {
 		if (email == null || email.isEmpty()) {
 			throw new ServerException("400", "email is empty.");
+		}
+	}
+
+	/**
+	 * 
+	 * @param password
+	 * @throws ServerException
+	 */
+	protected void checkPassword(String password) throws ServerException {
+		if (password == null || password.isEmpty()) {
+			throw new ServerException("400", "password is empty.");
 		}
 	}
 
@@ -174,7 +178,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	public boolean userAccountExists(String userId) throws ServerException {
 		checkUserId(userId);
 		try {
-			return this.userAccountPersistence.userAccountExists(userId);
+			return this.userAccountPersistence.userIdExists(userId);
 		} catch (Exception e) {
 			handleException(e);
 		}

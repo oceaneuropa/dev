@@ -13,7 +13,7 @@ public class DomainServiceWSApplication extends OrbitWSApplication {
 	 * @param feature
 	 */
 	public DomainServiceWSApplication(final DomainManagementService service, int feature) {
-		super(service.getContextRoot(), feature);
+		super(service, feature);
 		adapt(DomainManagementService.class, service);
 		adapt(WebServiceAware.class, service);
 

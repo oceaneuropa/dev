@@ -3,6 +3,7 @@ package other.orbit.infra.runtime.indexes.service;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -117,9 +118,13 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 		return IndexServiceDatabaseHelper.INSTANCE;
 	}
 
-	/** implement ConnectionAware interface */
+	/**
+	 * implement ConnectionAware interface
+	 * 
+	 * @throws SQLException
+	 */
 	@Override
-	public Connection getConnection() {
+	public Connection getConnection() throws SQLException {
 		return this.indexServiceConfig.getConnection();
 	}
 
@@ -176,7 +181,11 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			System.out.println(getClassName() + ".start()");
 		}
 
-		initializeTables();
+		try {
+			initializeTables();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 		// Initialize the command stack
 		this.revisionCommandStack = IEditingDomain.getEditingDomain(INDEX_SERVICE_EDITING_DOMAIN).getCommandStack(this);
@@ -208,8 +217,10 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 	/**
 	 * Initialize database tables.
+	 * 
+	 * @throws SQLException
 	 */
-	public void initializeTables() {
+	public void initializeTables() throws SQLException {
 		Connection conn = this.indexServiceConfig.getConnection();
 		try {
 			// DatabaseUtil.dropTable(conn, IndexItemRequestTableHandler.INSTANCE);

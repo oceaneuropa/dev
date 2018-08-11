@@ -40,7 +40,7 @@ public class PlatformConfigGetCommand extends AbstractCommand {
 
 			PlatformConfig taConfig = this.service.getPlatformConfig(machineId, id);
 			if (taConfig != null) {
-				taConfigDTO = ModelConverter.Domain.toDTO(taConfig);
+				taConfigDTO = ModelConverter.Domain.toPlatformConfigDTO(taConfig);
 				taConfigDTO.setMachineId(machineId);
 			}
 

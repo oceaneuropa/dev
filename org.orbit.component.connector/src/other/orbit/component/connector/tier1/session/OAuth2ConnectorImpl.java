@@ -30,7 +30,7 @@ public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorI
 
 	@Override
 	protected OAuth2Client createService(Map<String, Object> properties) {
-		return new OAuth2ClientImpl(properties);
+		return new OAuth2ClientImpl(null, properties);
 	}
 
 	@Override

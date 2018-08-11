@@ -3,7 +3,6 @@ package org.orbit.component.connector.tier2.appstore;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,21 +15,17 @@ import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
-import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.model.StatusDTO;
 
 /**
- * App store client connector implementation.
+ * App store client implementation.
  * 
  */
-public class AppStoreClientImpl implements AppStoreClient {
-
-	protected Map<String, Object> properties;
-	protected AppStoreWSClient client;
-	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
+public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppStoreWSClient> implements AppStoreClient {
 
 	/**
 	 * 
@@ -38,71 +33,17 @@ public class AppStoreClientImpl implements AppStoreClient {
 	 * @param properties
 	 */
 	public AppStoreClientImpl(ServiceConnector<AppStoreClient> connector, Map<String, Object> properties) {
-		if (connector != null) {
-			adapt(ServiceConnector.class, connector);
-		}
-		this.properties = checkProperties(properties);
-		initClient();
-	}
-
-	private Map<String, Object> checkProperties(Map<String, Object> properties) {
-		if (properties == null) {
-			properties = new HashMap<String, Object>();
-		}
-		return properties;
+		super(connector, properties);
 	}
 
 	@Override
-	public boolean close() throws ClientException {
-		@SuppressWarnings("unchecked")
-		ServiceConnector<AppStoreClient> connector = getAdapter(ServiceConnector.class);
-		if (connector != null) {
-			return connector.close(this);
-		}
-		return false;
-	}
-
-	@Override
-	public Map<String, Object> getProperties() {
-		return this.properties;
-	}
-
-	@Override
-	public void update(Map<String, Object> properties) {
-		this.properties = checkProperties(properties);
-		initClient();
-	}
-
-	protected void initClient() {
+	protected AppStoreWSClient createWSClient(Map<String, Object> properties) {
 		String realm = (String) this.properties.get(OrbitConstants.REALM);
 		String username = (String) this.properties.get(OrbitConstants.USERNAME);
 		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
 
 		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
-		this.client = new AppStoreWSClient(config);
-	}
-
-	// ------------------------------------------------------------------------------------------------
-	// Configuration methods
-	// ------------------------------------------------------------------------------------------------
-	@Override
-	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.APPSTORE_NAME);
-		return name;
-	}
-
-	@Override
-	public String getURL() {
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
-		return fullUrl;
-	}
-
-	// ------------------------------------------------------------------------------------------------
-	// Web service methods
-	// ------------------------------------------------------------------------------------------------
-	@Override
-	public boolean ping() {
-		return this.client.doPing();
+		return new AppStoreWSClient(config);
 	}
 
 	@Override
@@ -223,21 +164,6 @@ public class AppStoreClientImpl implements AppStoreClient {
 			throw e;
 		}
 		return succeed;
-	}
-
-	@Override
-	public <T> void adapt(Class<T> clazz, T object) {
-		this.adaptorSupport.adapt(clazz, object);
-	}
-
-	@Override
-	public <T> void adapt(Class<T>[] classes, T object) {
-		this.adaptorSupport.adapt(classes, object);
-	}
-
-	@Override
-	public <T> T getAdapter(Class<T> adapter) {
-		return this.adaptorSupport.getAdapter(adapter);
 	}
 
 }

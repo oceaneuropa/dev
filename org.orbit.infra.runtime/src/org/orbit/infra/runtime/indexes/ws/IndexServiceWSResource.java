@@ -13,7 +13,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.indexes.IndexItemCommandRequestDTO;
 import org.orbit.infra.runtime.indexes.service.IndexService;
+import org.orbit.platform.sdk.token.OrbitRoles;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -31,6 +33,7 @@ import org.slf4j.LoggerFactory;
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/commandrequest (Body parameter: IndexItemCommandRequestDTO)
  * 
  */
+@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.INDEX_ADMIN })
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class IndexServiceWSResource extends AbstractWSApplicationResource {

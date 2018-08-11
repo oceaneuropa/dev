@@ -39,7 +39,7 @@ public class MachineConfigGetCommand extends AbstractCommand {
 
 			MachineConfig machineConfig = this.service.getMachineConfig(machineId);
 			if (machineConfig != null) {
-				machineConfigDTO = ModelConverter.Domain.toDTO(machineConfig);
+				machineConfigDTO = ModelConverter.Domain.toMachineConfigDTO(machineConfig);
 			}
 
 		} catch (ServerException e) {
