@@ -23,7 +23,7 @@ import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.util.ModelConverter;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;

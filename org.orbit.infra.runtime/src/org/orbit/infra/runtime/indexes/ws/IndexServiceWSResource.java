@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.indexes.IndexItemCommandRequestDTO;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;

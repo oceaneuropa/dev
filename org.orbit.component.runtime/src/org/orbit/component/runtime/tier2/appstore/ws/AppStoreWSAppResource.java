@@ -22,7 +22,7 @@ import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.runtime.model.appstore.AppManifest;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.util.ModelConverter;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;

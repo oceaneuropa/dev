@@ -3,7 +3,7 @@ package org.orbit.component.runtime.common.token;
 import java.util.Date;
 
 import org.orbit.component.runtime.model.account.UserAccount;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.JWTUtil;

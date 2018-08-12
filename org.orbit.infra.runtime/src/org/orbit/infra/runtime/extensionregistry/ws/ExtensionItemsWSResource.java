@@ -23,7 +23,7 @@ import org.orbit.infra.model.extensionregistry.ExtensionItemUpdateRequest;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
 import org.orbit.infra.runtime.util.ModelConverter;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;

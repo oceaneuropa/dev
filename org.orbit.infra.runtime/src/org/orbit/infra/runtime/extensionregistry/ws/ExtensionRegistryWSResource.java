@@ -6,7 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.slf4j.Logger;

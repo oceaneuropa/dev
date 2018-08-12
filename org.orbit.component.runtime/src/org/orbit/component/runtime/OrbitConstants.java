@@ -20,6 +20,8 @@ public class OrbitConstants {
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
 	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
 
+	public static String TOKEN_PROVIDER__ORBIT = "orbit";
+
 	// tier1
 	public static String ORBIT_IDENTITY_SERVICE_URL = "orbit.identity_service.url";
 	public static String ORBIT_USER_ACCOUNTS_URL = "orbit.user_registry.url";

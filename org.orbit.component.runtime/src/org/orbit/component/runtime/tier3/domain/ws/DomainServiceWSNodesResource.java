@@ -20,7 +20,7 @@ import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.util.ModelConverter;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.StatusDTO;

@@ -20,7 +20,7 @@ import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.util.ModelConverter;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;

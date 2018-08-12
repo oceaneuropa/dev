@@ -13,7 +13,7 @@ import org.orbit.infra.model.channel.ChannelException;
 import org.orbit.infra.model.channel.ChannelMessageDTO;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.orbit.infra.runtime.util.ModelConverter;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.slf4j.Logger;

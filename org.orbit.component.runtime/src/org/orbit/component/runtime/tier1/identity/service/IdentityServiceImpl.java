@@ -17,9 +17,9 @@ import org.orbit.component.runtime.model.identity.RegisterRequest;
 import org.orbit.component.runtime.model.identity.RegisterResponse;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistence;
 import org.orbit.component.runtime.tier1.account.service.UserAccountPersistenceFactory;
-import org.orbit.platform.sdk.token.JWTTokenHandler;
-import org.orbit.platform.sdk.token.OrbitRoles;
-import org.orbit.platform.sdk.util.JWTTokenHelper;
+import org.orbit.platform.sdk.http.JWTTokenHandler;
+import org.orbit.platform.sdk.http.OrbitRoles;
+import org.orbit.platform.sdk.util.ExtensionHelper;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.StatusDTO;
@@ -294,7 +294,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 					// Generate token
 					tokenType = "Bearer";
 
-					JWTTokenHandler tokenHandler = JWTTokenHelper.INSTANCE.getTokenHandler("orbit");
+					JWTTokenHandler tokenHandler = ExtensionHelper.JWT.getTokenHandler(OrbitConstants.TOKEN_PROVIDER__ORBIT);
 					if (tokenHandler == null) {
 						throw new ServerException("500", "JWTTokenHandler is null.");
 					}

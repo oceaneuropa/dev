@@ -14,8 +14,8 @@ import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.platform.sdk.token.JWTTokenHandler;
-import org.orbit.platform.sdk.util.JWTTokenHelper;
+import org.orbit.platform.sdk.http.JWTTokenHandler;
+import org.orbit.platform.sdk.util.ExtensionHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -61,10 +61,24 @@ public class SignInServlet extends HttpServlet {
 							String tokenValue = loginResponse.getTokenValue();
 
 							try {
-								Map<String, String> payload = JWTTokenHelper.INSTANCE.getTokenPayload("orbit", tokenValue);
+								Map<String, String> payload = ExtensionHelper.JWT.getTokenPayload(WebConstants.TOKEN_PROVIDER__ORBIT, tokenValue);
 								if (payload != null) {
+									String theUsername = payload.get(JWTTokenHandler.PAYLOAD__USERNAME);
 									String firstName = payload.get(JWTTokenHandler.PAYLOAD__FIRST_NAME);
 									String lastName = payload.get(JWTTokenHandler.PAYLOAD__LAST_NAME);
+
+									String fullName = null;
+									if (firstName != null && !firstName.isEmpty() && lastName != null && !lastName.isEmpty()) {
+										fullName = firstName + " " + lastName;
+									} else {
+										fullName = username;
+									}
+
+									HttpSession session = request.getSession();
+									session.setAttribute(WebConstants.SESSION__USERNAME, theUsername);
+									session.setAttribute(WebConstants.SESSION__FULLNAME, fullName);
+									session.setAttribute(WebConstants.SESSION__TOKEN_TYPE, tokenType);
+									session.setAttribute(WebConstants.SESSION__ACCESS_TOKEN, tokenValue);
 								}
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -87,7 +101,8 @@ public class SignInServlet extends HttpServlet {
 			// Note:
 			// - redirect to desktop servlet in the future
 			// - show a jsp page for now
-			request.getRequestDispatcher(contextRoot + "/views/user_main.jsp").forward(request, response);
+			// request.getRequestDispatcher(contextRoot + "/user_main").forward(request, response);
+			response.sendRedirect(contextRoot + "/user_main");
 
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Incorrect username or password.");

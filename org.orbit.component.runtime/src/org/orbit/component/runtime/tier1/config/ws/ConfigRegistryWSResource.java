@@ -20,7 +20,7 @@ import org.orbit.component.model.tier1.configregistry.SetPropertiesDTO;
 import org.orbit.component.runtime.model.configregistry.EPath;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistry;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;

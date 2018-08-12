@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.platform.sdk.token.OrbitRoles;
+import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
 import org.orbit.spirit.runtime.gaia.service.GAIA;
 import org.orbit.spirit.runtime.gaia.util.ModelConverter;

@@ -10,6 +10,7 @@ import org.orbit.component.webconsole.servlet.tier1.identity.SignInServlet;
 import org.orbit.component.webconsole.servlet.tier1.identity.SignOutServlet;
 import org.orbit.component.webconsole.servlet.tier1.identity.SignUpPage;
 import org.orbit.component.webconsole.servlet.tier1.identity.SignUpServlet;
+import org.orbit.component.webconsole.servlet.tier1.identity.UserMainPage;
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountAddServlet;
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountDeleteServlet;
 import org.orbit.component.webconsole.servlet.tier1.useraccount.UserAccountListServlet;
@@ -46,13 +47,13 @@ import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStopServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeUpdateServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.ProgramsProviderServlet;
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.service.servlet.WebApplicationImpl;
+import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
 import org.orbit.service.servlet.impl.ServletMetadataImpl;
 import org.osgi.framework.BundleContext;
 
-public class WebApplication extends WebApplicationImpl {
+public class WebApplication extends PlatformWebApplication {
 
 	/**
 	 * 
@@ -97,10 +98,12 @@ public class WebApplication extends WebApplicationImpl {
 		String contextRoot = (String) this.properties.get(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 		dicts.put("contextPath", contextRoot);
 
+		String bundlePrefix = "/org.orbit.component.webconsole";
+
 		// Web resources
-		addResource(new ResourceMetadataImpl("/views/css", "/WEB-INF/views/css"));
-		addResource(new ResourceMetadataImpl("/views/icons", "/WEB-INF/views/icons"));
-		addResource(new ResourceMetadataImpl("/views/js", "/WEB-INF/views/js"));
+		addResource(new ResourceMetadataImpl("/views/css", bundlePrefix + "/WEB-INF/views/css"));
+		addResource(new ResourceMetadataImpl("/views/icons", bundlePrefix + "/WEB-INF/views/icons"));
+		addResource(new ResourceMetadataImpl("/views/js", bundlePrefix + "/WEB-INF/views/js"));
 
 		// Identity
 		addServlet(new ServletMetadataImpl("/signup", new SignUpPage(), dicts));
@@ -108,7 +111,9 @@ public class WebApplication extends WebApplicationImpl {
 
 		addServlet(new ServletMetadataImpl("/signup_req", new SignUpServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/signin_req", new SignInServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/signout_req", new SignOutServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/signout", new SignOutServlet(), dicts));
+
+		addServlet(new ServletMetadataImpl("/user_main", new UserMainPage(), dicts));
 
 		// User accounts
 		addServlet(new ServletMetadataImpl("/useraccounts", new UserAccountListServlet(), dicts));
