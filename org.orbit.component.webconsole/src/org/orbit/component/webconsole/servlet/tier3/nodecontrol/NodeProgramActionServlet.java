@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.component.webconsole.servlet.OrbitClientHelper;
+import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.util.OrbitIndexHelper;

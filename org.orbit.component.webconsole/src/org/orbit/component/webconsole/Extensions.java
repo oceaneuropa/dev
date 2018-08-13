@@ -1,5 +1,7 @@
 package org.orbit.component.webconsole;
 
+import org.orbit.component.webconsole.extension.PublicWebApplicationActivator;
+import org.orbit.component.webconsole.extension.PublicWebApplicationPropertyTester;
 import org.orbit.component.webconsole.extension.WebApplicationActivator;
 import org.orbit.component.webconsole.extension.WebApplicationPropertyTester;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
@@ -32,21 +34,33 @@ public class Extensions extends ProgramExtensions {
 	protected void createServiceActivatorExtensions() {
 		String typeId = ServiceActivator.EXTENSION_TYPE_ID;
 
-		// Component Web Application Activator
-		Extension extension1 = new Extension(typeId, WebApplicationActivator.ID, "Component Web Application Activator");
-		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, WebApplicationActivator.class);
-		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(WebApplicationPropertyTester.ID));
+		// Public Web Application Activator
+		Extension extension1 = new Extension(typeId, PublicWebApplicationActivator.ID, "Public Web Application Activator");
+		InterfaceDescription desc1 = new InterfaceDescription(ServiceActivator.class, PublicWebApplicationActivator.class);
+		desc1.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(PublicWebApplicationPropertyTester.ID));
 		extension1.addInterface(desc1);
 		addExtension(extension1);
+
+		// Component Web Application Activator
+		Extension extension2 = new Extension(typeId, WebApplicationActivator.ID, "Component Web Application Activator");
+		InterfaceDescription desc2 = new InterfaceDescription(ServiceActivator.class, WebApplicationActivator.class);
+		desc2.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(WebApplicationPropertyTester.ID));
+		extension2.addInterface(desc2);
+		addExtension(extension2);
 	}
 
 	protected void createPropertyTesterExtensions() {
 		String typeId = IPropertyTester.EXTENSION_TYPE_ID;
 
-		// Component Web Application Property Tester
-		Extension extension1 = new Extension(typeId, WebApplicationPropertyTester.ID);
-		extension1.addInterface(IPropertyTester.class, WebApplicationPropertyTester.class);
+		// Public Web Application Property Tester
+		Extension extension1 = new Extension(typeId, PublicWebApplicationPropertyTester.ID);
+		extension1.addInterface(IPropertyTester.class, PublicWebApplicationPropertyTester.class);
 		addExtension(extension1);
+
+		// Component Web Application Property Tester
+		Extension extension2 = new Extension(typeId, WebApplicationPropertyTester.ID);
+		extension2.addInterface(IPropertyTester.class, WebApplicationPropertyTester.class);
+		addExtension(extension2);
 	}
 
 }

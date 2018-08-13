@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.platform.sdk.util.ExtensionHelper;
 
 public class SignOutServlet extends HttpServlet {
 
@@ -17,26 +16,24 @@ public class SignOutServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
+		String publicContextRoot = getServletConfig().getInitParameter(WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT);
 
-		boolean isTokenValid = false;
+		// boolean isTokenValid = false;
 		HttpSession session = request.getSession(false);
 		if (session != null) {
 			// String username = (String) session.getAttribute(WebConstants.SESSION__USERNAME);
 			// String fullName = (String) session.getAttribute(WebConstants.SESSION__FULLNAME);
 			// String tokenType = (String) session.getAttribute(WebConstants.SESSION__TOKEN_TYPE);
-			String accessToken = (String) session.getAttribute(WebConstants.SESSION__ACCESS_TOKEN);
-
-			isTokenValid = ExtensionHelper.JWT.isTokenValid(WebConstants.TOKEN_PROVIDER__ORBIT, accessToken);
-
+			// String accessToken = (String) session.getAttribute(WebConstants.SESSION__ACCESS_TOKEN);
+			// isTokenValid = ExtensionHelper.JWT.isTokenValid(WebConstants.TOKEN_PROVIDER__ORBIT, accessToken);
 			session.invalidate();
 		}
 
-		if (session != null && isTokenValid) {
-			session.invalidate();
-		}
+		// if (session != null && isTokenValid) {
+		// session.invalidate();
+		// }
 
-		response.sendRedirect(contextRoot + "/signin");
+		response.sendRedirect(publicContextRoot + "/signin");
 	}
 
 }

@@ -1,7 +1,6 @@
 package org.orbit.component.webconsole.servlet.tier1.identity;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,9 +12,8 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.MessageHelper;
-import org.orbit.platform.sdk.http.JWTTokenHandler;
-import org.orbit.platform.sdk.util.ExtensionHelper;
+import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.component.webconsole.util.SessionHelper;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -29,6 +27,7 @@ public class SignInServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
+		String publicContextRoot = getServletConfig().getInitParameter(WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT);
 		String identityServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_IDENTITY_SERVICE_URL);
 		String message = "";
 
@@ -42,7 +41,7 @@ public class SignInServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "'password' parameter is empty.");
 		}
 
-		boolean succeed = false;
+		boolean signInSucceed = false;
 		if (!username_or_email_value.isEmpty() && !password.isEmpty()) {
 			try {
 				boolean usernameExists = OrbitComponentHelper.Identity.usernameExists(identityServiceUrl, username_or_email_value);
@@ -54,37 +53,20 @@ public class SignInServlet extends HttpServlet {
 
 					LoginResponse loginResponse = OrbitComponentHelper.Identity.login(identityServiceUrl, username, email, password);
 					if (loginResponse != null) {
-						succeed = loginResponse.isSucceed();
-
-						if (succeed) {
-							String tokenType = loginResponse.getTokenType();
-							String tokenValue = loginResponse.getTokenValue();
-
+						signInSucceed = loginResponse.isSucceed();
+						if (signInSucceed) {
+							// Login succeed
 							try {
-								Map<String, String> payload = ExtensionHelper.JWT.getTokenPayload(WebConstants.TOKEN_PROVIDER__ORBIT, tokenValue);
-								if (payload != null) {
-									String theUsername = payload.get(JWTTokenHandler.PAYLOAD__USERNAME);
-									String firstName = payload.get(JWTTokenHandler.PAYLOAD__FIRST_NAME);
-									String lastName = payload.get(JWTTokenHandler.PAYLOAD__LAST_NAME);
+								SessionHelper.INSTANCE.updateSession(request, loginResponse);
 
-									String fullName = null;
-									if (firstName != null && !firstName.isEmpty() && lastName != null && !lastName.isEmpty()) {
-										fullName = firstName + " " + lastName;
-									} else {
-										fullName = username;
-									}
-
-									HttpSession session = request.getSession();
-									session.setAttribute(WebConstants.SESSION__USERNAME, theUsername);
-									session.setAttribute(WebConstants.SESSION__FULLNAME, fullName);
-									session.setAttribute(WebConstants.SESSION__TOKEN_TYPE, tokenType);
-									session.setAttribute(WebConstants.SESSION__ACCESS_TOKEN, tokenValue);
-								}
 							} catch (Exception e) {
+								// Cannot get token from sign in response. Consider as sign in failed.
+								signInSucceed = true;
+								message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 								e.printStackTrace();
 							}
-
 						} else {
+							// Login failed
 							String responseMsg = loginResponse.getMessage();
 							message = MessageHelper.INSTANCE.add(message, responseMsg);
 						}
@@ -97,20 +79,22 @@ public class SignInServlet extends HttpServlet {
 			}
 		}
 
-		if (succeed) {
-			// Note:
-			// - redirect to desktop servlet in the future
-			// - show a jsp page for now
-			// request.getRequestDispatcher(contextRoot + "/user_main").forward(request, response);
-			response.sendRedirect(contextRoot + "/user_main");
-
-		} else {
+		if (!signInSucceed) {
 			message = MessageHelper.INSTANCE.add(message, "Incorrect username or password.");
+		}
 
-			HttpSession session = request.getSession(true);
-			session.setAttribute("message", message);
+		// ---------------------------------------------------------------
+		// Render data
+		// ---------------------------------------------------------------
+		HttpSession session = request.getSession(true);
+		session.setAttribute("message", message);
 
-			response.sendRedirect(contextRoot + "/signin");
+		if (signInSucceed) {
+			// Note:
+			// Redirect to desktop servlet. Show main page for now.
+			response.sendRedirect(contextRoot + "/user_main");
+		} else {
+			response.sendRedirect(publicContextRoot + "/signin");
 		}
 	}
 

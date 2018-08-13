@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.util.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
 public class SignUpPage extends HttpServlet {
@@ -18,7 +18,7 @@ public class SignUpPage extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
+		String publicContextRoot = getServletConfig().getInitParameter(WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT);
 		String message = "";
 
 		HttpSession session = request.getSession(false);
@@ -38,7 +38,7 @@ public class SignUpPage extends HttpServlet {
 		if (message != null && !message.isEmpty()) {
 			request.setAttribute("message", message);
 		}
-		request.getRequestDispatcher(contextRoot + "/views/sign_up.jsp").forward(request, response);
+		request.getRequestDispatcher(publicContextRoot + "/views/sign_up.jsp").forward(request, response);
 	}
 
 }

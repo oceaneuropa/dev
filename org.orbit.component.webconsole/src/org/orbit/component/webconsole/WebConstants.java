@@ -8,6 +8,9 @@ public class WebConstants {
 	public static String COMPONENT_WEB_CONSOLE_AUTOSTART = "component.web_console.autostart";
 	public static String COMPONENT_WEB_CONSOLE_CONTEXT_ROOT = "component.web_console.context_root";
 
+	public static String PUBLIC_WEB_CONSOLE_AUTOSTART = "public.web_console.autostart";
+	public static String PUBLIC_WEB_CONSOLE_CONTEXT_ROOT = "public.web_console.context_root";
+
 	public static String TOKEN_PROVIDER__ORBIT = "orbit";
 
 	public static String SESSION__USERNAME = "username";

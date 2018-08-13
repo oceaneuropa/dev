@@ -1,4 +1,4 @@
-package org.orbit.component.webconsole.servlet;
+package org.orbit.component.webconsole.util;
 
 import java.io.IOException;
 import java.util.List;

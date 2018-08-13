@@ -17,7 +17,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 
 /**

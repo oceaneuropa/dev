@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.util.OrbitComponentHelper;
-import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.ClientException;

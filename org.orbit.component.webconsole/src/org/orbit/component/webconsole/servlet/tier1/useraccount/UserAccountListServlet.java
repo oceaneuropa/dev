@@ -12,7 +12,7 @@ import org.orbit.component.api.OrbitConstants;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.util.OrbitComponentHelper;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.servlet.MessageHelper;
+import org.orbit.component.webconsole.util.MessageHelper;
 import org.origin.common.rest.client.ClientException;
 
 public class UserAccountListServlet extends HttpServlet {

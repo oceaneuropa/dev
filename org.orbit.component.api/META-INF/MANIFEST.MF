@@ -27,7 +27,6 @@ Export-Package: org.orbit.component.api;version="1.0.0",
  other.orbit.component.api.tier2.appstore;version="1.0.0",
  other.orbit.component.api.tier3.domainmanagement;version="1.0.0",
  other.orbit.component.api.tier3.nodecontrol;version="1.0.0"
-Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,2.0.0)",
- org.origin.common;bundle-version="1.0.0",
+Require-Bundle: org.origin.common;bundle-version="1.0.0",
  org.orbit.component.model;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy

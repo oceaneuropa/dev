@@ -1,0 +1,82 @@
+package org.orbit.component.webconsole.servlet;
+
+import java.util.Hashtable;
+import java.util.Map;
+
+import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignInPage;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignInServlet;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignUpPage;
+import org.orbit.component.webconsole.servlet.tier1.identity.SignUpServlet;
+import org.orbit.infra.api.InfraConstants;
+import org.orbit.platform.sdk.http.PlatformWebApplication;
+import org.orbit.service.servlet.impl.JspMetadataImpl;
+import org.orbit.service.servlet.impl.ResourceMetadataImpl;
+import org.orbit.service.servlet.impl.ServletMetadataImpl;
+import org.osgi.framework.BundleContext;
+
+public class PublicWebApplication extends PlatformWebApplication {
+
+	/**
+	 * 
+	 * @param initProperties
+	 */
+	public PublicWebApplication(Map<Object, Object> initProperties) {
+		super(initProperties);
+	}
+
+	@Override
+	protected String[] getPropertyNames() {
+		String[] propNames = new String[] { //
+				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
+				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
+				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
+				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
+				WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT, //
+				OrbitConstants.ORBIT_IDENTITY_SERVICE_URL, //
+				OrbitConstants.ORBIT_USER_ACCOUNTS_URL, //
+				OrbitConstants.ORBIT_AUTH_URL, //
+				OrbitConstants.ORBIT_REGISTRY_URL, //
+				OrbitConstants.ORBIT_APP_STORE_URL, //
+				OrbitConstants.ORBIT_DOMAIN_SERVICE_URL, //
+				OrbitConstants.ORBIT_NODE_CONTROL_URL, //
+				OrbitConstants.ORBIT_MISSION_CONTROL_URL, //
+		};
+		return propNames;
+	}
+
+	@Override
+	public String getContextRoot() {
+		String contextRoot = (String) this.getProperties().get(WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT);
+		return contextRoot;
+	}
+
+	@Override
+	protected void addResources(BundleContext bundleContext) {
+		Hashtable<Object, Object> dicts = new Hashtable<Object, Object>();
+		if (!this.properties.isEmpty()) {
+			dicts.putAll(this.properties);
+		}
+
+		String contextRoot = (String) this.properties.get(WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT);
+		dicts.put("contextPath", contextRoot);
+
+		String bundlePrefix = "/org.orbit.component.webconsole";
+
+		// Web resources
+		addResource(new ResourceMetadataImpl("/views/css", bundlePrefix + "/WEB-INF/views/css"));
+		addResource(new ResourceMetadataImpl("/views/icons", bundlePrefix + "/WEB-INF/views/icons"));
+		addResource(new ResourceMetadataImpl("/views/js", bundlePrefix + "/WEB-INF/views/js"));
+
+		// Identity
+		addServlet(new ServletMetadataImpl("/signup", new SignUpPage(), dicts)); // public
+		addServlet(new ServletMetadataImpl("/signin", new SignInPage(), dicts)); // public
+		addServlet(new ServletMetadataImpl("/signup_req", new SignUpServlet(), dicts)); // public
+		addServlet(new ServletMetadataImpl("/signin_req", new SignInServlet(), dicts)); // public
+
+		// Add JSPs
+		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));
+	}
+
+}
