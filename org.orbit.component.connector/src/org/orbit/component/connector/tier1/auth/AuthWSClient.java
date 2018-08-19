@@ -11,8 +11,8 @@ import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
 import org.orbit.component.model.tier1.auth.AuthorizationResponseDTO;
 import org.orbit.component.model.tier1.auth.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.TokenResponseDTO;
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
 /*
@@ -28,9 +28,9 @@ import org.origin.common.rest.client.ClientException;
  * @see TransferAgentServiceResource
  * 
  */
-public class AuthWSClient extends AbstractWSClient {
+public class AuthWSClient extends WSClient {
 
-	public AuthWSClient(ClientConfiguration config) {
+	public AuthWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

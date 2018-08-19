@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.ComponentConstants;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -27,7 +28,7 @@ public class UserAccountDeleteServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
+		String userRegistryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		String message = "";
 
 		String[] ids = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
@@ -44,8 +45,9 @@ public class UserAccountDeleteServlet extends HttpServlet {
 		boolean hasFailed = false;
 		if (ids != null) {
 			try {
+				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 				for (String currId : ids) {
-					boolean currSucceed = OrbitComponentHelper.UserAccounts.deleteUserAccount(userRegistryUrl, currId);
+					boolean currSucceed = ComponentClientsUtil.UserAccounts.deleteUserAccount(userRegistryUrl, accessToken, currId);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {

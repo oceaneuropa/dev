@@ -10,7 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
-import org.orbit.platform.sdk.util.ExtensionHelper;
+import org.orbit.platform.sdk.util.ExtensionUtil;
 import org.origin.common.util.ServletUtil;
 
 public class UserMainPage extends HttpServlet {
@@ -31,7 +31,7 @@ public class UserMainPage extends HttpServlet {
 		HttpSession session = request.getSession(false);
 		if (session != null) {
 			String accessToken = (String) session.getAttribute(WebConstants.SESSION__ACCESS_TOKEN);
-			isTokenValid = ExtensionHelper.JWT.isTokenValid(WebConstants.TOKEN_PROVIDER__ORBIT, accessToken);
+			isTokenValid = ExtensionUtil.JWT.isTokenValid(WebConstants.TOKEN_PROVIDER__ORBIT, accessToken);
 		}
 
 		if (message != null && !message.isEmpty()) {
@@ -42,23 +42,3 @@ public class UserMainPage extends HttpServlet {
 	}
 
 }
-
-// String username = (String) session.getAttribute(WebConstants.SESSION__USERNAME);
-// String fullName = (String) session.getAttribute(WebConstants.SESSION__FULLNAME);
-// String tokenType = (String) session.getAttribute(WebConstants.SESSION__TOKEN_TYPE);
-
-// if (isTokenValid) {
-// if (message != null && !message.isEmpty()) {
-// request.setAttribute("message", message);
-// }
-// request.setAttribute("isTokenValid", isTokenValid);
-// request.getRequestDispatcher(contextRoot + "/views/user_main.jsp").forward(request, response);
-//
-// } else {
-// if (session == null) {
-// session = request.getSession(true);
-// }
-// session.setAttribute("message", "Session expired.");
-//
-// response.sendRedirect(contextRoot + "/signin");
-// }

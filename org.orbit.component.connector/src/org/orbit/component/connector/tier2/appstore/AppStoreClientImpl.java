@@ -11,14 +11,13 @@ import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.api.tier2.appstore.CreateAppRequest;
 import org.orbit.component.api.tier2.appstore.UpdateAppRequest;
-import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.model.StatusDTO;
 
 /**
@@ -38,11 +37,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 
 	@Override
 	protected AppStoreWSClient createWSClient(Map<String, Object> properties) {
-		String realm = (String) this.properties.get(OrbitConstants.REALM);
-		String username = (String) this.properties.get(OrbitConstants.USERNAME);
-		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
-
-		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
+		WSClientConfiguration config = WSClientConfiguration.create(properties);
 		return new AppStoreWSClient(config);
 	}
 
@@ -51,7 +46,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 		List<AppManifest> apps = new ArrayList<AppManifest>();
 		try {
 			AppQueryDTO queryDTO = ModelConverter.AppStore.toDTO(query);
-			List<AppManifestDTO> appDTOs = this.client.getApps(queryDTO);
+			List<AppManifestDTO> appDTOs = this.client.getList(queryDTO);
 			for (AppManifestDTO appDTO : appDTOs) {
 				apps.add(ModelConverter.AppStore.toApp(appDTO));
 			}
@@ -65,7 +60,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 	public AppManifest getApp(String appId, String appVersion) throws ClientException {
 		AppManifest app = null;
 		try {
-			AppManifestDTO appDTO = this.client.getApp(appId, appVersion);
+			AppManifestDTO appDTO = this.client.get(appId, appVersion);
 			if (appDTO != null) {
 				app = ModelConverter.AppStore.toApp(appDTO);
 			}
@@ -78,7 +73,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 	@Override
 	public boolean exists(String appId, String appVersion) throws ClientException {
 		try {
-			return this.client.appExists(appId, appVersion);
+			return this.client.exists(appId, appVersion);
 		} catch (ClientException e) {
 			throw e;
 		}
@@ -88,11 +83,11 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 	public boolean create(CreateAppRequest createAppRequest) throws ClientException {
 		String appId = createAppRequest.getAppId();
 		String appVersion = createAppRequest.getAppVersion();
-		if (this.client.appExists(appId, appVersion)) {
+		if (this.client.exists(appId, appVersion)) {
 			throw new ClientException(400, String.format("App with appId '%s' and appVersion '%s' already exists.", appId, appVersion));
 		}
 
-		AppManifestDTO newAppDTO = this.client.addApp(ModelConverter.AppStore.toDTO(createAppRequest));
+		AppManifestDTO newAppDTO = this.client.create(ModelConverter.AppStore.toDTO(createAppRequest));
 		if (newAppDTO != null) {
 			return true;
 		}
@@ -103,7 +98,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 	public boolean create(CreateAppRequest createAppRequest, Path filePath) throws ClientException {
 		String appId = createAppRequest.getAppId();
 		String appVersion = createAppRequest.getAppVersion();
-		if (this.client.appExists(appId, appVersion)) {
+		if (this.client.exists(appId, appVersion)) {
 			throw new ClientException(400, String.format("App with appId '%s' and appVersion '%s' already exists.", appId, appVersion));
 		}
 
@@ -111,7 +106,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 			createAppRequest.setFileName(filePath.getFileName().toString());
 		}
 
-		AppManifestDTO newAppDTO = this.client.addApp(ModelConverter.AppStore.toDTO(createAppRequest));
+		AppManifestDTO newAppDTO = this.client.create(ModelConverter.AppStore.toDTO(createAppRequest));
 
 		if (newAppDTO != null && filePath != null) {
 			return uploadAppArchive(-1, newAppDTO.getAppId(), newAppDTO.getAppVersion(), filePath);
@@ -126,7 +121,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 		// if (!this.client.appExists(appId, appVersion)) {
 		// throw new ClientException(400, String.format("App with appId '%s' and appVersion '%s' does not exists.", appId, appVersion));
 		// }
-		StatusDTO status = this.client.updateApp(ModelConverter.AppStore.toDTO(updateAppRequest));
+		StatusDTO status = this.client.update(ModelConverter.AppStore.toDTO(updateAppRequest));
 		if (status != null && status.success()) {
 			return true;
 		}
@@ -136,7 +131,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 	@Override
 	public boolean delete(String appId, String appVersion) throws ClientException {
 		try {
-			StatusDTO status = this.client.deleteApp(appId, appVersion);
+			StatusDTO status = this.client.delete(appId, appVersion);
 			if (status != null && status.success()) {
 				return true;
 			}
@@ -148,7 +143,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 
 	@Override
 	public boolean uploadAppArchive(int id, String appId, String appVersion, Path filePath) throws ClientException {
-		StatusDTO status = this.client.uploadAppArchive(id, appId, appVersion, filePath);
+		StatusDTO status = this.client.upload(id, appId, appVersion, filePath);
 		if (status != null && status.success()) {
 			return true;
 		}
@@ -159,7 +154,7 @@ public class AppStoreClientImpl extends ServiceClientImpl<AppStoreClient, AppSto
 	public boolean downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException {
 		boolean succeed = false;
 		try {
-			succeed = this.client.downloadAppArchive(appId, appVersion, output);
+			succeed = this.client.download(appId, appVersion, output);
 		} catch (ClientException e) {
 			throw e;
 		}

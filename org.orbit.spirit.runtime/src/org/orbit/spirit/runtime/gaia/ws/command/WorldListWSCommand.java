@@ -22,6 +22,11 @@ public class WorldListWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) throws Exception {
 		List<WorldDTO> worldDTOs = new ArrayList<WorldDTO>();
 		List<World> worlds = this.gaia.getWorlds().getWorlds();

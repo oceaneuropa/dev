@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.model.domain.PlatformConfig;
@@ -70,7 +70,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(this.bundleContext, DomainManagementCommand.class.getName(), this, props);

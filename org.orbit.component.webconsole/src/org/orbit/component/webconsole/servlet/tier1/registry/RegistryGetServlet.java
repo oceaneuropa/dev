@@ -8,12 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
-import org.orbit.component.api.tier1.configregistry.EPath;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.webconsole.WebConstants;
-import org.origin.common.rest.client.ClientException;
 
 public class RegistryGetServlet extends HttpServlet {
 
@@ -25,7 +21,7 @@ public class RegistryGetServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String registryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_REGISTRY_URL);
+		String registryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_REGISTRY_URL);
 
 		String message = null;
 		HttpSession session = request.getSession(false);
@@ -39,17 +35,18 @@ public class RegistryGetServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
-		String userId = null;
-		ConfigRegistryClient registry = OrbitClients.getInstance().getConfigRegistry(registryUrl);
-		if (registry != null) {
-			try {
-				registry.getProperties();
-				registry.getProperties(userId, new EPath("/"));
-				registry.getProperty(userId, new EPath("/"), "test");
-			} catch (ClientException e) {
-				e.printStackTrace();
-			}
-		}
+		// String userId = null;
+		// String username = SessionHelper.INSTANCE.getUsername(request);
+		// ConfigRegistryClient registry = OrbitClients.getInstance().getConfigRegistry(registryUrl, username);
+		// if (registry != null) {
+		// try {
+		// registry.getProperties();
+		// registry.getProperties(userId, new EPath("/"));
+		// registry.getProperty(userId, new EPath("/"), "test");
+		// } catch (ClientException e) {
+		// e.printStackTrace();
+		// }
+		// }
 
 		// ---------------------------------------------------------------
 		// Render data

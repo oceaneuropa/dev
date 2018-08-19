@@ -7,11 +7,11 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier4.missioncontrol.Mission;
 import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -52,7 +52,7 @@ public class MissionControlCommand extends ServiceClientCommand implements Comma
 				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_MISSION_CONTROL_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(bundleContext, MissionControlCommand.class.getName(), this, props);
@@ -68,7 +68,8 @@ public class MissionControlCommand extends ServiceClientCommand implements Comma
 	}
 
 	protected MissionControlClient getMissionControl() {
-		MissionControlClient missionControl = OrbitClients.getInstance().getMissionControl(this.properties);
+		String missionControlUrl = (String) this.properties.get(ComponentConstants.ORBIT_MISSION_CONTROL_URL);
+		MissionControlClient missionControl = ComponentClientsUtil.MissionControl.getMissionControlClient(missionControlUrl, null);
 		if (missionControl == null) {
 			throw new IllegalStateException("MissionControl is null.");
 		}

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -38,24 +38,24 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 			System.out.println();
 		}
 
-		this.indexItem = indexProvider.getIndexItem(OrbitConstants.DOMAIN_SERVICE_INDEXER_ID, OrbitConstants.DOMAIN_SERVICE_TYPE, name);
+		this.indexItem = indexProvider.getIndexItem(ComponentsConstants.DOMAIN_SERVICE_INDEXER_ID, ComponentsConstants.DOMAIN_SERVICE_TYPE, name);
 		if (this.indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(OrbitConstants.DOMAIN_SERVICE_NAME, name);
-			props.put(OrbitConstants.DOMAIN_SERVICE_HOST_URL, hostURL);
-			props.put(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT, contextRoot);
-			props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(ComponentsConstants.DOMAIN_SERVICE_NAME, name);
+			props.put(ComponentsConstants.DOMAIN_SERVICE_HOST_URL, hostURL);
+			props.put(ComponentsConstants.DOMAIN_SERVICE_CONTEXT_ROOT, contextRoot);
+			props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			this.indexItem = indexProvider.addIndexItem(OrbitConstants.DOMAIN_SERVICE_INDEXER_ID, OrbitConstants.DOMAIN_SERVICE_TYPE, name, props);
+			this.indexItem = indexProvider.addIndexItem(ComponentsConstants.DOMAIN_SERVICE_INDEXER_ID, ComponentsConstants.DOMAIN_SERVICE_TYPE, name, props);
 
 		} else {
 			// Update existing index item with properties
 			Integer indexItemId = this.indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			indexProvider.setProperties(OrbitConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId, props);
+			indexProvider.setProperties(ComponentsConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId, props);
 		}
 	}
 
@@ -77,7 +77,7 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 				System.out.println("\tindexItemId = " + indexItemId);
 			}
 
-			indexProvider.removeIndexItem(OrbitConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
+			indexProvider.removeIndexItem(ComponentsConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
 		}
 	}
 

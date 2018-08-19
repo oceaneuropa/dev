@@ -36,16 +36,16 @@ public interface NodeControlService extends WebServiceAware {
 
 	boolean deleteNode(String id) throws IOException;
 
-	boolean startNode(String id) throws IOException;
+	boolean startNode(String id, String accessToken) throws IOException;
 
-	boolean stopNode(String id) throws IOException;
+	boolean stopNode(String id, String accessToken) throws IOException;
 
 	boolean isNodeStarting(String id) throws IOException;
 
-	boolean isNodeStarted(String id) throws IOException;
+	boolean isNodeStarted(String id, String accessToken) throws IOException;
 
 	boolean isNodeStopping(String id) throws IOException;
 
-	boolean isNodeStopped(String id) throws IOException;
+	boolean isNodeStopped(String id, String accessToken) throws IOException;
 
 }

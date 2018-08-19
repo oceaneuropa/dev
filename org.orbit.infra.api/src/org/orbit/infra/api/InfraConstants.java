@@ -5,12 +5,9 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	// Global
 	// ----------------------------------------------------------------------------------------
-	public static String REALM = "realm";
-	public static String USERNAME = "username";
-	public static String URL = "url";
-
 	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 	public static String ORBIT_EXTENSION_REGISTRY_URL = "orbit.extension_registry.url";
+	public static String ORBIT_CHANNEL_SERVICE_URL = "orbit.channel_service.url";
 
 	// global index item properties
 	public static String INDEX_ITEM_ID = "index_item_id";

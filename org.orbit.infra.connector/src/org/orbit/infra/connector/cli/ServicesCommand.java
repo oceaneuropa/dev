@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -47,7 +47,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 				new String[] { //
 						// show available services
 						"lservices", //
-		});
+				});
 
 		OSGiServiceUtil.register(bundleContext, ServicesCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
@@ -67,7 +67,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		if (this.indexServiceUrl == null) {
 			throw new IllegalStateException("indexServiceUrl is null.");
 		}
-		IndexService indexService = InfraClients.getInstance().getIndexService(this.indexServiceUrl);
+		IndexService indexService = InfraClientsUtil.IndexItems.getIndexServiceClient(this.indexServiceUrl, null);
 		return indexService;
 	}
 

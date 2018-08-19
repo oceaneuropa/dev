@@ -1,4 +1,4 @@
-package org.orbit.component.connector.tier4.mission;
+package org.orbit.component.connector.tier4.missioncontrol;
 
 import org.orbit.component.api.tier4.missioncontrol.Mission;
 

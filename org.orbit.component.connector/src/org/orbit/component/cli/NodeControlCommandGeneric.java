@@ -6,10 +6,10 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -45,12 +45,12 @@ public class NodeControlCommandGeneric implements CommandActivator {
 		OSGiServiceUtil.unregister(NodeControlCommandGeneric.class.getName(), this);
 	}
 
-	protected NodeControlClient getTransferAgent(String url) {
-		NodeControlClient transferAgent = OrbitClients.getInstance().getNodeControl(url);
-		if (transferAgent == null) {
-			throw new IllegalStateException("TransferAgent is null.");
+	protected NodeControlClient getNodeControl(String url) {
+		NodeControlClient nodeControl = ComponentClientsUtil.NodeControl.getNodeControlClient(url, null);
+		if (nodeControl == null) {
+			throw new IllegalStateException("NodeControlClient is null.");
 		}
-		return transferAgent;
+		return nodeControl;
 	}
 
 	@Descriptor("ping")
@@ -64,7 +64,7 @@ public class NodeControlCommandGeneric implements CommandActivator {
 		}
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(url);
+			NodeControlClient transferAgent = getNodeControl(url);
 
 			boolean ping = transferAgent.ping();
 			System.out.println("ping result = " + ping);
@@ -95,7 +95,7 @@ public class NodeControlCommandGeneric implements CommandActivator {
 		}
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(url);
+			NodeControlClient transferAgent = getNodeControl(url);
 
 			String echoMessage = transferAgent.echo(message);
 			System.out.println("echo result = " + echoMessage);
@@ -128,7 +128,7 @@ public class NodeControlCommandGeneric implements CommandActivator {
 		}
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(url);
+			NodeControlClient transferAgent = getNodeControl(url);
 
 			String levelResult = transferAgent.level(level1, level2, message1, message2);
 			System.out.println("level result = " + levelResult);
@@ -156,7 +156,7 @@ public class NodeControlCommandGeneric implements CommandActivator {
 		}
 
 		try {
-			NodeControlClient transferAgent = getTransferAgent(url);
+			NodeControlClient transferAgent = getNodeControl(url);
 
 			Request request = new Request(RequestConstants.GET_NODES);
 			Response response = transferAgent.sendRequest(request);

@@ -18,8 +18,8 @@ import org.orbit.infra.model.extensionregistry.ExtensionItemCreateRequest;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemSetPropertiesRequest;
 import org.orbit.infra.model.extensionregistry.ExtensionItemUpdateRequest;
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
@@ -50,13 +50,13 @@ import org.origin.common.util.StringUtil;
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/extensionitem/properties?platformId={platformId}&typeId={typeId}&extensionId={extensionId}&propertyNames={propertyNames}
  * 
  */
-public class ExtensionRegistryWSClient extends AbstractWSClient {
+public class ExtensionRegistryWSClient extends WSClient {
 
 	/**
 	 * 
 	 * @param config
 	 */
-	public ExtensionRegistryWSClient(ClientConfiguration config) {
+	public ExtensionRegistryWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

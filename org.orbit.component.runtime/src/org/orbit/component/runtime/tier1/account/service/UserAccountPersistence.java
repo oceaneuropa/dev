@@ -15,9 +15,9 @@ public interface UserAccountPersistence {
 
 	UserAccount createUserAccount(String userId, String password, String email, String firstName, String lastName, String phone) throws IOException;
 
-	boolean setUserAccountActivated(String userId, boolean activated) throws IOException;
+	boolean setActivated(String userId, boolean activated) throws IOException;
 
-	boolean userIdExists(String userId) throws IOException;
+	boolean usernameExists(String username) throws IOException;
 
 	boolean emailExists(String email) throws IOException;
 

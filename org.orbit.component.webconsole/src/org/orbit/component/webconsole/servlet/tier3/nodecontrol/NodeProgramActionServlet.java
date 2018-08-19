@@ -16,8 +16,9 @@ import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.util.OrbitIndexHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.util.ServletUtil;
 
 public class NodeProgramActionServlet extends HttpServlet {
@@ -80,9 +81,11 @@ public class NodeProgramActionServlet extends HttpServlet {
 		boolean hasFailed = false;
 		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty() && ACTIONS.contains(action)) {
 			try {
+				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
 				// Get platform client of the node
 				PlatformClient nodePlatformClient = null;
-				IndexItem nodeIndexItem = OrbitIndexHelper.INSTANCE.getIndexItem(indexServiceUrl, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				IndexItem nodeIndexItem = InfraClientsUtil.IndexItems.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
 					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem);
 				}

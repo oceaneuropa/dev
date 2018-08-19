@@ -1,6 +1,6 @@
 package org.orbit.component.connector;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.infra.api.InfraConstants;
 import org.origin.common.osgi.AbstractBundleActivator;
 import org.osgi.framework.BundleActivator;
@@ -46,13 +46,13 @@ public class Activator extends AbstractBundleActivator implements BundleActivato
 		String[] propNames = new String[] { //
 				InfraConstants.ORBIT_INDEX_SERVICE_URL, //
 				InfraConstants.ORBIT_EXTENSION_REGISTRY_URL, //
-				OrbitConstants.ORBIT_USER_ACCOUNTS_URL, //
-				OrbitConstants.ORBIT_AUTH_URL, //
-				OrbitConstants.ORBIT_REGISTRY_URL, //
-				OrbitConstants.ORBIT_APP_STORE_URL, //
-				OrbitConstants.ORBIT_DOMAIN_SERVICE_URL, //
-				OrbitConstants.ORBIT_NODE_CONTROL_URL, //
-				OrbitConstants.ORBIT_MISSION_CONTROL_URL, //
+				ComponentConstants.ORBIT_USER_ACCOUNTS_URL, //
+				ComponentConstants.ORBIT_AUTH_URL, //
+				ComponentConstants.ORBIT_REGISTRY_URL, //
+				ComponentConstants.ORBIT_APP_STORE_URL, //
+				ComponentConstants.ORBIT_DOMAIN_SERVICE_URL, //
+				ComponentConstants.ORBIT_NODE_CONTROL_URL, //
+				ComponentConstants.ORBIT_MISSION_CONTROL_URL, //
 		};
 		return propNames;
 	}

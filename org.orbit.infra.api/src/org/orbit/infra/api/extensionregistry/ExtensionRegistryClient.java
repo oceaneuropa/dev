@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.adapter.IAdaptable;
-import org.origin.common.service.ProxyService;
+import org.origin.common.service.Proxy;
 
-public interface ExtensionRegistryClient extends ProxyService, IAdaptable {
+public interface ExtensionRegistryClient extends Proxy, IAdaptable {
 
 	/**
 	 * 

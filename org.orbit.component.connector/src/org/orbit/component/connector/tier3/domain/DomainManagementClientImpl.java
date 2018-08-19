@@ -8,7 +8,6 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.AddNodeConfigRequest;
@@ -19,10 +18,10 @@ import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
 import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdateNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdatePlatformConfigRequest;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.model.StatusDTO;
 
 public class DomainManagementClientImpl extends ServiceClientImpl<DomainManagementClient, DomainManagementWSClient> implements DomainManagementClient {
@@ -38,11 +37,7 @@ public class DomainManagementClientImpl extends ServiceClientImpl<DomainManageme
 
 	@Override
 	protected DomainManagementWSClient createWSClient(Map<String, Object> properties) {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
-
-		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
+		WSClientConfiguration config = WSClientConfiguration.create(properties);
 		return new DomainManagementWSClient(config);
 	}
 

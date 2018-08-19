@@ -11,7 +11,7 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier3.domain.DomainManagementWSClient;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
@@ -24,9 +24,10 @@ import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdateNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdatePlatformConfigRequest;
 import org.origin.common.adapter.AdaptorSupport;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.client.WSClientConfiguration;
+import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.StringUtil;
@@ -70,8 +71,8 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 
 	@Override
 	public String getURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
-		String contextRoot = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(ComponentConstants.DOMAIN_SERVICE_HOST_URL);
+		String contextRoot = (String) this.properties.get(ComponentConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 
@@ -87,14 +88,14 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	 */
 	@Override
 	public void update(Map<String, Object> properties) {
-		String oldUrl = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
+		String oldUrl = (String) this.properties.get(ComponentConstants.DOMAIN_SERVICE_HOST_URL);
+		String oldContextRoot = (String) this.properties.get(ComponentConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
 
 		properties = checkProperties(properties);
 		this.properties.putAll(properties);
 
-		String newUrl = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
-		String newContextRoot = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
+		String newUrl = (String) properties.get(ComponentConstants.DOMAIN_SERVICE_HOST_URL);
+		String newContextRoot = (String) properties.get(ComponentConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
 
 		boolean reinitClient = false;
 		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {
@@ -113,7 +114,7 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	}
 
 	protected void initClient() {
-		ClientConfiguration clientConfig = getClientConfiguration(this.properties);
+		WSClientConfiguration clientConfig = getClientConfiguration(this.properties);
 		this.client = new DomainManagementWSClient(clientConfig);
 	}
 
@@ -448,12 +449,14 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	 * @param properties
 	 * @return
 	 */
-	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String url = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
-		return ClientConfiguration.create(realm, username, url, contextRoot);
+	protected WSClientConfiguration getClientConfiguration(Map<String, Object> properties) {
+		String realm = (String) properties.get(WSClientConstants.REALM);
+		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
+		String url = (String) properties.get(ComponentConstants.DOMAIN_SERVICE_HOST_URL);
+		String contextRoot = (String) properties.get(ComponentConstants.DOMAIN_SERVICE_CONTEXT_ROOT);
+
+		WSClientConfiguration config = WSClientConfiguration.create(realm, accessToken, url, contextRoot);
+		return config;
 	}
 
 	@Override

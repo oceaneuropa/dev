@@ -1,5 +1,6 @@
 package org.orbit.component.api;
 
+import org.orbit.component.api.util.ComponentClients;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -25,12 +26,12 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 		Activator.instance = this;
 
-		OrbitClients.getInstance().start(bundleContext);
+		ComponentClients.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		OrbitClients.getInstance().stop(bundleContext);
+		ComponentClients.getInstance().stop(bundleContext);
 
 		Activator.context = null;
 		Activator.instance = null;

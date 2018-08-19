@@ -2,12 +2,12 @@ package org.orbit.spirit.connector.gaia;
 
 import javax.ws.rs.client.Invocation.Builder;
 
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 
-public class GAIAWSClient extends AbstractWSClient {
+public class GAIAWSClient extends WSClient {
 
-	public GAIAWSClient(ClientConfiguration config) {
+	public GAIAWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

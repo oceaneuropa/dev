@@ -16,7 +16,7 @@ import org.orbit.component.connector.tier2.appstore.AppStoreConnector;
 import org.orbit.component.connector.tier2.appstore.AppStoreDownloader;
 import org.orbit.component.connector.tier3.domain.DomainManagementConnector;
 import org.orbit.component.connector.tier3.nodecontrol.NodeControlConnector;
-import org.orbit.component.connector.tier4.mission.MissionControlConnector;
+import org.orbit.component.connector.tier4.missioncontrol.MissionControlConnector;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.connector.ConnectorActivator;
 import org.orbit.platform.sdk.downloader.DownloadSource;

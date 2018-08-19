@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.api.InfraClients;
-import org.orbit.infra.api.channel.Channels;
+import org.orbit.infra.api.channel.ChannelClient;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -52,7 +52,7 @@ public class ChannelCommand implements Annotated, CommandActivator {
 				new String[] { //
 						"channel_ping", //
 						"channel_send" //
-		});
+				});
 		OSGiServiceUtil.register(bundleContext, ChannelCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
@@ -78,8 +78,8 @@ public class ChannelCommand implements Annotated, CommandActivator {
 		this.properties = properties;
 	}
 
-	protected Channels getChannels(String url) throws ClientException {
-		Channels channels = InfraClients.getInstance().getChannels(url);
+	protected ChannelClient getChannels(String url) throws ClientException {
+		ChannelClient channels = InfraClientsUtil.Channels.getChannelClient(url, null);
 		if (channels == null) {
 			LOG.error("Channels is not available.");
 			throw new IllegalStateException("Channels is not available. url = " + url);
@@ -93,7 +93,7 @@ public class ChannelCommand implements Annotated, CommandActivator {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "channel_ping", new String[] { "url", url });
 
-		Channels channel = getChannels(url);
+		ChannelClient channel = getChannels(url);
 
 		boolean result = channel.ping();
 		LOG.info("result = " + result);
@@ -113,7 +113,7 @@ public class ChannelCommand implements Annotated, CommandActivator {
 				, new String[] { "message", message } //
 		);
 
-		Channels channel = getChannels(url);
+		ChannelClient channel = getChannels(url);
 
 		boolean result = channel.send(channelId, senderId, message);
 		LOG.info("result = " + result);

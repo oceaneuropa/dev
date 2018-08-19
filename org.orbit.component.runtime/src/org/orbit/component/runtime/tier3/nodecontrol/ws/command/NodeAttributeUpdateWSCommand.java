@@ -22,6 +22,11 @@ public class NodeAttributeUpdateWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) throws Exception {
 		String id = RequestUtil.getParameter(request, "id", String.class, "");
 		String oldName = RequestUtil.getParameter(request, "oldName", String.class, "");

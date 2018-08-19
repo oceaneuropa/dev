@@ -1,11 +1,11 @@
 package org.orbit.component.connector.tier1.configregistry;
 
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 
-public class ConfigRegistryWSClient extends AbstractWSClient {
+public class ConfigRegistryWSClient extends WSClient {
 
-	public ConfigRegistryWSClient(ClientConfiguration config) {
+	public ConfigRegistryWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

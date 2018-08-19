@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.ComponentConstants;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -25,7 +26,7 @@ public class PlatformAddServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		String domainServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String id = ServletUtil.getParameter(request, "id", "");
@@ -47,7 +48,9 @@ public class PlatformAddServlet extends HttpServlet {
 		boolean succeed = false;
 		if (!machineId.isEmpty() && !id.isEmpty()) {
 			try {
-				succeed = OrbitComponentHelper.Domain.addPlatformConfig(domainServiceUrl, machineId, id, name, hostUrl, theContextRoot);
+				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+				succeed = ComponentClientsUtil.DomainControl.addPlatformConfig(domainServiceUrl, accessToken, machineId, id, name, hostUrl, theContextRoot);
 
 			} catch (ClientException e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

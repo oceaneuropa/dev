@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.infra.api.channel.Channels;
+import org.orbit.infra.api.channel.ChannelClient;
 import org.orbit.infra.connector.InfraConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -14,10 +14,10 @@ public class ChannelsConnectorImplV1 /* implements ChannelsConnector*/ {
 	protected static final String KEY_PARTS_SEPARATOR = "::";
 
 	protected ServiceRegistration<?> serviceRegistration;
-	protected Map<String, Channels> serviceMap;
+	protected Map<String, ChannelClient> serviceMap;
 
 	public ChannelsConnectorImplV1() {
-		this.serviceMap = new HashMap<String, Channels>();
+		this.serviceMap = new HashMap<String, ChannelClient>();
 	}
 
 	public void start(BundleContext bundleContext) {
@@ -35,8 +35,8 @@ public class ChannelsConnectorImplV1 /* implements ChannelsConnector*/ {
 	}
 
 	// @Override
-	public synchronized Channels getService(Map<String, Object> properties) {
-		Channels channel = null;
+	public synchronized ChannelClient getService(Map<String, Object> properties) {
+		ChannelClient channel = null;
 		String url = (String) properties.get(InfraConstants.CHANNEL_HOST_URL);
 		String contextRoot = (String) properties.get(InfraConstants.CHANNEL_CONTEXT_ROOT);
 		if (url != null && contextRoot != null) {

@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.ComponentConstants;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -24,7 +25,7 @@ public class AppDeleteServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
+		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 
 		String[] appIdVersions = ServletUtil.getParameterValues(request, "appId_appVersion", EMPTY_IDS);
 
@@ -37,13 +38,14 @@ public class AppDeleteServlet extends HttpServlet {
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
 		try {
+			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 			for (int i = 0; i < appIdVersions.length; i++) {
 				String currIdVersion = appIdVersions[i];
 				int index = currIdVersion.lastIndexOf("|");
 				String currId = currIdVersion.substring(0, index);
 				String currVersion = currIdVersion.substring(index + 1);
 
-				boolean currSucceed = OrbitComponentHelper.AppStore.deleteApp(appStoreUrl, currId, currVersion);
+				boolean currSucceed = ComponentClientsUtil.AppStore.deleteApp(appStoreUrl, accessToken, currId, currVersion);
 				if (currSucceed) {
 					hasSucceed = true;
 				} else {

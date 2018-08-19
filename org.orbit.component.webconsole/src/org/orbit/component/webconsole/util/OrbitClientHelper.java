@@ -1,17 +1,20 @@
 package org.orbit.component.webconsole.util;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.orbit.component.api.IndexConstants;
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
+import org.orbit.component.api.util.ComponentClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.OrbitIndexHelper;
-import org.orbit.platform.api.Clients;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
+import org.orbit.platform.api.util.PlatformClientsUtil;
+import org.origin.common.rest.client.WSClientConstants;
 
 public class OrbitClientHelper {
 
@@ -38,7 +41,7 @@ public class OrbitClientHelper {
 			}
 
 			if (platformUrl != null) {
-				platformClient = Clients.getInstance().getPlatformClient(platformUrl);
+				platformClient = PlatformClientsUtil.Platform.getPlatformClient(platformUrl, null);
 			}
 		}
 		return platformClient;
@@ -47,16 +50,17 @@ public class OrbitClientHelper {
 	/**
 	 * 
 	 * @param indexServiceUrl
+	 * @param accessToken
 	 * @param platformId
 	 * @return
 	 * @throws IOException
 	 */
-	public NodeControlClient getNodeControlClient(String indexServiceUrl, String platformId) throws IOException {
+	public NodeControlClient getNodeControlClient(String indexServiceUrl, String accessToken, String platformId) throws IOException {
 		NodeControlClient nodeControlClient = null;
 		if (indexServiceUrl != null && platformId != null) {
 
 			IndexItem nodeControlIndexItem = null;
-			List<IndexItem> nodeControlIndexItems = OrbitIndexHelper.INSTANCE.getIndexItemsOfPlatform(indexServiceUrl, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
+			List<IndexItem> nodeControlIndexItems = InfraClientsUtil.IndexItems.getIndexItemsOfPlatform(indexServiceUrl, accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
 			if (nodeControlIndexItems != null && !nodeControlIndexItems.isEmpty()) {
 				for (IndexItem currNodeControlIndexItem : nodeControlIndexItems) {
 					boolean isOnline = IndexItemHelper.INSTANCE.isOnline(currNodeControlIndexItem);
@@ -73,13 +77,20 @@ public class OrbitClientHelper {
 			if (nodeControlIndexItem != null) {
 				String hostURL = (String) nodeControlIndexItem.getProperties().get(IndexConstants.NODE_CONTROL_HOST_URL);
 				String contextRoot = (String) nodeControlIndexItem.getProperties().get(IndexConstants.NODE_CONTROL_CONTEXT_ROOT);
+
 				if (hostURL != null && contextRoot != null) {
-					String url = hostURL;
+					String nodeControlServiceUrl = hostURL;
 					if (!hostURL.endsWith("/") && !contextRoot.startsWith("/")) {
-						url += "/";
+						nodeControlServiceUrl += "/";
 					}
-					url += contextRoot;
-					nodeControlClient = OrbitClients.getInstance().getNodeControl(url);
+					nodeControlServiceUrl += contextRoot;
+
+					Map<String, Object> properties = new HashMap<String, Object>();
+					properties.put(WSClientConstants.REALM, null);
+					properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+					properties.put(WSClientConstants.URL, nodeControlServiceUrl);
+
+					nodeControlClient = ComponentClients.getInstance().getNodeControl(properties);
 				}
 			}
 		}

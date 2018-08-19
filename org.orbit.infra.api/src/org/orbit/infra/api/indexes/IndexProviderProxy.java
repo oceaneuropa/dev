@@ -4,44 +4,29 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.util.InfraClients;
 
 public class IndexProviderProxy implements IndexProvider {
 
 	private static IndexProviderProxyImpl PROXY = new IndexProviderProxyImpl();
 
-	protected Map<?, ?> properties;
-	protected String realm;
-	protected String username;
-	protected String url;
-
+	protected Map<String, Object> properties;
 	protected IndexProvider indexProvider = PROXY;
 
-	public IndexProviderProxy(Map<?, ?> properties) {
+	/**
+	 * 
+	 * @param properties
+	 */
+	public IndexProviderProxy(Map<String, Object> properties) {
+		if (properties == null) {
+			throw new IllegalArgumentException("properties is null");
+		}
 		this.properties = properties;
-	}
-
-	public IndexProviderProxy(String url) {
-		this(null, null, url);
-	}
-
-	public IndexProviderProxy(String realm, String username, String url) {
-		this.realm = realm;
-		this.username = username;
-		this.url = url;
 	}
 
 	protected synchronized IndexProvider resolve() {
 		if (this.indexProvider == null || this.indexProvider.isProxy()) {
-			IndexProvider resolvedIndexProvider = null;
-			if (this.properties != null) {
-				resolvedIndexProvider = InfraClients.getInstance().getIndexProvider(this.properties);
-			}
-			if (resolvedIndexProvider == null) {
-				if (this.url != null) {
-					resolvedIndexProvider = InfraClients.getInstance().getIndexProvider(this.realm, this.username, this.url);
-				}
-			}
+			IndexProvider resolvedIndexProvider = InfraClients.getInstance().getIndexProvider(this.properties, false);
 			if (resolvedIndexProvider != null && !resolvedIndexProvider.isProxy()) {
 				this.indexProvider = resolvedIndexProvider;
 			}

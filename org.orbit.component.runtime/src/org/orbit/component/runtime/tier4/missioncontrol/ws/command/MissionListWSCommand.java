@@ -24,6 +24,11 @@ public class MissionListWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) {
 		String typeId = (request.getParameter("typeId") instanceof String) ? (String) request.getParameter("typeId") : null;
 		if (typeId == null || typeId.isEmpty()) {

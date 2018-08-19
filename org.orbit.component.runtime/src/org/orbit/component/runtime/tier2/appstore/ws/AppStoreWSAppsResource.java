@@ -1,7 +1,9 @@
 package org.orbit.component.runtime.tier2.appstore.ws;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -12,6 +14,8 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -37,6 +41,7 @@ import org.origin.common.rest.server.ServerException;
  * App metadata.
  * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/apps?type={type}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/apps/exists?appId={appId}&appVersion={appVersion}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
  * URL (PUT):    {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/apps?appId={appId}&appVersion={appVersion}
@@ -68,11 +73,10 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.USER })
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getApps(@QueryParam("type") String type) {
-		AppStoreService service = getService();
-
+	public Response getList(@QueryParam("type") String type) {
 		List<AppManifestDTO> appDTOs = new ArrayList<AppManifestDTO>();
 		try {
+			AppStoreService service = getService();
 			List<AppManifest> apps = service.getApps(type);
 			if (apps != null) {
 				for (AppManifest app : apps) {
@@ -99,11 +103,10 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	@POST
 	@Path("query")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response getApps(AppQueryDTO queryDTO) {
-		AppStoreService service = getService();
-
+	public Response getList(@Context HttpHeaders httpHeaders, AppQueryDTO queryDTO) {
 		List<AppManifestDTO> appDTOs = new ArrayList<AppManifestDTO>();
 		try {
+			AppStoreService service = getService();
 			AppQuery query = ModelConverter.AppStore.toAppQuery(queryDTO);
 			List<AppManifest> apps = service.getApps(query);
 			if (apps != null) {
@@ -120,35 +123,62 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	}
 
 	/**
+	 * Check whether an app exists.
+	 * 
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/exists?appId={appId}&appVersion={appVersion}
+	 * 
+	 * @param appId
+	 * @param appVersion
+	 * @return
+	 */
+	@Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.USER })
+	@GET
+	@Path("/exists")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response exists(@QueryParam("appId") String appId, @QueryParam("appVersion") String appVersion) {
+		Map<String, Boolean> result = new HashMap<String, Boolean>();
+
+		try {
+			AppStoreService service = getService();
+			boolean exists = service.appExists(appId, appVersion);
+			result.put("exists", exists);
+
+		} catch (ServerException e) {
+			ErrorDTO error = handleError(e, e.getCode(), true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+		}
+		return Response.ok().entity(result).build();
+	}
+
+	/**
 	 * Add an app.
 	 * 
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
 	 * 
-	 * @param newAppRequestDTO
+	 * @param requestDTO
 	 * @return
 	 */
 	@Secured(roles = { OrbitRoles.SYSTEM_ADMIN, OrbitRoles.APP_STORE_ADMIN })
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response addApp(AppManifestDTO newAppRequestDTO) {
-		if (newAppRequestDTO == null) {
+	public Response create(AppManifestDTO requestDTO) {
+		if (requestDTO == null) {
 			ErrorDTO nullAppDTOError = new ErrorDTO("newAppRequestDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullAppDTOError).build();
 		}
 
 		AppManifestDTO newAppDTO = null;
-
-		AppStoreService service = getService();
 		try {
-			String appId = newAppRequestDTO.getAppId();
-			String appVersion = newAppRequestDTO.getAppVersion();
+			AppStoreService service = getService();
+			String appId = requestDTO.getAppId();
+			String appVersion = requestDTO.getAppVersion();
 
 			if (service.appExists(appId, appVersion)) {
 				ErrorDTO appExistsError = new ErrorDTO(String.format("App '%s' already exists.", appVersion));
 				return Response.status(Status.BAD_REQUEST).entity(appExistsError).build();
 			}
 
-			AppManifest appToAdd = ModelConverter.AppStore.toApp(newAppRequestDTO);
+			AppManifest appToAdd = ModelConverter.AppStore.toApp(requestDTO);
 			AppManifest newApp = service.addApp(appToAdd);
 			if (newApp == null) {
 				ErrorDTO newAppNotCreated = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "App is not added.");
@@ -170,22 +200,22 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	 * 
 	 * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
 	 * 
-	 * @param updateAppRequestDTO
+	 * @param requestDTO
 	 * @return
 	 */
 	@Secured(roles = { OrbitRoles.SYSTEM_ADMIN })
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateApp(AppManifestDTO updateAppRequestDTO) {
-		if (updateAppRequestDTO == null) {
+	public Response update(AppManifestDTO requestDTO) {
+		if (requestDTO == null) {
 			ErrorDTO nullDTOError = new ErrorDTO("updateAppRequestDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullDTOError).build();
 		}
 
 		boolean succeed = false;
-		AppStoreService service = getService();
 		try {
-			AppManifest appToUpdate = ModelConverter.AppStore.toApp(updateAppRequestDTO);
+			AppStoreService service = getService();
+			AppManifest appToUpdate = ModelConverter.AppStore.toApp(requestDTO);
 			succeed = service.updateApp(appToUpdate);
 
 		} catch (ServerException e) {
@@ -214,15 +244,15 @@ public class AppStoreWSAppsResource extends AbstractWSApplicationResource {
 	@Secured(roles = { OrbitRoles.SYSTEM_ADMIN })
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response deleteApp(@QueryParam("appId") String appId, @QueryParam("appVersion") String appVersion) {
+	public Response delete(@QueryParam("appId") String appId, @QueryParam("appVersion") String appVersion) {
 		if (appId == null || appId.isEmpty()) {
 			ErrorDTO nullAppIdError = new ErrorDTO("appId is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullAppIdError).build();
 		}
 
 		boolean succeed = false;
-		AppStoreService service = getService();
 		try {
+			AppStoreService service = getService();
 			succeed = service.deleteApp(appId, appVersion);
 
 		} catch (ServerException e) {

@@ -14,6 +14,10 @@ public interface UserRegistryService extends WebServiceAware {
 
 	boolean userAccountExists(String userId) throws ServerException;
 
+	boolean usernameExists(String username) throws ServerException;
+
+	boolean emailExists(String email) throws ServerException;
+
 	boolean matchUsernamePassword(String userId, String password) throws ServerException;
 
 	UserAccount registerUserAccount(UserAccount newUserAccountRequest) throws ServerException;

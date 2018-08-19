@@ -2,17 +2,18 @@ package org.orbit.component.runtime.tier3.nodecontrol.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlEditPolicy;
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -25,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * unavailable.
  * 
  */
-public class NodeControlServiceAdapter {
+public class NodeControlServiceAdapter implements LifecycleAware {
 
 	protected static Logger LOG = LoggerFactory.getLogger(NodeControlServiceAdapter.class);
 
@@ -40,7 +41,7 @@ public class NodeControlServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
+		return InfraClients.getInstance().getIndexProvider(this.properties, true);
 	}
 
 	public NodeControlService getService() {
@@ -51,6 +52,7 @@ public class NodeControlServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<NodeControlService, NodeControlService>(bundleContext, NodeControlService.class, new ServiceTrackerCustomizer<NodeControlService, NodeControlService>() {
 			@Override
@@ -81,6 +83,7 @@ public class NodeControlServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {
 			this.serviceTracker.close();
@@ -108,7 +111,7 @@ public class NodeControlServiceAdapter {
 		// this.indexTimer = new NodeControlServiceTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, OrbitConstants.NODE_CONTROL_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.NODE_CONTROL_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

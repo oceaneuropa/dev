@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -58,7 +58,7 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(this.bundleContext, NodeControlCommand.class.getName(), this, props);
@@ -83,6 +83,23 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 			throw new IllegalStateException("NodeControlService is null.");
 		}
 		return this.nodeControlService;
+	}
+
+	/**
+	 * 
+	 * @param absentValue
+	 * @param paramValue
+	 * @return
+	 */
+	protected String checkParameter(Object absentValue, String paramValue) {
+		if (absentValue != null && absentValue.equals(paramValue)) {
+			return null;
+		}
+		return paramValue;
+	}
+
+	protected String getAccessToken() {
+		return null;
 	}
 
 	@Descriptor("List nodes")
@@ -244,7 +261,8 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 
 		try {
 			NodeControlService service = getNodeControlService();
-			boolean succeed = service.startNode(id);
+			String accessToken = getAccessToken();
+			boolean succeed = service.startNode(id, accessToken);
 
 			if (succeed) {
 				System.out.println("Node is successfully started.");
@@ -266,7 +284,8 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 
 		try {
 			NodeControlService service = getNodeControlService();
-			boolean succeed = service.stopNode(id);
+			String accessToken = getAccessToken();
+			boolean succeed = service.stopNode(id, accessToken);
 
 			if (succeed) {
 				System.out.println("Node is successfully stopped.");
@@ -277,19 +296,6 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 			// e.printStackTrace();
 			System.err.println(e.getMessage());
 		}
-	}
-
-	/**
-	 * 
-	 * @param absentValue
-	 * @param paramValue
-	 * @return
-	 */
-	protected String checkParameter(Object absentValue, String paramValue) {
-		if (absentValue != null && absentValue.equals(paramValue)) {
-			return null;
-		}
-		return paramValue;
 	}
 
 }

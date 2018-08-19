@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.model.StatusDTO;
@@ -39,14 +39,14 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 			properties.putAll(this.initProperties);
 		}
 
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_PASSWORD);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_USER_REGISTRY_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_USER_REGISTRY_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_USER_REGISTRY_JDBC_DRIVER);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_USER_REGISTRY_JDBC_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_USER_REGISTRY_JDBC_USERNAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_USER_REGISTRY_JDBC_PASSWORD);
 
 		update(properties);
 
@@ -72,10 +72,10 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 		}
 		this.properties = properties;
 
-		String driver = (String) this.properties.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_DRIVER);
-		String url = (String) this.properties.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_URL);
-		String username = (String) this.properties.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_USERNAME);
-		String password = (String) this.properties.get(OrbitConstants.COMPONENT_USER_REGISTRY_JDBC_PASSWORD);
+		String driver = (String) this.properties.get(ComponentsConstants.COMPONENT_USER_REGISTRY_JDBC_DRIVER);
+		String url = (String) this.properties.get(ComponentsConstants.COMPONENT_USER_REGISTRY_JDBC_URL);
+		String username = (String) this.properties.get(ComponentsConstants.COMPONENT_USER_REGISTRY_JDBC_USERNAME);
+		String password = (String) this.properties.get(ComponentsConstants.COMPONENT_USER_REGISTRY_JDBC_PASSWORD);
 		Properties databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
 
 		try {
@@ -87,17 +87,17 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.COMPONENT_USER_REGISTRY_NAME);
+		String name = (String) this.properties.get(ComponentsConstants.COMPONENT_USER_REGISTRY_NAME);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.COMPONENT_USER_REGISTRY_HOST_URL);
+		String hostURL = (String) this.properties.get(ComponentsConstants.COMPONENT_USER_REGISTRY_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.properties.get(OrbitConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(ComponentsConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -106,7 +106,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = (String) this.properties.get(OrbitConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT);
+		String contextRoot = (String) this.properties.get(ComponentsConstants.COMPONENT_USER_REGISTRY_CONTEXT_ROOT);
 		return contextRoot;
 	}
 
@@ -125,7 +125,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 	 * @param userId
 	 * @throws ServerException
 	 */
-	protected void checkUserId(String userId) throws ServerException {
+	protected void checkUsername(String userId) throws ServerException {
 		if (userId == null || userId.isEmpty()) {
 			throw new ServerException("400", "userId is empty.");
 		}
@@ -165,7 +165,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public UserAccount getUserAccount(String userId) throws ServerException {
-		checkUserId(userId);
+		checkUsername(userId);
 		try {
 			return this.userAccountPersistence.getUserAccount(userId);
 		} catch (Exception e) {
@@ -176,9 +176,31 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public boolean userAccountExists(String userId) throws ServerException {
-		checkUserId(userId);
+		checkUsername(userId);
 		try {
-			return this.userAccountPersistence.userIdExists(userId);
+			return this.userAccountPersistence.usernameExists(userId);
+		} catch (Exception e) {
+			handleException(e);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean usernameExists(String username) throws ServerException {
+		checkUsername(username);
+		try {
+			return this.userAccountPersistence.usernameExists(username);
+		} catch (Exception e) {
+			handleException(e);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean emailExists(String email) throws ServerException {
+		checkEmail(email);
+		try {
+			return this.userAccountPersistence.emailExists(email);
 		} catch (Exception e) {
 			handleException(e);
 		}
@@ -187,7 +209,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public boolean matchUsernamePassword(String userId, String password) throws ServerException {
-		checkUserId(userId);
+		checkUsername(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount != null) {
@@ -218,7 +240,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 		String lastName = newAccountRequest.getLastName();
 		String phone = newAccountRequest.getPhone();
 
-		checkUserId(userId);
+		checkUsername(userId);
 		checkPassword(password);
 		checkEmail(email);
 
@@ -239,7 +261,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 		String newLastName = updateAccountRequest.getLastName();
 		String newPhone = updateAccountRequest.getPhone();
 
-		checkUserId(userId);
+		checkUsername(userId);
 
 		boolean isUpdated = false;
 
@@ -317,7 +339,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public boolean deleteUserAccount(String userId) throws ServerException {
-		checkUserId(userId);
+		checkUsername(userId);
 		try {
 			return this.userAccountPersistence.deleteUserAccount(userId);
 		} catch (Exception e) {
@@ -328,7 +350,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public boolean changePassword(String userId, String oldPassword, String newPassword) throws ServerException {
-		checkUserId(userId);
+		checkUsername(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
@@ -359,7 +381,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public boolean isUserAccountActivated(String userId) throws ServerException {
-		checkUserId(userId);
+		checkUsername(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
@@ -375,7 +397,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public boolean activateUserAccount(String userId) throws ServerException {
-		checkUserId(userId);
+		checkUsername(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
@@ -386,7 +408,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 				// already activated
 				return true;
 			}
-			return this.userAccountPersistence.setUserAccountActivated(userId, true);
+			return this.userAccountPersistence.setActivated(userId, true);
 
 		} catch (Exception e) {
 			handleException(e);
@@ -396,7 +418,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 
 	@Override
 	public boolean deactivateUserAccount(String userId) throws ServerException {
-		checkUserId(userId);
+		checkUsername(userId);
 		try {
 			UserAccount userAccount = this.userAccountPersistence.getUserAccount(userId);
 			if (userAccount == null) {
@@ -407,7 +429,7 @@ public class UserRegistryServiceImpl implements UserRegistryService, LifecycleAw
 				// already deactivated
 				return true;
 			}
-			return this.userAccountPersistence.setUserAccountActivated(userId, false);
+			return this.userAccountPersistence.setActivated(userId, false);
 
 		} catch (Exception e) {
 			handleException(e);

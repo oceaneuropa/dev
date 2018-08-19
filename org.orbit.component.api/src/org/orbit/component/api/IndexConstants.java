@@ -1,6 +1,6 @@
 package org.orbit.component.api;
 
-public class IndexConstants {
+public interface IndexConstants {
 
 	// ----------------------------------------------------------------------------------------
 	// Global

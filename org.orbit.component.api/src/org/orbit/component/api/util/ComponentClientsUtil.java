@@ -2,13 +2,15 @@ package org.orbit.component.api.util;
 
 import java.io.File;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.orbit.component.api.OrbitClients;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
+import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.api.tier1.identity.IdentityClient;
 import org.orbit.component.api.tier1.identity.LoginRequest;
 import org.orbit.component.api.tier1.identity.LoginResponse;
@@ -24,53 +26,25 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
+import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
 import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.AddPlatformConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdatePlatformConfigRequest;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.WSClientConstants;
 
-public class OrbitComponentHelper {
+public class ComponentClientsUtil {
 
 	public static Identity Identity = new Identity();
 	public static UserAccounts UserAccounts = new UserAccounts();
+	public static Auth Auth = new Auth();
 	public static AppStore AppStore = new AppStore();
-	public static Domain Domain = new Domain();
+	public static DomainControl DomainControl = new DomainControl();
 	public static NodeControl NodeControl = new NodeControl();
+	public static MissionControl MissionControl = new MissionControl();
 
 	public static class Identity {
-		/**
-		 * 
-		 * @param identityServiceUrl
-		 * @param username
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean usernameExists(String identityServiceUrl, String username) throws ClientException {
-			boolean exists = false;
-			IdentityClient identityClient = getIdentityClient(identityServiceUrl);
-			if (identityClient != null) {
-				exists = identityClient.usernameExists(username);
-			}
-			return exists;
-		}
-
-		/**
-		 * 
-		 * @param identityServiceUrl
-		 * @param email
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean emailExists(String identityServiceUrl, String email) throws ClientException {
-			boolean exists = false;
-			IdentityClient identityClient = getIdentityClient(identityServiceUrl);
-			if (identityClient != null) {
-				exists = identityClient.emailExists(email);
-			}
-			return exists;
-		}
-
 		/**
 		 * 
 		 * @param identityServiceUrl
@@ -82,7 +56,7 @@ public class OrbitComponentHelper {
 		 */
 		public RegisterResponse register(String identityServiceUrl, String username, String email, String password) throws ClientException {
 			RegisterResponse response = null;
-			IdentityClient identityClient = getIdentityClient(identityServiceUrl);
+			IdentityClient identityClient = getIdentityClient(identityServiceUrl, username);
 			if (identityClient != null) {
 				RegisterRequest request = new RegisterRequest(username, email, password);
 				response = identityClient.register(request);
@@ -101,7 +75,7 @@ public class OrbitComponentHelper {
 		 */
 		public LoginResponse login(String identityServiceUrl, String username, String email, String password) throws ClientException {
 			LoginResponse response = null;
-			IdentityClient identityClient = getIdentityClient(identityServiceUrl);
+			IdentityClient identityClient = getIdentityClient(identityServiceUrl, username);
 			if (identityClient != null) {
 				LoginRequest request = new LoginRequest("orbit", "password", username, email, password);
 				response = identityClient.login(request);
@@ -109,10 +83,20 @@ public class OrbitComponentHelper {
 			return response;
 		}
 
-		public IdentityClient getIdentityClient(String identityServiceUrl) {
+		/**
+		 * 
+		 * @param identityServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public IdentityClient getIdentityClient(String identityServiceUrl, String accessToken) {
 			IdentityClient identityClient = null;
 			if (identityServiceUrl != null) {
-				identityClient = OrbitClients.getInstance().getIdentityClient(identityServiceUrl);
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, identityServiceUrl);
+				identityClient = ComponentClients.getInstance().getIdentityClient(properties);
 			}
 			return identityClient;
 		}
@@ -124,12 +108,13 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param userRegistryUrl
+		 * @param accessToken
 		 * @return
 		 * @throws ClientException
 		 */
-		public UserAccount[] getUserAccounts(String userRegistryUrl) throws ClientException {
+		public UserAccount[] getUserAccounts(String userRegistryUrl, String accessToken) throws ClientException {
 			UserAccount[] userAccounts = null;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl);
+			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
 				userAccounts = userRegistry.getUserAccounts();
 			}
@@ -142,13 +127,14 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param userRegistryUrl
+		 * @param accessToken
 		 * @param userId
 		 * @return
 		 * @throws ClientException
 		 */
-		public UserAccount getUserAccount(String userRegistryUrl, String userId) throws ClientException {
+		public UserAccount getUserAccount(String userRegistryUrl, String accessToken, String userId) throws ClientException {
 			UserAccount userAccount = null;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl);
+			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
 				userAccount = userRegistry.getUserAccount(userId);
 			}
@@ -158,15 +144,16 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param userRegistryUrl
-		 * @param userId
+		 * @param accessToken
+		 * @param username
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean userAccountExists(String userRegistryUrl, String userId) throws ClientException {
+		public boolean usernameExists(String userRegistryUrl, String accessToken, String username) throws ClientException {
 			boolean exists = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl);
+			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
-				exists = userRegistry.exists(userId);
+				exists = userRegistry.usernameExists(username);
 			}
 			return exists;
 		}
@@ -174,6 +161,24 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param userRegistryUrl
+		 * @param accessToken
+		 * @param email
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean emailExists(String userRegistryUrl, String accessToken, String email) throws ClientException {
+			boolean exists = false;
+			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
+			if (userRegistry != null) {
+				exists = userRegistry.emailExists(email);
+			}
+			return exists;
+		}
+
+		/**
+		 * 
+		 * @param userRegistryUrl
+		 * @param accessToken
 		 * @param userId
 		 * @param email
 		 * @param password
@@ -183,9 +188,9 @@ public class OrbitComponentHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean addUserAccount(String userRegistryUrl, String userId, String email, String password, String firstName, String lastName, String phone) throws ClientException {
+		public boolean addUserAccount(String userRegistryUrl, String accessToken, String userId, String email, String password, String firstName, String lastName, String phone) throws ClientException {
 			boolean succeed = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl);
+			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
 				CreateUserAccountRequest createUserAccountRequest = new CreateUserAccountRequest();
 				createUserAccountRequest.setUserId(userId);
@@ -202,6 +207,7 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param userRegistryUrl
+		 * @param accessToken
 		 * @param userId
 		 * @param email
 		 * @param password
@@ -211,9 +217,9 @@ public class OrbitComponentHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateUserAccount(String userRegistryUrl, String userId, String email, String password, String firstName, String lastName, String phone) throws ClientException {
+		public boolean updateUserAccount(String userRegistryUrl, String accessToken, String userId, String email, String password, String firstName, String lastName, String phone) throws ClientException {
 			boolean succeed = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl);
+			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
 				UpdateUserAccountRequest updateUserAccountRequest = new UpdateUserAccountRequest();
 				updateUserAccountRequest.setUserId(userId);
@@ -231,13 +237,14 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param userRegistryUrl
+		 * @param accessToken
 		 * @param userId
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean deleteUserAccount(String userRegistryUrl, String userId) throws ClientException {
+		public boolean deleteUserAccount(String userRegistryUrl, String accessToken, String userId) throws ClientException {
 			boolean exists = false;
-			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl);
+			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
 				exists = userRegistry.delete(userId);
 			}
@@ -247,14 +254,39 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param userRegistryUrl
+		 * @param accessToken
 		 * @return
 		 */
-		public UserAccountClient getUserAccountsClient(String userRegistryUrl) {
+		public UserAccountClient getUserAccountsClient(String userRegistryUrl, String accessToken) {
 			UserAccountClient userRegistry = null;
 			if (userRegistryUrl != null) {
-				userRegistry = OrbitClients.getInstance().getUserAccounts(userRegistryUrl);
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, userRegistryUrl);
+				userRegistry = ComponentClients.getInstance().getUserAccounts(properties);
 			}
 			return userRegistry;
+		}
+	}
+
+	public static class Auth {
+		/**
+		 * 
+		 * @param authServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public AuthClient getAuthClient(String authServiceUrl, String accessToken) {
+			AuthClient auth = null;
+			if (authServiceUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, authServiceUrl);
+				auth = ComponentClients.getInstance().getAuth(properties);
+			}
+			return auth;
 		}
 	}
 
@@ -264,13 +296,14 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param appStoreUrl
+		 * @param accessToken
 		 * @return
 		 * @throws ClientException
 		 */
-		public AppManifest[] getApps(String appStoreUrl) throws ClientException {
+		public AppManifest[] getApps(String appStoreUrl, String accessToken) throws ClientException {
 			AppManifest[] appManifests = null;
 			if (appStoreUrl != null) {
-				AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+				AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
 				if (appStore != null) {
 					AppQuery query = new AppQuery();
 					appManifests = appStore.getApps(query);
@@ -285,14 +318,15 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param appStoreUrl
+		 * @param accessToken
 		 * @param appId
 		 * @param appVersion
 		 * @return
 		 * @throws ClientException
 		 */
-		public AppManifest getApp(String appStoreUrl, String appId, String appVersion) throws ClientException {
+		public AppManifest getApp(String appStoreUrl, String accessToken, String appId, String appVersion) throws ClientException {
 			AppManifest appManifest = null;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
 			if (appStore != null) {
 				appManifest = appStore.getApp(appId, appVersion);
 			}
@@ -302,6 +336,7 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param appStoreUrl
+		 * @param accessToken
 		 * @param id
 		 * @param version
 		 * @param type
@@ -311,9 +346,9 @@ public class OrbitComponentHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean addApp(String appStoreUrl, String id, String version, String type, String name, String desc, String fileName) throws ClientException {
+		public boolean addApp(String appStoreUrl, String accessToken, String id, String version, String type, String name, String desc, String fileName) throws ClientException {
 			boolean succeed = false;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
 			if (appStore != null) {
 				CreateAppRequest createAppRequest = new CreateAppRequest();
 				createAppRequest.setAppId(id);
@@ -331,6 +366,7 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param appStoreUrl
+		 * @param accessToken
 		 * @param id
 		 * @param appId
 		 * @param appVersion
@@ -341,9 +377,9 @@ public class OrbitComponentHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateApp(String appStoreUrl, int id, String appId, String appVersion, String type, String name, String desc, String fileName) throws ClientException {
+		public boolean updateApp(String appStoreUrl, String accessToken, int id, String appId, String appVersion, String type, String name, String desc, String fileName) throws ClientException {
 			boolean succeed = false;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
 			if (appStore != null) {
 				UpdateAppRequest updateAppRequest = new UpdateAppRequest();
 				updateAppRequest.setId(id);
@@ -362,14 +398,15 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param appStoreUrl
+		 * @param accessToken
 		 * @param id
 		 * @param version
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean deleteApp(String appStoreUrl, String id, String version) throws ClientException {
+		public boolean deleteApp(String appStoreUrl, String accessToken, String id, String version) throws ClientException {
 			boolean succeed = false;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
 			if (appStore != null) {
 				succeed = appStore.delete(id, version);
 			}
@@ -379,6 +416,7 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param appStoreUrl
+		 * @param accessToken
 		 * @param id
 		 * @param appId
 		 * @param appVersion
@@ -386,9 +424,9 @@ public class OrbitComponentHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean uploadAppFile(String appStoreUrl, int id, String appId, String appVersion, List<File> files) throws ClientException {
+		public boolean uploadAppFile(String appStoreUrl, String accessToken, int id, String appId, String appVersion, List<File> files) throws ClientException {
 			boolean succeed = false;
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
 			if (appStore != null) {
 				File file = (files != null && !files.isEmpty()) ? files.get(0) : null;
 				if (file != null && file.exists()) {
@@ -401,13 +439,14 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param appStoreUrl
+		 * @param accessToken
 		 * @param appId
 		 * @param appVersion
 		 * @param output
 		 * @throws ClientException
 		 */
-		public void downloadAppFile(String appStoreUrl, String appId, String appVersion, OutputStream output) throws ClientException {
-			AppStoreClient appStore = getAppStoreClient(appStoreUrl);
+		public void downloadAppFile(String appStoreUrl, String accessToken, String appId, String appVersion, OutputStream output) throws ClientException {
+			AppStoreClient appStore = getAppStoreClient(appStoreUrl, accessToken);
 			if (appStore != null) {
 				appStore.downloadAppArchive(appId, appVersion, output);
 			}
@@ -418,28 +457,33 @@ public class OrbitComponentHelper {
 		 * @param appStoreUrl
 		 * @return
 		 */
-		public AppStoreClient getAppStoreClient(String appStoreUrl) {
+		public AppStoreClient getAppStoreClient(String appStoreUrl, String accessToken) {
 			AppStoreClient appStoreClient = null;
 			if (appStoreUrl != null) {
-				appStoreClient = OrbitClients.getInstance().getAppStore(appStoreUrl);
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, appStoreUrl);
+				appStoreClient = ComponentClients.getInstance().getAppStore(properties);
 			}
 			return appStoreClient;
 		}
 	}
 
-	public static class Domain {
+	public static class DomainControl {
 		public static final MachineConfig[] EMPTY_MACHINE_CONFIGS = new MachineConfig[0];
 		public static final PlatformConfig[] EMPTY_PLATFORM_CONFIGS = new PlatformConfig[0];
 
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @return
 		 * @throws ClientException
 		 */
-		public MachineConfig[] getMachineConfigs(String domainServiceUrl) throws ClientException {
+		public MachineConfig[] getMachineConfigs(String domainServiceUrl, String accessToken) throws ClientException {
 			MachineConfig[] machineConfigs = null;
-			DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainClient = getDomainClient(domainServiceUrl, accessToken);
 			if (domainClient != null) {
 				machineConfigs = domainClient.getMachineConfigs();
 			}
@@ -452,13 +496,14 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param machineId
 		 * @return
 		 * @throws ClientException
 		 */
-		public MachineConfig getMachineConfig(String domainServiceUrl, String machineId) throws ClientException {
+		public MachineConfig getMachineConfig(String domainServiceUrl, String accessToken, String machineId) throws ClientException {
 			MachineConfig machineConfig = null;
-			DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainClient = getDomainClient(domainServiceUrl, accessToken);
 			if (domainClient != null) {
 				machineConfig = domainClient.getMachineConfig(machineId);
 			}
@@ -468,15 +513,16 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param id
 		 * @param name
 		 * @param ip
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean addMachineConfig(String domainServiceUrl, String id, String name, String ip) throws ClientException {
+		public boolean addMachineConfig(String domainServiceUrl, String accessToken, String id, String name, String ip) throws ClientException {
 			boolean succeed = false;
-			DomainManagementClient domainMgmt = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainMgmt = getDomainClient(domainServiceUrl, accessToken);
 			if (domainMgmt != null) {
 				AddMachineConfigRequest addMachineRequest = new AddMachineConfigRequest();
 				addMachineRequest.setMachineId(id);
@@ -490,15 +536,16 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param id
 		 * @param name
 		 * @param ip
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateMachineConfig(String domainServiceUrl, String id, String name, String ip) throws ClientException {
+		public boolean updateMachineConfig(String domainServiceUrl, String accessToken, String id, String name, String ip) throws ClientException {
 			boolean succeed = false;
-			DomainManagementClient domainMgmt = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainMgmt = getDomainClient(domainServiceUrl, accessToken);
 			if (domainMgmt != null) {
 				UpdateMachineConfigRequest updateMachineRequest = new UpdateMachineConfigRequest();
 				updateMachineRequest.setMachineId(id);
@@ -512,13 +559,14 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param id
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean removeMachineConfig(String domainServiceUrl, String id) throws ClientException {
+		public boolean removeMachineConfig(String domainServiceUrl, String accessToken, String id) throws ClientException {
 			boolean succeed = false;
-			DomainManagementClient domainMgmt = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainMgmt = getDomainClient(domainServiceUrl, accessToken);
 			if (domainMgmt != null) {
 				succeed = domainMgmt.removeMachineConfig(id);
 			}
@@ -528,13 +576,14 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param machineId
 		 * @return
 		 * @throws ClientException
 		 */
-		public PlatformConfig[] getPlatformConfigs(String domainServiceUrl, String machineId) throws ClientException {
+		public PlatformConfig[] getPlatformConfigs(String domainServiceUrl, String accessToken, String machineId) throws ClientException {
 			PlatformConfig[] platformConfigs = null;
-			DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainClient = getDomainClient(domainServiceUrl, accessToken);
 			if (domainClient != null) {
 				platformConfigs = domainClient.getPlatformConfigs(machineId);
 			}
@@ -547,14 +596,15 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param machineId
 		 * @param platformId
 		 * @return
 		 * @throws ClientException
 		 */
-		public PlatformConfig getPlatformConfig(String domainServiceUrl, String machineId, String platformId) throws ClientException {
+		public PlatformConfig getPlatformConfig(String domainServiceUrl, String accessToken, String machineId, String platformId) throws ClientException {
 			PlatformConfig platformConfig = null;
-			DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainClient = getDomainClient(domainServiceUrl, accessToken);
 			if (domainClient != null) {
 				platformConfig = domainClient.getPlatformConfig(machineId, platformId);
 			}
@@ -564,6 +614,7 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param machineId
 		 * @param platformId
 		 * @param name
@@ -572,9 +623,9 @@ public class OrbitComponentHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean addPlatformConfig(String domainServiceUrl, String machineId, String platformId, String name, String hostUrl, String contextRoot) throws ClientException {
+		public boolean addPlatformConfig(String domainServiceUrl, String accessToken, String machineId, String platformId, String name, String hostUrl, String contextRoot) throws ClientException {
 			boolean succeed = false;
-			DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainClient = getDomainClient(domainServiceUrl, accessToken);
 			if (domainClient != null) {
 				AddPlatformConfigRequest addPlatformRequest = new AddPlatformConfigRequest();
 				addPlatformRequest.setPlatformId(platformId);
@@ -589,6 +640,7 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param machineId
 		 * @param platformId
 		 * @param name
@@ -597,9 +649,9 @@ public class OrbitComponentHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updatePlatformConfig(String domainServiceUrl, String machineId, String platformId, String name, String hostUrl, String contextRoot) throws ClientException {
+		public boolean updatePlatformConfig(String domainServiceUrl, String accessToken, String machineId, String platformId, String name, String hostUrl, String contextRoot) throws ClientException {
 			boolean succeed = false;
-			DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainClient = getDomainClient(domainServiceUrl, accessToken);
 			if (domainClient != null) {
 				UpdatePlatformConfigRequest updatePlatformRequest = new UpdatePlatformConfigRequest();
 				updatePlatformRequest.setPlatformId(platformId);
@@ -614,14 +666,15 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @param machineId
 		 * @param platformId
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean removePlatformConfig(String domainServiceUrl, String machineId, String platformId) throws ClientException {
+		public boolean removePlatformConfig(String domainServiceUrl, String accessToken, String machineId, String platformId) throws ClientException {
 			boolean succeed = false;
-			DomainManagementClient domainClient = getDomainClient(domainServiceUrl);
+			DomainManagementClient domainClient = getDomainClient(domainServiceUrl, accessToken);
 			if (domainClient != null) {
 				succeed = domainClient.removePlatformConfig(machineId, platformId);
 			}
@@ -631,12 +684,17 @@ public class OrbitComponentHelper {
 		/**
 		 * 
 		 * @param domainServiceUrl
+		 * @param accessToken
 		 * @return
 		 */
-		public DomainManagementClient getDomainClient(String domainServiceUrl) {
+		public DomainManagementClient getDomainClient(String domainServiceUrl, String accessToken) {
 			DomainManagementClient domainClient = null;
 			if (domainServiceUrl != null) {
-				domainClient = OrbitClients.getInstance().getDomainService(domainServiceUrl);
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, domainServiceUrl);
+				domainClient = ComponentClients.getInstance().getDomainClient(properties);
 			}
 			return domainClient;
 		}
@@ -806,9 +864,82 @@ public class OrbitComponentHelper {
 			}
 			return succeed;
 		}
+
+		/**
+		 * 
+		 * @param nodeControlUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public NodeControlClient getNodeControlClient(String nodeControlUrl, String accessToken) {
+			NodeControlClient nodeControlClient = null;
+			if (nodeControlUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, nodeControlUrl);
+
+				nodeControlClient = ComponentClients.getInstance().getNodeControl(properties);
+			}
+			return nodeControlClient;
+		}
+	}
+
+	public static class MissionControl {
+		/**
+		 * 
+		 * @param domainServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public MissionControlClient getMissionControlClient(String missionControlUrl, String accessToken) {
+			MissionControlClient missionControl = null;
+			if (missionControlUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, missionControlUrl);
+
+				missionControl = ComponentClients.getInstance().getMissionControl(properties);
+			}
+			return missionControl;
+		}
 	}
 
 }
+
+// /**
+// *
+// * @param identityServiceUrl
+// * @param username
+// * @return
+// * @throws ClientException
+// */
+// public boolean usernameExists(String identityServiceUrl, String username) throws ClientException {
+// boolean exists = false;
+// IdentityClient identityClient = getIdentityClient(identityServiceUrl, null);
+// if (identityClient != null) {
+// exists = identityClient.usernameExists(username);
+// }
+// return exists;
+// }
+//
+// /**
+// *
+// * @param identityServiceUrl
+// * @param username
+// * @param email
+// * @return
+// * @throws ClientException
+// */
+// public boolean emailExists(String identityServiceUrl, String email) throws ClientException {
+// boolean exists = false;
+// IdentityClient identityClient = getIdentityClient(identityServiceUrl, null);
+// if (identityClient != null) {
+// exists = identityClient.emailExists(email);
+// }
+// return exists;
+// }
 
 // /**
 // *

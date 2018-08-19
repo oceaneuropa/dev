@@ -9,15 +9,14 @@ import org.orbit.component.api.tier1.identity.LogoutRequest;
 import org.orbit.component.api.tier1.identity.LogoutResponse;
 import org.orbit.component.api.tier1.identity.RegisterRequest;
 import org.orbit.component.api.tier1.identity.RegisterResponse;
-import org.orbit.component.connector.OrbitConstants;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
 import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
 import org.orbit.component.model.tier1.identity.RegisterRequestDTO;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.model.StatusDTO;
 
 public class IdentityClientImpl extends ServiceClientImpl<IdentityClient, IdentityWSClient> implements IdentityClient {
@@ -33,12 +32,8 @@ public class IdentityClientImpl extends ServiceClientImpl<IdentityClient, Identi
 
 	@Override
 	protected IdentityWSClient createWSClient(Map<String, Object> properties) {
-		String realm = (String) this.properties.get(OrbitConstants.REALM);
-		String username = (String) this.properties.get(OrbitConstants.USERNAME);
-		String fullUrl = (String) this.properties.get(OrbitConstants.URL);
-
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, fullUrl);
-		return new IdentityWSClient(clientConfig);
+		WSClientConfiguration config = WSClientConfiguration.create(properties);
+		return new IdentityWSClient(config);
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.model.missioncontrol.Mission;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
@@ -48,14 +48,14 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 			properties.putAll(this.initProperties);
 		}
 		// Service properties
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_NAME);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_PASSWORD);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_MISSION_CONTROL_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_MISSION_CONTROL_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_MISSION_CONTROL_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_MISSION_CONTROL_JDBC_DRIVER);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_MISSION_CONTROL_JDBC_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_MISSION_CONTROL_JDBC_USERNAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_MISSION_CONTROL_JDBC_PASSWORD);
 
 		update(properties);
 
@@ -82,10 +82,10 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 		}
 		this.properties = properties;
 
-		String jdbcDriver = (String) properties.get(OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_DRIVER);
-		String jdbcURL = (String) properties.get(OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_URL);
-		String jdbcUsername = (String) properties.get(OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_USERNAME);
-		String jdbcPassword = (String) properties.get(OrbitConstants.COMPONENT_MISSION_CONTROL_JDBC_PASSWORD);
+		String jdbcDriver = (String) properties.get(ComponentsConstants.COMPONENT_MISSION_CONTROL_JDBC_DRIVER);
+		String jdbcURL = (String) properties.get(ComponentsConstants.COMPONENT_MISSION_CONTROL_JDBC_URL);
+		String jdbcUsername = (String) properties.get(ComponentsConstants.COMPONENT_MISSION_CONTROL_JDBC_USERNAME);
+		String jdbcPassword = (String) properties.get(ComponentsConstants.COMPONENT_MISSION_CONTROL_JDBC_PASSWORD);
 
 		this.databaseProperties = DatabaseUtil.getProperties(jdbcDriver, jdbcURL, jdbcUsername, jdbcPassword);
 
@@ -99,17 +99,17 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.COMPONENT_MISSION_CONTROL_NAME);
+		String name = (String) this.properties.get(ComponentsConstants.COMPONENT_MISSION_CONTROL_NAME);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.COMPONENT_MISSION_CONTROL_HOST_URL);
+		String hostURL = (String) this.properties.get(ComponentsConstants.COMPONENT_MISSION_CONTROL_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.properties.get(OrbitConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(ComponentsConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -118,7 +118,7 @@ public class MissionControlServiceImpl implements MissionControlService, Connect
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = (String) this.properties.get(OrbitConstants.COMPONENT_MISSION_CONTROL_CONTEXT_ROOT);
+		String contextRoot = (String) this.properties.get(ComponentsConstants.COMPONENT_MISSION_CONTROL_CONTEXT_ROOT);
 		return contextRoot;
 	}
 

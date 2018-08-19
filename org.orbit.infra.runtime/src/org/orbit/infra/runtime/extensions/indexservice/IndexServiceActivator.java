@@ -21,7 +21,7 @@ public class IndexServiceActivator implements ServiceActivator {
 	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceActivator.class);
 
 	@Override
-	public void start(IPlatformContext context, IProcess process) {
+	public void start(IPlatformContext context, IProcess process) throws Exception {
 		LOG.debug("start()");
 
 		BundleContext bundleContext = context.getBundleContext();
@@ -35,7 +35,7 @@ public class IndexServiceActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IPlatformContext context, IProcess process) {
+	public void stop(IPlatformContext context, IProcess process) throws Exception {
 		LOG.debug("stop()");
 
 		BundleContext bundleContext = context.getBundleContext();

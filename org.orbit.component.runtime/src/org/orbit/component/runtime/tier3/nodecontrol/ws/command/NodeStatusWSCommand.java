@@ -16,6 +16,11 @@ public class NodeStatusWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) {
 		return Response.status(Status.OK).build();
 	}

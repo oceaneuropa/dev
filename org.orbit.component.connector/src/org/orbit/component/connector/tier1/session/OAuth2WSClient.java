@@ -1,7 +1,7 @@
 package org.orbit.component.connector.tier1.session;
 
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 
 /*
  * OAuth2 web service client.
@@ -11,9 +11,9 @@ import org.origin.common.rest.client.ClientConfiguration;
  * 
  * 
  */
-public class OAuth2WSClient extends AbstractWSClient {
+public class OAuth2WSClient extends WSClient {
 
-	public OAuth2WSClient(ClientConfiguration config) {
+	public OAuth2WSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

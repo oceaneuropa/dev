@@ -8,13 +8,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.tier1.identity.RegisterResponse;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
-import org.orbit.component.webconsole.util.SessionHelper;
+import org.orbit.platform.sdk.PlatformConstants;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -29,7 +30,8 @@ public class SignUpServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		String publicContextRoot = getServletConfig().getInitParameter(WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT);
 		String componentContextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String identityServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_IDENTITY_SERVICE_URL);
+		String identityServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_IDENTITY_SERVICE_URL);
+		String userRegistryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		String message = "";
 
 		String username = ServletUtil.getParameter(request, "username", "");
@@ -52,8 +54,11 @@ public class SignUpServlet extends HttpServlet {
 		boolean signUpSucceed = false;
 		if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
 			try {
-				boolean usernameExists = OrbitComponentHelper.Identity.usernameExists(identityServiceUrl, username);
-				boolean emailExists = OrbitComponentHelper.Identity.emailExists(identityServiceUrl, email);
+				// Get identity service's access token
+				String identityServiceAccessToken = null;
+
+				boolean usernameExists = ComponentClientsUtil.UserAccounts.usernameExists(identityServiceUrl, identityServiceAccessToken, username);
+				boolean emailExists = ComponentClientsUtil.UserAccounts.emailExists(identityServiceUrl, identityServiceAccessToken, email);
 
 				if (usernameExists) {
 					message = MessageHelper.INSTANCE.add(message, "username '" + username + "' is already taken.");
@@ -63,7 +68,7 @@ public class SignUpServlet extends HttpServlet {
 				}
 
 				if (!usernameExists && !emailExists) {
-					RegisterResponse registerResponse = OrbitComponentHelper.Identity.register(identityServiceUrl, username, email, password);
+					RegisterResponse registerResponse = ComponentClientsUtil.Identity.register(identityServiceUrl, username, email, password);
 					if (registerResponse != null) {
 						signUpSucceed = registerResponse.isSucceed();
 						String responseMessage = registerResponse.getMessage();
@@ -81,13 +86,13 @@ public class SignUpServlet extends HttpServlet {
 		boolean signInSucceed = false;
 		if (signUpSucceed) {
 			try {
-				LoginResponse loginResponse = OrbitComponentHelper.Identity.login(identityServiceUrl, username, email, password);
+				LoginResponse loginResponse = ComponentClientsUtil.Identity.login(identityServiceUrl, username, email, password);
 				if (loginResponse != null) {
 					signInSucceed = loginResponse.isSucceed();
 					if (signInSucceed) {
 						// Sign in succeed
 						try {
-							SessionHelper.INSTANCE.updateSession(request, loginResponse);
+							OrbitTokenUtil.INSTANCE.updateSession(request, PlatformConstants.TOKEN_PROVIDER__ORBIT, loginResponse.getTokenType(), loginResponse.getTokenValue());
 
 						} catch (Exception e) {
 							// Cannot get token from sign in response. Consider as sign in failed.

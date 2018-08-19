@@ -8,7 +8,7 @@ import org.junit.runner.JUnitCore;
 import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 
 import com.osgi.example1.fs.client.ws.FileSystemUtil;
@@ -29,7 +29,7 @@ public class FsClientTestWin {
 	}
 
 	protected FileSystemWSClient getClient() {
-		ClientConfiguration config = ClientConfiguration.create(null, "root", "http://127.0.0.1:9090", "/fs/v1");
+		WSClientConfiguration config = WSClientConfiguration.create(null, "root", "http://127.0.0.1:9090", "/fs/v1");
 		return new FileSystemWSClient(config);
 	}
 

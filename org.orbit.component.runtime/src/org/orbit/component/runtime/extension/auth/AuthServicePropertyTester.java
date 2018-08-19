@@ -3,7 +3,7 @@ package org.orbit.component.runtime.extension.auth;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.origin.common.extensions.condition.IPropertyTester;
 import org.origin.common.util.PropertyUtil;
@@ -24,8 +24,8 @@ public class AuthServicePropertyTester implements IPropertyTester {
 		}
 		if (bundleContext != null) {
 			Map<Object, Object> properties = new Hashtable<Object, Object>();
-			PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_AUTH_AUTOSTART);
-			String autoStart = (String) properties.get(OrbitConstants.COMPONENT_AUTH_AUTOSTART);
+			PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_AUTH_AUTOSTART);
+			String autoStart = (String) properties.get(ComponentsConstants.COMPONENT_AUTH_AUTOSTART);
 			if ("true".equalsIgnoreCase(autoStart)) {
 				return true;
 			}

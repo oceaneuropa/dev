@@ -9,15 +9,16 @@ package org.orbit.component.runtime.tier1.account.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -30,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * unavailable.
  * 
  */
-public class UserRegistryServiceAdapter {
+public class UserRegistryServiceAdapter implements LifecycleAware {
 
 	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryServiceAdapter.class);
 
@@ -45,7 +46,7 @@ public class UserRegistryServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
+		return InfraClients.getInstance().getIndexProvider(this.properties, true);
 	}
 
 	public UserRegistryService getService() {
@@ -56,6 +57,7 @@ public class UserRegistryServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<UserRegistryService, UserRegistryService>(bundleContext, UserRegistryService.class, new ServiceTrackerCustomizer<UserRegistryService, UserRegistryService>() {
 			@Override
@@ -89,6 +91,7 @@ public class UserRegistryServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {
 			this.serviceTracker.close();
@@ -111,7 +114,7 @@ public class UserRegistryServiceAdapter {
 		// this.indexTimer = new UserRegistryServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, OrbitConstants.USER_REGISTRY_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.USER_REGISTRY_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

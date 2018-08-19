@@ -3,10 +3,9 @@ package org.orbit.component.connector.tier1.session;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.session.OAuth2Client;
-import org.orbit.component.connector.OrbitConstants;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.client.WSClientConfiguration;
 
 public class OAuth2ClientImpl extends ServiceClientImpl<OAuth2Client, OAuth2WSClient> implements OAuth2Client {
 
@@ -21,12 +20,8 @@ public class OAuth2ClientImpl extends ServiceClientImpl<OAuth2Client, OAuth2WSCl
 
 	@Override
 	protected OAuth2WSClient createWSClient(Map<String, Object> properties) {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String url = (String) properties.get(OrbitConstants.URL);
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url);
-
-		return new OAuth2WSClient(clientConfig);
+		WSClientConfiguration config = WSClientConfiguration.create(properties);
+		return new OAuth2WSClient(config);
 	}
 
 }

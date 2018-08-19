@@ -7,7 +7,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.spirit.api.Clients;
+import org.orbit.spirit.api.SpiritClients;
 import org.orbit.spirit.api.Constants;
 import org.orbit.spirit.api.gaia.GAIAClient;
 import org.orbit.spirit.api.gaia.World;
@@ -67,7 +67,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 	}
 
 	protected GAIAClient getGAIA() {
-		GAIAClient gaia = Clients.getInstance().getGAIA(this.properties);
+		GAIAClient gaia = SpiritClients.getInstance().getGAIA(this.properties);
 		if (gaia == null) {
 			throw new IllegalStateException("GAIA is null.");
 		}

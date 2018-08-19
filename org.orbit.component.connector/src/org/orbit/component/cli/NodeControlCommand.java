@@ -7,13 +7,13 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -61,7 +61,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		OSGiServiceUtil.register(bundleContext, NodeControlCommand.class.getName(), this, props);
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 	}
 
@@ -79,9 +79,10 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 	}
 
 	protected DomainManagementClient getDomainService() {
-		DomainManagementClient domainService = OrbitClients.getInstance().getDomainService(this.properties);
+		String domainServiceUrl = (String) this.properties.get(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
+		DomainManagementClient domainService = ComponentClientsUtil.DomainControl.getDomainClient(domainServiceUrl, null);
 		if (domainService == null) {
-			throw new IllegalStateException("DomainService is null.");
+			throw new IllegalStateException("DomainManagementClient is null.");
 		}
 		return domainService;
 	}
@@ -90,8 +91,9 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		DomainManagementClient domainService = getDomainService();
 		PlatformConfig platformConfig = domainService.getPlatformConfig(machineId, platformId);
 		if (platformConfig != null) {
-			String url = platformConfig.getHostURL() + platformConfig.getContextRoot();
-			NodeControlClient nodeControlClient = OrbitClients.getInstance().getNodeControl(url);
+			String nodeControlServiceUrl = platformConfig.getHostURL() + platformConfig.getContextRoot();
+
+			NodeControlClient nodeControlClient = ComponentClientsUtil.NodeControl.getNodeControlClient(nodeControlServiceUrl, null);
 			if (nodeControlClient == null) {
 				throw new IllegalStateException("NodeControl is null.");
 			}

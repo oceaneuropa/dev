@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier1.session.ws;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -8,6 +8,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -19,7 +20,7 @@ import other.orbit.infra.api.indexes.IndexProviderLoadBalancer;
  * Adapter to start OAuth2WSApplication when OAuth2Service becomes available and to stop OAuth2WSApplication when OAuth2Service becomes unavailable.
  * 
  */
-public class OAuth2ServiceAdapter {
+public class OAuth2ServiceAdapter implements LifecycleAware {
 
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
 	protected ServiceTracker<OAuth2Service, OAuth2Service> serviceTracker;
@@ -50,6 +51,7 @@ public class OAuth2ServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<OAuth2Service, OAuth2Service>(bundleContext, OAuth2Service.class, new ServiceTrackerCustomizer<OAuth2Service, OAuth2Service>() {
 			@Override
@@ -82,6 +84,7 @@ public class OAuth2ServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {
 			this.serviceTracker.close();
@@ -104,7 +107,7 @@ public class OAuth2ServiceAdapter {
 		// this.indexTimer = new OAuth2ServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, OrbitConstants.OAUTH2_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.OAUTH2_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

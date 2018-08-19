@@ -8,11 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -26,7 +27,7 @@ public class PlatformUpdateServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String domainServiceUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		String domainServiceUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String id = ServletUtil.getParameter(request, "id", "");
@@ -48,12 +49,14 @@ public class PlatformUpdateServlet extends HttpServlet {
 		boolean succeed = false;
 		if (machineId != null && id != null) {
 			try {
-				PlatformConfig platformConfig = OrbitComponentHelper.Domain.getPlatformConfig(domainServiceUrl, machineId, id);
+				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+				PlatformConfig platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, id);
 				if (platformConfig == null) {
 					message = MessageHelper.INSTANCE.add(message, "Platform configuration is not found.");
 
 				} else {
-					succeed = OrbitComponentHelper.Domain.updatePlatformConfig(domainServiceUrl, machineId, id, name, hostUrl, theContextRoot);
+					succeed = ComponentClientsUtil.DomainControl.updatePlatformConfig(domainServiceUrl, accessToken, machineId, id, name, hostUrl, theContextRoot);
 				}
 
 			} catch (ClientException e) {

@@ -9,13 +9,13 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.NodeConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -68,7 +68,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(this.bundleContext, DomainManagementCommand.class.getName(), this, props);
@@ -83,7 +83,8 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 	}
 
 	protected DomainManagementClient getDomainManagementCLient() {
-		DomainManagementClient domainService = OrbitClients.getInstance().getDomainService(this.properties);
+		String domainServiceUrl = (String) this.properties.get(ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
+		DomainManagementClient domainService = ComponentClientsUtil.DomainControl.getDomainClient(domainServiceUrl, null);
 		if (domainService == null) {
 			throw new IllegalStateException("DomainManagementClient is null.");
 		}

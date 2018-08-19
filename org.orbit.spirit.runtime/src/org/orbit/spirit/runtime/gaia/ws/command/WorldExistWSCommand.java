@@ -20,6 +20,11 @@ public class WorldExistWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) throws Exception {
 		String name = (request.getParameter("name") instanceof String) ? (String) request.getParameter("name") : null;
 		if (name == null || name.isEmpty()) {

@@ -14,11 +14,12 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.ComponentConstants;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.platform.sdk.PlatformSDKActivator;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 
 /**
  * Upon receiving file upload submission, parses the request to read upload data and saves the file on disk.
@@ -40,7 +41,7 @@ public class AppUploadServlet extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
+		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 
 		String message = "";
 
@@ -134,7 +135,9 @@ public class AppUploadServlet extends HttpServlet {
 					}
 
 					// 8. Upload file to app store
-					boolean succeed = OrbitComponentHelper.AppStore.uploadAppFile(appStoreUrl, id, appId, appVersion, localFiles);
+					String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+					boolean succeed = ComponentClientsUtil.AppStore.uploadAppFile(appStoreUrl, accessToken, id, appId, appVersion, localFiles);
 					if (succeed) {
 						message = MessageHelper.INSTANCE.add(message, "App file is uploaded to app store successfully!");
 					} else {

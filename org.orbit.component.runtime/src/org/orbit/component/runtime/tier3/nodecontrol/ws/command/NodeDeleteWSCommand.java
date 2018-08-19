@@ -20,6 +20,11 @@ public class NodeDeleteWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) throws Exception {
 		String id = (request.getParameter("id") instanceof String) ? (String) request.getParameter("id") : null;
 		if (id == null || id.isEmpty()) {

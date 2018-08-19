@@ -27,6 +27,11 @@ public class NodeUpdateWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) throws Exception {
 		String id = RequestUtil.getParameter(request, "id", String.class, "");
 		String name = RequestUtil.getParameter(request, "name", String.class, "");

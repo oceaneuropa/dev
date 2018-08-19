@@ -5,9 +5,9 @@
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
 
-	String username = (String) session.getAttribute(WebConstants.SESSION__USERNAME);
-	String fullName = (String) session.getAttribute(WebConstants.SESSION__FULLNAME);
-	String tokenType = (String) session.getAttribute(WebConstants.SESSION__TOKEN_TYPE);
+	String username = (String) session.getAttribute(WebConstants.SESSION__ORBIT_USERNAME);
+	String fullName = (String) session.getAttribute(WebConstants.SESSION__ORBIT_FULLNAME);
+	String tokenType = (String) session.getAttribute(WebConstants.SESSION__ORBIT_TOKEN_TYPE);
 	String accessToken = (String) session.getAttribute(WebConstants.SESSION__ACCESS_TOKEN);
 	boolean isTokenValid = false;
 	Object isTokenValidObj = request.getAttribute("isTokenValid");

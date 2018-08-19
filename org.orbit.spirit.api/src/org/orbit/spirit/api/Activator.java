@@ -15,12 +15,12 @@ public class Activator implements BundleActivator {
 	public void start(BundleContext bundleContext) throws Exception {
 		Activator.context = bundleContext;
 
-		Clients.getInstance().start(bundleContext);
+		SpiritClients.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		Clients.getInstance().stop(bundleContext);
+		SpiritClients.getInstance().stop(bundleContext);
 
 		Activator.context = null;
 	}

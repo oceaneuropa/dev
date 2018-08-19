@@ -17,8 +17,8 @@ import org.orbit.infra.model.indexes.IndexItemCommandRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertiesRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertyRequestDTO;
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
@@ -61,13 +61,13 @@ import org.origin.common.util.StringUtil;
  * @see HomeAgentWSClient
  * @see AppStoreWSClient
  */
-public class IndexServiceWSClient extends AbstractWSClient {
+public class IndexServiceWSClient extends WSClient {
 
 	/**
 	 * 
 	 * @param config
 	 */
-	public IndexServiceWSClient(ClientConfiguration config) {
+	public IndexServiceWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

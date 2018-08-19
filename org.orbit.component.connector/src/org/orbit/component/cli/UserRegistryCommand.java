@@ -6,11 +6,11 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -52,10 +52,10 @@ public class UserRegistryCommand implements CommandActivator {
 						"activate_user", //
 						"deactivate_user", //
 						"delete_user" //
-		});
+				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(bundleContext, UserRegistryCommand.class.getName(), this, props);
@@ -68,7 +68,8 @@ public class UserRegistryCommand implements CommandActivator {
 	}
 
 	protected UserAccountClient getUserRegistry() {
-		UserAccountClient userRegistry = OrbitClients.getInstance().getUserAccounts(this.properties);
+		String userRegistryUrl = (String) this.properties.get(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
+		UserAccountClient userRegistry = ComponentClientsUtil.UserAccounts.getUserAccountsClient(userRegistryUrl, null);
 		if (userRegistry == null) {
 			throw new IllegalStateException("UserRegistry is null.");
 		}

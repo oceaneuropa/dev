@@ -14,8 +14,8 @@ import org.orbit.component.model.tier1.identity.LoginRequestDTO;
 import org.orbit.component.model.tier1.identity.LoginResponseDTO;
 import org.orbit.component.model.tier1.identity.LogoutRequestDTO;
 import org.orbit.component.model.tier1.identity.RegisterRequestDTO;
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
@@ -34,13 +34,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/logout   (Body parameter: LogoutRequestDTO)
  * 
  */
-public class IdentityWSClient extends AbstractWSClient {
+public class IdentityWSClient extends WSClient {
 
 	/**
 	 * 
 	 * @param config
 	 */
-	public IdentityWSClient(ClientConfiguration config) {
+	public IdentityWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

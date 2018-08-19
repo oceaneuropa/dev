@@ -11,8 +11,8 @@ import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.origin.common.adapter.AdaptorSupport;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.service.InternalProxyService;
 import org.slf4j.Logger;
@@ -49,21 +49,20 @@ public class ExtensionRegistryClientImpl implements ExtensionRegistryClient, Int
 	}
 
 	protected void initClient() {
-		String realm = (String) this.properties.get(InfraConstants.REALM);
-		String username = (String) this.properties.get(InfraConstants.USERNAME);
-		String url = (String) this.properties.get(InfraConstants.URL);
-
-		String orbitRealm = (String) this.properties.get(InfraConstants.ORBIT_REALM);
-		if (realm == null && orbitRealm != null) {
-			realm = orbitRealm;
-		}
-
-		String orbitExtensionRegistryServiceURL = (String) this.properties.get(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
-		if (url == null && orbitExtensionRegistryServiceURL != null) {
-			url = orbitExtensionRegistryServiceURL;
-		}
-
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url);
+		// String realm = (String) this.properties.get(WSClientConstants.REALM);
+		// String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
+		// String url = (String) this.properties.get(WSClientConstants.URL);
+		//
+		// String orbitRealm = (String) this.properties.get(InfraConstants.ORBIT_REALM);
+		// if (realm == null && orbitRealm != null) {
+		// realm = orbitRealm;
+		// }
+		//
+		// String orbitExtensionRegistryServiceURL = (String) this.properties.get(InfraConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		// if (url == null && orbitExtensionRegistryServiceURL != null) {
+		// url = orbitExtensionRegistryServiceURL;
+		// }
+		WSClientConfiguration clientConfig = WSClientConfiguration.create(this.properties);
 		this.client = new ExtensionRegistryWSClient(clientConfig);
 	}
 

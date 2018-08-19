@@ -2,10 +2,10 @@ package other.orbit.infra.api.channel;
 
 import java.util.Map;
 
-import org.orbit.infra.api.channel.Channels;
+import org.orbit.infra.api.channel.ChannelClient;
 
 public interface ChannelsConnector {
 
-	Channels getService(Map<Object, Object> properties);
+	ChannelClient getService(Map<Object, Object> properties);
 
 }

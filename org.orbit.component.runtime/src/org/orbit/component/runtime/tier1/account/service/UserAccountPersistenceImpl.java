@@ -114,7 +114,7 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public boolean setUserAccountActivated(String userId, boolean activated) throws IOException {
+	public boolean setActivated(String userId, boolean activated) throws IOException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
@@ -130,7 +130,7 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public boolean userIdExists(String userId) throws IOException {
+	public boolean usernameExists(String userId) throws IOException {
 		boolean exists = false;
 		Connection conn = null;
 		try {

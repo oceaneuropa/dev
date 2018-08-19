@@ -1,13 +1,6 @@
 package org.orbit.component.api;
 
-public class OrbitConstants {
-
-	// ----------------------------------------------------------------------------------------
-	// Connector property names
-	// ----------------------------------------------------------------------------------------
-	public static String REALM = "realm";
-	public static String USERNAME = "username";
-	public static String URL = "url";
+public interface ComponentConstants {
 
 	// ----------------------------------------------------------------------------------------
 	// orbit service config properties

@@ -28,6 +28,7 @@ public class UserRegistryWSApplication extends OrbitWSApplication {
 			}
 		});
 		register(UserRegistryUserAccountsWSResource.class);
+		register(UserRegistryUserAccountWSResource.class);
 	}
 
 }

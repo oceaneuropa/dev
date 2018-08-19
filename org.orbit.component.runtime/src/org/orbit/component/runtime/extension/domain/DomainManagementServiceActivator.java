@@ -17,7 +17,7 @@ public class DomainManagementServiceActivator implements ServiceActivator {
 	public static DomainManagementServiceActivator INSTANCE = new DomainManagementServiceActivator();
 
 	@Override
-	public void start(IPlatformContext context, IProcess process) {
+	public void start(IPlatformContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
 		Map<Object, Object> properties = context.getProperties();
 
@@ -29,7 +29,7 @@ public class DomainManagementServiceActivator implements ServiceActivator {
 	}
 
 	@Override
-	public void stop(IPlatformContext context, IProcess process) {
+	public void stop(IPlatformContext context, IProcess process) throws Exception {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop DomainManagementService

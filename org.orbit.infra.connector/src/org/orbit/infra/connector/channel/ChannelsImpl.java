@@ -3,21 +3,20 @@ package org.orbit.infra.connector.channel;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.infra.api.channel.Channels;
-import org.orbit.infra.connector.InfraConstants;
+import org.orbit.infra.api.channel.ChannelClient;
 import org.orbit.infra.model.channel.ChannelMessageDTO;
 import org.origin.common.adapter.AdaptorSupport;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.client.WSClientConfiguration;
 
-public class ChannelsImpl implements Channels {
+public class ChannelsImpl implements ChannelClient {
 
 	protected Map<String, Object> properties;
 	protected ChannelWSClient client;
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
-	public ChannelsImpl(ServiceConnector<Channels> connector, Map<String, Object> properties) {
+	public ChannelsImpl(ServiceConnector<ChannelClient> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
@@ -35,7 +34,7 @@ public class ChannelsImpl implements Channels {
 	@Override
 	public boolean close() throws ClientException {
 		@SuppressWarnings("unchecked")
-		ServiceConnector<Channels> connector = getAdapter(ServiceConnector.class);
+		ServiceConnector<ChannelClient> connector = getAdapter(ServiceConnector.class);
 		if (connector != null) {
 			return connector.close(this);
 		}
@@ -54,11 +53,7 @@ public class ChannelsImpl implements Channels {
 	}
 
 	protected void initClient() {
-		String realm = (String) this.properties.get(InfraConstants.REALM);
-		String username = (String) this.properties.get(InfraConstants.USERNAME);
-		String fullUrl = (String) this.properties.get(InfraConstants.URL);
-
-		ClientConfiguration config = ClientConfiguration.create(realm, username, fullUrl);
+		WSClientConfiguration config = WSClientConfiguration.create(this.properties);
 		this.client = new ChannelWSClient(config);
 	}
 

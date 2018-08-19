@@ -3,23 +3,24 @@ package other.orbit.infra.connector.channel;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.infra.api.channel.Channels;
+import org.orbit.infra.api.channel.ChannelClient;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.connector.channel.ChannelWSClient;
 import org.orbit.infra.model.channel.ChannelMessageDTO;
 import org.origin.common.adapter.AdaptorSupport;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.client.WSClientConfiguration;
+import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.util.StringUtil;
 
-public class ChannelsImplV1 implements Channels {
+public class ChannelsImplV1 implements ChannelClient {
 
 	protected Map<String, Object> properties;
 	protected ChannelWSClient client;
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
-	public ChannelsImplV1(ServiceConnector<Channels> connector, Map<String, Object> properties) {
+	public ChannelsImplV1(ServiceConnector<ChannelClient> connector, Map<String, Object> properties) {
 		if (connector != null) {
 			adapt(ServiceConnector.class, connector);
 		}
@@ -37,7 +38,7 @@ public class ChannelsImplV1 implements Channels {
 	@Override
 	public boolean close() throws ClientException {
 		@SuppressWarnings("unchecked")
-		ServiceConnector<Channels> connector = getAdapter(ServiceConnector.class);
+		ServiceConnector<ChannelClient> connector = getAdapter(ServiceConnector.class);
 		if (connector != null) {
 			return connector.close(this);
 		}
@@ -71,12 +72,12 @@ public class ChannelsImplV1 implements Channels {
 	}
 
 	protected void init() {
-		String realm = (String) this.properties.get(InfraConstants.REALM);
-		String username = (String) this.properties.get(InfraConstants.USERNAME);
+		String realm = (String) this.properties.get(WSClientConstants.REALM);
+		String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
 		String url = (String) this.properties.get(InfraConstants.CHANNEL_HOST_URL);
 		String contextRoot = (String) this.properties.get(InfraConstants.CHANNEL_CONTEXT_ROOT);
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
 
+		WSClientConfiguration clientConfig = WSClientConfiguration.create(realm, accessToken, url, contextRoot);
 		this.client = new ChannelWSClient(clientConfig);
 	}
 

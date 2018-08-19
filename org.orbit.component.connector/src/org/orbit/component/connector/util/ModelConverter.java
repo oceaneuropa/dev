@@ -29,7 +29,7 @@ import org.orbit.component.connector.tier3.domain.MachineConfigImpl;
 import org.orbit.component.connector.tier3.domain.NodeConfigImpl;
 import org.orbit.component.connector.tier3.domain.PlatformConfigImpl;
 import org.orbit.component.connector.tier3.nodecontrol.NodeInfoImpl;
-import org.orbit.component.connector.tier4.mission.MissionImpl;
+import org.orbit.component.connector.tier4.missioncontrol.MissionImpl;
 import org.orbit.component.model.tier1.account.UserAccountDTO;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationRequestDTO;
@@ -925,7 +925,6 @@ public class ModelConverter {
 			}
 			return status;
 		}
-
 	}
 
 	public static class MissionControl {

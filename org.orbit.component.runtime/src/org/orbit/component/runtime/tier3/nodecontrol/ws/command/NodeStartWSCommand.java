@@ -20,6 +20,11 @@ public class NodeStartWSCommand extends AbstractWSCommand {
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) throws Exception {
 		String id = (request.getParameter("id") instanceof String) ? (String) request.getParameter("id") : null;
 		if (id == null || id.isEmpty()) {
@@ -33,7 +38,9 @@ public class NodeStartWSCommand extends AbstractWSCommand {
 			return Response.status(Status.NOT_FOUND).entity(error).build();
 		}
 
-		boolean succeed = this.service.startNode(id);
+		String accessToken = null;
+		
+		boolean succeed = this.service.startNode(id, accessToken);
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("succeed", succeed);

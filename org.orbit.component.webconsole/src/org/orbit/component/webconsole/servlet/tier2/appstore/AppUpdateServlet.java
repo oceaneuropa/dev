@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.ComponentConstants;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -25,7 +26,7 @@ public class AppUpdateServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
+		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 		String message = "";
 
 		String idStr = ServletUtil.getParameter(request, "id", "");
@@ -52,7 +53,9 @@ public class AppUpdateServlet extends HttpServlet {
 		boolean succeed = false;
 		if (!appId.isEmpty()) {
 			try {
-				succeed = OrbitComponentHelper.AppStore.updateApp(appStoreUrl, id, appId, appVersion, type, name, desc, fileName);
+				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+				succeed = ComponentClientsUtil.AppStore.updateApp(appStoreUrl, accessToken, id, appId, appVersion, type, name, desc, fileName);
 
 			} catch (ClientException e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

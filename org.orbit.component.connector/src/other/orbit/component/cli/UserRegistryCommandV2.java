@@ -1,14 +1,18 @@
 package other.orbit.component.cli;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.OrbitClients;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
+import org.orbit.component.api.util.ComponentClients;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.CLIHelper;
@@ -44,7 +48,7 @@ public class UserRegistryCommandV2 {
 						"activate_user", //
 						"deactivate_user", //
 						"delete_user" //
-		} //
+				} //
 		);
 		OSGiServiceUtil.register(bundleContext, UserRegistryCommandV2.class.getName(), this, props);
 	}
@@ -56,7 +60,7 @@ public class UserRegistryCommandV2 {
 	}
 
 	protected UserAccountClient getUserRegistry(String url) {
-		return OrbitClients.getInstance().getUserAccounts(url);
+		return ComponentClientsUtil.UserAccounts.getUserAccountsClient(url, null);
 	}
 
 	@Descriptor("list_users")

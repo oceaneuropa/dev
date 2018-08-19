@@ -4,11 +4,10 @@ import java.util.Map;
 
 import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
 import org.orbit.component.api.tier1.configregistry.EPath;
-import org.orbit.component.connector.OrbitConstants;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
+import org.origin.common.rest.client.WSClientConfiguration;
 
 public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryClient, ConfigRegistryWSClient> implements ConfigRegistryClient {
 
@@ -23,11 +22,7 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 
 	@Override
 	protected ConfigRegistryWSClient createWSClient(Map<String, Object> properties) {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
-
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, fullUrl);
+		WSClientConfiguration clientConfig = WSClientConfiguration.create(properties);
 		return new ConfigRegistryWSClient(clientConfig);
 	}
 

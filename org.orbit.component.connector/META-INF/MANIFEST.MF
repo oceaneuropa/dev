@@ -30,6 +30,6 @@ Export-Package: org.orbit.component.connector;version="1.0.0",
  org.orbit.component.connector.tier2.appstore;version="1.0.0",
  org.orbit.component.connector.tier3.domain;version="1.0.0",
  org.orbit.component.connector.tier3.nodecontrol;version="1.0.0",
- org.orbit.component.connector.tier4.mission;version="1.0.0",
+ org.orbit.component.connector.tier4.missioncontrol;version="1.0.0",
  org.orbit.component.connector.util;version="1.0.0"
 Bundle-ActivationPolicy: lazy

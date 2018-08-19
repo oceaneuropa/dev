@@ -9,15 +9,16 @@ package org.orbit.component.runtime.tier1.config.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -28,7 +29,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  * becomes unavailable.
  * 
  */
-public class ConfigRegistryServiceAdapter {
+public class ConfigRegistryServiceAdapter implements LifecycleAware {
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<ConfigRegistryService, ConfigRegistryService> serviceTracker;
@@ -41,7 +42,7 @@ public class ConfigRegistryServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
+		return InfraClients.getInstance().getIndexProvider(this.properties, true);
 	}
 
 	public ConfigRegistryService getService() {
@@ -52,6 +53,7 @@ public class ConfigRegistryServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<ConfigRegistryService, ConfigRegistryService>(bundleContext, ConfigRegistryService.class, new ServiceTrackerCustomizer<ConfigRegistryService, ConfigRegistryService>() {
 			@Override
@@ -82,6 +84,7 @@ public class ConfigRegistryServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {
 			this.serviceTracker.close();
@@ -104,7 +107,7 @@ public class ConfigRegistryServiceAdapter {
 		// this.indexTimer = new ConfigRegistryServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, OrbitConstants.CONFIG_REGISTRY_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.CONFIG_REGISTRY_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

@@ -4,11 +4,11 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
-import org.orbit.component.api.OrbitClients;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -36,7 +36,7 @@ public class AppStoreCommand implements Annotated, CommandActivator {
 		props.put("osgi.command.function", new String[] { "list_apps" });
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_APP_STORE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_APP_STORE_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(this.bundleContext, AppStoreCommand.class.getName(), this, props);
@@ -51,7 +51,8 @@ public class AppStoreCommand implements Annotated, CommandActivator {
 	}
 
 	protected AppStoreClient getAppStore() {
-		AppStoreClient appStore = OrbitClients.getInstance().getAppStore(this.properties);
+		String appStoreUrl = (String) this.properties.get(ComponentConstants.ORBIT_APP_STORE_URL);
+		AppStoreClient appStore = ComponentClientsUtil.AppStore.getAppStoreClient(appStoreUrl, null);
 		if (appStore == null) {
 			throw new IllegalStateException("AppStore is null.");
 		}

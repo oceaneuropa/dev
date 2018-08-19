@@ -3,12 +3,12 @@ package org.orbit.component.runtime.util;
 import java.io.IOException;
 import java.util.List;
 
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.platform.api.Clients;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
+import org.orbit.platform.api.util.PlatformClientsUtil;
 
 public class OrbitClientHelper {
 
@@ -17,9 +17,10 @@ public class OrbitClientHelper {
 	/**
 	 * 
 	 * @param indexItem
+	 * @param accessToken
 	 * @return
 	 */
-	public PlatformClient getPlatformClient(IndexItem indexItem) {
+	public PlatformClient getPlatformClient(IndexItem indexItem, String accessToken) {
 		PlatformClient platformClient = null;
 		if (indexItem != null) {
 			String platformUrl = null;
@@ -35,7 +36,7 @@ public class OrbitClientHelper {
 			}
 
 			if (platformUrl != null) {
-				platformClient = Clients.getInstance().getPlatformClient(platformUrl);
+				platformClient = PlatformClientsUtil.Platform.getPlatformClient(platformUrl, accessToken);
 			}
 		}
 		return platformClient;
@@ -44,15 +45,16 @@ public class OrbitClientHelper {
 	/**
 	 * 
 	 * @param indexServiceUrl
+	 * @param accessToken
 	 * @param platformParentId
 	 * @param nodePlatformid
 	 * @return
 	 * @throws IOException
 	 */
-	public IndexItem getNodeIndexItem(String indexServiceUrl, String platformParentId, String nodePlatformid) throws IOException {
+	public IndexItem getNodeIndexItem(String indexServiceUrl, String accessToken, String platformParentId, String nodePlatformid) throws IOException {
 		IndexItem nodeIndexItem = null;
 		if (indexServiceUrl != null && platformParentId != null && nodePlatformid != null) {
-			IndexService indexService = getIndexService(indexServiceUrl);
+			IndexService indexService = getIndexService(indexServiceUrl, accessToken);
 			if (indexService != null) {
 				List<IndexItem> indexItems = indexService.getIndexItems(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE);
 				if (indexItems != null) {
@@ -75,12 +77,13 @@ public class OrbitClientHelper {
 	/**
 	 * 
 	 * @param indexServiceUrl
+	 * @param accessToken
 	 * @return
 	 */
-	protected IndexService getIndexService(String indexServiceUrl) {
+	protected IndexService getIndexService(String indexServiceUrl, String accessToken) {
 		IndexService indexService = null;
 		if (indexServiceUrl != null) {
-			indexService = InfraClients.getInstance().getIndexService(indexServiceUrl);
+			indexService = InfraClientsUtil.IndexItems.getIndexServiceClient(indexServiceUrl, accessToken);
 		}
 		return indexService;
 	}

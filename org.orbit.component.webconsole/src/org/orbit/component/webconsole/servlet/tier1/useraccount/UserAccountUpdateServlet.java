@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.ComponentConstants;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
 
@@ -25,7 +26,7 @@ public class UserAccountUpdateServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
+		String userRegistryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		String message = "";
 
 		String id = ServletUtil.getParameter(request, "id", "");
@@ -51,11 +52,12 @@ public class UserAccountUpdateServlet extends HttpServlet {
 		boolean succeed = false;
 		if (!id.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
 			try {
-				boolean exists = OrbitComponentHelper.UserAccounts.userAccountExists(userRegistryUrl, id);
+				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+				boolean exists = ComponentClientsUtil.UserAccounts.usernameExists(userRegistryUrl, accessToken, id);
 				if (!exists) {
 					message = MessageHelper.INSTANCE.add(message, "User '" + id + "' is not found.");
 				} else {
-					succeed = OrbitComponentHelper.UserAccounts.updateUserAccount(userRegistryUrl, id, email, password, firstName, lastName, phone);
+					succeed = ComponentClientsUtil.UserAccounts.updateUserAccount(userRegistryUrl, accessToken, id, email, password, firstName, lastName, phone);
 				}
 
 			} catch (ClientException e) {

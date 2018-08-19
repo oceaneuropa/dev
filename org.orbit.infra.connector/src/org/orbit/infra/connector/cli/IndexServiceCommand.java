@@ -6,8 +6,9 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.util.InfraClients;
+import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -54,7 +55,7 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 				new String[] { //
 						"index_service_ping", //
 						"index_service_echo" //
-		});
+				});
 		OSGiServiceUtil.register(bundleContext, IndexServiceCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
@@ -84,7 +85,7 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 		String url = getIndexServiceURL();
 		LOG.debug("### ### ### ### url = " + url);
 
-		IndexService indexService = InfraClients.getInstance().getIndexService(url);
+		IndexService indexService = InfraClientsUtil.IndexItems.getIndexServiceClient(url, null);
 		if (indexService == null) {
 			LOG.error("IndexService is not available.");
 			throw new IllegalStateException("IndexService is not available. url = " + url);

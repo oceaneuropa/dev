@@ -343,42 +343,42 @@ public class Extensions extends ProgramExtensions {
 		Class<?> factoryClass = ServiceIndexTimerFactory.class;
 
 		// tier 1
-		Extension extension11 = new Extension(typeId, OrbitConstants.IDENTITY_INDEXER_ID, "Identity Service Index Provider");
+		Extension extension11 = new Extension(typeId, ComponentsConstants.IDENTITY_INDEXER_ID, "Identity Service Index Provider");
 		extension11.addInterface(factoryClass, IdentityServiceTimerFactory.class);
 		addExtension(extension11);
 
-		Extension extension12 = new Extension(typeId, OrbitConstants.USER_REGISTRY_INDEXER_ID, "User Account Service Index Provider");
+		Extension extension12 = new Extension(typeId, ComponentsConstants.USER_REGISTRY_INDEXER_ID, "User Account Service Index Provider");
 		extension12.addInterface(factoryClass, UserRegistryServiceIndexTimerFactory.class);
 		addExtension(extension12);
 
-		Extension extension13 = new Extension(typeId, OrbitConstants.AUTH_INDEXER_ID, "Auth Service Index Provider");
+		Extension extension13 = new Extension(typeId, ComponentsConstants.AUTH_INDEXER_ID, "Auth Service Index Provider");
 		extension13.addInterface(factoryClass, AuthServiceIndexTimerFactory.class);
 		addExtension(extension13);
 
-		Extension extension14 = new Extension(typeId, OrbitConstants.CONFIG_REGISTRY_INDEXER_ID, "Config Registry Service Index Provider");
+		Extension extension14 = new Extension(typeId, ComponentsConstants.CONFIG_REGISTRY_INDEXER_ID, "Config Registry Service Index Provider");
 		extension14.addInterface(factoryClass, ConfigRegistryServiceIndexTimerFactory.class);
 		addExtension(extension14);
 
-		Extension extension15 = new Extension(typeId, OrbitConstants.OAUTH2_INDEXER_ID, "OAuth2 Service Index Provider");
+		Extension extension15 = new Extension(typeId, ComponentsConstants.OAUTH2_INDEXER_ID, "OAuth2 Service Index Provider");
 		extension15.addInterface(factoryClass, OAuth2ServiceIndexTimerFactory.class);
 		addExtension(extension15);
 
 		// tier 2
-		Extension extension21 = new Extension(typeId, OrbitConstants.APP_STORE_INDEXER_ID, "App Store Service Index Provider");
+		Extension extension21 = new Extension(typeId, ComponentsConstants.APP_STORE_INDEXER_ID, "App Store Service Index Provider");
 		extension21.addInterface(factoryClass, AppStoreServiceIndexTimerFactory.class);
 		addExtension(extension21);
 
 		// tier 3
-		Extension extension31 = new Extension(typeId, OrbitConstants.DOMAIN_SERVICE_INDEXER_ID, "Domain Management Service Index Provider");
+		Extension extension31 = new Extension(typeId, ComponentsConstants.DOMAIN_SERVICE_INDEXER_ID, "Domain Management Service Index Provider");
 		extension31.addInterface(factoryClass, DomainServiceTimerFactory.class);
 		addExtension(extension31);
 
-		Extension extension32 = new Extension(typeId, OrbitConstants.NODE_CONTROL_INDEXER_ID, "Node Control Service Index Provider");
+		Extension extension32 = new Extension(typeId, ComponentsConstants.NODE_CONTROL_INDEXER_ID, "Node Control Service Index Provider");
 		extension32.addInterface(factoryClass, NodeControlServiceTimerFactory.class);
 		addExtension(extension32);
 
 		// tier 4
-		Extension extension41 = new Extension(typeId, OrbitConstants.MISSION_CONTROL_INDEXER_ID, "Mission Control Service Index Provider");
+		Extension extension41 = new Extension(typeId, ComponentsConstants.MISSION_CONTROL_INDEXER_ID, "Mission Control Service Index Provider");
 		extension41.addInterface(factoryClass, MissionControlIndexTimeractory.class);
 		addExtension(extension41);
 	}

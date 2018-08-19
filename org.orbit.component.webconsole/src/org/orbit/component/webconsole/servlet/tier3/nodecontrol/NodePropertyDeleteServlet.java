@@ -9,11 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.util.ServletUtil;
 
 public class NodePropertyDeleteServlet extends HttpServlet {
@@ -59,9 +60,11 @@ public class NodePropertyDeleteServlet extends HttpServlet {
 
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !nodeId.isEmpty() && names.length > 0) {
 			try {
-				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, platformId);
+				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
 				for (String currName : names) {
-					boolean currSucceed = OrbitComponentHelper.NodeControl.deleteNodeAttribute(nodeControlClient, nodeId, currName);
+					boolean currSucceed = ComponentClientsUtil.NodeControl.deleteNodeAttribute(nodeControlClient, nodeId, currName);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {

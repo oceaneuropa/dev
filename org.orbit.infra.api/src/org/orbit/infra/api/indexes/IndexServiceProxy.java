@@ -4,44 +4,29 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.util.InfraClients;
 
 public class IndexServiceProxy implements IndexService {
 
 	private static IndexServiceProxyImpl PROXY = new IndexServiceProxyImpl();
 
-	protected Map<?, ?> properties;
-	protected String realm;
-	protected String username;
-	protected String url;
-
+	protected Map<String, Object> properties;
 	protected IndexService indexService = PROXY;
 
-	public IndexServiceProxy(Map<?, ?> properties) {
+	/**
+	 * 
+	 * @param properties
+	 */
+	public IndexServiceProxy(Map<String, Object> properties) {
+		if (properties == null) {
+			throw new IllegalArgumentException("properties is null");
+		}
 		this.properties = properties;
-	}
-
-	public IndexServiceProxy(String url) {
-		this(null, null, url);
-	}
-
-	public IndexServiceProxy(String realm, String username, String url) {
-		this.realm = realm;
-		this.username = username;
-		this.url = url;
 	}
 
 	protected synchronized IndexService resolve() {
 		if (this.indexService == null || this.indexService.isProxy()) {
-			IndexService resolvedIndexService = null;
-			if (this.properties != null) {
-				resolvedIndexService = InfraClients.getInstance().getIndexService(this.properties);
-			}
-			if (resolvedIndexService == null) {
-				if (this.url != null) {
-					resolvedIndexService = InfraClients.getInstance().getIndexService(this.realm, this.username, this.url);
-				}
-			}
+			IndexService resolvedIndexService = InfraClients.getInstance().getIndexService(this.properties, false);
 			if (resolvedIndexService != null && !resolvedIndexService.isProxy()) {
 				this.indexService = resolvedIndexService;
 			}
@@ -82,11 +67,6 @@ public class IndexServiceProxy implements IndexService {
 		return resolve().sendCommand(action, params);
 	}
 
-	// @Override
-	// public List<IndexItem> getIndexItems() throws IOException {
-	// return resolve().getIndexItems();
-	// }
-
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
 		return resolve().getIndexItems(indexProviderId);
@@ -124,7 +104,7 @@ public class IndexServiceProxy implements IndexService {
 
 	@Override
 	public boolean isProxy() {
-		return resolve().isProxy();
+		return true;
 	}
 
 	public static class IndexServiceProxyImpl implements IndexService {
@@ -153,11 +133,6 @@ public class IndexServiceProxy implements IndexService {
 		public String echo(String message) {
 			return null;
 		}
-
-		// @Override
-		// public List<IndexItem> getIndexItems() throws IOException {
-		// return null;
-		// }
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
@@ -204,3 +179,13 @@ public class IndexServiceProxy implements IndexService {
 	}
 
 }
+
+// @Override
+// public List<IndexItem> getIndexItems() throws IOException {
+// return resolve().getIndexItems();
+// }
+
+// @Override
+// public List<IndexItem> getIndexItems() throws IOException {
+// return null;
+// }

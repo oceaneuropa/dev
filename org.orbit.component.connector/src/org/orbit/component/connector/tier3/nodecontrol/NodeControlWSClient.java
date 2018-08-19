@@ -2,8 +2,8 @@ package org.orbit.component.connector.tier3.nodecontrol;
 
 import javax.ws.rs.client.Invocation.Builder;
 
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 
 /*
  * Transfer agent web service client.
@@ -17,9 +17,9 @@ import org.origin.common.rest.client.ClientConfiguration;
  * @see HomeAgentWSClient
  * 
  */
-public class NodeControlWSClient extends AbstractWSClient {
+public class NodeControlWSClient extends WSClient {
 
-	public NodeControlWSClient(ClientConfiguration config) {
+	public NodeControlWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

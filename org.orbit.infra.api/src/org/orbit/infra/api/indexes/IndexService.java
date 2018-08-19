@@ -6,13 +6,13 @@ import java.util.Map;
 
 // import org.orbit.component.connector.tier0.indexes.IndexServiceConfiguration;
 import org.origin.common.adapter.IAdaptable;
-import org.origin.common.service.ProxyService;
+import org.origin.common.service.Proxy;
 
 /**
  * Used by client to query index items.
  *
  */
-public interface IndexService extends ProxyService, IAdaptable {
+public interface IndexService extends Proxy, IAdaptable {
 
 	String getName();
 

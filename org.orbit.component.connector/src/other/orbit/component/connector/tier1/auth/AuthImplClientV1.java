@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier1.auth.AuthClient;
-import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier1.auth.AuthWSClient;
 import org.orbit.component.connector.util.ModelConverter;
 import org.orbit.component.model.tier1.auth.AuthorizationRequest;
@@ -17,8 +17,9 @@ import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.model.tier1.auth.TokenResponseDTO;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.WSClientConfiguration;
+import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
 
 public class AuthImplClientV1 implements AuthClient {
@@ -36,21 +37,21 @@ public class AuthImplClientV1 implements AuthClient {
 	}
 
 	protected void initClient() {
-		String realm = (String) properties.get(OrbitConstants.REALM);
-		String username = (String) properties.get(OrbitConstants.USERNAME);
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
+		String realm = (String) properties.get(WSClientConstants.REALM);
+		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
+		String url = (String) properties.get(WSClientConstants.URL);
 
-		String url = (String) properties.get(OrbitConstants.AUTH_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.AUTH_CONTEXT_ROOT);
+		// String url = (String) properties.get(OrbitConstants.AUTH_HOST_URL);
+		// String contextRoot = (String) properties.get(OrbitConstants.AUTH_CONTEXT_ROOT);
+		// ClientConfiguration clientConfig = null;
+		// if (fullUrl != null) {
+		// clientConfig = ClientConfiguration.create(realm, username, fullUrl, null);
+		// } else {
+		// clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
+		// }
 
-		ClientConfiguration clientConfig = null;
-		if (fullUrl != null) {
-			clientConfig = ClientConfiguration.create(realm, username, fullUrl, null);
-		} else {
-			clientConfig = ClientConfiguration.create(realm, username, url, contextRoot);
-		}
-
-		this.client = new AuthWSClient(clientConfig);
+		WSClientConfiguration config = WSClientConfiguration.create(realm, accessToken, url, null);
+		this.client = new AuthWSClient(config);
 	}
 
 	@Override
@@ -79,13 +80,13 @@ public class AuthImplClientV1 implements AuthClient {
 
 	@Override
 	public String getURL() {
-		String fullUrl = (String) properties.get(OrbitConstants.URL);
-		if (fullUrl != null) {
-			return fullUrl;
+		String url = (String) properties.get(WSClientConstants.URL);
+		if (url != null) {
+			return url;
 		}
 
-		String hostURL = (String) this.properties.get(OrbitConstants.AUTH_HOST_URL);
-		String contextRoot = (String) this.properties.get(OrbitConstants.AUTH_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(ComponentConstants.AUTH_HOST_URL);
+		String contextRoot = (String) this.properties.get(ComponentConstants.AUTH_CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 

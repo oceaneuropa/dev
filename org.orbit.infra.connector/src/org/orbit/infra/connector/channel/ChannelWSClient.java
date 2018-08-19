@@ -8,8 +8,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.infra.model.channel.ChannelMessageDTO;
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 
@@ -22,9 +22,9 @@ import org.origin.common.rest.util.ResponseUtil;
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/inbound (Body parameter: ChannelMessageDTO)
  * 
  */
-public class ChannelWSClient extends AbstractWSClient {
+public class ChannelWSClient extends WSClient {
 
-	public ChannelWSClient(ClientConfiguration config) {
+	public ChannelWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

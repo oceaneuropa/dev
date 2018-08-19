@@ -8,10 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 
 /**
@@ -30,7 +31,7 @@ public class AppListServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
+		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 
 		String message = null;
 		HttpSession session = request.getSession(false);
@@ -46,7 +47,10 @@ public class AppListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		AppManifest[] appManifests = null;
 		try {
-			appManifests = OrbitComponentHelper.AppStore.getApps(appStoreUrl);
+			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+			appManifests = ComponentClientsUtil.AppStore.getApps(appStoreUrl, accessToken);
+
 		} catch (ClientException e) {
 			e.printStackTrace();
 		}

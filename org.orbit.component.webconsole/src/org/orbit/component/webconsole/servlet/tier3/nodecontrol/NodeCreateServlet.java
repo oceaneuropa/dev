@@ -9,11 +9,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.util.ServletUtil;
 
 public class NodeCreateServlet extends HttpServlet {
@@ -53,8 +54,10 @@ public class NodeCreateServlet extends HttpServlet {
 
 		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
 			try {
-				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, platformId);
-				succeed = OrbitComponentHelper.NodeControl.createNode(nodeControlClient, id, name, typeId);
+				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
+				succeed = ComponentClientsUtil.NodeControl.createNode(nodeControlClient, id, name, typeId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

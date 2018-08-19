@@ -3,7 +3,7 @@ package com.osgi.example1.fs.client.api;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClientConfiguration;
 
 import com.osgi.example1.fs.client.ws.FileSystemWSClient;
 
@@ -14,7 +14,7 @@ public class FileSystemConfiguration {
 	protected String username;
 	protected String password;
 
-	protected Map<ClientConfiguration, FileSystemWSClient> clientMap = new HashMap<ClientConfiguration, FileSystemWSClient>();
+	protected Map<WSClientConfiguration, FileSystemWSClient> clientMap = new HashMap<WSClientConfiguration, FileSystemWSClient>();
 
 	/**
 	 * 
@@ -41,7 +41,7 @@ public class FileSystemConfiguration {
 	}
 
 	public synchronized FileSystemWSClient getFileSystemClient() {
-		ClientConfiguration config = ClientConfiguration.create(null, username, url, contextRoot);
+		WSClientConfiguration config = WSClientConfiguration.create(null, username, url, contextRoot);
 		FileSystemWSClient fsClient = this.clientMap.get(config);
 		if (fsClient == null) {
 			fsClient = new FileSystemWSClient(config);

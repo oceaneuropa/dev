@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
 import org.orbit.component.api.tier1.configregistry.EPath;
-import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier1.configregistry.ConfigRegistryWSClient;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
@@ -40,14 +40,14 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 	// ------------------------------------------------------------------------------------------------
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(OrbitConstants.CONFIG_REGISTRY_NAME);
+		String name = (String) this.properties.get(ComponentConstants.CONFIG_REGISTRY_NAME);
 		return name;
 	}
 
 	@Override
 	public String getURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.CONFIG_REGISTRY_HOST_URL);
-		String contextRoot = (String) this.properties.get(OrbitConstants.CONFIG_REGISTRY_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(ComponentConstants.CONFIG_REGISTRY_HOST_URL);
+		String contextRoot = (String) this.properties.get(ComponentConstants.CONFIG_REGISTRY_CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 
@@ -76,14 +76,14 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 			properties = new HashMap<String, Object>();
 		}
 
-		String oldUrl = (String) this.properties.get(OrbitConstants.APPSTORE_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(OrbitConstants.APPSTORE_CONTEXT_ROOT);
+		String oldUrl = (String) this.properties.get(ComponentConstants.APPSTORE_HOST_URL);
+		String oldContextRoot = (String) this.properties.get(ComponentConstants.APPSTORE_CONTEXT_ROOT);
 
 		this.properties = properties;
 		this.loadBalanceId = getLoadBalanceId(this.properties);
 
-		String newUrl = (String) properties.get(OrbitConstants.APPSTORE_HOST_URL);
-		String newContextRoot = (String) properties.get(OrbitConstants.APPSTORE_CONTEXT_ROOT);
+		String newUrl = (String) properties.get(ComponentConstants.APPSTORE_HOST_URL);
+		String newContextRoot = (String) properties.get(ComponentConstants.APPSTORE_CONTEXT_ROOT);
 
 		boolean reinitClient = false;
 		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {

@@ -7,22 +7,23 @@ import org.orbit.spirit.api.gaia.GAIAClient;
 import org.orbit.spirit.api.gaia.GAIAProxy;
 import org.origin.common.rest.client.GlobalContext;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
+import org.origin.common.rest.client.WSClientConstants;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Clients {
+public class SpiritClients {
 
-	protected static Logger LOG = LoggerFactory.getLogger(Clients.class);
+	protected static Logger LOG = LoggerFactory.getLogger(SpiritClients.class);
 
 	private static Object lock = new Object[0];
-	private static Clients instance = null;
+	private static SpiritClients instance = null;
 
-	public static Clients getInstance() {
+	public static SpiritClients getInstance() {
 		if (instance == null) {
 			synchronized (lock) {
 				if (instance == null) {
-					instance = new Clients();
+					instance = new SpiritClients();
 				}
 			}
 		}
@@ -89,23 +90,23 @@ public class Clients {
 	/**
 	 * 
 	 * @param realm
-	 * @param username
+	 * @param accessToken
 	 * @param url
 	 * @return
 	 */
-	public GAIAClient getGAIA(String realm, String username, String url) {
+	public GAIAClient getGAIA(String realm, String accessToken, String url) {
 		realm = GlobalContext.getInstance().checkRealm(realm);
-		username = GlobalContext.getInstance().checkUsername(realm, username);
+		accessToken = GlobalContext.getInstance().checkAccessToken(realm, accessToken);
 
 		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put(Constants.REALM, realm);
-		properties.put(Constants.USERNAME, username);
-		properties.put(Constants.URL, url);
+		properties.put(WSClientConstants.REALM, realm);
+		properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+		properties.put(WSClientConstants.URL, url);
 
 		GAIAClient gaia = this.gaiaConnectorAdapter.getService(properties);
 		if (gaia == null) {
 			LOG.error("GAIA is not available.");
-			throw new IllegalStateException("GAIA is not available. realm='" + realm + "', username='" + username + "', url='" + url + "'.");
+			throw new RuntimeException("GAIA is not available.");
 		}
 		return gaia;
 	}

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.model.domain.MachineConfig;
 import org.orbit.component.runtime.model.domain.NodeConfig;
 import org.orbit.component.runtime.model.domain.PlatformConfig;
@@ -51,14 +51,14 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		if (this.initProperties != null) {
 			properties.putAll(this.initProperties);
 		}
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
 
 		update(properties);
 
@@ -111,28 +111,28 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 		}
 		this.properties = properties;
 
-		String globalHostURL = (String) properties.get(OrbitConstants.ORBIT_HOST_URL);
-		String name = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
-		String hostURL = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
-		String contextRoot = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
-		String jdbcDriver = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER);
-		String jdbcURL = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL);
-		String jdbcUsername = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
-		String jdbcPassword = (String) properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
+		String globalHostURL = (String) properties.get(ComponentsConstants.ORBIT_HOST_URL);
+		String name = (String) properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
+		String hostURL = (String) properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
+		String contextRoot = (String) properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+		String jdbcDriver = (String) properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER);
+		String jdbcURL = (String) properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL);
+		String jdbcUsername = (String) properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME);
+		String jdbcPassword = (String) properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD);
 
 		boolean printProps = false;
 		if (printProps) {
 			System.out.println();
 			System.out.println("Config properties:");
 			System.out.println("-----------------------------------------------------");
-			System.out.println(OrbitConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME + " = " + name);
-			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL + " = " + hostURL);
-			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT + " = " + contextRoot);
-			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER + " = " + jdbcDriver);
-			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL + " = " + jdbcURL);
-			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME + " = " + jdbcUsername);
-			System.out.println(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD + " = " + jdbcPassword);
+			System.out.println(ComponentsConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+			System.out.println(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME + " = " + name);
+			System.out.println(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL + " = " + hostURL);
+			System.out.println(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT + " = " + contextRoot);
+			System.out.println(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_DRIVER + " = " + jdbcDriver);
+			System.out.println(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_URL + " = " + jdbcURL);
+			System.out.println(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_USERNAME + " = " + jdbcUsername);
+			System.out.println(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_JDBC_PASSWORD + " = " + jdbcPassword);
 			System.out.println("-----------------------------------------------------");
 			System.out.println();
 		}
@@ -165,16 +165,16 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 	@Override
 	public String getName() {
-		return (String) this.properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
+		return (String) this.properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_NAME);
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
+		String hostURL = (String) this.properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.properties.get(OrbitConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(ComponentsConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -183,7 +183,7 @@ public class DomainManagementServiceImpl implements DomainManagementService, Lif
 
 	@Override
 	public String getContextRoot() {
-		return (String) this.properties.get(OrbitConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+		return (String) this.properties.get(ComponentsConstants.COMPONENT_DOMAIN_MANAGEMENT_CONTEXT_ROOT);
 	}
 
 	/**

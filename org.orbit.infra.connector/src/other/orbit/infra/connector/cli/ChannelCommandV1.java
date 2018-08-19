@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.api.channel.Channels;
+import org.orbit.infra.api.channel.ChannelClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -68,7 +68,7 @@ public class ChannelCommandV1 implements Annotated {
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
-	protected Channels getChannel() throws ClientException {
+	protected ChannelClient getChannel() throws ClientException {
 //		if (this.connector == null) {
 //			LOG.error("ChannelConnector is not available.");
 //		}
@@ -83,7 +83,7 @@ public class ChannelCommandV1 implements Annotated {
 	@Descriptor("channel_ping")
 	public void channel_ping() throws ClientException {
 		LOG.info("channel_ping()");
-		Channels channel = getChannel();
+		ChannelClient channel = getChannel();
 		if (channel == null) {
 			return;
 		}
@@ -99,7 +99,7 @@ public class ChannelCommandV1 implements Annotated {
 			@Descriptor("Message") @Parameter(names = { "-message", "--message" }, absentValue = Parameter.UNSPECIFIED) String message //
 	) throws ClientException {
 		LOG.info("channel_send()");
-		Channels channel = getChannel();
+		ChannelClient channel = getChannel();
 		if (channel == null) {
 			return;
 		}

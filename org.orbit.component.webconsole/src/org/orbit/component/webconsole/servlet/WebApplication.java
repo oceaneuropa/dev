@@ -3,7 +3,7 @@ package org.orbit.component.webconsole.servlet;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.servlet.tier1.identity.SignOutServlet;
 import org.orbit.component.webconsole.servlet.tier1.identity.UserMainPage;
@@ -67,14 +67,14 @@ public class WebApplication extends PlatformWebApplication {
 				WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT, //
 				WebConstants.PUBLIC_WEB_CONSOLE_CONTEXT_ROOT, //
-				OrbitConstants.ORBIT_IDENTITY_SERVICE_URL, //
-				OrbitConstants.ORBIT_USER_ACCOUNTS_URL, //
-				OrbitConstants.ORBIT_AUTH_URL, //
-				OrbitConstants.ORBIT_REGISTRY_URL, //
-				OrbitConstants.ORBIT_APP_STORE_URL, //
-				OrbitConstants.ORBIT_DOMAIN_SERVICE_URL, //
-				OrbitConstants.ORBIT_NODE_CONTROL_URL, //
-				OrbitConstants.ORBIT_MISSION_CONTROL_URL, //
+				ComponentConstants.ORBIT_IDENTITY_SERVICE_URL, //
+				ComponentConstants.ORBIT_USER_ACCOUNTS_URL, //
+				ComponentConstants.ORBIT_AUTH_URL, //
+				ComponentConstants.ORBIT_REGISTRY_URL, //
+				ComponentConstants.ORBIT_APP_STORE_URL, //
+				ComponentConstants.ORBIT_DOMAIN_SERVICE_URL, //
+				ComponentConstants.ORBIT_NODE_CONTROL_URL, //
+				ComponentConstants.ORBIT_MISSION_CONTROL_URL, //
 		};
 		return propNames;
 	}

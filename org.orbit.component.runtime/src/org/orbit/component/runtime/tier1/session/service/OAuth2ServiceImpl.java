@@ -5,6 +5,16 @@ import org.osgi.framework.BundleContext;
 public class OAuth2ServiceImpl implements OAuth2Service {
 
 	@Override
+	public void start(BundleContext bundleContext) throws Exception {
+
+	}
+
+	@Override
+	public void stop(BundleContext bundleContext) throws Exception {
+
+	}
+
+	@Override
 	public String getName() {
 		return null;
 	}
@@ -17,14 +27,6 @@ public class OAuth2ServiceImpl implements OAuth2Service {
 	@Override
 	public String getContextRoot() {
 		return null;
-	}
-
-	public void start(BundleContext bundleContext) {
-
-	}
-
-	public void stop() {
-
 	}
 
 }

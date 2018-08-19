@@ -8,11 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.account.UserAccount;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 
 public class UserAccountListServlet extends HttpServlet {
@@ -25,7 +26,7 @@ public class UserAccountListServlet extends HttpServlet {
 		// Get parameters
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.COMPONENT_WEB_CONSOLE_CONTEXT_ROOT);
-		String userRegistryUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
+		String userRegistryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 
 		String message = null;
 		HttpSession session = request.getSession(false);
@@ -41,7 +42,8 @@ public class UserAccountListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		UserAccount[] userAccounts = null;
 		try {
-			userAccounts = OrbitComponentHelper.UserAccounts.getUserAccounts(userRegistryUrl);
+			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+			userAccounts = ComponentClientsUtil.UserAccounts.getUserAccounts(userRegistryUrl, accessToken);
 
 		} catch (ClientException e) {
 			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

@@ -12,8 +12,9 @@ import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.json.JSONUtil;
-import org.origin.common.rest.client.ClientConfiguration;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.client.WSClientConfiguration;
+import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.service.InternalProxyService;
 import org.slf4j.Logger;
@@ -77,21 +78,19 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 	}
 
 	protected void initClient() {
-		String realm = (String) properties.get(InfraConstants.REALM);
-		String username = (String) properties.get(InfraConstants.USERNAME);
-		String url = (String) properties.get(InfraConstants.URL);
-
-		String orbitRealm = (String) properties.get(InfraConstants.ORBIT_REALM);
-		String orbitIndexServiceURL = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		if (realm == null && orbitRealm != null) {
-			realm = orbitRealm;
-		}
-		if (url == null && orbitIndexServiceURL != null) {
-			url = orbitIndexServiceURL;
-		}
-
-		ClientConfiguration clientConfig = ClientConfiguration.create(realm, username, url);
-
+		// String realm = (String) properties.get(WSClientConstants.REALM);
+		// String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
+		// String url = (String) properties.get(WSClientConstants.URL);
+		//
+		// String orbitRealm = (String) properties.get(InfraConstants.ORBIT_REALM);
+		// String orbitIndexServiceURL = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		// if (realm == null && orbitRealm != null) {
+		// realm = orbitRealm;
+		// }
+		// if (url == null && orbitIndexServiceURL != null) {
+		// url = orbitIndexServiceURL;
+		// }
+		WSClientConfiguration clientConfig = WSClientConfiguration.create(this.properties);
 		this.client = new IndexServiceWSClient(clientConfig);
 	}
 
@@ -105,12 +104,13 @@ public class IndexServiceImpl implements IndexService, InternalProxyService {
 	 * @param properties
 	 * @return
 	 */
-	protected ClientConfiguration getClientConfiguration(Map<String, Object> properties) {
-		String realm = (String) properties.get(InfraConstants.REALM);
-		String username = (String) properties.get(InfraConstants.USERNAME);
+	protected WSClientConfiguration getClientConfiguration(Map<String, Object> properties) {
+		String realm = (String) properties.get(WSClientConstants.REALM);
+		String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
 		String url = (String) properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
 		String contextRoot = (String) properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
-		return ClientConfiguration.create(realm, username, url, contextRoot);
+
+		return WSClientConfiguration.create(realm, accessToken, url, contextRoot);
 	}
 
 	@Override

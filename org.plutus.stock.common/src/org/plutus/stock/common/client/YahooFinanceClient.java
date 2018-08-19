@@ -14,8 +14,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.DateUtil;
@@ -25,7 +25,7 @@ import org.plutus.stock.model.dto.YahooFinanceStockData;
  * YahooFinance web service client to retrieve stock data.
  *
  */
-public class YahooFinanceClient extends AbstractWSClient {
+public class YahooFinanceClient extends WSClient {
 
 	// type constants
 	public static final String TYPE_DAILY = "d";
@@ -45,14 +45,14 @@ public class YahooFinanceClient extends AbstractWSClient {
 	 * 
 	 */
 	public YahooFinanceClient() {
-		super(ClientConfiguration.create("orbit", null, "http://chart.finance.yahoo.com:80", "table.csv"));
+		super(WSClientConfiguration.create("orbit", null, "http://chart.finance.yahoo.com:80", "table.csv"));
 	}
 
 	/**
 	 * 
 	 * @param config
 	 */
-	public YahooFinanceClient(ClientConfiguration config) {
+	public YahooFinanceClient(WSClientConfiguration config) {
 		super(config);
 	}
 

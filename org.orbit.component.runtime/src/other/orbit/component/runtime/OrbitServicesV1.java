@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.component.runtime.Activator;
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
@@ -96,7 +96,7 @@ public class OrbitServicesV1 {
 		// load properties from accessing index service
 		Map<Object, Object> indexProviderProps = new Hashtable<Object, Object>();
 		// TASetupUtil.loadConfigIniProperties(bundleContext, indexProviderProps);
-		PropertyUtil.loadProperty(bundleContext, indexProviderProps, OrbitConstants.ORBIT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, indexProviderProps, ComponentsConstants.ORBIT_INDEX_SERVICE_URL);
 		IndexProviderLoadBalancer indexProviderLoadBalancer = IndexServiceUtil.getIndexProviderLoadBalancer(connector, indexProviderProps);
 
 		// Start service adapters

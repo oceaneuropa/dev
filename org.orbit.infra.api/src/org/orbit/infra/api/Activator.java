@@ -1,6 +1,7 @@
 package org.orbit.infra.api;
 
 import org.orbit.infra.api.util.ExtensionsRegister;
+import org.orbit.infra.api.util.InfraClients;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

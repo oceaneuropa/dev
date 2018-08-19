@@ -4,7 +4,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.orbit.spirit.api.Clients;
+import org.orbit.spirit.api.SpiritClients;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
 
@@ -14,7 +14,7 @@ public class GAIAProxy implements GAIAClient {
 
 	protected Map<?, ?> properties;
 	protected String realm;
-	protected String username;
+	protected String accessToken;
 	protected String url;
 
 	protected GAIAClient gaia = PROXY;
@@ -27,9 +27,9 @@ public class GAIAProxy implements GAIAClient {
 		this(null, null, url);
 	}
 
-	public GAIAProxy(String realm, String username, String url) {
+	public GAIAProxy(String realm, String accessToken, String url) {
 		this.realm = realm;
-		this.username = username;
+		this.accessToken = accessToken;
 		this.url = url;
 	}
 
@@ -37,11 +37,11 @@ public class GAIAProxy implements GAIAClient {
 		if (this.gaia == null || this.gaia.isProxy()) {
 			GAIAClient resolvedGAIA = null;
 			if (this.properties != null) {
-				resolvedGAIA = Clients.getInstance().getGAIA(this.properties);
+				resolvedGAIA = SpiritClients.getInstance().getGAIA(this.properties);
 			}
 			if (resolvedGAIA == null) {
 				if (this.url != null) {
-					resolvedGAIA = Clients.getInstance().getGAIA(this.realm, this.username, this.url);
+					resolvedGAIA = SpiritClients.getInstance().getGAIA(this.realm, this.accessToken, this.url);
 				}
 			}
 			if (resolvedGAIA != null && !resolvedGAIA.isProxy()) {

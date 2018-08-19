@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.account.UserAccountClient;
-import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.ComponentConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 import org.origin.common.annotation.Dependency;
@@ -32,7 +32,7 @@ public class UserRegistryConnectorImplWithConfigAdmin extends IndexBasedLoadBala
 
 	@Override
 	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
-		return indexService.getIndexItems(OrbitConstants.USER_REGISTRY_INDEXER_ID, OrbitConstants.USER_REGISTRY_TYPE);
+		return indexService.getIndexItems(ComponentConstants.USER_REGISTRY_INDEXER_ID, ComponentConstants.USER_REGISTRY_TYPE);
 	}
 
 	@Override

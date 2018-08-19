@@ -4,44 +4,29 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.infra.api.InfraClients;
+import org.orbit.infra.api.util.InfraClients;
 
 public class ExtensionRegistryClientProxy implements ExtensionRegistryClient {
 
 	private static ExtensionRegistryClientProxyImpl PROXY = new ExtensionRegistryClientProxyImpl();
 
-	protected Map<?, ?> properties;
-	protected String realm;
-	protected String username;
-	protected String url;
-
+	protected Map<String, Object> properties;
 	protected ExtensionRegistryClient extensionRegistry = PROXY;
 
-	public ExtensionRegistryClientProxy(Map<?, ?> properties) {
+	/**
+	 * 
+	 * @param properties
+	 */
+	public ExtensionRegistryClientProxy(Map<String, Object> properties) {
+		if (properties == null) {
+			throw new IllegalArgumentException("properties is null");
+		}
 		this.properties = properties;
-	}
-
-	public ExtensionRegistryClientProxy(String url) {
-		this(null, null, url);
-	}
-
-	public ExtensionRegistryClientProxy(String realm, String username, String url) {
-		this.realm = realm;
-		this.username = username;
-		this.url = url;
 	}
 
 	protected synchronized ExtensionRegistryClient resolve() {
 		if (this.extensionRegistry == null || this.extensionRegistry.isProxy()) {
-			ExtensionRegistryClient resolvedExtensionRegistry = null;
-			if (this.properties != null) {
-				resolvedExtensionRegistry = InfraClients.getInstance().getExtensionRegistry(this.properties);
-			}
-			if (resolvedExtensionRegistry == null) {
-				if (this.url != null) {
-					resolvedExtensionRegistry = InfraClients.getInstance().getExtensionRegistry(this.realm, this.username, this.url);
-				}
-			}
+			ExtensionRegistryClient resolvedExtensionRegistry = InfraClients.getInstance().getExtensionRegistry(this.properties, false);
 			if (resolvedExtensionRegistry != null && !resolvedExtensionRegistry.isProxy()) {
 				this.extensionRegistry = resolvedExtensionRegistry;
 			}

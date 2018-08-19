@@ -3,15 +3,16 @@ package org.orbit.infra.runtime.channel.ws;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.infra.api.util.InfraClients;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.server.FeatureConstants;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -19,7 +20,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ChannelServiceAdapter {
+public class ChannelServiceAdapter implements LifecycleAware {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ChannelServiceAdapter.class);
 
@@ -46,9 +47,10 @@ public class ChannelServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
+		return InfraClients.getInstance().getIndexProvider(this.properties, true);
 	}
 
+	@Override
 	public void start(final BundleContext bundleContext) {
 		LOG.debug("start()");
 
@@ -78,6 +80,7 @@ public class ChannelServiceAdapter {
 		this.serviceTracker.open();
 	}
 
+	@Override
 	public void stop(final BundleContext bundleContext) {
 		LOG.debug("stop()");
 

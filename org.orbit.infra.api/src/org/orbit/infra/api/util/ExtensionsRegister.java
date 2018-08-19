@@ -8,12 +8,11 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
-import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.IPlatform;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.util.ExtensionListener;
 import org.origin.common.extensions.util.ExtensionTracker;
@@ -100,7 +99,7 @@ public class ExtensionsRegister implements ExtensionListener {
 
 	protected ExtensionRegistryClient getExtensionRegistry() {
 		String extensionRegistryUrl = getExtensionRegistryUrl();
-		ExtensionRegistryClient extensionRegistry = InfraClients.getInstance().getExtensionRegistry(extensionRegistryUrl);
+		ExtensionRegistryClient extensionRegistry = InfraClientsUtil.ExtensionRegistry.getExtensionRegistryClient(extensionRegistryUrl, null);
 		if (extensionRegistry != null && !extensionRegistry.isProxy()) {
 			boolean match1 = false;
 			try {

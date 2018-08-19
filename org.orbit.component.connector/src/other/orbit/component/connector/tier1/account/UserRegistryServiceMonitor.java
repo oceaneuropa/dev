@@ -3,7 +3,7 @@ package other.orbit.component.connector.tier1.account;
 import java.io.IOException;
 import java.util.List;
 
-import org.orbit.component.connector.OrbitConstants;
+import org.orbit.component.connector.ComponentConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
@@ -17,7 +17,7 @@ public class UserRegistryServiceMonitor extends ServiceMonitor {
 
 	@Override
 	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
-		return indexService.getIndexItems(OrbitConstants.USER_REGISTRY_INDEXER_ID, OrbitConstants.USER_REGISTRY_TYPE);
+		return indexService.getIndexItems(ComponentConstants.USER_REGISTRY_INDEXER_ID, ComponentConstants.USER_REGISTRY_TYPE);
 	}
 
 }

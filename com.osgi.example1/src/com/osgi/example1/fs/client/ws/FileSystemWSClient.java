@@ -25,8 +25,8 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 import org.origin.common.io.IOUtil;
 import org.origin.common.json.JSONUtil;
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 
@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.osgi.example1.fs.common.FileMetadata;
 import com.osgi.example1.fs.common.Path;
 
-public class FileSystemWSClient extends AbstractWSClient {
+public class FileSystemWSClient extends WSClient {
 
 	protected static List<Path> EMPTY_PATHS = new ArrayList<Path>();
 	protected static String ACTION_MKDIRS = "mkdirs";
@@ -44,7 +44,7 @@ public class FileSystemWSClient extends AbstractWSClient {
 	 * 
 	 * @param config
 	 */
-	public FileSystemWSClient(ClientConfiguration config) {
+	public FileSystemWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

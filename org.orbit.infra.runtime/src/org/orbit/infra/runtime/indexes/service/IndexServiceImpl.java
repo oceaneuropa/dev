@@ -47,7 +47,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	 * 
 	 */
 	@Override
-	public void start(BundleContext bundleContext) {
+	public void start(BundleContext bundleContext) throws Exception {
 		LOG.debug("start()");
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
@@ -75,7 +75,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	 * 
 	 */
 	@Override
-	public void stop(BundleContext bundleContext) {
+	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.debug("stop()");
 
 		if (this.serviceRegistry != null) {

@@ -5,7 +5,7 @@ import java.util.Map;
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.rest.client.ClientException;
 
-public interface Channels extends IAdaptable {
+public interface ChannelClient extends IAdaptable {
 
 	Map<String, Object> getProperties();
 

@@ -9,21 +9,22 @@ package org.orbit.component.runtime.tier1.auth.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.OrbitConstants;
+import org.orbit.component.runtime.ComponentsConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
+import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
+import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-public class AuthServiceAdapter {
+public class AuthServiceAdapter implements LifecycleAware {
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<AuthService, AuthService> serviceTracker;
@@ -36,7 +37,7 @@ public class AuthServiceAdapter {
 	}
 
 	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProviderProxy(this.properties);
+		return InfraClients.getInstance().getIndexProvider(this.properties, true);
 	}
 
 	public AuthService getService() {
@@ -47,6 +48,7 @@ public class AuthServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void start(final BundleContext bundleContext) {
 		this.serviceTracker = new ServiceTracker<AuthService, AuthService>(bundleContext, AuthService.class, new ServiceTrackerCustomizer<AuthService, AuthService>() {
 			@Override
@@ -78,6 +80,7 @@ public class AuthServiceAdapter {
 	 * 
 	 * @param bundleContext
 	 */
+	@Override
 	public void stop(BundleContext bundleContext) {
 		if (this.serviceTracker != null) {
 			this.serviceTracker.close();
@@ -100,7 +103,7 @@ public class AuthServiceAdapter {
 		// this.indexTimer = new AuthServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, OrbitConstants.AUTH_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.AUTH_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

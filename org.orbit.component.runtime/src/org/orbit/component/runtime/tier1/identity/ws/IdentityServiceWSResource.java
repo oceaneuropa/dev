@@ -1,15 +1,10 @@
 package org.orbit.component.runtime.tier1.identity.ws;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -37,7 +32,6 @@ import org.origin.common.rest.server.ServerException;
  * {contextRoot}: /orbit/v1/identity
  * 
  * Identity: 
- * URL (GET):  {scheme}://{host}:{port}/{contextRoot}/exists?type={elementType}&value={elementValue}
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/register (Body parameter: RegisterRequestDTO)
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/login    (Body parameter: LoginRequestDTO)
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/logout   (Body parameter: LogoutRequestDTO)
@@ -55,52 +49,6 @@ public class IdentityServiceWSResource extends AbstractWSApplicationResource {
 			throw new RuntimeException("IdentityService is not available.");
 		}
 		return this.service;
-	}
-
-	/**
-	 * Check whether an element (specified by type) with a specified value exists.
-	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/exists?type={elementType}&value={elementValue}
-	 * 
-	 * @param type
-	 * @param value
-	 * @return
-	 */
-	@GET
-	@Path("exists")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response exists(@QueryParam("type") String type, @QueryParam("value") String value) {
-		if (type == null || type.isEmpty()) {
-			ErrorDTO nullError = new ErrorDTO("type is empty.");
-			return Response.status(Status.BAD_REQUEST).entity(nullError).build();
-		}
-		if (value == null || value.isEmpty()) {
-			ErrorDTO nullError = new ErrorDTO("value is empty.");
-			return Response.status(Status.BAD_REQUEST).entity(nullError).build();
-		}
-
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-		try {
-			boolean exists = false;
-			IdentityService service = getService();
-
-			if ("username".equalsIgnoreCase(type)) {
-				exists = service.usernameExists(value);
-
-			} else if ("email".equalsIgnoreCase(type)) {
-				exists = service.emailExists(value);
-
-			} else {
-				ErrorDTO nullError = new ErrorDTO("type '" + type + "' is not supported. Supported types are: 'username' and 'email'.");
-				return Response.status(Status.BAD_REQUEST).entity(nullError).build();
-			}
-			result.put("exists", exists);
-
-		} catch (ServerException e) {
-			ErrorDTO error = handleError(e, e.getCode(), true);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-		}
-		return Response.ok().entity(result).build();
 	}
 
 	/**

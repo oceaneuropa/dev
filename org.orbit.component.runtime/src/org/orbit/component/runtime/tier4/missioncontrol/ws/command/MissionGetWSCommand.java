@@ -16,6 +16,11 @@ public class MissionGetWSCommand extends AbstractWSCommand implements WSCommand 
 	}
 
 	@Override
+	public boolean isSupported(Request request) {
+		return false;
+	}
+
+	@Override
 	public Response execute(Request request) {
 		// String nodeId = (request.getParameter("nodeId") instanceof String) ? (String) request.getParameter("nodeId") : null;
 		// if (nodeId == null || nodeId.isEmpty()) {

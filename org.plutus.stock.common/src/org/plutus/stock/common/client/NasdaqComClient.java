@@ -12,8 +12,8 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 import org.plutus.stock.model.dto.StockCompany;
@@ -24,7 +24,7 @@ import org.plutus.stock.model.dto.StockCompany;
  * URL: http://www.nasdaq.com/screening/company-list.aspx
  *
  */
-public class NasdaqComClient extends AbstractWSClient {
+public class NasdaqComClient extends WSClient {
 
 	// stock exchange constants
 	public static final String EXCHANGE_NASDAQ = "NASDAQ";
@@ -44,14 +44,14 @@ public class NasdaqComClient extends AbstractWSClient {
 	 * 
 	 */
 	public NasdaqComClient() {
-		super(ClientConfiguration.create("orbit", null, "http://www.nasdaq.com:80", "screening/companies-by-industry.aspx"));
+		super(WSClientConfiguration.create("orbit", null, "http://www.nasdaq.com:80", "screening/companies-by-industry.aspx"));
 	}
 
 	/**
 	 * 
 	 * @param config
 	 */
-	public NasdaqComClient(ClientConfiguration config) {
+	public NasdaqComClient(WSClientConfiguration config) {
 		super(config);
 	}
 

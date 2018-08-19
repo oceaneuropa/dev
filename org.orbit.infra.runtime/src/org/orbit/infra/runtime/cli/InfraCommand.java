@@ -115,16 +115,20 @@ public class InfraCommand implements CommandActivator {
 	@Descriptor("Start a service")
 	public void startservice(@Descriptor("The service to start") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) {
 		LOG.info("starting service: " + service);
-		checkBundleContext();
+		try {
+			checkBundleContext();
 
-		if (INDEX_SERVICE.equalsIgnoreCase(service)) {
-			startIndexService(bundleContext);
+			if (INDEX_SERVICE.equalsIgnoreCase(service)) {
+				startIndexService(bundleContext);
 
-		} else if (CHANNEL.equalsIgnoreCase(service)) {
-			startChannelService(this.bundleContext);
+			} else if (CHANNEL.equalsIgnoreCase(service)) {
+				startChannelService(this.bundleContext);
 
-		} else {
-			System.err.println("###### Unsupported service name: " + service);
+			} else {
+				System.err.println("###### Unsupported service name: " + service);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -136,26 +140,30 @@ public class InfraCommand implements CommandActivator {
 	@Descriptor("Stop a service")
 	public void stopservice(@Descriptor("The service to stop") @Parameter(names = { "-s", "--service" }, absentValue = "null") String service) {
 		LOG.info("stopping service: " + service);
-		checkBundleContext();
+		try {
+			checkBundleContext();
 
-		if (INDEX_SERVICE.equalsIgnoreCase(service)) {
-			stopIndexService(bundleContext);
+			if (INDEX_SERVICE.equalsIgnoreCase(service)) {
+				stopIndexService(bundleContext);
 
-		} else if (CHANNEL.equalsIgnoreCase(service)) {
-			stopChannelService(this.bundleContext);
+			} else if (CHANNEL.equalsIgnoreCase(service)) {
+				stopChannelService(this.bundleContext);
 
-		} else {
-			System.err.println("###### Unsupported service name: " + service);
+			} else {
+				System.err.println("###### Unsupported service name: " + service);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
-	public void startIndexService(BundleContext bundleContext) {
+	public void startIndexService(BundleContext bundleContext) throws Exception {
 		IndexServiceImpl indexService = new IndexServiceImpl(null);
 		indexService.start(bundleContext);
 		this.indexService = indexService;
 	}
 
-	public void stopIndexService(BundleContext bundleContext) {
+	public void stopIndexService(BundleContext bundleContext) throws Exception {
 		if (this.indexService != null) {
 			this.indexService.stop(bundleContext);
 			this.indexService = null;

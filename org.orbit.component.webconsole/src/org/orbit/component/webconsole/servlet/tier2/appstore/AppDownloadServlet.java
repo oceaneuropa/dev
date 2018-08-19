@@ -11,11 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
-import org.orbit.component.api.util.OrbitComponentHelper;
+import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.platform.sdk.PlatformSDKActivator;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.MimeTypes;
@@ -33,7 +34,7 @@ public class AppDownloadServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Get parameters
 		// ---------------------------------------------------------------
-		String appStoreUrl = getServletConfig().getInitParameter(OrbitConstants.ORBIT_APP_STORE_URL);
+		String appStoreUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_APP_STORE_URL);
 		String message = "";
 
 		String appId = ServletUtil.getParameter(request, "appId", "");
@@ -51,7 +52,9 @@ public class AppDownloadServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		OutputStream output = null;
 		try {
-			AppManifest app = OrbitComponentHelper.AppStore.getApp(appStoreUrl, appId, appVersion);
+			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+			AppManifest app = ComponentClientsUtil.AppStore.getApp(appStoreUrl, accessToken, appId, appVersion);
 			if (app == null) {
 				message = MessageHelper.INSTANCE.add(message, "App '" + appId + "' (" + appVersion + ") is not found.");
 
@@ -73,7 +76,7 @@ public class AppDownloadServlet extends HttpServlet {
 				File localFile = new File(appDownloadDir, fileName);
 
 				output = new FileOutputStream(localFile);
-				OrbitComponentHelper.AppStore.downloadAppFile(appStoreUrl, appId, appVersion, output);
+				ComponentClientsUtil.AppStore.downloadAppFile(appStoreUrl, accessToken, appId, appVersion, output);
 
 				if (localFile.exists()) {
 					String fileType = MimeTypes.get().getByFileName(localFile.getName());

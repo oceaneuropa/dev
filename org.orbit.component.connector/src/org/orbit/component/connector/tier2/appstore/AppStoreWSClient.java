@@ -27,8 +27,8 @@ import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
 import org.orbit.component.model.tier2.appstore.AppQueryDTO;
 import org.origin.common.io.IOUtil;
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
@@ -43,19 +43,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * App metadata.
  * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/apps?type={type}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/apps/query (Body parameter: AppQueryDTO)
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/apps/exists?appId={appId}&appVersion={appVersion}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
  * URL (PUT):    {scheme}://{host}:{port}/{contextRoot}/apps (Body parameter: AppManifestDTO)
  * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/apps?appId={appId}&appVersion={appVersion}
  * 
  * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app?appId={appId}&appVersion={appVersion}
- * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app/exists?appId={appId}&appVersion={appVersion}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition) // Upload an app.
  * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content //Download an app.
  * 
  */
-public class AppStoreWSClient extends AbstractWSClient {
+public class AppStoreWSClient extends WSClient {
 
-	public AppStoreWSClient(ClientConfiguration config) {
+	public AppStoreWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 
@@ -68,7 +68,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<AppManifestDTO> getApps(String type) throws ClientException {
+	public List<AppManifestDTO> getList(String type) throws ClientException {
 		List<AppManifestDTO> apps = null;
 		Response response = null;
 		try {
@@ -103,7 +103,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public List<AppManifestDTO> getApps(AppQueryDTO queryDTO) throws ClientException {
+	public List<AppManifestDTO> getList(AppQueryDTO queryDTO) throws ClientException {
 		List<AppManifestDTO> apps = null;
 		Response response = null;
 		try {
@@ -138,7 +138,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public AppManifestDTO getApp(String appId, String appVersion) throws ClientException {
+	public AppManifestDTO get(String appId, String appVersion) throws ClientException {
 		AppManifestDTO app = null;
 		Response response = null;
 		try {
@@ -163,17 +163,17 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Check whether an app exists.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/app/exists?appId={appId}&appVersion={appVersion}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/apps/exists?appId={appId}&appVersion={appVersion}
 	 * 
 	 * @param appId
 	 * @param appVersion
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean appExists(String appId, String appVersion) throws ClientException {
+	public boolean exists(String appId, String appVersion) throws ClientException {
 		Response response = null;
 		try {
-			WebTarget target = getRootPath().path("app").path("exists");
+			WebTarget target = getRootPath().path("apps").path("exists");
 			target = target.queryParam("appId", appId);
 			target = target.queryParam("appVersion", appVersion);
 
@@ -209,7 +209,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public AppManifestDTO addApp(AppManifestDTO newAppRequestDTO) throws ClientException {
+	public AppManifestDTO create(AppManifestDTO newAppRequestDTO) throws ClientException {
 		AppManifestDTO newApp = null;
 		Response response = null;
 		try {
@@ -241,7 +241,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @return Update status
 	 * @throws ClientException
 	 */
-	public StatusDTO updateApp(AppManifestDTO updateAppRequestDTO) throws ClientException {
+	public StatusDTO update(AppManifestDTO updateAppRequestDTO) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
@@ -265,7 +265,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	/**
 	 * Upload an app file.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
+	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition)
 	 * 
 	 * @param appId
 	 * @param appVersion
@@ -274,7 +274,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @throws ClientException
 	 * @throws IOException
 	 */
-	public StatusDTO uploadAppArchive0(int id, String appId, String appVersion, Path filePath) throws ClientException {
+	public StatusDTO upload0(int id, String appId, String appVersion, Path filePath) throws ClientException {
 		File file = filePath.toFile();
 		if (file == null || !file.exists()) {
 			throw new ClientException(401, "File doesn't exist.");
@@ -327,7 +327,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @throws ClientException
 	 * @throws IOException
 	 */
-	public StatusDTO uploadAppArchive(int id, String appId, String appVersion, Path filePath) throws ClientException {
+	public StatusDTO upload(int id, String appId, String appVersion, Path filePath) throws ClientException {
 		File file = filePath.toFile();
 		if (file == null || !file.exists()) {
 			throw new ClientException(401, "File doesn't exist.");
@@ -381,7 +381,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean downloadAppArchive(String appId, String appVersion, OutputStream output) throws ClientException {
+	public boolean download(String appId, String appVersion, OutputStream output) throws ClientException {
 		InputStream input = null;
 		try {
 			WebTarget target = getRootPath().path("app").path("content");
@@ -417,7 +417,7 @@ public class AppStoreWSClient extends AbstractWSClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO deleteApp(String appId, String appVersion) throws ClientException {
+	public StatusDTO delete(String appId, String appVersion) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {

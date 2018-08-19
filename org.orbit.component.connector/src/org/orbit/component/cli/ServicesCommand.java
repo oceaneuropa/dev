@@ -10,14 +10,14 @@ import java.util.Map;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.component.api.IndexConstants;
-import org.orbit.component.api.OrbitConstants;
+import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.api.tier3.domain.DomainManagementClient;
-import org.orbit.infra.api.InfraClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
@@ -89,13 +89,13 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 
 		this.properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_USER_ACCOUNTS_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_AUTH_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_REGISTRY_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_APP_STORE_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_DOMAIN_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_NODE_CONTROL_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, OrbitConstants.ORBIT_MISSION_CONTROL_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_AUTH_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_APP_STORE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_NODE_CONTROL_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_MISSION_CONTROL_URL);
 	}
 
 	public void stop(BundleContext bundleContext) {
@@ -104,7 +104,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 	}
 
 	protected IndexService getIndexService() {
-		return InfraClients.getInstance().getIndexServiceProxy(this.properties);
+		return InfraClients.getInstance().getIndexService(this.properties, true);
 	}
 
 	@DependencyFullfilled

@@ -14,8 +14,8 @@ import javax.ws.rs.core.Response;
 import org.orbit.component.model.tier3.domain.MachineConfigDTO;
 import org.orbit.component.model.tier3.domain.NodeConfigDTO;
 import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
-import org.origin.common.rest.client.AbstractWSClient;
-import org.origin.common.rest.client.ClientConfiguration;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
@@ -50,13 +50,13 @@ import org.origin.common.rest.util.ResponseUtil;
  * @see TransferAgentWSClient
  * 
  */
-public class DomainManagementWSClient extends AbstractWSClient {
+public class DomainManagementWSClient extends WSClient {
 
 	public static String MACHINES = "machines";
 	public static String PLATFORMS = "platforms";
 	public static String NODES = "nodes";
 
-	public DomainManagementWSClient(ClientConfiguration config) {
+	public DomainManagementWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

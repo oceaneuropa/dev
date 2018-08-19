@@ -9,10 +9,6 @@ public class InfraConstants {
 	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 	public static String ORBIT_EXTENSION_REGISTRY_URL = "orbit.extension_registry.url";
 
-	public static String REALM = "realm";
-	public static String USERNAME = "username";
-	public static String URL = "url";
-
 	// ----------------------------------------------------------------------------------------
 	// IndexService
 	// ----------------------------------------------------------------------------------------
