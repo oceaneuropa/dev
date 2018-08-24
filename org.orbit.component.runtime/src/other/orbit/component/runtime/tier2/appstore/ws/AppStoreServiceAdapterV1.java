@@ -5,6 +5,7 @@ import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceIndexTimer;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -80,7 +81,7 @@ public class AppStoreServiceAdapterV1 {
 		LOG.info("doStart()");
 
 		// Start web service
-		this.webServiceApp = new AppStoreWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webServiceApp = new AppStoreWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer

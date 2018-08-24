@@ -8,7 +8,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;
+import org.orbit.component.runtime.util.ModelConverter;
 import org.origin.common.resources.node.INode;
 import org.origin.common.resources.util.WorkspaceHelper;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
@@ -33,7 +33,7 @@ public class NodeListWSCommand extends AbstractWSCommand {
 
 		List<INode> nodes = WorkspaceHelper.INSTANCE.getRootNodes(this.service.getWorkspace());
 		for (INode node : nodes) {
-			NodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
+			NodeDTO nodeDTO = ModelConverter.NodeControl.toDTO(node);
 			nodeDTOs.add(nodeDTO);
 		}
 

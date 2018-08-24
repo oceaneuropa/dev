@@ -19,7 +19,7 @@ public class AuthWSApplicationRelay extends WSRelayApplication {
 	 * @param factory
 	 */
 	public AuthWSApplicationRelay(String contextRoot, Switcher<URI> switcher, WSClientFactory factory) {
-		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, switcher);
+		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
 
 		Resource.Builder wsResource = Resource.builder("/");
 
@@ -27,7 +27,7 @@ public class AuthWSApplicationRelay extends WSRelayApplication {
 		// - All access to this web service application are handled by one Switcher instance.
 		// - Each API path has its own web service client instance.
 		// - A web service client instance for a API path will call one of the target URLs for that API path.
-		new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
+		// new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(wsResource, "authorize", POST, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(wsResource, "token", POST, JSON, factory.createClient(null), switcher);
 

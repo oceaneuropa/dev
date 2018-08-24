@@ -50,7 +50,7 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 	@Inject
 	public UserRegistryService service;
 
-	protected UserRegistryService getService() throws RuntimeException {
+	public UserRegistryService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("UserRegistryService is not available.");
 		}

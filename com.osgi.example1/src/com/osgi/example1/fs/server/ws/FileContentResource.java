@@ -26,6 +26,11 @@ import com.osgi.example1.fs.server.service.FileSystem;
 @Produces(MediaType.APPLICATION_JSON)
 public class FileContentResource extends AbstractWSApplicationResource {
 
+	@Override
+	public Object getService() {
+		return getService(FileSystem.class);
+	}
+
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_OCTET_STREAM })
 	public Response getFileContent(@QueryParam(value = "path") String pathString) {

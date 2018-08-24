@@ -21,6 +21,7 @@ import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.StatusDTO;
 
 public class UserRegistryImplV1 implements UserAccountClient {
@@ -73,6 +74,11 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	protected void initClient() {
 		WSClientConfiguration config = WSClientConfiguration.create(this.properties);
 		this.client = new UserAccountWSClient(config);
+	}
+
+	@Override
+	public ServiceMetadata getMetadata() throws ClientException {
+		return null;
 	}
 
 	@Override

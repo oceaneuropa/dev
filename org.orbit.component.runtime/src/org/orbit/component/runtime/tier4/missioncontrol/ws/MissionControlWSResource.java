@@ -137,7 +137,7 @@ public class MissionControlWSResource extends AbstractWSApplicationResource {
 
 		MissionControlService service = getService();
 
-		WSCommand command = service.getEditPolicies().getCommand(request);
+		WSCommand command = service.getEditPolicies().getCommand(httpHeaders, request);
 		if (command != null) {
 			try {
 				return command.execute(request);

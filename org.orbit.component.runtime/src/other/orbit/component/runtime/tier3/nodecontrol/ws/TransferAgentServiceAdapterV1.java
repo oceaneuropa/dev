@@ -7,6 +7,7 @@ import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlWSApplication
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlEditPolicy;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -91,7 +92,7 @@ public class TransferAgentServiceAdapterV1 {
 		editPolicies.install(new NodeControlEditPolicy());
 
 		// Start web service
-		this.webService = new NodeControlWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webService = new NodeControlWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webService.start(bundleContext);
 
 		// Start index timer

@@ -29,6 +29,7 @@ import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.StringUtil;
 
@@ -477,6 +478,11 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	@Override
 	public boolean isProxy() {
 		return false;
+	}
+
+	@Override
+	public ServiceMetadata getMetadata() throws ClientException {
+		return null;
 	}
 
 	@Override

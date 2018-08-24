@@ -47,7 +47,7 @@ public class AppStoreWSAppResource extends AbstractWSApplicationResource {
 	@Inject
 	public AppStoreService service;
 
-	protected AppStoreService getService() throws RuntimeException {
+	public AppStoreService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("AppStoreService is not available.");
 		}

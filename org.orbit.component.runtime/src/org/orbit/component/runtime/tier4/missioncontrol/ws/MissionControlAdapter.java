@@ -13,6 +13,7 @@ import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -103,7 +104,7 @@ public class MissionControlAdapter implements LifecycleAware {
 		editPolicies.install(new MissionControlEditPolicy());
 
 		// Start web app
-		this.webApp = new MissionControlWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webApp = new MissionControlWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer

@@ -20,7 +20,7 @@ public class ConfigRegistryServiceWSResource extends AbstractWSApplicationResour
 	@Inject
 	public ConfigRegistryService service;
 
-	protected ConfigRegistryService getService() throws RuntimeException {
+	public ConfigRegistryService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("ConfigRegistryService is not available.");
 		}

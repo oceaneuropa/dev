@@ -17,7 +17,7 @@ public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 	 * @param switcher
 	 */
 	public IndexServiceWSApplicationRelay(WebServiceAware webServiceAware, Switcher<URI> switcher) {
-		super(webServiceAware, FeatureConstants.PING, switcher);
+		super(webServiceAware, FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
 		adapt(WebServiceAware.class, webServiceAware);
 
 		// Note:
@@ -25,7 +25,7 @@ public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 		// - Each API path has its own web service client instance.
 		// - A web service client instance for a API path will call one of the target URLs for that API path.
 		Resource.Builder wsResource = Resource.builder("/");
-		new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);
+		// new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);
 		new WSMethodInflector(wsResource, "commandrequest", POST, JSON, createClient(), switcher);
 
 		Resource.Builder indexItemsWSResource = Resource.builder("/indexitems/{indexproviderid}");

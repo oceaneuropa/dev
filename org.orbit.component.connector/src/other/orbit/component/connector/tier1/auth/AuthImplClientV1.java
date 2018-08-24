@@ -21,6 +21,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 
 public class AuthImplClientV1 implements AuthClient {
 
@@ -147,6 +148,11 @@ public class AuthImplClientV1 implements AuthClient {
 	@Override
 	public boolean close() throws ClientException {
 		return false;
+	}
+
+	@Override
+	public ServiceMetadata getMetadata() throws ClientException {
+		return null;
 	}
 
 	@Override

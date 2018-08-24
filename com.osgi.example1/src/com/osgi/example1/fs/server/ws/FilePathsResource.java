@@ -18,6 +18,11 @@ import com.osgi.example1.fs.server.service.FileSystem;
 @Produces(MediaType.APPLICATION_JSON)
 public class FilePathsResource extends AbstractWSApplicationResource {
 
+	@Override
+	public Object getService() {
+		return getService(FileSystem.class);
+	}
+
 	/**
 	 * Get file paths with parent path.
 	 * 

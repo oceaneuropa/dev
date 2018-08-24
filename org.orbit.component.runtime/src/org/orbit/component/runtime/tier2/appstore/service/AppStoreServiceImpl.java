@@ -297,9 +297,9 @@ public class AppStoreServiceImpl implements AppStoreService, LifecycleAware {
 			String description = createAppRequest.getDescription();
 			String fileName = createAppRequest.getAppFileName();
 			long dateCreated = System.currentTimeMillis();
-			long dataModified = dateCreated;
+			long dateModified = dateCreated;
 
-			return this.appTableHandler.insert(conn, appId, appVersion, type, name, appManifest, fileName, description, dateCreated, dataModified);
+			return this.appTableHandler.insert(conn, appId, appVersion, type, name, appManifest, fileName, description, dateCreated, dateModified);
 
 		} catch (SQLException e) {
 			handleSQLException(e);

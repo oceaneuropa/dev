@@ -7,7 +7,6 @@ import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.process.Inflector;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
-import org.origin.common.service.WebServiceAware;
 
 public class AuthWSApplication extends OrbitWSApplication {
 
@@ -18,8 +17,7 @@ public class AuthWSApplication extends OrbitWSApplication {
 	 */
 	public AuthWSApplication(final AuthService service, int feature) {
 		super(service, feature);
-		adapt(AuthService.class, service);
-		adapt(WebServiceAware.class, service);
+		// adapt(AuthService.class, service);
 
 		register(new AbstractBinder() {
 			@Override

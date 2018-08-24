@@ -48,6 +48,17 @@ public class BigDecimalTest {
 		System.out.println(d2 + " -> " + r2);
 	}
 
+	@Test
+	public void test003() throws IOException {
+		System.out.println("--- --- --- test003() --- --- ---");
+
+		BigDecimal a = BigDecimalUtil.toBigDecimal("10");
+		BigDecimal b = BigDecimalUtil.toBigDecimal("1024");
+
+		BigDecimal result = BigDecimalUtil.multiply(0, a, b, b, b);
+		System.out.println("result = " + result.toPlainString());
+	}
+
 	public static void main(String[] args) {
 		Result result = JUnitCore.runClasses(BigDecimalTest.class);
 

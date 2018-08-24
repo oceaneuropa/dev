@@ -3,7 +3,6 @@ package org.orbit.component.runtime.tier1.identity.ws;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
-import org.origin.common.service.WebServiceAware;
 
 public class IdentityServiceWSApplication extends OrbitWSApplication {
 
@@ -14,8 +13,7 @@ public class IdentityServiceWSApplication extends OrbitWSApplication {
 	 */
 	public IdentityServiceWSApplication(final IdentityService service, int feature) {
 		super(service, feature);
-		adapt(IdentityService.class, service);
-		adapt(WebServiceAware.class, service);
+		// adapt(IdentityService.class, service);
 
 		register(new AbstractBinder() {
 			@Override

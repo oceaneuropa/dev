@@ -20,7 +20,7 @@ public class OAuth2ServiceWSResource extends AbstractWSApplicationResource {
 	@Inject
 	public OAuth2Service service;
 
-	protected OAuth2Service getService() throws RuntimeException {
+	public OAuth2Service getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("OAuth2Service is not available.");
 		}

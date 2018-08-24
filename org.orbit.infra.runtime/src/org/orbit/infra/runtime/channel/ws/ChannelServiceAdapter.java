@@ -98,7 +98,7 @@ public class ChannelServiceAdapter implements LifecycleAware {
 
 		// 2. start web service
 		LOG.debug("start web service");
-		this.webService = new ChannelWSApplication(service, FeatureConstants.PING | FeatureConstants.ECHO);
+		this.webService = new ChannelWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webService.start(bundleContext);
 
 		// 3. start index timer

@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier4.missioncontrol.ws.command;
 
-import org.orbit.component.runtime.RequestConstants;
+import org.orbit.component.model.RequestConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.origin.common.rest.editpolicy.AbstractServiceEditPolicy;
 import org.origin.common.rest.editpolicy.WSCommand;

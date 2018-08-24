@@ -3,7 +3,6 @@ package org.orbit.component.runtime.tier3.domain.ws;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
-import org.origin.common.service.WebServiceAware;
 
 public class DomainServiceWSApplication extends OrbitWSApplication {
 
@@ -14,8 +13,7 @@ public class DomainServiceWSApplication extends OrbitWSApplication {
 	 */
 	public DomainServiceWSApplication(final DomainManagementService service, int feature) {
 		super(service, feature);
-		adapt(DomainManagementService.class, service);
-		adapt(WebServiceAware.class, service);
+		// adapt(DomainManagementService.class, service);
 
 		register(new AbstractBinder() {
 			@Override

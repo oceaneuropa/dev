@@ -54,7 +54,7 @@ public class IndexItemsWSResource extends AbstractWSApplicationResource {
 	@Inject
 	public IndexService service;
 
-	protected IndexService getService() throws RuntimeException {
+	public IndexService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("IndexService is not available.");
 		}

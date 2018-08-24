@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 import org.orbit.spirit.api.SpiritClients;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 
 public class GAIAProxy implements GAIAClient {
 
@@ -79,6 +80,11 @@ public class GAIAProxy implements GAIAClient {
 	}
 
 	@Override
+	public ServiceMetadata getMetadata() throws ClientException {
+		return resolve().getMetadata();
+	}
+
+	@Override
 	public String getName() throws ClientException {
 		return resolve().getName();
 	}
@@ -137,6 +143,11 @@ public class GAIAProxy implements GAIAClient {
 		@Override
 		public boolean ping() {
 			return false;
+		}
+
+		@Override
+		public ServiceMetadata getMetadata() throws ClientException {
+			return null;
 		}
 
 		@Override

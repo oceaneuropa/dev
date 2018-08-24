@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.component.model.tier3.nodecontrol.NodeDTO;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.orbit.component.runtime.tier3.nodecontrol.util.NodeControlConverter;
+import org.orbit.component.runtime.util.ModelConverter;
 import org.origin.common.resources.node.INode;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -39,7 +39,7 @@ public class NodeGetWSCommand extends AbstractWSCommand implements WSCommand {
 			return Response.status(Status.NOT_FOUND).entity(error).build();
 		}
 
-		NodeDTO nodeDTO = NodeControlConverter.getInstance().toDTO(node);
+		NodeDTO nodeDTO = ModelConverter.NodeControl.toDTO(node);
 		return Response.status(Status.OK).entity(nodeDTO).build();
 	}
 

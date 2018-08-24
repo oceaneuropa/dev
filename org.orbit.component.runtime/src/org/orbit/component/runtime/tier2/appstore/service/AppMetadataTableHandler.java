@@ -685,7 +685,7 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			}
 
 		} else {
-			System.out.println(getClass().getName() + ".getAppContent() ### ### Unsupported database: '" + this.database + "'.");
+			System.out.println(getClass().getName() + ".getContentInputStream() ### ### Unsupported database: '" + this.database + "'.");
 		}
 
 		return inputStream;
@@ -721,8 +721,8 @@ public class AppMetadataTableHandler implements DatabaseTableAware {
 			PreparedStatement pstmt = null;
 			try {
 				String updateSQL = "UPDATE " + getTableName() + " SET appContent=? WHERE appId=? AND appVersion=?";
-
 				pstmt = conn.prepareStatement(updateSQL);
+
 				pstmt.setBinaryStream(1, bais, contentLength);
 				pstmt.setString(2, appId);
 				pstmt.setString(3, appVersion);

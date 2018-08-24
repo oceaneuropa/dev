@@ -3,7 +3,6 @@ package org.orbit.component.runtime.tier1.config.ws;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
-import org.origin.common.service.WebServiceAware;
 
 public class ConfigRegistryWSApplication extends OrbitWSApplication {
 
@@ -14,8 +13,7 @@ public class ConfigRegistryWSApplication extends OrbitWSApplication {
 	 */
 	public ConfigRegistryWSApplication(final ConfigRegistryService service, int feature) {
 		super(service, feature);
-		adapt(ConfigRegistryService.class, service);
-		adapt(WebServiceAware.class, service);
+		// adapt(ConfigRegistryService.class, service);
 
 		register(new AbstractBinder() {
 			@Override

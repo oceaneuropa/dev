@@ -37,7 +37,7 @@ public class ChannelWSResource extends AbstractWSApplicationResource {
 	@Inject
 	public ChannelService service;
 
-	protected ChannelService getService() throws RuntimeException {
+	public ChannelService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("ChannelService is not available.");
 		}

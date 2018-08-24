@@ -52,7 +52,7 @@
 		<%=name%>
 	</div>
 	<div class="main_div01">
-		<h2>Properties</h2>
+		<h2>Platform Properties</h2>
 		<div class="top_tools_div01"> 
 			<a class="button02" href="<%=contextRoot + "/domain/platformproperties?machineId=" + machineId + "&id=" + id%>">Refresh</a>
 		</div>

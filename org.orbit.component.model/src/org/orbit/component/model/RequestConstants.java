@@ -1,25 +1,25 @@
-package org.orbit.component.api;
+package org.orbit.component.model;
 
 public interface RequestConstants {
 
 	// ---------------------------------------------------------------
 	// Management request constants
 	// ---------------------------------------------------------------
-	// Constants for machine configuration requests
+	// Machine configurations
 	public static String GET_MACHINE_CONFIGS = "get_machine_configs";
 	public static String GET_MACHINE_CONFIG = "get_machine_config";
 	public static String ADD_MACHINE_CONFIG = "add_machine_config";
 	public static String UPDATE_MACHINE_CONFIG = "update_machine_config";
 	public static String REMOVE_MACHINE_CONFIG = "remove_machine_config";
 
-	// Constants for transfer agent requests
+	// Node control configurations
 	public static String GET_TA_CONFIGS = "get_ta_configs";
 	public static String GET_TA_CONFIG = "get_ta_config";
 	public static String ADD_TA_CONFIG = "add_ta_config";
 	public static String UPDATE_TA_CONFIG = "update_ta_config";
 	public static String REMOVE_TA_CONFIG = "remove_ta_config";
 
-	// Constants for node requests
+	// Node configurations
 	public static String GET_NODE_CONFIGS = "get_node_configs";
 	public static String GET_NODE_CONFIG = "get_node_config";
 	public static String ADD_NODE_CONFIG = "add_node_config";
@@ -58,5 +58,8 @@ public interface RequestConstants {
 	public static String MISSION_EXIST = "mission_exist";
 	public static String CREATE_MISSION = "create_mission";
 	public static String DELETE_MISSION = "delete_mission";
+	public static String START_MISSION = "start_mission";
+	public static String STOP_MISSION = "stop_mission";
+	public static String MISSION_STATUS = "mission_status";
 
 }

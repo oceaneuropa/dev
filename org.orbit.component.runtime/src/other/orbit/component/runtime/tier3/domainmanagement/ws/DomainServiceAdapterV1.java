@@ -5,6 +5,7 @@ import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceTimer;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -79,7 +80,7 @@ public class DomainServiceAdapterV1 {
 
 	protected void doStart(BundleContext bundleContext, DomainManagementService service) {
 		// Start web service
-		this.webServiceApp = new DomainServiceWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.PING | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webServiceApp = new DomainServiceWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer

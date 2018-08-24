@@ -12,6 +12,7 @@ import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier1.configregistry.ConfigRegistryWSClient;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.util.StringUtil;
 
 public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
@@ -38,6 +39,11 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 	// ------------------------------------------------------------------------------------------------
 	// Configuration methods
 	// ------------------------------------------------------------------------------------------------
+	@Override
+	public ServiceMetadata getMetadata() throws ClientException {
+		return null;
+	}
+
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(ComponentConstants.CONFIG_REGISTRY_NAME);

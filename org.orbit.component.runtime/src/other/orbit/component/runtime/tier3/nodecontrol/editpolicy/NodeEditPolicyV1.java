@@ -1,6 +1,6 @@
 package other.orbit.component.runtime.tier3.nodecontrol.editpolicy;
 
-import org.orbit.component.runtime.RequestConstants;
+import org.orbit.component.model.RequestConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.origin.common.command.ICommand;
 import org.origin.common.rest.editpolicy.other.AbstractWSEditPolicyV1;

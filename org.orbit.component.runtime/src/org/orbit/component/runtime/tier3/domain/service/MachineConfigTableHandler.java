@@ -46,13 +46,13 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 	}
 
 	/**
-	 * Convert a ResultSet record to a MachineConfigRTO object.
+	 * Convert a ResultSet record to a MachineConfig object.
 	 * 
 	 * @param rs
 	 * @return
 	 * @throws SQLException
 	 */
-	protected static MachineConfig toRTO(ResultSet rs) throws SQLException {
+	protected static MachineConfig toMachineConfig(ResultSet rs) throws SQLException {
 		String id = rs.getString("id");
 		String name = rs.getString("name");
 		String ipAddress = rs.getString("ipAddress");
@@ -71,7 +71,7 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 		ResultSetListHandler<MachineConfig> handler = new ResultSetListHandler<MachineConfig>() {
 			@Override
 			protected MachineConfig handleRow(ResultSet rs) throws SQLException {
-				return toRTO(rs);
+				return toMachineConfig(rs);
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, new Object[] {}, handler);
@@ -89,7 +89,7 @@ public class MachineConfigTableHandler implements DatabaseTableAware {
 		ResultSetSingleHandler<MachineConfig> handler = new ResultSetSingleHandler<MachineConfig>() {
 			@Override
 			protected MachineConfig handleRow(ResultSet rs) throws SQLException {
-				return toRTO(rs);
+				return toMachineConfig(rs);
 			}
 		};
 		return DatabaseUtil.query(conn, querySQL, new Object[] { id }, handler);

@@ -5,6 +5,7 @@ import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryServiceIndexTimer;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -82,7 +83,7 @@ public class UserRegistryServiceAdapterV1 {
 	 * @param service
 	 */
 	protected void doStart(BundleContext bundleContext, UserRegistryService service) {
-		this.webApp = new UserRegistryWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
+		this.webApp = new UserRegistryWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | OrbitFeatureConstants.AUTH_TOKEN_REQUEST_FILTER);
 		this.webApp.start(bundleContext);
 
 		// Start a timer to update the indexing of the service

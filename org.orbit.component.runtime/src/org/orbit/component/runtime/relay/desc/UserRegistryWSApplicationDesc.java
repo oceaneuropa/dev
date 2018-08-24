@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.relay.desc;
 
+import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSApplicationDesc;
 import org.origin.common.rest.server.WSMethodDesc;
 import org.origin.common.rest.server.WSResourceDesc;
@@ -13,10 +14,11 @@ public class UserRegistryWSApplicationDesc extends WSApplicationDesc {
 	 */
 	public UserRegistryWSApplicationDesc(WebServiceAware webServiceAware) {
 		super(webServiceAware);
+		setRemoteFeature(FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO);
 
-		WSResourceDesc rootWSResource = new WSResourceDesc(this, "/");
-		new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "echo");
-		new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "name");
+		// WSResourceDesc rootWSResource = new WSResourceDesc(this, "/");
+		// new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "echo");
+		// new WSMethodDesc(rootWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "name");
 
 		WSResourceDesc userAccountsWSResource = new WSResourceDesc(this, "/useraccounts");
 		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");

@@ -103,7 +103,7 @@ public class ExtensionRegistryAdapter implements LifecycleAware {
 	protected void doStart(BundleContext bundleContext, ExtensionRegistryService service) {
 		// 1. start web service
 		LOG.debug("start web service");
-		this.webService = new ExtensionRegistryWSApplication(service, FeatureConstants.PING | FeatureConstants.ECHO);
+		this.webService = new ExtensionRegistryWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webService.start(bundleContext);
 
 		// 2. start index timer

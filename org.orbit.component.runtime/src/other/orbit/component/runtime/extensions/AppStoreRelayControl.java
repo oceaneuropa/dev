@@ -9,6 +9,7 @@ import org.orbit.component.runtime.relay.util.SwitcherUtil;
 import org.orbit.platform.sdk.relaycontrol.WSRelayControlImpl;
 import org.origin.common.extensions.Extension;
 import org.origin.common.rest.client.WSClientFactory;
+import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.WSRelayApplication;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;

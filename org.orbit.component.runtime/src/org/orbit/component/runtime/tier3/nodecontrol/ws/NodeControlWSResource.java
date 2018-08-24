@@ -33,7 +33,7 @@ import org.origin.common.rest.model.Request;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
 
-/**
+/*
  * https://docs.oracle.com/cd/E19798-01/821-1841/6nmq2cp1v/index.html
  * 
  * Transfer agent web service resource.
@@ -137,7 +137,7 @@ public class NodeControlWSResource extends AbstractWSApplicationResource {
 
 		NodeControlService service = getService();
 
-		WSCommand command = service.getEditPolicies().getCommand(request);
+		WSCommand command = service.getEditPolicies().getCommand(httpHeaders, request);
 		if (command != null) {
 			try {
 				return command.execute(request);

@@ -17,15 +17,13 @@ public class ExtensionRegistryWSApplicationRelay extends WSRelayApplication {
 	 * @param switcher
 	 */
 	public ExtensionRegistryWSApplicationRelay(WebServiceAware webServiceAware, Switcher<URI> switcher) {
-		super(webServiceAware, FeatureConstants.PING, switcher);
+		super(webServiceAware, FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
 		adapt(WebServiceAware.class, webServiceAware);
 
 		// Note:
 		// - All access to this web service application are handled by one Switcher instance.
 		// - Each API path has its own web service client instance.
 		// - A web service client instance for a API path will call one of the target URLs for that API path.
-		Resource.Builder wsResource = Resource.builder("/");
-		new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);
 
 		Resource.Builder extensionItemsWSResource = Resource.builder("/extensionitems");
 		new WSMethodInflector(extensionItemsWSResource, "", GET, JSON, createClient(), switcher);
@@ -41,9 +39,12 @@ public class ExtensionRegistryWSApplicationRelay extends WSRelayApplication {
 		new WSMethodInflector(extensionItemWSResource, "properties", POST, JSON, createClient(), switcher);
 		new WSMethodInflector(extensionItemWSResource, "properties", DELETE, JSON, createClient(), switcher);
 
-		registerResources(wsResource.build());
 		registerResources(extensionItemsWSResource.build());
 		registerResources(extensionItemWSResource.build());
 	}
 
 }
+
+// Resource.Builder wsResource = Resource.builder("/");
+// new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);
+// registerResources(wsResource.build());

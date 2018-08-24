@@ -27,6 +27,7 @@ import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.StatusDTO;
 
 /**
@@ -72,6 +73,11 @@ public class AppStoreImplV1 implements AppStoreClient {
 	// ------------------------------------------------------------------------------------------------
 	// Configuration methods
 	// ------------------------------------------------------------------------------------------------
+	@Override
+	public ServiceMetadata getMetadata() throws ClientException {
+		return null;
+	}
+
 	@Override
 	public String getName() {
 		String name = (String) this.properties.get(ComponentConstants.APPSTORE_NAME);

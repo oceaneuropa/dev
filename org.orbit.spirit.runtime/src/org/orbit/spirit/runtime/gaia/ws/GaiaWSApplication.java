@@ -9,7 +9,7 @@ public class GaiaWSApplication extends AbstractJerseyWSApplication {
 
 	public GaiaWSApplication(final GAIA gaia, int feature) {
 		super(gaia, feature);
-		adapt(GAIA.class, gaia);
+		// adapt(GAIA.class, gaia);
 
 		AbstractBinder serviceBinder = new AbstractBinder() {
 			@Override

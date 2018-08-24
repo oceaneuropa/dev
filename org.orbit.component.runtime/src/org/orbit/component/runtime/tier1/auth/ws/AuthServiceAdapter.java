@@ -10,7 +10,6 @@ package org.orbit.component.runtime.tier1.auth.ws;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentsConstants;
-import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
@@ -18,6 +17,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
+import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -95,7 +95,7 @@ public class AuthServiceAdapter implements LifecycleAware {
 	 */
 	protected void doStart(BundleContext bundleContext, AuthService service) {
 		// Start web app
-		this.webApp = new AuthWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO);
+		this.webApp = new AuthWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer

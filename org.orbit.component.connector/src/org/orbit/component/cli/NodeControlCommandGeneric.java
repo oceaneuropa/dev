@@ -6,11 +6,11 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Request;

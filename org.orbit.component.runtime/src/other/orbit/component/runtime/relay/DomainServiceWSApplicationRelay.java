@@ -19,10 +19,7 @@ public class DomainServiceWSApplicationRelay extends WSRelayApplication {
 	 * @param factory
 	 */
 	public DomainServiceWSApplicationRelay(String contextRoot, Switcher<URI> switcher, WSClientFactory factory) {
-		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, switcher);
-
-		Resource.Builder wsResource = Resource.builder("/");
-		new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
+		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
 
 		Resource.Builder machinesWSResource = Resource.builder("/machines");
 		new WSMethodInflector(machinesWSResource, "", GET, JSON, factory.createClient(null), switcher);
@@ -45,10 +42,13 @@ public class DomainServiceWSApplicationRelay extends WSRelayApplication {
 		new WSMethodInflector(nodesWSResource, "", PUT, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(nodesWSResource, "{nodeId}", DELETE, JSON, factory.createClient(null), switcher);
 
-		registerResources(wsResource.build());
 		registerResources(machinesWSResource.build());
 		registerResources(transferAgentsWSResource.build());
 		registerResources(nodesWSResource.build());
 	}
 
 }
+
+// Resource.Builder wsResource = Resource.builder("/");
+// new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
+// registerResources(wsResource.build());

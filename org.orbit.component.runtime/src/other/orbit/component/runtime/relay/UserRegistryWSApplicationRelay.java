@@ -19,10 +19,7 @@ public class UserRegistryWSApplicationRelay extends WSRelayApplication {
 	 * @param factory
 	 */
 	public UserRegistryWSApplicationRelay(String contextRoot, Switcher<URI> switcher, WSClientFactory factory) {
-		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, switcher);
-
-		Resource.Builder wsResource = Resource.builder("/");
-		new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
+		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
 
 		Resource.Builder userAccountsWSResource = Resource.builder("/useraccounts");
 		new WSMethodInflector(userAccountsWSResource, "", GET, JSON, factory.createClient(null), switcher);
@@ -34,8 +31,11 @@ public class UserRegistryWSApplicationRelay extends WSRelayApplication {
 		new WSMethodInflector(userAccountsWSResource, "action", PUT, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(userAccountsWSResource, "{userId}", DELETE, JSON, factory.createClient(null), switcher);
 
-		registerResources(wsResource.build());
 		registerResources(userAccountsWSResource.build());
 	}
 
 }
+
+// Resource.Builder wsResource = Resource.builder("/");
+// new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
+// registerResources(wsResource.build());

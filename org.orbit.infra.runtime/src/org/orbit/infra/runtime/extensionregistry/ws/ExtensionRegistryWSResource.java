@@ -22,7 +22,7 @@ public class ExtensionRegistryWSResource extends AbstractWSApplicationResource {
 	@Inject
 	public ExtensionRegistryService service;
 
-	protected ExtensionRegistryService getService() throws RuntimeException {
+	public ExtensionRegistryService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("ExtensionRegistryService is not available.");
 		}

@@ -95,7 +95,7 @@ public class GaiaAdapter implements LifecycleAware {
 		editPolicies.install(new GaiaEditPolicy());
 
 		// Start web service
-		this.webServiceApp = new GaiaWSApplication(gaia, FeatureConstants.PING | FeatureConstants.JACKSON | FeatureConstants.MULTIPLEPART);
+		this.webServiceApp = new GaiaWSApplication(gaia, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | FeatureConstants.JACKSON | FeatureConstants.MULTIPLEPART);
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer

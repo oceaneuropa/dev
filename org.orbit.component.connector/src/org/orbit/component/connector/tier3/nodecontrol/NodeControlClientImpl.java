@@ -4,10 +4,10 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
-import org.orbit.component.api.RequestConstants;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.connector.util.ModelConverter;
+import org.orbit.component.model.RequestConstants;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;

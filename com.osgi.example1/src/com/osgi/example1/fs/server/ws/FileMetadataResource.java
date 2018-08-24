@@ -27,6 +27,11 @@ public class FileMetadataResource extends AbstractWSApplicationResource {
 	protected static String ACTION_MKDIRS = "mkdirs";
 	protected static String ACTION_CREATE_NEW_FILE = "createNewFile";
 
+	@Override
+	public Object getService() {
+		return getService(FileSystem.class);
+	}
+
 	/**
 	 * Get file metadata.
 	 * 

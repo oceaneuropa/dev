@@ -1,10 +1,10 @@
 package other.orbit.component.runtime.tier1.auth.ws;
 
-import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.component.runtime.tier1.auth.ws.AuthServiceIndexTimer;
 import org.orbit.component.runtime.tier1.auth.ws.AuthWSApplication;
 import org.orbit.infra.api.indexes.IndexProvider;
+import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -71,7 +71,7 @@ public class AuthServiceAdapterV1 {
 
 	protected void doStart(BundleContext bundleContext, AuthService service) {
 		// Start web service
-		this.webService = new AuthWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO);
+		this.webService = new AuthWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webService.start(bundleContext);
 
 		// Start indexing

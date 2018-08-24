@@ -3,7 +3,6 @@ package org.orbit.component.runtime.tier1.identity.ws;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentsConstants;
-import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
@@ -11,6 +10,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
+import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -93,7 +93,7 @@ public class IdentityServiceAdapter implements LifecycleAware {
 	 */
 	protected void doStart(BundleContext bundleContext, IdentityService service) {
 		// Start ws app
-		this.webApp = new IdentityServiceWSApplication(service, OrbitFeatureConstants.PING | OrbitFeatureConstants.NAME | OrbitFeatureConstants.ECHO);
+		this.webApp = new IdentityServiceWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer

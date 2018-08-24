@@ -17,12 +17,12 @@ public class ChannelWSApplicationRelay extends WSRelayApplication {
 	 * @param switcher
 	 */
 	public ChannelWSApplicationRelay(WebServiceAware webServiceAware, Switcher<URI> switcher) {
-		super(webServiceAware, FeatureConstants.PING, switcher);
+		super(webServiceAware, FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
 
 		adapt(WebServiceAware.class, webServiceAware);
 
 		Resource.Builder wsResource = Resource.builder("/");
-		new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);
+		// new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);
 		new WSMethodInflector(wsResource, "inbound", POST, JSON, createClient(), switcher);
 
 		registerResources(wsResource.build());

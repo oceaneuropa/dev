@@ -53,7 +53,7 @@ public class DomainServiceWSNodesResource extends AbstractWSApplicationResource 
 	@Inject
 	public DomainManagementService service;
 
-	protected DomainManagementService getService() throws RuntimeException {
+	public DomainManagementService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("DomainService is not available.");
 		}

@@ -29,10 +29,10 @@ public class TransferAgentWSApplicationRelay extends WSRelayApplication {
 	 * @param factory
 	 */
 	public TransferAgentWSApplicationRelay(String contextRoot, Switcher<URI> switcher, WSClientFactory factory) {
-		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, switcher);
+		super(new WebServiceAwareImpl(null, null, contextRoot), FeatureConstants.PING, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.ECHO, switcher);
 
 		Resource.Builder wsResource = Resource.builder("/");
-		new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
+		// new WSMethodInflector(wsResource, "echo", GET, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(wsResource, "level/{level1}/{level2}", GET, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(wsResource, "request", POST, JSON, factory.createClient(null), switcher);
 
