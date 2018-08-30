@@ -6,14 +6,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * DTO for user account
+ * User account DTO
  *
  */
 @XmlRootElement
 public class UserAccountDTO {
 
 	@XmlElement
-	protected String userId;
+	protected String accountId;
+	@XmlElement
+	protected String username;
 	@XmlElement
 	protected String password;
 	@XmlElement
@@ -32,12 +34,21 @@ public class UserAccountDTO {
 	protected boolean activated;
 
 	@XmlElement
-	public String getUserId() {
-		return this.userId;
+	public String getAccountId() {
+		return this.accountId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
+	}
+
+	@XmlElement
+	public String getUsername() {
+		return this.username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@XmlElement
@@ -105,7 +116,7 @@ public class UserAccountDTO {
 
 	@XmlElement
 	public boolean isActivated() {
-		return activated;
+		return this.activated;
 	}
 
 	public void setActivated(boolean activated) {

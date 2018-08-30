@@ -15,7 +15,6 @@ import org.orbit.component.api.tier2.appstore.AppQuery;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.api.tier2.appstore.CreateAppRequest;
 import org.orbit.component.api.tier2.appstore.UpdateAppRequest;
-import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier2.appstore.AppManifestImpl;
 import org.orbit.component.connector.tier2.appstore.AppStoreWSClient;
 import org.orbit.component.model.tier2.appstore.AppManifestDTO;
@@ -29,6 +28,8 @@ import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.StatusDTO;
+
+import other.orbit.component.connector.ComponentConstantsV1;
 
 /**
  * App store client connector implementation.
@@ -80,7 +81,7 @@ public class AppStoreImplV1 implements AppStoreClient {
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(ComponentConstants.APPSTORE_NAME);
+		String name = (String) this.properties.get(ComponentConstantsV1.APPSTORE_NAME);
 		return name;
 	}
 
@@ -247,8 +248,8 @@ public class AppStoreImplV1 implements AppStoreClient {
 	protected WSClientConfiguration getClientConfiguration(Map<String, Object> properties) {
 		String realm = (String) properties.get(WSClientConstants.REALM);
 		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
-		String url = (String) properties.get(ComponentConstants.APPSTORE_HOST_URL);
-		String contextRoot = (String) properties.get(ComponentConstants.APPSTORE_CONTEXT_ROOT);
+		String url = (String) properties.get(ComponentConstantsV1.APPSTORE_HOST_URL);
+		String contextRoot = (String) properties.get(ComponentConstantsV1.APPSTORE_CONTEXT_ROOT);
 
 		WSClientConfiguration config = WSClientConfiguration.create(realm, accessToken, url, contextRoot);
 		return config;

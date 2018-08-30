@@ -17,19 +17,19 @@ public class SwitcherPolicyStickyOrbitSessionImpl<URI> extends SwitcherPolicySti
 
 	@Override
 	protected String getClientId(ContainerRequestContext requestContext) {
-		String username = null;
+		String accountId = null;
 		String orbitSession = getOrbitSession(requestContext);
 		if (orbitSession != null) {
-			// extract userId from the session
+			// extract accountId from the session
 			DecodedJWT jwt = verifyJWT(orbitSession);
 			if (jwt != null) {
-				Claim usernameClaim = jwt.getClaim("username");
-				if (usernameClaim != null) {
-					username = usernameClaim.asString();
+				Claim accountIdClaim = jwt.getClaim("accountId");
+				if (accountIdClaim != null) {
+					accountId = accountIdClaim.asString();
 				}
 			}
 		}
-		return username;
+		return accountId;
 	}
 
 	protected DecodedJWT verifyJWT(String token) {

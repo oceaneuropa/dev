@@ -28,20 +28,20 @@ public class ConfigRegistryPropertyTableHandler implements DatabaseTableAware {
 
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
-			sb.append("    userId varchar(500) NOT NULL,");
+			sb.append("    accountId varchar(50) NOT NULL,");
 			sb.append("    path varchar(2000) NOT NULL,");
 			sb.append("    name varchar(2000) NOT NULL,");
 			sb.append("    value varchar(2000) NOT NULL,");
-			sb.append("    PRIMARY KEY (userId, path, name)");
+			sb.append("    PRIMARY KEY (accountId, path, name)");
 			sb.append(");");
 
 		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
-			sb.append("    userId varchar(500) NOT NULL,");
+			sb.append("    accountId varchar(50) NOT NULL,");
 			sb.append("    path varchar(2000) NOT NULL,");
 			sb.append("    name varchar(2000) NOT NULL,");
 			sb.append("    value varchar(2000) NOT NULL,");
-			sb.append("    PRIMARY KEY (userId, path, name)");
+			sb.append("    PRIMARY KEY (accountId, path, name)");
 			sb.append(");");
 		}
 
@@ -68,115 +68,115 @@ public class ConfigRegistryPropertyTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	protected static RegistryPropertyVO toRTO(ResultSet rs) throws SQLException {
-		String userId = rs.getString("userId");
+		String accountId = rs.getString("accountId");
 		String path = rs.getString("path");
 		String name = rs.getString("name");
 		String value = rs.getString("value");
-		return new RegistryPropertyVO(userId, path, name, value);
+		return new RegistryPropertyVO(accountId, path, name, value);
 	}
 
 	/**
 	 * Get properties in a path.
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @return
 	 * @throws SQLException
 	 */
-	public List<RegistryPropertyVO> getProperties(Connection conn, String userId, String path) throws SQLException {
+	public List<RegistryPropertyVO> getProperties(Connection conn, String accountId, String path) throws SQLException {
 		path = checkPath(path);
 
-		String querySQL = "SELECT * FROM " + getTableName() + " WHERE userId=? AND path=? ORDER BY path ASC, name ASC";
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE accountId=? AND path=? ORDER BY path ASC, name ASC";
 		ResultSetListHandler<RegistryPropertyVO> handler = new ResultSetListHandler<RegistryPropertyVO>() {
 			@Override
 			protected RegistryPropertyVO handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
-		return DatabaseUtil.query(conn, querySQL, new Object[] { userId, path }, handler);
+		return DatabaseUtil.query(conn, querySQL, new Object[] { accountId, path }, handler);
 	}
 
 	/**
 	 * Check whether a property exists.
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param name
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean hasProperty(Connection conn, String userId, String path, String name) throws SQLException {
+	public boolean hasProperty(Connection conn, String accountId, String path, String name) throws SQLException {
 		path = checkPath(path);
 
-		String querySQL = "SELECT * FROM " + getTableName() + " WHERE userId=? AND path=? AND name=?";
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE accountId=? AND path=? AND name=?";
 		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
 			@Override
 			public Boolean handle(ResultSet rs) throws SQLException {
 				return rs.next() ? true : false;
 			}
 		};
-		return DatabaseUtil.query(conn, querySQL, new Object[] { userId, path, name }, handler);
+		return DatabaseUtil.query(conn, querySQL, new Object[] { accountId, path, name }, handler);
 	}
 
 	/**
 	 * Get a property.
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param name
 	 * @return
 	 * @throws SQLException
 	 */
-	public RegistryPropertyVO getProperty(Connection conn, String userId, String path, String name) throws SQLException {
+	public RegistryPropertyVO getProperty(Connection conn, String accountId, String path, String name) throws SQLException {
 		path = checkPath(path);
 
-		String querySQL = "SELECT * FROM " + getTableName() + " WHERE userId=? AND path=? AND name=?";
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE accountId=? AND path=? AND name=?";
 		ResultSetSingleHandler<RegistryPropertyVO> handler = new ResultSetSingleHandler<RegistryPropertyVO>() {
 			@Override
 			protected RegistryPropertyVO handleRow(ResultSet rs) throws SQLException {
 				return toRTO(rs);
 			}
 		};
-		return DatabaseUtil.query(conn, querySQL, new Object[] { userId, path, name }, handler);
+		return DatabaseUtil.query(conn, querySQL, new Object[] { accountId, path, name }, handler);
 	}
 
 	/**
 	 * Set a property.
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param name
 	 * @param value
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean setProperty(Connection conn, String userId, String path, String name, String value) throws SQLException {
+	public boolean setProperty(Connection conn, String accountId, String path, String name, String value) throws SQLException {
 		path = checkPath(path);
 
 		// make sure path exists in the path table
-		ConfigRegistryPathTableHandler.INSTANCE.ensurePathExists(conn, userId, path, null);
+		ConfigRegistryPathTableHandler.INSTANCE.ensurePathExists(conn, accountId, path, null);
 
-		RegistryPropertyVO existingProperty = getProperty(conn, userId, path, name);
+		RegistryPropertyVO existingProperty = getProperty(conn, accountId, path, name);
 		if (existingProperty != null) {
 			// property name exists
 			String existingValue = existingProperty.getValue();
 
 			if ((existingValue == null && value != null) || (existingValue != null && !existingValue.equals(value))) {
 				// value is changed --- need to update
-				String updateSQL = "UPDATE " + getTableName() + " SET value=? WHERE userId=? AND path=? AND name=?";
-				return DatabaseUtil.update(conn, updateSQL, new Object[] { value, userId, path, name }, 1);
+				String updateSQL = "UPDATE " + getTableName() + " SET value=? WHERE accountId=? AND path=? AND name=?";
+				return DatabaseUtil.update(conn, updateSQL, new Object[] { value, accountId, path, name }, 1);
 			} else {
 				// value is not changed --- no need to update
 			}
 
 		} else {
 			// property name doesn't exist --- insert new property
-			String insertSQL = "INSERT INTO " + getTableName() + " (userId, path, name, value) VALUES (?, ?, ?, ?)";
-			return DatabaseUtil.update(conn, insertSQL, new Object[] { userId, path, name, value }, 1);
+			String insertSQL = "INSERT INTO " + getTableName() + " (accountId, path, name, value) VALUES (?, ?, ?, ?)";
+			return DatabaseUtil.update(conn, insertSQL, new Object[] { accountId, path, name, value }, 1);
 		}
 		return false;
 	}
@@ -185,64 +185,64 @@ public class ConfigRegistryPropertyTableHandler implements DatabaseTableAware {
 	 * Update properties' path.
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param newPath
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updatePaths(Connection conn, String userId, String path, String newPath) throws SQLException {
+	public boolean updatePaths(Connection conn, String accountId, String path, String newPath) throws SQLException {
 		path = checkPath(path);
 
-		String updateSQL = "UPDATE " + getTableName() + " SET path=? WHERE userId=? AND path=?";
-		return DatabaseUtil.update(conn, updateSQL, new Object[] { newPath, userId, path }, -1);
+		String updateSQL = "UPDATE " + getTableName() + " SET path=? WHERE accountId=? AND path=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { newPath, accountId, path }, -1);
 	}
 
 	/**
 	 * Delete a property.
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param name
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean deleteProperty(Connection conn, String userId, String path, String name) throws SQLException {
+	public boolean deleteProperty(Connection conn, String accountId, String path, String name) throws SQLException {
 		path = checkPath(path);
 
-		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE userId=? AND path=? AND name=?";
-		return DatabaseUtil.update(conn, deleteSQL, new Object[] { userId, path, name }, 1);
+		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE accountId=? AND path=? AND name=?";
+		return DatabaseUtil.update(conn, deleteSQL, new Object[] { accountId, path, name }, 1);
 	}
 
 	/**
 	 * Delete properties in a path.
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean deleteProperties(Connection conn, String userId, String path) throws SQLException {
+	public boolean deleteProperties(Connection conn, String accountId, String path) throws SQLException {
 		path = checkPath(path);
 
-		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE userId=? AND path=?";
-		return DatabaseUtil.update(conn, deleteSQL, new Object[] { userId, path }, 1);
+		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE accountId=? AND path=?";
+		return DatabaseUtil.update(conn, deleteSQL, new Object[] { accountId, path }, 1);
 	}
 
 	/**
 	 * Delete all properties of a user.
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean deleteAllProperties(Connection conn, String userId) throws SQLException {
-		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE userId=?";
-		return DatabaseUtil.update(conn, deleteSQL, new Object[] { userId }, 1);
+	public boolean deleteAllProperties(Connection conn, String accountId) throws SQLException {
+		String deleteSQL = "DELETE FROM " + getTableName() + " WHERE accountId=?";
+		return DatabaseUtil.update(conn, deleteSQL, new Object[] { accountId }, 1);
 	}
 
 }

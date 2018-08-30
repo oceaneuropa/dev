@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -35,7 +35,7 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 	public IndexItem getIndex(IndexProvider indexProvider, OAuth2Service service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(ComponentsConstants.OAUTH2_INDEXER_ID, ComponentsConstants.OAUTH2_TYPE, name);
+		return indexProvider.getIndexItem(ComponentConstants.OAUTH2_INDEXER_ID, ComponentConstants.OAUTH2_TYPE, name);
 	}
 
 	@Override
@@ -45,28 +45,28 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 		String contextRoot = service.getContextRoot();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.OAUTH2_NAME, name);
-		props.put(ComponentsConstants.OAUTH2_HOST_URL, hostURL);
-		props.put(ComponentsConstants.OAUTH2_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(ComponentConstants.OAUTH2_NAME, name);
+		props.put(ComponentConstants.OAUTH2_HOST_URL, hostURL);
+		props.put(ComponentConstants.OAUTH2_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		return indexProvider.addIndexItem(ComponentsConstants.OAUTH2_INDEXER_ID, ComponentsConstants.OAUTH2_TYPE, name, props);
+		return indexProvider.addIndexItem(ComponentConstants.OAUTH2_INDEXER_ID, ComponentConstants.OAUTH2_TYPE, name, props);
 	}
 
 	@Override
 	public void updateIndex(IndexProvider indexProvider, OAuth2Service service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		indexProvider.setProperties(ComponentsConstants.OAUTH2_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(ComponentConstants.OAUTH2_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentsConstants.OAUTH2_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(ComponentConstants.OAUTH2_INDEXER_ID, indexItemId);
 	}
 
 }

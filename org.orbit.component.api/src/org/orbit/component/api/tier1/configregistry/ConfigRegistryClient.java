@@ -30,44 +30,44 @@ public interface ConfigRegistryClient extends ServiceClient {
 	/**
 	 * Get the properties in a path.
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @return
 	 * @throws ClientException
 	 */
-	Map<String, String> getProperties(String userId, EPath path) throws ClientException;
+	Map<String, String> getProperties(String accountId, EPath path) throws ClientException;
 
 	/**
 	 * Get a property in a path.
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param name
 	 * @return
 	 * @throws ClientException
 	 */
-	String getProperty(String userId, EPath path, String name) throws ClientException;
+	String getProperty(String accountId, EPath path, String name) throws ClientException;
 
 	/**
 	 * Set the properties to a path.
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param properties
 	 * @throws ClientException
 	 */
-	void setProperties(String userId, EPath path, Map<String, String> properties) throws ClientException;
+	void setProperties(String accountId, EPath path, Map<String, String> properties) throws ClientException;
 
 	/**
 	 * Set a property to a path.
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param name
 	 * @param value
 	 * @throws ClientException
 	 */
-	void setProperty(String userId, EPath path, String name, String value) throws ClientException;
+	void setProperty(String accountId, EPath path, String name, String value) throws ClientException;
 
 	/**
 	 * Remove a property from a path.
@@ -76,23 +76,23 @@ public interface ConfigRegistryClient extends ServiceClient {
 	 * @param name
 	 * @throws ClientException
 	 */
-	void removeProperty(String userId, EPath path, String name) throws ClientException;
+	void removeProperty(String accountId, EPath path, String name) throws ClientException;
 
 	/**
 	 * Remove the properties from a path.
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @throws ClientException
 	 */
-	void removeAll(String userId, EPath path) throws ClientException;
+	void removeAll(String accountId, EPath path) throws ClientException;
 
 	/**
 	 * Remove all properties from this registry.
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @throws ClientException
 	 */
-	void removeAll(String userId) throws ClientException;
+	void removeAll(String accountId) throws ClientException;
 
 }

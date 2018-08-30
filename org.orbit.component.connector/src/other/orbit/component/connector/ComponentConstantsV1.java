@@ -1,6 +1,6 @@
-package org.orbit.component.connector;
+package other.orbit.component.connector;
 
-public interface ComponentConstants {
+public interface ComponentConstantsV1 {
 
 	// ----------------------------------------------------------------------------------------
 	// IndexItem

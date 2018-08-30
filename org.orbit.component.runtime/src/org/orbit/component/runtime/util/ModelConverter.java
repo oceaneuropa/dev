@@ -50,7 +50,7 @@ public class ModelConverter {
 	public static class Account {
 
 		/**
-		 * Convert UserAccountRTO to UserAccountDTO.
+		 * Convert UserAccount to UserAccountDTO.
 		 * 
 		 * @param userAccount
 		 * @return
@@ -59,23 +59,24 @@ public class ModelConverter {
 			if (userAccount == null) {
 				return null;
 			}
-			UserAccountDTO dto = new UserAccountDTO();
+			UserAccountDTO userAccountDTO = new UserAccountDTO();
 
-			dto.setUserId(userAccount.getUserId());
-			dto.setPassword(userAccount.getPassword());
-			dto.setEmail(userAccount.getEmail());
-			dto.setFirstName(userAccount.getFirstName());
-			dto.setLastName(userAccount.getLastName());
-			dto.setPhone(userAccount.getPhone());
-			dto.setCreationTime(userAccount.getCreationTime());
-			dto.setLastUpdateTime(userAccount.getLastUpdateTime());
-			dto.setActivated(userAccount.isActivated());
+			userAccountDTO.setAccountId(userAccount.getAccountId());
+			userAccountDTO.setUsername(userAccount.getUsername());
+			userAccountDTO.setPassword(userAccount.getPassword());
+			userAccountDTO.setEmail(userAccount.getEmail());
+			userAccountDTO.setFirstName(userAccount.getFirstName());
+			userAccountDTO.setLastName(userAccount.getLastName());
+			userAccountDTO.setPhone(userAccount.getPhone());
+			userAccountDTO.setCreationTime(userAccount.getCreationTime());
+			userAccountDTO.setLastUpdateTime(userAccount.getLastUpdateTime());
+			userAccountDTO.setActivated(userAccount.isActivated());
 
-			return dto;
+			return userAccountDTO;
 		}
 
 		/**
-		 * Convert UserAccountDTO to UserAccountRTO.
+		 * Convert UserAccountDTO to UserAccount.
 		 * 
 		 * @param userAccountDTO
 		 * @return
@@ -86,7 +87,8 @@ public class ModelConverter {
 			}
 			UserAccount userAccount = new UserAccount();
 
-			userAccount.setUserId(userAccountDTO.getUserId());
+			userAccount.setAccountId(userAccountDTO.getAccountId());
+			userAccount.setUsername(userAccountDTO.getUsername());
 			userAccount.setPassword(userAccountDTO.getPassword());
 			userAccount.setEmail(userAccountDTO.getEmail());
 			userAccount.setFirstName(userAccountDTO.getFirstName());
@@ -133,6 +135,7 @@ public class ModelConverter {
 			if (requestDTO == null) {
 				return null;
 			}
+
 			String clientId = requestDTO.getClientId();
 			String grantType = requestDTO.getGrantType();
 			String username = requestDTO.getUsername();

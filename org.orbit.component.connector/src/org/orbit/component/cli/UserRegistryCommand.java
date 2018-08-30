@@ -28,7 +28,7 @@ public class UserRegistryCommand implements CommandActivator {
 
 	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryCommand.class);
 
-	protected static String[] USER_ACCOUNT_COLUMNS = new String[] { "User Id", "Email", "Password", "First Name", "Last Name", "Phone", "Activated", "Creation Time", "Last Update Time" };
+	protected static String[] USER_ACCOUNT_COLUMNS = new String[] { "Account Id", "Username", "Email", "Password", "First Name", "Last Name", "Phone", "Activated", "Creation Time", "Last Update Time" };
 
 	protected Map<Object, Object> properties;
 
@@ -67,6 +67,11 @@ public class UserRegistryCommand implements CommandActivator {
 		OSGiServiceUtil.unregister(UserRegistryCommand.class.getName(), this);
 	}
 
+	protected String getAccountId(String username) {
+		String accountId = null;
+		return accountId;
+	}
+
 	protected UserAccountClient getUserRegistry() {
 		String userRegistryUrl = (String) this.properties.get(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		UserAccountClient userRegistry = ComponentClientsUtil.UserAccounts.getUserAccountsClient(userRegistryUrl, null);
@@ -87,7 +92,8 @@ public class UserRegistryCommand implements CommandActivator {
 		String[][] rows = new String[userAccounts.length][USER_ACCOUNT_COLUMNS.length];
 		int rowIndex = 0;
 		for (UserAccount currUserAccount : userAccounts) {
-			String userId = currUserAccount.getUserId();
+			String accountId = currUserAccount.getAccountId();
+			String username = currUserAccount.getUsername();
 			String email = currUserAccount.getEmail();
 			String password = currUserAccount.getPassword();
 			String firstName = currUserAccount.getFirstName();
@@ -99,7 +105,7 @@ public class UserRegistryCommand implements CommandActivator {
 			String createTimeStr = (createTime != null) ? DateUtil.toString(createTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 			String updateTimeStr = (updateTime != null) ? DateUtil.toString(updateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { userId, email, password, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
+			rows[rowIndex++] = new String[] { accountId, username, email, password, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
 		}
 
 		PrettyPrinter.prettyPrint(USER_ACCOUNT_COLUMNS, rows, userAccounts.length);
@@ -115,15 +121,18 @@ public class UserRegistryCommand implements CommandActivator {
 			return;
 		}
 
+		String accountId = getAccountId(username);
+
 		UserAccountClient userRegistry = getUserRegistry();
 
-		UserAccount userAccount = userRegistry.getUserAccount(username);
+		UserAccount userAccount = userRegistry.getUserAccount(accountId);
 
 		UserAccount[] userAccounts = (userAccount != null) ? new UserAccount[] { userAccount } : new UserAccount[0];
 		String[][] rows = new String[userAccounts.length][USER_ACCOUNT_COLUMNS.length];
 		int rowIndex = 0;
 		for (UserAccount currUserAccount : userAccounts) {
-			String currUserId = currUserAccount.getUserId();
+			String currAccountId = currUserAccount.getAccountId();
+			String currUsername = currUserAccount.getUsername();
 			String firstName = currUserAccount.getFirstName();
 			String lastName = currUserAccount.getLastName();
 			String email = currUserAccount.getEmail();
@@ -134,7 +143,7 @@ public class UserRegistryCommand implements CommandActivator {
 			String createTimeStr = (createTime != null) ? DateUtil.toString(createTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 			String updateTimeStr = (updateTime != null) ? DateUtil.toString(updateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { currUserId, email, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
+			rows[rowIndex++] = new String[] { currAccountId, currUsername, email, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
 		}
 
 		PrettyPrinter.prettyPrint(USER_ACCOUNT_COLUMNS, rows, userAccounts.length);
@@ -144,7 +153,7 @@ public class UserRegistryCommand implements CommandActivator {
 	@Descriptor("add_user")
 	public void add_user( //
 			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
-			@Descriptor("UserId") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
+			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
 			@Descriptor("Password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password, //
 			@Descriptor("Email") @Parameter(names = { "-email", "--email" }, absentValue = Parameter.UNSPECIFIED) String email, //
 			@Descriptor("First Name") @Parameter(names = { "-firstname", "--firstname" }, absentValue = Parameter.UNSPECIFIED) String firstName, //
@@ -160,7 +169,7 @@ public class UserRegistryCommand implements CommandActivator {
 				new String[] { "phone", phone } //
 		);
 		if (Parameter.UNSPECIFIED.equals(username)) {
-			System.out.println("userId is not set.");
+			System.out.println("username is not set.");
 			return;
 		}
 		if (Parameter.UNSPECIFIED.equals(password)) {
@@ -175,7 +184,7 @@ public class UserRegistryCommand implements CommandActivator {
 		UserAccountClient userRegistry = getUserRegistry();
 
 		CreateUserAccountRequest request = new CreateUserAccountRequest();
-		request.setUserId(username);
+		request.setUsername(username);
 		request.setPassword(password);
 		request.setEmail(email);
 		request.setFirstName(firstName);

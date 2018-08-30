@@ -70,7 +70,7 @@ public class OrbitServices {
 	 */
 	public void start(final BundleContext bundleContext) {
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_INDEX_SERVICE_URL);
 		this.properties = properties;
 
 		this.indexProviderConnector = new ServiceConnectorAdapter<IndexProvider>(IndexProvider.class) {

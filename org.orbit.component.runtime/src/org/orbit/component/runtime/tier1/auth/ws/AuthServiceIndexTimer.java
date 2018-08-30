@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -36,7 +36,7 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 	public IndexItem getIndex(IndexProvider indexProvider, AuthService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(ComponentsConstants.AUTH_INDEXER_ID, ComponentsConstants.AUTH_TYPE, name);
+		return indexProvider.getIndexItem(ComponentConstants.AUTH_INDEXER_ID, ComponentConstants.AUTH_TYPE, name);
 	}
 
 	@Override
@@ -49,14 +49,14 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.AUTH_NAME, name);
-		props.put(ComponentsConstants.AUTH_HOST_URL, hostURL);
-		props.put(ComponentsConstants.AUTH_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.AUTH_NAME, name);
+		props.put(ComponentConstants.AUTH_HOST_URL, hostURL);
+		props.put(ComponentConstants.AUTH_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentsConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		return indexProvider.addIndexItem(ComponentsConstants.AUTH_INDEXER_ID, ComponentsConstants.AUTH_TYPE, name, props);
+		return indexProvider.addIndexItem(ComponentConstants.AUTH_INDEXER_ID, ComponentConstants.AUTH_TYPE, name, props);
 	}
 
 	@Override
@@ -71,21 +71,21 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.AUTH_NAME, name);
-		props.put(ComponentsConstants.AUTH_HOST_URL, hostURL);
-		props.put(ComponentsConstants.AUTH_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.AUTH_NAME, name);
+		props.put(ComponentConstants.AUTH_HOST_URL, hostURL);
+		props.put(ComponentConstants.AUTH_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentsConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		indexProvider.setProperties(ComponentsConstants.AUTH_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(ComponentConstants.AUTH_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentsConstants.AUTH_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(ComponentConstants.AUTH_INDEXER_ID, indexItemId);
 	}
 
 }

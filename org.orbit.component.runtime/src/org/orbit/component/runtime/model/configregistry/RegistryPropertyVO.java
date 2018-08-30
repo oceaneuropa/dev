@@ -2,7 +2,7 @@ package org.orbit.component.runtime.model.configregistry;
 
 public class RegistryPropertyVO {
 
-	protected String userId;
+	protected String accountId;
 	protected EPath path;
 	protected String name;
 	protected String value;
@@ -12,13 +12,13 @@ public class RegistryPropertyVO {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param name
 	 * @param value
 	 */
-	public RegistryPropertyVO(String userId, EPath path, String name, String value) {
-		this.userId = userId;
+	public RegistryPropertyVO(String accountId, EPath path, String name, String value) {
+		this.accountId = accountId;
 		this.path = path;
 		this.name = name;
 		this.value = value;
@@ -26,28 +26,28 @@ public class RegistryPropertyVO {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param name
 	 * @param value
 	 */
-	public RegistryPropertyVO(String userId, String path, String name, String value) {
-		this.userId = userId;
+	public RegistryPropertyVO(String accountId, String path, String name, String value) {
+		this.accountId = accountId;
 		this.path = new EPath(path);
 		this.name = name;
 		this.value = value;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getAccountId() {
+		return this.accountId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	public EPath getPath() {
-		return path;
+		return this.path;
 	}
 
 	public void setPath(EPath path) {
@@ -55,7 +55,7 @@ public class RegistryPropertyVO {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -63,7 +63,7 @@ public class RegistryPropertyVO {
 	}
 
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
 	public void setValue(String value) {

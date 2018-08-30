@@ -30,8 +30,8 @@ import org.origin.common.rest.server.ServerException;
  * {contextRoot}: /orbit/v1/userregistry
  * 
  * User account: 
- * URL (GET):  {scheme}://{host}:{port}/{contextRoot}/useraccount?username={username}
- * URL (GET):  {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?username={username}
+ * URL (GET):  {scheme}://{host}:{port}/{contextRoot}/useraccount?accountId={accountId}
+ * URL (GET):  {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?accountId={accountId}
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/useraccount/action (Body parameter: UserAccountActionDTO)
  * 
  */
@@ -53,20 +53,20 @@ public class UserRegistryUserAccountWSResource extends AbstractWSApplicationReso
 	/**
 	 * Get a user account.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount?accountId={accountId}
 	 * 
-	 * @param username
+	 * @param accountId
 	 * @return
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response get(@QueryParam("username") String username) {
+	public Response get(@QueryParam("accountId") String accountId) {
 		UserAccountDTO userAccountDTO = null;
 		try {
 			UserRegistryService service = getService();
-			UserAccount userAccount = service.getUserAccount(username);
+			UserAccount userAccount = service.getUserAccountByAccountId(accountId);
 			if (userAccount == null) {
-				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", username));
+				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with accountId '%s' cannot be found.", accountId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
 			userAccountDTO = ModelConverter.Account.toUserAccountDTO(userAccount);
@@ -81,19 +81,19 @@ public class UserRegistryUserAccountWSResource extends AbstractWSApplicationReso
 	/**
 	 * Check whether a user account is activated.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?username={username}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?accountId={accountId}
 	 * 
-	 * @param username
+	 * @param accountId
 	 * @return
 	 */
 	@GET
-	@Path("/activated")
+	@Path("/accountId")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response isActivated(@QueryParam("username") String username) {
+	public Response isActivated(@QueryParam("v") String accountId) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		UserRegistryService service = getService();
 		try {
-			boolean activated = service.isUserAccountActivated(username);
+			boolean activated = service.isUserAccountActivated(accountId);
 			result.put("activated", activated);
 
 		} catch (ServerException e) {
@@ -108,7 +108,7 @@ public class UserRegistryUserAccountWSResource extends AbstractWSApplicationReso
 	 * 
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/useraccount/action (Body parameter: UserAccountActionDTO)
 	 * 
-	 * @param username
+	 * @param actionDTO
 	 * @return
 	 */
 	@PUT
@@ -123,34 +123,34 @@ public class UserRegistryUserAccountWSResource extends AbstractWSApplicationReso
 		Map<String, Object> result = new HashMap<String, Object>();
 		UserRegistryService service = getService();
 		try {
-			String userId = actionDTO.getUserId();
+			String accountId = actionDTO.getAccountId();
 			String action = actionDTO.getAction();
 			Map<Object, Object> args = actionDTO.getArgs();
 
-			if (userId == null || userId.isEmpty()) {
-				ErrorDTO error = new ErrorDTO("userId is empty.");
+			if (accountId == null || accountId.isEmpty()) {
+				ErrorDTO error = new ErrorDTO("accountId is empty.");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 
-			UserAccount userAccount = service.getUserAccount(userId);
+			UserAccount userAccount = service.getUserAccountByAccountId(accountId);
 			if (userAccount == null) {
-				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", userId));
+				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with accountId '%s' cannot be found.", accountId));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
 
 			if ("activate".equalsIgnoreCase(action)) {
 				boolean activated = false;
-				boolean succeed = service.activateUserAccount(userId);
+				boolean succeed = service.activateUserAccount(accountId);
 				if (succeed) {
-					activated = service.isUserAccountActivated(userId);
+					activated = service.isUserAccountActivated(accountId);
 				}
 				result.put("activated", activated);
 
 			} else if ("deactivate".equalsIgnoreCase(action)) {
 				boolean activated = false;
-				boolean succeed = service.deactivateUserAccount(userId);
+				boolean succeed = service.deactivateUserAccount(accountId);
 				if (succeed) {
-					activated = service.isUserAccountActivated(userId);
+					activated = service.isUserAccountActivated(accountId);
 				}
 				result.put("activated", activated);
 
@@ -170,7 +170,7 @@ public class UserRegistryUserAccountWSResource extends AbstractWSApplicationReso
 					return Response.status(Status.BAD_REQUEST).entity(error).build();
 				}
 
-				boolean succeed = service.changePassword(userId, oldPassword, newPassword);
+				boolean succeed = service.changePassword(accountId, oldPassword, newPassword);
 				result.put("succeed", succeed);
 
 			} else {

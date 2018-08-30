@@ -21,7 +21,7 @@ import org.origin.common.rest.server.ServerException;
  */
 public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 
-	protected String userId;
+	protected String accountId;
 	protected Properties databaseProperties;
 
 	protected ConfigRegistryPathTableHandler pathTableHandler = ConfigRegistryPathTableHandler.INSTANCE;
@@ -29,16 +29,16 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param databaseProperties
 	 */
-	public ConfigRegistryDatabaseImpl(String userId, Properties databaseProperties) {
-		this.userId = userId;
+	public ConfigRegistryDatabaseImpl(String accountId, Properties databaseProperties) {
+		this.accountId = accountId;
 		this.databaseProperties = databaseProperties;
 	}
 
-	public String getUserId() {
-		return this.userId;
+	public String getAccountId() {
+		return this.accountId;
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			List<RegistryPathVO> pathVOs = this.pathTableHandler.getPaths(conn, this.userId);
+			List<RegistryPathVO> pathVOs = this.pathTableHandler.getPaths(conn, this.accountId);
 			if (pathVOs != null) {
 				for (RegistryPathVO pathVO : pathVOs) {
 					EPath path = pathVO.getPath();
@@ -90,7 +90,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			hasPath = this.pathTableHandler.hasPath(conn, this.userId, path.getPathString());
+			hasPath = this.pathTableHandler.hasPath(conn, this.accountId, path.getPathString());
 		} catch (Exception e) {
 			handleException(e);
 		} finally {
@@ -107,7 +107,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			RegistryPathVO newPathVO = this.pathTableHandler.insertPath(conn, this.userId, path.getPathString(), description);
+			RegistryPathVO newPathVO = this.pathTableHandler.insertPath(conn, this.accountId, path.getPathString(), description);
 			if (newPathVO != null) {
 				return true;
 			}
@@ -127,7 +127,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return this.pathTableHandler.updatePath(conn, this.userId, path.getPathString(), newPath.getPathString());
+			return this.pathTableHandler.updatePath(conn, this.accountId, path.getPathString(), newPath.getPathString());
 
 		} catch (Exception e) {
 			handleException(e);
@@ -145,7 +145,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return this.pathTableHandler.updateDescription(conn, this.userId, path.getPathString(), description);
+			return this.pathTableHandler.updateDescription(conn, this.accountId, path.getPathString(), description);
 
 		} catch (Exception e) {
 			handleException(e);
@@ -164,7 +164,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		try {
 			conn = getConnection();
 			// delete all properties in the path. then delete the path
-			return this.pathTableHandler.deletePath(conn, this.userId, path.getPathString());
+			return this.pathTableHandler.deletePath(conn, this.accountId, path.getPathString());
 
 		} catch (Exception e) {
 			handleException(e);
@@ -180,7 +180,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		try {
 			conn = getConnection();
 			// delete all paths and all properties in each path.
-			return this.pathTableHandler.deleteAllPaths(conn, userId);
+			return this.pathTableHandler.deleteAllPaths(conn, accountId);
 
 		} catch (Exception e) {
 			handleException(e);
@@ -199,7 +199,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			List<RegistryPropertyVO> propertyVOs = this.propertyTableHandler.getProperties(conn, this.userId, path.getPathString());
+			List<RegistryPropertyVO> propertyVOs = this.propertyTableHandler.getProperties(conn, this.accountId, path.getPathString());
 			if (propertyVOs != null) {
 				for (RegistryPropertyVO propertyVO : propertyVOs) {
 					String name = propertyVO.getName();
@@ -221,7 +221,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			RegistryPropertyVO propertyVO = this.propertyTableHandler.getProperty(conn, this.userId, path.getPathString(), name);
+			RegistryPropertyVO propertyVO = this.propertyTableHandler.getProperty(conn, this.accountId, path.getPathString(), name);
 			if (propertyVO != null) {
 				value = propertyVO.getValue();
 			}
@@ -238,7 +238,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return this.propertyTableHandler.setProperty(conn, this.userId, path.getPathString(), name, value);
+			return this.propertyTableHandler.setProperty(conn, this.accountId, path.getPathString(), name, value);
 
 		} catch (Exception e) {
 			handleException(e);
@@ -253,7 +253,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return this.propertyTableHandler.deleteProperty(conn, this.userId, path.getPathString(), name);
+			return this.propertyTableHandler.deleteProperty(conn, this.accountId, path.getPathString(), name);
 
 		} catch (Exception e) {
 			handleException(e);
@@ -268,7 +268,7 @@ public class ConfigRegistryDatabaseImpl implements ConfigRegistry {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			return this.propertyTableHandler.deleteProperties(conn, this.userId, path.getPathString());
+			return this.propertyTableHandler.deleteProperties(conn, this.accountId, path.getPathString());
 
 		} catch (Exception e) {
 			handleException(e);

@@ -1,4 +1,4 @@
-package org.orbit.component.runtime.tier1.account.service;
+package org.orbit.component.runtime.tier1.account.service.impl;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.orbit.component.runtime.model.account.UserAccount;
+import org.orbit.component.runtime.tier1.account.service.UserAccountPersistence;
 import org.origin.common.jdbc.DatabaseUtil;
 
 public class UserAccountPersistenceImpl implements UserAccountPersistence {
@@ -52,7 +53,7 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			userAccounts = this.userAccountTableHandler.getUserAccounts(conn);
+			userAccounts = this.userAccountTableHandler.getList(conn);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -66,76 +67,28 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public UserAccount getUserAccount(String userId) throws IOException {
-		UserAccount userAccount = null;
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return this.userAccountTableHandler.getUserAccount(conn, userId);
-
-		} catch (SQLException e) {
-			handleSQLException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return userAccount;
-	}
-
-	@Override
-	public UserAccount getUserAccountByEmail(String email) throws IOException {
-		UserAccount userAccount = null;
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			return this.userAccountTableHandler.getUserAccountByEmail(conn, email);
-
-		} catch (SQLException e) {
-			handleSQLException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return userAccount;
-	}
-
-	@Override
-	public UserAccount createUserAccount(String userId, String password, String email, String firstName, String lastName, String phone) throws IOException {
-		UserAccount userAccount = null;
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			userAccount = this.userAccountTableHandler.createUserAccount(conn, userId, password, email, firstName, lastName, phone, null, null);
-
-		} catch (SQLException e) {
-			handleSQLException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return userAccount;
-	}
-
-	@Override
-	public boolean setActivated(String userId, boolean activated) throws IOException {
-		boolean succeed = false;
-		Connection conn = null;
-		try {
-			conn = getConnection();
-			succeed = this.userAccountTableHandler.setUserAccountActivated(conn, userId, activated);
-
-		} catch (SQLException e) {
-			handleSQLException(e);
-		} finally {
-			DatabaseUtil.closeQuietly(conn, true);
-		}
-		return succeed;
-	}
-
-	@Override
-	public boolean usernameExists(String userId) throws IOException {
+	public boolean accountIdExists(String accountId) throws IOException {
 		boolean exists = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			exists = this.userAccountTableHandler.userIdExists(conn, userId);
+			exists = this.userAccountTableHandler.accountIdExists(conn, accountId);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public boolean usernameExists(String username) throws IOException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			exists = this.userAccountTableHandler.usernameExists(conn, username);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -162,12 +115,77 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public boolean updatePassword(String userId, String password) throws IOException {
+	public UserAccount getUserAccountByAccountId(String accountId) throws IOException {
+		UserAccount userAccount = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return this.userAccountTableHandler.getByAccountId(conn, accountId);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return userAccount;
+	}
+
+	@Override
+	public UserAccount getUserAccountByUsername(String username) throws IOException {
+		UserAccount userAccount = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return this.userAccountTableHandler.getByUsername(conn, username);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return userAccount;
+	}
+
+	@Override
+	public UserAccount getUserAccountByEmail(String email) throws IOException {
+		UserAccount userAccount = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return this.userAccountTableHandler.getByEmail(conn, email);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return userAccount;
+	}
+
+	@Override
+	public UserAccount createUserAccount(String accountId, String username, String password, String email, String firstName, String lastName, String phone) throws IOException {
+		UserAccount userAccount = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			userAccount = this.userAccountTableHandler.create(conn, accountId, username, password, email, firstName, lastName, phone, null, null);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return userAccount;
+	}
+
+	@Override
+	public boolean setActivated(String accountId, boolean activated) throws IOException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.userAccountTableHandler.updatePassword(conn, userId, password, null);
+			succeed = this.userAccountTableHandler.setActivated(conn, accountId, activated);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -178,12 +196,12 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public boolean updateName(String userId, String firstName, String lastName) throws IOException {
+	public boolean updatePassword(String accountId, String password) throws IOException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.userAccountTableHandler.updateName(conn, userId, firstName, lastName, null);
+			succeed = this.userAccountTableHandler.updatePassword(conn, accountId, password, null);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -194,12 +212,12 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public boolean updateEmail(String userId, String email) throws IOException {
+	public boolean updateName(String accountId, String firstName, String lastName) throws IOException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.userAccountTableHandler.updateEmail(conn, userId, email, null);
+			succeed = this.userAccountTableHandler.updateName(conn, accountId, firstName, lastName, null);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -210,12 +228,12 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public boolean updatePhone(String userId, String phone) throws IOException {
+	public boolean updateEmail(String accountId, String email) throws IOException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.userAccountTableHandler.updatePhone(conn, userId, phone, null);
+			succeed = this.userAccountTableHandler.updateEmail(conn, accountId, email, null);
 
 		} catch (SQLException e) {
 			handleSQLException(e);
@@ -226,12 +244,28 @@ public class UserAccountPersistenceImpl implements UserAccountPersistence {
 	}
 
 	@Override
-	public boolean deleteUserAccount(String userId) throws IOException {
+	public boolean updatePhone(String accountId, String phone) throws IOException {
 		boolean succeed = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			succeed = this.userAccountTableHandler.deleteUserAccount(conn, userId);
+			succeed = this.userAccountTableHandler.updatePhone(conn, accountId, phone, null);
+
+		} catch (SQLException e) {
+			handleSQLException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteUserAccount(String accountId) throws IOException {
+		boolean succeed = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			succeed = this.userAccountTableHandler.delete(conn, accountId);
 
 		} catch (SQLException e) {
 			handleSQLException(e);

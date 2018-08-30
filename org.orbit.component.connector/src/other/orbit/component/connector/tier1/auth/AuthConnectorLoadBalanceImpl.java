@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier1.auth.AuthClient;
-import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier1.auth.AuthClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
 import other.orbit.component.api.tier1.auth.AuthConnectorV0;
 import other.orbit.component.api.tier1.auth.AuthConnectorV1;
+import other.orbit.component.connector.ComponentConstantsV1;
 import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
 public class AuthConnectorLoadBalanceImpl extends IndexBasedLoadBalancedServiceConnectorImpl<AuthClient> implements AuthConnectorV1 {
@@ -26,7 +26,7 @@ public class AuthConnectorLoadBalanceImpl extends IndexBasedLoadBalancedServiceC
 
 	@Override
 	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
-		return indexService.getIndexItems(ComponentConstants.AUTH_INDEXER_ID, ComponentConstants.AUTH_TYPE);
+		return indexService.getIndexItems(ComponentConstantsV1.AUTH_INDEXER_ID, ComponentConstantsV1.AUTH_TYPE);
 	}
 
 	@Override

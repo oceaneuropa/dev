@@ -27,37 +27,37 @@ public class ConfigRegistryClientImpl extends ServiceClientImpl<ConfigRegistryCl
 	}
 
 	@Override
-	public Map<String, String> getProperties(String userId, EPath path) throws ClientException {
+	public Map<String, String> getProperties(String accountId, EPath path) throws ClientException {
 		return null;
 	}
 
 	@Override
-	public String getProperty(String userId, EPath path, String key) throws ClientException {
+	public String getProperty(String accountId, EPath path, String key) throws ClientException {
 		return null;
 	}
 
 	@Override
-	public void setProperties(String userId, EPath path, Map<String, String> properties) throws ClientException {
+	public void setProperties(String accountId, EPath path, Map<String, String> properties) throws ClientException {
 
 	}
 
 	@Override
-	public void setProperty(String userId, EPath path, String key, String value) throws ClientException {
+	public void setProperty(String accountId, EPath path, String key, String value) throws ClientException {
 
 	}
 
 	@Override
-	public void removeProperty(String userId, EPath path, String key) throws ClientException {
+	public void removeProperty(String accountId, EPath path, String key) throws ClientException {
 
 	}
 
 	@Override
-	public void removeAll(String userId, EPath path) throws ClientException {
+	public void removeAll(String accountId, EPath path) throws ClientException {
 
 	}
 
 	@Override
-	public void removeAll(String userId) throws ClientException {
+	public void removeAll(String accountId) throws ClientException {
 
 	}
 

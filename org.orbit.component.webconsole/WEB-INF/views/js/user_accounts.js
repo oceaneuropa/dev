@@ -4,8 +4,9 @@
 		addUserDialog.showModal();
 	}
 
-	function changeUser(userId, password, firstName, lastName, email, phone) {
-		document.getElementById("user_id").setAttribute('value',userId);
+	function changeUser(accountId, username, password, firstName, lastName, email, phone) {
+		document.getElementById("user_id").setAttribute('value',accountId);
+		document.getElementById("user_username").setAttribute('value',username);
 		document.getElementById("user_password").setAttribute('value',password);
 		document.getElementById("user_firstName").setAttribute('value',firstName);
 		document.getElementById("user_lastName").setAttribute('value',lastName);
@@ -16,12 +17,12 @@
 		changeUserDialog.showModal();
 	}
 
-	function deleteUser(userId) {
+	function deleteUser(accountId, username) {
 		var actionURL = "<%=contextRoot + "/useraccountdelete"%>";
 		var dialog = document.getElementById('deleteUserDialog');
 
 		var messageDiv = document.getElementById('deleteUserDialogMessageDiv');
-		messageDiv.innerHTML="Are you sure you want to delete user '"+userId+"'?";
+		messageDiv.innerHTML="Are you sure you want to delete user '"+username+"'?";
 
 		var okButton = document.getElementById('doDeleteUser');
 		okButton.addEventListener('click', function() {
@@ -32,7 +33,7 @@
 			var idField = document.createElement("input");
 			idField.setAttribute("type", "hidden");
 			idField.setAttribute("name", "id");
-			idField.setAttribute("value", userId);
+			idField.setAttribute("value", accountId);
 
 			form.appendChild(idField);
 
@@ -60,7 +61,7 @@
 			var idField = document.createElement("input");
 			idField.setAttribute("type", "hidden");
 			idField.setAttribute("name", "id");
-			idField.setAttribute("value", userId);
+			idField.setAttribute("value", id);
 
 			form.appendChild(idField);
 

@@ -4,6 +4,6 @@ import org.origin.common.service.WebServiceAware;
 
 public interface ConfigRegistryService extends WebServiceAware {
 
-	ConfigRegistry getRegistry(String userId);
+	ConfigRegistry getRegistry(String accountId);
 
 }

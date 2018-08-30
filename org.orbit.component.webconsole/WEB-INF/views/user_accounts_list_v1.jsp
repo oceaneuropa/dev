@@ -38,7 +38,7 @@
 			<form id="main_list">
 			<tr>
 				<th class="th1" width="11"></th>
-				<th class="th1" width="150">Id</th>
+				<th class="th1" width="150">Username</th>
 				<th class="th1" width="150">Name</th>
 				<th class="th1" width="150">Email</th>
 				<th class="th1" width="100">Phone</th>
@@ -54,7 +54,8 @@
 			<%
 				} else {
 					for (UserAccount userAccount : userAccounts) {
-						String userId = userAccount.getUserId();
+						String accountId = userAccount.getAccountId();
+						String username = userAccount.getUsername();
 						String password = userAccount.getPassword();
 						String firstName = userAccount.getFirstName();
 						String lastName = userAccount.getLastName();
@@ -63,7 +64,6 @@
 						Date creationTime = userAccount.getCreationTime();
 						Date lastUpdateTime = userAccount.getLastUpdateTime();
 
-						userId = StringUtil.get(userId);
 						password = StringUtil.get(password);
 						firstName = StringUtil.get(firstName);
 						lastName = StringUtil.get(lastName);
@@ -74,10 +74,10 @@
 			%>
 			<tr>
 				<td class="td1">
-					<input type="checkbox" name="id" value="<%=userId%>">
+					<input type="checkbox" name="id" value="<%=accountId%>">
 				</td>
 				<td class="td2">
-					<%=userId%>
+					<%=username%>
 				</td>
 				<td class="td2"><%=firstName%>&nbsp;&nbsp;<%=lastName%></td>
 				<td class="td2"><%=email%></td>
@@ -105,8 +105,8 @@
 					</details>
 				</td>
 				<td class="td1">
-					<a class="action01" href="javascript:changeUser('<%=userId%>', '<%=password%>', '<%=firstName%>', '<%=lastName%>', '<%=email%>', '<%=phone%>')">Change</a> 
-					<a class="action01" href="javascript:deleteUser('<%=userId%>')">Delete</a>
+					<a class="action01" href="javascript:changeUser('<%=accountId%>', '<%=username%>', '<%=password%>', '<%=firstName%>', '<%=lastName%>', '<%=email%>', '<%=phone%>')">Change</a> 
+					<a class="action01" href="javascript:deleteUser('<%=accountId%>')">Delete</a>
 				</td>
 			</tr>
 			<%
@@ -124,7 +124,7 @@
 			<table class="dialog_table01">
 				<tr>
 					<td width="25%">Id:</td>
-					<td width="75%"><input type="text" name="id" class="input01" size="35"></td>
+					<td width="75%"><input type="text" name="username" class="input01" size="35"></td>
 				</tr>
 				<tr>
 					<td>Password:</td>
@@ -158,11 +158,12 @@
 	<dialog id="changeUserDialog">
 	<div class="dialog_title_div01">Change User</div>
 		<form method="post" action="<%=contextRoot + "/useraccountupdate"%>">
+		<input type="hidden" id="user_id" name = "id"/>
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
 					<td width="25%">Id:</td>
-					<td width="75%"><input type="text" id="user_id" name="id" class="input01" size="35"></td>
+					<td width="75%"><input type="text" id="user_username" name="username" class="input01" size="35"></td>
 				</tr>
 				<tr>
 					<td>Password:</td>
@@ -217,8 +218,9 @@
 		addUserDialog.showModal();
 	}
 
-	function changeUser(userId, password, firstName, lastName, email, phone) {
-		document.getElementById("user_id").setAttribute('value',userId);
+	function changeUser(accountId, username, password, firstName, lastName, email, phone) {
+		document.getElementById("user_id").setAttribute('value',accountId);
+		document.getElementById("user_username").setAttribute('value',username);
 		document.getElementById("user_password").setAttribute('value',password);
 		document.getElementById("user_firstName").setAttribute('value',firstName);
 		document.getElementById("user_lastName").setAttribute('value',lastName);
@@ -229,12 +231,12 @@
 		changeUserDialog.showModal();
 	}
 
-	function deleteUser(userId) {
+	function deleteUser(accountId, username) {
 		var actionURL = "<%=contextRoot + "/useraccountdelete"%>";
 		var dialog = document.getElementById('deleteUserDialog');
 
 		var messageDiv = document.getElementById('deleteUserDialogMessageDiv');
-		messageDiv.innerHTML="Are you sure you want to delete user '"+userId+"'?";
+		messageDiv.innerHTML="Are you sure you want to delete user '"+username+"'?";
 
 		var okButton = document.getElementById('doDeleteUser');
 		okButton.addEventListener('click', function() {
@@ -245,7 +247,7 @@
 			var idField = document.createElement("input");
 			idField.setAttribute("type", "hidden");
 			idField.setAttribute("name", "id");
-			idField.setAttribute("value", userId);
+			idField.setAttribute("value", accountId);
 
 			form.appendChild(idField);
 

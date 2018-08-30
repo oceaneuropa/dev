@@ -10,7 +10,7 @@ package org.orbit.component.runtime.extension.userregistry;
 import java.util.Map;
 
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
-import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl;
+import org.orbit.component.runtime.tier1.account.service.impl.UserRegistryServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;

@@ -9,7 +9,7 @@ package org.orbit.component.runtime.tier1.config.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -108,7 +108,7 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 		// this.indexTimer = new ConfigRegistryServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.CONFIG_REGISTRY_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.CONFIG_REGISTRY_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

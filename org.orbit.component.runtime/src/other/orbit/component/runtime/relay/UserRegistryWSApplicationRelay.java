@@ -23,13 +23,13 @@ public class UserRegistryWSApplicationRelay extends WSRelayApplication {
 
 		Resource.Builder userAccountsWSResource = Resource.builder("/useraccounts");
 		new WSMethodInflector(userAccountsWSResource, "", GET, JSON, factory.createClient(null), switcher);
-		new WSMethodInflector(userAccountsWSResource, "{userId}", GET, JSON, factory.createClient(null), switcher);
-		new WSMethodInflector(userAccountsWSResource, "{userId}/exists", GET, JSON, factory.createClient(null), switcher);
+		new WSMethodInflector(userAccountsWSResource, "{accountId}", GET, JSON, factory.createClient(null), switcher);
+		new WSMethodInflector(userAccountsWSResource, "{accountId}/exists", GET, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(userAccountsWSResource, "", POST, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(userAccountsWSResource, "", PUT, JSON, factory.createClient(null), switcher);
-		new WSMethodInflector(userAccountsWSResource, "{userId}/activated", GET, JSON, factory.createClient(null), switcher);
+		new WSMethodInflector(userAccountsWSResource, "{accountId}/activated", GET, JSON, factory.createClient(null), switcher);
 		new WSMethodInflector(userAccountsWSResource, "action", PUT, JSON, factory.createClient(null), switcher);
-		new WSMethodInflector(userAccountsWSResource, "{userId}", DELETE, JSON, factory.createClient(null), switcher);
+		new WSMethodInflector(userAccountsWSResource, "{accountId}", DELETE, JSON, factory.createClient(null), switcher);
 
 		registerResources(userAccountsWSResource.build());
 	}

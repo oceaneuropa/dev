@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier3.nodecontrol.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlEditPolicy;
@@ -112,7 +112,7 @@ public class NodeControlServiceAdapter implements LifecycleAware {
 		// this.indexTimer = new NodeControlServiceTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.NODE_CONTROL_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.NODE_CONTROL_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

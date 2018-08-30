@@ -14,24 +14,24 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UserAccountActionDTO {
 
 	@XmlElement
-	protected String userId;
+	protected String accountId;
 	@XmlElement
 	protected String action;
 	@XmlElement
 	protected Map<Object, Object> args = new HashMap<Object, Object>();
 
 	@XmlElement
-	public String getUserId() {
-		return userId;
+	public String getAccountId() {
+		return this.accountId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	@XmlElement
 	public String getAction() {
-		return action;
+		return this.action;
 	}
 
 	public void setAction(String action) {
@@ -40,7 +40,7 @@ public class UserAccountActionDTO {
 
 	@XmlElement
 	public Map<Object, Object> getArgs() {
-		return args;
+		return this.args;
 	}
 
 	public void setArgs(Map<Object, Object> args) {

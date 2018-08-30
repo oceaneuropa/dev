@@ -10,7 +10,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.util.LaunchServiceHelper;
 import org.orbit.component.runtime.util.OrbitClientHelper;
 import org.orbit.component.runtime.util.PlatformSetupUtil;
@@ -77,15 +77,15 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			properties.putAll(this.initProperties);
 		}
 
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_INDEX_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_EXTENSION_REGISTRY_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_APP_STORE_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.PLATFORM_HOME);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.NODESPACE_LOCATION);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_NODE_CONTROL_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_NODE_CONTROL_NAME);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_APP_STORE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.PLATFORM_HOME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.NODESPACE_LOCATION);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_NODE_CONTROL_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_NODE_CONTROL_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
 
 		update(properties);
 
@@ -122,30 +122,30 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			properties = new HashMap<Object, Object>();
 		}
 
-		String indexServiceUrl = (String) properties.get(ComponentsConstants.ORBIT_INDEX_SERVICE_URL);
-		String extensionRegistryUrl = (String) properties.get(ComponentsConstants.ORBIT_EXTENSION_REGISTRY_URL);
-		String appStoreUrl = (String) properties.get(ComponentsConstants.ORBIT_APP_STORE_URL);
-		String platformHome = (String) properties.get(ComponentsConstants.PLATFORM_HOME);
-		String nodespaceHome = (String) properties.get(ComponentsConstants.NODESPACE_LOCATION);
-		String globalHostURL = (String) properties.get(ComponentsConstants.ORBIT_HOST_URL);
-		String name = (String) properties.get(ComponentsConstants.COMPONENT_NODE_CONTROL_NAME);
-		String hostURL = (String) properties.get(ComponentsConstants.COMPONENT_NODE_CONTROL_HOST_URL);
-		String contextRoot = (String) properties.get(ComponentsConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
+		String indexServiceUrl = (String) properties.get(ComponentConstants.ORBIT_INDEX_SERVICE_URL);
+		String extensionRegistryUrl = (String) properties.get(ComponentConstants.ORBIT_EXTENSION_REGISTRY_URL);
+		String appStoreUrl = (String) properties.get(ComponentConstants.ORBIT_APP_STORE_URL);
+		String platformHome = (String) properties.get(ComponentConstants.PLATFORM_HOME);
+		String nodespaceHome = (String) properties.get(ComponentConstants.NODESPACE_LOCATION);
+		String globalHostURL = (String) properties.get(ComponentConstants.ORBIT_HOST_URL);
+		String name = (String) properties.get(ComponentConstants.COMPONENT_NODE_CONTROL_NAME);
+		String hostURL = (String) properties.get(ComponentConstants.COMPONENT_NODE_CONTROL_HOST_URL);
+		String contextRoot = (String) properties.get(ComponentConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
 
 		boolean printProps = false;
 		if (printProps) {
 			System.out.println();
 			System.out.println("Config properties:");
 			System.out.println("-----------------------------------------------------");
-			System.out.println(ComponentsConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
-			System.out.println(ComponentsConstants.ORBIT_EXTENSION_REGISTRY_URL + " = " + extensionRegistryUrl);
-			System.out.println(ComponentsConstants.ORBIT_APP_STORE_URL + " = " + appStoreUrl);
-			System.out.println(ComponentsConstants.PLATFORM_HOME + " = " + platformHome);
-			System.out.println(ComponentsConstants.NODESPACE_LOCATION + " = " + nodespaceHome);
-			System.out.println(ComponentsConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-			System.out.println(ComponentsConstants.COMPONENT_NODE_CONTROL_NAME + " = " + name);
-			System.out.println(ComponentsConstants.COMPONENT_NODE_CONTROL_HOST_URL + " = " + hostURL);
-			System.out.println(ComponentsConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT + " = " + contextRoot);
+			System.out.println(ComponentConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
+			System.out.println(ComponentConstants.ORBIT_EXTENSION_REGISTRY_URL + " = " + extensionRegistryUrl);
+			System.out.println(ComponentConstants.ORBIT_APP_STORE_URL + " = " + appStoreUrl);
+			System.out.println(ComponentConstants.PLATFORM_HOME + " = " + platformHome);
+			System.out.println(ComponentConstants.NODESPACE_LOCATION + " = " + nodespaceHome);
+			System.out.println(ComponentConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+			System.out.println(ComponentConstants.COMPONENT_NODE_CONTROL_NAME + " = " + name);
+			System.out.println(ComponentConstants.COMPONENT_NODE_CONTROL_HOST_URL + " = " + hostURL);
+			System.out.println(ComponentConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT + " = " + contextRoot);
 			System.out.println("-----------------------------------------------------");
 			System.out.println();
 		}
@@ -155,17 +155,17 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(ComponentsConstants.COMPONENT_NODE_CONTROL_NAME);
+		String name = (String) this.properties.get(ComponentConstants.COMPONENT_NODE_CONTROL_NAME);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.properties.get(ComponentsConstants.COMPONENT_NODE_CONTROL_HOST_URL);
+		String hostURL = (String) this.properties.get(ComponentConstants.COMPONENT_NODE_CONTROL_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.properties.get(ComponentsConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(ComponentConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -174,19 +174,19 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = (String) this.properties.get(ComponentsConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
+		String contextRoot = (String) this.properties.get(ComponentConstants.COMPONENT_NODE_CONTROL_CONTEXT_ROOT);
 		return contextRoot;
 	}
 
 	@Override
 	public String getPlatformHome() {
-		String platformHome = (String) this.properties.get(ComponentsConstants.PLATFORM_HOME);
+		String platformHome = (String) this.properties.get(ComponentConstants.PLATFORM_HOME);
 		return platformHome;
 	}
 
 	@Override
 	public String getNodespaceLocation() {
-		String nodespaceLocation = (String) this.properties.get(ComponentsConstants.NODESPACE_LOCATION);
+		String nodespaceLocation = (String) this.properties.get(ComponentConstants.NODESPACE_LOCATION);
 		if (nodespaceLocation == null || nodespaceLocation.isEmpty()) {
 			String home = getPlatformHome();
 			if (!home.endsWith("/")) {
@@ -198,7 +198,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	}
 
 	protected String getIndexServiceURL() {
-		String indexServiceUrl = (String) this.properties.get(ComponentsConstants.ORBIT_INDEX_SERVICE_URL);
+		String indexServiceUrl = (String) this.properties.get(ComponentConstants.ORBIT_INDEX_SERVICE_URL);
 		return indexServiceUrl;
 	}
 

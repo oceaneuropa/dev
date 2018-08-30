@@ -16,9 +16,9 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.model.tier1.account.UserAccountActionDTO;
 import org.orbit.component.model.tier1.account.UserAccountDTO;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
-import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
 
@@ -34,11 +34,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/useraccounts/exists?type={elementType}&value={elementValue}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/useraccounts (Body parameter: UserAccountDTO)
  * URL (PUT):    {scheme}://{host}:{port}/{contextRoot}/useraccounts (Body parameter: UserAccountDTO)
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/useraccounts?username={username}
+ * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/useraccounts?accountId={accountId}
  * 
  * User account: 
- * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/useraccount?username={username}
- * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?username={username}
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/useraccount?accountId={accountId}
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?accountId={accountId}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/useraccount/action (Body parameter: UserAccountActionDTO)
  * 
  */
@@ -87,18 +87,18 @@ public class UserAccountWSClient extends WSClient {
 	/**
 	 * Get a user account.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount?username={username}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount?accountId={accountId}
 	 * 
-	 * @param username
+	 * @param accountId
 	 * @return
 	 * @throws ClientException
 	 */
-	public UserAccountDTO get(String username) throws ClientException {
+	public UserAccountDTO get(String accountId) throws ClientException {
 		UserAccountDTO userAccount = null;
 		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("useraccount");
-			target = target.queryParam("username", username);
+			target = target.queryParam("accountId", accountId);
 
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
@@ -221,17 +221,17 @@ public class UserAccountWSClient extends WSClient {
 	 * 
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/useraccount/action (Body parameter: UserAccountActionDTO)
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param oldPassword
 	 * @param newPassword
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean changePassword(String userId, String oldPassword, String newPassword) throws ClientException {
+	public boolean changePassword(String accountId, String oldPassword, String newPassword) throws ClientException {
 		Response response = null;
 		try {
 			UserAccountActionDTO actionDTO = new UserAccountActionDTO();
-			actionDTO.setUserId(userId);
+			actionDTO.setAccountId(accountId);
 			actionDTO.setAction("change_password");
 			Map<Object, Object> args = new HashMap<Object, Object>();
 			args.put("oldpassword", oldPassword);
@@ -273,17 +273,17 @@ public class UserAccountWSClient extends WSClient {
 	/**
 	 * Check whether a user account is activated.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?username={username}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccount/activated?accountId={accountId}
 	 * 
-	 * @param username
+	 * @param accountId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean isActivated(String username) throws ClientException {
+	public boolean isActivated(String accountId) throws ClientException {
 		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("activated");
-			target = target.queryParam("username", username);
+			target = target.queryParam("accountId", accountId);
 
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).get();
@@ -313,15 +313,15 @@ public class UserAccountWSClient extends WSClient {
 	 * 
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/useraccount/action (Body parameter: UserAccountActionDTO)
 	 * 
-	 * @param username
+	 * @param accountId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean activate(String username) throws ClientException {
+	public boolean activate(String accountId) throws ClientException {
 		Response response = null;
 		try {
 			UserAccountActionDTO actionDTO = new UserAccountActionDTO();
-			actionDTO.setUserId(username);
+			actionDTO.setAccountId(accountId);
 			actionDTO.setAction("activate");
 			Map<Object, Object> args = new HashMap<Object, Object>();
 			args.put("key1", "v1");
@@ -367,15 +367,15 @@ public class UserAccountWSClient extends WSClient {
 	 * 
 	 * URL (POST): {scheme}://{host}:{port}/{contextRoot}/useraccount/action (Body parameter: UserAccountActionDTO)
 	 * 
-	 * @param username
+	 * @param accountId
 	 * @return
 	 * @throws ClientException
 	 */
-	public boolean deactivate(String username) throws ClientException {
+	public boolean deactivate(String accountId) throws ClientException {
 		Response response = null;
 		try {
 			UserAccountActionDTO actionDTO = new UserAccountActionDTO();
-			actionDTO.setUserId(username);
+			actionDTO.setAccountId(accountId);
 			actionDTO.setAction("deactivate");
 			Map<Object, Object> args = new HashMap<Object, Object>();
 			args.put("key4", "v2");
@@ -419,19 +419,19 @@ public class UserAccountWSClient extends WSClient {
 	/**
 	 * Delete a user account.
 	 * 
-	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/useraccounts?username={username}
+	 * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/useraccounts?accountId={accountId}
 	 * 
-	 * @param username
+	 * @param accountId
 	 * 
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO delete(String username) throws ClientException {
+	public StatusDTO delete(String accountId) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {
 			WebTarget target = getRootPath().path("useraccounts");
-			target = target.queryParam("username", username);
+			target = target.queryParam("accountId", accountId);
 
 			Builder builder = target.request(MediaType.APPLICATION_JSON);
 			response = updateHeaders(builder).delete();
@@ -448,39 +448,3 @@ public class UserAccountWSClient extends WSClient {
 	}
 
 }
-
-/// **
-// * Check whether a user account exists.
-// *
-// * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccounts/{userId}/exists
-// *
-// * @param userId
-// * @return
-// * @throws ClientException
-// */
-// public boolean userAccountExists(String userId) throws ClientException {
-// Response response = null;
-// try {
-// WebTarget target = getRootPath().path(PATH_USER_ACCOUNTS).path(userId).path(PATH_EXISTS);
-// Builder builder = target.request(MediaType.APPLICATION_JSON);
-// response = updateHeaders(builder).get();
-// checkResponse(target, response);
-//
-// String responseString = response.readEntity(String.class);
-//
-// ObjectMapper mapper = createObjectMapper(false);
-// Map<?, ?> result = mapper.readValue(responseString, Map.class);
-// if (result != null && result.containsKey(ATTR_EXISTS)) {
-// Object value = result.get(ATTR_EXISTS);
-// if (value instanceof Boolean) {
-// return (boolean) value;
-// }
-// }
-//
-// } catch (ClientException | IOException e) {
-// handleException(e);
-// } finally {
-// ResponseUtil.closeQuietly(response, true);
-// }
-// return false;
-// }

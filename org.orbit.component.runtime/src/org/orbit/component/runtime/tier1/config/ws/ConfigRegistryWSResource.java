@@ -29,13 +29,13 @@ import org.origin.common.rest.server.ServerException;
 /*
  * Config registry resource.
  * 
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{userid}/properties?path={path}
+ * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{accountId}/properties?path={path}
  * 
- * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{userid}/properties?path={path} (Body parameter: PropertiesDTO)
+ * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{accountId}/properties?path={path} (Body parameter: PropertiesDTO)
  * 
  */
 @Secured(roles = { OrbitRoles.USER })
-@Path("/{userid}")
+@Path("/{accountId}")
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigRegistryWSResource extends AbstractWSApplicationResource {
 
@@ -55,22 +55,22 @@ public class ConfigRegistryWSResource extends AbstractWSApplicationResource {
 	/**
 	 * Get properties.
 	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{userId}/properties?path={path}
+	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/{accountId}/properties?path={path}
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @return
 	 */
 	@GET
 	@Path("properties")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getProperties(@PathParam("userid") String userId, @QueryParam("path") String path) {
+	public Response getProperties(@PathParam("accountId") String accountId, @QueryParam("path") String path) {
 		// ConfigRegistryService service = getService(ConfigRegistryService.class);
 		ConfigRegistryService service = getService();
 
 		Map<String, String> properties = null;
 		try {
-			ConfigRegistry configRegistry = service.getRegistry(userId);
+			ConfigRegistry configRegistry = service.getRegistry(accountId);
 			properties = configRegistry.getProperties(new EPath(path));
 
 		} catch (ServerException e) {
@@ -86,14 +86,14 @@ public class ConfigRegistryWSResource extends AbstractWSApplicationResource {
 	/**
 	 * Add an app.
 	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{userId}/{root}/{path}/properties (Body parameter: PropertiesDTO)
+	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/{accountId}/{root}/{path}/properties (Body parameter: PropertiesDTO)
 	 * 
 	 * @param newAppRequestDTO
 	 * @return
 	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response setProperties(@PathParam("userid") String userId, @QueryParam("path") String path, SetPropertiesDTO propertiesDTO) {
+	public Response setProperties(@PathParam("accountId") String accountId, @QueryParam("path") String path, SetPropertiesDTO propertiesDTO) {
 		if (propertiesDTO == null) {
 			ErrorDTO nullPropertiesError = new ErrorDTO("propertiesDTO is null.");
 			return Response.status(Status.BAD_REQUEST).entity(nullPropertiesError).build();

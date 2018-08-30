@@ -1,17 +1,13 @@
 package other.orbit.component.cli;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
-import org.orbit.component.api.util.ComponentClients;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ClientException;
@@ -26,7 +22,7 @@ public class UserRegistryCommandV2 {
 
 	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryCommandV2.class);
 
-	protected static String[] USER_ACCOUNT_COLUMNS = new String[] { "User Id", "Email", "Password", "First Name", "Last Name", "Phone", "Activated", "Creation Time", "Last Update Time" };
+	protected static String[] USER_ACCOUNT_COLUMNS = new String[] { "Account Id", "Username", "Email", "Password", "First Name", "Last Name", "Phone", "Activated", "Creation Time", "Last Update Time" };
 
 	protected String getScheme() {
 		return "orbit";
@@ -63,6 +59,11 @@ public class UserRegistryCommandV2 {
 		return ComponentClientsUtil.UserAccounts.getUserAccountsClient(url, null);
 	}
 
+	protected String getAccountId(String username) {
+		String accountId = null;
+		return accountId;
+	}
+
 	@Descriptor("list_users")
 	public void list_users(//
 			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url //
@@ -76,7 +77,8 @@ public class UserRegistryCommandV2 {
 		String[][] rows = new String[userAccounts.length][USER_ACCOUNT_COLUMNS.length];
 		int rowIndex = 0;
 		for (UserAccount currUserAccount : userAccounts) {
-			String userId = currUserAccount.getUserId();
+			String accountId = currUserAccount.getAccountId();
+			String username = currUserAccount.getUsername();
 			String email = currUserAccount.getEmail();
 			String password = currUserAccount.getPassword();
 			String firstName = currUserAccount.getFirstName();
@@ -88,7 +90,7 @@ public class UserRegistryCommandV2 {
 			String createTimeStr = (createTime != null) ? DateUtil.toString(createTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 			String updateTimeStr = (updateTime != null) ? DateUtil.toString(updateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { userId, email, password, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
+			rows[rowIndex++] = new String[] { accountId, username, email, password, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
 		}
 
 		PrettyPrinter.prettyPrint(USER_ACCOUNT_COLUMNS, rows, userAccounts.length);
@@ -107,15 +109,18 @@ public class UserRegistryCommandV2 {
 			return;
 		}
 
+		String accountId = getAccountId(username);
+
 		UserAccountClient userRegistry = getUserRegistry(url);
 
-		UserAccount userAccount = userRegistry.getUserAccount(username);
+		UserAccount userAccount = userRegistry.getUserAccount(accountId);
 
 		UserAccount[] userAccounts = (userAccount != null) ? new UserAccount[] { userAccount } : new UserAccount[0];
 		String[][] rows = new String[userAccounts.length][USER_ACCOUNT_COLUMNS.length];
 		int rowIndex = 0;
 		for (UserAccount currUserAccount : userAccounts) {
-			String currUserId = currUserAccount.getUserId();
+			String currAccountId = currUserAccount.getAccountId();
+			String currUsername = currUserAccount.getUsername();
 			String firstName = currUserAccount.getFirstName();
 			String lastName = currUserAccount.getLastName();
 			String email = currUserAccount.getEmail();
@@ -126,7 +131,7 @@ public class UserRegistryCommandV2 {
 			String createTimeStr = (createTime != null) ? DateUtil.toString(createTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 			String updateTimeStr = (updateTime != null) ? DateUtil.toString(updateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { currUserId, email, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
+			rows[rowIndex++] = new String[] { currAccountId, currUsername, email, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
 		}
 
 		PrettyPrinter.prettyPrint(USER_ACCOUNT_COLUMNS, rows, userAccounts.length);
@@ -136,7 +141,7 @@ public class UserRegistryCommandV2 {
 	@Descriptor("add_user")
 	public void add_user( //
 			@Descriptor("URL") @Parameter(names = { "-url", "--url" }, absentValue = Parameter.UNSPECIFIED) String url, //
-			@Descriptor("UserId") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
+			@Descriptor("Username") @Parameter(names = { "-username", "--username" }, absentValue = Parameter.UNSPECIFIED) String username, //
 			@Descriptor("Password") @Parameter(names = { "-password", "--password" }, absentValue = Parameter.UNSPECIFIED) String password, //
 			@Descriptor("Email") @Parameter(names = { "-email", "--email" }, absentValue = Parameter.UNSPECIFIED) String email, //
 			@Descriptor("First Name") @Parameter(names = { "-firstname", "--firstname" }, absentValue = Parameter.UNSPECIFIED) String firstName, //
@@ -155,7 +160,7 @@ public class UserRegistryCommandV2 {
 		UserAccountClient userRegistry = getUserRegistry(url);
 
 		if (Parameter.UNSPECIFIED.equals(username)) {
-			System.out.println("userId is not set.");
+			System.out.println("username is not set.");
 			return;
 		}
 		if (Parameter.UNSPECIFIED.equals(password)) {
@@ -168,7 +173,7 @@ public class UserRegistryCommandV2 {
 		}
 
 		CreateUserAccountRequest request = new CreateUserAccountRequest();
-		request.setUserId(username);
+		request.setUsername(username);
 		request.setPassword(password);
 		request.setEmail(email);
 		request.setFirstName(firstName);
@@ -220,6 +225,8 @@ public class UserRegistryCommandV2 {
 			System.out.println("username is not set.");
 			return;
 		}
+
+		String accountId = getAccountId(username);
 
 		boolean succeed = userRegistry.activate(username);
 		boolean activated = userRegistry.isActivated(username);

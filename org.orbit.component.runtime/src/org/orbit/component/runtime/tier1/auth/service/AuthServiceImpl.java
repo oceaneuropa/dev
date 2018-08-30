@@ -9,7 +9,7 @@ import org.orbit.component.model.tier1.auth.AuthorizationRequest;
 import org.orbit.component.model.tier1.auth.AuthorizationResponse;
 import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenResponse;
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.common.token.TokenManager;
 import org.orbit.component.runtime.common.token.TokenManagerClusterImpl;
@@ -54,11 +54,11 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		if (this.initProperties != null) {
 			properties.putAll(this.initProperties);
 		}
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_AUTH_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_AUTH_NAME);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_AUTH_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_AUTH_TOKEN_SECRET);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_AUTH_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_AUTH_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_AUTH_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_AUTH_TOKEN_SECRET);
 
 		update(properties);
 
@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 	protected void init() {
 		// 1. retrieve token secret
 		String realm = Activator.getDefault().getRealm();
-		this.tokenSecret = (String) this.properties.get(ComponentsConstants.COMPONENT_AUTH_TOKEN_SECRET);
+		this.tokenSecret = (String) this.properties.get(ComponentConstants.COMPONENT_AUTH_TOKEN_SECRET);
 
 		// 2. init token manager
 		this.tokenManager = new TokenManagerClusterImpl(getName(), realm);
@@ -112,16 +112,16 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 
 	@Override
 	public String getName() {
-		return (String) this.properties.get(ComponentsConstants.COMPONENT_AUTH_NAME);
+		return (String) this.properties.get(ComponentConstants.COMPONENT_AUTH_NAME);
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.properties.get(ComponentsConstants.COMPONENT_AUTH_HOST_URL);
+		String hostURL = (String) this.properties.get(ComponentConstants.COMPONENT_AUTH_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.properties.get(ComponentsConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(ComponentConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -130,7 +130,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 
 	@Override
 	public String getContextRoot() {
-		return (String) this.properties.get(ComponentsConstants.COMPONENT_AUTH_CONTEXT_ROOT);
+		return (String) this.properties.get(ComponentConstants.COMPONENT_AUTH_CONTEXT_ROOT);
 	}
 
 	@Override
@@ -194,10 +194,10 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 			if (userRegistryService == null) {
 				throw new ServerException("Service Unavailable", "UserRegistry service is not available.");
 			}
-			userAccount = userRegistryService.getUserAccount(username);
-			if (userAccount != null) {
-				matchUsernamePassword = userRegistryService.matchUsernamePassword(username, password);
-			}
+			// userAccount = userRegistryService.getUserAccountByUsername(username);
+			// if (userAccount != null) {
+			// }
+			matchUsernamePassword = userRegistryService.matchUsernamePassword(username, password);
 
 		} catch (ServerException e) {
 			e.printStackTrace();
@@ -254,19 +254,19 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 		}
 
 		// Step2. Get username from JWT
-		String username = null;
+		String accountId = null;
 		Map<String, Claim> claimsMap = jwt.getClaims();
 		if (claimsMap != null) {
 			for (Iterator<String> claimItor = claimsMap.keySet().iterator(); claimItor.hasNext();) {
 				String key = claimItor.next();
 				Claim claim = claimsMap.get(key);
 				String value = claim.asString();
-				if ("username".equalsIgnoreCase(key)) {
-					username = value;
+				if ("account_id".equalsIgnoreCase(key)) {
+					accountId = value;
 				}
 			}
 		}
-		if (username == null) {
+		if (accountId == null) {
 			throw new ServerException("Unauthorized", "Refresh token is invalid.");
 		}
 
@@ -277,13 +277,14 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 			if (userRegistryService == null) {
 				throw new ServerException("Service Unavailable", "UserRegistry service is not available.");
 			}
-			userAccount = userRegistryService.getUserAccount(username);
+			userAccount = userRegistryService.getUserAccountByAccountId(accountId);
+
 		} catch (ServerException e) {
 			e.printStackTrace();
 			throw new ServerException("User Registry Exception", e.getMessage(), e);
 		}
 		if (userAccount == null) {
-			throw new ServerException("Unauthorized", "Invalid username: " + username);
+			throw new ServerException("Unauthorized", "Invalid username: " + accountId);
 		}
 
 		// Step4. Create new UserToken and store it in the tokenManager
@@ -294,7 +295,7 @@ public class AuthServiceImpl implements AuthService, LifecycleAware {
 			e.printStackTrace();
 			throw new ServerException("Authentication Failed", e.getMessage(), e);
 		}
-		this.tokenManager.setUserToken(username, userToken);
+		this.tokenManager.setUserToken(accountId, userToken);
 
 		// Step5. Return the token response
 		TokenResponse response = new TokenResponse();

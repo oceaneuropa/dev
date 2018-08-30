@@ -4,7 +4,8 @@ import java.util.Date;
 
 public class UpdateUserAccountRequest {
 
-	protected String userId; // required
+	protected String accountId; // required
+	protected String username; // required
 	protected String password; // required
 	protected String email; // required
 	protected String firstName;
@@ -13,16 +14,24 @@ public class UpdateUserAccountRequest {
 	protected Date creationTime;
 	protected Date lastUpdateTime;
 
-	public String getUserId() {
-		return userId;
+	public String getAccountId() {
+		return this.accountId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
+	}
+
+	public String getUsername() {
+		return this.username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -30,7 +39,7 @@ public class UpdateUserAccountRequest {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {
@@ -38,7 +47,7 @@ public class UpdateUserAccountRequest {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -46,7 +55,7 @@ public class UpdateUserAccountRequest {
 	}
 
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 
 	public void setLastName(String lastName) {
@@ -54,7 +63,7 @@ public class UpdateUserAccountRequest {
 	}
 
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
 	public void setPhone(String phone) {
@@ -62,7 +71,7 @@ public class UpdateUserAccountRequest {
 	}
 
 	public Date getCreationTime() {
-		return creationTime;
+		return this.creationTime;
 	}
 
 	public void setCreationTime(Date creationTime) {
@@ -70,7 +79,7 @@ public class UpdateUserAccountRequest {
 	}
 
 	public Date getLastUpdateTime() {
-		return lastUpdateTime;
+		return this.lastUpdateTime;
 	}
 
 	public void setLastUpdateTime(Date lastUpdateTime) {

@@ -8,12 +8,13 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
 import org.orbit.component.api.tier1.configregistry.EPath;
-import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier1.configregistry.ConfigRegistryWSClient;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.util.StringUtil;
+
+import other.orbit.component.connector.ComponentConstantsV1;
 
 public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 
@@ -46,14 +47,14 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(ComponentConstants.CONFIG_REGISTRY_NAME);
+		String name = (String) this.properties.get(ComponentConstantsV1.CONFIG_REGISTRY_NAME);
 		return name;
 	}
 
 	@Override
 	public String getURL() {
-		String hostURL = (String) this.properties.get(ComponentConstants.CONFIG_REGISTRY_HOST_URL);
-		String contextRoot = (String) this.properties.get(ComponentConstants.CONFIG_REGISTRY_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(ComponentConstantsV1.CONFIG_REGISTRY_HOST_URL);
+		String contextRoot = (String) this.properties.get(ComponentConstantsV1.CONFIG_REGISTRY_CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 
@@ -82,14 +83,14 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 			properties = new HashMap<String, Object>();
 		}
 
-		String oldUrl = (String) this.properties.get(ComponentConstants.APPSTORE_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(ComponentConstants.APPSTORE_CONTEXT_ROOT);
+		String oldUrl = (String) this.properties.get(ComponentConstantsV1.APPSTORE_HOST_URL);
+		String oldContextRoot = (String) this.properties.get(ComponentConstantsV1.APPSTORE_CONTEXT_ROOT);
 
 		this.properties = properties;
 		this.loadBalanceId = getLoadBalanceId(this.properties);
 
-		String newUrl = (String) properties.get(ComponentConstants.APPSTORE_HOST_URL);
-		String newContextRoot = (String) properties.get(ComponentConstants.APPSTORE_CONTEXT_ROOT);
+		String newUrl = (String) properties.get(ComponentConstantsV1.APPSTORE_HOST_URL);
+		String newContextRoot = (String) properties.get(ComponentConstantsV1.APPSTORE_CONTEXT_ROOT);
 
 		boolean reinitClient = false;
 		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {
@@ -114,37 +115,37 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 	}
 
 	@Override
-	public Map<String, String> getProperties(String userId, EPath path) throws ClientException {
+	public Map<String, String> getProperties(String accountId, EPath path) throws ClientException {
 		return null;
 	}
 
 	@Override
-	public String getProperty(String userId, EPath path, String key) throws ClientException {
+	public String getProperty(String accountId, EPath path, String key) throws ClientException {
 		return null;
 	}
 
 	@Override
-	public void setProperties(String userId, EPath path, Map<String, String> properties) throws ClientException {
+	public void setProperties(String accountId, EPath path, Map<String, String> properties) throws ClientException {
 
 	}
 
 	@Override
-	public void setProperty(String userId, EPath path, String key, String value) throws ClientException {
+	public void setProperty(String accountId, EPath path, String key, String value) throws ClientException {
 
 	}
 
 	@Override
-	public void removeProperty(String userId, EPath path, String key) throws ClientException {
+	public void removeProperty(String accountId, EPath path, String key) throws ClientException {
 
 	}
 
 	@Override
-	public void removeAll(String userId, EPath path) throws ClientException {
+	public void removeAll(String accountId, EPath path) throws ClientException {
 
 	}
 
 	@Override
-	public void removeAll(String userId) throws ClientException {
+	public void removeAll(String accountId) throws ClientException {
 
 	}
 

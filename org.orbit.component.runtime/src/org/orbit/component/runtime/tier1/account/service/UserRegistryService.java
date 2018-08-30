@@ -10,28 +10,30 @@ public interface UserRegistryService extends WebServiceAware {
 
 	List<UserAccount> getUserAccounts() throws ServerException;
 
-	UserAccount getUserAccount(String userId) throws ServerException;
+	UserAccount getUserAccountByAccountId(String accountId) throws ServerException;
 
-	boolean userAccountExists(String userId) throws ServerException;
+	UserAccount getUserAccountByUsername(String username) throws ServerException;
+
+	boolean accountIdExists(String accountId) throws ServerException;
 
 	boolean usernameExists(String username) throws ServerException;
 
 	boolean emailExists(String email) throws ServerException;
 
-	boolean matchUsernamePassword(String userId, String password) throws ServerException;
+	boolean matchUsernamePassword(String username, String password) throws ServerException;
 
 	UserAccount registerUserAccount(UserAccount newUserAccountRequest) throws ServerException;
 
 	boolean updateUserAccount(UserAccount updateUserAccountRequest) throws ServerException;
 
-	boolean changePassword(String userId, String oldPassword, String newPassword) throws ServerException;
+	boolean changePassword(String accountId, String oldPassword, String newPassword) throws ServerException;
 
-	boolean isUserAccountActivated(String userId) throws ServerException;
+	boolean isUserAccountActivated(String accountId) throws ServerException;
 
-	boolean activateUserAccount(String userId) throws ServerException;
+	boolean activateUserAccount(String accountId) throws ServerException;
 
-	boolean deactivateUserAccount(String userId) throws ServerException;
+	boolean deactivateUserAccount(String accountId) throws ServerException;
 
-	boolean deleteUserAccount(String userId) throws ServerException;
+	boolean deleteUserAccount(String accountId) throws ServerException;
 
 }

@@ -7,7 +7,7 @@
  *******************************************************************************/
 package org.orbit.component.runtime;
 
-public interface ComponentsConstants {
+public interface ComponentConstants {
 
 	// ----------------------------------------------------------------------------------------
 	// Global

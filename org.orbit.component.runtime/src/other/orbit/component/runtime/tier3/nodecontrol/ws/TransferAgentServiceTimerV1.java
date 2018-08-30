@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -33,32 +33,32 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 		String contextRoot = service.getContextRoot();
 		String taHome = service.getPlatformHome();
 
-		this.indexItem = indexProvider.getIndexItem(ComponentsConstants.NODE_CONTROL_INDEXER_ID, ComponentsConstants.NODE_CONTROL_TYPE, name);
+		this.indexItem = indexProvider.getIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, ComponentConstants.NODE_CONTROL_TYPE, name);
 		if (this.indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentsConstants.NODE_CONTROL_NAME, name);
-			props.put(ComponentsConstants.NODE_CONTROL_HOST_URL, hostURL);
-			props.put(ComponentsConstants.NODE_CONTROL_CONTEXT_ROOT, contextRoot);
-			props.put(ComponentsConstants.NODE_CONTROL_HOME, taHome);
-			props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(ComponentConstants.NODE_CONTROL_NAME, name);
+			props.put(ComponentConstants.NODE_CONTROL_HOST_URL, hostURL);
+			props.put(ComponentConstants.NODE_CONTROL_CONTEXT_ROOT, contextRoot);
+			props.put(ComponentConstants.NODE_CONTROL_HOME, taHome);
+			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			this.indexItem = indexProvider.addIndexItem(ComponentsConstants.NODE_CONTROL_INDEXER_ID, ComponentsConstants.NODE_CONTROL_TYPE, name, props);
+			this.indexItem = indexProvider.addIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, ComponentConstants.NODE_CONTROL_TYPE, name, props);
 
 		} else {
 			// Update existing index item with properties
 			Integer indexItemId = this.indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			indexProvider.setProperties(ComponentsConstants.NODE_CONTROL_INDEXER_ID, indexItemId, props);
+			indexProvider.setProperties(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItemId, props);
 		}
 	}
 
 	@Override
 	public synchronized void removeIndex(IndexProvider indexProvider) throws IOException {
 		if (this.indexItem != null) {
-			indexProvider.removeIndexItem(ComponentsConstants.NODE_CONTROL_INDEXER_ID, indexItem.getIndexItemId());
+			indexProvider.removeIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItem.getIndexItemId());
 		}
 	}
 

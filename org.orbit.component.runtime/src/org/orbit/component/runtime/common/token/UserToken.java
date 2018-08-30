@@ -9,6 +9,7 @@ public class UserToken implements Serializable {
 
 	private static final long serialVersionUID = -4104051835363057083L;
 
+	protected String accountId;
 	protected String username;
 	protected String accessToken;
 	protected String refreshToken;
@@ -16,6 +17,14 @@ public class UserToken implements Serializable {
 	protected Date refreshTokenExpireTime;
 
 	public UserToken() {
+	}
+
+	public String getAccountId() {
+		return this.accountId;
+	}
+
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	public String getUsername() {

@@ -29,22 +29,24 @@ public class UserTokenTableHandler implements DatabaseTableAware {
 
 		if (DatabaseTableAware.MYSQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
-			sb.append("    userId varchar(500) NOT NULL,");
+			sb.append("    accountId varchar(50) NOT NULL,");
+			sb.append("    username varchar(500) NOT NULL,");
 			sb.append("    accessToken varchar(500),");
 			sb.append("    refreshToken varchar(500),");
 			sb.append("	   accessTokenExpireTime varchar(50) DEFAULT NULL,");
 			sb.append("	   refreshTokenExpireTime varchar(50) DEFAULT NULL,");
-			sb.append("    PRIMARY KEY (userId)");
+			sb.append("    PRIMARY KEY (accountId)");
 			sb.append(");");
 
 		} else if (DatabaseTableAware.POSTGRESQL.equalsIgnoreCase(database)) {
 			sb.append("CREATE TABLE IF NOT EXISTS " + getTableName() + " (");
-			sb.append("    userId varchar(500) NOT NULL,");
+			sb.append("    accountId varchar(50) NOT NULL,");
+			sb.append("    username varchar(500) NOT NULL,");
 			sb.append("    accessToken varchar(500),");
 			sb.append("    refreshToken varchar(500),");
 			sb.append("	   accessTokenExpireTime varchar(50) DEFAULT NULL,");
 			sb.append("	   refreshTokenExpireTime varchar(50) DEFAULT NULL,");
-			sb.append("    PRIMARY KEY (userId)");
+			sb.append("    PRIMARY KEY (accountId)");
 			sb.append(");");
 		}
 
@@ -63,7 +65,8 @@ public class UserTokenTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	protected static UserToken toObject(ResultSet rs) throws SQLException {
-		String username = rs.getString("userId");
+		String accountId = rs.getString("accountId");
+		String username = rs.getString("username");
 		String accessToken = rs.getString("accessToken");
 		String refreshToken = rs.getString("refreshToken");
 		String accessTokenExpireTimeString = rs.getString("accessTokenExpireTime");
@@ -72,6 +75,7 @@ public class UserTokenTableHandler implements DatabaseTableAware {
 		Date refreshTokenExpireTime = refreshTokenExpireTimeString != null ? DateUtil.toDate(refreshTokenExpireTimeString, DateUtil.getCommonDateFormats()) : null;
 
 		UserToken userToken = new UserToken();
+		userToken.setAccountId(accountId);
 		userToken.setUsername(username);
 		userToken.setAccessToken(accessToken);
 		userToken.setRefreshToken(refreshToken);
@@ -101,43 +105,43 @@ public class UserTokenTableHandler implements DatabaseTableAware {
 	/**
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param username
 	 * @return
 	 * @throws SQLException
 	 */
-	public UserToken get(Connection conn, String userId) throws SQLException {
-		String querySQL = "SELECT * FROM " + getTableName() + " WHERE userId=?";
+	public UserToken get(Connection conn, String username) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE username=?";
 		ResultSetSingleHandler<UserToken> handler = new ResultSetSingleHandler<UserToken>() {
 			@Override
 			protected UserToken handleRow(ResultSet rs) throws SQLException {
 				return toObject(rs);
 			}
 		};
-		return DatabaseUtil.query(conn, querySQL, new Object[] { userId }, handler);
+		return DatabaseUtil.query(conn, querySQL, new Object[] { username }, handler);
 	}
 
 	/**
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param username
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean exists(Connection conn, String userId) throws SQLException {
-		String querySQL = "SELECT * FROM " + getTableName() + " WHERE userId=?";
+	public boolean exists(Connection conn, String username) throws SQLException {
+		String querySQL = "SELECT * FROM " + getTableName() + " WHERE username=?";
 		AbstractResultSetHandler<Boolean> handler = new AbstractResultSetHandler<Boolean>() {
 			@Override
 			public Boolean handle(ResultSet rs) throws SQLException {
 				return rs.next() ? true : false;
 			}
 		};
-		return DatabaseUtil.query(conn, querySQL, new Object[] { userId }, handler);
+		return DatabaseUtil.query(conn, querySQL, new Object[] { username }, handler);
 	}
 
 	/**
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param username
 	 * @param accessToken
 	 * @param refreshToken
 	 * @param accessTokenExpireTime
@@ -145,14 +149,14 @@ public class UserTokenTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public UserToken add(Connection conn, String userId, String accessToken, String refreshToken, Date accessTokenExpireTime, Date refreshTokenExpireTime) throws SQLException {
+	public UserToken add(Connection conn, String username, String accessToken, String refreshToken, Date accessTokenExpireTime, Date refreshTokenExpireTime) throws SQLException {
 		String accessTokenExpireTimeString = DateUtil.toString(accessTokenExpireTime, getDateFormat());
 		String refreshTokenExpireTimeString = DateUtil.toString(refreshTokenExpireTime, getDateFormat());
 
-		String insertSQL = "INSERT INTO " + getTableName() + " (userId, accessToken, refreshToken, accessTokenExpireTime, refreshTokenExpireTime) VALUES (?, ?, ?, ?, ?)";
-		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { userId, accessToken, refreshToken, accessTokenExpireTimeString, refreshTokenExpireTimeString }, 1);
+		String insertSQL = "INSERT INTO " + getTableName() + " (username, accessToken, refreshToken, accessTokenExpireTime, refreshTokenExpireTime) VALUES (?, ?, ?, ?, ?)";
+		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { username, accessToken, refreshToken, accessTokenExpireTimeString, refreshTokenExpireTimeString }, 1);
 		if (succeed) {
-			return get(conn, userId);
+			return get(conn, username);
 		}
 		return null;
 	}
@@ -160,7 +164,7 @@ public class UserTokenTableHandler implements DatabaseTableAware {
 	/**
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param username
 	 * @param accessToken
 	 * @param refreshToken
 	 * @param accessTokenExpireTime
@@ -168,17 +172,17 @@ public class UserTokenTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean update(Connection conn, String userId, String accessToken, String refreshToken, Date accessTokenExpireTime, Date refreshTokenExpireTime) throws SQLException {
+	public boolean update(Connection conn, String username, String accessToken, String refreshToken, Date accessTokenExpireTime, Date refreshTokenExpireTime) throws SQLException {
 		String accessTokenExpireTimeString = DateUtil.toString(accessTokenExpireTime, getDateFormat());
 		String refreshTokenExpireTimeString = DateUtil.toString(refreshTokenExpireTime, getDateFormat());
 
-		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET accessToken=?, refreshToken=?, accessTokenExpireTime=?, refreshTokenExpireTime=? WHERE userId=?", new Object[] { accessToken, refreshToken, accessTokenExpireTimeString, refreshTokenExpireTimeString, userId }, 1);
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET accessToken=?, refreshToken=?, accessTokenExpireTime=?, refreshTokenExpireTime=? WHERE username=?", new Object[] { accessToken, refreshToken, accessTokenExpireTimeString, refreshTokenExpireTimeString, username }, 1);
 	}
 
 	/**
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param username
 	 * @param accessToken
 	 * @param refreshToken
 	 * @param accessTokenExpireTime
@@ -186,36 +190,36 @@ public class UserTokenTableHandler implements DatabaseTableAware {
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updateAccessToken(Connection conn, String userId, String accessToken, Date accessTokenExpireTime) throws SQLException {
+	public boolean updateAccessToken(Connection conn, String username, String accessToken, Date accessTokenExpireTime) throws SQLException {
 		String accessTokenExpireTimeString = DateUtil.toString(accessTokenExpireTime, getDateFormat());
 
-		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET accessToken=?, accessTokenExpireTime=? WHERE userId=?", new Object[] { accessToken, accessTokenExpireTimeString, userId }, 1);
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET accessToken=?, accessTokenExpireTime=? WHERE username=?", new Object[] { accessToken, accessTokenExpireTimeString, username }, 1);
 	}
 
 	/**
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param v
 	 * @param refreshToken
 	 * @param refreshTokenExpireTime
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updateRefreshToken(Connection conn, String userId, String refreshToken, Date refreshTokenExpireTime) throws SQLException {
+	public boolean updateRefreshToken(Connection conn, String v, String refreshToken, Date refreshTokenExpireTime) throws SQLException {
 		String refreshTokenExpireTimeString = DateUtil.toString(refreshTokenExpireTime, getDateFormat());
 
-		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET refreshToken=?, refreshTokenExpireTime=? WHERE userId=?", new Object[] { refreshToken, refreshTokenExpireTimeString, userId }, 1);
+		return DatabaseUtil.update(conn, "UPDATE " + getTableName() + " SET refreshToken=?, refreshTokenExpireTime=? WHERE username=?", new Object[] { refreshToken, refreshTokenExpireTimeString, v }, 1);
 	}
 
 	/**
 	 * 
 	 * @param conn
-	 * @param userId
+	 * @param username
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean delete(Connection conn, String userId) throws SQLException {
-		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE userId=?", new Object[] { userId }, 1);
+	public boolean delete(Connection conn, String username) throws SQLException {
+		return DatabaseUtil.update(conn, "DELETE FROM " + getTableName() + " WHERE username=?", new Object[] { username }, 1);
 	}
 
 }

@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
-import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier2.appstore.AppStoreClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexService;
 
 import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
+import other.orbit.component.connector.ComponentConstantsV1;
 import other.orbit.infra.api.indexes.IndexBasedLoadBalancedServiceConnectorImpl;
 
 public class AppStoreConnectorImplV1 extends IndexBasedLoadBalancedServiceConnectorImpl<AppStoreClient> implements AppStoreConnectorV1 {
@@ -25,7 +25,7 @@ public class AppStoreConnectorImplV1 extends IndexBasedLoadBalancedServiceConnec
 
 	@Override
 	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
-		return indexService.getIndexItems(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE);
+		return indexService.getIndexItems(ComponentConstantsV1.APP_STORE_INDEXER_ID, ComponentConstantsV1.APP_STORE_TYPE);
 	}
 
 	@Override

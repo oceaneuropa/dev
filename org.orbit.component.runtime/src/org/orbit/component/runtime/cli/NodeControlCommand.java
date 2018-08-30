@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -58,7 +58,7 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_DOMAIN_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(this.bundleContext, NodeControlCommand.class.getName(), this, props);

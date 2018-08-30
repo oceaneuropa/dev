@@ -1,6 +1,6 @@
 package org.orbit.component.runtime.tier1.session.ws;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -108,7 +108,7 @@ public class OAuth2ServiceAdapter implements LifecycleAware {
 		// this.indexTimer = new OAuth2ServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.OAUTH2_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.OAUTH2_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

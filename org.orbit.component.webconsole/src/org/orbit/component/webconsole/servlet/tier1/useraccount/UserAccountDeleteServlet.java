@@ -31,9 +31,9 @@ public class UserAccountDeleteServlet extends HttpServlet {
 		String userRegistryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		String message = "";
 
-		String[] ids = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
+		String[] accountIds = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
 
-		if (ids.length == 0) {
+		if (accountIds.length == 0) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 
@@ -43,11 +43,11 @@ public class UserAccountDeleteServlet extends HttpServlet {
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
-		if (ids != null) {
+		if (accountIds != null) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-				for (String currId : ids) {
-					boolean currSucceed = ComponentClientsUtil.UserAccounts.deleteUserAccount(userRegistryUrl, accessToken, currId);
+				for (String currAccountId : accountIds) {
+					boolean currSucceed = ComponentClientsUtil.UserAccounts.deleteUserAccount(userRegistryUrl, accessToken, currAccountId);
 					if (currSucceed) {
 						hasSucceed = true;
 					} else {
@@ -63,9 +63,9 @@ public class UserAccountDeleteServlet extends HttpServlet {
 			succeed = true;
 		}
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (ids != null && ids.length > 1) ? "Users are deleted successfully." : "User is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (accountIds != null && accountIds.length > 1) ? "Users are deleted successfully." : "User is deleted successfully.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, (ids != null && ids.length > 1) ? "Users are not deleted." : "User is not deleted.");
+			message = MessageHelper.INSTANCE.add(message, (accountIds != null && accountIds.length > 1) ? "Users are not deleted." : "User is not deleted.");
 		}
 
 		// ---------------------------------------------------------------

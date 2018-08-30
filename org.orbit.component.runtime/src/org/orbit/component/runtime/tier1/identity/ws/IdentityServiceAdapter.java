@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier1.identity.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
 import org.orbit.infra.api.indexes.IndexProvider;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
@@ -99,7 +99,7 @@ public class IdentityServiceAdapter implements LifecycleAware {
 		// Start indexing timer
 		IndexProvider indexProvider = getIndexProvider();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.IDENTITY_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.IDENTITY_INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<IdentityService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);

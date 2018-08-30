@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -38,24 +38,24 @@ public class AppStoreServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
 
-		IndexItem indexItem = indexProvider.getIndexItem(ComponentsConstants.APP_STORE_INDEXER_ID, ComponentsConstants.APP_STORE_TYPE, name);
+		IndexItem indexItem = indexProvider.getIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE, name);
 		if (indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentsConstants.APPSTORE_HOST_URL, hostURL);
-			props.put(ComponentsConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
-			props.put(ComponentsConstants.APPSTORE_NAME, name);
-			props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
+			props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
+			props.put(ComponentConstants.APPSTORE_NAME, name);
+			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			indexProvider.addIndexItem(ComponentsConstants.APP_STORE_INDEXER_ID, ComponentsConstants.APP_STORE_TYPE, name, props);
+			indexProvider.addIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE, name, props);
 
 		} else {
 			// Update existing index item with properties
 			Integer indexItemId = indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			indexProvider.setProperties(ComponentsConstants.APP_STORE_INDEXER_ID, indexItemId, props);
+			indexProvider.setProperties(ComponentConstants.APP_STORE_INDEXER_ID, indexItemId, props);
 		}
 	}
 

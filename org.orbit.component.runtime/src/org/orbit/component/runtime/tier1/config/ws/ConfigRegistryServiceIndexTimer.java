@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -40,7 +40,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	public IndexItem getIndex(IndexProvider indexProvider, ConfigRegistryService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(ComponentsConstants.CONFIG_REGISTRY_INDEXER_ID, ComponentsConstants.CONFIG_REGISTRY_TYPE, name);
+		return indexProvider.getIndexItem(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, ComponentConstants.CONFIG_REGISTRY_TYPE, name);
 	}
 
 	@Override
@@ -53,14 +53,14 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.CONFIG_REGISTRY_NAME, name);
-		props.put(ComponentsConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
-		props.put(ComponentsConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.CONFIG_REGISTRY_NAME, name);
+		props.put(ComponentConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
+		props.put(ComponentConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentsConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		return indexProvider.addIndexItem(ComponentsConstants.CONFIG_REGISTRY_INDEXER_ID, ComponentsConstants.CONFIG_REGISTRY_TYPE, name, props);
+		return indexProvider.addIndexItem(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, ComponentConstants.CONFIG_REGISTRY_TYPE, name, props);
 	}
 
 	@Override
@@ -74,21 +74,21 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.CONFIG_REGISTRY_NAME, name);
-		props.put(ComponentsConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
-		props.put(ComponentsConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.CONFIG_REGISTRY_NAME, name);
+		props.put(ComponentConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
+		props.put(ComponentConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentsConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		indexProvider.setProperties(ComponentsConstants.CONFIG_REGISTRY_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentsConstants.CONFIG_REGISTRY_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, indexItemId);
 	}
 
 }

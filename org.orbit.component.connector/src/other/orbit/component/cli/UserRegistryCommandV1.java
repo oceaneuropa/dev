@@ -41,17 +41,18 @@ public class UserRegistryCommandV1 implements Annotated {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function", new String[] { //
-				"userregistry_ping", //
-				"userregistry_echo", //
-				"list_users", //
-				"get_user", //
-				"add_user", //
-				"change_password", //
-				"activate_user", //
-				"deactivate_user", //
-				"delete_user" //
-		} //
+		props.put("osgi.command.function",
+				new String[] { //
+						"userregistry_ping", //
+						"userregistry_echo", //
+						"list_users", //
+						"get_user", //
+						"add_user", //
+						"change_password", //
+						"activate_user", //
+						"deactivate_user", //
+						"delete_user" //
+				} //
 		);
 		OSGiServiceUtil.register(bundleContext, UserRegistryCommandV1.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
@@ -87,6 +88,11 @@ public class UserRegistryCommandV1 implements Annotated {
 		return userRegistry;
 	}
 
+	protected String getAccountId(String username) {
+		String accountId = null;
+		return accountId;
+	}
+
 	@Descriptor("list_users")
 	public void list_users() throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_users");
@@ -101,7 +107,7 @@ public class UserRegistryCommandV1 implements Annotated {
 		String[][] rows = new String[userAccounts.length][USER_ACCOUNT_COLUMNS.length];
 		int rowIndex = 0;
 		for (UserAccount currUserAccount : userAccounts) {
-			String userId = currUserAccount.getUserId();
+			String username = currUserAccount.getUsername();
 			String email = currUserAccount.getEmail();
 			String password = currUserAccount.getPassword();
 			String firstName = currUserAccount.getFirstName();
@@ -113,7 +119,7 @@ public class UserRegistryCommandV1 implements Annotated {
 			String createTimeStr = (createTime != null) ? DateUtil.toString(createTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 			String updateTimeStr = (updateTime != null) ? DateUtil.toString(updateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { userId, email, password, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
+			rows[rowIndex++] = new String[] { username, email, password, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
 		}
 
 		PrettyPrinter.prettyPrint(USER_ACCOUNT_COLUMNS, rows, userAccounts.length);
@@ -136,7 +142,9 @@ public class UserRegistryCommandV1 implements Annotated {
 			return;
 		}
 
-		UserAccount userAccount = userRegistry.getUserAccount(username);
+		String accountId = getAccountId(username);
+
+		UserAccount userAccount = userRegistry.getUserAccount(accountId);
 
 		UserAccount[] userAccounts = null;
 		if (userAccount != null) {
@@ -148,7 +156,7 @@ public class UserRegistryCommandV1 implements Annotated {
 		String[][] rows = new String[userAccounts.length][USER_ACCOUNT_COLUMNS.length];
 		int rowIndex = 0;
 		for (UserAccount currUserAccount : userAccounts) {
-			String userId = currUserAccount.getUserId();
+			String currUsername = currUserAccount.getUsername();
 			String firstName = currUserAccount.getFirstName();
 			String lastName = currUserAccount.getLastName();
 			String email = currUserAccount.getEmail();
@@ -159,7 +167,7 @@ public class UserRegistryCommandV1 implements Annotated {
 			String createTimeStr = (createTime != null) ? DateUtil.toString(createTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 			String updateTimeStr = (updateTime != null) ? DateUtil.toString(updateTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { userId, email, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
+			rows[rowIndex++] = new String[] { currUsername, email, firstName, lastName, phone, String.valueOf(activated), createTimeStr, updateTimeStr };
 		}
 
 		PrettyPrinter.prettyPrint(USER_ACCOUNT_COLUMNS, rows, userAccounts.length);
@@ -203,7 +211,7 @@ public class UserRegistryCommandV1 implements Annotated {
 		}
 
 		CreateUserAccountRequest request = new CreateUserAccountRequest();
-		request.setUserId(username);
+		request.setUsername(username);
 		request.setPassword(password);
 		request.setEmail(email);
 		request.setFirstName(firstName);

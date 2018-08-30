@@ -3,6 +3,7 @@ package org.orbit.component.runtime.tier1.account.service;
 import java.io.IOException;
 import java.util.Properties;
 
+import org.orbit.component.runtime.tier1.account.service.impl.UserAccountPersistenceImpl;
 import org.origin.common.jdbc.DatabaseUtil;
 
 public class UserAccountPersistenceFactory {

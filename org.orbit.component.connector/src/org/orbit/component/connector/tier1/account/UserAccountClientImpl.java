@@ -35,6 +35,17 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 
 	/**
 	 * 
+	 * @param accountId
+	 * @throws ClientException
+	 */
+	protected void checkAccountId(String accountId) throws ClientException {
+		if (accountId == null || accountId.isEmpty()) {
+			throw new ClientException(400, "accountId is empty.");
+		}
+	}
+
+	/**
+	 * 
 	 * @param username
 	 * @throws ClientException
 	 */
@@ -70,11 +81,11 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 	}
 
 	@Override
-	public UserAccount getUserAccount(String username) throws ClientException {
-		checkUsername(username);
+	public UserAccount getUserAccount(String accountId) throws ClientException {
+		checkAccountId(accountId);
 		UserAccount userAccount = null;
 		try {
-			UserAccountDTO userAccountDTO = getWSClient().get(username);
+			UserAccountDTO userAccountDTO = getWSClient().get(accountId);
 			if (userAccountDTO != null) {
 				userAccount = ModelConverter.Account.toUserAccountImpl(userAccountDTO);
 			}
@@ -100,8 +111,8 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 
 	@Override
 	public boolean register(CreateUserAccountRequest createUserAccountRequest) throws ClientException {
-		String userId = createUserAccountRequest.getUserId();
-		checkUsername(userId);
+		String username = createUserAccountRequest.getUsername();
+		checkUsername(username);
 		try {
 			UserAccountDTO createUserAccountRequestDTO = ModelConverter.Account.toDTO(createUserAccountRequest);
 			StatusDTO status = getWSClient().create(createUserAccountRequestDTO);
@@ -116,8 +127,8 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 
 	@Override
 	public boolean update(UpdateUserAccountRequest updateUserAccountRequest) throws ClientException {
-		String userId = updateUserAccountRequest.getUserId();
-		checkUsername(userId);
+		String accountId = updateUserAccountRequest.getAccountId();
+		checkAccountId(accountId);
 		try {
 			UserAccountDTO updateUserAccountRequestDTO = ModelConverter.Account.toDTO(updateUserAccountRequest);
 			StatusDTO status = getWSClient().update(updateUserAccountRequestDTO);
@@ -131,30 +142,30 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 	}
 
 	@Override
-	public boolean changePassword(String username, String oldPassword, String newPassword) throws ClientException {
-		checkUsername(username);
+	public boolean changePassword(String accountId, String oldPassword, String newPassword) throws ClientException {
+		checkAccountId(accountId);
 		try {
-			return getWSClient().changePassword(username, oldPassword, newPassword);
+			return getWSClient().changePassword(accountId, oldPassword, newPassword);
 		} catch (ClientException e) {
 			throw e;
 		}
 	}
 
 	@Override
-	public boolean isActivated(String username) throws ClientException {
-		checkUsername(username);
+	public boolean isActivated(String accountId) throws ClientException {
+		checkAccountId(accountId);
 		try {
-			return getWSClient().isActivated(username);
+			return getWSClient().isActivated(accountId);
 		} catch (ClientException e) {
 			throw e;
 		}
 	}
 
 	@Override
-	public boolean activate(String username) throws ClientException {
-		checkUsername(username);
+	public boolean activate(String accountId) throws ClientException {
+		checkAccountId(accountId);
 		try {
-			boolean succeed = getWSClient().activate(username);
+			boolean succeed = getWSClient().activate(accountId);
 			return succeed;
 		} catch (ClientException e) {
 			throw e;
@@ -162,10 +173,10 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 	}
 
 	@Override
-	public boolean deactivate(String username) throws ClientException {
-		checkUsername(username);
+	public boolean deactivate(String accountId) throws ClientException {
+		checkAccountId(accountId);
 		try {
-			boolean succeed = getWSClient().deactivate(username);
+			boolean succeed = getWSClient().deactivate(accountId);
 			return succeed;
 		} catch (ClientException e) {
 			throw e;
@@ -173,10 +184,10 @@ public class UserAccountClientImpl extends ServiceClientImpl<UserAccountClient, 
 	}
 
 	@Override
-	public boolean delete(String username) throws ClientException {
-		checkUsername(username);
+	public boolean delete(String accountId) throws ClientException {
+		checkAccountId(accountId);
 		try {
-			StatusDTO status = getWSClient().delete(username);
+			StatusDTO status = getWSClient().delete(accountId);
 			if (status != null && status.success()) {
 				return true;
 			}

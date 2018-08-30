@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -36,7 +36,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	public IndexItem getIndex(IndexProvider indexProvider, NodeControlService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(ComponentsConstants.NODE_CONTROL_INDEXER_ID, ComponentsConstants.NODE_CONTROL_TYPE, name);
+		return indexProvider.getIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, ComponentConstants.NODE_CONTROL_TYPE, name);
 	}
 
 	@Override
@@ -50,15 +50,15 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.NODE_CONTROL_NAME, name);
-		props.put(ComponentsConstants.NODE_CONTROL_HOST_URL, hostURL);
-		props.put(ComponentsConstants.NODE_CONTROL_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentsConstants.NODE_CONTROL_HOME, taHome);
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentsConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(ComponentConstants.NODE_CONTROL_NAME, name);
+		props.put(ComponentConstants.NODE_CONTROL_HOST_URL, hostURL);
+		props.put(ComponentConstants.NODE_CONTROL_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.NODE_CONTROL_HOME, taHome);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		return indexProvider.addIndexItem(ComponentsConstants.NODE_CONTROL_INDEXER_ID, ComponentsConstants.NODE_CONTROL_TYPE, name, props);
+		return indexProvider.addIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, ComponentConstants.NODE_CONTROL_TYPE, name, props);
 	}
 
 	@Override
@@ -73,22 +73,22 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.NODE_CONTROL_NAME, name);
-		props.put(ComponentsConstants.NODE_CONTROL_HOST_URL, hostURL);
-		props.put(ComponentsConstants.NODE_CONTROL_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentsConstants.NODE_CONTROL_HOME, platformHome);
+		props.put(ComponentConstants.NODE_CONTROL_NAME, name);
+		props.put(ComponentConstants.NODE_CONTROL_HOST_URL, hostURL);
+		props.put(ComponentConstants.NODE_CONTROL_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.NODE_CONTROL_HOME, platformHome);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentsConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		indexProvider.setProperties(ComponentsConstants.NODE_CONTROL_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentsConstants.NODE_CONTROL_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItemId);
 	}
 
 }

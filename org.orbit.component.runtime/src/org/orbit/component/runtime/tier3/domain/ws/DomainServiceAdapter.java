@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier3.domain.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -100,7 +100,7 @@ public class DomainServiceAdapter implements LifecycleAware {
 		// this.indexTimer = new DomainServiceTimer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.DOMAIN_SERVICE_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.DOMAIN_SERVICE_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

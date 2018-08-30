@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class CreateUserAccountRequest {
 
-	protected String userId; // required
+	protected String username; // required
 	protected String password; // required
 	protected String email; // required
 	protected String firstName;
@@ -13,16 +13,16 @@ public class CreateUserAccountRequest {
 	protected Date creationTime;
 	protected Date lastUpdateTime;
 
-	public String getUserId() {
-		return userId;
+	public String getUsername() {
+		return this.username;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -30,7 +30,7 @@ public class CreateUserAccountRequest {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {
@@ -38,7 +38,7 @@ public class CreateUserAccountRequest {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -46,7 +46,7 @@ public class CreateUserAccountRequest {
 	}
 
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 
 	public void setLastName(String lastName) {
@@ -54,7 +54,7 @@ public class CreateUserAccountRequest {
 	}
 
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
 	public void setPhone(String phone) {
@@ -62,7 +62,7 @@ public class CreateUserAccountRequest {
 	}
 
 	public Date getCreationTime() {
-		return creationTime;
+		return this.creationTime;
 	}
 
 	public void setCreationTime(Date creationTime) {
@@ -70,7 +70,7 @@ public class CreateUserAccountRequest {
 	}
 
 	public Date getLastUpdateTime() {
-		return lastUpdateTime;
+		return this.lastUpdateTime;
 	}
 
 	public void setLastUpdateTime(Date lastUpdateTime) {

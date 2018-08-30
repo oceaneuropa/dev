@@ -51,7 +51,7 @@ public class TokenUtil {
 		Date accessTokenExpiresAt = DateUtil.addMinutes(now, 30);
 
 		// Get user basic information
-		String username = userAccount.getUserId();
+		String username = userAccount.getUsername();
 		String email = userAccount.getEmail();
 		String firstName = userAccount.getFirstName();
 		String lastName = userAccount.getLastName();
@@ -93,7 +93,7 @@ public class TokenUtil {
 			// https://stackoverflow.com/questions/28418360/jwt-json-web-token-audience-aud-versus-client-id-whats-the-difference
 			// The audience of a token is the intended recipient of the token.
 			// The audience value is a string -- typically, the base address of the resource being accessed, such as "https://contoso.com".
-			String audiences = userAccount.getUserId();
+			String audiences = userAccount.getUsername();
 
 			// Access token expires in 30 minutes
 			// Refresh token expires in 24 hours
@@ -104,7 +104,7 @@ public class TokenUtil {
 			Date accessTokenExpiresAt = DateUtil.addMinutes(now, 30);
 			Date refreshTokenExpiresAt = DateUtil.addHours(now, 24);
 
-			String username = userAccount.getUserId();
+			String username = userAccount.getUsername();
 			String email = userAccount.getEmail();
 			String firstName = userAccount.getFirstName();
 			String lastName = userAccount.getLastName();

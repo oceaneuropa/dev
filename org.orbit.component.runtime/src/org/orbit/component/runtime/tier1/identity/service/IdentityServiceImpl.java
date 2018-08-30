@@ -7,7 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.model.account.UserAccount;
 import org.orbit.component.runtime.model.identity.LoginRequest;
 import org.orbit.component.runtime.model.identity.LoginResponse;
@@ -26,6 +26,7 @@ import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
+import org.origin.common.util.UUIDUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
@@ -55,15 +56,15 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 			properties.putAll(this.initProperties);
 		}
 
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_IDENTITY_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_IDENTITY_NAME);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_IDENTITY_CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_IDENTITY_JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_IDENTITY_JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_IDENTITY_JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_IDENTITY_JDBC_PASSWORD);
-		PropertyUtil.loadProperty(bundleContext, properties, ComponentsConstants.COMPONENT_IDENTITY_JWT_TOKEN_SECRET);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_IDENTITY_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_IDENTITY_NAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_IDENTITY_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_IDENTITY_JDBC_DRIVER);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_IDENTITY_JDBC_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_IDENTITY_JDBC_USERNAME);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_IDENTITY_JDBC_PASSWORD);
+		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.COMPONENT_IDENTITY_JWT_TOKEN_SECRET);
 
 		update(properties);
 
@@ -89,10 +90,10 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 		}
 		this.properties = properties;
 
-		String driver = (String) this.properties.get(ComponentsConstants.COMPONENT_IDENTITY_JDBC_DRIVER);
-		String url = (String) this.properties.get(ComponentsConstants.COMPONENT_IDENTITY_JDBC_URL);
-		String username = (String) this.properties.get(ComponentsConstants.COMPONENT_IDENTITY_JDBC_USERNAME);
-		String password = (String) this.properties.get(ComponentsConstants.COMPONENT_IDENTITY_JDBC_PASSWORD);
+		String driver = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_JDBC_DRIVER);
+		String url = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_JDBC_URL);
+		String username = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_JDBC_USERNAME);
+		String password = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_JDBC_PASSWORD);
 		Properties databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
 
 		try {
@@ -111,17 +112,17 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(ComponentsConstants.COMPONENT_IDENTITY_NAME);
+		String name = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_NAME);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.properties.get(ComponentsConstants.COMPONENT_IDENTITY_HOST_URL);
+		String hostURL = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.properties.get(ComponentsConstants.ORBIT_HOST_URL);
+		String globalHostURL = (String) this.properties.get(ComponentConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -130,12 +131,12 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = (String) this.properties.get(ComponentsConstants.COMPONENT_IDENTITY_CONTEXT_ROOT);
+		String contextRoot = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_CONTEXT_ROOT);
 		return contextRoot;
 	}
 
 	protected String getJWTTokenSecret() {
-		String tokenSecret = (String) this.properties.get(ComponentsConstants.COMPONENT_IDENTITY_JWT_TOKEN_SECRET);
+		String tokenSecret = (String) this.properties.get(ComponentConstants.COMPONENT_IDENTITY_JWT_TOKEN_SECRET);
 		if (tokenSecret == null) {
 			tokenSecret = "12345678";
 		}
@@ -162,7 +163,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 	 */
 	protected void checkUsername(String username) throws ServerException {
 		if (username == null || username.isEmpty()) {
-			throw new ServerException("400", "username is empty.");
+			throw new ServerException(StatusDTO.RESP_400, "username is empty.");
 		}
 	}
 
@@ -173,7 +174,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 	 */
 	protected void checkEmail(String email) throws ServerException {
 		if (email == null || email.isEmpty()) {
-			throw new ServerException("400", "email is empty.");
+			throw new ServerException(StatusDTO.RESP_400, "email is empty.");
 		}
 	}
 
@@ -184,7 +185,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 	 */
 	protected void checkPassword(String password) throws ServerException {
 		if (password == null || password.isEmpty()) {
-			throw new ServerException("400", "password is empty.");
+			throw new ServerException(StatusDTO.RESP_400, "password is empty.");
 		}
 	}
 
@@ -225,11 +226,40 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 			checkEmail(email);
 			checkPassword(password);
 
-			if (getUserAccountPersistence().usernameExists(username)) {
-				throw new ServerException("400", "username already exists.");
+			String accountId = UUIDUtil.generateBase64EncodedUUID();
+			boolean acountIdExists = this.userAccountPersistence.accountIdExists(accountId);
+			if (acountIdExists) {
+				int retryCount = 0;
+				int maxRetry = 10;
+				while (acountIdExists) {
+					accountId = UUIDUtil.generateBase64EncodedUUID();
+					acountIdExists = this.userAccountPersistence.accountIdExists(accountId);
+					if (!acountIdExists) {
+						break;
+					}
+					retryCount++;
+					if (retryCount == maxRetry) {
+						throw new ServerException(StatusDTO.RESP_500, "Cannot create account Id.");
+					}
+
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 
-			UserAccount userAccount = getUserAccountPersistence().createUserAccount(username, password, email, null, null, null);
+			boolean usernameExists = this.userAccountPersistence.usernameExists(username);
+			if (usernameExists) {
+				throw new ServerException(StatusDTO.RESP_400, "Username already exists.");
+			}
+			boolean emailExists = this.userAccountPersistence.emailExists(email);
+			if (emailExists) {
+				throw new ServerException(StatusDTO.RESP_400, "Email already exists.");
+			}
+
+			UserAccount userAccount = getUserAccountPersistence().createUserAccount(accountId, username, password, email, null, null, null);
 			if (userAccount != null) {
 				succeed = true;
 				message = "user is registered successfully.";
@@ -268,7 +298,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 				UserAccount userAccount = null;
 
 				if (username != null && !username.isEmpty() && getUserAccountPersistence().usernameExists(username)) {
-					userAccount = getUserAccountPersistence().getUserAccount(username);
+					userAccount = getUserAccountPersistence().getUserAccountByUsername(username);
 					if (userAccount != null) {
 						String userPassword = userAccount.getPassword();
 						if (userPassword != null && userPassword.equals(password)) {
@@ -294,13 +324,14 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 					// Generate token
 					tokenType = "Bearer";
 
-					JWTTokenHandler tokenHandler = ExtensionUtil.JWT.getTokenHandler(ComponentsConstants.TOKEN_PROVIDER__ORBIT);
+					JWTTokenHandler tokenHandler = ExtensionUtil.JWT.getTokenHandler(ComponentConstants.TOKEN_PROVIDER__ORBIT);
 					if (tokenHandler == null) {
 						throw new ServerException("500", "JWTTokenHandler is null.");
 					}
 
 					// Get user basic information
-					String _username = userAccount.getUserId();
+					String _accountId = userAccount.getAccountId();
+					String _username = userAccount.getUsername();
 					String _email = userAccount.getEmail();
 					String firstName = userAccount.getFirstName();
 					String lastName = userAccount.getLastName();
@@ -311,6 +342,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 					String classificationLevels = Secured.ClassificationLevels.TOP_SECRET + "," + Secured.ClassificationLevels.SECRET + "," + Secured.ClassificationLevels.CONFIDENTIAL;
 
 					Map<String, String> payload = new LinkedHashMap<String, String>();
+					payload.put(JWTTokenHandler.PAYLOAD__ACCOUNT_ID, _accountId);
 					payload.put(JWTTokenHandler.PAYLOAD__USERNAME, _username);
 					payload.put(JWTTokenHandler.PAYLOAD__EMAIL, _email);
 					payload.put(JWTTokenHandler.PAYLOAD__FIRST_NAME, firstName);
@@ -348,8 +380,7 @@ public class IdentityServiceImpl implements IdentityService, LifecycleAware {
 		return null;
 	}
 
-	public static String TOKEN_SECRET = "12345678";
-
 }
 
 // tokenValue = TokenUtil.createAccessToken(getJWTTokenSecret(), userAccount);
+// public static String TOKEN_SECRET = "12345678";

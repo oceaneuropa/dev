@@ -8,9 +8,8 @@ import org.origin.common.util.DateUtil;
 
 public class UserAccountImpl implements UserAccount {
 
-	private static boolean debug = true;
-
-	private String userId; // required
+	private String accountId; // required
+	private String username; // required
 	private String password; // required
 	private String email; // required
 	private String firstName;
@@ -25,7 +24,8 @@ public class UserAccountImpl implements UserAccount {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param accountId
+	 * @param username
 	 * @param password
 	 * @param email
 	 * @param firstName
@@ -34,8 +34,9 @@ public class UserAccountImpl implements UserAccount {
 	 * @param creationTime
 	 * @param lastUpdateTime
 	 */
-	UserAccountImpl(String userId, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime) {
-		this.userId = userId;
+	public UserAccountImpl(String accountId, String username, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime) {
+		this.accountId = accountId;
+		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.firstName = firstName;
@@ -46,12 +47,21 @@ public class UserAccountImpl implements UserAccount {
 	}
 
 	@Override
-	public String getUserId() {
-		return this.userId;
+	public String getAccountId() {
+		return this.accountId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	@Override
@@ -65,7 +75,7 @@ public class UserAccountImpl implements UserAccount {
 
 	@Override
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {
@@ -74,7 +84,7 @@ public class UserAccountImpl implements UserAccount {
 
 	@Override
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -83,7 +93,7 @@ public class UserAccountImpl implements UserAccount {
 
 	@Override
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 
 	public void setLastName(String lastName) {
@@ -92,7 +102,7 @@ public class UserAccountImpl implements UserAccount {
 
 	@Override
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
 	public void setPhone(String phone) {
@@ -101,7 +111,7 @@ public class UserAccountImpl implements UserAccount {
 
 	@Override
 	public Date getCreationTime() {
-		return creationTime;
+		return this.creationTime;
 	}
 
 	public void setCreationTime(Date creationTime) {
@@ -110,7 +120,7 @@ public class UserAccountImpl implements UserAccount {
 
 	@Override
 	public Date getLastUpdateTime() {
-		return lastUpdateTime;
+		return this.lastUpdateTime;
 	}
 
 	public void setLastUpdateTime(Date lastUpdateTime) {
@@ -137,10 +147,8 @@ public class UserAccountImpl implements UserAccount {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("UserAccountImpl(");
-		sb.append("userID=").append(this.userId);
-		// if (debug) {
-		// sb.append(", password=").append(this.password);
-		// }
+		sb.append("accountId=").append(this.accountId);
+		sb.append(", username=").append(this.username);
 		sb.append(", email=").append(this.email);
 		sb.append(", firstName=").append(this.firstName);
 		sb.append(", lastName=").append(this.lastName);

@@ -2,7 +2,7 @@ package org.orbit.component.runtime.tier4.missioncontrol.ws;
 
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.command.MissionControlEditPolicy;
@@ -112,7 +112,7 @@ public class MissionControlAdapter implements LifecycleAware {
 		// this.indexTimer = new MissionControlIndexer(indexProvider, service);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentsConstants.MISSION_CONTROL_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, ComponentConstants.MISSION_CONTROL_INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")

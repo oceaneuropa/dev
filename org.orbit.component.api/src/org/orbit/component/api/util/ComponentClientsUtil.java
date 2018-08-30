@@ -128,15 +128,15 @@ public class ComponentClientsUtil {
 		 * 
 		 * @param userRegistryUrl
 		 * @param accessToken
-		 * @param userId
+		 * @param accountId
 		 * @return
 		 * @throws ClientException
 		 */
-		public UserAccount getUserAccount(String userRegistryUrl, String accessToken, String userId) throws ClientException {
+		public UserAccount getUserAccount(String userRegistryUrl, String accessToken, String accountId) throws ClientException {
 			UserAccount userAccount = null;
 			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
-				userAccount = userRegistry.getUserAccount(userId);
+				userAccount = userRegistry.getUserAccount(accountId);
 			}
 			return userAccount;
 		}
@@ -179,7 +179,7 @@ public class ComponentClientsUtil {
 		 * 
 		 * @param userRegistryUrl
 		 * @param accessToken
-		 * @param userId
+		 * @param username
 		 * @param email
 		 * @param password
 		 * @param firstName
@@ -188,18 +188,20 @@ public class ComponentClientsUtil {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean addUserAccount(String userRegistryUrl, String accessToken, String userId, String email, String password, String firstName, String lastName, String phone) throws ClientException {
+		public boolean addUserAccount(String userRegistryUrl, String accessToken, String username, String email, String password, String firstName, String lastName, String phone) throws ClientException {
 			boolean succeed = false;
 			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
-				CreateUserAccountRequest createUserAccountRequest = new CreateUserAccountRequest();
-				createUserAccountRequest.setUserId(userId);
-				createUserAccountRequest.setPassword(password);
-				createUserAccountRequest.setFirstName(firstName);
-				createUserAccountRequest.setLastName(lastName);
-				createUserAccountRequest.setEmail(email);
-				createUserAccountRequest.setPhone(phone);
-				succeed = userRegistry.register(createUserAccountRequest);
+				CreateUserAccountRequest request = new CreateUserAccountRequest();
+
+				request.setUsername(username);
+				request.setPassword(password);
+				request.setFirstName(firstName);
+				request.setLastName(lastName);
+				request.setEmail(email);
+				request.setPhone(phone);
+
+				succeed = userRegistry.register(request);
 			}
 			return succeed;
 		}
@@ -208,7 +210,8 @@ public class ComponentClientsUtil {
 		 * 
 		 * @param userRegistryUrl
 		 * @param accessToken
-		 * @param userId
+		 * @param accountId
+		 * @param username
 		 * @param email
 		 * @param password
 		 * @param firstName
@@ -217,19 +220,21 @@ public class ComponentClientsUtil {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateUserAccount(String userRegistryUrl, String accessToken, String userId, String email, String password, String firstName, String lastName, String phone) throws ClientException {
+		public boolean updateUserAccount(String userRegistryUrl, String accessToken, String accountId, String username, String email, String password, String firstName, String lastName, String phone) throws ClientException {
 			boolean succeed = false;
 			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
-				UpdateUserAccountRequest updateUserAccountRequest = new UpdateUserAccountRequest();
-				updateUserAccountRequest.setUserId(userId);
-				updateUserAccountRequest.setPassword(password);
-				updateUserAccountRequest.setEmail(email);
-				updateUserAccountRequest.setFirstName(firstName);
-				updateUserAccountRequest.setLastName(lastName);
-				updateUserAccountRequest.setPhone(phone);
+				UpdateUserAccountRequest request = new UpdateUserAccountRequest();
 
-				succeed = userRegistry.update(updateUserAccountRequest);
+				request.setAccountId(accountId);
+				request.setUsername(username);
+				request.setPassword(password);
+				request.setEmail(email);
+				request.setFirstName(firstName);
+				request.setLastName(lastName);
+				request.setPhone(phone);
+
+				succeed = userRegistry.update(request);
 			}
 			return succeed;
 		}
@@ -238,15 +243,15 @@ public class ComponentClientsUtil {
 		 * 
 		 * @param userRegistryUrl
 		 * @param accessToken
-		 * @param userId
+		 * @param accountId
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean deleteUserAccount(String userRegistryUrl, String accessToken, String userId) throws ClientException {
+		public boolean deleteUserAccount(String userRegistryUrl, String accessToken, String accountId) throws ClientException {
 			boolean exists = false;
 			UserAccountClient userRegistry = getUserAccountsClient(userRegistryUrl, accessToken);
 			if (userRegistry != null) {
-				exists = userRegistry.delete(userId);
+				exists = userRegistry.delete(accountId);
 			}
 			return exists;
 		}

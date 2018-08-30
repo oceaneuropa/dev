@@ -39,7 +39,7 @@ import org.origin.common.rest.server.ServerException;
  * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/useraccounts/exists?type={elementType}&value={elementValue}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/useraccounts (Body parameter: UserAccountDTO)
  * URL (PUT):    {scheme}://{host}:{port}/{contextRoot}/useraccounts (Body parameter: UserAccountDTO)
- * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/useraccounts?username={username}
+ * URL (DELETE): {scheme}://{host}:{port}/{contextRoot}/useraccounts?accountId={accountId}
  * 
  */
 @Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN, OrbitRoles.USER_ACCOUNTS_ADMIN })
@@ -111,14 +111,17 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 			boolean exists = false;
 			UserRegistryService service = getService();
 
-			if ("username".equalsIgnoreCase(type)) {
+			if ("accountId".equalsIgnoreCase(type)) {
+				exists = service.accountIdExists(value);
+
+			} else if ("username".equalsIgnoreCase(type)) {
 				exists = service.usernameExists(value);
 
 			} else if ("email".equalsIgnoreCase(type)) {
 				exists = service.emailExists(value);
 
 			} else {
-				ErrorDTO nullError = new ErrorDTO("type '" + type + "' is not supported. Supported types are: 'username' and 'email'.");
+				ErrorDTO nullError = new ErrorDTO("type '" + type + "' is not supported. Supported types are: 'accountId', 'username' and 'email'.");
 				return Response.status(Status.BAD_REQUEST).entity(nullError).build();
 			}
 			result.put("exists", exists);
@@ -208,23 +211,24 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 	/**
 	 * Delete a user account
 	 * 
-	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/useraccounts?username={username}
+	 * URL (DEL): {scheme}://{host}:{port}/{contextRoot}/useraccounts?accountId={accountId}
 	 * 
-	 * @param username
+	 * @param accountId
 	 * @return
 	 */
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response delete(@QueryParam("username") String username) {
-		if (username == null || username.isEmpty()) {
-			ErrorDTO nullAppIdError = new ErrorDTO("username is null.");
+	public Response delete(@QueryParam("accountId") String accountId) {
+		boolean isAccountIdEmpty = (accountId == null || accountId.isEmpty()) ? true : false;
+		if (isAccountIdEmpty) {
+			ErrorDTO nullAppIdError = new ErrorDTO("accountId is empty.");
 			return Response.status(Status.BAD_REQUEST).entity(nullAppIdError).build();
 		}
 
 		boolean succeed = false;
 		UserRegistryService service = getService();
 		try {
-			succeed = service.deleteUserAccount(username);
+			succeed = service.deleteUserAccount(accountId);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -241,164 +245,3 @@ public class UserRegistryUserAccountsWSResource extends AbstractWSApplicationRes
 	}
 
 }
-
-/// **
-// * Get a user account.
-// *
-// * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccounts/{userId}
-// *
-// * @param userId
-// * @return
-// */
-// @GET
-// @Path("{userId}")
-// @Produces(MediaType.APPLICATION_JSON)
-// public Response getUserAccount(@PathParam("userId") String userId) {
-// UserAccountDTO userAccountDTO = null;
-// try {
-// UserRegistryService service = getService();
-// UserAccount userAccount = service.getUserAccount(userId);
-// if (userAccount == null) {
-// ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", userId));
-// return Response.status(Status.NOT_FOUND).entity(error).build();
-// }
-// userAccountDTO = ModelConverter.Account.toUserAccountDTO(userAccount);
-//
-// } catch (ServerException e) {
-// ErrorDTO error = handleError(e, e.getCode(), true);
-// return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-// }
-// return Response.ok().entity(userAccountDTO).build();
-// }
-
-// /**
-// * Check whether a user account exists.
-// *
-// * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccounts/{userId}/exists
-// *
-// * @param userId
-// * @return
-// */
-// @GET
-// @Path("{userId}/exists")
-// @Produces(MediaType.APPLICATION_JSON)
-// public Response userAccountExists(@PathParam("userId") String userId) {
-// Map<String, Boolean> result = new HashMap<String, Boolean>();
-// try {
-// UserRegistryService service = getService();
-// boolean exists = service.userAccountExists(userId);
-// result.put("exists", exists);
-//
-// } catch (ServerException e) {
-// ErrorDTO error = handleError(e, e.getCode(), true);
-// return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-// }
-// return Response.ok().entity(result).build();
-// }
-
-/// **
-// * Handle user account action.
-// *
-// * URL (PUT): {scheme}://{host}:{port}/{contextRoot}/useraccounts/action/ (Body parameter: UserAccountActionDTO)
-// *
-// * @param username
-// * @return
-// */
-// @PUT
-// @Path("action")
-// @Produces(MediaType.APPLICATION_JSON)
-// public Response onUserAccountAction(UserAccountActionDTO actionDTO) {
-// if (actionDTO == null) {
-// ErrorDTO error = new ErrorDTO("UserAccountActionDTO is null.");
-// return Response.status(Status.BAD_REQUEST).entity(error).build();
-// }
-//
-// Map<String, Object> result = new HashMap<String, Object>();
-// UserRegistryService service = getService();
-// try {
-// String userId = actionDTO.getUserId();
-// String action = actionDTO.getAction();
-// Map<Object, Object> args = actionDTO.getArgs();
-//
-// if (userId == null || userId.isEmpty()) {
-// ErrorDTO error = new ErrorDTO("userId is empty.");
-// return Response.status(Status.BAD_REQUEST).entity(error).build();
-// }
-//
-// UserAccount userAccount = service.getUserAccount(userId);
-// if (userAccount == null) {
-// ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("User account with userId '%s' cannot be found.", userId));
-// return Response.status(Status.NOT_FOUND).entity(error).build();
-// }
-//
-// if ("activate".equalsIgnoreCase(action)) {
-// boolean activated = false;
-// boolean succeed = service.activateUserAccount(userId);
-// if (succeed) {
-// activated = service.isUserAccountActivated(userId);
-// }
-// result.put("activated", activated);
-//
-// } else if ("deactivate".equalsIgnoreCase(action)) {
-// boolean activated = false;
-// boolean succeed = service.deactivateUserAccount(userId);
-// if (succeed) {
-// activated = service.isUserAccountActivated(userId);
-// }
-// result.put("activated", activated);
-//
-// } else if ("change_password".equalsIgnoreCase(action)) {
-// String oldPassword = null;
-// String newPassword = null;
-//
-// if (args.get("oldpassword") instanceof String) {
-// oldPassword = (String) args.get("oldpassword");
-// }
-// if (args.get("newpassword") instanceof String) {
-// newPassword = (String) args.get("newpassword");
-// }
-//
-// if (newPassword == null || newPassword.isEmpty()) {
-// ErrorDTO error = new ErrorDTO("New password is empty.");
-// return Response.status(Status.BAD_REQUEST).entity(error).build();
-// }
-//
-// boolean succeed = service.changePassword(userId, oldPassword, newPassword);
-// result.put("succeed", succeed);
-//
-// } else {
-// ErrorDTO error = new ErrorDTO("Unsupported action: " + action);
-// return Response.status(Status.BAD_REQUEST).entity(error).build();
-// }
-//
-// } catch (ServerException e) {
-// ErrorDTO error = handleError(e, e.getCode(), true);
-// return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-// }
-// return Response.ok().entity(result).build();
-// }
-
-/// **
-// * Check whether a user account is activated.
-// *
-// * URL (GET): {scheme}://{host}:{port}/{contextRoot}/useraccounts/activated?username={username}
-// *
-// * @param username
-// * @return
-// */
-// @GET
-// @Path("/activated")
-// @Produces(MediaType.APPLICATION_JSON)
-// public Response isActivated(@QueryParam("username") String username) {
-// Map<String, Boolean> result = new HashMap<String, Boolean>();
-// UserRegistryService service = getService();
-// try {
-// boolean activated = service.isUserAccountActivated(username);
-// result.put("activated", activated);
-//
-// } catch (ServerException e) {
-// ErrorDTO error = handleError(e, e.getCode(), true);
-// return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-// }
-// return Response.ok().entity(result).build();
-// }

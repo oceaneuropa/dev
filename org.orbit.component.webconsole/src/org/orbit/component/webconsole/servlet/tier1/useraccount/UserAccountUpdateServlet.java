@@ -29,15 +29,19 @@ public class UserAccountUpdateServlet extends HttpServlet {
 		String userRegistryUrl = getServletConfig().getInitParameter(ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		String message = "";
 
-		String id = ServletUtil.getParameter(request, "id", "");
+		String accountId = ServletUtil.getParameter(request, "id", "");
+		String username = ServletUtil.getParameter(request, "username", "");
 		String email = ServletUtil.getParameter(request, "email", "");
 		String password = ServletUtil.getParameter(request, "password", "");
 		String firstName = ServletUtil.getParameter(request, "firstName", "");
 		String lastName = ServletUtil.getParameter(request, "lastName", "");
 		String phone = ServletUtil.getParameter(request, "phone", "");
 
-		if (id.isEmpty()) {
+		if (accountId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is empty.");
+		}
+		if (username.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'username' parameter is empty.");
 		}
 		if (email.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'email' parameter is empty.");
@@ -50,15 +54,10 @@ public class UserAccountUpdateServlet extends HttpServlet {
 		// Handle data
 		// ---------------------------------------------------------------
 		boolean succeed = false;
-		if (!id.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
+		if (!username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
-				boolean exists = ComponentClientsUtil.UserAccounts.usernameExists(userRegistryUrl, accessToken, id);
-				if (!exists) {
-					message = MessageHelper.INSTANCE.add(message, "User '" + id + "' is not found.");
-				} else {
-					succeed = ComponentClientsUtil.UserAccounts.updateUserAccount(userRegistryUrl, accessToken, id, email, password, firstName, lastName, phone);
-				}
+				succeed = ComponentClientsUtil.UserAccounts.updateUserAccount(userRegistryUrl, accessToken, accountId, username, email, password, firstName, lastName, phone);
 
 			} catch (ClientException e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
@@ -81,3 +80,11 @@ public class UserAccountUpdateServlet extends HttpServlet {
 	}
 
 }
+
+// boolean exists = ComponentClientsUtil.UserAccounts.usernameExists(userRegistryUrl, accessToken, username);
+// if (!exists) {
+// message = MessageHelper.INSTANCE.add(message, "User '" + username + "' is not found.");
+// } else {
+// succeed = ComponentClientsUtil.UserAccounts.updateUserAccount(userRegistryUrl, accessToken, accountId, username, email, password, firstName,
+// lastName, phone);
+// }

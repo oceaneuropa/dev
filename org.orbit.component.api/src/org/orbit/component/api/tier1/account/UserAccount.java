@@ -4,7 +4,9 @@ import java.util.Date;
 
 public interface UserAccount {
 
-	String getUserId();
+	String getAccountId();
+
+	String getUsername();
 
 	String getEmail();
 

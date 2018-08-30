@@ -78,14 +78,16 @@ public class ModelConverter {
 		 * @return
 		 */
 		public UserAccountDTO toDTO(CreateUserAccountRequest createUserAccountRequest) {
-			UserAccountDTO createUserAccountRequestDTO = new UserAccountDTO();
-			createUserAccountRequestDTO.setUserId(createUserAccountRequest.getUserId());
-			createUserAccountRequestDTO.setPassword(createUserAccountRequest.getPassword());
-			createUserAccountRequestDTO.setEmail(createUserAccountRequest.getEmail());
-			createUserAccountRequestDTO.setFirstName(createUserAccountRequest.getFirstName());
-			createUserAccountRequestDTO.setLastName(createUserAccountRequest.getLastName());
-			createUserAccountRequestDTO.setPhone(createUserAccountRequest.getPhone());
-			return createUserAccountRequestDTO;
+			UserAccountDTO requestDTO = new UserAccountDTO();
+
+			requestDTO.setUsername(createUserAccountRequest.getUsername());
+			requestDTO.setPassword(createUserAccountRequest.getPassword());
+			requestDTO.setEmail(createUserAccountRequest.getEmail());
+			requestDTO.setFirstName(createUserAccountRequest.getFirstName());
+			requestDTO.setLastName(createUserAccountRequest.getLastName());
+			requestDTO.setPhone(createUserAccountRequest.getPhone());
+
+			return requestDTO;
 		}
 
 		/**
@@ -95,34 +97,40 @@ public class ModelConverter {
 		 * @return
 		 */
 		public UserAccountDTO toDTO(UpdateUserAccountRequest updateUserAccountRequest) {
-			UserAccountDTO updateUserAccountRequestDTO = new UserAccountDTO();
-			updateUserAccountRequestDTO.setUserId(updateUserAccountRequest.getUserId());
-			updateUserAccountRequestDTO.setPassword(updateUserAccountRequest.getPassword());
-			updateUserAccountRequestDTO.setEmail(updateUserAccountRequest.getEmail());
-			updateUserAccountRequestDTO.setFirstName(updateUserAccountRequest.getFirstName());
-			updateUserAccountRequestDTO.setLastName(updateUserAccountRequest.getLastName());
-			updateUserAccountRequestDTO.setPhone(updateUserAccountRequest.getPhone());
-			return updateUserAccountRequestDTO;
+			UserAccountDTO requestDTO = new UserAccountDTO();
+
+			requestDTO.setAccountId(updateUserAccountRequest.getAccountId());
+			requestDTO.setUsername(updateUserAccountRequest.getUsername());
+			requestDTO.setEmail(updateUserAccountRequest.getEmail());
+			requestDTO.setPassword(updateUserAccountRequest.getPassword());
+			requestDTO.setFirstName(updateUserAccountRequest.getFirstName());
+			requestDTO.setLastName(updateUserAccountRequest.getLastName());
+			requestDTO.setPhone(updateUserAccountRequest.getPhone());
+
+			return requestDTO;
 		}
 
 		/**
 		 * Convert DTO to UserAccountImpl.
 		 * 
-		 * @param dto
+		 * @param userAccountDTO
 		 * @return
 		 */
-		public UserAccountImpl toUserAccountImpl(UserAccountDTO dto) {
-			UserAccountImpl impl = new UserAccountImpl();
-			impl.setUserId(dto.getUserId());
-			impl.setEmail(dto.getEmail());
-			impl.setPassword(dto.getPassword());
-			impl.setFirstName(dto.getFirstName());
-			impl.setLastName(dto.getLastName());
-			impl.setPhone(dto.getPhone());
-			impl.setCreationTime(dto.getCreationTime());
-			impl.setLastUpdateTime(dto.getLastUpdateTime());
-			impl.setActivated(dto.isActivated());
-			return impl;
+		public UserAccountImpl toUserAccountImpl(UserAccountDTO userAccountDTO) {
+			UserAccountImpl userAccount = new UserAccountImpl();
+
+			userAccount.setAccountId(userAccountDTO.getAccountId());
+			userAccount.setUsername(userAccountDTO.getUsername());
+			userAccount.setEmail(userAccountDTO.getEmail());
+			userAccount.setPassword(userAccountDTO.getPassword());
+			userAccount.setFirstName(userAccountDTO.getFirstName());
+			userAccount.setLastName(userAccountDTO.getLastName());
+			userAccount.setPhone(userAccountDTO.getPhone());
+			userAccount.setCreationTime(userAccountDTO.getCreationTime());
+			userAccount.setLastUpdateTime(userAccountDTO.getLastUpdateTime());
+			userAccount.setActivated(userAccountDTO.isActivated());
+
+			return userAccount;
 		}
 	}
 

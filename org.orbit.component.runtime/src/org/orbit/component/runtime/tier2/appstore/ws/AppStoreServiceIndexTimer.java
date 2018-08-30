@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -40,7 +40,7 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	public IndexItem getIndex(IndexProvider indexProvider, AppStoreService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(ComponentsConstants.APP_STORE_INDEXER_ID, ComponentsConstants.APP_STORE_TYPE, name);
+		return indexProvider.getIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE, name);
 	}
 
 	@Override
@@ -53,14 +53,14 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.APPSTORE_NAME, name);
-		props.put(ComponentsConstants.APPSTORE_HOST_URL, hostURL);
-		props.put(ComponentsConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.APPSTORE_NAME, name);
+		props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
+		props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentsConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		return indexProvider.addIndexItem(ComponentsConstants.APP_STORE_INDEXER_ID, ComponentsConstants.APP_STORE_TYPE, name, props);
+		return indexProvider.addIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE, name, props);
 	}
 
 	@Override
@@ -74,21 +74,21 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.APPSTORE_NAME, name);
-		props.put(ComponentsConstants.APPSTORE_HOST_URL, hostURL);
-		props.put(ComponentsConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.APPSTORE_NAME, name);
+		props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
+		props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentsConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
-		indexProvider.setProperties(ComponentsConstants.APP_STORE_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(ComponentConstants.APP_STORE_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentsConstants.APP_STORE_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, indexItemId);
 	}
 
 }

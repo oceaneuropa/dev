@@ -22,13 +22,13 @@ public class UserRegistryWSApplicationDesc extends WSApplicationDesc {
 
 		WSResourceDesc userAccountsWSResource = new WSResourceDesc(this, "/useraccounts");
 		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "");
-		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{userId}");
-		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{userId}/exists");
+		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{accountId}");
+		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{accountId}/exists");
 		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.POST, WSMethodDesc.JSON, "");
 		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.PUT, WSMethodDesc.JSON, "");
-		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{userId}/activated");
+		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.GET, WSMethodDesc.JSON, "{accountId}/activated");
 		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.PUT, WSMethodDesc.JSON, "action");
-		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.DELETE, WSMethodDesc.JSON, "{userId}");
+		new WSMethodDesc(userAccountsWSResource, WSMethodDesc.DELETE, WSMethodDesc.JSON, "{accountId}");
 	}
 
 }

@@ -2,58 +2,73 @@ package org.orbit.component.runtime.model.account;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import org.origin.common.util.DateUtil;
 
 public class UserAccount {
 
-	protected String userId; // required
+	protected String accountId; // required
+	protected String username; // required
 	protected String password; // required
 	protected String email; // required
 	protected String firstName;
 	protected String lastName;
 	protected String phone;
+	protected boolean activated;
+	protected Map<String, Object> properties;
 	protected Date creationTime;
 	protected Date lastUpdateTime;
-	protected boolean activated;
 
 	public UserAccount() {
 	}
 
 	/**
 	 * 
-	 * @param userId
+	 * @param accountId
+	 * @param username
 	 * @param password
 	 * @param email
 	 * @param firstName
 	 * @param lastName
 	 * @param phone
+	 * @param activated
+	 * @param properties
 	 * @param creationTime
 	 * @param lastUpdateTime
-	 * @param activated
 	 */
-	public UserAccount(String userId, String password, String email, String firstName, String lastName, String phone, Date creationTime, Date lastUpdateTime, boolean activated) {
-		this.userId = userId;
+	public UserAccount(String accountId, String username, String password, String email, String firstName, String lastName, String phone, boolean activated, Map<String, Object> properties, Date creationTime, Date lastUpdateTime) {
+		this.accountId = accountId;
+		this.username = username;
 		this.password = password;
 		this.email = email;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phone = phone;
+		this.activated = activated;
+		this.properties = properties;
 		this.creationTime = creationTime;
 		this.lastUpdateTime = lastUpdateTime;
-		this.activated = activated;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getAccountId() {
+		return this.accountId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
+	}
+
+	public String getUsername() {
+		return this.username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(String password) {
@@ -61,7 +76,7 @@ public class UserAccount {
 	}
 
 	public String getEmail() {
-		return email;
+		return this.email;
 	}
 
 	public void setEmail(String email) {
@@ -69,7 +84,7 @@ public class UserAccount {
 	}
 
 	public String getFirstName() {
-		return firstName;
+		return this.firstName;
 	}
 
 	public void setFirstName(String firstName) {
@@ -77,7 +92,7 @@ public class UserAccount {
 	}
 
 	public String getLastName() {
-		return lastName;
+		return this.lastName;
 	}
 
 	public void setLastName(String lastName) {
@@ -85,15 +100,31 @@ public class UserAccount {
 	}
 
 	public String getPhone() {
-		return phone;
+		return this.phone;
 	}
 
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
+	public boolean isActivated() {
+		return this.activated;
+	}
+
+	public void setActivated(boolean activated) {
+		this.activated = activated;
+	}
+
+	public Map<String, Object> getProperties() {
+		return this.properties;
+	}
+
+	public void setProperties(Map<String, Object> properties) {
+		this.properties = properties;
+	}
+
 	public Date getCreationTime() {
-		return creationTime;
+		return this.creationTime;
 	}
 
 	public void setCreationTime(Date creationTime) {
@@ -101,19 +132,11 @@ public class UserAccount {
 	}
 
 	public Date getLastUpdateTime() {
-		return lastUpdateTime;
+		return this.lastUpdateTime;
 	}
 
 	public void setLastUpdateTime(Date lastUpdateTime) {
 		this.lastUpdateTime = lastUpdateTime;
-	}
-
-	public boolean isActivated() {
-		return activated;
-	}
-
-	public void setActivated(boolean activated) {
-		this.activated = activated;
 	}
 
 	protected DateFormat getDateFormat() {
@@ -122,20 +145,21 @@ public class UserAccount {
 
 	@Override
 	public String toString() {
-		String creationTimeString = creationTime != null ? DateUtil.toString(creationTime, getDateFormat()) : null;
-		String lastUpdateTimeString = lastUpdateTime != null ? DateUtil.toString(lastUpdateTime, getDateFormat()) : null;
+		String creationTimeString = this.creationTime != null ? DateUtil.toString(this.creationTime, getDateFormat()) : null;
+		String lastUpdateTimeString = this.lastUpdateTime != null ? DateUtil.toString(this.lastUpdateTime, getDateFormat()) : null;
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("UserAccountRTO(");
-		sb.append("userID=").append(this.userId);
+		sb.append("UserAccount(");
+		sb.append("accountId=").append(this.accountId);
+		sb.append(", username=").append(this.username);
 		sb.append(", password=").append(this.password);
 		sb.append(", email=").append(this.email);
 		sb.append(", firstName=").append(this.firstName);
 		sb.append(", lastName=").append(this.lastName);
 		sb.append(", phone=").append(this.phone);
+		sb.append(", activated=").append(this.activated);
 		sb.append(", creationTime=").append(creationTimeString);
 		sb.append(", lastUpdateTime=").append(lastUpdateTimeString);
-		sb.append(", activated=").append(activated);
 		sb.append(")");
 		return sb.toString();
 	}

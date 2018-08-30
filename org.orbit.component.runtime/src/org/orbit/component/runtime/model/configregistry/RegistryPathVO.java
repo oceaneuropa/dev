@@ -2,7 +2,7 @@ package org.orbit.component.runtime.model.configregistry;
 
 public class RegistryPathVO {
 
-	protected String userId;
+	protected String accountId;
 	protected EPath path;
 	protected String description;
 
@@ -11,38 +11,38 @@ public class RegistryPathVO {
 
 	/**
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param description
 	 */
-	public RegistryPathVO(String userId, EPath path, String description) {
-		this.userId = userId;
+	public RegistryPathVO(String accountId, EPath path, String description) {
+		this.accountId = accountId;
 		this.path = path;
 		this.description = description;
 	}
 
 	/**
 	 * 
-	 * @param userId
+	 * @param accountId
 	 * @param path
 	 * @param description
 	 */
-	public RegistryPathVO(String userId, String path, String description) {
-		this.userId = userId;
+	public RegistryPathVO(String accountId, String path, String description) {
+		this.accountId = accountId;
 		this.path = new EPath(path);
 		this.description = description;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getAccountId() {
+		return this.accountId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	public EPath getPath() {
-		return path;
+		return this.path;
 	}
 
 	public void setPath(EPath path) {
@@ -50,7 +50,7 @@ public class RegistryPathVO {
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {

@@ -9,26 +9,30 @@ public interface UserAccountPersistence {
 
 	List<UserAccount> getUserAccounts() throws IOException;
 
-	UserAccount getUserAccount(String userId) throws IOException;
-
-	UserAccount getUserAccountByEmail(String email) throws IOException;
-
-	UserAccount createUserAccount(String userId, String password, String email, String firstName, String lastName, String phone) throws IOException;
-
-	boolean setActivated(String userId, boolean activated) throws IOException;
+	boolean accountIdExists(String accountId) throws IOException;
 
 	boolean usernameExists(String username) throws IOException;
 
 	boolean emailExists(String email) throws IOException;
 
-	boolean updatePassword(String userId, String password) throws IOException;
+	UserAccount getUserAccountByAccountId(String accountId) throws IOException;
 
-	boolean updateName(String userId, String firstName, String lastName) throws IOException;
+	UserAccount getUserAccountByUsername(String username) throws IOException;
 
-	boolean updateEmail(String userId, String email) throws IOException;
+	UserAccount getUserAccountByEmail(String email) throws IOException;
 
-	boolean updatePhone(String userId, String phone) throws IOException;
+	UserAccount createUserAccount(String accountId, String username, String password, String email, String firstName, String lastName, String phone) throws IOException;
 
-	boolean deleteUserAccount(String userId) throws IOException;
+	boolean setActivated(String accountId, boolean activated) throws IOException;
+
+	boolean updatePassword(String accountId, String password) throws IOException;
+
+	boolean updateName(String accountId, String firstName, String lastName) throws IOException;
+
+	boolean updateEmail(String accountId, String email) throws IOException;
+
+	boolean updatePhone(String accountId, String phone) throws IOException;
+
+	boolean deleteUserAccount(String accountId) throws IOException;
 
 }

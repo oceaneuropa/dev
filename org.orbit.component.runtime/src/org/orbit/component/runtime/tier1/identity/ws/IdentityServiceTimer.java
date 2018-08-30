@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.ComponentsConstants;
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProvider;
@@ -39,7 +39,7 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 	public IndexItem getIndex(IndexProvider indexProvider, IdentityService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(ComponentsConstants.IDENTITY_INDEXER_ID, ComponentsConstants.IDENTITY_TYPE, name);
+		return indexProvider.getIndexItem(ComponentConstants.IDENTITY_INDEXER_ID, ComponentConstants.IDENTITY_TYPE, name);
 	}
 
 	@Override
@@ -51,12 +51,12 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 		Date now = new Date();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentsConstants.IDENTITY_NAME, name);
-		props.put(ComponentsConstants.IDENTITY_HOST_URL, hostURL);
-		props.put(ComponentsConstants.IDENTITY_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(ComponentConstants.IDENTITY_NAME, name);
+		props.put(ComponentConstants.IDENTITY_HOST_URL, hostURL);
+		props.put(ComponentConstants.IDENTITY_CONTEXT_ROOT, contextRoot);
+		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
 
-		return indexProvider.addIndexItem(ComponentsConstants.IDENTITY_INDEXER_ID, ComponentsConstants.IDENTITY_TYPE, name, props);
+		return indexProvider.addIndexItem(ComponentConstants.IDENTITY_INDEXER_ID, ComponentConstants.IDENTITY_TYPE, name, props);
 	}
 
 	@Override
@@ -69,19 +69,19 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> newProperties = new Hashtable<String, Object>();
-		newProperties.put(ComponentsConstants.IDENTITY_NAME, name);
-		newProperties.put(ComponentsConstants.IDENTITY_HOST_URL, hostURL);
-		newProperties.put(ComponentsConstants.IDENTITY_CONTEXT_ROOT, contextRoot);
-		newProperties.put(ComponentsConstants.LAST_HEARTBEAT_TIME, now);
+		newProperties.put(ComponentConstants.IDENTITY_NAME, name);
+		newProperties.put(ComponentConstants.IDENTITY_HOST_URL, hostURL);
+		newProperties.put(ComponentConstants.IDENTITY_CONTEXT_ROOT, contextRoot);
+		newProperties.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
 
-		indexProvider.setProperties(ComponentsConstants.IDENTITY_INDEXER_ID, indexItemId, newProperties);
+		indexProvider.setProperties(ComponentConstants.IDENTITY_INDEXER_ID, indexItemId, newProperties);
 	}
 
 	@Override
 	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentsConstants.IDENTITY_INDEXER_ID, indexItemId);
+		indexProvider.removeIndexItem(ComponentConstants.IDENTITY_INDEXER_ID, indexItemId);
 	}
 
 }

@@ -11,7 +11,6 @@ import org.orbit.component.api.tier1.account.CreateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UpdateUserAccountRequest;
 import org.orbit.component.api.tier1.account.UserAccount;
 import org.orbit.component.api.tier1.account.UserAccountClient;
-import org.orbit.component.connector.ComponentConstants;
 import org.orbit.component.connector.tier1.account.UserAccountImpl;
 import org.orbit.component.connector.tier1.account.UserAccountWSClient;
 import org.orbit.component.model.tier1.account.UserAccountDTO;
@@ -23,6 +22,8 @@ import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.StatusDTO;
+
+import other.orbit.component.connector.ComponentConstantsV1;
 
 public class UserRegistryImplV1 implements UserAccountClient {
 
@@ -83,7 +84,7 @@ public class UserRegistryImplV1 implements UserAccountClient {
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(ComponentConstants.USER_REGISTRY_NAME);
+		String name = (String) this.properties.get(ComponentConstantsV1.USER_REGISTRY_NAME);
 		return name;
 	}
 
@@ -111,6 +112,17 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	@Override
 	public Response sendRequest(Request request) throws ClientException {
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param accountId
+	 * @throws ClientException
+	 */
+	protected void checkAccountId(String accountId) throws ClientException {
+		if (accountId == null || accountId.isEmpty()) {
+			throw new ClientException(400, "accountId is empty.");
+		}
 	}
 
 	/**
@@ -150,11 +162,11 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	}
 
 	@Override
-	public UserAccount getUserAccount(String userId) throws ClientException {
-		checkUsername(userId);
+	public UserAccount getUserAccount(String accountId) throws ClientException {
+		checkAccountId(accountId);
 		UserAccount userAccount = null;
 		try {
-			UserAccountDTO userAccountDTO = this.client.get(userId);
+			UserAccountDTO userAccountDTO = this.client.get(accountId);
 			if (userAccountDTO != null) {
 				userAccount = toUserAccountImpl(userAccountDTO);
 			}
@@ -186,8 +198,8 @@ public class UserRegistryImplV1 implements UserAccountClient {
 
 	@Override
 	public boolean register(CreateUserAccountRequest createUserAccountRequest) throws ClientException {
-		String userId = createUserAccountRequest.getUserId();
-		checkUsername(userId);
+		String username = createUserAccountRequest.getUsername();
+		checkUsername(username);
 		try {
 			UserAccountDTO createUserAccountRequestDTO = toDTO(createUserAccountRequest);
 			StatusDTO status = this.client.create(createUserAccountRequestDTO);
@@ -202,8 +214,8 @@ public class UserRegistryImplV1 implements UserAccountClient {
 
 	@Override
 	public boolean update(UpdateUserAccountRequest updateUserAccountRequest) throws ClientException {
-		String userId = updateUserAccountRequest.getUserId();
-		checkUsername(userId);
+		String username = updateUserAccountRequest.getUsername();
+		checkUsername(username);
 		try {
 			UserAccountDTO updateUserAccountRequestDTO = toDTO(updateUserAccountRequest);
 			StatusDTO status = this.client.update(updateUserAccountRequestDTO);
@@ -217,30 +229,30 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	}
 
 	@Override
-	public boolean changePassword(String userId, String oldPassword, String newPassword) throws ClientException {
-		checkUsername(userId);
+	public boolean changePassword(String username, String oldPassword, String newPassword) throws ClientException {
+		checkUsername(username);
 		try {
-			return this.client.changePassword(userId, oldPassword, newPassword);
+			return this.client.changePassword(username, oldPassword, newPassword);
 		} catch (ClientException e) {
 			throw e;
 		}
 	}
 
 	@Override
-	public boolean isActivated(String userId) throws ClientException {
-		checkUsername(userId);
+	public boolean isActivated(String username) throws ClientException {
+		checkUsername(username);
 		try {
-			return this.client.isActivated(userId);
+			return this.client.isActivated(username);
 		} catch (ClientException e) {
 			throw e;
 		}
 	}
 
 	@Override
-	public boolean activate(String userId) throws ClientException {
-		checkUsername(userId);
+	public boolean activate(String username) throws ClientException {
+		checkUsername(username);
 		try {
-			boolean succeed = this.client.activate(userId);
+			boolean succeed = this.client.activate(username);
 			return succeed;
 		} catch (ClientException e) {
 			throw e;
@@ -248,10 +260,10 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	}
 
 	@Override
-	public boolean deactivate(String userId) throws ClientException {
-		checkUsername(userId);
+	public boolean deactivate(String username) throws ClientException {
+		checkUsername(username);
 		try {
-			boolean succeed = this.client.deactivate(userId);
+			boolean succeed = this.client.deactivate(username);
 			return succeed;
 		} catch (ClientException e) {
 			throw e;
@@ -259,10 +271,10 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	}
 
 	@Override
-	public boolean delete(String userId) throws ClientException {
-		checkUsername(userId);
+	public boolean delete(String username) throws ClientException {
+		checkUsername(username);
 		try {
-			StatusDTO status = this.client.delete(userId);
+			StatusDTO status = this.client.delete(username);
 			if (status != null && status.success()) {
 				return true;
 			}
@@ -282,9 +294,9 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	 * @return
 	 */
 	protected String getLoadBalanceId(Map<String, Object> properties) {
-		String userRegistryName = (String) properties.get(ComponentConstants.USER_REGISTRY_NAME);
-		String url = (String) properties.get(ComponentConstants.USER_REGISTRY_HOST_URL);
-		String contextRoot = (String) properties.get(ComponentConstants.USER_REGISTRY_CONTEXT_ROOT);
+		String userRegistryName = (String) properties.get(ComponentConstantsV1.USER_REGISTRY_NAME);
+		String url = (String) properties.get(ComponentConstantsV1.USER_REGISTRY_HOST_URL);
+		String contextRoot = (String) properties.get(ComponentConstantsV1.USER_REGISTRY_CONTEXT_ROOT);
 		String key = url + "::" + contextRoot + "::" + userRegistryName;
 		return key;
 	}
@@ -297,7 +309,7 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	 */
 	protected UserAccountDTO toDTO(CreateUserAccountRequest createUserAccountRequest) {
 		UserAccountDTO createUserAccountRequestDTO = new UserAccountDTO();
-		createUserAccountRequestDTO.setUserId(createUserAccountRequest.getUserId());
+		createUserAccountRequestDTO.setUsername(createUserAccountRequest.getUsername());
 		createUserAccountRequestDTO.setPassword(createUserAccountRequest.getPassword());
 		createUserAccountRequestDTO.setEmail(createUserAccountRequest.getEmail());
 		createUserAccountRequestDTO.setFirstName(createUserAccountRequest.getFirstName());
@@ -314,7 +326,7 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	 */
 	protected UserAccountDTO toDTO(UpdateUserAccountRequest updateUserAccountRequest) {
 		UserAccountDTO updateUserAccountRequestDTO = new UserAccountDTO();
-		updateUserAccountRequestDTO.setUserId(updateUserAccountRequest.getUserId());
+		updateUserAccountRequestDTO.setUsername(updateUserAccountRequest.getUsername());
 		updateUserAccountRequestDTO.setPassword(updateUserAccountRequest.getPassword());
 		updateUserAccountRequestDTO.setEmail(updateUserAccountRequest.getEmail());
 		updateUserAccountRequestDTO.setFirstName(updateUserAccountRequest.getFirstName());
@@ -331,7 +343,7 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	 */
 	protected UserAccountImpl toUserAccountImpl(UserAccountDTO dto) {
 		UserAccountImpl impl = new UserAccountImpl();
-		impl.setUserId(dto.getUserId());
+		impl.setUsername(dto.getUsername());
 		impl.setEmail(dto.getEmail());
 		impl.setPassword(dto.getPassword());
 		impl.setFirstName(dto.getFirstName());

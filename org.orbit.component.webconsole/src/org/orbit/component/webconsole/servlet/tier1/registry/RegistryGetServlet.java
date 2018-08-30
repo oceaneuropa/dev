@@ -35,14 +35,13 @@ public class RegistryGetServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
-		// String userId = null;
-		// String username = SessionHelper.INSTANCE.getUsername(request);
-		// ConfigRegistryClient registry = OrbitClients.getInstance().getConfigRegistry(registryUrl, username);
+		// String accountId = SessionHelper.INSTANCE.getAccountId(request);
+		// ConfigRegistryClient registry = OrbitClients.getInstance().getConfigRegistry(registryUrl, accountId);
 		// if (registry != null) {
 		// try {
 		// registry.getProperties();
-		// registry.getProperties(userId, new EPath("/"));
-		// registry.getProperty(userId, new EPath("/"), "test");
+		// registry.getProperties(accountId, new EPath("/"));
+		// registry.getProperty(accountId, new EPath("/"), "test");
 		// } catch (ClientException e) {
 		// e.printStackTrace();
 		// }

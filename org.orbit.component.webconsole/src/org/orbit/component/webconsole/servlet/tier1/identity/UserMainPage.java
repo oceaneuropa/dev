@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.util.ExtensionUtil;
 import org.origin.common.util.ServletUtil;
 
@@ -30,8 +31,8 @@ public class UserMainPage extends HttpServlet {
 		boolean isTokenValid = false;
 		HttpSession session = request.getSession(false);
 		if (session != null) {
-			String accessToken = (String) session.getAttribute(WebConstants.SESSION__ACCESS_TOKEN);
-			isTokenValid = ExtensionUtil.JWT.isTokenValid(WebConstants.TOKEN_PROVIDER__ORBIT, accessToken);
+			String accessToken = (String) session.getAttribute(PlatformConstants.SESSION__ORBIT_ACCESS_TOKEN);
+			isTokenValid = ExtensionUtil.JWT.isTokenValid(PlatformConstants.TOKEN_PROVIDER__ORBIT, accessToken);
 		}
 
 		if (message != null && !message.isEmpty()) {

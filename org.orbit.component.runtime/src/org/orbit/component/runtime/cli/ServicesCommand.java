@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.runtime.tier1.account.service.UserRegistryServiceImpl;
+import org.orbit.component.runtime.tier1.account.service.impl.UserRegistryServiceImpl;
 import org.orbit.component.runtime.tier1.auth.service.AuthServiceImpl;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryServiceImpl;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreServiceImpl;
