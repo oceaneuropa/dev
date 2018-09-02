@@ -17,11 +17,11 @@ import org.origin.common.rest.client.WSClientConstants;
 
 public class InfraClientsUtil {
 
-	public static IndexItems IndexItems = new IndexItems();
-	public static ExtensionRegistry ExtensionRegistry = new ExtensionRegistry();
+	public static Indexes Indexes = new Indexes();
+	public static Extensions Extensions = new Extensions();
 	public static Channels Channels = new Channels();
 
-	public static class IndexItems {
+	public static class Indexes {
 		/**
 		 * Get all index items of a indexer.
 		 * 
@@ -250,7 +250,7 @@ public class InfraClientsUtil {
 		}
 	}
 
-	public static class ExtensionRegistry {
+	public static class Extensions {
 		/**
 		 * Get all extension items from a platform.
 		 * 

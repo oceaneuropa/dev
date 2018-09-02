@@ -79,7 +79,7 @@ public class NodeListServlet extends HttpServlet {
 
 				// Get index items for platforms with type "node" and parent platform id equals the platformId
 				if (nodeInfos != null) {
-					nodeIdToIndexItemMap = InfraClientsUtil.IndexItems.getPlatformIdToIndexItem(indexServiceUrl, accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
+					nodeIdToIndexItemMap = InfraClientsUtil.Indexes.getPlatformIdToIndexItem(indexServiceUrl, accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
 					for (NodeInfo nodeInfo : nodeInfos) {
 						String nodeId = nodeInfo.getId();
 						boolean isOnline = false;

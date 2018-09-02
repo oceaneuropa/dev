@@ -253,7 +253,7 @@ public class UserAccountTableHandler implements DatabaseTableAware {
 		String creationTimeString = DateUtil.toString(creationTime, getDateFormat());
 		String lastUpdateTimeString = DateUtil.toString(lastUpdateTime, getDateFormat());
 
-		String insertSQL = "INSERT INTO " + getTableName() + " (accountId, username, password, email, firstName, lastName, phone, creationTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+		String insertSQL = "INSERT INTO " + getTableName() + " (accountId, username, password, email, firstName, lastName, phone, creationTime, lastUpdateTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { accountId, username, password, email, firstName, lastName, phone, creationTimeString, lastUpdateTimeString }, 1);
 		if (succeed) {
 			return getByAccountId(conn, accountId);

@@ -78,22 +78,22 @@ public class PlatformPropertyListServlet extends HttpServlet {
 				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, platformId);
 
 				// Get index item of the platform
-				platformIndexItem = InfraClientsUtil.IndexItems.getIndexItemOfPlatform(indexServiceUrl, accessToken, platformId);
+				platformIndexItem = InfraClientsUtil.Indexes.getIndexItemOfPlatform(indexServiceUrl, accessToken, platformId);
 
 				// Get all extensions from the platform
-				extensionItems = InfraClientsUtil.ExtensionRegistry.getExtensionItemsOfPlatform(extensionRegistryUrl, accessToken, platformId);
+				extensionItems = InfraClientsUtil.Extensions.getExtensionItemsOfPlatform(extensionRegistryUrl, accessToken, platformId);
 
 				// extensionItemMap = OrbitExtensionHelper.INSTANCE.getExtensionItemMapOfPlatform(extensionRegistryUrl, id);
-				extensionItemMap = InfraClientsUtil.ExtensionRegistry.toExtensionItemMap(extensionItems);
+				extensionItemMap = InfraClientsUtil.Extensions.toExtensionItemMap(extensionItems);
 
 				// Get indexer extensions from the platform
-				List<ExtensionItem> indexerExtensionItems = InfraClientsUtil.ExtensionRegistry.getExtensionItemsOfPlatform(extensionRegistryUrl, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
+				List<ExtensionItem> indexerExtensionItems = InfraClientsUtil.Extensions.getExtensionItemsOfPlatform(extensionRegistryUrl, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 
 				// Get index items from the platform
 				for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
 					String indexerId = indexerExtensionItem.getExtensionId();
 
-					List<IndexItem> currIndexItems = InfraClientsUtil.IndexItems.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, platformId);
+					List<IndexItem> currIndexItems = InfraClientsUtil.Indexes.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, platformId);
 					if (currIndexItems != null && !currIndexItems.isEmpty()) {
 						indexItems.addAll(currIndexItems);
 					}

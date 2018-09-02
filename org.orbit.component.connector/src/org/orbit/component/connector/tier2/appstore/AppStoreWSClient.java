@@ -51,6 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app?appId={appId}&appVersion={appVersion}
  * URL (POST):   {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content (FormData: InputStream and FormDataContentDisposition) // Upload an app.
  * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app/{appId}/{appVersion}/content //Download an app.
+ * URL (GET):    {scheme}://{host}:{port}/{contextRoot}/app/content?appId={appId}&appVersion={appVersion}
  * 
  */
 public class AppStoreWSClient extends WSClient {

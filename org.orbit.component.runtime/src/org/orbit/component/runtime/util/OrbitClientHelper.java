@@ -83,7 +83,7 @@ public class OrbitClientHelper {
 	protected IndexService getIndexService(String indexServiceUrl, String accessToken) {
 		IndexService indexService = null;
 		if (indexServiceUrl != null) {
-			indexService = InfraClientsUtil.IndexItems.getIndexServiceClient(indexServiceUrl, accessToken);
+			indexService = InfraClientsUtil.Indexes.getIndexServiceClient(indexServiceUrl, accessToken);
 		}
 		return indexService;
 	}

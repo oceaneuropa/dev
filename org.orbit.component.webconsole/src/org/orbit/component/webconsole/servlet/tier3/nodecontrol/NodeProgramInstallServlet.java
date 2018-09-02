@@ -57,7 +57,7 @@ public class NodeProgramInstallServlet extends HttpServlet {
 
 				// Get platform client of the node
 				PlatformClient nodePlatformClient = null;
-				IndexItem nodeIndexItem = InfraClientsUtil.IndexItems.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				IndexItem nodeIndexItem = InfraClientsUtil.Indexes.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
 					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem);
 				}

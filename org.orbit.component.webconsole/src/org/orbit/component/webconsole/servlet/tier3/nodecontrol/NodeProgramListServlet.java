@@ -81,7 +81,7 @@ public class NodeProgramListServlet extends HttpServlet {
 				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, parentPlatformId);
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClient, nodeId);
 
-				nodeIndexItem = InfraClientsUtil.IndexItems.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				nodeIndexItem = InfraClientsUtil.Indexes.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
 					PlatformClient nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem);
 					if (nodePlatformClient != null) {

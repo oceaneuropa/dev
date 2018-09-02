@@ -70,7 +70,7 @@ public class PlatformListServlet extends HttpServlet {
 				platformConfigs = ComponentClientsUtil.DomainControl.getPlatformConfigs(domainServiceUrl, accessToken, machineId);
 
 				// Get index items for platforms
-				platformIdToIndexItemMap = InfraClientsUtil.IndexItems.getPlatformIdToIndexItem(indexServiceUrl, accessToken, null, PlatformConstants.PLATFORM_TYPE__SERVER);
+				platformIdToIndexItemMap = InfraClientsUtil.Indexes.getPlatformIdToIndexItem(indexServiceUrl, accessToken, null, PlatformConstants.PLATFORM_TYPE__SERVER);
 
 				if (platformConfigs != null) {
 					for (PlatformConfig platformConfig : platformConfigs) {
@@ -87,9 +87,9 @@ public class PlatformListServlet extends HttpServlet {
 
 						Map<String, List<IndexItem>> indexerIdToIndexItemsMap = new LinkedHashMap<String, List<IndexItem>>();
 						// Get extensions indexer ids from the platform
-						List<String> indexerIds = InfraClientsUtil.ExtensionRegistry.getExtensionIdsOfPlatform(extensionRegistryUrl, accessToken, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
+						List<String> indexerIds = InfraClientsUtil.Extensions.getExtensionIdsOfPlatform(extensionRegistryUrl, accessToken, platformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 						for (String indexerId : indexerIds) {
-							List<IndexItem> currIndexItems = InfraClientsUtil.IndexItems.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, platformId);
+							List<IndexItem> currIndexItems = InfraClientsUtil.Indexes.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, platformId);
 							indexerIdToIndexItemsMap.put(indexerId, currIndexItems);
 						}
 						platformIdToIndexerIdToIndexItemsMap.put(platformId, indexerIdToIndexItemsMap);

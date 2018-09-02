@@ -57,8 +57,8 @@ public class SignUpServlet extends HttpServlet {
 				// Get identity service's access token
 				String identityServiceAccessToken = null;
 
-				boolean usernameExists = ComponentClientsUtil.UserAccounts.usernameExists(identityServiceUrl, identityServiceAccessToken, username);
-				boolean emailExists = ComponentClientsUtil.UserAccounts.emailExists(identityServiceUrl, identityServiceAccessToken, email);
+				boolean usernameExists = ComponentClientsUtil.UserAccounts.usernameExists(userRegistryUrl, identityServiceAccessToken, username);
+				boolean emailExists = ComponentClientsUtil.UserAccounts.emailExists(userRegistryUrl, identityServiceAccessToken, email);
 
 				if (usernameExists) {
 					message = MessageHelper.INSTANCE.add(message, "username '" + username + "' is already taken.");
