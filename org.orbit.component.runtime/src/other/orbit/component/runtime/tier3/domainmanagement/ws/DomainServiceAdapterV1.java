@@ -4,7 +4,7 @@ import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceTimer;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSApplication;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -84,7 +84,7 @@ public class DomainServiceAdapterV1 {
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		this.serviceIndexTimer = new DomainServiceTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

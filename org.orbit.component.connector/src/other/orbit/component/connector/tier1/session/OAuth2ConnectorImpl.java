@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.component.api.tier1.session.OAuth2Client;
 import org.orbit.component.connector.tier1.session.OAuth2ClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 
 import other.orbit.component.api.tier1.session.OAuth2ConnectorV1;
 import other.orbit.component.connector.ComponentConstantsV1;
@@ -19,12 +19,12 @@ public class OAuth2ConnectorImpl extends IndexBasedLoadBalancedServiceConnectorI
 	 * 
 	 * @param indexService
 	 */
-	public OAuth2ConnectorImpl(IndexService indexService) {
+	public OAuth2ConnectorImpl(IndexServiceClient indexService) {
 		super(indexService, OAuth2ConnectorV1.class);
 	}
 
 	@Override
-	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
+	protected List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException {
 		return indexService.getIndexItems(ComponentConstantsV1.OAUTH2_INDEXER_ID, ComponentConstantsV1.OAUTH2_TYPE);
 	}
 

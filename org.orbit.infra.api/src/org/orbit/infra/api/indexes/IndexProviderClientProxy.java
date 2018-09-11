@@ -4,29 +4,34 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.orbit.infra.api.util.InfraClients;
+import javax.ws.rs.core.Response;
 
-public class IndexProviderProxy implements IndexProvider {
+import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
+
+public class IndexProviderClientProxy implements IndexProviderClient {
 
 	private static IndexProviderProxyImpl PROXY = new IndexProviderProxyImpl();
 
 	protected Map<String, Object> properties;
-	protected IndexProvider indexProvider = PROXY;
+	protected IndexProviderClient indexProvider = PROXY;
 
 	/**
 	 * 
 	 * @param properties
 	 */
-	public IndexProviderProxy(Map<String, Object> properties) {
+	public IndexProviderClientProxy(Map<String, Object> properties) {
 		if (properties == null) {
 			throw new IllegalArgumentException("properties is null");
 		}
 		this.properties = properties;
 	}
 
-	protected synchronized IndexProvider resolve() {
+	protected synchronized IndexProviderClient resolve() {
 		if (this.indexProvider == null || this.indexProvider.isProxy()) {
-			IndexProvider resolvedIndexProvider = InfraClients.getInstance().getIndexProvider(this.properties, false);
+			// IndexProviderClient resolvedIndexProvider = InfraClients.getInstance().getIndexProvider0(this.properties, false);
+			IndexProviderClient resolvedIndexProvider = null;
 			if (resolvedIndexProvider != null && !resolvedIndexProvider.isProxy()) {
 				this.indexProvider = resolvedIndexProvider;
 			}
@@ -35,11 +40,6 @@ public class IndexProviderProxy implements IndexProvider {
 			this.indexProvider = PROXY;
 		}
 		return this.indexProvider;
-	}
-
-	@Override
-	public String getName() {
-		return resolve().getName();
 	}
 
 	@Override
@@ -53,24 +53,39 @@ public class IndexProviderProxy implements IndexProvider {
 	}
 
 	@Override
+	public void update(Map<String, Object> properties) {
+		resolve().update(properties);
+	}
+
+	@Override
+	public boolean close() throws ClientException {
+		return resolve().close();
+	}
+
+	@Override
+	public ServiceMetadata getMetadata() throws ClientException {
+		return resolve().getMetadata();
+	}
+
+	@Override
+	public String getName() throws ClientException {
+		return resolve().getName();
+	}
+
+	@Override
 	public boolean ping() {
 		return resolve().ping();
 	}
 
 	@Override
-	public String echo(String message) throws IOException {
+	public String echo(String message) throws ClientException {
 		return resolve().echo(message);
 	}
 
 	@Override
-	public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
-		return resolve().sendCommand(action, params);
+	public Response sendRequest(Request request) throws ClientException {
+		return resolve().sendRequest(request);
 	}
-
-	// @Override
-	// public List<IndexItem> getIndexItems() throws IOException {
-	// return resolve().getIndexItems();
-	// }
 
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
@@ -98,8 +113,8 @@ public class IndexProviderProxy implements IndexProvider {
 	}
 
 	@Override
-	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-		return resolve().removeIndexItem(indexProviderId, indexItemId);
+	public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+		return resolve().deleteIndexItem(indexProviderId, indexItemId);
 	}
 
 	@Override
@@ -137,8 +152,7 @@ public class IndexProviderProxy implements IndexProvider {
 		return false;
 	}
 
-	public static class IndexProviderProxyImpl implements IndexProvider {
-
+	public static class IndexProviderProxyImpl implements IndexProviderClient {
 		@Override
 		public String getName() {
 			return null;
@@ -155,6 +169,20 @@ public class IndexProviderProxy implements IndexProvider {
 		}
 
 		@Override
+		public void update(Map<String, Object> properties) {
+		}
+
+		@Override
+		public boolean close() throws ClientException {
+			return false;
+		}
+
+		@Override
+		public ServiceMetadata getMetadata() throws ClientException {
+			return null;
+		}
+
+		@Override
 		public boolean ping() {
 			return false;
 		}
@@ -164,10 +192,10 @@ public class IndexProviderProxy implements IndexProvider {
 			return null;
 		}
 
-		// @Override
-		// public List<IndexItem> getIndexItems() throws IOException {
-		// return null;
-		// }
+		@Override
+		public Response sendRequest(Request request) throws ClientException {
+			return null;
+		}
 
 		@Override
 		public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
@@ -190,30 +218,12 @@ public class IndexProviderProxy implements IndexProvider {
 		}
 
 		@Override
-		public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
-			return false;
-		}
-
-		@Override
-		public <T> void adapt(Class<T> clazz, T object) {
-		}
-
-		@Override
-		public <T> void adapt(Class<T>[] classes, T object) {
-		}
-
-		@Override
-		public <T> T getAdapter(Class<T> adapter) {
-			return null;
-		}
-
-		@Override
 		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
 			return null;
 		}
 
 		@Override
-		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
 			return false;
 		}
 
@@ -230,6 +240,19 @@ public class IndexProviderProxy implements IndexProvider {
 		@Override
 		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
 			return false;
+		}
+
+		@Override
+		public <T> void adapt(Class<T> clazz, T object) {
+		}
+
+		@Override
+		public <T> void adapt(Class<T>[] classes, T object) {
+		}
+
+		@Override
+		public <T> T getAdapter(Class<T> adapter) {
+			return null;
 		}
 
 		@Override

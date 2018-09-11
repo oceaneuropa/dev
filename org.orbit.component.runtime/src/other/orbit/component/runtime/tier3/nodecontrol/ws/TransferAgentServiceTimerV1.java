@@ -9,15 +9,15 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 
-public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, NodeControlService> implements ServiceIndexTimerV1<IndexProvider, NodeControlService> {
+public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProviderClient, NodeControlService> implements ServiceIndexTimerV1<IndexProviderClient, NodeControlService> {
 
 	protected IndexItem indexItem;
 
-	public TransferAgentServiceTimerV1(IndexProvider indexProvider) {
+	public TransferAgentServiceTimerV1(IndexProviderClient indexProvider) {
 		super("Index Timer [Transfer Agent Service]", indexProvider);
 	}
 
@@ -27,7 +27,7 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 	}
 
 	@Override
-	public synchronized void updateIndex(IndexProvider indexProvider, NodeControlService service) throws IOException {
+	public synchronized void updateIndex(IndexProviderClient indexProvider, NodeControlService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -56,9 +56,9 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 	}
 
 	@Override
-	public synchronized void removeIndex(IndexProvider indexProvider) throws IOException {
+	public synchronized void removeIndex(IndexProviderClient indexProvider) throws IOException {
 		if (this.indexItem != null) {
-			indexProvider.removeIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItem.getIndexItemId());
+			indexProvider.deleteIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItem.getIndexItemId());
 		}
 	}
 

@@ -6,7 +6,7 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.command.MissionControlEditPolicy;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClients;
@@ -41,8 +41,8 @@ public class MissionControlAdapter implements LifecycleAware {
 		this.properties = properties;
 	}
 
-	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties, true);
+	public IndexServiceClient getIndexProvider() {
+		return InfraClients.getInstance().getIndexService(this.properties, true);
 	}
 
 	public MissionControlService getService() {
@@ -108,7 +108,7 @@ public class MissionControlAdapter implements LifecycleAware {
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer
-		IndexProvider indexProvider = getIndexProvider();
+		IndexServiceClient indexProvider = getIndexProvider();
 		// this.indexTimer = new MissionControlIndexer(indexProvider, service);
 		// this.indexTimer.start();
 

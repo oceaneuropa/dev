@@ -3,7 +3,7 @@ package org.orbit.component.runtime.tier1.session.ws;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.PlatformSDKActivator;
@@ -104,7 +104,7 @@ public class OAuth2ServiceAdapter implements LifecycleAware {
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		// this.indexTimer = new OAuth2ServiceIndexTimer(indexProvider, service);
 		// this.indexTimer.start();
 

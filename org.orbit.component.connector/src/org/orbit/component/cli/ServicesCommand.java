@@ -16,7 +16,7 @@ import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -103,7 +103,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
-	protected IndexService getIndexService() {
+	protected IndexServiceClient getIndexService() {
 		return InfraClients.getInstance().getIndexService(this.properties, true);
 	}
 
@@ -260,7 +260,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 
 	protected void listTransferAgents() throws ClientException {
 		try {
-			IndexService indexService = getIndexService();
+			IndexServiceClient indexService = getIndexService();
 
 			List<IndexItem> indexItems = indexService.getIndexItems(IndexConstants.NODE_CONTROL_INDEXER_ID, IndexConstants.NODE_CONTROL_TYPE);
 

@@ -175,16 +175,6 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 		return contextRoot;
 	}
 
-	// /**
-	// *
-	// * @param e
-	// * @throws IndexServiceException
-	// */
-	// protected void handleSQLException(SQLException e) throws IndexServiceException {
-	// e.printStackTrace();
-	// throw new IndexServiceException(StatusDTO.RESP_500, e.getMessage(), e);
-	// }
-
 	/**
 	 * 
 	 * @param e
@@ -558,3 +548,13 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 }
+
+// /**
+// *
+// * @param e
+// * @throws IndexServiceException
+// */
+// protected void handleSQLException(SQLException e) throws IndexServiceException {
+// e.printStackTrace();
+// throw new IndexServiceException(StatusDTO.RESP_500, e.getMessage(), e);
+// }

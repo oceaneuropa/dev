@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.spirit.runtime.Constants;
 import org.orbit.spirit.runtime.gaia.service.GAIA;
@@ -20,7 +20,7 @@ public class GaiaIndexTimer extends ServiceIndexTimer<GAIA> {
 	 * @param indexProvider
 	 * @param gaia
 	 */
-	public GaiaIndexTimer(IndexProvider indexProvider, GAIA gaia) {
+	public GaiaIndexTimer(IndexServiceClient indexProvider, GAIA gaia) {
 		super("Index Timer [" + gaia.getName() + "]", indexProvider);
 		setDebug(false);
 		this.gaia = gaia;
@@ -32,14 +32,14 @@ public class GaiaIndexTimer extends ServiceIndexTimer<GAIA> {
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, GAIA gaia) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, GAIA gaia) throws IOException {
 		String name = gaia.getName();
 
 		return indexProvider.getIndexItem(Constants.GAIA_INDEXER_ID, Constants.GAIA_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, GAIA gaia) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, GAIA gaia) throws IOException {
 		// String OSName = gaia.getOSName();
 		// String OSVersion = gaia.getOSVersion();
 		String name = gaia.getName();
@@ -60,7 +60,7 @@ public class GaiaIndexTimer extends ServiceIndexTimer<GAIA> {
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, GAIA gaia, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, GAIA gaia, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.LAST_HEARTBEAT_TIME, new Date().getTime());
@@ -69,10 +69,10 @@ public class GaiaIndexTimer extends ServiceIndexTimer<GAIA> {
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(Constants.GAIA_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(Constants.GAIA_INDEXER_ID, indexItemId);
 	}
 
 }

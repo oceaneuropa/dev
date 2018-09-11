@@ -4,7 +4,7 @@ import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlIndexTimer;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlWSApplication;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -84,7 +84,7 @@ public class MissionControlAdapterV1 {
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		this.serviceIndexer = new MissionControlIndexTimer(indexProvider, service);
 		this.serviceIndexer.start();
 	}

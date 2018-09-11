@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.channel.service.ChannelService;
@@ -21,7 +21,7 @@ public class ChannelServiceIndexTimer extends ServiceIndexTimer<ChannelService> 
 	 * @param indexProvider
 	 * @param service
 	 */
-	public ChannelServiceIndexTimer(IndexProvider indexProvider, ChannelService service) {
+	public ChannelServiceIndexTimer(IndexServiceClient indexProvider, ChannelService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -33,14 +33,14 @@ public class ChannelServiceIndexTimer extends ServiceIndexTimer<ChannelService> 
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, ChannelService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, ChannelService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(InfraConstants.CHANNEL_INDEXER_ID, InfraConstants.CHANNEL_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, ChannelService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, ChannelService service) throws IOException {
 		String name = service.getName();
 		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
 		// String namespace = service.getNamespace();
@@ -63,7 +63,7 @@ public class ChannelServiceIndexTimer extends ServiceIndexTimer<ChannelService> 
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, ChannelService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, ChannelService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		String name = service.getName();
 		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
@@ -94,10 +94,10 @@ public class ChannelServiceIndexTimer extends ServiceIndexTimer<ChannelService> 
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(InfraConstants.CHANNEL_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(InfraConstants.CHANNEL_INDEXER_ID, indexItemId);
 	}
 
 }

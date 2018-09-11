@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
@@ -21,7 +21,7 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 	 * @param indexProvider
 	 * @param service
 	 */
-	public MissionControlIndexTimer(IndexProvider indexProvider, MissionControlService service) {
+	public MissionControlIndexTimer(IndexServiceClient indexProvider, MissionControlService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -33,14 +33,14 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, MissionControlService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, MissionControlService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(ComponentConstants.MISSION_CONTROL_INDEXER_ID, ComponentConstants.MISSION_CONTROL_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, MissionControlService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, MissionControlService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -60,7 +60,7 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, MissionControlService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, MissionControlService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -82,10 +82,10 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentConstants.MISSION_CONTROL_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(ComponentConstants.MISSION_CONTROL_INDEXER_ID, indexItemId);
 	}
 
 }

@@ -5,7 +5,7 @@ import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceTimer;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlWSApplication;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlEditPolicy;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
@@ -96,7 +96,7 @@ public class TransferAgentServiceAdapterV1 {
 		this.webService.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		this.serviceIndexTimer = new NodeControlServiceTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

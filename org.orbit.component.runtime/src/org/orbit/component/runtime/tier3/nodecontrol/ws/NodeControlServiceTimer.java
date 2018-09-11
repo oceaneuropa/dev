@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
@@ -21,7 +21,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	 * @param indexProvider
 	 * @param service
 	 */
-	public NodeControlServiceTimer(IndexProvider indexProvider, NodeControlService service) {
+	public NodeControlServiceTimer(IndexServiceClient indexProvider, NodeControlService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -33,14 +33,14 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, NodeControlService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, NodeControlService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, ComponentConstants.NODE_CONTROL_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, NodeControlService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, NodeControlService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -62,7 +62,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, NodeControlService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, NodeControlService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -85,10 +85,10 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItemId);
 	}
 
 }

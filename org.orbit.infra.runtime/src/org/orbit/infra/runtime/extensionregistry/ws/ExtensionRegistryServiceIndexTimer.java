@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
@@ -21,7 +21,7 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	 * @param indexProvider
 	 * @param service
 	 */
-	public ExtensionRegistryServiceIndexTimer(IndexProvider indexProvider, ExtensionRegistryService service) {
+	public ExtensionRegistryServiceIndexTimer(IndexServiceClient indexProvider, ExtensionRegistryService service) {
 		super("ExtensionRegistry Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -33,14 +33,14 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, ExtensionRegistryService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, ExtensionRegistryService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, InfraConstants.EXTENSION_REGISTRY_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, ExtensionRegistryService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, ExtensionRegistryService service) throws IOException {
 		String name = service.getName();
 		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
 		// String namespace = service.getNamespace();
@@ -63,7 +63,7 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, ExtensionRegistryService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, ExtensionRegistryService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		String name = service.getName();
 		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
@@ -94,10 +94,10 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, indexItemId);
 	}
 
 }

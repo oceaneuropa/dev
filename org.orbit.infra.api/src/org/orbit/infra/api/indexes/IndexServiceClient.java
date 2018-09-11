@@ -4,24 +4,53 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-/*
- * Used by index provider to create/update/delete index items.
- * 
- * Note:
- * indexProviderId should never appear in the method parameters, since the IndexProvider already holds a indexProviderId when created.
- * 
- * Example:
- * 
- * IndexService: "component_.index_service.indexer"
- * 
- * AppStore: "component.appstore.indexer"
- * 
- * ConfigRegisry: "component.configregistry.indexer"
- * 
- * FileSystem: "component.filesystem.indexer"
- * 
+import org.origin.common.rest.client.ServiceClient;
+
+/**
+ * Used by client to query index items.
+ *
  */
-public interface IndexProvider extends IndexService {
+public interface IndexServiceClient extends ServiceClient {
+
+	/**
+	 * Get all index items created by specified indexer provider.
+	 * 
+	 * @param indexProviderId
+	 * @return
+	 * @throws IOException
+	 */
+	List<IndexItem> getIndexItems(String indexProviderId) throws IOException;
+
+	/**
+	 * Get index items created by specified indexer provider and with specified type.
+	 * 
+	 * @param indexProviderId
+	 * @param type
+	 * @return
+	 * @throws IOException
+	 */
+	List<IndexItem> getIndexItems(String indexProviderId, String type) throws IOException;
+
+	/**
+	 * Get an index item.
+	 * 
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @return
+	 * @throws IOException
+	 */
+	IndexItem getIndexItem(String indexProviderId, String type, String name) throws IOException;
+
+	/**
+	 * Get an index item.
+	 * 
+	 * @param indexProviderId
+	 * @param indexItemId
+	 * @return
+	 * @throws IOException
+	 */
+	IndexItem getIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
 
 	/**
 	 * Add an index item.
@@ -43,7 +72,7 @@ public interface IndexProvider extends IndexService {
 	 * @return
 	 * @throws IOException
 	 */
-	boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
+	boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException;
 
 	/**
 	 * Set properties.

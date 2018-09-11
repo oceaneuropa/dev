@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
@@ -54,7 +54,7 @@ public class OrbitClientHelper {
 	public IndexItem getNodeIndexItem(String indexServiceUrl, String accessToken, String platformParentId, String nodePlatformid) throws IOException {
 		IndexItem nodeIndexItem = null;
 		if (indexServiceUrl != null && platformParentId != null && nodePlatformid != null) {
-			IndexService indexService = getIndexService(indexServiceUrl, accessToken);
+			IndexServiceClient indexService = getIndexService(indexServiceUrl, accessToken);
 			if (indexService != null) {
 				List<IndexItem> indexItems = indexService.getIndexItems(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE);
 				if (indexItems != null) {
@@ -80,8 +80,8 @@ public class OrbitClientHelper {
 	 * @param accessToken
 	 * @return
 	 */
-	protected IndexService getIndexService(String indexServiceUrl, String accessToken) {
-		IndexService indexService = null;
+	protected IndexServiceClient getIndexService(String indexServiceUrl, String accessToken) {
+		IndexServiceClient indexService = null;
 		if (indexServiceUrl != null) {
 			indexService = InfraClientsUtil.Indexes.getIndexServiceClient(indexServiceUrl, accessToken);
 		}

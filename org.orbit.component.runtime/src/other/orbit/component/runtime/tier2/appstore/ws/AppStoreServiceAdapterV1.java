@@ -4,7 +4,7 @@ import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceIndexTimer;
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreWSApplication;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -85,7 +85,7 @@ public class AppStoreServiceAdapterV1 {
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		this.serviceIndexTimer = new AppStoreServiceIndexTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

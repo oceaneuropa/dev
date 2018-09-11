@@ -5,7 +5,8 @@ Bundle-SymbolicName: org.orbit.infra.api;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.infra.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.orbit.platform.sdk;version="[1.0.0,2.0.0)",
+Import-Package: javax.ws.rs.core;version="2.0.0",
+ org.orbit.platform.sdk;version="[1.0.0,2.0.0)",
  org.osgi.framework;version="1.3.0",
  org.osgi.service.cm;version="1.5.0",
  org.osgi.util.tracker;version="1.5.1",

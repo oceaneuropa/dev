@@ -10,7 +10,7 @@ import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSMachinesResource;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSNodesResource;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceWSPlatformsResource;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.RestConstants;
 import org.origin.common.rest.server.AbstractApplication;
 import org.osgi.framework.ServiceRegistration;
@@ -19,18 +19,18 @@ public class DomainMgmtWSApplicationV1 extends AbstractApplication {
 
 	// protected static Logger logger = LoggerFactory.getLogger(DomainMgmtWSApplication.class);
 
-	protected IndexProvider indexProvider;
+	protected IndexProviderClient indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
 	protected DomainMgmtServiceTimerV1 serviceIndexTimer;
 
 	public DomainMgmtWSApplicationV1() {
 	}
 
-	public IndexProvider getIndexProvider() {
+	public IndexProviderClient getIndexProvider() {
 		return this.indexProvider;
 	}
 
-	public void setIndexProvider(IndexProvider indexProvider) {
+	public void setIndexProvider(IndexProviderClient indexProvider) {
 		this.indexProvider = indexProvider;
 	}
 

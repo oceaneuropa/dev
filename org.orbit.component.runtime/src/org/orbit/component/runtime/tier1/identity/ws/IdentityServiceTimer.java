@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 
 /**
@@ -24,7 +24,7 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 	 * @param indexProvider
 	 * @param service
 	 */
-	public IdentityServiceTimer(IndexProvider indexProvider, IdentityService service) {
+	public IdentityServiceTimer(IndexServiceClient indexProvider, IdentityService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -36,14 +36,14 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, IdentityService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, IdentityService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(ComponentConstants.IDENTITY_INDEXER_ID, ComponentConstants.IDENTITY_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, IdentityService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, IdentityService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -60,7 +60,7 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, IdentityService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, IdentityService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -78,10 +78,10 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentConstants.IDENTITY_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(ComponentConstants.IDENTITY_INDEXER_ID, indexItemId);
 	}
 
 }

@@ -9,15 +9,15 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 
-public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, DomainManagementService> implements ServiceIndexTimerV1<IndexProvider, DomainManagementService> {
+public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProviderClient, DomainManagementService> implements ServiceIndexTimerV1<IndexProviderClient, DomainManagementService> {
 
 	protected IndexItem indexItem;
 
-	public DomainMgmtServiceTimerV1(IndexProvider indexProvider) {
+	public DomainMgmtServiceTimerV1(IndexProviderClient indexProvider) {
 		super("Index Timer [Domain Management Service]", indexProvider);
 		setDebug(true);
 	}
@@ -28,7 +28,7 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 	}
 
 	@Override
-	public synchronized void updateIndex(IndexProvider indexProvider, DomainManagementService service) throws IOException {
+	public synchronized void updateIndex(IndexProviderClient indexProvider, DomainManagementService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -66,7 +66,7 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 	 * @throws IOException
 	 */
 	@Override
-	public synchronized void removeIndex(IndexProvider indexProvider) throws IOException {
+	public synchronized void removeIndex(IndexProviderClient indexProvider) throws IOException {
 		if (debug) {
 			System.out.println(getClass().getSimpleName() + ".removeIndex()");
 		}
@@ -77,7 +77,7 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 				System.out.println("\tindexItemId = " + indexItemId);
 			}
 
-			indexProvider.removeIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
+			indexProvider.deleteIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
 		}
 	}
 

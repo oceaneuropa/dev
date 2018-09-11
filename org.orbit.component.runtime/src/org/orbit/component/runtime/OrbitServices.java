@@ -19,7 +19,7 @@ import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceAdapter;
 import org.orbit.component.runtime.tier4.missioncontrol.service.MissionControlService;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlAdapter;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.util.PropertyUtil;
@@ -46,7 +46,7 @@ public class OrbitServices {
 	}
 
 	protected Map<Object, Object> properties;
-	protected ServiceConnectorAdapter<IndexProvider> indexProviderConnector;
+	protected ServiceConnectorAdapter<IndexProviderClient> indexProviderConnector;
 
 	// tier1
 	protected UserRegistryServiceAdapter userRegistryServiceAdapter;
@@ -73,14 +73,14 @@ public class OrbitServices {
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_INDEX_SERVICE_URL);
 		this.properties = properties;
 
-		this.indexProviderConnector = new ServiceConnectorAdapter<IndexProvider>(IndexProvider.class) {
+		this.indexProviderConnector = new ServiceConnectorAdapter<IndexProviderClient>(IndexProviderClient.class) {
 			@Override
-			public void connectorAdded(ServiceConnector<IndexProvider> connector) {
+			public void connectorAdded(ServiceConnector<IndexProviderClient> connector) {
 				doStart(bundleContext);
 			}
 
 			@Override
-			public void connectorRemoved(ServiceConnector<IndexProvider> connector) {
+			public void connectorRemoved(ServiceConnector<IndexProviderClient> connector) {
 			}
 		};
 		this.indexProviderConnector.start(bundleContext);

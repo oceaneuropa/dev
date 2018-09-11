@@ -10,12 +10,12 @@ import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IndexServiceTestWin {
 
-	protected IndexService indexService;
+	protected IndexServiceClient indexService;
 
 	public IndexServiceTestWin() {
 		this.indexService = getIndexService();
@@ -25,7 +25,7 @@ public class IndexServiceTestWin {
 		this.indexService = getIndexService();
 	}
 
-	protected IndexService getIndexService() {
+	protected IndexServiceClient getIndexService() {
 		// IndexServiceConfiguration config = new IndexServiceConfiguration("http://127.0.0.1:9090/orbit/v1");
 		// return IndexServiceFactory.getInstance().createIndexService(config);
 		return null;

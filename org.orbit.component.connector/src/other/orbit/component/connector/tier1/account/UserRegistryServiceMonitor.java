@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.util.List;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 
 import other.orbit.component.connector.ComponentConstantsV1;
 import other.orbit.infra.api.indexes.ServiceMonitor;
 
 public class UserRegistryServiceMonitor extends ServiceMonitor {
 
-	public UserRegistryServiceMonitor(IndexService indexService) {
+	public UserRegistryServiceMonitor(IndexServiceClient indexService) {
 		super(indexService);
 	}
 
 	@Override
-	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
+	protected List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException {
 		return indexService.getIndexItems(ComponentConstantsV1.USER_REGISTRY_INDEXER_ID, ComponentConstantsV1.USER_REGISTRY_TYPE);
 	}
 

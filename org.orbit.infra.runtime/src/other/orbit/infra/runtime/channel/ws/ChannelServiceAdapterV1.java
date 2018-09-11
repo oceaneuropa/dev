@@ -1,6 +1,6 @@
 package other.orbit.infra.runtime.channel.ws;
 
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.orbit.infra.runtime.channel.ws.ChannelServiceIndexTimer;
 import org.orbit.infra.runtime.channel.ws.ChannelWSApplication;
@@ -84,7 +84,7 @@ public class ChannelServiceAdapterV1 {
 
 		// 3. start index timer
 		LOG.debug("start index timer");
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		this.serviceIndexTimer = new ChannelServiceIndexTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

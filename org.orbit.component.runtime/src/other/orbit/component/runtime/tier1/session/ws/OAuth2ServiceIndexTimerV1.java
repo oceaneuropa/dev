@@ -8,13 +8,13 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 
-public class OAuth2ServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, OAuth2Service> implements ServiceIndexTimerV1<IndexProvider, OAuth2Service> {
+public class OAuth2ServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProviderClient, OAuth2Service> implements ServiceIndexTimerV1<IndexProviderClient, OAuth2Service> {
 
-	public OAuth2ServiceIndexTimerV1(IndexProvider indexProvider) {
+	public OAuth2ServiceIndexTimerV1(IndexProviderClient indexProvider) {
 		super("OAuth2 Service Index Timer", indexProvider);
 	}
 
@@ -25,7 +25,7 @@ public class OAuth2ServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProv
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, OAuth2Service service) throws IOException {
+	public void updateIndex(IndexProviderClient indexProvider, OAuth2Service service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();

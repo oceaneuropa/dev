@@ -4,28 +4,29 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class IndexProviderWrapper implements IndexProvider {
+import javax.ws.rs.core.Response;
 
-	protected IndexProvider indexProvider;
+import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 
-	public IndexProviderWrapper() {
+public class IndexProviderClientWrapper implements IndexProviderClient {
+
+	protected IndexProviderClient indexProvider;
+
+	public IndexProviderClientWrapper() {
 	}
 
-	public IndexProviderWrapper(IndexProvider indexProvider) {
+	public IndexProviderClientWrapper(IndexProviderClient indexProvider) {
 		this.indexProvider = indexProvider;
 	}
 
-	public synchronized void set(IndexProvider indexProvider) {
+	public synchronized void set(IndexProviderClient indexProvider) {
 		this.indexProvider = indexProvider;
 	}
 
-	public synchronized IndexProvider get() {
+	public synchronized IndexProviderClient get() {
 		return this.indexProvider;
-	}
-
-	@Override
-	public String getName() {
-		return (get() != null) ? get().getName() : null;
 	}
 
 	@Override
@@ -39,18 +40,40 @@ public class IndexProviderWrapper implements IndexProvider {
 	}
 
 	@Override
+	public void update(Map<String, Object> properties) {
+		if (get() != null) {
+			get().update(properties);
+		}
+	}
+
+	@Override
+	public boolean close() throws ClientException {
+		return (get() != null) ? get().close() : false;
+	}
+
+	@Override
+	public ServiceMetadata getMetadata() throws ClientException {
+		return (get() != null) ? get().getMetadata() : null;
+	}
+
+	@Override
+	public Response sendRequest(Request request) throws ClientException {
+		return (get() != null) ? get().sendRequest(request) : null;
+	}
+
+	@Override
+	public String getName() throws ClientException {
+		return (get() != null) ? get().getName() : null;
+	}
+
+	@Override
 	public boolean ping() {
 		return (get() != null) ? get().ping() : null;
 	}
 
 	@Override
-	public String echo(String message) throws IOException {
+	public String echo(String message) throws ClientException {
 		return (get() != null) ? get().echo(message) : null;
-	}
-
-	@Override
-	public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
-		return (get() != null) ? get().sendCommand(action, params) : null;
 	}
 
 	@Override
@@ -79,8 +102,8 @@ public class IndexProviderWrapper implements IndexProvider {
 	}
 
 	@Override
-	public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-		return (get() != null) ? get().removeIndexItem(indexProviderId, indexItemId) : null;
+	public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+		return (get() != null) ? get().deleteIndexItem(indexProviderId, indexItemId) : null;
 	}
 
 	@Override
@@ -96,11 +119,6 @@ public class IndexProviderWrapper implements IndexProvider {
 	@Override
 	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
 		return (get() != null) ? get().removeProperties(indexProviderId, indexItemId, propertyNames) : null;
-	}
-
-	@Override
-	public boolean isProxy() {
-		return (get() != null) ? get().isProxy() : null;
 	}
 
 	@Override
@@ -120,6 +138,11 @@ public class IndexProviderWrapper implements IndexProvider {
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		return (get() != null) ? get().getAdapter(adapter) : null;
+	}
+
+	@Override
+	public boolean isProxy() {
+		return (get() != null) ? get().isProxy() : null;
 	}
 
 }

@@ -3,7 +3,7 @@ package other.orbit.component.runtime.tier1.auth.ws;
 import org.orbit.component.runtime.tier1.auth.service.AuthService;
 import org.orbit.component.runtime.tier1.auth.ws.AuthServiceIndexTimer;
 import org.orbit.component.runtime.tier1.auth.ws.AuthWSApplication;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -75,7 +75,7 @@ public class AuthServiceAdapterV1 {
 		this.webService.start(bundleContext);
 
 		// Start indexing
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		this.indexTimer = new AuthServiceIndexTimer(indexProvider, service);
 		this.indexTimer.start();
 	}

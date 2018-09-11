@@ -2,10 +2,10 @@ package other.orbit.infra.api.indexes;
 
 import java.util.Map;
 
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 
 public interface IndexServiceConnectorV1 {
 
-	IndexService getService(Map<Object, Object> properties);
+	IndexServiceClient getService(Map<Object, Object> properties);
 
 }

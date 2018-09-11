@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalanceResourceImpl;
@@ -40,7 +40,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 	public static long ACTIVE_PING_INTERVAL = 5 * Timer.SECOND;
 
 	protected boolean debug = true;
-	protected IndexService indexService;
+	protected IndexServiceClient indexService;
 	protected Class<?> connectorClass;
 	protected LoadBalancer<SERVICE_CLIENT> loadBalancer;
 	protected IndexItemsMonitor indexItemsMonitor;
@@ -53,7 +53,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 	 * 
 	 * @param indexService
 	 */
-	public IndexBasedLoadBalancedServiceConnectorImpl(IndexService indexService) {
+	public IndexBasedLoadBalancedServiceConnectorImpl(IndexServiceClient indexService) {
 		this.indexService = indexService;
 		this.loadBalancer = createLoadBalancer();
 	}
@@ -63,7 +63,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 	 * @param indexService
 	 * @param connectorClass
 	 */
-	public IndexBasedLoadBalancedServiceConnectorImpl(IndexService indexService, Class<?> connectorClass) {
+	public IndexBasedLoadBalancedServiceConnectorImpl(IndexServiceClient indexService, Class<?> connectorClass) {
 		this.indexService = indexService;
 		this.loadBalancer = createLoadBalancer();
 		this.connectorClass = connectorClass;
@@ -77,11 +77,11 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 		this.debug = debug;
 	}
 
-	public IndexService getIndexService() {
+	public IndexServiceClient getIndexService() {
 		return indexService;
 	}
 
-	public void setIndexService(IndexService indexService) {
+	public void setIndexService(IndexServiceClient indexService) {
 		this.indexService = indexService;
 	}
 
@@ -131,7 +131,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 		// Start monitor to periodically get index items for a service
 		this.indexItemsMonitor = new IndexItemsMonitor(getConnectorClass().getSimpleName() + " Monitor", this.indexService) {
 			@Override
-			protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
+			protected List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException {
 				return IndexBasedLoadBalancedServiceConnectorImpl.this.getIndexItems(indexService);
 			}
 
@@ -229,7 +229,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 	 * @return
 	 * @throws IOException
 	 */
-	protected abstract List<IndexItem> getIndexItems(IndexService indexService) throws IOException;
+	protected abstract List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException;
 
 	/**
 	 * 

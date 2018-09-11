@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
@@ -21,7 +21,7 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 	 * @param indexProvider
 	 * @param service
 	 */
-	public DomainServiceTimer(IndexProvider indexProvider, DomainManagementService service) {
+	public DomainServiceTimer(IndexServiceClient indexProvider, DomainManagementService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -33,14 +33,14 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, DomainManagementService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, DomainManagementService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, ComponentConstants.DOMAIN_SERVICE_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, DomainManagementService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, DomainManagementService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -60,7 +60,7 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, DomainManagementService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, DomainManagementService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -82,10 +82,10 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
 	}
 
 }

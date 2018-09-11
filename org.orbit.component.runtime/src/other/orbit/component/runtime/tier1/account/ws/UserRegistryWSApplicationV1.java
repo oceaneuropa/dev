@@ -5,7 +5,7 @@ import org.orbit.component.runtime.common.ws.OrbitWSApplication;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryServiceIndexTimer;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryUserAccountsWSResource;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.osgi.framework.ServiceRegistration;
 
 /**
@@ -15,7 +15,7 @@ import org.osgi.framework.ServiceRegistration;
 public class UserRegistryWSApplicationV1 extends OrbitWSApplication {
 
 	protected UserRegistryService service;
-	protected IndexProvider indexProvider;
+	protected IndexProviderClient indexProvider;
 	protected ServiceRegistration<?> serviceRegistration;
 	protected UserRegistryServiceIndexTimer serviceIndexTimer;
 
@@ -42,11 +42,11 @@ public class UserRegistryWSApplicationV1 extends OrbitWSApplication {
 		return this.service;
 	}
 
-	public IndexProvider getIndexProvider() {
+	public IndexProviderClient getIndexProvider() {
 		return this.indexProvider;
 	}
 
-	public void setIndexProvider(IndexProvider indexProvider) {
+	public void setIndexProvider(IndexProviderClient indexProvider) {
 		this.indexProvider = indexProvider;
 	}
 

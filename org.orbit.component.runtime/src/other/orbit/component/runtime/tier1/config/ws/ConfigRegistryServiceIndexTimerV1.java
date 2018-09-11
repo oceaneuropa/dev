@@ -9,7 +9,7 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 
@@ -17,13 +17,13 @@ import org.origin.common.thread.other.ServiceIndexTimerV1;
  * ConfigRegistry service timer to update index item for the service.
  *
  */
-public class ConfigRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, ConfigRegistryService> implements ServiceIndexTimerV1<IndexProvider, ConfigRegistryService> {
+public class ConfigRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProviderClient, ConfigRegistryService> implements ServiceIndexTimerV1<IndexProviderClient, ConfigRegistryService> {
 
 	/**
 	 * 
 	 * @param indexProvider
 	 */
-	public ConfigRegistryServiceIndexTimerV1(IndexProvider indexProvider) {
+	public ConfigRegistryServiceIndexTimerV1(IndexProviderClient indexProvider) {
 		super("ConfigRegistry Index Timer", indexProvider);
 	}
 
@@ -33,7 +33,7 @@ public class ConfigRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<I
 	}
 
 	@Override
-	public synchronized void updateIndex(IndexProvider indexProvider, ConfigRegistryService service) throws IOException {
+	public synchronized void updateIndex(IndexProviderClient indexProvider, ConfigRegistryService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();

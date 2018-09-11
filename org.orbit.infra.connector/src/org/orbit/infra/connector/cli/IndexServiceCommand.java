@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClients;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.connector.InfraConstants;
@@ -81,11 +81,11 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 		this.properties = properties;
 	}
 
-	protected IndexService getIndexService() throws ClientException {
+	protected IndexServiceClient getIndexService() throws ClientException {
 		String url = getIndexServiceURL();
 		LOG.debug("### ### ### ### url = " + url);
 
-		IndexService indexService = InfraClientsUtil.Indexes.getIndexServiceClient(url, null);
+		IndexServiceClient indexService = InfraClientsUtil.Indexes.getIndexServiceClient(url, null);
 		if (indexService == null) {
 			LOG.error("IndexService is not available.");
 			throw new IllegalStateException("IndexService is not available. url = " + url);
@@ -109,7 +109,7 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 	public void index_service_ping() throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "index_service_ping");
 		try {
-			IndexService indexService = getIndexService();
+			IndexServiceClient indexService = getIndexService();
 
 			boolean result = indexService.ping();
 			LOG.info("### ### ### ### result = " + result);
@@ -132,7 +132,7 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "index_service_send", new String[] { "message", message });
 		try {
-			IndexService indexService = getIndexService();
+			IndexServiceClient indexService = getIndexService();
 
 			String resultMessage = indexService.echo(message);
 			LOG.info("### ### ### ### resultMessage = " + resultMessage);

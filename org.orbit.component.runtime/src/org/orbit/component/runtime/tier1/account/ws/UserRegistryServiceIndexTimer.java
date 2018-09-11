@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
@@ -25,7 +25,7 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 	 * @param indexProvider
 	 * @param service
 	 */
-	public UserRegistryServiceIndexTimer(IndexProvider indexProvider, UserRegistryService service) {
+	public UserRegistryServiceIndexTimer(IndexServiceClient indexProvider, UserRegistryService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -37,14 +37,14 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, UserRegistryService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, UserRegistryService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, ComponentConstants.USER_REGISTRY_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, UserRegistryService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, UserRegistryService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -63,7 +63,7 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, UserRegistryService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, UserRegistryService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -83,10 +83,10 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, indexItemId);
 	}
 
 }

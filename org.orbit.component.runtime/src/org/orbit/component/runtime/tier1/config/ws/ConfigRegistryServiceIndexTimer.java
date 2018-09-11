@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
@@ -25,7 +25,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	 * @param indexProvider
 	 * @param service
 	 */
-	public ConfigRegistryServiceIndexTimer(IndexProvider indexProvider, ConfigRegistryService service) {
+	public ConfigRegistryServiceIndexTimer(IndexServiceClient indexProvider, ConfigRegistryService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -37,14 +37,14 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, ConfigRegistryService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, ConfigRegistryService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, ComponentConstants.CONFIG_REGISTRY_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, ConfigRegistryService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, ConfigRegistryService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -64,7 +64,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, ConfigRegistryService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, ConfigRegistryService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -85,10 +85,10 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, indexItemId);
 	}
 
 }

@@ -289,7 +289,7 @@ public class IndexServiceWSClient extends WSClient {
 	 * @return
 	 * @throws ClientException
 	 */
-	public StatusDTO removeIndexItem(String indexProviderId, Integer indexItemId) throws ClientException {
+	public StatusDTO deleteIndexItem(String indexProviderId, Integer indexItemId) throws ClientException {
 		StatusDTO status = null;
 		Response response = null;
 		try {

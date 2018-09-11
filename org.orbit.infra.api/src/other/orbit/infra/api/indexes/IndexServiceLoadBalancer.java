@@ -4,12 +4,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
+import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 
-public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
+public class IndexServiceLoadBalancer extends LoadBalancer<IndexServiceClient> {
 
 	protected static IndexServiceUnsupportedImpl UNSUPPORTED_IMPL = new IndexServiceUnsupportedImpl();
 
@@ -17,25 +22,25 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 	 * 
 	 * @param services
 	 */
-	public IndexServiceLoadBalancer(List<LoadBalanceResource<IndexService>> services) {
+	public IndexServiceLoadBalancer(List<LoadBalanceResource<IndexServiceClient>> services) {
 		super(services);
 	}
 
-	public IndexService createLoadBalancableIndexService() {
+	public IndexServiceClient createLoadBalancableIndexService() {
 		return new IndexServiceLoadBalancableImpl();
 	}
 
-	protected IndexService next() {
-		LoadBalanceResource<IndexService> lbServices = this.getNext();
+	protected IndexServiceClient next() {
+		LoadBalanceResource<IndexServiceClient> lbServices = this.getNext();
 		if (lbServices != null) {
 			return lbServices.getService();
 		}
 		return UNSUPPORTED_IMPL;
 	}
 
-	public class IndexServiceLoadBalancableImpl implements IndexService {
+	public class IndexServiceLoadBalancableImpl implements IndexServiceClient {
 		@Override
-		public String getName() {
+		public String getName() throws ClientException {
 			return next().getName();
 		}
 
@@ -55,7 +60,7 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 		}
 
 		@Override
-		public String echo(String message) throws IOException {
+		public String echo(String message) throws ClientException {
 			return next().echo(message);
 		}
 
@@ -85,8 +90,8 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 		}
 
 		@Override
-		public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
-			return next().sendCommand(action, params);
+		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+			return next().deleteIndexItem(indexProviderId, indexItemId);
 		}
 
 		@Override
@@ -108,9 +113,57 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 		public boolean isProxy() {
 			return false;
 		}
+
+		@Override
+		public void update(Map<String, Object> properties) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public boolean close() throws ClientException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public ServiceMetadata getMetadata() throws ClientException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Response sendRequest(Request request) throws ClientException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
+			// TODO Auto-generated method stub
+			return false;
+		}
 	}
 
-	public static class IndexServiceUnsupportedImpl implements IndexService {
+	public static class IndexServiceUnsupportedImpl implements IndexServiceClient {
 		@Override
 		public String getName() {
 			throw new UnsupportedOperationException();
@@ -162,7 +215,7 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 		}
 
 		@Override
-		public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
+		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
@@ -183,6 +236,54 @@ public class IndexServiceLoadBalancer extends LoadBalancer<IndexService> {
 
 		@Override
 		public boolean isProxy() {
+			return false;
+		}
+
+		@Override
+		public void update(Map<String, Object> properties) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public boolean close() throws ClientException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public ServiceMetadata getMetadata() throws ClientException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Response sendRequest(Request request) throws ClientException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean setProperty(String indexProviderId, Integer indexItemId, String propName, Object propValue, String propType) throws IOException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propertyNames) throws IOException {
+			// TODO Auto-generated method stub
 			return false;
 		}
 	}

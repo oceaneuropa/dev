@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.connector.tier1.auth.AuthClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 
 import other.orbit.component.api.tier1.auth.AuthConnectorV0;
 import other.orbit.component.api.tier1.auth.AuthConnectorV1;
@@ -20,12 +20,12 @@ public class AuthConnectorLoadBalanceImpl extends IndexBasedLoadBalancedServiceC
 	 * 
 	 * @param indexService
 	 */
-	public AuthConnectorLoadBalanceImpl(IndexService indexService) {
+	public AuthConnectorLoadBalanceImpl(IndexServiceClient indexService) {
 		super(indexService, AuthConnectorV0.class);
 	}
 
 	@Override
-	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
+	protected List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException {
 		return indexService.getIndexItems(ComponentConstantsV1.AUTH_INDEXER_ID, ComponentConstantsV1.AUTH_TYPE);
 	}
 

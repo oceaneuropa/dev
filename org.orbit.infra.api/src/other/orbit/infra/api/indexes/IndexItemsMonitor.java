@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.origin.common.thread.ThreadPoolTimer;
 
 public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 
-	protected IndexService indexService;
+	protected IndexServiceClient indexService;
 	protected List<IndexItem> cachedIndexItems = new ArrayList<IndexItem>();
 
 	/**
@@ -26,7 +26,7 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 	 * @param name
 	 * @param indexService
 	 */
-	public IndexItemsMonitor(String name, IndexService indexService) {
+	public IndexItemsMonitor(String name, IndexServiceClient indexService) {
 		super(name);
 		this.indexService = indexService;
 
@@ -83,7 +83,7 @@ public abstract class IndexItemsMonitor extends ThreadPoolTimer {
 	 * @return
 	 * @throws IOException
 	 */
-	protected abstract List<IndexItem> getIndexItems(IndexService indexService) throws IOException;
+	protected abstract List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException;
 
 	/**
 	 * Called when index items are updated.

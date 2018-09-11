@@ -6,19 +6,19 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.orbit.spirit.runtime.Constants;
 import org.orbit.spirit.runtime.gaia.service.GAIA;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 
-public class NodeOSIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, GAIA> implements ServiceIndexTimerV1<IndexProvider, GAIA> {
+public class NodeOSIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProviderClient, GAIA> implements ServiceIndexTimerV1<IndexProviderClient, GAIA> {
 
 	/**
 	 * 
 	 * @param indexProvider
 	 */
-	public NodeOSIndexTimerV1(IndexProvider indexProvider) {
+	public NodeOSIndexTimerV1(IndexProviderClient indexProvider) {
 		super("NodeOS Index Timer", indexProvider);
 		setDebug(false);
 	}
@@ -30,7 +30,7 @@ public class NodeOSIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, G
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, GAIA nodeOS) throws IOException {
+	public void updateIndex(IndexProviderClient indexProvider, GAIA nodeOS) throws IOException {
 		// String OSName = nodeOS.getOSName();
 		// String OSVersion = nodeOS.getOSVersion();
 		String name = nodeOS.getName();

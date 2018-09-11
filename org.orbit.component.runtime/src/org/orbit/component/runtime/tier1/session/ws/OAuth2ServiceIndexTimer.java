@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 
 public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
@@ -20,7 +20,7 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 	 * @param indexProvider
 	 * @param service
 	 */
-	public OAuth2ServiceIndexTimer(IndexProvider indexProvider, OAuth2Service service) {
+	public OAuth2ServiceIndexTimer(IndexServiceClient indexProvider, OAuth2Service service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 	}
@@ -32,14 +32,14 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, OAuth2Service service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, OAuth2Service service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(ComponentConstants.OAUTH2_INDEXER_ID, ComponentConstants.OAUTH2_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, OAuth2Service service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, OAuth2Service service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -54,7 +54,7 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, OAuth2Service service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, OAuth2Service service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
@@ -63,10 +63,10 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentConstants.OAUTH2_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(ComponentConstants.OAUTH2_INDEXER_ID, indexItemId);
 	}
 
 }

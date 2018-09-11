@@ -4,7 +4,7 @@ import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryServiceIndexTimer;
 import org.orbit.component.runtime.tier1.account.ws.UserRegistryWSApplication;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -87,7 +87,7 @@ public class UserRegistryServiceAdapterV1 {
 		this.webApp.start(bundleContext);
 
 		// Start a timer to update the indexing of the service
-		IndexProvider indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
+		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
 		this.serviceIndexTimer = new UserRegistryServiceIndexTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}

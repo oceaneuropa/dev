@@ -2,7 +2,7 @@ package org.orbit.spirit.runtime.gaia.ws;
 
 import java.util.Map;
 
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClients;
@@ -35,8 +35,8 @@ public class GaiaAdapter implements LifecycleAware {
 		this.properties = properties;
 	}
 
-	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties, true);
+	public IndexServiceClient getIndexProvider() {
+		return InfraClients.getInstance().getIndexService(this.properties, true);
 	}
 
 	public GAIA getService() {
@@ -99,7 +99,7 @@ public class GaiaAdapter implements LifecycleAware {
 		this.webServiceApp.start(bundleContext);
 
 		// Start index timer
-		IndexProvider indexProvider = getIndexProvider();
+		IndexServiceClient indexProvider = getIndexProvider();
 		// this.indexTimer = new GaiaIndexTimer(indexProvider, gaia);
 		// this.indexTimer.start();
 

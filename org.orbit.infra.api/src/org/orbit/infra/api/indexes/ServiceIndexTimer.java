@@ -3,14 +3,48 @@ package org.orbit.infra.api.indexes;
 import java.io.IOException;
 import java.util.Map;
 
-import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformConstants;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.thread.IndexTimerImpl;
 
-public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexProvider, SERVICE, IndexItem> {
+public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexServiceClient, SERVICE, IndexItem> {
 
-	public static class MyIndexProviderWrapper extends IndexProviderWrapper {
+	public static class MyIndexServiceWrapper extends IndexServiceClientWrapper {
+		public MyIndexServiceWrapper() {
+		}
+
+		protected String getPlatformId() {
+			String platformId = null;
+			if (PlatformSDKActivator.getInstance() != null) {
+				IPlatform platform = PlatformSDKActivator.getInstance().getPlatform();
+				if (platform != null) {
+					platformId = platform.getId();
+				}
+			}
+			return platformId;
+		}
+
+		@Override
+		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
+			String platformId = getPlatformId();
+			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.PLATFORM_ID)) {
+				properties.put(PlatformConstants.PLATFORM_ID, platformId);
+			}
+			return super.addIndexItem(indexProviderId, type, name, properties);
+		}
+
+		@Override
+		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
+			String platformId = getPlatformId();
+			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.PLATFORM_ID)) {
+				properties.put(PlatformConstants.PLATFORM_ID, platformId);
+			}
+			return super.setProperties(indexProviderId, indexItemId, properties);
+		}
+	}
+
+	public static class MyIndexProviderWrapper extends IndexProviderClientWrapper {
 		public MyIndexProviderWrapper() {
 		}
 
@@ -44,24 +78,24 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexPro
 		}
 	}
 
-	protected IndexProviderWrapper indexProviderWrapper;
+	protected IndexServiceClientWrapper indexProviderWrapper;
 
 	/**
 	 * 
 	 * @param name
 	 * @param indexProvider
 	 */
-	public ServiceIndexTimer(String name, IndexProvider indexProvider) {
+	public ServiceIndexTimer(String name, IndexServiceClient indexProvider) {
 		super(name, indexProvider);
 	}
 
 	@Override
-	public synchronized IndexProvider getIndexProvider() {
+	public synchronized IndexServiceClient getIndexProvider() {
 		return getIndexProviderWrapper(this.indexProvider);
 	}
 
 	@Override
-	public synchronized void setIndexProvider(IndexProvider indexProvider) {
+	public synchronized void setIndexProvider(IndexServiceClient indexProvider) {
 		this.indexProvider = indexProvider;
 		getIndexProviderWrapper(this.indexProvider);
 	}
@@ -71,9 +105,9 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexPro
 	 * @param indexProvider
 	 * @return
 	 */
-	protected synchronized IndexProviderWrapper getIndexProviderWrapper(IndexProvider indexProvider) {
+	protected synchronized IndexServiceClientWrapper getIndexProviderWrapper(IndexServiceClient indexProvider) {
 		if (this.indexProviderWrapper == null) {
-			this.indexProviderWrapper = new MyIndexProviderWrapper();
+			this.indexProviderWrapper = new MyIndexServiceWrapper();
 		}
 		if (this.indexProviderWrapper.get() != indexProvider) {
 			this.indexProviderWrapper.set(indexProvider);

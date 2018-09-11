@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
 import org.orbit.component.connector.tier1.configregistry.ConfigRegistryClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 
 import other.orbit.component.api.tier1.config.ConfigRegistryConnectorV1;
 import other.orbit.component.connector.ComponentConstantsV1;
@@ -19,12 +19,12 @@ public class ConfigRegistryConnectorImplV1 extends IndexBasedLoadBalancedService
 	 * 
 	 * @param indexService
 	 */
-	public ConfigRegistryConnectorImplV1(IndexService indexService) {
+	public ConfigRegistryConnectorImplV1(IndexServiceClient indexService) {
 		super(indexService, ConfigRegistryConnectorV1.class);
 	}
 
 	@Override
-	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
+	protected List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException {
 		return indexService.getIndexItems(ComponentConstantsV1.CONFIG_REGISTRY_INDEXER_ID, ComponentConstantsV1.CONFIG_REGISTRY_TYPE);
 	}
 

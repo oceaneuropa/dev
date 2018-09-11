@@ -9,7 +9,7 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
 
@@ -17,13 +17,13 @@ import org.origin.common.thread.other.ServiceIndexTimerV1;
  * AppStore service timer to update index item for the service.
  *
  */
-public class AppStoreServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProvider, AppStoreService> implements ServiceIndexTimerV1<IndexProvider, AppStoreService> {
+public class AppStoreServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProviderClient, AppStoreService> implements ServiceIndexTimerV1<IndexProviderClient, AppStoreService> {
 
 	/**
 	 * 
 	 * @param indexProvider
 	 */
-	public AppStoreServiceIndexTimerV1(IndexProvider indexProvider) {
+	public AppStoreServiceIndexTimerV1(IndexProviderClient indexProvider) {
 		super("AppStore Service Index Timer", indexProvider);
 	}
 
@@ -33,7 +33,7 @@ public class AppStoreServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 	}
 
 	@Override
-	public synchronized void updateIndex(IndexProvider indexProvider, AppStoreService service) throws IOException {
+	public synchronized void updateIndex(IndexProviderClient indexProvider, AppStoreService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();

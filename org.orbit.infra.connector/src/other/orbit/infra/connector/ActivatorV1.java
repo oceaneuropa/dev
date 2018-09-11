@@ -1,7 +1,6 @@
 package other.orbit.infra.connector;
 
 import org.orbit.infra.connector.channel.ChannelsConnector;
-import org.orbit.infra.connector.indexes.IndexProviderConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -20,15 +19,15 @@ public class ActivatorV1 implements BundleActivator {
 	protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
 
 	protected IndexServiceConnector indexServiceConnectorImpl;
-	protected IndexProviderConnector indexProviderConnectorImpl;
+	// protected IndexProviderConnector indexProviderConnectorImpl;
 	protected ChannelsConnector channelConnector;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		ActivatorV1.context = bundleContext;
 
-		this.indexProviderConnectorImpl = new IndexProviderConnector();
-		this.indexProviderConnectorImpl.start(bundleContext);
+		// this.indexProviderConnectorImpl = new IndexProviderConnector();
+		// this.indexProviderConnectorImpl.start(bundleContext);
 
 		this.indexServiceConnectorImpl = new IndexServiceConnector();
 		this.indexServiceConnectorImpl.start(bundleContext);
@@ -62,10 +61,10 @@ public class ActivatorV1 implements BundleActivator {
 			this.indexServiceConnectorImpl = null;
 		}
 
-		if (this.indexProviderConnectorImpl != null) {
-			this.indexProviderConnectorImpl.stop(bundleContext);
-			this.indexProviderConnectorImpl = null;
-		}
+		// if (this.indexProviderConnectorImpl != null) {
+		// this.indexProviderConnectorImpl.stop(bundleContext);
+		// this.indexProviderConnectorImpl = null;
+		// }
 
 		if (this.indexServiceConnectorAdapter != null) {
 			this.indexServiceConnectorAdapter.stop(bundleContext);

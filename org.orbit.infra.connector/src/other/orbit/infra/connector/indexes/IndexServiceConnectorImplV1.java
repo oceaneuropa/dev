@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.connector.InfraConstants;
-import org.orbit.infra.connector.indexes.IndexProviderImpl;
+import org.orbit.infra.connector.indexes.IndexProviderClientImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -17,10 +17,10 @@ public class IndexServiceConnectorImplV1 implements IndexServiceConnectorV1 {
 	protected static final String KEY_PARTS_SEPARATOR = "::";
 
 	protected ServiceRegistration<?> serviceRegistration;
-	protected Map<String, IndexService> serviceMap;
+	protected Map<String, IndexServiceClient> serviceMap;
 
 	public IndexServiceConnectorImplV1() {
-		this.serviceMap = new HashMap<String, IndexService>();
+		this.serviceMap = new HashMap<String, IndexServiceClient>();
 	}
 
 	public void start(BundleContext bundleContext) {
@@ -37,8 +37,8 @@ public class IndexServiceConnectorImplV1 implements IndexServiceConnectorV1 {
 	}
 
 	@Override
-	public synchronized IndexService getService(Map<Object, Object> properties) {
-		IndexService indexService = null;
+	public synchronized IndexServiceClient getService(Map<Object, Object> properties) {
+		IndexServiceClient indexService = null;
 		String url = (String) properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
 		String contextRoot = (String) properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
 		if (url != null && contextRoot != null) {

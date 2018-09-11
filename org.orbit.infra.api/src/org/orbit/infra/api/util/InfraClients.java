@@ -7,10 +7,8 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.channel.ChannelClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClientProxy;
-import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexProviderProxy;
-import org.orbit.infra.api.indexes.IndexService;
-import org.orbit.infra.api.indexes.IndexServiceProxy;
+import org.orbit.infra.api.indexes.IndexServiceClient;
+import org.orbit.infra.api.indexes.IndexServiceClientProxy;
 import org.origin.common.rest.client.ServiceConnectorAdapter;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.util.LifecycleAware;
@@ -28,8 +26,7 @@ public class InfraClients implements LifecycleAware {
 		return INSTANCE;
 	}
 
-	protected ServiceConnectorAdapter<IndexProvider> indexProviderConnector;
-	protected ServiceConnectorAdapter<IndexService> indexServiceConnector;
+	protected ServiceConnectorAdapter<IndexServiceClient> indexServiceConnector;
 	protected ServiceConnectorAdapter<ExtensionRegistryClient> extensionRegistryConnector;
 	protected ServiceConnectorAdapter<ChannelClient> channelsConnector;
 
@@ -39,10 +36,7 @@ public class InfraClients implements LifecycleAware {
 	 */
 	@Override
 	public void start(final BundleContext bundleContext) {
-		this.indexProviderConnector = new ServiceConnectorAdapter<IndexProvider>(IndexProvider.class);
-		this.indexProviderConnector.start(bundleContext);
-
-		this.indexServiceConnector = new ServiceConnectorAdapter<IndexService>(IndexService.class);
+		this.indexServiceConnector = new ServiceConnectorAdapter<IndexServiceClient>(IndexServiceClient.class);
 		this.indexServiceConnector.start(bundleContext);
 
 		this.extensionRegistryConnector = new ServiceConnectorAdapter<ExtensionRegistryClient>(ExtensionRegistryClient.class);
@@ -72,11 +66,6 @@ public class InfraClients implements LifecycleAware {
 			this.indexServiceConnector.stop(bundleContext);
 			this.indexServiceConnector = null;
 		}
-
-		if (this.indexProviderConnector != null) {
-			this.indexProviderConnector.stop(bundleContext);
-			this.indexProviderConnector = null;
-		}
 	}
 
 	/**
@@ -85,7 +74,7 @@ public class InfraClients implements LifecycleAware {
 	 * @param useProxy
 	 * @return
 	 */
-	public IndexProvider getIndexProvider(Map<?, ?> properties, boolean useProxy) {
+	public IndexServiceClient getIndexService(Map<?, ?> properties, boolean useProxy) {
 		String realm = (String) properties.get(WSClientConstants.REALM);
 		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
 		String url = (String) properties.get(WSClientConstants.URL);
@@ -98,37 +87,9 @@ public class InfraClients implements LifecycleAware {
 		theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
 		theProperties.put(WSClientConstants.URL, url);
 
-		IndexProvider indexProvider = this.indexProviderConnector.getService(theProperties);
-		if (indexProvider == null && useProxy) {
-			// throw new RuntimeException("IndexProvider is not available.");
-			indexProvider = new IndexProviderProxy(theProperties);
-		}
-		return indexProvider;
-	}
-
-	/**
-	 * 
-	 * @param properties
-	 * @param useProxy
-	 * @return
-	 */
-	public IndexService getIndexService(Map<?, ?> properties, boolean useProxy) {
-		String realm = (String) properties.get(WSClientConstants.REALM);
-		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
-		String url = (String) properties.get(WSClientConstants.URL);
-		if (url == null) {
-			url = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		}
-
-		Map<String, Object> theProperties = new HashMap<String, Object>();
-		theProperties.put(WSClientConstants.REALM, realm);
-		theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-		theProperties.put(WSClientConstants.URL, url);
-
-		IndexService indexService = this.indexServiceConnector.getService(theProperties);
+		IndexServiceClient indexService = this.indexServiceConnector.getService(theProperties);
 		if (indexService == null && useProxy) {
-			// throw new RuntimeException("IndexService is not available.");
-			indexService = new IndexServiceProxy(theProperties);
+			indexService = new IndexServiceClientProxy(theProperties);
 		}
 		return indexService;
 	}
@@ -186,3 +147,68 @@ public class InfraClients implements LifecycleAware {
 	}
 
 }
+
+// protected ServiceConnectorAdapter<IndexProviderClient> indexProviderConnector;
+
+// this.indexProviderConnector = new ServiceConnectorAdapter<IndexProviderClient>(IndexProviderClient.class);
+// this.indexProviderConnector.start(bundleContext);
+
+// if (this.indexProviderConnector != null) {
+// this.indexProviderConnector.stop(bundleContext);
+// this.indexProviderConnector = null;
+// }
+
+// /**
+// *
+// * @param properties
+// * @param useProxy
+// * @return
+// */
+// public IndexServiceClient getIndexService0(Map<?, ?> properties, boolean useProxy) {
+// String realm = (String) properties.get(WSClientConstants.REALM);
+// String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
+// String url = (String) properties.get(WSClientConstants.URL);
+// if (url == null) {
+// url = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+// }
+//
+// Map<String, Object> theProperties = new HashMap<String, Object>();
+// theProperties.put(WSClientConstants.REALM, realm);
+// theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+// theProperties.put(WSClientConstants.URL, url);
+//
+// IndexServiceClient indexService = this.indexServiceConnector.getService(theProperties);
+// if (indexService == null && useProxy) {
+// // throw new RuntimeException("IndexService is not available.");
+// indexService = new IndexServiceClientProxy(theProperties);
+// }
+// return indexService;
+// }
+
+// /**
+// *
+// * @param properties
+// * @param useProxy
+// * @return
+// */
+// public IndexProviderClient getIndexProvider0(Map<?, ?> properties, boolean useProxy) {
+// String realm = (String) properties.get(WSClientConstants.REALM);
+// String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
+// String url = (String) properties.get(WSClientConstants.URL);
+// if (url == null) {
+// url = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+// }
+//
+// Map<String, Object> theProperties = new HashMap<String, Object>();
+// theProperties.put(WSClientConstants.REALM, realm);
+// theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+// theProperties.put(WSClientConstants.URL, url);
+//
+// // IndexProviderClient indexProvider = this.indexProviderConnector.getService(theProperties);
+// IndexProviderClient indexProvider = null;
+// if (indexProvider == null && useProxy) {
+// // throw new RuntimeException("IndexProvider is not available.");
+// indexProvider = new IndexProviderClientProxy(theProperties);
+// }
+// return indexProvider;
+// }

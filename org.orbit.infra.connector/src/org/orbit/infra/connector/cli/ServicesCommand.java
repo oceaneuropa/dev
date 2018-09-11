@@ -9,7 +9,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -63,11 +63,11 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
-	protected IndexService getIndexService() {
+	protected IndexServiceClient getIndexService() {
 		if (this.indexServiceUrl == null) {
 			throw new IllegalStateException("indexServiceUrl is null.");
 		}
-		IndexService indexService = InfraClientsUtil.Indexes.getIndexServiceClient(this.indexServiceUrl, null);
+		IndexServiceClient indexService = InfraClientsUtil.Indexes.getIndexServiceClient(this.indexServiceUrl, null);
 		return indexService;
 	}
 
@@ -89,7 +89,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 
 	protected void listChannelServices() throws ClientException {
 		try {
-			IndexService indexService = getIndexService();
+			IndexServiceClient indexService = getIndexService();
 
 			List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.CHANNEL_INDEXER_ID, InfraConstants.CHANNEL_TYPE);
 

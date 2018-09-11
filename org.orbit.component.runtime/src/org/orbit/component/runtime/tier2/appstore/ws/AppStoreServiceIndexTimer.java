@@ -8,7 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.origin.common.util.DateUtil;
 
@@ -25,7 +25,7 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	 * @param indexProvider
 	 * @param service
 	 */
-	public AppStoreServiceIndexTimer(IndexProvider indexProvider, AppStoreService service) {
+	public AppStoreServiceIndexTimer(IndexServiceClient indexProvider, AppStoreService service) {
 		super("Index Timer [" + service.getName() + "]", indexProvider);
 		this.service = service;
 		setDebug(true);
@@ -37,14 +37,14 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	}
 
 	@Override
-	public IndexItem getIndex(IndexProvider indexProvider, AppStoreService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexProvider, AppStoreService service) throws IOException {
 		String name = service.getName();
 
 		return indexProvider.getIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexProvider indexProvider, AppStoreService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexProvider, AppStoreService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -64,7 +64,7 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	}
 
 	@Override
-	public void updateIndex(IndexProvider indexProvider, AppStoreService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexProvider, AppStoreService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -85,10 +85,10 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	}
 
 	@Override
-	public void removeIndex(IndexProvider indexProvider, IndexItem indexItem) throws IOException {
+	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.removeIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, indexItemId);
 	}
 
 }

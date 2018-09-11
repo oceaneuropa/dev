@@ -7,7 +7,7 @@ import java.util.Map;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.connector.tier2.appstore.AppStoreClientImpl;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 
 import other.orbit.component.api.tier2.appstore.AppStoreConnectorV1;
 import other.orbit.component.connector.ComponentConstantsV1;
@@ -19,12 +19,12 @@ public class AppStoreConnectorImplV1 extends IndexBasedLoadBalancedServiceConnec
 	 * 
 	 * @param indexService
 	 */
-	public AppStoreConnectorImplV1(IndexService indexService) {
+	public AppStoreConnectorImplV1(IndexServiceClient indexService) {
 		super(indexService, AppStoreConnectorV1.class);
 	}
 
 	@Override
-	protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
+	protected List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException {
 		return indexService.getIndexItems(ComponentConstantsV1.APP_STORE_INDEXER_ID, ComponentConstantsV1.APP_STORE_TYPE);
 	}
 

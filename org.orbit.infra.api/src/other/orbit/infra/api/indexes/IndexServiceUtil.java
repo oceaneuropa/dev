@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.indexes.IndexProvider;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexProviderClient;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalanceResourceImpl;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
@@ -21,14 +21,14 @@ public class IndexServiceUtil {
 	 * @param props
 	 * @return
 	 */
-	public static List<IndexService> getIndexServices(IndexServiceConnectorV1 connector, Map<Object, Object> props) {
-		List<IndexService> indexServices = new ArrayList<IndexService>();
+	public static List<IndexServiceClient> getIndexServices(IndexServiceConnectorV1 connector, Map<Object, Object> props) {
+		List<IndexServiceClient> indexServices = new ArrayList<IndexServiceClient>();
 
 		if (connector != null) {
 			List<URL> urls = getIndexServiceURLs(props);
 			for (URL url : urls) {
 				Map<Object, Object> properties = toProperties(url);
-				IndexService indexService = connector.getService(properties);
+				IndexServiceClient indexService = connector.getService(properties);
 				if (indexService != null) {
 					indexServices.add(indexService);
 				}
@@ -45,22 +45,22 @@ public class IndexServiceUtil {
 	 * @return
 	 */
 	public static IndexServiceLoadBalancer getIndexServiceLoadBalancer(IndexServiceConnectorV1 connector, Map<Object, Object> props) {
-		List<LoadBalanceResource<IndexService>> resources = new ArrayList<LoadBalanceResource<IndexService>>();
+		List<LoadBalanceResource<IndexServiceClient>> resources = new ArrayList<LoadBalanceResource<IndexServiceClient>>();
 
 		if (connector != null) {
 			List<URL> urls = getIndexServiceURLs(props);
 			for (URL url : urls) {
 				Map<Object, Object> properties = toProperties(url);
-				IndexService indexService = connector.getService(properties);
+				IndexServiceClient indexService = connector.getService(properties);
 				if (indexService != null) {
 					String resourceId = indexService.getURL();
-					resources.add(new LoadBalanceResourceImpl<IndexService>(indexService, resourceId));
+					resources.add(new LoadBalanceResourceImpl<IndexServiceClient>(indexService, resourceId));
 				}
 			}
 		}
 
 		IndexServiceLoadBalancer loadBalancer = new IndexServiceLoadBalancer(resources);
-		loadBalancer.setPolicy(new RoundRobinLoadBalancePolicy<IndexService>());
+		loadBalancer.setPolicy(new RoundRobinLoadBalancePolicy<IndexServiceClient>());
 		return loadBalancer;
 	}
 
@@ -70,14 +70,14 @@ public class IndexServiceUtil {
 	 * @param props
 	 * @return
 	 */
-	public static List<IndexProvider> getIndexProviders(IndexProviderConnectorV1 connector, Map<Object, Object> props) {
-		List<IndexProvider> indexProviders = new ArrayList<IndexProvider>();
+	public static List<IndexProviderClient> getIndexProviders(IndexProviderConnectorV1 connector, Map<Object, Object> props) {
+		List<IndexProviderClient> indexProviders = new ArrayList<IndexProviderClient>();
 
 		if (connector != null) {
 			List<URL> urls = getIndexServiceURLs(props);
 			for (URL url : urls) {
 				Map<Object, Object> properties = toProperties(url);
-				IndexProvider indexProvider = connector.getService(properties);
+				IndexProviderClient indexProvider = connector.getService(properties);
 				if (indexProvider != null) {
 					indexProviders.add(indexProvider);
 				}
@@ -94,22 +94,22 @@ public class IndexServiceUtil {
 	 * @return
 	 */
 	public static IndexProviderLoadBalancer getIndexProviderLoadBalancer(IndexProviderConnectorV1 connector, Map<Object, Object> props) {
-		List<LoadBalanceResource<IndexProvider>> resources = new ArrayList<LoadBalanceResource<IndexProvider>>();
+		List<LoadBalanceResource<IndexProviderClient>> resources = new ArrayList<LoadBalanceResource<IndexProviderClient>>();
 
 		if (connector != null) {
 			List<URL> urls = getIndexServiceURLs(props);
 			for (URL url : urls) {
 				Map<Object, Object> properties = toProperties(url);
-				IndexProvider indexProvider = connector.getService(properties);
+				IndexProviderClient indexProvider = connector.getService(properties);
 				if (indexProvider != null) {
 					String resourceId = indexProvider.getURL();
-					resources.add(new LoadBalanceResourceImpl<IndexProvider>(indexProvider, resourceId));
+					resources.add(new LoadBalanceResourceImpl<IndexProviderClient>(indexProvider, resourceId));
 				}
 			}
 		}
 
 		IndexProviderLoadBalancer loadBalancer = new IndexProviderLoadBalancer(resources);
-		loadBalancer.setPolicy(new RoundRobinLoadBalancePolicy<IndexProvider>());
+		loadBalancer.setPolicy(new RoundRobinLoadBalancePolicy<IndexProviderClient>());
 		return loadBalancer;
 	}
 

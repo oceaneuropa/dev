@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -24,7 +24,7 @@ public abstract class ServiceMonitor implements Annotated {
 	/* actively ping the service every 5 seconds */
 	public static long ACTIVE_PING_INTERVAL = 5 * Timer.SECOND;
 
-	protected IndexService indexService;
+	protected IndexServiceClient indexService;
 	protected IndexItemsMonitor indexItemsMonitor;
 	protected List<IndexItem> indexItems = new ArrayList<IndexItem>();
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
@@ -36,11 +36,11 @@ public abstract class ServiceMonitor implements Annotated {
 	 * 
 	 * @param indexService
 	 */
-	public ServiceMonitor(IndexService indexService) {
+	public ServiceMonitor(IndexServiceClient indexService) {
 		this.indexService = indexService;
 	}
 
-	public IndexService getIndexService() {
+	public IndexServiceClient getIndexService() {
 		return indexService;
 	}
 
@@ -53,7 +53,7 @@ public abstract class ServiceMonitor implements Annotated {
 		// Start monitor to periodically get index items for a service
 		this.indexItemsMonitor = new IndexItemsMonitor(getClass().getSimpleName() + " Monitor", this.indexService) {
 			@Override
-			protected List<IndexItem> getIndexItems(IndexService indexService) throws IOException {
+			protected List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException {
 				return ServiceMonitor.this.getIndexItems(indexService);
 			}
 
@@ -90,7 +90,7 @@ public abstract class ServiceMonitor implements Annotated {
 	 * @return
 	 * @throws IOException
 	 */
-	protected abstract List<IndexItem> getIndexItems(IndexService indexService) throws IOException;
+	protected abstract List<IndexItem> getIndexItems(IndexServiceClient indexService) throws IOException;
 
 	protected synchronized void indexItemsUpdated(List<IndexItem> newIndexItems) {
 		Map<Integer, IndexItem> oldIndexItemsMap = new HashMap<Integer, IndexItem>();

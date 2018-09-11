@@ -6,7 +6,7 @@ import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.common.ws.OrbitFeatureConstants;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeControlEditPolicy;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClients;
@@ -41,8 +41,8 @@ public class NodeControlServiceAdapter implements LifecycleAware {
 		this.properties = properties;
 	}
 
-	public IndexProvider getIndexProvider() {
-		return InfraClients.getInstance().getIndexProvider(this.properties, true);
+	public IndexServiceClient getIndexProvider() {
+		return InfraClients.getInstance().getIndexService(this.properties, true);
 	}
 
 	public NodeControlService getService() {
@@ -108,7 +108,7 @@ public class NodeControlServiceAdapter implements LifecycleAware {
 		this.webApp.start(bundleContext);
 
 		// Start indexing timer
-		IndexProvider indexProvider = getIndexProvider();
+		IndexServiceClient indexProvider = getIndexProvider();
 		// this.indexTimer = new NodeControlServiceTimer(indexProvider, service);
 		// this.indexTimer.start();
 

@@ -4,27 +4,32 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexProvider;
+import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.loadbalance.LoadBalanceResource;
 import org.origin.common.loadbalance.LoadBalancer;
+import org.origin.common.rest.client.ClientException;
+import org.origin.common.rest.model.Request;
+import org.origin.common.rest.model.ServiceMetadata;
 
-public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
+public class IndexProviderLoadBalancer extends LoadBalancer<IndexProviderClient> {
 
 	protected static IndexProviderUnsupportedImpl UNSUPPORTED_IMPL = new IndexProviderUnsupportedImpl();
 
-	public IndexProviderLoadBalancer(List<LoadBalanceResource<IndexProvider>> services) {
+	public IndexProviderLoadBalancer(List<LoadBalanceResource<IndexProviderClient>> services) {
 		super(services);
 	}
 
-	public IndexProvider createLoadBalancableIndexProvider() {
+	public IndexProviderClient createLoadBalancableIndexProvider() {
 		return new IndexProviderLoadBalancableImpl();
 	}
 
-	public class IndexProviderLoadBalancableImpl implements IndexProvider {
+	public class IndexProviderLoadBalancableImpl implements IndexProviderClient {
 
-		protected IndexProvider next() {
-			LoadBalanceResource<IndexProvider> services = getNext();
+		protected IndexProviderClient next() {
+			LoadBalanceResource<IndexProviderClient> services = getNext();
 			if (services != null) {
 				return services.getService();
 			}
@@ -32,7 +37,7 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public String getName() {
+		public String getName() throws ClientException {
 			return next().getName();
 		}
 
@@ -52,7 +57,7 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public String echo(String message) throws IOException {
+		public String echo(String message) throws ClientException {
 			return next().echo(message);
 		}
 
@@ -82,18 +87,13 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
-			return next().sendCommand(action, params);
-		}
-
-		@Override
 		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
 			return next().addIndexItem(indexProviderId, type, name, properties);
 		}
 
 		@Override
-		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
-			return next().removeIndexItem(indexProviderId, indexItemId);
+		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+			return next().deleteIndexItem(indexProviderId, indexItemId);
 		}
 
 		@Override
@@ -130,9 +130,33 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		public boolean isProxy() {
 			return false;
 		}
+
+		@Override
+		public void update(Map<String, Object> properties) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public boolean close() throws ClientException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public ServiceMetadata getMetadata() throws ClientException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Response sendRequest(Request request) throws ClientException {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 
-	public static class IndexProviderUnsupportedImpl implements IndexProvider {
+	public static class IndexProviderUnsupportedImpl implements IndexProviderClient {
 		@Override
 		public String getName() {
 			throw new UnsupportedOperationException();
@@ -184,11 +208,6 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public boolean sendCommand(String action, Map<String, Object> params) throws IOException {
-			throw new UnsupportedOperationException();
-		}
-
-		@Override
 		public <T> void adapt(Class<T> clazz, T object) {
 			throw new UnsupportedOperationException();
 		}
@@ -209,7 +228,7 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		}
 
 		@Override
-		public boolean removeIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
+		public boolean deleteIndexItem(String indexProviderId, Integer indexItemId) throws IOException {
 			throw new UnsupportedOperationException();
 		}
 
@@ -231,6 +250,30 @@ public class IndexProviderLoadBalancer extends LoadBalancer<IndexProvider> {
 		@Override
 		public boolean isProxy() {
 			return false;
+		}
+
+		@Override
+		public void update(Map<String, Object> properties) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public boolean close() throws ClientException {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public ServiceMetadata getMetadata() throws ClientException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Response sendRequest(Request request) throws ClientException {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 

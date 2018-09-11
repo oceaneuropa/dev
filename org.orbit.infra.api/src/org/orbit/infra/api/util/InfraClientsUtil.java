@@ -12,7 +12,7 @@ import org.orbit.infra.api.channel.ChannelClient;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.indexes.IndexService;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.origin.common.rest.client.WSClientConstants;
 
 public class InfraClientsUtil {
@@ -34,7 +34,7 @@ public class InfraClientsUtil {
 		public List<IndexItem> getIndexItems(String indexServiceUrl, String accessToken, String indexerId) throws IOException {
 			List<IndexItem> indexItems = null;
 			if (indexServiceUrl != null && indexerId != null) {
-				IndexService indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
 				if (indexService != null) {
 					indexItems = indexService.getIndexItems(indexerId);
 				}
@@ -58,7 +58,7 @@ public class InfraClientsUtil {
 		public List<IndexItem> getIndexItemsOfPlatform(String indexServiceUrl, String accessToken, String indexerId, String platformId) throws IOException {
 			List<IndexItem> indexItems = new ArrayList<IndexItem>();
 			if (indexServiceUrl != null && indexerId != null) {
-				IndexService indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
 				if (indexService != null) {
 					List<IndexItem> allIndexItems = indexService.getIndexItems(indexerId);
 					if (allIndexItems != null) {
@@ -86,7 +86,7 @@ public class InfraClientsUtil {
 		public IndexItem getIndexItemOfPlatform(String indexServiceUrl, String accessToken, String platformId) throws IOException {
 			IndexItem platformIndexItem = null;
 			if (indexServiceUrl != null && platformId != null) {
-				IndexService indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
 				if (indexService != null) {
 					List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.PLATFORM_INDEXER_ID, InfraConstants.PLATFORM_INDEXER_TYPE);
 					if (indexItems != null) {
@@ -115,7 +115,7 @@ public class InfraClientsUtil {
 		public Map<String, IndexItem> getPlatformIdToIndexItem(String indexServiceUrl, String accessToken, String parentPlatformId, String... platformTypes) throws IOException {
 			Map<String, IndexItem> platformIdToIndexItem = new HashMap<String, IndexItem>();
 
-			IndexService indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+			IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
 			if (indexService != null) {
 				List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.PLATFORM_INDEXER_ID, InfraConstants.PLATFORM_INDEXER_TYPE);
 				if (indexItems != null) {
@@ -169,7 +169,7 @@ public class InfraClientsUtil {
 			IndexItem indexItem = null;
 
 			if (parentPlatformId != null && platformId != null) {
-				IndexService indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
 				if (indexService != null) {
 					List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.PLATFORM_INDEXER_ID, InfraConstants.PLATFORM_INDEXER_TYPE);
 					if (indexItems != null) {
@@ -212,13 +212,34 @@ public class InfraClientsUtil {
 		}
 
 		/**
+		 * Delete an index item.
+		 * 
+		 * @param indexServiceUrl
+		 * @param accessToken
+		 * @param indexProviderId
+		 * @param indexItemId
+		 * @return
+		 * @throws IOException
+		 */
+		public boolean deleteIndexItem(String indexServiceUrl, String accessToken, String indexProviderId, Integer indexItemId) throws IOException {
+			boolean isDeleted = false;
+			if (indexServiceUrl != null && indexProviderId != null && !indexProviderId.isEmpty() && indexItemId != null) {
+				IndexServiceClient indexService = getIndexServiceClient(indexServiceUrl, accessToken);
+				if (indexService != null) {
+					isDeleted = indexService.deleteIndexItem(indexProviderId, indexItemId);
+				}
+			}
+			return isDeleted;
+		}
+
+		/**
 		 * 
 		 * @param indexServiceUrl
 		 * @param accessToken
 		 * @return
 		 */
-		public IndexService getIndexServiceClient(String indexServiceUrl, String accessToken) {
-			IndexService indexServiceClient = null;
+		public IndexServiceClient getIndexServiceClient(String indexServiceUrl, String accessToken) {
+			IndexServiceClient indexServiceClient = null;
 			if (indexServiceUrl != null) {
 				Map<String, Object> properties = new HashMap<String, Object>();
 				properties.put(WSClientConstants.REALM, null);
