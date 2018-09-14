@@ -49,7 +49,7 @@ public class NodesProgramBatchUninstallServlet extends HttpServlet {
 		}
 		if (idVersions.length == 0) {
 			// message = MessageHelper.INSTANCE.add(message, "'id_version' parameter is not set.");
-			message = MessageHelper.INSTANCE.add(message, "Programs are not selected.");
+			message = MessageHelper.INSTANCE.add(message, "Apps are not selected.");
 		}
 
 		if (!machineId.isEmpty() && !platformId.isEmpty() && nodeIds.length > 0 && idVersions.length > 0) {

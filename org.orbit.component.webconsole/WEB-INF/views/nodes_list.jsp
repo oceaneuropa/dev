@@ -48,7 +48,7 @@
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
 		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>"><%=machineName%></a> >
 		<!-- <a href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>"><%=platformName%></a> -->
-		<%=platformName%>
+		Platform [<%=platformName%>]
 	</div>
 	<div class="main_div01">
 		<h2>Nodes</h2>
@@ -57,8 +57,8 @@
 			<a id="action.deleteNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodedelete"%>" class="button02">Delete</a>
 			<a id="action.startNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestart"%>" class="button02">Start</a> 
 			<a id="action.stopNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestop"%>" class="button02">Stop</a> 
-			<a id="actionInstallPrograms" class="button02">Install</a> 
-			<a id="actionUninstallPrograms" class="button02">Uninstall</a>
+			<a id="actionInstallPrograms" class="button02">Batch Install</a> 
+			<a id="actionUninstallPrograms" class="button02">Batch Uninstall</a>
 			<a class="button02" href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>">Refresh</a>
 		</div>
 		<table class="main_table01">

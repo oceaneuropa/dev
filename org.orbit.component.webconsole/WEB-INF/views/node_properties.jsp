@@ -123,7 +123,7 @@
 						<% } %>
 					</td>
 					<td class="td1">
-						<a class="action01" href="javascript:changeAttribute('<%=attrName%>', '<%=attrValueForEdit%>', '<%=rowNum%>')">Change</a> | 
+						<a class="action01" href="javascript:changeAttribute('<%=attrName%>', '<%=attrValueForEdit%>', '<%=rowNum%>')">Edit</a> | 
 						<a class="action01" href="javascript:deleteAttribute('<%=contextRoot + "/domain/nodeattributedelete"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=attrName%>')">Delete</a> 
 					</td>
 				</tr>
