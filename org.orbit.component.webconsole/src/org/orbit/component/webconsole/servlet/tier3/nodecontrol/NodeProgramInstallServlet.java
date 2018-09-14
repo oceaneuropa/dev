@@ -51,6 +51,7 @@ public class NodeProgramInstallServlet extends HttpServlet {
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
+
 		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
@@ -59,7 +60,7 @@ public class NodeProgramInstallServlet extends HttpServlet {
 				PlatformClient nodePlatformClient = null;
 				IndexItem nodeIndexItem = InfraClientsUtil.Indexes.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
-					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem);
+					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, nodeIndexItem);
 				}
 
 				// Instruct the node to self install the program
@@ -88,7 +89,7 @@ public class NodeProgramInstallServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are being installed." : "Program is being installed.");
+			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are installed." : "Program is installed.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are not installed." : "Program is not installed.");
 		}

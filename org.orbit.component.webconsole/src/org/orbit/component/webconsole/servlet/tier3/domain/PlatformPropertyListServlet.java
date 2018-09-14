@@ -130,7 +130,7 @@ public class PlatformPropertyListServlet extends HttpServlet {
 			request.setAttribute("indexItems", indexItems);
 		}
 
-		request.getRequestDispatcher(contextRoot + "/views/domain_platform_properties_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/platform_properties.jsp").forward(request, response);
 	}
 
 }

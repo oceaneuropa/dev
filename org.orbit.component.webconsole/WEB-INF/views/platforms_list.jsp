@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
+<%@ page import="org.origin.common.service.*"%>
 <%@ page import="org.orbit.platform.api.*"%>
 <%@ page import="org.orbit.infra.api.indexes.*"%>
 <%@ page import="org.orbit.component.api.*"%>
@@ -35,7 +36,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
-<script type="text/javascript" src="<%=contextRoot + "/views/js/domain_platforms.js"%>" defer></script>
+<script type="text/javascript" src="<%=contextRoot + "/views/js/platforms_list.js"%>" defer></script>
 </head>
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
@@ -62,19 +63,18 @@
 				<input type="hidden" name="machineId" value="<%=machineId%>">
 				<tr>
 					<th class="th1" width="12"></th>
-					<th class="th1" width="80">Id</th>
-					<th class="th1" width="80">Name</th>
-					<th class="th1" width="80">Host URL</th>
-					<th class="th1" width="80">Context Root</th>
-					<th class="th1" width="80">Platform Home</th>
-					<th class="th1" width="80">Status</th>
-					<th class="th1" width="140">Actions</th>
+					<th class="th1" width="100">Id (Platform Id)</th>
+					<th class="th1" width="100">Name</th>
+					<th class="th1" width="100">URL</th>
+					<th class="th1" width="100">Platform Home</th>
+					<th class="th1" width="100">Status</th>
+					<th class="th1" width="200">Actions</th>
 				</tr>
 				<%
 					if (platformConfigs.length == 0) {
 				%>
 				<tr>
-					<td colspan="8">(n/a)</td>
+					<td colspan="7">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -86,11 +86,14 @@
 
 							String hostURL = null;
 							String currContextRoot = null;
+							String platformId = null;
 							String platformHome = null;
+
 							IndexItem indexItem = platformIdToIndexItemMap.get(id);
 							if (indexItem != null) {
 								hostURL = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
 								currContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
+								platformId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
 								platformHome = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOME);
 							}
 
@@ -98,6 +101,8 @@
 							name = StringUtil.get(name);
 							hostURL = StringUtil.get(hostURL);
 							currContextRoot = StringUtil.get(currContextRoot);
+							String currUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, currContextRoot);
+
 							platformHome = StringUtil.get(platformHome);
 
 							boolean isOnline = platformConfig.getRuntimeStatus().isOnline();
@@ -118,9 +123,8 @@
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
 					<td class="td1"><%=id%></td>
-					<td class="td2"><%=name%></td>
-					<td class="td2"><%=hostURL%></td>
-					<td class="td2"><%=currContextRoot%></td>
+					<td class="td1"><%=name%></td>
+					<td class="td2"><%=currUrl%></td>
 					<td class="td2"><%=platformHome%></td>
 					<td class="td1"><font color="<%=statusColor%>"><%=statusStr1%></font></td>
 					<td class="td1">

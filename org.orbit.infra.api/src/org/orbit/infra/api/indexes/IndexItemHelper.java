@@ -16,7 +16,7 @@ public class IndexItemHelper {
 	 * @return
 	 */
 	public boolean isOnline(IndexItem indexItem) {
-		if (indexItem != null && isLastHeartbeatWithinSeconds(indexItem, 20)) {
+		if (indexItem != null && isLastHeartbeatWithinSeconds(indexItem, 16)) {
 			String indexerId = indexItem.getIndexProviderId();
 
 			boolean checkStarted = false;

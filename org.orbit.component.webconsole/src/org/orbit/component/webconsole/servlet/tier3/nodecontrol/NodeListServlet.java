@@ -12,12 +12,12 @@ import javax.servlet.http.HttpSession;
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
-import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
 import org.orbit.component.webconsole.util.MessageHelper;
-import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
@@ -74,8 +74,9 @@ public class NodeListServlet extends HttpServlet {
 
 				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, platformId);
 
-				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
-				nodeInfos = ComponentClientsUtil.NodeControl.getNodes(nodeControlClient);
+				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver(indexServiceUrl);
+				// NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
+				nodeInfos = ComponentClientsUtil.NodeControl.getNodes(nodeControlClientResolver, accessToken, platformId);
 
 				// Get index items for platforms with type "node" and parent platform id equals the platformId
 				if (nodeInfos != null) {
@@ -119,7 +120,7 @@ public class NodeListServlet extends HttpServlet {
 			request.setAttribute("nodeIdToIndexItemMap", nodeIdToIndexItemMap);
 		}
 
-		request.getRequestDispatcher(contextRoot + "/views/domain_nodes_list_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/nodes_list.jsp").forward(request, response);
 	}
 
 }

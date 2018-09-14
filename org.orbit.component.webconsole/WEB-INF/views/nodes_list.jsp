@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ page import="java.io.*,java.util.*, java.net.*, javax.servlet.*"%>
 <%@ page import="org.origin.common.util.*"%>
+<%@ page import="org.origin.common.service.*"%>
 <%@ page import="org.orbit.platform.api.*"%>
 <%@ page import="org.orbit.infra.api.indexes.*"%>
 <%@ page import="org.orbit.component.api.tier3.domain.*"%>
@@ -35,7 +36,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
-<script type="text/javascript" src="<%=contextRoot + "/views/js/domain_nodes.js"%>" defer></script>
+
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" src="<%=contextRoot + "/views/js/nodes_list.js"%>" defer></script>
+
 </head>
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />
@@ -53,6 +57,8 @@
 			<a id="action.deleteNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodedelete"%>" class="button02">Delete</a>
 			<a id="action.startNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestart"%>" class="button02">Start</a> 
 			<a id="action.stopNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestop"%>" class="button02">Stop</a> 
+			<a id="actionInstallPrograms" class="button02">Install</a> 
+			<a id="actionUninstallPrograms" class="button02">Uninstall</a>
 			<a class="button02" href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>">Refresh</a>
 		</div>
 		<table class="main_table01">
@@ -60,22 +66,21 @@
 				<input type="hidden" name="machineId" value="<%=machineId%>"> 
 				<input type="hidden" name="platformId" value="<%=platformId%>">
 				<tr>
-					<th class="th1" width="15">
+					<th class="th1" width="20">
 						<input type="checkbox" onClick="toggleSelection(this, 'id')" />
 					</th>
-					<th class="th1" width="50">Id</th>
-					<th class="th1" width="50">Name</th>
-					<th class="th1" width="50">Host URL</th>
-					<th class="th1" width="50">Context Root</th>
-					<th class="th1" width="80">Platform Home</th>
+					<th class="th1" width="100">Id (Platform Id)</th>
+					<th class="th1" width="100">Name</th>
+					<th class="th1" width="100">URL</th>
+					<th class="th1" width="100">Platform Home</th>
 					<th class="th1" width="50">Status</th>
-					<th class="th1" width="160">Actions</th>
+					<th class="th1" width="200">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
 				%>
 				<tr>
-					<td colspan="8">(n/a)</td>
+					<td colspan="7">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -94,13 +99,17 @@
 
 							String hostURL = null;
 							String currContextRoot = null;
+							String nodePlatformId = null;
 							String platformHome = null;
 							IndexItem indexItem = nodeIdToIndexItemMap.get(id);
 							if (indexItem != null) {
 								hostURL = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
 								currContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
+								nodePlatformId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
 								platformHome = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOME);
 							}
+
+							String currUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, currContextRoot);
 
 							id = StringUtil.get(id);
 							name = StringUtil.get(name);
@@ -110,10 +119,9 @@
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
-					<td class="td2"><%=id%></td>
-					<td class="td2"><%=name%></td>
-					<td class="td2"><%=hostURL%></td>
-					<td class="td2"><%=currContextRoot%></td>
+					<td class="td1"><%=id%></td>
+					<td class="td1"><%=name%></td>
+					<td class="td2"><%=currUrl%></td>
 					<td class="td2"><%=platformHome%></td>
 					<td class="td1"><font color="<%=statusColor%>"><%=statusStr1%></font></td>
 					<td class="td1">
@@ -224,6 +232,35 @@
 		<a id="okSubmitNodes" class="button02">OK</a> 
 		<a id="cancelSubmitNodes" class="button02b">Cancel</a>
 	</div>
+	</dialog>
+
+	<dialog id="programsSelectionDialog">
+	<div class="dialog_title_div01">Programs</div>
+	<form id="install_form" method="post" action="<%=contextRoot + "/domain/nodesprograminstall"%>">
+		<input type="hidden" name="machineId" value="<%=machineId%>">
+		<input type="hidden" name="platformId" value="<%=platformId%>">
+		<div id="programsSelectionDiv" class="dialog_main_div02">
+		</div>
+		<div class="dialog_button_div01">
+			<a id="okInstallPrograms" class="button02">OK</a> 
+			<a id="cancelInstallPrograms" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
+
+	<dialog id="uninstallProgramsSelectionDialog">
+	<div class="dialog_title_div01">Programs</div>
+	<form id="uninstall_form" method="post" action="<%=contextRoot + "/domain/nodesprogramuninstall"%>" 
+		data-programUninstallProviderUrl="<%=contextRoot + "/domain/nodesprogramuninstallprovider"%>" >
+		<input type="hidden" name="machineId" value="<%=machineId%>">
+		<input type="hidden" name="platformId" value="<%=platformId%>">
+		<div id="uninstallProgramsSelectionDiv" class="dialog_main_div02">
+		</div>
+		<div class="dialog_button_div01">
+			<a id="okUninstallPrograms" class="button02">OK</a> 
+			<a id="cancelUninstallPrograms" class="button02b">Cancel</a>
+		</div>
+	</form>
 	</dialog>
 
 </body>

@@ -43,7 +43,7 @@
 <link rel="stylesheet" href="../views/css/treetable.css">
 
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-<script type="text/javascript" src="<%=contextRoot + "/views/js/domain_node_programs_v2.js"%>"></script>
+<script type="text/javascript" src="<%=contextRoot + "/views/js/node_programs_list.js"%>"></script>
 
 </head>
 <body>
@@ -61,27 +61,33 @@
 		<h2>Programs</h2>
 		<div class="top_tools_div01">
 			<a id="actionInstallProgram" class="button02">Install</a> 
-			<a id="actionUninstallPrograms" class="button02">Uninstall</a> 
+			<a id="actionUninstallPrograms" class="button02" onClick="onProgramAction('uninstall', '<%=contextRoot + "/domain/nodeprogramaction"%>')">Uninstall</a> 
+			<a id="actionActivateProgram" class="button02" onClick="onProgramAction('activate', '<%=contextRoot + "/domain/nodeprogramaction"%>')">Activate</a> 
+			<a id="actionDeactivatePrograms" class="button02" onClick="onProgramAction('deactivate', '<%=contextRoot + "/domain/nodeprogramaction"%>')">Deactivate</a> 
+			<a id="actionStartProgram" class="button02" onClick="onProgramAction('start', '<%=contextRoot + "/domain/nodeprogramaction"%>')">Start</a> 
+			<a id="actionStopPrograms" class="button02" onClick="onProgramAction('stop', '<%=contextRoot + "/domain/nodeprogramaction"%>')">Stop</a> 
 			<a class="button02" href="<%=contextRoot + "/domain/nodeprograms?machineId=" + machineId + "&platformId=" + platformId + "&id=" + id%>">Refresh</a>
 		</div>
 		<table class="main_table01">
-			<form id="main_list" method="post" action="<%=contextRoot + "/domain/nodeprogramuninstall"%>">
+			<form id="main_list" method="post" action="">
 				<input type="hidden" name="machineId" value="<%=machineId%>"> 
 				<input type="hidden" name="platformId" value="<%=platformId%>">
 				<input type="hidden" name="id" value="<%=id%>">
+				<input id ="main_list__action" type="hidden" name="action" value="">
 				<tr>
-					<th class="th1" width="12"></th>
-					<th class="th1" width="100">Type</th>
-					<th class="th1" width="150">Id/Version</th>
-					<th class="th1" width="150">Name</th>
-					<th class="th1" width="100">State</th>
-					<th class="th1" width="150">Actions</th>
+					<th class="th1" width="10">
+						<input type="checkbox" onClick="toggleSelection(this, 'id_version')" />
+					</th>
+					<th class="th1" width="160">Type</th>
+					<th class="th1" width="220">Id/Version</th>
+					<th class="th1" width="220">Name</th>
+					<th class="th1" width="150">State</th>
 				</tr>
 				<%
 					if (programs.length == 0) {
 				%>
 				<tr>
-					<td colspan="6">(n/a)</td>
+					<td colspan="5">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -93,10 +99,12 @@
 							String activationStateLabel = program.getActivationState().getLabel();
 							String runtimeStateLabel = program.getRuntimeState().getLabel();
 
-							String statusColor = "#cccccc";
-							if (ProgramManifest.RUNTIME_STATE.STARTED.equals(program.getRuntimeState())) {
-								statusColor = "#2eb82e";
-							}
+							boolean isActivated = (ProgramManifest.ACTIVATION_STATE.ACTIVATED.equals(program.getActivationState())) ? true : false;
+							boolean isStarted = (ProgramManifest.RUNTIME_STATE.STARTED.equals(program.getRuntimeState())) ? true : false;
+
+							String statusColor1 = isActivated ? "#2eb82e" : "#cccccc";
+							String statusColor2 = (isActivated && isStarted) ? "#2eb82e" : "#cccccc";
+							String statusColor3 = isStarted ? "#2eb82e" : "#cccccc";
 				%>
 				<tr>
 					<td class="td1">
@@ -105,13 +113,10 @@
 					<td class="td1"><%=appType%></td>
 					<td class="td2"><%=appId + "_" + appVersion%></td>
 					<td class="td2"><%=appName%></td>
-					<td class="td1"><font color="<%=statusColor%>"><%=activationStateLabel + " | " + runtimeStateLabel%></font></td>
 					<td class="td1">
-						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'activate')">Activate</a>
-						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'deactivate')">Deactivate</a>
-						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'start')">Start</a>
-						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'stop')">Stop</a>
-						<a class="action01" href="javascript:programAction('<%=contextRoot + "/domain/nodeprogramaction"%>', '<%=machineId%>', '<%=platformId%>', '<%=id%>', '<%=appId%>', '<%=appVersion%>', 'uninstall')">Uninstall</a>  
+						<font color="<%=statusColor1%>"><%=activationStateLabel%></font>
+						<font color="<%=statusColor2%>"> | </font>
+						<font color="<%=statusColor3%>"><%=runtimeStateLabel%></font>
 					</td>
 				</tr>
 				<%
@@ -138,21 +143,21 @@
 	</form>
 	</dialog>
 
+	<dialog id="uninstallProgramsDialog">
+		<div class="dialog_title_div01">Uninstall Programs</div>
+		<div class="dialog_main_div01" id="uninstallProgramsDialogMessageDiv">Are you sure you want to uninstall selected programs?</div>
+		<div class="dialog_button_div01">
+			<a id="okUninstallPrograms" class="button02">OK</a> 
+			<a id="cancelUninstallPrograms" class="button02b">Cancel</a>
+		</div>
+	</dialog>
+
 	<dialog id="programActionDialog">
-	<div class="dialog_title_div01" id="programActionDialogTitleDiv" >{Action} Program</div>
-	<div class="dialog_main_div01" id="programActionDialogMessageDiv">Are you sure you want to {action} the program?</div>
+	<div class="dialog_title_div01" id="programActionDialogTitleDiv" >{Action} Programs</div>
+	<div class="dialog_main_div01" id="programActionDialogMessageDiv">Are you sure you want to {action} the programs?</div>
 	<div class="dialog_button_div01">
 		<a id="okProgramAction" class="button02">OK</a> 
 		<a id="cancelProgramAction" class="button02b">Cancel</a>
-	</div>
-	</dialog>
-
-	<dialog id="deleteAttributesDialog">
-	<div class="dialog_title_div01">Delete Attributes</div>
-	<div class="dialog_main_div01" id="deleteAttributesDialogMessageDiv">Are you sure you want to delete selected attributes?</div>
-	<div class="dialog_button_div01">
-		<a id="okDeleteAttributes" class="button02">OK</a> 
-		<a id="cancelDeleteAttributes" class="button02b">Cancel</a>
 	</div>
 	</dialog>
 

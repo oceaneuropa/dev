@@ -41,6 +41,9 @@ import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodePropertyUpda
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStartServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeStopServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodeUpdateServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatchInstallServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatchUninstallProviderServlet;
+import org.orbit.component.webconsole.servlet.tier3.nodecontrol.NodesProgramBatchUninstallServlet;
 import org.orbit.component.webconsole.servlet.tier3.nodecontrol.ProgramsProviderServlet;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
@@ -140,6 +143,9 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/domain/nodestart", new NodeStartServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodestop", new NodeStopServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/domain/nodestatus", new NodeListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodesprograminstall", new NodesProgramBatchInstallServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodesprogramuninstall", new NodesProgramBatchUninstallServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/domain/nodesprogramuninstallprovider", new NodesProgramBatchUninstallProviderServlet(), dicts));
 
 		// Node properties
 		addServlet(new ServletMetadataImpl("/domain/nodeproperties", new NodePropertyListServlet(), dicts));

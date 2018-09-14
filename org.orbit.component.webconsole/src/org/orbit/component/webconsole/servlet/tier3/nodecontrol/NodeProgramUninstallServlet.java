@@ -9,17 +9,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
+import org.orbit.component.webconsole.util.DefaultPlatformClientResolver;
 import org.orbit.component.webconsole.util.MessageHelper;
-import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.indexes.IndexItem;
-import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
+import org.orbit.platform.api.PlatformClientResolver;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.util.ServletUtil;
 
-@SuppressWarnings("serial")
 public class NodeProgramUninstallServlet extends HttpServlet {
+
+	private static final long serialVersionUID = -4493226816635603686L;
 
 	private static String[] EMPTY_IDS = new String[] {};
 
@@ -32,7 +32,7 @@ public class NodeProgramUninstallServlet extends HttpServlet {
 		String machineId = ServletUtil.getParameter(request, "machineId", "");
 		String parentPlatformId = ServletUtil.getParameter(request, "platformId", "");
 		String nodeId = ServletUtil.getParameter(request, "id", "");
-		String[] idVersions = ServletUtil.getParameterValues(request, "appId_appVersion", EMPTY_IDS);
+		String[] idVersions = ServletUtil.getParameterValues(request, "id_version", EMPTY_IDS);
 
 		if (machineId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
@@ -44,28 +44,26 @@ public class NodeProgramUninstallServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
 		}
 		if (idVersions.length == 0) {
-			message = MessageHelper.INSTANCE.add(message, "'appId_appVersion' parameter is not set.");
+			// message = MessageHelper.INSTANCE.add(message, "'id_version' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "Programs are not selected.");
 		}
 
 		boolean succeed = false;
 		boolean hasSucceed = false;
 		boolean hasFailed = false;
-		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty()) {
+
+		if (!machineId.isEmpty() && !parentPlatformId.isEmpty() && !nodeId.isEmpty() && idVersions.length > 0) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				// Get platform client of the node
-				PlatformClient nodePlatformClient = null;
-				IndexItem nodeIndexItem = InfraClientsUtil.Indexes.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
-				if (nodeIndexItem != null) {
-					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem);
-				}
+				PlatformClientResolver platformClientResolver = new DefaultPlatformClientResolver(indexServiceUrl, accessToken);
+				PlatformClient nodePlatformClient = platformClientResolver.resolve(parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 
-				// Instruct the node to self install the program
+				// Instruct the node to self uninstall the program
 				if (nodePlatformClient != null) {
 					for (int i = 0; i < idVersions.length; i++) {
 						String currIdVersion = idVersions[i];
-						int index = currIdVersion.lastIndexOf("|");
+						int index = currIdVersion.lastIndexOf("_");
 						String currAppId = currIdVersion.substring(0, index);
 						String currAppVersion = currIdVersion.substring(index + 1);
 
@@ -77,6 +75,7 @@ public class NodeProgramUninstallServlet extends HttpServlet {
 						}
 					}
 				}
+
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
@@ -86,10 +85,12 @@ public class NodeProgramUninstallServlet extends HttpServlet {
 			succeed = true;
 		}
 
-		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are being uninstalled." : "Program is being uninstalled.");
-		} else {
-			message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are not uninstalled." : "Program is not uninstalled.");
+		if (idVersions.length > 0) {
+			if (succeed) {
+				message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are uninstalled." : "Program is uninstalled.");
+			} else {
+				message = MessageHelper.INSTANCE.add(message, (idVersions.length > 1) ? "Programs are not uninstalled." : "Program is not uninstalled.");
+			}
 		}
 
 		HttpSession session = request.getSession(true);

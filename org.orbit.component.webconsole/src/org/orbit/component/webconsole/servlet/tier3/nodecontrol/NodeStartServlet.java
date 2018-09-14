@@ -82,9 +82,9 @@ public class NodeStartServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are being started." : "Node is being started.");
+			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are started." : "Node is started.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are not started." : "Node is not started.");
+			message = MessageHelper.INSTANCE.add(message, (nodeIds.length > 1) ? "Nodes are started." : "Node is started.");
 		}
 
 		// ---------------------------------------------------------------

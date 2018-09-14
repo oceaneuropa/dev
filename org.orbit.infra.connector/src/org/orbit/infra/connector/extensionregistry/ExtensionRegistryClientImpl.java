@@ -80,7 +80,8 @@ public class ExtensionRegistryClientImpl implements ExtensionRegistryClient, Int
 		try {
 			return this.client.echo(message);
 		} catch (ClientException e) {
-			throw new IOException(e);
+			// throw new IOException(e);
+			return null;
 		}
 	}
 

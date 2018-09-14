@@ -22,10 +22,11 @@ public class OrbitClientHelper {
 
 	/**
 	 * 
+	 * @param accessToken
 	 * @param indexItem
 	 * @return
 	 */
-	public PlatformClient getPlatformClient(IndexItem indexItem) {
+	public PlatformClient getPlatformClient(String accessToken, IndexItem indexItem) {
 		PlatformClient platformClient = null;
 		if (indexItem != null) {
 			String platformUrl = null;
@@ -41,7 +42,7 @@ public class OrbitClientHelper {
 			}
 
 			if (platformUrl != null) {
-				platformClient = PlatformClientsUtil.Platform.getPlatformClient(platformUrl, null);
+				platformClient = PlatformClientsUtil.Platform.getPlatformClient(accessToken, platformUrl);
 			}
 		}
 		return platformClient;

@@ -65,7 +65,7 @@ public class AppListServlet extends HttpServlet {
 			request.setAttribute("message", message);
 		}
 		request.setAttribute("appManifests", appManifests);
-		request.getRequestDispatcher(contextRoot + "/views/appstore_apps_list_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/appstore_apps_list.jsp").forward(request, response);
 	}
 
 }

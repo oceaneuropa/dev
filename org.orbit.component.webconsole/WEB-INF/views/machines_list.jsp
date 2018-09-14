@@ -18,7 +18,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Domain Management</title>
 <link rel="stylesheet" href="<%=contextRoot + "/views/css/style.css"%>">
-<script type="text/javascript" src="<%=contextRoot + "/views/js/domain_machines.js"%>" defer></script>
+<script type="text/javascript" src="<%=contextRoot + "/views/js/machines_list.js"%>" defer></script>
 </head>
 <body>
 	<jsp:include page="<%=platformContextRoot + "/top_menu"%>" />

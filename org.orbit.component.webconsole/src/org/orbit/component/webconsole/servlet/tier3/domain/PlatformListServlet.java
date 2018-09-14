@@ -119,7 +119,7 @@ public class PlatformListServlet extends HttpServlet {
 		}
 		request.setAttribute("platformIdToIndexerIdToIndexItemsMap", platformIdToIndexerIdToIndexItemsMap);
 
-		request.getRequestDispatcher(contextRoot + "/views/domain_platforms_list_v1.jsp").forward(request, response);
+		request.getRequestDispatcher(contextRoot + "/views/platforms_list.jsp").forward(request, response);
 	}
 
 }

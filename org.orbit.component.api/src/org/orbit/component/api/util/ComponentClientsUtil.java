@@ -1,6 +1,7 @@
 package org.orbit.component.api.util;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
+import org.orbit.component.api.tier3.nodecontrol.NodeControlClientResolver;
 import org.orbit.component.api.tier3.nodecontrol.NodeInfo;
 import org.orbit.component.api.tier4.missioncontrol.MissionControlClient;
 import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
@@ -708,14 +710,35 @@ public class ComponentClientsUtil {
 	public static class NodeControl {
 		public static final NodeInfo[] EMPTY_NODE_INFOS = new NodeInfo[0];
 
+		// /**
+		// *
+		// * @param nodeControlClient
+		// * @return
+		// * @throws ClientException
+		// */
+		// public NodeInfo[] getNodes(NodeControlClient nodeControlClient) throws ClientException {
+		// NodeInfo[] nodeInfos = null;
+		// if (nodeControlClient != null) {
+		// nodeInfos = nodeControlClient.getNodes();
+		// }
+		// if (nodeInfos == null) {
+		// nodeInfos = EMPTY_NODE_INFOS;
+		// }
+		// return nodeInfos;
+		// }
+
 		/**
 		 * 
-		 * @param nodeControlClient
+		 * @param nodeControlClientResolver
+		 * @param accessToken
+		 * @param parentPlatformId
 		 * @return
 		 * @throws ClientException
+		 * @throws IOException
 		 */
-		public NodeInfo[] getNodes(NodeControlClient nodeControlClient) throws ClientException {
+		public NodeInfo[] getNodes(NodeControlClientResolver nodeControlClientResolver, String accessToken, String parentPlatformId) throws ClientException, IOException {
 			NodeInfo[] nodeInfos = null;
+			NodeControlClient nodeControlClient = nodeControlClientResolver.resolve(accessToken, parentPlatformId);
 			if (nodeControlClient != null) {
 				nodeInfos = nodeControlClient.getNodes();
 			}
@@ -727,13 +750,17 @@ public class ComponentClientsUtil {
 
 		/**
 		 * 
-		 * @param nodeControlClient
+		 * @param nodeControlClientResolver
+		 * @param accessToken
+		 * @param parentPlatformId
 		 * @param nodeId
 		 * @return
 		 * @throws ClientException
+		 * @throws IOException
 		 */
-		public NodeInfo getNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
+		public NodeInfo getNode(NodeControlClientResolver nodeControlClientResolver, String accessToken, String parentPlatformId, String nodeId) throws ClientException, IOException {
 			NodeInfo nodeInfo = null;
+			NodeControlClient nodeControlClient = nodeControlClientResolver.resolve(accessToken, parentPlatformId);
 			if (nodeControlClient != null && nodeId != null) {
 				nodeInfo = nodeControlClient.getNode(nodeId);
 			}
@@ -798,6 +825,25 @@ public class ComponentClientsUtil {
 		 */
 		public boolean startNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
 			boolean succeed = false;
+			if (nodeControlClient != null && nodeId != null) {
+				succeed = nodeControlClient.startNode(nodeId);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param nodeControlClientResolver
+		 * @param accessToken
+		 * @param parentPlatformId
+		 * @param nodeId
+		 * @return
+		 * @throws ClientException
+		 * @throws IOException
+		 */
+		public boolean startNode(NodeControlClientResolver nodeControlClientResolver, String accessToken, String parentPlatformId, String nodeId) throws ClientException, IOException {
+			boolean succeed = false;
+			NodeControlClient nodeControlClient = nodeControlClientResolver.resolve(accessToken, parentPlatformId);
 			if (nodeControlClient != null && nodeId != null) {
 				succeed = nodeControlClient.startNode(nodeId);
 			}
@@ -1237,4 +1283,19 @@ public class ComponentClientsUtil {
 // }
 // }
 // return succeed;
+// }
+
+// /**
+// *
+// * @param nodeControlClient
+// * @param nodeId
+// * @return
+// * @throws ClientException
+// */
+// public NodeInfo getNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
+// NodeInfo nodeInfo = null;
+// if (nodeControlClient != null && nodeId != null) {
+// nodeInfo = nodeControlClient.getNode(nodeId);
+// }
+// return nodeInfo;
 // }

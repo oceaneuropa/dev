@@ -164,6 +164,113 @@ function stopNodes(formId, actionURL) {
 	document.getElementById('submitNodesDialog').showModal();
 }
 
+//-----------------------------------------------------------------------
+// Install programs
+//-----------------------------------------------------------------------
+$(document).on("click", "#actionInstallPrograms", function() {
+	$.get("../appstore/programsprovider", function(responseXml) {
+		var htmlContent = $(responseXml).find("data").html();
+		$("#programsSelectionDiv").html(htmlContent);
+	});
+
+	var dialog = document.getElementById('programsSelectionDialog');
+	dialog.showModal();
+});
+
+$(document).on("click", "#okInstallPrograms", function() {
+	var form = document.getElementById("install_form");
+
+	var checkboxes = document.getElementsByName("id");
+	for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i].checked) {
+			var nodeId = checkboxes[i].value;
+
+			var idField = document.createElement("input");
+			idField.setAttribute("type", "hidden");
+			idField.setAttribute("name", "nodeId");
+			idField.setAttribute("value", nodeId);
+			form.appendChild(idField);
+		}
+	}
+
+	// javascript:document.getElementById('install_form').submit();
+	document.getElementById('install_form').submit();
+	var dialog = document.getElementById('programsSelectionDialog');
+	dialog.close();
+});
+
+$(document).on("click", "#cancelInstallPrograms", function() {
+	// javascript:document.getElementById('install_form').reset();
+	document.getElementById('install_form').reset();
+	var dialog = document.getElementById('programsSelectionDialog');
+	dialog.close();
+});
+
+
+//-----------------------------------------------------------------------
+//Uninstall programs
+//-----------------------------------------------------------------------
+$(document).on("click", "#actionUninstallPrograms", function() {
+	var uninstall_form = document.getElementById("uninstall_form");
+	var url = uninstall_form.getAttribute("data-programUninstallProviderUrl");
+	// alert("url = " + url);
+
+	$.post(url, $("#main_list").serialize(), function(responseXml) {
+		var htmlContent = $(responseXml).find("data").html();
+		$("#uninstallProgramsSelectionDiv").html(htmlContent);
+	});
+
+//	var myform = document.getElementById("main_list");
+//    var formData = new FormData(myform);
+//    $.ajax({
+//        url: "/domain/nodesprogramuninstallprovider",
+//        data: formData,
+//        cache: false,
+//        processData: false,
+//        contentType: false,
+//        type: 'POST',
+//        success: function (dataofconfirm) {
+//            // do something with the result
+//        }
+//    });
+
+	var dialog = document.getElementById('uninstallProgramsSelectionDialog');
+	dialog.showModal();
+});
+
+$(document).on("click", "#okUninstallPrograms", function() {
+	var form = document.getElementById("uninstall_form");
+
+	var checkboxes = document.getElementsByName("id");
+	for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i].checked) {
+			var nodeId = checkboxes[i].value;
+
+			var idField = document.createElement("input");
+			idField.setAttribute("type", "hidden");
+			idField.setAttribute("name", "nodeId");
+			idField.setAttribute("value", nodeId);
+			form.appendChild(idField);
+		}
+	}
+
+	// javascript:document.getElementById('install_form').submit();
+	document.getElementById('uninstall_form').submit();
+	var dialog = document.getElementById('uninstallProgramsSelectionDialog');
+	dialog.close();
+});
+
+$(document).on("click", "#cancelUninstallPrograms", function() {
+	// javascript:document.getElementById('install_form').reset();
+	document.getElementById('uninstall_form').reset();
+	var dialog = document.getElementById('uninstallProgramsSelectionDialog');
+	dialog.close();
+});
+
+
+//-----------------------------------------------------------------------
+// Add listeners
+//-----------------------------------------------------------------------
 (function() {
 	// add action.addNode click listener
 	document.getElementById('action.addNode').addEventListener('click', function() {

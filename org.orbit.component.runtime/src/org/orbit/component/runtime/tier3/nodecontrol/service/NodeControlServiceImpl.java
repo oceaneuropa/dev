@@ -351,9 +351,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 		if (isNodeStarted(id, accessToken)) {
 			throw new IOException("Node with id '" + id + "' is already started.");
 		}
-		if (isNodeStarting(id)) {
-			throw new IOException("Node with id '" + id + "' is being started.");
-		}
+		// if (isNodeStarting(id)) {
+		// throw new IOException("Node with id '" + id + "' is being started.");
+		// }
 		if (isNodeStopping(id)) {
 			throw new IOException("Node with id '" + id + "' is being stopped.");
 		}
@@ -413,6 +413,8 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 				launchConfig.setAttribute(LaunchConstants.PROGRAM_ARGUMENTS_LIST, programArgs);
 			}
 			launchConfig.setAttribute(ScriptLauncher.WORKING_DIRECTORY_LOCATION, nodeLocation);
+			launchConfig.setAttribute(LaunchConstants.WORKING_DIRECTORY, nodeLocation);
+
 			launchConfig.save();
 
 			// 3. Launch the node with launch configuration
@@ -466,7 +468,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 				String platformId = currPlatform.getId();
 				IndexItem nodeIndexItem = OrbitClientHelper.INSTANCE.getNodeIndexItem(indexServiceUrl, accessToken, platformId, id);
 				if (nodeIndexItem != null) {
-					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(nodeIndexItem, accessToken);
+					nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, nodeIndexItem);
 				}
 			}
 			if (nodePlatformClient != null) {

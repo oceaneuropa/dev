@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.IPlatform;
+import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.launch.LaunchActivator;
 import org.origin.common.launch.LaunchService;
 import org.origin.common.launch.LaunchType;
@@ -196,6 +196,7 @@ public class LaunchServiceHelper {
 		allConfigs.put("osgi.noShutdown", "true");
 		allConfigs.put("osgi.bundles", "reference\\:file\\:eclipse.equinox/org.eclipse.equinox.simpleconfigurator_1.1.0.v20131217-1203.jar@1\\:start");
 		allConfigs.put("org.eclipse.equinox.simpleconfigurator.configUrl", "file\\:../../../configurations/node/org.eclipse.equinox.simpleconfigurator/bundles.info");
+		allConfigs.put("org.eclipse.equinox.simpleconfigurator.exclusiveInstallation", "false");
 		allConfigs.put("logback.configurationFile", "file\\:" + platformHome + "/log/logback/orbit0.xml");
 
 		allConfigs.put("platform.parent.id", platformId);
