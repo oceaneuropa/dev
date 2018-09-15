@@ -13,6 +13,7 @@ import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.util.ResponseUtil;
 
 public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, NodeControlWSClient> implements NodeControlClient {
 
@@ -50,12 +51,16 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 	@Override
 	public NodeInfo[] getNodes() throws ClientException {
 		Request request = new Request(RequestConstants.GET_NODES);
-
-		Response response = sendRequest(request);
-
 		NodeInfo[] nodeInfos = null;
-		if (response != null) {
-			nodeInfos = ModelConverter.NodeControl.getNodes(response);
+
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				nodeInfos = ModelConverter.NodeControl.getNodes(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		if (nodeInfos == null) {
 			nodeInfos = EMPTY_NODE_INFOS;
@@ -68,11 +73,15 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		Request request = new Request(RequestConstants.GET_NODE);
 		request.setParameter("id", id);
 
-		Response response = sendRequest(request);
-
 		NodeInfo nodeInfo = null;
-		if (response != null) {
-			nodeInfo = ModelConverter.NodeControl.getNode(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				nodeInfo = ModelConverter.NodeControl.getNode(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return nodeInfo;
 	}
@@ -85,9 +94,14 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		request.setParameter("typeId", typeId);
 
 		boolean succeed = false;
-		Response response = sendRequest(request);
-		if (response != null) {
-			succeed = ModelConverter.NodeControl.isCreated(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.NodeControl.isCreated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return succeed;
 	}
@@ -107,9 +121,14 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		}
 
 		boolean succeed = false;
-		Response response = sendRequest(request);
-		if (response != null) {
-			succeed = ModelConverter.NodeControl.isDeleted(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.NodeControl.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return succeed;
 	}
@@ -120,9 +139,14 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		request.setParameter("id", id);
 
 		boolean succeed = false;
-		Response response = sendRequest(request);
-		if (response != null) {
-			succeed = ModelConverter.NodeControl.isDeleted(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.NodeControl.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return succeed;
 	}
@@ -133,9 +157,14 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		request.setParameter("id", id);
 
 		boolean succeed = false;
-		Response response = sendRequest(request);
-		if (response != null) {
-			succeed = ModelConverter.NodeControl.isStarted(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.NodeControl.isStarted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return succeed;
 	}
@@ -146,9 +175,14 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		request.setParameter("id", id);
 
 		boolean succeed = false;
-		Response response = sendRequest(request);
-		if (response != null) {
-			succeed = ModelConverter.NodeControl.isStopped(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.NodeControl.isStopped(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return succeed;
 	}
@@ -161,9 +195,14 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		request.setParameter("value", value);
 
 		boolean succeed = false;
-		Response response = sendRequest(request);
-		if (response != null) {
-			succeed = ModelConverter.NodeControl.isSucceed(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.NodeControl.isSucceed(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return succeed;
 	}
@@ -177,9 +216,14 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		request.setParameter("value", value);
 
 		boolean succeed = false;
-		Response response = sendRequest(request);
-		if (response != null) {
-			succeed = ModelConverter.NodeControl.isSucceed(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.NodeControl.isSucceed(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return succeed;
 	}
@@ -191,9 +235,14 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 		request.setParameter("name", name);
 
 		boolean succeed = false;
-		Response response = sendRequest(request);
-		if (response != null) {
-			succeed = ModelConverter.NodeControl.isSucceed(response);
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.NodeControl.isSucceed(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 		return succeed;
 	}

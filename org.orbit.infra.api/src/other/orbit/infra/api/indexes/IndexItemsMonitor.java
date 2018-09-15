@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.origin.common.thread.ThreadPoolTimer;
+import org.origin.common.thread.ThreadPoolTimer1;
 
-public abstract class IndexItemsMonitor extends ThreadPoolTimer {
+public abstract class IndexItemsMonitor extends ThreadPoolTimer1 {
 
 	protected IndexServiceClient indexService;
 	protected List<IndexItem> cachedIndexItems = new ArrayList<IndexItem>();

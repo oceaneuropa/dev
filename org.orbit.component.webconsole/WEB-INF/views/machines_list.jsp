@@ -44,10 +44,10 @@
 			<form id="main_list" method="post" action="<%=contextRoot + "/domain/machinedelete"%>">
 			<tr>
 				<th class="th1" width="10"></th>
-				<th class="th1" width="180">Id</th>
-				<th class="th1" width="180">Name</th>
-				<th class="th1" width="180">IP Address</th>
-				<th class="th1" width="180">Actions</th>
+				<th class="th1" width="200">Id</th>
+				<th class="th1" width="200">Name</th>
+				<th class="th1" width="200">IP Address</th>
+				<th class="th1" width="100">Actions</th>
 			</tr>
 			<%
 				if (machineConfigs.length == 0) {
@@ -74,7 +74,7 @@
 				<td class="td2"><%=name%></td>
 				<td class="td2"><%=ip%></td>
 				<td class="td1">
-					<a class="action01" href="javascript:changeMachine('<%=id%>', '<%=name%>', '<%=ip%>')">Change</a>
+					<a class="action01" href="javascript:changeMachine('<%=id%>', '<%=name%>', '<%=ip%>')">Edit</a>
 					<a class="action01" href="<%=contextRoot%>/domain/platforms?machineId=<%=id%>">Platforms</a>
 					<!-- | <a class="action01" href="javascript:deleteMachine('<%=contextRoot + "/domain/machinedelete"%>', '<%=id%>')">Delete</a> -->
 				</td>

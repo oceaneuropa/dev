@@ -14,6 +14,7 @@ import org.orbit.component.model.RequestConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
 import org.osgi.framework.BundleContext;
@@ -155,11 +156,12 @@ public class NodeControlCommandGeneric implements CommandActivator {
 			return;
 		}
 
+		Response response = null;
 		try {
 			NodeControlClient transferAgent = getNodeControl(url);
 
 			Request request = new Request(RequestConstants.GET_NODES);
-			Response response = transferAgent.sendRequest(request);
+			response = transferAgent.sendRequest(request);
 
 			NodeInfo[] nodeInfos = ModelConverter.NodeControl.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
@@ -172,6 +174,8 @@ public class NodeControlCommandGeneric implements CommandActivator {
 
 		} catch (Exception e) {
 			System.out.println(e.toString());
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 

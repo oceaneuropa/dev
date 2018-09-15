@@ -18,6 +18,7 @@ import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.client.ServiceClientCommand;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.PropertyUtil;
@@ -94,11 +95,12 @@ public class MissionControlCommand extends ServiceClientCommand implements Comma
 			return;
 		}
 
+		Response response = null;
 		try {
 			MissionControlClient missionControl = getMissionControl();
 
 			Request request = new Request(RequestConstants.GET_MISSIONS);
-			Response response = missionControl.sendRequest(request);
+			response = missionControl.sendRequest(request);
 
 			Mission[] missions = ModelConverter.MissionControl.getMissions(response);
 			String[][] rows = new String[missions.length][MISSION_COLUMN_NAMES.length];
@@ -111,6 +113,8 @@ public class MissionControlCommand extends ServiceClientCommand implements Comma
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 

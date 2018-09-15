@@ -105,7 +105,7 @@
 					</details>
 				</td>
 				<td class="td1">
-					<a class="action01" href="javascript:changeUser('<%=accountId%>', '<%=username%>', '<%=password%>', '<%=firstName%>', '<%=lastName%>', '<%=email%>', '<%=phone%>')">Change</a> 
+					<a class="action01" href="javascript:changeUser('<%=accountId%>', '<%=username%>', '<%=password%>', '<%=firstName%>', '<%=lastName%>', '<%=email%>', '<%=phone%>')">Edit</a> 
 					<a class="action01" href="javascript:deleteUser('<%=accountId%>')">Delete</a>
 				</td>
 			</tr>

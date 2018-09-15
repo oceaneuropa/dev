@@ -13,13 +13,12 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.infra.model.indexes.IndexItemCommandRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertiesRequestDTO;
 import org.orbit.infra.model.indexes.IndexItemSetPropertyRequestDTO;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
-import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.StringUtil;
@@ -71,70 +70,6 @@ public class IndexServiceWSClient extends WSClient {
 		super(config);
 	}
 
-	// ----------------------------------------------------------------------
-	// Methods about IndexService itself
-	// ----------------------------------------------------------------------
-	/**
-	 * Ping index service.
-	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
-	 * 
-	 * @return
-	 * @throws ClientException
-	 */
-	public int ping() throws ClientException {
-		int result = 0;
-		Response response = null;
-		try {
-			WebTarget target = getRootPath().path("ping");
-			Builder builder = target.request(MediaType.APPLICATION_JSON);
-			response = updateHeaders(builder).get();
-			checkResponse(target, response);
-
-			result = response.readEntity(Integer.class);
-
-		} catch (ClientException e) {
-			handleException(e);
-		} finally {
-			ResponseUtil.closeQuietly(response, true);
-		}
-		return result;
-	}
-
-	/**
-	 * Execute an action.
-	 * 
-	 * URL (PST): {scheme}://{host}:{port}/{contextRoot}/commandrequest (Body parameter: IndexItemCommandRequestDTO)
-	 * 
-	 * @param command
-	 * @param params
-	 * @return
-	 * @throws ClientException
-	 */
-	public StatusDTO sendCommand(String command, Map<String, Object> params) throws ClientException {
-		StatusDTO status = null;
-		try {
-			IndexItemCommandRequestDTO commandRequest = new IndexItemCommandRequestDTO();
-			commandRequest.setCommand(command);
-			commandRequest.setParameters(params);
-
-			WebTarget target = getRootPath().path("commandrequest");
-			Builder builder = target.request(MediaType.APPLICATION_JSON);
-			Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexItemCommandRequestDTO>(commandRequest) {
-			}));
-			checkResponse(target, response);
-
-			status = response.readEntity(StatusDTO.class);
-
-		} catch (ClientException e) {
-			handleException(e);
-		}
-		return status;
-	}
-
-	// ----------------------------------------------------------------------
-	// Methods about IndexItems
-	// ----------------------------------------------------------------------
 	/**
 	 * Get index items.
 	 * 
@@ -247,9 +182,6 @@ public class IndexServiceWSClient extends WSClient {
 		return newIndexItemDTO;
 	}
 
-	// ----------------------------------------------------------------------
-	// Methods about IndexItem
-	// ----------------------------------------------------------------------
 	/**
 	 * Get an index item.
 	 * 
@@ -308,9 +240,6 @@ public class IndexServiceWSClient extends WSClient {
 		return status;
 	}
 
-	// ----------------------------------------------------------------------
-	// Methods about IndexItem properties
-	// ----------------------------------------------------------------------
 	/**
 	 * Get properties.
 	 * 
@@ -467,6 +396,67 @@ public class IndexServiceWSClient extends WSClient {
 	}
 
 }
+
+// ----------------------------------------------------------------------
+// Methods about IndexService itself
+// ----------------------------------------------------------------------
+// /**
+// * Ping index service.
+// *
+// * URL (GET): {scheme}://{host}:{port}/{contextRoot}/ping
+// *
+// * @return
+// * @throws ClientException
+// */
+// public int ping() throws ClientException {
+// int result = 0;
+// Response response = null;
+// try {
+// WebTarget target = getRootPath().path("ping");
+// Builder builder = target.request(MediaType.APPLICATION_JSON);
+// response = updateHeaders(builder).get();
+// checkResponse(target, response);
+//
+// result = response.readEntity(Integer.class);
+//
+// } catch (ClientException e) {
+// handleException(e);
+// } finally {
+// ResponseUtil.closeQuietly(response, true);
+// }
+// return result;
+// }
+
+// /**
+// * Execute an action.
+// *
+// * URL (PST): {scheme}://{host}:{port}/{contextRoot}/commandrequest (Body parameter: IndexItemCommandRequestDTO)
+// *
+// * @param command
+// * @param params
+// * @return
+// * @throws ClientException
+// */
+// public StatusDTO sendCommand(String command, Map<String, Object> params) throws ClientException {
+// StatusDTO status = null;
+// try {
+// IndexItemCommandRequestDTO commandRequest = new IndexItemCommandRequestDTO();
+// commandRequest.setCommand(command);
+// commandRequest.setParameters(params);
+//
+// WebTarget target = getRootPath().path("commandrequest");
+// Builder builder = target.request(MediaType.APPLICATION_JSON);
+// Response response = updateHeaders(builder).post(Entity.json(new GenericEntity<IndexItemCommandRequestDTO>(commandRequest) {
+// }));
+// checkResponse(target, response);
+//
+// status = response.readEntity(StatusDTO.class);
+//
+// } catch (ClientException e) {
+// handleException(e);
+// }
+// return status;
+// }
 
 /// **
 // * Check whether an index item exists.

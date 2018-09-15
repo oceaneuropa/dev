@@ -7,8 +7,8 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.spirit.api.SpiritClients;
 import org.orbit.spirit.api.Constants;
+import org.orbit.spirit.api.SpiritClients;
 import org.orbit.spirit.api.gaia.GAIAClient;
 import org.orbit.spirit.api.gaia.World;
 import org.orbit.spirit.connector.util.ModelConverter;
@@ -16,6 +16,7 @@ import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.client.ServiceClientCommand;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.PropertyUtil;
@@ -100,11 +101,12 @@ public class GAIAClientCommand extends ServiceClientCommand {
 	public void list_worlds() {
 		CLIHelper.getInstance().printCommand(getScheme(), "list_worlds");
 
+		Response response = null;
 		try {
 			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Constants.LIST_WORLDS);
-			Response response = gaia.sendRequest(request);
+			response = gaia.sendRequest(request);
 
 			World[] worlds = ModelConverter.GAIA.getWorlds(response);
 			String[][] rows = new String[worlds.length][WORLD_COLUMN_NAMES.length];
@@ -117,6 +119,8 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 		} catch (Exception e) {
 			System.out.println(e.toString());
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -126,13 +130,14 @@ public class GAIAClientCommand extends ServiceClientCommand {
 	) {
 		CLIHelper.getInstance().printCommand(getScheme(), "get_world", new String[] { "name", name });
 
+		Response response = null;
 		try {
 			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Constants.GET_WORLD);
 			request.setParameter("name", name);
 
-			Response response = gaia.sendRequest(request);
+			response = gaia.sendRequest(request);
 
 			World world = ModelConverter.GAIA.getWorld(response);
 			World[] worlds = (world != null) ? new World[] { world } : new World[] {};
@@ -146,6 +151,8 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -155,18 +162,21 @@ public class GAIAClientCommand extends ServiceClientCommand {
 	) {
 		CLIHelper.getInstance().printCommand(getScheme(), "world_exist", new String[] { "name", name });
 
+		Response response = null;
 		try {
 			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Constants.WORLD_EXIST);
 			request.setParameter("name", name);
 
-			Response response = gaia.sendRequest(request);
+			response = gaia.sendRequest(request);
 			boolean exists = ModelConverter.GAIA.exists(response);
 			LOG.info("exists: " + exists);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -176,19 +186,22 @@ public class GAIAClientCommand extends ServiceClientCommand {
 	) {
 		CLIHelper.getInstance().printCommand(getScheme(), "create_world", new String[] { "name", name });
 
+		Response response = null;
 		try {
 			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Constants.CREATE_WORLD);
 			request.setParameter("name", name);
 
-			Response response = gaia.sendRequest(request);
+			response = gaia.sendRequest(request);
 
 			boolean succeed = ModelConverter.GAIA.isCreated(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -198,19 +211,22 @@ public class GAIAClientCommand extends ServiceClientCommand {
 	) {
 		CLIHelper.getInstance().printCommand(getScheme(), "delete_world", new String[] { "name", name });
 
+		Response response = null;
 		try {
 			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Constants.DELETE_WORLD);
 			request.setParameter("name", name);
 
-			Response response = gaia.sendRequest(request);
+			response = gaia.sendRequest(request);
 
 			boolean succeed = ModelConverter.GAIA.isDeleted(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -220,19 +236,22 @@ public class GAIAClientCommand extends ServiceClientCommand {
 	) {
 		CLIHelper.getInstance().printCommand(getScheme(), "world_status", new String[] { "name", name });
 
+		Response response = null;
 		try {
 			GAIAClient gaia = getGAIA();
 
 			Request request = new Request(Constants.WORLD_STATUS);
 			request.setParameter("name", name);
 
-			Response response = gaia.sendRequest(request);
+			response = gaia.sendRequest(request);
 
 			Map<String, String> status = ModelConverter.GAIA.getStatus(response);
 			LOG.info("status: " + status);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 

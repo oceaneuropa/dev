@@ -21,6 +21,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.rest.client.ServiceClientCommand;
 import org.origin.common.rest.model.Request;
+import org.origin.common.rest.util.ResponseUtil;
 import org.origin.common.util.CLIHelper;
 import org.origin.common.util.PrettyPrinter;
 import org.origin.common.util.PropertyUtil;
@@ -154,11 +155,12 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 			return;
 		}
 
+		Response response = null;
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(RequestConstants.GET_NODES);
-			Response response = nodeControl.sendRequest(request);
+			response = nodeControl.sendRequest(request);
 
 			NodeInfo[] nodeInfos = ModelConverter.NodeControl.getNodes(response);
 			String[][] rows = new String[nodeInfos.length][NODE_TITLES.length];
@@ -170,8 +172,9 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 			PrettyPrinter.prettyPrint(NODE_TITLES, rows, nodeInfos.length);
 
 		} catch (Exception e) {
-			// e.printStackTrace();
 			System.out.println(e.toString());
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -184,13 +187,14 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		LOG.info("get_node()");
 		CLIHelper.getInstance().printCommand(getScheme(), "list_node", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
+		Response response = null;
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(RequestConstants.GET_NODE);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = nodeControl.sendRequest(request);
+			response = nodeControl.sendRequest(request);
 
 			NodeInfo nodeInfo = ModelConverter.NodeControl.getNode(response);
 			NodeInfo[] nodeInfos = (nodeInfo != null) ? new NodeInfo[] { nodeInfo } : new NodeInfo[] {};
@@ -205,6 +209,8 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -217,18 +223,21 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		LOG.info("node_exist()");
 		CLIHelper.getInstance().printCommand(getScheme(), "node_exist", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
+		Response response = null;
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(RequestConstants.NODE_EXIST);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = nodeControl.sendRequest(request);
+			response = nodeControl.sendRequest(request);
 			boolean exists = ModelConverter.NodeControl.exists(response);
 			LOG.info("exists: " + exists);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -241,19 +250,22 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		LOG.info("create_node()");
 		CLIHelper.getInstance().printCommand(getScheme(), "create_node", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
+		Response response = null;
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(RequestConstants.CREATE_NODE);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = nodeControl.sendRequest(request);
+			response = nodeControl.sendRequest(request);
 
 			boolean succeed = ModelConverter.NodeControl.isCreated(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -266,19 +278,22 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		LOG.info("delete_node()");
 		CLIHelper.getInstance().printCommand(getScheme(), "delete_node", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
+		Response response = null;
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(RequestConstants.DELETE_NODE);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = nodeControl.sendRequest(request);
+			response = nodeControl.sendRequest(request);
 
 			boolean succeed = ModelConverter.NodeControl.isDeleted(response);
 			LOG.info("succeed: " + succeed);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 
@@ -291,19 +306,22 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 		LOG.info("node_status()");
 		CLIHelper.getInstance().printCommand(getScheme(), "node_status", new String[] { "machineId", machineId }, new String[] { "platformId", platformId }, new String[] { "nodeId", nodeId });
 
+		Response response = null;
 		try {
 			NodeControlClient nodeControl = getNodeControl(machineId, platformId);
 
 			Request request = new Request(RequestConstants.NODE_STATUS);
 			request.setParameter("nodeId", nodeId);
 
-			Response response = nodeControl.sendRequest(request);
+			response = nodeControl.sendRequest(request);
 
 			String status = ModelConverter.NodeControl.getStatus(response);
 			LOG.info("status: " + status);
 
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
 		}
 	}
 

@@ -10,7 +10,6 @@ import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.origin.common.util.DateUtil;
 
 /**
  * AppStore service indexing timer.
@@ -50,36 +49,30 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 		String contextRoot = service.getContextRoot();
 
 		Date now = new Date();
-		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(ComponentConstants.APPSTORE_NAME, name);
 		props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
 		props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
 		return indexProvider.addIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE, name, props);
 	}
 
 	@Override
 	public void updateIndex(IndexServiceClient indexProvider, AppStoreService service, IndexItem indexItem) throws IOException {
-		String name = service.getName();
-		String hostURL = service.getHostURL();
-		String contextRoot = service.getContextRoot();
+		// String name = service.getName();
+		// String hostURL = service.getHostURL();
+		// String contextRoot = service.getContextRoot();
 
 		Date now = new Date();
-		Date expire = DateUtil.addSeconds(now, 30);
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.APPSTORE_NAME, name);
-		props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
-		props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		// props.put(ComponentConstants.APPSTORE_NAME, name);
+		// props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
+		// props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
 		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
 
 		indexProvider.setProperties(ComponentConstants.APP_STORE_INDEXER_ID, indexItemId, props);
 	}
@@ -92,3 +85,11 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	}
 
 }
+
+// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+// Date expire = DateUtil.addSeconds(now, 30);
+// props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
+
+// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+// Date expire = DateUtil.addSeconds(now, 30);
+// props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);

@@ -12,7 +12,7 @@ import org.origin.common.cluster.EventBus;
 import org.origin.common.cluster.EventBusUtil;
 import org.origin.common.cluster.EventContext;
 import org.origin.common.cluster.GroupEventAdapter;
-import org.origin.common.thread.ThreadPoolTimer;
+import org.origin.common.thread.ThreadPoolTimer1;
 import org.origin.common.util.PrettyPrinter;
 
 public class EventBusDemo {
@@ -21,7 +21,7 @@ public class EventBusDemo {
 	protected String userName;
 	protected EventBus eventBus;
 	protected GroupEventAdapter groupEventAdapter;
-	protected ThreadPoolTimer beaconTimer;
+	protected ThreadPoolTimer1 beaconTimer;
 
 	/**
 	 * 
@@ -84,7 +84,7 @@ public class EventBusDemo {
 				heartbeat();
 			}
 		};
-		this.beaconTimer = new ThreadPoolTimer(this.clusterName + "." + this.userName);
+		this.beaconTimer = new ThreadPoolTimer1(this.clusterName + "." + this.userName);
 		this.beaconTimer.setRunnable(beaconRunner);
 		this.beaconTimer.setInterval(15 * 1000);
 		this.beaconTimer.start();

@@ -125,7 +125,7 @@
 					<td class="td2"><%=platformHome%></td>
 					<td class="td1"><font color="<%=statusColor%>"><%=statusStr1%></font></td>
 					<td class="td1">
-						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Change</a>
+						<a class="action01" href="javascript:changeNode('<%=id%>', '<%=name%>', '<%=typeId%>')">Edit</a>
 						<a class="action01" href="<%=contextRoot%>/domain/nodeproperties?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Properties</a>
 						<a class="action01" href="<%=contextRoot%>/domain/nodeprograms?machineId=<%=machineId%>&platformId=<%=platformId%>&id=<%=id%>">Programs</a>
 						<!-- 

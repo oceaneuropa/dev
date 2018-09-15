@@ -24,7 +24,7 @@ import org.origin.common.loadbalance.policy.LoadBalancePolicy;
 import org.origin.common.loadbalance.policy.RoundRobinLoadBalancePolicy;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.Pingable;
-import org.origin.common.thread.ThreadPoolTimer;
+import org.origin.common.thread.ThreadPoolTimer1;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.Printer;
 import org.origin.common.util.Timer;
@@ -603,7 +603,7 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 
 	}
 
-	public abstract class PingMonitor extends ThreadPoolTimer {
+	public abstract class PingMonitor extends ThreadPoolTimer1 {
 
 		protected LoadBalanceResource<SERVICE_CLIENT> resource;
 

@@ -128,7 +128,7 @@
 					<td class="td2"><%=platformHome%></td>
 					<td class="td1"><font color="<%=statusColor%>"><%=statusStr1%></font></td>
 					<td class="td1">
-						<a class="action01" href="javascript:changePlatform('<%=id%>', '<%=name%>', '<%=hostURL%>', '<%=currContextRoot%>')">Change</a>
+						<a class="action01" href="javascript:changePlatform('<%=id%>', '<%=name%>', '<%=hostURL%>', '<%=currContextRoot%>')">Edit</a>
 						<a class="action01" href="<%=contextRoot%>/domain/platformproperties?machineId=<%=machineId%>&id=<%=id%>">Properties</a>
 						<% if (hasNodeControl) { %>
 							<a class="action01" href="<%=contextRoot%>/domain/nodes?machineId=<%=machineId%>&platformId=<%=id%>">Nodes</a> 

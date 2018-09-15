@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.json.JSONUtil;
@@ -15,7 +14,6 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.WSClientConfiguration;
-import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.service.InternalProxyService;
 import org.slf4j.Logger;
@@ -45,90 +43,6 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 		return new IndexServiceWSClient(config);
 	}
 
-	// /**
-	// *
-	// * @param config
-	// */
-	// public IndexServiceClientImpl(Map<String, Object> properties) {
-	// this.properties = checkProperties(properties);
-	// initClient();
-	// }
-
-	// private Map<String, Object> checkProperties(Map<String, Object> properties) {
-	// if (properties == null) {
-	// properties = new HashMap<String, Object>();
-	// }
-	// return properties;
-	// }
-
-	// ------------------------------------------------------------------------------------------------
-	// Configuration methods
-	// ------------------------------------------------------------------------------------------------
-	// @Override
-	// public String getName() {
-	// String name = (String) this.properties.get(InfraConstants.INDEX_SERVICE_NAME);
-	// return name;
-	// }
-
-	// @Override
-	// public String getURL() {
-	// String hostURL = (String) this.properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
-	// String contextRoot = (String) this.properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
-	// return hostURL + contextRoot;
-	// }
-
-	// @Override
-	// public Map<String, Object> getProperties() {
-	// return this.properties;
-	// }
-
-	// /**
-	// * Update properties. Re-initiate web service client if host URL or context root is changed.
-	// *
-	// * @param properties
-	// */
-	// @Override
-	// public void update(Map<String, Object> properties) {
-	// this.properties = checkProperties(properties);
-	// initClient();
-	// }
-
-	// protected void initClient() {
-	// String realm = (String) properties.get(WSClientConstants.REALM);
-	// String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
-	// String url = (String) properties.get(WSClientConstants.URL);
-	//
-	// String orbitRealm = (String) properties.get(InfraConstants.ORBIT_REALM);
-	// String orbitIndexServiceURL = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-	// if (realm == null && orbitRealm != null) {
-	// realm = orbitRealm;
-	// }
-	// if (url == null && orbitIndexServiceURL != null) {
-	// url = orbitIndexServiceURL;
-	// }
-	// WSClientConfiguration clientConfig = WSClientConfiguration.create(this.properties);
-	// this.client = new IndexServiceWSClient(clientConfig);
-	// }
-
-	// protected IndexServiceWSClient getClient() {
-	// return this.client;
-	// }
-
-	/**
-	 * Get web service client configuration.
-	 * 
-	 * @param properties
-	 * @return
-	 */
-	protected WSClientConfiguration getClientConfiguration(Map<String, Object> properties) {
-		String realm = (String) properties.get(WSClientConstants.REALM);
-		String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
-		String url = (String) properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
-
-		return WSClientConfiguration.create(realm, accessToken, url, contextRoot);
-	}
-
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId) throws IOException {
 		return doGetIndexItems(indexProviderId, null);
@@ -137,6 +51,33 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 	@Override
 	public List<IndexItem> getIndexItems(String indexProviderId, String type) throws IOException {
 		return doGetIndexItems(indexProviderId, type);
+	}
+
+	/**
+	 * @param indexItemId
+	 * @param indexProviderId
+	 * @param type
+	 * @param name
+	 * @param indexItemDTO
+	 */
+	protected void checkIndexItem(Integer indexItemId, String indexProviderId, String type, String name, IndexItemDTO indexItemDTO) {
+		Integer currIndexItemId = indexItemDTO.getIndexItemId();
+		String currIndexProviderId = indexItemDTO.getIndexProviderId();
+		String currType = indexItemDTO.getType();
+		String currName = indexItemDTO.getName();
+
+		if (indexItemId != null && currIndexItemId != null && indexItemId.intValue() != currIndexItemId.intValue()) {
+			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different indexItemId ('" + currIndexItemId + "') than the specified indexItemId ('" + indexItemId + "').");
+		}
+		if (indexProviderId != null && !indexProviderId.equals(currIndexProviderId)) {
+			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different indexProviderId ('" + currIndexProviderId + "') than the specified indexProviderId ('" + indexProviderId + "').");
+		}
+		if (type != null && !type.equals(currType)) {
+			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different type ('" + currType + "') than the specified type  ('" + type + "').");
+		}
+		if (name != null && !name.equals(currName)) {
+			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different name ('" + currName + "') than the specified name  ('" + name + "').");
+		}
 	}
 
 	/**
@@ -261,7 +202,7 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 				return true;
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new IOException(e);
 		}
 		return false;
@@ -275,7 +216,7 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 				return true;
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new IOException(e);
 		}
 		return false;
@@ -289,7 +230,7 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 				return true;
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new IOException(e);
 		}
 		return false;
@@ -303,37 +244,10 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 				return true;
 			}
 		} catch (ClientException e) {
-			e.printStackTrace();
+			// e.printStackTrace();
 			throw new IOException(e);
 		}
 		return false;
-	}
-
-	/**
-	 * @param indexItemId
-	 * @param indexProviderId
-	 * @param type
-	 * @param name
-	 * @param indexItemDTO
-	 */
-	protected void checkIndexItem(Integer indexItemId, String indexProviderId, String type, String name, IndexItemDTO indexItemDTO) {
-		Integer currIndexItemId = indexItemDTO.getIndexItemId();
-		String currIndexProviderId = indexItemDTO.getIndexProviderId();
-		String currType = indexItemDTO.getType();
-		String currName = indexItemDTO.getName();
-
-		if (indexItemId != null && currIndexItemId != null && indexItemId.intValue() != currIndexItemId.intValue()) {
-			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different indexItemId ('" + currIndexItemId + "') than the specified indexItemId ('" + indexItemId + "').");
-		}
-		if (indexProviderId != null && !indexProviderId.equals(currIndexProviderId)) {
-			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different indexProviderId ('" + currIndexProviderId + "') than the specified indexProviderId ('" + indexProviderId + "').");
-		}
-		if (type != null && !type.equals(currType)) {
-			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different type ('" + currType + "') than the specified type  ('" + type + "').");
-		}
-		if (name != null && !name.equals(currName)) {
-			System.err.println("IndexItemDTO '" + indexItemDTO.getIndexItemId() + "' has a different name ('" + currName + "') than the specified name  ('" + name + "').");
-		}
 	}
 
 	@Override
@@ -440,4 +354,88 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 // @Override
 // public <T> void adapt(Class<T>[] classes, T object) {
 // this.adaptorSupport.adapt(classes, object);
+// }
+
+// /**
+// *
+// * @param config
+// */
+// public IndexServiceClientImpl(Map<String, Object> properties) {
+// this.properties = checkProperties(properties);
+// initClient();
+// }
+
+// private Map<String, Object> checkProperties(Map<String, Object> properties) {
+// if (properties == null) {
+// properties = new HashMap<String, Object>();
+// }
+// return properties;
+// }
+
+// ------------------------------------------------------------------------------------------------
+// Configuration methods
+// ------------------------------------------------------------------------------------------------
+// @Override
+// public String getName() {
+// String name = (String) this.properties.get(InfraConstants.INDEX_SERVICE_NAME);
+// return name;
+// }
+
+// @Override
+// public String getURL() {
+// String hostURL = (String) this.properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
+// String contextRoot = (String) this.properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
+// return hostURL + contextRoot;
+// }
+
+// @Override
+// public Map<String, Object> getProperties() {
+// return this.properties;
+// }
+
+// /**
+// * Update properties. Re-initiate web service client if host URL or context root is changed.
+// *
+// * @param properties
+// */
+// @Override
+// public void update(Map<String, Object> properties) {
+// this.properties = checkProperties(properties);
+// initClient();
+// }
+
+// protected void initClient() {
+// String realm = (String) properties.get(WSClientConstants.REALM);
+// String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
+// String url = (String) properties.get(WSClientConstants.URL);
+//
+// String orbitRealm = (String) properties.get(InfraConstants.ORBIT_REALM);
+// String orbitIndexServiceURL = (String) properties.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+// if (realm == null && orbitRealm != null) {
+// realm = orbitRealm;
+// }
+// if (url == null && orbitIndexServiceURL != null) {
+// url = orbitIndexServiceURL;
+// }
+// WSClientConfiguration clientConfig = WSClientConfiguration.create(this.properties);
+// this.client = new IndexServiceWSClient(clientConfig);
+// }
+
+// protected IndexServiceWSClient getClient() {
+// return this.client;
+// }
+
+// /**
+// * Get web service client configuration.
+// *
+// * @param properties
+// * @return
+// */
+// protected WSClientConfiguration getClientConfiguration(Map<String, Object> properties) {
+// String realm = (String) properties.get(WSClientConstants.REALM);
+// String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
+// String url = (String) properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
+// String contextRoot = (String) properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
+//
+// return WSClientConfiguration.create(realm, accessToken, url, contextRoot);
 // }

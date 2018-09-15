@@ -86,7 +86,7 @@
 					<% } %>
 				</td>
 				<td class="td1">
-					<a class="action01" href="javascript:changeApp('<%=id%>', '<%=appId%>', '<%=appVersion%>', '<%=type%>', '<%=name%>', '<%=fileName%>', '<%=desc%>')">Change</a> 
+					<a class="action01" href="javascript:changeApp('<%=id%>', '<%=appId%>', '<%=appVersion%>', '<%=type%>', '<%=name%>', '<%=fileName%>', '<%=desc%>')">Edit</a> 
 					<a class="action01" href="<%=contextRoot%>/appstore/appproperties?appId=<%=appId%>&appVersion=<%=appVersion%>">Properties</a>
 					<a class="action01" href="javascript:uploadApp('<%=id%>', '<%=appId%>', '<%=appVersion%>')">Upload</a>
 					<!-- 

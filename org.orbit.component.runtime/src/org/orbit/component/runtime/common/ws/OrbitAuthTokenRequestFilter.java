@@ -2,7 +2,6 @@ package org.orbit.component.runtime.common.ws;
 
 import java.io.IOException;
 
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
@@ -78,11 +77,11 @@ public class OrbitAuthTokenRequestFilter implements ContainerRequestFilter {
 	protected DecodedJWT verifyJWT(String token) {
 		DecodedJWT jwt = null;
 		if (token != null) {
-			try {
-				jwt = JWTUtil.verifyToken("Einstein", "orbit.auth", token);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// try {
+			// jwt = JWTUtil.verifyToken("Einstein", "orbit.auth", token);
+			// } catch (Exception e) {
+			// // e.printStackTrace();
+			// }
 		}
 		return jwt;
 	}

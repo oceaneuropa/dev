@@ -79,6 +79,11 @@ public class ExtensionsRegister implements ExtensionListener {
 		}
 
 		unregisterExtensions();
+
+		if (this.timerTask != null) {
+			this.timerTask.cancel();
+			this.timerTask = null;
+		}
 	}
 
 	protected String getPlatformId() {
