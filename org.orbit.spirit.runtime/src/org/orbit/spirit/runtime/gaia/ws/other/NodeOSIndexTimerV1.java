@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderClient;
-import org.orbit.spirit.runtime.Constants;
+import org.orbit.spirit.runtime.SpiritConstants;
 import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
 import org.origin.common.thread.other.ServiceIndexTimerV1;
@@ -38,27 +38,27 @@ public class NodeOSIndexTimerV1 extends ServiceIndexTimerImplV1<IndexProviderCli
 		String contextRoot = nodeOS.getContextRoot();
 		// String nodeHome = nodeOS.getHome();
 
-		IndexItem indexItem = indexProvider.getIndexItem(Constants.IDX__GAIA__INDEXER_ID, Constants.IDX__GAIA__TYPE, name);
+		IndexItem indexItem = indexProvider.getIndexItem(SpiritConstants.IDX__GAIA__INDEXER_ID, SpiritConstants.IDX__GAIA__TYPE, name);
 		if (indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
 			// props.put(OSConstants.OS_PROGRAM_NAME, OSName);
 			// props.put(OSConstants.OS_PROGRAM_VERSION, OSVersion);
-			props.put(Constants.GAIA__NAME, name);
-			props.put(Constants.GAIA__HOST_URL, hostURL);
-			props.put(Constants.GAIA__CONTEXT_ROOT, contextRoot);
+			props.put(SpiritConstants.GAIA__NAME, name);
+			props.put(SpiritConstants.GAIA__HOST_URL, hostURL);
+			props.put(SpiritConstants.GAIA__CONTEXT_ROOT, contextRoot);
 			// props.put(PlatformConstants.GAIA_HOME, nodeHome);
-			props.put(Constants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(SpiritConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			indexProvider.addIndexItem(Constants.IDX__GAIA__INDEXER_ID, Constants.IDX__GAIA__TYPE, name, props);
+			indexProvider.addIndexItem(SpiritConstants.IDX__GAIA__INDEXER_ID, SpiritConstants.IDX__GAIA__TYPE, name, props);
 
 		} else {
 			// Update existing index item with properties
 			Integer indexItemId = indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(Constants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(SpiritConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-			indexProvider.setProperties(Constants.IDX__GAIA__INDEXER_ID, indexItemId, props);
+			indexProvider.setProperties(SpiritConstants.IDX__GAIA__INDEXER_ID, indexItemId, props);
 		}
 	}
 

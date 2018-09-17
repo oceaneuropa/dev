@@ -1,14 +1,16 @@
-package org.orbit.spirit.runtime.gaia.world;
+package org.orbit.spirit.runtime.gaia.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class WorldImpl implements World {
+import org.orbit.spirit.runtime.gaia.service.WorldMetadata;
+
+public class WorldMetadataImpl implements WorldMetadata {
 
 	protected String name;
 	protected Map<String, String> status;
 
-	public WorldImpl() {
+	public WorldMetadataImpl() {
 		this.status = new HashMap<String, String>();
 	}
 

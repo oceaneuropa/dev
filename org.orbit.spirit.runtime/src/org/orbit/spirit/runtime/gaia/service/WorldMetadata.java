@@ -1,8 +1,8 @@
-package org.orbit.spirit.runtime.gaia.world;
+package org.orbit.spirit.runtime.gaia.service;
 
 import java.util.Map;
 
-public interface World {
+public interface WorldMetadata {
 
 	String getName();
 

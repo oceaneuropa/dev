@@ -3,25 +3,27 @@ package org.orbit.spirit.runtime.gaia.world;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.orbit.spirit.runtime.gaia.service.WorldMetadata;
+import org.orbit.spirit.runtime.gaia.service.impl.WorldMetadataImpl;
 import org.origin.common.rest.server.ServerException;
 
 public class WorldsImpl implements Worlds {
 
-	protected List<World> worlds = new ArrayList<World>();
+	protected List<WorldMetadata> worlds = new ArrayList<WorldMetadata>();
 
 	public WorldsImpl() {
-		this.worlds = new ArrayList<World>();
+		this.worlds = new ArrayList<WorldMetadata>();
 	}
 
 	@Override
-	public List<World> getWorlds() throws ServerException {
+	public List<WorldMetadata> getWorlds() throws ServerException {
 		return this.worlds;
 	}
 
 	@Override
 	public boolean exists(String name) throws ServerException {
 		if (name != null) {
-			for (World currWorld : this.worlds) {
+			for (WorldMetadata currWorld : this.worlds) {
 				if (name.equals(currWorld.getName())) {
 					return true;
 				}
@@ -31,10 +33,10 @@ public class WorldsImpl implements Worlds {
 	}
 
 	@Override
-	public World get(String name) throws ServerException {
-		World world = null;
+	public WorldMetadata get(String name) throws ServerException {
+		WorldMetadata world = null;
 		if (name != null) {
-			for (World currWorld : this.worlds) {
+			for (WorldMetadata currWorld : this.worlds) {
 				if (name.equals(currWorld.getName())) {
 					world = currWorld;
 					break;
@@ -45,7 +47,7 @@ public class WorldsImpl implements Worlds {
 	}
 
 	@Override
-	public synchronized World create(String name) throws ServerException {
+	public synchronized WorldMetadata create(String name) throws ServerException {
 		if (name == null || name.isEmpty()) {
 			throw new ServerException("400", "World name is empty.");
 		}
@@ -53,7 +55,7 @@ public class WorldsImpl implements Worlds {
 			throw new ServerException("400", "World already exists.");
 		}
 
-		WorldImpl world = new WorldImpl();
+		WorldMetadataImpl world = new WorldMetadataImpl();
 		world.setName(name);
 		this.worlds.add(world);
 
@@ -63,9 +65,9 @@ public class WorldsImpl implements Worlds {
 	@Override
 	public synchronized boolean delete(String name) throws ServerException {
 		boolean succeed = false;
-		World worldToDelete = null;
+		WorldMetadata worldToDelete = null;
 		if (name != null) {
-			for (World currWorld : this.worlds) {
+			for (WorldMetadata currWorld : this.worlds) {
 				if (name.equals(currWorld.getName())) {
 					worldToDelete = currWorld;
 					break;

@@ -32,7 +32,7 @@ public class WorldExistWSCommand extends AbstractWSCommand {
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		boolean exists = this.gaia.getWorlds().exists(name);
+		boolean exists = this.gaia.worldExists(name);
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("exists", exists);

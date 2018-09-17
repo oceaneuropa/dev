@@ -10,73 +10,52 @@ package org.orbit.spirit.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.spirit.runtime.gaia.service.GaiaService;
-import org.orbit.spirit.runtime.gaia.ws.GaiaAdapter;
+import org.origin.common.osgi.AbstractBundleActivator;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Activator implements BundleActivator {
+public class Activator extends AbstractBundleActivator implements BundleActivator {
 
 	protected static Logger LOG = LoggerFactory.getLogger(Activator.class);
 
-	protected static BundleContext bundleContext;
 	protected static Activator instance;
-
-	static BundleContext getContext() {
-		return bundleContext;
-	}
 
 	public static Activator getInstance() {
 		return instance;
 	}
 
-	protected Extensions extensions;
-	protected GaiaAdapter gaiaAdapter;
-
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
 		LOG.info("start()");
-
-		Activator.bundleContext = bundleContext;
+		super.start(bundleContext);
 		Activator.instance = this;
 
 		// load config properties
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, Constants.ORBIT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, SpiritConstants.ORBIT_INDEX_SERVICE_URL);
 
 		// Register extensions
-		this.extensions = new Extensions();
-		this.extensions.start(bundleContext);
+		Extensions.INSTANCE.start(bundleContext);
 
-		// Start GAIA WS adapter
-		this.gaiaAdapter = new GaiaAdapter(properties);
-		this.gaiaAdapter.start(bundleContext);
+		// Start service adapters
+		SpiritServices.getInstance().start(bundleContext);
 	}
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		LOG.info("stop()");
 
-		// Stop GAIA WS adapter
-		if (this.gaiaAdapter != null) {
-			this.gaiaAdapter.stop(bundleContext);
-			this.gaiaAdapter = null;
-		}
+		// Stop service adapters
+		SpiritServices.getInstance().stop(bundleContext);
 
 		// Unregister extensions
-		if (this.extensions != null) {
-			this.extensions.stop(bundleContext);
-		}
+		Extensions.INSTANCE.stop(bundleContext);
 
 		Activator.instance = null;
-		Activator.bundleContext = null;
-	}
-
-	public GaiaService getGAIA() {
-		return (this.gaiaAdapter != null) ? this.gaiaAdapter.getService() : null;
+		super.stop(bundleContext);
 	}
 
 }

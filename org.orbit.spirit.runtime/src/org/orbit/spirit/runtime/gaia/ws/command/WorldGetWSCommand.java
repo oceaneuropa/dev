@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
 import org.orbit.spirit.runtime.gaia.service.GaiaService;
-import org.orbit.spirit.runtime.gaia.world.World;
+import org.orbit.spirit.runtime.gaia.service.WorldMetadata;
 import org.orbit.spirit.runtime.util.ModelConverter;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
@@ -32,7 +32,7 @@ public class WorldGetWSCommand extends AbstractWSCommand {
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		World world = this.gaia.getWorlds().get(name);
+		WorldMetadata world = this.gaia.getWorld(name);
 		if (world == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), "World '" + name + "' does not exist.");
 			return Response.status(Status.NOT_FOUND).entity(error).build();

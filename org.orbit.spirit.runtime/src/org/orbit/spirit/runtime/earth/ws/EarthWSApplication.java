@@ -1,32 +1,30 @@
-package org.orbit.spirit.runtime.gaia.ws;
+package org.orbit.spirit.runtime.earth.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.orbit.spirit.runtime.gaia.service.GaiaService;
+import org.orbit.spirit.runtime.earth.service.EarthService;
 import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.ServiceMetadataImpl;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
 import org.origin.common.rest.server.FeatureConstants;
 import org.origin.common.rest.server.ServerException;
 
-public class GaiaWSApplication extends AbstractJerseyWSApplication {
+public class EarthWSApplication extends AbstractJerseyWSApplication {
 
 	/**
 	 * 
-	 * @param gaia
+	 * @param earth
 	 * @param feature
 	 */
-	public GaiaWSApplication(final GaiaService gaia, int feature) {
-		super(gaia, feature);
-		// adapt(GAIA.class, gaia);
+	public EarthWSApplication(final EarthService earth, int feature) {
+		super(earth, feature);
 
 		AbstractBinder serviceBinder = new AbstractBinder() {
 			@Override
 			protected void configure() {
-				bind(gaia).to(GaiaService.class);
+				bind(earth).to(EarthService.class);
 			}
 		};
 		register(serviceBinder);
-		register(GaiaWSResource.class);
 		register(WorldsWSResource.class);
 	}
 
@@ -47,17 +45,19 @@ public class GaiaWSApplication extends AbstractJerseyWSApplication {
 	public ServiceMetadata getMetadata() {
 		ServiceMetadata metadata = super.getMetadata();
 
-		GaiaService service = getAdapter(GaiaService.class);
+		EarthService service = getAdapter(EarthService.class);
 		if (metadata instanceof ServiceMetadataImpl && service != null) {
 			String gaiaId = service.getGaiaId();
+			String earthId = service.getEarthId();
 			long numberOfWorlds = -1;
 			try {
-				numberOfWorlds = service.getWorlds().size();
+				numberOfWorlds = service.getWorlds().length;
 			} catch (ServerException e) {
 				e.printStackTrace();
 			}
 
 			((ServiceMetadataImpl) metadata).setProperty("gaia_id", gaiaId);
+			((ServiceMetadataImpl) metadata).setProperty("earth_id", earthId);
 			((ServiceMetadataImpl) metadata).setProperty("number_of_earth", numberOfWorlds);
 		}
 

@@ -7,9 +7,10 @@ import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
-import org.orbit.spirit.runtime.Constants;
+import org.orbit.platform.sdk.util.ExtensibleServiceEditPolicy;
+import org.orbit.spirit.runtime.SpiritConstants;
+import org.orbit.spirit.runtime.earth.service.EarthService;
 import org.orbit.spirit.runtime.gaia.service.GaiaService;
-import org.orbit.spirit.runtime.gaia.ws.command.GaiaEditPolicy;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.server.FeatureConstants;
@@ -21,17 +22,17 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GaiaAdapter implements LifecycleAware {
+public class GaiaServiceAdapter implements LifecycleAware {
 
-	protected static Logger LOG = LoggerFactory.getLogger(GaiaAdapter.class);
+	protected static Logger LOG = LoggerFactory.getLogger(GaiaServiceAdapter.class);
 
 	protected Map<Object, Object> properties;
 	protected ServiceTracker<GaiaService, GaiaService> serviceTracker;
 	protected GaiaWSApplication webServiceApp;
-	// protected GaiaIndexTimer indexTimer;
 	protected ServiceIndexTimer<GaiaService> indexTimer;
+	protected ExtensibleServiceEditPolicy editPolicy;
 
-	public GaiaAdapter(Map<Object, Object> properties) {
+	public GaiaServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
 	}
 
@@ -89,10 +90,11 @@ public class GaiaAdapter implements LifecycleAware {
 	protected void doStart(BundleContext bundleContext, GaiaService gaia) {
 		LOG.info("doStart()");
 
-		// Install web service edit policies
+		// Install edit policies
+		this.editPolicy = new ExtensibleServiceEditPolicy(SpiritConstants.EARTH__EDITPOLICY_ID, EarthService.class, SpiritConstants.GAIA__SERVICE_NAME);
 		ServiceEditPolicies editPolicies = gaia.getEditPolicies();
-		editPolicies.uninstall(GaiaEditPolicy.ID); // ensure GaiaWSEditPolicy instance is not duplicated
-		editPolicies.install(new GaiaEditPolicy());
+		editPolicies.uninstall(this.editPolicy.getId());
+		editPolicies.install(this.editPolicy);
 
 		// Start web service
 		this.webServiceApp = new GaiaWSApplication(gaia, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO | FeatureConstants.JACKSON | FeatureConstants.MULTIPLEPART);
@@ -100,12 +102,8 @@ public class GaiaAdapter implements LifecycleAware {
 
 		// Start index timer
 		IndexServiceClient indexProvider = getIndexProvider();
-		// this.indexTimer = new GaiaIndexTimer(indexProvider, gaia);
-		// this.indexTimer.start();
-
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, Constants.IDX__GAIA__INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, SpiritConstants.IDX__GAIA__INDEXER_ID);
 		if (extension != null) {
-			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<GaiaService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
@@ -137,9 +135,12 @@ public class GaiaAdapter implements LifecycleAware {
 			this.webServiceApp = null;
 		}
 
-		// Uninstall web service edit policies
-		ServiceEditPolicies editPolicies = gaia.getEditPolicies();
-		editPolicies.uninstall(GaiaEditPolicy.ID);
+		// Uninstall edit policies
+		if (this.editPolicy != null) {
+			ServiceEditPolicies editPolicies = gaia.getEditPolicies();
+			editPolicies.uninstall(this.editPolicy.getId());
+			this.editPolicy = null;
+		}
 	}
 
 }

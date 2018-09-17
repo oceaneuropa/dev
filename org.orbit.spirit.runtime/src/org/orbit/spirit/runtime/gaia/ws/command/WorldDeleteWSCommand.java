@@ -32,7 +32,7 @@ public class WorldDeleteWSCommand extends AbstractWSCommand {
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		boolean succeed = this.gaia.getWorlds().delete(name);
+		boolean succeed = this.gaia.deleteWorld(name);
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("succeed", succeed);

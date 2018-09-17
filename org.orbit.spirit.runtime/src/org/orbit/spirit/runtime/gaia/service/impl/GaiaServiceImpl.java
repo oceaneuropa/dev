@@ -4,17 +4,18 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.orbit.spirit.runtime.Constants;
+import org.orbit.spirit.runtime.SpiritConstants;
 import org.orbit.spirit.runtime.gaia.service.GaiaService;
-import org.orbit.spirit.runtime.gaia.world.Worlds;
-import org.orbit.spirit.runtime.gaia.world.WorldsImpl;
+import org.orbit.spirit.runtime.gaia.service.WorldMetadata;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -32,7 +33,6 @@ public class GaiaServiceImpl implements GaiaService, LifecycleAware {
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ServiceEditPolicies wsEditPolicies;
-	protected Worlds worlds;
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
 
 	/**
@@ -40,16 +40,8 @@ public class GaiaServiceImpl implements GaiaService, LifecycleAware {
 	 * @param initProperties
 	 */
 	public GaiaServiceImpl(Map<Object, Object> initProperties) {
-		if (initProperties == null) {
-			initProperties = new HashMap<Object, Object>();
-		}
 		this.initProperties = initProperties;
-
-		// this.wsEditPolicies = new ServiceEditPoliciesImpl();
-		// this.wsEditPolicies.setService(GAIA.class, this);
 		this.wsEditPolicies = new ServiceEditPoliciesImpl(GaiaService.class, this);
-
-		this.worlds = new WorldsImpl();
 	}
 
 	@Override
@@ -65,14 +57,15 @@ public class GaiaServiceImpl implements GaiaService, LifecycleAware {
 
 		// load properties
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__NAME);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__HOST_URL);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__CONTEXT_ROOT);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__JDBC_DRIVER);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__JDBC_URL);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__JDBC_USERNAME);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__JDBC_PASSWORD);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.GAIA__ID);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.GAIA__NAME);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.GAIA__HOST_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.GAIA__CONTEXT_ROOT);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.GAIA__JDBC_DRIVER);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.GAIA__JDBC_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.GAIA__JDBC_USERNAME);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, SpiritConstants.GAIA__JDBC_PASSWORD);
 
 		updateProperties(configProps);
 
@@ -123,24 +116,25 @@ public class GaiaServiceImpl implements GaiaService, LifecycleAware {
 			configProps = new HashMap<Object, Object>();
 		}
 
-		String globalHostURL = getProperty(Constants.ORBIT_HOST_URL);
-		String name = getProperty(Constants.GAIA__NAME);
-		String hostURL = getProperty(Constants.GAIA__HOST_URL);
-		String contextRoot = getProperty(Constants.GAIA__CONTEXT_ROOT);
+		String globalHostURL = getProperty(SpiritConstants.ORBIT_HOST_URL);
+		String gaiaId = getProperty(SpiritConstants.GAIA__ID);
+		String name = getProperty(SpiritConstants.GAIA__NAME);
+		String hostURL = getProperty(SpiritConstants.GAIA__HOST_URL);
+		String contextRoot = getProperty(SpiritConstants.GAIA__CONTEXT_ROOT);
+		String jdbcDriver = getProperty(SpiritConstants.GAIA__JDBC_DRIVER);
+		String jdbcURL = getProperty(SpiritConstants.GAIA__JDBC_URL);
+		String jdbcUsername = getProperty(SpiritConstants.GAIA__JDBC_USERNAME);
+		String jdbcPassword = getProperty(SpiritConstants.GAIA__JDBC_PASSWORD);
 
-		String jdbcDriver = getProperty(Constants.GAIA__JDBC_DRIVER);
-		String jdbcURL = getProperty(Constants.GAIA__JDBC_URL);
-		String jdbcUsername = getProperty(Constants.GAIA__JDBC_USERNAME);
-		String jdbcPassword = getProperty(Constants.GAIA__JDBC_PASSWORD);
-
-		LOG.info(Constants.ORBIT_HOST_URL + " = " + globalHostURL);
-		LOG.info(Constants.GAIA__NAME + " = " + name);
-		LOG.info(Constants.GAIA__HOST_URL + " = " + hostURL);
-		LOG.info(Constants.GAIA__CONTEXT_ROOT + " = " + contextRoot);
-		LOG.info(Constants.GAIA__JDBC_DRIVER + " = " + jdbcDriver);
-		LOG.info(Constants.GAIA__JDBC_URL + " = " + jdbcURL);
-		LOG.info(Constants.GAIA__JDBC_USERNAME + " = " + jdbcUsername);
-		LOG.info(Constants.GAIA__JDBC_PASSWORD + " = " + jdbcPassword);
+		LOG.info(SpiritConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+		LOG.info(SpiritConstants.GAIA__ID + " = " + gaiaId);
+		LOG.info(SpiritConstants.GAIA__NAME + " = " + name);
+		LOG.info(SpiritConstants.GAIA__HOST_URL + " = " + hostURL);
+		LOG.info(SpiritConstants.GAIA__CONTEXT_ROOT + " = " + contextRoot);
+		LOG.info(SpiritConstants.GAIA__JDBC_DRIVER + " = " + jdbcDriver);
+		LOG.info(SpiritConstants.GAIA__JDBC_URL + " = " + jdbcURL);
+		LOG.info(SpiritConstants.GAIA__JDBC_USERNAME + " = " + jdbcUsername);
+		LOG.info(SpiritConstants.GAIA__JDBC_PASSWORD + " = " + jdbcPassword);
 
 		this.properties = configProps;
 		this.databaseProperties = getConnectionProperties(this.properties);
@@ -152,10 +146,10 @@ public class GaiaServiceImpl implements GaiaService, LifecycleAware {
 	 * @return
 	 */
 	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = (String) this.properties.get(Constants.GAIA__JDBC_DRIVER);
-		String url = (String) this.properties.get(Constants.GAIA__JDBC_URL);
-		String username = (String) this.properties.get(Constants.GAIA__JDBC_USERNAME);
-		String password = (String) this.properties.get(Constants.GAIA__JDBC_PASSWORD);
+		String driver = (String) this.properties.get(SpiritConstants.GAIA__JDBC_DRIVER);
+		String url = (String) this.properties.get(SpiritConstants.GAIA__JDBC_URL);
+		String username = (String) this.properties.get(SpiritConstants.GAIA__JDBC_USERNAME);
+		String password = (String) this.properties.get(SpiritConstants.GAIA__JDBC_PASSWORD);
 		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
@@ -220,18 +214,24 @@ public class GaiaServiceImpl implements GaiaService, LifecycleAware {
 	}
 
 	@Override
+	public String getGaiaId() {
+		String gaiaId = getProperty(SpiritConstants.GAIA__ID);
+		return gaiaId;
+	}
+
+	@Override
 	public String getName() {
-		String name = getProperty(Constants.GAIA__NAME);
+		String name = getProperty(SpiritConstants.GAIA__NAME);
 		return name;
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = getProperty(Constants.GAIA__HOST_URL);
+		String hostURL = getProperty(SpiritConstants.GAIA__HOST_URL);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = getProperty(Constants.ORBIT_HOST_URL);
+		String globalHostURL = getProperty(SpiritConstants.ORBIT_HOST_URL);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -240,16 +240,41 @@ public class GaiaServiceImpl implements GaiaService, LifecycleAware {
 
 	@Override
 	public String getContextRoot() {
-		String contextRoot = getProperty(Constants.GAIA__CONTEXT_ROOT);
+		String contextRoot = getProperty(SpiritConstants.GAIA__CONTEXT_ROOT);
 		return contextRoot;
 	}
 
 	@Override
-	public Worlds getWorlds() {
-		return this.worlds;
+	public List<WorldMetadata> getWorlds() throws ServerException {
+		return null;
+	}
+
+	@Override
+	public boolean worldExists(String name) throws ServerException {
+		return false;
+	}
+
+	@Override
+	public WorldMetadata getWorld(String name) throws ServerException {
+		return null;
+	}
+
+	@Override
+	public WorldMetadata createWorld(String name) throws ServerException {
+		return null;
+	}
+
+	@Override
+	public boolean deleteWorld(String name) throws ServerException {
+		return false;
 	}
 
 }
+
+// protected Worlds worlds;
+// this.wsEditPolicies = new ServiceEditPoliciesImpl();
+// this.wsEditPolicies.setService(GAIA.class, this);
+// this.worlds = new WorldsImpl();
 
 // @Override
 // public String getHome() {

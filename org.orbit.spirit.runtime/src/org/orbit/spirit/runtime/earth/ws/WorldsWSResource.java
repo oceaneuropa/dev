@@ -1,9 +1,7 @@
-package org.orbit.spirit.runtime.gaia.ws;
+package org.orbit.spirit.runtime.earth.ws;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -16,8 +14,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
-import org.orbit.spirit.runtime.gaia.service.GaiaService;
-import org.orbit.spirit.runtime.gaia.service.WorldMetadata;
+import org.orbit.spirit.runtime.earth.service.EarthService;
+import org.orbit.spirit.runtime.earth.service.World;
 import org.orbit.spirit.runtime.util.ModelConverter;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
@@ -28,12 +26,12 @@ import org.origin.common.rest.server.ServerException;
  * Worlds web service resource.
  * 
  * {contextRoot} example: 
- * /orbit/v1/gaia
+ * /orbit/v1/earth
  * 
  * Worlds:
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/worlds 
  * URL (GET): {scheme}://{host}:{port}/{contextRoot}/worlds/{name}
- * URL (GET): {scheme}://{host}:{port}/{contextRoot}/worlds/{name}/exists
+ * 
  */
 @Secured(roles = { OrbitRoles.SYSTEM_COMPONENT, OrbitRoles.SYSTEM_ADMIN })
 @Path("/worlds")
@@ -41,9 +39,9 @@ import org.origin.common.rest.server.ServerException;
 public class WorldsWSResource extends AbstractWSApplicationResource {
 
 	@Inject
-	public GaiaService service;
+	public EarthService service;
 
-	public GaiaService getService() throws RuntimeException {
+	public EarthService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("GAIA is not available.");
 		}
@@ -61,11 +59,11 @@ public class WorldsWSResource extends AbstractWSApplicationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getWorlds() {
 		List<WorldDTO> worldDTOs = new ArrayList<WorldDTO>();
-		GaiaService gaia = getService();
+		EarthService earth = getService();
 		try {
-			List<WorldMetadata> worlds = gaia.getWorlds();
-			for (WorldMetadata world : worlds) {
-				WorldDTO worldDTO = ModelConverter.GAIA.toDTO(world);
+			World[] worlds = earth.getWorlds();
+			for (World world : worlds) {
+				WorldDTO worldDTO = ModelConverter.Earth.toDTO(world);
 				worldDTOs.add(worldDTO);
 			}
 
@@ -89,14 +87,14 @@ public class WorldsWSResource extends AbstractWSApplicationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserAccount(@PathParam("name") String name) {
 		WorldDTO worldDTO = null;
-		GaiaService gaia = getService();
+		EarthService earth = getService();
 		try {
-			WorldMetadata world = gaia.getWorld(name);
+			World world = earth.getWorld(name);
 			if (world == null) {
 				ErrorDTO error = new ErrorDTO(String.valueOf(Status.NOT_FOUND.getStatusCode()), String.format("World '%s' does not exist.", name));
 				return Response.status(Status.NOT_FOUND).entity(error).build();
 			}
-			worldDTO = ModelConverter.GAIA.toDTO(world);
+			worldDTO = ModelConverter.Earth.toDTO(world);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);
@@ -105,30 +103,30 @@ public class WorldsWSResource extends AbstractWSApplicationResource {
 		return Response.ok().entity(worldDTO).build();
 	}
 
-	/**
-	 * Check whether a world exists.
-	 * 
-	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/worlds/{name}/exists
-	 * 
-	 * @param name
-	 * @return
-	 */
-	@GET
-	@Path("{name}/exists")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response userAccountExists(@PathParam("name") String name) {
-		Map<String, Boolean> result = new HashMap<String, Boolean>();
-
-		GaiaService gaia = getService();
-		try {
-			boolean exists = gaia.worldExists(name);
-			result.put("exists", exists);
-
-		} catch (ServerException e) {
-			ErrorDTO error = handleError(e, e.getCode(), true);
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
-		}
-		return Response.ok().entity(result).build();
-	}
-
 }
+
+// /**
+// * Check whether a world exists.
+// *
+// * URL (GET): {scheme}://{host}:{port}/{contextRoot}/worlds/{name}/exists
+// *
+// * @param name
+// * @return
+// */
+// @GET
+// @Path("{name}/exists")
+// @Produces(MediaType.APPLICATION_JSON)
+// public Response userAccountExists(@PathParam("name") String name) {
+// Map<String, Boolean> result = new HashMap<String, Boolean>();
+//
+// GaiaService gaia = getService();
+// try {
+// boolean exists = gaia.worldExists(name);
+// result.put("exists", exists);
+//
+// } catch (ServerException e) {
+// ErrorDTO error = handleError(e, e.getCode(), true);
+// return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+// }
+// return Response.ok().entity(result).build();
+// }
