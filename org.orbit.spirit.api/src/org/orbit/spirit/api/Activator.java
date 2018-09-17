@@ -1,5 +1,6 @@
 package org.orbit.spirit.api;
 
+import org.orbit.spirit.api.util.SpiritClients;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 

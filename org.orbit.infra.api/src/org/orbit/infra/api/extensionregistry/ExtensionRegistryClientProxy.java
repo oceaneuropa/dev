@@ -5,61 +5,27 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.util.InfraClients;
+import org.origin.common.rest.client.ServiceClientProxy;
 
-public class ExtensionRegistryClientProxy implements ExtensionRegistryClient {
-
-	private static ExtensionRegistryClientProxyImpl PROXY = new ExtensionRegistryClientProxyImpl();
-
-	protected Map<String, Object> properties;
-	protected ExtensionRegistryClient extensionRegistry = PROXY;
+public class ExtensionRegistryClientProxy extends ServiceClientProxy<ExtensionRegistryClient> implements ExtensionRegistryClient {
 
 	/**
 	 * 
 	 * @param properties
 	 */
 	public ExtensionRegistryClientProxy(Map<String, Object> properties) {
-		if (properties == null) {
-			throw new IllegalArgumentException("properties is null");
-		}
-		this.properties = properties;
-	}
-
-	protected synchronized ExtensionRegistryClient resolve() {
-		if (this.extensionRegistry == null || this.extensionRegistry.isProxy()) {
-			ExtensionRegistryClient resolvedExtensionRegistry = InfraClients.getInstance().getExtensionRegistry(this.properties, false);
-			if (resolvedExtensionRegistry != null && !resolvedExtensionRegistry.isProxy()) {
-				this.extensionRegistry = resolvedExtensionRegistry;
-			}
-		}
-		if (this.extensionRegistry == null) {
-			this.extensionRegistry = PROXY;
-		}
-		return this.extensionRegistry;
+		super(properties);
 	}
 
 	@Override
-	public Map<String, Object> getProperties() {
-		return resolve().getProperties();
+	protected ExtensionRegistryClient resolveClient(Map<String, Object> properties) {
+		ExtensionRegistryClient resolvedExtensionRegistry = InfraClients.getInstance().getExtensionRegistry(properties, false);
+		return resolvedExtensionRegistry;
 	}
 
 	@Override
-	public String getName() {
-		return resolve().getName();
-	}
-
-	@Override
-	public String getURL() {
-		return resolve().getURL();
-	}
-
-	@Override
-	public boolean ping() {
-		return resolve().ping();
-	}
-
-	@Override
-	public String echo(String message) throws IOException {
-		return resolve().echo(message);
+	protected ExtensionRegistryClient createClientDummy() {
+		return new ExtensionRegistryClientDummyImpl();
 	}
 
 	@Override
@@ -112,52 +78,7 @@ public class ExtensionRegistryClientProxy implements ExtensionRegistryClient {
 		return resolve().removeExtensionProperties(platformId, typeId, extensionId, propertyNames);
 	}
 
-	@Override
-	public <T> void adapt(Class<T> clazz, T object) {
-		resolve().adapt(clazz, object);
-	}
-
-	@Override
-	public <T> void adapt(Class<T>[] classes, T object) {
-		resolve().adapt(classes, object);
-	}
-
-	@Override
-	public <T> T getAdapter(Class<T> adapter) {
-		return resolve().getAdapter(adapter);
-	}
-
-	@Override
-	public boolean isProxy() {
-		return resolve().isProxy();
-	}
-
-	public static class ExtensionRegistryClientProxyImpl implements ExtensionRegistryClient {
-
-		@Override
-		public String getName() {
-			return null;
-		}
-
-		@Override
-		public String getURL() {
-			return null;
-		}
-
-		@Override
-		public Map<String, Object> getProperties() {
-			return null;
-		}
-
-		@Override
-		public boolean ping() {
-			return false;
-		}
-
-		@Override
-		public String echo(String message) throws IOException {
-			return null;
-		}
+	public static class ExtensionRegistryClientDummyImpl extends ServiceClientDummyImpl implements ExtensionRegistryClient {
 
 		@Override
 		public List<ExtensionItem> getExtensionItems(String platformId) throws IOException {
@@ -208,24 +129,21 @@ public class ExtensionRegistryClientProxy implements ExtensionRegistryClient {
 		public boolean removeExtensionProperties(String platformId, String typeId, String extensionId, List<String> propertyNames) throws IOException {
 			return false;
 		}
-
-		@Override
-		public <T> void adapt(Class<T> clazz, T object) {
-		}
-
-		@Override
-		public <T> void adapt(Class<T>[] classes, T object) {
-		}
-
-		@Override
-		public <T> T getAdapter(Class<T> adapter) {
-			return null;
-		}
-
-		@Override
-		public boolean isProxy() {
-			return true;
-		}
 	}
 
 }
+
+// protected ExtensionRegistryClient extensionRegistry = PROXY;
+
+// protected synchronized ExtensionRegistryClient resolve() {
+// if (this.extensionRegistry == null || this.extensionRegistry.isProxy()) {
+// ExtensionRegistryClient resolvedExtensionRegistry = InfraClients.getInstance().getExtensionRegistry(this.properties, false);
+// if (resolvedExtensionRegistry != null && !resolvedExtensionRegistry.isProxy()) {
+// this.extensionRegistry = resolvedExtensionRegistry;
+// }
+// }
+// if (this.extensionRegistry == null) {
+// this.extensionRegistry = PROXY;
+// }
+// return this.extensionRegistry;
+// }

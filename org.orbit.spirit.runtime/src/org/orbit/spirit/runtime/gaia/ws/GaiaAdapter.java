@@ -8,7 +8,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClients;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.spirit.runtime.Constants;
-import org.orbit.spirit.runtime.gaia.service.GAIA;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.orbit.spirit.runtime.gaia.ws.command.GaiaEditPolicy;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
@@ -26,10 +26,10 @@ public class GaiaAdapter implements LifecycleAware {
 	protected static Logger LOG = LoggerFactory.getLogger(GaiaAdapter.class);
 
 	protected Map<Object, Object> properties;
-	protected ServiceTracker<GAIA, GAIA> serviceTracker;
+	protected ServiceTracker<GaiaService, GaiaService> serviceTracker;
 	protected GaiaWSApplication webServiceApp;
 	// protected GaiaIndexTimer indexTimer;
-	protected ServiceIndexTimer<GAIA> indexTimer;
+	protected ServiceIndexTimer<GaiaService> indexTimer;
 
 	public GaiaAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
@@ -39,7 +39,7 @@ public class GaiaAdapter implements LifecycleAware {
 		return InfraClients.getInstance().getIndexService(this.properties, true);
 	}
 
-	public GAIA getService() {
+	public GaiaService getService() {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
 	}
 
@@ -49,20 +49,20 @@ public class GaiaAdapter implements LifecycleAware {
 	 */
 	@Override
 	public void start(final BundleContext bundleContext) {
-		this.serviceTracker = new ServiceTracker<GAIA, GAIA>(bundleContext, GAIA.class, new ServiceTrackerCustomizer<GAIA, GAIA>() {
+		this.serviceTracker = new ServiceTracker<GaiaService, GaiaService>(bundleContext, GaiaService.class, new ServiceTrackerCustomizer<GaiaService, GaiaService>() {
 			@Override
-			public GAIA addingService(ServiceReference<GAIA> reference) {
-				GAIA gaia = bundleContext.getService(reference);
+			public GaiaService addingService(ServiceReference<GaiaService> reference) {
+				GaiaService gaia = bundleContext.getService(reference);
 				doStart(bundleContext, gaia);
 				return gaia;
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<GAIA> reference, GAIA gaia) {
+			public void modifiedService(ServiceReference<GaiaService> reference, GaiaService gaia) {
 			}
 
 			@Override
-			public void removedService(ServiceReference<GAIA> reference, GAIA gaia) {
+			public void removedService(ServiceReference<GaiaService> reference, GaiaService gaia) {
 				doStop(bundleContext, gaia);
 			}
 		});
@@ -86,7 +86,7 @@ public class GaiaAdapter implements LifecycleAware {
 	 * @param bundleContext
 	 * @param gaia
 	 */
-	protected void doStart(BundleContext bundleContext, GAIA gaia) {
+	protected void doStart(BundleContext bundleContext, GaiaService gaia) {
 		LOG.info("doStart()");
 
 		// Install web service edit policies
@@ -103,11 +103,11 @@ public class GaiaAdapter implements LifecycleAware {
 		// this.indexTimer = new GaiaIndexTimer(indexProvider, gaia);
 		// this.indexTimer.start();
 
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, Constants.GAIA_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, Constants.IDX__GAIA__INDEXER_ID);
 		if (extension != null) {
 			// String indexProviderId = extension.getId();
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<GAIA> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<GaiaService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(indexProvider, gaia);
 				if (this.indexTimer != null) {
@@ -122,7 +122,7 @@ public class GaiaAdapter implements LifecycleAware {
 	 * @param bundleContext
 	 * @param gaia
 	 */
-	protected void doStop(BundleContext bundleContext, GAIA gaia) {
+	protected void doStop(BundleContext bundleContext, GaiaService gaia) {
 		LOG.info("doStop()");
 
 		// Start index timer

@@ -10,8 +10,7 @@ package org.orbit.spirit.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.spirit.runtime.gaia.Extensions;
-import org.orbit.spirit.runtime.gaia.service.GAIA;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.orbit.spirit.runtime.gaia.ws.GaiaAdapter;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
@@ -76,7 +75,7 @@ public class Activator implements BundleActivator {
 		Activator.bundleContext = null;
 	}
 
-	public GAIA getGAIA() {
+	public GaiaService getGAIA() {
 		return (this.gaiaAdapter != null) ? this.gaiaAdapter.getService() : null;
 	}
 

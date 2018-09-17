@@ -1,20 +1,20 @@
 package org.orbit.spirit.runtime.gaia.ws;
 
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
-import org.orbit.spirit.runtime.gaia.service.GAIA;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.origin.common.rest.server.AbstractJerseyWSApplication;
 import org.origin.common.rest.server.FeatureConstants;
 
 public class GaiaWSApplication extends AbstractJerseyWSApplication {
 
-	public GaiaWSApplication(final GAIA gaia, int feature) {
+	public GaiaWSApplication(final GaiaService gaia, int feature) {
 		super(gaia, feature);
 		// adapt(GAIA.class, gaia);
 
 		AbstractBinder serviceBinder = new AbstractBinder() {
 			@Override
 			protected void configure() {
-				bind(gaia).to(GAIA.class);
+				bind(gaia).to(GaiaService.class);
 			}
 		};
 		register(serviceBinder);

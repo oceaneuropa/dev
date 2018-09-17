@@ -1,7 +1,8 @@
 package org.orbit.spirit.connector;
 
 import org.orbit.platform.sdk.connector.ConnectorActivator;
-import org.orbit.spirit.connector.gaia.GAIAConnector;
+import org.orbit.spirit.connector.earth.EarthConnector;
+import org.orbit.spirit.connector.gaia.GaiaConnector;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
@@ -29,10 +30,16 @@ public class Extensions extends ProgramExtensions {
 		String typeId = ConnectorActivator.EXTENSION_TYPE_ID;
 
 		// GAIA connector
-		Extension extension1 = new Extension(typeId, GAIAConnector.ID, "GAIA Connector", "GAIA connector description");
-		InterfaceDescription desc1 = new InterfaceDescription(ConnectorActivator.class, GAIAConnector.class);
+		Extension extension1 = new Extension(typeId, GaiaConnector.ID, "GAIA Connector", "GAIA connector description");
+		InterfaceDescription desc1 = new InterfaceDescription(ConnectorActivator.class, GaiaConnector.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
+
+		// Earth connector
+		Extension extension2 = new Extension(typeId, EarthConnector.ID, "Earth Connector", "Earth connector description");
+		InterfaceDescription desc2 = new InterfaceDescription(ConnectorActivator.class, EarthConnector.class);
+		extension2.addInterface(desc2);
+		addExtension(extension2);
 	}
 
 }

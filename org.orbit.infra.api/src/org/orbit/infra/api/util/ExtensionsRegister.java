@@ -16,6 +16,7 @@ import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.extensions.core.IExtension;
 import org.origin.common.extensions.util.ExtensionListener;
 import org.origin.common.extensions.util.ExtensionTracker;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -113,7 +114,7 @@ public class ExtensionsRegister implements ExtensionListener {
 				if (time1.equals(time1_echo)) {
 					match1 = true;
 				}
-			} catch (IOException e) {
+			} catch (ClientException e) {
 				e.printStackTrace();
 			}
 			boolean match2 = false;
@@ -123,7 +124,7 @@ public class ExtensionsRegister implements ExtensionListener {
 				if (time2.equals(time2_echo)) {
 					match2 = true;
 				}
-			} catch (IOException e) {
+			} catch (ClientException e) {
 				e.printStackTrace();
 			}
 			if (match1 && match2) {

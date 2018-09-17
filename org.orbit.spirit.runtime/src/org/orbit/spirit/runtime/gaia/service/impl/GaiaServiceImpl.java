@@ -1,73 +1,118 @@
-package org.orbit.spirit.runtime.gaia.service;
+package org.orbit.spirit.runtime.gaia.service.impl;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.orbit.spirit.runtime.Constants;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.orbit.spirit.runtime.gaia.world.Worlds;
 import org.orbit.spirit.runtime.gaia.world.WorldsImpl;
+import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
+import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GAIAImpl implements GAIA {
+public class GaiaServiceImpl implements GaiaService, LifecycleAware {
 
-	protected static Logger LOG = LoggerFactory.getLogger(GAIAImpl.class);
+	protected static Logger LOG = LoggerFactory.getLogger(GaiaServiceImpl.class);
 
 	protected BundleContext bundleContext;
 	protected Map<Object, Object> initProperties;
+	protected Properties databaseProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ServiceEditPolicies wsEditPolicies;
 	protected Worlds worlds;
-
 	protected AtomicBoolean isStarted = new AtomicBoolean(false);
 
 	/**
 	 * 
 	 * @param initProperties
 	 */
-	public GAIAImpl(Map<Object, Object> initProperties) {
+	public GaiaServiceImpl(Map<Object, Object> initProperties) {
 		if (initProperties == null) {
 			initProperties = new HashMap<Object, Object>();
 		}
 		this.initProperties = initProperties;
 
-		this.wsEditPolicies = new ServiceEditPoliciesImpl();
-		this.wsEditPolicies.setService(GAIA.class, this);
+		// this.wsEditPolicies = new ServiceEditPoliciesImpl();
+		// this.wsEditPolicies.setService(GAIA.class, this);
+		this.wsEditPolicies = new ServiceEditPoliciesImpl(GaiaService.class, this);
 
 		this.worlds = new WorldsImpl();
 	}
 
 	@Override
-	public String getName() {
-		String name = getProperty(Constants.GAIA_NAME);
-		return name;
+	public synchronized void start(BundleContext bundleContext) {
+		LOG.info("start()");
+		if (isStarted()) {
+			LOG.info("GAIA is readly started.");
+			return;
+		}
+		this.isStarted.set(true);
+
+		this.bundleContext = bundleContext;
+
+		// load properties
+		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__NAME);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__HOST_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__CONTEXT_ROOT);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__JDBC_DRIVER);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__JDBC_URL);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__JDBC_USERNAME);
+		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA__JDBC_PASSWORD);
+
+		updateProperties(configProps);
+
+		initialize();
+
+		// start OS service
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		this.serviceRegistry = this.bundleContext.registerService(GaiaService.class, this, props);
+	}
+
+	public synchronized boolean isStarted() {
+		return this.isStarted.get() ? true : false;
+	}
+
+	protected void checkStarted() {
+		if (!isStarted()) {
+			throw new IllegalStateException(getClass().getSimpleName() + " is not started.");
+		}
 	}
 
 	@Override
-	public String getHostURL() {
-		String hostURL = getProperty(Constants.GAIA_HOST_URL);
-		if (hostURL != null) {
-			return hostURL;
+	public synchronized void stop(BundleContext bundleContext) {
+		LOG.info("stop()");
+		if (!this.isStarted.compareAndSet(true, false)) {
+			LOG.info("GAIA is readly stopped.");
+			return;
 		}
-		String globalHostURL = getProperty(Constants.ORBIT_HOST_URL);
-		if (globalHostURL != null) {
-			return globalHostURL;
+
+		// Stop GAIA service
+		if (this.serviceRegistry != null) {
+			this.serviceRegistry.unregister();
+			this.serviceRegistry = null;
 		}
-		return null;
+
+		this.bundleContext = null;
 	}
 
 	@Override
-	public String getContextRoot() {
-		String contextRoot = getProperty(Constants.GAIA_CONTEXT_ROOT);
-		return contextRoot;
+	public Map<Object, Object> getProperties() {
+		return this.properties;
 	}
 
 	@Override
@@ -79,17 +124,39 @@ public class GAIAImpl implements GAIA {
 		}
 
 		String globalHostURL = getProperty(Constants.ORBIT_HOST_URL);
-		String name = getProperty(Constants.GAIA_NAME);
-		String hostURL = getProperty(Constants.GAIA_HOST_URL);
-		String contextRoot = getProperty(Constants.GAIA_CONTEXT_ROOT);
+		String name = getProperty(Constants.GAIA__NAME);
+		String hostURL = getProperty(Constants.GAIA__HOST_URL);
+		String contextRoot = getProperty(Constants.GAIA__CONTEXT_ROOT);
+
+		String jdbcDriver = getProperty(Constants.GAIA__JDBC_DRIVER);
+		String jdbcURL = getProperty(Constants.GAIA__JDBC_URL);
+		String jdbcUsername = getProperty(Constants.GAIA__JDBC_USERNAME);
+		String jdbcPassword = getProperty(Constants.GAIA__JDBC_PASSWORD);
 
 		LOG.info(Constants.ORBIT_HOST_URL + " = " + globalHostURL);
-		LOG.info(Constants.GAIA_NAME + " = " + name);
-		LOG.info(Constants.GAIA_HOST_URL + " = " + hostURL);
-		LOG.info(Constants.GAIA_CONTEXT_ROOT + " = " + contextRoot);
+		LOG.info(Constants.GAIA__NAME + " = " + name);
+		LOG.info(Constants.GAIA__HOST_URL + " = " + hostURL);
+		LOG.info(Constants.GAIA__CONTEXT_ROOT + " = " + contextRoot);
+		LOG.info(Constants.GAIA__JDBC_DRIVER + " = " + jdbcDriver);
+		LOG.info(Constants.GAIA__JDBC_URL + " = " + jdbcURL);
+		LOG.info(Constants.GAIA__JDBC_USERNAME + " = " + jdbcUsername);
+		LOG.info(Constants.GAIA__JDBC_PASSWORD + " = " + jdbcPassword);
 
 		this.properties = configProps;
-		// this.databaseProperties = getConnectionProperties();
+		this.databaseProperties = getConnectionProperties(this.properties);
+	}
+
+	/**
+	 * 
+	 * @param props
+	 * @return
+	 */
+	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
+		String driver = (String) this.properties.get(Constants.GAIA__JDBC_DRIVER);
+		String url = (String) this.properties.get(Constants.GAIA__JDBC_URL);
+		String username = (String) this.properties.get(Constants.GAIA__JDBC_USERNAME);
+		String password = (String) this.properties.get(Constants.GAIA__JDBC_PASSWORD);
+		return DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
 	protected String getProperty(String key) {
@@ -113,59 +180,68 @@ public class GAIAImpl implements GAIA {
 		return null;
 	}
 
-	public synchronized void start(BundleContext bundleContext) {
-		LOG.info("start()");
-		if (isStarted()) {
-			LOG.info("GAIA is readly started.");
-			return;
-		}
-		this.isStarted.set(true);
-
-		this.bundleContext = bundleContext;
-
-		// load properties
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.ORBIT_HOST_URL);
-		// PropertyUtil.loadProperty(this.bundleContext, configProps, OSConstants.GAIA_NAMESPACE);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA_NAME);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA_HOST_URL);
-		PropertyUtil.loadProperty(this.bundleContext, configProps, Constants.GAIA_CONTEXT_ROOT);
-		updateProperties(configProps);
-
-		// start OS service
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		this.serviceRegistry = this.bundleContext.registerService(GAIA.class, this, props);
+	@Override
+	public Connection getConnection() throws SQLException {
+		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
-	public synchronized boolean isStarted() {
-		return this.isStarted.get() ? true : false;
-	}
-
-	protected void checkStarted() {
-		if (!isStarted()) {
-			throw new IllegalStateException(getClass().getSimpleName() + " is not started.");
+	/**
+	 * Initialize database tables.
+	 */
+	public void initialize() {
+		String database = null;
+		try {
+			database = DatabaseUtil.getDatabase(this.databaseProperties);
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-	}
+		assert (database != null) : "database name cannot be retrieved.";
 
-	public synchronized void stop(BundleContext bundleContext) {
-		LOG.info("stop()");
-		if (!this.isStarted.compareAndSet(true, false)) {
-			LOG.info("GAIA is readly stopped.");
-			return;
+		Connection conn = null;
+		try {
+			conn = DatabaseUtil.getConnection(this.databaseProperties);
+
+			// if (this.categoryTableHandler != null) {
+			// DatabaseUtil.initialize(conn, this.categoryTableHandler);
+			// }
+			// if (this.appTableHandler != null) {
+			// DatabaseUtil.initialize(conn, this.appTableHandler);
+			// }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
 		}
-
-		// Stop GAIA service
-		if (this.serviceRegistry != null) {
-			this.serviceRegistry.unregister();
-			this.serviceRegistry = null;
-		}
-
-		this.bundleContext = null;
 	}
 
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
 		return this.wsEditPolicies;
+	}
+
+	@Override
+	public String getName() {
+		String name = getProperty(Constants.GAIA__NAME);
+		return name;
+	}
+
+	@Override
+	public String getHostURL() {
+		String hostURL = getProperty(Constants.GAIA__HOST_URL);
+		if (hostURL != null) {
+			return hostURL;
+		}
+		String globalHostURL = getProperty(Constants.ORBIT_HOST_URL);
+		if (globalHostURL != null) {
+			return globalHostURL;
+		}
+		return null;
+	}
+
+	@Override
+	public String getContextRoot() {
+		String contextRoot = getProperty(Constants.GAIA__CONTEXT_ROOT);
+		return contextRoot;
 	}
 
 	@Override

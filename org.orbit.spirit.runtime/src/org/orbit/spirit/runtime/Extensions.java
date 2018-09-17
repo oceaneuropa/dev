@@ -5,12 +5,11 @@
  * Contributors:
  *     OceanEuropa - initial API and implementation
  *******************************************************************************/
-package org.orbit.spirit.runtime.gaia;
+package org.orbit.spirit.runtime;
 
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
-import org.orbit.spirit.runtime.Constants;
-import org.orbit.spirit.runtime.gaia.extensions.GAIAServiceActivator;
+import org.orbit.spirit.runtime.extension.GaiaServiceActivator;
 import org.orbit.spirit.runtime.gaia.ws.GaiaIndexTimerFactory;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
@@ -45,8 +44,8 @@ public class Extensions extends ProgramExtensions {
 		String extensionTypeId = ServiceActivator.EXTENSION_TYPE_ID;
 
 		// GAIA
-		Extension gaiaExtension = new Extension(extensionTypeId, GAIAServiceActivator.ID, "GAIA activator", "GAIA activator description");
-		InterfaceDescription gaiaDesc = new InterfaceDescription("GAIA", ServiceActivator.class, GAIAServiceActivator.class);
+		Extension gaiaExtension = new Extension(extensionTypeId, GaiaServiceActivator.ID, "GAIA activator", "GAIA activator description");
+		InterfaceDescription gaiaDesc = new InterfaceDescription("GAIA", ServiceActivator.class, GaiaServiceActivator.class);
 		gaiaDesc.setParameters( //
 				new Parameter("gaia.name", "GAIA instance name"), //
 				new Parameter("gaia.context_root", "web service context root") //
@@ -59,7 +58,7 @@ public class Extensions extends ProgramExtensions {
 		String extensionTypeId = ServiceIndexTimerFactory.EXTENSION_TYPE_ID;
 		Class<?> factoryClass = ServiceIndexTimerFactory.class;
 
-		Extension extension11 = new Extension(extensionTypeId, Constants.GAIA_INDEXER_ID, "GAIA Index Provider");
+		Extension extension11 = new Extension(extensionTypeId, Constants.IDX__GAIA__INDEXER_ID, "GAIA Index Provider");
 		extension11.addInterface(factoryClass, GaiaIndexTimerFactory.class);
 		addExtension(extension11);
 	}

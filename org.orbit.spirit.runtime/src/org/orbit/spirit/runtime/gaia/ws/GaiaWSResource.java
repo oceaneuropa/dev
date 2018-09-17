@@ -12,7 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.platform.sdk.http.OrbitRoles;
-import org.orbit.spirit.runtime.gaia.service.GAIA;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
@@ -25,9 +25,9 @@ import org.origin.common.rest.server.AbstractWSApplicationResource;
 public class GaiaWSResource extends AbstractWSApplicationResource {
 
 	@Inject
-	public GAIA service;
+	public GaiaService service;
 
-	public GAIA getService() throws RuntimeException {
+	public GaiaService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("GAIA is not available.");
 		}
@@ -38,7 +38,7 @@ public class GaiaWSResource extends AbstractWSApplicationResource {
 	@Path("request")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public Response request(@Context HttpHeaders httpHeaders, Request request) {
-		GAIA service = getService();
+		GaiaService service = getService();
 
 		WSCommand command = service.getEditPolicies().getCommand(httpHeaders, request);
 		if (command != null) {

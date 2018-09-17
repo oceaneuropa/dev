@@ -16,9 +16,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
-import org.orbit.spirit.runtime.gaia.service.GAIA;
-import org.orbit.spirit.runtime.gaia.util.ModelConverter;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.orbit.spirit.runtime.gaia.world.World;
+import org.orbit.spirit.runtime.util.ModelConverter;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
@@ -41,9 +41,9 @@ import org.origin.common.rest.server.ServerException;
 public class WorldsWSResource extends AbstractWSApplicationResource {
 
 	@Inject
-	public GAIA service;
+	public GaiaService service;
 
-	public GAIA getService() throws RuntimeException {
+	public GaiaService getService() throws RuntimeException {
 		if (this.service == null) {
 			throw new RuntimeException("GAIA is not available.");
 		}
@@ -61,7 +61,7 @@ public class WorldsWSResource extends AbstractWSApplicationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getWorlds() {
 		List<WorldDTO> worldDTOs = new ArrayList<WorldDTO>();
-		GAIA gaia = getService();
+		GaiaService gaia = getService();
 		try {
 			List<World> worlds = gaia.getWorlds().getWorlds();
 			for (World world : worlds) {
@@ -89,7 +89,7 @@ public class WorldsWSResource extends AbstractWSApplicationResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserAccount(@PathParam("name") String name) {
 		WorldDTO worldDTO = null;
-		GAIA gaia = getService();
+		GaiaService gaia = getService();
 		try {
 			World world = gaia.getWorlds().get(name);
 			if (world == null) {
@@ -119,7 +119,7 @@ public class WorldsWSResource extends AbstractWSApplicationResource {
 	public Response userAccountExists(@PathParam("name") String name) {
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 
-		GAIA gaia = getService();
+		GaiaService gaia = getService();
 		try {
 			boolean exists = gaia.getWorlds().exists(name);
 			result.put("exists", exists);

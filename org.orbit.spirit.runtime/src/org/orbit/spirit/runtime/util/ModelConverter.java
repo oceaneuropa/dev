@@ -1,4 +1,4 @@
-package org.orbit.spirit.runtime.gaia.util;
+package org.orbit.spirit.runtime.util;
 
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
 import org.orbit.spirit.runtime.gaia.world.World;

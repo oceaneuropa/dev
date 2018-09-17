@@ -7,17 +7,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.spirit.model.gaia.dto.WorldDTO;
-import org.orbit.spirit.runtime.gaia.service.GAIA;
-import org.orbit.spirit.runtime.gaia.util.ModelConverter;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.orbit.spirit.runtime.gaia.world.World;
+import org.orbit.spirit.runtime.util.ModelConverter;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.Request;
 
 public class WorldListWSCommand extends AbstractWSCommand {
 
-	protected GAIA gaia;
+	protected GaiaService gaia;
 
-	public WorldListWSCommand(GAIA gaia) {
+	public WorldListWSCommand(GaiaService gaia) {
 		this.gaia = gaia;
 	}
 

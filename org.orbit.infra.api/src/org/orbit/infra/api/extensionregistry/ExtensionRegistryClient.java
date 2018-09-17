@@ -5,41 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.adapter.IAdaptable;
+import org.origin.common.rest.client.ServiceClient;
 import org.origin.common.service.Proxy;
 
-public interface ExtensionRegistryClient extends Proxy, IAdaptable {
-
-	/**
-	 * 
-	 * @return
-	 */
-	Map<String, Object> getProperties();
-
-	/**
-	 * 
-	 * @return
-	 */
-	String getName();
-
-	/**
-	 * 
-	 * @return
-	 */
-	String getURL();
-
-	/**
-	 * 
-	 * @return
-	 */
-	boolean ping();
-
-	/**
-	 * 
-	 * @param message
-	 * @return
-	 * @throws IOException
-	 */
-	String echo(String message) throws IOException;
+public interface ExtensionRegistryClient extends ServiceClient, Proxy, IAdaptable {
 
 	/**
 	 * 

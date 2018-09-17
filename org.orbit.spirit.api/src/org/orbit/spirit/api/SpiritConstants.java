@@ -2,7 +2,7 @@ package org.orbit.spirit.api;
 
 import java.io.File;
 
-public class Constants {
+public class SpiritConstants {
 
 	// ----------------------------------------------------------------------------------------
 	// Program constants
@@ -14,7 +14,8 @@ public class Constants {
 	// ----------------------------------------------------------------------------------------
 	// orbit service config properties
 	// ----------------------------------------------------------------------------------------
-	public static String ORBIT_GAIA_URL = "orbit.gaia.url";
+	public static String ORBIT__GAIA_SERVICE_URL = "orbit.gaia_service.url";
+	public static String ORBIT__EARTH_SERVICE_URL = "orbit.earth_service.url";
 
 	// ---------------------------------------------------------------
 	// Service command request constants

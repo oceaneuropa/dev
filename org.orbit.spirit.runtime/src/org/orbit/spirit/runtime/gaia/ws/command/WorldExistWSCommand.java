@@ -6,16 +6,16 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.spirit.runtime.gaia.service.GAIA;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
 public class WorldExistWSCommand extends AbstractWSCommand {
 
-	protected GAIA gaia;
+	protected GaiaService gaia;
 
-	public WorldExistWSCommand(GAIA gaia) {
+	public WorldExistWSCommand(GaiaService gaia) {
 		this.gaia = gaia;
 	}
 

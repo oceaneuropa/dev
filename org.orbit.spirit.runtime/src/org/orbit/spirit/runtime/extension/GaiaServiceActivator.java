@@ -1,19 +1,19 @@
-package org.orbit.spirit.runtime.gaia.extensions;
+package org.orbit.spirit.runtime.extension;
 
 import java.util.Map;
 
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
-import org.orbit.spirit.runtime.gaia.service.GAIA;
-import org.orbit.spirit.runtime.gaia.service.GAIAImpl;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
+import org.orbit.spirit.runtime.gaia.service.impl.GaiaServiceImpl;
 import org.osgi.framework.BundleContext;
 
-public class GAIAServiceActivator implements ServiceActivator {
+public class GaiaServiceActivator implements ServiceActivator {
 
 	public static final String ID = "component.gaia.service_activator";
 
-	public static GAIAServiceActivator INSTANCE = new GAIAServiceActivator();
+	public static GaiaServiceActivator INSTANCE = new GaiaServiceActivator();
 
 	@Override
 	public synchronized void start(IPlatformContext context, IProcess process) {
@@ -21,10 +21,10 @@ public class GAIAServiceActivator implements ServiceActivator {
 		Map<Object, Object> properties = context.getProperties();
 
 		// Start GAIA service
-		GAIAImpl newGAIA = new GAIAImpl(properties);
+		GaiaServiceImpl newGAIA = new GaiaServiceImpl(properties);
 		newGAIA.start(bundleContext);
 
-		process.adapt(GAIA.class, newGAIA);
+		process.adapt(GaiaService.class, newGAIA);
 	}
 
 	@Override
@@ -32,9 +32,9 @@ public class GAIAServiceActivator implements ServiceActivator {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop GAIA service
-		GAIA gaia = process.getAdapter(GAIA.class);
-		if (gaia instanceof GAIAImpl) {
-			((GAIAImpl) gaia).stop(bundleContext);
+		GaiaService gaia = process.getAdapter(GaiaService.class);
+		if (gaia instanceof GaiaServiceImpl) {
+			((GaiaServiceImpl) gaia).stop(bundleContext);
 		}
 	}
 

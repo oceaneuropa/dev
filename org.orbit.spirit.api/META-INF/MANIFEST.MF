@@ -13,4 +13,6 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)",
  org.apache.felix.gogo.runtime;bundle-version="[0.16.2,2.0.0)"
 Export-Package: org.orbit.spirit.api;version="1.0.0",
- org.orbit.spirit.api.gaia;version="1.0.0"
+ org.orbit.spirit.api.earth;version="1.0.0",
+ org.orbit.spirit.api.gaia;version="1.0.0",
+ org.orbit.spirit.api.util;version="1.0.0"

@@ -7,10 +7,10 @@ import javax.ws.rs.core.Response;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.spirit.api.Constants;
-import org.orbit.spirit.api.SpiritClients;
-import org.orbit.spirit.api.gaia.GAIAClient;
+import org.orbit.spirit.api.SpiritConstants;
+import org.orbit.spirit.api.gaia.GaiaClient;
 import org.orbit.spirit.api.gaia.World;
+import org.orbit.spirit.api.util.SpiritClients;
 import org.orbit.spirit.connector.util.ModelConverter;
 import org.origin.common.osgi.OSGiServiceUtil;
 import org.origin.common.rest.client.ServiceClient;
@@ -50,7 +50,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 				});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, properties, Constants.ORBIT_GAIA_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, SpiritConstants.ORBIT__GAIA_SERVICE_URL);
 		this.properties = properties;
 
 		OSGiServiceUtil.register(bundleContext, GAIAClientCommand.class.getName(), this, props);
@@ -64,11 +64,11 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 	@Override
 	public ServiceClient getServiceClient() {
-		return getGAIA();
+		return getGaiaClient();
 	}
 
-	protected GAIAClient getGAIA() {
-		GAIAClient gaia = SpiritClients.getInstance().getGAIA(this.properties);
+	protected GaiaClient getGaiaClient() {
+		GaiaClient gaia = SpiritClients.getInstance().getGaiaClient(this.properties, true);
 		if (gaia == null) {
 			throw new IllegalStateException("GAIA is null.");
 		}
@@ -85,7 +85,7 @@ public class GAIAClientCommand extends ServiceClientCommand {
 			return;
 		}
 
-		this.properties.put(Constants.ORBIT_GAIA_URL, url);
+		this.properties.put(SpiritConstants.ORBIT__GAIA_SERVICE_URL, url);
 	}
 
 	// -----------------------------------------------------------------------------------------
@@ -103,9 +103,9 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 		Response response = null;
 		try {
-			GAIAClient gaia = getGAIA();
+			GaiaClient gaia = getGaiaClient();
 
-			Request request = new Request(Constants.LIST_WORLDS);
+			Request request = new Request(SpiritConstants.LIST_WORLDS);
 			response = gaia.sendRequest(request);
 
 			World[] worlds = ModelConverter.GAIA.getWorlds(response);
@@ -132,9 +132,9 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 		Response response = null;
 		try {
-			GAIAClient gaia = getGAIA();
+			GaiaClient gaia = getGaiaClient();
 
-			Request request = new Request(Constants.GET_WORLD);
+			Request request = new Request(SpiritConstants.GET_WORLD);
 			request.setParameter("name", name);
 
 			response = gaia.sendRequest(request);
@@ -164,9 +164,9 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 		Response response = null;
 		try {
-			GAIAClient gaia = getGAIA();
+			GaiaClient gaia = getGaiaClient();
 
-			Request request = new Request(Constants.WORLD_EXIST);
+			Request request = new Request(SpiritConstants.WORLD_EXIST);
 			request.setParameter("name", name);
 
 			response = gaia.sendRequest(request);
@@ -188,9 +188,9 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 		Response response = null;
 		try {
-			GAIAClient gaia = getGAIA();
+			GaiaClient gaia = getGaiaClient();
 
-			Request request = new Request(Constants.CREATE_WORLD);
+			Request request = new Request(SpiritConstants.CREATE_WORLD);
 			request.setParameter("name", name);
 
 			response = gaia.sendRequest(request);
@@ -213,9 +213,9 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 		Response response = null;
 		try {
-			GAIAClient gaia = getGAIA();
+			GaiaClient gaia = getGaiaClient();
 
-			Request request = new Request(Constants.DELETE_WORLD);
+			Request request = new Request(SpiritConstants.DELETE_WORLD);
 			request.setParameter("name", name);
 
 			response = gaia.sendRequest(request);
@@ -238,9 +238,9 @@ public class GAIAClientCommand extends ServiceClientCommand {
 
 		Response response = null;
 		try {
-			GAIAClient gaia = getGAIA();
+			GaiaClient gaia = getGaiaClient();
 
-			Request request = new Request(Constants.WORLD_STATUS);
+			Request request = new Request(SpiritConstants.WORLD_STATUS);
 			request.setParameter("name", name);
 
 			response = gaia.sendRequest(request);

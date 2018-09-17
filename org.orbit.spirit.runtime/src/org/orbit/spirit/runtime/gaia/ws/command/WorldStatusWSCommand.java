@@ -3,7 +3,7 @@ package org.orbit.spirit.runtime.gaia.ws.command;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.spirit.runtime.gaia.service.GAIA;
+import org.orbit.spirit.runtime.gaia.service.GaiaService;
 import org.orbit.spirit.runtime.gaia.world.World;
 import org.origin.common.rest.editpolicy.AbstractWSCommand;
 import org.origin.common.rest.model.ErrorDTO;
@@ -11,9 +11,9 @@ import org.origin.common.rest.model.Request;
 
 public class WorldStatusWSCommand extends AbstractWSCommand {
 
-	protected GAIA gaia;
+	protected GaiaService gaia;
 
-	public WorldStatusWSCommand(GAIA gaia) {
+	public WorldStatusWSCommand(GaiaService gaia) {
 		this.gaia = gaia;
 	}
 

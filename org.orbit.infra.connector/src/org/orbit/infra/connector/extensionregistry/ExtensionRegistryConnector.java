@@ -16,7 +16,7 @@ public class ExtensionRegistryConnector extends ServiceConnector<ExtensionRegist
 
 	@Override
 	public ExtensionRegistryClient create(Map<String, Object> properties) {
-		return new ExtensionRegistryClientImpl(properties);
+		return new ExtensionRegistryClientImpl(this, properties);
 	}
 
 }

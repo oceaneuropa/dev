@@ -7,8 +7,6 @@ Bundle-Activator: org.orbit.spirit.connector.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs.client;version="[2.0.0,3.0.0)",
  javax.ws.rs.core;version="[2.0.0,3.0.0)",
- org.orbit.spirit.api;version="[1.0.0,2.0.0)",
- org.orbit.spirit.api.gaia;version="[1.0.0,2.0.0)",
  org.osgi.framework;version="[1.3.0,2.0.0)",
  org.slf4j;version="[1.7.25,2.0.0)"
 Bundle-ActivationPolicy: lazy
@@ -16,6 +14,9 @@ Require-Bundle: org.apache.felix.gogo.runtime;bundle-version="[0.16.2,1.0.0)",
  org.origin.common;bundle-version="[1.0.0,2.0.0)",
  org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)",
  org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)",
+ org.orbit.spirit.api;bundle-version="[1.0.0,2.0.0)",
  org.orbit.spirit.model;bundle-version="[1.0.0,2.0.0)"
 Export-Package: org.orbit.spirit.connector;version="1.0.0",
- org.orbit.spirit.connector.gaia;version="1.0.0"
+ org.orbit.spirit.connector.earth;version="1.0.0",
+ org.orbit.spirit.connector.gaia;version="1.0.0",
+ org.orbit.spirit.connector.util;version="1.0.0"

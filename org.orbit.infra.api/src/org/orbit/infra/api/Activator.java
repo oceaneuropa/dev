@@ -26,8 +26,8 @@ public class Activator implements BundleActivator {
 		Activator.context = bundleContext;
 
 		InfraClients infraClients = InfraClients.getInstance();
-		ClassLoader loader1 = this.getClass().getClassLoader();
-		ClassLoader loader2 = infraClients.getClass().getClassLoader();
+		// ClassLoader loader1 = this.getClass().getClassLoader();
+		// ClassLoader loader2 = infraClients.getClass().getClassLoader();
 		infraClients.start(bundleContext);
 
 		this.extensionsRegister = new ExtensionsRegister();
