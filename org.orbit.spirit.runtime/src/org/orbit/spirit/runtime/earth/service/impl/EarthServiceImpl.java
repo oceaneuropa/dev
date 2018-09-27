@@ -1,32 +1,56 @@
 package org.orbit.spirit.runtime.earth.service.impl;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.platform.model.program.ProgramException;
+import org.orbit.platform.model.program.ProgramManifest;
+import org.orbit.platform.runtime.api.PlatformRuntimeAPIActivator;
+import org.orbit.platform.runtime.api.platform.Platform;
+import org.orbit.platform.runtime.api.programs.Program;
+import org.orbit.platform.runtime.api.programs.ProgramHandler;
+import org.orbit.platform.runtime.api.programs.ProgramsAndFeatures;
+import org.orbit.platform.sdk.PlatformConstants;
+import org.orbit.platform.sdk.util.OrbitTokenUtil;
+import org.orbit.spirit.model.userprograms.UserProgram;
+import org.orbit.spirit.model.userprograms.UserPrograms;
 import org.orbit.spirit.runtime.SpiritConstants;
 import org.orbit.spirit.runtime.earth.service.EarthService;
 import org.orbit.spirit.runtime.earth.service.World;
+import org.orbit.spirit.runtime.util.ModelHelper;
+import org.orbit.substance.api.SubstanceConstants;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
+import org.origin.common.util.UUIDUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EarthServiceImpl implements EarthService, LifecycleAware {
+
+	protected static Logger LOG = LoggerFactory.getLogger(EarthServiceImpl.class);
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ServiceEditPolicies wsEditPolicies;
+
+	protected List<World> worlds = new ArrayList<World>();
 
 	/**
 	 * 
@@ -45,6 +69,7 @@ public class EarthServiceImpl implements EarthService, LifecycleAware {
 		}
 
 		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		PropertyUtil.loadProperty(bundleContext, properties, SubstanceConstants.ORBIT_DFS_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, SpiritConstants.ORBIT_HOST_URL);
 		PropertyUtil.loadProperty(bundleContext, properties, SpiritConstants.EARTH__GAIA_ID);
 		PropertyUtil.loadProperty(bundleContext, properties, SpiritConstants.EARTH__ID);
@@ -87,6 +112,7 @@ public class EarthServiceImpl implements EarthService, LifecycleAware {
 		}
 
 		String indexServiceUrl = (String) configProps.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		String dfsUrl = (String) configProps.get(SubstanceConstants.ORBIT_DFS_URL);
 		String globalHostURL = (String) configProps.get(SpiritConstants.ORBIT_HOST_URL);
 		String gaiaId = (String) configProps.get(SpiritConstants.EARTH__GAIA_ID);
 		String id = (String) configProps.get(SpiritConstants.EARTH__ID);
@@ -104,6 +130,7 @@ public class EarthServiceImpl implements EarthService, LifecycleAware {
 			System.out.println("Config properties:");
 			System.out.println("-----------------------------------------------------");
 			System.out.println(InfraConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
+			System.out.println(SubstanceConstants.ORBIT_DFS_URL + " = " + dfsUrl);
 			System.out.println(SpiritConstants.ORBIT_HOST_URL + " = " + globalHostURL);
 			System.out.println(SpiritConstants.EARTH__GAIA_ID + " = " + gaiaId);
 			System.out.println(SpiritConstants.EARTH__ID + " = " + id);
@@ -211,41 +238,157 @@ public class EarthServiceImpl implements EarthService, LifecycleAware {
 		return this.wsEditPolicies;
 	}
 
-	@Override
-	public World[] getWorlds() throws ServerException {
-		return null;
+	protected void checkName(String name) {
+		if (name == null) {
+			throw new IllegalArgumentException("name is null.");
+		}
+		if (name.isEmpty()) {
+			throw new IllegalArgumentException("name is empty.");
+		}
 	}
 
 	@Override
-	public boolean worldExists(String name) throws ServerException {
+	public synchronized World[] getWorlds() throws ServerException {
+		return this.worlds.toArray(new World[this.worlds.size()]);
+	}
+
+	@Override
+	public synchronized boolean worldExists(String name) throws ServerException {
+		checkName(name);
+		for (Iterator<World> itor = this.worlds.iterator(); itor.hasNext();) {
+			World currWorld = itor.next();
+			if (name.equals(currWorld.getName())) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
-	public World getWorld(String name) throws ServerException {
+	public synchronized World getWorld(String name) throws ServerException {
+		checkName(name);
+		World world = null;
+		for (Iterator<World> itor = this.worlds.iterator(); itor.hasNext();) {
+			World currWorld = itor.next();
+			if (name.equals(currWorld.getName())) {
+				world = currWorld;
+				break;
+			}
+		}
+		return world;
+	}
+
+	@Override
+	public synchronized World createWorld(String name) throws ServerException {
+		checkName(name);
+		World world = new WorldImpl(this);
+		String id = UUIDUtil.generateBase64EncodedUUID();
+		world.setId(id);
+		world.setName(name);
 		return null;
 	}
 
 	@Override
-	public World createWorld(String name) throws ServerException {
-		return null;
-	}
+	public synchronized boolean deleteWorld(String name) throws ServerException {
+		checkName(name);
 
-	@Override
-	public boolean deleteWorld(String name) throws ServerException {
+		for (Iterator<World> itor = this.worlds.iterator(); itor.hasNext();) {
+			World currWorld = itor.next();
+			if (name.equals(currWorld.getName())) {
+				currWorld.dispose();
+				itor.remove();
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
-	public boolean join(World world, String accountId) throws ServerException {
-		return false;
+	public synchronized boolean join(World world, String accessToken) throws ServerException {
+		LOG.debug("join()");
+
+		String accountId = OrbitTokenUtil.INSTANCE.getAccountId(accessToken, PlatformConstants.TOKEN_PROVIDER__ORBIT);
+		if (accountId == null) {
+			throw new ServerException("500", "accountId is not retrieved from access token.");
+		}
+		if (world.getAccountIds().contains(accountId)) {
+			return false;
+		}
+
+		ProgramsAndFeatures programsAndFeatures = null;
+		Platform platform = PlatformRuntimeAPIActivator.getInstance().getPlatform();
+		if (platform != null) {
+			programsAndFeatures = platform.getProgramsAndFeatures();
+		}
+		if (programsAndFeatures == null) {
+			throw new ServerException("500", "IProgramsAndFeatures is null.");
+		}
+
+		// 1. User programs provisioning
+		// (1) Get the programs installed by the user.
+		UserPrograms userPrograms = null;
+		try {
+			userPrograms = ModelHelper.INSTANCE.getUserPrograms(accessToken);
+		} catch (IOException e) {
+			throw new ServerException("500", e.getMessage(), e);
+		}
+		if (userPrograms == null) {
+			throw new ServerException("500", "UserPrograms is null.");
+		}
+
+		// (2) If a program is already installed, make sure it is started.
+		// If a program is not installed, collect it.
+		List<UserProgram> userProgramsToInstall = new ArrayList<UserProgram>();
+		for (UserProgram currUserProgram : userPrograms.getChildren()) {
+			String programId = currUserProgram.getId();
+			String programVersion = currUserProgram.getVersion();
+			try {
+				ProgramHandler programHandler = programsAndFeatures.getProgramHandler(programId, programVersion);
+				if (programHandler != null) {
+					if (!programHandler.getRuntimeState().isActivated()) {
+						programHandler.activate();
+					}
+					Program program = programHandler.getProgram();
+					if (!program.getRuntimeState().isStarted()) {
+						programHandler.start();
+					}
+				}
+			} catch (ProgramException e) {
+				e.printStackTrace();
+			}
+			if (!programsAndFeatures.isInstalled(programId, programVersion)) {
+				userProgramsToInstall.add(currUserProgram);
+			}
+		}
+
+		// (3) Install and start the program, if it is not already installed in the platform.
+		for (UserProgram currUserProgramToInstall : userProgramsToInstall) {
+			String programId = currUserProgramToInstall.getId();
+			String programVersion = currUserProgramToInstall.getVersion();
+			try {
+				ProgramManifest programManifest = programsAndFeatures.install(programId, programVersion, false);
+				if (programManifest != null) {
+					LOG.debug("Program ('" + programId + "'," + programVersion + ") is installed.");
+					LOG.debug(programManifest.toString());
+				} else {
+					LOG.debug("Program ('" + programId + "'," + programVersion + ") is not installed.");
+				}
+			} catch (ProgramException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// 2. Add accountId to the world
+		world.getAccountIds().add(accountId);
+
+		return true;
 	}
 
 	@Override
-	public boolean leave(World world, String accountId) throws ServerException {
+	public synchronized boolean leave(World world, String accessToken) throws ServerException {
+		LOG.debug("leave()");
+
 		return false;
 	}
 
 }
-
-// this.accountIdToFileSystemMap.clear();

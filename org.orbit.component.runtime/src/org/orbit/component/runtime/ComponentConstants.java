@@ -223,6 +223,10 @@ public interface ComponentConstants {
 	public static String NODE_CONTROL_CONTEXT_ROOT = "node_control.context_root";
 	public static String NODE_CONTROL_HOME = "node_control.home";
 
+	// EditPolicy values
+	public static String NODE_CONTROL__EDITPOLICY_ID = "component.node_control.editpolicy";
+	public static String NODE_CONTROL__SERVICE_NAME = "component.node_control.service";
+
 	// ----------------------------------------------------------------------------------------
 	// Mission Control
 	// ----------------------------------------------------------------------------------------

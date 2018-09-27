@@ -1,6 +1,8 @@
 package org.orbit.component.webconsole.servlet.tier3.nodecontrol;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -35,6 +37,8 @@ public class NodeStartServlet extends HttpServlet {
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
 		String[] nodeIds = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
 
+		String cleanOption = ServletUtil.getParameter(request, "-clean", "");
+
 		String message = "";
 		if (machineId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
@@ -57,10 +61,15 @@ public class NodeStartServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
+				Map<String, Object> options = new HashMap<String, Object>();
+				if ("true".equalsIgnoreCase(cleanOption)) {
+					options.put("-clean", true);
+				}
+
 				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
 				for (String currNodeId : nodeIds) {
 					try {
-						boolean currSucceed = ComponentClientsUtil.NodeControl.startNode(nodeControlClient, currNodeId);
+						boolean currSucceed = ComponentClientsUtil.NodeControl.startNode(nodeControlClient, currNodeId, options);
 						if (currSucceed) {
 							hasSucceed = true;
 						} else {

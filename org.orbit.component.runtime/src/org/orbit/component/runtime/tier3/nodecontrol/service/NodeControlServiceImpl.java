@@ -347,7 +347,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	protected boolean isNodeStopping = false;
 
 	@Override
-	public synchronized boolean startNode(String id, String accessToken) throws IOException {
+	public synchronized boolean startNode(String id, String accessToken, Map<String, Object> options) throws IOException {
 		if (isNodeStarted(id, accessToken)) {
 			throw new IOException("Node with id '" + id + "' is already started.");
 		}
@@ -370,6 +370,17 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			if (node == null) {
 				LOG.error("Node with id '" + id + "' is not found.");
 				return false;
+			}
+
+			// Get options for starting the node.
+			boolean doClean = false;
+			if (options != null) {
+				Object cleanOption = options.get("clean");
+				if (cleanOption != null) {
+					if (Boolean.TRUE.equals(cleanOption) || "true".equalsIgnoreCase(cleanOption.toString())) {
+						doClean = true;
+					}
+				}
 			}
 
 			String homeLocation = getPlatformHome();
@@ -410,6 +421,9 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 
 				List<String> programArgs = new ArrayList<String>();
 				programArgs.add("-console");
+				if (doClean) {
+					programArgs.add("-clean");
+				}
 				launchConfig.setAttribute(LaunchConstants.PROGRAM_ARGUMENTS_LIST, programArgs);
 			}
 			launchConfig.setAttribute(ScriptLauncher.WORKING_DIRECTORY_LOCATION, nodeLocation);
@@ -432,7 +446,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 	}
 
 	@Override
-	public synchronized boolean stopNode(String id, String accessToken) throws IOException {
+	public synchronized boolean stopNode(String id, String accessToken, Map<String, Object> options) throws IOException {
 		if (isNodeStopped(id, accessToken)) {
 			throw new IOException("Node with id '" + id + "' is already stopped.");
 		}

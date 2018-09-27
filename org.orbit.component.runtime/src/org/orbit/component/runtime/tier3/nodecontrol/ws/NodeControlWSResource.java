@@ -68,7 +68,29 @@ public class NodeControlWSResource extends AbstractWSApplicationResource {
 	@POST
 	@Path("request")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public Response request( //
+	public Response request(@Context HttpHeaders httpHeaders, Request request) {
+		NodeControlService service = getService();
+
+		WSCommand command = service.getEditPolicies().getCommand(httpHeaders, request);
+		if (command != null) {
+			try {
+				return command.execute(request);
+
+			} catch (Exception e) {
+				String statusCode = String.valueOf(Status.INTERNAL_SERVER_ERROR.getStatusCode());
+				ErrorDTO error = handleError(e, statusCode, true);
+				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
+			}
+		} else {
+			ErrorDTO error = new ErrorDTO("Request '" + request.getRequestName() + "' is not supported.");
+			return Response.status(Status.BAD_REQUEST).entity(error).build();
+		}
+	}
+
+	@POST
+	@Path("request2")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response request2( //
 			@Context HttpServletRequest servletRequest, //
 			@Context HttpServletResponse servletResponse, //
 			@Context ServletContext servletContext, //

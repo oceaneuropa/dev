@@ -1,6 +1,8 @@
 package org.orbit.component.webconsole.servlet.tier3.nodecontrol;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -39,6 +41,8 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 		String[] nodeIds = ServletUtil.getParameterValues(request, "nodeId", EMPTY_IDS);
 		String[] idVersions = ServletUtil.getParameterValues(request, "appId_appVersion", EMPTY_IDS);
 
+		String cleanOption = ServletUtil.getParameter(request, "-clean", "");
+
 		if (machineId.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'machineId' parameter is not set.");
 		}
@@ -59,6 +63,11 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 		if (!machineId.isEmpty() && !platformId.isEmpty() && nodeIds.length > 0 && idVersions.length > 0) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
+
+				Map<String, Object> options = new HashMap<String, Object>();
+				if ("true".equalsIgnoreCase(cleanOption)) {
+					options.put("-clean", true);
+				}
 
 				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
 
@@ -82,7 +91,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 						}
 						if (doStartNode) {
 							// start current node, before installing apps on it.
-							boolean isStarted = ComponentClientsUtil.NodeControl.startNode(nodeControlClient, nodeId);
+							boolean isStarted = ComponentClientsUtil.NodeControl.startNode(nodeControlClient, nodeId, options);
 							if (!isStarted) {
 								message = MessageHelper.INSTANCE.add(message, "Cannot start node. nodeId='" + nodeId + "'.");
 								continue;

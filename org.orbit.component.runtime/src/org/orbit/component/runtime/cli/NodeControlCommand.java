@@ -1,5 +1,6 @@
 package org.orbit.component.runtime.cli;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -262,7 +263,9 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 		try {
 			NodeControlService service = getNodeControlService();
 			String accessToken = getAccessToken();
-			boolean succeed = service.startNode(id, accessToken);
+
+			Map<String, Object> options = new HashMap<String, Object>();
+			boolean succeed = service.startNode(id, accessToken, options);
 
 			if (succeed) {
 				System.out.println("Node is successfully started.");
@@ -285,7 +288,9 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 		try {
 			NodeControlService service = getNodeControlService();
 			String accessToken = getAccessToken();
-			boolean succeed = service.stopNode(id, accessToken);
+
+			Map<String, Object> options = new HashMap<String, Object>();
+			boolean succeed = service.stopNode(id, accessToken, options);
 
 			if (succeed) {
 				System.out.println("Node is successfully stopped.");

@@ -820,13 +820,14 @@ public class ComponentClientsUtil {
 		 * 
 		 * @param nodeControlClient
 		 * @param nodeId
+		 * @param options
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean startNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
+		public boolean startNode(NodeControlClient nodeControlClient, String nodeId, Map<String, Object> options) throws ClientException {
 			boolean succeed = false;
 			if (nodeControlClient != null && nodeId != null) {
-				succeed = nodeControlClient.startNode(nodeId);
+				succeed = nodeControlClient.startNode(nodeId, options);
 			}
 			return succeed;
 		}
@@ -837,15 +838,16 @@ public class ComponentClientsUtil {
 		 * @param accessToken
 		 * @param parentPlatformId
 		 * @param nodeId
+		 * @param options
 		 * @return
 		 * @throws ClientException
 		 * @throws IOException
 		 */
-		public boolean startNode(NodeControlClientResolver nodeControlClientResolver, String accessToken, String parentPlatformId, String nodeId) throws ClientException, IOException {
+		public boolean startNode(NodeControlClientResolver nodeControlClientResolver, String accessToken, String parentPlatformId, String nodeId, Map<String, Object> options) throws ClientException, IOException {
 			boolean succeed = false;
 			NodeControlClient nodeControlClient = nodeControlClientResolver.resolve(accessToken, parentPlatformId);
 			if (nodeControlClient != null && nodeId != null) {
-				succeed = nodeControlClient.startNode(nodeId);
+				succeed = nodeControlClient.startNode(nodeId, options);
 			}
 			return succeed;
 		}
@@ -854,13 +856,14 @@ public class ComponentClientsUtil {
 		 * 
 		 * @param nodeControlClient
 		 * @param nodeId
+		 * @param options
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean stopNode(NodeControlClient nodeControlClient, String nodeId) throws ClientException {
+		public boolean stopNode(NodeControlClient nodeControlClient, String nodeId, Map<String, Object> options) throws ClientException {
 			boolean succeed = false;
 			if (nodeControlClient != null && nodeId != null) {
-				succeed = nodeControlClient.stopNode(nodeId);
+				succeed = nodeControlClient.stopNode(nodeId, options);
 			}
 			return succeed;
 		}

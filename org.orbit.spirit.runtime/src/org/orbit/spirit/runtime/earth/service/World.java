@@ -6,11 +6,7 @@ public interface World {
 
 	String getGaiaId();
 
-	void setGaiaId(String gaiaId);
-
 	String getEarthId();
-
-	void setEarthId(String earthId);
 
 	String getId();
 
@@ -22,4 +18,5 @@ public interface World {
 
 	List<String> getAccountIds();
 
+	void dispose();
 }

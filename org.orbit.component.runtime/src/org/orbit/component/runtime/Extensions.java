@@ -50,6 +50,18 @@ import org.orbit.component.runtime.tier1.session.ws.OAuth2ServiceIndexTimerFacto
 import org.orbit.component.runtime.tier2.appstore.ws.AppStoreServiceIndexTimerFactory;
 import org.orbit.component.runtime.tier3.domain.ws.DomainServiceTimerFactory;
 import org.orbit.component.runtime.tier3.nodecontrol.ws.NodeControlServiceTimerFactory;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeAttributeAddWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeAttributeDeleteWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeAttributeUpdateWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeCreateWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeDeleteWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeExistWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeGetWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeListWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeStartWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeStatusWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeStopWSCommand;
+import org.orbit.component.runtime.tier3.nodecontrol.ws.command.NodeUpdateWSCommand;
 import org.orbit.component.runtime.tier4.missioncontrol.ws.MissionControlIndexTimeractory;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -59,6 +71,7 @@ import org.origin.common.extensions.InterfaceDescription;
 import org.origin.common.extensions.ProgramExtensions;
 import org.origin.common.extensions.condition.ConditionFactory;
 import org.origin.common.extensions.condition.IPropertyTester;
+import org.origin.common.rest.editpolicy.WSCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,6 +103,8 @@ public class Extensions extends ProgramExtensions {
 
 		createCommandExtensions();
 		createIndexProvideExtensions();
+
+		createNodeControlEditPolicyCommandExtensions();
 	}
 
 	protected void createServiceActivatorExtensions1() {
@@ -381,6 +396,95 @@ public class Extensions extends ProgramExtensions {
 		Extension extension41 = new Extension(typeId, ComponentConstants.MISSION_CONTROL_INDEXER_ID, "Mission Control Service Index Provider");
 		extension41.addInterface(factoryClass, MissionControlIndexTimeractory.class);
 		addExtension(extension41);
+	}
+
+	protected void createNodeControlEditPolicyCommandExtensions() {
+		String extensionTypeId = WSCommand.EXTENSION_TYPE_ID;
+		String serviceName = ComponentConstants.NODE_CONTROL__SERVICE_NAME;
+
+		Extension extension1 = new Extension(extensionTypeId, NodeListWSCommand.ID);
+		extension1.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc1 = new InterfaceDescription(WSCommand.class, NodeListWSCommand.class);
+		desc1.setSingleton(false);
+		extension1.addInterface(desc1);
+		addExtension(extension1);
+
+		Extension extension2 = new Extension(extensionTypeId, NodeGetWSCommand.ID);
+		extension2.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc2 = new InterfaceDescription(WSCommand.class, NodeGetWSCommand.class);
+		desc2.setSingleton(false);
+		extension2.addInterface(desc2);
+		addExtension(extension2);
+
+		Extension extension3 = new Extension(extensionTypeId, NodeExistWSCommand.ID);
+		extension3.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc3 = new InterfaceDescription(WSCommand.class, NodeExistWSCommand.class);
+		desc3.setSingleton(false);
+		extension3.addInterface(desc3);
+		addExtension(extension3);
+
+		Extension extension4 = new Extension(extensionTypeId, NodeCreateWSCommand.ID);
+		extension4.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc4 = new InterfaceDescription(WSCommand.class, NodeCreateWSCommand.class);
+		desc4.setSingleton(false);
+		extension4.addInterface(desc4);
+		addExtension(extension4);
+
+		Extension extension5 = new Extension(extensionTypeId, NodeUpdateWSCommand.ID);
+		extension5.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc5 = new InterfaceDescription(WSCommand.class, NodeUpdateWSCommand.class);
+		desc5.setSingleton(false);
+		extension5.addInterface(desc5);
+		addExtension(extension5);
+
+		Extension extension6 = new Extension(extensionTypeId, NodeDeleteWSCommand.ID);
+		extension6.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc6 = new InterfaceDescription(WSCommand.class, NodeDeleteWSCommand.class);
+		desc6.setSingleton(false);
+		extension6.addInterface(desc6);
+		addExtension(extension6);
+
+		Extension extension7 = new Extension(extensionTypeId, NodeStartWSCommand.ID);
+		extension7.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc7 = new InterfaceDescription(WSCommand.class, NodeStartWSCommand.class);
+		desc7.setSingleton(false);
+		extension7.addInterface(desc7);
+		addExtension(extension7);
+
+		Extension extension8 = new Extension(extensionTypeId, NodeStopWSCommand.ID);
+		extension8.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc8 = new InterfaceDescription(WSCommand.class, NodeStopWSCommand.class);
+		desc8.setSingleton(false);
+		extension8.addInterface(desc8);
+		addExtension(extension8);
+
+		Extension extension9 = new Extension(extensionTypeId, NodeStatusWSCommand.ID);
+		extension9.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc9 = new InterfaceDescription(WSCommand.class, NodeStatusWSCommand.class);
+		desc9.setSingleton(false);
+		extension9.addInterface(desc9);
+		addExtension(extension9);
+
+		Extension extension10 = new Extension(extensionTypeId, NodeAttributeAddWSCommand.ID);
+		extension10.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc10 = new InterfaceDescription(WSCommand.class, NodeAttributeAddWSCommand.class);
+		desc10.setSingleton(false);
+		extension10.addInterface(desc10);
+		addExtension(extension10);
+
+		Extension extension11 = new Extension(extensionTypeId, NodeAttributeUpdateWSCommand.ID);
+		extension11.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc11 = new InterfaceDescription(WSCommand.class, NodeAttributeUpdateWSCommand.class);
+		desc11.setSingleton(false);
+		extension11.addInterface(desc11);
+		addExtension(extension11);
+
+		Extension extension12 = new Extension(extensionTypeId, NodeAttributeDeleteWSCommand.ID);
+		extension12.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc12 = new InterfaceDescription(WSCommand.class, NodeAttributeDeleteWSCommand.class);
+		desc12.setSingleton(false);
+		extension12.addInterface(desc12);
+		addExtension(extension12);
 	}
 
 }

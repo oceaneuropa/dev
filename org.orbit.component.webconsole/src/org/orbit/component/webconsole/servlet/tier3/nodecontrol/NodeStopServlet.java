@@ -1,6 +1,8 @@
 package org.orbit.component.webconsole.servlet.tier3.nodecontrol;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -57,10 +59,12 @@ public class NodeStopServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
+				Map<String, Object> options = new HashMap<String, Object>();
+
 				NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
 				for (String currNodeId : nodeIds) {
 					try {
-						boolean currSucceed = ComponentClientsUtil.NodeControl.stopNode(nodeControlClient, currNodeId);
+						boolean currSucceed = ComponentClientsUtil.NodeControl.stopNode(nodeControlClient, currNodeId, options);
 						if (currSucceed) {
 							hasSucceed = true;
 						} else {

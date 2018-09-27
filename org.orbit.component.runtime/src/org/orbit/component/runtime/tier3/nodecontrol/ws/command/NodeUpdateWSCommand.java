@@ -6,28 +6,30 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.orbit.component.model.RequestConstants;
+import org.orbit.component.runtime.common.ws.AbstractOrbitCommand;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.origin.common.resources.node.INode;
 import org.origin.common.resources.node.NodeDescription;
-import org.origin.common.rest.editpolicy.AbstractWSCommand;
+import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.util.RequestUtil;
 
-public class NodeUpdateWSCommand extends AbstractWSCommand {
+public class NodeUpdateWSCommand extends AbstractOrbitCommand<NodeControlService> implements WSCommand {
 
-	protected NodeControlService service;
+	public static String ID = "org.orbit.component.runtime.nodecontrol.NodeUpdateWSCommand";
 
-	/**
-	 * 
-	 * @param service
-	 */
-	public NodeUpdateWSCommand(NodeControlService service) {
-		this.service = service;
+	public NodeUpdateWSCommand() {
+		super(NodeControlService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
+		String requestName = request.getRequestName();
+		if (RequestConstants.UPDATE_NODE.equalsIgnoreCase(requestName)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -45,7 +47,7 @@ public class NodeUpdateWSCommand extends AbstractWSCommand {
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		INode node = this.service.getNode(id);
+		INode node = getService().getNode(id);
 		if (node == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Node with id '" + id + "' cannot be found.", null);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();

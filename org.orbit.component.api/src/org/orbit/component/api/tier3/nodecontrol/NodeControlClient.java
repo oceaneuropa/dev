@@ -1,5 +1,7 @@
 package org.orbit.component.api.tier3.nodecontrol;
 
+import java.util.Map;
+
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClient;
 
@@ -17,9 +19,9 @@ public interface NodeControlClient extends ServiceClient {
 
 	boolean deleteNode(String id) throws ClientException;
 
-	boolean startNode(String id) throws ClientException;
+	boolean startNode(String id, Map<String, Object> options) throws ClientException;
 
-	boolean stopNode(String id) throws ClientException;
+	boolean stopNode(String id, Map<String, Object> options) throws ClientException;
 
 	boolean addNodeAttribute(String id, String name, Object value) throws ClientException;
 

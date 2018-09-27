@@ -1,5 +1,6 @@
 package org.orbit.component.connector.tier3.nodecontrol;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.ws.rs.core.Response;
@@ -152,9 +153,19 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 	}
 
 	@Override
-	public boolean startNode(String id) throws ClientException {
+	public boolean startNode(String id, Map<String, Object> options) throws ClientException {
 		Request request = new Request(RequestConstants.START_NODE);
 		request.setParameter("id", id);
+
+		if (options != null) {
+			for (Iterator<String> itor = options.keySet().iterator(); itor.hasNext();) {
+				String optionName = itor.next();
+				Object optionValue = options.get(optionName);
+				if (optionName != null && optionValue != null) {
+					request.setParameter(optionName, optionValue);
+				}
+			}
+		}
 
 		boolean succeed = false;
 		Response response = null;
@@ -170,9 +181,19 @@ public class NodeControlClientImpl extends ServiceClientImpl<NodeControlClient, 
 	}
 
 	@Override
-	public boolean stopNode(String id) throws ClientException {
+	public boolean stopNode(String id, Map<String, Object> options) throws ClientException {
 		Request request = new Request(RequestConstants.STOP_NODE);
 		request.setParameter("id", id);
+
+		if (options != null) {
+			for (Iterator<String> itor = options.keySet().iterator(); itor.hasNext();) {
+				String optionName = itor.next();
+				Object optionValue = options.get(optionName);
+				if (optionName != null && optionValue != null) {
+					request.setParameter(optionName, optionValue);
+				}
+			}
+		}
 
 		boolean succeed = false;
 		Response response = null;

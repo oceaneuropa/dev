@@ -6,22 +6,28 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.orbit.component.model.RequestConstants;
+import org.orbit.component.runtime.common.ws.AbstractOrbitCommand;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
 import org.origin.common.resources.node.INode;
-import org.origin.common.rest.editpolicy.AbstractWSCommand;
+import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class NodeCreateWSCommand extends AbstractWSCommand {
+public class NodeCreateWSCommand extends AbstractOrbitCommand<NodeControlService> implements WSCommand {
 
-	protected NodeControlService service;
+	public static String ID = "org.orbit.component.runtime.nodecontrol.NodeCreateWSCommand";
 
-	public NodeCreateWSCommand(NodeControlService service) {
-		this.service = service;
+	public NodeCreateWSCommand() {
+		super(NodeControlService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
+		String requestName = request.getRequestName();
+		if (RequestConstants.CREATE_NODE.equalsIgnoreCase(requestName)) {
+			return true;
+		}
 		return false;
 	}
 
@@ -48,7 +54,7 @@ public class NodeCreateWSCommand extends AbstractWSCommand {
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		INode node = this.service.createNode(id, typeId, name);
+		INode node = getService().createNode(id, typeId, name);
 		boolean succeed = (node != null) ? true : false;
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

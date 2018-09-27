@@ -6,27 +6,35 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.orbit.component.model.RequestConstants;
+import org.orbit.component.runtime.common.ws.AbstractOrbitCommand;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
-import org.origin.common.rest.editpolicy.AbstractWSCommand;
+import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class NodeStartWSCommand extends AbstractWSCommand {
+public class NodeStartWSCommand extends AbstractOrbitCommand<NodeControlService> implements WSCommand {
 
-	protected NodeControlService service;
+	public static String ID = "org.orbit.component.runtime.nodecontrol.NodeStartWSCommand";
 
-	public NodeStartWSCommand(NodeControlService service) {
-		this.service = service;
+	public NodeStartWSCommand() {
+		super(NodeControlService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
+		String requestName = request.getRequestName();
+		if (RequestConstants.START_NODE.equalsIgnoreCase(requestName)) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
 	public Response execute(Request request) throws Exception {
 		String id = (request.getParameter("id") instanceof String) ? (String) request.getParameter("id") : null;
+		String clean = (request.getParameter("-clean") instanceof String) ? (String) request.getParameter("-clean") : null;
+
 		if (id == null || id.isEmpty()) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "'id' parameter is not set.", null);
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
@@ -39,8 +47,13 @@ public class NodeStartWSCommand extends AbstractWSCommand {
 		}
 
 		String accessToken = null;
-		
-		boolean succeed = this.service.startNode(id, accessToken);
+
+		Map<String, Object> options = new HashMap<String, Object>();
+		if ("true".equalsIgnoreCase(clean)) {
+			options.put("clean", Boolean.TRUE);
+		}
+
+		boolean succeed = this.service.startNode(id, accessToken, options);
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("succeed", succeed);

@@ -3,34 +3,32 @@ package org.orbit.spirit.runtime.earth.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.orbit.spirit.runtime.earth.service.EarthService;
 import org.orbit.spirit.runtime.earth.service.World;
 
 public class WorldImpl implements World {
 
-	protected String gaiaId;
-	protected String earthId;
+	protected EarthService earth;
 	protected String id;
 	protected String name;
 	protected List<String> accountIds = new ArrayList<String>();
 
-	@Override
-	public String getGaiaId() {
-		return this.gaiaId;
+	/**
+	 * 
+	 * @param earth
+	 */
+	public WorldImpl(EarthService earth) {
+		this.earth = earth;
 	}
 
 	@Override
-	public void setGaiaId(String gaiaId) {
-		this.gaiaId = gaiaId;
+	public String getGaiaId() {
+		return this.earth.getGaiaId();
 	}
 
 	@Override
 	public String getEarthId() {
-		return this.earthId;
-	}
-
-	@Override
-	public void setEarthId(String earthId) {
-		this.earthId = earthId;
+		return this.earth.getEarthId();
 	}
 
 	@Override
@@ -56,6 +54,11 @@ public class WorldImpl implements World {
 	@Override
 	public List<String> getAccountIds() {
 		return this.accountIds;
+	}
+
+	@Override
+	public void dispose() {
+
 	}
 
 }

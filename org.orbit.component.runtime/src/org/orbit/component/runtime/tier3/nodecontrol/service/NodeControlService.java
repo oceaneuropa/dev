@@ -2,6 +2,7 @@ package org.orbit.component.runtime.tier3.nodecontrol.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.origin.common.resources.IWorkspace;
 import org.origin.common.resources.node.INode;
@@ -36,9 +37,9 @@ public interface NodeControlService extends WebServiceAware {
 
 	boolean deleteNode(String id) throws IOException;
 
-	boolean startNode(String id, String accessToken) throws IOException;
+	boolean startNode(String id, String accessToken, Map<String, Object> options) throws IOException;
 
-	boolean stopNode(String id, String accessToken) throws IOException;
+	boolean stopNode(String id, String accessToken, Map<String, Object> options) throws IOException;
 
 	boolean isNodeStarting(String id) throws IOException;
 
