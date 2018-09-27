@@ -55,7 +55,7 @@
 		<div class="top_tools_div01">
 			<a id="action.addNode" class="button02">Create</a>
 			<a id="action.deleteNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodedelete"%>" class="button02">Delete</a>
-			<a id="action.startNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestart"%>" class="button02">Start</a> 
+			<a id="actionStartNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestart"%>" class="button02">Start</a> 
 			<a id="action.stopNodes" targetFormId="main_list" targetFormUrl="<%=contextRoot + "/domain/nodestop"%>" class="button02">Stop</a> 
 			<a id="actionInstallPrograms" class="button02">Batch Install</a> 
 			<a id="actionUninstallPrograms" class="button02">Batch Uninstall</a>
@@ -196,6 +196,18 @@
 			<a id="cancelChangeNode" class="button02b" href="javascript:document.getElementById('update_form').reset();">Cancel</a>
 		</div>
 	</form>
+	</dialog>
+
+	<dialog id="startNodesDialog">
+	<div class="dialog_title_div01" id="startNodesDialogTitleDiv">Start Nodes</div>
+	<div class="dialog_message_div01" id="startNodesDialogMessageDiv">Are you sure you want to start selected nodes?</div>
+	<div class="dialog_main_div01">
+		<input type="checkbox" id="startNodesDialog_option_clean" name="-clean" value="true"/> <label>-clean</label>
+	</div>
+	<div class="dialog_button_div01">
+		<a id="okStartNodes" class="button02">OK</a> 
+		<a id="cancelStartNodes" class="button02b">Cancel</a>
+	</div>
 	</dialog>
 
 	<dialog id="startNodeDialog">

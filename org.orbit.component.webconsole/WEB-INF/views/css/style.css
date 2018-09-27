@@ -186,7 +186,7 @@ th {
 /*---------------------------------------------------------------
 Input
 ---------------------------------------------------------------*/
-input {
+input[type=text] {
 	width: 100%;
 }
 
@@ -226,11 +226,24 @@ dialog.dialog-scale {
 	line-height: 20px;
 }
 
+.dialog_message_div01 {
+	padding-left: 5px;
+	padding-right: 5px;
+	min-width: 400px;
+	min-height: 30px;
+	display: block;
+}
+
 .dialog_main_div01 {
 	padding-left: 5px;
 	padding-right: 5px;
 	min-width: 400px;
 	min-height: 80px;
+	display: block;
+}
+
+.dialog_main_div01 label {
+	display: inline;
 }
 
 .dialog_table01 {

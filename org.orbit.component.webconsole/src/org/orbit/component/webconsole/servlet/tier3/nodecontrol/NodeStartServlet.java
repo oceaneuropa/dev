@@ -37,7 +37,7 @@ public class NodeStartServlet extends HttpServlet {
 		String platformId = ServletUtil.getParameter(request, "platformId", "");
 		String[] nodeIds = ServletUtil.getParameterValues(request, "id", EMPTY_IDS);
 
-		String cleanOption = ServletUtil.getParameter(request, "-clean", "");
+		String clean = ServletUtil.getParameter(request, "-clean", "");
 
 		String message = "";
 		if (machineId.isEmpty()) {
@@ -62,7 +62,7 @@ public class NodeStartServlet extends HttpServlet {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				Map<String, Object> options = new HashMap<String, Object>();
-				if ("true".equalsIgnoreCase(cleanOption)) {
+				if ("true".equalsIgnoreCase(clean)) {
 					options.put("-clean", true);
 				}
 

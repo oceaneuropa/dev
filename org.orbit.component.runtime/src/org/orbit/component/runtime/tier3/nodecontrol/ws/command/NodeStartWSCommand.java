@@ -33,7 +33,7 @@ public class NodeStartWSCommand extends AbstractOrbitCommand<NodeControlService>
 	@Override
 	public Response execute(Request request) throws Exception {
 		String id = (request.getParameter("id") instanceof String) ? (String) request.getParameter("id") : null;
-		String clean = (request.getParameter("-clean") instanceof String) ? (String) request.getParameter("-clean") : null;
+		Object clean = request.getParameter("-clean");
 
 		if (id == null || id.isEmpty()) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "'id' parameter is not set.", null);
@@ -49,8 +49,10 @@ public class NodeStartWSCommand extends AbstractOrbitCommand<NodeControlService>
 		String accessToken = null;
 
 		Map<String, Object> options = new HashMap<String, Object>();
-		if ("true".equalsIgnoreCase(clean)) {
-			options.put("clean", Boolean.TRUE);
+		if (clean != null) {
+			if (Boolean.TRUE.equals(clean) || "true".equalsIgnoreCase(clean.toString())) {
+				options.put("clean", Boolean.TRUE);
+			}
 		}
 
 		boolean succeed = this.service.startNode(id, accessToken, options);

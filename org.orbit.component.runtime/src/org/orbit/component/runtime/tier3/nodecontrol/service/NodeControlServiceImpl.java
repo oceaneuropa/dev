@@ -375,11 +375,8 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			// Get options for starting the node.
 			boolean doClean = false;
 			if (options != null) {
-				Object cleanOption = options.get("clean");
-				if (cleanOption != null) {
-					if (Boolean.TRUE.equals(cleanOption) || "true".equalsIgnoreCase(cleanOption.toString())) {
-						doClean = true;
-					}
+				if (Boolean.TRUE.equals(options.get("clean"))) {
+					doClean = true;
 				}
 			}
 

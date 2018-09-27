@@ -164,6 +164,32 @@ function stopNodes(formId, actionURL) {
 	document.getElementById('submitNodesDialog').showModal();
 }
 
+
+$(document).on("click", "#actionStartNodes", function() {
+	document.getElementById('startNodesDialog').showModal();
+});
+$(document).on("click", "#okStartNodes", function() {
+	var actionURL = document.getElementById('actionStartNodes').getAttribute('targetFormUrl');
+	var form = document.getElementById('main_list');
+	form.setAttribute("action", actionURL);
+
+	if (document.getElementById('startNodesDialog_option_clean').checked) {
+		var cleanField = document.createElement("input");
+		cleanField.setAttribute("type", "hidden");
+		cleanField.setAttribute("name", "-clean");
+		cleanField.setAttribute("value", "true");
+		form.appendChild(cleanField);
+	}
+
+	form.submit();
+});
+$(document).on("click", "#cancelStartNodes", function() {
+	// href="javascript:document.getElementById('upload_form').reset();"
+	document.getElementById('main_list').reset();
+	document.getElementById('startNodesDialog').close();
+});
+
+
 //-----------------------------------------------------------------------
 // Install programs
 //-----------------------------------------------------------------------
@@ -285,11 +311,11 @@ $(document).on("click", "#cancelUninstallPrograms", function() {
 	});
 
 	// add action.startsNodes click listener
-	document.getElementById('action.startNodes').addEventListener('click', function() {
-		var formId = document.getElementById('action.startNodes').getAttribute('targetFormId');
-		var url = document.getElementById('action.startNodes').getAttribute('targetFormUrl');
-		startNodes(formId, url);
-	});
+//	document.getElementById('action.startNodes').addEventListener('click', function() {
+//		var formId = document.getElementById('action.startNodes').getAttribute('targetFormId');
+//		var url = document.getElementById('action.startNodes').getAttribute('targetFormUrl');
+//		startNodes(formId, url);
+//	});
 
 	// add action.stopNodes click listener
 	document.getElementById('action.stopNodes').addEventListener('click', function() {
