@@ -47,7 +47,8 @@ public class NodeStartServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "'platformId' parameter is not set.");
 		}
 		if (nodeIds.length == 0) {
-			message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
+			// message = MessageHelper.INSTANCE.add(message, "'id' parameter is not set.");
+			message = MessageHelper.INSTANCE.add(message, "Please select nodes to start.");
 		}
 
 		// ---------------------------------------------------------------

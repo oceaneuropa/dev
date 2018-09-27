@@ -186,6 +186,7 @@ $(document).on("click", "#okStartNodes", function() {
 $(document).on("click", "#cancelStartNodes", function() {
 	// href="javascript:document.getElementById('upload_form').reset();"
 	document.getElementById('main_list').reset();
+	document.getElementById('startNodesDialog_option_clean').checked = false;
 	document.getElementById('startNodesDialog').close();
 });
 
