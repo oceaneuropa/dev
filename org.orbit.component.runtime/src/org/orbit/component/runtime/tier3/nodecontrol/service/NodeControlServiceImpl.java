@@ -448,10 +448,10 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			throw new IOException("Node with id '" + id + "' is already stopped.");
 		}
 		if (isNodeStopping(id)) {
-			throw new IOException("Node with id '" + id + "' is being stopped.");
+			// throw new IOException("Node with id '" + id + "' is being stopped.");
 		}
 		if (isNodeStarting(id)) {
-			throw new IOException("Node with id '" + id + "' is being started.");
+			// throw new IOException("Node with id '" + id + "' is being started.");
 		}
 
 		try {

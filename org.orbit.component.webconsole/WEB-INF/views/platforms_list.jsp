@@ -62,19 +62,22 @@
 			<form id="main_list" method="post" action="<%=contextRoot + "/domain/platformdelete"%>">
 				<input type="hidden" name="machineId" value="<%=machineId%>">
 				<tr>
-					<th class="th1" width="12"></th>
-					<th class="th1" width="100">Id (Platform Id)</th>
-					<th class="th1" width="100">Name</th>
-					<th class="th1" width="100">URL</th>
-					<th class="th1" width="100">Platform Home</th>
-					<th class="th1" width="100">Status</th>
-					<th class="th1" width="200">Actions</th>
+					<th class="th1" width="12">
+						<input type="checkbox" onClick="toggleSelection(this, 'id')" />
+					</th>
+					<th class="th1" width="120">JVM</th>
+					<th class="th1" width="80">Id</th>
+					<th class="th1" width="80">Name</th>
+					<th class="th1" width="80">URL</th>
+					<th class="th1" width="80">Platform Home</th>
+					<th class="th1" width="40">Status</th>
+					<th class="th1" width="150">Actions</th>
 				</tr>
 				<%
 					if (platformConfigs.length == 0) {
 				%>
 				<tr>
-					<td colspan="7">(n/a)</td>
+					<td colspan="8" class="td2">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -119,9 +122,25 @@
 									hasNodeControl = true;
 								}
 							}
+
+							String jvmName = null;
+							String pid = null;
+							if (platformConfig.getRuntimeProperties().containsKey("jvm_name")) {
+								jvmName = (String) platformConfig.getRuntimeProperties().get("jvm_name");	
+							}
+							if (platformConfig.getRuntimeProperties().containsKey("pid")) {
+								pid = (String) platformConfig.getRuntimeProperties().get("pid");	
+							}
+							if (jvmName == null) {
+								jvmName = "";
+							}
+							if (pid == null) {
+								pid = "";
+							}
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
+					<td class="td1"><%=jvmName%></td>
 					<td class="td1"><%=id%></td>
 					<td class="td1"><%=name%></td>
 					<td class="td2"><%=currUrl%></td>
@@ -135,7 +154,6 @@
 						<% } else {%>
 							<a class="action01b">Nodes</a>
 						<% }%>
-						<!-- | <a class="action01" href="javascript:deletePlatform('<%=contextRoot + "/domain/platformdelete"%>', '<%=machineId%>', '<%=id%>')">Delete</a> -->
 					</td>
 				</tr>
 				<%

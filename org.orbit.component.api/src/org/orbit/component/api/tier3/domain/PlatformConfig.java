@@ -1,5 +1,7 @@
 package org.orbit.component.api.tier3.domain;
 
+import java.util.Map;
+
 import org.orbit.component.api.RuntimeStatus;
 
 /**
@@ -21,5 +23,7 @@ public interface PlatformConfig {
 	String getContextRoot();
 
 	RuntimeStatus getRuntimeStatus();
+
+	Map<String, Object> getRuntimeProperties();
 
 }

@@ -17,4 +17,6 @@ public interface NodeInfo {
 
 	RuntimeStatus getRuntimeStatus();
 
+	Map<String, Object> getRuntimeProperties();
+
 }

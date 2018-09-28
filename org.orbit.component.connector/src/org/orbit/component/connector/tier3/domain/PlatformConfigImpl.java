@@ -1,5 +1,8 @@
 package org.orbit.component.connector.tier3.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.orbit.component.api.RuntimeStatus;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.connector.util.RuntimeStatusImpl;
@@ -12,7 +15,9 @@ public class PlatformConfigImpl implements PlatformConfig {
 	protected String home;
 	protected String hostURL;
 	protected String contextRoot;
-	protected RuntimeStatus status = new RuntimeStatusImpl();
+
+	protected RuntimeStatus runtimeStatus = new RuntimeStatusImpl();
+	protected Map<String, Object> runtimeProperties = new HashMap<String, Object>();
 
 	public PlatformConfigImpl() {
 	}
@@ -67,12 +72,17 @@ public class PlatformConfigImpl implements PlatformConfig {
 
 	@Override
 	public RuntimeStatus getRuntimeStatus() {
-		return this.status;
+		return this.runtimeStatus;
+	}
+
+	@Override
+	public Map<String, Object> getRuntimeProperties() {
+		return this.runtimeProperties;
 	}
 
 	@Override
 	public String toString() {
-		return "TransferAgentConfigImpl [id=" + id + ", name=" + name + ", home=" + home + ", hostURL=" + hostURL + ", contextRoot=" + contextRoot + "]";
+		return "PlatformConfigImpl [id=" + id + ", name=" + name + ", home=" + home + ", hostURL=" + hostURL + ", contextRoot=" + contextRoot + "]";
 	}
 
 }

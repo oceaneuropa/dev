@@ -18,12 +18,15 @@ import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
+import org.orbit.platform.api.PlatformMetadata;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.util.ServletUtil;
@@ -70,17 +73,36 @@ public class PlatformListServlet extends HttpServlet {
 				platformConfigs = ComponentClientsUtil.DomainControl.getPlatformConfigs(domainServiceUrl, accessToken, machineId);
 
 				// Get index items for platforms
-				platformIdToIndexItemMap = InfraClientsUtil.Indexes.getPlatformIdToIndexItem(indexServiceUrl, accessToken, null, PlatformConstants.PLATFORM_TYPE__SERVER);
+				platformIdToIndexItemMap = InfraClientsUtil.Indexes.getPlatformIdToIndexItem(indexServiceUrl, accessToken, null, PlatformConstants.PLATFORM_TYPE__SERVER, PlatformConstants.PLATFORM_TYPE__NODE);
 
 				if (platformConfigs != null) {
 					for (PlatformConfig platformConfig : platformConfigs) {
 						String platformId = platformConfig.getId();
 						boolean isOnline = false;
 						String runtimeState = "";
+
 						IndexItem indexItem = platformIdToIndexItemMap.get(platformId);
 						if (indexItem != null) {
 							isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
+
+							if (isOnline) {
+								try {
+									PlatformClient nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, indexItem);
+									if (nodePlatformClient != null) {
+										PlatformMetadata platformMetadata = nodePlatformClient.getMetadata();
+										if (platformMetadata != null) {
+											String jvmName = platformMetadata.getJvmName();
+											String pid = platformMetadata.getPid();
+
+											platformConfig.getRuntimeProperties().put("jvm_name", jvmName);
+											platformConfig.getRuntimeProperties().put("pid", pid);
+										}
+									}
+								} catch (Exception e) {
+									// message = MessageHelper.INSTANCE.add(message, e.getMessage());
+								}
+							}
 						}
 						platformConfig.getRuntimeStatus().setOnline(isOnline);
 						platformConfig.getRuntimeStatus().setRuntimeState(runtimeState);

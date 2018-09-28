@@ -14,7 +14,9 @@ public class NodeInfoImpl implements NodeInfo {
 	protected String name;
 	protected URI uri;
 	protected Map<String, Object> attributes;
-	protected RuntimeStatus status = new RuntimeStatusImpl();
+
+	protected RuntimeStatus runtimeStatus = new RuntimeStatusImpl();
+	protected Map<String, Object> runtimeProperties = new HashMap<String, Object>();
 
 	@Override
 	public String getId() {
@@ -57,7 +59,17 @@ public class NodeInfoImpl implements NodeInfo {
 
 	@Override
 	public RuntimeStatus getRuntimeStatus() {
-		return this.status;
+		return this.runtimeStatus;
+	}
+
+	@Override
+	public Map<String, Object> getRuntimeProperties() {
+		return this.runtimeProperties;
+	}
+
+	@Override
+	public String toString() {
+		return "NodeInfoImpl [id=" + id + ", name=" + name + ", uri=" + uri + "]";
 	}
 
 }

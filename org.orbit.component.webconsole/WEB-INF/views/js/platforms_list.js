@@ -1,3 +1,13 @@
+/*
+ * https://stackoverflow.com/questions/386281/how-to-implement-select-all-check-box-in-html
+ */
+function toggleSelection(source, checkboxesName) {
+	var checkboxes = document.getElementsByName(checkboxesName);
+	var n = checkboxes.length;
+	for (var i = 0; i < n; i++) {
+		checkboxes[i].checked = source.checked;
+	}
+}
 
 function addPlatform() {
 	document.getElementById('newPlatformDialog').showModal();

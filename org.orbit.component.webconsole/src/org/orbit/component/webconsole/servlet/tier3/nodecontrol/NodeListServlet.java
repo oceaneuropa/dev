@@ -18,11 +18,14 @@ import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
 import org.orbit.component.webconsole.util.DefaultNodeControlClientResolver;
 import org.orbit.component.webconsole.util.MessageHelper;
+import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
+import org.orbit.platform.api.PlatformMetadata;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.util.ServletUtil;
 
@@ -71,27 +74,47 @@ public class NodeListServlet extends HttpServlet {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				machineConfig = ComponentClientsUtil.DomainControl.getMachineConfig(domainServiceUrl, accessToken, machineId);
-
 				platformConfig = ComponentClientsUtil.DomainControl.getPlatformConfig(domainServiceUrl, accessToken, machineId, platformId);
 
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver(indexServiceUrl);
-				// NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);
 				nodeInfos = ComponentClientsUtil.NodeControl.getNodes(nodeControlClientResolver, accessToken, platformId);
 
 				// Get index items for platforms with type "node" and parent platform id equals the platformId
 				if (nodeInfos != null) {
-					nodeIdToIndexItemMap = InfraClientsUtil.Indexes.getPlatformIdToIndexItem(indexServiceUrl, accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE);
+					nodeIdToIndexItemMap = InfraClientsUtil.Indexes.getPlatformIdToIndexItem(indexServiceUrl, accessToken, platformId, PlatformConstants.PLATFORM_TYPE__NODE, PlatformConstants.PLATFORM_TYPE__SERVER);
+
 					for (NodeInfo nodeInfo : nodeInfos) {
 						String nodeId = nodeInfo.getId();
 						boolean isOnline = false;
 						String runtimeState = "";
+
 						IndexItem indexItem = nodeIdToIndexItemMap.get(nodeId);
+
 						if (indexItem != null) {
 							isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
 							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
+
+							if (isOnline) {
+								try {
+									PlatformClient nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, indexItem);
+									if (nodePlatformClient != null) {
+										PlatformMetadata platformMetadata = nodePlatformClient.getMetadata();
+										if (platformMetadata != null) {
+											String jvmName = platformMetadata.getJvmName();
+											String pid = platformMetadata.getPid();
+
+											nodeInfo.getRuntimeProperties().put("jvm_name", jvmName);
+											nodeInfo.getRuntimeProperties().put("pid", pid);
+										}
+									}
+								} catch (Exception e) {
+									// message = MessageHelper.INSTANCE.add(message, e.getMessage());
+								}
+							}
 						}
 						nodeInfo.getRuntimeStatus().setOnline(isOnline);
 						nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);
+
 					}
 				}
 
@@ -120,6 +143,9 @@ public class NodeListServlet extends HttpServlet {
 			request.setAttribute("nodeIdToIndexItemMap", nodeIdToIndexItemMap);
 		}
 
+		// String PID = ManagementFactory.getRuntimeMXBean().getName();
+		// request.setAttribute("PID", PID);
+
 		request.getRequestDispatcher(contextRoot + "/views/nodes_list.jsp").forward(request, response);
 	}
 
@@ -132,3 +158,5 @@ public class NodeListServlet extends HttpServlet {
 // nodeConfigs = EMPTY_NODE_CONFIGS;
 // }
 // request.setAttribute("nodeConfigs", nodeConfigs);
+
+// NodeControlClient nodeControlClient = OrbitClientHelper.INSTANCE.getNodeControlClient(indexServiceUrl, accessToken, platformId);

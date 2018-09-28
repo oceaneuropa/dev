@@ -61,9 +61,10 @@ public class OrbitClientHelper {
 					for (IndexItem indexItem : indexItems) {
 						String currPlatformId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
 						String currPlatformParentId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_PARENT_ID);
-						String currPlatformType = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_TYPE);
+						// String currPlatformType = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_TYPE);
 
-						if (PlatformConstants.PLATFORM_TYPE__NODE.equalsIgnoreCase(currPlatformType) && platformParentId.equals(currPlatformParentId) && nodePlatformid.equals(currPlatformId)) {
+						// if (PlatformConstants.PLATFORM_TYPE__NODE.equalsIgnoreCase(currPlatformType) && platformParentId.equals(currPlatformParentId) && nodePlatformid.equals(currPlatformId)) {
+						if (platformParentId.equals(currPlatformParentId) && nodePlatformid.equals(currPlatformId)) {
 							nodeIndexItem = indexItem;
 							break;
 						}

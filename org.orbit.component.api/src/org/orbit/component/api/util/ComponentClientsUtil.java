@@ -710,23 +710,6 @@ public class ComponentClientsUtil {
 	public static class NodeControl {
 		public static final NodeInfo[] EMPTY_NODE_INFOS = new NodeInfo[0];
 
-		// /**
-		// *
-		// * @param nodeControlClient
-		// * @return
-		// * @throws ClientException
-		// */
-		// public NodeInfo[] getNodes(NodeControlClient nodeControlClient) throws ClientException {
-		// NodeInfo[] nodeInfos = null;
-		// if (nodeControlClient != null) {
-		// nodeInfos = nodeControlClient.getNodes();
-		// }
-		// if (nodeInfos == null) {
-		// nodeInfos = EMPTY_NODE_INFOS;
-		// }
-		// return nodeInfos;
-		// }
-
 		/**
 		 * 
 		 * @param nodeControlClientResolver
@@ -1301,4 +1284,21 @@ public class ComponentClientsUtil {
 // nodeInfo = nodeControlClient.getNode(nodeId);
 // }
 // return nodeInfo;
+// }
+
+// /**
+// *
+// * @param nodeControlClient
+// * @return
+// * @throws ClientException
+// */
+// public NodeInfo[] getNodes(NodeControlClient nodeControlClient) throws ClientException {
+// NodeInfo[] nodeInfos = null;
+// if (nodeControlClient != null) {
+// nodeInfos = nodeControlClient.getNodes();
+// }
+// if (nodeInfos == null) {
+// nodeInfos = EMPTY_NODE_INFOS;
+// }
+// return nodeInfos;
 // }

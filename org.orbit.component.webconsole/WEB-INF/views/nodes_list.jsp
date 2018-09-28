@@ -16,7 +16,7 @@
 
 	NodeInfo[] nodeInfos = (NodeInfo[]) request.getAttribute("nodeInfos");
 	Map<String, IndexItem> nodeIdToIndexItemMap = (Map<String, IndexItem>) request.getAttribute("nodeIdToIndexItemMap");
-	
+
 	String machineName = (machineConfig != null) ? machineConfig.getName() : "n/a";
 	String machineId = (machineConfig != null) ? machineConfig.getId() : "";
 
@@ -48,7 +48,7 @@
 		<a href="<%=contextRoot%>/domain/machines">Machines</a> > 
 		<a href="<%=contextRoot%>/domain/platforms?machineId=<%=machineId%>"><%=machineName%></a> >
 		<!-- <a href="<%=contextRoot + "/domain/nodes?machineId=" + machineId + "&platformId=" + platformId%>"><%=platformName%></a> -->
-		Platform [<%=platformName%>]
+		<%=platformName%>
 	</div>
 	<div class="main_div01">
 		<h2>Nodes</h2>
@@ -69,18 +69,19 @@
 					<th class="th1" width="20">
 						<input type="checkbox" onClick="toggleSelection(this, 'id')" />
 					</th>
-					<th class="th1" width="100">Id (Platform Id)</th>
-					<th class="th1" width="100">Name</th>
-					<th class="th1" width="100">URL</th>
-					<th class="th1" width="100">Platform Home</th>
-					<th class="th1" width="50">Status</th>
-					<th class="th1" width="200">Actions</th>
+					<th class="th1" width="120">JVM</th>
+					<th class="th1" width="80">Id</th>
+					<th class="th1" width="80">Name</th>
+					<th class="th1" width="80">URL</th>
+					<th class="th1" width="80">Platform Home</th>
+					<th class="th1" width="40">Status</th>
+					<th class="th1" width="180">Actions</th>
 				</tr>
 				<%
 					if (nodeInfos.length == 0) {
 				%>
 				<tr>
-					<td colspan="7">(n/a)</td>
+					<td colspan="8">(n/a)</td>
 				</tr>
 				<%
 					} else {
@@ -116,9 +117,25 @@
 							hostURL = StringUtil.get(hostURL, "");
 							currContextRoot = StringUtil.get(currContextRoot, "");
 							platformHome = StringUtil.get(platformHome, "");
+							
+							String jvmName = null;
+							String pid = null;
+							if (nodeInfo.getRuntimeProperties().containsKey("jvm_name")) {
+								jvmName = (String) nodeInfo.getRuntimeProperties().get("jvm_name");	
+							}
+							if (nodeInfo.getRuntimeProperties().containsKey("pid")) {
+								pid = (String) nodeInfo.getRuntimeProperties().get("pid");	
+							}
+							if (jvmName == null) {
+								jvmName = "";
+							}
+							if (pid == null) {
+								pid = "";
+							}
 				%>
 				<tr>
 					<td class="td1"><input type="checkbox" name="id" value="<%=id%>"></td>
+					<td class="td1"><%=jvmName%></td>
 					<td class="td1"><%=id%></td>
 					<td class="td1"><%=name%></td>
 					<td class="td2"><%=currUrl%></td>
@@ -141,6 +158,7 @@
 			</form>
 		</table>
 	</div>
+	<br>
 
 	<dialog id="newNodeDialog">
 	<div class="dialog_title_div01">Create Node</div>
