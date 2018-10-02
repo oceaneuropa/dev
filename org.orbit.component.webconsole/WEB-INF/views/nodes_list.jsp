@@ -72,7 +72,7 @@
 					<th class="th1" width="120">JVM</th>
 					<th class="th1" width="80">Id</th>
 					<th class="th1" width="80">Name</th>
-					<th class="th1" width="80">URL</th>
+					<th class="th1" width="80">Platform URL</th>
 					<th class="th1" width="80">Platform Home</th>
 					<th class="th1" width="40">Status</th>
 					<th class="th1" width="180">Actions</th>

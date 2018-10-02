@@ -190,6 +190,10 @@ input[type=text] {
 	width: 100%;
 }
 
+input[type=password] {
+	width: 100%;
+}
+
 .input01 {
 	flex: 1;
 }

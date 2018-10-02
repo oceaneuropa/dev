@@ -114,7 +114,6 @@ public class NodeListServlet extends HttpServlet {
 						}
 						nodeInfo.getRuntimeStatus().setOnline(isOnline);
 						nodeInfo.getRuntimeStatus().setRuntimeState(runtimeState);
-
 					}
 				}
 
