@@ -17,9 +17,9 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
+import org.origin.common.servlet.MessageHelper;
 
 /**
  * Upon receiving file upload submission, parses the request to read upload data and saves the file on disk.

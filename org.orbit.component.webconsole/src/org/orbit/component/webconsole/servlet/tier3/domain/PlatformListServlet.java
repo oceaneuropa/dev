@@ -17,7 +17,6 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.component.webconsole.util.OrbitClientHelper;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -29,6 +28,7 @@ import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.api.PlatformMetadata;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
 public class PlatformListServlet extends HttpServlet {

@@ -14,11 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier2.appstore.AppManifest;
 import org.orbit.component.api.util.ComponentClientsUtil;
-import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.io.IOUtil;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.MimeTypes;
 import org.origin.common.util.ServletUtil;
 

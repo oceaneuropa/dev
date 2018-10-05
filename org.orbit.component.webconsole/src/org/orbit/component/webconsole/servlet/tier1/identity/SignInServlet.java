@@ -12,10 +12,10 @@ import org.orbit.component.api.ComponentConstants;
 import org.orbit.component.api.tier1.identity.LoginResponse;
 import org.orbit.component.api.util.ComponentClientsUtil;
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.client.ClientException;
+import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
 public class SignInServlet extends HttpServlet {

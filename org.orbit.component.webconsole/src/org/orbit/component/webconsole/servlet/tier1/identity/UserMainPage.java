@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.component.webconsole.WebConstants;
-import org.orbit.component.webconsole.util.MessageHelper;
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.util.ExtensionUtil;
+import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
 public class UserMainPage extends HttpServlet {
