@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.OrbitRelayConstants;
-import org.orbit.component.runtime.relay.util.SwitcherUtil;
+import org.orbit.component.runtime.lb.util.SwitcherUtil;
 import org.origin.common.rest.client.WSClientFactory;
 import org.origin.common.rest.client.WSClientFactoryImpl;
 import org.origin.common.rest.switcher.Switcher;

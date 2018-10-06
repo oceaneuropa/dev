@@ -2,8 +2,8 @@ package org.orbit.infra.runtime.extensions.channelservice;
 
 import java.util.Map;
 
-import org.orbit.infra.runtime.channel.service.ChannelService;
-import org.orbit.infra.runtime.channel.service.ChannelServiceImpl;
+import org.orbit.infra.runtime.datatube.service.DataTubeService;
+import org.orbit.infra.runtime.datatube.service.impl.DataTubeServiceImpl;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
@@ -22,10 +22,10 @@ public class ChannelServiceActivator implements ServiceActivator {
 		Map<Object, Object> properties = context.getProperties();
 
 		// Start ChannelService
-		ChannelServiceImpl channelService = new ChannelServiceImpl(properties);
+		DataTubeServiceImpl channelService = new DataTubeServiceImpl(properties);
 		channelService.start(bundleContext);
 
-		process.adapt(ChannelService.class, channelService);
+		process.adapt(DataTubeService.class, channelService);
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class ChannelServiceActivator implements ServiceActivator {
 		BundleContext bundleContext = context.getBundleContext();
 
 		// Stop ChannelService
-		ChannelService channelService = process.getAdapter(ChannelService.class);
+		DataTubeService channelService = process.getAdapter(DataTubeService.class);
 		if (channelService instanceof LifecycleAware) {
 			((LifecycleAware) channelService).stop(bundleContext);
 		}

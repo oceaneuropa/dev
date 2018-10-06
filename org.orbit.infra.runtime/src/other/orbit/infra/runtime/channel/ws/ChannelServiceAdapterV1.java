@@ -1,10 +1,10 @@
 package other.orbit.infra.runtime.channel.ws;
 
 import org.orbit.infra.api.indexes.IndexProviderClient;
-import org.orbit.infra.runtime.channel.service.ChannelService;
-import org.orbit.infra.runtime.channel.ws.ChannelServiceIndexTimer;
-import org.orbit.infra.runtime.channel.ws.ChannelWSApplication;
-import org.orbit.infra.runtime.channel.ws.ChannelWebSocket;
+import org.orbit.infra.runtime.datatube.service.DataTubeService;
+import org.orbit.infra.runtime.datatube.ws.DataTubeServiceIndexTimer;
+import org.orbit.infra.runtime.datatube.ws.DataTubeWSApplication;
+import org.orbit.infra.runtime.datatube.ws.DataTubeWebSocketHandler;
 import org.origin.common.rest.server.FeatureConstants;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -19,27 +19,27 @@ public class ChannelServiceAdapterV1 {
 
 	protected static Logger LOG = LoggerFactory.getLogger(ChannelServiceAdapterV1.class);
 
-	protected ServiceTracker<ChannelService, ChannelService> serviceTracker;
+	protected ServiceTracker<DataTubeService, DataTubeService> serviceTracker;
 	protected IndexProviderLoadBalancer indexProviderLoadBalancer;
-	protected ChannelWebSocket webSocket;
-	protected ChannelWSApplication webService;
-	protected ChannelServiceIndexTimer serviceIndexTimer;
+	protected DataTubeWebSocketHandler webSocket;
+	protected DataTubeWSApplication webService;
+	protected DataTubeServiceIndexTimer serviceIndexTimer;
 
 	public ChannelServiceAdapterV1(IndexProviderLoadBalancer indexProviderLoadBalancer) {
 		this.indexProviderLoadBalancer = indexProviderLoadBalancer;
 	}
 
-	public ChannelService getService() {
+	public DataTubeService getService() {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
 	}
 
 	public void start(final BundleContext bundleContext) {
 		LOG.debug("start()");
 
-		this.serviceTracker = new ServiceTracker<ChannelService, ChannelService>(bundleContext, ChannelService.class, new ServiceTrackerCustomizer<ChannelService, ChannelService>() {
+		this.serviceTracker = new ServiceTracker<DataTubeService, DataTubeService>(bundleContext, DataTubeService.class, new ServiceTrackerCustomizer<DataTubeService, DataTubeService>() {
 			@Override
-			public ChannelService addingService(ServiceReference<ChannelService> reference) {
-				ChannelService service = bundleContext.getService(reference);
+			public DataTubeService addingService(ServiceReference<DataTubeService> reference) {
+				DataTubeService service = bundleContext.getService(reference);
 				LOG.debug("ServiceTracker ChannelService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
@@ -48,12 +48,12 @@ public class ChannelServiceAdapterV1 {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<ChannelService> reference, ChannelService service) {
+			public void modifiedService(ServiceReference<DataTubeService> reference, DataTubeService service) {
 				LOG.debug("ServiceTracker ChannelService [" + service + "] is modified.");
 			}
 
 			@Override
-			public void removedService(ServiceReference<ChannelService> reference, ChannelService service) {
+			public void removedService(ServiceReference<DataTubeService> reference, DataTubeService service) {
 				LOG.debug("ServiceTracker ChannelService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
@@ -71,25 +71,25 @@ public class ChannelServiceAdapterV1 {
 		}
 	}
 
-	protected void doStart(BundleContext bundleContext, ChannelService service) {
+	protected void doStart(BundleContext bundleContext, DataTubeService service) {
 		// 1. start web socket
 		LOG.debug("start web socket");
-		this.webSocket = new ChannelWebSocket(service);
+		this.webSocket = new DataTubeWebSocketHandler(service);
 		this.webSocket.start(bundleContext);
 
 		// 2. start web service
 		LOG.debug("start web service");
-		this.webService = new ChannelWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
+		this.webService = new DataTubeWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webService.start(bundleContext);
 
 		// 3. start index timer
 		LOG.debug("start index timer");
 		IndexProviderClient indexProvider = this.indexProviderLoadBalancer.createLoadBalancableIndexProvider();
-		this.serviceIndexTimer = new ChannelServiceIndexTimer(indexProvider, service);
+		this.serviceIndexTimer = new DataTubeServiceIndexTimer(indexProvider, service);
 		this.serviceIndexTimer.start();
 	}
 
-	protected void doStop(BundleContext bundleContext, ChannelService service) {
+	protected void doStop(BundleContext bundleContext, DataTubeService service) {
 		// 1. stop index timer
 		LOG.debug("stop index timer");
 		if (this.serviceIndexTimer != null) {

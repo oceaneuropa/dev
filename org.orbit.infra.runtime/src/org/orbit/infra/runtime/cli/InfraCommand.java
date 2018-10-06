@@ -10,7 +10,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.runtime.InfraServices;
-import org.orbit.infra.runtime.channel.service.ChannelServiceImpl;
+import org.orbit.infra.runtime.datatube.service.impl.DataTubeServiceImpl;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryServiceImpl;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.service.IndexServiceImpl;
@@ -38,7 +38,7 @@ public class InfraCommand implements CommandActivator {
 	protected BundleContext bundleContext;
 	protected IndexServiceImpl indexService;
 	protected ExtensionRegistryServiceImpl extensionRegistryService;
-	protected ChannelServiceImpl channelService;
+	protected DataTubeServiceImpl channelService;
 
 	/**
 	 * 
@@ -171,7 +171,7 @@ public class InfraCommand implements CommandActivator {
 	}
 
 	public void startChannelService(BundleContext bundleContext) {
-		ChannelServiceImpl channelService = new ChannelServiceImpl(null);
+		DataTubeServiceImpl channelService = new DataTubeServiceImpl(null);
 		channelService.start(bundleContext);
 		this.channelService = channelService;
 	}

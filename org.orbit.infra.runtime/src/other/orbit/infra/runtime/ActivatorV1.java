@@ -4,8 +4,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.infra.runtime.channel.service.ChannelService;
 import org.orbit.infra.runtime.cli.InfraCommand;
+import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.ws.IndexServiceAdapter;
 import org.origin.common.util.PropertyUtil;
@@ -58,14 +58,14 @@ public class ActivatorV1 implements BundleActivator {
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_AUTOSTART);
 		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_INDEX_SERVICE_NAME);
 
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_AUTOSTART);
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__AUTOSTART);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__NAME);
 
 		autoStartIndexService = configProps.containsKey(InfraConstants.COMPONENT_INDEX_SERVICE_AUTOSTART) ? true : false;
 		hasIndexService = configProps.containsKey(InfraConstants.COMPONENT_INDEX_SERVICE_NAME) ? true : false;
 
-		autoStartChannelService = configProps.containsKey(InfraConstants.COMPONENT_CHANNEL_AUTOSTART) ? true : false;
-		hasChannelService = configProps.containsKey(InfraConstants.COMPONENT_CHANNEL_NAME) ? true : false;
+		autoStartChannelService = configProps.containsKey(InfraConstants.DATATUBE__AUTOSTART) ? true : false;
+		hasChannelService = configProps.containsKey(InfraConstants.DATATUBE__NAME) ? true : false;
 
 		LOG.info("autoStartIndexService = " + autoStartIndexService);
 		LOG.info("hasIndexService = " + hasIndexService);
@@ -133,7 +133,7 @@ public class ActivatorV1 implements BundleActivator {
 		return (indexServiceAdapter != null) ? indexServiceAdapter.getService() : null;
 	}
 
-	public ChannelService getChannelService() {
+	public DataTubeService getChannelService() {
 		return (channelServiceAdapter != null) ? channelServiceAdapter.getService() : null;
 	}
 

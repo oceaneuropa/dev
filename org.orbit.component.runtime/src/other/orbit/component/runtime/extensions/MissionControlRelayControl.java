@@ -4,8 +4,8 @@ import java.net.URI;
 import java.util.List;
 
 import org.orbit.component.runtime.Extensions;
-import org.orbit.component.runtime.relay.desc.MissionControlWSApplicationDesc;
-import org.orbit.component.runtime.relay.util.SwitcherUtil;
+import org.orbit.component.runtime.lb.desc.MissionControlWSApplicationDesc;
+import org.orbit.component.runtime.lb.util.SwitcherUtil;
 import org.orbit.platform.sdk.relaycontrol.WSRelayControlImpl;
 import org.origin.common.extensions.Extension;
 import org.origin.common.rest.client.WSClientFactory;

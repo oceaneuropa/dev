@@ -24,8 +24,8 @@ public class ChannelServicePropertyTester implements IPropertyTester {
 		}
 		if (bundleContext != null) {
 			Map<Object, Object> properties = new Hashtable<Object, Object>();
-			PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.COMPONENT_CHANNEL_AUTOSTART);
-			String autoStart = (String) properties.get(InfraConstants.COMPONENT_CHANNEL_AUTOSTART);
+			PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.DATATUBE__AUTOSTART);
+			String autoStart = (String) properties.get(InfraConstants.DATATUBE__AUTOSTART);
 			if ("true".equalsIgnoreCase(autoStart)) {
 				return true;
 			}

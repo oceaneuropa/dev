@@ -1,8 +1,8 @@
 package org.orbit.infra.runtime;
 
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.runtime.channel.ws.ChannelServiceIndexTimerFactory;
 import org.orbit.infra.runtime.cli.InfraCommand;
+import org.orbit.infra.runtime.datatube.ws.DataTubeServiceIndexTimerFactory;
 import org.orbit.infra.runtime.extensionregistry.ws.ExtensionRegistryServiceIndexTimerFactory;
 import org.orbit.infra.runtime.extensions.channelservice.ChannelServiceActivator;
 import org.orbit.infra.runtime.extensions.channelservice.ChannelServicePropertyTester;
@@ -203,8 +203,8 @@ public class Extensions extends ProgramExtensions {
 		extension2.addInterface(factoryClass, ExtensionRegistryServiceIndexTimerFactory.class);
 		addExtension(extension2);
 
-		Extension extension3 = new Extension(extensionTypeId, InfraConstants.CHANNEL_INDEXER_ID, "Channel Service Index Provider");
-		extension3.addInterface(factoryClass, ChannelServiceIndexTimerFactory.class);
+		Extension extension3 = new Extension(extensionTypeId, InfraConstants.IDX__DATATUBE_INDEXER_ID, "Channel Service Index Provider");
+		extension3.addInterface(factoryClass, DataTubeServiceIndexTimerFactory.class);
 		addExtension(extension3);
 	}
 

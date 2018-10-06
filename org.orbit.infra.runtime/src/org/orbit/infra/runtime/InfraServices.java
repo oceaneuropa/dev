@@ -3,8 +3,8 @@ package org.orbit.infra.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.infra.runtime.channel.service.ChannelService;
-import org.orbit.infra.runtime.channel.ws.ChannelServiceAdapter;
+import org.orbit.infra.runtime.datatube.service.DataTubeService;
+import org.orbit.infra.runtime.datatube.ws.DataTubeServiceAdapter;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
 import org.orbit.infra.runtime.extensionregistry.ws.ExtensionRegistryAdapter;
 import org.orbit.infra.runtime.indexes.service.IndexService;
@@ -34,7 +34,7 @@ public class InfraServices {
 
 	protected IndexServiceAdapter indexServiceAdapter;
 	protected ExtensionRegistryAdapter extensionRegistryAdapter;
-	protected ChannelServiceAdapter channelServiceAdapter;
+	protected DataTubeServiceAdapter channelServiceAdapter;
 
 	/**
 	 * 
@@ -53,7 +53,7 @@ public class InfraServices {
 		this.extensionRegistryAdapter = new ExtensionRegistryAdapter(properties);
 		this.extensionRegistryAdapter.start(bundleContext);
 
-		this.channelServiceAdapter = new ChannelServiceAdapter(properties);
+		this.channelServiceAdapter = new DataTubeServiceAdapter(properties);
 		this.channelServiceAdapter.start(bundleContext);
 	}
 
@@ -87,7 +87,7 @@ public class InfraServices {
 		return (this.extensionRegistryAdapter != null) ? this.extensionRegistryAdapter.getService() : null;
 	}
 
-	public ChannelService getChannelService() {
+	public DataTubeService getChannelService() {
 		return (this.channelServiceAdapter != null) ? this.channelServiceAdapter.getService() : null;
 	}
 

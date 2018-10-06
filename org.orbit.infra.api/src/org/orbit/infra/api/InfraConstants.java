@@ -50,8 +50,8 @@ public class InfraConstants {
 	// Channel
 	// ----------------------------------------------------------------------------------------
 	// index item values
-	public static String CHANNEL_INDEXER_ID = "component.channel.indexer"; // index provider id for Channel
-	public static String CHANNEL_TYPE = "Channel"; // type of index item for Channel
+	public static String CHANNEL_INDEXER_ID = "component.channel.indexer";
+	public static String CHANNEL_TYPE = "Channel";
 
 	// index item properties
 	public static String CHANNEL_NAME = "channel.name";

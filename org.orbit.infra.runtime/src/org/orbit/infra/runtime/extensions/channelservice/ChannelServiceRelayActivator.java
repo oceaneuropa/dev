@@ -2,8 +2,8 @@ package org.orbit.infra.runtime.extensions.channelservice;
 
 import java.util.Map;
 
-import org.orbit.infra.runtime.relay.ChannelWSApplicationRelay;
-import org.orbit.infra.runtime.relay.InfraRelays;
+import org.orbit.infra.runtime.lb.ChannelWSApplicationRelay;
+import org.orbit.infra.runtime.lb.InfraRelays;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.orbit.platform.sdk.IProcess;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;

@@ -40,7 +40,7 @@ public class InfraConstants {
 	public static String INDEX_SERVICE_TYPE = "IndexService"; // type of index item for IndexService
 
 	// ----------------------------------------------------------------------------------------
-	// ExtensionRegistryService
+	// Extension Registry
 	// ----------------------------------------------------------------------------------------
 	// config properties
 	public static String COMPONENT_EXTENSION_REGISTRY_AUTOSTART = "component.extension_registry.autostart";
@@ -62,26 +62,6 @@ public class InfraConstants {
 	public static String EXTENSION_REGISTRY_TYPE = "ExtensionRegistry";
 
 	// ----------------------------------------------------------------------------------------
-	// Channel
-	// ----------------------------------------------------------------------------------------
-	// config properties
-	public static String COMPONENT_CHANNEL_AUTOSTART = "component.channel.autostart";
-	public static String COMPONENT_CHANNEL_HOST_URL = "component.channel.host.url";
-	public static String COMPONENT_CHANNEL_NAME = "component.channel.name";
-	public static String COMPONENT_CHANNEL_CONTEXT_ROOT = "component.channel.context_root";
-	public static String COMPONENT_CHANNEL_HTTP_PORT = "component.channel.http_port";
-
-	// index item values
-	public static String CHANNEL_INDEXER_ID = "component.channel.indexer"; // index provider id for ChannelService
-	public static String CHANNEL_TYPE = "Channel"; // type of index item for ChannelService
-
-	// index item properties
-	public static String CHANNEL_NAME = "channel.name";
-	public static String CHANNEL_HOST_URL = "channel.host.url";
-	public static String CHANNEL_CONTEXT_ROOT = "channel.context_root";
-	public static String CHANNEL_HTTP_PORT = "channel.http_port";
-
-	// ----------------------------------------------------------------------------------------
 	// Relay
 	// ----------------------------------------------------------------------------------------
 	public static String COMPONENT_INDEX_SERVICE_RELAY_AUTOSTART = "component.index_service.relay.autostart";
@@ -101,5 +81,57 @@ public class InfraConstants {
 	public static String COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT = "component.channel.relay.context_root";
 	public static String COMPONENT_CHANNEL_RELAY_HOSTS = "component.channel.relay.hosts";
 	public static String COMPONENT_CHANNEL_RELAY_URLS = "component.channel.relay.urls";
+
+	// ----------------------------------------------------------------------------------------
+	// Data Cast
+	// ----------------------------------------------------------------------------------------
+	// config properties
+	public static String DATACAST__AUTOSTART = "infra.data_cast.autostart";
+	public static String DATACAST__ID = "infra.data_cast.id";
+	public static String DATACAST__NAME = "infra.data_cast.name";
+	public static String DATACAST__HOST_URL = "infra.data_cast.host.url";
+	public static String DATACAST__CONTEXT_ROOT = "infra.data_cast.context_root";
+
+	// index item values
+	public static String IDX__DATACAST_INDEXER_ID = "infra.data_cast.indexer";
+	public static String IDX__DATACAST_TYPE = "DataCast";
+
+	// index item properties
+	public static String IDX_PROP__DATACAST__ID = "data_cast.id";
+	public static String IDX_PROP__DATACAST__NAME = "data_cast.name";
+	public static String IDX_PROP__DATACAST__HOST_URL = "data_cast.host.url";
+	public static String IDX_PROP__DATACAST__CONTEXT_ROOT = "data_cast.context_root";
+
+	// EditPolicy values
+	public static String DATACAST__EDITPOLICY_ID = "infra.data_cast.editpolicy";
+	public static String DATACAST__SERVICE_NAME = "infra.data_cast.service";
+
+	// ----------------------------------------------------------------------------------------
+	// Data Tube
+	// ----------------------------------------------------------------------------------------
+	// config properties
+	public static String DATATUBE__AUTOSTART = "infra.data_tube.autostart";
+	public static String DATATUBE__DATACAST_ID = "infra.data_tube.datacast_id";
+	public static String DATATUBE__ID = "infra.data_tube.id";
+	public static String DATATUBE__NAME = "infra.data_tube.name";
+	public static String DATATUBE__HOST_URL = "infra.data_tube.host.url";
+	public static String DATATUBE__CONTEXT_ROOT = "infra.data_tube.context_root";
+	public static String DATATUBE__HTTP_PORT = "infra.data_tube.http_port";
+
+	// index item values
+	public static String IDX__DATATUBE_INDEXER_ID = "infra.data_tube.indexer";
+	public static String IDX__DATATUBE_TYPE = "DataTube";
+
+	// index item properties
+	public static String IDX_PROP__DATATUBE__DATACAST_ID = "data_tube.data_cast_id";
+	public static String IDX_PROP__DATATUBE__ID = "data_tube.id";
+	public static String IDX_PROP__DATATUBE__NAME = "data_tube.name";
+	public static String IDX_PROP__DATATUBE__HOST_URL = "data_tube.host.url";
+	public static String IDX_PROP__DATATUBE__CONTEXT_ROOT = "data_tube.context_root";
+	public static String IDX_PROP__DATATUBE__HTTP_PORT = "data_tube.http_port";
+
+	// EditPolicy values
+	public static String DATATUBE__EDITPOLICY_ID = "infra.data_tube.editpolicy";
+	public static String DATATUBE__SERVICE_NAME = "infra.data_tube.service";
 
 }
