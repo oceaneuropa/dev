@@ -18,10 +18,6 @@ import org.osgi.framework.ServiceRegistration;
 public class DataTubeServiceImpl implements DataTubeService, LifecycleAware {
 
 	protected Map<Object, Object> initProperties;
-	protected String name;
-	protected String hostURL;
-	protected String contextRoot;
-	protected String httpPort;
 	protected Map<String, Channel> channelMap;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected Map<Object, Object> properties;
@@ -35,6 +31,95 @@ public class DataTubeServiceImpl implements DataTubeService, LifecycleAware {
 		this.initProperties = initProperties;
 		this.channelMap = Collections.synchronizedMap(new HashMap<String, Channel>());
 		this.properties = new HashMap<Object, Object>();
+	}
+
+	@Override
+	public void start(BundleContext bundleContext) {
+		Map<Object, Object> configProps = new Hashtable<Object, Object>();
+		if (this.initProperties != null) {
+			configProps.putAll(this.initProperties);
+		}
+
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__DATACAST_ID);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__ID);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__NAME);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__HTTP_PORT);
+
+		updateProperties(configProps);
+
+		// Register service
+		Hashtable<String, Object> props = new Hashtable<String, Object>();
+		this.serviceRegistry = bundleContext.registerService(DataTubeService.class, this, props);
+	}
+
+	@Override
+	public void stop(BundleContext bundleContext) {
+		if (this.serviceRegistry != null) {
+			this.serviceRegistry.unregister();
+			this.serviceRegistry = null;
+		}
+	}
+
+	@Override
+	public Map<Object, Object> getProperties() {
+		return this.properties;
+	}
+
+	/**
+	 * 
+	 * @param configProps
+	 */
+	public synchronized void updateProperties(Map<Object, Object> configProps) {
+		if (configProps == null) {
+			configProps = new HashMap<Object, Object>();
+		}
+
+		String globalHostURL = (String) configProps.get(InfraConstants.ORBIT_HOST_URL);
+		String dataCastId = (String) configProps.get(InfraConstants.DATATUBE__DATACAST_ID);
+		String dataTubeId = (String) configProps.get(InfraConstants.DATATUBE__ID);
+		String name = (String) configProps.get(InfraConstants.DATATUBE__NAME);
+		String hostURL = (String) configProps.get(InfraConstants.DATATUBE__HOST_URL);
+		String contextRoot = (String) configProps.get(InfraConstants.DATATUBE__CONTEXT_ROOT);
+		String webSocketHttpPort = (String) configProps.get(InfraConstants.DATATUBE__HTTP_PORT);
+
+		boolean printProps = false;
+		if (printProps) {
+			System.out.println();
+			System.out.println("Config properties:");
+			System.out.println("-----------------------------------------------------");
+			System.out.println(InfraConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+			System.out.println(InfraConstants.DATATUBE__DATACAST_ID + " = " + dataCastId);
+			System.out.println(InfraConstants.DATATUBE__ID + " = " + dataTubeId);
+			System.out.println(InfraConstants.DATATUBE__NAME + " = " + name);
+			System.out.println(InfraConstants.DATATUBE__HOST_URL + " = " + hostURL);
+			System.out.println(InfraConstants.DATATUBE__CONTEXT_ROOT + " = " + contextRoot);
+			System.out.println(InfraConstants.DATATUBE__HTTP_PORT + " = " + webSocketHttpPort);
+
+			System.out.println("-----------------------------------------------------");
+			System.out.println();
+		}
+
+		this.properties = configProps;
+	}
+
+	@Override
+	public String getDataCastId() {
+		String dataCastId = (String) this.properties.get(InfraConstants.DATATUBE__DATACAST_ID);
+		return dataCastId;
+	}
+
+	@Override
+	public String getDataTubeId() {
+		String dataTubeId = (String) this.properties.get(InfraConstants.DATATUBE__ID);
+		return dataTubeId;
+	}
+
+	@Override
+	public String getWebSocketHttpPort() {
+		return (String) this.properties.get(InfraConstants.DATATUBE__HTTP_PORT);
 	}
 
 	@Override
@@ -58,46 +143,6 @@ public class DataTubeServiceImpl implements DataTubeService, LifecycleAware {
 	@Override
 	public String getContextRoot() {
 		return (String) this.properties.get(InfraConstants.DATATUBE__CONTEXT_ROOT);
-	}
-
-	@Override
-	public String getWebSocketHttpPort() {
-		return (String) this.properties.get(InfraConstants.DATATUBE__HTTP_PORT);
-	}
-
-	@Override
-	public void start(BundleContext bundleContext) {
-		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		if (this.initProperties != null) {
-			configProps.putAll(this.initProperties);
-		}
-
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__NAME);
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__HTTP_PORT);
-
-		update(configProps);
-
-		// Register service
-		Hashtable<String, Object> props = new Hashtable<String, Object>();
-		this.serviceRegistry = bundleContext.registerService(DataTubeService.class, this, props);
-	}
-
-	public synchronized void update(Map<Object, Object> properties) {
-		if (properties == null) {
-			properties = new HashMap<Object, Object>();
-		}
-		this.properties = properties;
-	}
-
-	@Override
-	public void stop(BundleContext bundleContext) {
-		if (this.serviceRegistry != null) {
-			this.serviceRegistry.unregister();
-			this.serviceRegistry = null;
-		}
 	}
 
 	@Override
@@ -163,6 +208,10 @@ public class DataTubeServiceImpl implements DataTubeService, LifecycleAware {
 
 }
 
+// protected String name;
+// protected String hostURL;
+// protected String contextRoot;
+// protected String httpPort;
 // protected String namespace;
 // PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.COMPONENT_CHANNEL_NAMESPACE);
 // @Override

@@ -21,9 +21,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Channel web service resource.
+ * Data tube web service resource.
  * 
- * {contextRoot} example: /orbit/v1/channel
+ * {contextRoot} example: /orbit/v1/datatube
  *
  * URL (POST): {scheme}://{host}:{port}/{contextRoot}/inbound (Body parameter: ChannelMessageDTO)
  *
@@ -40,7 +40,7 @@ public class DataTubeWSResource extends AbstractWSApplicationResource {
 
 	public DataTubeService getService() throws RuntimeException {
 		if (this.service == null) {
-			throw new RuntimeException("ChannelService is not available.");
+			throw new RuntimeException("DataTubeService is not available.");
 		}
 		return this.service;
 	}

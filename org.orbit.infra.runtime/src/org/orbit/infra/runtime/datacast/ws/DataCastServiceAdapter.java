@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.datatube.ws;
+package org.orbit.infra.runtime.datacast.ws;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.api.util.InfraClients;
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.infra.runtime.datatube.service.DataTubeService;
+import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.orbit.platform.sdk.util.ExtensibleServiceEditPolicy;
 import org.origin.common.extensions.core.IExtension;
@@ -22,22 +22,21 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DataTubeServiceAdapter implements LifecycleAware {
+public class DataCastServiceAdapter implements LifecycleAware {
 
-	protected static Logger LOG = LoggerFactory.getLogger(DataTubeServiceAdapter.class);
+	protected static Logger LOG = LoggerFactory.getLogger(DataCastServiceAdapter.class);
 
 	protected Map<Object, Object> properties;
-	protected ServiceTracker<DataTubeService, DataTubeService> serviceTracker;
-	protected DataTubeWebSocketHandler webSocketHandler;
-	protected DataTubeWSApplication webApp;
-	protected ServiceIndexTimer<DataTubeService> indexTimer;
+	protected ServiceTracker<DataCastService, DataCastService> serviceTracker;
+	protected DataCastWSApplication webApp;
+	protected ServiceIndexTimer<DataCastService> indexTimer;
 	protected ExtensibleServiceEditPolicy editPolicy;
 
 	/**
 	 * 
 	 * @param properties
 	 */
-	public DataTubeServiceAdapter(Map<Object, Object> properties) {
+	public DataCastServiceAdapter(Map<Object, Object> properties) {
 		this.properties = properties;
 		if (this.properties == null) {
 			this.properties = new HashMap<Object, Object>();
@@ -48,7 +47,7 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 		return InfraClients.getInstance().getIndexService(this.properties, true);
 	}
 
-	public DataTubeService getService() {
+	public DataCastService getService() {
 		return (this.serviceTracker != null) ? this.serviceTracker.getService() : null;
 	}
 
@@ -56,11 +55,11 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 	public void start(final BundleContext bundleContext) {
 		LOG.debug("start()");
 
-		this.serviceTracker = new ServiceTracker<DataTubeService, DataTubeService>(bundleContext, DataTubeService.class, new ServiceTrackerCustomizer<DataTubeService, DataTubeService>() {
+		this.serviceTracker = new ServiceTracker<DataCastService, DataCastService>(bundleContext, DataCastService.class, new ServiceTrackerCustomizer<DataCastService, DataCastService>() {
 			@Override
-			public DataTubeService addingService(ServiceReference<DataTubeService> reference) {
-				DataTubeService service = bundleContext.getService(reference);
-				LOG.debug("ServiceTracker DataTubeService [" + service + "] is added.");
+			public DataCastService addingService(ServiceReference<DataCastService> reference) {
+				DataCastService service = bundleContext.getService(reference);
+				LOG.debug("ServiceTracker DataCastService [" + service + "] is added.");
 
 				doStart(bundleContext, service);
 
@@ -68,13 +67,13 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 			}
 
 			@Override
-			public void modifiedService(ServiceReference<DataTubeService> reference, DataTubeService service) {
-				LOG.debug("ServiceTracker DataTubeService [" + service + "] is modified.");
+			public void modifiedService(ServiceReference<DataCastService> reference, DataCastService service) {
+				LOG.debug("ServiceTracker DataCastService [" + service + "] is modified.");
 			}
 
 			@Override
-			public void removedService(ServiceReference<DataTubeService> reference, DataTubeService service) {
-				LOG.debug("ServiceTracker DataTubeService [" + service + "] is removed.");
+			public void removedService(ServiceReference<DataCastService> reference, DataCastService service) {
+				LOG.debug("ServiceTracker DataCastService [" + service + "] is removed.");
 
 				doStop(bundleContext, service);
 			}
@@ -92,30 +91,25 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 		}
 	}
 
-	protected void doStart(BundleContext bundleContext, DataTubeService service) {
+	protected void doStart(BundleContext bundleContext, DataCastService service) {
 		// Install edit policies
-		this.editPolicy = new ExtensibleServiceEditPolicy(InfraConstants.DATATUBE__EDITPOLICY_ID, DataTubeService.class, InfraConstants.DATATUBE__SERVICE_NAME);
+		this.editPolicy = new ExtensibleServiceEditPolicy(InfraConstants.DATACAST__EDITPOLICY_ID, DataCastService.class, InfraConstants.DATACAST__SERVICE_NAME);
 		ServiceEditPolicies editPolicies = service.getEditPolicies();
 		editPolicies.uninstall(this.editPolicy.getId());
 		editPolicies.install(this.editPolicy);
 
-		// Start web socket
-		LOG.debug("start web socket");
-		this.webSocketHandler = new DataTubeWebSocketHandler(service);
-		this.webSocketHandler.start(bundleContext);
-
 		// Start web service
 		LOG.debug("start web service");
-		this.webApp = new DataTubeWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
+		this.webApp = new DataCastWSApplication(service, FeatureConstants.METADATA | FeatureConstants.NAME | FeatureConstants.PING | FeatureConstants.ECHO);
 		this.webApp.start(bundleContext);
 
 		// Start index timer
 		LOG.debug("start index timer");
 		IndexServiceClient indexProvider = getIndexProvider();
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.IDX__DATATUBE_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.IDX__DATACAST_INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
-			ServiceIndexTimerFactory<DataTubeService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
+			ServiceIndexTimerFactory<DataCastService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);
 			if (indexTimerFactory != null) {
 				this.indexTimer = indexTimerFactory.create(indexProvider, service);
 				if (this.indexTimer != null) {
@@ -125,7 +119,7 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 		}
 	}
 
-	protected void doStop(BundleContext bundleContext, DataTubeService service) {
+	protected void doStop(BundleContext bundleContext, DataCastService service) {
 		// Stop index timer
 		LOG.debug("stop index timer");
 		if (this.indexTimer != null) {
@@ -138,13 +132,6 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 		if (this.webApp != null) {
 			this.webApp.stop(bundleContext);
 			this.webApp = null;
-		}
-
-		// Stop web socket
-		LOG.debug("stop web socket");
-		if (this.webSocketHandler != null) {
-			this.webSocketHandler.stop(bundleContext);
-			this.webSocketHandler = null;
 		}
 
 		// Uninstall edit policies

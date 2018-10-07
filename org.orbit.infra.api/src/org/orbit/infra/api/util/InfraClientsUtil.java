@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.channel.ChannelClient;
+import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -258,8 +258,8 @@ public class InfraClientsUtil {
 		 * @param accessToken
 		 * @return
 		 */
-		public ChannelClient getChannelClient(String channelServiceUrl, String accessToken) {
-			ChannelClient channelClient = null;
+		public DataTubeClient getChannelClient(String channelServiceUrl, String accessToken) {
+			DataTubeClient channelClient = null;
 			if (channelServiceUrl != null) {
 				Map<String, Object> properties = new HashMap<String, Object>();
 				properties.put(WSClientConstants.REALM, null);

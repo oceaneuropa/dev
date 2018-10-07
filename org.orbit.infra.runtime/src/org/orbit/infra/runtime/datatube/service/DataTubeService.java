@@ -1,9 +1,14 @@
 package org.orbit.infra.runtime.datatube.service;
 
 import org.origin.common.rest.editpolicy.EditPoliciesAwareService;
+import org.origin.common.service.PropertiesAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface DataTubeService extends WebServiceAware, EditPoliciesAwareService {
+public interface DataTubeService extends WebServiceAware, PropertiesAware, EditPoliciesAwareService {
+
+	String getDataCastId();
+	
+	String getDataTubeId();
 
 	String getWebSocketHttpPort();
 

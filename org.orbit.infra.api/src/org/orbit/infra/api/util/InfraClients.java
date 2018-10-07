@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.channel.ChannelClient;
+import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClientProxy;
 import org.orbit.infra.api.indexes.IndexServiceClient;
@@ -28,7 +28,7 @@ public class InfraClients implements LifecycleAware {
 
 	protected ServiceConnectorAdapter<IndexServiceClient> indexServiceConnector;
 	protected ServiceConnectorAdapter<ExtensionRegistryClient> extensionRegistryConnector;
-	protected ServiceConnectorAdapter<ChannelClient> channelsConnector;
+	protected ServiceConnectorAdapter<DataTubeClient> channelsConnector;
 
 	/**
 	 * 
@@ -42,7 +42,7 @@ public class InfraClients implements LifecycleAware {
 		this.extensionRegistryConnector = new ServiceConnectorAdapter<ExtensionRegistryClient>(ExtensionRegistryClient.class);
 		this.extensionRegistryConnector.start(bundleContext);
 
-		this.channelsConnector = new ServiceConnectorAdapter<ChannelClient>(ChannelClient.class);
+		this.channelsConnector = new ServiceConnectorAdapter<DataTubeClient>(DataTubeClient.class);
 		this.channelsConnector.start(bundleContext);
 	}
 
@@ -126,7 +126,7 @@ public class InfraClients implements LifecycleAware {
 	 * @param properties
 	 * @return
 	 */
-	public ChannelClient getChannel(Map<?, ?> properties) {
+	public DataTubeClient getChannel(Map<?, ?> properties) {
 		String realm = (String) properties.get(WSClientConstants.REALM);
 		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
 		String url = (String) properties.get(WSClientConstants.URL);
@@ -139,7 +139,7 @@ public class InfraClients implements LifecycleAware {
 		theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
 		theProperties.put(WSClientConstants.URL, url);
 
-		ChannelClient channelClient = this.channelsConnector.getService(theProperties);
+		DataTubeClient channelClient = this.channelsConnector.getService(theProperties);
 		if (channelClient == null) {
 			// throw new RuntimeException("Channels is not available.");
 		}

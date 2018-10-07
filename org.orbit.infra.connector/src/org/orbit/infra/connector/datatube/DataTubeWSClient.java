@@ -1,4 +1,4 @@
-package org.orbit.infra.connector.channel;
+package org.orbit.infra.connector.datatube;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation.Builder;
@@ -8,23 +8,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.orbit.infra.model.channel.ChannelMessageDTO;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
-import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 
 /*
- * Channel web service client.
+ * DataTube web service client.
  * 
  * {contextRoot} example:
- * /orbit/v1/channel
+ * /orbit/v1/datatube
  * 
  * URL (PST): {scheme}://{host}:{port}/{contextRoot}/inbound (Body parameter: ChannelMessageDTO)
  * 
  */
-public class ChannelWSClient extends WSClient {
+public class DataTubeWSClient extends WSClient {
 
-	public ChannelWSClient(WSClientConfiguration config) {
+	public DataTubeWSClient(WSClientConfiguration config) {
 		super(config);
 	}
 

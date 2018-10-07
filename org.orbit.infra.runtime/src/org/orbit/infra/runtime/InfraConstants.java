@@ -76,11 +76,17 @@ public class InfraConstants {
 	public static String COMPONENT_EXTENSION_REGISTRY_RELAY_HOSTS = "component.extension_registry.relay.hosts";
 	public static String COMPONENT_EXTENSION_REGISTRY_RELAY_URLS = "component.extension_registry.relay.urls";
 
-	public static String COMPONENT_CHANNEL_RELAY_AUTOSTART = "component.channel.relay.autostart";
-	public static String COMPONENT_CHANNEL_RELAY_NAME = "component.channel.relay.name";
-	public static String COMPONENT_CHANNEL_RELAY_CONTEXT_ROOT = "component.channel.relay.context_root";
-	public static String COMPONENT_CHANNEL_RELAY_HOSTS = "component.channel.relay.hosts";
-	public static String COMPONENT_CHANNEL_RELAY_URLS = "component.channel.relay.urls";
+	public static String DATACAST__RELAY_AUTOSTART = "infra.data_cast.relay.autostart";
+	public static String DATACAST__RELAY_NAME = "infra.data_cast.relay.name";
+	public static String DATACAST__RELAY_CONTEXT_ROOT = "infra.data_cast.relay.context_root";
+	public static String DATACAST__RELAY_HOSTS = "infra.data_cast.relay.hosts";
+	public static String DATACAST__RELAY_URLS = "infra.data_cast.relay.urls";
+
+	public static String DATATUBE__RELAY_AUTOSTART = "infra.data_tube.relay.autostart";
+	public static String DATATUBE__RELAY_NAME = "infra.data_tube.relay.name";
+	public static String DATATUBE__RELAY_CONTEXT_ROOT = "infra.data_tube.relay.context_root";
+	public static String DATATUBE__RELAY_HOSTS = "infra.data_tube.relay.hosts";
+	public static String DATATUBE__RELAY_URLS = "infra.data_tube.relay.urls";
 
 	// ----------------------------------------------------------------------------------------
 	// Data Cast
@@ -91,6 +97,10 @@ public class InfraConstants {
 	public static String DATACAST__NAME = "infra.data_cast.name";
 	public static String DATACAST__HOST_URL = "infra.data_cast.host.url";
 	public static String DATACAST__CONTEXT_ROOT = "infra.data_cast.context_root";
+	public static String DATACAST__JDBC_DRIVER = "infra.data_cast.jdbc.driver";
+	public static String DATACAST__JDBC_URL = "infra.dfs.data_cast.url";
+	public static String DATACAST__JDBC_USERNAME = "infra.data_cast.jdbc.username";
+	public static String DATACAST__JDBC_PASSWORD = "infra.data_cast.jdbc.password";
 
 	// index item values
 	public static String IDX__DATACAST_INDEXER_ID = "infra.data_cast.indexer";

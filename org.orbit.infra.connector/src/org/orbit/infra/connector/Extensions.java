@@ -1,8 +1,9 @@
 package org.orbit.infra.connector;
 
-import org.orbit.infra.connector.channel.ChannelsConnector;
-import org.orbit.infra.connector.cli.ChannelCommand;
+import org.orbit.infra.connector.cli.DataTubeCommand;
 import org.orbit.infra.connector.cli.IndexServiceCommand;
+import org.orbit.infra.connector.datacast.DataCastConnector;
+import org.orbit.infra.connector.datatube.DataTubeConnector;
 import org.orbit.infra.connector.extensionregistry.ExtensionRegistryConnector;
 import org.orbit.infra.connector.indexes.IndexProviderConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
@@ -47,17 +48,23 @@ public class Extensions extends ProgramExtensions {
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 
-		// Channel connector
-		Extension extension3 = new Extension(typeId, ChannelsConnector.ID, "Cannel Connector", "Cannel connector description");
-		InterfaceDescription desc3 = new InterfaceDescription(ConnectorActivator.class, ChannelsConnector.class);
+		// Extension Registry
+		Extension extension3 = new Extension(typeId, ExtensionRegistryConnector.ID, "Extension Registry Connector");
+		InterfaceDescription desc3 = new InterfaceDescription(ConnectorActivator.class, ExtensionRegistryConnector.class);
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 
-		// Extension Registry
-		Extension extension4 = new Extension(typeId, ExtensionRegistryConnector.ID, "Extension Registry Connector");
-		InterfaceDescription desc4 = new InterfaceDescription(ConnectorActivator.class, ExtensionRegistryConnector.class);
+		// DataCast connector
+		Extension extension4 = new Extension(typeId, DataCastConnector.ID, "DataCast Connector", "DataCast connector description");
+		InterfaceDescription desc4 = new InterfaceDescription(ConnectorActivator.class, DataCastConnector.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);
+
+		// DataTube connector
+		Extension extension5 = new Extension(typeId, DataTubeConnector.ID, "DataTube Connector", "DataTube connector description");
+		InterfaceDescription desc5 = new InterfaceDescription(ConnectorActivator.class, DataTubeConnector.class);
+		extension5.addInterface(desc5);
+		addExtension(extension5);
 	}
 
 	protected void createCommandExtensions() {
@@ -69,9 +76,9 @@ public class Extensions extends ProgramExtensions {
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 
-		// Channel command
-		Extension extension2 = new Extension(typeId, ChannelCommand.ID, "Channel Command", "Channel command description");
-		InterfaceDescription desc2 = new InterfaceDescription(CommandActivator.class, ChannelCommand.class);
+		// DataTube command
+		Extension extension2 = new Extension(typeId, DataTubeCommand.ID, "DataTube Command", "DataTube command description");
+		InterfaceDescription desc2 = new InterfaceDescription(CommandActivator.class, DataTubeCommand.class);
 		extension2.addInterface(desc2);
 		addExtension(extension2);
 	}

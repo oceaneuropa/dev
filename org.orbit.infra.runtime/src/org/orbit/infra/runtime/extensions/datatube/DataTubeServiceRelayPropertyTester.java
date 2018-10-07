@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.extensions.channelservice;
+package org.orbit.infra.runtime.extensions.datatube;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -9,11 +9,11 @@ import org.origin.common.extensions.condition.IPropertyTester;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 
-public class ChannelServicePropertyTester implements IPropertyTester {
+public class DataTubeServiceRelayPropertyTester implements IPropertyTester {
 
-	public static String ID = "org.orbit.infra.runtime.ChannelServicePropertyTester";
+	public static String ID = "org.orbit.infra.runtime.DataTubeServiceRelayPropertyTester";
 
-	public static ChannelServicePropertyTester INSTANCE = new ChannelServicePropertyTester();
+	public static DataTubeServiceRelayPropertyTester INSTANCE = new DataTubeServiceRelayPropertyTester();
 
 	@Override
 	public boolean accept(Object context, Object source, Object target, Map<String, Object> args) {
@@ -24,8 +24,8 @@ public class ChannelServicePropertyTester implements IPropertyTester {
 		}
 		if (bundleContext != null) {
 			Map<Object, Object> properties = new Hashtable<Object, Object>();
-			PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.DATATUBE__AUTOSTART);
-			String autoStart = (String) properties.get(InfraConstants.DATATUBE__AUTOSTART);
+			PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.DATATUBE__RELAY_AUTOSTART);
+			String autoStart = (String) properties.get(InfraConstants.DATATUBE__RELAY_AUTOSTART);
 			if ("true".equalsIgnoreCase(autoStart)) {
 				return true;
 			}

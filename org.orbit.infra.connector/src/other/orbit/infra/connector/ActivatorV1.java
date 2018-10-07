@@ -1,6 +1,6 @@
 package other.orbit.infra.connector;
 
-import org.orbit.infra.connector.channel.ChannelsConnector;
+import org.orbit.infra.connector.datatube.DataTubeConnector;
 import org.orbit.infra.connector.indexes.IndexServiceConnector;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -20,7 +20,7 @@ public class ActivatorV1 implements BundleActivator {
 
 	protected IndexServiceConnector indexServiceConnectorImpl;
 	// protected IndexProviderConnector indexProviderConnectorImpl;
-	protected ChannelsConnector channelConnector;
+	protected DataTubeConnector channelConnector;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -32,7 +32,7 @@ public class ActivatorV1 implements BundleActivator {
 		this.indexServiceConnectorImpl = new IndexServiceConnector();
 		this.indexServiceConnectorImpl.start(bundleContext);
 
-		this.channelConnector = new ChannelsConnector();
+		this.channelConnector = new DataTubeConnector();
 		this.channelConnector.start(bundleContext);
 
 		this.indexServiceConnectorAdapter = new IndexServiceConnectorAdapterV1() {

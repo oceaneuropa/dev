@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.infra.api.channel.ChannelClient;
+import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
@@ -19,15 +19,15 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ChannelCommand implements Annotated, CommandActivator {
+public class DataTubeCommand implements Annotated, CommandActivator {
 
 	public static final String ID = "org.orbit.infra.connector.ChannelCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(ChannelCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(DataTubeCommand.class);
 
 	protected Map<Object, Object> properties;
 
-	public ChannelCommand() {
+	public DataTubeCommand() {
 		this.properties = new HashMap<Object, Object>();
 	}
 
@@ -53,7 +53,7 @@ public class ChannelCommand implements Annotated, CommandActivator {
 						"channel_ping", //
 						"channel_send" //
 				});
-		OSGiServiceUtil.register(bundleContext, ChannelCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, DataTubeCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -63,7 +63,7 @@ public class ChannelCommand implements Annotated, CommandActivator {
 	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(ChannelCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(DataTubeCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 
@@ -78,8 +78,8 @@ public class ChannelCommand implements Annotated, CommandActivator {
 		this.properties = properties;
 	}
 
-	protected ChannelClient getChannels(String url) throws ClientException {
-		ChannelClient channels = InfraClientsUtil.Channels.getChannelClient(url, null);
+	protected DataTubeClient getChannels(String url) throws ClientException {
+		DataTubeClient channels = InfraClientsUtil.Channels.getChannelClient(url, null);
 		if (channels == null) {
 			LOG.error("Channels is not available.");
 			throw new IllegalStateException("Channels is not available. url = " + url);
@@ -93,7 +93,7 @@ public class ChannelCommand implements Annotated, CommandActivator {
 	) throws ClientException {
 		CLIHelper.getInstance().printCommand(getScheme(), "channel_ping", new String[] { "url", url });
 
-		ChannelClient channel = getChannels(url);
+		DataTubeClient channel = getChannels(url);
 
 		boolean result = channel.ping();
 		LOG.info("result = " + result);
@@ -113,7 +113,7 @@ public class ChannelCommand implements Annotated, CommandActivator {
 				, new String[] { "message", message } //
 		);
 
-		ChannelClient channel = getChannels(url);
+		DataTubeClient channel = getChannels(url);
 
 		boolean result = channel.send(channelId, senderId, message);
 		LOG.info("result = " + result);
