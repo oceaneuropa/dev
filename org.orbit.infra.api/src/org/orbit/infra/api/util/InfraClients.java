@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClientProxy;
@@ -28,7 +29,8 @@ public class InfraClients implements LifecycleAware {
 
 	protected ServiceConnectorAdapter<IndexServiceClient> indexServiceConnector;
 	protected ServiceConnectorAdapter<ExtensionRegistryClient> extensionRegistryConnector;
-	protected ServiceConnectorAdapter<DataTubeClient> channelsConnector;
+	protected ServiceConnectorAdapter<DataCastClient> dataCastConnector;
+	protected ServiceConnectorAdapter<DataTubeClient> dataTubeConnector;
 
 	/**
 	 * 
@@ -42,8 +44,11 @@ public class InfraClients implements LifecycleAware {
 		this.extensionRegistryConnector = new ServiceConnectorAdapter<ExtensionRegistryClient>(ExtensionRegistryClient.class);
 		this.extensionRegistryConnector.start(bundleContext);
 
-		this.channelsConnector = new ServiceConnectorAdapter<DataTubeClient>(DataTubeClient.class);
-		this.channelsConnector.start(bundleContext);
+		this.dataCastConnector = new ServiceConnectorAdapter<DataCastClient>(DataCastClient.class);
+		this.dataCastConnector.start(bundleContext);
+
+		this.dataTubeConnector = new ServiceConnectorAdapter<DataTubeClient>(DataTubeClient.class);
+		this.dataTubeConnector.start(bundleContext);
 	}
 
 	/**
@@ -52,9 +57,14 @@ public class InfraClients implements LifecycleAware {
 	 */
 	@Override
 	public void stop(final BundleContext bundleContext) {
-		if (this.channelsConnector != null) {
-			this.channelsConnector.stop(bundleContext);
-			this.channelsConnector = null;
+		if (this.dataCastConnector != null) {
+			this.dataCastConnector.stop(bundleContext);
+			this.dataCastConnector = null;
+		}
+
+		if (this.dataTubeConnector != null) {
+			this.dataTubeConnector.stop(bundleContext);
+			this.dataTubeConnector = null;
 		}
 
 		if (this.extensionRegistryConnector != null) {
@@ -126,24 +136,25 @@ public class InfraClients implements LifecycleAware {
 	 * @param properties
 	 * @return
 	 */
-	public DataTubeClient getChannel(Map<?, ?> properties) {
-		String realm = (String) properties.get(WSClientConstants.REALM);
-		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
-		String url = (String) properties.get(WSClientConstants.URL);
-		if (url == null) {
-			url = (String) properties.get(InfraConstants.ORBIT_CHANNEL_SERVICE_URL);
+	public DataCastClient getDataCastClient(Map<String, Object> properties) {
+		DataCastClient dataCastClient = this.dataCastConnector.getService(properties);
+		if (dataCastClient == null) {
+			throw new RuntimeException("DataCastClient is not available.");
 		}
+		return dataCastClient;
+	}
 
-		Map<String, Object> theProperties = new HashMap<String, Object>();
-		theProperties.put(WSClientConstants.REALM, realm);
-		theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-		theProperties.put(WSClientConstants.URL, url);
-
-		DataTubeClient channelClient = this.channelsConnector.getService(theProperties);
-		if (channelClient == null) {
-			// throw new RuntimeException("Channels is not available.");
+	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
+	public DataTubeClient getDataTubeClient(Map<String, Object> properties) {
+		DataTubeClient dataTubeClient = this.dataTubeConnector.getService(properties);
+		if (dataTubeClient == null) {
+			throw new RuntimeException("DataTubeClient is not available.");
 		}
-		return channelClient;
+		return dataTubeClient;
 	}
 
 }
@@ -211,4 +222,29 @@ public class InfraClients implements LifecycleAware {
 // indexProvider = new IndexProviderClientProxy(theProperties);
 // }
 // return indexProvider;
+// }
+
+// /**
+// *
+// * @param properties
+// * @return
+// */
+// public DataTubeClient getDataTubeClient(Map<?, ?> properties) {
+// String realm = (String) properties.get(WSClientConstants.REALM);
+// String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
+// String url = (String) properties.get(WSClientConstants.URL);
+// if (url == null) {
+// url = (String) properties.get(InfraConstants.ORBIT_CHANNEL_SERVICE_URL);
+// }
+//
+// Map<String, Object> theProperties = new HashMap<String, Object>();
+// theProperties.put(WSClientConstants.REALM, realm);
+// theProperties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+// theProperties.put(WSClientConstants.URL, url);
+//
+// DataTubeClient dataTubeClient = this.dataTubeConnector.getService(theProperties);
+// if (dataTubeClient == null) {
+// // throw new RuntimeException("Channels is not available.");
+// }
+// return dataTubeClient;
 // }

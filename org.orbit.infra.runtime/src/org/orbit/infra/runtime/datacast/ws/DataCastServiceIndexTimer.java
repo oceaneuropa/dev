@@ -36,7 +36,7 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 	public IndexItem getIndex(IndexServiceClient indexProvider, DataCastService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(InfraConstants.IDX__DATACAST_INDEXER_ID, InfraConstants.IDX__DATACAST_TYPE, name);
+		return indexProvider.getIndexItem(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE, name);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		return indexService.addIndexItem(InfraConstants.IDX__DATATUBE_INDEXER_ID, InfraConstants.IDX__DATATUBE_TYPE, name, props);
+		return indexService.addIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE, name, props);
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
-		indexService.setProperties(InfraConstants.IDX__DATATUBE_INDEXER_ID, indexItemId, props);
+		indexService.setProperties(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId, props);
 
 		// List<String> propNames = new ArrayList<String>();
 		// propNames.add(InfraConstants.URL);
@@ -95,7 +95,7 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 	public void removeIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexService.deleteIndexItem(InfraConstants.IDX__DATATUBE_INDEXER_ID, indexItemId);
+		indexService.deleteIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId);
 	}
 
 }

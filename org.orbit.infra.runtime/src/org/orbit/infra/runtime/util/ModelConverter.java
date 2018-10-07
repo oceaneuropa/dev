@@ -1,47 +1,18 @@
 package org.orbit.infra.runtime.util;
 
-import org.orbit.infra.model.channel.ChannelException;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
-import org.origin.common.rest.model.ErrorDTO;
-import org.origin.common.rest.server.ServerException;
 
 public class ModelConverter {
 
 	public static Indexes Indexes = new Indexes();
 	public static Extensions Extensions = new Extensions();
-	public static Channel Channel = new Channel();
+	public static DataCast DataCast = new DataCast();
+	public static DataTube DataTube = new DataTube();
 
 	public static class Indexes {
-		/**
-		 * Convert ServerException object to Error DTO.
-		 * 
-		 * @param e
-		 * @return
-		 */
-		public ErrorDTO toDTO(ServerException e) {
-			if (e == null) {
-				return null;
-			}
-
-			ErrorDTO dto = new ErrorDTO();
-			dto.setCode(e.getCode());
-			dto.setMessage(e.getMessage());
-
-			if (e.getCause() != null) {
-				String causeName = e.getCause().getClass().getName();
-				String causeMessage = e.getCause().getMessage();
-				dto.setDetail(causeName + " " + causeMessage);
-			} else {
-				String causeName = e.getClass().getName();
-				dto.setDetail(causeName);
-			}
-
-			return dto;
-		}
-
 		/**
 		 * Convert IndexItem runtime model to IndexItem DTO.
 		 * 
@@ -53,14 +24,14 @@ public class ModelConverter {
 				return null;
 			}
 
-			IndexItemDTO dto = new IndexItemDTO();
-			dto.setIndexItemId(indexItem.getIndexItemId());
-			dto.setIndexProviderId(indexItem.getIndexProviderId());
-			dto.setType(indexItem.getType());
-			dto.setName(indexItem.getName());
-			dto.setProperties(indexItem.getProperties());
+			IndexItemDTO indexItemDTO = new IndexItemDTO();
+			indexItemDTO.setIndexItemId(indexItem.getIndexItemId());
+			indexItemDTO.setIndexProviderId(indexItem.getIndexProviderId());
+			indexItemDTO.setType(indexItem.getType());
+			indexItemDTO.setName(indexItem.getName());
+			indexItemDTO.setProperties(indexItem.getProperties());
 
-			return dto;
+			return indexItemDTO;
 		}
 	}
 
@@ -76,50 +47,24 @@ public class ModelConverter {
 				return null;
 			}
 
-			ExtensionItemDTO DTO = new ExtensionItemDTO();
-			DTO.setId(item.getId());
-			DTO.setPlatformId(item.getPlatformId());
-			DTO.setTypeId(item.getTypeId());
-			DTO.setExtensionId(item.getExtensionId());
-			DTO.setName(item.getName());
-			DTO.setDescription(item.getDescription());
-			DTO.setProperties(item.getProperties());
-			return DTO;
+			ExtensionItemDTO extensionItemDTO = new ExtensionItemDTO();
+			extensionItemDTO.setId(item.getId());
+			extensionItemDTO.setPlatformId(item.getPlatformId());
+			extensionItemDTO.setTypeId(item.getTypeId());
+			extensionItemDTO.setExtensionId(item.getExtensionId());
+			extensionItemDTO.setName(item.getName());
+			extensionItemDTO.setDescription(item.getDescription());
+			extensionItemDTO.setProperties(item.getProperties());
+			return extensionItemDTO;
 		}
 	}
 
-	public static class Channel {
+	public static class DataCast {
 
-		// ------------------------------------------------------------------------------------------
-		// RTO -> DTO
-		// ------------------------------------------------------------------------------------------
-		/**
-		 * Convert ChannelException object to Error DTO.
-		 * 
-		 * @param e
-		 * @return
-		 */
-		public ErrorDTO toDTO(ChannelException e) {
-			if (e == null) {
-				return null;
-			}
+	}
 
-			ErrorDTO dto = new ErrorDTO();
+	public static class DataTube {
 
-			dto.setCode(e.getCode());
-			dto.setMessage(e.getMessage());
-
-			if (e.getCause() != null) {
-				String causeName = e.getCause().getClass().getName();
-				String causeMessage = e.getCause().getMessage();
-				dto.setDetail(causeName + " " + causeMessage);
-
-			} else {
-				String causeName = e.getClass().getName();
-				dto.setDetail(causeName);
-			}
-			return dto;
-		}
 	}
 
 }
@@ -148,5 +93,63 @@ public class ModelConverter {
 // dto.setDetail(causeName);
 // }
 //
+// return dto;
+// }
+
+/// **
+// * Convert ServerException object to Error DTO.
+// *
+// * @param e
+// * @return
+// */
+// public ErrorDTO toDTO(ServerException e) {
+// if (e == null) {
+// return null;
+// }
+//
+// ErrorDTO dto = new ErrorDTO();
+// dto.setCode(e.getCode());
+// dto.setMessage(e.getMessage());
+//
+// if (e.getCause() != null) {
+// String causeName = e.getCause().getClass().getName();
+// String causeMessage = e.getCause().getMessage();
+// dto.setDetail(causeName + " " + causeMessage);
+// } else {
+// String causeName = e.getClass().getName();
+// dto.setDetail(causeName);
+// }
+//
+// return dto;
+// }
+
+// ------------------------------------------------------------------------------------------
+// RTO -> DTO
+// ------------------------------------------------------------------------------------------
+// /**
+// * Convert ChannelException object to Error DTO.
+// *
+// * @param e
+// * @return
+// */
+// public ErrorDTO toDTO(ChannelException e) {
+// if (e == null) {
+// return null;
+// }
+//
+// ErrorDTO dto = new ErrorDTO();
+//
+// dto.setCode(e.getCode());
+// dto.setMessage(e.getMessage());
+//
+// if (e.getCause() != null) {
+// String causeName = e.getCause().getClass().getName();
+// String causeMessage = e.getCause().getMessage();
+// dto.setDetail(causeName + " " + causeMessage);
+//
+// } else {
+// String causeName = e.getClass().getName();
+// dto.setDetail(causeName);
+// }
 // return dto;
 // }

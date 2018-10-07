@@ -223,11 +223,11 @@ public class Extensions extends ProgramExtensions {
 		extension2.addInterface(factoryClass, ExtensionRegistryServiceIndexTimerFactory.class);
 		addExtension(extension2);
 
-		Extension extension3 = new Extension(extensionTypeId, InfraConstants.IDX__DATACAST_INDEXER_ID, "DataCast Service Index Provider");
+		Extension extension3 = new Extension(extensionTypeId, InfraConstants.IDX__DATACAST__INDEXER_ID, "DataCast Service Index Provider");
 		extension3.addInterface(factoryClass, DataCastServiceIndexTimerFactory.class);
 		addExtension(extension3);
 
-		Extension extension4 = new Extension(extensionTypeId, InfraConstants.IDX__DATATUBE_INDEXER_ID, "DataTube Service Index Provider");
+		Extension extension4 = new Extension(extensionTypeId, InfraConstants.IDX__DATATUBE__INDEXER_ID, "DataTube Service Index Provider");
 		extension4.addInterface(factoryClass, DataTubeServiceIndexTimerFactory.class);
 		addExtension(extension4);
 	}

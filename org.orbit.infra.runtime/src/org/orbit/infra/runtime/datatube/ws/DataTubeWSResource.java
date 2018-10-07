@@ -1,5 +1,7 @@
 package org.orbit.infra.runtime.datatube.ws;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -9,13 +11,12 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.infra.model.channel.ChannelException;
 import org.orbit.infra.model.channel.ChannelMessageDTO;
 import org.orbit.infra.runtime.datatube.service.Channel;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
-import org.orbit.infra.runtime.util.ModelConverter;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
+import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +68,9 @@ public class DataTubeWSResource extends AbstractWSApplicationResource {
 
 			return Response.status(Status.OK).entity(result).build();
 
-		} catch (ChannelException e) {
-			e.printStackTrace();
-			return Response.status(Status.BAD_REQUEST).entity(ModelConverter.Channel.toDTO(e)).build();
+		} catch (IOException e) {
+			ErrorDTO error = handleError(e, "500", true);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 	}
 

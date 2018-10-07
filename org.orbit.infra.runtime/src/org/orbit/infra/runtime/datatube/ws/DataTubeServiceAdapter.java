@@ -112,7 +112,7 @@ public class DataTubeServiceAdapter implements LifecycleAware {
 		// Start index timer
 		LOG.debug("start index timer");
 		IndexServiceClient indexProvider = getIndexProvider();
-		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.IDX__DATATUBE_INDEXER_ID);
+		IExtension extension = PlatformSDKActivator.getInstance().getExtensionRegistry().getExtension(ServiceIndexTimerFactory.EXTENSION_TYPE_ID, InfraConstants.IDX__DATATUBE__INDEXER_ID);
 		if (extension != null) {
 			@SuppressWarnings("unchecked")
 			ServiceIndexTimerFactory<DataTubeService> indexTimerFactory = extension.createExecutableInstance(ServiceIndexTimerFactory.class);

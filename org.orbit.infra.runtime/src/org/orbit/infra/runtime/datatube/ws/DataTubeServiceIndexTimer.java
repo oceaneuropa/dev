@@ -36,7 +36,7 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 	public IndexItem getIndex(IndexServiceClient indexProvider, DataTubeService service) throws IOException {
 		String name = service.getName();
 
-		return indexProvider.getIndexItem(InfraConstants.IDX__DATATUBE_INDEXER_ID, InfraConstants.IDX__DATATUBE_TYPE, name);
+		return indexProvider.getIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE, name);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 		// props.put(InfraConstants.HEARTBEAT_EXPIRE_TIME, expire);
-		return indexProvider.addIndexItem(InfraConstants.IDX__DATATUBE_INDEXER_ID, InfraConstants.IDX__DATATUBE_TYPE, name, props);
+		return indexProvider.addIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE, name, props);
 	}
 
 	@Override
@@ -83,7 +83,7 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 		// props.put(InfraConstants.HEARTBEAT_EXPIRE_TIME, expire);
-		indexProvider.setProperties(InfraConstants.IDX__DATATUBE_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId, props);
 
 		// List<String> propNames = new ArrayList<String>();
 		// propNames.add(InfraConstants.URL);
@@ -97,7 +97,7 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 
-		indexProvider.deleteIndexItem(InfraConstants.IDX__DATATUBE_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId);
 	}
 
 }

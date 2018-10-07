@@ -1,5 +1,6 @@
 package org.orbit.infra.runtime.datatube.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.orbit.infra.model.channel.ChannelException;
 import org.orbit.infra.runtime.datatube.service.Channel;
 import org.orbit.infra.runtime.datatube.service.MessageListener;
 
@@ -52,7 +52,7 @@ public class ChannelImpl implements Channel {
 
 	/** Implement MessageListener interface */
 	@Override
-	public int onMessage(final String senderId, final String message) throws ChannelException {
+	public int onMessage(final String senderId, final String message) throws IOException {
 		for (Iterator<MessageListener> itor = this.messageListeners.iterator(); itor.hasNext();) {
 			final MessageListener listener = itor.next();
 			this.threadPoolExecutor.execute(new Runnable() {

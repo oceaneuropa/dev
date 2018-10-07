@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
@@ -19,7 +20,8 @@ public class InfraClientsUtil {
 
 	public static Indexes Indexes = new Indexes();
 	public static Extensions Extensions = new Extensions();
-	public static Channels Channels = new Channels();
+	public static DataCast DataCast = new DataCast();
+	public static DataTube DataTube = new DataTube();
 
 	public static class Indexes {
 		/**
@@ -251,26 +253,6 @@ public class InfraClientsUtil {
 		}
 	}
 
-	public static class Channels {
-		/**
-		 * 
-		 * @param channelServiceUrl
-		 * @param accessToken
-		 * @return
-		 */
-		public DataTubeClient getChannelClient(String channelServiceUrl, String accessToken) {
-			DataTubeClient channelClient = null;
-			if (channelServiceUrl != null) {
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(WSClientConstants.REALM, null);
-				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-				properties.put(WSClientConstants.URL, channelServiceUrl);
-				channelClient = InfraClients.getInstance().getChannel(properties);
-			}
-			return channelClient;
-		}
-	}
-
 	public static class Extensions {
 		/**
 		 * Get all extension items from a platform.
@@ -386,6 +368,48 @@ public class InfraClientsUtil {
 				extensionRegistry = InfraClients.getInstance().getExtensionRegistry(properties, true);
 			}
 			return extensionRegistry;
+		}
+	}
+
+	public static class DataCast {
+		/**
+		 * 
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public DataCastClient getDataCastClient(String dataCastServiceUrl, String accessToken) {
+			DataCastClient dataCastClient = null;
+			if (dataCastServiceUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, dataCastServiceUrl);
+
+				dataCastClient = InfraClients.getInstance().getDataCastClient(properties);
+			}
+			return dataCastClient;
+		}
+	}
+
+	public static class DataTube {
+		/**
+		 * 
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public DataTubeClient getDataTubeClient(String dataTubeServiceUrl, String accessToken) {
+			DataTubeClient dataTubeClient = null;
+			if (dataTubeServiceUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, dataTubeServiceUrl);
+
+				dataTubeClient = InfraClients.getInstance().getDataTubeClient(properties);
+			}
+			return dataTubeClient;
 		}
 	}
 

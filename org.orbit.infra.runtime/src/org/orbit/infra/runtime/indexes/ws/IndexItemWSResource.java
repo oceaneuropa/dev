@@ -74,18 +74,6 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 	}
 
 	/**
-	 * Handle ServerException and create ErrorDTO from it.
-	 * 
-	 * @param e
-	 * @return
-	 */
-	protected ErrorDTO handleError(ServerException e) {
-		e.printStackTrace();
-		this.logger.error(e.getMessage());
-		return ModelConverter.Indexes.toDTO(e);
-	}
-
-	/**
 	 * Get an index item.
 	 * 
 	 * URL (GET): {scheme}://{host}:{port}/{contextRoot}/indexitems/{indexproviderid}/{indexitemid}
@@ -182,7 +170,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 			properties = indexService.getProperties(indexProviderId, indexItemId);
 
 		} catch (ServerException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 		if (properties == null) {
@@ -236,7 +224,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 			succeed = indexService.setProperties(indexProviderId, indexItemId, existingProperties);
 
 		} catch (ServerException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -344,7 +332,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 			succeed = indexService.setProperties(indexProviderId, indexItemId, properties);
 
 		} catch (ServerException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -390,7 +378,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 			indexService.removeProperty(indexProviderId, indexItemId, (List<String>) propNames);
 
 		} catch (ServerException e) {
-			ErrorDTO error = handleError(e);
+			ErrorDTO error = handleError(e, e.getCode(), true);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(error).build();
 		}
 
@@ -406,6 +394,18 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 	}
 
 }
+
+// /**
+// * Handle ServerException and create ErrorDTO from it.
+// *
+// * @param e
+// * @return
+// */
+// protected ErrorDTO handleError(ServerException e) {
+// e.printStackTrace();
+// this.logger.error(e.getMessage());
+// return ModelConverter.Indexes.toDTO(e);
+// }
 
 // /**
 // * Check whether an index item exists.

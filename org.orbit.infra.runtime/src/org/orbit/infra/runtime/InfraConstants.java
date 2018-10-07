@@ -103,8 +103,8 @@ public class InfraConstants {
 	public static String DATACAST__JDBC_PASSWORD = "infra.data_cast.jdbc.password";
 
 	// index item values
-	public static String IDX__DATACAST_INDEXER_ID = "infra.data_cast.indexer";
-	public static String IDX__DATACAST_TYPE = "DataCast";
+	public static String IDX__DATACAST__INDEXER_ID = "infra.data_cast.indexer";
+	public static String IDX__DATACAST__TYPE = "DataCast";
 
 	// index item properties
 	public static String IDX_PROP__DATACAST__ID = "data_cast.id";
@@ -129,8 +129,8 @@ public class InfraConstants {
 	public static String DATATUBE__HTTP_PORT = "infra.data_tube.http_port";
 
 	// index item values
-	public static String IDX__DATATUBE_INDEXER_ID = "infra.data_tube.indexer";
-	public static String IDX__DATATUBE_TYPE = "DataTube";
+	public static String IDX__DATATUBE__INDEXER_ID = "infra.data_tube.indexer";
+	public static String IDX__DATATUBE__TYPE = "DataTube";
 
 	// index item properties
 	public static String IDX_PROP__DATATUBE__DATACAST_ID = "data_tube.data_cast_id";

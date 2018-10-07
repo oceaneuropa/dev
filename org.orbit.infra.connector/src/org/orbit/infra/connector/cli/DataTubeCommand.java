@@ -79,7 +79,7 @@ public class DataTubeCommand implements Annotated, CommandActivator {
 	}
 
 	protected DataTubeClient getChannels(String url) throws ClientException {
-		DataTubeClient channels = InfraClientsUtil.Channels.getChannelClient(url, null);
+		DataTubeClient channels = InfraClientsUtil.DataTube.getDataTubeClient(url, null);
 		if (channels == null) {
 			LOG.error("Channels is not available.");
 			throw new IllegalStateException("Channels is not available. url = " + url);

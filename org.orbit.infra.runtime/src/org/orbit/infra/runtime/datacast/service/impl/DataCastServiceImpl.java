@@ -2,13 +2,16 @@ package org.orbit.infra.runtime.datacast.service.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
+import org.orbit.infra.runtime.datacast.service.DataTubeMetadata;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
@@ -195,6 +198,13 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
 		return this.wsEditPolicies;
+	}
+
+	@Override
+	public List<DataTubeMetadata> getDataTubes() {
+		List<DataTubeMetadata> dataTubes = new ArrayList<DataTubeMetadata>();
+
+		return dataTubes;
 	}
 
 }
