@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
-import org.orbit.infra.model.channel.ChannelMessageDTO;
+import org.orbit.infra.model.datatube.ChannelMessageDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;

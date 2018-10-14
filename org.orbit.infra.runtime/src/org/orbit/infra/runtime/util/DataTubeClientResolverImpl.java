@@ -6,12 +6,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClientsUtil;
-import org.orbit.infra.runtime.InfraConstants;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class DataTubeClientResolverImpl implements DataTubeClientResolver {

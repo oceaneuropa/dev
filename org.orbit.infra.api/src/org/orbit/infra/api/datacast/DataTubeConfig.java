@@ -1,9 +1,14 @@
-package org.orbit.infra.runtime.datacast.service;
+package org.orbit.infra.api.datacast;
 
-import java.util.List;
 import java.util.Map;
 
-public interface ChannelMetadata {
+public interface DataTubeConfig {
+
+	DataCastClient getDataCastClient();
+
+	String getId();
+
+	void setId(String id);
 
 	String getDataCastId();
 
@@ -13,15 +18,13 @@ public interface ChannelMetadata {
 
 	void setDataTubeId(String dataTubeId);
 
-	String getChannelId();
-
-	void setChannelId(String channelId);
-
 	String getName();
 
 	void setName(String name);
 
-	List<String> getAccountIds();
+	boolean isEnabled();
+
+	void setEnabled(boolean enabled);
 
 	Map<String, Object> getProperties();
 

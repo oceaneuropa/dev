@@ -24,7 +24,7 @@ import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsUtil;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
-import org.orbit.platform.api.PlatformMetadata;
+import org.orbit.platform.api.PlatformServiceMetadata;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
@@ -98,7 +98,7 @@ public class NodeListServlet extends HttpServlet {
 								try {
 									PlatformClient nodePlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, indexItem);
 									if (nodePlatformClient != null) {
-										PlatformMetadata platformMetadata = nodePlatformClient.getMetadata();
+										PlatformServiceMetadata platformMetadata = nodePlatformClient.getMetadata();
 										if (platformMetadata != null) {
 											String jvmName = platformMetadata.getJvmName();
 											String pid = platformMetadata.getPid();

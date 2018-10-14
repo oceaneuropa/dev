@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.infra.model.channel.ChannelMessageDTO;
+import org.orbit.infra.model.datatube.ChannelMessageDTO;
 import org.orbit.infra.runtime.datatube.service.Channel;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.platform.sdk.http.OrbitRoles;

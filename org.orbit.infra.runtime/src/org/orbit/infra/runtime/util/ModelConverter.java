@@ -1,9 +1,16 @@
 package org.orbit.infra.runtime.util;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.orbit.infra.model.datacast.DataTubeConfigDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
+import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
+import org.origin.common.json.JSONUtil;
 
 public class ModelConverter {
 
@@ -60,7 +67,89 @@ public class ModelConverter {
 	}
 
 	public static class DataCast {
+		/**
+		 * 
+		 * @param dataTubeConfig
+		 * @return
+		 */
+		public DataTubeConfigDTO toDTO(DataTubeConfig dataTubeConfig) {
+			if (dataTubeConfig == null) {
+				return null;
+			}
 
+			String id = dataTubeConfig.getId();
+			String dataCastId = dataTubeConfig.getDataCastId();
+			String dataTubeId = dataTubeConfig.getDataTubeId();
+			String name = dataTubeConfig.getName();
+			boolean isEnabled = dataTubeConfig.isEnabled();
+			Map<String, Object> properties = dataTubeConfig.getProperties();
+			long dateCreated = dataTubeConfig.getDateCreated();
+			long dateModified = dataTubeConfig.getDateModified();
+
+			DataTubeConfigDTO dataTubeConfigDTO = new DataTubeConfigDTO();
+			dataTubeConfigDTO.setId(id);
+			dataTubeConfigDTO.setDataCastId(dataCastId);
+			dataTubeConfigDTO.setDataTubeId(dataTubeId);
+			dataTubeConfigDTO.setName(name);
+			dataTubeConfigDTO.setEnabled(isEnabled);
+			dataTubeConfigDTO.setProperties(properties);
+			dataTubeConfigDTO.setDateCreated(dateCreated);
+			dataTubeConfigDTO.setDateModified(dateModified);
+
+			return dataTubeConfigDTO;
+		}
+
+		/**
+		 * 
+		 * @param accountIdsString
+		 * @return
+		 */
+		public List<String> toAccountIds(String accountIdsString) {
+			List<String> accountIds = new ArrayList<String>();
+			if (accountIdsString != null && !accountIdsString.isEmpty()) {
+				List<Object> list = JSONUtil.toList(accountIdsString, false);
+				if (list != null) {
+					for (Object object : list) {
+						accountIds.add(object.toString());
+					}
+				}
+			}
+			return accountIds;
+		}
+
+		/**
+		 * Convert a list of String to string
+		 * 
+		 * @param accountIds
+		 * @return
+		 */
+		public String toAccountIdsString(List<String> accountIds) {
+			String accountIdsString = JSONUtil.toJsonString(accountIds, false);
+			if (accountIdsString == null) {
+				accountIdsString = "";
+			}
+			return accountIdsString;
+		}
+
+		/**
+		 * 
+		 * @param propertiesString
+		 * @return
+		 */
+		public Map<String, Object> toProperties(String propertiesString) {
+			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+			return properties;
+		}
+
+		/**
+		 * 
+		 * @param properties
+		 * @return
+		 */
+		public String toPropertiesString(Map<String, Object> properties) {
+			String propertiesString = JSONUtil.toJsonString(properties);
+			return propertiesString;
+		}
 	}
 
 	public static class DataTube {

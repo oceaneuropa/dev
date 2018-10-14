@@ -1,4 +1,4 @@
-package org.orbit.infra.model.channel;
+package org.orbit.infra.model.datatube;
 
 public class ChannelException extends Exception {
 

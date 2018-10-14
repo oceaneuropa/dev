@@ -3,6 +3,13 @@ package org.orbit.infra.runtime;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
 import org.orbit.infra.runtime.cli.InfraCommand;
 import org.orbit.infra.runtime.datacast.ws.DataCastServiceIndexTimerFactory;
+import org.orbit.infra.runtime.datacast.ws.command.CreateDataTubeConfigCommand;
+import org.orbit.infra.runtime.datacast.ws.command.DeleteDataTubeConfigCommand;
+import org.orbit.infra.runtime.datacast.ws.command.GetDataTubeConfigCommand;
+import org.orbit.infra.runtime.datacast.ws.command.ListDataTubeConfigsCommand;
+import org.orbit.infra.runtime.datacast.ws.command.RemoveDataTubeConfigPropertiesCommand;
+import org.orbit.infra.runtime.datacast.ws.command.SetDataTubeConfigPropertiesCommand;
+import org.orbit.infra.runtime.datacast.ws.command.UpdateDataTubeConfigCommand;
 import org.orbit.infra.runtime.datatube.ws.DataTubeServiceIndexTimerFactory;
 import org.orbit.infra.runtime.extensionregistry.ws.ExtensionRegistryServiceIndexTimerFactory;
 import org.orbit.infra.runtime.extensions.datacast.DataCastServiceActivator;
@@ -29,6 +36,7 @@ import org.origin.common.extensions.Parameter;
 import org.origin.common.extensions.ProgramExtensions;
 import org.origin.common.extensions.condition.ConditionFactory;
 import org.origin.common.extensions.condition.IPropertyTester;
+import org.origin.common.rest.editpolicy.WSCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +61,11 @@ public class Extensions extends ProgramExtensions {
 		createServiceActivatorExtensions();
 		createPropertyTesterExtensions();
 		createIndexProviderExtensions();
-		createCommandExtensions();
+
+		createEditPolicyCommandExtensions1();
+		createEditPolicyCommandExtensions2();
+
+		createCommandExtensions2();
 	}
 
 	protected void createServiceActivatorExtensions() {
@@ -232,7 +244,65 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension4);
 	}
 
-	protected void createCommandExtensions() {
+	protected void createEditPolicyCommandExtensions1() {
+		String extensionTypeId = WSCommand.EXTENSION_TYPE_ID;
+		String serviceName = InfraConstants.DATACAST__SERVICE_NAME;
+
+		Extension extension1 = new Extension(extensionTypeId, ListDataTubeConfigsCommand.ID);
+		extension1.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc1 = new InterfaceDescription(WSCommand.class, ListDataTubeConfigsCommand.class);
+		desc1.setSingleton(false);
+		extension1.addInterface(desc1);
+		addExtension(extension1);
+
+		Extension extension2 = new Extension(extensionTypeId, GetDataTubeConfigCommand.ID);
+		extension2.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc2 = new InterfaceDescription(WSCommand.class, GetDataTubeConfigCommand.class);
+		desc2.setSingleton(false);
+		extension2.addInterface(desc2);
+		addExtension(extension2);
+
+		Extension extension3 = new Extension(extensionTypeId, CreateDataTubeConfigCommand.ID);
+		extension3.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc3 = new InterfaceDescription(WSCommand.class, CreateDataTubeConfigCommand.class);
+		desc3.setSingleton(false);
+		extension3.addInterface(desc3);
+		addExtension(extension3);
+
+		Extension extension4 = new Extension(extensionTypeId, UpdateDataTubeConfigCommand.ID);
+		extension4.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc4 = new InterfaceDescription(WSCommand.class, UpdateDataTubeConfigCommand.class);
+		desc4.setSingleton(false);
+		extension4.addInterface(desc4);
+		addExtension(extension4);
+
+		Extension extension5 = new Extension(extensionTypeId, SetDataTubeConfigPropertiesCommand.ID);
+		extension5.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc5 = new InterfaceDescription(WSCommand.class, SetDataTubeConfigPropertiesCommand.class);
+		desc5.setSingleton(false);
+		extension5.addInterface(desc5);
+		addExtension(extension5);
+
+		Extension extension6 = new Extension(extensionTypeId, RemoveDataTubeConfigPropertiesCommand.ID);
+		extension6.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc6 = new InterfaceDescription(WSCommand.class, RemoveDataTubeConfigPropertiesCommand.class);
+		desc6.setSingleton(false);
+		extension6.addInterface(desc6);
+		addExtension(extension6);
+
+		Extension extension7 = new Extension(extensionTypeId, DeleteDataTubeConfigCommand.ID);
+		extension7.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc7 = new InterfaceDescription(WSCommand.class, DeleteDataTubeConfigCommand.class);
+		desc7.setSingleton(false);
+		extension7.addInterface(desc7);
+		addExtension(extension7);
+	}
+
+	protected void createEditPolicyCommandExtensions2() {
+
+	}
+
+	protected void createCommandExtensions2() {
 		String extensionTypeId = CommandActivator.EXTENSION_TYPE_ID;
 
 		// Infra server side command

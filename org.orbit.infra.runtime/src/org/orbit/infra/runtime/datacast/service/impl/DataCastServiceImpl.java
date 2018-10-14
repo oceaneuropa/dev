@@ -1,26 +1,41 @@
 package org.orbit.infra.runtime.datacast.service.impl;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.orbit.infra.api.datatube.DataTubeClient;
+import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.runtime.InfraConstants;
+import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
-import org.orbit.infra.runtime.datacast.service.DataTubeMetadata;
+import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
+import org.orbit.infra.runtime.util.DataTubeClientResolverImpl;
+import org.orbit.platform.sdk.http.JWTTokenHandler;
+import org.orbit.platform.sdk.http.OrbitRoles;
+import org.orbit.platform.sdk.util.ExtensionUtil;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
+import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
+import org.origin.common.util.UUIDUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 public class DataCastServiceImpl implements DataCastService, LifecycleAware {
+
+	public static DataTubeConfig[] EMPTY_DATATUBES = new DataTubeConfig[0];
+	public static ChannelMetadata[] EMPTY_CHANNELS = new ChannelMetadata[0];
 
 	protected Map<Object, Object> initProperties;
 	protected Map<Object, Object> properties = new HashMap<Object, Object>();
@@ -200,11 +215,446 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 		return this.wsEditPolicies;
 	}
 
-	@Override
-	public List<DataTubeMetadata> getDataTubes() {
-		List<DataTubeMetadata> dataTubes = new ArrayList<DataTubeMetadata>();
+	/**
+	 * 
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+	protected DataTubeConfigTableHandler getDataTubeConfigTableHandler(Connection conn) throws SQLException {
+		DataTubeConfigTableHandler tableHandler = DataTubeConfigTableHandler.getInstance(conn, getDataCastId());
+		return tableHandler;
+	}
 
-		return dataTubes;
+	/**
+	 * 
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+	protected ChannelMetadataTableHandler getChannelMetadataTableHandler(Connection conn) throws SQLException {
+		ChannelMetadataTableHandler tableHandler = ChannelMetadataTableHandler.getInstance(conn, getDataCastId());
+		return tableHandler;
+	}
+
+	/**
+	 * 
+	 * @param e
+	 * @throws ServerException
+	 */
+	protected void handleException(Exception e) throws ServerException {
+		throw new ServerException("500", e);
+	}
+
+	@Override
+	public DataTubeConfig[] getDataTubeConfigs() throws ServerException {
+		DataTubeConfig[] result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DataTubeConfigTableHandler tableHandler = getDataTubeConfigTableHandler(conn);
+
+			List<DataTubeConfig> dataTubeConfigs = tableHandler.getList(conn);
+			if (dataTubeConfigs != null && !dataTubeConfigs.isEmpty()) {
+				result = dataTubeConfigs.toArray(new DataTubeConfig[dataTubeConfigs.size()]);
+			}
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		if (result == null) {
+			result = EMPTY_DATATUBES;
+		}
+		return result;
+	}
+
+	@Override
+	public DataTubeConfig[] getDataTubeConfigs(boolean isEnabled) throws ServerException {
+		DataTubeConfig[] result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DataTubeConfigTableHandler tableHandler = getDataTubeConfigTableHandler(conn);
+
+			List<DataTubeConfig> dataTubeConfigs = tableHandler.getList(conn, isEnabled);
+			if (dataTubeConfigs != null && !dataTubeConfigs.isEmpty()) {
+				result = dataTubeConfigs.toArray(new DataTubeConfig[dataTubeConfigs.size()]);
+			}
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		if (result == null) {
+			result = EMPTY_DATATUBES;
+		}
+		return result;
+	}
+
+	@Override
+	public DataTubeConfig getDataTubeConfig(String configId) throws ServerException {
+		DataTubeConfig result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DataTubeConfigTableHandler tableHandler = getDataTubeConfigTableHandler(conn);
+
+			result = tableHandler.getByConfigId(conn, configId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return result;
+	}
+
+	@Override
+	public DataTubeConfig createDataTubeConfig(String dataTubeId, String dataTubeName, boolean isEnabled, Map<String, Object> properties) throws ServerException {
+		DataTubeConfig result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DataTubeConfigTableHandler tableHandler = getDataTubeConfigTableHandler(conn);
+
+			result = tableHandler.create(conn, dataTubeId, dataTubeName, isEnabled, properties);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} catch (IOException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean updateDataTubeName(String configId, String dataTubeName) throws ServerException {
+		boolean isUpdated = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DataTubeConfigTableHandler tableHandler = getDataTubeConfigTableHandler(conn);
+
+			isUpdated = tableHandler.updateName(conn, configId, dataTubeName);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean updateDataTubeEnabled(String configId, boolean isEnabled) throws ServerException {
+		boolean isUpdated = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DataTubeConfigTableHandler tableHandler = getDataTubeConfigTableHandler(conn);
+
+			isUpdated = tableHandler.updateEnabled(conn, configId, isEnabled);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean updateDataTubeProperties(String configId, Map<String, Object> properties) throws ServerException {
+		boolean isUpdated = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DataTubeConfigTableHandler tableHandler = getDataTubeConfigTableHandler(conn);
+
+			isUpdated = tableHandler.updateProperties(conn, configId, properties);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean deleteDataTubeConfig(String configId) throws ServerException {
+		boolean isDeleted = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DataTubeConfigTableHandler tableHandler = getDataTubeConfigTableHandler(conn);
+
+			isDeleted = tableHandler.deleteByConfigId(conn, configId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isDeleted;
+	}
+
+	@Override
+	public ChannelMetadata[] getChannels() throws ServerException {
+		ChannelMetadata[] result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			List<ChannelMetadata> channels = tableHandler.getList(conn);
+			if (channels != null && !channels.isEmpty()) {
+				result = channels.toArray(new ChannelMetadata[channels.size()]);
+			}
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		if (result == null) {
+			result = EMPTY_CHANNELS;
+		}
+		return result;
+	}
+
+	@Override
+	public ChannelMetadata[] getChannels(String dataTubeId) throws ServerException {
+		ChannelMetadata[] result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			List<ChannelMetadata> channels = tableHandler.getList(conn, dataTubeId);
+			if (channels != null && !channels.isEmpty()) {
+				result = channels.toArray(new ChannelMetadata[channels.size()]);
+			}
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		if (result == null) {
+			result = EMPTY_CHANNELS;
+		}
+		return result;
+	}
+
+	@Override
+	public boolean channelExistsById(String channelId) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			exists = tableHandler.existsByChannelId(conn, channelId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public boolean channelExistsByName(String channelName) throws ServerException {
+		boolean exists = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			exists = tableHandler.existsByChannelName(conn, channelName);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public ChannelMetadata getChannelById(String channelId) throws ServerException {
+		ChannelMetadata result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			result = tableHandler.getByChannelId(conn, channelId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return result;
+	}
+
+	@Override
+	public ChannelMetadata getChannelByName(String channelName) throws ServerException {
+		ChannelMetadata result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			result = tableHandler.getByChannelName(conn, channelName);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return result;
+	}
+
+	@Override
+	public ChannelMetadata createChannel(String channelName, Map<String, Object> properties) throws ServerException {
+		ChannelMetadata result = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			String dataTubeId = allocateDataTube(conn, tableHandler);
+			if (dataTubeId == null) {
+				throw new ServerException("500", "Data tube cannot be allocated.");
+			}
+
+			String channelId = generateChannelId();
+
+			if (properties == null) {
+				properties = new HashMap<String, Object>();
+			}
+			result = tableHandler.create(conn, dataTubeId, channelId, channelName, null, properties);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} catch (IOException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return result;
+	}
+
+	public String generateChannelId() {
+		String channelId = UUIDUtil.generateBase64EncodedUUID();
+		return channelId;
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param tableHandler
+	 * @return
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public String allocateDataTube(Connection conn, ChannelMetadataTableHandler tableHandler) throws IOException, SQLException {
+		String dataTubeId = null;
+
+		String dataCastServiceToken = getDataCastServiceToken();
+		String dataCastId = getDataCastId();
+		String indexServiceUrl = (String) getProperties().get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+
+		long dataTubeWithLeastAccountsSize = Long.MAX_VALUE;
+
+		List<ChannelMetadata> channels = tableHandler.getList(conn);
+		for (ChannelMetadata currChannel : channels) {
+			String currDataTubeId = currChannel.getDataTubeId();
+			long currAccountSize = currChannel.getAccountIds().size();
+
+		}
+
+		DataTubeClientResolver dataTubeClientResolver = new DataTubeClientResolverImpl(indexServiceUrl);
+		DataTubeClient[] dataTubeClients = dataTubeClientResolver.resolve(dataCastId, dataCastServiceToken, (Comparator) null);
+		for (DataTubeClient currDataTubeClient : dataTubeClients) {
+			try {
+				if (currDataTubeClient.ping()) {
+
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		return dataTubeId;
+	}
+
+	protected String getDataCastServiceToken() {
+		String tokenValue = null;
+		try {
+			JWTTokenHandler tokenHandler = ExtensionUtil.JWT.getTokenHandler(InfraConstants.TOKEN_PROVIDER__ORBIT);
+			if (tokenHandler != null) {
+				String roles = OrbitRoles.DATACAST_ADMIN;
+				int securityLevel = Secured.SecurityLevels.LEVEL_1;
+				String classificationLevels = Secured.ClassificationLevels.TOP_SECRET + "," + Secured.ClassificationLevels.SECRET + "," + Secured.ClassificationLevels.CONFIDENTIAL;
+
+				Map<String, String> payload = new LinkedHashMap<String, String>();
+				payload.put(JWTTokenHandler.PAYLOAD__ROLES, roles);
+				payload.put(JWTTokenHandler.PAYLOAD__SECURITY_LEVEL, String.valueOf(securityLevel));
+				payload.put(JWTTokenHandler.PAYLOAD__CLASSIFICATION_LEVELS, classificationLevels);
+
+				tokenValue = tokenHandler.createToken(payload);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return tokenValue;
+	}
+
+	@Override
+	public boolean deleteChannelById(String channelId) throws ServerException {
+		boolean isDeleted = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			isDeleted = tableHandler.deleteByChannelId(conn, channelId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isDeleted;
+	}
+
+	@Override
+	public boolean deleteChannelByName(String channelName) throws ServerException {
+
+		boolean isDeleted = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			isDeleted = tableHandler.deleteByChannelName(conn, channelName);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isDeleted;
 	}
 
 }

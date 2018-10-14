@@ -91,7 +91,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		try {
 			IndexServiceClient indexService = getIndexService();
 
-			List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.CHANNEL_INDEXER_ID, InfraConstants.CHANNEL_TYPE);
+			List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 
 			String[][] rows = new String[indexItems.size()][CHANNEL_SERVICES_COLUMNS.length];
 			int rowIndex = 0;
@@ -99,9 +99,9 @@ public class ServicesCommand implements Annotated, CommandActivator {
 				Integer indexItemId = indexItem.getIndexItemId();
 				Map<String, Object> props = indexItem.getProperties();
 
-				String name = (String) props.get(InfraConstants.CHANNEL_NAME);
-				String hostUrl = (String) props.get(InfraConstants.CHANNEL_HOST_URL);
-				String contextRoot = (String) props.get(InfraConstants.CHANNEL_CONTEXT_ROOT);
+				String name = (String) props.get(InfraConstants.IDX_PROP__DATATUBE__NAME);
+				String hostUrl = (String) props.get(InfraConstants.IDX_PROP__DATATUBE__HOST_URL);
+				String contextRoot = (String) props.get(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT);
 				Object lastHeartbeatTime = props.get(InfraConstants.HEARTBEAT_EXPIRE_TIME);
 				Object heartbeatExpireTime = props.get(InfraConstants.LAST_HEARTBEAT_TIME);
 

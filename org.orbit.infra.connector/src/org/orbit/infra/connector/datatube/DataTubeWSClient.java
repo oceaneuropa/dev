@@ -7,7 +7,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.orbit.infra.model.channel.ChannelMessageDTO;
+import org.orbit.infra.model.datatube.ChannelMessageDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;

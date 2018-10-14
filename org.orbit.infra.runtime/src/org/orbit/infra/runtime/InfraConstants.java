@@ -14,8 +14,10 @@ public class InfraConstants {
 	public static String URL = "url";
 	public static String BASE_URL = "base_url";
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
-	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
-	public static String PINGABLE = "pingable";
+	// public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
+	// public static String PINGABLE = "pingable";
+
+	public static String TOKEN_PROVIDER__ORBIT = "orbit";
 
 	// ----------------------------------------------------------------------------------------
 	// IndexService

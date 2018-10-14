@@ -3,12 +3,12 @@ package org.orbit.infra.runtime.util;
 import java.io.IOException;
 import java.util.List;
 
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClientsUtil;
-import org.orbit.infra.runtime.InfraConstants;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class DataCastClientResolverImpl implements DataCastClientResolver {
