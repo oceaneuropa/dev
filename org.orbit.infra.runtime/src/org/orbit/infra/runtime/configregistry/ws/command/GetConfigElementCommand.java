@@ -51,7 +51,7 @@ public class GetConfigElementCommand extends AbstractDataCastCommand<ConfigRegis
 
 		ConfigRegistryService service = getService();
 
-		ConfigRegistry configRegistry = service.getById(configRegistryId);
+		ConfigRegistry configRegistry = service.getConfigRegistryById(configRegistryId);
 		if (configRegistry == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Config registry is not found.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();

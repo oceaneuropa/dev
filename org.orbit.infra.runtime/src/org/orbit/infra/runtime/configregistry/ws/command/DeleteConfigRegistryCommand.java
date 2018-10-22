@@ -45,11 +45,11 @@ public class DeleteConfigRegistryCommand extends AbstractDataCastCommand<ConfigR
 		boolean succeed = false;
 		if (hasId) {
 			String id = request.getStringParameter("id");
-			succeed = service.deleteById(id);
+			succeed = service.deleteConfigRegistryById(id);
 
 		} else if (hasName) {
 			String name = request.getStringParameter("name");
-			succeed = service.deleteByName(name);
+			succeed = service.deleteConfigRegistryByName(name);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

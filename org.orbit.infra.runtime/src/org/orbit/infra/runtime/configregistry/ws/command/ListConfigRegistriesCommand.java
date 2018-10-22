@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ws.rs.core.Response;
 
 import org.orbit.infra.model.RequestConstants;
-import org.orbit.infra.model.configregistry.ConfigRegistryMetadataDTO;
+import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.runtime.common.ws.AbstractDataCastCommand;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
@@ -34,23 +34,31 @@ public class ListConfigRegistriesCommand extends AbstractDataCastCommand<ConfigR
 
 	@Override
 	public Response execute(Request request) throws Exception {
+		boolean hasType = request.hasParameter("type");
+
 		ConfigRegistryService service = getService();
 
-		List<ConfigRegistryMetadataDTO> metadataDTOs = new ArrayList<ConfigRegistryMetadataDTO>();
+		ConfigRegistry[] configRegistries = null;
+		if (hasType) {
+			String type = request.getStringParameter("type");
+			configRegistries = service.getConfigRegistries(type);
+		} else {
+			configRegistries = service.getConfigRegistries();
+		}
 
-		ConfigRegistry[] configRegistries = service.getList();
+		List<ConfigRegistryDTO> configRegistryDTOs = new ArrayList<ConfigRegistryDTO>();
 		if (configRegistries != null) {
 			for (ConfigRegistry configRegistry : configRegistries) {
 				ConfigRegistryMetadata metadata = configRegistry.getMetadata();
 
-				ConfigRegistryMetadataDTO metadataDTO = ModelConverter.CONFIG_REGISTRY.toDTO(metadata);
-				if (metadataDTO != null) {
-					metadataDTOs.add(metadataDTO);
+				ConfigRegistryDTO configRegistryDTO = ModelConverter.CONFIG_REGISTRY.toDTO(metadata);
+				if (configRegistryDTO != null) {
+					configRegistryDTOs.add(configRegistryDTO);
 				}
 			}
 		}
 
-		return Response.ok().entity(metadataDTOs).build();
+		return Response.ok().entity(configRegistryDTOs).build();
 	}
 
 }

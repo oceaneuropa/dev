@@ -1,35 +1,32 @@
 package org.orbit.infra.runtime.configregistry.ws.command;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
-import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.runtime.common.ws.AbstractDataCastCommand;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
 import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.resource.Path;
+import org.origin.common.resource.PathDTO;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class ListConfigElementsCommand extends AbstractDataCastCommand<ConfigRegistryService> implements WSCommand {
+public class GetConfigElementPathCommand extends AbstractDataCastCommand<ConfigRegistryService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.configregistry.ListConfigElementsCommand";
+	public static String ID = "org.orbit.infra.runtime.configregistry.GetConfigElementPathCommand";
 
-	public ListConfigElementsCommand() {
+	public GetConfigElementPathCommand() {
 		super(ConfigRegistryService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.CONFIG_ELEMENT__LIST_CONFIG_ELEMENTS.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.CONFIG_ELEMENT__GET_CONFIG_ELEMENT_PATH.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -43,6 +40,13 @@ public class ListConfigElementsCommand extends AbstractDataCastCommand<ConfigReg
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
+		boolean hasElementId = request.hasParameter("element_id");
+
+		if (!hasElementId) {
+			ErrorDTO error = new ErrorDTO("'element_id' parameter is not set.");
+			return Response.status(Status.BAD_REQUEST).entity(error).build();
+		}
+
 		ConfigRegistryService service = getService();
 
 		ConfigRegistry configRegistry = service.getConfigRegistryById(configRegistryId);
@@ -51,32 +55,24 @@ public class ListConfigElementsCommand extends AbstractDataCastCommand<ConfigReg
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		List<ConfigElementDTO> configElementDTOs = new ArrayList<ConfigElementDTO>();
-		ConfigElement[] configElements = null;
+		PathDTO pathDTO = null;
 
-		if (request.hasParameter("parent_element_id")) {
-			String parentElementId = request.getStringParameter("parent_element_id");
-			configElements = configRegistry.listElements(parentElementId);
+		if (hasElementId) {
+			String elementId = request.getStringParameter("element_id");
+			ConfigElement configElement = configRegistry.getElement(elementId);
 
-		} else if (request.hasParameter("parent_element_path")) {
-			String parentElementPath = request.getStringParameter("parent_element_path");
-			Path parentPath = new Path(parentElementPath);
-			configElements = configRegistry.listElements(parentPath);
-
-		} else {
-			configElements = configRegistry.listRoots();
-		}
-
-		if (configElements != null) {
-			for (ConfigElement configElement : configElements) {
-				ConfigElementDTO configElementDTO = ModelConverter.CONFIG_REGISTRY.toDTO(configElement);
-				if (configElementDTO != null) {
-					configElementDTOs.add(configElementDTO);
+			if (configElement != null) {
+				Path path = configElement.getPath();
+				if (path != null) {
+					pathDTO = ModelConverter.COMMON.toDTO(path);
 				}
 			}
 		}
 
-		return Response.ok().entity(configElementDTOs).build();
+		if (pathDTO == null) {
+			return Response.ok().build();
+		}
+		return Response.ok().entity(pathDTO).build();
 	}
 
 }

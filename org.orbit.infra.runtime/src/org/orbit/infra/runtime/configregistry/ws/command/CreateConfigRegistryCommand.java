@@ -6,7 +6,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
-import org.orbit.infra.model.configregistry.ConfigRegistryMetadataDTO;
+import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.runtime.common.ws.AbstractDataCastCommand;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
@@ -72,7 +72,7 @@ public class CreateConfigRegistryCommand extends AbstractDataCastCommand<ConfigR
 			if (isLastSegmentNumber) {
 				appendNumber = lastNumber + 1;
 			}
-			while (service.existsByName(name)) {
+			while (service.configRegistryExistsByName(name)) {
 				String nextName = null;
 				if (isLastSegmentNumber) {
 					nextName = defaultName.substring(0, index) + "_" + appendNumber;
@@ -84,20 +84,20 @@ public class CreateConfigRegistryCommand extends AbstractDataCastCommand<ConfigR
 			}
 
 		} else {
-			if (service.existsByName(name)) {
+			if (service.configRegistryExistsByName(name)) {
 				ErrorDTO error = new ErrorDTO("Config registry with name '" + name + "' already exists.");
 				return Response.status(Status.BAD_REQUEST).entity(error).build();
 			}
 		}
 
-		ConfigRegistry configRegistry = service.create(type, name, properties);
+		ConfigRegistry configRegistry = service.createConfigRegistry(type, name, properties);
 		if (configRegistry == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Config registry cannot be created.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
 		ConfigRegistryMetadata metadata = configRegistry.getMetadata();
-		ConfigRegistryMetadataDTO metadataDTO = ModelConverter.CONFIG_REGISTRY.toDTO(metadata);
+		ConfigRegistryDTO metadataDTO = ModelConverter.CONFIG_REGISTRY.toDTO(metadata);
 		return Response.ok().entity(metadataDTO).build();
 	}
 

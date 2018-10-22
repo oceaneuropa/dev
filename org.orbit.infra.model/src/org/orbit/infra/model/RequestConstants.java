@@ -13,6 +13,7 @@ public class RequestConstants {
 
 	public static String CONFIG_ELEMENT__LIST_CONFIG_ELEMENTS = "list_config_elements";
 	public static String CONFIG_ELEMENT__GET_CONFIG_ELEMENT = "get_config_element";
+	public static String CONFIG_ELEMENT__GET_CONFIG_ELEMENT_PATH = "get_config_element_path";
 	public static String CONFIG_ELEMENT__CONFIG_ELEMENT_EXISTS = "config_element_exists";
 	public static String CONFIG_ELEMENT__CREATE_CONFIG_ELEMENT = "create_config_element";
 	public static String CONFIG_ELEMENT__UPDATE_CONFIG_ELEMENT = "update_config_element";

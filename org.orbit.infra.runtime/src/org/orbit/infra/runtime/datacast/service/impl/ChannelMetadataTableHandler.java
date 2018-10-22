@@ -173,7 +173,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 		}
 
 		List<String> accountIds = ModelConverter.DATA_CAST.toAccountIds(accountIdsString);
-		Map<String, Object> properties = ModelConverter.DATA_CAST.toProperties(propertiesString);
+		Map<String, Object> properties = ModelConverter.COMMON.toProperties(propertiesString);
 
 		return new ChannelMetadataImpl(this.dataCastId, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIds, properties, dateCreated, dateModified);
 	}
@@ -309,7 +309,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 		}
 
 		String accountIdsString = ModelConverter.DATA_CAST.toAccountIdsString(accountIds);
-		String propertiesString = ModelConverter.DATA_CAST.toPropertiesString(properties);
+		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
 
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
@@ -359,7 +359,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateProperties(Connection conn, String channelId, Map<String, Object> properties) throws SQLException {
-		String propertiesString = ModelConverter.DATA_CAST.toPropertiesString(properties);
+		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET properties=?, dateModified=? WHERE channelId=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { propertiesString, getCurrentTime(), channelId }, 1);

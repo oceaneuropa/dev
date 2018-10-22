@@ -158,7 +158,7 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 			parentElementId = "-1";
 		}
 
-		Map<String, Object> attributes = ModelConverter.CONFIG_REGISTRY.toMap(attributesString);
+		Map<String, Object> attributes = ModelConverter.COMMON.toMap(attributesString);
 
 		return new ConfigElementImpl(this.configRegistryId, id, elementId, parentElementId, null, name, attributes, dateCreated, dateModified);
 	}
@@ -291,7 +291,7 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 			throw new IOException("Element with same name already exists.");
 		}
 
-		String attributesString = ModelConverter.CONFIG_REGISTRY.toMapString(attributes);
+		String attributesString = ModelConverter.COMMON.toMapString(attributes);
 
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
@@ -339,7 +339,7 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateAttributes(Connection conn, String elementId, Map<String, Object> attributes) throws SQLException {
-		String attributesString = ModelConverter.CONFIG_REGISTRY.toMapString(attributes);
+		String attributesString = ModelConverter.COMMON.toMapString(attributes);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET attributes=?, dateModified=? WHERE elementId=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { attributesString, getCurrentTime(), elementId }, 1);

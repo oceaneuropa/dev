@@ -53,14 +53,14 @@ public class RemoveConfigRegistryPropertiesCommand extends AbstractDataCastComma
 
 		boolean succeed = false;
 
-		ConfigRegistry configRegistry = service.getById(id);
+		ConfigRegistry configRegistry = service.getConfigRegistryById(id);
 		if (configRegistry != null) {
 			Map<String, Object> existingProperties = configRegistry.getMetadata().getProperties();
 			for (String propertyName : propertyNames) {
 				existingProperties.remove(propertyName);
 			}
 
-			succeed = service.updateProperties(id, existingProperties);
+			succeed = service.updateConfigRegistryProperties(id, existingProperties);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

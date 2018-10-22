@@ -45,7 +45,7 @@ public class UpdateConfigRegistryCommand extends AbstractDataCastCommand<ConfigR
 
 		if (request.hasParameter("type")) {
 			String type = request.getStringParameter("type");
-			boolean currSucceed = service.updateType(id, type);
+			boolean currSucceed = service.updateConfigRegistryType(id, type);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {
@@ -55,7 +55,7 @@ public class UpdateConfigRegistryCommand extends AbstractDataCastCommand<ConfigR
 
 		if (request.hasParameter("name")) {
 			String name = request.getStringParameter("name");
-			boolean currSucceed = service.updateName(id, name);
+			boolean currSucceed = service.updateConfigRegistryName(id, name);
 			if (currSucceed) {
 				hasSucceed = true;
 			} else {

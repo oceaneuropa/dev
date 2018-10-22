@@ -315,7 +315,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public ConfigRegistry[] getList() throws ServerException {
+	public ConfigRegistry[] getConfigRegistries() throws ServerException {
 		List<ConfigRegistry> configRegistries = new ArrayList<ConfigRegistry>();
 		Connection conn = null;
 		try {
@@ -343,7 +343,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public ConfigRegistry[] getList(String type) throws ServerException {
+	public ConfigRegistry[] getConfigRegistries(String type) throws ServerException {
 		List<ConfigRegistry> configRegistries = new ArrayList<ConfigRegistry>();
 		Connection conn = null;
 		try {
@@ -371,7 +371,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public ConfigRegistry getById(String id) throws ServerException {
+	public ConfigRegistry getConfigRegistryById(String id) throws ServerException {
 		ConfigRegistry configRegistry = null;
 		Connection conn = null;
 		try {
@@ -392,7 +392,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public ConfigRegistry getByName(String fullName) throws ServerException {
+	public ConfigRegistry getConfigRegistryByName(String fullName) throws ServerException {
 		ConfigRegistry configRegistry = null;
 		Connection conn = null;
 		try {
@@ -413,7 +413,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public boolean existsById(String id) throws ServerException {
+	public boolean configRegistryExistsById(String id) throws ServerException {
 		boolean exists = false;
 		Connection conn = null;
 		try {
@@ -431,7 +431,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public boolean existsByName(String fullName) throws ServerException {
+	public boolean configRegistryExistsByName(String fullName) throws ServerException {
 		boolean exists = false;
 		Connection conn = null;
 		try {
@@ -449,7 +449,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public ConfigRegistry create(String type, String fullName, Map<String, Object> properties) throws ServerException {
+	public ConfigRegistry createConfigRegistry(String type, String fullName, Map<String, Object> properties) throws ServerException {
 		ConfigRegistry configRegistry = null;
 		Connection conn = null;
 		try {
@@ -459,11 +459,11 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 			if (fullName == null || fullName.isEmpty()) {
 				throw new ServerException("500", "Name is empty.");
 			}
-			if (existsByName(fullName)) {
+			if (configRegistryExistsByName(fullName)) {
 				throw new ServerException("500", "Name '" + fullName + "' already exists.");
 			}
 			String id = generateConfigRegistryId();
-			if (existsById(id)) {
+			if (configRegistryExistsById(id)) {
 				throw new ServerException("500", "Id '" + id + "'already exists.");
 			}
 			if (properties == null) {
@@ -493,7 +493,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public boolean updateType(String id, String type) throws ServerException {
+	public boolean updateConfigRegistryType(String id, String type) throws ServerException {
 		boolean isUpdated = false;
 		Connection conn = null;
 		try {
@@ -515,7 +515,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public boolean updateName(String id, String fullName) throws ServerException {
+	public boolean updateConfigRegistryName(String id, String fullName) throws ServerException {
 		boolean isUpdated = false;
 		Connection conn = null;
 		try {
@@ -537,7 +537,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public boolean updateProperties(String id, Map<String, Object> properties) throws ServerException {
+	public boolean updateConfigRegistryProperties(String id, Map<String, Object> properties) throws ServerException {
 		boolean isUpdated = false;
 		Connection conn = null;
 		try {
@@ -559,7 +559,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public boolean deleteById(String id) throws ServerException {
+	public boolean deleteConfigRegistryById(String id) throws ServerException {
 		boolean isDeleted = false;
 		Connection conn = null;
 		try {
@@ -581,7 +581,7 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	}
 
 	@Override
-	public boolean deleteByName(String fullName) throws ServerException {
+	public boolean deleteConfigRegistryByName(String fullName) throws ServerException {
 		boolean isDeleted = false;
 		Connection conn = null;
 		try {

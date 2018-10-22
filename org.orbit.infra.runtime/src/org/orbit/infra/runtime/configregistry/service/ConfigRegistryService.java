@@ -10,28 +10,28 @@ import org.origin.common.service.WebServiceAware;
 
 public interface ConfigRegistryService extends WebServiceAware, PropertiesAware, ConnectionAware, EditPoliciesAwareService {
 
-	ConfigRegistry[] getList() throws ServerException;
+	ConfigRegistry[] getConfigRegistries() throws ServerException;
 
-	ConfigRegistry[] getList(String type) throws ServerException;
+	ConfigRegistry[] getConfigRegistries(String type) throws ServerException;
 
-	ConfigRegistry getById(String id) throws ServerException;
+	ConfigRegistry getConfigRegistryById(String id) throws ServerException;
 
-	ConfigRegistry getByName(String fullName) throws ServerException;
+	ConfigRegistry getConfigRegistryByName(String fullName) throws ServerException;
 
-	boolean existsById(String id) throws ServerException;
+	boolean configRegistryExistsById(String id) throws ServerException;
 
-	boolean existsByName(String fullName) throws ServerException;
+	boolean configRegistryExistsByName(String fullName) throws ServerException;
 
-	ConfigRegistry create(String type, String fullName, Map<String, Object> properties) throws ServerException;
+	ConfigRegistry createConfigRegistry(String type, String fullName, Map<String, Object> properties) throws ServerException;
 
-	boolean updateType(String id, String type) throws ServerException;
+	boolean updateConfigRegistryType(String id, String type) throws ServerException;
 
-	boolean updateName(String id, String fullName) throws ServerException;
+	boolean updateConfigRegistryName(String id, String fullName) throws ServerException;
 
-	boolean updateProperties(String id, Map<String, Object> properties) throws ServerException;
+	boolean updateConfigRegistryProperties(String id, Map<String, Object> properties) throws ServerException;
 
-	boolean deleteById(String id) throws ServerException;
+	boolean deleteConfigRegistryById(String id) throws ServerException;
 
-	boolean deleteByName(String fullName) throws ServerException;
+	boolean deleteConfigRegistryByName(String fullName) throws ServerException;
 
 }

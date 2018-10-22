@@ -95,7 +95,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 		try {
 			IndexItem indexItem = indexService.getIndexItem(indexProviderId, indexItemId);
 			if (indexItem != null) {
-				indexItemDTO = ModelConverter.Indexes.toDTO(indexItem);
+				indexItemDTO = ModelConverter.INDEX_SERVICE.toDTO(indexItem);
 			}
 
 		} catch (ServerException e) {

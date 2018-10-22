@@ -4,7 +4,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
-import org.orbit.infra.model.configregistry.ConfigRegistryMetadataDTO;
+import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.runtime.common.ws.AbstractDataCastCommand;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
@@ -46,11 +46,11 @@ public class GetConfigRegistryCommand extends AbstractDataCastCommand<ConfigRegi
 		ConfigRegistry configRegistry = null;
 		if (hasId) {
 			String id = request.getStringParameter("id");
-			configRegistry = service.getById(id);
+			configRegistry = service.getConfigRegistryById(id);
 
 		} else if (hasName) {
 			String name = request.getStringParameter("name");
-			configRegistry = service.getByName(name);
+			configRegistry = service.getConfigRegistryByName(name);
 		}
 
 		if (configRegistry == null) {
@@ -60,7 +60,7 @@ public class GetConfigRegistryCommand extends AbstractDataCastCommand<ConfigRegi
 		}
 
 		ConfigRegistryMetadata metadata = configRegistry.getMetadata();
-		ConfigRegistryMetadataDTO metadataDTO = ModelConverter.CONFIG_REGISTRY.toDTO(metadata);
+		ConfigRegistryDTO metadataDTO = ModelConverter.CONFIG_REGISTRY.toDTO(metadata);
 		return Response.ok().entity(metadataDTO).build();
 	}
 

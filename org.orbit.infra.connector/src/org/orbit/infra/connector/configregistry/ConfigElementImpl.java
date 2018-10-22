@@ -1,13 +1,16 @@
-package org.orbit.infra.runtime.configregistry.service.impl;
+package org.orbit.infra.connector.configregistry;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.orbit.infra.runtime.configregistry.service.ConfigElement;
-import org.orbit.infra.runtime.util.ModelConverter;
+import org.orbit.infra.api.configregistry.ConfigElement;
+import org.orbit.infra.api.configregistry.ConfigRegistryClient;
+import org.orbit.infra.connector.util.ModelConverter;
 import org.origin.common.resource.Path;
 
 public class ConfigElementImpl implements ConfigElement {
+
+	protected ConfigRegistryClient configRegistryClient;
 
 	protected String configRegistryId;
 	protected int id;
@@ -19,11 +22,17 @@ public class ConfigElementImpl implements ConfigElement {
 	protected long dateCreated;
 	protected long dateModified;
 
-	public ConfigElementImpl() {
+	/**
+	 * 
+	 * @param configRegistryClient
+	 */
+	public ConfigElementImpl(ConfigRegistryClient configRegistryClient) {
+		this.configRegistryClient = configRegistryClient;
 	}
 
 	/**
 	 * 
+	 * @param configRegistryClient
 	 * @param configRegistryId
 	 * @param id
 	 * @param elementId
@@ -34,7 +43,9 @@ public class ConfigElementImpl implements ConfigElement {
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public ConfigElementImpl(String configRegistryId, int id, String elementId, String parentElementId, Path path, String name, Map<String, Object> attributes, long dateCreated, long dateModified) {
+	public ConfigElementImpl(ConfigRegistryClient configRegistryClient, String configRegistryId, int id, String elementId, String parentElementId, Path path, String name, Map<String, Object> attributes, long dateCreated, long dateModified) {
+		this.configRegistryClient = configRegistryClient;
+
 		this.configRegistryId = configRegistryId;
 		this.id = id;
 		this.elementId = elementId;
@@ -44,6 +55,11 @@ public class ConfigElementImpl implements ConfigElement {
 		this.attributes = attributes;
 		this.dateCreated = dateCreated;
 		this.dateModified = dateModified;
+	}
+
+	@Override
+	public ConfigRegistryClient getConfigRegistryClient() {
+		return this.configRegistryClient;
 	}
 
 	@Override

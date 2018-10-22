@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.model.configregistry.ConfigElementDTO;
-import org.orbit.infra.model.configregistry.ConfigRegistryMetadataDTO;
+import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.model.datacast.DataTubeConfigDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
@@ -17,16 +17,19 @@ import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.resource.Path;
+import org.origin.common.resource.PathDTO;
 
 public class ModelConverter {
 
-	public static Indexes Indexes = new Indexes();
-	public static Extensions Extensions = new Extensions();
-	public static ConfigRegistry CONFIG_REGISTRY = new ConfigRegistry();
-	public static DataCast DATA_CAST = new DataCast();
-	public static DataTube DATA_TUBE = new DataTube();
+	public static INDEX_SERVICE INDEX_SERVICE = new INDEX_SERVICE();
+	public static EXTENSION_REGISTRY EXTENSION_REGISTRY = new EXTENSION_REGISTRY();
+	public static CONFIG_REGISTRY CONFIG_REGISTRY = new CONFIG_REGISTRY();
+	public static DATA_CAST DATA_CAST = new DATA_CAST();
+	public static DATA_TUBE DATA_TUBE = new DATA_TUBE();
+	public static COMMON COMMON = new COMMON();
 
-	public static class Indexes {
+	public static class INDEX_SERVICE {
 		/**
 		 * Convert IndexItem runtime model to IndexItem DTO.
 		 * 
@@ -49,7 +52,7 @@ public class ModelConverter {
 		}
 	}
 
-	public static class Extensions {
+	public static class EXTENSION_REGISTRY {
 		/**
 		 * Convert ExtensionItem runtime model to ExtensionItem DTO.
 		 * 
@@ -74,13 +77,13 @@ public class ModelConverter {
 		}
 	}
 
-	public static class ConfigRegistry {
+	public static class CONFIG_REGISTRY {
 		/**
 		 * 
 		 * @param metadata
 		 * @return
 		 */
-		public ConfigRegistryMetadataDTO toDTO(ConfigRegistryMetadata metadata) {
+		public ConfigRegistryDTO toDTO(ConfigRegistryMetadata metadata) {
 			if (metadata == null) {
 				return null;
 			}
@@ -92,15 +95,15 @@ public class ModelConverter {
 			long dateCreated = metadata.getDateCreated();
 			long dateModified = metadata.getDateModified();
 
-			ConfigRegistryMetadataDTO metadataDTO = new ConfigRegistryMetadataDTO();
-			metadataDTO.setId(id);
-			metadataDTO.setType(type);
-			metadataDTO.setName(name);
-			metadataDTO.setProperties(properties);
-			metadataDTO.setDateCreated(dateCreated);
-			metadataDTO.setDateModified(dateModified);
+			ConfigRegistryDTO configRegistryDTO = new ConfigRegistryDTO();
+			configRegistryDTO.setId(id);
+			configRegistryDTO.setType(type);
+			configRegistryDTO.setName(name);
+			configRegistryDTO.setProperties(properties);
+			configRegistryDTO.setDateCreated(dateCreated);
+			configRegistryDTO.setDateModified(dateModified);
 
-			return metadataDTO;
+			return configRegistryDTO;
 		}
 
 		/**
@@ -132,49 +135,9 @@ public class ModelConverter {
 
 			return configElementDTO;
 		}
-
-		/**
-		 * 
-		 * @param propertiesString
-		 * @return
-		 */
-		public Map<String, Object> toProperties(String propertiesString) {
-			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
-			return properties;
-		}
-
-		/**
-		 * 
-		 * @param properties
-		 * @return
-		 */
-		public String toPropertiesString(Map<String, Object> properties) {
-			String propertiesString = JSONUtil.toJsonString(properties);
-			return propertiesString;
-		}
-
-		/**
-		 * 
-		 * @param propertiesString
-		 * @return
-		 */
-		public Map<String, Object> toMap(String mapString) {
-			Map<String, Object> map = JSONUtil.toProperties(mapString, true);
-			return map;
-		}
-
-		/**
-		 * 
-		 * @param map
-		 * @return
-		 */
-		public String toMapString(Map<String, Object> map) {
-			String mapString = JSONUtil.toJsonString(map);
-			return mapString;
-		}
 	}
 
-	public static class DataCast {
+	public static class DATA_CAST {
 		/**
 		 * 
 		 * @param dataTubeConfig
@@ -276,6 +239,30 @@ public class ModelConverter {
 			}
 			return accountIdsString;
 		}
+	}
+
+	public static class DATA_TUBE {
+
+	}
+
+	public static class COMMON {
+		/**
+		 * 
+		 * @param path
+		 * @return
+		 */
+		public PathDTO toDTO(Path path) {
+			if (path == null) {
+				return null;
+			}
+
+			String pathString = path.getPathString();
+
+			PathDTO pathDTO = new PathDTO();
+			pathDTO.setPathString(pathString);
+
+			return pathDTO;
+		}
 
 		/**
 		 * 
@@ -296,10 +283,26 @@ public class ModelConverter {
 			String propertiesString = JSONUtil.toJsonString(properties);
 			return propertiesString;
 		}
-	}
 
-	public static class DataTube {
+		/**
+		 * 
+		 * @param propertiesString
+		 * @return
+		 */
+		public Map<String, Object> toMap(String mapString) {
+			Map<String, Object> map = JSONUtil.toProperties(mapString, true);
+			return map;
+		}
 
+		/**
+		 * 
+		 * @param map
+		 * @return
+		 */
+		public String toMapString(Map<String, Object> map) {
+			String mapString = JSONUtil.toJsonString(map);
+			return mapString;
+		}
 	}
 
 }

@@ -42,15 +42,16 @@ public class ConfigElementExistsCommand extends AbstractDataCastCommand<ConfigRe
 
 		boolean hasElementId = request.hasParameter("element_id");
 		boolean hasElementPath = request.hasParameter("element_path");
+		boolean hasElementName = request.hasParameter("element_name");
 
-		if (!hasElementId && !hasElementPath) {
-			ErrorDTO error = new ErrorDTO("'element_id' parameter or 'element_path' parameter is not set.");
+		if (!hasElementId && !hasElementPath && !hasElementName) {
+			ErrorDTO error = new ErrorDTO("'element_id' parameter or 'element_path' parameter or 'element_name' (and 'parent_element_id') parameters are not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
 		ConfigRegistryService service = getService();
 
-		ConfigRegistry configRegistry = service.getById(configRegistryId);
+		ConfigRegistry configRegistry = service.getConfigRegistryById(configRegistryId);
 		if (configRegistry == null) {
 			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Config registry is not found.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
@@ -65,6 +66,17 @@ public class ConfigElementExistsCommand extends AbstractDataCastCommand<ConfigRe
 			String elementPathString = request.getStringParameter("element_path");
 			Path elementPath = new Path(elementPathString);
 			exists = configRegistry.exists(elementPath);
+
+		} else if (hasElementName) {
+			String parentElementId = null;
+			boolean hasParentElementId = request.hasParameter("parent_element_id");
+			if (hasParentElementId) {
+				parentElementId = request.getStringParameter("parent_element_id");
+			} else {
+				parentElementId = "-1";
+			}
+			String name = request.getStringParameter("element_name");
+			exists = configRegistry.exists(parentElementId, name);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

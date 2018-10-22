@@ -61,7 +61,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				dataTubeConfigs = ModelConverter.DataCast.getDataTubeConfigs(this, response);
+				dataTubeConfigs = ModelConverter.DATA_CAST.getDataTubeConfigs(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -82,7 +82,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				dataTubeConfigs = ModelConverter.DataCast.getDataTubeConfigs(this, response);
+				dataTubeConfigs = ModelConverter.DATA_CAST.getDataTubeConfigs(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -103,7 +103,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				dataTubeConfig = ModelConverter.DataCast.getDataTubeConfig(this, response);
+				dataTubeConfig = ModelConverter.DATA_CAST.getDataTubeConfig(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -124,7 +124,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				dataTubeConfig = ModelConverter.DataCast.getDataTubeConfig(this, response);
+				dataTubeConfig = ModelConverter.DATA_CAST.getDataTubeConfig(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -143,7 +143,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -162,7 +162,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -181,7 +181,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -200,7 +200,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -218,7 +218,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.DataCast.isDeleted(response);
+				isDeleted = ModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -235,7 +235,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				channelMetadatas = ModelConverter.DataCast.getChannelMetadatas(this, response);
+				channelMetadatas = ModelConverter.DATA_CAST.getChannelMetadatas(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -256,7 +256,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				channelMetadatas = ModelConverter.DataCast.getChannelMetadatas(this, response);
+				channelMetadatas = ModelConverter.DATA_CAST.getChannelMetadatas(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -277,7 +277,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				channelMetadata = ModelConverter.DataCast.getChannelMetadata(this, response);
+				channelMetadata = ModelConverter.DATA_CAST.getChannelMetadata(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -295,7 +295,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				channelMetadata = ModelConverter.DataCast.getChannelMetadata(this, response);
+				channelMetadata = ModelConverter.DATA_CAST.getChannelMetadata(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -313,7 +313,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.DataCast.exists(response);
+				exists = ModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -331,7 +331,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				exists = ModelConverter.DataCast.exists(response);
+				exists = ModelConverter.COMMON.exists(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -363,7 +363,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				channelMetadata = ModelConverter.DataCast.getChannelMetadata(this, response);
+				channelMetadata = ModelConverter.DATA_CAST.getChannelMetadata(this, response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -406,7 +406,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -425,7 +425,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -444,7 +444,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -463,7 +463,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -482,7 +482,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isUpdated(response);
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -500,7 +500,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.DataCast.isDeleted(response);
+				isDeleted = ModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
@@ -518,7 +518,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isDeleted = ModelConverter.DataCast.isDeleted(response);
+				isDeleted = ModelConverter.COMMON.isDeleted(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);

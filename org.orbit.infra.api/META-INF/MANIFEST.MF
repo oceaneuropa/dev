@@ -12,6 +12,7 @@ Import-Package: javax.ws.rs.core;version="2.0.0",
  org.osgi.util.tracker;version="1.5.1",
  org.slf4j;version="1.7.25"
 Export-Package: org.orbit.infra.api;version="1.0.0",
+ org.orbit.infra.api.configregistry;version="1.0.0",
  org.orbit.infra.api.datacast;version="1.0.0",
  org.orbit.infra.api.datatube;version="1.0.0",
  org.orbit.infra.api.extensionregistry;version="1.0.0",

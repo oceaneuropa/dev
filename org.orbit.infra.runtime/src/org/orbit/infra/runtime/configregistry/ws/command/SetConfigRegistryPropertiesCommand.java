@@ -51,12 +51,12 @@ public class SetConfigRegistryPropertiesCommand extends AbstractDataCastCommand<
 		ConfigRegistryService service = getService();
 
 		boolean succeed = false;
-		ConfigRegistry configRegistry = service.getById(id);
+		ConfigRegistry configRegistry = service.getConfigRegistryById(id);
 		if (configRegistry != null) {
 			Map<String, Object> existingProperties = configRegistry.getMetadata().getProperties();
 			existingProperties.putAll(newProperties);
 
-			succeed = service.updateProperties(id, existingProperties);
+			succeed = service.updateConfigRegistryProperties(id, existingProperties);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

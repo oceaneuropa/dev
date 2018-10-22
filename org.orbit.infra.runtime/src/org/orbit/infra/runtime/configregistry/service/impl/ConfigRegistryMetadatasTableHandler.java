@@ -123,7 +123,7 @@ public class ConfigRegistryMetadatasTableHandler implements DatabaseTableAware {
 		long dateCreated = rs.getLong("dateCreated");
 		long dateModified = rs.getLong("dateModified");
 
-		Map<String, Object> properties = ModelConverter.CONFIG_REGISTRY.toProperties(propertiesString);
+		Map<String, Object> properties = ModelConverter.COMMON.toProperties(propertiesString);
 
 		return new ConfigRegistryMetadataImpl(id, type, name, properties, dateCreated, dateModified);
 	}
@@ -254,7 +254,7 @@ public class ConfigRegistryMetadatasTableHandler implements DatabaseTableAware {
 			throw new IOException("Config registry with same name already exists.");
 		}
 
-		String propertiesString = ModelConverter.CONFIG_REGISTRY.toPropertiesString(properties);
+		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
 
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
@@ -306,7 +306,7 @@ public class ConfigRegistryMetadatasTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateProperties(Connection conn, String id, Map<String, Object> properties) throws SQLException {
-		String propertiesString = ModelConverter.CONFIG_REGISTRY.toPropertiesString(properties);
+		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET properties=?, dateModified=? WHERE id=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { propertiesString, getCurrentTime(), id }, 1);

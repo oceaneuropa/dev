@@ -2,6 +2,7 @@ package org.orbit.infra.connector;
 
 import org.orbit.infra.connector.cli.DataTubeCommand;
 import org.orbit.infra.connector.cli.IndexServiceCommand;
+import org.orbit.infra.connector.configregistry.ConfigRegistryConnector;
 import org.orbit.infra.connector.datacast.DataCastConnector;
 import org.orbit.infra.connector.datatube.DataTubeConnector;
 import org.orbit.infra.connector.extensionregistry.ExtensionRegistryConnector;
@@ -54,17 +55,23 @@ public class Extensions extends ProgramExtensions {
 		extension3.addInterface(desc3);
 		addExtension(extension3);
 
-		// DataCast connector
-		Extension extension4 = new Extension(typeId, DataCastConnector.ID, "DataCast Connector", "DataCast connector description");
-		InterfaceDescription desc4 = new InterfaceDescription(ConnectorActivator.class, DataCastConnector.class);
+		// Config Registry connector
+		Extension extension4 = new Extension(typeId, DataCastConnector.ID, "Config Registry Connector");
+		InterfaceDescription desc4 = new InterfaceDescription(ConnectorActivator.class, ConfigRegistryConnector.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);
 
-		// DataTube connector
-		Extension extension5 = new Extension(typeId, DataTubeConnector.ID, "DataTube Connector", "DataTube connector description");
-		InterfaceDescription desc5 = new InterfaceDescription(ConnectorActivator.class, DataTubeConnector.class);
+		// DataCast connector
+		Extension extension5 = new Extension(typeId, DataCastConnector.ID, "DataCast Connector", "DataCast connector description");
+		InterfaceDescription desc5 = new InterfaceDescription(ConnectorActivator.class, DataCastConnector.class);
 		extension5.addInterface(desc5);
 		addExtension(extension5);
+
+		// DataTube connector
+		Extension extension6 = new Extension(typeId, DataTubeConnector.ID, "DataTube Connector", "DataTube connector description");
+		InterfaceDescription desc6 = new InterfaceDescription(ConnectorActivator.class, DataTubeConnector.class);
+		extension6.addInterface(desc6);
+		addExtension(extension6);
 	}
 
 	protected void createCommandExtensions() {

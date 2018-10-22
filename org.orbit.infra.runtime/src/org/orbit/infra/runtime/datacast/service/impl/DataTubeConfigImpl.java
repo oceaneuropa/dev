@@ -128,7 +128,7 @@ public class DataTubeConfigImpl implements DataTubeConfig {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		String propertiesString = ModelConverter.DATA_CAST.toPropertiesString(this.properties);
+		String propertiesString = ModelConverter.COMMON.toPropertiesString(this.properties);
 
 		sb.append("DataTubeConfigImpl (");
 		sb.append("id='").append(this.id).append("'");

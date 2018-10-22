@@ -105,7 +105,7 @@ public class ExtensionItemWSResource extends AbstractWSApplicationResource {
 
 			ExtensionItem item = service.getExtensionItem(platformId, typeId, extensionId);
 			if (item != null) {
-				DTO = ModelConverter.Extensions.toDTO(item);
+				DTO = ModelConverter.EXTENSION_REGISTRY.toDTO(item);
 			}
 
 		} catch (ServerException e) {

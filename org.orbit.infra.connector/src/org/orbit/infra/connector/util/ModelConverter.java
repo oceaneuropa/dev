@@ -7,23 +7,190 @@ import java.util.Map;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 
+import org.orbit.infra.api.configregistry.ConfigElement;
+import org.orbit.infra.api.configregistry.ConfigRegistry;
+import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.datacast.ChannelMetadata;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataTubeConfig;
+import org.orbit.infra.connector.configregistry.ConfigElementImpl;
+import org.orbit.infra.connector.configregistry.ConfigRegistryImpl;
 import org.orbit.infra.connector.datacast.ChannelMetadataImpl;
 import org.orbit.infra.connector.datacast.DataTubeConfigImpl;
+import org.orbit.infra.model.configregistry.ConfigElementDTO;
+import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.model.datacast.DataTubeConfigDTO;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.resource.Path;
+import org.origin.common.resource.PathDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
 
 public class ModelConverter {
 
-	public static DataCast DataCast = new DataCast();
-	public static DataTube DataTube = new DataTube();
+	public static CONFIG_REGISTRY CONFIG_REGISTRY = new CONFIG_REGISTRY();
+	public static DATA_CAST DATA_CAST = new DATA_CAST();
+	public static DATA_TUBE DATA_TUBE = new DATA_TUBE();
+	public static COMMON COMMON = new COMMON();
 
-	public static class DataCast {
+	public static class CONFIG_REGISTRY {
+		/**
+		 * 
+		 * @param configRegistryClient
+		 * @param configRegistryDTO
+		 * @return
+		 */
+		public ConfigRegistry toConfigRegistry(ConfigRegistryClient configRegistryClient, ConfigRegistryDTO configRegistryDTO) {
+			if (configRegistryDTO == null) {
+				return null;
+			}
+
+			String id = configRegistryDTO.getId();
+			String type = configRegistryDTO.getType();
+			String name = configRegistryDTO.getName();
+			Map<String, Object> properties = configRegistryDTO.getProperties();
+			long dateCreated = configRegistryDTO.getDateCreated();
+			long dateModified = configRegistryDTO.getDateModified();
+
+			ConfigRegistryImpl configRegistry = new ConfigRegistryImpl(configRegistryClient);
+			configRegistry.setId(id);
+			configRegistry.setType(type);
+			configRegistry.setName(name);
+			configRegistry.setProperties(properties);
+			configRegistry.setDateCreated(dateCreated);
+			configRegistry.setDateModified(dateModified);
+
+			return configRegistry;
+		}
+
+		/**
+		 * 
+		 * @param configRegistryClient
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			List<ConfigRegistry> configRegistries = new ArrayList<ConfigRegistry>();
+			List<ConfigRegistryDTO> configRegistryDTOs = response.readEntity(new GenericType<List<ConfigRegistryDTO>>() {
+			});
+			for (ConfigRegistryDTO dataTubeConfigDTO : configRegistryDTOs) {
+				ConfigRegistry dataTubeConfig = toConfigRegistry(configRegistryClient, dataTubeConfigDTO);
+				if (dataTubeConfig != null) {
+					configRegistries.add(dataTubeConfig);
+				}
+			}
+			return configRegistries.toArray(new ConfigRegistry[configRegistries.size()]);
+		}
+
+		/**
+		 * 
+		 * @param configRegistryClient
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigRegistry getConfigRegistry(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			ConfigRegistry configRegistry = null;
+			ConfigRegistryDTO configRegistryDTO = response.readEntity(ConfigRegistryDTO.class);
+			if (configRegistryDTO != null) {
+				configRegistry = toConfigRegistry(configRegistryClient, configRegistryDTO);
+			}
+			return configRegistry;
+		}
+
+		/**
+		 * 
+		 * @param configRegistryClient
+		 * @param configElementDTO
+		 * @return
+		 */
+		public ConfigElement toConfigElement(ConfigRegistryClient configRegistryClient, ConfigElementDTO configElementDTO) {
+			if (configElementDTO == null) {
+				return null;
+			}
+
+			String configRegistryId = configElementDTO.getConfigRegistryId();
+			String parentElementId = configElementDTO.getParentElementId();
+			String elementId = configElementDTO.getElementId();
+			String pathString = configElementDTO.getPath();
+			Map<String, Object> attributes = configElementDTO.getAttributes();
+			long dateCreated = configElementDTO.getDateCreated();
+			long dateModified = configElementDTO.getDateModified();
+
+			Path path = null;
+			if (pathString != null && !pathString.isEmpty()) {
+				path = new Path(pathString);
+			}
+
+			ConfigElementImpl configElement = new ConfigElementImpl(configRegistryClient);
+			configElement.setConfigRegistryId(configRegistryId);
+			configElement.setParentElementId(parentElementId);
+			configElement.setElementId(elementId);
+			configElement.setPath(path);
+			configElement.setAttributes(attributes);
+			configElement.setDateCreated(dateCreated);
+			configElement.setDateModified(dateModified);
+
+			return configElement;
+		}
+
+		/**
+		 * 
+		 * @param configRegistryClient
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement[] getConfigElements(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			List<ConfigElement> configElements = new ArrayList<ConfigElement>();
+			List<ConfigElementDTO> configElementDTOs = response.readEntity(new GenericType<List<ConfigElementDTO>>() {
+			});
+			for (ConfigElementDTO configElementDTO : configElementDTOs) {
+				ConfigElement configElement = toConfigElement(configRegistryClient, configElementDTO);
+				if (configElement != null) {
+					configElements.add(configElement);
+				}
+			}
+			return configElements.toArray(new ConfigElement[configElements.size()]);
+		}
+
+		/**
+		 * 
+		 * @param configRegistryClient
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement getConfigElement(ConfigRegistryClient configRegistryClient, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			ConfigElement configElement = null;
+			ConfigElementDTO configElementDTO = response.readEntity(ConfigElementDTO.class);
+			if (configElementDTO != null) {
+				configElement = toConfigElement(configRegistryClient, configElementDTO);
+			}
+			return configElement;
+		}
+
+	}
+
+	public static class DATA_CAST {
 		/**
 		 * 
 		 * @param dataCastClient
@@ -181,89 +348,49 @@ public class ModelConverter {
 			}
 			return channelMetadata;
 		}
-
-		/**
-		 * 
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean exists(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			boolean exists = false;
-			try {
-				exists = ResponseUtil.getSimpleValue(response, "exists", Boolean.class);
-
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return exists;
-		}
-
-		/**
-		 * 
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean isUpdated(Response response) throws ClientException {
-			return isSucceed(response);
-		}
-
-		/**
-		 * 
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean isDeleted(Response response) throws ClientException {
-			return isSucceed(response);
-		}
-
-		/**
-		 * 
-		 * @param response
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean isSucceed(Response response) throws ClientException {
-			if (!ResponseUtil.isSuccessful(response)) {
-				throw new ClientException(response);
-			}
-			boolean succeed = false;
-			try {
-				succeed = ResponseUtil.getSimpleValue(response, "succeed", Boolean.class);
-
-			} catch (Exception e) {
-				throw new ClientException(500, e.getMessage(), e);
-			}
-			return succeed;
-		}
-
-		/**
-		 * 
-		 * @param properties
-		 * @return
-		 */
-		public String toPropertiesString(Map<String, Object> properties) {
-			String propertiesString = JSONUtil.toJsonString(properties);
-			return propertiesString;
-		}
-
-		/**
-		 * 
-		 * @param propertiesString
-		 * @return
-		 */
-		public Map<String, Object> toProperties(String propertiesString) {
-			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
-			return properties;
-		}
 	}
 
-	public static class DataTube {
+	public static class DATA_TUBE {
+
+	}
+
+	public static class COMMON {
+		/**
+		 * 
+		 * @param pathDTO
+		 * @return
+		 */
+		public Path toPath(PathDTO pathDTO) {
+			if (pathDTO == null) {
+				return null;
+			}
+
+			String pathString = pathDTO.getPathString();
+			if (pathString == null) {
+				return null;
+			}
+
+			return new Path(pathString);
+		}
+
+		/**
+		 * 
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public Path getPath(Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			Path path = null;
+			PathDTO pathDTO = response.readEntity(PathDTO.class);
+			if (pathDTO != null) {
+				path = toPath(pathDTO);
+			}
+			return path;
+		}
 
 		/**
 		 * 
@@ -353,6 +480,26 @@ public class ModelConverter {
 		public Map<String, Object> toProperties(String propertiesString) {
 			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
 			return properties;
+		}
+
+		/**
+		 * 
+		 * @param propertiesString
+		 * @return
+		 */
+		public Map<String, Object> toMap(String mapString) {
+			Map<String, Object> map = JSONUtil.toProperties(mapString, true);
+			return map;
+		}
+
+		/**
+		 * 
+		 * @param map
+		 * @return
+		 */
+		public String toMapString(Map<String, Object> map) {
+			String mapString = JSONUtil.toJsonString(map);
+			return mapString;
 		}
 	}
 

@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ConfigRegistryMetadataDTO {
+public class ConfigRegistryDTO {
 
 	@XmlElement
 	protected String id;

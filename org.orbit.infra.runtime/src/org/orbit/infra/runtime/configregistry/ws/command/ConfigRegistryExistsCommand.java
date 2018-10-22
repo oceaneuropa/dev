@@ -45,11 +45,11 @@ public class ConfigRegistryExistsCommand extends AbstractDataCastCommand<ConfigR
 		boolean exists = false;
 		if (hasId) {
 			String id = request.getStringParameter("id");
-			exists = service.existsById(id);
+			exists = service.configRegistryExistsById(id);
 
 		} else if (hasName) {
 			String name = request.getStringParameter("name");
-			exists = service.existsByName(name);
+			exists = service.configRegistryExistsByName(name);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

@@ -98,7 +98,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 			}
 			if (items != null) {
 				for (ExtensionItem item : items) {
-					ExtensionItemDTO DTO = ModelConverter.Extensions.toDTO(item);
+					ExtensionItemDTO DTO = ModelConverter.EXTENSION_REGISTRY.toDTO(item);
 					DTOs.add(DTO);
 				}
 			}
@@ -140,7 +140,7 @@ public class ExtensionItemsWSResource extends AbstractWSApplicationResource {
 
 			ExtensionItem newItem = service.addExtensionItem(platformId, typeId, extensionId, name, description, properties);
 			if (newItem != null) {
-				newDTO = ModelConverter.Extensions.toDTO(newItem);
+				newDTO = ModelConverter.EXTENSION_REGISTRY.toDTO(newItem);
 			}
 
 		} catch (ServerException e) {
