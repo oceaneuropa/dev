@@ -1,5 +1,7 @@
 package org.orbit.infra.runtime.configregistry.ws.command;
 
+import java.util.Map;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -15,18 +17,18 @@ import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class GetConfigElementCommand extends AbstractDataCastCommand<ConfigRegistryService> implements WSCommand {
+public class CreateConfigElementCommand extends AbstractDataCastCommand<ConfigRegistryService> implements WSCommand {
 
-	public static String ID = "org.orbit.infra.runtime.configregistry.GetConfigElementCommand";
+	public static String ID = "org.orbit.infra.runtime.configregistry.CreateConfigElementCommand";
 
-	public GetConfigElementCommand() {
+	public CreateConfigElementCommand() {
 		super(ConfigRegistryService.class);
 	}
 
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.CONFIG_ELEMENT__GET_CONFIG_ELEMENT.equalsIgnoreCase(requestName)) {
+		if (RequestConstants.CONFIG_ELEMENT__CREATE_CONFIG_ELEMENT.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -40,12 +42,20 @@ public class GetConfigElementCommand extends AbstractDataCastCommand<ConfigRegis
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		boolean hasElementId = request.hasParameter("element_id");
 		boolean hasElementPath = request.hasParameter("element_path");
 		boolean hasElementName = request.hasParameter("element_name");
 
-		if (!hasElementId && !hasElementPath && !hasElementName) {
-			ErrorDTO error = new ErrorDTO("'element_id' parameter or 'element_path' parameter or 'element_name' (and 'parent_element_id') parameters are not set.");
+		Map<String, Object> attributes = null;
+		if (request.hasParameter("attributes")) {
+			attributes = (Map<String, Object>) request.getMapParameter("attributes");
+		}
+		boolean generateUniqueName = false;
+		if (request.hasParameter("generate_unique_name")) {
+			generateUniqueName = true;
+		}
+
+		if (!hasElementPath && !hasElementName) {
+			ErrorDTO error = new ErrorDTO("'element_path' parameter or ''element_name' (and 'parent_element_id') parameters are not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
@@ -57,17 +67,13 @@ public class GetConfigElementCommand extends AbstractDataCastCommand<ConfigRegis
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		ConfigElementDTO configElementDTO = null;
 		ConfigElement configElement = null;
 
-		if (hasElementId) {
-			String elementId = request.getStringParameter("element_id");
-			configElement = configRegistry.getElement(elementId);
-
-		} else if (hasElementPath) {
+		if (hasElementPath) {
 			String elementPathString = request.getStringParameter("element_path");
 			Path elementPath = new Path(elementPathString);
-			configElement = configRegistry.getElement(elementPath);
+
+			configElement = configRegistry.createElement(elementPath, attributes);
 
 		} else if (hasElementName) {
 			String parentElementId = null;
@@ -78,20 +84,53 @@ public class GetConfigElementCommand extends AbstractDataCastCommand<ConfigRegis
 				parentElementId = "-1";
 			}
 			String name = request.getStringParameter("element_name");
-			configElement = configRegistry.getElement(parentElementId, name);
+
+			if (generateUniqueName) {
+				String defaultName = name;
+				boolean isLastSegmentNumber = false;
+				int lastNumber = -1;
+				int index = defaultName.lastIndexOf("_");
+				if (index > 0 && index < defaultName.length() - 1) {
+					String lastSegment = defaultName.substring(index + 1);
+					try {
+						lastNumber = Integer.parseInt(lastSegment);
+						isLastSegmentNumber = true;
+					} catch (Exception e) {
+					}
+				}
+
+				int appendNumber = 1;
+				if (isLastSegmentNumber) {
+					appendNumber = lastNumber + 1;
+				}
+				while (configRegistry.exists(parentElementId, name)) {
+					String nextName = null;
+					if (isLastSegmentNumber) {
+						nextName = defaultName.substring(0, index) + "_" + appendNumber;
+					} else {
+						nextName = defaultName + "_" + appendNumber;
+					}
+					name = nextName;
+					appendNumber++;
+				}
+
+			} else {
+				if (configRegistry.exists(parentElementId, name)) {
+					ErrorDTO error = new ErrorDTO("Config registry with name '" + name + "' already exists.");
+					return Response.status(Status.BAD_REQUEST).entity(error).build();
+				}
+			}
+
+			configElement = configRegistry.createElement(parentElementId, name, attributes);
 		}
 
-		if (configElement != null) {
-			configElementDTO = ModelConverter.CONFIG_REGISTRY.toDTO(configElement);
+		if (configElement == null) {
+			ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Config element cannot be created.");
+			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		if (configElementDTO == null) {
-			return Response.ok().build();
-		}
+		ConfigElementDTO configElementDTO = ModelConverter.CONFIG_REGISTRY.toDTO(configElement);
 		return Response.ok().entity(configElementDTO).build();
 	}
 
 }
-
-// ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "Config element is not found.");
-// return Response.status(Status.BAD_REQUEST).entity(error).build();

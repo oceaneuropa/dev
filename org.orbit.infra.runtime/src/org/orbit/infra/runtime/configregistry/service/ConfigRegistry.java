@@ -37,13 +37,15 @@ public interface ConfigRegistry {
 
 	boolean exists(Path path) throws IOException;
 
+	boolean exists(String parentElementId, String name) throws IOException;
+
 	ConfigElement createElement(Path path, Map<String, Object> attributes) throws IOException;
 
 	ConfigElement createElement(String parentElementId, String name, Map<String, Object> attributes) throws IOException;
 
 	boolean updateName(String elementId, String newName) throws IOException;
 
-	boolean updateAttributes(String configId, Map<String, Object> attributes) throws IOException;
+	boolean updateAttributes(String elementId, Map<String, Object> attributes) throws IOException;
 
 	boolean delete(String elementId) throws IOException;
 

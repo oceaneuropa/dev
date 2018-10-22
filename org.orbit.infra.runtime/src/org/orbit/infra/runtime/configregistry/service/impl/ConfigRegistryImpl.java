@@ -363,6 +363,15 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	}
 
 	@Override
+	public boolean exists(String parentElementId, String name) throws IOException {
+		ConfigElement configElement = getElement(parentElementId, name);
+		if (configElement != null) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public ConfigElement createElement(Path path, Map<String, Object> attributes) throws IOException {
 		if (path == null || path.isEmpty()) {
 			throw new IOException("Path is empty.");
@@ -504,14 +513,14 @@ public class ConfigRegistryImpl implements ConfigRegistry {
 	}
 
 	@Override
-	public boolean updateAttributes(String configId, Map<String, Object> attributes) throws IOException {
+	public boolean updateAttributes(String elementId, Map<String, Object> attributes) throws IOException {
 		boolean isUpdated = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			ConfigRegistryElementsTableHandler tableHandler = getTableHandler(conn);
 
-			isUpdated = tableHandler.updateAttributes(conn, configId, attributes);
+			isUpdated = tableHandler.updateAttributes(conn, elementId, attributes);
 
 		} catch (SQLException e) {
 			handleSQLException(e);

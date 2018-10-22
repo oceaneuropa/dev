@@ -56,8 +56,8 @@ public class RemoveConfigRegistryPropertiesCommand extends AbstractDataCastComma
 		ConfigRegistry configRegistry = service.getById(id);
 		if (configRegistry != null) {
 			Map<String, Object> existingProperties = configRegistry.getMetadata().getProperties();
-			for (String propName : propertyNames) {
-				existingProperties.remove(propName);
+			for (String propertyName : propertyNames) {
+				existingProperties.remove(propertyName);
 			}
 
 			succeed = service.updateProperties(id, existingProperties);
