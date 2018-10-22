@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
+import org.orbit.infra.api.datacast.ChannelMetadata;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.datacast.DataTubeConfig;
@@ -21,6 +22,7 @@ import org.origin.common.rest.util.ResponseUtil;
 public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCastWSClient> implements DataCastClient {
 
 	private static final DataTubeConfig[] EMPTY_DATATUBE_CONFIGS = new DataTubeConfig[0];
+	private static final ChannelMetadata[] EMPTY_CHANNEL_METADATAS = new ChannelMetadata[0];
 
 	/**
 	 * 
@@ -211,17 +213,317 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		Request request = new Request(RequestConstants.DATACAST__DELETE_DATATUBE_CONFIG);
 		request.setParameter("id", configId);
 
+		boolean isDeleted = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isDeleted = ModelConverter.DataCast.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isDeleted;
+	}
+
+	@Override
+	public ChannelMetadata[] getChannelMetadatas() throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__LIST_CHANNEL_METADATAS);
+
+		ChannelMetadata[] channelMetadatas = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				channelMetadatas = ModelConverter.DataCast.getChannelMetadatas(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (channelMetadatas == null) {
+			channelMetadatas = EMPTY_CHANNEL_METADATAS;
+		}
+		return channelMetadatas;
+	}
+
+	@Override
+	public ChannelMetadata[] getChannelMetadatas(String dataTubeId) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__LIST_CHANNEL_METADATAS);
+		request.setParameter("data_tube_id", dataTubeId);
+
+		ChannelMetadata[] channelMetadatas = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				channelMetadatas = ModelConverter.DataCast.getChannelMetadatas(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (channelMetadatas == null) {
+			channelMetadatas = EMPTY_CHANNEL_METADATAS;
+		}
+		return channelMetadatas;
+	}
+
+	@Override
+	public ChannelMetadata getChannelMetadataById(String channelId) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__GET_CHANNEL_METADATA);
+		request.setParameter("channel_id", channelId);
+
+		ChannelMetadata channelMetadata = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				channelMetadata = ModelConverter.DataCast.getChannelMetadata(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return channelMetadata;
+	}
+
+	@Override
+	public ChannelMetadata getChannelMetadataByName(String name) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__GET_CHANNEL_METADATA);
+		request.setParameter("name", name);
+
+		ChannelMetadata channelMetadata = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				channelMetadata = ModelConverter.DataCast.getChannelMetadata(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return channelMetadata;
+	}
+
+	@Override
+	public boolean channelMetadataExistsById(String channelId) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__CHANNEL_METADATA_EXISTS);
+		request.setParameter("channel_id", channelId);
+
+		boolean exists = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				exists = ModelConverter.DataCast.exists(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public boolean channelMetadataExistsByName(String name) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__CHANNEL_METADATA_EXISTS);
+		request.setParameter("name", name);
+
+		boolean exists = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				exists = ModelConverter.DataCast.exists(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__CREATE_DATATUBE_CONFIG);
+		request.setParameter("data_tube_id", dataTubeId);
+		request.setParameter("name", name);
+		if (accessType != null) {
+			request.setParameter("access_type", accessType);
+		}
+		if (accessCode != null) {
+			request.setParameter("access_code", accessCode);
+		}
+		if (ownerAccountId != null) {
+			request.setParameter("owner_account_id", ownerAccountId);
+		}
+		if (accountIds != null) {
+			request.setParameter("account_ids", accountIds);
+		}
+		request.setParameter("properties", properties);
+
+		ChannelMetadata channelMetadata = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				channelMetadata = ModelConverter.DataCast.getChannelMetadata(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return channelMetadata;
+	}
+
+	@Override
+	public boolean updateChannelMetadata(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__UPDATE_DATATUBE_CONFIG);
+		request.setParameter("channel_id", channelId);
+
+		if (updateName) {
+			request.setParameter("update_name", true);
+			request.setParameter("name", name);
+		}
+
+		if (updateAccessType) {
+			request.setParameter("update_access_type", true);
+			request.setParameter("access_type", accessType);
+		}
+
+		if (updateAccessCode) {
+			request.setParameter("update_access_code", true);
+			request.setParameter("access_code", accessCode);
+		}
+
+		if (updateOwnerAccountId) {
+			request.setParameter("update_owner_account_id", true);
+			request.setParameter("owner_account_id", ownerAccountId);
+		}
+
+		if (updateOwnerAccountId) {
+			request.setParameter("update_owner_account_id", true);
+			request.setParameter("owner_account_id", ownerAccountId);
+		}
+
 		boolean isUpdated = false;
 		Response response = null;
 		try {
 			response = sendRequest(request);
 			if (response != null) {
-				isUpdated = ModelConverter.DataCast.isDeleted(response);
+				isUpdated = ModelConverter.DataCast.isUpdated(response);
 			}
 		} finally {
 			ResponseUtil.closeQuietly(response, true);
 		}
 		return isUpdated;
+	}
+
+	@Override
+	public boolean addChannelMetadataAccountIds(String channelId, List<String> accountIds) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__ADD_CHANNEL_METADATA_ACCOUNT_IDS);
+		request.setParameter("channel_id", channelId);
+		request.setParameter("accountIds", accountIds);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ModelConverter.DataCast.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean removeChannelMetadataAccountIds(String channelId, List<String> accountIds) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_IDS);
+		request.setParameter("channel_id", channelId);
+		request.setParameter("accountIds", accountIds);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ModelConverter.DataCast.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean setChannelMetadataProperties(String channelId, Map<String, Object> properties) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__SET_CHANNEL_METADATA_PROPERTIES);
+		request.setParameter("channel_id", channelId);
+		request.setParameter("properties", properties);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ModelConverter.DataCast.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean removeChannelMetadataProperties(String channelId, List<String> propertyNames) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__REMOVE_CHANNEL_METADATA_PROPERTIES);
+		request.setParameter("channel_id", channelId);
+		request.setParameter("property_names", propertyNames);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ModelConverter.DataCast.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean deleteChannelMetadataById(String channelId) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__DELETE_CHANNEL_METADATA);
+		request.setParameter("channel_id", channelId);
+
+		boolean isDeleted = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isDeleted = ModelConverter.DataCast.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isDeleted;
+	}
+
+	@Override
+	public boolean deleteChannelMetadataByName(String name) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__DELETE_CHANNEL_METADATA);
+		request.setParameter("name", name);
+
+		boolean isDeleted = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isDeleted = ModelConverter.DataCast.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isDeleted;
 	}
 
 }

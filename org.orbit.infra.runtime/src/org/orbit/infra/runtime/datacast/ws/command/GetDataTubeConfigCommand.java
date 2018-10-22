@@ -47,7 +47,7 @@ public class GetDataTubeConfigCommand extends AbstractDataCastCommand<DataCastSe
 			return Response.ok().build();
 		}
 
-		DataTubeConfigDTO dataTubeConfigDTO = ModelConverter.DataCast.toDTO(dataTubeConfig);
+		DataTubeConfigDTO dataTubeConfigDTO = ModelConverter.DATA_CAST.toDTO(dataTubeConfig);
 		return Response.ok().entity(dataTubeConfigDTO).build();
 	}
 

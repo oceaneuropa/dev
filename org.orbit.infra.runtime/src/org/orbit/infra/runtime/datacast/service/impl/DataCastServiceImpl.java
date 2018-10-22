@@ -405,7 +405,7 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public ChannelMetadata[] getChannels() throws ServerException {
+	public ChannelMetadata[] getChannelMetadatas() throws ServerException {
 		ChannelMetadata[] result = null;
 		Connection conn = null;
 		try {
@@ -429,7 +429,7 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public ChannelMetadata[] getChannels(String dataTubeId) throws ServerException {
+	public ChannelMetadata[] getChannelMetadatas(String dataTubeId) throws ServerException {
 		ChannelMetadata[] result = null;
 		Connection conn = null;
 		try {
@@ -453,7 +453,7 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public boolean channelExistsById(String channelId) throws ServerException {
+	public boolean channelMetadataExistsById(String channelId) throws ServerException {
 		boolean exists = false;
 		Connection conn = null;
 		try {
@@ -471,14 +471,14 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public boolean channelExistsByName(String channelName) throws ServerException {
+	public boolean channelMetadataExistsByName(String name) throws ServerException {
 		boolean exists = false;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
 
-			exists = tableHandler.existsByChannelName(conn, channelName);
+			exists = tableHandler.existsByChannelName(conn, name);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -489,7 +489,7 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public ChannelMetadata getChannelById(String channelId) throws ServerException {
+	public ChannelMetadata getChannelMetadataById(String channelId) throws ServerException {
 		ChannelMetadata result = null;
 		Connection conn = null;
 		try {
@@ -507,14 +507,14 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public ChannelMetadata getChannelByName(String channelName) throws ServerException {
+	public ChannelMetadata getChannelMetadataByName(String name) throws ServerException {
 		ChannelMetadata result = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
 
-			result = tableHandler.getByChannelName(conn, channelName);
+			result = tableHandler.getByChannelName(conn, name);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -525,24 +525,30 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public ChannelMetadata createChannel(String channelName, Map<String, Object> properties) throws ServerException {
+	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ServerException {
 		ChannelMetadata result = null;
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
 
-			String dataTubeId = allocateDataTube(conn, tableHandler);
+			if (dataTubeId == null) {
+				dataTubeId = allocateDataTube(conn, tableHandler);
+			}
 			if (dataTubeId == null) {
 				throw new ServerException("500", "Data tube cannot be allocated.");
 			}
 
 			String channelId = generateChannelId();
 
+			if (channelMetadataExistsByName(name)) {
+
+			}
+
 			if (properties == null) {
 				properties = new HashMap<String, Object>();
 			}
-			result = tableHandler.create(conn, dataTubeId, channelId, channelName, null, properties);
+			result = tableHandler.create(conn, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIds, properties);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -621,7 +627,7 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public boolean deleteChannelById(String channelId) throws ServerException {
+	public boolean deleteChannelMetadataById(String channelId) throws ServerException {
 		boolean isDeleted = false;
 		Connection conn = null;
 		try {
@@ -639,7 +645,7 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 	}
 
 	@Override
-	public boolean deleteChannelByName(String channelName) throws ServerException {
+	public boolean deleteChannelMetadataByName(String name) throws ServerException {
 
 		boolean isDeleted = false;
 		Connection conn = null;
@@ -647,7 +653,7 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware {
 			conn = getConnection();
 			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
 
-			isDeleted = tableHandler.deleteByChannelName(conn, channelName);
+			isDeleted = tableHandler.deleteByChannelName(conn, name);
 
 		} catch (SQLException e) {
 			handleException(e);

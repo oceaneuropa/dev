@@ -47,7 +47,7 @@ public class ListDataTubeConfigsCommand extends AbstractDataCastCommand<DataCast
 		List<DataTubeConfigDTO> dataTubeConfigDTOs = new ArrayList<DataTubeConfigDTO>();
 		if (dataTubeConfigs != null) {
 			for (DataTubeConfig currDataTubeConfig : dataTubeConfigs) {
-				DataTubeConfigDTO dataTubeConfigDTO = ModelConverter.DataCast.toDTO(currDataTubeConfig);
+				DataTubeConfigDTO dataTubeConfigDTO = ModelConverter.DATA_CAST.toDTO(currDataTubeConfig);
 				if (dataTubeConfigDTO != null) {
 					dataTubeConfigDTOs.add(dataTubeConfigDTO);
 				}

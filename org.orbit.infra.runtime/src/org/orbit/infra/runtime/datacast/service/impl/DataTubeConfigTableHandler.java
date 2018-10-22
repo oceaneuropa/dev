@@ -164,7 +164,7 @@ public class DataTubeConfigTableHandler implements DatabaseTableAware {
 			dataTubeId = "-1";
 		}
 
-		Map<String, Object> properties = ModelConverter.DataCast.toProperties(propertiesString);
+		Map<String, Object> properties = ModelConverter.DATA_CAST.toProperties(propertiesString);
 
 		return new DataTubeConfigImpl(id, this.dataCastId, dataTubeId, name, isEnabled, properties, dateCreated, dateModified);
 	}
@@ -289,7 +289,7 @@ public class DataTubeConfigTableHandler implements DatabaseTableAware {
 	 */
 	public DataTubeConfig create(Connection conn, String dataTubeId, String name, boolean isEnabled, Map<String, Object> properties) throws SQLException, IOException {
 		String id = generateDataTubeConfigId();
-		String propertiesString = ModelConverter.DataCast.toPropertiesString(properties);
+		String propertiesString = ModelConverter.DATA_CAST.toPropertiesString(properties);
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
 
@@ -341,7 +341,7 @@ public class DataTubeConfigTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateProperties(Connection conn, String configId, Map<String, Object> properties) throws SQLException {
-		String propertiesString = ModelConverter.DataCast.toPropertiesString(properties);
+		String propertiesString = ModelConverter.DATA_CAST.toPropertiesString(properties);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET properties=?, dateModified=? WHERE id=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { propertiesString, getCurrentTime(), configId }, 1);

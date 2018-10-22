@@ -4,10 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.orbit.infra.model.configregistry.ConfigElementDTO;
+import org.orbit.infra.model.configregistry.ConfigRegistryMetadataDTO;
+import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.model.datacast.DataTubeConfigDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
+import org.orbit.infra.runtime.configregistry.service.ConfigElement;
+import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
+import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.origin.common.json.JSONUtil;
@@ -16,8 +22,9 @@ public class ModelConverter {
 
 	public static Indexes Indexes = new Indexes();
 	public static Extensions Extensions = new Extensions();
-	public static DataCast DataCast = new DataCast();
-	public static DataTube DataTube = new DataTube();
+	public static ConfigRegistry CONFIG_REGISTRY = new ConfigRegistry();
+	public static DataCast DATA_CAST = new DataCast();
+	public static DataTube DATA_TUBE = new DataTube();
 
 	public static class Indexes {
 		/**
@@ -62,7 +69,108 @@ public class ModelConverter {
 			extensionItemDTO.setName(item.getName());
 			extensionItemDTO.setDescription(item.getDescription());
 			extensionItemDTO.setProperties(item.getProperties());
+
 			return extensionItemDTO;
+		}
+	}
+
+	public static class ConfigRegistry {
+		/**
+		 * 
+		 * @param metadata
+		 * @return
+		 */
+		public ConfigRegistryMetadataDTO toDTO(ConfigRegistryMetadata metadata) {
+			if (metadata == null) {
+				return null;
+			}
+
+			String id = metadata.getId();
+			String type = metadata.getType();
+			String name = metadata.getName();
+			Map<String, Object> properties = metadata.getProperties();
+			long dateCreated = metadata.getDateCreated();
+			long dateModified = metadata.getDateModified();
+
+			ConfigRegistryMetadataDTO metadataDTO = new ConfigRegistryMetadataDTO();
+			metadataDTO.setId(id);
+			metadataDTO.setType(type);
+			metadataDTO.setName(name);
+			metadataDTO.setProperties(properties);
+			metadataDTO.setDateCreated(dateCreated);
+			metadataDTO.setDateModified(dateModified);
+
+			return metadataDTO;
+		}
+
+		/**
+		 * 
+		 * @param configElement
+		 * @return
+		 */
+		public ConfigElementDTO toDTO(ConfigElement configElement) {
+			if (configElement == null) {
+				return null;
+			}
+
+			String configRegistryId = configElement.getConfigRegistryId();
+			String parentElementId = configElement.getParentElementId();
+			String elementId = configElement.getElementId();
+			String pathString = configElement.getPath().getPathString();
+			Map<String, Object> attributes = configElement.getAttributes();
+			long dateCreated = configElement.getDateCreated();
+			long dateModified = configElement.getDateModified();
+
+			ConfigElementDTO configElementDTO = new ConfigElementDTO();
+			configElementDTO.setConfigRegistryId(configRegistryId);
+			configElementDTO.setParentElementId(parentElementId);
+			configElementDTO.setElementId(elementId);
+			configElementDTO.setPath(pathString);
+			configElementDTO.setAttributes(attributes);
+			configElementDTO.setDateCreated(dateCreated);
+			configElementDTO.setDateModified(dateModified);
+
+			return configElementDTO;
+		}
+
+		/**
+		 * 
+		 * @param propertiesString
+		 * @return
+		 */
+		public Map<String, Object> toProperties(String propertiesString) {
+			Map<String, Object> properties = JSONUtil.toProperties(propertiesString, true);
+			return properties;
+		}
+
+		/**
+		 * 
+		 * @param properties
+		 * @return
+		 */
+		public String toPropertiesString(Map<String, Object> properties) {
+			String propertiesString = JSONUtil.toJsonString(properties);
+			return propertiesString;
+		}
+
+		/**
+		 * 
+		 * @param propertiesString
+		 * @return
+		 */
+		public Map<String, Object> toMap(String mapString) {
+			Map<String, Object> map = JSONUtil.toProperties(mapString, true);
+			return map;
+		}
+
+		/**
+		 * 
+		 * @param map
+		 * @return
+		 */
+		public String toMapString(Map<String, Object> map) {
+			String mapString = JSONUtil.toJsonString(map);
+			return mapString;
 		}
 	}
 
@@ -97,6 +205,44 @@ public class ModelConverter {
 			dataTubeConfigDTO.setDateModified(dateModified);
 
 			return dataTubeConfigDTO;
+		}
+
+		/**
+		 * 
+		 * @param channelMetadata
+		 * @return
+		 */
+		public ChannelMetadataDTO toDTO(ChannelMetadata channelMetadata) {
+			if (channelMetadata == null) {
+				return null;
+			}
+
+			String dataCastId = channelMetadata.getDataCastId();
+			String dataTubeId = channelMetadata.getDataTubeId();
+			String channelId = channelMetadata.getChannelId();
+			String name = channelMetadata.getName();
+			String accessType = channelMetadata.getAccessType();
+			String accessCode = channelMetadata.getAccessCode();
+			String ownerAccountId = channelMetadata.getOwnerAccountId();
+			List<String> accountIds = channelMetadata.getAccountIds();
+			Map<String, Object> properties = channelMetadata.getProperties();
+			long dateCreated = channelMetadata.getDateCreated();
+			long dateModified = channelMetadata.getDateModified();
+
+			ChannelMetadataDTO channelMetadataDTO = new ChannelMetadataDTO();
+			channelMetadataDTO.setDataCastId(dataCastId);
+			channelMetadataDTO.setDataTubeId(dataTubeId);
+			channelMetadataDTO.setChannelId(channelId);
+			channelMetadataDTO.setName(name);
+			channelMetadataDTO.setAccessType(accessType);
+			channelMetadataDTO.setAccessCode(accessCode);
+			channelMetadataDTO.setOwnerAccountId(ownerAccountId);
+			channelMetadataDTO.setAccountIds(accountIds);
+			channelMetadataDTO.setProperties(properties);
+			channelMetadataDTO.setDateCreated(dateCreated);
+			channelMetadataDTO.setDateModified(dateModified);
+
+			return channelMetadataDTO;
 		}
 
 		/**

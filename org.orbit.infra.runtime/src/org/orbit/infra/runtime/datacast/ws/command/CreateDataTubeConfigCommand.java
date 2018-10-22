@@ -58,7 +58,7 @@ public class CreateDataTubeConfigCommand extends AbstractDataCastCommand<DataCas
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		DataTubeConfigDTO dataTubeConfigDTO = ModelConverter.DataCast.toDTO(dataTubeConfig);
+		DataTubeConfigDTO dataTubeConfigDTO = ModelConverter.DATA_CAST.toDTO(dataTubeConfig);
 		return Response.ok().entity(dataTubeConfigDTO).build();
 	}
 

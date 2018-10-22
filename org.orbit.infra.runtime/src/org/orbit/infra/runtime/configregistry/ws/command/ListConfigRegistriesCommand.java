@@ -1,0 +1,56 @@
+package org.orbit.infra.runtime.configregistry.ws.command;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.core.Response;
+
+import org.orbit.infra.model.RequestConstants;
+import org.orbit.infra.model.configregistry.ConfigRegistryMetadataDTO;
+import org.orbit.infra.runtime.common.ws.AbstractDataCastCommand;
+import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
+import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
+import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
+import org.orbit.infra.runtime.util.ModelConverter;
+import org.origin.common.rest.editpolicy.WSCommand;
+import org.origin.common.rest.model.Request;
+
+public class ListConfigRegistriesCommand extends AbstractDataCastCommand<ConfigRegistryService> implements WSCommand {
+
+	public static String ID = "org.orbit.infra.runtime.configregistry.ListConfigRegistriesCommand";
+
+	public ListConfigRegistriesCommand() {
+		super(ConfigRegistryService.class);
+	}
+
+	@Override
+	public boolean isSupported(Request request) {
+		String requestName = request.getRequestName();
+		if (RequestConstants.CONFIG_REGISTRY__LIST_CONFIG_REGISTRIES.equalsIgnoreCase(requestName)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Response execute(Request request) throws Exception {
+		ConfigRegistryService service = getService();
+
+		List<ConfigRegistryMetadataDTO> metadataDTOs = new ArrayList<ConfigRegistryMetadataDTO>();
+
+		ConfigRegistry[] configRegistries = service.getList();
+		if (configRegistries != null) {
+			for (ConfigRegistry configRegistry : configRegistries) {
+				ConfigRegistryMetadata metadata = configRegistry.getMetadata();
+
+				ConfigRegistryMetadataDTO metadataDTO = ModelConverter.CONFIG_REGISTRY.toDTO(metadata);
+				if (metadataDTO != null) {
+					metadataDTOs.add(metadataDTO);
+				}
+			}
+		}
+
+		return Response.ok().entity(metadataDTOs).build();
+	}
+
+}

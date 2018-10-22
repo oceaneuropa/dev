@@ -48,27 +48,16 @@ public class SetDataTubeConfigPropertiesCommand extends AbstractDataCastCommand<
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		boolean hasSucceed = false;
-		boolean hasFailed = false;
-
 		DataCastService dataCastService = getService();
+
+		boolean succeed = false;
 
 		DataTubeConfig dataTubeConfig = dataCastService.getDataTubeConfig(id);
 		if (dataTubeConfig != null) {
-			Map<String, Object> currProperties = dataTubeConfig.getProperties();
-			currProperties.putAll(properties);
+			Map<String, Object> existingProperties = dataTubeConfig.getProperties();
+			existingProperties.putAll(properties);
 
-			boolean currSucceed = dataCastService.updateDataTubeProperties(id, currProperties);
-			if (currSucceed) {
-				hasSucceed = true;
-			} else {
-				hasFailed = true;
-			}
-		}
-
-		boolean succeed = false;
-		if (hasSucceed && !hasFailed) {
-			succeed = true;
+			succeed = dataCastService.updateDataTubeProperties(id, existingProperties);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

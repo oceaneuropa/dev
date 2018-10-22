@@ -14,8 +14,6 @@ public class InfraConstants {
 	public static String URL = "url";
 	public static String BASE_URL = "base_url";
 	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
-	// public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
-	// public static String PINGABLE = "pingable";
 
 	public static String TOKEN_PROVIDER__ORBIT = "orbit";
 
@@ -91,6 +89,35 @@ public class InfraConstants {
 	public static String DATATUBE__RELAY_URLS = "infra.data_tube.relay.urls";
 
 	// ----------------------------------------------------------------------------------------
+	// Config Registry
+	// ----------------------------------------------------------------------------------------
+	// config properties
+	public static String CONFIG_REGISTRY__AUTOSTART = "infra.config_registry.autostart";
+	// public static String CONFIG_REGISTRY__ID = "infra.config_registry.id";
+	public static String CONFIG_REGISTRY__NAME = "infra.config_registry.name";
+	public static String CONFIG_REGISTRY__HOST_URL = "infra.config_registry.host.url";
+	public static String CONFIG_REGISTRY__CONTEXT_ROOT = "infra.config_registry.context_root";
+	public static String CONFIG_REGISTRY__JDBC_DRIVER = "infra.config_registry.jdbc.driver";
+	public static String CONFIG_REGISTRY__JDBC_URL = "infra.config_registry.jdbc.url";
+	public static String CONFIG_REGISTRY__JDBC_USERNAME = "infra.config_registry.jdbc.username";
+	public static String CONFIG_REGISTRY__JDBC_PASSWORD = "infra.config_registry.jdbc.password";
+
+	// index item values
+	public static String IDX__CONFIG_REGISTRY__INDEXER_ID = "infra.config_registry.indexer";
+	public static String IDX__CONFIG_REGISTRY__TYPE = "ConfigRegistry";
+
+	// index item properties
+	// public static String IDX_PROP__CONFIG_REGISTRY__ID = "config_registry.id";
+	public static String IDX_PROP__CONFIG_REGISTRY__NAME = "config_registry.name";
+	public static String IDX_PROP__CONFIG_REGISTRY__HOST_URL = "config_registry.host.url";
+	public static String IDX_PROP__CONFIG_REGISTRY__CONTEXT_ROOT = "config_registry.context_root";
+	public static String IDX_PROP__CONFIG_REGISTRY__BASE_URL = "config_registry.base_url";
+
+	// EditPolicy values
+	public static String CONFIG_REGISTRY__EDITPOLICY_ID = "infra.config_registry.editpolicy";
+	public static String CONFIG_REGISTRY__SERVICE_NAME = "infra.config_registry.service";
+
+	// ----------------------------------------------------------------------------------------
 	// Data Cast
 	// ----------------------------------------------------------------------------------------
 	// config properties
@@ -100,7 +127,7 @@ public class InfraConstants {
 	public static String DATACAST__HOST_URL = "infra.data_cast.host.url";
 	public static String DATACAST__CONTEXT_ROOT = "infra.data_cast.context_root";
 	public static String DATACAST__JDBC_DRIVER = "infra.data_cast.jdbc.driver";
-	public static String DATACAST__JDBC_URL = "infra.dfs.data_cast.url";
+	public static String DATACAST__JDBC_URL = "infra.data_cast.jdbc.url";
 	public static String DATACAST__JDBC_USERNAME = "infra.data_cast.jdbc.username";
 	public static String DATACAST__JDBC_PASSWORD = "infra.data_cast.jdbc.password";
 
@@ -113,6 +140,7 @@ public class InfraConstants {
 	public static String IDX_PROP__DATACAST__NAME = "data_cast.name";
 	public static String IDX_PROP__DATACAST__HOST_URL = "data_cast.host.url";
 	public static String IDX_PROP__DATACAST__CONTEXT_ROOT = "data_cast.context_root";
+	public static String IDX_PROP__DATACAST__BASE_URL = "data_cast.base_url";
 
 	// EditPolicy values
 	public static String DATACAST__EDITPOLICY_ID = "infra.data_cast.editpolicy";
@@ -140,10 +168,14 @@ public class InfraConstants {
 	public static String IDX_PROP__DATATUBE__NAME = "data_tube.name";
 	public static String IDX_PROP__DATATUBE__HOST_URL = "data_tube.host.url";
 	public static String IDX_PROP__DATATUBE__CONTEXT_ROOT = "data_tube.context_root";
-	public static String IDX_PROP__DATATUBE__HTTP_PORT = "data_tube.http_port";
+	public static String IDX_PROP__DATATUBE__BASE_URL = "data_tube.base_url";
+	public static String IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT = "data_tube.web_socket_http_port";
 
 	// EditPolicy values
 	public static String DATATUBE__EDITPOLICY_ID = "infra.data_tube.editpolicy";
 	public static String DATATUBE__SERVICE_NAME = "infra.data_tube.service";
 
 }
+
+// public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
+// public static String PINGABLE = "pingable";

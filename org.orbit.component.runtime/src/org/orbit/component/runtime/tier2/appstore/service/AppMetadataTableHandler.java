@@ -41,8 +41,8 @@ import org.origin.common.util.StringUtil;
  */
 public class AppMetadataTableHandler implements DatabaseTableAware {
 
-	public static AppMetadataTableHandler INSTANCE_FOR_MYSQL = new AppMetadataTableHandler(DatabaseTableAware.MYSQL);
-	public static AppMetadataTableHandler INSTANCE_FOR_POSTGRESQL = new AppMetadataTableHandler(DatabaseTableAware.POSTGRESQL);
+	// public static AppMetadataTableHandler INSTANCE_FOR_MYSQL = new AppMetadataTableHandler(DatabaseTableAware.MYSQL);
+	// public static AppMetadataTableHandler INSTANCE_FOR_POSTGRESQL = new AppMetadataTableHandler(DatabaseTableAware.POSTGRESQL);
 
 	protected String database;
 

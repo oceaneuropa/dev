@@ -42,36 +42,25 @@ public class RemoveDataTubeConfigPropertiesCommand extends AbstractDataCastComma
 
 		List<String> propertyNames = null;
 		if (request.hasParameter("property_names")) {
-			propertyNames = (List<String>) request.getListParameter("properties");
+			propertyNames = (List<String>) request.getListParameter("property_names");
 		}
 		if (propertyNames == null || propertyNames.isEmpty()) {
 			ErrorDTO error = new ErrorDTO("'property_names' parameter is not set.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
-		boolean hasSucceed = false;
-		boolean hasFailed = false;
-
-		DataCastService dataCastService = getService();
-
-		DataTubeConfig dataTubeConfig = dataCastService.getDataTubeConfig(id);
-		if (dataTubeConfig != null) {
-			Map<String, Object> currProperties = dataTubeConfig.getProperties();
-			for (String propName : propertyNames) {
-				currProperties.remove(propName);
-			}
-
-			boolean currSucceed = dataCastService.updateDataTubeProperties(id, currProperties);
-			if (currSucceed) {
-				hasSucceed = true;
-			} else {
-				hasFailed = true;
-			}
-		}
+		DataCastService service = getService();
 
 		boolean succeed = false;
-		if (hasSucceed && !hasFailed) {
-			succeed = true;
+
+		DataTubeConfig dataTubeConfig = service.getDataTubeConfig(id);
+		if (dataTubeConfig != null) {
+			Map<String, Object> existingProperties = dataTubeConfig.getProperties();
+			for (String propName : propertyNames) {
+				existingProperties.remove(propName);
+			}
+
+			succeed = service.updateDataTubeProperties(id, existingProperties);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

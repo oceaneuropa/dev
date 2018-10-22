@@ -10,6 +10,7 @@ import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.datatube.service.Channel;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
+import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.util.LifecycleAware;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
@@ -31,6 +32,7 @@ public class DataTubeServiceImpl implements DataTubeService, LifecycleAware {
 		this.initProperties = initProperties;
 		this.channelMap = Collections.synchronizedMap(new HashMap<String, Channel>());
 		this.properties = new HashMap<Object, Object>();
+		this.wsEditPolicies = new ServiceEditPoliciesImpl(DataTubeService.class, this);
 	}
 
 	@Override

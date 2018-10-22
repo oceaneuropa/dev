@@ -1,5 +1,6 @@
 package org.orbit.infra.runtime.datacast.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.origin.common.jdbc.ConnectionAware;
@@ -34,22 +35,22 @@ public interface DataCastService extends WebServiceAware, PropertiesAware, Conne
 	// -----------------------------------------------------------------
 	// Channel metadatas
 	// -----------------------------------------------------------------
-	ChannelMetadata[] getChannels() throws ServerException;
+	ChannelMetadata[] getChannelMetadatas() throws ServerException;
 
-	ChannelMetadata[] getChannels(String dataTubeId) throws ServerException;
+	ChannelMetadata[] getChannelMetadatas(String dataTubeId) throws ServerException;
 
-	boolean channelExistsById(String channelId) throws ServerException;
+	boolean channelMetadataExistsById(String channelId) throws ServerException;
 
-	boolean channelExistsByName(String channelName) throws ServerException;
+	boolean channelMetadataExistsByName(String name) throws ServerException;
 
-	ChannelMetadata getChannelById(String channelId) throws ServerException;
+	ChannelMetadata getChannelMetadataById(String channelId) throws ServerException;
 
-	ChannelMetadata getChannelByName(String channelName) throws ServerException;
+	ChannelMetadata getChannelMetadataByName(String name) throws ServerException;
 
-	ChannelMetadata createChannel(String channelName, Map<String, Object> properties) throws ServerException;
+	ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ServerException;
 
-	boolean deleteChannelById(String channelId) throws ServerException;
+	boolean deleteChannelMetadataById(String channelId) throws ServerException;
 
-	boolean deleteChannelByName(String channelName) throws ServerException;
+	boolean deleteChannelMetadataByName(String name) throws ServerException;
 
 }

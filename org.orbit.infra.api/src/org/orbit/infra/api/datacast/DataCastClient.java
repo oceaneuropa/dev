@@ -11,6 +11,9 @@ public interface DataCastClient extends ServiceClient {
 	@Override
 	DataCastServiceMetadata getMetadata() throws ClientException;
 
+	// ----------------------------------------------------------------------------------------------------------------
+	// Data tube configs
+	// ----------------------------------------------------------------------------------------------------------------
 	DataTubeConfig[] getDataTubeConfigs() throws ClientException;
 
 	DataTubeConfig[] getDataTubeConfigs(boolean isEnabled) throws ClientException;
@@ -28,5 +31,36 @@ public interface DataCastClient extends ServiceClient {
 	boolean removeDataTubeProperties(String configId, List<String> propertyNames) throws ClientException;
 
 	boolean deleteDataTubeConfig(String configId) throws ClientException;
+
+	// ----------------------------------------------------------------------------------------------------------------
+	// Channel metadatas
+	// ----------------------------------------------------------------------------------------------------------------
+	ChannelMetadata[] getChannelMetadatas() throws ClientException;
+
+	ChannelMetadata[] getChannelMetadatas(String dataTubeId) throws ClientException;
+
+	ChannelMetadata getChannelMetadataById(String channelId) throws ClientException;
+
+	ChannelMetadata getChannelMetadataByName(String name) throws ClientException;
+
+	boolean channelMetadataExistsById(String channelId) throws ClientException;
+
+	boolean channelMetadataExistsByName(String name) throws ClientException;
+
+	ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ClientException;
+
+	boolean updateChannelMetadata(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException;
+
+	boolean addChannelMetadataAccountIds(String channelId, List<String> accountIds) throws ClientException;
+
+	boolean removeChannelMetadataAccountIds(String channelId, List<String> accountIds) throws ClientException;
+
+	boolean setChannelMetadataProperties(String channelId, Map<String, Object> properties) throws ClientException;
+
+	boolean removeChannelMetadataProperties(String channelId, List<String> propertyNames) throws ClientException;
+
+	boolean deleteChannelMetadataById(String channelId) throws ClientException;
+
+	boolean deleteChannelMetadataByName(String name) throws ClientException;
 
 }

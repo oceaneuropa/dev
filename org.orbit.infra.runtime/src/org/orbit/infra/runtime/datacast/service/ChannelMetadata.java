@@ -21,6 +21,32 @@ public interface ChannelMetadata {
 
 	void setName(String name);
 
+	/**
+	 * Values are: public, private.
+	 * 
+	 * If 'public', anyone can join the channel.
+	 * 
+	 * If 'private', only invited users (by accountId) can join the channel.
+	 * 
+	 * @return
+	 */
+	String getAccessType();
+
+	void setAccessType(String accessType);
+
+	/**
+	 * like the password in diablo2 game.
+	 * 
+	 * @return
+	 */
+	String getAccessCode();
+
+	void setAccessCode(String accessCode);
+
+	String getOwnerAccountId();
+
+	void setOwnerAccountId(String accountId);
+
 	List<String> getAccountIds();
 
 	Map<String, Object> getProperties();

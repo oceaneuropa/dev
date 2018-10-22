@@ -118,6 +118,9 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    dataTubeId varchar(250) NOT NULL,");
 			sb.append("    channelId varchar(250) NOT NULL,");
 			sb.append("    name varchar(500) NOT NULL,");
+			sb.append("    accessType varchar(250) DEFAULT NULL,");
+			sb.append("    accessCode varchar(250) DEFAULT NULL,");
+			sb.append("    ownerAccountId varchar(250) DEFAULT NULL,");
 			sb.append("    accountIds varchar(50000) DEFAULT NULL,");
 			sb.append("    properties varchar(5000) DEFAULT NULL,");
 			sb.append("    dateCreated bigint DEFAULT 0,");
@@ -131,6 +134,9 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    dataTubeId varchar(250) NOT NULL,");
 			sb.append("    channelId varchar(250) NOT NULL,");
 			sb.append("    name varchar(500) NOT NULL,");
+			sb.append("    accessType varchar(250) DEFAULT NULL,");
+			sb.append("    accessCode varchar(250) DEFAULT NULL,");
+			sb.append("    ownerAccountId varchar(250) DEFAULT NULL,");
 			sb.append("    accountIds varchar(50000) DEFAULT NULL,");
 			sb.append("    properties varchar(5000) DEFAULT NULL,");
 			sb.append("    dateCreated bigint DEFAULT 0,");
@@ -153,6 +159,9 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 		String dataTubeId = rs.getString("dataTubeId");
 		String channelId = rs.getString("channelId");
 		String name = rs.getString("name");
+		String accessType = rs.getString("accessType");
+		String accessCode = rs.getString("accessCode");
+		String ownerAccountId = rs.getString("ownerAccountId");
 		String accountIdsString = rs.getString("accountIds");
 		String propertiesString = rs.getString("properties");
 		long dateCreated = rs.getLong("dateCreated");
@@ -163,10 +172,10 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			dataTubeId = "-1";
 		}
 
-		List<String> accountIds = ModelConverter.DataCast.toAccountIds(accountIdsString);
-		Map<String, Object> properties = ModelConverter.DataCast.toProperties(propertiesString);
+		List<String> accountIds = ModelConverter.DATA_CAST.toAccountIds(accountIdsString);
+		Map<String, Object> properties = ModelConverter.DATA_CAST.toProperties(propertiesString);
 
-		return new ChannelMetadataImpl(this.dataCastId, dataTubeId, channelId, name, accountIds, properties, dateCreated, dateModified);
+		return new ChannelMetadataImpl(this.dataCastId, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIds, properties, dateCreated, dateModified);
 	}
 
 	/**
@@ -282,13 +291,16 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * @param dataTubeId
 	 * @param channelId
 	 * @param name
+	 * @param accessType
+	 * @param accessCode
+	 * @param ownerAccountId
 	 * @param accountIds
 	 * @param properties
 	 * @return
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public ChannelMetadata create(Connection conn, String dataTubeId, String channelId, String name, List<String> accountIds, Map<String, Object> properties) throws SQLException, IOException {
+	public ChannelMetadata create(Connection conn, String dataTubeId, String channelId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws SQLException, IOException {
 		if (existsByChannelId(conn, channelId)) {
 			throw new IOException("Channel with same channelId already exists.");
 		}
@@ -296,14 +308,14 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			throw new IOException("Channel with same name already exists.");
 		}
 
-		String accountIdsString = ModelConverter.DataCast.toAccountIdsString(accountIds);
-		String propertiesString = ModelConverter.DataCast.toPropertiesString(properties);
+		String accountIdsString = ModelConverter.DATA_CAST.toAccountIdsString(accountIds);
+		String propertiesString = ModelConverter.DATA_CAST.toPropertiesString(properties);
 
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
 
-		String insertSQL = "INSERT INTO " + getTableName() + " (dataTubeId, channelId, name, accountIds, properties, dateCreated, dateModified) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { dataTubeId, channelId, name, accountIdsString, propertiesString, dateCreated, dateModified }, 1);
+		String insertSQL = "INSERT INTO " + getTableName() + " (dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIds, properties, dateCreated, dateModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIdsString, propertiesString, dateCreated, dateModified }, 1);
 		if (succeed) {
 			return getByChannelId(conn, channelId);
 		}
@@ -332,7 +344,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateAccountIds(Connection conn, String channelId, List<String> accountIds) throws SQLException {
-		String accountIdsString = ModelConverter.DataCast.toAccountIdsString(accountIds);
+		String accountIdsString = ModelConverter.DATA_CAST.toAccountIdsString(accountIds);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET accountIds=?, dateModified=? WHERE channelId=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { accountIdsString, getCurrentTime(), channelId }, 1);
@@ -347,7 +359,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * @throws SQLException
 	 */
 	public boolean updateProperties(Connection conn, String channelId, Map<String, Object> properties) throws SQLException {
-		String propertiesString = ModelConverter.DataCast.toPropertiesString(properties);
+		String propertiesString = ModelConverter.DATA_CAST.toPropertiesString(properties);
 
 		String updateSQL = "UPDATE " + getTableName() + " SET properties=?, dateModified=? WHERE channelId=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { propertiesString, getCurrentTime(), channelId }, 1);

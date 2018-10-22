@@ -3,6 +3,8 @@ package org.orbit.infra.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.infra.runtime.datacast.service.DataCastService;
+import org.orbit.infra.runtime.datacast.ws.DataCastServiceAdapter;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.datatube.ws.DataTubeServiceAdapter;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
@@ -34,7 +36,8 @@ public class InfraServices {
 
 	protected IndexServiceAdapter indexServiceAdapter;
 	protected ExtensionRegistryAdapter extensionRegistryAdapter;
-	protected DataTubeServiceAdapter channelServiceAdapter;
+	protected DataCastServiceAdapter dataCastServiceAdapter;
+	protected DataTubeServiceAdapter dataTubeServiceAdapter;
 
 	/**
 	 * 
@@ -53,8 +56,11 @@ public class InfraServices {
 		this.extensionRegistryAdapter = new ExtensionRegistryAdapter(properties);
 		this.extensionRegistryAdapter.start(bundleContext);
 
-		this.channelServiceAdapter = new DataTubeServiceAdapter(properties);
-		this.channelServiceAdapter.start(bundleContext);
+		this.dataCastServiceAdapter = new DataCastServiceAdapter(properties);
+		this.dataCastServiceAdapter.start(bundleContext);
+
+		this.dataTubeServiceAdapter = new DataTubeServiceAdapter(properties);
+		this.dataTubeServiceAdapter.start(bundleContext);
 	}
 
 	/**
@@ -63,9 +69,14 @@ public class InfraServices {
 	 */
 	public void stop(BundleContext bundleContext) {
 		// Stop service adapters
-		if (this.channelServiceAdapter != null) {
-			this.channelServiceAdapter.stop(bundleContext);
-			this.channelServiceAdapter = null;
+		if (this.dataTubeServiceAdapter != null) {
+			this.dataTubeServiceAdapter.stop(bundleContext);
+			this.dataTubeServiceAdapter = null;
+		}
+
+		if (this.dataCastServiceAdapter != null) {
+			this.dataCastServiceAdapter.stop(bundleContext);
+			this.dataCastServiceAdapter = null;
 		}
 
 		if (this.extensionRegistryAdapter != null) {
@@ -87,8 +98,12 @@ public class InfraServices {
 		return (this.extensionRegistryAdapter != null) ? this.extensionRegistryAdapter.getService() : null;
 	}
 
-	public DataTubeService getChannelService() {
-		return (this.channelServiceAdapter != null) ? this.channelServiceAdapter.getService() : null;
+	public DataCastService getDataCastService() {
+		return (this.dataCastServiceAdapter != null) ? this.dataCastServiceAdapter.getService() : null;
+	}
+
+	public DataTubeService getDataTubeService() {
+		return (this.dataTubeServiceAdapter != null) ? this.dataTubeServiceAdapter.getService() : null;
 	}
 
 }

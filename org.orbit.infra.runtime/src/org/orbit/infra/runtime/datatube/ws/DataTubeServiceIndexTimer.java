@@ -41,56 +41,49 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 
 	@Override
 	public IndexItem addIndex(IndexServiceClient indexProvider, DataTubeService service) throws IOException {
+		String dataCastId = service.getDataCastId();
+		String dataTubeId = service.getDataTubeId();
 		String name = service.getName();
+		String hostURL = service.getHostURL();
+		String contextRoot = service.getContextRoot();
 		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
-		// String namespace = service.getNamespace();
-		// String hostURL = service.getHostURL();
-		// String contextRoot = service.getContextRoot();
-
-		Date now = new Date();
-		// Date expire = DateUtil.addSeconds(now, 30);
+		String webSocketHttpPort = service.getWebSocketHttpPort();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(InfraConstants.NAME, name);
-		props.put(InfraConstants.BASE_URL, url);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, now);
-		// props.put(InfraConstants.CHANNEL_NAMESPACE, namespace);
-		// props.put(InfraConstants.CHANNEL_HOST_URL, hostURL);
-		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		// props.put(InfraConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID, dataCastId);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__NAME, name);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__HOST_URL, hostURL);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__BASE_URL, url);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
+		props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date());
+
 		return indexProvider.addIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE, name, props);
 	}
 
 	@Override
 	public void updateIndex(IndexServiceClient indexProvider, DataTubeService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
+		String dataCastId = service.getDataCastId();
+		String dataTubeId = service.getDataTubeId();
 		String name = service.getName();
+		String hostURL = service.getHostURL();
+		String contextRoot = service.getContextRoot();
 		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
-		// String namespace = service.getNamespace();
-		// String hostURL = service.getHostURL();
-		// String contextRoot = service.getContextRoot();
-
-		Date now = new Date();
-		// Date expire = DateUtil.addSeconds(now, 30);
+		String webSocketHttpPort = service.getWebSocketHttpPort();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(InfraConstants.NAME, name);
-		props.put(InfraConstants.BASE_URL, url);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, now);
-		// props.put(InfraConstants.CHANNEL_NAMESPACE, namespace);
-		// props.put(InfraConstants.CHANNEL_HOST_URL, hostURL);
-		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		// props.put(InfraConstants.HEARTBEAT_EXPIRE_TIME, expire);
-		indexProvider.setProperties(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId, props);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID, dataCastId);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__NAME, name);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__HOST_URL, hostURL);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__BASE_URL, url);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
+		props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date());
 
-		// List<String> propNames = new ArrayList<String>();
-		// propNames.add(InfraConstants.URL);
-		// propNames.add(InfraConstants.CHANNEL_NAME);
-		// propNames.add(InfraConstants.CHANNEL_HOST_URL);
-		// propNames.add(InfraConstants.CHANNEL_CONTEXT_ROOT);
-		// indexProvider.removeProperties(InfraConstants.CHANNEL_INDEXER_ID, indexItemId, propNames);
+		indexProvider.setProperties(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
