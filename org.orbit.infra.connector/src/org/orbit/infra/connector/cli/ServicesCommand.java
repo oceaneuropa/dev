@@ -67,7 +67,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		if (this.indexServiceUrl == null) {
 			throw new IllegalStateException("indexServiceUrl is null.");
 		}
-		IndexServiceClient indexService = InfraClientsUtil.Indexes.getIndexServiceClient(this.indexServiceUrl, null);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, null);
 		return indexService;
 	}
 

@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.common.ws;
+package org.orbit.infra.runtime.util;
 
 import org.orbit.platform.sdk.PlatformConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;

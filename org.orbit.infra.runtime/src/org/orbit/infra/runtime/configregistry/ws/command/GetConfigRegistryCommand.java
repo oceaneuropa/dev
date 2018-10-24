@@ -5,10 +5,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
-import org.orbit.infra.runtime.common.ws.AbstractDataCastCommand;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
+import org.orbit.infra.runtime.util.AbstractDataCastCommand;
 import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;

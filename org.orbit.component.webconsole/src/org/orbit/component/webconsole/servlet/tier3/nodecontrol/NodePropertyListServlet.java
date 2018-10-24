@@ -86,24 +86,24 @@ public class NodePropertyListServlet extends HttpServlet {
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver(indexServiceUrl);
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
-				nodeIndexItem = InfraClientsUtil.Indexes.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
 					String nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
 
 					if (nodePlatformId != null) {
-						List<ExtensionItem> indexerExtensionItems = InfraClientsUtil.Extensions.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
+						List<ExtensionItem> indexerExtensionItems = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 						for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
 							String indexerId = indexerExtensionItem.getExtensionId();
 
-							List<IndexItem> currIndexItems = InfraClientsUtil.Indexes.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, nodePlatformId);
+							List<IndexItem> currIndexItems = InfraClientsUtil.INDEX_SERVICE.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, nodePlatformId);
 							if (currIndexItems != null && !currIndexItems.isEmpty()) {
 								indexItems.addAll(currIndexItems);
 							}
 						}
 
 						// Get all extensions from the platform (of the Node)
-						extensionItems = InfraClientsUtil.Extensions.getExtensionItemsOfPlatform(extensionRegistryUrl, accessToken, nodePlatformId);
-						extensionItemMap = InfraClientsUtil.Extensions.toExtensionItemMap(extensionItems);
+						extensionItems = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, accessToken, nodePlatformId);
+						extensionItemMap = InfraClientsUtil.EXTENSION_REGISTRY.toExtensionItemMap(extensionItems);
 					}
 				}
 

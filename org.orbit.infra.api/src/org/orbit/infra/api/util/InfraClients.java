@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
@@ -29,6 +30,7 @@ public class InfraClients implements LifecycleAware {
 
 	protected ServiceConnectorAdapter<IndexServiceClient> indexServiceConnector;
 	protected ServiceConnectorAdapter<ExtensionRegistryClient> extensionRegistryConnector;
+	protected ServiceConnectorAdapter<ConfigRegistryClient> configRegistryConnector;
 	protected ServiceConnectorAdapter<DataCastClient> dataCastConnector;
 	protected ServiceConnectorAdapter<DataTubeClient> dataTubeConnector;
 
@@ -43,6 +45,9 @@ public class InfraClients implements LifecycleAware {
 
 		this.extensionRegistryConnector = new ServiceConnectorAdapter<ExtensionRegistryClient>(ExtensionRegistryClient.class);
 		this.extensionRegistryConnector.start(bundleContext);
+
+		this.configRegistryConnector = new ServiceConnectorAdapter<ConfigRegistryClient>(ConfigRegistryClient.class);
+		this.configRegistryConnector.start(bundleContext);
 
 		this.dataCastConnector = new ServiceConnectorAdapter<DataCastClient>(DataCastClient.class);
 		this.dataCastConnector.start(bundleContext);
@@ -65,6 +70,11 @@ public class InfraClients implements LifecycleAware {
 		if (this.dataTubeConnector != null) {
 			this.dataTubeConnector.stop(bundleContext);
 			this.dataTubeConnector = null;
+		}
+
+		if (this.configRegistryConnector != null) {
+			this.configRegistryConnector.stop(bundleContext);
+			this.configRegistryConnector = null;
 		}
 
 		if (this.extensionRegistryConnector != null) {
@@ -129,6 +139,37 @@ public class InfraClients implements LifecycleAware {
 			extensionRegistry = new ExtensionRegistryClientProxy(theProperties);
 		}
 		return extensionRegistry;
+	}
+
+	/**
+	 * 
+	 * @param configRegistryUrl
+	 * @param accessToken
+	 * @return
+	 */
+	public ConfigRegistryClient getConfigRegistryClient(String configRegistryUrl, String accessToken) {
+		ConfigRegistryClient configRegistryClient = null;
+		if (configRegistryUrl != null) {
+			Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put(WSClientConstants.REALM, null);
+			properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+			properties.put(WSClientConstants.URL, configRegistryUrl);
+			configRegistryClient = getConfigRegistryClient(properties);
+		}
+		return configRegistryClient;
+	}
+
+	/**
+	 * 
+	 * @param properties
+	 * @return
+	 */
+	public ConfigRegistryClient getConfigRegistryClient(Map<String, Object> properties) {
+		ConfigRegistryClient configRegistryClient = this.configRegistryConnector.getService(properties);
+		if (configRegistryClient == null) {
+			throw new RuntimeException("ConfigRegistryClient is not available.");
+		}
+		return configRegistryClient;
 	}
 
 	/**

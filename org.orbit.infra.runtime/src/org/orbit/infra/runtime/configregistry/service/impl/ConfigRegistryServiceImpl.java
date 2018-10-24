@@ -15,23 +15,24 @@ import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
+import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
+import org.origin.common.event.PropertyChangeEvent;
+import org.origin.common.event.PropertyChangeListener;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.rest.util.LifecycleAware;
-import org.origin.common.util.PropertyUtil;
 import org.origin.common.util.UUIDUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class ConfigRegistryServiceImpl implements ConfigRegistryService, LifecycleAware {
+public class ConfigRegistryServiceImpl implements ConfigRegistryService, LifecycleAware, PropertyChangeListener {
 
 	public static ConfigRegistry[] EMPTY_CONFIG_REGISTRIES = new ConfigRegistry[0];
 
 	protected Map<Object, Object> initProperties;
-	protected Map<Object, Object> properties = new HashMap<Object, Object>();
 	protected Properties databaseProperties;
 	protected ServiceRegistration<?> serviceRegistry;
 	protected ServiceEditPolicies wsEditPolicies;
@@ -47,27 +48,12 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 		this.wsEditPolicies = new ServiceEditPoliciesImpl(ConfigRegistryService.class, this);
 	}
 
+	/** LifecycleAware */
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
-		Map<Object, Object> properties = new Hashtable<Object, Object>();
-		if (this.initProperties != null) {
-			properties.putAll(this.initProperties);
-		}
+		ConfigRegistryConfigPropertiesHandler.getInstance().addPropertyChangeListener(this);
 
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
-		// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__ID);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__NAME);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__JDBC_URL);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME);
-		PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD);
-
-		updateProperties(properties);
-
-		// initialize();
+		updateConnectionProperties();
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(ConfigRegistryService.class, this, props);
@@ -79,86 +65,51 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 			this.serviceRegistry.unregister();
 			this.serviceRegistry = null;
 		}
+
+		ConfigRegistryConfigPropertiesHandler.getInstance().removePropertyChangeListener(this);
 	}
 
+	/** PropertyChangeListener */
 	@Override
-	public Map<Object, Object> getProperties() {
-		return this.properties;
-	}
-
-	/**
-	 * 
-	 * @param configProps
-	 */
-	public synchronized void updateProperties(Map<Object, Object> configProps) {
-		if (configProps == null) {
-			configProps = new HashMap<Object, Object>();
+	public void notifyEvent(PropertyChangeEvent event) {
+		String eventName = event.getName();
+		if (InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER.equals(eventName) //
+				|| InfraConstants.CONFIG_REGISTRY__JDBC_URL.equals(eventName) //
+				|| InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME.equals(eventName) //
+				|| InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD.equals(eventName)) {
+			updateConnectionProperties();
 		}
-
-		String indexServiceUrl = (String) configProps.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
-		String globalHostURL = (String) configProps.get(InfraConstants.ORBIT_HOST_URL);
-		// String id = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__ID);
-		String name = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__NAME);
-		String hostURL = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__HOST_URL);
-		String contextRoot = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT);
-		String jdbcDriver = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER);
-		String jdbcURL = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__JDBC_URL);
-		String jdbcUsername = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME);
-		String jdbcPassword = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD);
-
-		boolean printProps = false;
-		if (printProps) {
-			System.out.println();
-			System.out.println("Config properties:");
-			System.out.println("-----------------------------------------------------");
-			System.out.println(InfraConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
-			System.out.println(InfraConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-			// System.out.println(InfraConstants.CONFIG_REGISTRY__ID + " = " + id);
-			System.out.println(InfraConstants.CONFIG_REGISTRY__NAME + " = " + name);
-			System.out.println(InfraConstants.CONFIG_REGISTRY__HOST_URL + " = " + hostURL);
-			System.out.println(InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT + " = " + contextRoot);
-			System.out.println(InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER + " = " + jdbcDriver);
-			System.out.println(InfraConstants.CONFIG_REGISTRY__JDBC_URL + " = " + jdbcURL);
-			System.out.println(InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME + " = " + jdbcUsername);
-			System.out.println(InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD + " = " + jdbcPassword);
-			System.out.println("-----------------------------------------------------");
-			System.out.println();
-		}
-
-		this.properties = configProps;
-		this.databaseProperties = getConnectionProperties(this.properties);
 	}
 
-	/**
-	 * 
-	 * @param props
-	 * @return
-	 */
-	protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
-		String driver = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER);
-		String url = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__JDBC_URL);
-		String username = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME);
-		String password = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD);
-		return DatabaseUtil.getProperties(driver, url, username, password);
+	protected synchronized void updateConnectionProperties() {
+		ConfigRegistryConfigPropertiesHandler configPropertiesHandler = ConfigRegistryConfigPropertiesHandler.getInstance();
+		String driver = configPropertiesHandler.getProperty(InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER, this.initProperties);
+		String url = configPropertiesHandler.getProperty(InfraConstants.CONFIG_REGISTRY__JDBC_URL, this.initProperties);
+		String username = configPropertiesHandler.getProperty(InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME, this.initProperties);
+		String password = configPropertiesHandler.getProperty(InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD, this.initProperties);
+
+		this.databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
 	}
 
+	/** ConnectionAware */
 	@Override
 	public Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.databaseProperties);
 	}
 
+	/** WebServiceAware */
 	@Override
 	public String getName() {
-		return (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__NAME);
+		return ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__NAME, this.initProperties);
 	}
 
 	@Override
 	public String getHostURL() {
-		String hostURL = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__HOST_URL);
+		String hostURL = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__HOST_URL, this.initProperties);
 		if (hostURL != null) {
 			return hostURL;
 		}
-		String globalHostURL = (String) this.properties.get(InfraConstants.ORBIT_HOST_URL);
+		String globalHostURL = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_HOST_URL, this.initProperties);
 		if (globalHostURL != null) {
 			return globalHostURL;
 		}
@@ -167,9 +118,10 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 
 	@Override
 	public String getContextRoot() {
-		return (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT);
+		return ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT, this.initProperties);
 	}
 
+	/** EditPoliciesAwareService */
 	@Override
 	public ServiceEditPolicies getEditPolicies() {
 		return this.wsEditPolicies;
@@ -183,15 +135,6 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 	 */
 	protected ConfigRegistryMetadatasTableHandler getConfigRegistryMetadatasTableHandler(Connection conn) throws SQLException {
 		return ConfigRegistryMetadatasTableHandler.getInstance(conn, this.databaseProperties);
-	}
-
-	/**
-	 * 
-	 * @param e
-	 * @throws ServerException
-	 */
-	protected void handleException(Exception e) throws ServerException {
-		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 	/**
@@ -238,6 +181,11 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 		}
 	}
 
+	/**
+	 * 
+	 * @param id
+	 * @throws ServerException
+	 */
 	protected synchronized void cleanupById(String id) throws ServerException {
 		if (id == null) {
 			return;
@@ -600,7 +548,125 @@ public class ConfigRegistryServiceImpl implements ConfigRegistryService, Lifecyc
 			DatabaseUtil.closeQuietly(conn, true);
 		}
 		return isDeleted;
+	}
 
+	/**
+	 * 
+	 * @param e
+	 * @throws ServerException
+	 */
+	protected void handleException(Exception e) throws ServerException {
+		throw new ServerException(StatusDTO.RESP_500, e.getMessage(), e);
 	}
 
 }
+
+// protected Map<Object, Object> properties = new HashMap<Object, Object>();
+// @Override
+// public void start(BundleContext bundleContext) throws Exception {
+// // Map<Object, Object> properties = new Hashtable<Object, Object>();
+// // if (this.initProperties != null) {
+// // properties.putAll(this.initProperties);
+// // }
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_INDEX_SERVICE_URL);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.ORBIT_HOST_URL);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__ID);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__NAME);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__HOST_URL);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__JDBC_URL);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME);
+// // PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD);
+// // updateProperties(properties);
+// // initialize();
+//
+// this.databaseProperties = getConnectionProperties();
+//
+// Hashtable<String, Object> props = new Hashtable<String, Object>();
+// this.serviceRegistry = bundleContext.registerService(ConfigRegistryService.class, this, props);
+// }
+
+// /**
+// *
+// * @param props
+// * @return
+// */
+// protected synchronized Properties getConnectionProperties(Map<Object, Object> props) {
+// String driver = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER);
+// String url = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__JDBC_URL);
+// String username = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME);
+// String password = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD);
+// return DatabaseUtil.getProperties(driver, url, username, password);
+// }
+
+// @Override
+// public Map<Object, Object> getProperties() {
+// return this.properties;
+// }
+
+// /**
+// *
+// * @param configProps
+// */
+// public synchronized void updateProperties(Map<Object, Object> configProps) {
+// if (configProps == null) {
+// configProps = new HashMap<Object, Object>();
+// }
+//
+// String indexServiceUrl = (String) configProps.get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+// String globalHostURL = (String) configProps.get(InfraConstants.ORBIT_HOST_URL);
+// String id = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__ID);
+// String name = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__NAME);
+// String hostURL = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__HOST_URL);
+// String contextRoot = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT);
+// String jdbcDriver = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER);
+// String jdbcURL = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__JDBC_URL);
+// String jdbcUsername = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME);
+// String jdbcPassword = (String) configProps.get(InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD);
+//
+// boolean printProps = false;
+// if (printProps) {
+// System.out.println();
+// System.out.println("Config properties:");
+// System.out.println("-----------------------------------------------------");
+// System.out.println(InfraConstants.ORBIT_INDEX_SERVICE_URL + " = " + indexServiceUrl);
+// System.out.println(InfraConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+// // System.out.println(InfraConstants.CONFIG_REGISTRY__ID + " = " + id);
+// System.out.println(InfraConstants.CONFIG_REGISTRY__NAME + " = " + name);
+// System.out.println(InfraConstants.CONFIG_REGISTRY__HOST_URL + " = " + hostURL);
+// System.out.println(InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT + " = " + contextRoot);
+// System.out.println(InfraConstants.CONFIG_REGISTRY__JDBC_DRIVER + " = " + jdbcDriver);
+// System.out.println(InfraConstants.CONFIG_REGISTRY__JDBC_URL + " = " + jdbcURL);
+// System.out.println(InfraConstants.CONFIG_REGISTRY__JDBC_USERNAME + " = " + jdbcUsername);
+// System.out.println(InfraConstants.CONFIG_REGISTRY__JDBC_PASSWORD + " = " + jdbcPassword);
+// System.out.println("-----------------------------------------------------");
+// System.out.println();
+// }
+//
+// this.properties = configProps;
+// this.databaseProperties = getConnectionProperties(this.properties);
+// }
+
+// @Override
+// public String getName() {
+// return (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__NAME);
+// }
+//
+// @Override
+// public String getHostURL() {
+// String hostURL = (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__HOST_URL);
+// if (hostURL != null) {
+// return hostURL;
+// }
+// String globalHostURL = (String) this.properties.get(InfraConstants.ORBIT_HOST_URL);
+// if (globalHostURL != null) {
+// return globalHostURL;
+// }
+// return null;
+// }
+//
+// @Override
+// public String getContextRoot() {
+// return (String) this.properties.get(InfraConstants.CONFIG_REGISTRY__CONTEXT_ROOT);
+// }

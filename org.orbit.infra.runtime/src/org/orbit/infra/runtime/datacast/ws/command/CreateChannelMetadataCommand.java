@@ -8,9 +8,9 @@ import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.datacast.ChannelMetadataDTO;
-import org.orbit.infra.runtime.common.ws.AbstractDataCastCommand;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
+import org.orbit.infra.runtime.util.AbstractDataCastCommand;
 import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;

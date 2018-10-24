@@ -8,22 +8,30 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.orbit.infra.api.InfraConstants;
+import org.orbit.infra.api.configregistry.ConfigElement;
+import org.orbit.infra.api.configregistry.ConfigRegistry;
+import org.orbit.infra.api.configregistry.ConfigRegistryClient;
+import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
+import org.origin.common.resource.Path;
+import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientConstants;
+import org.origin.common.rest.model.ServiceMetadata;
 
 public class InfraClientsUtil {
 
-	public static Indexes Indexes = new Indexes();
-	public static Extensions Extensions = new Extensions();
-	public static DataCast DataCast = new DataCast();
-	public static DataTube DataTube = new DataTube();
+	public static INDEX_SERVICE INDEX_SERVICE = new INDEX_SERVICE();
+	public static EXTENSION_REGISTRY EXTENSION_REGISTRY = new EXTENSION_REGISTRY();
+	public static CONFIG_REGISTRY CONFIG_REGISTRY = new CONFIG_REGISTRY();
+	public static DATA_CAST DATA_CAST = new DATA_CAST();
+	public static DATA_TUBE DATA_TUBE = new DATA_TUBE();
 
-	public static class Indexes {
+	public static class INDEX_SERVICE {
 		/**
 		 * Get all index items of a indexer.
 		 * 
@@ -253,7 +261,7 @@ public class InfraClientsUtil {
 		}
 	}
 
-	public static class Extensions {
+	public static class EXTENSION_REGISTRY {
 		/**
 		 * Get all extension items from a platform.
 		 * 
@@ -371,7 +379,633 @@ public class InfraClientsUtil {
 		}
 	}
 
-	public static class DataCast {
+	public static class CONFIG_REGISTRY {
+		public ConfigRegistry[] EMPTY_CONFIG_REGISTRIES = new ConfigRegistry[0];
+		public ConfigElement[] EMPTY_CONFIG_ELEMENTS = new ConfigElement[0];
+
+		/**
+		 * 
+		 * @param configRegistryUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public ConfigRegistryClient getConfigRegistryClient(String configRegistryUrl, String accessToken) {
+			ConfigRegistryClient configRegistryClient = InfraClients.getInstance().getConfigRegistryClient(configRegistryUrl, accessToken);
+			return configRegistryClient;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @return
+		 * @throws ClientException
+		 */
+		public ServiceMetadata getServiceMetadata(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken) throws ClientException {
+			ServiceMetadata metadata = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				metadata = client.getMetadata();
+			}
+			return metadata;
+		}
+
+		// -----------------------------------------------------------------------------------
+		// Config Registries
+		// -----------------------------------------------------------------------------------
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken) throws ClientException {
+			ConfigRegistry[] configRegistries = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configRegistries = client.getConfigRegistries();
+			}
+			if (configRegistries == null) {
+				configRegistries = EMPTY_CONFIG_REGISTRIES;
+			}
+			return configRegistries;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param type
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String type) throws ClientException {
+			ConfigRegistry[] configRegistries = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configRegistries = client.getConfigRegistries(type);
+			}
+			if (configRegistries == null) {
+				configRegistries = EMPTY_CONFIG_REGISTRIES;
+			}
+			return configRegistries;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param id
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigRegistry getConfigRegistryById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
+			ConfigRegistry configRegistry = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configRegistry = client.getConfigRegistryById(id);
+			}
+			return configRegistry;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigRegistry getConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
+			ConfigRegistry configRegistry = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configRegistry = client.getConfigRegistryByName(name);
+			}
+			return configRegistry;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param id
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean configRegistryExistsById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
+			boolean exists = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				exists = client.configRegistryExistsById(id);
+			}
+			return exists;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean configRegistryExistsByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
+			boolean exists = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				exists = client.configRegistryExistsByName(name);
+			}
+			return exists;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param type
+		 * @param name
+		 * @param properties
+		 * @param generateUniqueName
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigRegistry createConfigRegistry(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws ClientException {
+			ConfigRegistry configRegistry = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configRegistry = client.createConfigRegistry(type, name, properties, generateUniqueName);
+			}
+			return configRegistry;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param id
+		 * @param type
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean updateConfigRegistryType(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, String type) throws ClientException {
+			boolean isUpdated = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isUpdated = client.updateConfigRegistryType(id, type);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param id
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean updateConfigRegistryName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, String name) throws ClientException {
+			boolean isUpdated = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isUpdated = client.updateConfigRegistryName(id, name);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param id
+		 * @param properties
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean setConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, Map<String, Object> properties) throws ClientException {
+			boolean isUpdated = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isUpdated = client.setConfigRegistryProperties(id, properties);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param id
+		 * @param propertyNames
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean removeConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, List<String> propertyNames) throws ClientException {
+			boolean isUpdated = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isUpdated = client.removeConfigRegistryProperties(id, propertyNames);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param id
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean deleteConfigRegistryById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
+			boolean isDeleted = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isDeleted = client.deleteConfigRegistryById(id);
+			}
+			return isDeleted;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean deleteConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
+			boolean isDeleted = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isDeleted = client.deleteConfigRegistryByName(name);
+			}
+			return isDeleted;
+		}
+
+		// -----------------------------------------------------------------------------------
+		// Config Elements
+		// -----------------------------------------------------------------------------------
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement[] listRootConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId) throws ClientException {
+			ConfigElement[] configElements = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configElements = client.listRootConfigElements(configRegistryId);
+			}
+			if (configElements == null) {
+				configElements = EMPTY_CONFIG_ELEMENTS;
+			}
+			return configElements;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param parentElementId
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement[] listConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId) throws ClientException {
+			ConfigElement[] configElements = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configElements = client.listConfigElements(configRegistryId, parentElementId);
+			}
+			if (configElements == null) {
+				configElements = EMPTY_CONFIG_ELEMENTS;
+			}
+			return configElements;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param parentPath
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement[] listConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path parentPath) throws ClientException {
+			ConfigElement[] configElements = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configElements = client.listConfigElements(configRegistryId, parentPath);
+			}
+			if (configElements == null) {
+				configElements = EMPTY_CONFIG_ELEMENTS;
+			}
+			return configElements;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param elementId
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
+			ConfigElement configElement = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configElement = client.getConfigElement(configRegistryId, elementId);
+			}
+			return configElement;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param path
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
+			ConfigElement configElement = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configElement = client.getConfigElement(configRegistryId, path);
+			}
+			return configElement;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param parentElementId
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
+			ConfigElement configElement = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configElement = client.getConfigElement(configRegistryId, parentElementId, name);
+			}
+			return configElement;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param elementId
+		 * @return
+		 * @throws ClientException
+		 */
+		public Path getConfigElementPath(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
+			Path path = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				path = client.getConfigElementPath(configRegistryId, elementId);
+			}
+			return path;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param elementId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
+			boolean exists = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				exists = client.configElementExists(configRegistryId, elementId);
+			}
+			return exists;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param path
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
+			boolean exists = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				exists = client.configElementExists(configRegistryId, path);
+			}
+			return exists;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param parentElementId
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
+			boolean exists = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				exists = client.configElementExists(configRegistryId, parentElementId, name);
+			}
+			return exists;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param path
+		 * @param attributes
+		 * @param generateUniqueName
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement createConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+			ConfigElement configElement = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configElement = client.createConfigElement(configRegistryId, path, attributes, generateUniqueName);
+			}
+			return configElement;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param parentElementId
+		 * @param name
+		 * @param attributes
+		 * @param generateUniqueName
+		 * @return
+		 * @throws ClientException
+		 */
+		public ConfigElement createConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
+			ConfigElement configElement = null;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				configElement = client.createConfigElement(configRegistryId, parentElementId, name, attributes, generateUniqueName);
+			}
+			return configElement;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param elementId
+		 * @param newName
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean updateConfigElementName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, String newName) throws ClientException {
+			boolean isUpdated = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isUpdated = client.updateConfigElementName(configRegistryId, elementId, newName);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param elementId
+		 * @param attributes
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean setConfigElementAttributes(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException {
+			boolean isUpdated = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isUpdated = client.setConfigElementAttributes(configRegistryId, elementId, attributes);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param elementId
+		 * @param attributeName
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean removeConfigElementAttributes(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, List<String> attributeName) throws ClientException {
+			boolean isUpdated = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isUpdated = client.removeConfigElementAttributes(configRegistryId, elementId, attributeName);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param elementId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean deleteConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
+			boolean isDeleted = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isDeleted = client.deleteConfigElement(configRegistryId, elementId);
+			}
+			return isDeleted;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param serviceUrl
+		 * @param accessToken
+		 * @param configRegistryId
+		 * @param path
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean deleteConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
+			boolean isDeleted = false;
+			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			if (client != null) {
+				isDeleted = client.deleteConfigElement(configRegistryId, path);
+			}
+			return isDeleted;
+		}
+	}
+
+	public static class DATA_CAST {
 		/**
 		 * 
 		 * @param dataCastServiceUrl
@@ -392,7 +1026,7 @@ public class InfraClientsUtil {
 		}
 	}
 
-	public static class DataTube {
+	public static class DATA_TUBE {
 		/**
 		 * 
 		 * @param dataTubeServiceUrl

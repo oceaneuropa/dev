@@ -33,7 +33,7 @@ public class DataCastClientResolverImpl implements DataCastClientResolver {
 			throw new IllegalArgumentException("dataCastServiceUrl is empty.");
 		}
 
-		DataCastClient dataCastClient = InfraClientsUtil.DataCast.getDataCastClient(dataCastServiceUrl, accessToken);
+		DataCastClient dataCastClient = InfraClientsUtil.DATA_CAST.getDataCastClient(dataCastServiceUrl, accessToken);
 		return dataCastClient;
 	}
 
@@ -44,7 +44,7 @@ public class DataCastClientResolverImpl implements DataCastClientResolver {
 		}
 
 		IndexItem dataCastIndexItem = null;
-		IndexServiceClient indexService = InfraClientsUtil.Indexes.getIndexServiceClient(this.indexServiceUrl, accessToken);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);

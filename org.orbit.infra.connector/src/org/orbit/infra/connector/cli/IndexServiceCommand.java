@@ -85,7 +85,7 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 		String url = getIndexServiceURL();
 		LOG.debug("### ### ### ### url = " + url);
 
-		IndexServiceClient indexService = InfraClientsUtil.Indexes.getIndexServiceClient(url, null);
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(url, null);
 		if (indexService == null) {
 			LOG.error("IndexService is not available.");
 			throw new IllegalStateException("IndexService is not available. url = " + url);

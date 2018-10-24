@@ -20,17 +20,17 @@ public interface ConfigRegistryClient extends ServiceClient, Proxy, IAdaptable {
 
 	ConfigRegistry getConfigRegistryById(String id) throws ClientException;
 
-	ConfigRegistry getConfigRegistryByName(String fullName) throws ClientException;
+	ConfigRegistry getConfigRegistryByName(String name) throws ClientException;
 
 	boolean configRegistryExistsById(String id) throws ClientException;
 
-	boolean configRegistryExistsByName(String fullName) throws ClientException;
+	boolean configRegistryExistsByName(String name) throws ClientException;
 
-	ConfigRegistry createConfigRegistry(String type, String fullName, Map<String, Object> properties, boolean generateUniqueName) throws ClientException;
+	ConfigRegistry createConfigRegistry(String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws ClientException;
 
 	boolean updateConfigRegistryType(String id, String type) throws ClientException;
 
-	boolean updateConfigRegistryName(String id, String fullName) throws ClientException;
+	boolean updateConfigRegistryName(String id, String name) throws ClientException;
 
 	boolean setConfigRegistryProperties(String id, Map<String, Object> properties) throws ClientException;
 
@@ -38,7 +38,7 @@ public interface ConfigRegistryClient extends ServiceClient, Proxy, IAdaptable {
 
 	boolean deleteConfigRegistryById(String id) throws ClientException;
 
-	boolean deleteConfigRegistryByName(String fullName) throws ClientException;
+	boolean deleteConfigRegistryByName(String name) throws ClientException;
 
 	// -----------------------------------------------------------------------------------
 	// Config Elements

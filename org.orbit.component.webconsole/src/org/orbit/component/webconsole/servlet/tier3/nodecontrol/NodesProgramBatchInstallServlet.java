@@ -78,7 +78,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 						continue;
 					}
 
-					IndexItem nodeIndexItem = InfraClientsUtil.Indexes.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+					IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 					if (autoStartNode) {
 						boolean doStartNode = false;
 						if (nodeIndexItem == null) {
@@ -99,7 +99,7 @@ public class NodesProgramBatchInstallServlet extends HttpServlet {
 
 							long totalWaitingTime = 0;
 							while (nodeIndexItem == null) {
-								nodeIndexItem = InfraClientsUtil.Indexes.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+								nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 								try {
 									Thread.sleep(1000);
 								} catch (Exception e) {

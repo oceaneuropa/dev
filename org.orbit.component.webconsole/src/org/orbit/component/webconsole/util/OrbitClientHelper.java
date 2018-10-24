@@ -61,7 +61,7 @@ public class OrbitClientHelper {
 		if (indexServiceUrl != null && platformId != null) {
 
 			IndexItem nodeControlIndexItem = null;
-			List<IndexItem> nodeControlIndexItems = InfraClientsUtil.Indexes.getIndexItemsOfPlatform(indexServiceUrl, accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
+			List<IndexItem> nodeControlIndexItems = InfraClientsUtil.INDEX_SERVICE.getIndexItemsOfPlatform(indexServiceUrl, accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
 			if (nodeControlIndexItems != null && !nodeControlIndexItems.isEmpty()) {
 				for (IndexItem currNodeControlIndexItem : nodeControlIndexItems) {
 					boolean isOnline = IndexItemHelper.INSTANCE.isOnline(currNodeControlIndexItem);

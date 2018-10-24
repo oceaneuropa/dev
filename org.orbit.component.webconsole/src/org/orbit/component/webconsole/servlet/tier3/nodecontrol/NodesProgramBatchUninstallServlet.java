@@ -57,7 +57,7 @@ public class NodesProgramBatchUninstallServlet extends HttpServlet {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				for (String nodeId : nodeIds) {
-					IndexItem nodeIndexItem = InfraClientsUtil.Indexes.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+					IndexItem nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, platformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 					if (nodeIndexItem == null) {
 						continue;
 					}

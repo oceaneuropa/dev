@@ -7,7 +7,7 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 	public static String ORBIT_EXTENSION_REGISTRY_URL = "orbit.extension_registry.url";
-	// public static String ORBIT_CHANNEL_SERVICE_URL = "orbit.channel_service.url";
+	public static String ORBIT_CONFIG_REGISTRY_URL = "orbit.config_registry.url";
 	public static String ORBIT_DATACAST_URL = "orbit.data_cast.url";
 	public static String ORBIT_DATATUBE_URL = "orbit.data_tube.url";
 
@@ -136,6 +136,8 @@ public class InfraConstants {
 	public static String DATATUBE__SERVICE_NAME = "infra.data_tube.service";
 
 }
+
+// public static String ORBIT_CHANNEL_SERVICE_URL = "orbit.channel_service.url";
 
 // ----------------------------------------------------------------------------------------
 // Channel

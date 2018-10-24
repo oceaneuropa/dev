@@ -1,12 +1,11 @@
 package org.orbit.infra.runtime.extensions.configregistry;
 
-import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.runtime.InfraConstants;
+import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
 import org.orbit.platform.sdk.IPlatformContext;
 import org.origin.common.extensions.condition.IPropertyTester;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 
 public class ConfigRegistryServicePropertyTester implements IPropertyTester {
@@ -23,9 +22,10 @@ public class ConfigRegistryServicePropertyTester implements IPropertyTester {
 			bundleContext = platformContext.getBundleContext();
 		}
 		if (bundleContext != null) {
-			Map<Object, Object> properties = new Hashtable<Object, Object>();
-			PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__AUTOSTART);
-			String autoStart = (String) properties.get(InfraConstants.CONFIG_REGISTRY__AUTOSTART);
+			// Map<Object, Object> properties = new Hashtable<Object, Object>();
+			// PropertyUtil.loadProperty(bundleContext, properties, InfraConstants.CONFIG_REGISTRY__AUTOSTART);
+			// String autoStart = (String) properties.get(InfraConstants.CONFIG_REGISTRY__AUTOSTART);
+			String autoStart = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__AUTOSTART);
 			if ("true".equalsIgnoreCase(autoStart)) {
 				return true;
 			}

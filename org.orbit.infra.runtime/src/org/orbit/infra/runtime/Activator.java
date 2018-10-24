@@ -1,5 +1,6 @@
 package org.orbit.infra.runtime;
 
+import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
@@ -27,6 +28,9 @@ public class Activator implements BundleActivator {
 		Activator.bundleContext = bundleContext;
 		Activator.instance = this;
 
+		// Load config properties
+		ConfigRegistryConfigPropertiesHandler.getInstance().start(bundleContext);
+
 		// Register extensions
 		Extensions.INSTANCE.start(bundleContext);
 
@@ -43,6 +47,9 @@ public class Activator implements BundleActivator {
 
 		// Unregister extensions
 		Extensions.INSTANCE.stop(bundleContext);
+
+		// Unload config properties
+		ConfigRegistryConfigPropertiesHandler.getInstance().stop(bundleContext);
 
 		Activator.instance = null;
 		Activator.bundleContext = null;
