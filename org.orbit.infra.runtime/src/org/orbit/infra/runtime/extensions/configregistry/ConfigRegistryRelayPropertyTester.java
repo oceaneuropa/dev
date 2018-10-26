@@ -8,11 +8,11 @@ import org.orbit.platform.sdk.IPlatformContext;
 import org.origin.common.extensions.condition.IPropertyTester;
 import org.osgi.framework.BundleContext;
 
-public class ConfigRegistryServicePropertyTester implements IPropertyTester {
+public class ConfigRegistryRelayPropertyTester implements IPropertyTester {
 
-	public static String ID = "org.orbit.infra.runtime.ConfigRegistryServicePropertyTester";
+	public static String ID = "org.orbit.infra.runtime.ConfigRegistryRelayPropertyTester";
 
-	public static ConfigRegistryServicePropertyTester INSTANCE = new ConfigRegistryServicePropertyTester();
+	public static ConfigRegistryRelayPropertyTester INSTANCE = new ConfigRegistryRelayPropertyTester();
 
 	@Override
 	public boolean accept(Object context, Object source, Object target, Map<String, Object> args) {
@@ -22,7 +22,7 @@ public class ConfigRegistryServicePropertyTester implements IPropertyTester {
 			bundleContext = platformContext.getBundleContext();
 		}
 		if (bundleContext != null) {
-			String autoStart = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__AUTOSTART);
+			String autoStart = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__RELAY_AUTOSTART);
 			if ("true".equalsIgnoreCase(autoStart)) {
 				return true;
 			}

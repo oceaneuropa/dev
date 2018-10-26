@@ -13,6 +13,8 @@ import org.orbit.infra.api.configregistry.ConfigRegistry;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
 import org.orbit.infra.api.datacast.DataCastClient;
+import org.orbit.infra.api.datacast.DataCastClientResolver;
+import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
@@ -1006,6 +1008,23 @@ public class InfraClientsUtil {
 	}
 
 	public static class DATA_CAST {
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @return
+		 * @throws ClientException
+		 */
+		public DataCastServiceMetadata getServiceMetadata(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken) throws ClientException {
+			DataCastServiceMetadata metadata = null;
+			DataCastClient dataCastClient = clientResolver.resolve(dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				metadata = dataCastClient.getMetadata();
+			}
+			return metadata;
+		}
+
 		/**
 		 * 
 		 * @param dataCastServiceUrl

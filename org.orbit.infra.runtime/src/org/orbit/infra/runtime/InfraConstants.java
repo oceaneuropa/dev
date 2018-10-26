@@ -76,6 +76,12 @@ public class InfraConstants {
 	public static String COMPONENT_EXTENSION_REGISTRY_RELAY_HOSTS = "component.extension_registry.relay.hosts";
 	public static String COMPONENT_EXTENSION_REGISTRY_RELAY_URLS = "component.extension_registry.relay.urls";
 
+	public static String CONFIG_REGISTRY__RELAY_AUTOSTART = "infra.config_registry.relay.autostart";
+	public static String CONFIG_REGISTRY__RELAY_NAME = "infra.config_registry.relay.name";
+	public static String CONFIG_REGISTRY__RELAY_CONTEXT_ROOT = "infra.config_registry.relay.context_root";
+	public static String CONFIG_REGISTRY__RELAY_HOSTS = "infra.config_registry.relay.hosts";
+	public static String CONFIG_REGISTRY__RELAY_URLS = "infra.config_registry.relay.urls";
+
 	public static String DATACAST__RELAY_AUTOSTART = "infra.data_cast.relay.autostart";
 	public static String DATACAST__RELAY_NAME = "infra.data_cast.relay.name";
 	public static String DATACAST__RELAY_CONTEXT_ROOT = "infra.data_cast.relay.context_root";

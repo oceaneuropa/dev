@@ -3,6 +3,8 @@ package org.orbit.infra.runtime;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
+import org.orbit.infra.runtime.configregistry.ws.ConfigRegistryServiceAdapter;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.infra.runtime.datacast.ws.DataCastServiceAdapter;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
@@ -36,6 +38,7 @@ public class InfraServices {
 
 	protected IndexServiceAdapter indexServiceAdapter;
 	protected ExtensionRegistryAdapter extensionRegistryAdapter;
+	protected ConfigRegistryServiceAdapter configRegistryAdapter;
 	protected DataCastServiceAdapter dataCastServiceAdapter;
 	protected DataTubeServiceAdapter dataTubeServiceAdapter;
 
@@ -55,6 +58,9 @@ public class InfraServices {
 
 		this.extensionRegistryAdapter = new ExtensionRegistryAdapter(properties);
 		this.extensionRegistryAdapter.start(bundleContext);
+
+		this.configRegistryAdapter = new ConfigRegistryServiceAdapter(properties);
+		this.configRegistryAdapter.start(bundleContext);
 
 		this.dataCastServiceAdapter = new DataCastServiceAdapter(properties);
 		this.dataCastServiceAdapter.start(bundleContext);
@@ -79,6 +85,11 @@ public class InfraServices {
 			this.dataCastServiceAdapter = null;
 		}
 
+		if (this.configRegistryAdapter != null) {
+			this.configRegistryAdapter.stop(bundleContext);
+			this.configRegistryAdapter = null;
+		}
+
 		if (this.extensionRegistryAdapter != null) {
 			this.extensionRegistryAdapter.stop(bundleContext);
 			this.extensionRegistryAdapter = null;
@@ -96,6 +107,10 @@ public class InfraServices {
 
 	public ExtensionRegistryService getExtensionRegistryService() {
 		return (this.extensionRegistryAdapter != null) ? this.extensionRegistryAdapter.getService() : null;
+	}
+
+	public ConfigRegistryService getConfigRegistryService() {
+		return (this.configRegistryAdapter != null) ? this.configRegistryAdapter.getService() : null;
 	}
 
 	public DataCastService getDataCastService() {

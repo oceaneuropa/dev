@@ -24,9 +24,10 @@ public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 		// - All access to this web service application are handled by one Switcher instance.
 		// - Each API path has its own web service client instance.
 		// - A web service client instance for a API path will call one of the target URLs for that API path.
-		Resource.Builder wsResource = Resource.builder("/");
-		// new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);
-		new WSMethodInflector(wsResource, "commandrequest", POST, JSON, createClient(), switcher);
+		Resource.Builder rootWSResource = Resource.builder("/");
+		new WSMethodInflector(rootWSResource, "metadata", GET, JSON, createClient(), switcher);
+		new WSMethodInflector(rootWSResource, "request", POST, JSON, createClient(), switcher);
+		new WSMethodInflector(rootWSResource, "commandrequest", POST, JSON, createClient(), switcher);
 
 		Resource.Builder indexItemsWSResource = Resource.builder("/indexitems/{indexproviderid}");
 		new WSMethodInflector(indexItemsWSResource, "", GET, JSON, createClient(), switcher);
@@ -40,9 +41,11 @@ public class IndexServiceWSApplicationRelay extends WSRelayApplication {
 		new WSMethodInflector(indexItemWSResource, "property", POST, JSON, createClient(), switcher);
 		new WSMethodInflector(indexItemWSResource, "properties", DELETE, JSON, createClient(), switcher);
 
-		registerResources(wsResource.build());
+		registerResources(rootWSResource.build());
 		registerResources(indexItemsWSResource.build());
 		registerResources(indexItemWSResource.build());
 	}
 
 }
+
+// new WSMethodInflector(wsResource, "echo", GET, JSON, createClient(), switcher);

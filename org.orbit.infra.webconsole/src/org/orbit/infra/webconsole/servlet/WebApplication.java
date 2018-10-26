@@ -65,7 +65,8 @@ public class WebApplication extends PlatformWebApplication {
 		// addServlet(new ServletMetadataImpl("/filedelete", new FileDeleteServlet(), dicts));
 
 		// Admin
-		addServlet(new ServletMetadataImpl("/admin/datacastlist", new DataCastListServlet(), dicts));
+		// addServlet(new ServletMetadataImpl("/admin/datacastlist", new DataCastListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/datacastlist", new DataCastListServletV2(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datatubelist", new DataTubeListServlet(), dicts));
 
 		// Add JSPs

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.runtime.InfraConstants;
+import org.orbit.infra.runtime.util.ConfigRegistryConfigPropertiesHandler;
 import org.origin.common.rest.switcher.Switcher;
 import org.origin.common.rest.switcher.SwitcherPolicy;
 import org.origin.common.service.WebServiceAware;
@@ -139,6 +140,51 @@ public class InfraRelays {
 		Switcher<URI> uriSwitcher = RelayHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
 
 		ExtensionRegistryWSApplicationRelay relay = new ExtensionRegistryWSApplicationRelay(webServiceAware, uriSwitcher);
+		return relay;
+	}
+
+	/**
+	 * 
+	 * @param bundleContext
+	 * @param initProperties
+	 * @return
+	 */
+	public ConfigRegistryWSApplicationRelay createConfigRegistryRelay(BundleContext bundleContext, Map<Object, Object> initProperties) {
+		LOG.debug("createConfigRegistryRelay()");
+
+		String hostURL = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_HOST_URL, initProperties);
+		String name = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__RELAY_NAME, initProperties);
+		String contextRoot = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__RELAY_CONTEXT_ROOT, initProperties);
+		String hosts = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__RELAY_HOSTS, initProperties);
+		String urls = ConfigRegistryConfigPropertiesHandler.getInstance().getProperty(InfraConstants.CONFIG_REGISTRY__RELAY_URLS, initProperties);
+
+		LOG.debug("Properties:");
+		LOG.debug("-----------------------------------------------------------------------------");
+		LOG.debug(InfraConstants.ORBIT_HOST_URL + " = " + hostURL);
+		LOG.debug(InfraConstants.CONFIG_REGISTRY__RELAY_NAME + " = " + name);
+		LOG.debug(InfraConstants.CONFIG_REGISTRY__RELAY_CONTEXT_ROOT + " = " + contextRoot);
+		LOG.debug(InfraConstants.CONFIG_REGISTRY__RELAY_HOSTS + " = " + hosts);
+		LOG.debug(InfraConstants.CONFIG_REGISTRY__RELAY_URLS + " = " + urls);
+		LOG.debug("-----------------------------------------------------------------------------");
+
+		if (contextRoot == null) {
+			return null;
+		}
+
+		List<URI> uriList = null;
+		if (urls != null) {
+			uriList = toList(urls);
+		} else if (hosts != null) {
+			uriList = toList(hosts, contextRoot);
+		}
+		if (uriList == null || uriList.isEmpty()) {
+			return null;
+		}
+
+		WebServiceAware webServiceAware = new WebServiceAwareImpl(name, hostURL, contextRoot);
+		Switcher<URI> uriSwitcher = RelayHelper.INSTANCE.createURISwitcher(uriList, SwitcherPolicy.MODE_ROUND_ROBIN);
+
+		ConfigRegistryWSApplicationRelay relay = new ConfigRegistryWSApplicationRelay(webServiceAware, uriSwitcher);
 		return relay;
 	}
 

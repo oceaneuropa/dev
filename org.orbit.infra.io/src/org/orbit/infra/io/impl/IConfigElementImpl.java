@@ -9,12 +9,15 @@ import org.orbit.infra.api.configregistry.ConfigElement;
 import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
+import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.resource.Path;
 
 public class IConfigElementImpl implements IConfigElement {
 
 	protected IConfigRegistry cfgReg;
 	protected ConfigElement configElement;
+
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -181,6 +184,22 @@ public class IConfigElementImpl implements IConfigElement {
 	public IConfigElement createMemberConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
 		String parentElementId = getElementId();
 		return this.cfgReg.createConfigElement(parentElementId, name, attributes, generateUniqueName);
+	}
+
+	/** IAdaptable */
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		return this.adaptorSupport.getAdapter(adapter);
 	}
 
 }

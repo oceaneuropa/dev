@@ -21,11 +21,12 @@ public class DataTubeWSApplicationRelay extends WSRelayApplication {
 
 		adapt(WebServiceAware.class, webServiceAware);
 
-		Resource.Builder wsResource = Resource.builder("/");
-		new WSMethodInflector(wsResource, "inbound", POST, JSON, createClient(), switcher);
-		new WSMethodInflector(wsResource, "request", POST, JSON, createClient(), switcher);
+		Resource.Builder rootWSResource = Resource.builder("/");
+		new WSMethodInflector(rootWSResource, "metadata", GET, JSON, createClient(), switcher);
+		new WSMethodInflector(rootWSResource, "inbound", POST, JSON, createClient(), switcher);
+		new WSMethodInflector(rootWSResource, "request", POST, JSON, createClient(), switcher);
 
-		registerResources(wsResource.build());
+		registerResources(rootWSResource.build());
 	}
 
 }

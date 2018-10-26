@@ -34,6 +34,8 @@ import org.orbit.infra.runtime.datacast.ws.command.SetDataTubeConfigPropertiesCo
 import org.orbit.infra.runtime.datacast.ws.command.UpdateDataTubeConfigCommand;
 import org.orbit.infra.runtime.datatube.ws.DataTubeServiceIndexTimerFactory;
 import org.orbit.infra.runtime.extensionregistry.ws.ExtensionRegistryServiceIndexTimerFactory;
+import org.orbit.infra.runtime.extensions.configregistry.ConfigRegistryRelayActivator;
+import org.orbit.infra.runtime.extensions.configregistry.ConfigRegistryRelayPropertyTester;
 import org.orbit.infra.runtime.extensions.configregistry.ConfigRegistryServiceActivator;
 import org.orbit.infra.runtime.extensions.configregistry.ConfigRegistryServicePropertyTester;
 import org.orbit.infra.runtime.extensions.datacast.DataCastServiceActivator;
@@ -126,7 +128,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension12);
 
 		// Config Registry Service
-		Extension extension13 = new Extension(extensionTypeId, ExtensionRegistryActivator.ID, "Config Registry Service Activator", "Config Registry Service activator description");
+		Extension extension13 = new Extension(extensionTypeId, ConfigRegistryServiceActivator.ID, "Config Registry Service Activator", "Config Registry Service activator description");
 		InterfaceDescription desc13 = new InterfaceDescription(ServiceActivator.class, ConfigRegistryServiceActivator.class);
 		desc13.setParameters( //
 				new Parameter("infra.config_registry.name", "instance name"), //
@@ -188,27 +190,38 @@ public class Extensions extends ProgramExtensions {
 		extension22.addInterface(desc22);
 		addExtension(extension22);
 
-		// DataCast Service Relay
-		Extension extension23 = new Extension(extensionTypeId, DataCastServiceRelayActivator.ID, "DataCast Service Relay Activator");
-		InterfaceDescription desc23 = new InterfaceDescription(ServiceActivator.class, DataCastServiceRelayActivator.class);
-		desc23.setParameters( //
-				new Parameter(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root"), //
-				new Parameter(InfraConstants.DATATUBE__RELAY_URLS, "target urls") //
+		// Config Registry Service Relay
+		Extension extension23 = new Extension(extensionTypeId, ConfigRegistryRelayActivator.ID, "Config Registry Service Relay Activator");
+		InterfaceDescription desc223 = new InterfaceDescription(ServiceActivator.class, ConfigRegistryRelayActivator.class);
+		desc223.setParameters( //
+				new Parameter(InfraConstants.CONFIG_REGISTRY__RELAY_CONTEXT_ROOT, "web service relay context root"), //
+				new Parameter(InfraConstants.CONFIG_REGISTRY__RELAY_URLS, "target urls") //
 		);
-		desc23.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DataCastServiceRelayPropertyTester.ID));
-		extension23.addInterface(desc23);
+		desc223.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(ConfigRegistryRelayPropertyTester.ID));
+		extension23.addInterface(desc223);
 		addExtension(extension23);
 
-		// DataTube Service Relay
-		Extension extension24 = new Extension(extensionTypeId, DataTubeServiceRelayActivator.ID, "DataTube Service Relay Activator");
-		InterfaceDescription desc24 = new InterfaceDescription(ServiceActivator.class, DataTubeServiceRelayActivator.class);
+		// DataCast Service Relay
+		Extension extension24 = new Extension(extensionTypeId, DataCastServiceRelayActivator.ID, "DataCast Service Relay Activator");
+		InterfaceDescription desc24 = new InterfaceDescription(ServiceActivator.class, DataCastServiceRelayActivator.class);
 		desc24.setParameters( //
 				new Parameter(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root"), //
 				new Parameter(InfraConstants.DATATUBE__RELAY_URLS, "target urls") //
 		);
-		desc24.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DataTubeServiceRelayPropertyTester.ID));
+		desc24.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DataCastServiceRelayPropertyTester.ID));
 		extension24.addInterface(desc24);
 		addExtension(extension24);
+
+		// DataTube Service Relay
+		Extension extension25 = new Extension(extensionTypeId, DataTubeServiceRelayActivator.ID, "DataTube Service Relay Activator");
+		InterfaceDescription desc25 = new InterfaceDescription(ServiceActivator.class, DataTubeServiceRelayActivator.class);
+		desc25.setParameters( //
+				new Parameter(InfraConstants.DATATUBE__RELAY_CONTEXT_ROOT, "web service relay context root"), //
+				new Parameter(InfraConstants.DATATUBE__RELAY_URLS, "target urls") //
+		);
+		desc25.setTriggerCondition(ConditionFactory.getInstance().newPropertyTesterCondition(DataTubeServiceRelayPropertyTester.ID));
+		extension25.addInterface(desc25);
+		addExtension(extension25);
 	}
 
 	protected void createPropertyTesterExtensions() {
@@ -226,17 +239,23 @@ public class Extensions extends ProgramExtensions {
 		extension12.addInterface(desc12);
 		addExtension(extension12);
 
-		// DataCast Service Property Tester
-		Extension extension13 = new Extension(extensionTypeId, DataCastServicePropertyTester.ID);
-		InterfaceDescription desc13 = new InterfaceDescription(IPropertyTester.class, DataCastServicePropertyTester.class);
+		// Config Registry Service Property Tester
+		Extension extension13 = new Extension(extensionTypeId, ConfigRegistryServicePropertyTester.ID);
+		InterfaceDescription desc13 = new InterfaceDescription(IPropertyTester.class, ConfigRegistryServicePropertyTester.class);
 		extension13.addInterface(desc13);
 		addExtension(extension13);
 
-		// DataTube Service Property Tester
-		Extension extension14 = new Extension(extensionTypeId, DataTubeServicePropertyTester.ID);
-		InterfaceDescription desc14 = new InterfaceDescription(IPropertyTester.class, DataTubeServicePropertyTester.class);
+		// DataCast Service Property Tester
+		Extension extension14 = new Extension(extensionTypeId, DataCastServicePropertyTester.ID);
+		InterfaceDescription desc14 = new InterfaceDescription(IPropertyTester.class, DataCastServicePropertyTester.class);
 		extension14.addInterface(desc14);
 		addExtension(extension14);
+
+		// DataTube Service Property Tester
+		Extension extension15 = new Extension(extensionTypeId, DataTubeServicePropertyTester.ID);
+		InterfaceDescription desc15 = new InterfaceDescription(IPropertyTester.class, DataTubeServicePropertyTester.class);
+		extension15.addInterface(desc15);
+		addExtension(extension15);
 
 		// Index Service Relay Property Tester
 		Extension extension21 = new Extension(extensionTypeId, IndexServiceRelayPropertyTester.ID, "Index Service Relay Property Tester");
@@ -250,17 +269,23 @@ public class Extensions extends ProgramExtensions {
 		extension22.addInterface(desc22);
 		addExtension(extension22);
 
-		// DataCast Service Relay Property Tester
-		Extension extension23 = new Extension(extensionTypeId, DataCastServiceRelayPropertyTester.ID, "DataCast Service Relay Property Tester");
-		InterfaceDescription desc23 = new InterfaceDescription(IPropertyTester.class, DataCastServiceRelayPropertyTester.class);
+		// Config Registry Service Relay Property Tester
+		Extension extension23 = new Extension(extensionTypeId, ConfigRegistryRelayPropertyTester.ID, "Config Registry Service Relay Property Tester");
+		InterfaceDescription desc23 = new InterfaceDescription(IPropertyTester.class, ConfigRegistryRelayPropertyTester.class);
 		extension23.addInterface(desc23);
 		addExtension(extension23);
 
-		// DataTube Service Relay Property Tester
-		Extension extension24 = new Extension(extensionTypeId, DataTubeServiceRelayPropertyTester.ID, "DataTube Service Relay Property Tester");
-		InterfaceDescription desc24 = new InterfaceDescription(IPropertyTester.class, DataTubeServiceRelayPropertyTester.class);
+		// DataCast Service Relay Property Tester
+		Extension extension24 = new Extension(extensionTypeId, DataCastServiceRelayPropertyTester.ID, "DataCast Service Relay Property Tester");
+		InterfaceDescription desc24 = new InterfaceDescription(IPropertyTester.class, DataCastServiceRelayPropertyTester.class);
 		extension24.addInterface(desc24);
 		addExtension(extension24);
+
+		// DataTube Service Relay Property Tester
+		Extension extension25 = new Extension(extensionTypeId, DataTubeServiceRelayPropertyTester.ID, "DataTube Service Relay Property Tester");
+		InterfaceDescription desc25 = new InterfaceDescription(IPropertyTester.class, DataTubeServiceRelayPropertyTester.class);
+		extension25.addInterface(desc25);
+		addExtension(extension25);
 	}
 
 	protected void createIndexProviderExtensions() {

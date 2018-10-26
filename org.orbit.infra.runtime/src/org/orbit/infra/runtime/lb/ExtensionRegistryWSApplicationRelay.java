@@ -24,6 +24,9 @@ public class ExtensionRegistryWSApplicationRelay extends WSRelayApplication {
 		// - All access to this web service application are handled by one Switcher instance.
 		// - Each API path has its own web service client instance.
 		// - A web service client instance for a API path will call one of the target URLs for that API path.
+		Resource.Builder rootWSResource = Resource.builder("/");
+		new WSMethodInflector(rootWSResource, "metadata", GET, JSON, createClient(), switcher);
+		new WSMethodInflector(rootWSResource, "request", POST, JSON, createClient(), switcher);
 
 		Resource.Builder extensionItemsWSResource = Resource.builder("/extensionitems");
 		new WSMethodInflector(extensionItemsWSResource, "", GET, JSON, createClient(), switcher);
@@ -39,6 +42,7 @@ public class ExtensionRegistryWSApplicationRelay extends WSRelayApplication {
 		new WSMethodInflector(extensionItemWSResource, "properties", POST, JSON, createClient(), switcher);
 		new WSMethodInflector(extensionItemWSResource, "properties", DELETE, JSON, createClient(), switcher);
 
+		registerResources(rootWSResource.build());
 		registerResources(extensionItemsWSResource.build());
 		registerResources(extensionItemWSResource.build());
 	}

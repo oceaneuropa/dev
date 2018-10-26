@@ -2,7 +2,9 @@ package org.orbit.infra.io.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -18,7 +20,7 @@ public class DataCastUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static List<IndexItem> getDataCastIndexItems(String indexServiceUrl, String accessToken) throws IOException {
+	public static List<IndexItem> getDataCastIndexItemsList(String indexServiceUrl, String accessToken) throws IOException {
 		List<IndexItem> dataCastIndexItems = null;
 		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
 		if (indexService != null) {
@@ -28,6 +30,28 @@ public class DataCastUtil {
 			dataCastIndexItems = new ArrayList<IndexItem>();
 		}
 		return dataCastIndexItems;
+	}
+
+	/**
+	 * 
+	 * @param indexServiceUrl
+	 * @param accessToken
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, IndexItem> getDataCastIndexItemsMap(String indexServiceUrl, String accessToken) throws IOException {
+		Map<String, IndexItem> dataCastIndexItemMap = new HashMap<String, IndexItem>();
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
+		if (indexService != null) {
+			List<IndexItem> dataCastIndexItems = indexService.getIndexItems(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE);
+			if (dataCastIndexItems != null) {
+				for (IndexItem dataCastIndexItem : dataCastIndexItems) {
+					String dataCastId = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);
+					dataCastIndexItemMap.put(dataCastId, dataCastIndexItem);
+				}
+			}
+		}
+		return dataCastIndexItemMap;
 	}
 
 	/**

@@ -54,7 +54,7 @@ public class DataCastListServlet extends HttpServlet {
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-			dataCastIndexItems = DataCastUtil.getDataCastIndexItems(indexServiceUrl, accessToken);
+			dataCastIndexItems = DataCastUtil.getDataCastIndexItemsList(indexServiceUrl, accessToken);
 
 			DataCastClientResolver dataCastClientResolver = new DataCastClientResolverImpl(indexServiceUrl);
 			for (IndexItem dataCastIndexItem : dataCastIndexItems) {

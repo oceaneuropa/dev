@@ -21,6 +21,10 @@ public class IndexServiceAdapter {
 	protected IndexServiceWSApplication webService;
 	protected IndexServiceIndexTimer serviceIndexTimer;
 
+	/**
+	 * 
+	 * @param properties
+	 */
 	public IndexServiceAdapter(Map<Object, Object> properties) {
 		this.properties = checkProperties(properties);
 	}

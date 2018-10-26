@@ -37,10 +37,10 @@ public class ConfigRegistryServiceAdapter implements LifecycleAware {
 	 * @param properties
 	 */
 	public ConfigRegistryServiceAdapter(Map<Object, Object> properties) {
-		this.properties = properties;
-		if (this.properties == null) {
-			this.properties = new HashMap<Object, Object>();
+		if (properties == null) {
+			properties = new HashMap<Object, Object>();
 		}
+		this.properties = properties;
 	}
 
 	public IndexServiceClient getIndexProvider() {

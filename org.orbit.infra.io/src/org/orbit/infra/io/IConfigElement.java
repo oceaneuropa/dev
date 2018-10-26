@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.configregistry.ConfigElement;
+import org.origin.common.adapter.IAdaptable;
 import org.origin.common.resource.Path;
 
-public interface IConfigElement {
+public interface IConfigElement extends IAdaptable {
 
 	CFG getCFG();
 

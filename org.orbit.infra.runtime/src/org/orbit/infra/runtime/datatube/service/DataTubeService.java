@@ -1,10 +1,10 @@
 package org.orbit.infra.runtime.datatube.service;
 
-import org.origin.common.rest.editpolicy.EditPoliciesAwareService;
+import org.origin.common.rest.editpolicy.EditPoliciesAware;
 import org.origin.common.service.PropertiesAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface DataTubeService extends WebServiceAware, PropertiesAware, EditPoliciesAwareService {
+public interface DataTubeService extends WebServiceAware, PropertiesAware, EditPoliciesAware {
 
 	String getDataCastId();
 	

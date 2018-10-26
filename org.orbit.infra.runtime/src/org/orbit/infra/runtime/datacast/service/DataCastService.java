@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.jdbc.ConnectionAware;
-import org.origin.common.rest.editpolicy.EditPoliciesAwareService;
+import org.origin.common.rest.editpolicy.EditPoliciesAware;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.PropertiesAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface DataCastService extends WebServiceAware, PropertiesAware, ConnectionAware, EditPoliciesAwareService {
+public interface DataCastService extends WebServiceAware, PropertiesAware, ConnectionAware, EditPoliciesAware {
 
 	String getDataCastId();
 
