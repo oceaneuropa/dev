@@ -430,6 +430,11 @@ public class IConfigRegistryImpl implements IConfigRegistry {
 	}
 
 	@Override
+	public IConfigElement createRootConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException {
+		return createConfigElement("-1", name, attributes, generateUniqueName);
+	}
+
+	@Override
 	public boolean updateConfigElementName(String elementId, String newName) throws IOException {
 		String configRegistryId = getId();
 

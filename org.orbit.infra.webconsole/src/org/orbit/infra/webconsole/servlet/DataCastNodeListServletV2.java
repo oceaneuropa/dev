@@ -15,17 +15,16 @@ import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsUtil;
-import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.DataCastClientResolverImpl;
 import org.orbit.infra.io.util.DataCastUtil;
 import org.orbit.infra.webconsole.WebConstants;
+import org.orbit.infra.webconsole.util.DataCastHelper;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
-import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.servlet.MessageHelper;
 
-public class DataCastListServletV2 extends HttpServlet {
+public class DataCastNodeListServletV2 extends HttpServlet {
 
 	private static final long serialVersionUID = -4942763685721798471L;
 
@@ -57,21 +56,9 @@ public class DataCastListServletV2 extends HttpServlet {
 
 			// 1. Get or create config registry "DataCastNodes"
 			// - get root IConfigElements from it
-			CFG cfg = CFG.getDefault(accessToken);
-			String cfgRegType = "NodeConfigList";
-			String cfgRegName = "DataCastNodes";
-			IConfigRegistry cfgReg = null;
-
-			ServiceMetadata metadata = cfg.getServiceServiceMetadata();
-			System.out.println("metadata = \r\n" + metadata);
-
-			if (!cfg.configRegistryExistsByName(cfgRegName)) {
-				cfgReg = cfg.createConfigRegistry(cfgRegType, cfgRegName, null, false);
-			} else {
-				cfgReg = cfg.getConfigRegistryByName(cfgRegName);
-			}
+			IConfigRegistry cfgReg = DataCastHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 			if (cfgReg == null) {
-				message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + cfgRegName + "' cannot be retrieved or created.");
+				message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
 			} else {
 				configElements = cfgReg.listRootConfigElements();
 			}
@@ -141,3 +128,6 @@ public class DataCastListServletV2 extends HttpServlet {
 
 // request.setAttribute("dataCastIndexItems", dataCastIndexItems);
 // request.setAttribute("dataCastIdToServiceMetadata", dataCastIdToServiceMetadata);
+
+// ServiceMetadata metadata = cfg.getServiceServiceMetadata();
+// System.out.println("metadata = \r\n" + metadata);

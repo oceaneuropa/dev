@@ -44,29 +44,36 @@
 	<div class="main_div01">
 		<h2>Data Cast Services</h2>
 		<div class="top_tools_div01">
+			<a id="actionAddNode" class="button02">Create</a>
+			<a id="actionDeleteNodes" class="button02">Delete</a>
 			<a class="button02" href="<%=contextRoot + "/admin/datacastlist"%>">Refresh</a>
 		</div>
 		<table class="main_table01">
+			<form id="main_list" method="post">
 			<tr>
+				<th class="th1" width="20">
+					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
+				</th>
 				<th class="th1" width="100">JVM</th>
-				<th class="th1" width="100">Id</th>
+				<th class="th1" width="100">Data Cast Id</th>
 				<th class="th1" width="100">Name</th>
 				<th class="th1" width="200">URL</th>
+				<th class="th1" width="100">Enabled</th>
 				<th class="th1" width="100">Status</th>
 				<th class="th1" width="200">Metadata</th>
-				<th class="th1" width="100">Action</th>
+				<th class="th1" width="150">Action</th>
 			</tr>
 			<%
-				// if (dataCastIndexItems.isEmpty()) {
 				if (configElements.length == 0) {
 			%>
 			<tr>
-				<td colspan="7">(n/a)</td>
+				<td colspan="9">(n/a)</td>
 			</tr>
 			<%
 				} else {
-					// for (IndexItem dataCastIndexItem : dataCastIndexItems) {
 					for (IConfigElement configElement : configElements) {
+						String elementId = configElement.getElementId();
+
 						IndexItem dataCastIndexItem = configElement.getAdapter(IndexItem.class);
 
 						String dataCastId = "";
@@ -76,6 +83,7 @@
 						String metadataStr = "";
 						String propStr = "";
 						String jvmName = "";
+						boolean enabled = false;
 
 						if (dataCastIndexItem != null) {
 							dataCastId = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);
@@ -94,9 +102,9 @@
 						} else {
 							dataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
 							name = configElement.getName();
+							enabled = configElement.getAttribute("enabled", Boolean.class);
 						}
 
-						// DataCastServiceMetadata serviceMetadata = dataCastIdToServiceMetadata.get(dataCastId);
 						DataCastServiceMetadata serviceMetadata = configElement.getAdapter(DataCastServiceMetadata.class);
 						if (serviceMetadata != null) {
 							long currServerTime = serviceMetadata.getServerTime();
@@ -125,7 +133,6 @@
 										if ("server_time".equals(propName)) {
 											propValue = DateUtil.toString(DateUtil.toDate(Long.valueOf(propValue.toString())), DateUtil.SIMPLE_DATE_FORMAT2);
 										}
-
 										propStr += propName + " = " + propValue + "<br/>";
 									}
 								}
@@ -136,20 +143,83 @@
 						String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 			%>
 			<tr>
+				<td class="td1"><input type="checkbox" name="elementId" value="<%=elementId%>"></td>
 				<td class="td1"><%=jvmName%></td>
 				<td class="td1"><%=dataCastId%></td>
 				<td class="td1"><%=name%></td>
 				<td class="td1"><%=dataCastServiceUrl%></td>
+				<td class="td1"><%=enabled%></td>
 				<td class="td1" width="100"><font color="<%=statusColor%>"><%=statusText%></font></td>
 				<td class="td2"><%=metadataStr%></td>
-				<td class="td1"><a class="action01" href="<%=contextRoot%>/admin/datatubelist?dataCastId=<%=dataCastId%>">Data Tubes</a></td>
+				<td class="td1">
+					<a class="action01" href="javascript:changeDataCastNode('<%=elementId%>', '<%=dataCastId%>', '<%=name%>', '<%=enabled%>')">Edit</a>
+					<a class="action01" href="<%=contextRoot%>/admin/datatubelist?dataCastId=<%=dataCastId%>">Data Tubes</a>
+				</td>
 			</tr>
 			<%
 					} // loop
 				}
 			%>
+			</form>
 		</table>
 	</div>
-	<br />
+	<br/>
+
+	<dialog id="newNodeDialog">
+	<div class="dialog_title_div01">Create Node</div>
+	<form id="new_form" method="post" action="<%=contextRoot + "/admin/datacastadd"%>">
+		<div class="dialog_main_div01">
+			<table class="dialog_table01">
+				<tr>
+					<td width="25%">Id:</td>
+					<td width="75%"><input type="text" name="data_cast_id" class="input01" size="35"></td>
+				</tr>
+				<tr>
+					<td>Name:</td>
+					<td><input type="text" name="name"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="dialog_button_div01">
+			<a id="okAddNode" class="button02">OK</a> 
+			<a id="cancelAddNode" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
+
+	<dialog id="changeNodeDialog">
+	<div class="dialog_title_div01">Change Data Cast Node</div>
+	<form id="update_form" method="post" action="<%=contextRoot + "/admin/datacastupdate"%>">
+		<input type="hidden" id="node__elementId" name="elementId" >
+		<div class="dialog_main_div01">
+			<table class="dialog_table01">
+				<tr>
+					<td width="25%">Data Cast Id:</td>
+					<td width="75%"><input type="text" id="node__data_cast_id" name="data_cast_id" class="input01" size="35"></td>
+				</tr>
+				<tr>
+					<td>Name:</td>
+					<td><input id="node__name" type="text" name="name"></td>
+				</tr>
+			</table>
+		</div>
+		<div class="dialog_button_div01">
+			<a id="okChangeNode" class="button02">OK</a> 
+			<a id="cancelChangeNode" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
+
+	<dialog id="deleteNodesDialog">
+	<form id="delete_form" method="post" action="<%=contextRoot + "/admin/datacastdelete"%>">
+		<div class="dialog_title_div01">Delete Data Cast Nodes</div>
+		<div class="dialog_main_div01" id="deleteNodesDialogMessageDiv">Are you sure you want to delete selected data cast nodes?</div>
+		<div class="dialog_button_div01">
+			<a id="okDeleteNodes" class="button02">OK</a>
+			<a id="cancelDeleteNodes" class="button02b">Cancel</a>
+		</div>
+	</form>
+	</dialog>
+
 </body>
 </html>

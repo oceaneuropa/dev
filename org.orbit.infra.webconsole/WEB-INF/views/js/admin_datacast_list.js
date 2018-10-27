@@ -6,48 +6,76 @@ function toggleSelection(source, checkboxesName) {
 	}
 }
 
-// @see domain_node_programs_v2.js
-function uploadFile() {
-	var uploadFileDialog = document.getElementById('uploadFileDialog');
-	uploadFileDialog.showModal();
-}
-
-
-$(document).on("click", "#actionUploadFile", function() {
-	document.getElementById('uploadFileDialog').showModal();
-});
-$(document).on("click", "#okUploadFile", function() {
-	var form = document.getElementById("upload_form");
-	form.submit();
-});
-$(document).on("click", "#cancelUploadFile", function() {
-	// href="javascript:document.getElementById('upload_form').reset();"
-	document.getElementById('upload_form').reset();
-	document.getElementById('uploadFileDialog').close();
+//-----------------------------------------------------------------------
+// Create nodes
+//-----------------------------------------------------------------------
+$(document).on("click", "#actionAddNode", function() {
+	document.getElementById('newNodeDialog').showModal();
 });
 
-
-$(document).on("click", "#actionCreateDirectory", function() {
-	document.getElementById('createDirectoryDialog').showModal();
-});
-$(document).on("click", "#okCreateDirectory", function() {
+$(document).on("click", "#okAddNode", function() {
 	var form = document.getElementById("new_form");
 	form.submit();
 });
-$(document).on("click", "#cancelCreateDirectory", function() {
+
+$(document).on("click", "#cancelAddNode", function() {
 	document.getElementById('new_form').reset();
-	document.getElementById('createDirectoryDialog').close();
+	document.getElementById('newNodeDialog').close();
 });
 
+//-----------------------------------------------------------------------
+// Change node
+//-----------------------------------------------------------------------
+function changeDataCastNode(elementId, dataCastId, name, enabled) {
+	document.getElementById("node__elementId").setAttribute('value', elementId);
+	document.getElementById("node__data_cast_id").setAttribute('value', dataCastId);
+	document.getElementById("node__name").setAttribute('value', name);
 
-$(document).on("click", "#actionDeleteFiles", function() {
-	document.getElementById('deleteFilesDialog').showModal();
+	document.getElementById('changeNodeDialog').showModal();
+}
+
+$(document).on("click", "#okChangeNode", function() {
+	document.getElementById("update_form").submit();
 });
-$(document).on("click", "#okDeleteFiles", function() {
-	var form = document.getElementById("main_list");
+
+$(document).on("click", "#cancelChangeNode", function() {
+	document.getElementById('update_form').reset();
+	document.getElementById('changeNodeDialog').close();
+});
+
+//-----------------------------------------------------------------------
+// Delete nodes
+//-----------------------------------------------------------------------
+$(document).on("click", "#actionDeleteNodes", function() {
+	document.getElementById('deleteNodesDialog').showModal();
+});
+
+$(document).on("click", "#okDeleteNodes", function() {
+	var form = document.getElementById("delete_form");
+
+	var checkboxes = document.getElementsByName("elementId");
+	for (var i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i].checked) {
+			var elementId = checkboxes[i].value;
+
+			var elementIdField = document.createElement("input");
+			elementIdField.setAttribute("type", "hidden");
+			elementIdField.setAttribute("name", "elementId");
+			elementIdField.setAttribute("value", elementId);
+			form.appendChild(elementIdField);
+		}
+	}
+
+	// javascript:document.getElementById('install_form').submit();
+	// document.getElementById('install_form').submit();
 	form.submit();
+	document.getElementById('deleteNodesDialog').close();
+
+	// var form = document.getElementById("main_list");
+	// form.submit();
 });
-$(document).on("click", "#cancelDeleteFiles", function() {
+
+$(document).on("click", "#cancelDeleteNodes", function() {
 	document.getElementById('main_list').reset();
-	document.getElementById('deleteFilesDialog').close();
+	document.getElementById('deleteNodesDialog').close();
 });

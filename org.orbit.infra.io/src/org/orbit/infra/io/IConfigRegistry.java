@@ -67,6 +67,8 @@ public interface IConfigRegistry {
 	IConfigElement createConfigElement(Path path, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
 	IConfigElement createConfigElement(String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
+	
+	IConfigElement createRootConfigElement(String name, Map<String, Object> attributes, boolean generateUniqueName) throws IOException;
 
 	boolean updateConfigElementName(String elementId, String newName) throws IOException;
 

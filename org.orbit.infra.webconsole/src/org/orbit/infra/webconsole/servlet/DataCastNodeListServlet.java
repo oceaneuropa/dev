@@ -24,7 +24,7 @@ import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 
-public class DataCastListServlet extends HttpServlet {
+public class DataCastNodeListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4942763685721798471L;
 

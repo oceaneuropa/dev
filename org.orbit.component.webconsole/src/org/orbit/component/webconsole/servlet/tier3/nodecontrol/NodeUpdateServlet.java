@@ -51,7 +51,7 @@ public class NodeUpdateServlet extends HttpServlet {
 		// Handle data
 		// ---------------------------------------------------------------
 		boolean succeed = false;
-		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty() && !id.isEmpty()) {
+		if (!machineId.isEmpty() && !platformId.isEmpty() && !id.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
@@ -65,9 +65,9 @@ public class NodeUpdateServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Node is created.");
+			message = MessageHelper.INSTANCE.add(message, "Node is updated.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, "Node is not created.");
+			message = MessageHelper.INSTANCE.add(message, "Node is not updated.");
 		}
 
 		// ---------------------------------------------------------------
