@@ -86,7 +86,8 @@ public class DataCastNodeListServletV2 extends HttpServlet {
 									configElement.adapt(DataCastServiceMetadata.class, dataCastServiceMetadata);
 								}
 							} catch (Exception e) {
-								message = MessageHelper.INSTANCE.add(message, e.getMessage());
+								message = MessageHelper.INSTANCE.add(message, e.getMessage() + " dataCastId: '" + dataCastId + "'");
+								e.printStackTrace();
 							}
 						}
 					}
@@ -95,6 +96,7 @@ public class DataCastNodeListServletV2 extends HttpServlet {
 
 		} catch (Exception e) {
 			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+			e.printStackTrace();
 		}
 
 		if (configElements == null) {

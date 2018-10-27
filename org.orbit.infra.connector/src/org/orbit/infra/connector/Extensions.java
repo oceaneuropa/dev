@@ -56,7 +56,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension3);
 
 		// Config Registry connector
-		Extension extension4 = new Extension(typeId, DataCastConnector.ID, "Config Registry Connector");
+		Extension extension4 = new Extension(typeId, ConfigRegistryConnector.ID, "Config Registry Connector");
 		InterfaceDescription desc4 = new InterfaceDescription(ConnectorActivator.class, ConfigRegistryConnector.class);
 		extension4.addInterface(desc4);
 		addExtension(extension4);

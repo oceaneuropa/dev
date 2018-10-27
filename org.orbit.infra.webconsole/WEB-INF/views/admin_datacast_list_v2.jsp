@@ -57,14 +57,14 @@
 				<th class="th1" width="20">
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
 				</th>
-				<th class="th1" width="100">JVM</th>
+				<th class="th1" width="120">JVM</th>
 				<th class="th1" width="100">Name</th>
 				<th class="th1" width="100">Data Cast Id</th>
-				<th class="th1" width="100">Enabled</th>
-				<th class="th1" width="200">URL</th>
-				<th class="th1" width="100">Status</th>
-				<th class="th1" width="200">Metadata</th>
-				<th class="th1" width="150">Action</th>
+				<th class="th1" width="50">Enabled</th>
+				<th class="th1" width="180">URL</th>
+				<th class="th1" width="50">Status</th>
+				<th class="th1" width="180">Metadata</th>
+				<th class="th1" width="100">Action</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
@@ -151,7 +151,7 @@
 				<td class="td1"><%=name%></td>
 				<td class="td1"><%=dataCastId%></td>
 				<td class="td1"><%=enabledStr%></td>
-				<td class="td1"><%=dataCastServiceUrl%></td>
+				<td class="td2"><%=dataCastServiceUrl%></td>
 				<td class="td1">
 					<font color="<%=statusColor%>"><%=statusText%></font>
 				</td>
