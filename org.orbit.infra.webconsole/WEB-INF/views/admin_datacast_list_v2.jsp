@@ -55,10 +55,10 @@
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
 				</th>
 				<th class="th1" width="100">JVM</th>
-				<th class="th1" width="100">Data Cast Id</th>
 				<th class="th1" width="100">Name</th>
-				<th class="th1" width="200">URL</th>
+				<th class="th1" width="100">Data Cast Id</th>
 				<th class="th1" width="100">Enabled</th>
+				<th class="th1" width="200">URL</th>
 				<th class="th1" width="100">Status</th>
 				<th class="th1" width="200">Metadata</th>
 				<th class="th1" width="150">Action</th>
@@ -73,20 +73,19 @@
 				} else {
 					for (IConfigElement configElement : configElements) {
 						String elementId = configElement.getElementId();
+						boolean enabled = configElement.getAttribute("enabled", Boolean.class);
+						String dataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
 
 						IndexItem dataCastIndexItem = configElement.getAdapter(IndexItem.class);
 
-						String dataCastId = "";
 						String name = "";
 						String dataCastServiceUrl = "";
 						boolean isOnline = false;
 						String metadataStr = "";
 						String propStr = "";
 						String jvmName = "";
-						boolean enabled = false;
 
 						if (dataCastIndexItem != null) {
-							dataCastId = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);
 							name = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__NAME);
 							// String hostUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__HOST_URL);
 							// String dataCastContextRoot = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT);
@@ -100,9 +99,7 @@
 							}
 
 						} else {
-							dataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
 							name = configElement.getName();
-							enabled = configElement.getAttribute("enabled", Boolean.class);
 						}
 
 						DataCastServiceMetadata serviceMetadata = configElement.getAdapter(DataCastServiceMetadata.class);
@@ -141,14 +138,15 @@
 
 						String statusText = isOnline ? "Online" : "Offline";
 						String statusColor = isOnline ? "#2eb82e" : "#cccccc";
+						String enabledStr = enabled ? "true" : "false";
 			%>
 			<tr>
 				<td class="td1"><input type="checkbox" name="elementId" value="<%=elementId%>"></td>
 				<td class="td1"><%=jvmName%></td>
-				<td class="td1"><%=dataCastId%></td>
 				<td class="td1"><%=name%></td>
+				<td class="td1"><%=dataCastId%></td>
+				<td class="td1"><%=enabledStr%></td>
 				<td class="td1"><%=dataCastServiceUrl%></td>
-				<td class="td1"><%=enabled%></td>
 				<td class="td1" width="100"><font color="<%=statusColor%>"><%=statusText%></font></td>
 				<td class="td2"><%=metadataStr%></td>
 				<td class="td1">
@@ -171,12 +169,19 @@
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
-					<td width="25%">Id:</td>
+					<td>Name:</td>
+					<td><input type="text" name="name"></td>
+				</tr>
+				<tr>
+					<td width="25%">Data Cast Id:</td>
 					<td width="75%"><input type="text" name="data_cast_id" class="input01" size="35"></td>
 				</tr>
 				<tr>
-					<td>Name:</td>
-					<td><input type="text" name="name"></td>
+					<td>Enabled:</td>
+					<td>
+						<input name="enabled" type="radio" value="true" checked> <label>true</label> 
+						<input name="enabled" type="radio" value="false" > <label>false</label> 
+					</td>
 				</tr>
 			</table>
 		</div>
@@ -188,18 +193,26 @@
 	</dialog>
 
 	<dialog id="changeNodeDialog">
-	<div class="dialog_title_div01">Change Data Cast Node</div>
-	<form id="update_form" method="post" action="<%=contextRoot + "/admin/datacastupdate"%>">
+	<div class="dialog_title_div01">Change Node</div>
+	<form id="update_form" name="update_form_name" method="post" action="<%=contextRoot + "/admin/datacastupdate"%>">
 		<input type="hidden" id="node__elementId" name="elementId" >
+		<input type="hidden" id="node__enabled" name="enabled" >
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
+				<tr>
+					<td>Name:</td>
+					<td><input id="node__name" type="text" name="name"></td>
+				</tr>
 				<tr>
 					<td width="25%">Data Cast Id:</td>
 					<td width="75%"><input type="text" id="node__data_cast_id" name="data_cast_id" class="input01" size="35"></td>
 				</tr>
 				<tr>
-					<td>Name:</td>
-					<td><input id="node__name" type="text" name="name"></td>
+					<td>Enabled:</td>
+					<td>
+						<input name="node__enabled_radio" type="radio" value="true" onClick="setElementValue('node__enabled', true)" > <label>true</label> 
+						<input name="node__enabled_radio" type="radio" value="false" onClick="setElementValue('node__enabled', false)" > <label>false</label> 
+					</td>
 				</tr>
 			</table>
 		</div>

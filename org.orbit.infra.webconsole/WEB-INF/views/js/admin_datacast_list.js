@@ -6,6 +6,10 @@ function toggleSelection(source, checkboxesName) {
 	}
 }
 
+function setElementValue(elementId, elementValue) {
+	document.getElementById(elementId).setAttribute('value', elementValue);
+}
+
 //-----------------------------------------------------------------------
 // Create nodes
 //-----------------------------------------------------------------------
@@ -30,6 +34,15 @@ function changeDataCastNode(elementId, dataCastId, name, enabled) {
 	document.getElementById("node__elementId").setAttribute('value', elementId);
 	document.getElementById("node__data_cast_id").setAttribute('value', dataCastId);
 	document.getElementById("node__name").setAttribute('value', name);
+	document.getElementById("node__enabled").setAttribute('value', enabled);	
+
+	// alert("enabled=" + enabled);
+	// var radio = document.getElementsByName('node__enabled_radio');
+	if (enabled == 'true') {
+		document.update_form_name.node__enabled_radio.value='true';
+	} else {
+		document.update_form_name.node__enabled_radio.value='false';
+	}
 
 	document.getElementById('changeNodeDialog').showModal();
 }

@@ -77,7 +77,7 @@ public class DataCastNodeUpdateServlet extends HttpServlet {
 						boolean oldEnabled = configElement.getAttribute("enabled", Boolean.class);
 						if (enabled != oldEnabled) {
 							hasAttributesChange = true;
-							// attributes.put("enabled", enabled);
+							attributes.put("enabled", enabled);
 						}
 						if (!oldDataCastId.equals(dataCastId) || enabled != oldEnabled) {
 							isAttributesUpdated = configElement.setAttributes(attributes);
@@ -113,7 +113,7 @@ public class DataCastNodeUpdateServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, "Data cast node is updated.");
+			// message = MessageHelper.INSTANCE.add(message, "Data cast node is updated.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Data cast node is not updated.");
 		}

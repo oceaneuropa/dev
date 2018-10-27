@@ -186,7 +186,11 @@ th {
 /*---------------------------------------------------------------
 Input
 ---------------------------------------------------------------*/
-input {
+input[type=text] {
+	width: 100%;
+}
+
+input[type=password] {
 	width: 100%;
 }
 
@@ -231,6 +235,11 @@ dialog.dialog-scale {
 	padding-right: 5px;
 	min-width: 400px;
 	min-height: 80px;
+	display: block;
+}
+
+.dialog_main_div01 label {
+	display: inline;
 }
 
 .dialog_table01 {

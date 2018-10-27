@@ -32,6 +32,8 @@ public class DataCastNodeAddServlet extends HttpServlet {
 
 		String dataCastId = ServletUtil.getParameter(request, "data_cast_id", "");
 		String name = ServletUtil.getParameter(request, "name", "");
+		String enabledStr = ServletUtil.getParameter(request, "enabled", "");
+		boolean enabled = ("true".equals(enabledStr)) ? true : false;
 
 		String message = "";
 		if (dataCastId.isEmpty()) {
@@ -53,7 +55,7 @@ public class DataCastNodeAddServlet extends HttpServlet {
 				} else {
 					Map<String, Object> attributes = new HashMap<String, Object>();
 					attributes.put(InfraConstants.IDX_PROP__DATACAST__ID, dataCastId);
-					attributes.put("enabled", true);
+					attributes.put("enabled", enabled);
 					configElement = cfgReg.createRootConfigElement(name, attributes, true);
 				}
 
