@@ -45,11 +45,14 @@
 		<h2>Data Cast Services</h2>
 		<div class="top_tools_div01">
 			<a id="actionAddNode" class="button02">Create</a>
+			<a id="actionEnableNodes" class="button02" onClick="onNodeAction('enable', '<%=contextRoot + "/admin/datacastaction"%>')">Enable</a> 
+			<a id="actionDisableNodes" class="button02" onClick="onNodeAction('disable', '<%=contextRoot + "/admin/datacastaction"%>')">Disable</a>
 			<a id="actionDeleteNodes" class="button02">Delete</a>
 			<a class="button02" href="<%=contextRoot + "/admin/datacastlist"%>">Refresh</a>
 		</div>
 		<table class="main_table01">
 			<form id="main_list" method="post">
+			<input id ="main_list__action" type="hidden" name="action" value="">
 			<tr>
 				<th class="th1" width="20">
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
@@ -141,16 +144,20 @@
 						String enabledStr = enabled ? "true" : "false";
 			%>
 			<tr>
-				<td class="td1"><input type="checkbox" name="elementId" value="<%=elementId%>"></td>
+				<td class="td1">
+					<input type="checkbox" name="elementId" value="<%=elementId%>">
+				</td>
 				<td class="td1"><%=jvmName%></td>
 				<td class="td1"><%=name%></td>
 				<td class="td1"><%=dataCastId%></td>
 				<td class="td1"><%=enabledStr%></td>
 				<td class="td1"><%=dataCastServiceUrl%></td>
-				<td class="td1" width="100"><font color="<%=statusColor%>"><%=statusText%></font></td>
+				<td class="td1">
+					<font color="<%=statusColor%>"><%=statusText%></font>
+				</td>
 				<td class="td2"><%=metadataStr%></td>
 				<td class="td1">
-					<a class="action01" href="javascript:changeDataCastNode('<%=elementId%>', '<%=dataCastId%>', '<%=name%>', '<%=enabled%>')">Edit</a>
+					<a class="action01" href="javascript:changeDataCastNode('<%=elementId%>', '<%=dataCastId%>', '<%=name%>', <%=enabled%>)">Edit</a>
 					<a class="action01" href="<%=contextRoot%>/admin/datatubelist?dataCastId=<%=dataCastId%>">Data Tubes</a>
 				</td>
 			</tr>
@@ -196,7 +203,6 @@
 	<div class="dialog_title_div01">Change Node</div>
 	<form id="update_form" name="update_form_name" method="post" action="<%=contextRoot + "/admin/datacastupdate"%>">
 		<input type="hidden" id="node__elementId" name="elementId" >
-		<input type="hidden" id="node__enabled" name="enabled" >
 		<div class="dialog_main_div01">
 			<table class="dialog_table01">
 				<tr>
@@ -210,8 +216,8 @@
 				<tr>
 					<td>Enabled:</td>
 					<td>
-						<input name="node__enabled_radio" type="radio" value="true" onClick="setElementValue('node__enabled', true)" > <label>true</label> 
-						<input name="node__enabled_radio" type="radio" value="false" onClick="setElementValue('node__enabled', false)" > <label>false</label> 
+						<input name="enabled" type="radio" value="true"> <label>true</label> 
+						<input name="enabled" type="radio" value="false"> <label>false</label> 
 					</td>
 				</tr>
 			</table>
@@ -232,6 +238,15 @@
 			<a id="cancelDeleteNodes" class="button02b">Cancel</a>
 		</div>
 	</form>
+	</dialog>
+
+	<dialog id="nodeActionDialog">
+	<div class="dialog_title_div01" id="nodeActionDialogTitleDiv" >{Action} Nodes</div>
+	<div class="dialog_main_div01" id="nodeActionDialogMessageDiv">Are you sure you want to {action} the nodes?</div>
+	<div class="dialog_button_div01">
+		<a id="okNodeAction" class="button02">OK</a> 
+		<a id="cancelNodeAction" class="button02b">Cancel</a>
+	</div>
 	</dialog>
 
 </body>

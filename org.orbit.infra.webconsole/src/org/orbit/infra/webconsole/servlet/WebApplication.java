@@ -70,6 +70,7 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/admin/datacastadd", new DataCastNodeAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datacastupdate", new DataCastNodeUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datacastdelete", new DataCastNodeDeleteServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/datacastaction", new DataCastNodeActionServlet(), dicts));
 
 		addServlet(new ServletMetadataImpl("/admin/datatubelist", new DataTubeListServlet(), dicts));
 

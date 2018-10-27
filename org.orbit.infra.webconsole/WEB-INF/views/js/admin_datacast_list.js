@@ -34,14 +34,11 @@ function changeDataCastNode(elementId, dataCastId, name, enabled) {
 	document.getElementById("node__elementId").setAttribute('value', elementId);
 	document.getElementById("node__data_cast_id").setAttribute('value', dataCastId);
 	document.getElementById("node__name").setAttribute('value', name);
-	document.getElementById("node__enabled").setAttribute('value', enabled);	
 
-	// alert("enabled=" + enabled);
-	// var radio = document.getElementsByName('node__enabled_radio');
-	if (enabled == 'true') {
-		document.update_form_name.node__enabled_radio.value='true';
+	if (enabled) {
+		document.update_form_name.enabled.value='true';
 	} else {
-		document.update_form_name.node__enabled_radio.value='false';
+		document.update_form_name.enabled.value='false';
 	}
 
 	document.getElementById('changeNodeDialog').showModal();
@@ -54,6 +51,50 @@ $(document).on("click", "#okChangeNode", function() {
 $(document).on("click", "#cancelChangeNode", function() {
 	document.getElementById('update_form').reset();
 	document.getElementById('changeNodeDialog').close();
+});
+
+
+//-----------------------------------------------------------------------
+//Actions on nodes
+//-----------------------------------------------------------------------
+function onNodeAction(action, formActionUrl) {
+	document.getElementById("main_list__action").value = action;
+
+	var form = document.getElementById("main_list");
+	form.setAttribute("action", formActionUrl);
+
+	var nodeActionDialogTitleDiv = document.getElementById("nodeActionDialogTitleDiv");
+	var nodeActionDialogMessageDiv = document.getElementById("nodeActionDialogMessageDiv");
+
+	var dialogTitle = null;
+	var dialogMessage = null;
+
+	if (action == "enable") {
+		dialogTitle = "Enable Nodes";
+		dialogMessage = "Are you sure you want to enable the data cast nodes?";
+
+	} else if (action == "disable") {
+		dialogTitle = "Disable Nodes";
+		dialogMessage = "Are you sure you want to disable the data cast nodes?";
+
+	} else {
+		dialogTitle = action + " Data Cast Nodes";
+		dialogMessage = "Are you sure you want to '" + action + "' the programs?";
+	}
+
+	nodeActionDialogTitleDiv.innerHTML = dialogTitle;
+	nodeActionDialogMessageDiv.innerHTML = dialogMessage;
+
+	document.getElementById('nodeActionDialog').showModal();
+}
+
+$(document).on("click", "#okNodeAction", function() {
+	document.getElementById("main_list").submit();
+});
+
+$(document).on("click", "#cancelNodeAction", function() {
+	document.getElementById('main_list').reset();
+	document.getElementById('nodeActionDialog').close();
 });
 
 //-----------------------------------------------------------------------
