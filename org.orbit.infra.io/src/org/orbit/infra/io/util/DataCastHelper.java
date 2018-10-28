@@ -1,4 +1,4 @@
-package org.orbit.infra.webconsole.util;
+package org.orbit.infra.io.util;
 
 import java.io.IOException;
 
