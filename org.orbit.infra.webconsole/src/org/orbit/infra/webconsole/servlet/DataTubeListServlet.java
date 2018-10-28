@@ -1,9 +1,6 @@
 package org.orbit.infra.webconsole.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -13,14 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.io.IConfigElement;
+import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.DataCastUtil;
 import org.orbit.infra.io.util.DataTubeClientResolverImpl;
 import org.orbit.infra.webconsole.WebConstants;
+import org.orbit.infra.webconsole.util.DataCastHelper;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
@@ -28,6 +28,8 @@ import org.origin.common.util.ServletUtil;
 public class DataTubeListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -7506275257981482773L;
+
+	protected static IConfigElement[] EMPTY_CONFIG_ELEMENTS = new IConfigElement[] {};
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -51,38 +53,51 @@ public class DataTubeListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
-		IndexItem dataCastIndexItem = null;
-		List<IndexItem> dataTubeIndexItems = null;
-		Map<String, DataTubeServiceMetadata> dataTubeIdToServiceMetadata = new HashMap<String, DataTubeServiceMetadata>();
+		IConfigElement dataCastConfigElement = null;
+		IConfigElement[] configElements = null;
 
 		if (!dataCastId.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				dataCastIndexItem = DataCastUtil.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
-				dataTubeIndexItems = DataCastUtil.getDataTubeIndexItems(indexServiceUrl, accessToken, dataCastId);
-
-				DataTubeClientResolver dataTubeClientResolver = new DataTubeClientResolverImpl(indexServiceUrl);
-
-				for (IndexItem dataTubeIndexItem : dataTubeIndexItems) {
-					String dataTubeId = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__ID);
-
-					DataTubeServiceMetadata dataTubeServiceMetadata = null;
-
-					boolean isOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
-					if (isOnline) {
-						try {
-							DataTubeClient dataTubeClient = dataTubeClientResolver.resolve(dataCastId, dataTubeId, accessToken);
-							if (dataTubeClient != null) {
-								dataTubeServiceMetadata = dataTubeClient.getMetadata();
-							}
-						} catch (Exception e) {
-							message = MessageHelper.INSTANCE.add(message, e.getMessage());
-						}
+				IConfigRegistry cfgReg = DataCastHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+				if (cfgReg != null) {
+					dataCastConfigElement = DataCastHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+					if (dataCastConfigElement != null) {
+						configElements = dataCastConfigElement.memberConfigElements();
+					} else {
+						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
 					}
+				} else {
+					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
+				}
 
-					if (dataTubeServiceMetadata != null) {
-						dataTubeIdToServiceMetadata.put(dataTubeId, dataTubeServiceMetadata);
+				if (configElements != null) {
+					Map<String, IndexItem> dataTubeIndexItemMap = DataCastUtil.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
+
+					DataTubeClientResolver clientResolver = new DataTubeClientResolverImpl(indexServiceUrl);
+
+					for (IConfigElement configElement : configElements) {
+						String dataTubeId = configElement.getAttribute(InfraConstants.IDX_PROP__DATATUBE__ID, String.class);
+
+						IndexItem dataTubeIndexItem = dataTubeIndexItemMap.get(dataTubeId);
+						if (dataTubeIndexItem != null) {
+							configElement.adapt(IndexItem.class, dataTubeIndexItem);
+
+							boolean isOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
+							if (isOnline) {
+								try {
+									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+									DataTubeServiceMetadata serviceMetadata = InfraClientsUtil.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
+									if (serviceMetadata != null) {
+										configElement.adapt(DataTubeServiceMetadata.class, serviceMetadata);
+									}
+								} catch (Exception e) {
+									message = MessageHelper.INSTANCE.add(message, e.getMessage() + " dataTubeId: '" + dataTubeId + "'");
+									e.printStackTrace();
+								}
+							}
+						}
 					}
 				}
 
@@ -92,8 +107,8 @@ public class DataTubeListServlet extends HttpServlet {
 			}
 		}
 
-		if (dataTubeIndexItems == null) {
-			dataTubeIndexItems = new ArrayList<IndexItem>();
+		if (configElements == null) {
+			configElements = EMPTY_CONFIG_ELEMENTS;
 		}
 
 		// ---------------------------------------------------------------
@@ -103,34 +118,12 @@ public class DataTubeListServlet extends HttpServlet {
 			request.setAttribute("message", message);
 		}
 		request.setAttribute("dataCastId", dataCastId);
-		if (dataCastIndexItem != null) {
-			request.setAttribute("dataCastIndexItem", dataCastIndexItem);
+		if (dataCastConfigElement != null) {
+			request.setAttribute("dataCastConfigElement", dataCastConfigElement);
 		}
-		request.setAttribute("dataTubeIndexItems", dataTubeIndexItems);
-		request.setAttribute("dataTubeIdToServiceMetadata", dataTubeIdToServiceMetadata);
+		request.setAttribute("configElements", configElements);
 
 		request.getRequestDispatcher(contextRoot + "/views/admin_datatube_list.jsp").forward(request, response);
 	}
 
 }
-
-// Map<String, PlatformServiceMetadata> dataTubeIdToPlatformMetadata = new HashMap<String, PlatformServiceMetadata>();
-// PlatformServiceMetadata platformMetadata = null;
-// try {
-// String platformId = (String) dataTubeIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
-// if (platformId != null) {
-// IndexItem platformIndexItem = OrbitClientHelper.INSTANCE.getPlatformIndexItem(indexServiceUrl, accessToken, platformId);
-// if (platformIndexItem != null) {
-// PlatformClient platformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, platformIndexItem);
-// if (platformClient != null) {
-// platformMetadata = platformClient.getMetadata();
-// }
-// }
-// }
-// } catch (Exception e) {
-// message = MessageHelper.INSTANCE.add(message, e.getMessage());
-// }
-// if (platformMetadata != null) {
-// dataTubeIdToPlatformMetadata.put(dataTubeId, platformMetadata);
-// }
-// request.setAttribute("dataTubeIdToPlatformMetadata", dataTubeIdToPlatformMetadata);

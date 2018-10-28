@@ -127,4 +127,30 @@ public class DataCastUtil {
 		return dataTubeIndexItems;
 	}
 
+	/**
+	 * 
+	 * @param indexServiceUrl
+	 * @param accessToken
+	 * @param dataCastId
+	 * @return
+	 * @throws IOException
+	 */
+	public static Map<String, IndexItem> getDataTubeIndexItemsMap(String indexServiceUrl, String accessToken, String dataCastId) throws IOException {
+		Map<String, IndexItem> dataTubeIndexItemMap = new HashMap<String, IndexItem>();
+		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
+		if (dataCastId != null && indexService != null) {
+			List<IndexItem> allDataTubeIndexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
+
+			for (IndexItem dataTubeIndexItem : allDataTubeIndexItems) {
+				String currDataCastId = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID);
+				String currDataTubeId = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__ID);
+
+				if (dataCastId.equals(currDataCastId)) {
+					dataTubeIndexItemMap.put(currDataTubeId, dataTubeIndexItem);
+				}
+			}
+		}
+		return dataTubeIndexItemMap;
+	}
+
 }

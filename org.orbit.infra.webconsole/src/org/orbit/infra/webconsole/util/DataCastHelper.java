@@ -2,15 +2,22 @@ package org.orbit.infra.webconsole.util;
 
 import java.io.IOException;
 
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.io.CFG;
+import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
 
 public class DataCastHelper {
 
 	protected static final String DATA_CAST_NODES__CONFIG_REGISTRY_TYPE = "NodeConfigList";
+
 	protected static final String DATA_CAST_NODES__CONFIG_REGISTRY_NAME = "DataCastNodes";
 
 	public static DataCastHelper INSTANCE = new DataCastHelper();
+
+	public String getNodeConfigListType() {
+		return DATA_CAST_NODES__CONFIG_REGISTRY_TYPE;
+	}
 
 	public String getConfigRegistryName__DataCastNodes() {
 		return DATA_CAST_NODES__CONFIG_REGISTRY_NAME;
@@ -27,14 +34,38 @@ public class DataCastHelper {
 		IConfigRegistry cfgReg = null;
 		CFG cfg = CFG.getDefault(accessToken);
 		if (cfg != null) {
-			cfgReg = cfg.getConfigRegistryByName(DATA_CAST_NODES__CONFIG_REGISTRY_NAME);
+			cfgReg = cfg.getConfigRegistryByName(getConfigRegistryName__DataCastNodes());
 			if (cfgReg == null) {
 				if (createIfNotExist) {
-					cfgReg = cfg.createConfigRegistry(DATA_CAST_NODES__CONFIG_REGISTRY_TYPE, DATA_CAST_NODES__CONFIG_REGISTRY_NAME, null, false);
+					cfgReg = cfg.createConfigRegistry(getNodeConfigListType(), getConfigRegistryName__DataCastNodes(), null, false);
 				}
 			}
 		}
 		return cfgReg;
+	}
+
+	/**
+	 * 
+	 * @param cfgReg
+	 * @param dataCastId
+	 * @return
+	 * @throws IOException
+	 */
+	public IConfigElement getDataCastConfigElement(IConfigRegistry cfgReg, String dataCastId) throws IOException {
+		IConfigElement result = null;
+		if (cfgReg != null && dataCastId != null) {
+			IConfigElement[] rootElements = cfgReg.listRootConfigElements();
+			if (rootElements != null) {
+				for (IConfigElement rootElement : rootElements) {
+					String currDataCastId = rootElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
+					if (dataCastId.equals(currDataCastId)) {
+						result = rootElement;
+						break;
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 }

@@ -20,9 +20,9 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DataCastNodeActionServlet extends HttpServlet {
+public class DataTubeNodeActionServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1702575975605988511L;
+	private static final long serialVersionUID = -5950996718559122550L;
 
 	public static String ACTION__ENABLE = "enable";
 	public static String ACTION__DISABLE = "disable";
@@ -43,12 +43,13 @@ public class DataCastNodeActionServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
+		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
 		String[] elementIds = ServletUtil.getParameterValues(request, "elementId", EMPTY_IDS);
 		String action = ServletUtil.getParameter(request, "action", "");
 
 		String message = "";
 		if (elementIds.length == 0) {
-			message = MessageHelper.INSTANCE.add(message, "Data cast nodes are not selected.");
+			message = MessageHelper.INSTANCE.add(message, "Data tube nodes are not selected.");
 		}
 		if (action.isEmpty()) {
 			message = MessageHelper.INSTANCE.add(message, "'action' parameter is not set.");
@@ -117,9 +118,9 @@ public class DataCastNodeActionServlet extends HttpServlet {
 
 		if (elementIds.length > 0) {
 			if (succeed) {
-				message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data cast nodes are " + actionMessage + "." : "Data cast node is " + actionMessage + ".");
+				message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are " + actionMessage + "." : "Data tube node is " + actionMessage + ".");
 			} else {
-				message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data cast nodes are not " + actionMessage + "." : "Data cast node is not " + actionMessage + ".");
+				message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are not " + actionMessage + "." : "Data tube node is not " + actionMessage + ".");
 			}
 		}
 
@@ -129,7 +130,7 @@ public class DataCastNodeActionServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/admin/datacastlist");
+		response.sendRedirect(contextRoot + "/admin/datatubelist?dataCastId=" + dataCastId);
 	}
 
 }

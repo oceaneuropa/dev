@@ -16,6 +16,8 @@ import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.datatube.DataTubeClient;
+import org.orbit.infra.api.datatube.DataTubeClientResolver;
+import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
@@ -1046,6 +1048,23 @@ public class InfraClientsUtil {
 	}
 
 	public static class DATA_TUBE {
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @return
+		 * @throws ClientException
+		 */
+		public DataTubeServiceMetadata getServiceMetadata(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken) throws ClientException {
+			DataTubeServiceMetadata metadata = null;
+			DataTubeClient dataTubeClient = clientResolver.resolve(dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				metadata = dataTubeClient.getMetadata();
+			}
+			return metadata;
+		}
+
 		/**
 		 * 
 		 * @param dataTubeServiceUrl

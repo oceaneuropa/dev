@@ -18,9 +18,9 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DataCastNodeUpdateServlet extends HttpServlet {
+public class DataTubeNodeUpdateServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 64890005468755567L;
+	private static final long serialVersionUID = -7267181047167025154L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -29,8 +29,9 @@ public class DataCastNodeUpdateServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
+		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
 		String elementId = ServletUtil.getParameter(request, "elementId", "");
-		String dataCastId = ServletUtil.getParameter(request, "data_cast_id", "");
+		String dataTubeId = ServletUtil.getParameter(request, "data_tube_id", "");
 		String name = ServletUtil.getParameter(request, "name", "");
 		String enabledStr = ServletUtil.getParameter(request, "enabled", "");
 		boolean enabled = ("true".equals(enabledStr)) ? true : false;
@@ -69,17 +70,17 @@ public class DataCastNodeUpdateServlet extends HttpServlet {
 
 						// Update attributes
 						Map<String, Object> attributes = configElement.getAttributes();
-						String oldDataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
-						if (!oldDataCastId.equals(dataCastId)) {
+						String oldDataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATATUBE__ID, String.class);
+						if (!oldDataCastId.equals(dataTubeId)) {
 							hasAttributesChange = true;
-							attributes.put(InfraConstants.IDX_PROP__DATACAST__ID, dataCastId);
+							attributes.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
 						}
 						boolean oldEnabled = configElement.getAttribute("enabled", Boolean.class);
 						if (enabled != oldEnabled) {
 							hasAttributesChange = true;
 							attributes.put("enabled", enabled);
 						}
-						if (!oldDataCastId.equals(dataCastId) || enabled != oldEnabled) {
+						if (!oldDataCastId.equals(dataTubeId) || enabled != oldEnabled) {
 							isAttributesUpdated = configElement.setAttributes(attributes);
 							if (isAttributesUpdated) {
 								message = MessageHelper.INSTANCE.add(message, "Config element attributes are updated.");
@@ -95,7 +96,7 @@ public class DataCastNodeUpdateServlet extends HttpServlet {
 				}
 
 			} catch (Exception e) {
-				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
+				message = MessageHelper.INSTANCE.add(message, "[" + e.getClass().getName() + "] " + e.getMessage());
 			}
 		}
 
@@ -115,7 +116,7 @@ public class DataCastNodeUpdateServlet extends HttpServlet {
 		if (succeed) {
 			// message = MessageHelper.INSTANCE.add(message, "Data cast node is updated.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, "Data cast node is not updated.");
+			message = MessageHelper.INSTANCE.add(message, "Data tube node is not updated.");
 		}
 
 		// ---------------------------------------------------------------
@@ -124,7 +125,7 @@ public class DataCastNodeUpdateServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/admin/datacastlist");
+		response.sendRedirect(contextRoot + "/admin/datatubelist?dataCastId=" + dataCastId);
 	}
 
 }

@@ -1,9 +1,6 @@
 package org.orbit.infra.webconsole.servlet;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -13,20 +10,25 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.orbit.infra.api.InfraConstants;
-import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
+import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.io.IConfigElement;
+import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.DataCastClientResolverImpl;
 import org.orbit.infra.io.util.DataCastUtil;
 import org.orbit.infra.webconsole.WebConstants;
+import org.orbit.infra.webconsole.util.DataCastHelper;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 
 public class DataCastNodeListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -4942763685721798471L;
+
+	protected static IConfigElement[] EMPTY_CONFIG_ELEMENTS = new IConfigElement[] {};
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -48,35 +50,47 @@ public class DataCastNodeListServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
-		List<IndexItem> dataCastIndexItems = null;
-		Map<String, DataCastServiceMetadata> dataCastIdToServiceMetadata = new HashMap<String, DataCastServiceMetadata>();
-
+		IConfigElement[] configElements = null;
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-			dataCastIndexItems = DataCastUtil.getDataCastIndexItemsList(indexServiceUrl, accessToken);
+			// 1. Get or create config registry "DataCastNodes"
+			// - get root IConfigElements from it
+			IConfigRegistry cfgReg = DataCastHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+			if (cfgReg == null) {
+				message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
+			} else {
+				configElements = cfgReg.listRootConfigElements();
+			}
 
-			DataCastClientResolver dataCastClientResolver = new DataCastClientResolverImpl(indexServiceUrl);
-			for (IndexItem dataCastIndexItem : dataCastIndexItems) {
-				String dataCastId = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);
-				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+			// 2. Each IConfigElement represents one DataCast node
+			// - find IndexItem and DataCastServiceMetadata and attach them (if available) to IConfigElement.
+			if (configElements != null) {
+				Map<String, IndexItem> dataCastIndexItemMap = DataCastUtil.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
 
-				DataCastServiceMetadata dataCastServiceMetadata = null;
+				DataCastClientResolver clientResolver = new DataCastClientResolverImpl(indexServiceUrl);
 
-				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
-				if (isOnline) {
-					try {
-						DataCastClient dataCastClient = dataCastClientResolver.resolve(dataCastServiceUrl, accessToken);
-						if (dataCastClient != null) {
-							dataCastServiceMetadata = dataCastClient.getMetadata();
+				for (IConfigElement configElement : configElements) {
+					String dataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
+
+					IndexItem dataCastIndexItem = dataCastIndexItemMap.get(dataCastId);
+					if (dataCastIndexItem != null) {
+						configElement.adapt(IndexItem.class, dataCastIndexItem);
+
+						boolean isOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
+						if (isOnline) {
+							try {
+								String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+								DataCastServiceMetadata dataCastServiceMetadata = InfraClientsUtil.DATA_CAST.getServiceMetadata(clientResolver, dataCastServiceUrl, accessToken);
+								if (dataCastServiceMetadata != null) {
+									configElement.adapt(DataCastServiceMetadata.class, dataCastServiceMetadata);
+								}
+							} catch (Exception e) {
+								message = MessageHelper.INSTANCE.add(message, e.getMessage() + " dataCastId: '" + dataCastId + "'");
+								e.printStackTrace();
+							}
 						}
-					} catch (Exception e) {
-						message = MessageHelper.INSTANCE.add(message, e.getMessage());
 					}
-				}
-
-				if (dataCastServiceMetadata != null) {
-					dataCastIdToServiceMetadata.put(dataCastId, dataCastServiceMetadata);
 				}
 			}
 
@@ -84,8 +98,9 @@ public class DataCastNodeListServlet extends HttpServlet {
 			message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 			e.printStackTrace();
 		}
-		if (dataCastIndexItems == null) {
-			dataCastIndexItems = new ArrayList<IndexItem>();
+
+		if (configElements == null) {
+			configElements = EMPTY_CONFIG_ELEMENTS;
 		}
 
 		// ---------------------------------------------------------------
@@ -94,35 +109,27 @@ public class DataCastNodeListServlet extends HttpServlet {
 		if (message != null) {
 			request.setAttribute("message", message);
 		}
-		request.setAttribute("dataCastIndexItems", dataCastIndexItems);
-		request.setAttribute("dataCastIdToServiceMetadata", dataCastIdToServiceMetadata);
+		request.setAttribute("configElements", configElements);
 
 		request.getRequestDispatcher(contextRoot + "/views/admin_datacast_list.jsp").forward(request, response);
 	}
 
 }
 
-// String currHostUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__HOST_URL);
-// String currContextRoot = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT);
-// String dataCastServiceUrl = WebServiceAwareHelper.INSTANCE.getURL(currHostUrl, currContextRoot);
+// protected static List<IndexItem> EMPTY_INDEX_ITEMS = new ArrayList<IndexItem>();
 
-// Map<String, PlatformServiceMetadata> dataCastIdToPlatformMetadata = new HashMap<String, PlatformServiceMetadata>();
-// PlatformServiceMetadata platformMetadata = null;
-// try {
-// String platformId = (String) dataCastIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
-// if (platformId != null) {
-// IndexItem platformIndexItem = OrbitClientHelper.INSTANCE.getPlatformIndexItem(indexServiceUrl, accessToken, platformId);
-// if (platformIndexItem != null) {
-// PlatformClient dataCastPlatformClient = OrbitClientHelper.INSTANCE.getPlatformClient(accessToken, platformIndexItem);
-// if (dataCastPlatformClient != null) {
-// platformMetadata = dataCastPlatformClient.getMetadata();
+// if (dataCastIndexItems == null) {
+// dataCastIndexItems = EMPTY_INDEX_ITEMS;
 // }
-// }
-// }
-// } catch (Exception e) {
-// message = MessageHelper.INSTANCE.add(message, e.getMessage());
-// }
-// if (platformMetadata != null) {
-// dataCastIdToPlatformMetadata.put(dataCastId, platformMetadata);
-// }
-// request.setAttribute("dataCastIdToPlatformMetadata", dataCastIdToPlatformMetadata);
+
+// List<IndexItem> dataCastIndexItems = null;
+// Map<String, DataCastServiceMetadata> dataCastIdToServiceMetadata = new HashMap<String, DataCastServiceMetadata>();
+// dataCastIndexItems = DataCastUtil.getDataCastIndexItemsList(indexServiceUrl, accessToken);
+
+// dataCastIdToServiceMetadata.put(dataCastId, dataCastServiceMetadata);
+
+// request.setAttribute("dataCastIndexItems", dataCastIndexItems);
+// request.setAttribute("dataCastIdToServiceMetadata", dataCastIdToServiceMetadata);
+
+// ServiceMetadata metadata = cfg.getServiceServiceMetadata();
+// System.out.println("metadata = \r\n" + metadata);

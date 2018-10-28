@@ -57,25 +57,28 @@ public class WebApplication extends PlatformWebApplication {
 		addResource(new ResourceMetadataImpl("/views/icons", bundlePrefix + "/WEB-INF/views/icons"));
 		addResource(new ResourceMetadataImpl("/views/js", bundlePrefix + "/WEB-INF/views/js"));
 
-		// Files
-		// addServlet(new ServletMetadataImpl("/files", new FileListServlet(), dicts));
-		// addServlet(new ServletMetadataImpl("/mkdir", new CreateDirectoryServlet(), dicts));
-		// addServlet(new ServletMetadataImpl("/fileupload", new FileUploadServlet(), dicts));
-		// addServlet(new ServletMetadataImpl("/filedownload", new FileDownloadServlet(), dicts));
-		// addServlet(new ServletMetadataImpl("/filedelete", new FileDeleteServlet(), dicts));
-
 		// Admin
-		// addServlet(new ServletMetadataImpl("/admin/datacastlist", new DataCastListServlet(), dicts));
-		addServlet(new ServletMetadataImpl("/admin/datacastlist", new DataCastNodeListServletV2(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/datacastlist", new DataCastNodeListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datacastadd", new DataCastNodeAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datacastupdate", new DataCastNodeUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datacastdelete", new DataCastNodeDeleteServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datacastaction", new DataCastNodeActionServlet(), dicts));
 
 		addServlet(new ServletMetadataImpl("/admin/datatubelist", new DataTubeListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/datatubeadd", new DataTubeNodeAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/datatubeupdate", new DataTubeNodeUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/datatubedelete", new DataTubeNodeDeleteServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/datatubeaction", new DataTubeNodeActionServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));
 	}
 
 }
+
+// Files
+// addServlet(new ServletMetadataImpl("/files", new FileListServlet(), dicts));
+// addServlet(new ServletMetadataImpl("/mkdir", new CreateDirectoryServlet(), dicts));
+// addServlet(new ServletMetadataImpl("/fileupload", new FileUploadServlet(), dicts));
+// addServlet(new ServletMetadataImpl("/filedownload", new FileDownloadServlet(), dicts));
+// addServlet(new ServletMetadataImpl("/filedelete", new FileDeleteServlet(), dicts));
