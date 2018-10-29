@@ -25,7 +25,7 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DataTubeListServlet extends HttpServlet {
+public class DataTubeNodeListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -7506275257981482773L;
 
@@ -69,7 +69,7 @@ public class DataTubeListServlet extends HttpServlet {
 						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
 					}
 				} else {
-					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
+					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 				}
 
 				if (configElements != null) {
@@ -88,9 +88,9 @@ public class DataTubeListServlet extends HttpServlet {
 							if (isOnline) {
 								try {
 									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
-									DataTubeServiceMetadata serviceMetadata = InfraClientsUtil.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
-									if (serviceMetadata != null) {
-										configElement.adapt(DataTubeServiceMetadata.class, serviceMetadata);
+									DataTubeServiceMetadata metadata = InfraClientsUtil.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
+									if (metadata != null) {
+										configElement.adapt(DataTubeServiceMetadata.class, metadata);
 									}
 								} catch (Exception e) {
 									message = MessageHelper.INSTANCE.add(message, e.getMessage() + " dataTubeId: '" + dataTubeId + "'");

@@ -58,7 +58,7 @@ public class DataCastNodeListServlet extends HttpServlet {
 			// - get root IConfigElements from it
 			IConfigRegistry cfgReg = DataCastHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 			if (cfgReg == null) {
-				message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
+				message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 			} else {
 				configElements = cfgReg.listRootConfigElements();
 			}
@@ -81,9 +81,9 @@ public class DataCastNodeListServlet extends HttpServlet {
 						if (isOnline) {
 							try {
 								String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
-								DataCastServiceMetadata dataCastServiceMetadata = InfraClientsUtil.DATA_CAST.getServiceMetadata(clientResolver, dataCastServiceUrl, accessToken);
-								if (dataCastServiceMetadata != null) {
-									configElement.adapt(DataCastServiceMetadata.class, dataCastServiceMetadata);
+								DataCastServiceMetadata metadata = InfraClientsUtil.DATA_CAST.getServiceMetadata(clientResolver, dataCastServiceUrl, accessToken);
+								if (metadata != null) {
+									configElement.adapt(DataCastServiceMetadata.class, metadata);
 								}
 							} catch (Exception e) {
 								message = MessageHelper.INSTANCE.add(message, e.getMessage() + " dataCastId: '" + dataCastId + "'");

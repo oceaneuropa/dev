@@ -25,7 +25,7 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DataTubeListServletV0 extends HttpServlet {
+public class DataTubeNodeListServletV0 extends HttpServlet {
 
 	private static final long serialVersionUID = -7506275257981482773L;
 

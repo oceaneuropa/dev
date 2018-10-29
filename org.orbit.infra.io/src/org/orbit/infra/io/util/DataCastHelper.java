@@ -9,18 +9,18 @@ import org.orbit.infra.io.IConfigRegistry;
 
 public class DataCastHelper {
 
-	protected static final String DATA_CAST_NODES__CONFIG_REGISTRY_TYPE = "NodeConfigList";
+	protected static final String CONFIG_REGISTRY_TYPE__NODE_CONFIG_LIST = "NodeConfigList";
 
-	protected static final String DATA_CAST_NODES__CONFIG_REGISTRY_NAME = "DataCastNodes";
+	protected static final String CONFIG_REGISTRY_NAME__DATA_CAST_NODES = "DataCastNodes";
 
 	public static DataCastHelper INSTANCE = new DataCastHelper();
 
 	public String getNodeConfigListType() {
-		return DATA_CAST_NODES__CONFIG_REGISTRY_TYPE;
+		return CONFIG_REGISTRY_TYPE__NODE_CONFIG_LIST;
 	}
 
 	public String getConfigRegistryName__DataCastNodes() {
-		return DATA_CAST_NODES__CONFIG_REGISTRY_NAME;
+		return CONFIG_REGISTRY_NAME__DATA_CAST_NODES;
 	}
 
 	/**

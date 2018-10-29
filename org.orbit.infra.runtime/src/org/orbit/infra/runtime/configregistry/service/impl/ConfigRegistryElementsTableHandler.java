@@ -104,6 +104,11 @@ public class ConfigRegistryElementsTableHandler implements DatabaseTableAware {
 	 * @return
 	 */
 	public static String doGetTableName(String configRegistryId) {
+		if (configRegistryId != null) {
+			while (configRegistryId.contains("-")) {
+				configRegistryId = configRegistryId.replace("-", "_");
+			}
+		}
 		return "ConfigRegistry_" + configRegistryId;
 	}
 

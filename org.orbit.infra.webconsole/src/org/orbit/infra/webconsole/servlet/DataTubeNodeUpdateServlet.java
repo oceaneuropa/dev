@@ -114,7 +114,7 @@ public class DataTubeNodeUpdateServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			// message = MessageHelper.INSTANCE.add(message, "Data cast node is updated.");
+			// message = MessageHelper.INSTANCE.add(message, "Data tube node is updated.");
 		} else {
 			message = MessageHelper.INSTANCE.add(message, "Data tube node is not updated.");
 		}
