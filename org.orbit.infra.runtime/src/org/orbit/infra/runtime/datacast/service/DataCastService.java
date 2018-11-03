@@ -6,10 +6,9 @@ import java.util.Map;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.rest.editpolicy.EditPoliciesAware;
 import org.origin.common.rest.server.ServerException;
-import org.origin.common.service.PropertiesAware;
 import org.origin.common.service.WebServiceAware;
 
-public interface DataCastService extends WebServiceAware, PropertiesAware, ConnectionAware, EditPoliciesAware {
+public interface DataCastService extends WebServiceAware, ConnectionAware, EditPoliciesAware {
 
 	String getDataCastId();
 
@@ -48,6 +47,10 @@ public interface DataCastService extends WebServiceAware, PropertiesAware, Conne
 	ChannelMetadata getChannelMetadataByName(String name) throws ServerException;
 
 	ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ServerException;
+
+	boolean updateChannelMetadataName(String channelId, String name) throws ServerException;
+
+	boolean updateChannelMetadataPropertiesById(String channelId, Map<String, Object> properties) throws ServerException;
 
 	boolean deleteChannelMetadataById(String channelId) throws ServerException;
 

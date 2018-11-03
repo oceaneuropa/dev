@@ -21,18 +21,27 @@ import org.orbit.infra.runtime.configregistry.ws.command.SetConfigRegistryProper
 import org.orbit.infra.runtime.configregistry.ws.command.UpdateConfigElementCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.UpdateConfigRegistryCommand;
 import org.orbit.infra.runtime.datacast.ws.DataCastServiceIndexTimerFactory;
-import org.orbit.infra.runtime.datacast.ws.command.ChannelMetadataExistsCommand;
-import org.orbit.infra.runtime.datacast.ws.command.CreateChannelMetadataCommand;
-import org.orbit.infra.runtime.datacast.ws.command.CreateDataTubeConfigCommand;
-import org.orbit.infra.runtime.datacast.ws.command.DeleteDataTubeConfigCommand;
-import org.orbit.infra.runtime.datacast.ws.command.GetChannelMetadataCommand;
-import org.orbit.infra.runtime.datacast.ws.command.GetDataTubeConfigCommand;
-import org.orbit.infra.runtime.datacast.ws.command.ListChannelMetadatasCommand;
-import org.orbit.infra.runtime.datacast.ws.command.ListDataTubeConfigsCommand;
-import org.orbit.infra.runtime.datacast.ws.command.RemoveDataTubeConfigPropertiesCommand;
-import org.orbit.infra.runtime.datacast.ws.command.SetDataTubeConfigPropertiesCommand;
-import org.orbit.infra.runtime.datacast.ws.command.UpdateDataTubeConfigCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.ChannelMetadataExistsCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.CreateChannelMetadataCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.DeleteChannelMetadataCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.GetChannelMetadataCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.ListChannelMetadatasCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.RemoveChannelMetadataPropertiesCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.SetChannelMetadataPropertiesCommand;
+import org.orbit.infra.runtime.datacast.ws.command.datatube.CreateDataTubeConfigCommand;
+import org.orbit.infra.runtime.datacast.ws.command.datatube.DeleteDataTubeConfigCommand;
+import org.orbit.infra.runtime.datacast.ws.command.datatube.GetDataTubeConfigCommand;
+import org.orbit.infra.runtime.datacast.ws.command.datatube.ListDataTubeConfigsCommand;
+import org.orbit.infra.runtime.datacast.ws.command.datatube.RemoveDataTubeConfigPropertiesCommand;
+import org.orbit.infra.runtime.datacast.ws.command.datatube.SetDataTubeConfigPropertiesCommand;
+import org.orbit.infra.runtime.datacast.ws.command.datatube.UpdateDataTubeConfigCommand;
 import org.orbit.infra.runtime.datatube.ws.DataTubeServiceIndexTimerFactory;
+import org.orbit.infra.runtime.datatube.ws.command.CreateRuntimeChannelCommand;
+import org.orbit.infra.runtime.datatube.ws.command.DeleteRuntimeChannelCommand;
+import org.orbit.infra.runtime.datatube.ws.command.GetRuntimeChannelCommand;
+import org.orbit.infra.runtime.datatube.ws.command.ListRuntimeChannelsCommand;
+import org.orbit.infra.runtime.datatube.ws.command.RuntimeChannelExistsCommand;
+import org.orbit.infra.runtime.datatube.ws.command.SyncChannelMetadataCommand;
 import org.orbit.infra.runtime.extensionregistry.ws.ExtensionRegistryServiceIndexTimerFactory;
 import org.orbit.infra.runtime.extensions.configregistry.ConfigRegistryRelayActivator;
 import org.orbit.infra.runtime.extensions.configregistry.ConfigRegistryRelayPropertyTester;
@@ -54,7 +63,9 @@ import org.orbit.infra.runtime.extensions.indexservice.IndexServiceActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServicePropertyTester;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayPropertyTester;
+import org.orbit.infra.runtime.util.RankingProviderForDataTubeNodeChannel;
 import org.orbit.platform.sdk.command.CommandActivator;
+import org.orbit.platform.sdk.ranking.RankingProvider;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
 import org.origin.common.extensions.Extension;
 import org.origin.common.extensions.InterfaceDescription;
@@ -88,10 +99,13 @@ public class Extensions extends ProgramExtensions {
 		createPropertyTesterExtensions();
 		createIndexProviderExtensions();
 
-		createEditPolicyCommandExtensions1();
-		createEditPolicyCommandExtensions2();
+		createEditPolicyCommandExtensions_ExtensionRegistry();
+		createEditPolicyCommandExtensions_DataCast();
+		createEditPolicyCommandExtensions_DataTube();
 
 		createCommandExtensions();
+
+		createRankingProviderExtensions();
 	}
 
 	protected void createServiceActivatorExtensions() {
@@ -312,7 +326,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension15);
 	}
 
-	protected void createEditPolicyCommandExtensions1() {
+	protected void createEditPolicyCommandExtensions_ExtensionRegistry() {
 		String extensionTypeId = WSCommand.EXTENSION_TYPE_ID;
 		String serviceName = InfraConstants.CONFIG_REGISTRY__SERVICE_NAME;
 
@@ -442,12 +456,12 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension29);
 	}
 
-	protected void createEditPolicyCommandExtensions2() {
+	protected void createEditPolicyCommandExtensions_DataCast() {
 		String extensionTypeId = WSCommand.EXTENSION_TYPE_ID;
 		String serviceName = InfraConstants.DATACAST__SERVICE_NAME;
 
 		// -----------------------------------------------------------------------------------
-		// Data Tubes
+		// DataCast - DataTube configs
 		// -----------------------------------------------------------------------------------
 		Extension extension11 = new Extension(extensionTypeId, ListDataTubeConfigsCommand.ID);
 		extension11.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
@@ -499,7 +513,7 @@ public class Extensions extends ProgramExtensions {
 		addExtension(extension17);
 
 		// -----------------------------------------------------------------------------------
-		// Data Channels
+		// DataCast - ChannelMetadatas
 		// -----------------------------------------------------------------------------------
 		Extension extension21 = new Extension(extensionTypeId, ListChannelMetadatasCommand.ID);
 		extension21.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
@@ -528,6 +542,77 @@ public class Extensions extends ProgramExtensions {
 		desc24.setSingleton(false);
 		extension24.addInterface(desc24);
 		addExtension(extension24);
+
+		Extension extension28 = new Extension(extensionTypeId, SetChannelMetadataPropertiesCommand.ID);
+		extension28.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc28 = new InterfaceDescription(WSCommand.class, SetChannelMetadataPropertiesCommand.class);
+		desc28.setSingleton(false);
+		extension28.addInterface(desc28);
+		addExtension(extension28);
+
+		Extension extension29 = new Extension(extensionTypeId, RemoveChannelMetadataPropertiesCommand.ID);
+		extension29.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc29 = new InterfaceDescription(WSCommand.class, RemoveChannelMetadataPropertiesCommand.class);
+		desc29.setSingleton(false);
+		extension29.addInterface(desc29);
+		addExtension(extension29);
+
+		Extension extension30 = new Extension(extensionTypeId, DeleteChannelMetadataCommand.ID);
+		extension30.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc30 = new InterfaceDescription(WSCommand.class, DeleteChannelMetadataCommand.class);
+		desc30.setSingleton(false);
+		extension30.addInterface(desc30);
+		addExtension(extension30);
+	}
+
+	protected void createEditPolicyCommandExtensions_DataTube() {
+		String extensionTypeId = WSCommand.EXTENSION_TYPE_ID;
+		String serviceName = InfraConstants.DATATUBE__SERVICE_NAME;
+
+		// -----------------------------------------------------------------------------------
+		// DataTube - RuntimeChannels
+		// -----------------------------------------------------------------------------------
+		Extension extension11 = new Extension(extensionTypeId, ListRuntimeChannelsCommand.ID);
+		extension11.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc11 = new InterfaceDescription(WSCommand.class, ListRuntimeChannelsCommand.class);
+		desc11.setSingleton(false);
+		extension11.addInterface(desc11);
+		addExtension(extension11);
+
+		Extension extension12 = new Extension(extensionTypeId, GetRuntimeChannelCommand.ID);
+		extension12.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc12 = new InterfaceDescription(WSCommand.class, GetRuntimeChannelCommand.class);
+		desc12.setSingleton(false);
+		extension12.addInterface(desc12);
+		addExtension(extension12);
+
+		Extension extension13 = new Extension(extensionTypeId, RuntimeChannelExistsCommand.ID);
+		extension13.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc13 = new InterfaceDescription(WSCommand.class, RuntimeChannelExistsCommand.class);
+		desc13.setSingleton(false);
+		extension13.addInterface(desc13);
+		addExtension(extension13);
+
+		Extension extension14 = new Extension(extensionTypeId, CreateRuntimeChannelCommand.ID);
+		extension14.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc14 = new InterfaceDescription(WSCommand.class, CreateRuntimeChannelCommand.class);
+		desc14.setSingleton(false);
+		extension14.addInterface(desc14);
+		addExtension(extension14);
+
+		Extension extension15 = new Extension(extensionTypeId, SyncChannelMetadataCommand.ID);
+		extension15.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc15 = new InterfaceDescription(WSCommand.class, SyncChannelMetadataCommand.class);
+		desc15.setSingleton(false);
+		extension15.addInterface(desc15);
+		addExtension(extension15);
+
+		Extension extension16 = new Extension(extensionTypeId, DeleteRuntimeChannelCommand.ID);
+		extension16.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc16 = new InterfaceDescription(WSCommand.class, DeleteRuntimeChannelCommand.class);
+		desc16.setSingleton(false);
+		extension16.addInterface(desc16);
+		addExtension(extension16);
 	}
 
 	protected void createCommandExtensions() {
@@ -536,6 +621,17 @@ public class Extensions extends ProgramExtensions {
 		// Infra server side command
 		Extension extension1 = new Extension(extensionTypeId, InfraCommand.ID, "Infra server side command", "Infra server side command description");
 		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, InfraCommand.class);
+		extension1.addInterface(desc1);
+		addExtension(extension1);
+	}
+
+	protected void createRankingProviderExtensions() {
+		String extensionTypeId = RankingProvider.EXTENSION_TYPE_ID;
+
+		Extension extension1 = new Extension(extensionTypeId, RankingProviderForDataTubeNodeChannel.ID, "Data Tube Nodes Ranking Provider for new Channel");
+		extension1.setProperty(RankingProvider.PROP__RANKING_TARGET, InfraConstants.DATA_TUBE_NODES_RANKING__NEW_CHANNEL);
+		InterfaceDescription desc1 = new InterfaceDescription(RankingProvider.class, RankingProviderForDataTubeNodeChannel.class);
+		desc1.setSingleton(true);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 	}

@@ -18,8 +18,8 @@ import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.io.util.DataCastUtil;
-import org.orbit.infra.io.util.DataTubeClientResolverImpl;
+import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -59,10 +59,10 @@ public class DataTubeNodeListServletV0 extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				dataCastIndexItem = DataCastUtil.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
-				dataTubeIndexItems = DataCastUtil.getDataTubeIndexItems(indexServiceUrl, accessToken, dataCastId);
+				dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				dataTubeIndexItems = DataCastIndexItemHelper.getDataTubeIndexItems(indexServiceUrl, accessToken, dataCastId);
 
-				DataTubeClientResolver dataTubeClientResolver = new DataTubeClientResolverImpl(indexServiceUrl);
+				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
 
 				for (IndexItem dataTubeIndexItem : dataTubeIndexItems) {
 					String dataTubeId = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__ID);

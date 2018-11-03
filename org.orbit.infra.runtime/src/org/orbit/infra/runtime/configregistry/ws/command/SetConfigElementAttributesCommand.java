@@ -10,12 +10,12 @@ import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
-import org.orbit.infra.runtime.util.AbstractDataCastCommand;
+import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class SetConfigElementAttributesCommand extends AbstractDataCastCommand<ConfigRegistryService> implements WSCommand {
+public class SetConfigElementAttributesCommand extends AbstractInfraCommand<ConfigRegistryService> implements WSCommand {
 
 	public static String ID = "org.orbit.infra.runtime.configregistry.SetConfigElementAttributesCommand";
 

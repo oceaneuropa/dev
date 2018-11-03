@@ -18,8 +18,8 @@ import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.io.util.DataCastClientResolverImpl;
-import org.orbit.infra.io.util.DataCastUtil;
+import org.orbit.infra.io.util.DefaultDataCastClientResolver;
+import org.orbit.infra.io.util.DataCastIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -54,9 +54,9 @@ public class DataCastNodeListServletV0 extends HttpServlet {
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-			dataCastIndexItems = DataCastUtil.getDataCastIndexItemsList(indexServiceUrl, accessToken);
+			dataCastIndexItems = DataCastIndexItemHelper.getDataCastIndexItemsList(indexServiceUrl, accessToken);
 
-			DataCastClientResolver dataCastClientResolver = new DataCastClientResolverImpl(indexServiceUrl);
+			DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 			for (IndexItem dataCastIndexItem : dataCastIndexItems) {
 				String dataCastId = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);
 				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);

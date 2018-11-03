@@ -8,7 +8,7 @@ import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClients;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -85,7 +85,7 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 		String url = getIndexServiceURL();
 		LOG.debug("### ### ### ### url = " + url);
 
-		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(url, null);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(url, null);
 		if (indexService == null) {
 			LOG.error("IndexService is not available.");
 			throw new IllegalStateException("IndexService is not available. url = " + url);

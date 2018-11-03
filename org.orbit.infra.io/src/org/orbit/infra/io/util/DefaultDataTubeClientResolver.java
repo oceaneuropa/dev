@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.util;
+package org.orbit.infra.io.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
-public class DataTubeClientResolverImpl implements DataTubeClientResolver {
+public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 
 	protected String indexServiceUrl;
 
@@ -22,7 +22,7 @@ public class DataTubeClientResolverImpl implements DataTubeClientResolver {
 	 * 
 	 * @param indexServiceUrl
 	 */
-	public DataTubeClientResolverImpl(String indexServiceUrl) {
+	public DefaultDataTubeClientResolver(String indexServiceUrl) {
 		if (indexServiceUrl == null || indexServiceUrl.isEmpty()) {
 			throw new IllegalArgumentException("indexServiceUrl is empty.");
 		}
@@ -36,7 +36,7 @@ public class DataTubeClientResolverImpl implements DataTubeClientResolver {
 			throw new IllegalArgumentException("dataTubeServiceUrl is empty.");
 		}
 
-		DataTubeClient dataTubeClient = InfraClientsUtil.DATA_TUBE.getDataTubeClient(dataTubeServiceUrl, accessToken);
+		DataTubeClient dataTubeClient = InfraClientsHelper.DATA_TUBE.getDataTubeClient(dataTubeServiceUrl, accessToken);
 		return dataTubeClient;
 	}
 
@@ -50,7 +50,7 @@ public class DataTubeClientResolverImpl implements DataTubeClientResolver {
 		}
 
 		IndexItem dataTubeIndexItem = null;
-		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID);
@@ -79,7 +79,7 @@ public class DataTubeClientResolverImpl implements DataTubeClientResolver {
 		List<DataTubeClient> dataTubeClients = new ArrayList<DataTubeClient>();
 
 		List<IndexItem> dataTubeIndexItems = new ArrayList<IndexItem>();
-		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(indexServiceUrl, accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID);

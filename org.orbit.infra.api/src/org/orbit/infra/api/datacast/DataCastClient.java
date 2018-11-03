@@ -49,15 +49,19 @@ public interface DataCastClient extends ServiceClient {
 
 	ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ClientException;
 
-	boolean updateChannelMetadata(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException;
+	boolean updateChannelMetadataById(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException;
 
-	boolean addChannelMetadataAccountIds(String channelId, List<String> accountIds) throws ClientException;
+	boolean setChannelMetadataStatusById(String channelId, int status) throws ClientException;
 
-	boolean removeChannelMetadataAccountIds(String channelId, List<String> accountIds) throws ClientException;
+	boolean clearChannelMetadataStatusById(String channelId, int status) throws ClientException;
 
-	boolean setChannelMetadataProperties(String channelId, Map<String, Object> properties) throws ClientException;
+	boolean addChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException;
 
-	boolean removeChannelMetadataProperties(String channelId, List<String> propertyNames) throws ClientException;
+	boolean removeChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException;
+
+	boolean setChannelMetadataPropertiesById(String channelId, Map<String, Object> properties) throws ClientException;
+
+	boolean removeChannelMetadataPropertiesById(String channelId, List<String> propertyNames) throws ClientException;
 
 	boolean deleteChannelMetadataById(String channelId) throws ClientException;
 

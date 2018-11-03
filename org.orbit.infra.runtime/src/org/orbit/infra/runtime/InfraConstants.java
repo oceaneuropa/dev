@@ -181,6 +181,11 @@ public class InfraConstants {
 	public static String DATATUBE__EDITPOLICY_ID = "infra.data_tube.editpolicy";
 	public static String DATATUBE__SERVICE_NAME = "infra.data_tube.service";
 
+	// ----------------------------------------------------------------------------------------
+	// Ranking targets
+	// ----------------------------------------------------------------------------------------
+	public static String DATA_TUBE_NODES_RANKING__NEW_CHANNEL = "data_tube_nodes_ranking__new_channel";
+
 }
 
 // public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";

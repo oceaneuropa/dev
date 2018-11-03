@@ -97,6 +97,12 @@ public class IConfigElementImpl implements IConfigElement {
 		return this.configElement.getDateModified();
 	}
 
+	@Override
+	public boolean isEnabled() {
+		boolean isEnabled = this.configElement.getAttribute("enabled", Boolean.class);
+		return isEnabled;
+	}
+
 	// -----------------------------------------------------------------------------------
 	// Config element (update)
 	// -----------------------------------------------------------------------------------

@@ -12,6 +12,7 @@ import org.orbit.infra.api.configregistry.ConfigElement;
 import org.orbit.infra.api.configregistry.ConfigRegistry;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
+import org.orbit.infra.api.datacast.ChannelMetadata;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
@@ -27,7 +28,7 @@ import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.ServiceMetadata;
 
-public class InfraClientsUtil {
+public class InfraClientsHelper {
 
 	public static INDEX_SERVICE INDEX_SERVICE = new INDEX_SERVICE();
 	public static EXTENSION_REGISTRY EXTENSION_REGISTRY = new EXTENSION_REGISTRY();
@@ -1012,6 +1013,25 @@ public class InfraClientsUtil {
 	public static class DATA_CAST {
 		/**
 		 * 
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public DataCastClient getDataCastClient(String dataCastServiceUrl, String accessToken) {
+			DataCastClient dataCastClient = null;
+			if (dataCastServiceUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, dataCastServiceUrl);
+
+				dataCastClient = InfraClients.getInstance().getDataCastClient(properties);
+			}
+			return dataCastClient;
+		}
+
+		/**
+		 * 
 		 * @param clientResolver
 		 * @param dataCastServiceUrl
 		 * @param accessToken
@@ -1029,21 +1049,38 @@ public class InfraClientsUtil {
 
 		/**
 		 * 
+		 * @param clientResolver
 		 * @param dataCastServiceUrl
 		 * @param accessToken
+		 * @param channelId
 		 * @return
+		 * @throws ClientException
 		 */
-		public DataCastClient getDataCastClient(String dataCastServiceUrl, String accessToken) {
-			DataCastClient dataCastClient = null;
-			if (dataCastServiceUrl != null) {
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(WSClientConstants.REALM, null);
-				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-				properties.put(WSClientConstants.URL, dataCastServiceUrl);
-
-				dataCastClient = InfraClients.getInstance().getDataCastClient(properties);
+		public ChannelMetadata getChannelMetadataByChannelId(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId) throws ClientException {
+			ChannelMetadata channelMetadata = null;
+			DataCastClient dataCastClient = clientResolver.resolve(dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				dataCastClient.getChannelMetadataById(channelId);
 			}
-			return dataCastClient;
+			return channelMetadata;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public ChannelMetadata getChannelMetadataByChannelName(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String name) throws ClientException {
+			ChannelMetadata channelMetadata = null;
+			DataCastClient dataCastClient = clientResolver.resolve(dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				dataCastClient.getChannelMetadataByName(name);
+			}
+			return channelMetadata;
 		}
 	}
 

@@ -341,7 +341,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 
 	@Override
 	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ClientException {
-		Request request = new Request(RequestConstants.DATACAST__CREATE_DATATUBE_CONFIG);
+		Request request = new Request(RequestConstants.DATACAST__CREATE_CHANNEL_METADATA);
 		request.setParameter("data_tube_id", dataTubeId);
 		request.setParameter("name", name);
 		if (accessType != null) {
@@ -372,8 +372,8 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean updateChannelMetadata(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException {
-		Request request = new Request(RequestConstants.DATACAST__UPDATE_DATATUBE_CONFIG);
+	public boolean updateChannelMetadataById(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__UPDATE_CHANNEL_METADATA);
 		request.setParameter("channel_id", channelId);
 
 		if (updateName) {
@@ -415,7 +415,45 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean addChannelMetadataAccountIds(String channelId, List<String> accountIds) throws ClientException {
+	public boolean setChannelMetadataStatusById(String channelId, int status) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__SET_CHANNEL_METADATA_STATUS);
+		request.setParameter("channel_id", channelId);
+		request.setParameter("status", status);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean clearChannelMetadataStatusById(String channelId, int status) throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__CLEAR_CHANNEL_METADATA_STATUS);
+		request.setParameter("channel_id", channelId);
+		request.setParameter("status", status);
+
+		boolean isUpdated = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isUpdated = ModelConverter.COMMON.isUpdated(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean addChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException {
 		Request request = new Request(RequestConstants.DATACAST__ADD_CHANNEL_METADATA_ACCOUNT_IDS);
 		request.setParameter("channel_id", channelId);
 		request.setParameter("accountIds", accountIds);
@@ -434,7 +472,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean removeChannelMetadataAccountIds(String channelId, List<String> accountIds) throws ClientException {
+	public boolean removeChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException {
 		Request request = new Request(RequestConstants.DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_IDS);
 		request.setParameter("channel_id", channelId);
 		request.setParameter("accountIds", accountIds);
@@ -453,7 +491,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean setChannelMetadataProperties(String channelId, Map<String, Object> properties) throws ClientException {
+	public boolean setChannelMetadataPropertiesById(String channelId, Map<String, Object> properties) throws ClientException {
 		Request request = new Request(RequestConstants.DATACAST__SET_CHANNEL_METADATA_PROPERTIES);
 		request.setParameter("channel_id", channelId);
 		request.setParameter("properties", properties);
@@ -472,7 +510,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean removeChannelMetadataProperties(String channelId, List<String> propertyNames) throws ClientException {
+	public boolean removeChannelMetadataPropertiesById(String channelId, List<String> propertyNames) throws ClientException {
 		Request request = new Request(RequestConstants.DATACAST__REMOVE_CHANNEL_METADATA_PROPERTIES);
 		request.setParameter("channel_id", channelId);
 		request.setParameter("property_names", propertyNames);
@@ -527,3 +565,44 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 }
+
+// boolean setChannelMetadataPropertiesByName(String channelId, Map<String, Object> properties) throws ClientException;
+// boolean removeChannelMetadataPropertiesByName(String channelId, List<String> propertyNames) throws ClientException;
+//
+// @Override
+// public boolean setChannelMetadataPropertiesByName(String name, Map<String, Object> properties) throws ClientException {
+// Request request = new Request(RequestConstants.DATACAST__SET_CHANNEL_METADATA_PROPERTIES);
+// request.setParameter("name", name);
+// request.setParameter("properties", properties);
+//
+// boolean isUpdated = false;
+// Response response = null;
+// try {
+// response = sendRequest(request);
+// if (response != null) {
+// isUpdated = ModelConverter.COMMON.isUpdated(response);
+// }
+// } finally {
+// ResponseUtil.closeQuietly(response, true);
+// }
+// return isUpdated;
+// }
+//
+// @Override
+// public boolean removeChannelMetadataPropertiesByName(String name, List<String> propertyNames) throws ClientException {
+// Request request = new Request(RequestConstants.DATACAST__REMOVE_CHANNEL_METADATA_PROPERTIES);
+// request.setParameter("name", name);
+// request.setParameter("property_names", propertyNames);
+//
+// boolean isUpdated = false;
+// Response response = null;
+// try {
+// response = sendRequest(request);
+// if (response != null) {
+// isUpdated = ModelConverter.COMMON.isUpdated(response);
+// }
+// } finally {
+// ResponseUtil.closeQuietly(response, true);
+// }
+// return isUpdated;
+// }

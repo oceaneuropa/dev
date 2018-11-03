@@ -2,16 +2,25 @@ package org.orbit.infra.connector.datatube;
 
 import java.util.Map;
 
+import javax.ws.rs.core.Response;
+
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
+import org.orbit.infra.api.datatube.RuntimeChannel;
+import org.orbit.infra.connector.util.ModelConverter;
+import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.datatube.ChannelMessageDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
 import org.origin.common.rest.client.WSClientConfiguration;
+import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadataDTO;
+import org.origin.common.rest.util.ResponseUtil;
 
 public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTubeWSClient> implements DataTubeClient {
+
+	private static final RuntimeChannel[] EMPTY_RUNTIME_CHANNELS = new RuntimeChannel[0];
 
 	/**
 	 * 
@@ -58,6 +67,208 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 			throw e;
 		}
 		return false;
+	}
+
+	@Override
+	public RuntimeChannel[] getRuntimeChannels() throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__LIST_RUNTIME_CHANNELS);
+
+		RuntimeChannel[] runtimeChannels = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				runtimeChannels = ModelConverter.DATA_TUBE.getRuntimeChannels(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		if (runtimeChannels == null) {
+			runtimeChannels = EMPTY_RUNTIME_CHANNELS;
+		}
+		return runtimeChannels;
+	}
+
+	@Override
+	public RuntimeChannel getRuntimeChannelId(String channelId, boolean createIfNotExist) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__GET_RUNTIME_CHANNEL);
+		request.setParameter("channel_id", channelId);
+
+		RuntimeChannel runtimeChannel = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				runtimeChannel = ModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return runtimeChannel;
+	}
+
+	@Override
+	public RuntimeChannel getRuntimeChannelByName(String name, boolean createIfNotExist) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__GET_RUNTIME_CHANNEL);
+		request.setParameter("name", name);
+
+		RuntimeChannel runtimeChannel = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				runtimeChannel = ModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return runtimeChannel;
+	}
+
+	@Override
+	public boolean runtimeChannelExistsById(String channelId) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__RUNTIME_CHANNEL_EXISTS);
+		request.setParameter("channel_id", channelId);
+
+		boolean exists = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				exists = ModelConverter.COMMON.exists(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public boolean runtimeChannelExistsByName(String name) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__RUNTIME_CHANNEL_EXISTS);
+		request.setParameter("name", name);
+
+		boolean exists = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				exists = ModelConverter.COMMON.exists(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return exists;
+	}
+
+	@Override
+	public RuntimeChannel createRuntimeChannelId(String channelId, boolean useExisting) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__CREATE_RUNTIME_CHANNEL);
+		request.setParameter("channel_id", channelId);
+		request.setParameter("use_existing", useExisting);
+
+		RuntimeChannel runtimeChannel = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				runtimeChannel = ModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return runtimeChannel;
+	}
+
+	@Override
+	public RuntimeChannel createRuntimeChannelByName(String name, boolean useExisting) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__CREATE_RUNTIME_CHANNEL);
+		request.setParameter("name", name);
+		request.setParameter("use_existing", useExisting);
+
+		RuntimeChannel runtimeChannel = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				runtimeChannel = ModelConverter.DATA_TUBE.getRuntimeChannel(this, response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return runtimeChannel;
+	}
+
+	@Override
+	public boolean syncChannelMetadataId(String channelId) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__SYNC_CHANNEL_METADATA);
+		request.setParameter("channel_id", channelId);
+
+		boolean succeed = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.COMMON.isSucceed(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean syncChannelMetadataByName(String name) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__SYNC_CHANNEL_METADATA);
+		request.setParameter("name", name);
+
+		boolean succeed = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.COMMON.isSucceed(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean deleteRuntimeChannelId(String channelId) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__DELETE_RUNTIME_CHANNEL);
+		request.setParameter("channel_id", channelId);
+
+		boolean isDeleted = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isDeleted = ModelConverter.COMMON.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isDeleted;
+	}
+
+	@Override
+	public boolean deleteRuntimeChannelByName(String name) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__DELETE_RUNTIME_CHANNEL);
+		request.setParameter("name", name);
+
+		boolean isDeleted = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				isDeleted = ModelConverter.COMMON.isDeleted(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return isDeleted;
 	}
 
 }

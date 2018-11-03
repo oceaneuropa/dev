@@ -14,12 +14,12 @@ import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.DataCastClientResolverImpl;
-import org.orbit.infra.io.util.DataCastHelper;
-import org.orbit.infra.io.util.DataCastUtil;
+import org.orbit.infra.io.util.DefaultDataCastClientResolver;
+import org.orbit.infra.io.util.DataCastNodeConfigHelper;
+import org.orbit.infra.io.util.DataCastIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -56,9 +56,9 @@ public class DataCastNodeListServlet extends HttpServlet {
 
 			// 1. Get or create config registry "DataCastNodes"
 			// - get root IConfigElements from it
-			IConfigRegistry cfgReg = DataCastHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+			IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 			if (cfgReg == null) {
-				message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
+				message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 			} else {
 				configElements = cfgReg.listRootConfigElements();
 			}
@@ -66,9 +66,9 @@ public class DataCastNodeListServlet extends HttpServlet {
 			// 2. Each IConfigElement represents one DataCast node
 			// - find IndexItem and DataCastServiceMetadata and attach them (if available) to IConfigElement.
 			if (configElements != null) {
-				Map<String, IndexItem> dataCastIndexItemMap = DataCastUtil.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
+				Map<String, IndexItem> dataCastIndexItemMap = DataCastIndexItemHelper.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
 
-				DataCastClientResolver clientResolver = new DataCastClientResolverImpl(indexServiceUrl);
+				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 
 				for (IConfigElement configElement : configElements) {
 					String dataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
@@ -81,7 +81,7 @@ public class DataCastNodeListServlet extends HttpServlet {
 						if (isOnline) {
 							try {
 								String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
-								DataCastServiceMetadata metadata = InfraClientsUtil.DATA_CAST.getServiceMetadata(clientResolver, dataCastServiceUrl, accessToken);
+								DataCastServiceMetadata metadata = InfraClientsHelper.DATA_CAST.getServiceMetadata(clientResolver, dataCastServiceUrl, accessToken);
 								if (metadata != null) {
 									configElement.adapt(DataCastServiceMetadata.class, metadata);
 								}

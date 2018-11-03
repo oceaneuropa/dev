@@ -9,15 +9,17 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.orbit.infra.runtime.datatube.service.Channel;
+import org.orbit.infra.api.datacast.ChannelMetadata;
 import org.orbit.infra.runtime.datatube.service.MessageListener;
+import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 
-public class ChannelImpl implements Channel {
+public class RuntimeChannelImpl implements RuntimeChannel {
 
 	protected static int DEFAULT_CORE_THREADS_NUM = 1;
 	protected static int DEFAULT_MAX_THREADS_NUM = 10;
 	protected static int DEFAULT_KEEP_ALIVE_SECONDS = 20;
 
+	protected ChannelMetadata channelMetadata;
 	protected ThreadPoolExecutor threadPoolExecutor;
 	protected int coreThreadsNum = DEFAULT_CORE_THREADS_NUM;
 	protected int maxThreadsNum = DEFAULT_MAX_THREADS_NUM;
@@ -26,9 +28,24 @@ public class ChannelImpl implements Channel {
 	protected List<MessageListener> messageListeners;
 	protected MessageListenerSupportImpl messageListenerSupport = new MessageListenerSupportImpl();
 
-	public ChannelImpl() {
+	/**
+	 * 
+	 * @param channelMetadata
+	 */
+	public RuntimeChannelImpl(ChannelMetadata channelMetadata) {
+		this.channelMetadata = channelMetadata;
 		this.messageListeners = new ArrayList<MessageListener>();
 		this.threadPoolExecutor = createThreadPoolExecutor();
+	}
+
+	@Override
+	public ChannelMetadata getChannelMetadata() {
+		return this.channelMetadata;
+	}
+
+	@Override
+	public void setChannelMetadata(ChannelMetadata channelMetadata) {
+		this.channelMetadata = channelMetadata;
 	}
 
 	protected ThreadPoolExecutor createThreadPoolExecutor() {
@@ -50,7 +67,7 @@ public class ChannelImpl implements Channel {
 		return threadFactory;
 	}
 
-	/** Implement MessageListener interface */
+	/** MessageListener */
 	@Override
 	public int onMessage(final String senderId, final String message) throws IOException {
 		for (Iterator<MessageListener> itor = this.messageListeners.iterator(); itor.hasNext();) {
@@ -65,7 +82,7 @@ public class ChannelImpl implements Channel {
 		return 1;
 	}
 
-	/** Implement MessageListenerSupport interface */
+	/** MessageListenerSupport */
 	@Override
 	public List<MessageListener> getMessageListeners() {
 		return this.messageListenerSupport.getMessageListeners();

@@ -9,12 +9,12 @@ import javax.ws.rs.core.Response.Status;
 import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistry;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
-import org.orbit.infra.runtime.util.AbstractDataCastCommand;
+import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class UpdateConfigElementCommand extends AbstractDataCastCommand<ConfigRegistryService> implements WSCommand {
+public class UpdateConfigElementCommand extends AbstractInfraCommand<ConfigRegistryService> implements WSCommand {
 
 	public static String ID = "org.orbit.infra.runtime.configregistry.UpdateConfigElementCommand";
 

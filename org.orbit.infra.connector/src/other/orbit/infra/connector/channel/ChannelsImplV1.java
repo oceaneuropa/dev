@@ -7,6 +7,7 @@ import javax.ws.rs.core.Response;
 
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
+import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.connector.datatube.DataTubeWSClient;
 import org.orbit.infra.model.datatube.ChannelMessageDTO;
@@ -155,6 +156,72 @@ public class ChannelsImplV1 implements DataTubeClient {
 
 	@Override
 	public boolean isProxy() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public RuntimeChannel[] getRuntimeChannels() throws ClientException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RuntimeChannel getRuntimeChannelId(String channelId, boolean createIfNotExist) throws ClientException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RuntimeChannel getRuntimeChannelByName(String name, boolean createIfNotExist) throws ClientException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean runtimeChannelExistsById(String channelId) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean runtimeChannelExistsByName(String name) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public RuntimeChannel createRuntimeChannelId(String channelId, boolean useExisting) throws ClientException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RuntimeChannel createRuntimeChannelByName(String name, boolean useExisting) throws ClientException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean syncChannelMetadataId(String channelId) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean syncChannelMetadataByName(String name) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteRuntimeChannelId(String channelId) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteRuntimeChannelByName(String name) throws ClientException {
 		// TODO Auto-generated method stub
 		return false;
 	}

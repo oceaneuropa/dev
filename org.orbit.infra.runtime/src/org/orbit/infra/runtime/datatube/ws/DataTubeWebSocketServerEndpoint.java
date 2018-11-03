@@ -12,9 +12,10 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import org.orbit.infra.runtime.datatube.service.Channel;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.datatube.service.MessageListener;
+import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
+import org.origin.common.rest.server.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,13 @@ public class DataTubeWebSocketServerEndpoint implements MessageListener {
 		DataTubeService channelService = getService(session);
 		if (channelService != null) {
 
-			Channel channel = channelService.getChannel(channelId);
+			RuntimeChannel channel = null;
+			try {
+				channel = channelService.getRuntimeChannelById(channelId);
+			} catch (ServerException e) {
+				e.printStackTrace();
+			}
+
 			if (channel != null) {
 				boolean found = false;
 
@@ -93,8 +100,12 @@ public class DataTubeWebSocketServerEndpoint implements MessageListener {
 
 		DataTubeService channelService = getService(session);
 		if (channelService != null) {
-
-			Channel channel = channelService.getChannel(channelId);
+			RuntimeChannel channel = null;
+			try {
+				channel = channelService.getRuntimeChannelById(channelId);
+			} catch (ServerException e) {
+				e.printStackTrace();
+			}
 			if (channel != null) {
 				channel.removeMessageListener(this);
 			}
@@ -146,7 +157,7 @@ public class DataTubeWebSocketServerEndpoint implements MessageListener {
 		try {
 			DataTubeService service = getService(session);
 
-			Channel channel = service.getChannel(channelId);
+			RuntimeChannel channel = service.getRuntimeChannelById(channelId);
 			if (channel != null) {
 				channel.onMessage("unknown-sender", message);
 			}

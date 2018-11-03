@@ -10,7 +10,7 @@ import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -67,7 +67,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		if (this.indexServiceUrl == null) {
 			throw new IllegalStateException("indexServiceUrl is null.");
 		}
-		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, null);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, null);
 		return indexService;
 	}
 

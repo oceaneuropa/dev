@@ -13,14 +13,18 @@ import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.datacast.ChannelMetadata;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataTubeConfig;
+import org.orbit.infra.api.datatube.DataTubeClient;
+import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.connector.configregistry.ConfigElementImpl;
 import org.orbit.infra.connector.configregistry.ConfigRegistryImpl;
 import org.orbit.infra.connector.datacast.ChannelMetadataImpl;
 import org.orbit.infra.connector.datacast.DataTubeConfigImpl;
+import org.orbit.infra.connector.datatube.RuntimeChannelImpl;
 import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.model.datacast.DataTubeConfigDTO;
+import org.orbit.infra.model.datatube.RuntimeChannelDTO;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
@@ -352,6 +356,88 @@ public class ModelConverter {
 
 	public static class DATA_TUBE {
 
+		/**
+		 * 
+		 * @param dataTubeClient
+		 * @param runtimeChannelDTO
+		 * @return
+		 */
+		public RuntimeChannel toRuntimeChannel(DataTubeClient dataTubeClient, RuntimeChannelDTO runtimeChannelDTO) {
+			if (runtimeChannelDTO == null) {
+				return null;
+			}
+
+			String dataCastId = runtimeChannelDTO.getDataCastId();
+			String dataTubeId = runtimeChannelDTO.getDataTubeId();
+			String channelId = runtimeChannelDTO.getChannelId();
+			String name = runtimeChannelDTO.getName();
+			// String accessType = runtimeChannelDTO.getAccessType();
+			// String accessCode = runtimeChannelDTO.getAccessCode();
+			// String ownerAccountId = runtimeChannelDTO.getOwnerAccountId();
+			// List<String> accountIds = runtimeChannelDTO.getAccountIds();
+			// Map<String, Object> properties = runtimeChannelDTO.getProperties();
+			long dateCreated = runtimeChannelDTO.getDateCreated();
+			long dateModified = runtimeChannelDTO.getDateModified();
+
+			RuntimeChannelImpl runtimeChannel = new RuntimeChannelImpl(dataTubeClient);
+			runtimeChannel.setDataCastId(dataCastId);
+			runtimeChannel.setDataTubeId(dataTubeId);
+			runtimeChannel.setChannelId(channelId);
+			runtimeChannel.setName(name);
+			// channelMetadata.setAccessType(accessType);
+			// channelMetadata.setAccessCode(accessCode);
+			// channelMetadata.setOwnerAccountId(ownerAccountId);
+			// channelMetadata.setAccountIds(accountIds);
+			// channelMetadata.setProperties(properties);
+			runtimeChannel.setDateCreated(dateCreated);
+			runtimeChannel.setDateModified(dateModified);
+
+			return runtimeChannel;
+		}
+
+		/**
+		 * 
+		 * @param dataTubeClient
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public RuntimeChannel[] getRuntimeChannels(DataTubeClient dataTubeClient, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			List<RuntimeChannel> runtimeChannels = new ArrayList<RuntimeChannel>();
+			List<RuntimeChannelDTO> runtimeChannelDTOs = response.readEntity(new GenericType<List<RuntimeChannelDTO>>() {
+			});
+			for (RuntimeChannelDTO runtimeChannelDTO : runtimeChannelDTOs) {
+				RuntimeChannel runtimeChannel = toRuntimeChannel(dataTubeClient, runtimeChannelDTO);
+				if (runtimeChannel != null) {
+					runtimeChannels.add(runtimeChannel);
+				}
+			}
+			return runtimeChannels.toArray(new RuntimeChannel[runtimeChannels.size()]);
+		}
+
+		/**
+		 * 
+		 * @param dataTubeClient
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public RuntimeChannel getRuntimeChannel(DataTubeClient dataTubeClient, Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+
+			RuntimeChannel runtimeChannel = null;
+			RuntimeChannelDTO runtimeChannelDTO = response.readEntity(RuntimeChannelDTO.class);
+			if (runtimeChannelDTO != null) {
+				runtimeChannel = toRuntimeChannel(dataTubeClient, runtimeChannelDTO);
+			}
+			return runtimeChannel;
+		}
 	}
 
 	public static class COMMON {

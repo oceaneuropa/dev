@@ -23,7 +23,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -86,24 +86,24 @@ public class NodePropertyListServlet extends HttpServlet {
 				NodeControlClientResolver nodeControlClientResolver = new DefaultNodeControlClientResolver(indexServiceUrl);
 				nodeInfo = ComponentClientsUtil.NodeControl.getNode(nodeControlClientResolver, accessToken, parentPlatformId, nodeId);
 
-				nodeIndexItem = InfraClientsUtil.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
+				nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
 					String nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
 
 					if (nodePlatformId != null) {
-						List<ExtensionItem> indexerExtensionItems = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
+						List<ExtensionItem> indexerExtensionItems = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);
 						for (ExtensionItem indexerExtensionItem : indexerExtensionItems) {
 							String indexerId = indexerExtensionItem.getExtensionId();
 
-							List<IndexItem> currIndexItems = InfraClientsUtil.INDEX_SERVICE.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, nodePlatformId);
+							List<IndexItem> currIndexItems = InfraClientsHelper.INDEX_SERVICE.getIndexItemsOfPlatform(indexServiceUrl, accessToken, indexerId, nodePlatformId);
 							if (currIndexItems != null && !currIndexItems.isEmpty()) {
 								indexItems.addAll(currIndexItems);
 							}
 						}
 
 						// Get all extensions from the platform (of the Node)
-						extensionItems = InfraClientsUtil.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, accessToken, nodePlatformId);
-						extensionItemMap = InfraClientsUtil.EXTENSION_REGISTRY.toExtensionItemMap(extensionItems);
+						extensionItems = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, accessToken, nodePlatformId);
+						extensionItemMap = InfraClientsHelper.EXTENSION_REGISTRY.toExtensionItemMap(extensionItems);
 					}
 				}
 

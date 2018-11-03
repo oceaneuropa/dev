@@ -13,8 +13,8 @@ import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.io.util.DataCastClientResolverImpl;
-import org.orbit.infra.io.util.DataCastUtil;
+import org.orbit.infra.io.util.DefaultDataCastClientResolver;
+import org.orbit.infra.io.util.DataCastIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -52,7 +52,7 @@ public class ChannelListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				dataCastIndexItem = DataCastUtil.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 				if (dataCastIndexItem == null) {
 					message = MessageHelper.INSTANCE.add(message, "DataCast index item doesn't exist. dataCastId: '" + dataCastId + "'.");
 				}
@@ -68,7 +68,7 @@ public class ChannelListServlet extends HttpServlet {
 						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
 						if (dataCastServiceUrl != null) {
 							try {
-								DataCastClientResolver dataCastClientResolver = new DataCastClientResolverImpl(indexServiceUrl);
+								DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 								dataCastClient = dataCastClientResolver.resolve(dataCastServiceUrl, accessToken);
 
 								if (dataCastClient == null) {
@@ -84,7 +84,7 @@ public class ChannelListServlet extends HttpServlet {
 					}
 				}
 
-				dataCastIndexItem = DataCastUtil.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

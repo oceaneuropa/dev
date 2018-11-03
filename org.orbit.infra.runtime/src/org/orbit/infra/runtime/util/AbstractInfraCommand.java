@@ -5,13 +5,13 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.rest.editpolicy.ServiceAwareWSCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
 
-public abstract class AbstractDataCastCommand<SERVICE> extends ServiceAwareWSCommand<SERVICE> implements WSCommand {
+public abstract class AbstractInfraCommand<SERVICE> extends ServiceAwareWSCommand<SERVICE> implements WSCommand {
 
 	/**
 	 * 
 	 * @param serviceClass
 	 */
-	public AbstractDataCastCommand(Class<SERVICE> serviceClass) {
+	public AbstractInfraCommand(Class<SERVICE> serviceClass) {
 		super(serviceClass);
 	}
 

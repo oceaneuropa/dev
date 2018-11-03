@@ -8,6 +8,7 @@ import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.model.datacast.DataTubeConfigDTO;
+import org.orbit.infra.model.datatube.RuntimeChannelDTO;
 import org.orbit.infra.model.extensionregistry.ExtensionItemDTO;
 import org.orbit.infra.model.indexes.IndexItem;
 import org.orbit.infra.model.indexes.IndexItemDTO;
@@ -15,6 +16,7 @@ import org.orbit.infra.runtime.configregistry.service.ConfigElement;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryMetadata;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
+import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.resource.Path;
@@ -242,7 +244,45 @@ public class ModelConverter {
 	}
 
 	public static class DATA_TUBE {
+		/**
+		 * 
+		 * @param runtimeChannel
+		 * @return
+		 */
+		public RuntimeChannelDTO toDTO(RuntimeChannel runtimeChannel) {
+			if (runtimeChannel == null) {
+				return null;
+			}
 
+			org.orbit.infra.api.datacast.ChannelMetadata channelMetadata = runtimeChannel.getChannelMetadata();
+
+			String dataCastId = channelMetadata.getDataCastId();
+			String dataTubeId = channelMetadata.getDataTubeId();
+			String channelId = channelMetadata.getChannelId();
+			String name = channelMetadata.getName();
+			// String accessType = channelMetadata.getAccessType();
+			// String accessCode = channelMetadata.getAccessCode();
+			// String ownerAccountId = channelMetadata.getOwnerAccountId();
+			// List<String> accountIds = channelMetadata.getAccountIds();
+			// Map<String, Object> properties = channelMetadata.getProperties();
+			long dateCreated = channelMetadata.getDateCreated();
+			long dateModified = channelMetadata.getDateModified();
+
+			RuntimeChannelDTO runtimeChannelDTO = new RuntimeChannelDTO();
+			runtimeChannelDTO.setDataCastId(dataCastId);
+			runtimeChannelDTO.setDataTubeId(dataTubeId);
+			runtimeChannelDTO.setChannelId(channelId);
+			runtimeChannelDTO.setName(name);
+			// runtimeChannelDTO.setAccessType(accessType);
+			// runtimeChannelDTO.setAccessCode(accessCode);
+			// runtimeChannelDTO.setOwnerAccountId(ownerAccountId);
+			// runtimeChannelDTO.setAccountIds(accountIds);
+			// runtimeChannelDTO.setProperties(properties);
+			runtimeChannelDTO.setDateCreated(dateCreated);
+			runtimeChannelDTO.setDateModified(dateModified);
+
+			return runtimeChannelDTO;
+		}
 	}
 
 	public static class COMMON {

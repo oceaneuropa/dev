@@ -12,12 +12,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.orbit.infra.model.datatube.ChannelMessageDTO;
-import org.orbit.infra.runtime.datatube.service.Channel;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
+import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
+import org.origin.common.rest.server.ServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,8 +61,16 @@ public class DataTubeWSResource extends AbstractWSApplicationResource {
 			LOG.debug("\tsenderId = " + senderId);
 			LOG.debug("\tmessage = " + message);
 
+			RuntimeChannel channel = null;
+			try {
+				channel = getService().getRuntimeChannelById(channelId);
+			} catch (ServerException e) {
+				e.printStackTrace();
+			} catch (RuntimeException e) {
+				e.printStackTrace();
+			}
+
 			int result = 0;
-			Channel channel = getService().getChannel(channelId);
 			if (channel != null) {
 				result = channel.onMessage(senderId, message);
 			}

@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.datacast.ws.command;
+package org.orbit.infra.runtime.datacast.ws.command.datatube;
 
 import java.util.Map;
 
@@ -9,13 +9,13 @@ import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.datacast.DataTubeConfigDTO;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
 import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
-import org.orbit.infra.runtime.util.AbstractDataCastCommand;
+import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
 
-public class CreateDataTubeConfigCommand extends AbstractDataCastCommand<DataCastService> implements WSCommand {
+public class CreateDataTubeConfigCommand extends AbstractInfraCommand<DataCastService> implements WSCommand {
 
 	public static String ID = "org.orbit.infra.runtime.datacast.CreateDataTubeConfigCommand";
 

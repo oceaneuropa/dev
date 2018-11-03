@@ -172,6 +172,7 @@ public class Extensions extends ProgramExtensions {
 		Extension extension1 = new Extension(Downloader.EXTENSION_TYPE_ID, AppStoreDownloader.ID, "AppStore Downloader", "Be able to download apps from app store");
 		extension1.setProperty(Downloader.PROP__DOWNLOAD_SOURCE, DownloadSource.Sources.APP_STORE.getId());
 		InterfaceDescription desc1 = new InterfaceDescription(Downloader.class, AppStoreDownloader.class);
+		desc1.setSingleton(true);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 	}

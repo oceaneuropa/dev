@@ -1,4 +1,4 @@
-package org.orbit.infra.runtime.datacast.ws.command;
+package org.orbit.infra.runtime.datacast.ws.command.channel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,12 @@ import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
-import org.orbit.infra.runtime.util.AbstractDataCastCommand;
+import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.orbit.infra.runtime.util.ModelConverter;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.Request;
 
-public class ListChannelMetadatasCommand extends AbstractDataCastCommand<DataCastService> implements WSCommand {
+public class ListChannelMetadatasCommand extends AbstractInfraCommand<DataCastService> implements WSCommand {
 
 	public static String ID = "org.orbit.infra.runtime.datacast.ListChannelMetadatasCommand";
 

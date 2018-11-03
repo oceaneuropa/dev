@@ -32,11 +32,6 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		this.dataCastClient = dataCastClient;
 	}
 
-	@Override
-	public DataCastClient getDataCastClient() {
-		return this.dataCastClient;
-	}
-
 	/**
 	 * 
 	 * @param dataCastId
@@ -63,6 +58,11 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		this.properties = properties;
 		this.dateCreated = dateCreated;
 		this.dateModified = dateModified;
+	}
+
+	@Override
+	public DataCastClient getDataCastClient() {
+		return this.dataCastClient;
 	}
 
 	@Override
@@ -100,6 +100,7 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		return this.name;
 	}
 
+	@Override
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -158,18 +159,22 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		this.properties = properties;
 	}
 
+	@Override
 	public long getDateCreated() {
 		return this.dateCreated;
 	}
 
+	@Override
 	public void setDateCreated(long dateCreated) {
 		this.dateCreated = dateCreated;
 	}
 
+	@Override
 	public long getDateModified() {
 		return this.dateModified;
 	}
 
+	@Override
 	public void setDateModified(long dateModified) {
 		this.dateModified = dateModified;
 	}

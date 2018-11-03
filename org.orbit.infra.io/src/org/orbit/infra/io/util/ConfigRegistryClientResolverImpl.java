@@ -8,7 +8,7 @@ import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientResolver {
@@ -32,7 +32,7 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 			throw new IllegalArgumentException("configRegistryUrl is empty.");
 		}
 
-		ConfigRegistryClient configRegistryClient = InfraClientsUtil.CONFIG_REGISTRY.getConfigRegistryClient(configRegistryUrl, accessToken);
+		ConfigRegistryClient configRegistryClient = InfraClientsHelper.CONFIG_REGISTRY.getConfigRegistryClient(configRegistryUrl, accessToken);
 		return configRegistryClient;
 	}
 
@@ -43,7 +43,7 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 		}
 
 		IndexItem cfgIndexItem = null;
-		IndexServiceClient indexService = InfraClientsUtil.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
+		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, InfraConstants.IDX__CONFIG_REGISTRY__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
 			String currConfigRegistryName = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__CONFIG_REGISTRY__NAME);

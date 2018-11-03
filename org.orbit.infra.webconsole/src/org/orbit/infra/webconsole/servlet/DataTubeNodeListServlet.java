@@ -14,12 +14,12 @@ import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.DataCastHelper;
-import org.orbit.infra.io.util.DataCastUtil;
-import org.orbit.infra.io.util.DataTubeClientResolverImpl;
+import org.orbit.infra.io.util.DataCastNodeConfigHelper;
+import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -60,22 +60,22 @@ public class DataTubeNodeListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				IConfigRegistry cfgReg = DataCastHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+				IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 				if (cfgReg != null) {
-					dataCastConfigElement = DataCastHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+					dataCastConfigElement = DataCastNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
 					if (dataCastConfigElement != null) {
 						configElements = dataCastConfigElement.memberConfigElements();
 					} else {
 						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
 					}
 				} else {
-					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
+					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 				}
 
 				if (configElements != null) {
-					Map<String, IndexItem> dataTubeIndexItemMap = DataCastUtil.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
+					Map<String, IndexItem> dataTubeIndexItemMap = DataCastIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
 
-					DataTubeClientResolver clientResolver = new DataTubeClientResolverImpl(indexServiceUrl);
+					DataTubeClientResolver clientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
 
 					for (IConfigElement configElement : configElements) {
 						String dataTubeId = configElement.getAttribute(InfraConstants.IDX_PROP__DATATUBE__ID, String.class);
@@ -88,7 +88,7 @@ public class DataTubeNodeListServlet extends HttpServlet {
 							if (isOnline) {
 								try {
 									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
-									DataTubeServiceMetadata metadata = InfraClientsUtil.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
+									DataTubeServiceMetadata metadata = InfraClientsHelper.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
 									if (metadata != null) {
 										configElement.adapt(DataTubeServiceMetadata.class, metadata);
 									}

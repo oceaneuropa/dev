@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
 import org.orbit.infra.api.datatube.DataTubeClient;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.connector.InfraConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
@@ -79,7 +79,7 @@ public class DataTubeCommand implements Annotated, CommandActivator {
 	}
 
 	protected DataTubeClient getChannels(String url) throws ClientException {
-		DataTubeClient channels = InfraClientsUtil.DATA_TUBE.getDataTubeClient(url, null);
+		DataTubeClient channels = InfraClientsHelper.DATA_TUBE.getDataTubeClient(url, null);
 		if (channels == null) {
 			LOG.error("Channels is not available.");
 			throw new IllegalStateException("Channels is not available. url = " + url);

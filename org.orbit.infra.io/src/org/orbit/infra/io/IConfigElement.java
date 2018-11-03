@@ -39,6 +39,8 @@ public interface IConfigElement extends IAdaptable {
 
 	long getDateModified();
 
+	boolean isEnabled();
+
 	// -----------------------------------------------------------------------------------
 	// Config element (write)
 	// -----------------------------------------------------------------------------------

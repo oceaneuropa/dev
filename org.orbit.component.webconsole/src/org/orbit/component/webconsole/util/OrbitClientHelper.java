@@ -10,7 +10,7 @@ import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.util.ComponentClients;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
-import org.orbit.infra.api.util.InfraClientsUtil;
+import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.platform.api.PlatformClient;
 import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.api.util.PlatformClientsUtil;
@@ -61,7 +61,7 @@ public class OrbitClientHelper {
 		if (indexServiceUrl != null && platformId != null) {
 
 			IndexItem nodeControlIndexItem = null;
-			List<IndexItem> nodeControlIndexItems = InfraClientsUtil.INDEX_SERVICE.getIndexItemsOfPlatform(indexServiceUrl, accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
+			List<IndexItem> nodeControlIndexItems = InfraClientsHelper.INDEX_SERVICE.getIndexItemsOfPlatform(indexServiceUrl, accessToken, IndexConstants.NODE_CONTROL_INDEXER_ID, platformId);
 			if (nodeControlIndexItems != null && !nodeControlIndexItems.isEmpty()) {
 				for (IndexItem currNodeControlIndexItem : nodeControlIndexItems) {
 					boolean isOnline = IndexItemHelper.INSTANCE.isOnline(currNodeControlIndexItem);

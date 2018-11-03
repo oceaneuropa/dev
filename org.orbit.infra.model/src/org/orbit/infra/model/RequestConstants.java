@@ -34,10 +34,19 @@ public class RequestConstants {
 	public static String DATACAST__CHANNEL_METADATA_EXISTS = "channel_metadata_exists";
 	public static String DATACAST__CREATE_CHANNEL_METADATA = "create_channel_metadata";
 	public static String DATACAST__UPDATE_CHANNEL_METADATA = "update_channel_metadata";
+	public static String DATACAST__SET_CHANNEL_METADATA_STATUS = "set_channel_metadata_status";
+	public static String DATACAST__CLEAR_CHANNEL_METADATA_STATUS = "clear_channel_metadata_status";
 	public static String DATACAST__ADD_CHANNEL_METADATA_ACCOUNT_IDS = "set_channel_metadata_account_ids";
 	public static String DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_IDS = "remove_channel_metadata_account_ids";
 	public static String DATACAST__SET_CHANNEL_METADATA_PROPERTIES = "set_channel_metadata_properties";
 	public static String DATACAST__REMOVE_CHANNEL_METADATA_PROPERTIES = "remove_channel_metadata_properties";
 	public static String DATACAST__DELETE_CHANNEL_METADATA = "delete_channel_metadata";
+
+	public static String DATATUBE__LIST_RUNTIME_CHANNELS = "list_runtime_channels";
+	public static String DATATUBE__GET_RUNTIME_CHANNEL = "get_runtime_channel";
+	public static String DATATUBE__RUNTIME_CHANNEL_EXISTS = "runtime_channel_exists";
+	public static String DATATUBE__CREATE_RUNTIME_CHANNEL = "create_runtime_channel";
+	public static String DATATUBE__SYNC_CHANNEL_METADATA = "sync_channel_metadata";
+	public static String DATATUBE__DELETE_RUNTIME_CHANNEL = "delete_runtime_channel";
 
 }
