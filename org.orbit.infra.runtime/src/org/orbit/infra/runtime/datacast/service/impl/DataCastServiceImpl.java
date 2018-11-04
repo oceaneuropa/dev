@@ -35,7 +35,7 @@ import org.origin.common.util.UUIDUtil;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class DataCastServiceImpl implements DataCastService, LifecycleAware, PropertyChangeListener {
+public class DataCastServiceImpl implements LifecycleAware, DataCastService, PropertyChangeListener {
 
 	public static DataTubeConfig[] EMPTY_DATATUBES = new DataTubeConfig[0];
 	public static ChannelMetadata[] EMPTY_CHANNELS = new ChannelMetadata[0];
@@ -51,8 +51,13 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware, Pro
 	 * @param initProperties
 	 */
 	public DataCastServiceImpl(Map<Object, Object> initProperties) {
-		this.initProperties = initProperties;
+		this.initProperties = (initProperties != null) ? initProperties : new HashMap<Object, Object>();
 		this.wsEditPolicies = new ServiceEditPoliciesImpl(DataCastService.class, this);
+	}
+
+	@Override
+	public Map<Object, Object> getInitProperties() {
+		return this.initProperties;
 	}
 
 	protected String getAccessToken() {
@@ -195,16 +200,6 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware, Pro
 	// return DatabaseUtil.getProperties(driver, url, username, password);
 	// }
 
-	protected synchronized void updateConnectionProperties() {
-		DataCastConfigPropertiesHandler configPropertiesHandler = DataCastConfigPropertiesHandler.getInstance();
-		String driver = configPropertiesHandler.getProperty(InfraConstants.DATACAST__JDBC_DRIVER, this.initProperties);
-		String url = configPropertiesHandler.getProperty(InfraConstants.DATACAST__JDBC_URL, this.initProperties);
-		String username = configPropertiesHandler.getProperty(InfraConstants.DATACAST__JDBC_USERNAME, this.initProperties);
-		String password = configPropertiesHandler.getProperty(InfraConstants.DATACAST__JDBC_PASSWORD, this.initProperties);
-
-		this.databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
-	}
-
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
 		if (this.serviceRegistry != null) {
@@ -231,6 +226,24 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware, Pro
 	@Override
 	public Connection getConnection() throws SQLException {
 		return DatabaseUtil.getConnection(this.databaseProperties);
+	}
+
+	protected synchronized void updateConnectionProperties() {
+		DataCastConfigPropertiesHandler configPropertiesHandler = DataCastConfigPropertiesHandler.getInstance();
+		String driver = configPropertiesHandler.getProperty(InfraConstants.DATACAST__JDBC_DRIVER, this.initProperties);
+		String url = configPropertiesHandler.getProperty(InfraConstants.DATACAST__JDBC_URL, this.initProperties);
+		String username = configPropertiesHandler.getProperty(InfraConstants.DATACAST__JDBC_USERNAME, this.initProperties);
+		String password = configPropertiesHandler.getProperty(InfraConstants.DATACAST__JDBC_PASSWORD, this.initProperties);
+
+		this.databaseProperties = DatabaseUtil.getProperties(driver, url, username, password);
+
+		String database = null;
+		try {
+			database = DatabaseUtil.getDatabase(this.databaseProperties);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		assert (database != null) : "database name cannot be retrieved.";
 	}
 
 	/** WebServiceAware */
@@ -695,6 +708,60 @@ public class DataCastServiceImpl implements DataCastService, LifecycleAware, Pro
 			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
 
 			isUpdated = tableHandler.updateName(conn, channelId, name);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean updateChannelMetadataAccessType(String channelId, String accessType) throws ServerException {
+		boolean isUpdated = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			isUpdated = tableHandler.updateAccessType(conn, channelId, accessType);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean updateChannelMetadataAccessCode(String channelId, String accessCode) throws ServerException {
+		boolean isUpdated = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			isUpdated = tableHandler.updateAccessCode(conn, channelId, accessCode);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean updateChannelMetadataOwnerAccountId(String channelId, String accountId) throws ServerException {
+		boolean isUpdated = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			isUpdated = tableHandler.updateOwnerAccountId(conn, channelId, accountId);
 
 		} catch (SQLException e) {
 			handleException(e);

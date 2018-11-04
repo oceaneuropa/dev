@@ -3,6 +3,8 @@ package org.orbit.infra.runtime.datacast.service;
 import java.util.List;
 import java.util.Map;
 
+import org.origin.common.model.AccountConfigurable;
+
 public interface ChannelMetadata {
 
 	String getDataCastId();
@@ -47,9 +49,23 @@ public interface ChannelMetadata {
 
 	void setOwnerAccountId(String accountId);
 
-	List<String> getAccountIds();
+	List<AccountConfigurable> getAccountConfigs();
+
+	void setAccountConfigs(List<AccountConfigurable> accountConfigs);
+
+	void addAccountConfig(AccountConfigurable accountConfig);
+
+	void removeAccountConfig(AccountConfigurable accountConfig);
 
 	Map<String, Object> getProperties();
+
+	ChannelStatus getStatus();
+
+	void setStatus(ChannelStatus status);
+
+	void appendStatus(ChannelStatus status);
+
+	void clearStatus(ChannelStatus status);
 
 	long getDateCreated();
 

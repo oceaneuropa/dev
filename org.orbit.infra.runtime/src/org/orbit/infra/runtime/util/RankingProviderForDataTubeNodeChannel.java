@@ -14,7 +14,7 @@ import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.DataCastNodeConfigHelper;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.platform.sdk.ranking.RankingProvider;
-import org.origin.common.util.Weightable;
+import org.origin.common.model.Weightable;
 import org.origin.common.util.WeightableComparator;
 
 public class RankingProviderForDataTubeNodeChannel implements RankingProvider {

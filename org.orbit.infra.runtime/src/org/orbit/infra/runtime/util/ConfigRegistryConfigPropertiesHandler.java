@@ -1,7 +1,7 @@
 package org.orbit.infra.runtime.util;
 
 import org.orbit.infra.runtime.InfraConstants;
-import org.origin.common.service.AbstractConfigPropertiesHandler;
+import org.origin.common.model.AbstractConfigPropertiesHandler;
 
 public class ConfigRegistryConfigPropertiesHandler extends AbstractConfigPropertiesHandler {
 

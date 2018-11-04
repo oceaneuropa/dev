@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.datacast.ChannelMetadata;
+import org.orbit.infra.api.datacast.ChannelStatus;
 import org.orbit.infra.api.datacast.DataCastClient;
 
 public class ChannelMetadataImpl implements ChannelMetadata {
@@ -157,6 +158,21 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 
 	public synchronized void setProperties(Map<String, Object> properties) {
 		this.properties = properties;
+	}
+
+	protected ChannelStatus status = null;
+
+	@Override
+	public ChannelStatus getStatus() {
+		int value = (int) this.properties.get("status");
+		if (this.status != null) {
+			if (this.status.value() != value) {
+				this.status.setValue(value);
+			}
+		} else {
+			this.status = new ChannelStatus(value);
+		}
+		return this.status;
 	}
 
 	@Override

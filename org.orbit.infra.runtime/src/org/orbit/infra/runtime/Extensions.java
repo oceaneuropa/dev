@@ -22,12 +22,15 @@ import org.orbit.infra.runtime.configregistry.ws.command.UpdateConfigElementComm
 import org.orbit.infra.runtime.configregistry.ws.command.UpdateConfigRegistryCommand;
 import org.orbit.infra.runtime.datacast.ws.DataCastServiceIndexTimerFactory;
 import org.orbit.infra.runtime.datacast.ws.command.channel.ChannelMetadataExistsCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.ClearChannelMetadataStatusCommand;
 import org.orbit.infra.runtime.datacast.ws.command.channel.CreateChannelMetadataCommand;
 import org.orbit.infra.runtime.datacast.ws.command.channel.DeleteChannelMetadataCommand;
 import org.orbit.infra.runtime.datacast.ws.command.channel.GetChannelMetadataCommand;
 import org.orbit.infra.runtime.datacast.ws.command.channel.ListChannelMetadatasCommand;
 import org.orbit.infra.runtime.datacast.ws.command.channel.RemoveChannelMetadataPropertiesCommand;
 import org.orbit.infra.runtime.datacast.ws.command.channel.SetChannelMetadataPropertiesCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.SetChannelMetadataStatusCommand;
+import org.orbit.infra.runtime.datacast.ws.command.channel.UpdateChannelMetadataCommand;
 import org.orbit.infra.runtime.datacast.ws.command.datatube.CreateDataTubeConfigCommand;
 import org.orbit.infra.runtime.datacast.ws.command.datatube.DeleteDataTubeConfigCommand;
 import org.orbit.infra.runtime.datacast.ws.command.datatube.GetDataTubeConfigCommand;
@@ -542,6 +545,27 @@ public class Extensions extends ProgramExtensions {
 		desc24.setSingleton(false);
 		extension24.addInterface(desc24);
 		addExtension(extension24);
+
+		Extension extension25 = new Extension(extensionTypeId, UpdateChannelMetadataCommand.ID);
+		extension25.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc25 = new InterfaceDescription(WSCommand.class, UpdateChannelMetadataCommand.class);
+		desc25.setSingleton(false);
+		extension25.addInterface(desc25);
+		addExtension(extension25);
+
+		Extension extension26 = new Extension(extensionTypeId, SetChannelMetadataStatusCommand.ID);
+		extension26.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc26 = new InterfaceDescription(WSCommand.class, SetChannelMetadataStatusCommand.class);
+		desc26.setSingleton(false);
+		extension26.addInterface(desc26);
+		addExtension(extension26);
+
+		Extension extension27 = new Extension(extensionTypeId, ClearChannelMetadataStatusCommand.ID);
+		extension27.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+		InterfaceDescription desc27 = new InterfaceDescription(WSCommand.class, ClearChannelMetadataStatusCommand.class);
+		desc27.setSingleton(false);
+		extension27.addInterface(desc27);
+		addExtension(extension27);
 
 		Extension extension28 = new Extension(extensionTypeId, SetChannelMetadataPropertiesCommand.ID);
 		extension28.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);

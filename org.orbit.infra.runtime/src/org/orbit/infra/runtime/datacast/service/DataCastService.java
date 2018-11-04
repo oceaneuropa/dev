@@ -10,6 +10,8 @@ import org.origin.common.service.WebServiceAware;
 
 public interface DataCastService extends WebServiceAware, ConnectionAware, EditPoliciesAware {
 
+	Map<Object, Object> getInitProperties();
+
 	String getDataCastId();
 
 	// -----------------------------------------------------------------
@@ -49,6 +51,12 @@ public interface DataCastService extends WebServiceAware, ConnectionAware, EditP
 	ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ServerException;
 
 	boolean updateChannelMetadataName(String channelId, String name) throws ServerException;
+
+	boolean updateChannelMetadataAccessType(String channelId, String accessType) throws ServerException;
+
+	boolean updateChannelMetadataAccessCode(String channelId, String accessCode) throws ServerException;
+
+	boolean updateChannelMetadataOwnerAccountId(String channelId, String accountId) throws ServerException;
 
 	boolean updateChannelMetadataPropertiesById(String channelId, Map<String, Object> properties) throws ServerException;
 

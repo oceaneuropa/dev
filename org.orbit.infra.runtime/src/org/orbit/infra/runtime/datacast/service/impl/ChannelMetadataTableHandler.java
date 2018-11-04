@@ -175,7 +175,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 		List<String> accountIds = ModelConverter.DATA_CAST.toAccountIds(accountIdsString);
 		Map<String, Object> properties = ModelConverter.COMMON.toProperties(propertiesString);
 
-		return new ChannelMetadataImpl(this.dataCastId, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIds, properties, dateCreated, dateModified);
+		return new ChannelMetadataImpl(this.dataCastId, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, properties, dateCreated, dateModified);
 	}
 
 	/**
@@ -333,6 +333,45 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	public boolean updateName(Connection conn, String channelId, String name) throws SQLException {
 		String updateSQL = "UPDATE " + getTableName() + " SET name=?, dateModified=? WHERE channelId=?";
 		return DatabaseUtil.update(conn, updateSQL, new Object[] { name, getCurrentTime(), channelId }, 1);
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param channelId
+	 * @param accessType
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateAccessType(Connection conn, String channelId, String accessType) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET accessType=?, dateModified=? WHERE channelId=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { accessType, getCurrentTime(), channelId }, 1);
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param channelId
+	 * @param accessCode
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateAccessCode(Connection conn, String channelId, String accessCode) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET accessCode=?, dateModified=? WHERE channelId=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { accessCode, getCurrentTime(), channelId }, 1);
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param channelId
+	 * @param accountId
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateOwnerAccountId(Connection conn, String channelId, String accountId) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET ownerAccountId=?, dateModified=? WHERE channelId=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { accountId, getCurrentTime(), channelId }, 1);
 	}
 
 	/**

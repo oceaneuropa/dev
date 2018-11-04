@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.orbit.infra.api.Activator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs.core;version="2.0.0",
- org.orbit.platform.sdk;version="[1.0.0,2.0.0)",
  org.osgi.framework;version="1.3.0",
  org.osgi.service.cm;version="1.5.0",
  org.osgi.util.tracker;version="1.5.1",
@@ -22,4 +21,5 @@ Export-Package: org.orbit.infra.api;version="1.0.0",
  other.orbit.infra.api.indexes;version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.origin.common;bundle-version="[1.0.0,2.0.0)",
- org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)"
+ org.origin.common.extensions;bundle-version="[1.0.0,2.0.0)",
+ org.orbit.platform.sdk;bundle-version="[1.0.0,2.0.0)"

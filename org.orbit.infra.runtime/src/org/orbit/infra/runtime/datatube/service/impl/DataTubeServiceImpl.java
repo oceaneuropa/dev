@@ -29,7 +29,7 @@ import org.origin.common.rest.util.LifecycleAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-public class DataTubeServiceImpl implements DataTubeService, LifecycleAware, PropertyChangeListener {
+public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, PropertyChangeListener {
 
 	protected Map<Object, Object> initProperties;
 	protected Map<String, RuntimeChannel> runtimeChannelMap;
@@ -42,10 +42,15 @@ public class DataTubeServiceImpl implements DataTubeService, LifecycleAware, Pro
 	 * @param initProperties
 	 */
 	public DataTubeServiceImpl(Map<Object, Object> initProperties) {
-		this.initProperties = initProperties;
-		this.runtimeChannelMap = Collections.synchronizedMap(new HashMap<String, RuntimeChannel>());
+		this.initProperties = (initProperties != null) ? initProperties : new HashMap<Object, Object>();
 		this.wsEditPolicies = new ServiceEditPoliciesImpl(DataTubeService.class, this);
+		this.runtimeChannelMap = Collections.synchronizedMap(new HashMap<String, RuntimeChannel>());
 		// this.properties = new HashMap<Object, Object>();
+	}
+
+	@Override
+	public Map<Object, Object> getInitProperties() {
+		return this.initProperties;
 	}
 
 	protected String getAccessToken() {

@@ -26,9 +26,9 @@ public interface ChannelMetadata {
 	/**
 	 * Values are: public, private.
 	 * 
-	 * If 'public', anyone can join the channel.
+	 * If 'public', anyone can join.
 	 * 
-	 * If 'private', only invited users (by accountId) can join the channel.
+	 * If 'private', only the owner and the invited users can join.
 	 * 
 	 * @return
 	 */
@@ -37,7 +37,7 @@ public interface ChannelMetadata {
 	void setAccessType(String accessType);
 
 	/**
-	 * like the password in diablo2 game.
+	 * like the password for a diablo2 game.
 	 * 
 	 * @return
 	 */
@@ -52,6 +52,8 @@ public interface ChannelMetadata {
 	List<String> getAccountIds();
 
 	Map<String, Object> getProperties();
+
+	ChannelStatus getStatus();
 
 	long getDateCreated();
 

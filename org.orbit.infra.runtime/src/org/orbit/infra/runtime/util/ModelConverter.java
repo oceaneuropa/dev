@@ -189,7 +189,7 @@ public class ModelConverter {
 			String accessType = channelMetadata.getAccessType();
 			String accessCode = channelMetadata.getAccessCode();
 			String ownerAccountId = channelMetadata.getOwnerAccountId();
-			List<String> accountIds = channelMetadata.getAccountIds();
+			// List<String> accountIds = channelMetadata.getAccountIds();
 			Map<String, Object> properties = channelMetadata.getProperties();
 			long dateCreated = channelMetadata.getDateCreated();
 			long dateModified = channelMetadata.getDateModified();
@@ -202,7 +202,7 @@ public class ModelConverter {
 			channelMetadataDTO.setAccessType(accessType);
 			channelMetadataDTO.setAccessCode(accessCode);
 			channelMetadataDTO.setOwnerAccountId(ownerAccountId);
-			channelMetadataDTO.setAccountIds(accountIds);
+			// channelMetadataDTO.setAccountIds(accountIds);
 			channelMetadataDTO.setProperties(properties);
 			channelMetadataDTO.setDateCreated(dateCreated);
 			channelMetadataDTO.setDateModified(dateModified);

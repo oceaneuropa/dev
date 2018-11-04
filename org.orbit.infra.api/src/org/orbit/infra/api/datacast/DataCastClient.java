@@ -51,7 +51,7 @@ public interface DataCastClient extends ServiceClient {
 
 	boolean updateChannelMetadataById(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException;
 
-	boolean setChannelMetadataStatusById(String channelId, int status) throws ClientException;
+	boolean setChannelMetadataStatusById(String channelId, int status, boolean append) throws ClientException;
 
 	boolean clearChannelMetadataStatusById(String channelId, int status) throws ClientException;
 

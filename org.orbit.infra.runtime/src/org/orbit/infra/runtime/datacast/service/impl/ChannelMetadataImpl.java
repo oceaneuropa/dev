@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
+import org.orbit.infra.runtime.datacast.service.ChannelStatus;
+import org.origin.common.model.AccountConfigurable;
 
 public class ChannelMetadataImpl implements ChannelMetadata {
 
@@ -16,7 +18,7 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	protected String accessType;
 	protected String accessCode;
 	protected String ownerAccountId;
-	protected List<String> accountIds;
+	protected List<AccountConfigurable> accountConfigs;
 	protected Map<String, Object> properties;
 	protected long dateCreated;
 	protected long dateModified;
@@ -33,12 +35,11 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	 * @param accessType
 	 * @param accessCode
 	 * @param ownerAccountId
-	 * @param accountIds
 	 * @param properties
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public ChannelMetadataImpl(String dataCastId, String dataTubeId, String channelId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties, long dateCreated, long dateModified) {
+	public ChannelMetadataImpl(String dataCastId, String dataTubeId, String channelId, String name, String accessType, String accessCode, String ownerAccountId, Map<String, Object> properties, long dateCreated, long dateModified) {
 		this.dataCastId = dataCastId;
 		this.dataTubeId = dataTubeId;
 		this.channelId = channelId;
@@ -46,7 +47,6 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		this.accessType = accessType;
 		this.accessCode = accessCode;
 		this.ownerAccountId = ownerAccountId;
-		this.accountIds = accountIds;
 		this.properties = properties;
 		this.dateCreated = dateCreated;
 		this.dateModified = dateModified;
@@ -122,15 +122,42 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	}
 
 	@Override
-	public synchronized List<String> getAccountIds() {
-		if (this.accountIds == null) {
-			this.accountIds = new ArrayList<String>();
+	public synchronized List<AccountConfigurable> getAccountConfigs() {
+		if (this.accountConfigs == null) {
+			this.accountConfigs = new ArrayList<AccountConfigurable>();
 		}
-		return this.accountIds;
+		return this.accountConfigs;
 	}
 
-	public synchronized void setAccountIds(List<String> accountIds) {
-		this.accountIds = accountIds;
+	@Override
+	public synchronized void setAccountConfigs(List<AccountConfigurable> accountConfigs) {
+		this.accountConfigs = accountConfigs;
+	}
+
+	@Override
+	public synchronized void addAccountConfig(AccountConfigurable accountConfig) {
+		if (accountConfig == null) {
+			return;
+		}
+		if (this.accountConfigs == null) {
+			this.accountConfigs = new ArrayList<AccountConfigurable>();
+		}
+		if (!this.accountConfigs.contains(accountConfig)) {
+			this.accountConfigs.add(accountConfig);
+		}
+	}
+
+	@Override
+	public synchronized void removeAccountConfig(AccountConfigurable accountConfig) {
+		if (accountConfig == null) {
+			return;
+		}
+		if (this.accountConfigs == null) {
+			this.accountConfigs = new ArrayList<AccountConfigurable>();
+		}
+		if (this.accountConfigs.contains(accountConfig)) {
+			this.accountConfigs.remove(accountConfig);
+		}
 	}
 
 	@Override
@@ -143,6 +170,54 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 
 	public synchronized void setProperties(Map<String, Object> properties) {
 		this.properties = properties;
+	}
+
+	protected ChannelStatus status = null;
+
+	@Override
+	public ChannelStatus getStatus() {
+		int value = (int) this.properties.get("status");
+		if (this.status != null) {
+			if (this.status.value() != value) {
+				this.status.setValue(value);
+			}
+		} else {
+			this.status = new ChannelStatus(value);
+		}
+		return this.status;
+	}
+
+	@Override
+	public void setStatus(ChannelStatus status) {
+		this.status = status;
+		updateProperties(this.status);
+	}
+
+	@Override
+	public void appendStatus(ChannelStatus status) {
+		if (status == null) {
+			return;
+		}
+		if (this.status == null) {
+			this.status = status;
+		} else {
+			this.status.setValue(this.status.value() | status.value());
+		}
+		updateProperties(this.status);
+	}
+
+	@Override
+	public void clearStatus(ChannelStatus status) {
+		if (this.status == null || status == null) {
+			return;
+		}
+		this.status.setValue(this.status.value() & ~status.value());
+		updateProperties(this.status);
+	}
+
+	protected void updateProperties(ChannelStatus status) {
+		int value = (status != null) ? status.value() : 0;
+		this.properties.put("status", new Integer(value));
 	}
 
 	public long getDateCreated() {
@@ -162,3 +237,16 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	}
 
 }
+
+// protected List<String> accountIds;
+// @Override
+// public synchronized List<String> getAccountIds() {
+// if (this.accountIds == null) {
+// this.accountIds = new ArrayList<String>();
+// }
+// return this.accountIds;
+// }
+
+// public synchronized void setAccountIds(List<String> accountIds) {
+// this.accountIds = accountIds;
+// }

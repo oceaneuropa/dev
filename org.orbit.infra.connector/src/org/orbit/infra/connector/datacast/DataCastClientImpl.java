@@ -415,10 +415,13 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean setChannelMetadataStatusById(String channelId, int status) throws ClientException {
+	public boolean setChannelMetadataStatusById(String channelId, int status, boolean append) throws ClientException {
 		Request request = new Request(RequestConstants.DATACAST__SET_CHANNEL_METADATA_STATUS);
 		request.setParameter("channel_id", channelId);
 		request.setParameter("status", status);
+		if (append) {
+			request.setParameter("append", append);
+		}
 
 		boolean isUpdated = false;
 		Response response = null;
