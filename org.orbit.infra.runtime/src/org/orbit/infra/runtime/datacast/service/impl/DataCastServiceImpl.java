@@ -26,6 +26,7 @@ import org.orbit.platform.sdk.util.ExtensionUtil;
 import org.origin.common.event.PropertyChangeEvent;
 import org.origin.common.event.PropertyChangeListener;
 import org.origin.common.jdbc.DatabaseUtil;
+import org.origin.common.model.AccountConfig;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.editpolicy.ServiceEditPolicies;
 import org.origin.common.rest.editpolicy.ServiceEditPoliciesImpl;
@@ -607,7 +608,7 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 	}
 
 	@Override
-	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ServerException {
+	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ServerException {
 		ChannelMetadata result = null;
 		Connection conn = null;
 		try {
@@ -618,11 +619,11 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 				throw new ServerException("400", "Channel with name '" + name + "' already exists.");
 			}
 
-			if (dataTubeId == null) {
-				dataTubeId = allocateDataTube(conn, tableHandler);
+			if (dataTubeId == null || dataTubeId.isEmpty()) {
+				dataTubeId = allocateDataTubeId(conn, tableHandler);
 			}
-			if (dataTubeId == null) {
-				throw new ServerException("500", "Data tube cannot be allocated.");
+			if (dataTubeId == null || dataTubeId.isEmpty()) {
+				throw new ServerException("500", "Data tube is not set and cannot be allocated.");
 			}
 
 			String channelId = generateChannelId();
@@ -630,7 +631,7 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 			if (properties == null) {
 				properties = new HashMap<String, Object>();
 			}
-			result = tableHandler.create(conn, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIds, properties);
+			result = tableHandler.create(conn, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountConfigs, properties);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -647,6 +648,26 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 		return channelId;
 	}
 
+	@Override
+	public String allocateDataTubeIdForNewChannel() throws ServerException {
+		String dataTubeId = null;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			dataTubeId = allocateDataTubeId(conn, tableHandler);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} catch (IOException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return dataTubeId;
+	}
+
 	/**
 	 * 
 	 * @param conn
@@ -655,12 +676,12 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public String allocateDataTube(Connection conn, ChannelMetadataTableHandler tableHandler) throws IOException, SQLException {
+	protected String allocateDataTubeId(Connection conn, ChannelMetadataTableHandler tableHandler) throws IOException, SQLException {
 		String dataTubeId = null;
 
 		RankingProvider rankingProvider = ExtensionUtil.RANKING.getRankingProvider(InfraConstants.DATA_TUBE_NODES_RANKING__NEW_CHANNEL);
 		if (rankingProvider == null) {
-			throw new IOException("RankingProvider of data tube nodes for new channle is not found.");
+			throw new IOException("RankingProvider for data tube nodes is not found.");
 		}
 
 		String accessToken = getAccessToken();
@@ -762,6 +783,24 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
 
 			isUpdated = tableHandler.updateOwnerAccountId(conn, channelId, accountId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
+	public boolean updateChannelMetadataAccountConfigsById(String channelId, List<AccountConfig> accountConfigs) throws ServerException {
+		boolean isUpdated = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			isUpdated = tableHandler.updateAccountConfigs(conn, channelId, accountConfigs);
 
 		} catch (SQLException e) {
 			handleException(e);

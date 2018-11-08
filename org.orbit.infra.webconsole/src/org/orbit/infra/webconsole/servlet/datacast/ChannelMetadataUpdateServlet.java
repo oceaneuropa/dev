@@ -1,7 +1,6 @@
-package org.orbit.infra.webconsole.servlet;
+package org.orbit.infra.webconsole.servlet.datacast;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -19,9 +18,9 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DataTubeNodeAddServlet extends HttpServlet {
+public class ChannelMetadataUpdateServlet extends HttpServlet {
 
-	private static final long serialVersionUID = -2372849439735213448L;
+	private static final long serialVersionUID = 6717634139408260228L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -31,37 +30,53 @@ public class DataTubeNodeAddServlet extends HttpServlet {
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
 		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
-		String dataTubeId = ServletUtil.getParameter(request, "data_tube_id", "");
+		String channelId = ServletUtil.getParameter(request, "channelId", "");
 		String name = ServletUtil.getParameter(request, "name", "");
-		String enabledStr = ServletUtil.getParameter(request, "enabled", "");
-		boolean enabled = ("true".equals(enabledStr)) ? true : false;
 
 		String message = "";
-		if (dataTubeId.isEmpty()) {
-			message = MessageHelper.INSTANCE.add(message, "'data_tube_id' parameter is not set.");
+		if (channelId.isEmpty()) {
+			MessageHelper.INSTANCE.add(message, "'channelId' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
-		IConfigElement dataCastConfigElement = null;
-		IConfigElement configElement = null;
-		if (!dataTubeId.isEmpty()) {
+		boolean hasNameChange = false;
+		boolean isNameUpdated = false;
+
+		boolean hasAttributesChange = false;
+		boolean isAttributesUpdated = false;
+
+		if (!channelId.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 				if (cfgReg != null) {
-					dataCastConfigElement = DataCastNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
-					if (dataCastConfigElement != null) {
-						Map<String, Object> attributes = new HashMap<String, Object>();
-						attributes.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
-						attributes.put("enabled", enabled);
-						configElement = dataCastConfigElement.createMemberConfigElement(name, attributes, true);
+					IConfigElement configElement = cfgReg.getConfigElement(channelId);
+					if (configElement != null) {
+						// Update name
+						String oldName = configElement.getName();
+						if (!name.equals(oldName)) {
+							hasNameChange = true;
+							isNameUpdated = configElement.rename(name);
+							if (isNameUpdated) {
+								message = MessageHelper.INSTANCE.add(message, "Config element name is updated.");
+							}
+						}
+
+						// Update attributes
+						Map<String, Object> attributes = configElement.getAttributes();
+						String oldDataCastId = configElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
+						if (!oldDataCastId.equals(dataCastId)) {
+							hasAttributesChange = true;
+							attributes.put(InfraConstants.IDX_PROP__DATACAST__ID, dataCastId);
+						}
 
 					} else {
-						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
+						message = MessageHelper.INSTANCE.add(message, "Config element with elementId '" + channelId + "' cannot be found.");
 					}
+
 				} else {
 					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
 				}
@@ -71,10 +86,23 @@ public class DataTubeNodeAddServlet extends HttpServlet {
 			}
 		}
 
-		if (configElement == null) {
-			message = MessageHelper.INSTANCE.add(message, "Config element is not created.");
+		boolean succeed = false;
+		boolean hasSucceed = false;
+		boolean hasFailed = false;
+		if ((hasNameChange && isNameUpdated) || (hasAttributesChange && isAttributesUpdated)) {
+			hasSucceed = true;
+		}
+		if ((hasNameChange && !isNameUpdated) || (hasAttributesChange && !isAttributesUpdated)) {
+			hasFailed = true;
+		}
+		if (hasSucceed && !hasFailed) {
+			succeed = true;
+		}
+
+		if (succeed) {
+			// message = MessageHelper.INSTANCE.add(message, "Data cast node is updated.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, "Config element is created successfully.");
+			message = MessageHelper.INSTANCE.add(message, "Data cast node is not updated.");
 		}
 
 		// ---------------------------------------------------------------
@@ -83,7 +111,7 @@ public class DataTubeNodeAddServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/admin/datatubelist?dataCastId=" + dataCastId);
+		response.sendRedirect(contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId);
 	}
 
 }

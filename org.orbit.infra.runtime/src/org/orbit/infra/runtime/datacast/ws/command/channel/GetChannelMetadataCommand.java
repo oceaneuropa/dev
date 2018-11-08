@@ -53,8 +53,6 @@ public class GetChannelMetadataCommand extends AbstractInfraCommand<DataCastServ
 		}
 
 		if (channelMetadata == null) {
-			// ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "ChannelMetadata cannot be created");
-			// return Response.status(Status.BAD_REQUEST).entity(error).build();
 			return Response.ok().build();
 		}
 
@@ -63,3 +61,6 @@ public class GetChannelMetadataCommand extends AbstractInfraCommand<DataCastServ
 	}
 
 }
+
+// ErrorDTO error = new ErrorDTO(String.valueOf(Status.BAD_REQUEST.getStatusCode()), "ChannelMetadata cannot be created");
+// return Response.status(Status.BAD_REQUEST).entity(error).build();

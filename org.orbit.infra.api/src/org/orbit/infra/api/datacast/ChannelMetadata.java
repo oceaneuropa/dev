@@ -3,7 +3,10 @@ package org.orbit.infra.api.datacast;
 import java.util.List;
 import java.util.Map;
 
-public interface ChannelMetadata {
+import org.origin.common.adapter.IAdaptable;
+import org.origin.common.model.AccountConfig;
+
+public interface ChannelMetadata extends IAdaptable {
 
 	DataCastClient getDataCastClient();
 
@@ -26,9 +29,9 @@ public interface ChannelMetadata {
 	/**
 	 * Values are: public, private.
 	 * 
-	 * If 'public', anyone can join.
+	 * - If 'public', anyone can join.
 	 * 
-	 * If 'private', only the owner and the invited users can join.
+	 * - If 'private', only the owner and the invited users can join.
 	 * 
 	 * @return
 	 */
@@ -37,7 +40,11 @@ public interface ChannelMetadata {
 	void setAccessType(String accessType);
 
 	/**
-	 * like the password for a diablo2 game.
+	 * Like the password for a diablo2 game.
+	 * 
+	 * - If 'public', anyone has the password can join.
+	 * 
+	 * - If 'private', only the owner and the invited users who have the password can join.
 	 * 
 	 * @return
 	 */
@@ -49,7 +56,7 @@ public interface ChannelMetadata {
 
 	void setOwnerAccountId(String accountId);
 
-	List<String> getAccountIds();
+	List<AccountConfig> getAccountConfigs();
 
 	Map<String, Object> getProperties();
 
@@ -64,3 +71,5 @@ public interface ChannelMetadata {
 	void setDateModified(long dateModified);
 
 }
+
+// List<String> getAccountIds();

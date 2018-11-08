@@ -79,7 +79,7 @@ function onNodeAction(action, formActionUrl) {
 
 	} else {
 		dialogTitle = action + " Data Cast Nodes";
-		dialogMessage = "Are you sure you want to '" + action + "' the programs?";
+		dialogMessage = "Are you sure you want to '" + action + "' the data cast nodes?";
 	}
 
 	nodeActionDialogTitleDiv.innerHTML = dialogTitle;

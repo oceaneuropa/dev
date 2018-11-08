@@ -19,8 +19,11 @@ import org.orbit.infra.runtime.datacast.service.DataTubeConfig;
 import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionItem;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.model.AccountConfig;
 import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
+import org.origin.common.util.AccountConfigReader;
+import org.origin.common.util.AccountConfigWriter;
 
 public class ModelConverter {
 
@@ -189,10 +192,13 @@ public class ModelConverter {
 			String accessType = channelMetadata.getAccessType();
 			String accessCode = channelMetadata.getAccessCode();
 			String ownerAccountId = channelMetadata.getOwnerAccountId();
+			List<AccountConfig> accountConfigs = channelMetadata.getAccountConfigs();
 			// List<String> accountIds = channelMetadata.getAccountIds();
 			Map<String, Object> properties = channelMetadata.getProperties();
 			long dateCreated = channelMetadata.getDateCreated();
 			long dateModified = channelMetadata.getDateModified();
+
+			String accountConfigsString = toAccountConfigsString(accountConfigs);
 
 			ChannelMetadataDTO channelMetadataDTO = new ChannelMetadataDTO();
 			channelMetadataDTO.setDataCastId(dataCastId);
@@ -202,6 +208,7 @@ public class ModelConverter {
 			channelMetadataDTO.setAccessType(accessType);
 			channelMetadataDTO.setAccessCode(accessCode);
 			channelMetadataDTO.setOwnerAccountId(ownerAccountId);
+			channelMetadataDTO.setAccountConfigsString(accountConfigsString);
 			// channelMetadataDTO.setAccountIds(accountIds);
 			channelMetadataDTO.setProperties(properties);
 			channelMetadataDTO.setDateCreated(dateCreated);
@@ -212,35 +219,63 @@ public class ModelConverter {
 
 		/**
 		 * 
-		 * @param accountIdsString
+		 * @param accountConfigsString
 		 * @return
 		 */
-		public List<String> toAccountIds(String accountIdsString) {
-			List<String> accountIds = new ArrayList<String>();
-			if (accountIdsString != null && !accountIdsString.isEmpty()) {
-				List<Object> list = JSONUtil.toList(accountIdsString, false);
-				if (list != null) {
-					for (Object object : list) {
-						accountIds.add(object.toString());
-					}
-				}
+		public List<AccountConfig> toAccountConfigs(String accountConfigsString) {
+			AccountConfigReader reader = new AccountConfigReader();
+			List<AccountConfig> accountConfigs = reader.read(accountConfigsString);
+			if (accountConfigs == null) {
+				accountConfigs = new ArrayList<AccountConfig>();
 			}
-			return accountIds;
+			return accountConfigs;
 		}
 
 		/**
-		 * Convert a list of String to string
 		 * 
-		 * @param accountIds
+		 * @param accountConfigs
 		 * @return
 		 */
-		public String toAccountIdsString(List<String> accountIds) {
-			String accountIdsString = JSONUtil.toJsonString(accountIds, false);
-			if (accountIdsString == null) {
-				accountIdsString = "";
+		public String toAccountConfigsString(List<AccountConfig> accountConfigs) {
+			AccountConfigWriter writer = new AccountConfigWriter();
+			String accountConfigsString = writer.write(accountConfigs);
+			if (accountConfigsString == null) {
+				accountConfigsString = "";
 			}
-			return accountIdsString;
+			return accountConfigsString;
 		}
+
+		// /**
+		// *
+		// * @param accountIdsString
+		// * @return
+		// */
+		// public List<String> toAccountIds(String accountIdsString) {
+		// List<String> accountIds = new ArrayList<String>();
+		// if (accountIdsString != null && !accountIdsString.isEmpty()) {
+		// List<Object> list = JSONUtil.toList(accountIdsString, false);
+		// if (list != null) {
+		// for (Object object : list) {
+		// accountIds.add(object.toString());
+		// }
+		// }
+		// }
+		// return accountIds;
+		// }
+		//
+		// /**
+		// * Convert a list of String to string
+		// *
+		// * @param accountIds
+		// * @return
+		// */
+		// public String toAccountIdsString(List<String> accountIds) {
+		// String accountIdsString = JSONUtil.toJsonString(accountIds, false);
+		// if (accountIdsString == null) {
+		// accountIdsString = "";
+		// }
+		// return accountIdsString;
+		// }
 	}
 
 	public static class DATA_TUBE {

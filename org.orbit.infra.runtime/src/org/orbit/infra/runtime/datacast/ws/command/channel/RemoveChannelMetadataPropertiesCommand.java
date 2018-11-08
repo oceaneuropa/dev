@@ -34,13 +34,6 @@ public class RemoveChannelMetadataPropertiesCommand extends AbstractInfraCommand
 
 	@Override
 	public Response execute(Request request) throws Exception {
-		// boolean hasChannelId = request.hasParameter("channel_id");
-		// boolean hasName = request.hasParameter("name");
-		// if (!hasChannelId && !hasName) {
-		// ErrorDTO error = new ErrorDTO("'channel_id' parameter or 'name' parameter is not set.");
-		// return Response.status(Status.BAD_REQUEST).entity(error).build();
-		// }
-
 		String channelId = request.getStringParameter("channel_id");
 		if (channelId == null || channelId.isEmpty()) {
 			ErrorDTO error = new ErrorDTO("'channel_id' parameter is not set.");
@@ -69,23 +62,30 @@ public class RemoveChannelMetadataPropertiesCommand extends AbstractInfraCommand
 			succeed = service.updateChannelMetadataPropertiesById(channelId, existingProperties);
 		}
 
-		// else if (hasName) {
-		// String name = request.getStringParameter("name");
-		// channelMetadata = service.getChannelMetadataByName(name);
-		//
-		// if (channelMetadata != null) {
-		// Map<String, Object> existingProperties = channelMetadata.getProperties();
-		// for (String propName : propertyNames) {
-		// existingProperties.remove(propName);
-		// }
-		//
-		// succeed = service.updateChannelMetadataPropertiesByName(name, existingProperties);
-		// }
-		// }
-
 		Map<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("succeed", succeed);
 		return Response.status(Status.OK).entity(result).build();
 	}
 
 }
+
+// boolean hasChannelId = request.hasParameter("channel_id");
+// boolean hasName = request.hasParameter("name");
+// if (!hasChannelId && !hasName) {
+// ErrorDTO error = new ErrorDTO("'channel_id' parameter or 'name' parameter is not set.");
+// return Response.status(Status.BAD_REQUEST).entity(error).build();
+// }
+
+// else if (hasName) {
+// String name = request.getStringParameter("name");
+// channelMetadata = service.getChannelMetadataByName(name);
+//
+// if (channelMetadata != null) {
+// Map<String, Object> existingProperties = channelMetadata.getProperties();
+// for (String propName : propertyNames) {
+// existingProperties.remove(propName);
+// }
+//
+// succeed = service.updateChannelMetadataPropertiesByName(name, existingProperties);
+// }
+// }

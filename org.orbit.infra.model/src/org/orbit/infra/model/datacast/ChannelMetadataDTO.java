@@ -1,6 +1,5 @@
 package org.orbit.infra.model.datacast;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -24,7 +23,8 @@ public class ChannelMetadataDTO {
 	@XmlElement
 	protected String ownerAccountId;
 	@XmlElement
-	protected List<String> accountIds;
+	// protected List<String> accountIds;
+	protected String accountConfigsString;
 	@XmlElement
 	protected Map<String, Object> properties;
 	@XmlElement
@@ -96,12 +96,18 @@ public class ChannelMetadataDTO {
 	}
 
 	@XmlElement
-	public List<String> getAccountIds() {
-		return this.accountIds;
+	// public List<String> getAccountIds() {
+	// return this.accountIds;
+	// }
+	// public void setAccountIds(List<String> accountIds) {
+	// this.accountIds = accountIds;
+	// }
+	public String getAccountConfigsString() {
+		return accountConfigsString;
 	}
 
-	public void setAccountIds(List<String> accountIds) {
-		this.accountIds = accountIds;
+	public void setAccountConfigsString(String accountConfigsString) {
+		this.accountConfigsString = accountConfigsString;
 	}
 
 	@XmlElement

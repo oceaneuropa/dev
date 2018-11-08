@@ -40,17 +40,18 @@ public class SyncChannelMetadataCommand extends AbstractInfraCommand<DataTubeSer
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
+		boolean createIfNotExist = request.getBooleanParameter("create_if_not_exist");
+
 		DataTubeService dataTubeService = getService();
 
 		boolean succeed = false;
-
 		if (hasChannelId) {
 			String channelId = request.getStringParameter("channel_id");
-			succeed = dataTubeService.syncChannelMetadataById(channelId);
+			succeed = dataTubeService.syncChannelMetadataById(channelId, createIfNotExist);
 
 		} else if (hasName) {
 			String name = request.getStringParameter("name");
-			succeed = dataTubeService.syncChannelMetadataByName(name);
+			succeed = dataTubeService.syncChannelMetadataByName(name, createIfNotExist);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.infra.runtime.datacast.service.ChannelStatus;
-import org.origin.common.model.AccountConfigurable;
+import org.origin.common.model.AccountConfig;
 
 public class ChannelMetadataImpl implements ChannelMetadata {
 
@@ -18,7 +18,7 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	protected String accessType;
 	protected String accessCode;
 	protected String ownerAccountId;
-	protected List<AccountConfigurable> accountConfigs;
+	protected List<AccountConfig> accountConfigs;
 	protected Map<String, Object> properties;
 	protected long dateCreated;
 	protected long dateModified;
@@ -35,11 +35,12 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	 * @param accessType
 	 * @param accessCode
 	 * @param ownerAccountId
+	 * @param accountConfigs
 	 * @param properties
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public ChannelMetadataImpl(String dataCastId, String dataTubeId, String channelId, String name, String accessType, String accessCode, String ownerAccountId, Map<String, Object> properties, long dateCreated, long dateModified) {
+	public ChannelMetadataImpl(String dataCastId, String dataTubeId, String channelId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties, long dateCreated, long dateModified) {
 		this.dataCastId = dataCastId;
 		this.dataTubeId = dataTubeId;
 		this.channelId = channelId;
@@ -47,6 +48,7 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		this.accessType = accessType;
 		this.accessCode = accessCode;
 		this.ownerAccountId = ownerAccountId;
+		this.accountConfigs = accountConfigs;
 		this.properties = properties;
 		this.dateCreated = dateCreated;
 		this.dateModified = dateModified;
@@ -122,25 +124,25 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	}
 
 	@Override
-	public synchronized List<AccountConfigurable> getAccountConfigs() {
+	public synchronized List<AccountConfig> getAccountConfigs() {
 		if (this.accountConfigs == null) {
-			this.accountConfigs = new ArrayList<AccountConfigurable>();
+			this.accountConfigs = new ArrayList<AccountConfig>();
 		}
 		return this.accountConfigs;
 	}
 
 	@Override
-	public synchronized void setAccountConfigs(List<AccountConfigurable> accountConfigs) {
+	public synchronized void setAccountConfigs(List<AccountConfig> accountConfigs) {
 		this.accountConfigs = accountConfigs;
 	}
 
 	@Override
-	public synchronized void addAccountConfig(AccountConfigurable accountConfig) {
+	public synchronized void addAccountConfig(AccountConfig accountConfig) {
 		if (accountConfig == null) {
 			return;
 		}
 		if (this.accountConfigs == null) {
-			this.accountConfigs = new ArrayList<AccountConfigurable>();
+			this.accountConfigs = new ArrayList<AccountConfig>();
 		}
 		if (!this.accountConfigs.contains(accountConfig)) {
 			this.accountConfigs.add(accountConfig);
@@ -148,12 +150,12 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	}
 
 	@Override
-	public synchronized void removeAccountConfig(AccountConfigurable accountConfig) {
+	public synchronized void removeAccountConfig(AccountConfig accountConfig) {
 		if (accountConfig == null) {
 			return;
 		}
 		if (this.accountConfigs == null) {
-			this.accountConfigs = new ArrayList<AccountConfigurable>();
+			this.accountConfigs = new ArrayList<AccountConfig>();
 		}
 		if (this.accountConfigs.contains(accountConfig)) {
 			this.accountConfigs.remove(accountConfig);

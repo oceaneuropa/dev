@@ -54,23 +54,21 @@
 			<form id="main_list" method="post">
 			<input id ="main_list__action" type="hidden" name="action" value="">
 			<tr>
-				<th class="th1" width="20">
+				<th class="th1" width="15">
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
 				</th>
-				<th class="th1" width="120">JVM</th>
 				<th class="th1" width="100">Name</th>
 				<th class="th1" width="100">Data Cast Id</th>
-				<th class="th1" width="50">Enabled</th>
-				<th class="th1" width="180">URL</th>
-				<th class="th1" width="50">Status</th>
-				<th class="th1" width="180">Metadata</th>
-				<th class="th1" width="100">Action</th>
+				<th class="th1" width="60">Enabled</th>
+				<th class="th1" width="60">Status</th>
+				<th class="th1" width="120">Metadata</th>
+				<th class="th1" width="120">Action</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
 			%>
 			<tr>
-				<td colspan="9">(n/a)</td>
+				<td colspan="7">(n/a)</td>
 			</tr>
 			<%
 				} else {
@@ -93,13 +91,15 @@
 							// String dataCastContextRoot = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT);
 							// String dataCastServiceUrl = WebServiceAwareHelper.INSTANCE.getURL(hostUrl, dataCastContextRoot);
 							dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+
+							metadataStr += "base_url = " + dataCastServiceUrl + "<br/>";
+
 							isOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
 							// config name overrides index setting
 							if (configElement.getName() != null) {
 								name = configElement.getName();
 							}
-
 						} else {
 							name = configElement.getName();
 						}
@@ -116,11 +116,13 @@
 							String currName = serviceMetadata.getName();
 							String currHostUrl = serviceMetadata.getHostURL();
 							String currContextRoot = serviceMetadata.getContextRoot();
+							// dataCastServiceUrl = serviceMetadata.getBaseURL();
 
 							// metadataStr += "datacast_id = " + currDataCastId + "<br/>";
 							// metadataStr += "name = " + currName + "<br/>";
 							// metadataStr += "host_url = " + currHostUrl + "<br/>";
 							// metadataStr += "context_root = " + currContextRoot + "<br/>";
+							metadataStr += "JVM = " + jvmName + "<br/>";
 							metadataStr += "server_time = " + currServerTimeStr + "<br/>";
 
 							if (!metadataProperties.isEmpty()) {
@@ -146,11 +148,9 @@
 				<td class="td1">
 					<input type="checkbox" name="elementId" value="<%=elementId%>">
 				</td>
-				<td class="td1"><%=jvmName%></td>
 				<td class="td1"><%=name%></td>
 				<td class="td1"><%=dataCastId%></td>
 				<td class="td1"><%=enabledStr%></td>
-				<td class="td2"><%=dataCastServiceUrl%></td>
 				<td class="td1">
 					<font color="<%=statusColor%>"><%=statusText%></font>
 				</td>
@@ -158,6 +158,7 @@
 				<td class="td1">
 					<a class="action01" href="javascript:changeDataCastNode('<%=elementId%>', '<%=dataCastId%>', '<%=name%>', <%=enabled%>)">Edit</a>
 					<a class="action01" href="<%=contextRoot%>/admin/datatubelist?dataCastId=<%=dataCastId%>">Data Tubes</a>
+					<a class="action01" href="<%=contextRoot%>/admin/channelmetadatalist?dataCastId=<%=dataCastId%>">Channels</a>
 				</td>
 			</tr>
 			<%

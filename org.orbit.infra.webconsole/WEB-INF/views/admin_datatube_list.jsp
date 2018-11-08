@@ -67,20 +67,18 @@
 				<th class="th1" width="20">
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
 				</th>
-				<th class="th1" width="120">JVM</th>
 				<th class="th1" width="100">Name</th>
 				<th class="th1" width="100">Data Tube Id</th>
-				<th class="th1" width="50">Enabled</th>
-				<th class="th1" width="180">URL</th>
-				<th class="th1" width="50">Status</th>
-				<th class="th1" width="180">Metadata</th>
-				<th class="th1" width="100">Action</th>
+				<th class="th1" width="60">Enabled</th>
+				<th class="th1" width="60">Status</th>
+				<th class="th1" width="120">Metadata</th>
+				<th class="th1" width="120">Action</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
 			%>
 			<tr>
-				<td colspan="9">(n/a)</td>
+				<td colspan="7">(n/a)</td>
 			</tr>
 			<%
 				} else {
@@ -101,6 +99,8 @@
 							name = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__NAME);
 							dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
 							isOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
+
+							metadataStr += "base_url = " + dataTubeServiceUrl + "<br/>";
 
 							// config name overrides index setting
 							if (configElement.getName() != null) {
@@ -123,6 +123,7 @@
 							String currHostUrl = serviceMetadata.getHostURL();
 							String currContextRoot = serviceMetadata.getContextRoot();
 
+							metadataStr += "JVM = " + jvmName + "<br/>";
 							metadataStr += "server_time = " + currServerTimeStr + "<br/>";
 
 							if (!metadataProperties.isEmpty()) {
@@ -148,11 +149,9 @@
 				<td class="td1">
 					<input type="checkbox" name="elementId" value="<%=elementId%>">
 				</td>
-				<td class="td1"><%=jvmName%></td>
 				<td class="td1"><%=name%></td>
 				<td class="td1"><%=dataTubeId%></td>
 				<td class="td1"><%=enabledStr%></td>
-				<td class="td2"><%=dataTubeServiceUrl%></td>
 				<td class="td1">
 					<font color="<%=statusColor%>"><%=statusText%></font>
 				</td>

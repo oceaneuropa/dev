@@ -50,10 +50,10 @@ public class CreateRuntimeChannelCommand extends AbstractInfraCommand<DataTubeSe
 
 			if (useExisting) {
 				runtimeChannel = dataTubeService.getRuntimeChannelById(channelId);
-				if (runtimeChannel == null) {
-					runtimeChannel = dataTubeService.createRuntimeChannelById(channelId);
+				if (runtimeChannel != null) {
+					dataTubeService.syncChannelMetadataById(channelId, false);
 				} else {
-					dataTubeService.syncChannelMetadataById(channelId);
+					runtimeChannel = dataTubeService.createRuntimeChannelById(channelId);
 				}
 			} else {
 				runtimeChannel = dataTubeService.createRuntimeChannelById(channelId);
@@ -69,10 +69,10 @@ public class CreateRuntimeChannelCommand extends AbstractInfraCommand<DataTubeSe
 
 			if (useExisting) {
 				runtimeChannel = dataTubeService.getRuntimeChannelByName(name);
-				if (runtimeChannel == null) {
-					runtimeChannel = dataTubeService.createRuntimeChannelByName(name);
+				if (runtimeChannel != null) {
+					dataTubeService.syncChannelMetadataByName(name, false);
 				} else {
-					dataTubeService.syncChannelMetadataByName(name);
+					runtimeChannel = dataTubeService.createRuntimeChannelByName(name);
 				}
 			} else {
 				runtimeChannel = dataTubeService.createRuntimeChannelByName(name);

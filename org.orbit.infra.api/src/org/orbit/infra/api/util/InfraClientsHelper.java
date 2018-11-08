@@ -2,7 +2,10 @@ package org.orbit.infra.api.util;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -13,16 +16,19 @@ import org.orbit.infra.api.configregistry.ConfigRegistry;
 import org.orbit.infra.api.configregistry.ConfigRegistryClient;
 import org.orbit.infra.api.configregistry.ConfigRegistryClientResolver;
 import org.orbit.infra.api.datacast.ChannelMetadata;
+import org.orbit.infra.api.datacast.ChannelStatus;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
+import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.extensionregistry.ExtensionItem;
 import org.orbit.infra.api.extensionregistry.ExtensionRegistryClient;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
+import org.origin.common.model.AccountConfig;
 import org.origin.common.resource.Path;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientConstants;
@@ -37,6 +43,24 @@ public class InfraClientsHelper {
 	public static DATA_TUBE DATA_TUBE = new DATA_TUBE();
 
 	public static class INDEX_SERVICE {
+		/**
+		 * 
+		 * @param indexServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public IndexServiceClient getIndexServiceClient(String indexServiceUrl, String accessToken) {
+			IndexServiceClient indexServiceClient = null;
+			if (indexServiceUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, indexServiceUrl);
+				indexServiceClient = InfraClients.getInstance().getIndexService(properties, true);
+			}
+			return indexServiceClient;
+		}
+
 		/**
 		 * Get all index items of a indexer.
 		 * 
@@ -246,27 +270,27 @@ public class InfraClientsHelper {
 			}
 			return isDeleted;
 		}
-
-		/**
-		 * 
-		 * @param indexServiceUrl
-		 * @param accessToken
-		 * @return
-		 */
-		public IndexServiceClient getIndexServiceClient(String indexServiceUrl, String accessToken) {
-			IndexServiceClient indexServiceClient = null;
-			if (indexServiceUrl != null) {
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(WSClientConstants.REALM, null);
-				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-				properties.put(WSClientConstants.URL, indexServiceUrl);
-				indexServiceClient = InfraClients.getInstance().getIndexService(properties, true);
-			}
-			return indexServiceClient;
-		}
 	}
 
 	public static class EXTENSION_REGISTRY {
+		/**
+		 * 
+		 * @param extensionRegistryUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public ExtensionRegistryClient getExtensionRegistryClient(String extensionRegistryUrl, String accessToken) {
+			ExtensionRegistryClient extensionRegistry = null;
+			if (extensionRegistryUrl != null) {
+				Map<String, Object> properties = new HashMap<String, Object>();
+				properties.put(WSClientConstants.REALM, null);
+				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+				properties.put(WSClientConstants.URL, extensionRegistryUrl);
+				extensionRegistry = InfraClients.getInstance().getExtensionRegistry(properties, true);
+			}
+			return extensionRegistry;
+		}
+
 		/**
 		 * Get all extension items from a platform.
 		 * 
@@ -364,24 +388,6 @@ public class InfraClientsHelper {
 
 			return extensionItemMap;
 		}
-
-		/**
-		 * 
-		 * @param extensionRegistryUrl
-		 * @param accessToken
-		 * @return
-		 */
-		public ExtensionRegistryClient getExtensionRegistryClient(String extensionRegistryUrl, String accessToken) {
-			ExtensionRegistryClient extensionRegistry = null;
-			if (extensionRegistryUrl != null) {
-				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(WSClientConstants.REALM, null);
-				properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-				properties.put(WSClientConstants.URL, extensionRegistryUrl);
-				extensionRegistry = InfraClients.getInstance().getExtensionRegistry(properties, true);
-			}
-			return extensionRegistry;
-		}
 	}
 
 	public static class CONFIG_REGISTRY {
@@ -390,12 +396,27 @@ public class InfraClientsHelper {
 
 		/**
 		 * 
-		 * @param configRegistryUrl
+		 * @param configRegistryServiceUrl
 		 * @param accessToken
 		 * @return
 		 */
-		public ConfigRegistryClient getConfigRegistryClient(String configRegistryUrl, String accessToken) {
-			ConfigRegistryClient configRegistryClient = InfraClients.getInstance().getConfigRegistryClient(configRegistryUrl, accessToken);
+		public ConfigRegistryClient getConfigRegistryClient(String configRegistryServiceUrl, String accessToken) {
+			ConfigRegistryClient configRegistryClient = InfraClients.getInstance().getConfigRegistryClient(configRegistryServiceUrl, accessToken);
+			return configRegistryClient;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param configRegistryServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public ConfigRegistryClient getConfigRegistryClient(ConfigRegistryClientResolver clientResolver, String configRegistryServiceUrl, String accessToken) {
+			ConfigRegistryClient configRegistryClient = null;
+			if (clientResolver != null && configRegistryServiceUrl != null) {
+				configRegistryClient = clientResolver.resolve(configRegistryServiceUrl, accessToken);
+			}
 			return configRegistryClient;
 		}
 
@@ -409,7 +430,7 @@ public class InfraClientsHelper {
 		 */
 		public ServiceMetadata getServiceMetadata(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken) throws ClientException {
 			ServiceMetadata metadata = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				metadata = client.getMetadata();
 			}
@@ -429,7 +450,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken) throws ClientException {
 			ConfigRegistry[] configRegistries = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configRegistries = client.getConfigRegistries();
 			}
@@ -450,7 +471,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigRegistry[] getConfigRegistries(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String type) throws ClientException {
 			ConfigRegistry[] configRegistries = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configRegistries = client.getConfigRegistries(type);
 			}
@@ -471,7 +492,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigRegistry getConfigRegistryById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
 			ConfigRegistry configRegistry = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configRegistry = client.getConfigRegistryById(id);
 			}
@@ -489,7 +510,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigRegistry getConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
 			ConfigRegistry configRegistry = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configRegistry = client.getConfigRegistryByName(name);
 			}
@@ -507,7 +528,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean configRegistryExistsById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				exists = client.configRegistryExistsById(id);
 			}
@@ -525,7 +546,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean configRegistryExistsByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				exists = client.configRegistryExistsByName(name);
 			}
@@ -546,7 +567,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigRegistry createConfigRegistry(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String type, String name, Map<String, Object> properties, boolean generateUniqueName) throws ClientException {
 			ConfigRegistry configRegistry = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configRegistry = client.createConfigRegistry(type, name, properties, generateUniqueName);
 			}
@@ -565,7 +586,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean updateConfigRegistryType(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, String type) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isUpdated = client.updateConfigRegistryType(id, type);
 			}
@@ -584,7 +605,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean updateConfigRegistryName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, String name) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isUpdated = client.updateConfigRegistryName(id, name);
 			}
@@ -603,7 +624,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean setConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, Map<String, Object> properties) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isUpdated = client.setConfigRegistryProperties(id, properties);
 			}
@@ -622,7 +643,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean removeConfigRegistryProperties(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id, List<String> propertyNames) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isUpdated = client.removeConfigRegistryProperties(id, propertyNames);
 			}
@@ -640,7 +661,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean deleteConfigRegistryById(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String id) throws ClientException {
 			boolean isDeleted = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isDeleted = client.deleteConfigRegistryById(id);
 			}
@@ -658,7 +679,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean deleteConfigRegistryByName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String name) throws ClientException {
 			boolean isDeleted = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isDeleted = client.deleteConfigRegistryByName(name);
 			}
@@ -679,7 +700,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigElement[] listRootConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId) throws ClientException {
 			ConfigElement[] configElements = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configElements = client.listRootConfigElements(configRegistryId);
 			}
@@ -701,7 +722,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigElement[] listConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId) throws ClientException {
 			ConfigElement[] configElements = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configElements = client.listConfigElements(configRegistryId, parentElementId);
 			}
@@ -723,7 +744,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigElement[] listConfigElements(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path parentPath) throws ClientException {
 			ConfigElement[] configElements = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configElements = client.listConfigElements(configRegistryId, parentPath);
 			}
@@ -745,7 +766,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configElement = client.getConfigElement(configRegistryId, elementId);
 			}
@@ -764,7 +785,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configElement = client.getConfigElement(configRegistryId, path);
 			}
@@ -784,7 +805,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigElement getConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configElement = client.getConfigElement(configRegistryId, parentElementId, name);
 			}
@@ -803,7 +824,7 @@ public class InfraClientsHelper {
 		 */
 		public Path getConfigElementPath(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
 			Path path = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				path = client.getConfigElementPath(configRegistryId, elementId);
 			}
@@ -822,7 +843,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				exists = client.configElementExists(configRegistryId, elementId);
 			}
@@ -841,7 +862,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				exists = client.configElementExists(configRegistryId, path);
 			}
@@ -861,7 +882,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean configElementExists(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name) throws ClientException {
 			boolean exists = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				exists = client.configElementExists(configRegistryId, parentElementId, name);
 			}
@@ -882,7 +903,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigElement createConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configElement = client.createConfigElement(configRegistryId, path, attributes, generateUniqueName);
 			}
@@ -904,7 +925,7 @@ public class InfraClientsHelper {
 		 */
 		public ConfigElement createConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String parentElementId, String name, Map<String, Object> attributes, boolean generateUniqueName) throws ClientException {
 			ConfigElement configElement = null;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				configElement = client.createConfigElement(configRegistryId, parentElementId, name, attributes, generateUniqueName);
 			}
@@ -924,7 +945,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean updateConfigElementName(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, String newName) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isUpdated = client.updateConfigElementName(configRegistryId, elementId, newName);
 			}
@@ -944,7 +965,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean setConfigElementAttributes(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, Map<String, Object> attributes) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isUpdated = client.setConfigElementAttributes(configRegistryId, elementId, attributes);
 			}
@@ -964,7 +985,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean removeConfigElementAttributes(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId, List<String> attributeName) throws ClientException {
 			boolean isUpdated = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isUpdated = client.removeConfigElementAttributes(configRegistryId, elementId, attributeName);
 			}
@@ -983,7 +1004,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean deleteConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, String elementId) throws ClientException {
 			boolean isDeleted = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isDeleted = client.deleteConfigElement(configRegistryId, elementId);
 			}
@@ -1002,7 +1023,7 @@ public class InfraClientsHelper {
 		 */
 		public boolean deleteConfigElement(ConfigRegistryClientResolver clientResolver, String serviceUrl, String accessToken, String configRegistryId, Path path) throws ClientException {
 			boolean isDeleted = false;
-			ConfigRegistryClient client = clientResolver.resolve(serviceUrl, accessToken);
+			ConfigRegistryClient client = getConfigRegistryClient(clientResolver, serviceUrl, accessToken);
 			if (client != null) {
 				isDeleted = client.deleteConfigElement(configRegistryId, path);
 			}
@@ -1011,6 +1032,8 @@ public class InfraClientsHelper {
 	}
 
 	public static class DATA_CAST {
+		public static ChannelMetadata[] EMPTY_CHANNEL_METADATAS = new ChannelMetadata[0];
+
 		/**
 		 * 
 		 * @param dataCastServiceUrl
@@ -1036,15 +1059,79 @@ public class InfraClientsHelper {
 		 * @param dataCastServiceUrl
 		 * @param accessToken
 		 * @return
+		 */
+		public DataCastClient getDataCastClient(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken) {
+			DataCastClient dataCastClient = null;
+			if (clientResolver != null && dataCastServiceUrl != null) {
+				dataCastClient = clientResolver.resolve(dataCastServiceUrl, accessToken);
+			}
+			return dataCastClient;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @return
 		 * @throws ClientException
 		 */
 		public DataCastServiceMetadata getServiceMetadata(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken) throws ClientException {
 			DataCastServiceMetadata metadata = null;
-			DataCastClient dataCastClient = clientResolver.resolve(dataCastServiceUrl, accessToken);
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
 			if (dataCastClient != null) {
 				metadata = dataCastClient.getMetadata();
 			}
 			return metadata;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param comparator
+		 * @return
+		 * @throws ClientException
+		 */
+		public ChannelMetadata[] getChannelMetadatas(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, Comparator<ChannelMetadata> comparator) throws ClientException {
+			ChannelMetadata[] channelMetadatas = null;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				channelMetadatas = dataCastClient.getChannelMetadatas();
+			}
+			if (channelMetadatas == null) {
+				channelMetadatas = EMPTY_CHANNEL_METADATAS;
+			}
+			if (comparator != null && channelMetadatas != null && channelMetadatas.length > 1) {
+				Arrays.sort(channelMetadatas, comparator);
+			}
+			return channelMetadatas;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param dataTubeId
+		 * @param comparator
+		 * @return
+		 * @throws ClientException
+		 */
+		public ChannelMetadata[] getChannelMetadatas(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String dataTubeId, Comparator<ChannelMetadata> comparator) throws ClientException {
+			ChannelMetadata[] channelMetadatas = null;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				channelMetadatas = dataCastClient.getChannelMetadatas(dataTubeId);
+			}
+			if (channelMetadatas == null) {
+				channelMetadatas = EMPTY_CHANNEL_METADATAS;
+			}
+			if (comparator != null && channelMetadatas != null && channelMetadatas.length > 1) {
+				Arrays.sort(channelMetadatas, comparator);
+			}
+			return channelMetadatas;
 		}
 
 		/**
@@ -1058,9 +1145,9 @@ public class InfraClientsHelper {
 		 */
 		public ChannelMetadata getChannelMetadataByChannelId(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId) throws ClientException {
 			ChannelMetadata channelMetadata = null;
-			DataCastClient dataCastClient = clientResolver.resolve(dataCastServiceUrl, accessToken);
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
 			if (dataCastClient != null) {
-				dataCastClient.getChannelMetadataById(channelId);
+				channelMetadata = dataCastClient.getChannelMetadataById(channelId);
 			}
 			return channelMetadata;
 		}
@@ -1076,31 +1163,181 @@ public class InfraClientsHelper {
 		 */
 		public ChannelMetadata getChannelMetadataByChannelName(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String name) throws ClientException {
 			ChannelMetadata channelMetadata = null;
-			DataCastClient dataCastClient = clientResolver.resolve(dataCastServiceUrl, accessToken);
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
 			if (dataCastClient != null) {
-				dataCastClient.getChannelMetadataByName(name);
+				channelMetadata = dataCastClient.getChannelMetadataByName(name);
 			}
 			return channelMetadata;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param dataTubeId
+		 * @param name
+		 * @param accessType
+		 * @param accessCode
+		 * @param ownerAccountId
+		 * @param accountConfigs
+		 * @param properties
+		 * @return
+		 * @throws ClientException
+		 */
+		public ChannelMetadata createChannelMetadata(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ClientException {
+			ChannelMetadata channelMetadata = null;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				channelMetadata = dataCastClient.createChannelMetadata(dataTubeId, name, accessType, accessCode, ownerAccountId, accountConfigs, properties);
+			}
+			return channelMetadata;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param updateName
+		 * @param name
+		 * @param updateAccessType
+		 * @param accessType
+		 * @param updateAccessCode
+		 * @param accessCode
+		 * @param updateOwnerAccountId
+		 * @param ownerAccountId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean updateChannelMetadata(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException {
+			boolean isUpdated = false;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				isUpdated = dataCastClient.updateChannelMetadataById(channelId, updateName, name, updateAccessType, accessType, updateAccessCode, accessCode, updateOwnerAccountId, ownerAccountId);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param channelStatus
+		 * @param append
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean setChannelMetadataStatusById(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId, ChannelStatus channelStatus, boolean append) throws ClientException {
+			boolean isUpdated = false;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				isUpdated = dataCastClient.setChannelMetadataStatusById(channelId, channelStatus, append);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param channelStatus
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean clearChannelMetadataStatusById(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId, ChannelStatus channelStatus) throws ClientException {
+			boolean isUpdated = false;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				isUpdated = dataCastClient.clearChannelMetadataStatusById(channelId, channelStatus);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param accountConfigs
+		 * @param appendAccountConfigs
+		 * @param appendAccountConfig
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean setChannelMetadataAccountConfigsById(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId, List<AccountConfig> accountConfigs, boolean appendAccountConfigs, boolean appendAccountConfig) throws ClientException {
+			boolean isUpdated = false;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				isUpdated = dataCastClient.setChannelMetadataAccountConfigsById(channelId, accountConfigs, appendAccountConfigs, appendAccountConfig);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param accountIds
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean removeChannelMetadataAccountConfigsById(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId, List<String> accountIds) throws ClientException {
+			boolean isUpdated = false;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				isUpdated = dataCastClient.removeChannelMetadataAccountConfigsById(channelId, accountIds);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean deleteChannelMetadataById(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId) throws ClientException {
+			boolean isDeleted = false;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				isDeleted = dataCastClient.deleteChannelMetadataById(channelId);
+			}
+			return isDeleted;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataCastServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean deleteChannelMetadataByName(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String name) throws ClientException {
+			boolean isDeleted = false;
+			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
+			if (dataCastClient != null) {
+				isDeleted = dataCastClient.deleteChannelMetadataByName(name);
+			}
+			return isDeleted;
 		}
 	}
 
 	public static class DATA_TUBE {
-		/**
-		 * 
-		 * @param clientResolver
-		 * @param dataTubeServiceUrl
-		 * @param accessToken
-		 * @return
-		 * @throws ClientException
-		 */
-		public DataTubeServiceMetadata getServiceMetadata(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken) throws ClientException {
-			DataTubeServiceMetadata metadata = null;
-			DataTubeClient dataTubeClient = clientResolver.resolve(dataTubeServiceUrl, accessToken);
-			if (dataTubeClient != null) {
-				metadata = dataTubeClient.getMetadata();
-			}
-			return metadata;
-		}
+		public static RuntimeChannel[] EMPTY_RUNTIME_CHANNELS = new RuntimeChannel[0];
 
 		/**
 		 * 
@@ -1119,6 +1356,403 @@ public class InfraClientsHelper {
 				dataTubeClient = InfraClients.getInstance().getDataTubeClient(properties);
 			}
 			return dataTubeClient;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @return
+		 */
+		public DataTubeClient getDataTubeClient(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken) {
+			DataTubeClient dataTubeClient = null;
+			if (clientResolver != null && dataTubeServiceUrl != null) {
+				dataTubeClient = clientResolver.resolve(dataTubeServiceUrl, accessToken);
+			}
+			return dataTubeClient;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @return
+		 * @throws ClientException
+		 */
+		public DataTubeServiceMetadata getServiceMetadata(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken) throws ClientException {
+			DataTubeServiceMetadata metadata = null;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				metadata = dataTubeClient.getMetadata();
+			}
+			return metadata;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param senderId
+		 * @param message
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean send(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId, String senderId, String message) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.send(channelId, senderId, message);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param comparator
+		 * @return
+		 * @throws ClientException
+		 */
+		public RuntimeChannel[] getRuntimeChannels(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, Comparator<RuntimeChannel> comparator) throws ClientException {
+			RuntimeChannel[] runtimeChannels = null;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				runtimeChannels = dataTubeClient.getRuntimeChannels();
+			}
+			if (runtimeChannels == null) {
+				runtimeChannels = EMPTY_RUNTIME_CHANNELS;
+			}
+			if (comparator != null && runtimeChannels != null && runtimeChannels.length > 1) {
+				Arrays.sort(runtimeChannels, comparator);
+			}
+			return runtimeChannels;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param comparator
+		 * @return
+		 * @throws ClientException
+		 */
+		public Map<String, RuntimeChannel> getRuntimeChannelsMap(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, Comparator<RuntimeChannel> comparator) throws ClientException {
+			Map<String, RuntimeChannel> runtimeChannelsMap = new LinkedHashMap<String, RuntimeChannel>();
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				RuntimeChannel[] runtimeChannels = dataTubeClient.getRuntimeChannels();
+				if (runtimeChannels != null) {
+					if (comparator != null && runtimeChannels.length > 1) {
+						Arrays.sort(runtimeChannels, comparator);
+					}
+					for (RuntimeChannel runtimeChannel : runtimeChannels) {
+						String channelId = runtimeChannel.getChannelId();
+						runtimeChannelsMap.put(channelId, runtimeChannel);
+					}
+				}
+			}
+			return runtimeChannelsMap;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param createIfNotExist
+		 * @return
+		 * @throws ClientException
+		 */
+		public RuntimeChannel getRuntimeChannelId(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId, boolean createIfNotExist) throws ClientException {
+			RuntimeChannel runtimeChannel = null;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				runtimeChannel = dataTubeClient.getRuntimeChannelId(channelId, createIfNotExist);
+			}
+			return runtimeChannel;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @param createIfNotExist
+		 * @return
+		 * @throws ClientException
+		 */
+		public RuntimeChannel getRuntimeChannelByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name, boolean createIfNotExist) throws ClientException {
+			RuntimeChannel runtimeChannel = null;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				runtimeChannel = dataTubeClient.getRuntimeChannelByName(name, createIfNotExist);
+			}
+			return runtimeChannel;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean runtimeChannelExistsById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId) throws ClientException {
+			boolean exists = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				exists = dataTubeClient.runtimeChannelExistsById(channelId);
+			}
+			return exists;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean runtimeChannelExistsByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name) throws ClientException {
+			boolean exists = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				exists = dataTubeClient.runtimeChannelExistsByName(name);
+			}
+			return exists;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param useExisting
+		 * @return
+		 * @throws ClientException
+		 */
+		public RuntimeChannel createRuntimeChannelId(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId, boolean useExisting) throws ClientException {
+			RuntimeChannel runtimeChannel = null;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				runtimeChannel = dataTubeClient.createRuntimeChannelId(channelId, useExisting);
+			}
+			return runtimeChannel;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @param useExisting
+		 * @return
+		 * @throws ClientException
+		 */
+		public RuntimeChannel createRuntimeChannelByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name, boolean useExisting) throws ClientException {
+			RuntimeChannel runtimeChannel = null;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				runtimeChannel = dataTubeClient.createRuntimeChannelByName(name, useExisting);
+			}
+			return runtimeChannel;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @param createIfNotExist
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean syncChannelMetadataById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId, boolean createIfNotExist) throws ClientException {
+			boolean isUpdated = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				isUpdated = dataTubeClient.syncChannelMetadataId(channelId, createIfNotExist);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @param createIfNotExist
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean syncChannelMetadataByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name, boolean createIfNotExist) throws ClientException {
+			boolean isUpdated = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				isUpdated = dataTubeClient.syncChannelMetadataByName(name, createIfNotExist);
+			}
+			return isUpdated;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean startRuntimeChannelById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.startRuntimeChannelById(channelId);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean startRuntimeChannelByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.startRuntimeChannelByName(name);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean suspendRuntimeChannelById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.suspendRuntimeChannelById(channelId);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean suspendRuntimeChannelByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.suspendRuntimeChannelByName(name);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean stopRuntimeChannelById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.stopRuntimeChannelById(channelId);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean stopRuntimeChannelByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.stopRuntimeChannelByName(name);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean deleteRuntimeChannelById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId) throws ClientException {
+			boolean isDeleted = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				isDeleted = dataTubeClient.deleteRuntimeChannelId(channelId);
+			}
+			return isDeleted;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean deleteRuntimeChannelByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name) throws ClientException {
+			boolean isDeleted = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				isDeleted = dataTubeClient.deleteRuntimeChannelByName(name);
+			}
+			return isDeleted;
 		}
 	}
 

@@ -203,13 +203,49 @@ public class ChannelsImplV1 implements DataTubeClient {
 	}
 
 	@Override
-	public boolean syncChannelMetadataId(String channelId) throws ClientException {
+	public boolean syncChannelMetadataId(String channelId, boolean createIfNotExist) throws ClientException {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean syncChannelMetadataByName(String name) throws ClientException {
+	public boolean syncChannelMetadataByName(String name, boolean createIfNotExist) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean startRuntimeChannelById(String channelId) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean startRuntimeChannelByName(String name) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean suspendRuntimeChannelById(String channelId) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean suspendRuntimeChannelByName(String name) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean stopRuntimeChannelById(String channelId) throws ClientException {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean stopRuntimeChannelByName(String name) throws ClientException {
 		// TODO Auto-generated method stub
 		return false;
 	}

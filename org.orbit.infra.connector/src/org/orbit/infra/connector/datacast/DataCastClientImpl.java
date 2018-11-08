@@ -6,11 +6,13 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 
 import org.orbit.infra.api.datacast.ChannelMetadata;
+import org.orbit.infra.api.datacast.ChannelStatus;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.datacast.DataTubeConfig;
 import org.orbit.infra.connector.util.ModelConverter;
 import org.orbit.infra.model.RequestConstants;
+import org.origin.common.model.AccountConfig;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
@@ -340,10 +342,14 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ClientException {
+	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ClientException {
 		Request request = new Request(RequestConstants.DATACAST__CREATE_CHANNEL_METADATA);
-		request.setParameter("data_tube_id", dataTubeId);
-		request.setParameter("name", name);
+		if (dataTubeId != null) {
+			request.setParameter("data_tube_id", dataTubeId);
+		}
+		if (name != null) {
+			request.setParameter("name", name);
+		}
 		if (accessType != null) {
 			request.setParameter("access_type", accessType);
 		}
@@ -353,10 +359,13 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		if (ownerAccountId != null) {
 			request.setParameter("owner_account_id", ownerAccountId);
 		}
-		if (accountIds != null) {
-			request.setParameter("account_ids", accountIds);
+		if (accountConfigs != null) {
+			String accountConfigsString = ModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
+			request.setParameter("account_configs", accountConfigsString);
 		}
-		request.setParameter("properties", properties);
+		if (properties != null) {
+			request.setParameter("properties", properties);
+		}
 
 		ChannelMetadata channelMetadata = null;
 		Response response = null;
@@ -369,6 +378,29 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 			ResponseUtil.closeQuietly(response, true);
 		}
 		return channelMetadata;
+	}
+
+	@Override
+	public String allocateDataTubeIdGet() throws ClientException {
+		String dataTubeId = getWSClient().allocateDataTubeId();
+		return dataTubeId;
+	}
+
+	@Override
+	public String allocateDataTubeIdCmd() throws ClientException {
+		Request request = new Request(RequestConstants.DATACAST__ALLOCATE_DATA_TUBE_ID);
+
+		String dataTubeId = null;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				dataTubeId = ModelConverter.DATA_CAST.getDataTubeId(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return dataTubeId;
 	}
 
 	@Override
@@ -415,10 +447,14 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean setChannelMetadataStatusById(String channelId, int status, boolean append) throws ClientException {
+	public boolean setChannelMetadataStatusById(String channelId, ChannelStatus channelStatus, boolean append) throws ClientException {
+		if (channelStatus == null) {
+			throw new IllegalArgumentException("channelStatus is null.");
+		}
+
 		Request request = new Request(RequestConstants.DATACAST__SET_CHANNEL_METADATA_STATUS);
 		request.setParameter("channel_id", channelId);
-		request.setParameter("status", status);
+		request.setParameter("status", channelStatus.getMode());
 		if (append) {
 			request.setParameter("append", append);
 		}
@@ -437,10 +473,14 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean clearChannelMetadataStatusById(String channelId, int status) throws ClientException {
+	public boolean clearChannelMetadataStatusById(String channelId, ChannelStatus channelStatus) throws ClientException {
+		if (channelStatus == null) {
+			throw new IllegalArgumentException("channelStatus is null.");
+		}
+
 		Request request = new Request(RequestConstants.DATACAST__CLEAR_CHANNEL_METADATA_STATUS);
 		request.setParameter("channel_id", channelId);
-		request.setParameter("status", status);
+		request.setParameter("status", channelStatus.getMode());
 
 		boolean isUpdated = false;
 		Response response = null;
@@ -456,10 +496,22 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean addChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException {
-		Request request = new Request(RequestConstants.DATACAST__ADD_CHANNEL_METADATA_ACCOUNT_IDS);
+	public boolean setChannelMetadataAccountConfigsById(String channelId, List<AccountConfig> accountConfigs, boolean appendAccountConfigs, boolean appendAccountConfig) throws ClientException {
+		if (accountConfigs == null) {
+			throw new IllegalArgumentException("accountConfigs is null.");
+		}
+
+		String accountConfigsString = ModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
+
+		Request request = new Request(RequestConstants.DATACAST__SET_CHANNEL_METADATA_ACCOUNT_CONFIGS);
 		request.setParameter("channel_id", channelId);
-		request.setParameter("accountIds", accountIds);
+		request.setParameter("account_configs", accountConfigsString);
+		if (appendAccountConfigs) {
+			request.setParameter("append_account_configs", appendAccountConfigs);
+		}
+		if (appendAccountConfig) {
+			request.setParameter("append_account_config", appendAccountConfig);
+		}
 
 		boolean isUpdated = false;
 		Response response = null;
@@ -475,10 +527,14 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean removeChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException {
-		Request request = new Request(RequestConstants.DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_IDS);
+	public boolean removeChannelMetadataAccountConfigsById(String channelId, List<String> accountIds) throws ClientException {
+		if (accountIds == null) {
+			throw new IllegalArgumentException("accountIds is null.");
+		}
+
+		Request request = new Request(RequestConstants.DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_CONFIGS);
 		request.setParameter("channel_id", channelId);
-		request.setParameter("accountIds", accountIds);
+		request.setParameter("account_ids", accountIds);
 
 		boolean isUpdated = false;
 		Response response = null;
@@ -571,6 +627,46 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 
 // boolean setChannelMetadataPropertiesByName(String channelId, Map<String, Object> properties) throws ClientException;
 // boolean removeChannelMetadataPropertiesByName(String channelId, List<String> propertyNames) throws ClientException;
+// boolean addChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException;
+// boolean removeChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException;
+//
+// @Override
+// public boolean addChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException {
+// Request request = new Request(RequestConstants.DATACAST__ADD_CHANNEL_METADATA_ACCOUNT_IDS);
+// request.setParameter("channel_id", channelId);
+// request.setParameter("accountIds", accountIds);
+//
+// boolean isUpdated = false;
+// Response response = null;
+// try {
+// response = sendRequest(request);
+// if (response != null) {
+// isUpdated = ModelConverter.COMMON.isUpdated(response);
+// }
+// } finally {
+// ResponseUtil.closeQuietly(response, true);
+// }
+// return isUpdated;
+// }
+//
+// @Override
+// public boolean removeChannelMetadataAccountIdsById(String channelId, List<String> accountIds) throws ClientException {
+// Request request = new Request(RequestConstants.DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_IDS);
+// request.setParameter("channel_id", channelId);
+// request.setParameter("accountIds", accountIds);
+//
+// boolean isUpdated = false;
+// Response response = null;
+// try {
+// response = sendRequest(request);
+// if (response != null) {
+// isUpdated = ModelConverter.COMMON.isUpdated(response);
+// }
+// } finally {
+// ResponseUtil.closeQuietly(response, true);
+// }
+// return isUpdated;
+// }
 //
 // @Override
 // public boolean setChannelMetadataPropertiesByName(String name, Map<String, Object> properties) throws ClientException {

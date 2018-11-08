@@ -16,6 +16,7 @@ import org.origin.common.jdbc.DatabaseTableAware;
 import org.origin.common.jdbc.DatabaseUtil;
 import org.origin.common.jdbc.ResultSetListHandler;
 import org.origin.common.jdbc.ResultSetSingleHandler;
+import org.origin.common.model.AccountConfig;
 
 /*
  * Table name:
@@ -121,7 +122,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    accessType varchar(250) DEFAULT NULL,");
 			sb.append("    accessCode varchar(250) DEFAULT NULL,");
 			sb.append("    ownerAccountId varchar(250) DEFAULT NULL,");
-			sb.append("    accountIds varchar(50000) DEFAULT NULL,");
+			sb.append("    accountConfigs varchar(5000) DEFAULT NULL,");
 			sb.append("    properties varchar(5000) DEFAULT NULL,");
 			sb.append("    dateCreated bigint DEFAULT 0,");
 			sb.append("    dateModified bigint DEFAULT 0,");
@@ -137,7 +138,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			sb.append("    accessType varchar(250) DEFAULT NULL,");
 			sb.append("    accessCode varchar(250) DEFAULT NULL,");
 			sb.append("    ownerAccountId varchar(250) DEFAULT NULL,");
-			sb.append("    accountIds varchar(50000) DEFAULT NULL,");
+			sb.append("    accountConfigs varchar(5000) DEFAULT NULL,");
 			sb.append("    properties varchar(5000) DEFAULT NULL,");
 			sb.append("    dateCreated bigint DEFAULT 0,");
 			sb.append("    dateModified bigint DEFAULT 0,");
@@ -162,7 +163,7 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 		String accessType = rs.getString("accessType");
 		String accessCode = rs.getString("accessCode");
 		String ownerAccountId = rs.getString("ownerAccountId");
-		String accountIdsString = rs.getString("accountIds");
+		String accountConfigsString = rs.getString("accountConfigs");
 		String propertiesString = rs.getString("properties");
 		long dateCreated = rs.getLong("dateCreated");
 		long dateModified = rs.getLong("dateModified");
@@ -172,10 +173,10 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			dataTubeId = "-1";
 		}
 
-		List<String> accountIds = ModelConverter.DATA_CAST.toAccountIds(accountIdsString);
+		List<AccountConfig> accountConfigs = ModelConverter.DATA_CAST.toAccountConfigs(accountConfigsString);
 		Map<String, Object> properties = ModelConverter.COMMON.toProperties(propertiesString);
 
-		return new ChannelMetadataImpl(this.dataCastId, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, properties, dateCreated, dateModified);
+		return new ChannelMetadataImpl(this.dataCastId, dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountConfigs, properties, dateCreated, dateModified);
 	}
 
 	/**
@@ -294,13 +295,13 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * @param accessType
 	 * @param accessCode
 	 * @param ownerAccountId
-	 * @param accountIds
+	 * @param accountConfigs
 	 * @param properties
 	 * @return
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public ChannelMetadata create(Connection conn, String dataTubeId, String channelId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws SQLException, IOException {
+	public ChannelMetadata create(Connection conn, String dataTubeId, String channelId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws SQLException, IOException {
 		if (existsByChannelId(conn, channelId)) {
 			throw new IOException("Channel with same channelId already exists.");
 		}
@@ -308,14 +309,14 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 			throw new IOException("Channel with same name already exists.");
 		}
 
-		String accountIdsString = ModelConverter.DATA_CAST.toAccountIdsString(accountIds);
+		String accountConfigsString = ModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
 		String propertiesString = ModelConverter.COMMON.toPropertiesString(properties);
 
 		long dateCreated = getCurrentTime();
 		long dateModified = dateCreated;
 
-		String insertSQL = "INSERT INTO " + getTableName() + " (dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIds, properties, dateCreated, dateModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountIdsString, propertiesString, dateCreated, dateModified }, 1);
+		String insertSQL = "INSERT INTO " + getTableName() + " (dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountConfigs, properties, dateCreated, dateModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		boolean succeed = DatabaseUtil.update(conn, insertSQL, new Object[] { dataTubeId, channelId, name, accessType, accessCode, ownerAccountId, accountConfigsString, propertiesString, dateCreated, dateModified }, 1);
 		if (succeed) {
 			return getByChannelId(conn, channelId);
 		}
@@ -378,15 +379,15 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * 
 	 * @param conn
 	 * @param channelId
-	 * @param accountIds
+	 * @param accountConfigs
 	 * @return
 	 * @throws SQLException
 	 */
-	public boolean updateAccountIds(Connection conn, String channelId, List<String> accountIds) throws SQLException {
-		String accountIdsString = ModelConverter.DATA_CAST.toAccountIdsString(accountIds);
+	public boolean updateAccountConfigs(Connection conn, String channelId, List<AccountConfig> accountConfigs) throws SQLException {
+		String accountConfigsString = ModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
 
-		String updateSQL = "UPDATE " + getTableName() + " SET accountIds=?, dateModified=? WHERE channelId=?";
-		return DatabaseUtil.update(conn, updateSQL, new Object[] { accountIdsString, getCurrentTime(), channelId }, 1);
+		String updateSQL = "UPDATE " + getTableName() + " SET accountConfigs=?, dateModified=? WHERE channelId=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { accountConfigsString, getCurrentTime(), channelId }, 1);
 	}
 
 	/**
@@ -450,3 +451,22 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	}
 
 }
+
+// String accountIdsString = rs.getString("accountIds");
+// List<String> accountIds = ModelConverter.DATA_CAST.toAccountIds(accountIdsString);
+// String accountIdsString = ModelConverter.DATA_CAST.toAccountIdsString(accountConfigs);
+//
+// /**
+// *
+// * @param conn
+// * @param channelId
+// * @param accountIds
+// * @return
+// * @throws SQLException
+// */
+// public boolean updateAccountIds(Connection conn, String channelId, List<String> accountIds) throws SQLException {
+// String accountIdsString = ModelConverter.DATA_CAST.toAccountIdsString(accountIds);
+//
+// String updateSQL = "UPDATE " + getTableName() + " SET accountIds=?, dateModified=? WHERE channelId=?";
+// return DatabaseUtil.update(conn, updateSQL, new Object[] { accountIdsString, getCurrentTime(), channelId }, 1);
+// }

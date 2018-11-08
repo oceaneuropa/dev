@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.origin.common.jdbc.ConnectionAware;
+import org.origin.common.model.AccountConfig;
 import org.origin.common.rest.editpolicy.EditPoliciesAware;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAware;
@@ -48,7 +49,9 @@ public interface DataCastService extends WebServiceAware, ConnectionAware, EditP
 
 	ChannelMetadata getChannelMetadataByName(String name) throws ServerException;
 
-	ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<String> accountIds, Map<String, Object> properties) throws ServerException;
+	ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ServerException;
+
+	String allocateDataTubeIdForNewChannel() throws ServerException;
 
 	boolean updateChannelMetadataName(String channelId, String name) throws ServerException;
 
@@ -57,6 +60,8 @@ public interface DataCastService extends WebServiceAware, ConnectionAware, EditP
 	boolean updateChannelMetadataAccessCode(String channelId, String accessCode) throws ServerException;
 
 	boolean updateChannelMetadataOwnerAccountId(String channelId, String accountId) throws ServerException;
+
+	boolean updateChannelMetadataAccountConfigsById(String channelId, List<AccountConfig> accountConfigs) throws ServerException;
 
 	boolean updateChannelMetadataPropertiesById(String channelId, Map<String, Object> properties) throws ServerException;
 

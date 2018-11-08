@@ -7,6 +7,8 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -17,6 +19,7 @@ import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
 import org.orbit.platform.sdk.http.OrbitRoles;
 import org.origin.common.rest.annotation.Secured;
 import org.origin.common.rest.model.ErrorDTO;
+import org.origin.common.rest.model.Request;
 import org.origin.common.rest.server.AbstractWSApplicationResource;
 import org.origin.common.rest.server.ServerException;
 import org.slf4j.Logger;
@@ -45,6 +48,13 @@ public class DataTubeWSResource extends AbstractWSApplicationResource {
 			throw new RuntimeException("DataTubeService is not available.");
 		}
 		return this.service;
+	}
+
+	@POST
+	@Path("request")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response request(@Context HttpHeaders httpHeaders, Request request) {
+		return super.request(httpHeaders, request);
 	}
 
 	@POST

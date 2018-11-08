@@ -1,4 +1,4 @@
-package org.orbit.infra.webconsole.servlet;
+package org.orbit.infra.webconsole.servlet.datacast;
 
 import java.io.IOException;
 
@@ -15,10 +15,9 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DataTubeNodeDeleteServlet extends HttpServlet {
+public class DataCastNodeDeleteServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 884583393284559470L;
-
+	private static final long serialVersionUID = 2318338748025863262L;
 	private static String[] EMPTY_ELEMENT_IDS = new String[] {};
 
 	@Override
@@ -28,13 +27,12 @@ public class DataTubeNodeDeleteServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
-		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
 		String[] elementIds = ServletUtil.getParameterValues(request, "elementId", EMPTY_ELEMENT_IDS);
 
 		String message = "";
 		if (elementIds.length == 0) {
 			// message = MessageHelper.INSTANCE.add(message, "'elementIds' parameter is not set.");
-			message = MessageHelper.INSTANCE.add(message, "Data tube nodes are not selected.");
+			message = MessageHelper.INSTANCE.add(message, "Data cast nodes are not selected.");
 		}
 
 		// ---------------------------------------------------------------
@@ -72,9 +70,9 @@ public class DataTubeNodeDeleteServlet extends HttpServlet {
 		}
 
 		if (succeed) {
-			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are deleted successfully." : "Data tube node is deleted successfully.");
+			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data cast nodes are deleted successfully." : "Data cast node is deleted successfully.");
 		} else {
-			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data tube nodes are not deleted." : "Data tube node is not deleted.");
+			message = MessageHelper.INSTANCE.add(message, (elementIds.length > 1) ? "Data cast nodes are not deleted." : "Data cast node is not deleted.");
 		}
 
 		// ---------------------------------------------------------------
@@ -83,7 +81,7 @@ public class DataTubeNodeDeleteServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/admin/datatubelist?dataCastId=" + dataCastId);
+		response.sendRedirect(contextRoot + "/admin/datacastlist");
 	}
 
 }

@@ -1,5 +1,8 @@
 package org.orbit.infra.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RequestConstants {
 
 	public static String CONFIG_REGISTRY__LIST_CONFIG_REGISTRIES = "list_config_registries";
@@ -33,11 +36,12 @@ public class RequestConstants {
 	public static String DATACAST__GET_CHANNEL_METADATA = "get_channel_metadata";
 	public static String DATACAST__CHANNEL_METADATA_EXISTS = "channel_metadata_exists";
 	public static String DATACAST__CREATE_CHANNEL_METADATA = "create_channel_metadata";
+	public static String DATACAST__ALLOCATE_DATA_TUBE_ID = "allocate_data_tube_id";
 	public static String DATACAST__UPDATE_CHANNEL_METADATA = "update_channel_metadata";
 	public static String DATACAST__SET_CHANNEL_METADATA_STATUS = "set_channel_metadata_status";
 	public static String DATACAST__CLEAR_CHANNEL_METADATA_STATUS = "clear_channel_metadata_status";
-	public static String DATACAST__ADD_CHANNEL_METADATA_ACCOUNT_IDS = "set_channel_metadata_account_ids";
-	public static String DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_IDS = "remove_channel_metadata_account_ids";
+	public static String DATACAST__SET_CHANNEL_METADATA_ACCOUNT_CONFIGS = "set_channel_metadata_account_configs";
+	public static String DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_CONFIGS = "remove_channel_metadata_account_configs";
 	public static String DATACAST__SET_CHANNEL_METADATA_PROPERTIES = "set_channel_metadata_properties";
 	public static String DATACAST__REMOVE_CHANNEL_METADATA_PROPERTIES = "remove_channel_metadata_properties";
 	public static String DATACAST__DELETE_CHANNEL_METADATA = "delete_channel_metadata";
@@ -47,6 +51,22 @@ public class RequestConstants {
 	public static String DATATUBE__RUNTIME_CHANNEL_EXISTS = "runtime_channel_exists";
 	public static String DATATUBE__CREATE_RUNTIME_CHANNEL = "create_runtime_channel";
 	public static String DATATUBE__SYNC_CHANNEL_METADATA = "sync_channel_metadata";
+	public static String DATATUBE__RUNTIME_CHANNEL_ON_ACTION = "runtime_channel_on_action";
 	public static String DATATUBE__DELETE_RUNTIME_CHANNEL = "delete_runtime_channel";
 
+	public static List<String> RUNTIME_CHANNEL_ACTIONS = new ArrayList<String>();
+	public static String RUNTIME_CHANNEL_ACTION__START = "start";
+	public static String RUNTIME_CHANNEL_ACTION__SUSPEND = "suspend";
+	public static String RUNTIME_CHANNEL_ACTION__STOP = "stop";
+	static {
+		RUNTIME_CHANNEL_ACTIONS.add(RUNTIME_CHANNEL_ACTION__START);
+		RUNTIME_CHANNEL_ACTIONS.add(RUNTIME_CHANNEL_ACTION__SUSPEND);
+		RUNTIME_CHANNEL_ACTIONS.add(RUNTIME_CHANNEL_ACTION__STOP);
+	}
+
+	public static String ALLOCATE_TYPE__DATA_TUBE_ID = "data_tube_id";
+
 }
+
+// public static String DATACAST__ADD_CHANNEL_METADATA_ACCOUNT_IDS = "set_channel_metadata_account_ids";
+// public static String DATACAST__REMOVE_CHANNEL_METADATA_ACCOUNT_IDS = "remove_channel_metadata_account_ids";

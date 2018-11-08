@@ -93,6 +93,9 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 	public RuntimeChannel getRuntimeChannelId(String channelId, boolean createIfNotExist) throws ClientException {
 		Request request = new Request(RequestConstants.DATATUBE__GET_RUNTIME_CHANNEL);
 		request.setParameter("channel_id", channelId);
+		if (createIfNotExist) {
+			request.setParameter("create_if_not_exist", createIfNotExist);
+		}
 
 		RuntimeChannel runtimeChannel = null;
 		Response response = null;
@@ -111,6 +114,9 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 	public RuntimeChannel getRuntimeChannelByName(String name, boolean createIfNotExist) throws ClientException {
 		Request request = new Request(RequestConstants.DATATUBE__GET_RUNTIME_CHANNEL);
 		request.setParameter("name", name);
+		if (createIfNotExist) {
+			request.setParameter("create_if_not_exist", createIfNotExist);
+		}
 
 		RuntimeChannel runtimeChannel = null;
 		Response response = null;
@@ -200,9 +206,12 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 	}
 
 	@Override
-	public boolean syncChannelMetadataId(String channelId) throws ClientException {
+	public boolean syncChannelMetadataId(String channelId, boolean createIfNotExist) throws ClientException {
 		Request request = new Request(RequestConstants.DATATUBE__SYNC_CHANNEL_METADATA);
 		request.setParameter("channel_id", channelId);
+		if (createIfNotExist) {
+			request.setParameter("create_if_not_exist", createIfNotExist);
+		}
 
 		boolean succeed = false;
 		Response response = null;
@@ -218,9 +227,92 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 	}
 
 	@Override
-	public boolean syncChannelMetadataByName(String name) throws ClientException {
+	public boolean syncChannelMetadataByName(String name, boolean createIfNotExist) throws ClientException {
 		Request request = new Request(RequestConstants.DATATUBE__SYNC_CHANNEL_METADATA);
 		request.setParameter("name", name);
+		if (createIfNotExist) {
+			request.setParameter("create_if_not_exist", createIfNotExist);
+		}
+
+		boolean succeed = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.COMMON.isSucceed(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return succeed;
+	}
+
+	@Override
+	public boolean startRuntimeChannelById(String channelId) throws ClientException {
+		return runtimeChannelOnActionById(channelId, RequestConstants.RUNTIME_CHANNEL_ACTION__START);
+	}
+
+	@Override
+	public boolean startRuntimeChannelByName(String name) throws ClientException {
+		return runtimeChannelOnActionByName(name, RequestConstants.RUNTIME_CHANNEL_ACTION__START);
+	}
+
+	@Override
+	public boolean suspendRuntimeChannelById(String channelId) throws ClientException {
+		return runtimeChannelOnActionById(channelId, RequestConstants.RUNTIME_CHANNEL_ACTION__SUSPEND);
+	}
+
+	@Override
+	public boolean suspendRuntimeChannelByName(String name) throws ClientException {
+		return runtimeChannelOnActionByName(name, RequestConstants.RUNTIME_CHANNEL_ACTION__SUSPEND);
+	}
+
+	@Override
+	public boolean stopRuntimeChannelById(String channelId) throws ClientException {
+		return runtimeChannelOnActionById(channelId, RequestConstants.RUNTIME_CHANNEL_ACTION__STOP);
+	}
+
+	@Override
+	public boolean stopRuntimeChannelByName(String name) throws ClientException {
+		return runtimeChannelOnActionByName(name, RequestConstants.RUNTIME_CHANNEL_ACTION__STOP);
+	}
+
+	/**
+	 * 
+	 * @param channelId
+	 * @param action
+	 * @return
+	 * @throws ClientException
+	 */
+	protected boolean runtimeChannelOnActionById(String channelId, String action) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__RUNTIME_CHANNEL_ON_ACTION);
+		request.setParameter("channel_id", channelId);
+		request.setParameter("action", action);
+
+		boolean succeed = false;
+		Response response = null;
+		try {
+			response = sendRequest(request);
+			if (response != null) {
+				succeed = ModelConverter.COMMON.isSucceed(response);
+			}
+		} finally {
+			ResponseUtil.closeQuietly(response, true);
+		}
+		return succeed;
+	}
+
+	/**
+	 * 
+	 * @param name
+	 * @param action
+	 * @return
+	 * @throws ClientException
+	 */
+	protected boolean runtimeChannelOnActionByName(String name, String action) throws ClientException {
+		Request request = new Request(RequestConstants.DATATUBE__RUNTIME_CHANNEL_ON_ACTION);
+		request.setParameter("name", name);
+		request.setParameter("action", action);
 
 		boolean succeed = false;
 		Response response = null;

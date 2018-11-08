@@ -30,9 +30,21 @@ public interface DataTubeService extends WebServiceAware, EditPoliciesAware {
 
 	RuntimeChannel createRuntimeChannelByName(String name) throws ServerException;
 
-	boolean syncChannelMetadataById(String channelId) throws ServerException;
+	boolean syncChannelMetadataById(String channelId, boolean createIfNotExist) throws ServerException;
 
-	boolean syncChannelMetadataByName(String name) throws ServerException;
+	boolean syncChannelMetadataByName(String name, boolean createIfNotExist) throws ServerException;
+
+	boolean startRuntimeChannelById(String channelId) throws ServerException;
+
+	boolean startRuntimeChannelByName(String name) throws ServerException;
+
+	boolean suspendRuntimeChannelById(String channelId) throws ServerException;
+
+	boolean suspendRuntimeChannelByName(String name) throws ServerException;
+
+	boolean stopRuntimeChannelById(String channelId) throws ServerException;
+
+	boolean stopRuntimeChannelByName(String name) throws ServerException;
 
 	boolean removeRuntimeChannelById(String channelId) throws ServerException;
 

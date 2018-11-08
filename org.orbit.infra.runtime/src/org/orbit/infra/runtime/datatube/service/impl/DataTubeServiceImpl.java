@@ -1,5 +1,6 @@
 package org.orbit.infra.runtime.datatube.service.impl;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -9,7 +10,11 @@ import java.util.Map;
 
 import org.orbit.infra.api.datacast.ChannelMetadata;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexItemHelper;
+import org.orbit.infra.api.util.ChannelMetadataComparator;
 import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.io.util.DataCastIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
@@ -80,24 +85,17 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	public void start(BundleContext bundleContext) {
 		DataTubeConfigPropertiesHandler.getInstance().addPropertyChangeListener(this);
 
-		// Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		// if (this.initProperties != null) {
-		// configProps.putAll(this.initProperties);
-		// }
-		//
-		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
-		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__DATACAST_ID);
-		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__ID);
-		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__NAME);
-		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__HOST_URL);
-		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__CONTEXT_ROOT);
-		// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__HTTP_PORT);
-		//
-		// updateProperties(configProps);
-
 		// Register service
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		this.serviceRegistry = bundleContext.registerService(DataTubeService.class, this, props);
+
+		try {
+			initRuntimeChannels();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClientException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -108,48 +106,13 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		}
 
 		DataTubeConfigPropertiesHandler.getInstance().removePropertyChangeListener(this);
-	}
 
-	// @Override
-	// public Map<Object, Object> getProperties() {
-	// return this.properties;
-	// }
-	// /**
-	// *
-	// * @param configProps
-	// */
-	// public synchronized void updateProperties(Map<Object, Object> configProps) {
-	// if (configProps == null) {
-	// configProps = new HashMap<Object, Object>();
-	// }
-	//
-	// String globalHostURL = (String) configProps.get(InfraConstants.ORBIT_HOST_URL);
-	// String dataCastId = (String) configProps.get(InfraConstants.DATATUBE__DATACAST_ID);
-	// String dataTubeId = (String) configProps.get(InfraConstants.DATATUBE__ID);
-	// String name = (String) configProps.get(InfraConstants.DATATUBE__NAME);
-	// String hostURL = (String) configProps.get(InfraConstants.DATATUBE__HOST_URL);
-	// String contextRoot = (String) configProps.get(InfraConstants.DATATUBE__CONTEXT_ROOT);
-	// String webSocketHttpPort = (String) configProps.get(InfraConstants.DATATUBE__HTTP_PORT);
-	//
-	// boolean printProps = false;
-	// if (printProps) {
-	// System.out.println();
-	// System.out.println("Config properties:");
-	// System.out.println("-----------------------------------------------------");
-	// System.out.println(InfraConstants.ORBIT_HOST_URL + " = " + globalHostURL);
-	// System.out.println(InfraConstants.DATATUBE__DATACAST_ID + " = " + dataCastId);
-	// System.out.println(InfraConstants.DATATUBE__ID + " = " + dataTubeId);
-	// System.out.println(InfraConstants.DATATUBE__NAME + " = " + name);
-	// System.out.println(InfraConstants.DATATUBE__HOST_URL + " = " + hostURL);
-	// System.out.println(InfraConstants.DATATUBE__CONTEXT_ROOT + " = " + contextRoot);
-	// System.out.println(InfraConstants.DATATUBE__HTTP_PORT + " = " + webSocketHttpPort);
-	//
-	// System.out.println("-----------------------------------------------------");
-	// System.out.println();
-	// }
-	//
-	// this.properties = configProps;
-	// }
+		try {
+			disposeRuntimeChannels();
+		} catch (ServerException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/** PropertyChangeListener */
 	@Override
@@ -173,14 +136,6 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 
 	@Override
 	public String getHostURL() {
-		// String hostURL = (String) this.properties.get(InfraConstants.DATATUBE__HOST_URL);
-		// if (hostURL != null) {
-		// return hostURL;
-		// }
-		// String globalHostURL = (String) this.properties.get(InfraConstants.ORBIT_HOST_URL);
-		// if (globalHostURL != null) {
-		// return globalHostURL;
-		// }
 		String hostURL = DataTubeConfigPropertiesHandler.getInstance().getProperty(InfraConstants.DATATUBE__HOST_URL, this.initProperties);
 		if (hostURL != null) {
 			return hostURL;
@@ -241,16 +196,58 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 
 	/**
 	 * 
-	 * @param channelId
 	 * @return
+	 * @throws IOException
 	 * @throws ClientException
 	 */
-	protected ChannelMetadata findChannelMetadataById(String channelId) throws ClientException {
+	protected synchronized ChannelMetadata[] findChannelMetadatas() throws IOException, ClientException {
+		ChannelMetadata[] channelMetadatas = null;
+		String dataCastId = getDataCastId();
+		String dataTubeId = getDataTubeId();
 		String accessToken = getAccessToken();
 		String indexServiceUrl = getIndexServiceURL();
 
-		DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
-		ChannelMetadata channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(clientResolver, indexServiceUrl, accessToken, channelId);
+		IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		if (dataCastIndexItem != null) {
+			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
+			if (isDataCastOnline) {
+				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+				channelMetadatas = InfraClientsHelper.DATA_CAST.getChannelMetadatas(clientResolver, dataCastServiceUrl, accessToken, dataTubeId, ChannelMetadataComparator.ASC);
+
+			} else {
+				throw new ClientException(500, "DataCast service (dataCastId='" + dataCastId + "') is not online.");
+			}
+		}
+		return channelMetadatas;
+	}
+
+	/**
+	 * 
+	 * @param channelId
+	 * @return
+	 * @throws ClientException
+	 * @throws IOException
+	 */
+	protected ChannelMetadata findChannelMetadataById(String channelId) throws ClientException, IOException {
+		ChannelMetadata channelMetadata = null;
+
+		String dataCastId = getDataCastId();
+		String accessToken = getAccessToken();
+		String indexServiceUrl = getIndexServiceURL();
+
+		IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		if (dataCastIndexItem != null) {
+			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
+			if (isDataCastOnline) {
+				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+				channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(clientResolver, dataCastServiceUrl, accessToken, channelId);
+			} else {
+				throw new ClientException(500, "DataCast service (dataCastId='" + dataCastId + "') is not online.");
+			}
+		}
+
 		return channelMetadata;
 	}
 
@@ -259,13 +256,27 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	 * @param name
 	 * @return
 	 * @throws ClientException
+	 * @throws IOException
 	 */
-	protected ChannelMetadata findChannelMetadataByName(String name) throws ClientException {
+	protected ChannelMetadata findChannelMetadataByName(String name) throws ClientException, IOException {
+		ChannelMetadata channelMetadata = null;
+
+		String dataCastId = getDataCastId();
 		String accessToken = getAccessToken();
 		String indexServiceUrl = getIndexServiceURL();
-		DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 
-		ChannelMetadata channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelName(clientResolver, indexServiceUrl, accessToken, name);
+		IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		if (dataCastIndexItem != null) {
+			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
+			if (isDataCastOnline) {
+				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
+				channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelName(clientResolver, dataCastServiceUrl, accessToken, name);
+			} else {
+				throw new ClientException(500, "DataCast service (dataCastId='" + dataCastId + "') is not online.");
+			}
+		}
+
 		return channelMetadata;
 	}
 
@@ -283,8 +294,8 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	 * @return
 	 */
 	protected synchronized RuntimeChannel findRuntimeChannelById(String channelId) {
-		RuntimeChannel channel = this.runtimeChannelMap.get(channelId);
-		return channel;
+		RuntimeChannel runtimeChannel = this.runtimeChannelMap.get(channelId);
+		return runtimeChannel;
 	}
 
 	/**
@@ -309,13 +320,13 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 
 	/**
 	 * 
-	 * @param channel
+	 * @param runtimeChannel
 	 * @return
 	 */
-	protected synchronized boolean checkInRuntimeChannel(RuntimeChannel channel) {
-		if (channel != null) {
-			String channelId = channel.getChannelMetadata().getChannelId();
-			this.runtimeChannelMap.put(channelId, channel);
+	protected synchronized boolean checkInRuntimeChannel(RuntimeChannel runtimeChannel) {
+		if (runtimeChannel != null) {
+			String channelId = runtimeChannel.getChannelMetadata().getChannelId();
+			this.runtimeChannelMap.put(channelId, runtimeChannel);
 			return true;
 		}
 		return false;
@@ -327,8 +338,8 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	 * @return
 	 */
 	protected synchronized RuntimeChannel checkOutRuntimeChannelById(String channelId) {
-		RuntimeChannel channel = this.runtimeChannelMap.remove(channelId);
-		return channel;
+		RuntimeChannel runtimeChannel = this.runtimeChannelMap.remove(channelId);
+		return runtimeChannel;
 	}
 
 	/**
@@ -337,22 +348,32 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	 * @return
 	 */
 	protected synchronized RuntimeChannel checkOutRuntimeChannelByName(String name) {
-		RuntimeChannel channel = null;
+		RuntimeChannel runtimeChannel = null;
 		for (Iterator<String> itor = this.runtimeChannelMap.keySet().iterator(); itor.hasNext();) {
 			String channelId = itor.next();
-			RuntimeChannel currChannel = this.runtimeChannelMap.get(channelId);
+			RuntimeChannel currRuntimeChannel = this.runtimeChannelMap.get(channelId);
 
-			String currName = currChannel.getChannelMetadata().getName();
+			String currName = currRuntimeChannel.getChannelMetadata().getName();
 			if (name.equals(currName)) {
-				channel = currChannel;
+				runtimeChannel = currRuntimeChannel;
 				break;
 			}
 		}
-		if (channel != null) {
-			String channelId = channel.getChannelMetadata().getChannelId();
+		if (runtimeChannel != null) {
+			String channelId = runtimeChannel.getChannelMetadata().getChannelId();
 			this.runtimeChannelMap.remove(channelId);
 		}
-		return channel;
+		return runtimeChannel;
+	}
+
+	protected synchronized void initRuntimeChannels() throws IOException, ClientException {
+		ChannelMetadata[] channelMetadatas = findChannelMetadatas();
+		if (channelMetadatas != null) {
+			for (ChannelMetadata channelMetadata : channelMetadatas) {
+				RuntimeChannel runtimeChannel = new RuntimeChannelImpl(channelMetadata);
+				checkInRuntimeChannel(runtimeChannel);
+			}
+		}
 	}
 
 	@Override
@@ -365,8 +386,8 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		checkChannelId(channelId);
 
 		boolean exists = false;
-		RuntimeChannel channel = findRuntimeChannelById(channelId);
-		if (channel != null) {
+		RuntimeChannel runtimeChannel = findRuntimeChannelById(channelId);
+		if (runtimeChannel != null) {
 			exists = true;
 		}
 		return exists;
@@ -377,8 +398,8 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		checkChannelName(name);
 
 		boolean exists = false;
-		RuntimeChannel channel = findRuntimeChannelByName(name);
-		if (channel != null) {
+		RuntimeChannel runtimeChannel = findRuntimeChannelByName(name);
+		if (runtimeChannel != null) {
 			exists = true;
 		}
 		return exists;
@@ -388,25 +409,25 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	public synchronized RuntimeChannel getRuntimeChannelById(String channelId) throws ServerException {
 		checkChannelId(channelId);
 
-		RuntimeChannel channel = findRuntimeChannelById(channelId);
-		return channel;
+		RuntimeChannel runtimeChannel = findRuntimeChannelById(channelId);
+		return runtimeChannel;
 	}
 
 	@Override
 	public synchronized RuntimeChannel getRuntimeChannelByName(String name) throws ServerException {
 		checkChannelName(name);
 
-		RuntimeChannel channel = findRuntimeChannelByName(name);
-		return channel;
+		RuntimeChannel runtimeChannel = findRuntimeChannelByName(name);
+		return runtimeChannel;
 	}
 
 	@Override
 	public synchronized RuntimeChannel createRuntimeChannelById(String channelId) throws ServerException {
 		checkChannelId(channelId);
 
-		RuntimeChannel channel = findRuntimeChannelById(channelId);
-		if (channel != null) {
-			throw new ServerException("500", "Runtime channel (channelId='" + channelId + "') already exists.");
+		RuntimeChannel runtimeChannel = findRuntimeChannelById(channelId);
+		if (runtimeChannel != null) {
+			throw new ServerException("404", "Runtime channel (channelId='" + channelId + "') already exists.");
 		}
 
 		ChannelMetadata channelMetadata = null;
@@ -414,23 +435,27 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 			channelMetadata = findChannelMetadataById(channelId);
 		} catch (ClientException e) {
 			handleException(e);
-		}
-		if (channelMetadata == null) {
-			throw new ServerException("500", "Channel metadata (channelId='" + channelId + "') is not found.");
+		} catch (IOException e) {
+			handleException(e);
 		}
 
-		channel = new RuntimeChannelImpl(channelMetadata);
-		checkInRuntimeChannel(channel);
-		return channel;
+		if (channelMetadata == null) {
+			throw new ServerException("404", "Channel metadata (channelId='" + channelId + "') is not found.");
+		}
+
+		runtimeChannel = new RuntimeChannelImpl(channelMetadata);
+		checkInRuntimeChannel(runtimeChannel);
+
+		return runtimeChannel;
 	}
 
 	@Override
 	public synchronized RuntimeChannel createRuntimeChannelByName(String name) throws ServerException {
 		checkChannelName(name);
 
-		RuntimeChannel channel = findRuntimeChannelByName(name);
-		if (channel != null) {
-			throw new ServerException("500", "Runtime channel (name='" + name + "') already exists.");
+		RuntimeChannel runtimeChannel = findRuntimeChannelByName(name);
+		if (runtimeChannel != null) {
+			throw new ServerException("404", "Runtime channel (name='" + name + "') already exists.");
 		}
 
 		ChannelMetadata channelMetadata = null;
@@ -438,59 +463,161 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 			channelMetadata = findChannelMetadataByName(name);
 		} catch (ClientException e) {
 			handleException(e);
-		}
-		if (channelMetadata == null) {
-			throw new ServerException("500", "Channel metadata (name='" + name + "') is not found.");
+		} catch (IOException e) {
+			handleException(e);
 		}
 
-		channel = new RuntimeChannelImpl(channelMetadata);
-		checkInRuntimeChannel(channel);
-		return channel;
+		if (channelMetadata == null) {
+			throw new ServerException("404", "Channel metadata (name='" + name + "') is not found.");
+		}
+
+		runtimeChannel = new RuntimeChannelImpl(channelMetadata);
+		checkInRuntimeChannel(runtimeChannel);
+		return runtimeChannel;
 	}
 
 	@Override
-	public synchronized boolean syncChannelMetadataById(String channelId) throws ServerException {
+	public synchronized boolean syncChannelMetadataById(String channelId, boolean createIfNotExist) throws ServerException {
 		checkChannelId(channelId);
 
 		ChannelMetadata channelMetadata = null;
 		try {
 			channelMetadata = findChannelMetadataById(channelId);
+			if (channelMetadata == null) {
+				throw new ServerException("404", "Channel metadata (channelId='" + channelId + "') is not found.");
+			}
 		} catch (ClientException e) {
 			handleException(e);
-		}
-		if (channelMetadata == null) {
-			throw new ServerException("400", "Channel metadata (channelId='" + channelId + "') is not found.");
+		} catch (IOException e) {
+			handleException(e);
 		}
 
-		RuntimeChannel channel = findRuntimeChannelById(channelId);
-		if (channel != null) {
-			channel.setChannelMetadata(channelMetadata);
+		RuntimeChannel runtimeChannel = findRuntimeChannelById(channelId);
+		if (runtimeChannel != null) {
+			runtimeChannel.setChannelMetadata(channelMetadata);
 			return true;
+
+		} else {
+			if (createIfNotExist) {
+				runtimeChannel = createRuntimeChannelById(channelId);
+				if (runtimeChannel == null) {
+					throw new ServerException("404", "Runtime channel (channelId='" + channelId + "') doesn't exist and cannot be created.");
+				}
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized boolean syncChannelMetadataByName(String name, boolean createIfNotExist) throws ServerException {
+		checkChannelName(name);
+
+		ChannelMetadata channelMetadata = null;
+		try {
+			channelMetadata = findChannelMetadataByName(name);
+			if (channelMetadata == null) {
+				throw new ServerException("404", "Channel metadata (name='" + name + "') is not found.");
+			}
+		} catch (ClientException e) {
+			handleException(e);
+		} catch (IOException e) {
+			handleException(e);
+		}
+
+		RuntimeChannel runtimeChannel = findRuntimeChannelByName(name);
+		if (runtimeChannel != null) {
+			runtimeChannel.setChannelMetadata(channelMetadata);
+			return true;
+
+		} else {
+			if (createIfNotExist) {
+				runtimeChannel = createRuntimeChannelByName(name);
+				if (runtimeChannel == null) {
+					throw new ServerException("404", "Runtime channel (name='" + name + "') doesn't exist and cannot be created.");
+				}
+				return true;
+			}
 		}
 
 		return false;
 	}
 
 	@Override
-	public synchronized boolean syncChannelMetadataByName(String name) throws ServerException {
-		checkChannelName(name);
+	public synchronized boolean startRuntimeChannelById(String channelId) throws ServerException {
+		checkChannelId(channelId);
 
-		ChannelMetadata channelMetadata = null;
-		try {
-			channelMetadata = findChannelMetadataByName(name);
-		} catch (ClientException e) {
-			handleException(e);
-		}
-		if (channelMetadata == null) {
-			throw new ServerException("400", "Channel metadata (name='" + name + "') is not found.");
-		}
+		syncChannelMetadataById(channelId, true);
 
-		RuntimeChannel channel = findRuntimeChannelByName(name);
-		if (channel != null) {
-			channel.setChannelMetadata(channelMetadata);
+		RuntimeChannel runtimeChannel = findRuntimeChannelById(channelId);
+		if (runtimeChannel != null) {
 			return true;
 		}
+		return false;
+	}
 
+	@Override
+	public synchronized boolean startRuntimeChannelByName(String name) throws ServerException {
+		checkChannelName(name);
+
+		syncChannelMetadataByName(name, true);
+
+		RuntimeChannel runtimeChannel = findRuntimeChannelByName(name);
+		if (runtimeChannel != null) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized boolean suspendRuntimeChannelById(String channelId) throws ServerException {
+		checkChannelId(channelId);
+
+		syncChannelMetadataById(channelId, true);
+
+		RuntimeChannel runtimeChannel = findRuntimeChannelById(channelId);
+		if (runtimeChannel != null) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized boolean suspendRuntimeChannelByName(String name) throws ServerException {
+		checkChannelName(name);
+
+		syncChannelMetadataByName(name, true);
+
+		RuntimeChannel runtimeChannel = findRuntimeChannelByName(name);
+		if (runtimeChannel != null) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized boolean stopRuntimeChannelById(String channelId) throws ServerException {
+		checkChannelId(channelId);
+
+		removeRuntimeChannelById(channelId);
+
+		RuntimeChannel runtimeChannel = findRuntimeChannelById(channelId);
+		if (runtimeChannel == null) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public synchronized boolean stopRuntimeChannelByName(String name) throws ServerException {
+		checkChannelName(name);
+
+		removeRuntimeChannelByName(name);
+
+		RuntimeChannel runtimeChannel = findRuntimeChannelByName(name);
+		if (runtimeChannel == null) {
+			return true;
+		}
 		return false;
 	}
 
@@ -498,9 +625,9 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	public synchronized boolean removeRuntimeChannelById(String channelId) throws ServerException {
 		checkChannelId(channelId);
 
-		RuntimeChannel channel = checkOutRuntimeChannelById(channelId);
-		if (channel != null) {
-			channel.dispose();
+		RuntimeChannel runtimeChannel = checkOutRuntimeChannelById(channelId);
+		if (runtimeChannel != null) {
+			runtimeChannel.dispose();
 			return true;
 		}
 		return false;
@@ -510,9 +637,9 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 	public synchronized boolean removeRuntimeChannelByName(String name) throws ServerException {
 		checkChannelName(name);
 
-		RuntimeChannel channel = checkOutRuntimeChannelByName(name);
-		if (channel != null) {
-			channel.dispose();
+		RuntimeChannel runtimeChannel = checkOutRuntimeChannelByName(name);
+		if (runtimeChannel != null) {
+			runtimeChannel.dispose();
 			return true;
 		}
 		return false;
@@ -572,4 +699,69 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 // listeners = Collections.emptyList();
 // }
 // return listeners;
+// }
+
+// String hostURL = (String) this.properties.get(InfraConstants.DATATUBE__HOST_URL);
+// if (hostURL != null) {
+// return hostURL;
+// }
+// String globalHostURL = (String) this.properties.get(InfraConstants.ORBIT_HOST_URL);
+// if (globalHostURL != null) {
+// return globalHostURL;
+// }
+
+// Map<Object, Object> configProps = new Hashtable<Object, Object>();
+// if (this.initProperties != null) {
+// configProps.putAll(this.initProperties);
+// }
+//
+// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.ORBIT_HOST_URL);
+// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__DATACAST_ID);
+// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__ID);
+// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__NAME);
+// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__HOST_URL);
+// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__CONTEXT_ROOT);
+// PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.DATATUBE__HTTP_PORT);
+//
+// updateProperties(configProps);
+
+// @Override
+// public Map<Object, Object> getProperties() {
+// return this.properties;
+// }
+// /**
+// *
+// * @param configProps
+// */
+// public synchronized void updateProperties(Map<Object, Object> configProps) {
+// if (configProps == null) {
+// configProps = new HashMap<Object, Object>();
+// }
+//
+// String globalHostURL = (String) configProps.get(InfraConstants.ORBIT_HOST_URL);
+// String dataCastId = (String) configProps.get(InfraConstants.DATATUBE__DATACAST_ID);
+// String dataTubeId = (String) configProps.get(InfraConstants.DATATUBE__ID);
+// String name = (String) configProps.get(InfraConstants.DATATUBE__NAME);
+// String hostURL = (String) configProps.get(InfraConstants.DATATUBE__HOST_URL);
+// String contextRoot = (String) configProps.get(InfraConstants.DATATUBE__CONTEXT_ROOT);
+// String webSocketHttpPort = (String) configProps.get(InfraConstants.DATATUBE__HTTP_PORT);
+//
+// boolean printProps = false;
+// if (printProps) {
+// System.out.println();
+// System.out.println("Config properties:");
+// System.out.println("-----------------------------------------------------");
+// System.out.println(InfraConstants.ORBIT_HOST_URL + " = " + globalHostURL);
+// System.out.println(InfraConstants.DATATUBE__DATACAST_ID + " = " + dataCastId);
+// System.out.println(InfraConstants.DATATUBE__ID + " = " + dataTubeId);
+// System.out.println(InfraConstants.DATATUBE__NAME + " = " + name);
+// System.out.println(InfraConstants.DATATUBE__HOST_URL + " = " + hostURL);
+// System.out.println(InfraConstants.DATATUBE__CONTEXT_ROOT + " = " + contextRoot);
+// System.out.println(InfraConstants.DATATUBE__HTTP_PORT + " = " + webSocketHttpPort);
+//
+// System.out.println("-----------------------------------------------------");
+// System.out.println();
+// }
+//
+// this.properties = configProps;
 // }

@@ -5,6 +5,21 @@ import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.webconsole.WebConstants;
+import org.orbit.infra.webconsole.servlet.datacast.ChannelMetadataActionServlet;
+import org.orbit.infra.webconsole.servlet.datacast.ChannelMetadataAddServlet;
+import org.orbit.infra.webconsole.servlet.datacast.ChannelMetadataDeleteServlet;
+import org.orbit.infra.webconsole.servlet.datacast.ChannelMetadataListServlet;
+import org.orbit.infra.webconsole.servlet.datacast.ChannelMetadataUpdateServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeActionServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeAddServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeDeleteServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeListServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataCastNodeUpdateServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeActionServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeAddServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeDeleteServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeListServlet;
+import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeUpdateServlet;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -69,6 +84,12 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/admin/datatubeupdate", new DataTubeNodeUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datatubedelete", new DataTubeNodeDeleteServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datatubeaction", new DataTubeNodeActionServlet(), dicts));
+
+		addServlet(new ServletMetadataImpl("/admin/channelmetadatalist", new ChannelMetadataListServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/channelmetadataadd", new ChannelMetadataAddServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/channelmetadataupdate", new ChannelMetadataUpdateServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/channelmetadatadelete", new ChannelMetadataDeleteServlet(), dicts));
+		addServlet(new ServletMetadataImpl("/admin/channelmetadataaction", new ChannelMetadataActionServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

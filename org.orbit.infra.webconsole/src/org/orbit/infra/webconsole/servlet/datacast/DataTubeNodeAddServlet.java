@@ -1,4 +1,4 @@
-package org.orbit.infra.webconsole.servlet;
+package org.orbit.infra.webconsole.servlet.datacast;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -19,9 +19,9 @@ import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
 import org.origin.common.util.ServletUtil;
 
-public class DataCastNodeAddServlet extends HttpServlet {
+public class DataTubeNodeAddServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 9035877661499855559L;
+	private static final long serialVersionUID = -2372849439735213448L;
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,33 +30,40 @@ public class DataCastNodeAddServlet extends HttpServlet {
 		// ---------------------------------------------------------------
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
-		String dataCastId = ServletUtil.getParameter(request, "data_cast_id", "");
+		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
+		String dataTubeId = ServletUtil.getParameter(request, "data_tube_id", "");
 		String name = ServletUtil.getParameter(request, "name", "");
 		String enabledStr = ServletUtil.getParameter(request, "enabled", "");
 		boolean enabled = ("true".equals(enabledStr)) ? true : false;
 
 		String message = "";
-		if (dataCastId.isEmpty()) {
-			message = MessageHelper.INSTANCE.add(message, "'data_cast_id' parameter is not set.");
+		if (dataTubeId.isEmpty()) {
+			message = MessageHelper.INSTANCE.add(message, "'data_tube_id' parameter is not set.");
 		}
 
 		// ---------------------------------------------------------------
 		// Handle data
 		// ---------------------------------------------------------------
+		IConfigElement dataCastConfigElement = null;
 		IConfigElement configElement = null;
-		if (!dataCastId.isEmpty()) {
+		if (!dataTubeId.isEmpty()) {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
 				IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
-				if (cfgReg == null) {
-					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
+				if (cfgReg != null) {
+					dataCastConfigElement = DataCastNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+					if (dataCastConfigElement != null) {
+						Map<String, Object> attributes = new HashMap<String, Object>();
+						attributes.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
+						attributes.put("enabled", enabled);
+						configElement = dataCastConfigElement.createMemberConfigElement(name, attributes, true);
 
+					} else {
+						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
+					}
 				} else {
-					Map<String, Object> attributes = new HashMap<String, Object>();
-					attributes.put(InfraConstants.IDX_PROP__DATACAST__ID, dataCastId);
-					attributes.put("enabled", enabled);
-					configElement = cfgReg.createRootConfigElement(name, attributes, true);
+					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
 				}
 
 			} catch (Exception e) {
@@ -76,7 +83,7 @@ public class DataCastNodeAddServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/admin/datacastlist");
+		response.sendRedirect(contextRoot + "/admin/datatubelist?dataCastId=" + dataCastId);
 	}
 
 }

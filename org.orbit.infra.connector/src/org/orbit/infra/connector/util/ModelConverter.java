@@ -26,10 +26,13 @@ import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.model.datacast.DataTubeConfigDTO;
 import org.orbit.infra.model.datatube.RuntimeChannelDTO;
 import org.origin.common.json.JSONUtil;
+import org.origin.common.model.AccountConfig;
 import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
+import org.origin.common.util.AccountConfigReader;
+import org.origin.common.util.AccountConfigWriter;
 
 public class ModelConverter {
 
@@ -288,10 +291,13 @@ public class ModelConverter {
 			String accessType = channelMetadataDTO.getAccessType();
 			String accessCode = channelMetadataDTO.getAccessCode();
 			String ownerAccountId = channelMetadataDTO.getOwnerAccountId();
-			List<String> accountIds = channelMetadataDTO.getAccountIds();
+			String accountConfigsString = channelMetadataDTO.getAccountConfigsString();
+			// List<String> accountIds = channelMetadataDTO.getAccountIds();
 			Map<String, Object> properties = channelMetadataDTO.getProperties();
 			long dateCreated = channelMetadataDTO.getDateCreated();
 			long dateModified = channelMetadataDTO.getDateModified();
+
+			List<AccountConfig> accountConfigs = toAccountConfigs(accountConfigsString);
 
 			ChannelMetadataImpl channelMetadata = new ChannelMetadataImpl(dataCastClient);
 			channelMetadata.setDataCastId(dataCastId);
@@ -301,7 +307,8 @@ public class ModelConverter {
 			channelMetadata.setAccessType(accessType);
 			channelMetadata.setAccessCode(accessCode);
 			channelMetadata.setOwnerAccountId(ownerAccountId);
-			channelMetadata.setAccountIds(accountIds);
+			channelMetadata.setAccountConfigs(accountConfigs);
+			// channelMetadata.setAccountIds(accountIds);
 			channelMetadata.setProperties(properties);
 			channelMetadata.setDateCreated(dateCreated);
 			channelMetadata.setDateModified(dateModified);
@@ -351,6 +358,54 @@ public class ModelConverter {
 				channelMetadata = toChannelMetadata(dataCastClient, channelMetadataDTO);
 			}
 			return channelMetadata;
+		}
+
+		/**
+		 * 
+		 * @param response
+		 * @return
+		 * @throws ClientException
+		 */
+		public String getDataTubeId(Response response) throws ClientException {
+			if (!ResponseUtil.isSuccessful(response)) {
+				throw new ClientException(response);
+			}
+			String dataTubeId = null;
+			try {
+				dataTubeId = ResponseUtil.getSimpleValue(response, "data_tube_id", String.class);
+
+			} catch (Exception e) {
+				throw new ClientException(500, e.getMessage(), e);
+			}
+			return dataTubeId;
+		}
+
+		/**
+		 * 
+		 * @param accountConfigsString
+		 * @return
+		 */
+		public List<AccountConfig> toAccountConfigs(String accountConfigsString) {
+			AccountConfigReader reader = new AccountConfigReader();
+			List<AccountConfig> accountConfigs = reader.read(accountConfigsString);
+			if (accountConfigs == null) {
+				accountConfigs = new ArrayList<AccountConfig>();
+			}
+			return accountConfigs;
+		}
+
+		/**
+		 * 
+		 * @param accountConfigs
+		 * @return
+		 */
+		public String toAccountConfigsString(List<AccountConfig> accountConfigs) {
+			AccountConfigWriter writer = new AccountConfigWriter();
+			String accountConfigsString = writer.write(accountConfigs);
+			if (accountConfigsString == null) {
+				accountConfigsString = "";
+			}
+			return accountConfigsString;
 		}
 	}
 
