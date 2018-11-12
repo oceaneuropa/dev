@@ -1,5 +1,6 @@
 package org.orbit.infra.connector.datacast;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -342,13 +343,19 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ClientException {
+	public ChannelMetadata createChannelMetadata(String dataTubeId, String name, ChannelStatus channelStatus, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ClientException {
 		Request request = new Request(RequestConstants.DATACAST__CREATE_CHANNEL_METADATA);
 		if (dataTubeId != null) {
 			request.setParameter("data_tube_id", dataTubeId);
 		}
 		if (name != null) {
 			request.setParameter("name", name);
+		}
+		if (channelStatus != null) {
+			if (properties == null) {
+				properties = new HashMap<String, Object>();
+			}
+			properties.put("status", channelStatus.getMode());
 		}
 		if (accessType != null) {
 			request.setParameter("access_type", accessType);
@@ -404,9 +411,14 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 	}
 
 	@Override
-	public boolean updateChannelMetadataById(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException {
+	public boolean updateChannelMetadataById(String channelId, boolean updateDataTubeId, String dataTubeId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException {
 		Request request = new Request(RequestConstants.DATACAST__UPDATE_CHANNEL_METADATA);
 		request.setParameter("channel_id", channelId);
+
+		if (updateDataTubeId) {
+			request.setParameter("update_data_tube_id", true);
+			request.setParameter("data_tube_id", dataTubeId);
+		}
 
 		if (updateName) {
 			request.setParameter("update_name", true);
@@ -421,11 +433,6 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		if (updateAccessCode) {
 			request.setParameter("update_access_code", true);
 			request.setParameter("access_code", accessCode);
-		}
-
-		if (updateOwnerAccountId) {
-			request.setParameter("update_owner_account_id", true);
-			request.setParameter("owner_account_id", ownerAccountId);
 		}
 
 		if (updateOwnerAccountId) {

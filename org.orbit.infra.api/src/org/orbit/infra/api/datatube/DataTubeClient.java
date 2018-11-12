@@ -33,10 +33,6 @@ public interface DataTubeClient extends ServiceClient {
 
 	RuntimeChannel createRuntimeChannelByName(String name, boolean useExisting) throws ClientException;
 
-	boolean syncChannelMetadataId(String channelId, boolean createIfNotExist) throws ClientException;
-
-	boolean syncChannelMetadataByName(String name, boolean createIfNotExist) throws ClientException;
-
 	boolean startRuntimeChannelById(String channelId) throws ClientException;
 
 	boolean startRuntimeChannelByName(String name) throws ClientException;
@@ -48,6 +44,10 @@ public interface DataTubeClient extends ServiceClient {
 	boolean stopRuntimeChannelById(String channelId) throws ClientException;
 
 	boolean stopRuntimeChannelByName(String name) throws ClientException;
+
+	boolean syncRuntimeChannelById(String channelId) throws ClientException;
+
+	boolean syncRuntimeChannelByName(String name) throws ClientException;
 
 	boolean deleteRuntimeChannelId(String channelId) throws ClientException;
 

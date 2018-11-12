@@ -1,6 +1,10 @@
 package org.orbit.infra.api.datatube;
 
-public interface RuntimeChannel {
+import org.origin.common.adapter.IAdaptable;
+import org.origin.common.model.DateRecordAware;
+import org.origin.common.model.TransientPropertyAware;
+
+public interface RuntimeChannel extends DateRecordAware<Long>, TransientPropertyAware, IAdaptable {
 
 	DataTubeClient getDataTubeClient();
 
@@ -19,13 +23,5 @@ public interface RuntimeChannel {
 	String getName();
 
 	void setName(String name);
-
-	long getDateCreated();
-
-	void setDateCreated(long dateCreated);
-
-	long getDateModified();
-
-	void setDateModified(long dateModified);
 
 }

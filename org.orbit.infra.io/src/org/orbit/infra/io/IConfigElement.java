@@ -6,9 +6,11 @@ import java.util.Map;
 
 import org.orbit.infra.api.configregistry.ConfigElement;
 import org.origin.common.adapter.IAdaptable;
+import org.origin.common.model.DateRecordAware;
+import org.origin.common.model.TransientPropertyAware;
 import org.origin.common.resource.Path;
 
-public interface IConfigElement extends IAdaptable {
+public interface IConfigElement extends DateRecordAware<Long>, TransientPropertyAware, IAdaptable {
 
 	CFG getCFG();
 
@@ -34,10 +36,6 @@ public interface IConfigElement extends IAdaptable {
 	Map<String, Object> getAttributes();
 
 	<T> T getAttribute(String attrName, Class<T> attrValueClass);
-
-	long getDateCreated();
-
-	long getDateModified();
 
 	boolean isEnabled();
 

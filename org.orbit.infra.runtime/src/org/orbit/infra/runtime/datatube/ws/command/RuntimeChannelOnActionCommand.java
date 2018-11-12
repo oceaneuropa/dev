@@ -65,6 +65,9 @@ public class RuntimeChannelOnActionCommand extends AbstractInfraCommand<DataTube
 
 			} else if (RequestConstants.RUNTIME_CHANNEL_ACTION__STOP.equals(action)) {
 				succeed = dataTubeService.stopRuntimeChannelById(channelId);
+
+			} else if (RequestConstants.RUNTIME_CHANNEL_ACTION__SYNC.equals(action)) {
+				succeed = dataTubeService.syncRuntimeChannelById(channelId);
 			}
 
 		} else if (hasName) {
@@ -78,6 +81,9 @@ public class RuntimeChannelOnActionCommand extends AbstractInfraCommand<DataTube
 
 			} else if (RequestConstants.RUNTIME_CHANNEL_ACTION__STOP.equals(action)) {
 				succeed = dataTubeService.stopRuntimeChannelByName(name);
+
+			} else if (RequestConstants.RUNTIME_CHANNEL_ACTION__SYNC.equals(action)) {
+				succeed = dataTubeService.syncRuntimeChannelByName(name);
 			}
 		}
 

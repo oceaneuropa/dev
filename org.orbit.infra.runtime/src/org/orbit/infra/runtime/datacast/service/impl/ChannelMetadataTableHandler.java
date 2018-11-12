@@ -327,6 +327,19 @@ public class ChannelMetadataTableHandler implements DatabaseTableAware {
 	 * 
 	 * @param conn
 	 * @param channelId
+	 * @param dataTubeId
+	 * @return
+	 * @throws SQLException
+	 */
+	public boolean updateDataTubeId(Connection conn, String channelId, String dataTubeId) throws SQLException {
+		String updateSQL = "UPDATE " + getTableName() + " SET dataTubeId=?, dateModified=? WHERE channelId=?";
+		return DatabaseUtil.update(conn, updateSQL, new Object[] { dataTubeId, getCurrentTime(), channelId }, 1);
+	}
+
+	/**
+	 * 
+	 * @param conn
+	 * @param channelId
 	 * @param name
 	 * @return
 	 * @throws SQLException

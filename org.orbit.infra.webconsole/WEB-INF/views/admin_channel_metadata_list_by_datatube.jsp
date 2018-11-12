@@ -14,6 +14,7 @@
 	String platformContextRoot = getServletConfig().getInitParameter(WebConstants.PLATFORM_WEB_CONSOLE_CONTEXT_ROOT);
 	String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
+	String groupBy = (String) request.getAttribute("groupBy");
 	String dataCastId = (String) request.getAttribute("dataCastId");
 
 	String dataCastName = null;
@@ -27,13 +28,14 @@
 		}
 	}
 
-	ChannelMetadata[] channelMetadatas = (ChannelMetadata[]) request.getAttribute("channelMetadatas");
-	if (channelMetadatas == null) {
-		channelMetadatas = new ChannelMetadata[] {};
+	// ChannelMetadata[] channelMetadatas = (ChannelMetadata[]) request.getAttribute("channelMetadatas");
+	// if (channelMetadatas == null) {
+	//	channelMetadatas = new ChannelMetadata[] {};
+	// }
+	Map<String, List<ChannelMetadata>> channelMetadatasMap = (Map<String, List<ChannelMetadata>>) request.getAttribute("channelMetadatasMap");
+	if (channelMetadatasMap == null) {
+		channelMetadatasMap = new LinkedHashMap<String, List<ChannelMetadata>>();		
 	}
-
-	String groupBy = (String) request.getAttribute("groupBy");
-
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -54,6 +56,7 @@
 		<a href="<%=contextRoot%>/admin/datacastlist">Data Cast Nodes</a> >
 		<%=dataCastName%>
 	</div>
+
 	<div class="main_div01">
 		<h2>Channel Metadatas</h2>
 		<div class="top_tools_div01">
@@ -81,14 +84,22 @@
 			<% } %>
 			)
 		</div>
+		<form id="main_list" method="post">
+		<%
+			for(Iterator<String> itor = channelMetadatasMap.keySet().iterator(); itor.hasNext(); ) {
+				String dataTubeId = itor.next();	
+				List<ChannelMetadata> channelMetadatas = channelMetadatasMap.get(dataTubeId);
+				if (channelMetadatas == null) {
+					channelMetadatas = new ArrayList<ChannelMetadata>();
+				}
+		%>
 		<table class="main_table01">
-			<form id="main_list" method="post">
 			<input type="hidden" name="groupBy" value="<%=groupBy%>">
 			<input type="hidden" name="dataCastId" value="<%=dataCastId%>">
 			<input id ="main_list__action" type="hidden" name="action" value="">
 			<tr>
 				<th class="th1" width="12">
-					<input type="checkbox" onClick="toggleSelection(this, 'channelId')" />
+					<input type="checkbox" onClick="toggleSelection(this, 'channelId', '<%=dataTubeId%>')" />
 				</th>
 				<th class="th1" width="120">Data Tube Id</th>
 				<th class="th1" width="180">Channel</th>
@@ -98,7 +109,7 @@
 				<th class="th1" width="100">Action</th>
 			</tr>
 			<%
-				if (channelMetadatas.length == 0) {
+				if (channelMetadatas.isEmpty()) {
 			%>
 			<tr>
 				<td colspan="7">(n/a)</td>
@@ -106,7 +117,7 @@
 			<%
 				} else {
 					for (ChannelMetadata channelMetadata : channelMetadatas) {
-						String dataTubeId = channelMetadata.getDataTubeId();
+						// String dataTubeId = channelMetadata.getDataTubeId();
 						String channelId = channelMetadata.getChannelId();
 						String name = channelMetadata.getName();
 						String accessType = channelMetadata.getAccessType();
@@ -177,7 +188,7 @@
 			%>
 			<tr>
 				<td class="td1">
-					<input type="checkbox" name="channelId" value="<%=channelId%>">
+					<input type="checkbox" name="channelId" data-dataTubeId="<%=dataTubeId%>" value="<%=channelId%>">
 				</td>
 				<td class="td1">
 					<font color="<%=dataTubeStatusColor%>"><%=dataTubeId%></font>
@@ -203,8 +214,14 @@
 					} // loop
 				}
 			%>
-			</form>
 		</table>
+			<% if (itor.hasNext()) { %>
+				</br>
+			<% } %>
+		<%
+			}
+		%>
+		</form>
 	</div>
 	<br/>
 

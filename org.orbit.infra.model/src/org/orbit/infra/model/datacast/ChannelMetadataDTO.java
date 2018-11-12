@@ -23,7 +23,6 @@ public class ChannelMetadataDTO {
 	@XmlElement
 	protected String ownerAccountId;
 	@XmlElement
-	// protected List<String> accountIds;
 	protected String accountConfigsString;
 	@XmlElement
 	protected Map<String, Object> properties;
@@ -138,3 +137,5 @@ public class ChannelMetadataDTO {
 	}
 
 }
+
+// protected List<String> accountIds;

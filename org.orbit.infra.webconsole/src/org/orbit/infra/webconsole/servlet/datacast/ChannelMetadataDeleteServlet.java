@@ -40,6 +40,8 @@ public class ChannelMetadataDeleteServlet extends HttpServlet {
 		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
+		String groupBy = ServletUtil.getParameter(request, "groupBy", "");
+
 		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
 		String[] channelIds = ServletUtil.getParameterValues(request, "channelId", EMPTY_CHANNEL_IDS);
 
@@ -150,7 +152,7 @@ public class ChannelMetadataDeleteServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId);
+		response.sendRedirect(contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId + "&groupBy=" + groupBy);
 	}
 
 }

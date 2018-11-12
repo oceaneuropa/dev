@@ -10,6 +10,8 @@ import org.orbit.infra.api.datacast.ChannelStatus;
 import org.orbit.infra.api.datacast.DataCastClient;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.model.AccountConfig;
+import org.origin.common.model.DateRecordSupport;
+import org.origin.common.model.TransientPropertySupport;
 
 public class ChannelMetadataImpl implements ChannelMetadata {
 
@@ -25,9 +27,9 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	protected String ownerAccountId;
 	protected List<AccountConfig> accountConfigs;
 	protected Map<String, Object> properties;
-	protected long dateCreated;
-	protected long dateModified;
 
+	protected DateRecordSupport<Long> dateRecordSupport = new DateRecordSupport<Long>();
+	protected TransientPropertySupport transientPropertySupport = new TransientPropertySupport();
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
@@ -67,8 +69,9 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		this.ownerAccountId = ownerAccountId;
 		this.accountConfigs = accountConfigs;
 		this.properties = properties;
-		this.dateCreated = dateCreated;
-		this.dateModified = dateModified;
+
+		setDateCreated(dateCreated);
+		setDateModified(dateModified);
 	}
 
 	@Override
@@ -119,7 +122,7 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	@Override
 	public ChannelStatus getStatus() {
 		int value = 0;
-		Object obj = getProperties().get("channel_status");
+		Object obj = getProperties().get("status");
 		if (obj instanceof Integer) {
 			value = (int) obj;
 		} else if (obj != null) {
@@ -192,24 +195,41 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		this.properties = properties;
 	}
 
+	/** DateRecordAware */
 	@Override
-	public long getDateCreated() {
-		return this.dateCreated;
+	public Long getDateCreated() {
+		return this.dateRecordSupport.getDateCreated();
 	}
 
 	@Override
-	public void setDateCreated(long dateCreated) {
-		this.dateCreated = dateCreated;
+	public void setDateCreated(Long dateCreated) {
+		this.dateRecordSupport.setDateCreated(dateCreated);
 	}
 
 	@Override
-	public long getDateModified() {
-		return this.dateModified;
+	public Long getDateModified() {
+		return this.dateRecordSupport.getDateModified();
 	}
 
 	@Override
-	public void setDateModified(long dateModified) {
-		this.dateModified = dateModified;
+	public void setDateModified(Long dateModified) {
+		this.dateRecordSupport.setDateModified(dateModified);
+	}
+
+	/** TransientPropertyAware */
+	@Override
+	public <T> T getTransientProperty(String key) {
+		return this.transientPropertySupport.getTransientProperty(key);
+	}
+
+	@Override
+	public <T> T setTransientProperty(String key, T value) {
+		return this.transientPropertySupport.setTransientProperty(key, value);
+	}
+
+	@Override
+	public <T> T removeTransientProperty(String key) {
+		return this.transientPropertySupport.removeTransientProperty(key);
 	}
 
 	/** IAdaptable */
@@ -230,6 +250,11 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 
 }
 
+// List<String> getAccountIds();
+// long getDateCreated();
+// void setDateCreated(long dateCreated);
+// long getDateModified();
+// void setDateModified(long dateModified);
 // protected List<String> accountIds;
 // @Override
 // public synchronized List<String> getAccountIds() {
@@ -241,3 +266,9 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 // public synchronized void setAccountIds(List<String> accountIds) {
 // this.accountIds = accountIds;
 // }
+// protected long dateCreated;
+// protected long dateModified;
+// return this.dateCreated;
+// this.dateCreated = dateCreated;
+// return this.dateModified;
+// this.dateModified = dateModified;

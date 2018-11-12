@@ -43,6 +43,24 @@ public class UpdateChannelMetadataCommand extends AbstractInfraCommand<DataCastS
 
 		DataCastService dataCastService = getService();
 
+		// 1. dataTubeId
+		boolean updateDataTubeId = request.getBooleanParameter("update_data_tube_id");
+		if (updateDataTubeId) {
+			if (!request.hasParameter("data_tube_id")) {
+				ErrorDTO error = new ErrorDTO("'data_tube_id' parameter is not set.");
+				return Response.status(Status.BAD_REQUEST).entity(error).build();
+			}
+
+			String dataTubeId = request.getStringParameter("data_tube_id");
+			boolean currSucceed = dataCastService.updateChannelMetadataDataTubeId(channelId, dataTubeId);
+			if (currSucceed) {
+				hasSucceed = true;
+			} else {
+				hasFailed = true;
+			}
+		}
+
+		// 2. name
 		boolean updateName = request.getBooleanParameter("update_name");
 		if (updateName) {
 			if (!request.hasParameter("name")) {
@@ -59,7 +77,7 @@ public class UpdateChannelMetadataCommand extends AbstractInfraCommand<DataCastS
 			}
 		}
 
-		// public or private
+		// 3. accessType (public or private)
 		// - public --- anyone can join
 		// - private --- only the owner and the invited users can join
 		boolean updateAccessType = request.getBooleanParameter("update_access_type");
@@ -78,7 +96,7 @@ public class UpdateChannelMetadataCommand extends AbstractInfraCommand<DataCastS
 			}
 		}
 
-		// like the password for a diablo2 game.
+		// 4. accessCode
 		boolean updateAccessCode = request.getBooleanParameter("update_access_code");
 		if (updateAccessCode) {
 			if (!request.hasParameter("access_code")) {
@@ -95,6 +113,7 @@ public class UpdateChannelMetadataCommand extends AbstractInfraCommand<DataCastS
 			}
 		}
 
+		// 5. ownerAccountId
 		boolean updateOwnerAccountId = request.getBooleanParameter("update_owner_account_id");
 		if (updateOwnerAccountId) {
 			if (!request.hasParameter("owner_account_id")) {

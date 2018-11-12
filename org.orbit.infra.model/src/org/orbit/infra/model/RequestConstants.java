@@ -50,7 +50,6 @@ public class RequestConstants {
 	public static String DATATUBE__GET_RUNTIME_CHANNEL = "get_runtime_channel";
 	public static String DATATUBE__RUNTIME_CHANNEL_EXISTS = "runtime_channel_exists";
 	public static String DATATUBE__CREATE_RUNTIME_CHANNEL = "create_runtime_channel";
-	public static String DATATUBE__SYNC_CHANNEL_METADATA = "sync_channel_metadata";
 	public static String DATATUBE__RUNTIME_CHANNEL_ON_ACTION = "runtime_channel_on_action";
 	public static String DATATUBE__DELETE_RUNTIME_CHANNEL = "delete_runtime_channel";
 
@@ -58,10 +57,13 @@ public class RequestConstants {
 	public static String RUNTIME_CHANNEL_ACTION__START = "start";
 	public static String RUNTIME_CHANNEL_ACTION__SUSPEND = "suspend";
 	public static String RUNTIME_CHANNEL_ACTION__STOP = "stop";
+	public static String RUNTIME_CHANNEL_ACTION__SYNC = "sync";
+
 	static {
 		RUNTIME_CHANNEL_ACTIONS.add(RUNTIME_CHANNEL_ACTION__START);
 		RUNTIME_CHANNEL_ACTIONS.add(RUNTIME_CHANNEL_ACTION__SUSPEND);
 		RUNTIME_CHANNEL_ACTIONS.add(RUNTIME_CHANNEL_ACTION__STOP);
+		RUNTIME_CHANNEL_ACTIONS.add(RUNTIME_CHANNEL_ACTION__SYNC);
 	}
 
 	public static String ALLOCATE_TYPE__DATA_TUBE_ID = "data_tube_id";

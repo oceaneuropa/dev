@@ -173,7 +173,7 @@ public class DataCastIndexItemHelper {
 			for (IndexItem currIndexItem : allDataTubeIndexItems) {
 				String currDataCastId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID);
 				String currDataTubeId = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__ID);
-				if (dataCastId.equals(currDataCastId) && !dataTubeId.equals(currDataTubeId)) {
+				if (dataCastId.equals(currDataCastId) && dataTubeId.equals(currDataTubeId)) {
 					dataTubeIndexItem = currIndexItem;
 					break;
 				}

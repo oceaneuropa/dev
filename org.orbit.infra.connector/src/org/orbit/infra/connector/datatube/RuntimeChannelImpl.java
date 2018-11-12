@@ -2,6 +2,9 @@ package org.orbit.infra.connector.datatube;
 
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.RuntimeChannel;
+import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.model.DateRecordSupport;
+import org.origin.common.model.TransientPropertySupport;
 
 public class RuntimeChannelImpl implements RuntimeChannel {
 
@@ -11,8 +14,10 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 	protected String dataTubeId;
 	protected String channelId;
 	protected String name;
-	protected long dateCreated;
-	protected long dateModified;
+
+	protected DateRecordSupport<Long> dateRecordSupport = new DateRecordSupport<Long>();
+	protected TransientPropertySupport transientPropertySupport = new TransientPropertySupport();
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -24,6 +29,7 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 
 	/**
 	 * 
+	 * @param dataTubeClient
 	 * @param dataCastId
 	 * @param dataTubeId
 	 * @param channelId
@@ -31,13 +37,16 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 	 * @param dateCreated
 	 * @param dateModified
 	 */
-	public RuntimeChannelImpl(String dataCastId, String dataTubeId, String channelId, String name, long dateCreated, long dateModified) {
+	public RuntimeChannelImpl(DataTubeClient dataTubeClient, String dataCastId, String dataTubeId, String channelId, String name, long dateCreated, long dateModified) {
+		this.dataTubeClient = dataTubeClient;
+
 		this.dataCastId = dataCastId;
 		this.dataTubeId = dataTubeId;
 		this.channelId = channelId;
 		this.name = name;
-		this.dateCreated = dateCreated;
-		this.dateModified = dateModified;
+
+		setDateCreated(dateCreated);
+		setDateModified(dateModified);
 	}
 
 	@Override
@@ -85,24 +94,68 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 		this.name = name;
 	}
 
+	/** DateRecordAware */
 	@Override
-	public long getDateCreated() {
-		return this.dateCreated;
+	public Long getDateCreated() {
+		return this.dateRecordSupport.getDateCreated();
 	}
 
 	@Override
-	public void setDateCreated(long dateCreated) {
-		this.dateCreated = dateCreated;
+	public void setDateCreated(Long dateCreated) {
+		this.dateRecordSupport.setDateCreated(dateCreated);
 	}
 
 	@Override
-	public long getDateModified() {
-		return this.dateModified;
+	public Long getDateModified() {
+		return this.dateRecordSupport.getDateModified();
 	}
 
 	@Override
-	public void setDateModified(long dateModified) {
-		this.dateModified = dateModified;
+	public void setDateModified(Long dateModified) {
+		this.dateRecordSupport.setDateModified(dateModified);
+	}
+
+	/** TransientPropertyAware */
+	@Override
+	public <T> T getTransientProperty(String key) {
+		return this.transientPropertySupport.getTransientProperty(key);
+	}
+
+	@Override
+	public <T> T setTransientProperty(String key, T value) {
+		return this.transientPropertySupport.setTransientProperty(key, value);
+	}
+
+	@Override
+	public <T> T removeTransientProperty(String key) {
+		return this.transientPropertySupport.removeTransientProperty(key);
+	}
+
+	/** IAdaptable */
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		return this.adaptorSupport.getAdapter(adapter);
 	}
 
 }
+
+// long getDateCreated();
+// void setDateCreated(long dateCreated);
+// long getDateModified();
+// void setDateModified(long dateModified);
+// protected long dateCreated;
+// protected long dateModified;
+// return this.dateCreated;
+// this.dateCreated = dateCreated;
+// return this.dateModified;
+// this.dateModified = dateModified;

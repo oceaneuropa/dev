@@ -61,8 +61,8 @@
 				<th class="th1" width="100">Data Cast Id</th>
 				<th class="th1" width="60">Enabled</th>
 				<th class="th1" width="60">Status</th>
-				<th class="th1" width="120">Metadata</th>
-				<th class="th1" width="120">Action</th>
+				<th class="th1" width="150">Metadata</th>
+				<th class="th1" width="130">Action</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
@@ -158,7 +158,7 @@
 				<td class="td1">
 					<a class="action01" href="javascript:changeDataCastNode('<%=elementId%>', '<%=dataCastId%>', '<%=name%>', <%=enabled%>)">Edit</a>
 					<a class="action01" href="<%=contextRoot%>/admin/datatubelist?dataCastId=<%=dataCastId%>">Data Tubes</a>
-					<a class="action01" href="<%=contextRoot%>/admin/channelmetadatalist?dataCastId=<%=dataCastId%>">Channels</a>
+					<a class="action01" href="<%=contextRoot%>/admin/channelmetadatalist?dataCastId=<%=dataCastId%>">Channel Metadatas</a>
 				</td>
 			</tr>
 			<%

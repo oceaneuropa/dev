@@ -721,6 +721,24 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 	}
 
 	@Override
+	public boolean updateChannelMetadataDataTubeId(String channelId, String dataTubeId) throws ServerException {
+		boolean isUpdated = false;
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
+
+			isUpdated = tableHandler.updateDataTubeId(conn, channelId, dataTubeId);
+
+		} catch (SQLException e) {
+			handleException(e);
+		} finally {
+			DatabaseUtil.closeQuietly(conn, true);
+		}
+		return isUpdated;
+	}
+
+	@Override
 	public boolean updateChannelMetadataName(String channelId, String name) throws ServerException {
 		boolean isUpdated = false;
 		Connection conn = null;

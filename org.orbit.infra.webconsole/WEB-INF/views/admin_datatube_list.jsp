@@ -144,6 +144,12 @@
 						String statusText = isOnline ? "Online" : "Offline";
 						String statusColor = isOnline ? "#2eb82e" : "#cccccc";
 						String enabledStr = enabled ? "true" : "false";
+						
+						int runtimeChannelsNum = 0;
+						RuntimeChannel[] runtimeChannels = configElement.getTransientProperty("runtimeChannels");
+						if (runtimeChannels != null) {
+							runtimeChannelsNum = runtimeChannels.length;
+						}
 			%>
 			<tr>
 				<td class="td1">
@@ -158,10 +164,11 @@
 				<td class="td2"><%=metadataStr%></td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeDataTubeNode('<%=elementId%>', '<%=dataTubeId%>', '<%=name%>', <%=enabled%>)">Edit</a>
+					<a class="action01" href="<%=contextRoot%>/admin/runtimechannellist?dataCastId=<%=dataCastId%>&dataTubeId=<%=dataTubeId%>">Runtime Channels (<%=runtimeChannelsNum%>)</a>
 				</td>
 			</tr>
 			<%
-					} // loop
+					} // for loop
 				}
 			%>
 			</form>

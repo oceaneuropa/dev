@@ -21,11 +21,11 @@ import com.osgi.example1.fs.server.service.database.DatabaseFileSystem;
 import com.osgi.example1.fs.server.service.database.DatabaseFileSystemConfiguration;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DatabaseFileSystemTestMac {
+public class DatabaseFileSystemTestMac2 {
 
 	protected FileSystem fs;
 
-	public DatabaseFileSystemTestMac() {
+	public DatabaseFileSystemTestMac2() {
 		this.fs = getDatabaseFileSystem();
 	}
 
@@ -34,7 +34,7 @@ public class DatabaseFileSystemTestMac {
 	}
 
 	protected FileSystem getDatabaseFileSystem() {
-		Properties properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "Zion88419716");
+		Properties properties = DatabaseUtil.getProperties("org.postgresql.Driver", "jdbc:postgresql://127.0.0.1:5432/origin", "postgres", "admin");
 		// Properties properties = DatabaseUtil.getProperties("com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1:3306/origin", "root", "admin");
 		DatabaseFileSystemConfiguration config = new DatabaseFileSystemConfiguration(properties);
 		return new DatabaseFileSystem(config);
@@ -270,15 +270,9 @@ public class DatabaseFileSystemTestMac {
 
 		// local dir location
 		File localDir = new File("/Users/example/Downloads/apache/myfolder");
-		// File localDir = new File("/Users/yayang/svn/amxext/trunk/bwsolutions/OData/BW6ODataPlugin");
-		// File localDir = new File("/Users/yayang/svn/amxext/trunk/bwsolutions/OData/BW6ODataPlugin_6.0.1");
-		// File localDir = new File("/Users/yayang/svn/amxext/trunk/bwsolutions/OData/BW6ODataPlugin_V3");
 
 		// FS file path
 		Path fsPath = new Path("/Users/example/Downloads/apache/myfolder.zip");
-		// Path fsPath = new Path("/OData/BW6ODataPlugin.zip");
-		// Path fsPath = new Path("/OData/BW6ODataPlugin_6.0.1.zip");
-		// Path fsPath = new Path("/OData/BW6ODataPlugin_V3.zip");
 
 		if (this.fs.exists(fsPath)) {
 			this.fs.delete(fsPath);
@@ -351,7 +345,7 @@ public class DatabaseFileSystemTestMac {
 	}
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(DatabaseFileSystemTestMac.class);
+		Result result = JUnitCore.runClasses(DatabaseFileSystemTestMac2.class);
 
 		System.out.println("--- --- --- DatabaseFileSystemTestMac.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {

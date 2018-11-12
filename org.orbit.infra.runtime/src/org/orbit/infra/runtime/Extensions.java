@@ -48,7 +48,6 @@ import org.orbit.infra.runtime.datatube.ws.command.GetRuntimeChannelCommand;
 import org.orbit.infra.runtime.datatube.ws.command.ListRuntimeChannelsCommand;
 import org.orbit.infra.runtime.datatube.ws.command.RuntimeChannelExistsCommand;
 import org.orbit.infra.runtime.datatube.ws.command.RuntimeChannelOnActionCommand;
-import org.orbit.infra.runtime.datatube.ws.command.SyncChannelMetadataCommand;
 import org.orbit.infra.runtime.extensionregistry.ws.ExtensionRegistryServiceIndexTimerFactory;
 import org.orbit.infra.runtime.extensions.configregistry.ConfigRegistryRelayActivator;
 import org.orbit.infra.runtime.extensions.configregistry.ConfigRegistryRelayPropertyTester;
@@ -649,26 +648,19 @@ public class Extensions extends ProgramExtensions {
 		extension14.addInterface(desc14);
 		addExtension(extension14);
 
-		Extension extension15 = new Extension(extensionTypeId, SyncChannelMetadataCommand.ID);
+		Extension extension15 = new Extension(extensionTypeId, RuntimeChannelOnActionCommand.ID);
 		extension15.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc15 = new InterfaceDescription(WSCommand.class, SyncChannelMetadataCommand.class);
+		InterfaceDescription desc15 = new InterfaceDescription(WSCommand.class, RuntimeChannelOnActionCommand.class);
 		desc15.setSingleton(false);
 		extension15.addInterface(desc15);
 		addExtension(extension15);
 
-		Extension extension16 = new Extension(extensionTypeId, RuntimeChannelOnActionCommand.ID);
+		Extension extension16 = new Extension(extensionTypeId, DeleteRuntimeChannelCommand.ID);
 		extension16.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc16 = new InterfaceDescription(WSCommand.class, RuntimeChannelOnActionCommand.class);
+		InterfaceDescription desc16 = new InterfaceDescription(WSCommand.class, DeleteRuntimeChannelCommand.class);
 		desc16.setSingleton(false);
 		extension16.addInterface(desc16);
 		addExtension(extension16);
-
-		Extension extension17 = new Extension(extensionTypeId, DeleteRuntimeChannelCommand.ID);
-		extension17.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
-		InterfaceDescription desc17 = new InterfaceDescription(WSCommand.class, DeleteRuntimeChannelCommand.class);
-		desc17.setSingleton(false);
-		extension17.addInterface(desc17);
-		addExtension(extension17);
 	}
 
 	protected void createCommandExtensions() {
@@ -693,3 +685,10 @@ public class Extensions extends ProgramExtensions {
 	}
 
 }
+
+// Extension extension15 = new Extension(extensionTypeId, SyncChannelMetadataCommand.ID);
+// extension15.setProperty(WSCommand.PROP__SERVICE_NAME, serviceName);
+// InterfaceDescription desc15 = new InterfaceDescription(WSCommand.class, SyncChannelMetadataCommand.class);
+// desc15.setSingleton(false);
+// extension15.addInterface(desc15);
+// addExtension(extension15);

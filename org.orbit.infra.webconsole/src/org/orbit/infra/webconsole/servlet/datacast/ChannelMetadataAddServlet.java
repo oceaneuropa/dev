@@ -12,6 +12,7 @@ import javax.servlet.http.HttpSession;
 
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.datacast.ChannelMetadata;
+import org.orbit.infra.api.datacast.ChannelStatus;
 import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.datatube.RuntimeChannel;
@@ -39,16 +40,26 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
+		String groupBy = ServletUtil.getParameter(request, "groupBy", "");
+
 		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
 		String dataTubeId = ServletUtil.getParameter(request, "data_tube_id", "");
 		String name = ServletUtil.getParameter(request, "name", "");
 		String accessType = ServletUtil.getParameter(request, "access_type", "");
 		String accessCode = ServletUtil.getParameter(request, "access_code", "");
 		String ownerAccountId = ServletUtil.getParameter(request, "owner_account_id", "");
+		String start = ServletUtil.getParameter(request, "-start", "");
 
 		// normalize value
 		if (!"public".equals(accessType) && !"private".equals(accessType)) {
 			accessType = "public";
+		}
+
+		ChannelStatus channelStatus = null;
+		if ("true".equalsIgnoreCase(start)) {
+			channelStatus = ChannelStatus.STARTED;
+		} else {
+			channelStatus = ChannelStatus.STOPPED;
 		}
 
 		String message = "";
@@ -81,10 +92,10 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 						List<AccountConfig> accountConfigs = null;
 						Map<String, Object> properties = null;
 
-						channelMetadata = InfraClientsHelper.DATA_CAST.createChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, dataTubeId, name, accessType, accessCode, ownerAccountId, accountConfigs, properties);
+						channelMetadata = InfraClientsHelper.DATA_CAST.createChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, dataTubeId, name, channelStatus, accessType, accessCode, ownerAccountId, accountConfigs, properties);
 
 						if (channelMetadata != null) {
-							message = MessageHelper.INSTANCE.add(message, "Channel metadata is created successfully.");
+							message = MessageHelper.INSTANCE.add(message, "Channel metadata is created.");
 							String channelId = channelMetadata.getChannelId();
 
 							IndexItem dataTubeIndexItem = DataCastIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
@@ -96,9 +107,9 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 									RuntimeChannel runtimeChannel = InfraClientsHelper.DATA_TUBE.createRuntimeChannelId(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId, true);
 
 									if (runtimeChannel != null) {
-										message = MessageHelper.INSTANCE.add(message, "Runtime channel (channelId='" + channelId + "'; dataTubeId='" + dataTubeId + "') is created.");
+										message = MessageHelper.INSTANCE.add(message, "Runtime channel is created.");
 									} else {
-										message = MessageHelper.INSTANCE.add(message, "Runtime channel (channelId='" + channelId + "'; dataTubeId='" + dataTubeId + "') is not created.");
+										message = MessageHelper.INSTANCE.add(message, "Runtime channel is not created.");
 									}
 								} else {
 									message = MessageHelper.INSTANCE.add(message, "DataTube service (dataTubeId='" + dataTubeId + "') is not online.");
@@ -126,7 +137,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId);
+		response.sendRedirect(contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId + "&groupBy=" + groupBy);
 	}
 
 }

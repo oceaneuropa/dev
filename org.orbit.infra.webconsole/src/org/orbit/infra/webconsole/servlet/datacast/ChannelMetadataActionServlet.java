@@ -43,6 +43,8 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 		String indexServiceUrl = getServletConfig().getInitParameter(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		String contextRoot = getServletConfig().getInitParameter(WebConstants.INFRA__WEB_CONSOLE_CONTEXT_ROOT);
 
+		String groupBy = ServletUtil.getParameter(request, "groupBy", "");
+
 		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
 		String[] channelIds = ServletUtil.getParameterValues(request, "channelId", EMPTY_CHANNEL_IDS);
 		String action = ServletUtil.getParameter(request, "action", "");
@@ -67,9 +69,12 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 		boolean hasFailed = false;
 
 		if (channelIds.length > 0 && RequestConstants.RUNTIME_CHANNEL_ACTIONS.contains(action)) {
+
 			boolean isStartAction = false;
 			boolean isSuspendAction = false;
 			boolean isStopAction = false;
+			boolean isSyncRuntimeChannelAction = false;
+
 			String actionResultLabel = "";
 			if (RequestConstants.RUNTIME_CHANNEL_ACTION__START.equals(action)) {
 				isStartAction = true;
@@ -82,15 +87,10 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 			} else if (RequestConstants.RUNTIME_CHANNEL_ACTION__STOP.equals(action)) {
 				isStopAction = true;
 				actionResultLabel = "stopped";
-			}
 
-			ChannelStatus channelStatus = ChannelStatus.EMPTY;
-			if (isStartAction) {
-				channelStatus = ChannelStatus.STARTED;
-			} else if (isSuspendAction) {
-				channelStatus = ChannelStatus.SUSPENDED;
-			} else if (isStopAction) {
-				channelStatus = ChannelStatus.STOPPED;
+			} else if (RequestConstants.RUNTIME_CHANNEL_ACTION__SYNC.equals(action)) {
+				isSyncRuntimeChannelAction = true;
+				actionResultLabel = "synchronized";
 			}
 
 			try {
@@ -117,50 +117,69 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 								continue;
 							}
 
+							// String channelName = channelMetadata.getName();
 							String dataTubeId = channelMetadata.getDataTubeId();
 
-							boolean currSucceed = InfraClientsHelper.DATA_CAST.setChannelMetadataStatusById(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId, channelStatus, false);
-							if (currSucceed) {
-								hasSucceed = true;
-
-								IndexItem dataTubeIndexItem = dataTubeIndexItemMap.get(dataTubeId);
-								if (dataTubeIndexItem != null) {
-									boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
-
-									if (isDataTubeOnline) {
-										// delete runtime channel from data tube service
-										String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
-
-										boolean isActionSucceed = false;
-										if (isStartAction) {
-											isActionSucceed = InfraClientsHelper.DATA_TUBE.startRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
-
-										} else if (isSuspendAction) {
-											isActionSucceed = InfraClientsHelper.DATA_TUBE.suspendRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
-
-										} else if (isStopAction) {
-											isActionSucceed = InfraClientsHelper.DATA_TUBE.stopRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
-										}
-
-										if (isActionSucceed) {
-											message = MessageHelper.INSTANCE.add(message, "Runtime channel (channelId='" + channelId + "'; dataTubeId='" + dataTubeId + "') is updated.");
-										} else {
-											message = MessageHelper.INSTANCE.add(message, "Runtime channel (channelId='" + channelId + "'; dataTubeId='" + dataTubeId + "') is not updated.");
-										}
-
-									} else {
-										if (!dataTubeIdsWithoutOnlineService.contains(dataTubeId)) {
-											dataTubeIdsWithoutOnlineService.add(dataTubeId);
-										}
-									}
+							boolean isDataTubeOnline = false;
+							String dataTubeServiceUrl = null;
+							IndexItem dataTubeIndexItem = dataTubeIndexItemMap.get(dataTubeId);
+							if (dataTubeIndexItem != null) {
+								isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
+								if (isDataTubeOnline) {
+									dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
 								} else {
-									if (!dataTubeIdsWithoutIndexItem.contains(dataTubeId)) {
-										dataTubeIdsWithoutIndexItem.add(dataTubeId);
+									if (!dataTubeIdsWithoutOnlineService.contains(dataTubeId)) {
+										dataTubeIdsWithoutOnlineService.add(dataTubeId);
 									}
+								}
+							} else {
+								if (!dataTubeIdsWithoutIndexItem.contains(dataTubeId)) {
+									dataTubeIdsWithoutIndexItem.add(dataTubeId);
+								}
+							}
+
+							boolean isRuntimeChannelUpdated = false;
+							if (isSyncRuntimeChannelAction) {
+								isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+
+								if (isRuntimeChannelUpdated) {
+									hasSucceed = true;
+								} else {
+									hasFailed = true;
 								}
 
 							} else {
-								hasFailed = true;
+								ChannelStatus channelStatus = ChannelStatus.EMPTY;
+								if (isStartAction) {
+									channelStatus = ChannelStatus.STARTED;
+								} else if (isSuspendAction) {
+									channelStatus = ChannelStatus.SUSPENDED;
+								} else if (isStopAction) {
+									channelStatus = ChannelStatus.STOPPED;
+								}
+
+								boolean isChannelMetadataUpdated = InfraClientsHelper.DATA_CAST.setChannelMetadataStatusById(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId, channelStatus, false);
+								if (isChannelMetadataUpdated) {
+									if (isDataTubeOnline && dataTubeServiceUrl != null) {
+										// delete runtime channel from data tube service
+										isRuntimeChannelUpdated = false;
+										if (isStartAction) {
+											isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.startRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+
+										} else if (isSuspendAction) {
+											isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.suspendRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+
+										} else if (isStopAction) {
+											isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.stopRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
+										}
+									}
+								}
+
+								if (isChannelMetadataUpdated && isRuntimeChannelUpdated) {
+									hasSucceed = true;
+								} else {
+									hasFailed = true;
+								}
 							}
 						}
 					} else {
@@ -188,9 +207,17 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 
 			if (channelIds.length > 0) {
 				if (succeed) {
-					message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Channels are " + actionResultLabel + "." : "Channel is " + actionResultLabel + ".");
+					if (isSyncRuntimeChannelAction) {
+						message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Runtime channels are synchronized." : "Runtime channel is synchronized.");
+					} else {
+						message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Channels are " + actionResultLabel + "." : "Channel is " + actionResultLabel + ".");
+					}
 				} else {
-					message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Channels are not " + actionResultLabel + "." : "Channel is not " + actionResultLabel + ".");
+					if (isSyncRuntimeChannelAction) {
+						message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Runtime channels are not synchronized." : "Runtime channel is not synchronized.");
+					} else {
+						message = MessageHelper.INSTANCE.add(message, (channelIds.length > 1) ? "Channels are not " + actionResultLabel + "." : "Channel is not " + actionResultLabel + ".");
+					}
 				}
 			}
 		}
@@ -201,7 +228,7 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 		HttpSession session = request.getSession(true);
 		session.setAttribute("message", message);
 
-		response.sendRedirect(contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId);
+		response.sendRedirect(contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId + "&groupBy=" + groupBy);
 	}
 
 }

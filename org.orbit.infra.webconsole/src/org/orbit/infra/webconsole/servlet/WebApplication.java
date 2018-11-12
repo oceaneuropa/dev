@@ -20,6 +20,7 @@ import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeAddServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeDeleteServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeListServlet;
 import org.orbit.infra.webconsole.servlet.datacast.DataTubeNodeUpdateServlet;
+import org.orbit.infra.webconsole.servlet.datatube.RuntimeChannelListServlet;
 import org.orbit.platform.sdk.http.PlatformWebApplication;
 import org.orbit.service.servlet.impl.JspMetadataImpl;
 import org.orbit.service.servlet.impl.ResourceMetadataImpl;
@@ -73,6 +74,7 @@ public class WebApplication extends PlatformWebApplication {
 		addResource(new ResourceMetadataImpl("/views/js", bundlePrefix + "/WEB-INF/views/js"));
 
 		// Admin
+		// DataCast
 		addServlet(new ServletMetadataImpl("/admin/datacastlist", new DataCastNodeListServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datacastadd", new DataCastNodeAddServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/datacastupdate", new DataCastNodeUpdateServlet(), dicts));
@@ -90,6 +92,9 @@ public class WebApplication extends PlatformWebApplication {
 		addServlet(new ServletMetadataImpl("/admin/channelmetadataupdate", new ChannelMetadataUpdateServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/channelmetadatadelete", new ChannelMetadataDeleteServlet(), dicts));
 		addServlet(new ServletMetadataImpl("/admin/channelmetadataaction", new ChannelMetadataActionServlet(), dicts));
+
+		// DataTube
+		addServlet(new ServletMetadataImpl("/admin/runtimechannellist", new RuntimeChannelListServlet(), dicts));
 
 		// Add JSPs
 		addJSP(new JspMetadataImpl(bundleContext.getBundle(), "/views", "/WEB-INF", dicts));

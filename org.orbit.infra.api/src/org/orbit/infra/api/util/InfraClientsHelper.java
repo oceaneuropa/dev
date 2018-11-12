@@ -1177,6 +1177,7 @@ public class InfraClientsHelper {
 		 * @param accessToken
 		 * @param dataTubeId
 		 * @param name
+		 * @param channelStatus
 		 * @param accessType
 		 * @param accessCode
 		 * @param ownerAccountId
@@ -1185,11 +1186,11 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public ChannelMetadata createChannelMetadata(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ClientException {
+		public ChannelMetadata createChannelMetadata(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String dataTubeId, String name, ChannelStatus channelStatus, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ClientException {
 			ChannelMetadata channelMetadata = null;
 			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
 			if (dataCastClient != null) {
-				channelMetadata = dataCastClient.createChannelMetadata(dataTubeId, name, accessType, accessCode, ownerAccountId, accountConfigs, properties);
+				channelMetadata = dataCastClient.createChannelMetadata(dataTubeId, name, channelStatus, accessType, accessCode, ownerAccountId, accountConfigs, properties);
 			}
 			return channelMetadata;
 		}
@@ -1200,6 +1201,8 @@ public class InfraClientsHelper {
 		 * @param dataCastServiceUrl
 		 * @param accessToken
 		 * @param channelId
+		 * @param updateDataTubeId
+		 * @param dataTubeId
 		 * @param updateName
 		 * @param name
 		 * @param updateAccessType
@@ -1211,11 +1214,11 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
-		public boolean updateChannelMetadata(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException {
+		public boolean updateChannelMetadata(DataCastClientResolver clientResolver, String dataCastServiceUrl, String accessToken, String channelId, boolean updateDataTubeId, String dataTubeId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException {
 			boolean isUpdated = false;
 			DataCastClient dataCastClient = getDataCastClient(clientResolver, dataCastServiceUrl, accessToken);
 			if (dataCastClient != null) {
-				isUpdated = dataCastClient.updateChannelMetadataById(channelId, updateName, name, updateAccessType, accessType, updateAccessCode, accessCode, updateOwnerAccountId, ownerAccountId);
+				isUpdated = dataCastClient.updateChannelMetadataById(channelId, updateDataTubeId, dataTubeId, updateName, name, updateAccessType, accessType, updateAccessCode, accessCode, updateOwnerAccountId, ownerAccountId);
 			}
 			return isUpdated;
 		}
@@ -1579,44 +1582,6 @@ public class InfraClientsHelper {
 		 * @param dataTubeServiceUrl
 		 * @param accessToken
 		 * @param channelId
-		 * @param createIfNotExist
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean syncChannelMetadataById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId, boolean createIfNotExist) throws ClientException {
-			boolean isUpdated = false;
-			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
-			if (dataTubeClient != null) {
-				isUpdated = dataTubeClient.syncChannelMetadataId(channelId, createIfNotExist);
-			}
-			return isUpdated;
-		}
-
-		/**
-		 * 
-		 * @param clientResolver
-		 * @param dataTubeServiceUrl
-		 * @param accessToken
-		 * @param name
-		 * @param createIfNotExist
-		 * @return
-		 * @throws ClientException
-		 */
-		public boolean syncChannelMetadataByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name, boolean createIfNotExist) throws ClientException {
-			boolean isUpdated = false;
-			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
-			if (dataTubeClient != null) {
-				isUpdated = dataTubeClient.syncChannelMetadataByName(name, createIfNotExist);
-			}
-			return isUpdated;
-		}
-
-		/**
-		 * 
-		 * @param clientResolver
-		 * @param dataTubeServiceUrl
-		 * @param accessToken
-		 * @param channelId
 		 * @return
 		 * @throws ClientException
 		 */
@@ -1728,6 +1693,42 @@ public class InfraClientsHelper {
 		 * @return
 		 * @throws ClientException
 		 */
+		public boolean syncRuntimeChannelById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.syncRuntimeChannelById(channelId);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param name
+		 * @return
+		 * @throws ClientException
+		 */
+		public boolean syncRuntimeChannelByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name) throws ClientException {
+			boolean succeed = false;
+			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+			if (dataTubeClient != null) {
+				succeed = dataTubeClient.syncRuntimeChannelByName(name);
+			}
+			return succeed;
+		}
+
+		/**
+		 * 
+		 * @param clientResolver
+		 * @param dataTubeServiceUrl
+		 * @param accessToken
+		 * @param channelId
+		 * @return
+		 * @throws ClientException
+		 */
 		public boolean deleteRuntimeChannelById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId) throws ClientException {
 			boolean isDeleted = false;
 			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
@@ -1781,4 +1782,44 @@ public class InfraClientsHelper {
 // }
 //
 // return extensionItemMap;
+// }
+
+/// **
+// *
+// * @param clientResolver
+// * @param dataTubeServiceUrl
+// * @param accessToken
+// * @param channelId
+// * @param createIfNotExist
+// * @return
+// * @throws ClientException
+// */
+// public boolean syncChannelMetadataById(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String channelId, boolean
+/// createIfNotExist) throws ClientException {
+// boolean isUpdated = false;
+// DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+// if (dataTubeClient != null) {
+// isUpdated = dataTubeClient.syncChannelMetadataId(channelId, createIfNotExist);
+// }
+// return isUpdated;
+// }
+//
+/// **
+// *
+// * @param clientResolver
+// * @param dataTubeServiceUrl
+// * @param accessToken
+// * @param name
+// * @param createIfNotExist
+// * @return
+// * @throws ClientException
+// */
+// public boolean syncChannelMetadataByName(DataTubeClientResolver clientResolver, String dataTubeServiceUrl, String accessToken, String name, boolean
+/// createIfNotExist) throws ClientException {
+// boolean isUpdated = false;
+// DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
+// if (dataTubeClient != null) {
+// isUpdated = dataTubeClient.syncChannelMetadataByName(name, createIfNotExist);
+// }
+// return isUpdated;
 // }

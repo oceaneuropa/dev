@@ -1,8 +1,11 @@
 package org.orbit.infra.webconsole.servlet.datacast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -57,6 +60,8 @@ public class ChannelMetadataListServlet extends HttpServlet {
 		}
 
 		String dataCastId = ServletUtil.getParameter(request, "dataCastId", "");
+
+		String groupBy = ServletUtil.getParameter(request, "groupBy", "");
 
 		// ---------------------------------------------------------------
 		// Handle data
@@ -152,7 +157,6 @@ public class ChannelMetadataListServlet extends HttpServlet {
 				} else {
 					message = MessageHelper.INSTANCE.add(message, "IndexItem for DataCast service (dataCastId='" + dataCastId + "') cannot be found.");
 				}
-
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");
 				e.printStackTrace();
@@ -161,6 +165,20 @@ public class ChannelMetadataListServlet extends HttpServlet {
 
 		if (channelMetadatas == null) {
 			channelMetadatas = EMPTY_CHANNEL_METADATAS;
+		}
+
+		Map<String, List<ChannelMetadata>> channelMetadatasMap = new LinkedHashMap<String, List<ChannelMetadata>>();
+		if ("datatube".equals(groupBy)) {
+			for (ChannelMetadata channelMetadata : channelMetadatas) {
+				String dataTubeId = channelMetadata.getDataTubeId();
+
+				List<ChannelMetadata> currChannelMetadatas = channelMetadatasMap.get(dataTubeId);
+				if (currChannelMetadatas == null) {
+					currChannelMetadatas = new ArrayList<ChannelMetadata>();
+					channelMetadatasMap.put(dataTubeId, currChannelMetadatas);
+				}
+				currChannelMetadatas.add(channelMetadata);
+			}
 		}
 
 		// ---------------------------------------------------------------
@@ -174,8 +192,15 @@ public class ChannelMetadataListServlet extends HttpServlet {
 			request.setAttribute("dataCastConfigElement", dataCastConfigElement);
 		}
 		request.setAttribute("channelMetadatas", channelMetadatas);
+		request.setAttribute("groupBy", groupBy);
 
-		request.getRequestDispatcher(contextRoot + "/views/admin_channel_metadata_list.jsp").forward(request, response);
+		String fileName = "admin_channel_metadata_list.jsp";
+		if ("datatube".equals(groupBy)) {
+			request.setAttribute("channelMetadatasMap", channelMetadatasMap);
+			fileName = "admin_channel_metadata_list_by_datatube.jsp";
+		}
+
+		request.getRequestDispatcher(contextRoot + "/views/" + fileName).forward(request, response);
 	}
 
 }

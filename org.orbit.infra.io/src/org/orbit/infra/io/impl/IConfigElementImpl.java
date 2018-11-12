@@ -10,6 +10,8 @@ import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
 import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.model.DateRecordSupport;
+import org.origin.common.model.TransientPropertySupport;
 import org.origin.common.resource.Path;
 
 public class IConfigElementImpl implements IConfigElement {
@@ -17,6 +19,8 @@ public class IConfigElementImpl implements IConfigElement {
 	protected IConfigRegistry cfgReg;
 	protected ConfigElement configElement;
 
+	protected DateRecordSupport<Long> dateRecordSupport = new DateRecordSupport<Long>();
+	protected TransientPropertySupport transientPropertySupport = new TransientPropertySupport();
 	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
@@ -85,16 +89,6 @@ public class IConfigElementImpl implements IConfigElement {
 	@Override
 	public <T> T getAttribute(String attrName, Class<T> attrValueClass) {
 		return this.configElement.getAttribute(attrName, attrValueClass);
-	}
-
-	@Override
-	public long getDateCreated() {
-		return this.configElement.getDateCreated();
-	}
-
-	@Override
-	public long getDateModified() {
-		return this.configElement.getDateModified();
 	}
 
 	@Override
@@ -192,6 +186,43 @@ public class IConfigElementImpl implements IConfigElement {
 		return this.cfgReg.createConfigElement(parentElementId, name, attributes, generateUniqueName);
 	}
 
+	/** DateRecordAware */
+	@Override
+	public Long getDateCreated() {
+		return this.dateRecordSupport.getDateCreated();
+	}
+
+	@Override
+	public void setDateCreated(Long dateCreated) {
+		this.dateRecordSupport.setDateCreated(dateCreated);
+	}
+
+	@Override
+	public Long getDateModified() {
+		return this.dateRecordSupport.getDateModified();
+	}
+
+	@Override
+	public void setDateModified(Long dateModified) {
+		this.dateRecordSupport.setDateModified(dateModified);
+	}
+
+	/** TransientPropertyAware */
+	@Override
+	public <T> T getTransientProperty(String key) {
+		return this.transientPropertySupport.getTransientProperty(key);
+	}
+
+	@Override
+	public <T> T setTransientProperty(String key, T value) {
+		return this.transientPropertySupport.setTransientProperty(key, value);
+	}
+
+	@Override
+	public <T> T removeTransientProperty(String key) {
+		return this.transientPropertySupport.removeTransientProperty(key);
+	}
+
 	/** IAdaptable */
 	@Override
 	public <T> void adapt(Class<T> clazz, T object) {
@@ -209,3 +240,14 @@ public class IConfigElementImpl implements IConfigElement {
 	}
 
 }
+
+// long getDateCreated();
+// long getDateModified();
+// @Override
+// public long getDateCreated() {
+// return this.configElement.getDateCreated();
+// }
+// @Override
+// public long getDateModified() {
+// return this.configElement.getDateModified();
+// }

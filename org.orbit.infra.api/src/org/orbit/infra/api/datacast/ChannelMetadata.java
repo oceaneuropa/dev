@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.origin.common.adapter.IAdaptable;
 import org.origin.common.model.AccountConfig;
+import org.origin.common.model.DateRecordAware;
+import org.origin.common.model.TransientPropertyAware;
 
-public interface ChannelMetadata extends IAdaptable {
+public interface ChannelMetadata extends DateRecordAware<Long>, TransientPropertyAware, IAdaptable {
 
 	DataCastClient getDataCastClient();
 
@@ -62,14 +64,4 @@ public interface ChannelMetadata extends IAdaptable {
 
 	ChannelStatus getStatus();
 
-	long getDateCreated();
-
-	void setDateCreated(long dateCreated);
-
-	long getDateModified();
-
-	void setDateModified(long dateModified);
-
 }
-
-// List<String> getAccountIds();

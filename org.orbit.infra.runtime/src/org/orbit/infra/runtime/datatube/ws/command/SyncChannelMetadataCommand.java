@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.util.AbstractInfraCommand;
 import org.origin.common.rest.editpolicy.WSCommand;
@@ -17,6 +16,8 @@ public class SyncChannelMetadataCommand extends AbstractInfraCommand<DataTubeSer
 
 	public static String ID = "org.orbit.infra.runtime.datatube.SyncChannelMetadataCommand";
 
+	public static String DATATUBE__SYNC_CHANNEL_METADATA = "sync_channel_metadata";
+
 	public SyncChannelMetadataCommand() {
 		super(DataTubeService.class);
 	}
@@ -24,7 +25,7 @@ public class SyncChannelMetadataCommand extends AbstractInfraCommand<DataTubeSer
 	@Override
 	public boolean isSupported(Request request) {
 		String requestName = request.getRequestName();
-		if (RequestConstants.DATATUBE__SYNC_CHANNEL_METADATA.equalsIgnoreCase(requestName)) {
+		if (DATATUBE__SYNC_CHANNEL_METADATA.equalsIgnoreCase(requestName)) {
 			return true;
 		}
 		return false;
@@ -47,11 +48,11 @@ public class SyncChannelMetadataCommand extends AbstractInfraCommand<DataTubeSer
 		boolean succeed = false;
 		if (hasChannelId) {
 			String channelId = request.getStringParameter("channel_id");
-			succeed = dataTubeService.syncChannelMetadataById(channelId, createIfNotExist);
+			// succeed = dataTubeService.syncChannelMetadataById(channelId, createIfNotExist);
 
 		} else if (hasName) {
 			String name = request.getStringParameter("name");
-			succeed = dataTubeService.syncChannelMetadataByName(name, createIfNotExist);
+			// succeed = dataTubeService.syncChannelMetadataByName(name, createIfNotExist);
 		}
 
 		Map<String, Boolean> result = new HashMap<String, Boolean>();

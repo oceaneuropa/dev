@@ -48,13 +48,13 @@ public interface DataCastClient extends ServiceClient {
 
 	boolean channelMetadataExistsByName(String name) throws ClientException;
 
-	ChannelMetadata createChannelMetadata(String dataTubeId, String name, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ClientException;
+	ChannelMetadata createChannelMetadata(String dataTubeId, String name, ChannelStatus channelStatus, String accessType, String accessCode, String ownerAccountId, List<AccountConfig> accountConfigs, Map<String, Object> properties) throws ClientException;
 
 	String allocateDataTubeIdGet() throws ClientException;
 
 	String allocateDataTubeIdCmd() throws ClientException;
 
-	boolean updateChannelMetadataById(String channelId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException;
+	boolean updateChannelMetadataById(String channelId, boolean updateDataTubeId, String dataTubeId, boolean updateName, String name, boolean updateAccessType, String accessType, boolean updateAccessCode, String accessCode, boolean updateOwnerAccountId, String ownerAccountId) throws ClientException;
 
 	boolean setChannelMetadataStatusById(String channelId, ChannelStatus channelStatus, boolean append) throws ClientException;
 

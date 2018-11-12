@@ -52,20 +52,48 @@ public class DataCastNodeConfigHelper {
 	 * @throws IOException
 	 */
 	public IConfigElement getDataCastConfigElement(IConfigRegistry cfgReg, String dataCastId) throws IOException {
-		IConfigElement result = null;
+		IConfigElement dataCastConfigElement = null;
 		if (cfgReg != null && dataCastId != null) {
 			IConfigElement[] rootElements = cfgReg.listRootConfigElements();
 			if (rootElements != null) {
 				for (IConfigElement rootElement : rootElements) {
 					String currDataCastId = rootElement.getAttribute(InfraConstants.IDX_PROP__DATACAST__ID, String.class);
 					if (dataCastId.equals(currDataCastId)) {
-						result = rootElement;
+						dataCastConfigElement = rootElement;
 						break;
 					}
 				}
 			}
 		}
-		return result;
+		return dataCastConfigElement;
+	}
+
+	/**
+	 * 
+	 * @param cfgReg
+	 * @param dataCastId
+	 * @param dataTubeId
+	 * @return
+	 * @throws IOException
+	 */
+	public IConfigElement getDataTubeConfigElement(IConfigRegistry cfgReg, String dataCastId, String dataTubeId) throws IOException {
+		IConfigElement dataTubeConfigElement = null;
+		if (cfgReg != null && dataCastId != null && dataTubeId != null) {
+			IConfigElement dataCastConfigElement = getDataCastConfigElement(cfgReg, dataCastId);
+			if (dataCastConfigElement != null) {
+				IConfigElement[] configElements = dataCastConfigElement.memberConfigElements();
+				if (configElements != null) {
+					for (IConfigElement configElement : configElements) {
+						String currDataTubeId = configElement.getAttribute(InfraConstants.IDX_PROP__DATATUBE__ID, String.class);
+						if (dataTubeId.equals(currDataTubeId)) {
+							dataTubeConfigElement = configElement;
+							break;
+						}
+					}
+				}
+			}
+		}
+		return dataTubeConfigElement;
 	}
 
 }

@@ -6,17 +6,6 @@ function toggleSelection(source, checkboxesName) {
 	}
 }
 
-function toggleSelection(source, checkboxesName, dataTubeId) {
-	var checkboxes = document.getElementsByName(checkboxesName);
-	var n = checkboxes.length;
-	for (var i = 0; i < n; i++) {
-		var currDataTubeId = checkboxes[i].getAttribute("data-dataTubeId");
-		if (dataTubeId == currDataTubeId) {
-			checkboxes[i].checked = source.checked;	
-		}
-	}
-}
-
 function setElementValue(elementId, elementValue) {
 	document.getElementById(elementId).setAttribute('value', elementValue);
 }
@@ -38,24 +27,24 @@ $(document).on("click", "#okCreateChannel", function() {
 });
 
 $(document).on("click", "#cancelCreateChannel", function() {
-	// document.getElementById('new_form').reset();
+	document.getElementById('new_form').reset();
 	document.getElementById('newChannelDialog').close();
 });
 
 //-----------------------------------------------------------------------
 // Change Channel
 //-----------------------------------------------------------------------
-function changeChannelMetadata(channelId, dataTubeId, name, channelStatusMode, accessType, accessCode, ownerAccountId) {
-	document.getElementById("update__channel_id").setAttribute('value', channelId);
+function changeChannel(elementId, dataTubeId, name, enabled) {
+	document.getElementById("update__elementId").setAttribute('value', elementId);
 	document.getElementById("update__data_tube_id").setAttribute('value', dataTubeId);
 	document.getElementById("update__name").setAttribute('value', name);
-	if (accessType == 'private') {
-		document.update_form_name.access_type.value='private';
+
+	if (enabled) {
+		document.update_form_name.enabled.value='true';
 	} else {
-		document.update_form_name.access_type.value='public';
+		document.update_form_name.enabled.value='false';
 	}
-	document.getElementById("update__access_code").setAttribute('value', accessCode);
-	document.getElementById("update__owner_account_id").setAttribute('value', ownerAccountId);
+
 	document.getElementById('changeChannelDialog').showModal();
 }
 
@@ -64,7 +53,7 @@ $(document).on("click", "#okChangeChannel", function() {
 });
 
 $(document).on("click", "#cancelChangeChannel", function() {
-	// document.getElementById('update_form').reset();
+	document.getElementById('update_form').reset();
 	document.getElementById('changeChannelDialog').close();
 });
 
@@ -96,10 +85,6 @@ function onChannelAction(action, formActionUrl) {
 		dialogTitle = "Stop Channels";
 		dialogMessage = "Are you sure you want to stop the channels?";
 
-	} else if (action == "sync") {
-		dialogTitle = "Synchronize Runtime Channels";
-		dialogMessage = "Are you sure you want to synchronize the runtime channels?";
-
 	} else {
 		dialogTitle = action + " Channels";
 		dialogMessage = "Are you sure you want to '" + action + "' the channels?";
@@ -116,7 +101,7 @@ $(document).on("click", "#okChannelAction", function() {
 });
 
 $(document).on("click", "#cancelChannelAction", function() {
-	// document.getElementById('main_list').reset();
+	document.getElementById('main_list').reset();
 	document.getElementById('channelActionDialog').close();
 });
 
@@ -148,6 +133,6 @@ $(document).on("click", "#okDeleteChannels", function() {
 });
 
 $(document).on("click", "#cancelDeleteChannels", function() {
-	// document.getElementById('main_list').reset();
+	document.getElementById('main_list').reset();
 	document.getElementById('deleteChannelsDialog').close();
 });

@@ -53,6 +53,8 @@ public interface DataCastService extends WebServiceAware, ConnectionAware, EditP
 
 	String allocateDataTubeIdForNewChannel() throws ServerException;
 
+	boolean updateChannelMetadataDataTubeId(String channelId, String dataTubeId) throws ServerException;
+
 	boolean updateChannelMetadataName(String channelId, String name) throws ServerException;
 
 	boolean updateChannelMetadataAccessType(String channelId, String accessType) throws ServerException;

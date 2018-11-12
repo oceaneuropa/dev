@@ -12,13 +12,15 @@ import javax.servlet.http.HttpSession;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
+import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
+import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.DataCastNodeConfigHelper;
 import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.DataCastNodeConfigHelper;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -84,14 +86,18 @@ public class DataTubeNodeListServlet extends HttpServlet {
 						if (dataTubeIndexItem != null) {
 							configElement.adapt(IndexItem.class, dataTubeIndexItem);
 
-							boolean isOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
-							if (isOnline) {
+							boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
+							if (isDataTubeOnline) {
 								try {
 									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
 									DataTubeServiceMetadata metadata = InfraClientsHelper.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
 									if (metadata != null) {
 										configElement.adapt(DataTubeServiceMetadata.class, metadata);
 									}
+
+									RuntimeChannel[] runtimeChannels = InfraClientsHelper.DATA_TUBE.getRuntimeChannels(clientResolver, dataTubeServiceUrl, accessToken, RuntimeChannelComparator.ASC);
+									configElement.setTransientProperty("runtimeChannels", runtimeChannels);
+
 								} catch (Exception e) {
 									message = MessageHelper.INSTANCE.add(message, e.getMessage() + " dataTubeId: '" + dataTubeId + "'");
 									e.printStackTrace();
