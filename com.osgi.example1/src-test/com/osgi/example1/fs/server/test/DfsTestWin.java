@@ -20,11 +20,11 @@ import com.osgi.example1.fs.server.service.database.DatabaseFileSystem;
 import com.osgi.example1.fs.server.service.database.DatabaseFileSystemConfiguration;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DatabaseFileSystemTestWin {
+public class DfsTestWin {
 
 	protected FileSystem fs;
 
-	public DatabaseFileSystemTestWin() {
+	public DfsTestWin() {
 		this.fs = getDatabaseFileSystem();
 	}
 
@@ -204,7 +204,7 @@ public class DatabaseFileSystemTestWin {
 	}
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(DatabaseFileSystemTestWin.class);
+		Result result = JUnitCore.runClasses(DfsTestWin.class);
 
 		System.out.println("--- --- --- DatabaseFileSystemTestWin.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {

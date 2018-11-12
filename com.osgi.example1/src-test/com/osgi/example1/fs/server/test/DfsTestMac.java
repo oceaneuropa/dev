@@ -21,11 +21,11 @@ import com.osgi.example1.fs.server.service.database.DatabaseFileSystem;
 import com.osgi.example1.fs.server.service.database.DatabaseFileSystemConfiguration;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class DatabaseFileSystemTestMac2 {
+public class DfsTestMac {
 
 	protected FileSystem fs;
 
-	public DatabaseFileSystemTestMac2() {
+	public DfsTestMac() {
 		this.fs = getDatabaseFileSystem();
 	}
 
@@ -345,7 +345,7 @@ public class DatabaseFileSystemTestMac2 {
 	}
 
 	public static void main(String[] args) {
-		Result result = JUnitCore.runClasses(DatabaseFileSystemTestMac2.class);
+		Result result = JUnitCore.runClasses(DfsTestMac.class);
 
 		System.out.println("--- --- --- DatabaseFileSystemTestMac.main() --- --- ---");
 		for (Failure failure : result.getFailures()) {
