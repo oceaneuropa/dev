@@ -69,7 +69,7 @@ import org.orbit.infra.runtime.extensions.indexservice.IndexServiceActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServicePropertyTester;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayActivator;
 import org.orbit.infra.runtime.extensions.indexservice.IndexServiceRelayPropertyTester;
-import org.orbit.infra.runtime.util.RankingProviderForDataTubeNodeChannel;
+import org.orbit.infra.runtime.util.RankingProviderOfDataTubeNodesForChannel;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.orbit.platform.sdk.ranking.RankingProvider;
 import org.orbit.platform.sdk.serviceactivator.ServiceActivator;
@@ -676,9 +676,9 @@ public class Extensions extends ProgramExtensions {
 	protected void createRankingProviderExtensions() {
 		String extensionTypeId = RankingProvider.EXTENSION_TYPE_ID;
 
-		Extension extension1 = new Extension(extensionTypeId, RankingProviderForDataTubeNodeChannel.ID, "Data Tube Nodes Ranking Provider for new Channel");
-		extension1.setProperty(RankingProvider.PROP__RANKING_TARGET, InfraConstants.DATA_TUBE_NODES_RANKING__NEW_CHANNEL);
-		InterfaceDescription desc1 = new InterfaceDescription(RankingProvider.class, RankingProviderForDataTubeNodeChannel.class);
+		Extension extension1 = new Extension(extensionTypeId, RankingProviderOfDataTubeNodesForChannel.ID, "Ranking Provider of Data Tube Nodes for new Channel");
+		extension1.setProperty(RankingProvider.PROP__RANKING_TARGET, InfraConstants.RANKING_PROVIDER__DATA_TUBE_NODES__NEW_CHANNEL);
+		InterfaceDescription desc1 = new InterfaceDescription(RankingProvider.class, RankingProviderOfDataTubeNodesForChannel.class);
 		desc1.setSingleton(true);
 		extension1.addInterface(desc1);
 		addExtension(extension1);

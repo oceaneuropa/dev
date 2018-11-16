@@ -12,6 +12,9 @@ import java.util.concurrent.TimeUnit;
 import org.orbit.infra.api.datacast.ChannelMetadata;
 import org.orbit.infra.runtime.datatube.service.MessageListener;
 import org.orbit.infra.runtime.datatube.service.RuntimeChannel;
+import org.origin.common.adapter.AdaptorSupport;
+import org.origin.common.model.DateRecordSupport;
+import org.origin.common.model.TransientPropertySupport;
 
 public class RuntimeChannelImpl implements RuntimeChannel {
 
@@ -27,6 +30,9 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 
 	protected List<MessageListener> messageListeners;
 	protected MessageListenerSupportImpl messageListenerSupport = new MessageListenerSupportImpl();
+	protected DateRecordSupport<Long> dateRecordSupport = new DateRecordSupport<Long>();
+	protected TransientPropertySupport transientPropertySupport = new TransientPropertySupport();
+	protected AdaptorSupport adaptorSupport = new AdaptorSupport();
 
 	/**
 	 * 
@@ -82,6 +88,11 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 		return 1;
 	}
 
+	@Override
+	public void dispose() {
+		this.messageListenerSupport.dispose();
+	}
+
 	/** MessageListenerSupport */
 	@Override
 	public List<MessageListener> getMessageListeners() {
@@ -103,9 +114,57 @@ public class RuntimeChannelImpl implements RuntimeChannel {
 		return this.messageListenerSupport.removeMessageListener(listener);
 	}
 
+	/** DateRecordAware */
 	@Override
-	public void dispose() {
-		this.messageListenerSupport.dispose();
+	public Long getDateCreated() {
+		return this.dateRecordSupport.getDateCreated();
+	}
+
+	@Override
+	public void setDateCreated(Long dateCreated) {
+		this.dateRecordSupport.setDateCreated(dateCreated);
+	}
+
+	@Override
+	public Long getDateModified() {
+		return this.dateRecordSupport.getDateModified();
+	}
+
+	@Override
+	public void setDateModified(Long dateModified) {
+		this.dateRecordSupport.setDateModified(dateModified);
+	}
+
+	/** TransientPropertyAware */
+	@Override
+	public <T> T getTransientProperty(String key) {
+		return this.transientPropertySupport.getTransientProperty(key);
+	}
+
+	@Override
+	public <T> T setTransientProperty(String key, T value) {
+		return this.transientPropertySupport.setTransientProperty(key, value);
+	}
+
+	@Override
+	public <T> T removeTransientProperty(String key) {
+		return this.transientPropertySupport.removeTransientProperty(key);
+	}
+
+	/** IAdaptable */
+	@Override
+	public <T> void adapt(Class<T> clazz, T object) {
+		this.adaptorSupport.adapt(clazz, object);
+	}
+
+	@Override
+	public <T> void adapt(Class<T>[] classes, T object) {
+		this.adaptorSupport.adapt(classes, object);
+	}
+
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		return this.adaptorSupport.getAdapter(adapter);
 	}
 
 }

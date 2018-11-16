@@ -10,9 +10,8 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.origin.common.service.WebServiceAwareHelper;
 
-public class DataCastIndexItemHelper {
+public class InfraIndexItemHelper {
 
 	/**
 	 * 
@@ -79,30 +78,6 @@ public class DataCastIndexItemHelper {
 			}
 		}
 		return dataCastIndexItem;
-	}
-
-	/**
-	 * 
-	 * @param dataCastIndexItem
-	 * @return
-	 * @see OrbitClientHelper.getNodeControlClient(String indexServiceUrl, String accessToken, String platformId) throws IOException
-	 */
-	public static String getDataCastServiceUrl(IndexItem dataCastIndexItem) {
-		String dataCastServiceUrl = null;
-		if (dataCastIndexItem != null) {
-			String baseURL = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
-			String hostURL = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__HOST_URL);
-			String contextRoot = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT);
-
-			if (baseURL != null && !baseURL.isEmpty()) {
-				dataCastServiceUrl = baseURL;
-			} else {
-				if (hostURL != null && contextRoot != null) {
-					dataCastServiceUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
-				}
-			}
-		}
-		return dataCastServiceUrl;
 	}
 
 	/**
@@ -182,28 +157,52 @@ public class DataCastIndexItemHelper {
 		return dataTubeIndexItem;
 	}
 
-	/**
-	 * 
-	 * @param dataTubeIndexItem
-	 * @return
-	 * @see OrbitClientHelper.getNodeControlClient(String indexServiceUrl, String accessToken, String platformId) throws IOException
-	 */
-	public static String getDataTubeServiceUrl(IndexItem dataTubeIndexItem) {
-		String dataTubeServiceUrl = null;
-		if (dataTubeIndexItem != null) {
-			String baseURL = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
-			String hostURL = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__HOST_URL);
-			String contextRoot = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT);
-
-			if (baseURL != null && !baseURL.isEmpty()) {
-				dataTubeServiceUrl = baseURL;
-			} else {
-				if (hostURL != null && contextRoot != null) {
-					dataTubeServiceUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
-				}
-			}
-		}
-		return dataTubeServiceUrl;
-	}
-
 }
+
+// /**
+// *
+// * @param dataCastIndexItem
+// * @return
+// * @see OrbitClientHelper.getNodeControlClient(String indexServiceUrl, String accessToken, String platformId) throws IOException
+// */
+// public static String getDataCastServiceUrl(IndexItem dataCastIndexItem) {
+// String dataCastServiceUrl = null;
+// if (dataCastIndexItem != null) {
+// String baseURL = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+// String hostURL = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__HOST_URL);
+// String contextRoot = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT);
+//
+// if (baseURL != null && !baseURL.isEmpty()) {
+// dataCastServiceUrl = baseURL;
+// } else {
+// if (hostURL != null && contextRoot != null) {
+// dataCastServiceUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
+// }
+// }
+// }
+// return dataCastServiceUrl;
+// }
+
+// /**
+// *
+// * @param dataTubeIndexItem
+// * @return
+// * @see OrbitClientHelper.getNodeControlClient(String indexServiceUrl, String accessToken, String platformId) throws IOException
+// */
+// public static String getDataTubeServiceUrl(IndexItem dataTubeIndexItem) {
+// String dataTubeServiceUrl = null;
+// if (dataTubeIndexItem != null) {
+// String baseURL = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+// String hostURL = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__HOST_URL);
+// String contextRoot = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT);
+//
+// if (baseURL != null && !baseURL.isEmpty()) {
+// dataTubeServiceUrl = baseURL;
+// } else {
+// if (hostURL != null && contextRoot != null) {
+// dataTubeServiceUrl = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
+// }
+// }
+// }
+// return dataTubeServiceUrl;
+// }

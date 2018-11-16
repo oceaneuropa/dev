@@ -15,7 +15,7 @@ import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
@@ -60,7 +60,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 				if (dataCastIndexItem != null) {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
@@ -108,8 +108,8 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 							isChannelMetadataUpdated = InfraClientsHelper.DATA_CAST.updateChannelMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId, isDataTubeChanged, dataTubeId, updateName, name, updateAccessType, accessType, updateAccessCode, accessCode, updateOwnerAccountId, ownerAccountId);
 
 							if (isChannelMetadataUpdated) {
-								IndexItem oldDataTubeIndexItem = DataCastIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, oldDataTubeId);
-								IndexItem newDataTubeIndexItem = DataCastIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
+								IndexItem oldDataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, oldDataTubeId);
+								IndexItem newDataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
 
 								if (isDataTubeChanged) {
 									boolean isOldRuntimeChannelRemoved = false;

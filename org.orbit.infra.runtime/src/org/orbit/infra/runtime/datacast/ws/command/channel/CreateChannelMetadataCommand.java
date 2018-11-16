@@ -16,6 +16,7 @@ import org.origin.common.model.AccountConfig;
 import org.origin.common.rest.editpolicy.WSCommand;
 import org.origin.common.rest.model.ErrorDTO;
 import org.origin.common.rest.model.Request;
+import org.origin.common.util.NameUtil;
 
 public class CreateChannelMetadataCommand extends AbstractInfraCommand<DataCastService> implements WSCommand {
 
@@ -50,15 +51,16 @@ public class CreateChannelMetadataCommand extends AbstractInfraCommand<DataCastS
 		if (request.hasParameter("properties")) {
 			properties = (Map<String, Object>) request.getMapParameter("properties");
 		}
+
 		boolean generateUniqueName = false;
 		if (request.hasParameter("generate_unique_name")) {
 			generateUniqueName = true;
 		}
 
-		if (dataTubeId == null || dataTubeId.isEmpty()) {
-			ErrorDTO error = new ErrorDTO("'data_tube_id' parameter is empty.");
-			return Response.status(Status.BAD_REQUEST).entity(error).build();
-		}
+		// if (dataTubeId == null || dataTubeId.isEmpty()) {
+		// ErrorDTO error = new ErrorDTO("'data_tube_id' parameter is empty.");
+		// return Response.status(Status.BAD_REQUEST).entity(error).build();
+		// }
 		if (name == null || name.isEmpty()) {
 			ErrorDTO error = new ErrorDTO("'name' parameter is empty.");
 			return Response.status(Status.BAD_REQUEST).entity(error).build();
@@ -67,39 +69,12 @@ public class CreateChannelMetadataCommand extends AbstractInfraCommand<DataCastS
 		DataCastService dataCastService = getService();
 
 		if (generateUniqueName) {
-			String defaultName = name;
-			boolean isLastSegmentNumber = false;
-			int lastNumber = -1;
-			int index = defaultName.lastIndexOf("_");
-			if (index > 0 && index < defaultName.length() - 1) {
-				String lastSegment = defaultName.substring(index + 1);
-				try {
-					lastNumber = Integer.parseInt(lastSegment);
-					isLastSegmentNumber = true;
-				} catch (Exception e) {
-				}
-			}
+			name = NameUtil.getUniqueName(dataCastService, name);
+		}
 
-			int appendNumber = 1;
-			if (isLastSegmentNumber) {
-				appendNumber = lastNumber + 1;
-			}
-			while (dataCastService.channelMetadataExistsByName(name)) {
-				String nextName = null;
-				if (isLastSegmentNumber) {
-					nextName = defaultName.substring(0, index) + "_" + appendNumber;
-				} else {
-					nextName = defaultName + "_" + appendNumber;
-				}
-				name = nextName;
-				appendNumber++;
-			}
-
-		} else {
-			if (dataCastService.channelMetadataExistsByName(name)) {
-				ErrorDTO error = new ErrorDTO("Channel with name '" + name + "' already exists.");
-				return Response.status(Status.BAD_REQUEST).entity(error).build();
-			}
+		if (dataCastService.channelMetadataExistsByName(name)) {
+			ErrorDTO error = new ErrorDTO("Channel with name '" + name + "' already exists.");
+			return Response.status(Status.BAD_REQUEST).entity(error).build();
 		}
 
 		ChannelMetadata channelMetadata = dataCastService.createChannelMetadata(dataTubeId, name, accessType, accessCode, ownerAccountId, accountConfigs, properties);

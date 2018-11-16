@@ -29,7 +29,7 @@ public interface DataTubeClient extends ServiceClient {
 
 	boolean runtimeChannelExistsByName(String name) throws ClientException;
 
-	RuntimeChannel createRuntimeChannelId(String channelId, boolean useExisting) throws ClientException;
+	RuntimeChannel createRuntimeChannelById(String channelId, boolean useExisting) throws ClientException;
 
 	RuntimeChannel createRuntimeChannelByName(String name, boolean useExisting) throws ClientException;
 

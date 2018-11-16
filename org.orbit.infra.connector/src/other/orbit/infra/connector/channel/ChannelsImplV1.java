@@ -191,7 +191,7 @@ public class ChannelsImplV1 implements DataTubeClient {
 	}
 
 	@Override
-	public RuntimeChannel createRuntimeChannelId(String channelId, boolean useExisting) throws ClientException {
+	public RuntimeChannel createRuntimeChannelById(String channelId, boolean useExisting) throws ClientException {
 		// TODO Auto-generated method stub
 		return null;
 	}

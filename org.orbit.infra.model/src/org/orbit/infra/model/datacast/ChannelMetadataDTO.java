@@ -95,14 +95,8 @@ public class ChannelMetadataDTO {
 	}
 
 	@XmlElement
-	// public List<String> getAccountIds() {
-	// return this.accountIds;
-	// }
-	// public void setAccountIds(List<String> accountIds) {
-	// this.accountIds = accountIds;
-	// }
 	public String getAccountConfigsString() {
-		return accountConfigsString;
+		return this.accountConfigsString;
 	}
 
 	public void setAccountConfigsString(String accountConfigsString) {
@@ -139,3 +133,9 @@ public class ChannelMetadataDTO {
 }
 
 // protected List<String> accountIds;
+// public List<String> getAccountIds() {
+// return this.accountIds;
+// }
+// public void setAccountIds(List<String> accountIds) {
+// this.accountIds = accountIds;
+// }

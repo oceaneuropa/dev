@@ -21,6 +21,36 @@ public class ChannelStatus {
 		this.mode = mode;
 	}
 
+	public void set(ChannelStatus statusToSet) {
+		if (statusToSet == null) {
+			this.mode = 0;
+		} else {
+			this.mode = statusToSet.getMode();
+		}
+	}
+
+	public void append(int modeToMerge) {
+		this.mode = mode | modeToMerge;
+	}
+
+	public void append(ChannelStatus statusToMerge) {
+		if (statusToMerge == null) {
+			return;
+		}
+		this.mode = mode | statusToMerge.getMode();
+	}
+
+	public void remove(int modeToRemove) {
+		this.mode = mode & ~modeToRemove;
+	}
+
+	public void remove(ChannelStatus statusToRemove) {
+		if (statusToRemove == null) {
+			return;
+		}
+		this.mode = mode & ~statusToRemove.getMode();
+	}
+
 	public boolean contains(int singleMode) {
 		if ((this.mode & singleMode) == singleMode) {
 			return true;

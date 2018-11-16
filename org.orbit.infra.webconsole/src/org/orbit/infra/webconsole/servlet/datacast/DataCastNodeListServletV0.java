@@ -19,7 +19,7 @@ import org.orbit.infra.api.datacast.DataCastServiceMetadata;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -54,7 +54,7 @@ public class DataCastNodeListServletV0 extends HttpServlet {
 		try {
 			String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-			dataCastIndexItems = DataCastIndexItemHelper.getDataCastIndexItemsList(indexServiceUrl, accessToken);
+			dataCastIndexItems = InfraIndexItemHelper.getDataCastIndexItemsList(indexServiceUrl, accessToken);
 
 			DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 			for (IndexItem dataCastIndexItem : dataCastIndexItems) {

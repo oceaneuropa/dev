@@ -11,13 +11,13 @@ import java.util.Map;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.DataCastNodeConfigHelper;
+import org.orbit.infra.io.util.InfraNodeConfigHelper;
 import org.orbit.infra.runtime.datacast.service.ChannelMetadata;
 import org.orbit.platform.sdk.ranking.RankingProvider;
 import org.origin.common.model.Weightable;
 import org.origin.common.util.WeightableComparator;
 
-public class RankingProviderForDataTubeNodeChannel implements RankingProvider {
+public class RankingProviderOfDataTubeNodesForChannel implements RankingProvider {
 
 	public static final String ID = "org.orbit.infra.datacast.RankingProviderForDataTubeNodeChannel";
 
@@ -41,9 +41,9 @@ public class RankingProviderForDataTubeNodeChannel implements RankingProvider {
 
 		List<Weightable<IConfigElement, Integer>> weightables = new ArrayList<Weightable<IConfigElement, Integer>>();
 
-		IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, false);
+		IConfigRegistry cfgReg = InfraNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, false);
 		if (cfgReg != null) {
-			IConfigElement dataCastConfigElement = DataCastNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+			IConfigElement dataCastConfigElement = InfraNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
 
 			if (dataCastConfigElement != null) {
 				IConfigElement[] dataTubeConfigElements = dataCastConfigElement.memberConfigElements();

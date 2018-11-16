@@ -168,7 +168,7 @@ public class DataTubeClientImpl extends ServiceClientImpl<DataTubeClient, DataTu
 	}
 
 	@Override
-	public RuntimeChannel createRuntimeChannelId(String channelId, boolean useExisting) throws ClientException {
+	public RuntimeChannel createRuntimeChannelById(String channelId, boolean useExisting) throws ClientException {
 		Request request = new Request(RequestConstants.DATATUBE__CREATE_RUNTIME_CHANNEL);
 		request.setParameter("channel_id", channelId);
 		request.setParameter("use_existing", useExisting);

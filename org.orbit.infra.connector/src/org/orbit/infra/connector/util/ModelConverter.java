@@ -31,8 +31,7 @@ import org.origin.common.resource.Path;
 import org.origin.common.resource.PathDTO;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.util.ResponseUtil;
-import org.origin.common.util.AccountConfigReader;
-import org.origin.common.util.AccountConfigWriter;
+import org.origin.common.util.AccountConfigUtil;
 
 public class ModelConverter {
 
@@ -292,12 +291,11 @@ public class ModelConverter {
 			String accessCode = channelMetadataDTO.getAccessCode();
 			String ownerAccountId = channelMetadataDTO.getOwnerAccountId();
 			String accountConfigsString = channelMetadataDTO.getAccountConfigsString();
-			// List<String> accountIds = channelMetadataDTO.getAccountIds();
 			Map<String, Object> properties = channelMetadataDTO.getProperties();
 			long dateCreated = channelMetadataDTO.getDateCreated();
 			long dateModified = channelMetadataDTO.getDateModified();
 
-			List<AccountConfig> accountConfigs = toAccountConfigs(accountConfigsString);
+			List<AccountConfig> accountConfigs = AccountConfigUtil.toAccountConfigs(accountConfigsString);
 
 			ChannelMetadataImpl channelMetadata = new ChannelMetadataImpl(dataCastClient);
 			channelMetadata.setDataCastId(dataCastId);
@@ -308,7 +306,6 @@ public class ModelConverter {
 			channelMetadata.setAccessCode(accessCode);
 			channelMetadata.setOwnerAccountId(ownerAccountId);
 			channelMetadata.setAccountConfigs(accountConfigs);
-			// channelMetadata.setAccountIds(accountIds);
 			channelMetadata.setProperties(properties);
 			channelMetadata.setDateCreated(dateCreated);
 			channelMetadata.setDateModified(dateModified);
@@ -379,38 +376,9 @@ public class ModelConverter {
 			}
 			return dataTubeId;
 		}
-
-		/**
-		 * 
-		 * @param accountConfigsString
-		 * @return
-		 */
-		public List<AccountConfig> toAccountConfigs(String accountConfigsString) {
-			AccountConfigReader reader = new AccountConfigReader();
-			List<AccountConfig> accountConfigs = reader.read(accountConfigsString);
-			if (accountConfigs == null) {
-				accountConfigs = new ArrayList<AccountConfig>();
-			}
-			return accountConfigs;
-		}
-
-		/**
-		 * 
-		 * @param accountConfigs
-		 * @return
-		 */
-		public String toAccountConfigsString(List<AccountConfig> accountConfigs) {
-			AccountConfigWriter writer = new AccountConfigWriter();
-			String accountConfigsString = writer.write(accountConfigs);
-			if (accountConfigsString == null) {
-				accountConfigsString = "";
-			}
-			return accountConfigsString;
-		}
 	}
 
 	public static class DATA_TUBE {
-
 		/**
 		 * 
 		 * @param dataTubeClient
@@ -426,11 +394,6 @@ public class ModelConverter {
 			String dataTubeId = runtimeChannelDTO.getDataTubeId();
 			String channelId = runtimeChannelDTO.getChannelId();
 			String name = runtimeChannelDTO.getName();
-			// String accessType = runtimeChannelDTO.getAccessType();
-			// String accessCode = runtimeChannelDTO.getAccessCode();
-			// String ownerAccountId = runtimeChannelDTO.getOwnerAccountId();
-			// List<String> accountIds = runtimeChannelDTO.getAccountIds();
-			// Map<String, Object> properties = runtimeChannelDTO.getProperties();
 			long dateCreated = runtimeChannelDTO.getDateCreated();
 			long dateModified = runtimeChannelDTO.getDateModified();
 
@@ -439,11 +402,6 @@ public class ModelConverter {
 			runtimeChannel.setDataTubeId(dataTubeId);
 			runtimeChannel.setChannelId(channelId);
 			runtimeChannel.setName(name);
-			// channelMetadata.setAccessType(accessType);
-			// channelMetadata.setAccessCode(accessCode);
-			// channelMetadata.setOwnerAccountId(ownerAccountId);
-			// channelMetadata.setAccountIds(accountIds);
-			// channelMetadata.setProperties(properties);
 			runtimeChannel.setDateCreated(dateCreated);
 			runtimeChannel.setDateModified(dateModified);
 

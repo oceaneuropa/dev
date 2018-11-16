@@ -27,8 +27,8 @@ import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
-import org.orbit.infra.io.util.DataCastNodeConfigHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
+import org.orbit.infra.io.util.InfraNodeConfigHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
@@ -73,21 +73,21 @@ public class ChannelMetadataListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+				IConfigRegistry cfgReg = InfraNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 				if (cfgReg != null) {
-					dataCastConfigElement = DataCastNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+					dataCastConfigElement = InfraNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
 					if (dataCastConfigElement == null) {
 						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
 					}
 				} else {
-					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
+					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + InfraNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 				}
 
 				// Get DataCast service index item and check whether the service is online
 				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
 
-				Map<String, IndexItem> dataCastIndexItemMap = DataCastIndexItemHelper.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
+				Map<String, IndexItem> dataCastIndexItemMap = InfraIndexItemHelper.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
 				IndexItem dataCastIndexItem = dataCastIndexItemMap.get(dataCastId);
 
 				if (dataCastIndexItem != null) {
@@ -102,7 +102,7 @@ public class ChannelMetadataListServlet extends HttpServlet {
 							Map<String, DataTubeServiceMetadata> dataTubeServiceMetadataMap = new HashMap<String, DataTubeServiceMetadata>();
 							Map<String, Map<String, RuntimeChannel>> dataTubeRuntimeChannelsMap = new HashMap<String, Map<String, RuntimeChannel>>();
 
-							Map<String, IndexItem> dataTubeIndexItemMap = DataCastIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
+							Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
 							for (Iterator<String> dataTubeItor = dataTubeIndexItemMap.keySet().iterator(); dataTubeItor.hasNext();) {
 								String dataTubeId = dataTubeItor.next();
 

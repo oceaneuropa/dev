@@ -1552,7 +1552,7 @@ public class InfraClientsHelper {
 			RuntimeChannel runtimeChannel = null;
 			DataTubeClient dataTubeClient = getDataTubeClient(clientResolver, dataTubeServiceUrl, accessToken);
 			if (dataTubeClient != null) {
-				runtimeChannel = dataTubeClient.createRuntimeChannelId(channelId, useExisting);
+				runtimeChannel = dataTubeClient.createRuntimeChannelById(channelId, useExisting);
 			}
 			return runtimeChannel;
 		}

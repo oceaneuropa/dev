@@ -15,7 +15,7 @@ import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.ChannelMetadataComparator;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
@@ -183,18 +183,6 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		return DataTubeConfigPropertiesHandler.getInstance().getProperty(InfraConstants.DATATUBE__HTTP_PORT, this.initProperties);
 	}
 
-	protected void checkChannelId(String channelId) {
-		if (channelId == null || channelId.isEmpty()) {
-			throw new IllegalArgumentException("channelId is empty.");
-		}
-	}
-
-	protected void checkChannelName(String name) {
-		if (name == null || name.isEmpty()) {
-			throw new IllegalArgumentException("name is empty.");
-		}
-	}
-
 	/**
 	 * 
 	 * @return
@@ -208,7 +196,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		String accessToken = getAccessToken();
 		String indexServiceUrl = getIndexServiceURL();
 
-		IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 		if (dataCastIndexItem != null) {
 			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 			if (isDataCastOnline) {
@@ -237,7 +225,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		String accessToken = getAccessToken();
 		String indexServiceUrl = getIndexServiceURL();
 
-		IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 		if (dataCastIndexItem != null) {
 			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 			if (isDataCastOnline) {
@@ -266,7 +254,7 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		String accessToken = getAccessToken();
 		String indexServiceUrl = getIndexServiceURL();
 
-		IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+		IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 		if (dataCastIndexItem != null) {
 			boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 			if (isDataCastOnline) {
@@ -581,7 +569,6 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		checkChannelId(channelId);
 
 		boolean succeed = syncRuntimeChannelById(channelId);
-
 		return succeed;
 	}
 
@@ -590,7 +577,6 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		checkChannelName(name);
 
 		boolean succeed = syncRuntimeChannelByName(name);
-
 		return succeed;
 	}
 
@@ -599,7 +585,6 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		checkChannelId(channelId);
 
 		boolean succeed = syncRuntimeChannelById(channelId);
-
 		return succeed;
 	}
 
@@ -608,7 +593,6 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		checkChannelName(name);
 
 		boolean succeed = syncRuntimeChannelByName(name);
-
 		return succeed;
 	}
 
@@ -617,7 +601,6 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		checkChannelId(channelId);
 
 		boolean succeed = syncRuntimeChannelById(channelId);
-
 		return succeed;
 	}
 
@@ -626,7 +609,6 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 		checkChannelName(name);
 
 		boolean succeed = syncRuntimeChannelByName(name);
-
 		return succeed;
 	}
 
@@ -664,6 +646,18 @@ public class DataTubeServiceImpl implements LifecycleAware, DataTubeService, Pro
 			}
 		}
 		this.runtimeChannelMap.clear();
+	}
+
+	protected void checkChannelId(String channelId) {
+		if (channelId == null || channelId.isEmpty()) {
+			throw new IllegalArgumentException("channelId is empty.");
+		}
+	}
+
+	protected void checkChannelName(String name) {
+		if (name == null || name.isEmpty()) {
+			throw new IllegalArgumentException("name is empty.");
+		}
 	}
 
 	/**

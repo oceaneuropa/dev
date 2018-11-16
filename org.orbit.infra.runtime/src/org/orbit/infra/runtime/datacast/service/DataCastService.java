@@ -5,11 +5,12 @@ import java.util.Map;
 
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.model.AccountConfig;
+import org.origin.common.model.UniqueNameAware;
 import org.origin.common.rest.editpolicy.EditPoliciesAware;
 import org.origin.common.rest.server.ServerException;
 import org.origin.common.service.WebServiceAware;
 
-public interface DataCastService extends WebServiceAware, ConnectionAware, EditPoliciesAware {
+public interface DataCastService extends UniqueNameAware, WebServiceAware, ConnectionAware, EditPoliciesAware {
 
 	Map<Object, Object> getInitProperties();
 

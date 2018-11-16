@@ -14,16 +14,6 @@ public class RuntimeChannelDTO {
 	protected String channelId;
 	@XmlElement
 	protected String name;
-	// @XmlElement
-	// protected String accessType;
-	// @XmlElement
-	// protected String accessCode;
-	// @XmlElement
-	// protected String ownerAccountId;
-	// @XmlElement
-	// protected List<String> accountIds;
-	// @XmlElement
-	// protected Map<String, Object> properties;
 	@XmlElement
 	protected long dateCreated;
 	@XmlElement
@@ -65,51 +55,6 @@ public class RuntimeChannelDTO {
 		this.name = name;
 	}
 
-	// @XmlElement
-	// public String getAccessType() {
-	// return this.accessType;
-	// }
-	//
-	// public void setAccessType(String accessType) {
-	// this.accessType = accessType;
-	// }
-	//
-	// @XmlElement
-	// public String getAccessCode() {
-	// return this.accessCode;
-	// }
-	//
-	// public void setAccessCode(String accessCode) {
-	// this.accessCode = accessCode;
-	// }
-	//
-	// @XmlElement
-	// public String getOwnerAccountId() {
-	// return this.ownerAccountId;
-	// }
-	//
-	// public void setOwnerAccountId(String ownerAccountId) {
-	// this.ownerAccountId = ownerAccountId;
-	// }
-	//
-	// @XmlElement
-	// public List<String> getAccountIds() {
-	// return this.accountIds;
-	// }
-	//
-	// public void setAccountIds(List<String> accountIds) {
-	// this.accountIds = accountIds;
-	// }
-	//
-	// @XmlElement
-	// public Map<String, Object> getProperties() {
-	// return this.properties;
-	// }
-	//
-	// public void setProperties(Map<String, Object> properties) {
-	// this.properties = properties;
-	// }
-
 	@XmlElement
 	public long getDateCreated() {
 		return this.dateCreated;
@@ -129,3 +74,58 @@ public class RuntimeChannelDTO {
 	}
 
 }
+
+// @XmlElement
+// protected String accessType;
+// @XmlElement
+// protected String accessCode;
+// @XmlElement
+// protected String ownerAccountId;
+// @XmlElement
+// protected List<String> accountIds;
+// @XmlElement
+// protected Map<String, Object> properties;
+// @XmlElement
+// public String getAccessType() {
+// return this.accessType;
+// }
+//
+// public void setAccessType(String accessType) {
+// this.accessType = accessType;
+// }
+//
+// @XmlElement
+// public String getAccessCode() {
+// return this.accessCode;
+// }
+//
+// public void setAccessCode(String accessCode) {
+// this.accessCode = accessCode;
+// }
+//
+// @XmlElement
+// public String getOwnerAccountId() {
+// return this.ownerAccountId;
+// }
+//
+// public void setOwnerAccountId(String ownerAccountId) {
+// this.ownerAccountId = ownerAccountId;
+// }
+//
+// @XmlElement
+// public List<String> getAccountIds() {
+// return this.accountIds;
+// }
+//
+// public void setAccountIds(List<String> accountIds) {
+// this.accountIds = accountIds;
+// }
+//
+// @XmlElement
+// public Map<String, Object> getProperties() {
+// return this.properties;
+// }
+//
+// public void setProperties(Map<String, Object> properties) {
+// this.properties = properties;
+// }

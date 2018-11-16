@@ -14,7 +14,7 @@ import org.orbit.infra.api.datacast.DataCastClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -52,7 +52,7 @@ public class ChannelListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 				if (dataCastIndexItem == null) {
 					message = MessageHelper.INSTANCE.add(message, "DataCast index item doesn't exist. dataCastId: '" + dataCastId + "'.");
 				}
@@ -84,7 +84,7 @@ public class ChannelListServlet extends HttpServlet {
 					}
 				}
 
-				dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 
 			} catch (Exception e) {
 				message = MessageHelper.INSTANCE.add(message, "Exception occurs: '" + e.getMessage() + "'.");

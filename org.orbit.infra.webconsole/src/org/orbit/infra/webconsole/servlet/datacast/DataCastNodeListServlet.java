@@ -18,8 +18,8 @@ import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
-import org.orbit.infra.io.util.DataCastNodeConfigHelper;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.InfraNodeConfigHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -56,9 +56,9 @@ public class DataCastNodeListServlet extends HttpServlet {
 
 			// 1. Get or create config registry "DataCastNodes"
 			// - get root IConfigElements from it
-			IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+			IConfigRegistry cfgReg = InfraNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 			if (cfgReg == null) {
-				message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
+				message = MessageHelper.INSTANCE.add(message, "Config registry for '" + InfraNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 			} else {
 				configElements = cfgReg.listRootConfigElements();
 			}
@@ -66,7 +66,7 @@ public class DataCastNodeListServlet extends HttpServlet {
 			// 2. Each IConfigElement represents one DataCast node
 			// - find IndexItem and DataCastServiceMetadata and attach them (if available) to IConfigElement.
 			if (configElements != null) {
-				Map<String, IndexItem> dataCastIndexItemMap = DataCastIndexItemHelper.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
+				Map<String, IndexItem> dataCastIndexItemMap = InfraIndexItemHelper.getDataCastIndexItemsMap(indexServiceUrl, accessToken);
 
 				DataCastClientResolver clientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 

@@ -19,8 +19,8 @@ import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
-import org.orbit.infra.io.util.DataCastNodeConfigHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
+import org.orbit.infra.io.util.InfraNodeConfigHelper;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -62,20 +62,20 @@ public class DataTubeNodeListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+				IConfigRegistry cfgReg = InfraNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 				if (cfgReg != null) {
-					dataCastConfigElement = DataCastNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+					dataCastConfigElement = InfraNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
 					if (dataCastConfigElement != null) {
 						configElements = dataCastConfigElement.memberConfigElements();
 					} else {
 						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
 					}
 				} else {
-					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
+					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + InfraNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 				}
 
 				if (configElements != null) {
-					Map<String, IndexItem> dataTubeIndexItemMap = DataCastIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
+					Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
 
 					DataTubeClientResolver clientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
 

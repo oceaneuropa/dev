@@ -21,6 +21,7 @@ import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadataDTO;
 import org.origin.common.rest.util.ResponseUtil;
+import org.origin.common.util.AccountConfigUtil;
 
 public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCastWSClient> implements DataCastClient {
 
@@ -348,28 +349,35 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 		if (dataTubeId != null) {
 			request.setParameter("data_tube_id", dataTubeId);
 		}
+
 		if (name != null) {
 			request.setParameter("name", name);
 		}
+
 		if (channelStatus != null) {
 			if (properties == null) {
 				properties = new HashMap<String, Object>();
 			}
 			properties.put("status", channelStatus.getMode());
 		}
+
 		if (accessType != null) {
 			request.setParameter("access_type", accessType);
 		}
+
 		if (accessCode != null) {
 			request.setParameter("access_code", accessCode);
 		}
+
 		if (ownerAccountId != null) {
 			request.setParameter("owner_account_id", ownerAccountId);
 		}
+
 		if (accountConfigs != null) {
-			String accountConfigsString = ModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
+			String accountConfigsString = AccountConfigUtil.toAccountConfigsString(accountConfigs);
 			request.setParameter("account_configs", accountConfigsString);
 		}
+
 		if (properties != null) {
 			request.setParameter("properties", properties);
 		}
@@ -508,7 +516,7 @@ public class DataCastClientImpl extends ServiceClientImpl<DataCastClient, DataCa
 			throw new IllegalArgumentException("accountConfigs is null.");
 		}
 
-		String accountConfigsString = ModelConverter.DATA_CAST.toAccountConfigsString(accountConfigs);
+		String accountConfigsString = AccountConfigUtil.toAccountConfigsString(accountConfigs);
 
 		Request request = new Request(RequestConstants.DATACAST__SET_CHANNEL_METADATA_ACCOUNT_CONFIGS);
 		request.setParameter("channel_id", channelId);

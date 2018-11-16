@@ -19,7 +19,7 @@ import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
@@ -82,7 +82,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 				DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
 
-				IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 				if (dataCastIndexItem != null) {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
@@ -98,7 +98,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 							message = MessageHelper.INSTANCE.add(message, "Channel metadata is created.");
 							String channelId = channelMetadata.getChannelId();
 
-							IndexItem dataTubeIndexItem = DataCastIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
+							IndexItem dataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
 							if (dataTubeIndexItem != null) {
 								boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
 

@@ -180,8 +180,8 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 	public ChannelStatus getStatus() {
 		int value = (int) this.properties.get("status");
 		if (this.status != null) {
-			if (this.status.value() != value) {
-				this.status.setValue(value);
+			if (this.status.getMode() != value) {
+				this.status.setMode(value);
 			}
 		} else {
 			this.status = new ChannelStatus(value);
@@ -203,7 +203,7 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		if (this.status == null) {
 			this.status = status;
 		} else {
-			this.status.setValue(this.status.value() | status.value());
+			this.status.setMode(this.status.getMode() | status.getMode());
 		}
 		updateProperties(this.status);
 	}
@@ -213,12 +213,12 @@ public class ChannelMetadataImpl implements ChannelMetadata {
 		if (this.status == null || status == null) {
 			return;
 		}
-		this.status.setValue(this.status.value() & ~status.value());
+		this.status.setMode(this.status.getMode() & ~status.getMode());
 		updateProperties(this.status);
 	}
 
 	protected void updateProperties(ChannelStatus status) {
-		int value = (status != null) ? status.value() : 0;
+		int value = (status != null) ? status.getMode() : 0;
 		this.properties.put("status", new Integer(value));
 	}
 

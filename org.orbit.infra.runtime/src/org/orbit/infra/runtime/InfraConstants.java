@@ -184,7 +184,7 @@ public class InfraConstants {
 	// ----------------------------------------------------------------------------------------
 	// Ranking targets
 	// ----------------------------------------------------------------------------------------
-	public static String DATA_TUBE_NODES_RANKING__NEW_CHANNEL = "data_tube_nodes_ranking__new_channel";
+	public static String RANKING_PROVIDER__DATA_TUBE_NODES__NEW_CHANNEL = "data_tube_nodes_ranking__new_channel";
 
 }
 

@@ -18,7 +18,7 @@ import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
@@ -64,7 +64,7 @@ public class ChannelMetadataDeleteServlet extends HttpServlet {
 				List<String> dataTubeIdsWithoutIndexItem = new ArrayList<String>();
 				List<String> dataTubeIdsWithoutOnlineService = new ArrayList<String>();
 
-				IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 				if (dataCastIndexItem != null) {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
@@ -74,7 +74,7 @@ public class ChannelMetadataDeleteServlet extends HttpServlet {
 						DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 						DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
 
-						Map<String, IndexItem> dataTubeIndexItemMap = DataCastIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
+						Map<String, IndexItem> dataTubeIndexItemMap = InfraIndexItemHelper.getDataTubeIndexItemsMap(indexServiceUrl, accessToken, dataCastId);
 
 						for (String channelId : channelIds) {
 							ChannelMetadata channelMetadata = InfraClientsHelper.DATA_CAST.getChannelMetadataByChannelId(dataCastClientResolver, dataCastServiceUrl, accessToken, channelId);

@@ -56,11 +56,6 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 		this.wsEditPolicies = new ServiceEditPoliciesImpl(DataCastService.class, this);
 	}
 
-	@Override
-	public Map<Object, Object> getInitProperties() {
-		return this.initProperties;
-	}
-
 	protected String getAccessToken() {
 		String tokenValue = null;
 		try {
@@ -81,6 +76,11 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 			e.printStackTrace();
 		}
 		return tokenValue;
+	}
+
+	@Override
+	public Map<Object, Object> getInitProperties() {
+		return this.initProperties;
 	}
 
 	/** LifecycleAware */
@@ -276,6 +276,7 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 	}
 
 	protected String getIndexServiceURL() {
+		// String indexServiceUrl = (String) getProperties().get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
 		return DataCastConfigPropertiesHandler.getInstance().getProperty(InfraConstants.ORBIT_INDEX_SERVICE_URL, this.initProperties);
 	}
 
@@ -571,6 +572,20 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 		return exists;
 	}
 
+	/** UniqueNameAware */
+	@Override
+	public boolean nameExists(String type, String name) throws Exception {
+		if ("channel_metadata_id".equals(type)) {
+			return channelMetadataExistsById(name);
+
+		} else if ("channel_metadata_name".equals(type)) {
+			return channelMetadataExistsByName(name);
+
+		} else {
+			return channelMetadataExistsByName(name);
+		}
+	}
+
 	@Override
 	public ChannelMetadata getChannelMetadataById(String channelId) throws ServerException {
 		ChannelMetadata result = null;
@@ -620,7 +635,7 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 			}
 
 			if (dataTubeId == null || dataTubeId.isEmpty()) {
-				dataTubeId = allocateDataTubeId(conn, tableHandler);
+				dataTubeId = allocateDataTube(conn, tableHandler);
 			}
 			if (dataTubeId == null || dataTubeId.isEmpty()) {
 				throw new ServerException("500", "Data tube is not set and cannot be allocated.");
@@ -656,7 +671,7 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 			conn = getConnection();
 			ChannelMetadataTableHandler tableHandler = getChannelMetadataTableHandler(conn);
 
-			dataTubeId = allocateDataTubeId(conn, tableHandler);
+			dataTubeId = allocateDataTube(conn, tableHandler);
 
 		} catch (SQLException e) {
 			handleException(e);
@@ -676,10 +691,8 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	protected String allocateDataTubeId(Connection conn, ChannelMetadataTableHandler tableHandler) throws IOException, SQLException {
-		String dataTubeId = null;
-
-		RankingProvider rankingProvider = ExtensionUtil.RANKING.getRankingProvider(InfraConstants.DATA_TUBE_NODES_RANKING__NEW_CHANNEL);
+	protected String allocateDataTube(Connection conn, ChannelMetadataTableHandler tableHandler) throws IOException, SQLException {
+		RankingProvider rankingProvider = ExtensionUtil.RANKING.getRankingProvider(InfraConstants.RANKING_PROVIDER__DATA_TUBE_NODES__NEW_CHANNEL);
 		if (rankingProvider == null) {
 			throw new IOException("RankingProvider for data tube nodes is not found.");
 		}
@@ -696,12 +709,11 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 		Map<String, Object> result = rankingProvider.getRanking(args);
 
 		List<IConfigElement> dataTubeConfigElements = (List<IConfigElement>) result.get("dataTubeConfigElements");
-		// Map<String, Integer> dataTubeIdToWeight = (Map<String, Integer>) result.get("dataTubeIdToWeight");
 		if (dataTubeConfigElements == null || dataTubeConfigElements.isEmpty()) {
 			throw new IOException("DataTube nodes is empty.");
 		}
 
-		// String indexServiceUrl = (String) getProperties().get(InfraConstants.ORBIT_INDEX_SERVICE_URL);
+		String dataTubeId = null;
 		String indexServiceUrl = getIndexServiceURL();
 		DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
 		for (IConfigElement dataTubeConfigElement : dataTubeConfigElements) {
@@ -716,7 +728,6 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 				e.printStackTrace();
 			}
 		}
-
 		return dataTubeId;
 	}
 

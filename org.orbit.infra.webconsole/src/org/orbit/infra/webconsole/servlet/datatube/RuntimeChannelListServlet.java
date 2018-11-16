@@ -21,8 +21,8 @@ import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.DataCastIndexItemHelper;
-import org.orbit.infra.io.util.DataCastNodeConfigHelper;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
+import org.orbit.infra.io.util.InfraNodeConfigHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
@@ -69,10 +69,10 @@ public class RuntimeChannelListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				IConfigRegistry cfgReg = DataCastNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+				IConfigRegistry cfgReg = InfraNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 				if (cfgReg != null) {
-					dataCastConfigElement = DataCastNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
-					dataTubeConfigElement = DataCastNodeConfigHelper.INSTANCE.getDataTubeConfigElement(cfgReg, dataCastId, dataTubeId);
+					dataCastConfigElement = InfraNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+					dataTubeConfigElement = InfraNodeConfigHelper.INSTANCE.getDataTubeConfigElement(cfgReg, dataCastId, dataTubeId);
 
 					if (dataCastConfigElement == null) {
 						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
@@ -81,7 +81,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 						message = MessageHelper.INSTANCE.add(message, "Config element for data tube node (dataCastId: '" + dataCastId + "'; dataTubeId: '" + dataTubeId + "') cannot be found.");
 					}
 				} else {
-					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + DataCastNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
+					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + InfraNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 				}
 
 				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
@@ -90,7 +90,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 				// Get DataCast service index item and check whether the service is online
 				boolean isDataCastOnline = false;
 				String dataCastServiceUrl = null;
-				IndexItem dataCastIndexItem = DataCastIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
+				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 				if (dataCastIndexItem != null) {
 					dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
 					isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
@@ -104,7 +104,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 				}
 
 				// Get DataTube service index item and check whether the service is online
-				IndexItem dataTubeIndexItem = DataCastIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
+				IndexItem dataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
 				if (dataTubeIndexItem != null) {
 					String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
 					boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);

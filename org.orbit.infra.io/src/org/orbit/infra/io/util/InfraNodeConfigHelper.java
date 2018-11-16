@@ -7,13 +7,13 @@ import org.orbit.infra.io.CFG;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
 
-public class DataCastNodeConfigHelper {
+public class InfraNodeConfigHelper {
 
 	protected static final String CONFIG_REGISTRY_TYPE__NODE_CONFIG_LIST = "NodeConfigList";
 
 	protected static final String CONFIG_REGISTRY_NAME__DATA_CAST_NODES = "DataCastNodes";
 
-	public static DataCastNodeConfigHelper INSTANCE = new DataCastNodeConfigHelper();
+	public static InfraNodeConfigHelper INSTANCE = new InfraNodeConfigHelper();
 
 	public String getNodeConfigListType() {
 		return CONFIG_REGISTRY_TYPE__NODE_CONFIG_LIST;
