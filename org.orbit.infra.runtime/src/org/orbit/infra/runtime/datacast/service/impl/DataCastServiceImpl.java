@@ -572,17 +572,17 @@ public class DataCastServiceImpl implements LifecycleAware, DataCastService, Pro
 		return exists;
 	}
 
-	/** UniqueNameAware */
+	/** UniqueValueAware */
 	@Override
-	public boolean nameExists(String type, String name) throws Exception {
+	public boolean valueExists(String type, String value) throws Exception {
 		if ("channel_metadata_id".equals(type)) {
-			return channelMetadataExistsById(name);
+			return channelMetadataExistsById(value);
 
 		} else if ("channel_metadata_name".equals(type)) {
-			return channelMetadataExistsByName(name);
+			return channelMetadataExistsByName(value);
 
 		} else {
-			return channelMetadataExistsByName(name);
+			return channelMetadataExistsByName(value);
 		}
 	}
 
