@@ -11,6 +11,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.service.WebServiceAwareHelper;
 
 public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 
@@ -44,6 +45,7 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Date now = new Date();
 
@@ -51,6 +53,7 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 		props.put(InfraConstants.SERVICE__NAME, name);
 		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		return indexProvider.addIndexItem(ComponentConstants.AUTH_INDEXER_ID, ComponentConstants.AUTH_TYPE, name, props);
@@ -61,6 +64,7 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Integer indexItemId = indexItem.getIndexItemId();
 
@@ -70,6 +74,7 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 		props.put(InfraConstants.SERVICE__NAME, name);
 		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		indexProvider.setProperties(ComponentConstants.AUTH_INDEXER_ID, indexItemId, props);

@@ -11,6 +11,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.service.WebServiceAwareHelper;
 
 public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 
@@ -44,11 +45,13 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.SERVICE__NAME, name);
 		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		return indexProvider.addIndexItem(ComponentConstants.OAUTH2_INDEXER_ID, ComponentConstants.OAUTH2_TYPE, name, props);
@@ -59,12 +62,14 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.SERVICE__NAME, name);
 		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		indexProvider.setProperties(ComponentConstants.OAUTH2_INDEXER_ID, indexItemId, props);

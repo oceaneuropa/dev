@@ -42,22 +42,18 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	@Override
 	public IndexItem addIndex(IndexServiceClient indexProvider, ExtensionRegistryService service) throws IOException {
 		String name = service.getName();
-		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
-		// String namespace = service.getNamespace();
-		// String hostURL = service.getHostURL();
-		// String contextRoot = service.getContextRoot();
+		String hostURL = service.getHostURL();
+		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Date now = new Date();
-		// Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.SERVICE__NAME, name);
-		props.put(InfraConstants.SERVICE__BASE_URL, url);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
-		// props.put(InfraConstants.CHANNEL_NAMESPACE, namespace);
-		// props.put(InfraConstants.CHANNEL_HOST_URL, hostURL);
-		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		return indexProvider.addIndexItem(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, InfraConstants.EXTENSION_REGISTRY_TYPE, name, props);
 	}
@@ -66,31 +62,20 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 	public void updateIndex(IndexServiceClient indexProvider, ExtensionRegistryService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		String name = service.getName();
-		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
-		// String namespace = service.getNamespace();
-		// String hostURL = service.getHostURL();
-		// String contextRoot = service.getContextRoot();
+		String hostURL = service.getHostURL();
+		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Date now = new Date();
-		// Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.SERVICE__NAME, name);
-		props.put(InfraConstants.SERVICE__BASE_URL, url);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
-		// props.put(InfraConstants.CHANNEL_NAMESPACE, namespace);
-		// props.put(InfraConstants.CHANNEL_HOST_URL, hostURL);
-		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		indexProvider.setProperties(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, indexItemId, props);
-
-		// List<String> propNames = new ArrayList<String>();
-		// propNames.add(InfraConstants.URL);
-		// propNames.add(InfraConstants.CHANNEL_NAME);
-		// propNames.add(InfraConstants.CHANNEL_HOST_URL);
-		// propNames.add(InfraConstants.CHANNEL_CONTEXT_ROOT);
-		// indexProvider.removeProperties(InfraConstants.CHANNEL_INDEXER_ID, indexItemId, propNames);
 	}
 
 	@Override

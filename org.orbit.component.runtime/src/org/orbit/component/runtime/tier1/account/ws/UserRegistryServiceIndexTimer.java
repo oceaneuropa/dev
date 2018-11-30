@@ -11,6 +11,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.service.WebServiceAwareHelper;
 
 /**
  * Indexer for UserRegistry service.
@@ -48,6 +49,7 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Date now = new Date();
 
@@ -55,6 +57,7 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		props.put(InfraConstants.SERVICE__NAME, name);
 		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		return indexProvider.addIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, ComponentConstants.USER_REGISTRY_TYPE, name, props);
@@ -65,17 +68,19 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Date now = new Date();
 
 		Integer indexItemId = indexItem.getIndexItemId();
-		Map<String, Object> newProperties = new Hashtable<String, Object>();
-		newProperties.put(InfraConstants.SERVICE__NAME, name);
-		newProperties.put(InfraConstants.SERVICE__HOST_URL, hostURL);
-		newProperties.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
-		newProperties.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
+		Map<String, Object> props = new Hashtable<String, Object>();
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		indexProvider.setProperties(ComponentConstants.USER_REGISTRY_INDEXER_ID, indexItemId, newProperties);
+		indexProvider.setProperties(ComponentConstants.USER_REGISTRY_INDEXER_ID, indexItemId, props);
 	}
 
 	@Override
@@ -86,5 +91,3 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 	}
 
 }
-
-// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());

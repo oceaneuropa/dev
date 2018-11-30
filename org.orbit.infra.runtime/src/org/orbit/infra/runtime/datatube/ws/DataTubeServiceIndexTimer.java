@@ -46,17 +46,17 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(service);
 		String webSocketHttpPort = service.getWebSocketHttpPort();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID, dataCastId);
 		props.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		return indexProvider.addIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE, name, props);
@@ -70,17 +70,17 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(service);
 		String webSocketHttpPort = service.getWebSocketHttpPort();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID, dataCastId);
 		props.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
+		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		indexProvider.setProperties(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId, props);

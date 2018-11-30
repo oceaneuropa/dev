@@ -44,13 +44,13 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		return indexService.addIndexItem(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, InfraConstants.IDX__CONFIG_REGISTRY__TYPE, name, props);
@@ -63,13 +63,13 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
-		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
-		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		indexService.setProperties(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, indexItemId, props);
