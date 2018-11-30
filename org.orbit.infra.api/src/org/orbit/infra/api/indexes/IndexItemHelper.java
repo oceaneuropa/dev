@@ -1,8 +1,13 @@
 package org.orbit.infra.api.indexes;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.orbit.infra.api.InfraConstants;
+import org.origin.common.rest.client.WSClient;
+import org.origin.common.rest.client.WSClientConfiguration;
+import org.origin.common.rest.client.WSClientConstants;
 
 public class IndexItemHelper {
 
@@ -32,6 +37,37 @@ public class IndexItemHelper {
 			} else {
 				return true;
 			}
+		}
+
+//		Map<String, Object> properties = new HashMap<String, Object>();
+//		// properties.put(WSClientConstants.REALM, null);
+//		// properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+//		// properties.put(WSClientConstants.URL, gaiaServiceUrl);
+//		WSClientConfiguration config = WSClientConfiguration.create(properties);
+//		WSClient wsClient = new WSClient(config);
+//		if (wsClient.doPing()) {
+//			return true;
+//		}
+		return false;
+	}
+
+	/**
+	 * 
+	 * @param serviceUrl
+	 * @param accessToken
+	 * @return
+	 */
+	public boolean isOnline(String serviceUrl, String accessToken) {
+		Map<String, Object> properties = new HashMap<String, Object>();
+		properties.put(WSClientConstants.REALM, null);
+		if (accessToken != null) {
+			properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+		}
+		properties.put(WSClientConstants.URL, serviceUrl);
+		WSClientConfiguration config = WSClientConfiguration.create(properties);
+		WSClient wsClient = new WSClient(config);
+		if (wsClient.doPing()) {
+			return true;
 		}
 		return false;
 	}
