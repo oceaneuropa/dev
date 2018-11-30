@@ -8,6 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
@@ -42,10 +43,10 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 		if (this.indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.DOMAIN_SERVICE_NAME, name);
-			props.put(ComponentConstants.DOMAIN_SERVICE_HOST_URL, hostURL);
-			props.put(ComponentConstants.DOMAIN_SERVICE_CONTEXT_ROOT, contextRoot);
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__NAME, name);
+			props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+			props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			this.indexItem = indexProvider.addIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, ComponentConstants.DOMAIN_SERVICE_TYPE, name, props);
 
@@ -53,7 +54,7 @@ public class DomainMgmtServiceTimerV1 extends ServiceIndexTimerImplV1<IndexProvi
 			// Update existing index item with properties
 			Integer indexItemId = this.indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			indexProvider.setProperties(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId, props);
 		}

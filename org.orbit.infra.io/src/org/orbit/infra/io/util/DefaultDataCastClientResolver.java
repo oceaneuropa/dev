@@ -56,8 +56,8 @@ public class DefaultDataCastClientResolver implements DataCastClientResolver {
 
 		String serviceURL = null;
 		if (dataCastIndexItem != null) {
-			String hostURL = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__HOST_URL);
-			String contextRoot = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT);
+			String hostURL = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+			String contextRoot = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
 			serviceURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 		}
 		return serviceURL;

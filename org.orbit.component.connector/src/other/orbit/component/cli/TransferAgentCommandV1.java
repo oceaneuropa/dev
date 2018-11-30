@@ -11,6 +11,7 @@ import org.orbit.component.api.tier3.domain.DomainManagementClient;
 import org.orbit.component.api.tier3.domain.PlatformConfig;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.model.RequestConstants;
+import org.orbit.infra.api.InfraConstants;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -66,7 +67,7 @@ public class TransferAgentCommandV1 implements Annotated {
 
 						// Nodes
 						"list_nodes", "node_exist", "create_node", "delete_node", "is_node_started", "start_node", "stop_node",//
-		});
+				});
 
 		OSGiServiceUtil.register(this.bundleContext, TransferAgentCommandV1.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
@@ -103,9 +104,9 @@ public class TransferAgentCommandV1 implements Annotated {
 				Map<String, Object> properties = new HashMap<String, Object>();
 				properties.put(IndexConstants.NODE_CONTROL_MACHINE_ID, taConfig.getMachineId());
 				properties.put(IndexConstants.NODE_CONTROL_TRANSFER_AGENT_ID, taConfig.getId());
-				properties.put(IndexConstants.NODE_CONTROL_NAME, taConfig.getName());
-				properties.put(IndexConstants.NODE_CONTROL_HOST_URL, taConfig.getHostURL());
-				properties.put(IndexConstants.NODE_CONTROL_CONTEXT_ROOT, taConfig.getContextRoot());
+				properties.put(InfraConstants.SERVICE__NAME, taConfig.getName());
+				properties.put(InfraConstants.SERVICE__HOST_URL, taConfig.getHostURL());
+				properties.put(InfraConstants.SERVICE__CONTEXT_ROOT, taConfig.getContextRoot());
 				properties.put(IndexConstants.NODE_CONTROL_HOME, taConfig.getHome());
 
 				NodeControlClient nodeControlClient = taConnector.getService(properties);

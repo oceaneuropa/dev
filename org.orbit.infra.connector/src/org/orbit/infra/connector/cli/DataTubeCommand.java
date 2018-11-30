@@ -6,9 +6,9 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.connector.InfraConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;
@@ -42,8 +42,8 @@ public class DataTubeCommand implements Annotated, CommandActivator {
 	@Override
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.CHANNEL_HOST_URL);
-		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.CHANNEL_CONTEXT_ROOT);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.SERVICE__HOST_URL);
+		PropertyUtil.loadProperty(bundleContext, configProps, InfraConstants.SERVICE__CONTEXT_ROOT);
 		update(configProps);
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();

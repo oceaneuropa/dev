@@ -59,7 +59,7 @@ public class DataCastNodeListServletV0 extends HttpServlet {
 			DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 			for (IndexItem dataCastIndexItem : dataCastIndexItems) {
 				String dataCastId = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__ID);
-				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+				String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
 				DataCastServiceMetadata dataCastServiceMetadata = null;
 

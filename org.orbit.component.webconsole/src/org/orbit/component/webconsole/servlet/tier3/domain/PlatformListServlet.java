@@ -84,7 +84,7 @@ public class PlatformListServlet extends HttpServlet {
 						IndexItem indexItem = platformIdToIndexItemMap.get(platformId);
 						if (indexItem != null) {
 							isOnline = IndexItemHelper.INSTANCE.isOnline(indexItem);
-							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
+							runtimeState = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_RUNTIME_STATE);
 
 							if (isOnline) {
 								try {

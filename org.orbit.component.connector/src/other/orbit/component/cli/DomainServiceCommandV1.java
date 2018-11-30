@@ -11,6 +11,7 @@ import org.orbit.component.api.tier3.domain.MachineConfig;
 import org.orbit.component.cli.ResourcePropertyHelper;
 import org.orbit.component.model.tier3.domain.AddMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
+import org.orbit.infra.api.InfraConstants;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.annotation.Dependency;
 import org.origin.common.annotation.DependencyFullfilled;
@@ -36,7 +37,7 @@ public class DomainServiceCommandV1 implements Annotated {
 	public static final String TRANSFER_AGENT = "transferagent";
 
 	// Column names constants
-	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.host.url", "domain_mgmt.context_root", "domain_mgmt.name", "last_heartbeat_time", "heartbeat_expired" };
+	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "Index Item Id", "Host URL", "Context Root", "Name", "Heartbeat Time", "" };
 	protected static String[] MACHINE_CONFIG_TITLES = new String[] { "ID", "Name", "IP Address" };
 
 	protected BundleContext bundleContext;
@@ -184,13 +185,12 @@ public class DomainServiceCommandV1 implements Annotated {
 		int rowIndex = 0;
 		for (LoadBalanceResource<DomainManagementClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.name");
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.host.url");
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__HOST_URL);
 			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "domain_mgmt.context_root");
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
-			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
-			rows[rowIndex++] = new String[] { indexItemId.toString(), hostUrl, contextRoot, name, DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2), DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) };
+			rows[rowIndex++] = new String[] { indexItemId.toString(), hostUrl, contextRoot, name, DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2), "" };
 		}
 
 		PrettyPrinter.prettyPrint(DOMAIN_SERVICES_TITLES, rows, resources.size());

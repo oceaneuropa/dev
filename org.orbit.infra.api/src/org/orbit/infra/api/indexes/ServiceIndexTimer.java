@@ -28,8 +28,8 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexSer
 		@Override
 		public IndexItem addIndexItem(String indexProviderId, String type, String name, Map<String, Object> properties) throws IOException {
 			String platformId = getPlatformId();
-			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.PLATFORM_ID)) {
-				properties.put(PlatformConstants.PLATFORM_ID, platformId);
+			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.IDX_PROP__PLATFORM_ID)) {
+				properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
 			}
 			return super.addIndexItem(indexProviderId, type, name, properties);
 		}
@@ -37,8 +37,8 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexSer
 		@Override
 		public boolean setProperties(String indexProviderId, Integer indexItemId, Map<String, Object> properties) throws IOException {
 			String platformId = getPlatformId();
-			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.PLATFORM_ID)) {
-				properties.put(PlatformConstants.PLATFORM_ID, platformId);
+			if (platformId != null && properties != null && !properties.containsKey(PlatformConstants.IDX_PROP__PLATFORM_ID)) {
+				properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
 			}
 			return super.setProperties(indexProviderId, indexItemId, properties);
 		}

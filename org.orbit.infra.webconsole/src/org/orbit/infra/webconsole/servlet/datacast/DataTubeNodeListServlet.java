@@ -19,9 +19,9 @@ import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
+import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.InfraNodeConfigHelper;
-import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -89,7 +89,7 @@ public class DataTubeNodeListServlet extends HttpServlet {
 							boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
 							if (isDataTubeOnline) {
 								try {
-									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 									DataTubeServiceMetadata metadata = InfraClientsHelper.DATA_TUBE.getServiceMetadata(clientResolver, dataTubeServiceUrl, accessToken);
 									if (metadata != null) {
 										configElement.adapt(DataTubeServiceMetadata.class, metadata);

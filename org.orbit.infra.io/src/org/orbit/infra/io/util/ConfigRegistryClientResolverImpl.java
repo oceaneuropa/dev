@@ -46,7 +46,7 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 		IndexServiceClient indexService = InfraClientsHelper.INDEX_SERVICE.getIndexServiceClient(this.indexServiceUrl, accessToken);
 		List<IndexItem> indexItems = indexService.getIndexItems(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, InfraConstants.IDX__CONFIG_REGISTRY__TYPE);
 		for (IndexItem currIndexItem : indexItems) {
-			String currConfigRegistryName = (String) currIndexItem.getProperties().get(InfraConstants.IDX_PROP__CONFIG_REGISTRY__NAME);
+			String currConfigRegistryName = (String) currIndexItem.getProperties().get(InfraConstants.SERVICE__NAME);
 			if (configRegistryName.equals(currConfigRegistryName)) {
 				cfgIndexItem = currIndexItem;
 				break;
@@ -55,9 +55,9 @@ public class ConfigRegistryClientResolverImpl implements ConfigRegistryClientRes
 
 		String serviceURL = null;
 		if (cfgIndexItem != null) {
-			String hostURL = (String) cfgIndexItem.getProperties().get(InfraConstants.IDX_PROP__CONFIG_REGISTRY__HOST_URL);
-			String contextRoot = (String) cfgIndexItem.getProperties().get(InfraConstants.IDX_PROP__CONFIG_REGISTRY__CONTEXT_ROOT);
-			String baseURL = (String) cfgIndexItem.getProperties().get(InfraConstants.IDX_PROP__CONFIG_REGISTRY__BASE_URL);
+			String hostURL = (String) cfgIndexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+			String contextRoot = (String) cfgIndexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
+			String baseURL = (String) cfgIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 			if (hostURL != null && baseURL != null) {
 				serviceURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 			} else if (baseURL != null) {

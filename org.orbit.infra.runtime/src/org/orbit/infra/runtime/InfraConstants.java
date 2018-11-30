@@ -10,11 +10,6 @@ public class InfraConstants {
 	public static String ORBIT_HOST_URL = "orbit.host.url";
 
 	// global index item properties
-	public static String NAME = "name";
-	public static String URL = "url";
-	public static String BASE_URL = "base_url";
-	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
-
 	public static String TOKEN_PROVIDER__ORBIT = "orbit";
 
 	// ----------------------------------------------------------------------------------------
@@ -29,11 +24,6 @@ public class InfraConstants {
 	public static String COMPONENT_INDEX_SERVICE_JDBC_URL = "component.index_service.jdbc.url";
 	public static String COMPONENT_INDEX_SERVICE_JDBC_USERNAME = "component.index_service.jdbc.username";
 	public static String COMPONENT_INDEX_SERVICE_JDBC_PASSWORD = "component.index_service.jdbc.password";
-
-	// index item properties
-	public static String INDEX_SERVICE_NAME = "index_service.name";
-	public static String INDEX_SERVICE_HOST_URL = "index_service.host.url";
-	public static String INDEX_SERVICE_CONTEXT_ROOT = "index_service.context_root";
 
 	// index item values
 	public static String INDEX_SERVICE_INDEXER_ID = "component.index_service.indexer"; // index provider id for IndexService
@@ -51,11 +41,6 @@ public class InfraConstants {
 	public static String COMPONENT_EXTENSION_REGISTRY_JDBC_URL = "component.extension_registry.jdbc.url";
 	public static String COMPONENT_EXTENSION_REGISTRY_JDBC_USERNAME = "component.extension_registry.jdbc.username";
 	public static String COMPONENT_EXTENSION_REGISTRY_JDBC_PASSWORD = "component.extension_registry.jdbc.password";
-
-	// index item properties
-	public static String EXTENSION_REGISTRY_NAME = "extension_registry.name";
-	public static String EXTENSION_REGISTRY_HOST_URL = "extension_registry.host.url";
-	public static String EXTENSION_REGISTRY_CONTEXT_ROOT = "extension_registry.context_root";
 
 	// index item values
 	public static String EXTENSION_REGISTRY_INDEXER_ID = "component.extension_registry.indexer";
@@ -112,13 +97,6 @@ public class InfraConstants {
 	public static String IDX__CONFIG_REGISTRY__INDEXER_ID = "infra.config_registry.indexer";
 	public static String IDX__CONFIG_REGISTRY__TYPE = "ConfigRegistry";
 
-	// index item properties
-	// public static String IDX_PROP__CONFIG_REGISTRY__ID = "config_registry.id";
-	public static String IDX_PROP__CONFIG_REGISTRY__NAME = "config_registry.name";
-	public static String IDX_PROP__CONFIG_REGISTRY__HOST_URL = "config_registry.host.url";
-	public static String IDX_PROP__CONFIG_REGISTRY__CONTEXT_ROOT = "config_registry.context_root";
-	public static String IDX_PROP__CONFIG_REGISTRY__BASE_URL = "config_registry.base_url";
-
 	// EditPolicy values
 	public static String CONFIG_REGISTRY__EDITPOLICY_ID = "infra.config_registry.editpolicy";
 	public static String CONFIG_REGISTRY__SERVICE_NAME = "infra.config_registry.service";
@@ -143,10 +121,6 @@ public class InfraConstants {
 
 	// index item properties
 	public static String IDX_PROP__DATACAST__ID = "data_cast.id";
-	public static String IDX_PROP__DATACAST__NAME = "data_cast.name";
-	public static String IDX_PROP__DATACAST__HOST_URL = "data_cast.host.url";
-	public static String IDX_PROP__DATACAST__CONTEXT_ROOT = "data_cast.context_root";
-	public static String IDX_PROP__DATACAST__BASE_URL = "data_cast.base_url";
 
 	// EditPolicy values
 	public static String DATACAST__EDITPOLICY_ID = "infra.data_cast.editpolicy";
@@ -171,10 +145,6 @@ public class InfraConstants {
 	// index item properties
 	public static String IDX_PROP__DATATUBE__DATACAST_ID = "data_tube.data_cast_id";
 	public static String IDX_PROP__DATATUBE__ID = "data_tube.id";
-	public static String IDX_PROP__DATATUBE__NAME = "data_tube.name";
-	public static String IDX_PROP__DATATUBE__HOST_URL = "data_tube.host.url";
-	public static String IDX_PROP__DATATUBE__CONTEXT_ROOT = "data_tube.context_root";
-	public static String IDX_PROP__DATATUBE__BASE_URL = "data_tube.base_url";
 	public static String IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT = "data_tube.web_socket_http_port";
 
 	// EditPolicy values
@@ -187,6 +157,3 @@ public class InfraConstants {
 	public static String RANKING_PROVIDER__DATA_TUBE_NODES__NEW_CHANNEL = "data_tube_nodes_ranking__new_channel";
 
 }
-
-// public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
-// public static String PINGABLE = "pingable";

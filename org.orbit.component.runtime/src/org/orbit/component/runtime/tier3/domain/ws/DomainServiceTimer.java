@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier3.domain.service.DomainManagementService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.origin.common.util.DateUtil;
 
 public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementService> {
 
@@ -46,15 +46,12 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 		String contextRoot = service.getContextRoot();
 
 		Date now = new Date();
-		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.DOMAIN_SERVICE_NAME, name);
-		props.put(ComponentConstants.DOMAIN_SERVICE_HOST_URL, hostURL);
-		props.put(ComponentConstants.DOMAIN_SERVICE_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		return indexProvider.addIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, ComponentConstants.DOMAIN_SERVICE_TYPE, name, props);
 	}
@@ -68,15 +65,12 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 		Integer indexItemId = indexItem.getIndexItemId();
 
 		Date now = new Date();
-		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.DOMAIN_SERVICE_NAME, name);
-		props.put(ComponentConstants.DOMAIN_SERVICE_HOST_URL, hostURL);
-		props.put(ComponentConstants.DOMAIN_SERVICE_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		indexProvider.setProperties(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId, props);
 	}

@@ -19,9 +19,9 @@ import org.orbit.infra.api.datatube.RuntimeChannel;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.model.AccountConfig;
@@ -87,7 +87,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
 					if (isDataCastOnline) {
-						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
 						List<AccountConfig> accountConfigs = null;
 						Map<String, Object> properties = null;
@@ -103,7 +103,7 @@ public class ChannelMetadataAddServlet extends HttpServlet {
 								boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
 
 								if (isDataTubeOnline) {
-									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+									String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 									RuntimeChannel runtimeChannel = InfraClientsHelper.DATA_TUBE.createRuntimeChannelId(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId, true);
 
 									if (runtimeChannel != null) {

@@ -63,8 +63,8 @@ public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 
 		String serviceURL = null;
 		if (dataTubeIndexItem != null) {
-			String hostURL = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__HOST_URL);
-			String contextRoot = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT);
+			String hostURL = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+			String contextRoot = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
 			serviceURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 		}
 		return serviceURL;
@@ -93,8 +93,8 @@ public class DefaultDataTubeClientResolver implements DataTubeClientResolver {
 		}
 
 		for (IndexItem currDataTubeIndexItem : dataTubeIndexItems) {
-			String hostURL = (String) currDataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__HOST_URL);
-			String contextRoot = (String) currDataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT);
+			String hostURL = (String) currDataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+			String contextRoot = (String) currDataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 			String serviceURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 			if (serviceURL != null) {

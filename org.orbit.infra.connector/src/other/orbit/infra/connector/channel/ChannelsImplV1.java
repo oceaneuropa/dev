@@ -5,10 +5,10 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response;
 
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.DataTubeServiceMetadata;
 import org.orbit.infra.api.datatube.RuntimeChannel;
-import org.orbit.infra.connector.InfraConstants;
 import org.orbit.infra.connector.datatube.DataTubeWSClient;
 import org.orbit.infra.model.datatube.ChannelMessageDTO;
 import org.origin.common.adapter.AdaptorSupport;
@@ -59,13 +59,13 @@ public class ChannelsImplV1 implements DataTubeClient {
 	public void update(Map<String, Object> properties) {
 		properties = checkProperties(properties);
 
-		String oldUrl = (String) this.properties.get(InfraConstants.CHANNEL_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(InfraConstants.CHANNEL_CONTEXT_ROOT);
+		String oldUrl = (String) this.properties.get(InfraConstants.SERVICE__HOST_URL);
+		String oldContextRoot = (String) this.properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 		this.properties.putAll(properties);
 
-		String newUrl = (String) properties.get(InfraConstants.CHANNEL_HOST_URL);
-		String newContextRoot = (String) properties.get(InfraConstants.CHANNEL_CONTEXT_ROOT);
+		String newUrl = (String) properties.get(InfraConstants.SERVICE__HOST_URL);
+		String newContextRoot = (String) properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 		boolean reinit = false;
 		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {
@@ -79,8 +79,8 @@ public class ChannelsImplV1 implements DataTubeClient {
 	protected void init() {
 		String realm = (String) this.properties.get(WSClientConstants.REALM);
 		String accessToken = (String) this.properties.get(WSClientConstants.ACCESS_TOKEN);
-		String url = (String) this.properties.get(InfraConstants.CHANNEL_HOST_URL);
-		String contextRoot = (String) this.properties.get(InfraConstants.CHANNEL_CONTEXT_ROOT);
+		String url = (String) this.properties.get(InfraConstants.SERVICE__HOST_URL);
+		String contextRoot = (String) this.properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 		WSClientConfiguration clientConfig = WSClientConfiguration.create(realm, accessToken, url, contextRoot);
 		this.client = new DataTubeWSClient(clientConfig);

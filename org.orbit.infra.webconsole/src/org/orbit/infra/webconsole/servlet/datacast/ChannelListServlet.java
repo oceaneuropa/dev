@@ -65,7 +65,7 @@ public class ChannelListServlet extends HttpServlet {
 
 					if (isOnline) {
 						DataCastClient dataCastClient = null;
-						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 						if (dataCastServiceUrl != null) {
 							try {
 								DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
@@ -75,7 +75,7 @@ public class ChannelListServlet extends HttpServlet {
 									message = MessageHelper.INSTANCE.add(message, "DataCast client is not available. dataCastId: '" + dataCastId + "'.");
 								}
 								if (dataCastClient != null) {
-									
+
 								}
 							} catch (Exception e) {
 								message = MessageHelper.INSTANCE.add(message, e.getMessage());

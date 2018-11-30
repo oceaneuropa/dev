@@ -3,21 +3,11 @@ package other.orbit.component.connector;
 public interface ComponentConstantsV1 {
 
 	// ----------------------------------------------------------------------------------------
-	// IndexItem
-	// ----------------------------------------------------------------------------------------
-	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
-
-	// ----------------------------------------------------------------------------------------
 	// Identity
 	// ----------------------------------------------------------------------------------------
 	// index item values
 	public static String IDENITY_INDEXER_ID = "component.identity.indexer"; // index provider id for Identity service
 	public static String IDENITY_TYPE = "Identity"; // type of index item for Identity service
-
-	// index item properties
-	public static String IDENITY_NAME = "identity.name";
-	public static String IDENITY_HOST_URL = "identity.host.url";
-	public static String IDENITY_CONTEXT_ROOT = "identity.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// UserRegistry
@@ -26,22 +16,12 @@ public interface ComponentConstantsV1 {
 	public static String USER_REGISTRY_INDEXER_ID = "component.userregistry.indexer"; // index provider id for UserRegistry
 	public static String USER_REGISTRY_TYPE = "UserRegistry"; // type of index item for UserRegistry
 
-	// index item properties
-	public static String USER_REGISTRY_NAME = "userregistry.name";
-	public static String USER_REGISTRY_HOST_URL = "userregistry.host.url";
-	public static String USER_REGISTRY_CONTEXT_ROOT = "userregistry.context_root";
-
 	// ----------------------------------------------------------------------------------------
 	// OAuth2
 	// ----------------------------------------------------------------------------------------
 	// index item values
 	public static String OAUTH2_INDEXER_ID = "component.oauth2.indexer"; // index provider id for OAuth2 service
 	public static String OAUTH2_TYPE = "OAuth2"; // type of index item for OAuth2 service
-
-	// index item properties
-	public static String OAUTH2_NAME = "oauth2.name";
-	public static String OAUTH2_HOST_URL = "oauth2.host.url";
-	public static String OAUTH2_CONTEXT_ROOT = "oauth2.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// Auth
@@ -50,22 +30,12 @@ public interface ComponentConstantsV1 {
 	public static String AUTH_INDEXER_ID = "component.auth.indexer"; // index provider id for Auth service
 	public static String AUTH_TYPE = "Auth"; // type of index item for Auth service
 
-	// index item properties
-	public static String AUTH_NAME = "auth.name";
-	public static String AUTH_HOST_URL = "auth.host.url";
-	public static String AUTH_CONTEXT_ROOT = "auth.context_root";
-
 	// ----------------------------------------------------------------------------------------
 	// ConfigRegistry
 	// ----------------------------------------------------------------------------------------
 	// index item values
 	public static String CONFIG_REGISTRY_INDEXER_ID = "component.configregistry.indexer"; // index provider id for ConfigRegistry
 	public static String CONFIG_REGISTRY_TYPE = "ConfigRegistry"; // type of index item for ConfigRegistry
-
-	// index item properties
-	public static String CONFIG_REGISTRY_NAME = "configregistry.name";
-	public static String CONFIG_REGISTRY_HOST_URL = "configregistry.host.url";
-	public static String CONFIG_REGISTRY_CONTEXT_ROOT = "configregistry.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// AppStore
@@ -74,22 +44,12 @@ public interface ComponentConstantsV1 {
 	public static String APP_STORE_INDEXER_ID = "component.appstore.indexer"; // index provider id for AppStore
 	public static String APP_STORE_TYPE = "AppStore"; // type of index item for AppStore
 
-	// index item properties
-	public static String APPSTORE_NAME = "appstore.name";
-	public static String APPSTORE_HOST_URL = "appstore.host.url";
-	public static String APPSTORE_CONTEXT_ROOT = "appstore.context_root";
-
 	// ----------------------------------------------------------------------------------------
 	// DomainService
 	// ----------------------------------------------------------------------------------------
 	// index item values
 	public static String DOMAIN_SERVICE_INDEXER_ID = "component.domain_service.indexer"; // index provider id for DomainService
 	public static String DOMAIN_SERVICE_TYPE = "DomainService"; // type of index item for DomainService
-
-	// index item properties
-	public static String DOMAIN_SERVICE_NAME = "domain_service.name";
-	public static String DOMAIN_SERVICE_HOST_URL = "domain_service.host.url";
-	public static String DOMAIN_SERVICE_CONTEXT_ROOT = "domain_service.context_root";
 
 }
 

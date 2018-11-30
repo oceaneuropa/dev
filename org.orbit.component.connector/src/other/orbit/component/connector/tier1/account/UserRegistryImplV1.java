@@ -14,6 +14,7 @@ import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.connector.tier1.account.UserAccountImpl;
 import org.orbit.component.connector.tier1.account.UserAccountWSClient;
 import org.orbit.component.model.tier1.account.UserAccountDTO;
+import org.orbit.infra.api.InfraConstants;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
@@ -22,8 +23,6 @@ import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.StatusDTO;
-
-import other.orbit.component.connector.ComponentConstantsV1;
 
 public class UserRegistryImplV1 implements UserAccountClient {
 
@@ -84,7 +83,7 @@ public class UserRegistryImplV1 implements UserAccountClient {
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(ComponentConstantsV1.USER_REGISTRY_NAME);
+		String name = (String) this.properties.get(InfraConstants.SERVICE__NAME);
 		return name;
 	}
 
@@ -294,9 +293,9 @@ public class UserRegistryImplV1 implements UserAccountClient {
 	 * @return
 	 */
 	protected String getLoadBalanceId(Map<String, Object> properties) {
-		String userRegistryName = (String) properties.get(ComponentConstantsV1.USER_REGISTRY_NAME);
-		String url = (String) properties.get(ComponentConstantsV1.USER_REGISTRY_HOST_URL);
-		String contextRoot = (String) properties.get(ComponentConstantsV1.USER_REGISTRY_CONTEXT_ROOT);
+		String userRegistryName = (String) properties.get(InfraConstants.SERVICE__NAME);
+		String url = (String) properties.get(InfraConstants.SERVICE__HOST_URL);
+		String contextRoot = (String) properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 		String key = url + "::" + contextRoot + "::" + userRegistryName;
 		return key;
 	}

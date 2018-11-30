@@ -12,14 +12,12 @@ public interface ComponentConstants {
 	// ----------------------------------------------------------------------------------------
 	// Global
 	// ----------------------------------------------------------------------------------------
+	public static String OSGI_SERVICE_HTTP_PORT = "org.osgi.service.http.port";
 	public static String ORBIT_HOST_URL = "orbit.host.url";
 	public static String ORBIT_INDEX_SERVICE_URL = "orbit.index_service.url";
 	public static String ORBIT_EXTENSION_REGISTRY_URL = "orbit.extension_registry.url";
 
 	// global index item properties
-	public static String LAST_HEARTBEAT_TIME = "last_heartbeat_time";
-	public static String HEARTBEAT_EXPIRE_TIME = "heartbeat_expire_time";
-
 	public static String TOKEN_PROVIDER__ORBIT = "orbit";
 
 	// tier1
@@ -62,11 +60,6 @@ public interface ComponentConstants {
 	public static String IDENTITY_INDEXER_ID = "component.identity.indexer"; // index provider id for Identity service
 	public static String IDENTITY_TYPE = "Identity"; // type of index item for Identity service
 
-	// index item properties
-	public static String IDENTITY_NAME = "identity.name";
-	public static String IDENTITY_HOST_URL = "identity.host.url";
-	public static String IDENTITY_CONTEXT_ROOT = "identity.context_root";
-
 	// ----------------------------------------------------------------------------------------
 	// User Registry Service
 	// ----------------------------------------------------------------------------------------
@@ -83,11 +76,6 @@ public interface ComponentConstants {
 	// index item values
 	public static String USER_REGISTRY_INDEXER_ID = "component.user_registry.indexer"; // index provider id for UserRegistry
 	public static String USER_REGISTRY_TYPE = "UserRegistry"; // type of index item for UserRegistry
-
-	// index item properties
-	public static String USER_REGISTRY_NAME = "user_registry.name";
-	public static String USER_REGISTRY_HOST_URL = "user_registry.host.url";
-	public static String USER_REGISTRY_CONTEXT_ROOT = "user_registry.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// OAuth2 Service
@@ -106,11 +94,6 @@ public interface ComponentConstants {
 	public static String OAUTH2_INDEXER_ID = "component.oauth2.indexer"; // index provider id for OAuth2 service
 	public static String OAUTH2_TYPE = "OAuth2"; // type of index item for OAuth2 service
 
-	// index item properties
-	public static String OAUTH2_NAME = "oauth2.name";
-	public static String OAUTH2_HOST_URL = "oauth2.host.url";
-	public static String OAUTH2_CONTEXT_ROOT = "oauth2.context_root";
-
 	// ----------------------------------------------------------------------------------------
 	// Auth Service
 	// ----------------------------------------------------------------------------------------
@@ -119,21 +102,11 @@ public interface ComponentConstants {
 	public static String COMPONENT_AUTH_HOST_URL = "component.auth.host.url";
 	public static String COMPONENT_AUTH_CONTEXT_ROOT = "component.auth.context_root";
 	public static String COMPONENT_AUTH_TOKEN_SECRET = "component.auth.token_secret";
-	// public static String COMPONENT_AUTH_JDBC_DRIVER = "component.auth.jdbc.driver";
-	// public static String COMPONENT_AUTH_JDBC_URL = "component.auth.jdbc.url";
-	// public static String COMPONENT_AUTH_JDBC_USERNAME = "component.auth.jdbc.username";
-	// public static String COMPONENT_AUTH_JDBC_PASSWORD = "component.auth.jdbc.password";
 	public static String COMPONENT_AUTH_AUTOSTART = "component.auth.autostart";
 
 	// index item values
 	public static String AUTH_INDEXER_ID = "component.auth.indexer"; // index provider id for auth service
 	public static String AUTH_TYPE = "Auth"; // type of index item for auth service
-
-	// index item properties
-	public static String AUTH_NAMESPACE = "auth.namespace";
-	public static String AUTH_NAME = "auth.name";
-	public static String AUTH_HOST_URL = "auth.host.url";
-	public static String AUTH_CONTEXT_ROOT = "auth.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// Config Registry
@@ -152,11 +125,6 @@ public interface ComponentConstants {
 	public static String CONFIG_REGISTRY_INDEXER_ID = "component.config_registry.indexer"; // index provider id for ConfigRegistry
 	public static String CONFIG_REGISTRY_TYPE = "ConfigRegistry"; // type of index item for ConfigRegistry
 
-	// index item properties
-	public static String CONFIG_REGISTRY_NAME = "config_registry.name";
-	public static String CONFIG_REGISTRY_HOST_URL = "config_registry.host.url";
-	public static String CONFIG_REGISTRY_CONTEXT_ROOT = "config_registry.context_root";
-
 	// ----------------------------------------------------------------------------------------
 	// App Store
 	// ----------------------------------------------------------------------------------------
@@ -173,11 +141,6 @@ public interface ComponentConstants {
 	// index item values
 	public static String APP_STORE_INDEXER_ID = "component.app_store.indexer"; // index provider id for AppStore
 	public static String APP_STORE_TYPE = "AppStore"; // type of index item for AppStore
-
-	// index item properties
-	public static String APPSTORE_NAME = "app_store.name";
-	public static String APPSTORE_HOST_URL = "app_store.host.url";
-	public static String APPSTORE_CONTEXT_ROOT = "app_store.context_root";
 
 	// ----------------------------------------------------------------------------------------
 	// Domain Management Service
@@ -196,11 +159,6 @@ public interface ComponentConstants {
 	public static String DOMAIN_SERVICE_INDEXER_ID = "component.domain_management.indexer"; // index provider id for DomainService
 	public static String DOMAIN_SERVICE_TYPE = "DomainManagement"; // type of index item for DomainService
 
-	// index item properties
-	public static String DOMAIN_SERVICE_NAME = "domain_management.name";
-	public static String DOMAIN_SERVICE_HOST_URL = "domain_management.host.url";
-	public static String DOMAIN_SERVICE_CONTEXT_ROOT = "domain_management.context_root";
-
 	// ----------------------------------------------------------------------------------------
 	// Node Control
 	// ----------------------------------------------------------------------------------------
@@ -218,9 +176,6 @@ public interface ComponentConstants {
 	public static String NODE_CONTROL_TYPE = "NodeControl"; // type of index item for NodeControl
 
 	// index item properties
-	public static String NODE_CONTROL_NAME = "node_control.name";
-	public static String NODE_CONTROL_HOST_URL = "node_control.host.url";
-	public static String NODE_CONTROL_CONTEXT_ROOT = "node_control.context_root";
 	public static String NODE_CONTROL_HOME = "node_control.home";
 
 	// EditPolicy values
@@ -244,9 +199,6 @@ public interface ComponentConstants {
 	public static String MISSION_CONTROL_TYPE = "MissionControl"; // type of index item for MissionControl service
 
 	// index item properties
-	public static String MISSION_CONTROL_NAME = "mission_control.name";
-	public static String MISSION_CONTROL_HOST_URL = "mission_control.host.url";
-	public static String MISSION_CONTROL_CONTEXT_ROOT = "mission_control.context_root";
 	public static String MISSION_CONTROL_HOME = "mission_control.home";
 
 }

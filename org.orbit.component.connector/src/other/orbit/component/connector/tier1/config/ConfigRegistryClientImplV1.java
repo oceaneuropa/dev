@@ -9,12 +9,11 @@ import javax.ws.rs.core.Response;
 import org.orbit.component.api.tier1.configregistry.ConfigRegistryClient;
 import org.orbit.component.api.tier1.configregistry.EPath;
 import org.orbit.component.connector.tier1.configregistry.ConfigRegistryWSClient;
+import org.orbit.infra.api.InfraConstants;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.util.StringUtil;
-
-import other.orbit.component.connector.ComponentConstantsV1;
 
 public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 
@@ -47,14 +46,14 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 
 	@Override
 	public String getName() {
-		String name = (String) this.properties.get(ComponentConstantsV1.CONFIG_REGISTRY_NAME);
+		String name = (String) this.properties.get(InfraConstants.SERVICE__NAME);
 		return name;
 	}
 
 	@Override
 	public String getURL() {
-		String hostURL = (String) this.properties.get(ComponentConstantsV1.CONFIG_REGISTRY_HOST_URL);
-		String contextRoot = (String) this.properties.get(ComponentConstantsV1.CONFIG_REGISTRY_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(InfraConstants.SERVICE__HOST_URL);
+		String contextRoot = (String) this.properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 
@@ -83,14 +82,14 @@ public class ConfigRegistryClientImplV1 implements ConfigRegistryClient {
 			properties = new HashMap<String, Object>();
 		}
 
-		String oldUrl = (String) this.properties.get(ComponentConstantsV1.APPSTORE_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(ComponentConstantsV1.APPSTORE_CONTEXT_ROOT);
+		String oldUrl = (String) this.properties.get(InfraConstants.SERVICE__HOST_URL);
+		String oldContextRoot = (String) this.properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 		this.properties = properties;
 		this.loadBalanceId = getLoadBalanceId(this.properties);
 
-		String newUrl = (String) properties.get(ComponentConstantsV1.APPSTORE_HOST_URL);
-		String newContextRoot = (String) properties.get(ComponentConstantsV1.APPSTORE_CONTEXT_ROOT);
+		String newUrl = (String) properties.get(InfraConstants.SERVICE__HOST_URL);
+		String newContextRoot = (String) properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 		boolean reinitClient = false;
 		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {

@@ -8,14 +8,14 @@ import org.origin.common.util.DateUtil;
 
 public class LoadBalanceResourceHelper {
 
+	public static String LAST_PING_TIME = "last_ping_time";
+	public static String LAST_PING_SUCCEED = "last_ping_succeed";
+
 	public static LoadBalanceResourceHelper INSTANCE = new LoadBalanceResourceHelper();
 
-	// ------------------------------------------------------------------------------------
-	// "last_heartbeat_time" property
-	// ------------------------------------------------------------------------------------
 	public <S> boolean hasLastHeartBeatTime(LoadBalanceResource<S> resource) {
-		if (resource.hasProperty(InfraConstants.LAST_HEARTBEAT_TIME)) {
-			Object value = resource.getProperty(InfraConstants.LAST_HEARTBEAT_TIME);
+		if (resource.hasProperty(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME)) {
+			Object value = resource.getProperty(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME);
 			if (value instanceof Date) {
 				return true;
 
@@ -37,8 +37,8 @@ public class LoadBalanceResourceHelper {
 
 	public <S> Date getLastHeartBeatTime(LoadBalanceResource<S> resource) {
 		Date lastHeartBeatTime = null;
-		if (resource.hasProperty(InfraConstants.LAST_HEARTBEAT_TIME)) {
-			Object value = resource.getProperty(InfraConstants.LAST_HEARTBEAT_TIME);
+		if (resource.hasProperty(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME)) {
+			Object value = resource.getProperty(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME);
 			if (value instanceof Date) {
 				lastHeartBeatTime = (Date) value;
 
@@ -53,31 +53,11 @@ public class LoadBalanceResourceHelper {
 	}
 
 	// ------------------------------------------------------------------------------------
-	// "heartbeat_expire_time" property
-	// ------------------------------------------------------------------------------------
-	public <S> Date getHeartBeatExpireTime(LoadBalanceResource<S> resource) {
-		Date heartBeatExpireTime = null;
-		if (resource.hasProperty(InfraConstants.HEARTBEAT_EXPIRE_TIME)) {
-			Object value = resource.getProperty(InfraConstants.HEARTBEAT_EXPIRE_TIME);
-			if (value instanceof Date) {
-				heartBeatExpireTime = (Date) value;
-
-			} else if (value instanceof String) {
-				heartBeatExpireTime = DateUtil.toDate((String) value, DateUtil.getCommonDateFormats());
-
-			} else if (value instanceof Long) {
-				heartBeatExpireTime = DateUtil.toDate((Long) value);
-			}
-		}
-		return heartBeatExpireTime;
-	}
-
-	// ------------------------------------------------------------------------------------
 	// "last_ping_time" property
 	// ------------------------------------------------------------------------------------
 	public <S> boolean hasLastPingTime(LoadBalanceResource<S> resource) {
-		if (resource.hasProperty(InfraConstants.LAST_PING_TIME)) {
-			Object value = resource.getProperty(InfraConstants.LAST_PING_TIME);
+		if (resource.hasProperty(LoadBalanceResourceHelper.LAST_PING_TIME)) {
+			Object value = resource.getProperty(LoadBalanceResourceHelper.LAST_PING_TIME);
 			if (value instanceof Date) {
 				return true;
 
@@ -99,8 +79,8 @@ public class LoadBalanceResourceHelper {
 
 	public <S> Date getLastPingTime(LoadBalanceResource<S> resource) {
 		Date lastHeartBeatTime = null;
-		if (resource.hasProperty(InfraConstants.LAST_PING_TIME)) {
-			Object value = resource.getProperty(InfraConstants.LAST_PING_TIME);
+		if (resource.hasProperty(LoadBalanceResourceHelper.LAST_PING_TIME)) {
+			Object value = resource.getProperty(LoadBalanceResourceHelper.LAST_PING_TIME);
 			if (value instanceof Date) {
 				lastHeartBeatTime = (Date) value;
 
@@ -118,8 +98,8 @@ public class LoadBalanceResourceHelper {
 	// "last_ping_succeed" property
 	// ------------------------------------------------------------------------------------
 	public <S> boolean hasLastPingSucceed(LoadBalanceResource<S> resource) {
-		if (resource.hasProperty(InfraConstants.LAST_PING_SUCCEED)) {
-			Object value = resource.getProperty(InfraConstants.LAST_PING_SUCCEED);
+		if (resource.hasProperty(LoadBalanceResourceHelper.LAST_PING_SUCCEED)) {
+			Object value = resource.getProperty(LoadBalanceResourceHelper.LAST_PING_SUCCEED);
 			if (value instanceof Boolean) {
 				return true;
 
@@ -136,8 +116,8 @@ public class LoadBalanceResourceHelper {
 
 	public <S> boolean isLastPingSucceed(LoadBalanceResource<S> resource) {
 		Boolean lastPingSucceed = null;
-		if (resource.hasProperty(InfraConstants.LAST_PING_SUCCEED)) {
-			Object value = resource.getProperty(InfraConstants.LAST_PING_SUCCEED);
+		if (resource.hasProperty(LoadBalanceResourceHelper.LAST_PING_SUCCEED)) {
+			Object value = resource.getProperty(LoadBalanceResourceHelper.LAST_PING_SUCCEED);
 			if (value instanceof Boolean) {
 				lastPingSucceed = (Boolean) value;
 

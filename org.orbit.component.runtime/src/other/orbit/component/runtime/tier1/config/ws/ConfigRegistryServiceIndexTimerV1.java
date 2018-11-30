@@ -8,6 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
@@ -42,10 +43,10 @@ public class ConfigRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<I
 		if (indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
-			props.put(ComponentConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);
-			props.put(ComponentConstants.CONFIG_REGISTRY_NAME, name);
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__NAME, name);
+			props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+			props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			indexProvider.addIndexItem(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, ComponentConstants.CONFIG_REGISTRY_TYPE, name, props);
 
@@ -53,7 +54,7 @@ public class ConfigRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<I
 			// Update existing index item with properties
 			Integer indexItemId = indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			indexProvider.setProperties(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, indexItemId, props);
 		}

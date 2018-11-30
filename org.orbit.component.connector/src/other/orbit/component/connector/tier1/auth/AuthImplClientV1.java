@@ -16,13 +16,12 @@ import org.orbit.component.model.tier1.auth.TokenRequest;
 import org.orbit.component.model.tier1.auth.TokenRequestDTO;
 import org.orbit.component.model.tier1.auth.TokenResponse;
 import org.orbit.component.model.tier1.auth.TokenResponseDTO;
+import org.orbit.infra.api.InfraConstants;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.WSClientConstants;
 import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadata;
-
-import other.orbit.component.connector.ComponentConstantsV1;
 
 public class AuthImplClientV1 implements AuthClient {
 
@@ -87,8 +86,8 @@ public class AuthImplClientV1 implements AuthClient {
 			return url;
 		}
 
-		String hostURL = (String) this.properties.get(ComponentConstantsV1.AUTH_HOST_URL);
-		String contextRoot = (String) this.properties.get(ComponentConstantsV1.AUTH_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(InfraConstants.SERVICE__HOST_URL);
+		String contextRoot = (String) this.properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 

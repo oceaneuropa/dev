@@ -4,9 +4,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexProviderClient;
-import org.orbit.infra.connector.InfraConstants;
-import org.orbit.infra.connector.indexes.IndexProviderClientImpl;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
@@ -39,8 +38,8 @@ public class IndexProviderConnectorImplV1 implements IndexProviderConnectorV1 {
 	@Override
 	public synchronized IndexProviderClient getService(Map<Object, Object> properties) {
 		IndexProviderClient indexProvider = null;
-		String url = (String) properties.get(InfraConstants.INDEX_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
+		String url = (String) properties.get(InfraConstants.SERVICE__HOST_URL);
+		String contextRoot = (String) properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 		if (url != null && contextRoot != null) {
 			String key = url + KEY_PARTS_SEPARATOR + contextRoot;
 			indexProvider = this.serviceMap.get(key);

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.platform.sdk.IPlatform;
 import org.orbit.platform.sdk.PlatformSDKActivator;
 import org.origin.common.launch.LaunchActivator;
@@ -182,9 +183,7 @@ public class LaunchServiceHelper {
 						continue;
 					}
 					// Need to validate required properties in config.ini attribute. If not set, node should not be started.
-					if ("org.osgi.service.http.port".equals((String) propName) //
-							|| "orbit.host.url".equals((String) propName)) //
-					{
+					if (ComponentConstants.OSGI_SERVICE_HTTP_PORT.equals((String) propName) || ComponentConstants.ORBIT_HOST_URL.equals((String) propName)) {
 						continue;
 					}
 					allConfigs.put((String) propName, propValue.toString());

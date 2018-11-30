@@ -5,14 +5,14 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.runtime.Activator;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderClient;
-import org.origin.common.thread.other.ServiceIndexTimerV1;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
+import org.origin.common.thread.other.ServiceIndexTimerV1;
 
 /**
  * UserRegistry service timer to update index item for the service.
@@ -43,10 +43,10 @@ public class UserRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<Ind
 		if (indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.USER_REGISTRY_HOST_URL, hostURL);
-			props.put(ComponentConstants.USER_REGISTRY_CONTEXT_ROOT, contextRoot);
-			props.put(ComponentConstants.USER_REGISTRY_NAME, name);
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__NAME, name);
+			props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+			props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			indexProvider.addIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, ComponentConstants.USER_REGISTRY_TYPE, name, props);
 
@@ -54,7 +54,7 @@ public class UserRegistryServiceIndexTimerV1 extends ServiceIndexTimerImplV1<Ind
 			// Update existing index item with properties
 			Integer indexItemId = indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			indexProvider.setProperties(ComponentConstants.USER_REGISTRY_INDEXER_ID, indexItemId, props);
 		}

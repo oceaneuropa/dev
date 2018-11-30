@@ -69,13 +69,13 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 			Map<String, Object> properties = new Hashtable<String, Object>();
 			String platformId = getPlatformId();
 			if (platformId != null && properties != null) {
-				properties.put(PlatformConstants.PLATFORM_ID, platformId);
+				properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
 			}
-			properties.put(InfraConstants.NAME, name);
-			properties.put(InfraConstants.BASE_URL, url);
+			properties.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
+			properties.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
 			// props.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
 			// props.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
-			properties.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			properties.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 			return indexProvider.addIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name, properties);
 
 		} catch (ServerException e) {
@@ -95,11 +95,11 @@ public class IndexServiceIndexTimer extends IndexTimerImpl<IndexService, IndexSe
 			Map<String, Object> properties = new Hashtable<String, Object>();
 			String platformId = getPlatformId();
 			if (platformId != null && properties != null) {
-				properties.put(PlatformConstants.PLATFORM_ID, platformId);
+				properties.put(PlatformConstants.IDX_PROP__PLATFORM_ID, platformId);
 			}
-			properties.put(InfraConstants.NAME, name);
-			properties.put(InfraConstants.BASE_URL, url);
-			properties.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			properties.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
+			properties.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
+			properties.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 			// props.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
 			// props.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
 			indexProvider.setProperties(InfraConstants.INDEX_SERVICE_INDEXER_ID, indexItemId, properties);

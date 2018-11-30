@@ -49,11 +49,11 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.IDX_PROP__DATACAST__ID, dataCastId);
-		props.put(InfraConstants.IDX_PROP__DATACAST__NAME, name);
-		props.put(InfraConstants.IDX_PROP__DATACAST__HOST_URL, hostURL);
-		props.put(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT, contextRoot);
-		props.put(InfraConstants.IDX_PROP__DATACAST__BASE_URL, url);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date());
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		return indexService.addIndexItem(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE, name, props);
 	}
@@ -70,11 +70,11 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.IDX_PROP__DATACAST__ID, dataCastId);
-		props.put(InfraConstants.IDX_PROP__DATACAST__NAME, name);
-		props.put(InfraConstants.IDX_PROP__DATACAST__HOST_URL, hostURL);
-		props.put(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT, contextRoot);
-		props.put(InfraConstants.IDX_PROP__DATACAST__BASE_URL, url);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date());
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		indexService.setProperties(InfraConstants.IDX__DATACAST__INDEXER_ID, indexItemId, props);
 	}

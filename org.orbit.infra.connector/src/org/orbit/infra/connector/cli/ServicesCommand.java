@@ -30,7 +30,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 	public static final String CHANNEL = "channel";
 
 	// Column names constants
-	protected static String[] CHANNEL_SERVICES_COLUMNS = new String[] { "index_item_id", "channel.name", "channel.host.url", "channel.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	protected static String[] CHANNEL_SERVICES_COLUMNS = new String[] { "index_item_id", "channel.name", "channel.host.url", "channel.context_root", "Heartbeat Time", "" };
 
 	protected String scheme = "infra";
 	protected String indexServiceUrl = null;
@@ -99,16 +99,14 @@ public class ServicesCommand implements Annotated, CommandActivator {
 				Integer indexItemId = indexItem.getIndexItemId();
 				Map<String, Object> props = indexItem.getProperties();
 
-				String name = (String) props.get(InfraConstants.IDX_PROP__DATATUBE__NAME);
-				String hostUrl = (String) props.get(InfraConstants.IDX_PROP__DATATUBE__HOST_URL);
-				String contextRoot = (String) props.get(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT);
-				Object lastHeartbeatTime = props.get(InfraConstants.HEARTBEAT_EXPIRE_TIME);
-				Object heartbeatExpireTime = props.get(InfraConstants.LAST_HEARTBEAT_TIME);
+				String name = (String) props.get(InfraConstants.SERVICE__NAME);
+				String hostUrl = (String) props.get(InfraConstants.SERVICE__HOST_URL);
+				String contextRoot = (String) props.get(InfraConstants.SERVICE__CONTEXT_ROOT);
+				Object lastHeartbeatTime = props.get(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME);
 
 				String lastHeartbeatTimeStr = lastHeartbeatTime.toString();
-				String heartbeatExpireTimeStr = heartbeatExpireTime.toString();
 
-				rows[rowIndex++] = new String[] { indexItemId.toString(), name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+				rows[rowIndex++] = new String[] { indexItemId.toString(), name, hostUrl, contextRoot, lastHeartbeatTimeStr, "" };
 			}
 
 			PrettyPrinter.prettyPrint(CHANNEL_SERVICES_COLUMNS, rows, indexItems.size());

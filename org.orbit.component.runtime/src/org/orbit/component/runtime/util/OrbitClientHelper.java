@@ -3,6 +3,7 @@ package org.orbit.component.runtime.util;
 import java.io.IOException;
 import java.util.List;
 
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClientsHelper;
@@ -24,8 +25,8 @@ public class OrbitClientHelper {
 		PlatformClient platformClient = null;
 		if (indexItem != null) {
 			String platformUrl = null;
-			String platformHostUrl = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
-			String platformContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
+			String platformHostUrl = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+			String platformContextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 			if (platformHostUrl != null && platformContextRoot != null) {
 				platformUrl = platformHostUrl;
@@ -59,11 +60,12 @@ public class OrbitClientHelper {
 				List<IndexItem> indexItems = indexService.getIndexItems(PlatformConstants.PLATFORM_INDEXER_ID, PlatformConstants.PLATFORM_INDEXER_TYPE);
 				if (indexItems != null) {
 					for (IndexItem indexItem : indexItems) {
-						String currPlatformId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
-						String currPlatformParentId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_PARENT_ID);
+						String currPlatformId = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_ID);
+						String currPlatformParentId = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_PARENT_ID);
 						// String currPlatformType = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_TYPE);
 
-						// if (PlatformConstants.PLATFORM_TYPE__NODE.equalsIgnoreCase(currPlatformType) && platformParentId.equals(currPlatformParentId) && nodePlatformid.equals(currPlatformId)) {
+						// if (PlatformConstants.PLATFORM_TYPE__NODE.equalsIgnoreCase(currPlatformType) && platformParentId.equals(currPlatformParentId) &&
+						// nodePlatformid.equals(currPlatformId)) {
 						if (platformParentId.equals(currPlatformParentId) && nodePlatformid.equals(currPlatformId)) {
 							nodeIndexItem = indexItem;
 							break;

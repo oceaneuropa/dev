@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.config.service.ConfigRegistryService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.origin.common.util.DateUtil;
 
 /**
  * ConfigRegistry service timer to update index item for the service.
@@ -50,15 +50,12 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String contextRoot = service.getContextRoot();
 
 		Date now = new Date();
-		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.CONFIG_REGISTRY_NAME, name);
-		props.put(ComponentConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
-		props.put(ComponentConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		return indexProvider.addIndexItem(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, ComponentConstants.CONFIG_REGISTRY_TYPE, name, props);
 	}
@@ -70,16 +67,13 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String contextRoot = service.getContextRoot();
 
 		Date now = new Date();
-		Date expire = DateUtil.addSeconds(now, 30);
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.CONFIG_REGISTRY_NAME, name);
-		props.put(ComponentConstants.CONFIG_REGISTRY_HOST_URL, hostURL);
-		props.put(ComponentConstants.CONFIG_REGISTRY_CONTEXT_ROOT, contextRoot);
-		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		indexProvider.setProperties(ComponentConstants.CONFIG_REGISTRY_INDEXER_ID, indexItemId, props);
 	}

@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -62,8 +61,6 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 	// runtime constants
 	public static String INDEX_SERVICE_EDITING_DOMAIN = "indexservice"; // editing domain name for editing index services
-	public static String CONFIG_SERVICE_HEARTBEAT_EXPIRE_TIME = "index.service.heartbeatExpireTime";
-	public static int DEFAULT_HEARTBEAT_EXPIRE_TIME = 30; // if no heartbeat for the last 30 seconds, the node is considered as not active.
 
 	protected BundleContext bundleContext;
 	protected IndexServiceDatabaseConfigurationV1 indexServiceConfig;
@@ -166,10 +163,6 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 
 	public String getContextRoot() {
 		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, null);
-	}
-
-	public Integer getServiceHeartbeatExpireTime() {
-		return PropertyUtil.getInt(this.indexServiceConfig.getProperties(), CONFIG_SERVICE_HEARTBEAT_EXPIRE_TIME, DEFAULT_HEARTBEAT_EXPIRE_TIME);
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
@@ -286,8 +279,8 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 				// Add an index item for the current index service and put the url, contextRoot, username, password for accessing the service as
 				// properties of the index item.
 				Map<String, Object> properties = new HashMap<String, Object>();
-				properties.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostUrl);
-				properties.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
+				properties.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostUrl);
+				properties.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
 
 				addIndexItem(InfraConstants.INDEX_SERVICE_INDEXER_ID, InfraConstants.INDEX_SERVICE_TYPE, name, properties);
 			}
@@ -1125,24 +1118,13 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			List<IndexItem> indexItems = getIndexItems(null, InfraConstants.INDEX_SERVICE_TYPE);
 			for (IndexItem indexItem : indexItems) {
 				String currName = indexItem.getName();
-				String hostURL = (String) indexItem.getProperty(InfraConstants.INDEX_SERVICE_HOST_URL);
-				String contextRoot = (String) indexItem.getProperty(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT);
-				Date lastHeartbeatTime = (Date) indexItem.getRuntimeProperty(InfraConstants.LAST_HEARTBEAT_TIME);
-
-				// gets a calendar using the default time zone and locale.
-				Calendar calendar = Calendar.getInstance();
-				calendar.add(Calendar.SECOND, -getServiceHeartbeatExpireTime());
-				Date heartbeatTimeoutTime = calendar.getTime();
+				String hostURL = (String) indexItem.getProperty(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL);
+				String contextRoot = (String) indexItem.getProperty(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT);
+				Date lastHeartbeatTime = (Date) indexItem.getRuntimeProperty(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME);
 
 				// do not notify itself
 				if (serviceName != null && serviceName.equals(currName)) {
 					// System.err.println("Ignore notifying current index service node '" + currName + "'.");
-					continue;
-				}
-
-				// Last heartbeat happened 30 seconds ago. Index service node is considered as not running.
-				if (lastHeartbeatTime == null || lastHeartbeatTime.compareTo(heartbeatTimeoutTime) <= 0) {
-					System.err.println("Index service node '" + currName + "' is not running (last heartbeat time is " + lastHeartbeatTime + " ).");
 					continue;
 				}
 

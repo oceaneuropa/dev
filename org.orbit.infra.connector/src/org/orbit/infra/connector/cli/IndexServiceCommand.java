@@ -6,10 +6,9 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexServiceClient;
-import org.orbit.infra.api.util.InfraClients;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.connector.InfraConstants;
 import org.orbit.platform.sdk.command.CommandActivator;
 import org.origin.common.annotation.Annotated;
 import org.origin.common.osgi.OSGiServiceUtil;

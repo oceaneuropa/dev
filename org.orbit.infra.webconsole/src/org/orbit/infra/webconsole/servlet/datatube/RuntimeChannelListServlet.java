@@ -21,10 +21,10 @@ import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.infra.api.util.RuntimeChannelComparator;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.InfraIndexItemHelper;
-import org.orbit.infra.io.util.InfraNodeConfigHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
+import org.orbit.infra.io.util.InfraNodeConfigHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -92,7 +92,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 				String dataCastServiceUrl = null;
 				IndexItem dataCastIndexItem = InfraIndexItemHelper.getDataCastIndexItem(indexServiceUrl, accessToken, dataCastId);
 				if (dataCastIndexItem != null) {
-					dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+					dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 					isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 					if (isDataCastOnline) {
 						dataCastServiceMetadata = InfraClientsHelper.DATA_CAST.getServiceMetadata(dataCastClientResolver, dataCastServiceUrl, accessToken);
@@ -106,7 +106,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 				// Get DataTube service index item and check whether the service is online
 				IndexItem dataTubeIndexItem = InfraIndexItemHelper.getDataTubeIndexItem(indexServiceUrl, accessToken, dataCastId, dataTubeId);
 				if (dataTubeIndexItem != null) {
-					String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+					String dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 					boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
 
 					// Get runtime channels from DataTube service

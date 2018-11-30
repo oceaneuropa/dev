@@ -20,9 +20,9 @@ import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.model.RequestConstants;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
@@ -104,7 +104,7 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
 					if (isDataCastOnline) {
-						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
 						DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 						DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
@@ -126,7 +126,7 @@ public class ChannelMetadataActionServlet extends HttpServlet {
 							if (dataTubeIndexItem != null) {
 								isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
 								if (isDataTubeOnline) {
-									dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+									dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 								} else {
 									if (!dataTubeIdsWithoutOnlineService.contains(dataTubeId)) {
 										dataTubeIdsWithoutOnlineService.add(dataTubeId);

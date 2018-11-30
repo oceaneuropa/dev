@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.identity.service.IdentityService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
@@ -51,10 +52,10 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 		Date now = new Date();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.IDENTITY_NAME, name);
-		props.put(ComponentConstants.IDENTITY_HOST_URL, hostURL);
-		props.put(ComponentConstants.IDENTITY_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		return indexProvider.addIndexItem(ComponentConstants.IDENTITY_INDEXER_ID, ComponentConstants.IDENTITY_TYPE, name, props);
 	}
@@ -69,10 +70,10 @@ public class IdentityServiceTimer extends ServiceIndexTimer<IdentityService> {
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> newProperties = new Hashtable<String, Object>();
-		newProperties.put(ComponentConstants.IDENTITY_NAME, name);
-		newProperties.put(ComponentConstants.IDENTITY_HOST_URL, hostURL);
-		newProperties.put(ComponentConstants.IDENTITY_CONTEXT_ROOT, contextRoot);
-		newProperties.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		newProperties.put(InfraConstants.SERVICE__NAME, name);
+		newProperties.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		newProperties.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		newProperties.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		indexProvider.setProperties(ComponentConstants.IDENTITY_INDEXER_ID, indexItemId, newProperties);
 	}

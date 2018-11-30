@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.account.service.UserRegistryService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.origin.common.util.DateUtil;
 
 /**
  * Indexer for UserRegistry service.
@@ -50,14 +50,12 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		String contextRoot = service.getContextRoot();
 
 		Date now = new Date();
-		Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.USER_REGISTRY_NAME, name);
-		props.put(ComponentConstants.USER_REGISTRY_HOST_URL, hostURL);
-		props.put(ComponentConstants.USER_REGISTRY_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
-		props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		return indexProvider.addIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, ComponentConstants.USER_REGISTRY_TYPE, name, props);
 	}
@@ -69,15 +67,13 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		String contextRoot = service.getContextRoot();
 
 		Date now = new Date();
-		Date expire = DateUtil.addSeconds(now, 30);
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> newProperties = new Hashtable<String, Object>();
-		newProperties.put(ComponentConstants.USER_REGISTRY_NAME, name);
-		newProperties.put(ComponentConstants.USER_REGISTRY_HOST_URL, hostURL);
-		newProperties.put(ComponentConstants.USER_REGISTRY_CONTEXT_ROOT, contextRoot);
-		newProperties.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
-		newProperties.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
+		newProperties.put(InfraConstants.SERVICE__NAME, name);
+		newProperties.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		newProperties.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		newProperties.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		indexProvider.setProperties(ComponentConstants.USER_REGISTRY_INDEXER_ID, indexItemId, newProperties);
 	}

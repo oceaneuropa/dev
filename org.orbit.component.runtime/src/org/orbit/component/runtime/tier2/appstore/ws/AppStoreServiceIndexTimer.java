@@ -7,9 +7,11 @@ import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.service.WebServiceAwareHelper;
 
 /**
  * AppStore service indexing timer.
@@ -47,32 +49,36 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Date now = new Date();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.APPSTORE_NAME, name);
-		props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
-		props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		return indexProvider.addIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE, name, props);
 	}
 
 	@Override
 	public void updateIndex(IndexServiceClient indexProvider, AppStoreService service, IndexItem indexItem) throws IOException {
-		// String name = service.getName();
-		// String hostURL = service.getHostURL();
-		// String contextRoot = service.getContextRoot();
+		String name = service.getName();
+		String hostURL = service.getHostURL();
+		String contextRoot = service.getContextRoot();
+		String baseURL = WebServiceAwareHelper.INSTANCE.getURL(hostURL, contextRoot);
 
 		Date now = new Date();
 
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		// props.put(ComponentConstants.APPSTORE_NAME, name);
-		// props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
-		// props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
 		indexProvider.setProperties(ComponentConstants.APP_STORE_INDEXER_ID, indexItemId, props);
 	}
@@ -85,11 +91,3 @@ public class AppStoreServiceIndexTimer extends ServiceIndexTimer<AppStoreService
 	}
 
 }
-
-// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-// Date expire = DateUtil.addSeconds(now, 30);
-// props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);
-
-// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-// Date expire = DateUtil.addSeconds(now, 30);
-// props.put(ComponentConstants.HEARTBEAT_EXPIRE_TIME, expire);

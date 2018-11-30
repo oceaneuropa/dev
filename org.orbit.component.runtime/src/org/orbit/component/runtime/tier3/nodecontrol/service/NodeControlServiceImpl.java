@@ -568,7 +568,7 @@ public class NodeControlServiceImpl implements NodeControlService, LifecycleAwar
 			if (nodeIndexItem != null) {
 				boolean isOnline = IndexItemHelper.INSTANCE.isOnline(nodeIndexItem);
 				boolean isStopped = false;
-				String runtimeState = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_RUNTIME_STATE);
+				String runtimeState = (String) nodeIndexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_RUNTIME_STATE);
 				if ("stopped".equalsIgnoreCase(runtimeState)) {
 					isStopped = true;
 				}

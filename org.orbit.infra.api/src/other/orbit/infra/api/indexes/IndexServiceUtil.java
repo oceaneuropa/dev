@@ -182,8 +182,8 @@ public class IndexServiceUtil {
 				contextRoot = "";
 			}
 
-			properties.put(InfraConstants.INDEX_SERVICE_HOST_URL, hostURL);
-			properties.put(InfraConstants.INDEX_SERVICE_CONTEXT_ROOT, contextRoot);
+			properties.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+			properties.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
 
 		} catch (Exception e) {
 			e.printStackTrace();

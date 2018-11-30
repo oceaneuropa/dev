@@ -1,6 +1,5 @@
 package org.orbit.infra.api.indexes;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +20,9 @@ public class IndexItemHelper {
 	 * @return
 	 */
 	public boolean isOnline(IndexItem indexItem) {
-		if (indexItem != null && isLastHeartbeatWithinSeconds(indexItem, 16)) {
+		// if (indexItem != null && isLastHeartbeatWithinSeconds(indexItem, 16)) {
+		String serviceURL = null;
+		if (indexItem != null) {
 			String indexerId = indexItem.getIndexProviderId();
 
 			boolean checkStarted = false;
@@ -37,17 +38,23 @@ public class IndexItemHelper {
 			} else {
 				return true;
 			}
+
+			serviceURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 		}
 
-//		Map<String, Object> properties = new HashMap<String, Object>();
-//		// properties.put(WSClientConstants.REALM, null);
-//		// properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
-//		// properties.put(WSClientConstants.URL, gaiaServiceUrl);
-//		WSClientConfiguration config = WSClientConfiguration.create(properties);
-//		WSClient wsClient = new WSClient(config);
-//		if (wsClient.doPing()) {
-//			return true;
-//		}
+		if (serviceURL != null && !serviceURL.isEmpty()) {
+			Map<String, Object> properties = new HashMap<String, Object>();
+			// properties.put(WSClientConstants.REALM, null);
+			// properties.put(WSClientConstants.ACCESS_TOKEN, accessToken);
+			properties.put(WSClientConstants.URL, serviceURL);
+
+			WSClientConfiguration config = WSClientConfiguration.create(properties);
+			WSClient wsClient = new WSClient(config);
+			if (wsClient.doPing()) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 
@@ -72,41 +79,40 @@ public class IndexItemHelper {
 		return false;
 	}
 
-	/**
-	 * 
-	 * @param indexItem
-	 * @param withinSeconds
-	 * @return
-	 */
-	public boolean isLastHeartbeatWithinSeconds(IndexItem indexItem, long withinSeconds) {
-		Date lastHeartbeatTime = getLastUpdateTime(indexItem);
-		Date now = new Date();
-		if (lastHeartbeatTime != null) {
-			long milliseconds = now.getTime() - lastHeartbeatTime.getTime();
-			long withinMilliseconds = withinSeconds * 1000;
-			if (milliseconds <= withinMilliseconds) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * 
-	 * @param indexItem
-	 * @return
-	 */
-	public Date getLastUpdateTime(IndexItem indexItem) {
-		Date date = null;
-		if (indexItem != null) {
-			Object value = indexItem.getProperties().get(IndexItem.LAST_HEARTBEAT_TIME);
-			if (value instanceof Long) {
-				date = new Date((Long) value);
-			} else if (value instanceof Date) {
-				date = (Date) value;
-			}
-		}
-		return date;
-	}
+	// /**
+	// *
+	// * @param indexItem
+	// * @param withinSeconds
+	// * @return
+	// */
+	// protected boolean isLastHeartbeatWithinSeconds(IndexItem indexItem, long withinSeconds) {
+	// Date lastHeartbeatTime = getLastUpdateTime(indexItem);
+	// Date now = new Date();
+	// if (lastHeartbeatTime != null) {
+	// long milliseconds = now.getTime() - lastHeartbeatTime.getTime();
+	// long withinMilliseconds = withinSeconds * 1000;
+	// if (milliseconds <= withinMilliseconds) {
+	// return true;
+	// }
+	// }
+	// return false;
+	// }
+	// /**
+	// *
+	// * @param indexItem
+	// * @return
+	// */
+	// public Date getLastUpdateTime(IndexItem indexItem) {
+	// Date date = null;
+	// if (indexItem != null) {
+	// Object value = indexItem.getProperties().get(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME);
+	// if (value instanceof Long) {
+	// date = new Date((Long) value);
+	// } else if (value instanceof Date) {
+	// date = (Date) value;
+	// }
+	// }
+	// return date;
+	// }
 
 }

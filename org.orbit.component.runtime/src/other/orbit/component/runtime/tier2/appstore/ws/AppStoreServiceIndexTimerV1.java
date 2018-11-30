@@ -8,6 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier2.appstore.service.AppStoreService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
@@ -42,10 +43,10 @@ public class AppStoreServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 		if (indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.APPSTORE_HOST_URL, hostURL);
-			props.put(ComponentConstants.APPSTORE_CONTEXT_ROOT, contextRoot);
-			props.put(ComponentConstants.APPSTORE_NAME, name);
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+			props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+			props.put(InfraConstants.SERVICE__NAME, name);
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			indexProvider.addIndexItem(ComponentConstants.APP_STORE_INDEXER_ID, ComponentConstants.APP_STORE_TYPE, name, props);
 
@@ -53,7 +54,7 @@ public class AppStoreServiceIndexTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 			// Update existing index item with properties
 			Integer indexItemId = indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			indexProvider.setProperties(ComponentConstants.APP_STORE_INDEXER_ID, indexItemId, props);
 		}

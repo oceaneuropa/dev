@@ -405,33 +405,12 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 		boolean isHeartbeatExpired = false;
 		if (lastHeartbeatTime != null) {
 			Date heartbeatExpireTime = DateUtil.addSeconds(lastHeartbeatTime, 30);
-			resource.setProperty(InfraConstants.HEARTBEAT_EXPIRE_TIME, heartbeatExpireTime);
 			if (heartbeatExpireTime.before(new Date())) {
 				isHeartbeatExpired = true;
 			}
 		} else {
 			isHeartbeatExpired = true;
 		}
-
-		// long seconds = (System.currentTimeMillis() - lastHeartBeatTime.getTime()) / 1000;
-		// boolean isHeartBeatExpired = (seconds > 30) ? true : false;
-		// if (isHeartBeatExpired) {
-		// // expired
-		// System.err.println("\tExpired (in " + seconds + " seconds)");
-		// System.err.println();
-		//
-		//
-		// resource.setProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME, Boolean.TRUE);
-		//
-		// } else {
-		// // not expired
-		// // System.out.println("\tNot expired (in " + seconds + " seconds)");
-		// // System.out.println();
-		//
-		// if (resource.hasProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME)) {
-		// resource.removeProperty(OriginConstants.HEARTBEAT_EXPIRE_TIME);
-		// }
-		// }
 
 		// 4. Start active ping monitor if heart beat expired.
 		// Stop active ping monitor if heart beat not expired.
@@ -562,19 +541,13 @@ public abstract class IndexBasedLoadBalancedServiceConnectorImpl<SERVICE_CLIENT>
 		Date nowTime = new Date();
 		if (succeed) {
 			// ping succeeded
-			resource.setProperty(InfraConstants.LAST_PING_TIME, nowTime);
-			resource.setProperty(InfraConstants.LAST_PING_SUCCEED, Boolean.TRUE);
-
-			// The service can be pinged right now.
-			// If the service heart beat was expired. The expiration can be lifted now.
-			if (resource.hasProperty(InfraConstants.HEARTBEAT_EXPIRE_TIME)) {
-				resource.removeProperty(InfraConstants.HEARTBEAT_EXPIRE_TIME);
-			}
+			resource.setProperty(LoadBalanceResourceHelper.LAST_PING_TIME, nowTime);
+			resource.setProperty(LoadBalanceResourceHelper.LAST_PING_SUCCEED, Boolean.TRUE);
 
 		} else {
 			// ping failed
-			resource.setProperty(InfraConstants.LAST_PING_TIME, nowTime);
-			resource.setProperty(InfraConstants.LAST_PING_SUCCEED, Boolean.FALSE);
+			resource.setProperty(LoadBalanceResourceHelper.LAST_PING_TIME, nowTime);
+			resource.setProperty(LoadBalanceResourceHelper.LAST_PING_SUCCEED, Boolean.FALSE);
 		}
 	}
 

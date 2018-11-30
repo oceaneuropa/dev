@@ -15,9 +15,9 @@ import org.orbit.infra.api.datatube.DataTubeClientResolver;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
-import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
+import org.orbit.infra.io.util.InfraIndexItemHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -65,7 +65,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 					boolean isDataCastOnline = IndexItemHelper.INSTANCE.isOnline(dataCastIndexItem);
 
 					if (isDataCastOnline) {
-						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+						String dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
 						DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);
 						DataTubeClientResolver dataTubeClientResolver = new DefaultDataTubeClientResolver(indexServiceUrl);
@@ -119,7 +119,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 										boolean isOldDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(oldDataTubeIndexItem);
 
 										if (isOldDataTubeOnline) {
-											String dataTubeServiceUrl = (String) oldDataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+											String dataTubeServiceUrl = (String) oldDataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 											isOldRuntimeChannelRemoved = InfraClientsHelper.DATA_TUBE.deleteRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										} else {
@@ -133,7 +133,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 										boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(newDataTubeIndexItem);
 
 										if (isDataTubeOnline) {
-											String dataTubeServiceUrl = (String) newDataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+											String dataTubeServiceUrl = (String) newDataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 											isNewRuntimeChannelCreated = InfraClientsHelper.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										} else {
@@ -152,7 +152,7 @@ public class ChannelMetadataUpdateServlet extends HttpServlet {
 										boolean isDataTubeOnline = IndexItemHelper.INSTANCE.isOnline(newDataTubeIndexItem);
 
 										if (isDataTubeOnline) {
-											String dataTubeServiceUrl = (String) newDataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+											String dataTubeServiceUrl = (String) newDataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 											isRuntimeChannelUpdated = InfraClientsHelper.DATA_TUBE.syncRuntimeChannelById(dataTubeClientResolver, dataTubeServiceUrl, accessToken, channelId);
 
 										} else {

@@ -47,11 +47,11 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__NAME, name);
-		props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__HOST_URL, hostURL);
-		props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__CONTEXT_ROOT, contextRoot);
-		props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__BASE_URL, url);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date());
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		return indexService.addIndexItem(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, InfraConstants.IDX__CONFIG_REGISTRY__TYPE, name, props);
 	}
@@ -66,11 +66,11 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		String url = WebServiceAwareHelper.INSTANCE.getURL(service);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__NAME, name);
-		props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__HOST_URL, hostURL);
-		props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__CONTEXT_ROOT, contextRoot);
-		props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__BASE_URL, url);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date());
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		indexService.setProperties(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, indexItemId, props);
 	}

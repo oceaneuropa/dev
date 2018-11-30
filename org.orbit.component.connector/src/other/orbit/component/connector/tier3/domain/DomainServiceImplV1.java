@@ -22,6 +22,7 @@ import org.orbit.component.model.tier3.domain.PlatformConfigDTO;
 import org.orbit.component.model.tier3.domain.UpdateMachineConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdateNodeConfigRequest;
 import org.orbit.component.model.tier3.domain.UpdatePlatformConfigRequest;
+import org.orbit.infra.api.InfraConstants;
 import org.origin.common.adapter.AdaptorSupport;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceConnector;
@@ -31,8 +32,6 @@ import org.origin.common.rest.model.Request;
 import org.origin.common.rest.model.ServiceMetadata;
 import org.origin.common.rest.model.StatusDTO;
 import org.origin.common.util.StringUtil;
-
-import other.orbit.component.connector.ComponentConstantsV1;
 
 public class DomainServiceImplV1 implements DomainManagementClient {
 
@@ -73,8 +72,8 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 
 	@Override
 	public String getURL() {
-		String hostURL = (String) this.properties.get(ComponentConstantsV1.DOMAIN_SERVICE_HOST_URL);
-		String contextRoot = (String) this.properties.get(ComponentConstantsV1.DOMAIN_SERVICE_CONTEXT_ROOT);
+		String hostURL = (String) this.properties.get(InfraConstants.SERVICE__HOST_URL);
+		String contextRoot = (String) this.properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 		return hostURL + contextRoot;
 	}
 
@@ -90,14 +89,14 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	 */
 	@Override
 	public void update(Map<String, Object> properties) {
-		String oldUrl = (String) this.properties.get(ComponentConstantsV1.DOMAIN_SERVICE_HOST_URL);
-		String oldContextRoot = (String) this.properties.get(ComponentConstantsV1.DOMAIN_SERVICE_CONTEXT_ROOT);
+		String oldUrl = (String) this.properties.get(InfraConstants.SERVICE__HOST_URL);
+		String oldContextRoot = (String) this.properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 		properties = checkProperties(properties);
 		this.properties.putAll(properties);
 
-		String newUrl = (String) properties.get(ComponentConstantsV1.DOMAIN_SERVICE_HOST_URL);
-		String newContextRoot = (String) properties.get(ComponentConstantsV1.DOMAIN_SERVICE_CONTEXT_ROOT);
+		String newUrl = (String) properties.get(InfraConstants.SERVICE__HOST_URL);
+		String newContextRoot = (String) properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 		boolean reinitClient = false;
 		if (!StringUtil.equals(oldUrl, newUrl) || !StringUtil.equals(oldContextRoot, newContextRoot)) {
@@ -454,8 +453,8 @@ public class DomainServiceImplV1 implements DomainManagementClient {
 	protected WSClientConfiguration getClientConfiguration(Map<String, Object> properties) {
 		String realm = (String) properties.get(WSClientConstants.REALM);
 		String accessToken = (String) properties.get(WSClientConstants.ACCESS_TOKEN);
-		String url = (String) properties.get(ComponentConstantsV1.DOMAIN_SERVICE_HOST_URL);
-		String contextRoot = (String) properties.get(ComponentConstantsV1.DOMAIN_SERVICE_CONTEXT_ROOT);
+		String url = (String) properties.get(InfraConstants.SERVICE__HOST_URL);
+		String contextRoot = (String) properties.get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 		WSClientConfiguration config = WSClientConfiguration.create(realm, accessToken, url, contextRoot);
 		return config;

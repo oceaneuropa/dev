@@ -30,8 +30,8 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 	protected static Logger LOG = LoggerFactory.getLogger(DomainManagementCommand.class);
 
 	// Column names constants
-	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
-	protected static String[] AUTH_SERVICES_TITLES = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "Index Item Id", "Namespace", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
+	protected static String[] AUTH_SERVICES_TITLES = new String[] { "Index Item Id", "Namespace", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
 	protected static String[] MACHINE_CONFIG_TITLES = new String[] { "ID", "Name", "IP Address" };
 	protected static String[] PLATFORM_CONFIG_TITLES = new String[] { "Machine ID", "ID", "Name", "hostURL", "contextRoot", "Home" };
 	protected static String[] NODE_CONFIG_TITLES = new String[] { "Machine ID", "Platform ID", "ID", "Name", "hostURL", "contextRoot" };

@@ -52,12 +52,12 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID, dataCastId);
 		props.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__NAME, name);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__HOST_URL, hostURL);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT, contextRoot);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__BASE_URL, url);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
 		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date());
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		return indexProvider.addIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE, name, props);
 	}
@@ -76,12 +76,12 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		Map<String, Object> props = new Hashtable<String, Object>();
 		props.put(InfraConstants.IDX_PROP__DATATUBE__DATACAST_ID, dataCastId);
 		props.put(InfraConstants.IDX_PROP__DATATUBE__ID, dataTubeId);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__NAME, name);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__HOST_URL, hostURL);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__CONTEXT_ROOT, contextRoot);
-		props.put(InfraConstants.IDX_PROP__DATATUBE__BASE_URL, url);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__NAME, name);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, url);
 		props.put(InfraConstants.IDX_PROP__DATATUBE__WEB_SOCKET_HTTP_PORT, webSocketHttpPort);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, new Date());
+		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
 		indexProvider.setProperties(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId, props);
 	}

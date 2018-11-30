@@ -8,6 +8,7 @@ import java.util.Map;
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.OrbitServices;
 import org.orbit.component.runtime.tier3.nodecontrol.service.NodeControlService;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexProviderClient;
 import org.origin.common.thread.other.ServiceIndexTimerImplV1;
@@ -37,11 +38,11 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 		if (this.indexItem == null) {
 			// Create new index item with properties
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.NODE_CONTROL_NAME, name);
-			props.put(ComponentConstants.NODE_CONTROL_HOST_URL, hostURL);
-			props.put(ComponentConstants.NODE_CONTROL_CONTEXT_ROOT, contextRoot);
+			props.put(InfraConstants.SERVICE__NAME, name);
+			props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+			props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
 			props.put(ComponentConstants.NODE_CONTROL_HOME, taHome);
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			this.indexItem = indexProvider.addIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, ComponentConstants.NODE_CONTROL_TYPE, name, props);
 
@@ -49,7 +50,7 @@ public class TransferAgentServiceTimerV1 extends ServiceIndexTimerImplV1<IndexPr
 			// Update existing index item with properties
 			Integer indexItemId = this.indexItem.getIndexItemId();
 			Map<String, Object> props = new Hashtable<String, Object>();
-			props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+			props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 			indexProvider.setProperties(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItemId, props);
 		}

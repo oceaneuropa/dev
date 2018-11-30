@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
 import org.orbit.component.runtime.tier1.session.service.OAuth2Service;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
@@ -45,19 +46,26 @@ public class OAuth2ServiceIndexTimer extends ServiceIndexTimer<OAuth2Service> {
 		String contextRoot = service.getContextRoot();
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.OAUTH2_NAME, name);
-		props.put(ComponentConstants.OAUTH2_HOST_URL, hostURL);
-		props.put(ComponentConstants.OAUTH2_CONTEXT_ROOT, contextRoot);
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		return indexProvider.addIndexItem(ComponentConstants.OAUTH2_INDEXER_ID, ComponentConstants.OAUTH2_TYPE, name, props);
 	}
 
 	@Override
 	public void updateIndex(IndexServiceClient indexProvider, OAuth2Service service, IndexItem indexItem) throws IOException {
+		String name = service.getName();
+		String hostURL = service.getHostURL();
+		String contextRoot = service.getContextRoot();
+
 		Integer indexItemId = indexItem.getIndexItemId();
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(ComponentConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__HOST_URL, hostURL);
+		props.put(InfraConstants.SERVICE__CONTEXT_ROOT, contextRoot);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date().getTime());
 
 		indexProvider.setProperties(ComponentConstants.OAUTH2_INDEXER_ID, indexItemId, props);
 	}

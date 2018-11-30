@@ -8,11 +8,11 @@ import java.util.Map;
 import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.tier3.nodecontrol.NodeControlClient;
 import org.orbit.component.api.util.ComponentClients;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexItemHelper;
 import org.orbit.infra.api.util.InfraClientsHelper;
 import org.orbit.platform.api.PlatformClient;
-import org.orbit.platform.api.PlatformConstants;
 import org.orbit.platform.api.util.PlatformClientsUtil;
 import org.origin.common.rest.client.WSClientConstants;
 
@@ -30,8 +30,8 @@ public class OrbitClientHelper {
 		PlatformClient platformClient = null;
 		if (indexItem != null) {
 			String platformUrl = null;
-			String platformHostUrl = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
-			String platformContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
+			String platformHostUrl = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+			String platformContextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 			if (platformHostUrl != null && platformContextRoot != null) {
 				platformUrl = platformHostUrl;
@@ -76,8 +76,8 @@ public class OrbitClientHelper {
 			}
 
 			if (nodeControlIndexItem != null) {
-				String hostURL = (String) nodeControlIndexItem.getProperties().get(IndexConstants.NODE_CONTROL_HOST_URL);
-				String contextRoot = (String) nodeControlIndexItem.getProperties().get(IndexConstants.NODE_CONTROL_CONTEXT_ROOT);
+				String hostURL = (String) nodeControlIndexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+				String contextRoot = (String) nodeControlIndexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
 
 				if (hostURL != null && contextRoot != null) {
 					String nodeControlServiceUrl = hostURL;

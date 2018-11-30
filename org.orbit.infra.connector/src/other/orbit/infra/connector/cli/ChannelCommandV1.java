@@ -24,20 +24,9 @@ public class ChannelCommandV1 implements Annotated {
 
 	protected Map<Object, Object> properties;
 
-	// @Dependency
-	// protected ChannelsConnector connector;
-
 	public ChannelCommandV1() {
 		this.properties = new HashMap<Object, Object>();
 	}
-
-//	public ChannelsConnector getConnector() {
-//		return this.connector;
-//	}
-//
-//	public void setConnector(ChannelsConnector connector) {
-//		this.connector = connector;
-//	}
 
 	public void start(BundleContext bundleContext) {
 		Map<Object, Object> configProps = new Hashtable<Object, Object>();

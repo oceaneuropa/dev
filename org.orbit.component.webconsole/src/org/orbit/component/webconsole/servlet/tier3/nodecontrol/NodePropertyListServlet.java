@@ -88,7 +88,7 @@ public class NodePropertyListServlet extends HttpServlet {
 
 				nodeIndexItem = InfraClientsHelper.INDEX_SERVICE.getIndexItem(indexServiceUrl, accessToken, parentPlatformId, nodeId, InfraConstants.PLATFORM_TYPE__NODE);
 				if (nodeIndexItem != null) {
-					String nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
+					String nodePlatformId = (String) nodeIndexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_ID);
 
 					if (nodePlatformId != null) {
 						List<ExtensionItem> indexerExtensionItems = InfraClientsHelper.EXTENSION_REGISTRY.getExtensionItemsOfPlatform(extensionRegistryUrl, nodePlatformId, ServiceIndexTimerFactory.EXTENSION_TYPE_ID);

@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
-import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.extensionregistry.service.ExtensionRegistryService;
 import org.origin.common.service.WebServiceAwareHelper;
 
@@ -51,14 +51,14 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 		// Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(InfraConstants.NAME, name);
-		props.put(InfraConstants.BASE_URL, url);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__BASE_URL, url);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 		// props.put(InfraConstants.CHANNEL_NAMESPACE, namespace);
 		// props.put(InfraConstants.CHANNEL_HOST_URL, hostURL);
 		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		// props.put(InfraConstants.HEARTBEAT_EXPIRE_TIME, expire);
+
 		return indexProvider.addIndexItem(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, InfraConstants.EXTENSION_REGISTRY_TYPE, name, props);
 	}
 
@@ -75,14 +75,14 @@ public class ExtensionRegistryServiceIndexTimer extends ServiceIndexTimer<Extens
 		// Date expire = DateUtil.addSeconds(now, 30);
 
 		Map<String, Object> props = new Hashtable<String, Object>();
-		props.put(InfraConstants.NAME, name);
-		props.put(InfraConstants.BASE_URL, url);
-		props.put(InfraConstants.LAST_HEARTBEAT_TIME, now);
+		props.put(InfraConstants.SERVICE__NAME, name);
+		props.put(InfraConstants.SERVICE__BASE_URL, url);
+		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 		// props.put(InfraConstants.CHANNEL_NAMESPACE, namespace);
 		// props.put(InfraConstants.CHANNEL_HOST_URL, hostURL);
 		// props.put(InfraConstants.CHANNEL_CONTEXT_ROOT, contextRoot);
 		// props.put(OrbitConstants.LAST_HEARTBEAT_TIME, new Date().getTime());
-		// props.put(InfraConstants.HEARTBEAT_EXPIRE_TIME, expire);
+
 		indexProvider.setProperties(InfraConstants.EXTENSION_REGISTRY_INDEXER_ID, indexItemId, props);
 
 		// List<String> propNames = new ArrayList<String>();

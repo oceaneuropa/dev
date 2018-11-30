@@ -9,12 +9,13 @@ import java.util.Map;
 
 import org.apache.felix.service.command.Descriptor;
 import org.apache.felix.service.command.Parameter;
-import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.ComponentConstants;
+import org.orbit.component.api.IndexConstants;
 import org.orbit.component.api.tier1.account.UserAccountClient;
 import org.orbit.component.api.tier1.auth.AuthClient;
 import org.orbit.component.api.tier2.appstore.AppStoreClient;
 import org.orbit.component.api.tier3.domain.DomainManagementClient;
+import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.util.InfraClients;
@@ -54,11 +55,11 @@ public class ServicesCommand implements Annotated, CommandActivator {
 	public static final String NODE_CONTROL = "nodecontrol";
 
 	// Column names constants
-	protected static String[] USERREGISTRY_SERVICES_COLUMNS = new String[] { "index_item_id", "userregistry.namespace", "userregistry.name", "userregistry.host.url", "userregistry.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
-	protected static String[] AUTH_SERVICES_COLUMNS = new String[] { "index_item_id", "auth.namespace", "auth.name", "auth.host.url", "auth.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
-	protected static String[] APPSTORE_SERVICES_COLUMNS = new String[] { "index_item_id", "appstore.namespace", "appstore.name", "appstore.host.url", "appstore.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
-	protected static String[] DOMAIN_SERVICES_COLUMNS = new String[] { "index_item_id", "domain_mgmt.namespace", "domain_mgmt.name", "domain_mgmt.host.url", "domain_mgmt.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
-	protected static String[] TRANSFERAGENT_SERVICES_TITLES = new String[] { "index_item_id", "node_service.name", "node_service.host.url", "node_service.context_root", "last_heartbeat_time", "heartbeat_expire_time" };
+	protected static String[] USERREGISTRY_SERVICES_COLUMNS = new String[] { "Index Item Id", "Namespace", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
+	protected static String[] AUTH_SERVICES_COLUMNS = new String[] { "Index Item Id", "Namespace", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
+	protected static String[] APPSTORE_SERVICES_COLUMNS = new String[] { "Index Item Id", "Namespace", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
+	protected static String[] DOMAIN_SERVICES_COLUMNS = new String[] { "Index Item Id", "Namespace", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
+	protected static String[] TRANSFERAGENT_SERVICES_TITLES = new String[] { "Index Item Id", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
 
 	protected String scheme = "orbit";
 	protected Map<Object, Object> properties;
@@ -83,7 +84,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 				new String[] { //
 						// show available services
 						"lservices", //
-		});
+				});
 
 		OSGiServiceUtil.register(bundleContext, ServicesCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
@@ -168,17 +169,15 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		int rowIndex = 0;
 		for (LoadBalanceResource<UserAccountClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_NAME);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_HOST_URL);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.USER_REGISTRY_CONTEXT_ROOT);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__HOST_URL);
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
-			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
 			String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
-			String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, "" };
 		}
 
 		PrettyPrinter.prettyPrint(USERREGISTRY_SERVICES_COLUMNS, rows, resources.size());
@@ -193,17 +192,15 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		int rowIndex = 0;
 		for (LoadBalanceResource<AuthClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_NAME);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_HOST_URL);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.AUTH_CONTEXT_ROOT);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__HOST_URL);
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
-			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
 			String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
-			String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, "" };
 		}
 
 		PrettyPrinter.prettyPrint(AUTH_SERVICES_COLUMNS, rows, resources.size());
@@ -217,17 +214,15 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		int rowIndex = 0;
 		for (LoadBalanceResource<AppStoreClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_NAME);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_HOST_URL);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.APPSTORE_CONTEXT_ROOT);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__HOST_URL);
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
-			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
 			String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
-			String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, "" };
 		}
 
 		PrettyPrinter.prettyPrint(APPSTORE_SERVICES_COLUMNS, rows, resources.size());
@@ -241,17 +236,15 @@ public class ServicesCommand implements Annotated, CommandActivator {
 		int rowIndex = 0;
 		for (LoadBalanceResource<DomainManagementClient> resource : resources) {
 			Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_SERVICE_NAMESPACE);
-			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_SERVICE_NAME);
-			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_MANAGEMENT_HOST_URL);
-			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, IndexConstants.DOMAIN_MANAGEMENT_CONTEXT_ROOT);
+			String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAMESPACE);
+			String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__NAME);
+			String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__HOST_URL);
+			String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, InfraConstants.SERVICE__CONTEXT_ROOT);
 			Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
-			Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
 
 			String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
-			String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
 
-			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+			rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, "" };
 		}
 
 		PrettyPrinter.prettyPrint(DOMAIN_SERVICES_COLUMNS, rows, resources.size());
@@ -271,16 +264,16 @@ public class ServicesCommand implements Annotated, CommandActivator {
 				Map<String, Object> props = indexItem.getProperties();
 
 				// String namespace = (String) props.get(IndexConstants.NODE_SERVICE_NAMESPACE);
-				String name = (String) props.get(IndexConstants.NODE_CONTROL_NAME);
-				String hostUrl = (String) props.get(IndexConstants.NODE_CONTROL_HOST_URL);
-				String contextRoot = (String) props.get(IndexConstants.NODE_CONTROL_CONTEXT_ROOT);
-				Object lastHeartbeatTime = props.get(IndexConstants.HEARTBEAT_EXPIRE_TIME);
-				Object heartbeatExpireTime = props.get(IndexConstants.LAST_HEARTBEAT_TIME);
+				String name = (String) props.get(InfraConstants.SERVICE__NAME);
+				String hostUrl = (String) props.get(InfraConstants.SERVICE__HOST_URL);
+				String contextRoot = (String) props.get(InfraConstants.SERVICE__CONTEXT_ROOT);
+				Object lastHeartbeatTime = props.get(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME);
+				// Object heartbeatExpireTime = props.get(IndexConstants.LAST_HEARTBEAT_TIME);
 
 				String lastHeartbeatTimeStr = lastHeartbeatTime.toString();
-				String heartbeatExpireTimeStr = heartbeatExpireTime.toString();
+				// String heartbeatExpireTimeStr = heartbeatExpireTime.toString();
 
-				rows[rowIndex++] = new String[] { indexItemId.toString(), name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
+				rows[rowIndex++] = new String[] { indexItemId.toString(), name, hostUrl, contextRoot, lastHeartbeatTimeStr, "" };
 			}
 
 			PrettyPrinter.prettyPrint(TRANSFERAGENT_SERVICES_TITLES, rows, indexItems.size());
@@ -292,28 +285,3 @@ public class ServicesCommand implements Annotated, CommandActivator {
 	}
 
 }
-
-// public static final String OAUTH2 = "oauth2";
-// protected void listTransferAgentServices() throws ClientException {
-// List<LoadBalanceResource<TransferAgent>> resources = CommandHelper.INSTANCE.getTransferAgentResources(this.transferAgentConnector);
-//
-// String[][] rows = new String[resources.size()][TRANSFERAGENT_SERVICES_TITLES.length];
-// int rowIndex = 0;
-// for (LoadBalanceResource<TransferAgent> resource : resources) {
-// Integer indexItemId = ResourcePropertyHelper.INSTANCE.getIndexItemId(resource);
-// String namespace = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.namespace");
-// String name = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.name");
-// String hostUrl = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.host.url");
-// String contextRoot = ResourcePropertyHelper.INSTANCE.getProperty(resource, "transfer_agent.context_root");
-// Date lastHeartbeatTime = ResourcePropertyHelper.INSTANCE.getLastHeartbeatTime(resource);
-// Date heartbeatExpireTime = ResourcePropertyHelper.INSTANCE.getHeartbeatExpireTime(resource);
-//
-// String lastHeartbeatTimeStr = (lastHeartbeatTime != null) ? DateUtil.toString(lastHeartbeatTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
-// String heartbeatExpireTimeStr = (heartbeatExpireTime != null) ? DateUtil.toString(heartbeatExpireTime, DateUtil.SIMPLE_DATE_FORMAT2) : "null";
-//
-// rows[rowIndex++] = new String[] { indexItemId.toString(), namespace, name, hostUrl, contextRoot, lastHeartbeatTimeStr, heartbeatExpireTimeStr };
-// }
-//
-// PrettyPrinter.prettyPrint(TRANSFERAGENT_SERVICES_TITLES, rows, resources.size());
-// System.out.println();
-// }
