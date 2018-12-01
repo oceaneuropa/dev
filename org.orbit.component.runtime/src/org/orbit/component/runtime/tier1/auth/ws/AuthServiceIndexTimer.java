@@ -3,6 +3,7 @@ package org.orbit.component.runtime.tier1.auth.ws;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
@@ -11,37 +12,29 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 
-	protected AuthService service;
-
 	/**
 	 * 
-	 * @param indexProvider
+	 * @param indexService
 	 * @param service
 	 */
-	public AuthServiceIndexTimer(IndexServiceClient indexProvider, AuthService service) {
-		super("Index Timer [" + service.getName() + "]", indexProvider);
-		this.service = service;
+	public AuthServiceIndexTimer(IndexServiceClient indexService, AuthService service) {
+		super(ComponentConstants.AUTH_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexService, service);
 		setDebug(true);
 	}
 
 	@Override
-	public AuthService getService() {
-		return this.service;
-	}
-
-	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, AuthService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexService, AuthService service) throws IOException {
 		String name = service.getName();
-
-		return indexProvider.getIndexItem(ComponentConstants.AUTH_INDEXER_ID, ComponentConstants.AUTH_TYPE, name);
+		return indexService.getIndexItem(getIndexProviderId(), ComponentConstants.AUTH_TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, AuthService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexService, AuthService service) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -56,11 +49,11 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		return indexProvider.addIndexItem(ComponentConstants.AUTH_INDEXER_ID, ComponentConstants.AUTH_TYPE, name, props);
+		return indexService.addIndexItem(getIndexProviderId(), ComponentConstants.AUTH_TYPE, name, props);
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, AuthService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexService, AuthService service, IndexItem indexItem) throws IOException {
 		String name = service.getName();
 		String hostURL = service.getHostURL();
 		String contextRoot = service.getContextRoot();
@@ -77,14 +70,21 @@ public class AuthServiceIndexTimer extends ServiceIndexTimer<AuthService> {
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		indexProvider.setProperties(ComponentConstants.AUTH_INDEXER_ID, indexItemId, props);
+		indexService.setProperties(getIndexProviderId(), indexItemId, props);
 	}
 
 	@Override
-	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, AuthService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = indexItem.getProperties();
+		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
+		indexService.removeProperties(getIndexProviderId(), indexItemId, propertyNames);
+	}
 
-		indexProvider.deleteIndexItem(ComponentConstants.AUTH_INDEXER_ID, indexItemId);
+	@Override
+	public void removeIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+		indexService.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

@@ -128,7 +128,7 @@ public interface IndexService extends WebServiceAware {
 	 * @return
 	 * @throws ServerException
 	 */
-	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException;
+	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException;
 
 }
 

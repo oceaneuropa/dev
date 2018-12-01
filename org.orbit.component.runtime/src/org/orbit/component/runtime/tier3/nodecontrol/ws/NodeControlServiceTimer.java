@@ -3,6 +3,7 @@ package org.orbit.component.runtime.tier3.nodecontrol.ws;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
@@ -11,11 +12,10 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlService> {
-
-	protected NodeControlService service;
 
 	/**
 	 * 
@@ -23,21 +23,14 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 	 * @param service
 	 */
 	public NodeControlServiceTimer(IndexServiceClient indexProvider, NodeControlService service) {
-		super("Index Timer [" + service.getName() + "]", indexProvider);
-		this.service = service;
+		super(ComponentConstants.NODE_CONTROL_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
 		setDebug(true);
-	}
-
-	@Override
-	public synchronized NodeControlService getService() {
-		return this.service;
 	}
 
 	@Override
 	public IndexItem getIndex(IndexServiceClient indexProvider, NodeControlService service) throws IOException {
 		String name = service.getName();
-
-		return indexProvider.getIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, ComponentConstants.NODE_CONTROL_TYPE, name);
+		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.NODE_CONTROL_TYPE, name);
 	}
 
 	@Override
@@ -58,7 +51,7 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 		props.put(ComponentConstants.NODE_CONTROL_HOME, taHome);
 
-		return indexProvider.addIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, ComponentConstants.NODE_CONTROL_TYPE, name, props);
+		return indexProvider.addIndexItem(getIndexProviderId(), ComponentConstants.NODE_CONTROL_TYPE, name, props);
 	}
 
 	@Override
@@ -80,14 +73,21 @@ public class NodeControlServiceTimer extends ServiceIndexTimer<NodeControlServic
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 		props.put(ComponentConstants.NODE_CONTROL_HOME, platformHome);
 
-		indexProvider.setProperties(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(getIndexProviderId(), indexItemId, props);
+	}
+
+	@Override
+	public void cleanupIndex(IndexServiceClient indexService, NodeControlService service, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = indexItem.getProperties();
+		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
+		indexService.removeProperties(getIndexProviderId(), indexItemId, propertyNames);
 	}
 
 	@Override
 	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-
-		indexProvider.deleteIndexItem(ComponentConstants.NODE_CONTROL_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

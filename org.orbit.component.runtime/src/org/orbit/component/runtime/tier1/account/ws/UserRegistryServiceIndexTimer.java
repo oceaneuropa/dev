@@ -3,6 +3,7 @@ package org.orbit.component.runtime.tier1.account.ws;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
@@ -11,6 +12,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 /**
@@ -19,29 +21,20 @@ import org.origin.common.service.WebServiceAwareHelper;
  */
 public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistryService> {
 
-	protected UserRegistryService service;
-
 	/**
 	 * 
 	 * @param indexProvider
 	 * @param service
 	 */
 	public UserRegistryServiceIndexTimer(IndexServiceClient indexProvider, UserRegistryService service) {
-		super("Index Timer [" + service.getName() + "]", indexProvider);
-		this.service = service;
+		super(ComponentConstants.USER_REGISTRY_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
 		setDebug(true);
-	}
-
-	@Override
-	public UserRegistryService getService() {
-		return this.service;
 	}
 
 	@Override
 	public IndexItem getIndex(IndexServiceClient indexProvider, UserRegistryService service) throws IOException {
 		String name = service.getName();
-
-		return indexProvider.getIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, ComponentConstants.USER_REGISTRY_TYPE, name);
+		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.USER_REGISTRY_TYPE, name);
 	}
 
 	@Override
@@ -60,7 +53,7 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		return indexProvider.addIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, ComponentConstants.USER_REGISTRY_TYPE, name, props);
+		return indexProvider.addIndexItem(getIndexProviderId(), ComponentConstants.USER_REGISTRY_TYPE, name, props);
 	}
 
 	@Override
@@ -80,14 +73,21 @@ public class UserRegistryServiceIndexTimer extends ServiceIndexTimer<UserRegistr
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		indexProvider.setProperties(ComponentConstants.USER_REGISTRY_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(getIndexProviderId(), indexItemId, props);
+	}
+
+	@Override
+	public void cleanupIndex(IndexServiceClient indexService, UserRegistryService service, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = indexItem.getProperties();
+		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
+		indexService.removeProperties(getIndexProviderId(), indexItemId, propertyNames);
 	}
 
 	@Override
 	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-
-		indexProvider.deleteIndexItem(ComponentConstants.USER_REGISTRY_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

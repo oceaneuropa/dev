@@ -61,7 +61,7 @@
 			<a id="actionStartChannels" class="button02" onClick="onChannelAction('start', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Start</a>
 			<a id="actionSuspendChannels" class="button02" onClick="onChannelAction('suspend', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Suspend</a> 
 			<a id="actionStopChannels" class="button02" onClick="onChannelAction('stop', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Stop</a>
-			<a id="actionSyncChannels" class="button02" onClick="onChannelAction('sync', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Synchronize Runtime Channels</a>
+			<a id="actionSyncChannels" class="button02" onClick="onChannelAction('sync', '<%=contextRoot + "/admin/channelmetadataaction?dataCastId=" + dataCastId%>')">Synchronize Channel Instances</a>
 			<a id="actionDeleteChannels" class="button02">Delete</a>
 			<a class="button02" href="<%=contextRoot + "/admin/channelmetadatalist?dataCastId=" + dataCastId + "&groupBy=" + groupBy%>">Refresh</a>
 		</div>

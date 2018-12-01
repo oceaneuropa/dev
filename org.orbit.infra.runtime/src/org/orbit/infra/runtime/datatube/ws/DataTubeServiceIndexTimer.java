@@ -3,6 +3,7 @@ package org.orbit.infra.runtime.datatube.ws;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
@@ -10,37 +11,29 @@ import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
+import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService> {
 
-	protected DataTubeService service;
-
 	/**
 	 * 
-	 * @param indexProvider
+	 * @param indexService
 	 * @param service
 	 */
-	public DataTubeServiceIndexTimer(IndexServiceClient indexProvider, DataTubeService service) {
-		super("Index Timer [" + service.getName() + "]", indexProvider);
-		this.service = service;
+	public DataTubeServiceIndexTimer(IndexServiceClient indexService, DataTubeService service) {
+		super(InfraConstants.IDX__DATATUBE__INDEXER_ID, "Index Timer [" + service.getName() + "]", indexService, service);
 		setDebug(true);
 	}
 
 	@Override
-	public DataTubeService getService() {
-		return this.service;
-	}
-
-	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, DataTubeService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexService, DataTubeService service) throws IOException {
 		String name = service.getName();
-
-		return indexProvider.getIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE, name);
+		return indexService.getIndexItem(getIndexProviderId(), InfraConstants.IDX__DATATUBE__TYPE, name);
 	}
 
 	@Override
-	public IndexItem addIndex(IndexServiceClient indexProvider, DataTubeService service) throws IOException {
+	public IndexItem addIndex(IndexServiceClient indexService, DataTubeService service) throws IOException {
 		String dataCastId = service.getDataCastId();
 		String dataTubeId = service.getDataTubeId();
 		String name = service.getName();
@@ -59,11 +52,11 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
-		return indexProvider.addIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, InfraConstants.IDX__DATATUBE__TYPE, name, props);
+		return indexService.addIndexItem(getIndexProviderId(), InfraConstants.IDX__DATATUBE__TYPE, name, props);
 	}
 
 	@Override
-	public void updateIndex(IndexServiceClient indexProvider, DataTubeService service, IndexItem indexItem) throws IOException {
+	public void updateIndex(IndexServiceClient indexService, DataTubeService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
 		String dataCastId = service.getDataCastId();
 		String dataTubeId = service.getDataTubeId();
@@ -83,14 +76,21 @@ public class DataTubeServiceIndexTimer extends ServiceIndexTimer<DataTubeService
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
-		indexProvider.setProperties(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId, props);
+		indexService.setProperties(getIndexProviderId(), indexItemId, props);
 	}
 
 	@Override
-	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
+	public void cleanupIndex(IndexServiceClient indexService, DataTubeService service, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = indexItem.getProperties();
+		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
+		indexService.removeProperties(getIndexProviderId(), indexItemId, propertyNames);
+	}
 
-		indexProvider.deleteIndexItem(InfraConstants.IDX__DATATUBE__INDEXER_ID, indexItemId);
+	@Override
+	public void removeIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+		indexService.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

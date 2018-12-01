@@ -96,8 +96,8 @@
 
 						IndexItem dataTubeIndexItem = configElement.getAdapter(IndexItem.class);
 						if (dataTubeIndexItem != null) {
-							name = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__NAME);
-							dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATATUBE__BASE_URL);
+							name = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__NAME);
+							dataTubeServiceUrl = (String) dataTubeIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 							isOnline = IndexItemHelper.INSTANCE.isOnline(dataTubeIndexItem);
 
 							metadataStr += "base_url = " + dataTubeServiceUrl + "<br/>";
@@ -164,7 +164,7 @@
 				<td class="td2"><%=metadataStr%></td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeDataTubeNode('<%=elementId%>', '<%=dataTubeId%>', '<%=name%>', <%=enabled%>)">Edit</a>
-					<a class="action01" href="<%=contextRoot%>/admin/runtimechannellist?dataCastId=<%=dataCastId%>&dataTubeId=<%=dataTubeId%>">Runtime Channels (<%=runtimeChannelsNum%>)</a>
+					<a class="action01" href="<%=contextRoot%>/admin/runtimechannellist?dataCastId=<%=dataCastId%>&dataTubeId=<%=dataTubeId%>">Channel Instances (<%=runtimeChannelsNum%>)</a>
 				</td>
 			</tr>
 			<%

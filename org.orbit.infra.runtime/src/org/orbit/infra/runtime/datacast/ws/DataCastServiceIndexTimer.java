@@ -3,6 +3,7 @@ package org.orbit.infra.runtime.datacast.ws;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
@@ -10,33 +11,25 @@ import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.datacast.service.DataCastService;
+import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService> {
 
-	protected DataCastService service;
-
 	/**
 	 * 
-	 * @param indexProvider
+	 * @param indexService
 	 * @param service
 	 */
-	public DataCastServiceIndexTimer(IndexServiceClient indexProvider, DataCastService service) {
-		super("Index Timer [" + service.getName() + "]", indexProvider);
-		this.service = service;
+	public DataCastServiceIndexTimer(IndexServiceClient indexService, DataCastService service) {
+		super(InfraConstants.IDX__DATACAST__INDEXER_ID, "Index Timer [" + service.getName() + "]", indexService, service);
 		setDebug(true);
 	}
 
 	@Override
-	public DataCastService getService() {
-		return this.service;
-	}
-
-	@Override
-	public IndexItem getIndex(IndexServiceClient indexProvider, DataCastService service) throws IOException {
+	public IndexItem getIndex(IndexServiceClient indexService, DataCastService service) throws IOException {
 		String name = service.getName();
-
-		return indexProvider.getIndexItem(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE, name);
+		return indexService.getIndexItem(getIndexProviderId(), InfraConstants.IDX__DATACAST__TYPE, name);
 	}
 
 	@Override
@@ -55,7 +48,7 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
-		return indexService.addIndexItem(InfraConstants.IDX__DATACAST__INDEXER_ID, InfraConstants.IDX__DATACAST__TYPE, name, props);
+		return indexService.addIndexItem(getIndexProviderId(), InfraConstants.IDX__DATACAST__TYPE, name, props);
 	}
 
 	@Override
@@ -76,14 +69,21 @@ public class DataCastServiceIndexTimer extends ServiceIndexTimer<DataCastService
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
-		indexService.setProperties(InfraConstants.IDX__DATACAST__INDEXER_ID, indexItemId, props);
+		indexService.setProperties(getIndexProviderId(), indexItemId, props);
+	}
+
+	@Override
+	public void cleanupIndex(IndexServiceClient indexService, DataCastService service, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = indexItem.getProperties();
+		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
+		indexService.removeProperties(getIndexProviderId(), indexItemId, propertyNames);
 	}
 
 	@Override
 	public void removeIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-
-		indexService.deleteIndexItem(InfraConstants.IDX__DATACAST__INDEXER_ID, indexItemId);
+		indexService.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

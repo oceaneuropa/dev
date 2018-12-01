@@ -3,6 +3,7 @@ package org.orbit.component.runtime.tier3.domain.ws;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
@@ -11,11 +12,10 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementService> {
-
-	protected DomainManagementService service;
 
 	/**
 	 * 
@@ -23,21 +23,14 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 	 * @param service
 	 */
 	public DomainServiceTimer(IndexServiceClient indexProvider, DomainManagementService service) {
-		super("Index Timer [" + service.getName() + "]", indexProvider);
-		this.service = service;
+		super(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
 		setDebug(true);
-	}
-
-	@Override
-	public synchronized DomainManagementService getService() {
-		return this.service;
 	}
 
 	@Override
 	public IndexItem getIndex(IndexServiceClient indexProvider, DomainManagementService service) throws IOException {
 		String name = service.getName();
-
-		return indexProvider.getIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, ComponentConstants.DOMAIN_SERVICE_TYPE, name);
+		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.DOMAIN_SERVICE_TYPE, name);
 	}
 
 	@Override
@@ -56,7 +49,7 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		return indexProvider.addIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, ComponentConstants.DOMAIN_SERVICE_TYPE, name, props);
+		return indexProvider.addIndexItem(getIndexProviderId(), ComponentConstants.DOMAIN_SERVICE_TYPE, name, props);
 	}
 
 	@Override
@@ -77,14 +70,21 @@ public class DomainServiceTimer extends ServiceIndexTimer<DomainManagementServic
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		indexProvider.setProperties(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(getIndexProviderId(), indexItemId, props);
+	}
+
+	@Override
+	public void cleanupIndex(IndexServiceClient indexService, DomainManagementService service, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = indexItem.getProperties();
+		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
+		indexService.removeProperties(getIndexProviderId(), indexItemId, propertyNames);
 	}
 
 	@Override
 	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-
-		indexProvider.deleteIndexItem(ComponentConstants.DOMAIN_SERVICE_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

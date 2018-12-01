@@ -502,7 +502,7 @@ public class IndexServiceImpl implements IndexService, LifecycleAware {
 	}
 
 	@Override
-	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException {
+	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException {
 		LOG.debug("removeProperty(String, Integer, List<String>)");
 		LOG.debug("    indexProviderId = " + indexProviderId);
 		LOG.debug("    indexItemId = " + indexItemId);

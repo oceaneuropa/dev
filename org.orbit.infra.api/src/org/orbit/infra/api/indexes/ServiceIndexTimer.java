@@ -49,11 +49,13 @@ public abstract class ServiceIndexTimer<SERVICE> extends IndexTimerImpl<IndexSer
 
 	/**
 	 * 
+	 * @param indexProviderId
 	 * @param name
 	 * @param indexProvider
+	 * @param service
 	 */
-	public ServiceIndexTimer(String name, IndexServiceClient indexProvider) {
-		super(name, indexProvider);
+	public ServiceIndexTimer(String indexProviderId, String name, IndexServiceClient indexProvider, SERVICE service) {
+		super(indexProviderId, name, indexProvider, service);
 	}
 
 	@Override

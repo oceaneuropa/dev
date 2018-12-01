@@ -3,6 +3,7 @@ package org.orbit.infra.runtime.configregistry.ws;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
@@ -10,11 +11,10 @@ import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.configregistry.service.ConfigRegistryService;
+import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigRegistryService> {
-
-	protected ConfigRegistryService service;
 
 	/**
 	 * 
@@ -22,21 +22,14 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 	 * @param service
 	 */
 	public ConfigRegistryServiceIndexTimer(IndexServiceClient indexProvider, ConfigRegistryService service) {
-		super("Index Timer [" + service.getName() + "]", indexProvider);
-		this.service = service;
+		super(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
 		setDebug(true);
-	}
-
-	@Override
-	public ConfigRegistryService getService() {
-		return this.service;
 	}
 
 	@Override
 	public IndexItem getIndex(IndexServiceClient indexProvider, ConfigRegistryService service) throws IOException {
 		String name = service.getName();
-
-		return indexProvider.getIndexItem(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, InfraConstants.IDX__CONFIG_REGISTRY__TYPE, name);
+		return indexProvider.getIndexItem(getIndexProviderId(), InfraConstants.IDX__CONFIG_REGISTRY__TYPE, name);
 	}
 
 	@Override
@@ -53,7 +46,7 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
-		return indexService.addIndexItem(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, InfraConstants.IDX__CONFIG_REGISTRY__TYPE, name, props);
+		return indexService.addIndexItem(getIndexProviderId(), InfraConstants.IDX__CONFIG_REGISTRY__TYPE, name, props);
 	}
 
 	@Override
@@ -72,19 +65,21 @@ public class ConfigRegistryServiceIndexTimer extends ServiceIndexTimer<ConfigReg
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(org.orbit.infra.api.InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, new Date());
 
-		indexService.setProperties(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, indexItemId, props);
+		indexService.setProperties(getIndexProviderId(), indexItemId, props);
+	}
+
+	@Override
+	public void cleanupIndex(IndexServiceClient indexService, ConfigRegistryService service, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = indexItem.getProperties();
+		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
+		indexService.removeProperties(getIndexProviderId(), indexItemId, propertyNames);
 	}
 
 	@Override
 	public void removeIndex(IndexServiceClient indexService, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-
-		indexService.deleteIndexItem(InfraConstants.IDX__CONFIG_REGISTRY__INDEXER_ID, indexItemId);
+		indexService.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }
-
-// String dataCastId = service.getDataCastId();
-// props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__ID, dataCastId);
-// String dataCastId = service.getDataCastId();
-// props.put(InfraConstants.IDX_PROP__CONFIG_REGISTRY__ID, dataCastId);

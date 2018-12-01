@@ -3,6 +3,7 @@ package org.orbit.component.runtime.tier4.missioncontrol.ws;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.orbit.component.runtime.ComponentConstants;
@@ -11,11 +12,10 @@ import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.api.indexes.ServiceIndexTimer;
+import org.origin.common.lang.MapHelper;
 import org.origin.common.service.WebServiceAwareHelper;
 
 public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlService> {
-
-	protected MissionControlService service;
 
 	/**
 	 * 
@@ -23,21 +23,14 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 	 * @param service
 	 */
 	public MissionControlIndexTimer(IndexServiceClient indexProvider, MissionControlService service) {
-		super("Index Timer [" + service.getName() + "]", indexProvider);
-		this.service = service;
+		super(ComponentConstants.MISSION_CONTROL_INDEXER_ID, "Index Timer [" + service.getName() + "]", indexProvider, service);
 		setDebug(true);
-	}
-
-	@Override
-	public synchronized MissionControlService getService() {
-		return this.service;
 	}
 
 	@Override
 	public IndexItem getIndex(IndexServiceClient indexProvider, MissionControlService service) throws IOException {
 		String name = service.getName();
-
-		return indexProvider.getIndexItem(ComponentConstants.MISSION_CONTROL_INDEXER_ID, ComponentConstants.MISSION_CONTROL_TYPE, name);
+		return indexProvider.getIndexItem(getIndexProviderId(), ComponentConstants.MISSION_CONTROL_TYPE, name);
 	}
 
 	@Override
@@ -56,7 +49,7 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		return indexProvider.addIndexItem(ComponentConstants.MISSION_CONTROL_INDEXER_ID, ComponentConstants.MISSION_CONTROL_TYPE, name, props);
+		return indexProvider.addIndexItem(getIndexProviderId(), ComponentConstants.MISSION_CONTROL_TYPE, name, props);
 	}
 
 	@Override
@@ -77,14 +70,21 @@ public class MissionControlIndexTimer extends ServiceIndexTimer<MissionControlSe
 		props.put(InfraConstants.SERVICE__BASE_URL, baseURL);
 		props.put(InfraConstants.SERVICE__LAST_HEARTBEAT_TIME, now);
 
-		indexProvider.setProperties(ComponentConstants.MISSION_CONTROL_INDEXER_ID, indexItemId, props);
+		indexProvider.setProperties(getIndexProviderId(), indexItemId, props);
+	}
+
+	@Override
+	public void cleanupIndex(IndexServiceClient indexService, MissionControlService service, IndexItem indexItem) throws IOException {
+		Integer indexItemId = indexItem.getIndexItemId();
+		Map<String, Object> props = indexItem.getProperties();
+		List<String> propertyNames = MapHelper.INSTANCE.getKeyList(props);
+		indexService.removeProperties(getIndexProviderId(), indexItemId, propertyNames);
 	}
 
 	@Override
 	public void removeIndex(IndexServiceClient indexProvider, IndexItem indexItem) throws IOException {
 		Integer indexItemId = indexItem.getIndexItemId();
-
-		indexProvider.deleteIndexItem(ComponentConstants.MISSION_CONTROL_INDEXER_ID, indexItemId);
+		indexProvider.deleteIndexItem(getIndexProviderId(), indexItemId);
 	}
 
 }

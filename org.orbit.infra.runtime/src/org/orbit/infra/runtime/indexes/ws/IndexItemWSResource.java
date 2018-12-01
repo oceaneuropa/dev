@@ -375,7 +375,7 @@ public class IndexItemWSResource extends AbstractWSApplicationResource {
 			// List<String> propNames = Arrays.asList(propertyNamesString);
 			List<String> propNames = StringUtil.toList(propertyNamesString);
 
-			indexService.removeProperty(indexProviderId, indexItemId, (List<String>) propNames);
+			indexService.removeProperties(indexProviderId, indexItemId, (List<String>) propNames);
 
 		} catch (ServerException e) {
 			ErrorDTO error = handleError(e, e.getCode(), true);

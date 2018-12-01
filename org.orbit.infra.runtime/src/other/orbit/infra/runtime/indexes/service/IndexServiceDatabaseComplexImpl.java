@@ -1443,7 +1443,7 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	 * @throws ServerException
 	 */
 	@Override
-	public boolean removeProperty(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException {
+	public boolean removeProperties(String indexProviderId, Integer indexItemId, List<String> propNames) throws ServerException {
 		boolean succeed = false;
 
 		// 1. Retrieve index item data from database.

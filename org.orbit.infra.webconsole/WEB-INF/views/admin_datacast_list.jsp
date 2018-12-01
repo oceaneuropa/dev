@@ -57,12 +57,12 @@
 				<th class="th1" width="15">
 					<input type="checkbox" onClick="toggleSelection(this, 'elementId')" />
 				</th>
-				<th class="th1" width="100">Name</th>
-				<th class="th1" width="100">Data Cast Id</th>
-				<th class="th1" width="60">Enabled</th>
-				<th class="th1" width="60">Status</th>
+				<th class="th1" width="150">Name</th>
+				<th class="th1" width="150">Data Cast Id</th>
+				<th class="th1" width="50">Enabled</th>
+				<th class="th1" width="50">Status</th>
 				<th class="th1" width="150">Metadata</th>
-				<th class="th1" width="130">Action</th>
+				<th class="th1" width="250">Action</th>
 			</tr>
 			<%
 				if (configElements.length == 0) {
@@ -86,11 +86,11 @@
 
 						IndexItem dataCastIndexItem = configElement.getAdapter(IndexItem.class);
 						if (dataCastIndexItem != null) {
-							name = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__NAME);
+							name = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__NAME);
 							// String hostUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__HOST_URL);
 							// String dataCastContextRoot = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__CONTEXT_ROOT);
 							// String dataCastServiceUrl = WebServiceAwareHelper.INSTANCE.getURL(hostUrl, dataCastContextRoot);
-							dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.IDX_PROP__DATACAST__BASE_URL);
+							dataCastServiceUrl = (String) dataCastIndexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
 
 							metadataStr += "base_url = " + dataCastServiceUrl + "<br/>";
 
@@ -157,7 +157,7 @@
 				<td class="td2"><%=metadataStr%></td>
 				<td class="td1">
 					<a class="action01" href="javascript:changeDataCastNode('<%=elementId%>', '<%=dataCastId%>', '<%=name%>', <%=enabled%>)">Edit</a>
-					<a class="action01" href="<%=contextRoot%>/admin/datatubelist?dataCastId=<%=dataCastId%>">Data Tubes</a>
+					<a class="action01" href="<%=contextRoot%>/admin/datatubelist?dataCastId=<%=dataCastId%>">DataTube Nodes</a>
 					<a class="action01" href="<%=contextRoot%>/admin/channelmetadatalist?dataCastId=<%=dataCastId%>">Channel Metadatas</a>
 				</td>
 			</tr>
