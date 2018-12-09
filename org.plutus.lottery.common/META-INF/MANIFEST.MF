@@ -12,4 +12,7 @@ Import-Package: org.jgroups.demos;version="3.6.13.Final",
  org.junit.runners,
  org.osgi.framework;version="1.3.0"
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.origin.common;bundle-version="1.0.0"
+Require-Bundle: org.origin.common;bundle-version="1.0.0",
+ org.origin.svg;bundle-version="1.0.0",
+ org.origin.svg.widgets;bundle-version="1.0.0",
+ org.origin.svg.ui;bundle-version="1.0.0"

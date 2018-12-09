@@ -7,6 +7,7 @@ import org.origin.common.util.DateUtil;
 public class Draw {
 
 	// 1 based index
+	protected int drawId;
 	protected int index;
 	protected Date date;
 	protected int num1;
@@ -32,7 +33,7 @@ public class Draw {
 	 * @param num3
 	 * @param num4
 	 * @param num5
-	 * @param red
+	 * @param pb
 	 */
 	public Draw(Date date, int num1, int num2, int num3, int num4, int num5, int pb) {
 		this.date = date;
@@ -42,6 +43,14 @@ public class Draw {
 		this.num4 = num4;
 		this.num5 = num5;
 		this.pb = pb;
+	}
+
+	public int getDrawId() {
+		return this.drawId;
+	}
+
+	public void setDrawId(int drawId) {
+		this.drawId = drawId;
 	}
 
 	public void setIndex(int index) {
@@ -111,6 +120,20 @@ public class Draw {
 
 	public void setPB(int pb) {
 		this.pb = pb;
+	}
+
+	public boolean numContains(int num) {
+		if (this.num1 == num || this.num2 == num || this.num3 == num || this.num4 == num || this.num5 == num) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isPB(int pb) {
+		if (this.pb == pb) {
+			return true;
+		}
+		return false;
 	}
 
 	public int[] getNumberArray(boolean includePb) {
