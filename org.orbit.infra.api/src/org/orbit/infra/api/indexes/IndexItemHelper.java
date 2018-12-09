@@ -7,6 +7,7 @@ import org.orbit.infra.api.InfraConstants;
 import org.origin.common.rest.client.WSClient;
 import org.origin.common.rest.client.WSClientConfiguration;
 import org.origin.common.rest.client.WSClientConstants;
+import org.origin.common.service.WebServiceAwareHelper;
 
 public class IndexItemHelper {
 
@@ -53,6 +54,26 @@ public class IndexItemHelper {
 		}
 
 		return false;
+	}
+
+	/**
+	 * 
+	 * @param indexItem
+	 * @return
+	 */
+	public String getServiceURL(IndexItem indexItem) {
+		String serviceUrl = null;
+		if (indexItem != null) {
+			String baseUrl = (String) indexItem.getProperties().get(InfraConstants.SERVICE__BASE_URL);
+			if (baseUrl != null && !baseUrl.isEmpty()) {
+				serviceUrl = baseUrl;
+			} else {
+				String hostUrl = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+				String contextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
+				serviceUrl = WebServiceAwareHelper.INSTANCE.getURL(hostUrl, contextRoot);
+			}
+		}
+		return serviceUrl;
 	}
 
 }
