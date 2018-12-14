@@ -10,7 +10,7 @@ import org.plutus.lottery.powerball.Analysis;
 import org.plutus.lottery.powerball.AnalysisContext;
 import org.plutus.lottery.powerball.AnalysisRegistry;
 import org.plutus.lottery.powerball.Draw;
-import org.plutus.lottery.powerball.DrawReader;
+import org.plutus.lottery.powerball.DrawReaderV1;
 import org.plutus.lottery.powerball.analysis.A11_MinMaxAvgAnalysis;
 import org.plutus.lottery.powerball.analysis.A21_OddEvenAnalysis;
 import org.plutus.lottery.powerball.analysis.A22_SumAnalysis;
@@ -49,7 +49,7 @@ public abstract class AbstractAnalysisTester {
 		System.out.println("--- --- --- test001_readDraws() --- --- ---");
 
 		try {
-			List<Draw> draws = DrawReader.read(file);
+			List<Draw> draws = DrawReaderV1.read(file);
 			context.setDraws(draws);
 
 			if (printDraws) {

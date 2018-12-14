@@ -13,7 +13,7 @@ import org.origin.common.io.IOUtil;
 import org.origin.common.util.DateUtil;
 import org.plutus.lottery.common.Comparators;
 
-public class DrawReader {
+public class DrawReaderV1 {
 
 	/**
 	 * 
@@ -26,7 +26,7 @@ public class DrawReader {
 		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(file);
-			DrawReader reader = new DrawReader();
+			DrawReaderV1 reader = new DrawReaderV1();
 			draws = reader.read(fis);
 		} finally {
 			IOUtil.closeQuietly(fis, true);
@@ -37,7 +37,7 @@ public class DrawReader {
 		return draws;
 	}
 
-	public DrawReader() {
+	public DrawReaderV1() {
 	}
 
 	/**
