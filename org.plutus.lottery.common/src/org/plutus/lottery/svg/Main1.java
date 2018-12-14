@@ -24,14 +24,17 @@ import org.plutus.lottery.powerball.DrawReaderV2;
 import org.plutus.lottery.svg.control.DrawPart;
 import org.plutus.lottery.svg.control.LinkPart;
 import org.plutus.lottery.svg.control.NumberPart;
+import org.plutus.lottery.svg.control.PBPart;
 import org.plutus.lottery.svg.factory.DrawFigureFactory;
 import org.plutus.lottery.svg.factory.LinkFigureFactory;
 import org.plutus.lottery.svg.factory.NumberFigureFactory;
+import org.plutus.lottery.svg.factory.PBFigureFactory;
 
 public class Main1 {
 
 	static {
 		DrawFigureFactory.register();
+		PBFigureFactory.register();
 		NumberFigureFactory.register();
 		LinkFigureFactory.register();
 	}
@@ -39,9 +42,9 @@ public class Main1 {
 	public static void main(String[] args) {
 		try {
 			Map<Integer, List<Draw>> yearToDraws = getDrawsByYear();
-			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_01x69__{0}.svg", PB.DRAW_SQUARE_01x69);
-			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_10x07__{0}.svg", PB.DRAW_SQUARE_10x07);
-			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_14x05__{0}.svg", PB.DRAW_SQUARE_14x05);
+			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_01x69__{0}.svg", PBConstants.DRAW_SQUARE_01x69);
+			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_10x07__{0}.svg", PBConstants.DRAW_SQUARE_10x07);
+			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_14x05__{0}.svg", PBConstants.DRAW_SQUARE_14x05);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -64,13 +67,13 @@ public class Main1 {
 				String fileLocation = MessageFormat.format(outputFileLocation, new Object[] { String.valueOf(year) });
 
 				Display display = null;
-				if (drawStyle == PB.DRAW_SQUARE_01x69) {
-					display = generate_01x69(draws);
+				if (drawStyle == PBConstants.DRAW_SQUARE_01x69) {
+					display = generate_01x69(draws, true, true);
 
-				} else if (drawStyle == PB.DRAW_SQUARE_10x07) {
+				} else if (drawStyle == PBConstants.DRAW_SQUARE_10x07) {
 					display = generate_10x07(draws);
 
-				} else if (drawStyle == PB.DRAW_SQUARE_14x05) {
+				} else if (drawStyle == PBConstants.DRAW_SQUARE_14x05) {
 					display = generate_14x05(draws);
 				}
 
@@ -105,28 +108,35 @@ public class Main1 {
 	/**
 	 * 
 	 * @param draws
+	 * @param showLinks
+	 * @param showPB
 	 * @return
 	 */
-	protected static Display generate_01x69(List<Draw> draws) {
-		// 10 and 10 are for the overall shift for all draw figures
+	protected static Display generate_01x69(List<Draw> draws, boolean showLinks, boolean showPB) {
+		// 10 and 10 are for the overall shift for all figures
 		int draw_x = 0 + 10;
 		int draw_y = 0 + 10;
 		int draw_w = 10;
 		int draw_h = 690;
 		int space_w = 100;
+		int draw_width = draw_w + space_w; // total draw width (one number column and empty space)
 
-		int draw_width = draw_w + space_w; // total draw width (one number column and empt space)
-		int display_width = draws.size() * draw_width;
-		Size size = new Size(display_width, draw_h + 100);
+		int pb_x = draw_x;
+		int pb_y = draw_y + draw_h + 20 + 10;
+		int pb_w = 10;
+		int pb_h = 260;
+		int pb_width = draw_width;
+
+		int display_width = draws.size() * draw_width + 100;
+		Size size = new Size(display_width, draw_h + pb_h + 100);
 		Display display = new Display(size);
 
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
 		for (int i = 0; i < draws.size(); i++) {
 			Draw draw = draws.get(i);
-
 			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 
-			DrawPart drawPart = new DrawPart(display, draw, PB.DRAW_SQUARE_01x69);
+			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_01x69);
 			drawPart.setBounds(drawBounds);
 			drawPart.createContents();
 			drawParts.add(drawPart);
@@ -134,7 +144,6 @@ public class Main1 {
 			draw_x += draw_width;
 		}
 
-		boolean showLinks = true;
 		if (showLinks) {
 			DrawPart prevDrawPart = null;
 			for (DrawPart currDrawPart : drawParts) {
@@ -183,6 +192,48 @@ public class Main1 {
 			}
 		}
 
+		if (showPB) {
+			List<PBPart> pbParts = new ArrayList<PBPart>();
+			for (int i = 0; i < draws.size(); i++) {
+				Draw draw = draws.get(i);
+				Rectangle pbBounds = new Rectangle(pb_x, pb_y, pb_w, pb_h);
+
+				PBPart pbPart = new PBPart(display, draw, PBConstants.PB_SQUARE_01x26);
+				pbPart.setBounds(pbBounds);
+				pbPart.createContents();
+				pbParts.add(pbPart);
+
+				pb_x += pb_width;
+			}
+
+			if (showLinks) {
+				PBPart prevPBPart = null;
+				for (PBPart currPBPart : pbParts) {
+					int curr_draw_x = currPBPart.getBounds().getX();
+
+					NumberPart currNumPart = currPBPart.getMatchedNumber();
+					if (currNumPart == null) {
+						continue;
+					}
+
+					currNumPart.setIndex(new Point(0, currNumPart.getNumber() - 1));
+
+					int shiftX = 5;
+					int shiftY = -4;
+					currNumPart.setLocation(new Point(curr_draw_x + shiftX, pb_y + currNumPart.getNumber() * 10 + shiftY));
+
+					if (prevPBPart != null) {
+						NumberPart prevNumPart = prevPBPart.getMatchedNumber();
+
+						LinkPart link = new LinkPart(display, prevNumPart, currNumPart);
+						link.createContents();
+					}
+
+					prevPBPart = currPBPart;
+				}
+			}
+		}
+
 		return display;
 	}
 
@@ -206,7 +257,7 @@ public class Main1 {
 		for (Draw draw : draws) {
 			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 
-			DrawPart drawPart = new DrawPart(display, draw, PB.DRAW_SQUARE_10x07);
+			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_10x07);
 			drawPart.setShowLinks(true);
 			drawPart.setBounds(drawBounds);
 			drawPart.createContents();
@@ -242,7 +293,7 @@ public class Main1 {
 		for (Draw draw : draws) {
 			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 
-			DrawPart drawPart = new DrawPart(display, draw, PB.DRAW_SQUARE_14x05);
+			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_14x05);
 			drawPart.setShowLinks(true);
 			drawPart.setBounds(drawBounds);
 			drawPart.createContents();

@@ -110,7 +110,7 @@ public class Main2 {
 		for (Draw draw : draws) {
 			Rectangle currBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 
-			DrawPart drawPart = new DrawPart(display, draw, PB.DRAW_SQUARE_14x05);
+			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_14x05);
 			drawPart.setBounds(currBounds);
 			drawPart.createContents();
 			drawParts.add(drawPart);

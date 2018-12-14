@@ -1,5 +1,6 @@
 package org.plutus.lottery.svg.control;
 
+import org.origin.svg.widgets.Composite;
 import org.origin.svg.widgets.Control;
 import org.origin.svg.widgets.Display;
 
@@ -25,12 +26,12 @@ public class LinkPart extends Control {
 
 	/**
 	 * 
-	 * @param drawPart
+	 * @param parent
 	 * @param source
 	 * @param target
 	 */
-	public LinkPart(DrawPart drawPart, NumberPart source, NumberPart target) {
-		super(drawPart);
+	public LinkPart(Composite parent, NumberPart source, NumberPart target) {
+		super(parent);
 		checkSource(source);
 		checkTarget(target);
 

@@ -7,7 +7,7 @@ import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.widgets.Composite;
 import org.origin.svg.widgets.Display;
 import org.plutus.lottery.powerball.Draw;
-import org.plutus.lottery.svg.PB;
+import org.plutus.lottery.svg.PBConstants;
 
 public class YearPart extends Composite {
 
@@ -62,7 +62,7 @@ public class YearPart extends Composite {
 		for (Draw draw : this.draws) {
 			Rectangle currBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 
-			DrawPart drawPart = new DrawPart(this, draw, PB.DRAW_SQUARE_14x05);
+			DrawPart drawPart = new DrawPart(this, draw, PBConstants.DRAW_SQUARE_14x05);
 			drawPart.setBounds(currBounds);
 			drawPart.createContents();
 			this.drawParts.add(drawPart);

@@ -115,7 +115,7 @@ public class Draw {
 	}
 
 	public int getPB() {
-		return pb;
+		return this.pb;
 	}
 
 	public void setPB(int pb) {

@@ -1,11 +1,13 @@
 package org.plutus.lottery.svg.control;
 
 import org.origin.svg.graphics.Point;
+import org.origin.svg.widgets.Composite;
 import org.origin.svg.widgets.Control;
 
 public class NumberPart extends Control {
 
 	protected int number;
+	protected boolean isPBNumber;
 	protected boolean match;
 	protected Point index; // (x,y) index within board
 	protected Point location; // (x,y) abs location within board
@@ -13,18 +15,24 @@ public class NumberPart extends Control {
 
 	/**
 	 * 
-	 * @param board
+	 * @param parent
 	 * @param number
+	 * @param isPBNumber
 	 * @param match
 	 */
-	public NumberPart(DrawPart board, int number, boolean match) {
-		super(board);
+	public NumberPart(Composite parent, int number, boolean isPBNumber, boolean match) {
+		super(parent);
 		this.number = number;
+		this.isPBNumber = isPBNumber;
 		this.match = match;
 	}
 
 	public int getNumber() {
 		return this.number;
+	}
+
+	public boolean isPBNumber() {
+		return this.isPBNumber;
 	}
 
 	public boolean match() {

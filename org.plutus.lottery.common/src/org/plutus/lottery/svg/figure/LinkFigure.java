@@ -14,7 +14,11 @@ public class LinkFigure extends Line {
 		super(linkPart.getSource().getLocation(), linkPart.getTarget().getLocation());
 		this.link = linkPart;
 
-		setStrokeColor(ColorConstants.GREEN_LITERAL);
+		if (linkPart.getTarget().isPBNumber()) {
+			setStrokeColor(ColorConstants.PURPLE_LITERAL);
+		} else {
+			setStrokeColor(ColorConstants.GREEN_LITERAL);
+		}
 		setStrokeWidth(5);
 		setStrokeOpacity(0.5);
 	}

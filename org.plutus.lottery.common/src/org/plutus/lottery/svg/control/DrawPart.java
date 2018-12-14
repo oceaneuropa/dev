@@ -9,7 +9,7 @@ import org.origin.svg.widgets.Composite;
 import org.origin.svg.widgets.Display;
 import org.origin.svg.widgets.util.StyleUtil;
 import org.plutus.lottery.powerball.Draw;
-import org.plutus.lottery.svg.PB;
+import org.plutus.lottery.svg.PBConstants;
 
 public class DrawPart extends Composite {
 
@@ -40,8 +40,12 @@ public class DrawPart extends Composite {
 	}
 
 	protected static int checkStyle(int style) {
-		if (!StyleUtil.hasStyle(style, PB.DRAW_SQUARE_14x05) && !StyleUtil.hasStyle(style, PB.DRAW_SQUARE_10x07)) {
-			style = StyleUtil.appendStyle(style, PB.DRAW_SQUARE_14x05);
+		if (!StyleUtil.hasStyle(style, PBConstants.DRAW_ROUND) //
+				&& !StyleUtil.hasStyle(style, PBConstants.DRAW_SQUARE_01x69) //
+				&& !StyleUtil.hasStyle(style, PBConstants.DRAW_SQUARE_10x07) //
+				&& !StyleUtil.hasStyle(style, PBConstants.DRAW_SQUARE_14x05) //
+		) {
+			style = StyleUtil.appendStyle(style, PBConstants.DRAW_SQUARE_14x05);
 		}
 		return style;
 	}
@@ -71,13 +75,13 @@ public class DrawPart extends Composite {
 	}
 
 	public void createContents() {
-		if (hasStyle(PB.DRAW_ROUND)) {
+		if (hasStyle(PBConstants.DRAW_ROUND)) {
 
-		} else if (hasStyle(PB.DRAW_SQUARE_01x69)) {
+		} else if (hasStyle(PBConstants.DRAW_SQUARE_01x69)) {
 			createContents_01x69();
-		} else if (hasStyle(PB.DRAW_SQUARE_14x05)) {
+		} else if (hasStyle(PBConstants.DRAW_SQUARE_14x05)) {
 			createContents_14x05();
-		} else if (hasStyle(PB.DRAW_SQUARE_10x07)) {
+		} else if (hasStyle(PBConstants.DRAW_SQUARE_10x07)) {
 			createContents_10x07();
 		} else {
 			createContents_14x05();
@@ -93,7 +97,7 @@ public class DrawPart extends Composite {
 		for (int i = 1; i <= 69; i++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, this.draw.numContains(i));
+			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i));
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 
@@ -118,7 +122,7 @@ public class DrawPart extends Composite {
 		for (int i = 1; i <= 69; i++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, this.draw.numContains(i));
+			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i));
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 
@@ -165,7 +169,7 @@ public class DrawPart extends Composite {
 		for (int i = 1; i <= 69; i++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, this.draw.numContains(i));
+			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i));
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 			this.numberParts.add(numberPart);
