@@ -20,7 +20,7 @@ import org.origin.svg.widgets.Display;
 import org.origin.svg.widgets.render.impl.WidgetFigureFactory;
 import org.plutus.lottery.powerball.Draw;
 import org.plutus.lottery.powerball.DrawHelper;
-import org.plutus.lottery.powerball.DrawReaderV2;
+import org.plutus.lottery.powerball.impl.DrawReaderV2;
 import org.plutus.lottery.svg.control.DrawPart;
 import org.plutus.lottery.svg.control.LinkPart;
 import org.plutus.lottery.svg.control.NumberPart;
@@ -99,9 +99,8 @@ public class Main1 {
 	 * @throws IOException
 	 */
 	protected static Map<Integer, List<Draw>> getDrawsByYear() throws IOException {
-		File inputFile = new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt");
-		List<Draw> allDraws = DrawReaderV2.read(inputFile);
-		Map<Integer, List<Draw>> drawsByYear = DrawHelper.INSTANCE.groupByYear(allDraws);
+		List<Draw> draws = DrawHelper.INSTANCE.read(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
+		Map<Integer, List<Draw>> drawsByYear = DrawHelper.INSTANCE.groupByYear(draws);
 		return drawsByYear;
 	}
 

@@ -12,12 +12,14 @@ import org.junit.runner.notification.Failure;
 import org.junit.runners.MethodSorters;
 import org.origin.common.util.SystemUtils;
 import org.plutus.lottery.powerball.DrawStat;
+import org.plutus.lottery.powerball.impl.DrawReaderV2;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class A21_OddEvenAnalysisTester extends AbstractAnalysisTester {
 
 	public A21_OddEvenAnalysisTester() {
-		super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
+		// super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
+		super(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
 	}
 
 	@Test

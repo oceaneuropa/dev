@@ -17,16 +17,16 @@ public interface Analysis {
 	public int getPriority();
 
 	/**
-	 * Start the analysis.
+	 * Register the analysis.
 	 * 
 	 */
-	public void start();
+	public void register();
 
 	/**
-	 * Stop the analysis.
+	 * Unregister the analysis.
 	 * 
 	 */
-	public void stop();
+	public void unregister();
 
 	/**
 	 * Run the analysis.

@@ -21,6 +21,16 @@ public class A22_SumAnalysis implements Analysis {
 	public static A22_SumAnalysis INSTANCE = new A22_SumAnalysis();
 
 	@Override
+	public void register() {
+		AnalysisRegistry.getInstance().add(this);
+	}
+
+	@Override
+	public void unregister() {
+		AnalysisRegistry.getInstance().remove(this);
+	}
+
+	@Override
 	public String getId() {
 		return ANALYSIS_ID;
 	}
@@ -28,16 +38,6 @@ public class A22_SumAnalysis implements Analysis {
 	@Override
 	public int getPriority() {
 		return 3;
-	}
-
-	@Override
-	public void start() {
-		AnalysisRegistry.getInstance().add(this);
-	}
-
-	@Override
-	public void stop() {
-		AnalysisRegistry.getInstance().remove(this);
 	}
 
 	@Override

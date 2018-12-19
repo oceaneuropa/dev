@@ -16,6 +16,26 @@ public class AnalysisRegistry {
 
 	public List<Analysis> analyses = new ArrayList<Analysis>();
 
+	/**
+	 * 
+	 * @param context
+	 */
+	public void run(AnalysisContext context) {
+		if (context == null) {
+			throw new IllegalArgumentException("context is null");
+		}
+		for (Analysis analysis : this.analyses) {
+			try {
+				analysis.run(context);
+
+				System.out.println("Analyzed by [" + analysis.getClass().getSimpleName() + "] (id=" + analysis.getId() + ", priority=" + analysis.getPriority() + ")");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	public List<Analysis> getAnalyses() {
 		return this.analyses;
 	}

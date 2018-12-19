@@ -19,6 +19,21 @@ public class DrawStat {
 	// 均值
 	public static String PROP_AVG = "PROP_AVG";
 
+	// 单个数字的均值和标准差 (standard deviation - SD)
+	public static String NUM1_AVG = "NUM1_AVG";
+	public static String NUM2_AVG = "NUM2_AVG";
+	public static String NUM3_AVG = "NUM3_AVG";
+	public static String NUM4_AVG = "NUM4_AVG";
+	public static String NUM5_AVG = "NUM5_AVG";
+	public static String PB_AVG = "PB_AVG";
+
+	public static String NUM1_SD = "NUM1_SD";
+	public static String NUM2_SD = "NUM2_SD";
+	public static String NUM3_SD = "NUM3_SD";
+	public static String NUM4_SD = "NUM4_SD";
+	public static String NUM5_SD = "NUM5_SD";
+	public static String PB_SD = "PB_SD";
+
 	// 均值和中值之比
 	public static String PROP_AVG_VS_MID = "PROP_AVG_VS_MID";
 	// 均值和中值之比 标准化为百分比
@@ -31,6 +46,32 @@ public class DrawStat {
 	public static String PROP_EVEN_COUNT = "PROP_EVEN_COUNT";
 	// 间距均值
 	public static String PROP_DIST_AVG = "PROP_DIST_AVG";
+
+	// 后一组和当前组每个数字差值 (后一组减去当前组对应数字;后一组必须存在;)
+	public static String NUM1_DIFF = "NUM1_DIFF";
+	public static String NUM2_DIFF = "NUM2_DIFF";
+	public static String NUM3_DIFF = "NUM3_DIFF";
+	public static String NUM4_DIFF = "NUM4_DIFF";
+	public static String NUM5_DIFF = "NUM5_DIFF";
+	public static String PB_DIFF = "PB_DIFF";
+
+	public static String NUM1_DIFF_MIN = "NUM1_DIFF_MIN";
+	public static String NUM1_DIFF_MAX = "NUM1_DIFF_MAX";
+
+	public static String NUM2_DIFF_MIN = "NUM2_DIFF_MIN";
+	public static String NUM2_DIFF_MAX = "NUM2_DIFF_MAX";
+
+	public static String NUM3_DIFF_MIN = "NUM3_DIFF_MIN";
+	public static String NUM3_DIFF_MAX = "NUM3_DIFF_MAX";
+
+	public static String NUM4_DIFF_MIN = "NUM4_DIFF_MIN";
+	public static String NUM4_DIFF_MAX = "NUM4_DIFF_MAX";
+
+	public static String NUM5_DIFF_MIN = "NUM5_DIFF_MIN";
+	public static String NUM5_DIFF_MAX = "NUM5_DIFF_MAX";
+
+	public static String PB_DIFF_MIN = "PB_DIFF_MIN";
+	public static String PB_DIFF_MAX = "PB_DIFF_MAX";
 
 	// --------------------------------------------------------------------------------------------------
 	// BasicCount

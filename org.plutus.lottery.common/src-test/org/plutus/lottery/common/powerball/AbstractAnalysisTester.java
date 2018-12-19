@@ -6,11 +6,11 @@ import java.util.List;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.plutus.lottery.powerball.Analysis;
 import org.plutus.lottery.powerball.AnalysisContext;
 import org.plutus.lottery.powerball.AnalysisRegistry;
 import org.plutus.lottery.powerball.Draw;
-import org.plutus.lottery.powerball.DrawReaderV1;
+import org.plutus.lottery.powerball.DrawHelper;
+import org.plutus.lottery.powerball.DrawReader;
 import org.plutus.lottery.powerball.analysis.A11_MinMaxAvgAnalysis;
 import org.plutus.lottery.powerball.analysis.A21_OddEvenAnalysis;
 import org.plutus.lottery.powerball.analysis.A22_SumAnalysis;
@@ -21,14 +21,17 @@ import org.plutus.lottery.powerball.analysis.A24_RepetitionAnalysis;
 public abstract class AbstractAnalysisTester {
 
 	protected static File file;
+	protected static DrawReader reader;
 	protected static boolean printDraws;
 	protected static AnalysisContext context = new AnalysisContext();
 
 	/**
 	 * 
+	 * @param reader
 	 * @param file
 	 */
-	public AbstractAnalysisTester(File file) {
+	public AbstractAnalysisTester(DrawReader reader, File file) {
+		AbstractAnalysisTester.reader = reader;
 		AbstractAnalysisTester.file = file;
 		setup();
 	}
@@ -36,12 +39,11 @@ public abstract class AbstractAnalysisTester {
 	protected void setup() {
 		printDraws = false;
 
-		A11_MinMaxAvgAnalysis.INSTANCE.start();
-
-		A21_OddEvenAnalysis.INSTANCE.start();
-		A24_RepetitionAnalysis.INSTANCE.start();
-		A22_SumAnalysis.INSTANCE.start();
-		A23_HotColdAnalysis.INSTANCE.start();
+		A11_MinMaxAvgAnalysis.INSTANCE.register();
+		A21_OddEvenAnalysis.INSTANCE.register();
+		A24_RepetitionAnalysis.INSTANCE.register();
+		A22_SumAnalysis.INSTANCE.register();
+		A23_HotColdAnalysis.INSTANCE.register();
 	}
 
 	@Test
@@ -49,7 +51,7 @@ public abstract class AbstractAnalysisTester {
 		System.out.println("--- --- --- test001_readDraws() --- --- ---");
 
 		try {
-			List<Draw> draws = DrawReaderV1.read(file);
+			List<Draw> draws = DrawHelper.INSTANCE.read(reader, file);
 			context.setDraws(draws);
 
 			if (printDraws) {
@@ -73,21 +75,7 @@ public abstract class AbstractAnalysisTester {
 	public void test002_runAnalyses() {
 		System.out.println("--- --- --- test002_runAnalyses() --- --- ---");
 
-		try {
-			List<Analysis> analyses = AnalysisRegistry.getInstance().getAnalyses();
-			for (Analysis analysis : analyses) {
-				try {
-					analysis.run(context);
-
-					System.out.println("Analyzed by [" + analysis.getClass().getSimpleName() + "] (id=" + analysis.getId() + ", priority=" + analysis.getPriority() + ")");
-
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		AnalysisRegistry.getInstance().run(context);
 		System.out.println();
 	}
 

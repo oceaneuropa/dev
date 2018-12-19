@@ -16,13 +16,15 @@ import org.origin.common.util.Range;
 import org.origin.common.util.StatUtil;
 import org.origin.common.util.SystemUtils;
 import org.plutus.lottery.powerball.DrawStat;
+import org.plutus.lottery.powerball.impl.DrawReaderV2;
 import org.plutus.lottery.powerball.report.CombinationReport;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class A24_RepetitionAnalysisTester extends AbstractAnalysisTester {
 
 	public A24_RepetitionAnalysisTester() {
-		super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
+		// super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
+		super(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
 	}
 
 	@Override

@@ -29,6 +29,16 @@ public class A24_RepetitionAnalysis implements Analysis {
 	public static A24_RepetitionAnalysis INSTANCE = new A24_RepetitionAnalysis();
 
 	@Override
+	public void register() {
+		AnalysisRegistry.getInstance().add(this);
+	}
+
+	@Override
+	public void unregister() {
+		AnalysisRegistry.getInstance().remove(this);
+	}
+
+	@Override
 	public String getId() {
 		return ANALYSIS_ID;
 	}
@@ -36,16 +46,6 @@ public class A24_RepetitionAnalysis implements Analysis {
 	@Override
 	public int getPriority() {
 		return 3;
-	}
-
-	@Override
-	public void start() {
-		AnalysisRegistry.getInstance().add(this);
-	}
-
-	@Override
-	public void stop() {
-		AnalysisRegistry.getInstance().remove(this);
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class A24_RepetitionAnalysis implements Analysis {
 		}
 		int combin5MinDistance = StatUtil.min(allCombin5Distances);
 		int combin5MaxDistance = StatUtil.max(allCombin5Distances);
-		int combin5AvgDistance = (int) StatUtil.avg(0, allCombin5Distances);
+		int combin5AvgDistance = allCombin5Distances.isEmpty() ? 0 : (int) StatUtil.avg(0, allCombin5Distances);
 
 		// ----------------------------------------------------
 		// 重复3个数字的投注期间隔的范围统计

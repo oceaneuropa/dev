@@ -14,6 +14,7 @@ import org.junit.runners.MethodSorters;
 import org.origin.common.util.SystemUtils;
 import org.plutus.lottery.powerball.Draw;
 import org.plutus.lottery.powerball.DrawStat;
+import org.plutus.lottery.powerball.impl.DrawReaderV2;
 import org.plutus.lottery.powerball.report.NumberReport;
 import org.plutus.lottery.powerball.report.NumberReports;
 
@@ -21,7 +22,8 @@ import org.plutus.lottery.powerball.report.NumberReports;
 public class A23_HotColdAnalysisTester extends AbstractAnalysisTester {
 
 	public A23_HotColdAnalysisTester() {
-		super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
+		// super(new File(SystemUtils.getUserDir(), "/doc/data/pb-winnums.txt"));
+		super(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
 	}
 
 	@Test

@@ -19,6 +19,16 @@ public class A23_HotColdAnalysis implements Analysis {
 	public static A23_HotColdAnalysis INSTANCE = new A23_HotColdAnalysis();
 
 	@Override
+	public void register() {
+		AnalysisRegistry.getInstance().add(this);
+	}
+
+	@Override
+	public void unregister() {
+		AnalysisRegistry.getInstance().remove(this);
+	}
+
+	@Override
 	public String getId() {
 		return ANALYSIS_ID;
 	}
@@ -26,16 +36,6 @@ public class A23_HotColdAnalysis implements Analysis {
 	@Override
 	public int getPriority() {
 		return 3;
-	}
-
-	@Override
-	public void start() {
-		AnalysisRegistry.getInstance().add(this);
-	}
-
-	@Override
-	public void stop() {
-		AnalysisRegistry.getInstance().remove(this);
 	}
 
 	@Override
