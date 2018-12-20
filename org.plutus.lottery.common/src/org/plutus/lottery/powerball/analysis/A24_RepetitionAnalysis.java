@@ -110,7 +110,7 @@ public class A24_RepetitionAnalysis implements Analysis {
 		}
 		int combin3MinDistance = StatUtil.min(allCombin3Distances);
 		int combin3MaxDistance = StatUtil.max(allCombin3Distances);
-		int combin3AvgDistance = (int) StatUtil.avg(0, allCombin3Distances);
+		int combin3AvgDistance = (!allCombin3Distances.isEmpty()) ? (int) StatUtil.avg(0, allCombin3Distances) : 0;
 
 		List<Integer> allCombin4Distances = new ArrayList<Integer>();
 		for (CombinationReport combin4Report : combin4Reports) {
@@ -119,7 +119,7 @@ public class A24_RepetitionAnalysis implements Analysis {
 		}
 		int combin4MinDistance = StatUtil.min(allCombin4Distances);
 		int combin4MaxDistance = StatUtil.max(allCombin4Distances);
-		int combin4AvgDistance = (int) StatUtil.avg(0, allCombin4Distances);
+		int combin4AvgDistance = (!allCombin4Distances.isEmpty()) ? (int) StatUtil.avg(0, allCombin4Distances) : 0;
 
 		List<Integer> allCombin5Distances = new ArrayList<Integer>();
 		for (CombinationReport combin5Report : combin5Reports) {

@@ -1,12 +1,23 @@
 package org.plutus.lottery.svg;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.origin.common.io.IOUtil;
 import org.origin.common.util.SystemUtils;
+import org.origin.svg.Shape;
+import org.origin.svg.graphics.Point;
+import org.origin.svg.graphics.Rectangle;
+import org.origin.svg.graphics.Size;
+import org.origin.svg.util.SVGStringWriter;
+import org.origin.svg.widgets.Display;
+import org.origin.svg.widgets.render.impl.WidgetFigureFactory;
 import org.plutus.lottery.powerball.AnalysisContext;
 import org.plutus.lottery.powerball.AnalysisRegistry;
 import org.plutus.lottery.powerball.Draw;
@@ -19,6 +30,13 @@ import org.plutus.lottery.powerball.analysis.A22_SumAnalysis;
 import org.plutus.lottery.powerball.analysis.A23_HotColdAnalysis;
 import org.plutus.lottery.powerball.analysis.A24_RepetitionAnalysis;
 import org.plutus.lottery.powerball.impl.DrawReaderV2;
+import org.plutus.lottery.svg.control.IntegersPart;
+import org.plutus.lottery.svg.control.LinkPart;
+import org.plutus.lottery.svg.control.NumberPart;
+import org.plutus.lottery.svg.factory.DrawFigureFactory;
+import org.plutus.lottery.svg.factory.LinkFigureFactory;
+import org.plutus.lottery.svg.factory.NumberFigureFactory;
+import org.plutus.lottery.svg.factory.PBFigureFactory;
 
 public class Main2 {
 
@@ -31,6 +49,13 @@ public class Main2 {
 		A23_HotColdAnalysis.INSTANCE.register();
 	}
 
+	static {
+		DrawFigureFactory.register();
+		PBFigureFactory.register();
+		NumberFigureFactory.register();
+		LinkFigureFactory.register();
+	}
+
 	public static void main(String[] args) {
 		try {
 			List<Draw> draws = getDraws();
@@ -38,8 +63,11 @@ public class Main2 {
 			context.setDraws(draws);
 			AnalysisRegistry.getInstance().run(context);
 
+			// Map<Integer, List<Draw>> yearToDraws = getDrawsByYear();
 			Map<Integer, List<Draw>> yearToDraws = DrawHelper.INSTANCE.groupByYear(draws);
-			generateNumbersDiff(context, yearToDraws, SystemUtils.getUserDir(), "/doc/temp/powerball_draws__nums_diff__{0}.txt");
+
+			// avg range: [12, 57]
+			generate_avg(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__avg__{0}.svg", PBConstants.DRAW_AVG);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,97 +78,99 @@ public class Main2 {
 		return DrawHelper.INSTANCE.read(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
 	}
 
-	/**
-	 * 
-	 * @param yearToDraws
-	 * @param baseFolder
-	 * @param fileLocationPattern
-	 */
-	public static void generateNumbersDiff(AnalysisContext context, Map<Integer, List<Draw>> yearToDraws, File baseFolder, String fileLocationPattern) {
-		DrawStat globalStat = context.getGlobalStat();
-
-		// System.out.println("------------------------------------------------------------------------");
-		// System.out.println("Diff Ranges");
-		// System.out.println("------------------------------------------------------------------------");
-		// int num1_diff_min = globalStat.get(DrawStat.NUM1_DIFF_MIN, Integer.class);
-		// int num1_diff_max = globalStat.get(DrawStat.NUM1_DIFF_MAX, Integer.class);
-		// int num2_diff_min = globalStat.get(DrawStat.NUM2_DIFF_MIN, Integer.class);
-		// int num2_diff_max = globalStat.get(DrawStat.NUM2_DIFF_MAX, Integer.class);
-		// int num3_diff_min = globalStat.get(DrawStat.NUM3_DIFF_MIN, Integer.class);
-		// int num3_diff_max = globalStat.get(DrawStat.NUM3_DIFF_MAX, Integer.class);
-		// int num4_diff_min = globalStat.get(DrawStat.NUM4_DIFF_MIN, Integer.class);
-		// int num4_diff_max = globalStat.get(DrawStat.NUM4_DIFF_MAX, Integer.class);
-		// int num5_diff_min = globalStat.get(DrawStat.NUM5_DIFF_MIN, Integer.class);
-		// int num5_diff_max = globalStat.get(DrawStat.NUM5_DIFF_MAX, Integer.class);
-		// int pb_diff_min = globalStat.get(DrawStat.PB_DIFF_MIN, Integer.class);
-		// int pb_diff_max = globalStat.get(DrawStat.PB_DIFF_MAX, Integer.class);
-		// System.out.println("Num1: [" + num1_diff_min + ", " + num1_diff_max + "]");
-		// System.out.println("Num2: [" + num2_diff_min + ", " + num2_diff_max + "]");
-		// System.out.println("Num3: [" + num3_diff_min + ", " + num3_diff_max + "]");
-		// System.out.println("Num4: [" + num4_diff_min + ", " + num4_diff_max + "]");
-		// System.out.println("Num5: [" + num5_diff_min + ", " + num5_diff_max + "]");
-		// System.out.println("PB: [" + pb_diff_min + ", " + pb_diff_max + "]");
-		// System.out.println();
-
+	public static void generate_avg(Map<Integer, List<Draw>> yearToDraws, File baseFolder, String outputFileLocation, int drawStyle) {
 		for (Iterator<Integer> yearItor = yearToDraws.keySet().iterator(); yearItor.hasNext();) {
 			Integer year = yearItor.next();
 			List<Draw> draws = yearToDraws.get(year);
 
-			System.out.println("------------------------------------------------------------------------");
-			System.out.println(String.valueOf(year));
-			System.out.println("------------------------------------------------------------------------");
-
-			int num1_diff_min = globalStat.get(year + "." + DrawStat.NUM1_DIFF_MIN, Integer.class);
-			int num1_diff_max = globalStat.get(year + "." + DrawStat.NUM1_DIFF_MAX, Integer.class);
-			int num2_diff_min = globalStat.get(year + "." + DrawStat.NUM2_DIFF_MIN, Integer.class);
-			int num2_diff_max = globalStat.get(year + "." + DrawStat.NUM2_DIFF_MAX, Integer.class);
-			int num3_diff_min = globalStat.get(year + "." + DrawStat.NUM3_DIFF_MIN, Integer.class);
-			int num3_diff_max = globalStat.get(year + "." + DrawStat.NUM3_DIFF_MAX, Integer.class);
-			int num4_diff_min = globalStat.get(year + "." + DrawStat.NUM4_DIFF_MIN, Integer.class);
-			int num4_diff_max = globalStat.get(year + "." + DrawStat.NUM4_DIFF_MAX, Integer.class);
-			int num5_diff_min = globalStat.get(year + "." + DrawStat.NUM5_DIFF_MIN, Integer.class);
-			int num5_diff_max = globalStat.get(year + "." + DrawStat.NUM5_DIFF_MAX, Integer.class);
-			int pb_diff_min = globalStat.get(year + "." + DrawStat.PB_DIFF_MIN, Integer.class);
-			int pb_diff_max = globalStat.get(year + "." + DrawStat.PB_DIFF_MAX, Integer.class);
-
-			System.out.println("Num1: [" + num1_diff_min + ", " + num1_diff_max + "]");
-			System.out.println("Num2: [" + num2_diff_min + ", " + num2_diff_max + "]");
-			System.out.println("Num3: [" + num3_diff_min + ", " + num3_diff_max + "]");
-			System.out.println("Num4: [" + num4_diff_min + ", " + num4_diff_max + "]");
-			System.out.println("Num5: [" + num5_diff_min + ", " + num5_diff_max + "]");
-			System.out.println("PB:   [" + pb_diff_min + ", " + pb_diff_max + "]");
-			System.out.println();
-
-			int size = draws.size();
-			for (int i = 0; i < size; i++) {
-				if (i == size - 1) {
-					break;
+			try {
+				String fileLocation = MessageFormat.format(outputFileLocation, new Object[] { String.valueOf(year) });
+				Display display = null;
+				if (drawStyle == PBConstants.DRAW_AVG) {
+					display = generate_avg(draws, true);
 				}
-				Draw draw = draws.get(i);
-				DrawStat stat = draw.getStat();
-				int drawId = draw.getDrawId();
-				int num1_diff = stat.get(DrawStat.NUM1_DIFF, Integer.class);
-				int num2_diff = stat.get(DrawStat.NUM2_DIFF, Integer.class);
-				int num3_diff = stat.get(DrawStat.NUM3_DIFF, Integer.class);
-				int num4_diff = stat.get(DrawStat.NUM4_DIFF, Integer.class);
-				int num5_diff = stat.get(DrawStat.NUM5_DIFF, Integer.class);
-				int pb_diff = stat.get(DrawStat.PB_DIFF, Integer.class);
-
-				String text = drawId + " " + num1_diff + ", " + num2_diff + ", " + num3_diff + ", " + num4_diff + ", " + num5_diff + ", " + pb_diff;
-				System.out.println(text);
+				if (display != null) {
+					File outputFile = new File(baseFolder, fileLocation);
+					save(display, outputFile);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			System.out.println();
-
-			// FileOutputStream output = null;
-			// try {
-			// String fileLocation = MessageFormat.format(fileLocationPattern, new Object[] { String.valueOf(year) });
-			//
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// } finally {
-			// IOUtil.closeQuietly(output, true);
-			// }
 		}
+	}
+
+	public static Map<Integer, List<Draw>> getDrawsByYear() throws IOException {
+		List<Draw> draws = DrawHelper.INSTANCE.read(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
+		Map<Integer, List<Draw>> drawsByYear = DrawHelper.INSTANCE.groupByYear(draws);
+		return drawsByYear;
+	}
+
+	public static void save(Display display, File file) throws IOException {
+		FileOutputStream output = null;
+		try {
+			Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
+			SVGStringWriter writer = new SVGStringWriter(rootShape);
+
+			output = new FileOutputStream(file);
+			writer.write(output);
+		} finally {
+			IOUtil.closeQuietly(output, true);
+		}
+	}
+
+	protected static Display generate_avg(List<Draw> draws, boolean showAvgLinks) {
+		// 10 and 10 are for the overall shift for all figures
+		int draw_x = 0 + 10;
+		int draw_y = 0 + 10;
+		int draw_w = 10;
+		int draw_h = 690;
+		int space_w = 100;
+		int draw_width = draw_w + space_w; // total draw width (one number column and empty space)
+
+		int display_width = draws.size() * draw_width + 100;
+		Size size = new Size(display_width, draw_h + 100);
+		Display display = new Display(size);
+
+		List<IntegersPart> integersParts = new ArrayList<IntegersPart>();
+		for (int i = 0; i < draws.size(); i++) {
+			Draw draw = draws.get(i);
+			int avg = draw.getStat().get(DrawStat.PROP_AVG, Integer.class);
+
+			Rectangle integersBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
+
+			IntegersPart integersPart = new IntegersPart(display, 1, 69, PBConstants.NONE);
+			integersPart.setMatchedNum(avg);
+			integersPart.setBounds(integersBounds);
+			integersPart.createContents();
+			integersParts.add(integersPart);
+
+			draw_x += draw_width;
+		}
+
+		if (showAvgLinks) {
+			IntegersPart prevIntegersPart = null;
+			for (IntegersPart currIntegersPart : integersParts) {
+				int curr_draw_x = currIntegersPart.getBounds().getX();
+
+				NumberPart numPartCurr1 = currIntegersPart.getMatchedNumberParts().get(0);
+				numPartCurr1.setIndex(new Point(0, numPartCurr1.getNumber() - 1));
+
+				int shiftX = 5;
+				int shiftY = 5;
+				numPartCurr1.setLocation(new Point(curr_draw_x + shiftX, numPartCurr1.getNumber() * 10 + shiftY));
+
+				if (prevIntegersPart != null) {
+					NumberPart numPartPrev1 = prevIntegersPart.getMatchedNumberParts().get(0);
+
+					LinkPart link1 = new LinkPart(display, numPartPrev1, numPartCurr1);
+					link1.createContents();
+				}
+
+				prevIntegersPart = currIntegersPart;
+			}
+		}
+
+		return display;
 	}
 
 }

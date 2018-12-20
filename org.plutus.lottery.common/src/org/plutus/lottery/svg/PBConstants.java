@@ -1,6 +1,9 @@
 package org.plutus.lottery.svg;
 
 public class PBConstants {
+	public final static int NONE = 0;
+
+	public final static int DRAW_AVG = 1 << 21;
 
 	public final static int DRAW_ROUND = 1 << 31;
 	public final static int DRAW_SQUARE_01x69 = 1 << 32;

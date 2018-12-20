@@ -62,7 +62,6 @@ public class Main1 {
 			Integer year = yearItor.next();
 			List<Draw> draws = yearToDraws.get(year);
 
-			FileOutputStream output = null;
 			try {
 				String fileLocation = MessageFormat.format(outputFileLocation, new Object[] { String.valueOf(year) });
 
@@ -78,30 +77,32 @@ public class Main1 {
 				}
 
 				if (display != null) {
-					Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
-					SVGStringWriter writer = new SVGStringWriter(rootShape);
-
 					File outputFile = new File(baseFolder, fileLocation);
-					output = new FileOutputStream(outputFile);
-					writer.write(output);
+					save(display, outputFile);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			} finally {
-				IOUtil.closeQuietly(output, true);
 			}
 		}
 	}
 
-	/**
-	 * 
-	 * @return
-	 * @throws IOException
-	 */
-	protected static Map<Integer, List<Draw>> getDrawsByYear() throws IOException {
+	public static Map<Integer, List<Draw>> getDrawsByYear() throws IOException {
 		List<Draw> draws = DrawHelper.INSTANCE.read(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
 		Map<Integer, List<Draw>> drawsByYear = DrawHelper.INSTANCE.groupByYear(draws);
 		return drawsByYear;
+	}
+
+	public static void save(Display display, File file) throws IOException {
+		FileOutputStream output = null;
+		try {
+			Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
+			SVGStringWriter writer = new SVGStringWriter(rootShape);
+
+			output = new FileOutputStream(file);
+			writer.write(output);
+		} finally {
+			IOUtil.closeQuietly(output, true);
+		}
 	}
 
 	/**
