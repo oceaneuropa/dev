@@ -12,13 +12,28 @@ public class NumberFigure extends AbstractControlFigure {
 	public NumberFigure(NumberPart numberPart) {
 		super(numberPart);
 
+		boolean match = numberPart.match();
+		boolean showNumber = numberPart.showNumber();
+
 		int r = 3;
 		int cx = r + 3;
 		int cy = r + 3;
+
+		if (match) {
+			r = 6;
+			cx = r + 0;
+			cy = r + 0;
+		}
+
 		Circle circle = new Circle(cx, cy, r);
 		if (numberPart.match()) {
-			circle.setFillColor(ColorConstants.GREEN_LITERAL);
-			circle.setStrokeColor(ColorConstants.GREEN_LITERAL);
+			if (numberPart.isPBNumber()) {
+				circle.setFillColor(ColorConstants.PURPLE_LITERAL);
+				circle.setStrokeColor(ColorConstants.PURPLE_LITERAL);
+			} else {
+				circle.setFillColor(ColorConstants.GREEN_LITERAL);
+				circle.setStrokeColor(ColorConstants.GREEN_LITERAL);
+			}
 		} else {
 			circle.setFillColor(ColorConstants.LIGHT_GREY_LITERAL);
 			circle.setStrokeColor(ColorConstants.LIGHT_GREY_LITERAL);
@@ -27,21 +42,29 @@ public class NumberFigure extends AbstractControlFigure {
 
 		add(circle);
 
-		if (numberPart.showNumber()) {
+		if (showNumber) {
 			int number = numberPart.getNumber();
-			boolean match = numberPart.match();
 
 			Text text = new Text(4, 4, 5, 8);
+			if (match) {
+				text = new Text(4, 4, 1, 5);
+			}
+
 			text.setText(String.valueOf(number));
 			text.setTextAnchor(SVGConstants.TEXT_ANCHOR_MIDDLE);
 			if (match) {
-				text.setStrokeColor(ColorConstants.BLACK_LITERAL);
-				text.setFillColor(ColorConstants.BLACK_LITERAL);
+				text.setStrokeColor(ColorConstants.WHITE_LITERAL);
+				text.setFillColor(ColorConstants.WHITE_LITERAL);
 			} else {
 				text.setStrokeOpacity(0.2);
 				text.setFillOpacity(0.2);
 			}
-			text.getTransform().scale(0.7);
+
+			if (match) {
+				text.getTransform().scale(1.2);
+			} else {
+				text.getTransform().scale(0.7);
+			}
 
 			add(text);
 		}

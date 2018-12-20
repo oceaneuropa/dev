@@ -132,7 +132,8 @@ public class Main1 {
 		Display display = new Display(size);
 
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
-		for (int i = 0; i < draws.size(); i++) {
+		int length = draws.size();
+		for (int i = 0; i < length; i++) {
 			Draw draw = draws.get(i);
 			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 

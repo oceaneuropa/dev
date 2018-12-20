@@ -136,8 +136,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">32</text>
         </g>
         <g id="widget_34" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="320" width="10" height="10" stroke-width="0px" transform="translate(0,320)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">33</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">33</text>
         </g>
         <g id="widget_35" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="330" width="10" height="10" stroke-width="0px" transform="translate(0,330)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -426,8 +426,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">35</text>
         </g>
         <g id="widget_107" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="350" width="10" height="10" stroke-width="0px" transform="translate(0,350)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">36</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">36</text>
         </g>
         <g id="widget_108" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -628,8 +628,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">16</text>
         </g>
         <g id="widget_158" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="160" width="10" height="10" stroke-width="0px" transform="translate(0,160)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">17</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">17</text>
         </g>
         <g id="widget_159" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="170" width="10" height="10" stroke-width="0px" transform="translate(0,170)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -926,8 +926,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">21</text>
         </g>
         <g id="widget_233" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="210" width="10" height="10" stroke-width="0px" transform="translate(0,210)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">22</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">22</text>
         </g>
         <g id="widget_234" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="220" width="10" height="10" stroke-width="0px" transform="translate(0,220)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -1208,8 +1208,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">22</text>
         </g>
         <g id="widget_304" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="220" width="10" height="10" stroke-width="0px" transform="translate(0,220)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">23</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">23</text>
         </g>
         <g id="widget_305" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -1490,8 +1490,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">23</text>
         </g>
         <g id="widget_375" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">24</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">24</text>
         </g>
         <g id="widget_376" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -1764,8 +1764,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">22</text>
         </g>
         <g id="widget_444" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="220" width="10" height="10" stroke-width="0px" transform="translate(0,220)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">23</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">23</text>
         </g>
         <g id="widget_445" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -2074,8 +2074,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">30</text>
         </g>
         <g id="widget_522" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">31</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">31</text>
         </g>
         <g id="widget_523" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="310" width="10" height="10" stroke-width="0px" transform="translate(0,310)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -2312,8 +2312,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">20</text>
         </g>
         <g id="widget_582" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="200" width="10" height="10" stroke-width="0px" transform="translate(0,200)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">21</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">21</text>
         </g>
         <g id="widget_583" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="210" width="10" height="10" stroke-width="0px" transform="translate(0,210)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -2678,8 +2678,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">42</text>
         </g>
         <g id="widget_674" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="420" width="10" height="10" stroke-width="0px" transform="translate(0,420)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">43</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">43</text>
         </g>
         <g id="widget_675" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="430" width="10" height="10" stroke-width="0px" transform="translate(0,430)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -2884,8 +2884,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">24</text>
         </g>
         <g id="widget_726" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">25</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">25</text>
         </g>
         <g id="widget_727" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -3174,8 +3174,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">27</text>
         </g>
         <g id="widget_799" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="270" width="10" height="10" stroke-width="0px" transform="translate(0,270)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">28</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">28</text>
         </g>
         <g id="widget_800" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -3472,8 +3472,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">32</text>
         </g>
         <g id="widget_874" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="320" width="10" height="10" stroke-width="0px" transform="translate(0,320)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">33</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">33</text>
         </g>
         <g id="widget_875" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="330" width="10" height="10" stroke-width="0px" transform="translate(0,330)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -3714,8 +3714,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">23</text>
         </g>
         <g id="widget_935" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">24</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">24</text>
         </g>
         <g id="widget_936" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -3996,8 +3996,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">24</text>
         </g>
         <g id="widget_1006" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">25</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">25</text>
         </g>
         <g id="widget_1007" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -4274,8 +4274,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">24</text>
         </g>
         <g id="widget_1076" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">25</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">25</text>
         </g>
         <g id="widget_1077" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -4552,8 +4552,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">24</text>
         </g>
         <g id="widget_1146" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">25</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">25</text>
         </g>
         <g id="widget_1147" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -4826,8 +4826,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">23</text>
         </g>
         <g id="widget_1215" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">24</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">24</text>
         </g>
         <g id="widget_1216" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -5168,8 +5168,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">39</text>
         </g>
         <g id="widget_1301" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="390" width="10" height="10" stroke-width="0px" transform="translate(0,390)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">40</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">40</text>
         </g>
         <g id="widget_1302" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="400" width="10" height="10" stroke-width="0px" transform="translate(0,400)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -5406,8 +5406,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">29</text>
         </g>
         <g id="widget_1361" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">30</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">30</text>
         </g>
         <g id="widget_1362" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -5684,8 +5684,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">29</text>
         </g>
         <g id="widget_1431" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">30</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">30</text>
         </g>
         <g id="widget_1432" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -5958,8 +5958,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">28</text>
         </g>
         <g id="widget_1500" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">29</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">29</text>
         </g>
         <g id="widget_1501" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -6228,8 +6228,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">26</text>
         </g>
         <g id="widget_1568" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="260" width="10" height="10" stroke-width="0px" transform="translate(0,260)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">27</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">27</text>
         </g>
         <g id="widget_1569" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="270" width="10" height="10" stroke-width="0px" transform="translate(0,270)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -6518,8 +6518,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">29</text>
         </g>
         <g id="widget_1641" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">30</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">30</text>
         </g>
         <g id="widget_1642" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -6724,8 +6724,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">11</text>
         </g>
         <g id="widget_1693" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="110" width="10" height="10" stroke-width="0px" transform="translate(0,110)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">12</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">12</text>
         </g>
         <g id="widget_1694" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="120" width="10" height="10" stroke-width="0px" transform="translate(0,120)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -7070,8 +7070,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">28</text>
         </g>
         <g id="widget_1780" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">29</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">29</text>
         </g>
         <g id="widget_1781" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -7396,8 +7396,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">40</text>
         </g>
         <g id="widget_1862" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="400" width="10" height="10" stroke-width="0px" transform="translate(0,400)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">41</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">41</text>
         </g>
         <g id="widget_1863" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="410" width="10" height="10" stroke-width="0px" transform="translate(0,410)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -7642,8 +7642,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">32</text>
         </g>
         <g id="widget_1924" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="320" width="10" height="10" stroke-width="0px" transform="translate(0,320)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">33</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">33</text>
         </g>
         <g id="widget_1925" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="330" width="10" height="10" stroke-width="0px" transform="translate(0,330)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -7904,8 +7904,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">28</text>
         </g>
         <g id="widget_1990" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">29</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">29</text>
         </g>
         <g id="widget_1991" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -8150,8 +8150,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">20</text>
         </g>
         <g id="widget_2052" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="200" width="10" height="10" stroke-width="0px" transform="translate(0,200)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">21</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">21</text>
         </g>
         <g id="widget_2053" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="210" width="10" height="10" stroke-width="0px" transform="translate(0,210)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -8436,8 +8436,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">22</text>
         </g>
         <g id="widget_2124" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="220" width="10" height="10" stroke-width="0px" transform="translate(0,220)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">23</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">23</text>
         </g>
         <g id="widget_2125" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -8734,8 +8734,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">27</text>
         </g>
         <g id="widget_2199" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="270" width="10" height="10" stroke-width="0px" transform="translate(0,270)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">28</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">28</text>
         </g>
         <g id="widget_2200" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -9036,8 +9036,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">33</text>
         </g>
         <g id="widget_2275" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="330" width="10" height="10" stroke-width="0px" transform="translate(0,330)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">34</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">34</text>
         </g>
         <g id="widget_2276" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="340" width="10" height="10" stroke-width="0px" transform="translate(0,340)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -9298,8 +9298,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">29</text>
         </g>
         <g id="widget_2341" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">30</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">30</text>
         </g>
         <g id="widget_2342" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -9520,8 +9520,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">15</text>
         </g>
         <g id="widget_2397" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="150" width="10" height="10" stroke-width="0px" transform="translate(0,150)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">16</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">16</text>
         </g>
         <g id="widget_2398" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="160" width="10" height="10" stroke-width="0px" transform="translate(0,160)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -9854,8 +9854,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">29</text>
         </g>
         <g id="widget_2481" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">30</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">30</text>
         </g>
         <g id="widget_2482" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -10112,8 +10112,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">24</text>
         </g>
         <g id="widget_2546" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">25</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">25</text>
         </g>
         <g id="widget_2547" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -10394,8 +10394,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">25</text>
         </g>
         <g id="widget_2617" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">26</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">26</text>
         </g>
         <g id="widget_2618" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="260" width="10" height="10" stroke-width="0px" transform="translate(0,260)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -10720,8 +10720,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">37</text>
         </g>
         <g id="widget_2699" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="370" width="10" height="10" stroke-width="0px" transform="translate(0,370)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">38</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">38</text>
         </g>
         <g id="widget_2700" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="380" width="10" height="10" stroke-width="0px" transform="translate(0,380)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -10942,8 +10942,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">23</text>
         </g>
         <g id="widget_2755" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">24</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">24</text>
         </g>
         <g id="widget_2756" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -11216,8 +11216,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">22</text>
         </g>
         <g id="widget_2824" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="220" width="10" height="10" stroke-width="0px" transform="translate(0,220)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">23</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">23</text>
         </g>
         <g id="widget_2825" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -11534,8 +11534,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">32</text>
         </g>
         <g id="widget_2904" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="320" width="10" height="10" stroke-width="0px" transform="translate(0,320)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">33</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">33</text>
         </g>
         <g id="widget_2905" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="330" width="10" height="10" stroke-width="0px" transform="translate(0,330)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -11804,8 +11804,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">30</text>
         </g>
         <g id="widget_2972" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">31</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">31</text>
         </g>
         <g id="widget_2973" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="310" width="10" height="10" stroke-width="0px" transform="translate(0,310)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -12038,8 +12038,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">19</text>
         </g>
         <g id="widget_3031" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="190" width="10" height="10" stroke-width="0px" transform="translate(0,190)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">20</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">20</text>
         </g>
         <g id="widget_3032" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="200" width="10" height="10" stroke-width="0px" transform="translate(0,200)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -12320,8 +12320,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">20</text>
         </g>
         <g id="widget_3102" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="200" width="10" height="10" stroke-width="0px" transform="translate(0,200)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">21</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">21</text>
         </g>
         <g id="widget_3103" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="210" width="10" height="10" stroke-width="0px" transform="translate(0,210)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -12682,8 +12682,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">41</text>
         </g>
         <g id="widget_3193" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="410" width="10" height="10" stroke-width="0px" transform="translate(0,410)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">42</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">42</text>
         </g>
         <g id="widget_3194" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="420" width="10" height="10" stroke-width="0px" transform="translate(0,420)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -12968,8 +12968,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">43</text>
         </g>
         <g id="widget_3265" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="430" width="10" height="10" stroke-width="0px" transform="translate(0,430)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">44</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">44</text>
         </g>
         <g id="widget_3266" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="440" width="10" height="10" stroke-width="0px" transform="translate(0,440)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -13194,8 +13194,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">30</text>
         </g>
         <g id="widget_3322" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">31</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">31</text>
         </g>
         <g id="widget_3323" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="310" width="10" height="10" stroke-width="0px" transform="translate(0,310)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -13436,8 +13436,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">21</text>
         </g>
         <g id="widget_3383" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="210" width="10" height="10" stroke-width="0px" transform="translate(0,210)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">22</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">22</text>
         </g>
         <g id="widget_3384" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="220" width="10" height="10" stroke-width="0px" transform="translate(0,220)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -13682,8 +13682,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">13</text>
         </g>
         <g id="widget_3445" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="130" width="10" height="10" stroke-width="0px" transform="translate(0,130)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">14</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">14</text>
         </g>
         <g id="widget_3446" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="140" width="10" height="10" stroke-width="0px" transform="translate(0,140)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -14044,8 +14044,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">34</text>
         </g>
         <g id="widget_3536" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="340" width="10" height="10" stroke-width="0px" transform="translate(0,340)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">35</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">35</text>
         </g>
         <g id="widget_3537" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="350" width="10" height="10" stroke-width="0px" transform="translate(0,350)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -14282,8 +14282,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">24</text>
         </g>
         <g id="widget_3596" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">25</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">25</text>
         </g>
         <g id="widget_3597" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -14512,8 +14512,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">12</text>
         </g>
         <g id="widget_3654" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="120" width="10" height="10" stroke-width="0px" transform="translate(0,120)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">13</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">13</text>
         </g>
         <g id="widget_3655" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="130" width="10" height="10" stroke-width="0px" transform="translate(0,130)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -14818,8 +14818,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">19</text>
         </g>
         <g id="widget_3731" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="190" width="10" height="10" stroke-width="0px" transform="translate(0,190)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">20</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">20</text>
         </g>
         <g id="widget_3732" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="200" width="10" height="10" stroke-width="0px" transform="translate(0,200)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -15176,8 +15176,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">39</text>
         </g>
         <g id="widget_3821" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="390" width="10" height="10" stroke-width="0px" transform="translate(0,390)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">40</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">40</text>
         </g>
         <g id="widget_3822" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="400" width="10" height="10" stroke-width="0px" transform="translate(0,400)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -15418,8 +15418,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">30</text>
         </g>
         <g id="widget_3882" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">31</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">31</text>
         </g>
         <g id="widget_3883" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="310" width="10" height="10" stroke-width="0px" transform="translate(0,310)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -15716,8 +15716,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">35</text>
         </g>
         <g id="widget_3957" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="350" width="10" height="10" stroke-width="0px" transform="translate(0,350)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">36</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">36</text>
         </g>
         <g id="widget_3958" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -15998,8 +15998,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">36</text>
         </g>
         <g id="widget_4028" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">37</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">37</text>
         </g>
         <g id="widget_4029" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="370" width="10" height="10" stroke-width="0px" transform="translate(0,370)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -16268,8 +16268,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">34</text>
         </g>
         <g id="widget_4096" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="340" width="10" height="10" stroke-width="0px" transform="translate(0,340)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">35</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">35</text>
         </g>
         <g id="widget_4097" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="350" width="10" height="10" stroke-width="0px" transform="translate(0,350)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -16510,8 +16510,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">25</text>
         </g>
         <g id="widget_4157" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">26</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">26</text>
         </g>
         <g id="widget_4158" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="260" width="10" height="10" stroke-width="0px" transform="translate(0,260)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -16804,8 +16804,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">29</text>
         </g>
         <g id="widget_4231" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">30</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">30</text>
         </g>
         <g id="widget_4232" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -17034,8 +17034,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">17</text>
         </g>
         <g id="widget_4289" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="170" width="10" height="10" stroke-width="0px" transform="translate(0,170)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">18</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">18</text>
         </g>
         <g id="widget_4290" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="180" width="10" height="10" stroke-width="0px" transform="translate(0,180)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -17396,8 +17396,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">38</text>
         </g>
         <g id="widget_4380" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="380" width="10" height="10" stroke-width="0px" transform="translate(0,380)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">39</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">39</text>
         </g>
         <g id="widget_4381" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="390" width="10" height="10" stroke-width="0px" transform="translate(0,390)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -17630,8 +17630,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">27</text>
         </g>
         <g id="widget_4439" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="270" width="10" height="10" stroke-width="0px" transform="translate(0,270)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">28</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">28</text>
         </g>
         <g id="widget_4440" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -17896,8 +17896,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">24</text>
         </g>
         <g id="widget_4506" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">25</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">25</text>
         </g>
         <g id="widget_4507" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -18198,8 +18198,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">30</text>
         </g>
         <g id="widget_4582" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">31</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">31</text>
         </g>
         <g id="widget_4583" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="310" width="10" height="10" stroke-width="0px" transform="translate(0,310)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -18436,8 +18436,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">20</text>
         </g>
         <g id="widget_4642" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="200" width="10" height="10" stroke-width="0px" transform="translate(0,200)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">21</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">21</text>
         </g>
         <g id="widget_4643" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="210" width="10" height="10" stroke-width="0px" transform="translate(0,210)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -18754,8 +18754,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">30</text>
         </g>
         <g id="widget_4722" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">31</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">31</text>
         </g>
         <g id="widget_4723" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="310" width="10" height="10" stroke-width="0px" transform="translate(0,310)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -19004,8 +19004,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">23</text>
         </g>
         <g id="widget_4785" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">24</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">24</text>
         </g>
         <g id="widget_4786" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -19322,8 +19322,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">33</text>
         </g>
         <g id="widget_4865" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="330" width="10" height="10" stroke-width="0px" transform="translate(0,330)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">34</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">34</text>
         </g>
         <g id="widget_4866" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="340" width="10" height="10" stroke-width="0px" transform="translate(0,340)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -19556,8 +19556,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">22</text>
         </g>
         <g id="widget_4924" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="220" width="10" height="10" stroke-width="0px" transform="translate(0,220)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">23</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">23</text>
         </g>
         <g id="widget_4925" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -19930,8 +19930,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">46</text>
         </g>
         <g id="widget_5018" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="460" width="10" height="10" stroke-width="0px" transform="translate(0,460)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">47</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">47</text>
         </g>
         <g id="widget_5019" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="470" width="10" height="10" stroke-width="0px" transform="translate(0,470)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -20072,8 +20072,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">12</text>
         </g>
         <g id="widget_5054" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="120" width="10" height="10" stroke-width="0px" transform="translate(0,120)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">13</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">13</text>
         </g>
         <g id="widget_5055" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="130" width="10" height="10" stroke-width="0px" transform="translate(0,130)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -20382,8 +20382,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">20</text>
         </g>
         <g id="widget_5132" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="200" width="10" height="10" stroke-width="0px" transform="translate(0,200)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">21</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">21</text>
         </g>
         <g id="widget_5133" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="210" width="10" height="10" stroke-width="0px" transform="translate(0,210)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -20692,8 +20692,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">28</text>
         </g>
         <g id="widget_5210" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">29</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">29</text>
         </g>
         <g id="widget_5211" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -21002,8 +21002,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">36</text>
         </g>
         <g id="widget_5288" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">37</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">37</text>
         </g>
         <g id="widget_5289" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="370" width="10" height="10" stroke-width="0px" transform="translate(0,370)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -21292,8 +21292,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">39</text>
         </g>
         <g id="widget_5361" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="390" width="10" height="10" stroke-width="0px" transform="translate(0,390)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">40</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">40</text>
         </g>
         <g id="widget_5362" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="400" width="10" height="10" stroke-width="0px" transform="translate(0,400)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -21578,8 +21578,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">41</text>
         </g>
         <g id="widget_5433" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="410" width="10" height="10" stroke-width="0px" transform="translate(0,410)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">42</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">42</text>
         </g>
         <g id="widget_5434" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="420" width="10" height="10" stroke-width="0px" transform="translate(0,420)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -21812,8 +21812,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">30</text>
         </g>
         <g id="widget_5492" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">31</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">31</text>
         </g>
         <g id="widget_5493" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="310" width="10" height="10" stroke-width="0px" transform="translate(0,310)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -22114,8 +22114,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">36</text>
         </g>
         <g id="widget_5568" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">37</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">37</text>
         </g>
         <g id="widget_5569" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="370" width="10" height="10" stroke-width="0px" transform="translate(0,370)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -22384,8 +22384,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">34</text>
         </g>
         <g id="widget_5636" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="340" width="10" height="10" stroke-width="0px" transform="translate(0,340)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">35</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">35</text>
         </g>
         <g id="widget_5637" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="350" width="10" height="10" stroke-width="0px" transform="translate(0,350)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -22630,8 +22630,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">26</text>
         </g>
         <g id="widget_5698" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="260" width="10" height="10" stroke-width="0px" transform="translate(0,260)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">27</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">27</text>
         </g>
         <g id="widget_5699" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="270" width="10" height="10" stroke-width="0px" transform="translate(0,270)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -23028,8 +23028,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">56</text>
         </g>
         <g id="widget_5798" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="560" width="10" height="10" stroke-width="0px" transform="translate(0,560)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">57</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">57</text>
         </g>
         <g id="widget_5799" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="570" width="10" height="10" stroke-width="0px" transform="translate(0,570)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -23250,8 +23250,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">42</text>
         </g>
         <g id="widget_5854" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="420" width="10" height="10" stroke-width="0px" transform="translate(0,420)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">43</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">43</text>
         </g>
         <g id="widget_5855" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="430" width="10" height="10" stroke-width="0px" transform="translate(0,430)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -23540,8 +23540,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">45</text>
         </g>
         <g id="widget_5927" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="450" width="10" height="10" stroke-width="0px" transform="translate(0,450)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">46</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">46</text>
         </g>
         <g id="widget_5928" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="460" width="10" height="10" stroke-width="0px" transform="translate(0,460)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -23822,8 +23822,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">46</text>
         </g>
         <g id="widget_5998" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="460" width="10" height="10" stroke-width="0px" transform="translate(0,460)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">47</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">47</text>
         </g>
         <g id="widget_5999" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="470" width="10" height="10" stroke-width="0px" transform="translate(0,470)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -24044,8 +24044,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">32</text>
         </g>
         <g id="widget_6054" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="320" width="10" height="10" stroke-width="0px" transform="translate(0,320)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">33</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">33</text>
         </g>
         <g id="widget_6055" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="330" width="10" height="10" stroke-width="0px" transform="translate(0,330)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -24282,8 +24282,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">22</text>
         </g>
         <g id="widget_6114" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="220" width="10" height="10" stroke-width="0px" transform="translate(0,220)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">23</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">23</text>
         </g>
         <g id="widget_6115" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="230" width="10" height="10" stroke-width="0px" transform="translate(0,230)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -24588,8 +24588,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">29</text>
         </g>
         <g id="widget_6191" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">30</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">30</text>
         </g>
         <g id="widget_6192" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="300" width="10" height="10" stroke-width="0px" transform="translate(0,300)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -24890,8 +24890,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">35</text>
         </g>
         <g id="widget_6267" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="350" width="10" height="10" stroke-width="0px" transform="translate(0,350)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">36</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">36</text>
         </g>
         <g id="widget_6268" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -25168,8 +25168,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">35</text>
         </g>
         <g id="widget_6337" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="350" width="10" height="10" stroke-width="0px" transform="translate(0,350)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">36</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">36</text>
         </g>
         <g id="widget_6338" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -25470,8 +25470,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">41</text>
         </g>
         <g id="widget_6413" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="410" width="10" height="10" stroke-width="0px" transform="translate(0,410)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">42</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">42</text>
         </g>
         <g id="widget_6414" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="420" width="10" height="10" stroke-width="0px" transform="translate(0,420)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -25772,8 +25772,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">47</text>
         </g>
         <g id="widget_6489" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="470" width="10" height="10" stroke-width="0px" transform="translate(0,470)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">48</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">48</text>
         </g>
         <g id="widget_6490" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="480" width="10" height="10" stroke-width="0px" transform="translate(0,480)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -26038,8 +26038,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">44</text>
         </g>
         <g id="widget_6556" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="440" width="10" height="10" stroke-width="0px" transform="translate(0,440)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">45</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">45</text>
         </g>
         <g id="widget_6557" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="450" width="10" height="10" stroke-width="0px" transform="translate(0,450)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -26284,8 +26284,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">36</text>
         </g>
         <g id="widget_6618" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">37</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">37</text>
         </g>
         <g id="widget_6619" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="370" width="10" height="10" stroke-width="0px" transform="translate(0,370)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -26530,8 +26530,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">28</text>
         </g>
         <g id="widget_6680" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">29</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">29</text>
         </g>
         <g id="widget_6681" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -26840,8 +26840,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">36</text>
         </g>
         <g id="widget_6758" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="360" width="10" height="10" stroke-width="0px" transform="translate(0,360)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">37</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">37</text>
         </g>
         <g id="widget_6759" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="370" width="10" height="10" stroke-width="0px" transform="translate(0,370)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -27078,8 +27078,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">26</text>
         </g>
         <g id="widget_6818" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="260" width="10" height="10" stroke-width="0px" transform="translate(0,260)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">27</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">27</text>
         </g>
         <g id="widget_6819" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="270" width="10" height="10" stroke-width="0px" transform="translate(0,270)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -27348,8 +27348,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">24</text>
         </g>
         <g id="widget_6886" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="240" width="10" height="10" stroke-width="0px" transform="translate(0,240)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">25</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">25</text>
         </g>
         <g id="widget_6887" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="250" width="10" height="10" stroke-width="0px" transform="translate(0,250)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -27642,8 +27642,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">28</text>
         </g>
         <g id="widget_6960" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="280" width="10" height="10" stroke-width="0px" transform="translate(0,280)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">29</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">29</text>
         </g>
         <g id="widget_6961" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="290" width="10" height="10" stroke-width="0px" transform="translate(0,290)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -27984,8 +27984,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">44</text>
         </g>
         <g id="widget_7046" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="440" width="10" height="10" stroke-width="0px" transform="translate(0,440)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">45</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">45</text>
         </g>
         <g id="widget_7047" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="450" width="10" height="10" stroke-width="0px" transform="translate(0,450)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -28270,8 +28270,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">46</text>
         </g>
         <g id="widget_7118" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="460" width="10" height="10" stroke-width="0px" transform="translate(0,460)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">47</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">47</text>
         </g>
         <g id="widget_7119" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="470" width="10" height="10" stroke-width="0px" transform="translate(0,470)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -28548,8 +28548,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">46</text>
         </g>
         <g id="widget_7188" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="460" width="10" height="10" stroke-width="0px" transform="translate(0,460)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">47</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">47</text>
         </g>
         <g id="widget_7189" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="470" width="10" height="10" stroke-width="0px" transform="translate(0,470)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
@@ -28798,8 +28798,8 @@
             <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill-opacity="0.2" stroke-width="0px" stroke-opacity="0.2" transform="scale(0.7)">39</text>
         </g>
         <g id="widget_7251" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="390" width="10" height="10" stroke-width="0px" transform="translate(0,390)">
-            <circle cx="6" cy="6" r="3" fill="green" stroke="green" stroke-width="1px"/>
-            <text x="4" y="4" dx="5" dy="8" text-anchor="middle" fill="black" stroke="black" stroke-width="0px" transform="scale(0.7)">40</text>
+            <circle cx="6" cy="6" r="6" fill="green" stroke="green" stroke-width="1px"/>
+            <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="white" stroke="white" stroke-width="0px" transform="scale(1.2)">40</text>
         </g>
         <g id="widget_7252" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="400" width="10" height="10" stroke-width="0px" transform="translate(0,400)">
             <circle cx="6" cy="6" r="3" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
