@@ -5,11 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.origin.common.io.IOUtil;
+import org.origin.common.util.DateUtil;
 import org.origin.common.util.SystemUtils;
 import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
@@ -113,6 +115,10 @@ public class Main1 {
 	 * @return
 	 */
 	protected static Display generate_01x69(List<Draw> draws, boolean showLinks, boolean showPB) {
+		// Draw lastDraw = new Draw();
+		// lastDraw.setDummy(true);
+		// draws.add(lastDraw);
+
 		// 10 and 10 are for the overall shift for all figures
 		int draw_x = 0 + 10;
 		int draw_y = 0 + 10;
@@ -127,7 +133,7 @@ public class Main1 {
 		int pb_h = 260;
 		int pb_width = draw_width;
 
-		int display_width = draws.size() * draw_width + 100;
+		int display_width = (draws.size() + 1) * draw_width + 100;
 		Size size = new Size(display_width, draw_h + pb_h + 100);
 		Display display = new Display(size);
 
@@ -145,9 +151,28 @@ public class Main1 {
 			draw_x += draw_width;
 		}
 
+		// Last dummy draw
+		Draw dummyDraw = new Draw();
+		dummyDraw.setDrawId((!draws.isEmpty()) ? (draws.get(draws.size() - 1).getDrawId() + 1) : 1);
+		dummyDraw.setDate(DateUtil.addHours(new Date(), 24 * 3));
+		dummyDraw.setDummy(true);
+
+		// Part for dummy draw
+		{
+			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
+			DrawPart drawPart = new DrawPart(display, dummyDraw, PBConstants.DRAW_SQUARE_01x69);
+			drawPart.setBounds(drawBounds);
+			drawPart.createContents();
+			drawParts.add(drawPart);
+		}
+
 		if (showLinks) {
 			DrawPart prevDrawPart = null;
 			for (DrawPart currDrawPart : drawParts) {
+				if (currDrawPart.getDraw().isDummy()) {
+					continue;
+				}
+
 				int curr_draw_x = currDrawPart.getBounds().getX();
 
 				NumberPart numPartCurr1 = currDrawPart.getMatchedNumbers().get(0);
@@ -207,9 +232,23 @@ public class Main1 {
 				pb_x += pb_width;
 			}
 
+			// Part for dummy draw
+			{
+				Rectangle pbBounds = new Rectangle(pb_x, pb_y, pb_w, pb_h);
+
+				PBPart pbPart = new PBPart(display, dummyDraw, PBConstants.PB_SQUARE_01x26);
+				pbPart.setBounds(pbBounds);
+				pbPart.createContents();
+				pbParts.add(pbPart);
+			}
+
 			if (showLinks) {
 				PBPart prevPBPart = null;
 				for (PBPart currPBPart : pbParts) {
+					if (currPBPart.getDraw().isDummy()) {
+						continue;
+					}
+
 					int curr_draw_x = currPBPart.getBounds().getX();
 
 					NumberPart currNumPart = currPBPart.getMatchedNumber();
@@ -246,12 +285,12 @@ public class Main1 {
 	protected static Display generate_10x07(List<Draw> draws) {
 		int draw_x = 0 + 10; // 10 is for top shift
 		int draw_y = 0 + 10; // 10 is for left shift
-		int draw_w = 100;
-		int draw_h = 70;
+		int draw_w = 105;
+		int draw_h = 75;
 
-		int total_h = (draws.size() / 10) * (70 + 15) + 100;
+		int total_h = (draws.size() / 10) * (75 + 15) + 100;
 
-		Size size = new Size(1400, total_h);
+		Size size = new Size(1300, total_h);
 		Display display = new Display(size);
 
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
@@ -282,12 +321,12 @@ public class Main1 {
 	protected static Display generate_14x05(List<Draw> draws) {
 		int draw_x = 0 + 10; // 10 is for top shift
 		int draw_y = 0 + 10; // 10 is for left shift
-		int draw_w = 140;
-		int draw_h = 50;
+		int draw_w = 145;
+		int draw_h = 55;
 
-		int total_h = (draws.size() / 9) * (50 + 15) + 100;
+		int total_h = (draws.size() / 8) * (55 + 15) + 100;
 
-		Size size = new Size(1400, total_h);
+		Size size = new Size(1300, total_h);
 		Display display = new Display(size);
 
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();

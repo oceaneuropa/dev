@@ -94,10 +94,11 @@ public class DrawPart extends Composite {
 		int number_w = 10;
 		int number_h = 10;
 
+		boolean isDummy = this.draw.isDummy();
 		for (int i = 1; i <= 69; i++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i));
+			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i), isDummy);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 
@@ -122,7 +123,7 @@ public class DrawPart extends Composite {
 		for (int i = 1; i <= 69; i++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i));
+			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i), false);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 
@@ -169,7 +170,7 @@ public class DrawPart extends Composite {
 		for (int i = 1; i <= 69; i++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i));
+			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i), false);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 			this.numberParts.add(numberPart);

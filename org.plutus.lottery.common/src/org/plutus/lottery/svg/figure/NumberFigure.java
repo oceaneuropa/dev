@@ -13,14 +13,19 @@ public class NumberFigure extends AbstractControlFigure {
 		super(numberPart);
 
 		boolean match = numberPart.match();
+		boolean isDummy = numberPart.isDummy();
 		boolean showNumber = numberPart.showNumber();
 
-		int r = 3;
+		int r = 4;
 		int cx = r + 3;
 		int cy = r + 3;
 
 		if (match) {
 			r = 6;
+			cx = r + 0;
+			cy = r + 0;
+		} else if (isDummy) {
+			r = 4;
 			cx = r + 0;
 			cy = r + 0;
 		}
@@ -48,6 +53,8 @@ public class NumberFigure extends AbstractControlFigure {
 			Text text = new Text(4, 4, 5, 8);
 			if (match) {
 				text = new Text(4, 4, 1, 5);
+			} else if (isDummy) {
+				text = new Text(4, 4, 1, 5);
 			}
 
 			text.setText(String.valueOf(number));
@@ -56,14 +63,23 @@ public class NumberFigure extends AbstractControlFigure {
 				text.setStrokeColor(ColorConstants.WHITE_LITERAL);
 				text.setFillColor(ColorConstants.WHITE_LITERAL);
 			} else {
-				text.setStrokeOpacity(0.2);
-				text.setFillOpacity(0.2);
+				if (isDummy) {
+					text.setStrokeColor(ColorConstants.BLUE_LITERAL);
+					text.setFillColor(ColorConstants.BLUE_LITERAL);
+				} else {
+					text.setStrokeOpacity(0.2);
+					text.setFillOpacity(0.2);
+				}
 			}
 
 			if (match) {
 				text.getTransform().scale(1.2);
 			} else {
-				text.getTransform().scale(0.7);
+				if (isDummy) {
+					text.getTransform().scale(0.8);
+				} else {
+					text.getTransform().scale(0.8);
+				}
 			}
 
 			add(text);

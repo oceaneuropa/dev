@@ -74,10 +74,11 @@ public class PBPart extends Composite {
 		int number_w = 10;
 		int number_h = 10;
 
+		boolean isDummy = this.draw.isDummy();
 		for (int i = 1; i <= 26; i++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, true, this.draw.isPB(i));
+			NumberPart numberPart = new NumberPart(this, i, true, this.draw.isPB(i), isDummy);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 

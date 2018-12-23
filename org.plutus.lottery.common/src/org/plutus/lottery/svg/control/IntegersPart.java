@@ -61,7 +61,7 @@ public class IntegersPart extends Composite {
 		for (int i = this.startNum; i <= this.endNum; i++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, false, this.matchedNums.contains(i));
+			NumberPart numberPart = new NumberPart(this, i, false, this.matchedNums.contains(i), false);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 

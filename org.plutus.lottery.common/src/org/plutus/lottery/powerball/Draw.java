@@ -18,6 +18,7 @@ public class Draw {
 	protected int pb;
 
 	protected DrawStat stat;
+	protected boolean isDummy;
 
 	/**
 	 * 
@@ -165,6 +166,14 @@ public class Draw {
 
 	public synchronized void setStat(DrawStat stat) {
 		this.stat = stat;
+	}
+
+	public boolean isDummy() {
+		return this.isDummy;
+	}
+
+	public void setDummy(boolean isDummy) {
+		this.isDummy = isDummy;
 	}
 
 	@Override

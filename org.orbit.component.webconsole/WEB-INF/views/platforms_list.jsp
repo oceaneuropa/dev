@@ -3,6 +3,7 @@
 <%@ page import="org.origin.common.util.*"%>
 <%@ page import="org.origin.common.service.*"%>
 <%@ page import="org.orbit.platform.api.*"%>
+<%@ page import="org.orbit.infra.api.*"%>
 <%@ page import="org.orbit.infra.api.indexes.*"%>
 <%@ page import="org.orbit.component.api.*"%>
 <%@ page import="org.orbit.component.api.tier3.domain.*"%>
@@ -94,10 +95,10 @@
 
 							IndexItem indexItem = platformIdToIndexItemMap.get(id);
 							if (indexItem != null) {
-								hostURL = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOST_URL);
-								currContextRoot = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_CONTEXT_ROOT);
-								platformId = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_ID);
-								platformHome = (String) indexItem.getProperties().get(PlatformConstants.PLATFORM_HOME);
+								hostURL = (String) indexItem.getProperties().get(InfraConstants.SERVICE__HOST_URL);
+								currContextRoot = (String) indexItem.getProperties().get(InfraConstants.SERVICE__CONTEXT_ROOT);
+								platformId = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_ID);
+								platformHome = (String) indexItem.getProperties().get(PlatformConstants.IDX_PROP__PLATFORM_HOME);
 							}
 
 							id = StringUtil.get(id);

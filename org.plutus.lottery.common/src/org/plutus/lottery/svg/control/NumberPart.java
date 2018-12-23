@@ -9,6 +9,8 @@ public class NumberPart extends Control {
 	protected int number;
 	protected boolean isPBNumber;
 	protected boolean match;
+	protected boolean isDummy;
+
 	protected Point index; // (x,y) index within board
 	protected Point location; // (x,y) abs location within board
 	protected boolean showNumber = true;
@@ -19,12 +21,14 @@ public class NumberPart extends Control {
 	 * @param number
 	 * @param isPBNumber
 	 * @param match
+	 * @param isDummy
 	 */
-	public NumberPart(Composite parent, int number, boolean isPBNumber, boolean match) {
+	public NumberPart(Composite parent, int number, boolean isPBNumber, boolean match, boolean isDummy) {
 		super(parent);
 		this.number = number;
 		this.isPBNumber = isPBNumber;
 		this.match = match;
+		this.isDummy = isDummy;
 	}
 
 	public int getNumber() {
@@ -37,6 +41,14 @@ public class NumberPart extends Control {
 
 	public boolean match() {
 		return this.match;
+	}
+
+	public boolean isDummy() {
+		return this.isDummy;
+	}
+
+	public void setDummy(boolean isDummy) {
+		this.isDummy = isDummy;
 	}
 
 	public Point getIndex() {
