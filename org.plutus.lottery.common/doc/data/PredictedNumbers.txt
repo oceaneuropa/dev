@@ -1,7 +1,4 @@
-Draw #      Draw Date           Number_1    Number_2    Number_3    Number_4    Number_5    Powerball
-1     		Wed. Dec 12, 2019          7          39          41          58          62           5  
-2     		Sat. Dec 15, 2019          9          20          42          48          58           9  
-3     		Wed. Dec 19, 2019          6          11          37          49          51           7   
-
-
-
+Draw #      Draw Date           Number_1    Number_2    Number_3    Number_4    Number_5    Powerball		   avg
+1     		Wed. Dec 12, 2019         12          32          38          50          56            8  			37
+2     		Sat. Dec 15, 2019          3          34          39          58          64           13 			39
+3     		Wed. Dec 19, 2019          5          23          29          36          68           15   		32

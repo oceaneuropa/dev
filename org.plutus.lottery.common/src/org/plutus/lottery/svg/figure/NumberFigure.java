@@ -22,7 +22,7 @@ public class NumberFigure extends AbstractControlFigure {
 
 		if (match) {
 			r = 6;
-			cx = r + 0;
+			cx = r + 0 + 1;
 			cy = r + 0;
 		} else if (isDummy) {
 			r = 4;
@@ -52,7 +52,7 @@ public class NumberFigure extends AbstractControlFigure {
 
 			Text text = new Text(4, 4, 5, 8);
 			if (match) {
-				text = new Text(4, 4, 1, 5);
+				text = new Text(5, 4, 1, 5);
 			} else if (isDummy) {
 				text = new Text(4, 4, 1, 5);
 			}

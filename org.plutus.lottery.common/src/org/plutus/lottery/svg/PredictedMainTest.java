@@ -20,7 +20,7 @@ import org.plutus.lottery.powerball.analysis.A23_HotColdAnalysis;
 import org.plutus.lottery.powerball.analysis.A24_RepetitionAnalysis;
 import org.plutus.lottery.powerball.impl.DrawReaderV2;
 
-public class MainPredictedTest {
+public class PredictedMainTest {
 
 	static {
 		A11_MinMaxAvgAnalysis.INSTANCE.register();

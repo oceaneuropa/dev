@@ -139,7 +139,7 @@ public class DrawPart extends Composite {
 			}
 
 			Point index = new Point(index_x, index_y);
-			Point location = new Point(numberBounds.getX() + 5 + 1, numberBounds.getY() + 5 + 1);
+			Point location = new Point(numberBounds.getX() + 5 + 2, numberBounds.getY() + 5 + 2);
 			numberPart.setIndex(index);
 			numberPart.setLocation(location);
 
@@ -186,7 +186,7 @@ public class DrawPart extends Composite {
 			}
 
 			Point index = new Point(index_x, index_y);
-			Point location = new Point(numberBounds.getX() + 5 + 1, numberBounds.getY() + 5 + 1);
+			Point location = new Point(numberBounds.getX() + 5 + 2, numberBounds.getY() + 5 + 2);
 			numberPart.setIndex(index);
 			numberPart.setLocation(location);
 

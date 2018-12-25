@@ -187,7 +187,7 @@ public class Main1 {
 				numPartCurr4.setIndex(new Point(0, numPartCurr4.getNumber() - 1));
 				numPartCurr5.setIndex(new Point(0, numPartCurr5.getNumber() - 1));
 
-				int shiftX = 5;
+				int shiftX = 7;
 				int shiftY = 5;
 				numPartCurr1.setLocation(new Point(curr_draw_x + shiftX, numPartCurr1.getNumber() * 10 + shiftY));
 				numPartCurr2.setLocation(new Point(curr_draw_x + shiftX, numPartCurr2.getNumber() * 10 + shiftY));
@@ -258,7 +258,7 @@ public class Main1 {
 
 					currNumPart.setIndex(new Point(0, currNumPart.getNumber() - 1));
 
-					int shiftX = 5;
+					int shiftX = 7;
 					int shiftY = -4;
 					currNumPart.setLocation(new Point(curr_draw_x + shiftX, pb_y + currNumPart.getNumber() * 10 + shiftY));
 
@@ -285,10 +285,10 @@ public class Main1 {
 	protected static Display generate_10x07(List<Draw> draws) {
 		int draw_x = 0 + 10; // 10 is for top shift
 		int draw_y = 0 + 10; // 10 is for left shift
-		int draw_w = 105;
-		int draw_h = 75;
+		int draw_w = 102;
+		int draw_h = 72;
 
-		int total_h = (draws.size() / 10) * (75 + 15) + 100;
+		int total_h = (draws.size() / 10) * (72 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
 		Display display = new Display(size);
@@ -321,10 +321,10 @@ public class Main1 {
 	protected static Display generate_14x05(List<Draw> draws) {
 		int draw_x = 0 + 10; // 10 is for top shift
 		int draw_y = 0 + 10; // 10 is for left shift
-		int draw_w = 145;
-		int draw_h = 55;
+		int draw_w = 142;
+		int draw_h = 52;
 
-		int total_h = (draws.size() / 8) * (55 + 15) + 100;
+		int total_h = (draws.size() / 8) * (52 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
 		Display display = new Display(size);

@@ -115,56 +115,50 @@ public class MainTest {
 			System.out.println(String.valueOf(year));
 			System.out.println("------------------------------------------------------------------------");
 
-			int num1_diff_min = globalStat.get(year + "." + DrawStat.NUM1_DIFF_MIN, Integer.class);
-			int num1_diff_max = globalStat.get(year + "." + DrawStat.NUM1_DIFF_MAX, Integer.class);
-			int num2_diff_min = globalStat.get(year + "." + DrawStat.NUM2_DIFF_MIN, Integer.class);
-			int num2_diff_max = globalStat.get(year + "." + DrawStat.NUM2_DIFF_MAX, Integer.class);
-			int num3_diff_min = globalStat.get(year + "." + DrawStat.NUM3_DIFF_MIN, Integer.class);
-			int num3_diff_max = globalStat.get(year + "." + DrawStat.NUM3_DIFF_MAX, Integer.class);
-			int num4_diff_min = globalStat.get(year + "." + DrawStat.NUM4_DIFF_MIN, Integer.class);
-			int num4_diff_max = globalStat.get(year + "." + DrawStat.NUM4_DIFF_MAX, Integer.class);
-			int num5_diff_min = globalStat.get(year + "." + DrawStat.NUM5_DIFF_MIN, Integer.class);
-			int num5_diff_max = globalStat.get(year + "." + DrawStat.NUM5_DIFF_MAX, Integer.class);
-			int pb_diff_min = globalStat.get(year + "." + DrawStat.PB_DIFF_MIN, Integer.class);
-			int pb_diff_max = globalStat.get(year + "." + DrawStat.PB_DIFF_MAX, Integer.class);
+			// int num1_diff_min = globalStat.get(year + "." + DrawStat.NUM1_DIFF_MIN, Integer.class);
+			// int num1_diff_max = globalStat.get(year + "." + DrawStat.NUM1_DIFF_MAX, Integer.class);
+			// int num2_diff_min = globalStat.get(year + "." + DrawStat.NUM2_DIFF_MIN, Integer.class);
+			// int num2_diff_max = globalStat.get(year + "." + DrawStat.NUM2_DIFF_MAX, Integer.class);
+			// int num3_diff_min = globalStat.get(year + "." + DrawStat.NUM3_DIFF_MIN, Integer.class);
+			// int num3_diff_max = globalStat.get(year + "." + DrawStat.NUM3_DIFF_MAX, Integer.class);
+			// int num4_diff_min = globalStat.get(year + "." + DrawStat.NUM4_DIFF_MIN, Integer.class);
+			// int num4_diff_max = globalStat.get(year + "." + DrawStat.NUM4_DIFF_MAX, Integer.class);
+			// int num5_diff_min = globalStat.get(year + "." + DrawStat.NUM5_DIFF_MIN, Integer.class);
+			// int num5_diff_max = globalStat.get(year + "." + DrawStat.NUM5_DIFF_MAX, Integer.class);
+			// int pb_diff_min = globalStat.get(year + "." + DrawStat.PB_DIFF_MIN, Integer.class);
+			// int pb_diff_max = globalStat.get(year + "." + DrawStat.PB_DIFF_MAX, Integer.class);
 
-			System.out.println("Num1: [" + num1_diff_min + ", " + num1_diff_max + "]");
-			System.out.println("Num2: [" + num2_diff_min + ", " + num2_diff_max + "]");
-			System.out.println("Num3: [" + num3_diff_min + ", " + num3_diff_max + "]");
-			System.out.println("Num4: [" + num4_diff_min + ", " + num4_diff_max + "]");
-			System.out.println("Num5: [" + num5_diff_min + ", " + num5_diff_max + "]");
-			System.out.println("PB:   [" + pb_diff_min + ", " + pb_diff_max + "]");
-			System.out.println();
+			// System.out.println("Num1: [" + num1_diff_min + ", " + num1_diff_max + "]");
+			// System.out.println("Num2: [" + num2_diff_min + ", " + num2_diff_max + "]");
+			// System.out.println("Num3: [" + num3_diff_min + ", " + num3_diff_max + "]");
+			// System.out.println("Num4: [" + num4_diff_min + ", " + num4_diff_max + "]");
+			// System.out.println("Num5: [" + num5_diff_min + ", " + num5_diff_max + "]");
+			// System.out.println("PB: [" + pb_diff_min + ", " + pb_diff_max + "]");
+			// System.out.println();
 
 			int size = draws.size();
 			for (int i = 0; i < size; i++) {
-				if (i == size - 1) {
-					break;
-				}
+				// if (i == size - 1) {
+				// break;
+				// }
 				Draw draw = draws.get(i);
 				DrawStat stat = draw.getStat();
 				int drawId = draw.getDrawId();
-				int num1_diff = stat.get(DrawStat.NUM1_DIFF, Integer.class);
-				int num2_diff = stat.get(DrawStat.NUM2_DIFF, Integer.class);
-				int num3_diff = stat.get(DrawStat.NUM3_DIFF, Integer.class);
-				int num4_diff = stat.get(DrawStat.NUM4_DIFF, Integer.class);
-				int num5_diff = stat.get(DrawStat.NUM5_DIFF, Integer.class);
-				int pb_diff = stat.get(DrawStat.PB_DIFF, Integer.class);
+				// int num1_diff = stat.get(DrawStat.NUM1_DIFF, Integer.class);
+				// int num2_diff = stat.get(DrawStat.NUM2_DIFF, Integer.class);
+				// int num3_diff = stat.get(DrawStat.NUM3_DIFF, Integer.class);
+				// int num4_diff = stat.get(DrawStat.NUM4_DIFF, Integer.class);
+				// int num5_diff = stat.get(DrawStat.NUM5_DIFF, Integer.class);
+				// int pb_diff = stat.get(DrawStat.PB_DIFF, Integer.class);
 
-				String text = drawId + " " + num1_diff + ", " + num2_diff + ", " + num3_diff + ", " + num4_diff + ", " + num5_diff + ", " + pb_diff;
+				int avg = stat.get(DrawStat.PROP_AVG, Integer.class);
+
+				// String text = drawId + " avg: " + avg + ", diff: " + num1_diff + ", " + num2_diff + ", " + num3_diff + ", " + num4_diff + ", " + num5_diff +
+				// ", " + pb_diff;
+				String text = drawId + " avg: " + avg;
 				System.out.println(text);
 			}
 			System.out.println();
-
-			// FileOutputStream output = null;
-			// try {
-			// String fileLocation = MessageFormat.format(fileLocationPattern, new Object[] { String.valueOf(year) });
-			//
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// } finally {
-			// IOUtil.closeQuietly(output, true);
-			// }
 		}
 	}
 
