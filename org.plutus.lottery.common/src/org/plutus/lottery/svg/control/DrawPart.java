@@ -1,6 +1,7 @@
 package org.plutus.lottery.svg.control;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,9 @@ public class DrawPart extends Composite {
 	protected List<NumberPart> matchedNumberParts = new ArrayList<NumberPart>();
 	protected List<LinkPart> linkParts = new ArrayList<LinkPart>();
 	protected boolean showLinks = false;
+
+	protected List<Draw> predictedDraws;
+	protected Map<Integer, String> indexToPredictedLinkStrokeColor = new HashMap<Integer, String>();
 
 	/**
 	 * 
@@ -79,6 +83,22 @@ public class DrawPart extends Composite {
 
 	public List<LinkPart> getLinks() {
 		return this.linkParts;
+	}
+
+	public List<Draw> getPredictedDraws() {
+		return this.predictedDraws;
+	}
+
+	public void setPredictedDraws(List<Draw> predictedDraws) {
+		this.predictedDraws = predictedDraws;
+	}
+
+	public Map<Integer, String> getIndexToPredictedLinkStrokeColor() {
+		return this.indexToPredictedLinkStrokeColor;
+	}
+
+	public void setIndexToPredictedLinkStrokeColor(Map<Integer, String> indexToPredictedLinkStrokeColor) {
+		this.indexToPredictedLinkStrokeColor = indexToPredictedLinkStrokeColor;
 	}
 
 	public void createContents() {
@@ -160,9 +180,30 @@ public class DrawPart extends Composite {
 		}
 
 		if (showLinks()) {
-			List<LinkPart> links = createLinks(this.matchedNumberParts);
+			List<LinkPart> links = createLinks(this.matchedNumberParts, false, null);
 			for (LinkPart link : links) {
 				this.linkParts.add(link);
+			}
+
+			if (this.predictedDraws != null && !this.predictedDraws.isEmpty()) {
+				for (int j = 0; j < predictedDraws.size(); j++) {
+					Draw predictedDraw = predictedDraws.get(j);
+					String strokeColor = indexToPredictedLinkStrokeColor.get(j);
+
+					NumberPart numPart1 = this.numberPartsMap.get(predictedDraw.getNum1());
+					NumberPart numPart2 = this.numberPartsMap.get(predictedDraw.getNum2());
+					NumberPart numPart3 = this.numberPartsMap.get(predictedDraw.getNum3());
+					NumberPart numPart4 = this.numberPartsMap.get(predictedDraw.getNum4());
+					NumberPart numPart5 = this.numberPartsMap.get(predictedDraw.getNum5());
+
+					List<NumberPart> predictedNumberParts = new ArrayList<NumberPart>();
+					predictedNumberParts.add(numPart1);
+					predictedNumberParts.add(numPart2);
+					predictedNumberParts.add(numPart3);
+					predictedNumberParts.add(numPart4);
+					predictedNumberParts.add(numPart5);
+					createLinks(predictedNumberParts, true, strokeColor);
+				}
 			}
 		}
 	}
@@ -208,9 +249,30 @@ public class DrawPart extends Composite {
 		}
 
 		if (showLinks()) {
-			List<LinkPart> links = createLinks(this.matchedNumberParts);
+			List<LinkPart> links = createLinks(this.matchedNumberParts, false, null);
 			for (LinkPart link : links) {
 				this.linkParts.add(link);
+			}
+
+			if (this.predictedDraws != null && !this.predictedDraws.isEmpty()) {
+				for (int j = 0; j < predictedDraws.size(); j++) {
+					Draw predictedDraw = predictedDraws.get(j);
+					String strokeColor = indexToPredictedLinkStrokeColor.get(j);
+
+					NumberPart numPart1 = this.numberPartsMap.get(predictedDraw.getNum1());
+					NumberPart numPart2 = this.numberPartsMap.get(predictedDraw.getNum2());
+					NumberPart numPart3 = this.numberPartsMap.get(predictedDraw.getNum3());
+					NumberPart numPart4 = this.numberPartsMap.get(predictedDraw.getNum4());
+					NumberPart numPart5 = this.numberPartsMap.get(predictedDraw.getNum5());
+
+					List<NumberPart> predictedNumberParts = new ArrayList<NumberPart>();
+					predictedNumberParts.add(numPart1);
+					predictedNumberParts.add(numPart2);
+					predictedNumberParts.add(numPart3);
+					predictedNumberParts.add(numPart4);
+					predictedNumberParts.add(numPart5);
+					createLinks(predictedNumberParts, true, strokeColor);
+				}
 			}
 		}
 	}
@@ -227,7 +289,14 @@ public class DrawPart extends Composite {
 		return links;
 	}
 
-	protected List<LinkPart> createLinks(List<NumberPart> matchedNumbers) {
+	/**
+	 * 
+	 * @param matchedNumbers
+	 * @param isPredicted
+	 * @param strokeColor
+	 * @return
+	 */
+	protected List<LinkPart> createLinks(List<NumberPart> matchedNumbers, boolean isPredicted, String strokeColor) {
 		List<LinkPart> links = new ArrayList<LinkPart>();
 
 		List<NumberPart> theMatchedNumbers = new ArrayList<NumberPart>(matchedNumbers);
@@ -287,14 +356,29 @@ public class DrawPart extends Composite {
 		num5 = theMatchedNumbers.get(0);
 
 		LinkPart link1 = new LinkPart(this, num1, num2);
-		link1.createContents();
+		link1.setPredicted(isPredicted);
+		link1.setStrokeColor(strokeColor);
+
 		LinkPart link2 = new LinkPart(this, num1, num3);
-		link2.createContents();
+		link2.setPredicted(isPredicted);
+		link2.setStrokeColor(strokeColor);
+
 		LinkPart link3 = new LinkPart(this, num2, num4);
-		link3.createContents();
+		link3.setPredicted(isPredicted);
+		link3.setStrokeColor(strokeColor);
+
 		LinkPart link4 = new LinkPart(this, num3, num5);
-		link4.createContents();
+		link4.setPredicted(isPredicted);
+		link4.setStrokeColor(strokeColor);
+
 		LinkPart link5 = new LinkPart(this, num4, num5);
+		link5.setPredicted(isPredicted);
+		link5.setStrokeColor(strokeColor);
+
+		link1.createContents();
+		link2.createContents();
+		link3.createContents();
+		link4.createContents();
 		link5.createContents();
 
 		links.add(link1);
@@ -302,6 +386,7 @@ public class DrawPart extends Composite {
 		links.add(link3);
 		links.add(link4);
 		links.add(link5);
+
 		return links;
 	}
 

@@ -45,7 +45,7 @@ public class Main1 {
 		LinkFigureFactory.register();
 
 		indexToPredictedLinkStrokeColor.put(0, ColorConstants.RED_LITERAL);
-		indexToPredictedLinkStrokeColor.put(1, ColorConstants.GREY_LITERAL);
+		indexToPredictedLinkStrokeColor.put(1, ColorConstants.DARK_ORANGE_LITERAL);
 		indexToPredictedLinkStrokeColor.put(2, ColorConstants.BLUE_LITERAL);
 		indexToPredictedLinkStrokeColor.put(3, ColorConstants.ORANGE_LITERAL);
 	}
@@ -160,6 +160,7 @@ public class Main1 {
 		Size size = new Size(display_width, draw_h + pb_h + 100);
 		Display display = new Display(size);
 
+		Date last = null;
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
 		int length = draws.size();
 		for (int i = 0; i < length; i++) {
@@ -172,12 +173,16 @@ public class Main1 {
 			drawParts.add(drawPart);
 
 			draw_x += draw_width;
+
+			if (i == length - 1) {
+				last = draw.getDate();
+			}
 		}
 
 		// Last dummy draw
 		Draw dummyDraw = new Draw();
 		dummyDraw.setDrawId((!draws.isEmpty()) ? (draws.get(draws.size() - 1).getDrawId() + 1) : 1);
-		dummyDraw.setDate(DateUtil.addHours(new Date(), 24 * 3));
+		dummyDraw.setDate(DateUtil.addHours(last, 24 * 3));
 		dummyDraw.setDummy(true);
 
 		// Part for dummy draw
@@ -422,9 +427,14 @@ public class Main1 {
 
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
 		for (Draw draw : draws) {
+			int drawId = draw.getDrawId();
+			List<Draw> predictedDraws = idToPredictedNumbers.get(drawId);
+
 			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 
 			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_10x07);
+			drawPart.setPredictedDraws(predictedDraws);
+			drawPart.setIndexToPredictedLinkStrokeColor(indexToPredictedLinkStrokeColor);
 			drawPart.setShowLinks(true);
 			drawPart.setBounds(drawBounds);
 			drawPart.createContents();
@@ -459,9 +469,14 @@ public class Main1 {
 
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
 		for (Draw draw : draws) {
+			int drawId = draw.getDrawId();
+			List<Draw> predictedDraws = idToPredictedNumbers.get(drawId);
+
 			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
 
 			DrawPart drawPart = new DrawPart(display, draw, PBConstants.DRAW_SQUARE_14x05);
+			drawPart.setPredictedDraws(predictedDraws);
+			drawPart.setIndexToPredictedLinkStrokeColor(indexToPredictedLinkStrokeColor);
 			drawPart.setShowLinks(true);
 			drawPart.setBounds(drawBounds);
 			drawPart.createContents();

@@ -42,6 +42,7 @@ public class NumberFigure extends AbstractControlFigure {
 		} else {
 			circle.setFillColor(ColorConstants.LIGHT_GREY_LITERAL);
 			circle.setStrokeColor(ColorConstants.LIGHT_GREY_LITERAL);
+			circle.setFillOpacity(0.4);
 		}
 		circle.setStrokeWidth(1);
 
@@ -67,8 +68,10 @@ public class NumberFigure extends AbstractControlFigure {
 					text.setStrokeColor(ColorConstants.BLUE_LITERAL);
 					text.setFillColor(ColorConstants.BLUE_LITERAL);
 				} else {
-					text.setStrokeOpacity(0.2);
-					text.setFillOpacity(0.2);
+					text.setStrokeColor(ColorConstants.BLACK_LITERAL);
+					text.setFillColor(ColorConstants.BLACK_LITERAL);
+					text.setStrokeOpacity(0.4);
+					text.setFillOpacity(0.4);
 				}
 			}
 
