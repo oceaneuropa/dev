@@ -1,7 +1,9 @@
 package org.plutus.lottery.svg.control;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.origin.svg.graphics.Point;
 import org.origin.svg.graphics.Rectangle;
@@ -15,6 +17,7 @@ public class DrawPart extends Composite {
 
 	protected Draw draw;
 	protected List<NumberPart> numberParts = new ArrayList<NumberPart>();
+	protected Map<Integer, NumberPart> numberPartsMap = new LinkedHashMap<Integer, NumberPart>();
 	protected List<NumberPart> matchedNumberParts = new ArrayList<NumberPart>();
 	protected List<LinkPart> linkParts = new ArrayList<LinkPart>();
 	protected boolean showLinks = false;
@@ -62,11 +65,15 @@ public class DrawPart extends Composite {
 		return this.draw;
 	}
 
-	public List<NumberPart> getNumbers() {
+	public List<NumberPart> getNumberParts() {
 		return this.numberParts;
 	}
 
-	public List<NumberPart> getMatchedNumbers() {
+	public NumberPart getNumberPart(Integer number) {
+		return this.numberPartsMap.get(number);
+	}
+
+	public List<NumberPart> getMatchedNumberParts() {
 		return this.matchedNumberParts;
 	}
 
@@ -95,14 +102,15 @@ public class DrawPart extends Composite {
 		int number_h = 10;
 
 		boolean isDummy = this.draw.isDummy();
-		for (int i = 1; i <= 69; i++) {
+		for (int number = 1; number <= 69; number++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i), isDummy);
+			NumberPart numberPart = new NumberPart(this, number, false, this.draw.numContains(number), isDummy);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 
 			this.numberParts.add(numberPart);
+			this.numberPartsMap.put(number, numberPart);
 			if (numberPart.match()) {
 				this.matchedNumberParts.add(numberPart);
 			}
@@ -120,20 +128,21 @@ public class DrawPart extends Composite {
 		int index_x = 0;
 		int index_y = 0;
 
-		for (int i = 1; i <= 69; i++) {
+		for (int number = 1; number <= 69; number++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i), false);
+			NumberPart numberPart = new NumberPart(this, number, false, this.draw.numContains(number), false);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 
 			this.numberParts.add(numberPart);
+			this.numberPartsMap.put(number, numberPart);
 			if (numberPart.match()) {
 				this.matchedNumberParts.add(numberPart);
 			}
 
 			number_x += number_w;
-			if ((i % 10) == 0) {
+			if ((number % 10) == 0) {
 				number_x = 0;
 				number_y += number_h;
 			}
@@ -144,7 +153,7 @@ public class DrawPart extends Composite {
 			numberPart.setLocation(location);
 
 			index_x++;
-			if ((i % 10) == 0) {
+			if ((number % 10) == 0) {
 				index_x = 0;
 				index_y++;
 			}
@@ -167,20 +176,21 @@ public class DrawPart extends Composite {
 		int index_x = 0;
 		int index_y = 0;
 
-		for (int i = 1; i <= 69; i++) {
+		for (int number = 1; number <= 69; number++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, false, this.draw.numContains(i), false);
+			NumberPart numberPart = new NumberPart(this, number, false, this.draw.numContains(number), false);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 			this.numberParts.add(numberPart);
+			this.numberPartsMap.put(number, numberPart);
 			if (numberPart.match()) {
 				this.matchedNumberParts.add(numberPart);
 			}
 
 			number_x += number_w;
 			// if (i == 14 || i == 28 || i == 42 || i == 56) {
-			if ((i % 14) == 0) {
+			if ((number % 14) == 0) {
 				number_x = 0;
 				number_y += number_h;
 			}
@@ -191,7 +201,7 @@ public class DrawPart extends Composite {
 			numberPart.setLocation(location);
 
 			index_x++;
-			if ((i % 14) == 0) {
+			if ((number % 14) == 0) {
 				index_x = 0;
 				index_y++;
 			}

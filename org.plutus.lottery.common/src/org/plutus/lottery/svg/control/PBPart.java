@@ -1,7 +1,9 @@
 package org.plutus.lottery.svg.control;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.widgets.Composite;
@@ -14,6 +16,7 @@ public class PBPart extends Composite {
 
 	protected Draw draw;
 	protected List<NumberPart> numberParts = new ArrayList<NumberPart>();
+	protected Map<Integer, NumberPart> numberPartsMap = new LinkedHashMap<Integer, NumberPart>();
 	protected NumberPart matchedNumberPart;
 
 	/**
@@ -49,11 +52,15 @@ public class PBPart extends Composite {
 		return this.draw;
 	}
 
-	public List<NumberPart> getNumbers() {
+	public List<NumberPart> getNumberParts() {
 		return this.numberParts;
 	}
 
-	public NumberPart getMatchedNumber() {
+	public NumberPart getNumberPart(Integer number) {
+		return this.numberPartsMap.get(number);
+	}
+
+	public NumberPart getMatchedNumberPart() {
 		return this.matchedNumberPart;
 	}
 
@@ -75,14 +82,15 @@ public class PBPart extends Composite {
 		int number_h = 10;
 
 		boolean isDummy = this.draw.isDummy();
-		for (int i = 1; i <= 26; i++) {
+		for (int number = 1; number <= 26; number++) {
 			Rectangle numberBounds = new Rectangle(number_x, number_y, number_w, number_h);
 
-			NumberPart numberPart = new NumberPart(this, i, true, this.draw.isPB(i), isDummy);
+			NumberPart numberPart = new NumberPart(this, number, true, this.draw.isPB(number), isDummy);
 			numberPart.setBounds(numberBounds);
 			numberPart.createContents();
 
 			this.numberParts.add(numberPart);
+			this.numberPartsMap.put(number, numberPart);
 			if (numberPart.match()) {
 				this.matchedNumberPart = numberPart;
 			}

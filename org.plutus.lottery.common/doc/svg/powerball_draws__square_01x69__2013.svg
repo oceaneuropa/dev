@@ -21288,7 +21288,7 @@
     </g>
     <g id="widget_5321" type="org.plutus.lottery.svg.control.DrawPart" x="8370" y="10" width="10" height="690" stroke-width="0px" transform="translate(8370,10)">
         <text x="0" y="700" text-anchor="start" stroke-width="0px" transform="">#77</text>
-        <text x="0" y="710" text-anchor="start" stroke-width="0px" transform="">12/26/2018</text>
+        <text x="0" y="710" text-anchor="start" stroke-width="0px" transform="">12/30/2018</text>
         <g id="widget_5322" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="0" width="10" height="10" stroke-width="0px" transform="">
             <circle cx="4" cy="4" r="4" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
             <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="blue" stroke="blue" stroke-width="0px" transform="scale(0.8)">1</text>
@@ -30151,7 +30151,7 @@
     </g>
     <g id="widget_7818" type="org.plutus.lottery.svg.control.PBPart" x="8370" y="730" width="10" height="260" stroke-width="0px" transform="translate(8370,730)">
         <text x="0" y="270" text-anchor="start" stroke-width="0px" transform="">#77</text>
-        <text x="0" y="280" text-anchor="start" stroke-width="0px" transform="">12/26/2018</text>
+        <text x="0" y="280" text-anchor="start" stroke-width="0px" transform="">12/30/2018</text>
         <g id="widget_7819" type="org.plutus.lottery.svg.control.NumberPart" x="0" y="0" width="10" height="10" stroke-width="0px" transform="">
             <circle cx="4" cy="4" r="4" fill="lightgrey" stroke="lightgrey" stroke-width="1px"/>
             <text x="4" y="4" dx="1" dy="5" text-anchor="middle" fill="blue" stroke="blue" stroke-width="0px" transform="scale(0.8)">1</text>

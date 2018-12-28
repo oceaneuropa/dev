@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
+import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.svg.widgets.Display;
 import org.origin.svg.widgets.render.impl.WidgetFigureFactory;
@@ -34,19 +36,29 @@ import org.plutus.lottery.svg.factory.PBFigureFactory;
 
 public class Main1 {
 
+	protected static Map<Integer, String> indexToPredictedLinkStrokeColor = new HashMap<Integer, String>();
+
 	static {
 		DrawFigureFactory.register();
 		PBFigureFactory.register();
 		NumberFigureFactory.register();
 		LinkFigureFactory.register();
+
+		indexToPredictedLinkStrokeColor.put(0, ColorConstants.RED_LITERAL);
+		indexToPredictedLinkStrokeColor.put(1, ColorConstants.GREY_LITERAL);
+		indexToPredictedLinkStrokeColor.put(2, ColorConstants.BLUE_LITERAL);
+		indexToPredictedLinkStrokeColor.put(3, ColorConstants.ORANGE_LITERAL);
 	}
 
 	public static void main(String[] args) {
 		try {
 			Map<Integer, List<Draw>> yearToDraws = getDrawsByYear();
-			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_01x69__{0}.svg", PBConstants.DRAW_SQUARE_01x69);
-			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_10x07__{0}.svg", PBConstants.DRAW_SQUARE_10x07);
-			generate(yearToDraws, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_14x05__{0}.svg", PBConstants.DRAW_SQUARE_14x05);
+			Map<Integer, List<Draw>> idToPredictedNumbers = getPredictedDrawsById();
+
+			generate(yearToDraws, idToPredictedNumbers, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_01x69__{0}.svg", PBConstants.DRAW_SQUARE_01x69);
+			generate(yearToDraws, idToPredictedNumbers, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_10x07__{0}.svg", PBConstants.DRAW_SQUARE_10x07);
+			generate(yearToDraws, idToPredictedNumbers, SystemUtils.getUserDir(), "/doc/svg/powerball_draws__square_14x05__{0}.svg", PBConstants.DRAW_SQUARE_14x05);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,11 +67,12 @@ public class Main1 {
 	/**
 	 * 
 	 * @param yearToDraws
+	 * @param idToPredictedNumbers
 	 * @param baseFolder
 	 * @param outputFileLocation
 	 * @param drawStyle
 	 */
-	public static void generate(Map<Integer, List<Draw>> yearToDraws, File baseFolder, String outputFileLocation, int drawStyle) {
+	public static void generate(Map<Integer, List<Draw>> yearToDraws, Map<Integer, List<Draw>> idToPredictedNumbers, File baseFolder, String outputFileLocation, int drawStyle) {
 		for (Iterator<Integer> yearItor = yearToDraws.keySet().iterator(); yearItor.hasNext();) {
 			Integer year = yearItor.next();
 			List<Draw> draws = yearToDraws.get(year);
@@ -69,13 +82,13 @@ public class Main1 {
 
 				Display display = null;
 				if (drawStyle == PBConstants.DRAW_SQUARE_01x69) {
-					display = generate_01x69(draws, true, true);
+					display = generate_01x69(draws, idToPredictedNumbers, true, true);
 
 				} else if (drawStyle == PBConstants.DRAW_SQUARE_10x07) {
-					display = generate_10x07(draws);
+					display = generate_10x07(draws, idToPredictedNumbers);
 
 				} else if (drawStyle == PBConstants.DRAW_SQUARE_14x05) {
-					display = generate_14x05(draws);
+					display = generate_14x05(draws, idToPredictedNumbers);
 				}
 
 				if (display != null) {
@@ -94,6 +107,12 @@ public class Main1 {
 		return drawsByYear;
 	}
 
+	public static Map<Integer, List<Draw>> getPredictedDrawsById() throws IOException {
+		List<Draw> draws = DrawHelper.INSTANCE.read(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/PredictedNumbers.txt"));
+		Map<Integer, List<Draw>> drawsById = DrawHelper.INSTANCE.groupByDrawId(draws);
+		return drawsById;
+	}
+
 	public static void save(Display display, File file) throws IOException {
 		FileOutputStream output = null;
 		try {
@@ -110,11 +129,12 @@ public class Main1 {
 	/**
 	 * 
 	 * @param draws
+	 * @param idToPredictedNumbers
 	 * @param showLinks
 	 * @param showPB
 	 * @return
 	 */
-	protected static Display generate_01x69(List<Draw> draws, boolean showLinks, boolean showPB) {
+	protected static Display generate_01x69(List<Draw> draws, Map<Integer, List<Draw>> idToPredictedNumbers, boolean showLinks, boolean showPB) {
 		// Draw lastDraw = new Draw();
 		// lastDraw.setDummy(true);
 		// draws.add(lastDraw);
@@ -169,49 +189,117 @@ public class Main1 {
 		if (showLinks) {
 			DrawPart prevDrawPart = null;
 			for (DrawPart currDrawPart : drawParts) {
-				if (currDrawPart.getDraw().isDummy()) {
+				Draw currDraw = currDrawPart.getDraw();
+				if (currDraw.isDummy()) {
 					continue;
 				}
 
 				int curr_draw_x = currDrawPart.getBounds().getX();
 
-				NumberPart numPartCurr1 = currDrawPart.getMatchedNumbers().get(0);
-				NumberPart numPartCurr2 = currDrawPart.getMatchedNumbers().get(1);
-				NumberPart numPartCurr3 = currDrawPart.getMatchedNumbers().get(2);
-				NumberPart numPartCurr4 = currDrawPart.getMatchedNumbers().get(3);
-				NumberPart numPartCurr5 = currDrawPart.getMatchedNumbers().get(4);
+				NumberPart currNumPart1 = currDrawPart.getMatchedNumberParts().get(0);
+				NumberPart currNumPart2 = currDrawPart.getMatchedNumberParts().get(1);
+				NumberPart currNumPart3 = currDrawPart.getMatchedNumberParts().get(2);
+				NumberPart currNumPart4 = currDrawPart.getMatchedNumberParts().get(3);
+				NumberPart currNumPart5 = currDrawPart.getMatchedNumberParts().get(4);
 
-				numPartCurr1.setIndex(new Point(0, numPartCurr1.getNumber() - 1));
-				numPartCurr2.setIndex(new Point(0, numPartCurr2.getNumber() - 1));
-				numPartCurr3.setIndex(new Point(0, numPartCurr3.getNumber() - 1));
-				numPartCurr4.setIndex(new Point(0, numPartCurr4.getNumber() - 1));
-				numPartCurr5.setIndex(new Point(0, numPartCurr5.getNumber() - 1));
+				currNumPart1.setIndex(new Point(0, currNumPart1.getNumber() - 1));
+				currNumPart2.setIndex(new Point(0, currNumPart2.getNumber() - 1));
+				currNumPart3.setIndex(new Point(0, currNumPart3.getNumber() - 1));
+				currNumPart4.setIndex(new Point(0, currNumPart4.getNumber() - 1));
+				currNumPart5.setIndex(new Point(0, currNumPart5.getNumber() - 1));
 
 				int shiftX = 7;
 				int shiftY = 5;
-				numPartCurr1.setLocation(new Point(curr_draw_x + shiftX, numPartCurr1.getNumber() * 10 + shiftY));
-				numPartCurr2.setLocation(new Point(curr_draw_x + shiftX, numPartCurr2.getNumber() * 10 + shiftY));
-				numPartCurr3.setLocation(new Point(curr_draw_x + shiftX, numPartCurr3.getNumber() * 10 + shiftY));
-				numPartCurr4.setLocation(new Point(curr_draw_x + shiftX, numPartCurr4.getNumber() * 10 + shiftY));
-				numPartCurr5.setLocation(new Point(curr_draw_x + shiftX, numPartCurr5.getNumber() * 10 + shiftY));
+				currNumPart1.setLocation(new Point(curr_draw_x + shiftX, currNumPart1.getNumber() * 10 + shiftY));
+				currNumPart2.setLocation(new Point(curr_draw_x + shiftX, currNumPart2.getNumber() * 10 + shiftY));
+				currNumPart3.setLocation(new Point(curr_draw_x + shiftX, currNumPart3.getNumber() * 10 + shiftY));
+				currNumPart4.setLocation(new Point(curr_draw_x + shiftX, currNumPart4.getNumber() * 10 + shiftY));
+				currNumPart5.setLocation(new Point(curr_draw_x + shiftX, currNumPart5.getNumber() * 10 + shiftY));
 
 				if (prevDrawPart != null) {
-					NumberPart numPartPrev1 = prevDrawPart.getMatchedNumbers().get(0);
-					NumberPart numPartPrev2 = prevDrawPart.getMatchedNumbers().get(1);
-					NumberPart numPartPrev3 = prevDrawPart.getMatchedNumbers().get(2);
-					NumberPart numPartPrev4 = prevDrawPart.getMatchedNumbers().get(3);
-					NumberPart numPartPrev5 = prevDrawPart.getMatchedNumbers().get(4);
+					NumberPart prevNumPart1 = prevDrawPart.getMatchedNumberParts().get(0);
+					NumberPart prevNumPart2 = prevDrawPart.getMatchedNumberParts().get(1);
+					NumberPart prevNumPart3 = prevDrawPart.getMatchedNumberParts().get(2);
+					NumberPart prevNumPart4 = prevDrawPart.getMatchedNumberParts().get(3);
+					NumberPart prevNumPart5 = prevDrawPart.getMatchedNumberParts().get(4);
 
-					LinkPart link1 = new LinkPart(display, numPartPrev1, numPartCurr1);
+					LinkPart link1 = new LinkPart(display, prevNumPart1, currNumPart1);
+					LinkPart link2 = new LinkPart(display, prevNumPart2, currNumPart2);
+					LinkPart link3 = new LinkPart(display, prevNumPart3, currNumPart3);
+					LinkPart link4 = new LinkPart(display, prevNumPart4, currNumPart4);
+					LinkPart link5 = new LinkPart(display, prevNumPart5, currNumPart5);
+
 					link1.createContents();
-					LinkPart link2 = new LinkPart(display, numPartPrev2, numPartCurr2);
 					link2.createContents();
-					LinkPart link3 = new LinkPart(display, numPartPrev3, numPartCurr3);
 					link3.createContents();
-					LinkPart link4 = new LinkPart(display, numPartPrev4, numPartCurr4);
 					link4.createContents();
-					LinkPart link5 = new LinkPart(display, numPartPrev5, numPartCurr5);
 					link5.createContents();
+
+					// ------------------------------------------------------------------------------------
+					// draw predicted numbers begins
+					// ------------------------------------------------------------------------------------
+					List<Draw> predictedDraws = idToPredictedNumbers.get(currDraw.getDrawId());
+					if (predictedDraws != null && !predictedDraws.isEmpty()) {
+						for (int j = 0; j < predictedDraws.size(); j++) {
+							Draw predictedDraw = predictedDraws.get(j);
+
+							String strokeColor = indexToPredictedLinkStrokeColor.get(j);
+
+							NumberPart predictedNumPart1 = currDrawPart.getNumberPart(predictedDraw.getNum1());
+							NumberPart predictedNumPart2 = currDrawPart.getNumberPart(predictedDraw.getNum2());
+							NumberPart predictedNumPart3 = currDrawPart.getNumberPart(predictedDraw.getNum3());
+							NumberPart predictedNumPart4 = currDrawPart.getNumberPart(predictedDraw.getNum4());
+							NumberPart predictedNumPart5 = currDrawPart.getNumberPart(predictedDraw.getNum5());
+
+							if (predictedNumPart1.getIndex() == null || predictedNumPart1.getLocation() == null) {
+								predictedNumPart1.setIndex(new Point(0, predictedNumPart1.getNumber() - 1));
+								predictedNumPart1.setLocation(new Point(curr_draw_x + shiftX, predictedNumPart1.getNumber() * 10 + shiftY));
+							}
+							if (predictedNumPart2.getIndex() == null || predictedNumPart2.getLocation() == null) {
+								predictedNumPart2.setIndex(new Point(0, predictedNumPart2.getNumber() - 1));
+								predictedNumPart2.setLocation(new Point(curr_draw_x + shiftX, predictedNumPart2.getNumber() * 10 + shiftY));
+							}
+							if (predictedNumPart3.getIndex() == null || predictedNumPart3.getLocation() == null) {
+								predictedNumPart3.setIndex(new Point(0, predictedNumPart3.getNumber() - 1));
+								predictedNumPart3.setLocation(new Point(curr_draw_x + shiftX, predictedNumPart3.getNumber() * 10 + shiftY));
+							}
+							if (predictedNumPart4.getIndex() == null || predictedNumPart4.getLocation() == null) {
+								predictedNumPart4.setIndex(new Point(0, predictedNumPart4.getNumber() - 1));
+								predictedNumPart4.setLocation(new Point(curr_draw_x + shiftX, predictedNumPart4.getNumber() * 10 + shiftY));
+							}
+							if (predictedNumPart5.getIndex() == null || predictedNumPart5.getLocation() == null) {
+								predictedNumPart5.setIndex(new Point(0, predictedNumPart5.getNumber() - 1));
+								predictedNumPart5.setLocation(new Point(curr_draw_x + shiftX, predictedNumPart5.getNumber() * 10 + shiftY));
+							}
+
+							LinkPart predictedLink1 = new LinkPart(display, prevNumPart1, predictedNumPart1);
+							LinkPart predictedLink2 = new LinkPart(display, prevNumPart2, predictedNumPart2);
+							LinkPart predictedLink3 = new LinkPart(display, prevNumPart3, predictedNumPart3);
+							LinkPart predictedLink4 = new LinkPart(display, prevNumPart4, predictedNumPart4);
+							LinkPart predictedLink5 = new LinkPart(display, prevNumPart5, predictedNumPart5);
+
+							predictedLink1.setPredicted(true);
+							predictedLink2.setPredicted(true);
+							predictedLink3.setPredicted(true);
+							predictedLink4.setPredicted(true);
+							predictedLink5.setPredicted(true);
+
+							predictedLink1.setStrokeColor(strokeColor);
+							predictedLink2.setStrokeColor(strokeColor);
+							predictedLink3.setStrokeColor(strokeColor);
+							predictedLink4.setStrokeColor(strokeColor);
+							predictedLink5.setStrokeColor(strokeColor);
+
+							predictedLink1.createContents();
+							predictedLink2.createContents();
+							predictedLink3.createContents();
+							predictedLink4.createContents();
+							predictedLink5.createContents();
+						}
+					}
+					// ------------------------------------------------------------------------------------
+					// draw predicted numbers ends
+					// ------------------------------------------------------------------------------------
 				}
 
 				prevDrawPart = currDrawPart;
@@ -245,13 +333,14 @@ public class Main1 {
 			if (showLinks) {
 				PBPart prevPBPart = null;
 				for (PBPart currPBPart : pbParts) {
-					if (currPBPart.getDraw().isDummy()) {
+					Draw currDraw = currPBPart.getDraw();
+					if (currDraw.isDummy()) {
 						continue;
 					}
 
 					int curr_draw_x = currPBPart.getBounds().getX();
 
-					NumberPart currNumPart = currPBPart.getMatchedNumber();
+					NumberPart currNumPart = currPBPart.getMatchedNumberPart();
 					if (currNumPart == null) {
 						continue;
 					}
@@ -263,10 +352,36 @@ public class Main1 {
 					currNumPart.setLocation(new Point(curr_draw_x + shiftX, pb_y + currNumPart.getNumber() * 10 + shiftY));
 
 					if (prevPBPart != null) {
-						NumberPart prevNumPart = prevPBPart.getMatchedNumber();
+						NumberPart prevNumPart = prevPBPart.getMatchedNumberPart();
 
 						LinkPart link = new LinkPart(display, prevNumPart, currNumPart);
 						link.createContents();
+
+						// ------------------------------------------------------------------------------------
+						// draw predicted PB number begins
+						// ------------------------------------------------------------------------------------
+						List<Draw> predictedDraws = idToPredictedNumbers.get(currDraw.getDrawId());
+						if (predictedDraws != null && !predictedDraws.isEmpty()) {
+							for (int j = 0; j < predictedDraws.size(); j++) {
+								Draw predictedDraw = predictedDraws.get(j);
+								String strokeColor = indexToPredictedLinkStrokeColor.get(j);
+
+								NumberPart predictedNumPart = currPBPart.getNumberPart(predictedDraw.getPB());
+
+								if (predictedNumPart.getIndex() == null || predictedNumPart.getLocation() == null) {
+									predictedNumPart.setIndex(new Point(0, predictedNumPart.getNumber() - 1));
+									predictedNumPart.setLocation(new Point(curr_draw_x + shiftX, pb_y + predictedNumPart.getNumber() * 10 + shiftY));
+								}
+
+								LinkPart predictedLink = new LinkPart(display, prevNumPart, predictedNumPart);
+								predictedLink.setPredicted(true);
+								predictedLink.setStrokeColor(strokeColor);
+								predictedLink.createContents();
+							}
+						}
+						// ------------------------------------------------------------------------------------
+						// draw predicted PB number begins
+						// ------------------------------------------------------------------------------------
 					}
 
 					prevPBPart = currPBPart;
@@ -280,9 +395,10 @@ public class Main1 {
 	/**
 	 * 
 	 * @param draws
+	 * @param idToPredictedNumbers
 	 * @return
 	 */
-	protected static Display generate_10x07(List<Draw> draws) {
+	protected static Display generate_10x07(List<Draw> draws, Map<Integer, List<Draw>> idToPredictedNumbers) {
 		int draw_x = 0 + 10; // 10 is for top shift
 		int draw_y = 0 + 10; // 10 is for left shift
 		int draw_w = 102;
@@ -316,9 +432,10 @@ public class Main1 {
 	/**
 	 * 
 	 * @param draws
+	 * @param idToPredictedNumbers
 	 * @return
 	 */
-	protected static Display generate_14x05(List<Draw> draws) {
+	protected static Display generate_14x05(List<Draw> draws, Map<Integer, List<Draw>> idToPredictedNumbers) {
 		int draw_x = 0 + 10; // 10 is for top shift
 		int draw_y = 0 + 10; // 10 is for left shift
 		int draw_w = 142;

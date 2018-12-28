@@ -58,4 +58,24 @@ public class DrawHelper {
 		return yearToDraws;
 	}
 
+	/**
+	 * 
+	 * @param allDraws
+	 * @return
+	 */
+	public Map<Integer, List<Draw>> groupByDrawId(List<Draw> allDraws) {
+		Map<Integer, List<Draw>> idToDraws = new TreeMap<Integer, List<Draw>>();
+		for (Draw draw : allDraws) {
+			int drawId = draw.getDrawId();
+
+			List<Draw> draws = idToDraws.get(drawId);
+			if (draws == null) {
+				draws = new ArrayList<Draw>();
+				idToDraws.put(drawId, draws);
+			}
+			draws.add(draw);
+		}
+		return idToDraws;
+	}
+
 }

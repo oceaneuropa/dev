@@ -14,13 +14,28 @@ public class LinkFigure extends Line {
 		super(linkPart.getSource().getLocation(), linkPart.getTarget().getLocation());
 		this.link = linkPart;
 
-		if (linkPart.getTarget().isPBNumber()) {
-			setStrokeColor(ColorConstants.PURPLE_LITERAL);
+		if (linkPart.isPredicted()) {
+			String strokeColor = linkPart.getStrokeColor();
+			if (strokeColor == null) {
+				strokeColor = ColorConstants.BLUE_LITERAL;
+			}
+			if (linkPart.getTarget().isPBNumber()) {
+				setStrokeColor(strokeColor);
+			} else {
+				setStrokeColor(strokeColor);
+			}
+			setStrokeWidth(2);
+			setStrokeOpacity(0.5);
+
 		} else {
-			setStrokeColor(ColorConstants.GREEN_LITERAL);
+			if (linkPart.getTarget().isPBNumber()) {
+				setStrokeColor(ColorConstants.PURPLE_LITERAL);
+			} else {
+				setStrokeColor(ColorConstants.GREEN_LITERAL);
+			}
+			setStrokeWidth(5);
+			setStrokeOpacity(0.5);
 		}
-		setStrokeWidth(5);
-		setStrokeOpacity(0.5);
 	}
 
 	public void updateFigure(Control control, Notification notification) {

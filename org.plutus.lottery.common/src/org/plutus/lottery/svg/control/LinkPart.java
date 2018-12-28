@@ -8,6 +8,8 @@ public class LinkPart extends Control {
 
 	protected NumberPart source;
 	protected NumberPart target;
+	protected boolean isPredicted;
+	protected String strokeColor;
 
 	/**
 	 * 
@@ -68,6 +70,22 @@ public class LinkPart extends Control {
 
 	public void setTarget(NumberPart target) {
 		this.target = target;
+	}
+
+	public boolean isPredicted() {
+		return this.isPredicted;
+	}
+
+	public void setPredicted(boolean isPredicted) {
+		this.isPredicted = isPredicted;
+	}
+
+	public String getStrokeColor() {
+		return this.strokeColor;
+	}
+
+	public void setStrokeColor(String strokeColor) {
+		this.strokeColor = strokeColor;
 	}
 
 }
