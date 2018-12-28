@@ -25,7 +25,7 @@ public class LinkFigure extends Line {
 				setStrokeColor(strokeColor);
 			}
 			setStrokeWidth(2);
-			setStrokeOpacity(0.5);
+			setStrokeOpacity(0.4);
 
 		} else {
 			if (linkPart.getTarget().isPBNumber()) {

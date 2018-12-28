@@ -2,3 +2,7 @@ Draw #      Draw Date           Number_1    Number_2    Number_3    Number_4    
 597     	Wed. Dec 26, 2018         12          32          38          50          56            8
 597     	Wed. Dec 26, 2018          3          34          39          58          64           13
 597     	Wed. Dec 26, 2018          5          23          29          36          68           15
+
+598			Sat. Dec 30, 2018		   8		  18		  29		  39		  48			7															
+598			Sat. Dec 30, 2018		  12		  20		  32		  43		  53	   	   13
+598			Sat. Dec 30, 2018		  14		  21		  34		  45		  61	   	   15

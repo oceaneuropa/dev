@@ -63,9 +63,12 @@ public class DrawReaderV1 implements DrawReader {
 	 * @return
 	 */
 	protected Draw convertToDraw(String line) {
+		if (line == null || line.trim().isEmpty()) {
+			return null;
+		}
 		String[] segments = line.split("\\s+");
-		if (segments == null || segments.length < 7) {
-			System.err.println("convertToDraw() invalid line: " + line);
+		if (segments.length < 7) {
+			System.err.println(getClass().getSimpleName() + ".convertToDraw() invalid line: " + line);
 			return null;
 		}
 

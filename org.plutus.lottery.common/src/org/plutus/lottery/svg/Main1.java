@@ -73,16 +73,18 @@ public class Main1 {
 	 * @param drawStyle
 	 */
 	public static void generate(Map<Integer, List<Draw>> yearToDraws, Map<Integer, List<Draw>> idToPredictedNumbers, File baseFolder, String outputFileLocation, int drawStyle) {
+		int thisYear = DateUtil.getYear(new Date());
 		for (Iterator<Integer> yearItor = yearToDraws.keySet().iterator(); yearItor.hasNext();) {
 			Integer year = yearItor.next();
 			List<Draw> draws = yearToDraws.get(year);
 
+			boolean showDummyDraw = (thisYear == year) ? true : false;
 			try {
 				String fileLocation = MessageFormat.format(outputFileLocation, new Object[] { String.valueOf(year) });
 
 				Display display = null;
 				if (drawStyle == PBConstants.DRAW_SQUARE_01x69) {
-					display = generate_01x69(draws, idToPredictedNumbers, true, true);
+					display = generate_01x69(draws, idToPredictedNumbers, true, true, showDummyDraw);
 
 				} else if (drawStyle == PBConstants.DRAW_SQUARE_10x07) {
 					display = generate_10x07(draws, idToPredictedNumbers);
@@ -132,9 +134,10 @@ public class Main1 {
 	 * @param idToPredictedNumbers
 	 * @param showLinks
 	 * @param showPB
+	 * @param showDummyDraw
 	 * @return
 	 */
-	protected static Display generate_01x69(List<Draw> draws, Map<Integer, List<Draw>> idToPredictedNumbers, boolean showLinks, boolean showPB) {
+	protected static Display generate_01x69(List<Draw> draws, Map<Integer, List<Draw>> idToPredictedNumbers, boolean showLinks, boolean showPB, boolean showDummyDraw) {
 		// Draw lastDraw = new Draw();
 		// lastDraw.setDummy(true);
 		// draws.add(lastDraw);
@@ -179,7 +182,7 @@ public class Main1 {
 
 		// Part for dummy draw
 		{
-			Rectangle drawBounds = new Rectangle(draw_x, draw_y, draw_w, draw_h);
+			Rectangle drawBounds = new Rectangle(draw_x, draw_y + 3, draw_w, draw_h);
 			DrawPart drawPart = new DrawPart(display, dummyDraw, PBConstants.DRAW_SQUARE_01x69);
 			drawPart.setBounds(drawBounds);
 			drawPart.createContents();
@@ -190,31 +193,38 @@ public class Main1 {
 			DrawPart prevDrawPart = null;
 			for (DrawPart currDrawPart : drawParts) {
 				Draw currDraw = currDrawPart.getDraw();
-				if (currDraw.isDummy()) {
-					continue;
-				}
+				// if (currDraw.isDummy()) {
+				// continue;
+				// }
 
 				int curr_draw_x = currDrawPart.getBounds().getX();
-
-				NumberPart currNumPart1 = currDrawPart.getMatchedNumberParts().get(0);
-				NumberPart currNumPart2 = currDrawPart.getMatchedNumberParts().get(1);
-				NumberPart currNumPart3 = currDrawPart.getMatchedNumberParts().get(2);
-				NumberPart currNumPart4 = currDrawPart.getMatchedNumberParts().get(3);
-				NumberPart currNumPart5 = currDrawPart.getMatchedNumberParts().get(4);
-
-				currNumPart1.setIndex(new Point(0, currNumPart1.getNumber() - 1));
-				currNumPart2.setIndex(new Point(0, currNumPart2.getNumber() - 1));
-				currNumPart3.setIndex(new Point(0, currNumPart3.getNumber() - 1));
-				currNumPart4.setIndex(new Point(0, currNumPart4.getNumber() - 1));
-				currNumPart5.setIndex(new Point(0, currNumPart5.getNumber() - 1));
-
-				int shiftX = 7;
+				int shiftX = currDraw.isDummy() ? 4 : 7;
 				int shiftY = 5;
-				currNumPart1.setLocation(new Point(curr_draw_x + shiftX, currNumPart1.getNumber() * 10 + shiftY));
-				currNumPart2.setLocation(new Point(curr_draw_x + shiftX, currNumPart2.getNumber() * 10 + shiftY));
-				currNumPart3.setLocation(new Point(curr_draw_x + shiftX, currNumPart3.getNumber() * 10 + shiftY));
-				currNumPart4.setLocation(new Point(curr_draw_x + shiftX, currNumPart4.getNumber() * 10 + shiftY));
-				currNumPart5.setLocation(new Point(curr_draw_x + shiftX, currNumPart5.getNumber() * 10 + shiftY));
+
+				NumberPart currNumPart1 = null;
+				NumberPart currNumPart2 = null;
+				NumberPart currNumPart3 = null;
+				NumberPart currNumPart4 = null;
+				NumberPart currNumPart5 = null;
+				if (!currDraw.isDummy()) {
+					currNumPart1 = currDrawPart.getMatchedNumberParts().get(0);
+					currNumPart2 = currDrawPart.getMatchedNumberParts().get(1);
+					currNumPart3 = currDrawPart.getMatchedNumberParts().get(2);
+					currNumPart4 = currDrawPart.getMatchedNumberParts().get(3);
+					currNumPart5 = currDrawPart.getMatchedNumberParts().get(4);
+
+					currNumPart1.setIndex(new Point(0, currNumPart1.getNumber() - 1));
+					currNumPart2.setIndex(new Point(0, currNumPart2.getNumber() - 1));
+					currNumPart3.setIndex(new Point(0, currNumPart3.getNumber() - 1));
+					currNumPart4.setIndex(new Point(0, currNumPart4.getNumber() - 1));
+					currNumPart5.setIndex(new Point(0, currNumPart5.getNumber() - 1));
+
+					currNumPart1.setLocation(new Point(curr_draw_x + shiftX, currNumPart1.getNumber() * 10 + shiftY));
+					currNumPart2.setLocation(new Point(curr_draw_x + shiftX, currNumPart2.getNumber() * 10 + shiftY));
+					currNumPart3.setLocation(new Point(curr_draw_x + shiftX, currNumPart3.getNumber() * 10 + shiftY));
+					currNumPart4.setLocation(new Point(curr_draw_x + shiftX, currNumPart4.getNumber() * 10 + shiftY));
+					currNumPart5.setLocation(new Point(curr_draw_x + shiftX, currNumPart5.getNumber() * 10 + shiftY));
+				}
 
 				if (prevDrawPart != null) {
 					NumberPart prevNumPart1 = prevDrawPart.getMatchedNumberParts().get(0);
@@ -223,17 +233,19 @@ public class Main1 {
 					NumberPart prevNumPart4 = prevDrawPart.getMatchedNumberParts().get(3);
 					NumberPart prevNumPart5 = prevDrawPart.getMatchedNumberParts().get(4);
 
-					LinkPart link1 = new LinkPart(display, prevNumPart1, currNumPart1);
-					LinkPart link2 = new LinkPart(display, prevNumPart2, currNumPart2);
-					LinkPart link3 = new LinkPart(display, prevNumPart3, currNumPart3);
-					LinkPart link4 = new LinkPart(display, prevNumPart4, currNumPart4);
-					LinkPart link5 = new LinkPart(display, prevNumPart5, currNumPart5);
+					if (!currDraw.isDummy()) {
+						LinkPart link1 = new LinkPart(display, prevNumPart1, currNumPart1);
+						LinkPart link2 = new LinkPart(display, prevNumPart2, currNumPart2);
+						LinkPart link3 = new LinkPart(display, prevNumPart3, currNumPart3);
+						LinkPart link4 = new LinkPart(display, prevNumPart4, currNumPart4);
+						LinkPart link5 = new LinkPart(display, prevNumPart5, currNumPart5);
 
-					link1.createContents();
-					link2.createContents();
-					link3.createContents();
-					link4.createContents();
-					link5.createContents();
+						link1.createContents();
+						link2.createContents();
+						link3.createContents();
+						link4.createContents();
+						link5.createContents();
+					}
 
 					// ------------------------------------------------------------------------------------
 					// draw predicted numbers begins
@@ -322,7 +334,7 @@ public class Main1 {
 
 			// Part for dummy draw
 			{
-				Rectangle pbBounds = new Rectangle(pb_x, pb_y, pb_w, pb_h);
+				Rectangle pbBounds = new Rectangle(pb_x, pb_y + 3, pb_w, pb_h);
 
 				PBPart pbPart = new PBPart(display, dummyDraw, PBConstants.PB_SQUARE_01x26);
 				pbPart.setBounds(pbBounds);
@@ -334,28 +346,27 @@ public class Main1 {
 				PBPart prevPBPart = null;
 				for (PBPart currPBPart : pbParts) {
 					Draw currDraw = currPBPart.getDraw();
-					if (currDraw.isDummy()) {
-						continue;
-					}
+					// if (currDraw.isDummy()) {
+					// continue;
+					// }
 
 					int curr_draw_x = currPBPart.getBounds().getX();
+					int shiftX = currDraw.isDummy() ? 4 : 7;
+					int shiftY = -4;
 
 					NumberPart currNumPart = currPBPart.getMatchedNumberPart();
-					if (currNumPart == null) {
-						continue;
+					if (currNumPart != null) {
+						currNumPart.setIndex(new Point(0, currNumPart.getNumber() - 1));
+						currNumPart.setLocation(new Point(curr_draw_x + shiftX, pb_y + currNumPart.getNumber() * 10 + shiftY));
 					}
-
-					currNumPart.setIndex(new Point(0, currNumPart.getNumber() - 1));
-
-					int shiftX = 7;
-					int shiftY = -4;
-					currNumPart.setLocation(new Point(curr_draw_x + shiftX, pb_y + currNumPart.getNumber() * 10 + shiftY));
 
 					if (prevPBPart != null) {
 						NumberPart prevNumPart = prevPBPart.getMatchedNumberPart();
 
-						LinkPart link = new LinkPart(display, prevNumPart, currNumPart);
-						link.createContents();
+						if (prevNumPart != null && currNumPart != null) {
+							LinkPart link = new LinkPart(display, prevNumPart, currNumPart);
+							link.createContents();
+						}
 
 						// ------------------------------------------------------------------------------------
 						// draw predicted PB number begins
