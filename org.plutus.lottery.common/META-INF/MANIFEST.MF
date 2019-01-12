@@ -15,4 +15,5 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: org.origin.common;bundle-version="1.0.0",
  org.origin.svg;bundle-version="1.0.0",
  org.origin.svg.widgets;bundle-version="1.0.0",
- org.origin.svg.ui;bundle-version="1.0.0"
+ org.origin.svg.ui;bundle-version="1.0.0",
+ org.origin.svg.render;bundle-version="[1.0.0,2.0.0)"

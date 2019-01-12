@@ -18,10 +18,11 @@ import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
+import org.origin.svg.render.widget.WidgetFigureFactory;
 import org.origin.svg.util.ColorConstants;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.svg.widgets.Display;
-import org.origin.svg.widgets.render.impl.WidgetFigureFactory;
+import org.origin.svg.widgets.render.FigureFactoryRegistry;
 import org.plutus.lottery.powerball.Draw;
 import org.plutus.lottery.powerball.DrawHelper;
 import org.plutus.lottery.powerball.impl.DrawReaderV2;
@@ -29,16 +30,17 @@ import org.plutus.lottery.svg.control.DrawPart;
 import org.plutus.lottery.svg.control.LinkPart;
 import org.plutus.lottery.svg.control.NumberPart;
 import org.plutus.lottery.svg.control.PBPart;
-import org.plutus.lottery.svg.factory.DrawFigureFactory;
-import org.plutus.lottery.svg.factory.LinkFigureFactory;
-import org.plutus.lottery.svg.factory.NumberFigureFactory;
-import org.plutus.lottery.svg.factory.PBFigureFactory;
+import org.plutus.lottery.svg.render.DrawFigureFactory;
+import org.plutus.lottery.svg.render.LinkFigureFactory;
+import org.plutus.lottery.svg.render.NumberFigureFactory;
+import org.plutus.lottery.svg.render.PBFigureFactory;
 
 public class Main1 {
 
 	protected static Map<Integer, String> indexToPredictedLinkStrokeColor = new HashMap<Integer, String>();
 
 	static {
+		WidgetFigureFactory.register();
 		DrawFigureFactory.register();
 		PBFigureFactory.register();
 		NumberFigureFactory.register();
@@ -105,7 +107,7 @@ public class Main1 {
 
 	public static Map<Integer, List<Draw>> getDrawsByYear() throws IOException {
 		List<Draw> draws = DrawHelper.INSTANCE.read(DrawReaderV2.INSTANCE, new File(SystemUtils.getUserDir(), "/doc/data/DownloadAllNumbers.txt"));
-		Map<Integer, List<Draw>> drawsByYear = DrawHelper.INSTANCE.groupByYear(draws);
+		Map<Integer, List<Draw>> drawsByYear = DrawHelper.INSTANCE.groupByYear(draws, 10);
 		return drawsByYear;
 	}
 
@@ -118,7 +120,8 @@ public class Main1 {
 	public static void save(Display display, File file) throws IOException {
 		FileOutputStream output = null;
 		try {
-			Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
+			Shape rootShape = FigureFactoryRegistry.getFactory().createFigure(display);
+			// Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
 			SVGStringWriter writer = new SVGStringWriter(rootShape);
 
 			output = new FileOutputStream(file);
@@ -420,13 +423,24 @@ public class Main1 {
 		int draw_w = 102;
 		int draw_h = 72;
 
-		int total_h = (draws.size() / 10) * (72 + 15) + 100;
+		int total_h = ((draws.size() + 1) / 10) * (72 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
 		Display display = new Display(size);
 
+		// Last dummy draw
+		Date last = (!draws.isEmpty()) ? draws.get(draws.size() - 1).getDate() : new Date();
+		Draw dummyDraw = new Draw();
+		dummyDraw.setDrawId((!draws.isEmpty()) ? (draws.get(draws.size() - 1).getDrawId() + 1) : 1);
+		dummyDraw.setDate(DateUtil.addHours(last, 24 * 3));
+		dummyDraw.setDummy(true);
+
+		List<Draw> draws2 = new ArrayList<Draw>();
+		draws2.addAll(draws);
+		draws2.add(dummyDraw);
+
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
-		for (Draw draw : draws) {
+		for (Draw draw : draws2) {
 			int drawId = draw.getDrawId();
 			List<Draw> predictedDraws = idToPredictedNumbers.get(drawId);
 
@@ -462,13 +476,24 @@ public class Main1 {
 		int draw_w = 142;
 		int draw_h = 52;
 
-		int total_h = (draws.size() / 8) * (52 + 15) + 100;
+		int total_h = ((draws.size() + 1) / 8) * (52 + 15) + 100;
 
 		Size size = new Size(1300, total_h);
 		Display display = new Display(size);
 
+		// Last dummy draw
+		Date last = (!draws.isEmpty()) ? draws.get(draws.size() - 1).getDate() : new Date();
+		Draw dummyDraw = new Draw();
+		dummyDraw.setDrawId((!draws.isEmpty()) ? (draws.get(draws.size() - 1).getDrawId() + 1) : 1);
+		dummyDraw.setDate(DateUtil.addHours(last, 24 * 3));
+		dummyDraw.setDummy(true);
+
+		List<Draw> draws2 = new ArrayList<Draw>();
+		draws2.addAll(draws);
+		draws2.add(dummyDraw);
+
 		List<DrawPart> drawParts = new ArrayList<DrawPart>();
-		for (Draw draw : draws) {
+		for (Draw draw : draws2) {
 			int drawId = draw.getDrawId();
 			List<Draw> predictedDraws = idToPredictedNumbers.get(drawId);
 

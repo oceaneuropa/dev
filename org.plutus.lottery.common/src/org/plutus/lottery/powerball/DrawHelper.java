@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -44,8 +45,20 @@ public class DrawHelper {
 	 * @return
 	 */
 	public Map<Integer, List<Draw>> groupByYear(List<Draw> allDraws) {
+		return groupByYear(allDraws, 0);
+	}
+
+	/**
+	 * 
+	 * @param allDraws
+	 * @param numberOfDrawsFromNextYear
+	 * @return
+	 */
+	public Map<Integer, List<Draw>> groupByYear(List<Draw> allDraws, int numberOfDrawsFromNextYear) {
 		Map<Integer, List<Draw>> yearToDraws = new TreeMap<Integer, List<Draw>>();
-		for (Draw draw : allDraws) {
+
+		for (int i = 0; i < allDraws.size(); i++) {
+			Draw draw = allDraws.get(i);
 			int year = DateUtil.getYear(draw.getDate());
 
 			List<Draw> draws = yearToDraws.get(year);
@@ -55,6 +68,26 @@ public class DrawHelper {
 			}
 			draws.add(draw);
 		}
+
+		if (numberOfDrawsFromNextYear > 0) {
+			for (Iterator<Integer> yearItor = yearToDraws.keySet().iterator(); yearItor.hasNext();) {
+				int year = yearItor.next();
+				int nextYear = year + 1;
+
+				List<Draw> drawsOfNextYear = yearToDraws.get(nextYear);
+				if (drawsOfNextYear != null && !drawsOfNextYear.isEmpty()) {
+					List<Draw> drawsOfCurrYear = yearToDraws.get(year);
+					if (drawsOfCurrYear == null) {
+						drawsOfCurrYear = new ArrayList<Draw>();
+						yearToDraws.put(year, drawsOfCurrYear);
+					}
+
+					int numToAdd = numberOfDrawsFromNextYear < drawsOfNextYear.size() ? numberOfDrawsFromNextYear : drawsOfNextYear.size();
+					drawsOfCurrYear.addAll(drawsOfNextYear.subList(0, numToAdd));
+				}
+			}
+		}
+
 		return yearToDraws;
 	}
 

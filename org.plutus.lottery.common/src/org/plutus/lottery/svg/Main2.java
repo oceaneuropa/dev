@@ -15,9 +15,10 @@ import org.origin.svg.Shape;
 import org.origin.svg.graphics.Point;
 import org.origin.svg.graphics.Rectangle;
 import org.origin.svg.graphics.Size;
+import org.origin.svg.render.widget.WidgetFigureFactory;
 import org.origin.svg.util.SVGStringWriter;
 import org.origin.svg.widgets.Display;
-import org.origin.svg.widgets.render.impl.WidgetFigureFactory;
+import org.origin.svg.widgets.render.FigureFactoryRegistry;
 import org.plutus.lottery.powerball.AnalysisContext;
 import org.plutus.lottery.powerball.AnalysisRegistry;
 import org.plutus.lottery.powerball.Draw;
@@ -33,14 +34,15 @@ import org.plutus.lottery.powerball.impl.DrawReaderV2;
 import org.plutus.lottery.svg.control.IntegersPart;
 import org.plutus.lottery.svg.control.LinkPart;
 import org.plutus.lottery.svg.control.NumberPart;
-import org.plutus.lottery.svg.factory.DrawFigureFactory;
-import org.plutus.lottery.svg.factory.LinkFigureFactory;
-import org.plutus.lottery.svg.factory.NumberFigureFactory;
-import org.plutus.lottery.svg.factory.PBFigureFactory;
+import org.plutus.lottery.svg.render.DrawFigureFactory;
+import org.plutus.lottery.svg.render.LinkFigureFactory;
+import org.plutus.lottery.svg.render.NumberFigureFactory;
+import org.plutus.lottery.svg.render.PBFigureFactory;
 
 public class Main2 {
 
 	static {
+		WidgetFigureFactory.register();
 		A11_MinMaxAvgAnalysis.INSTANCE.register();
 		A12_NumberDiffAnalysis.INSTANCE.register();
 		A21_OddEvenAnalysis.INSTANCE.register();
@@ -108,7 +110,8 @@ public class Main2 {
 	public static void save(Display display, File file) throws IOException {
 		FileOutputStream output = null;
 		try {
-			Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
+			Shape rootShape = FigureFactoryRegistry.getFactory().createFigure(display);
+			// Shape rootShape = WidgetFigureFactory.getInstance().createFigure(display);
 			SVGStringWriter writer = new SVGStringWriter(rootShape);
 
 			output = new FileOutputStream(file);

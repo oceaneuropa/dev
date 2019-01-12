@@ -180,9 +180,11 @@ public class DrawPart extends Composite {
 		}
 
 		if (showLinks()) {
-			List<LinkPart> links = createLinks(this.matchedNumberParts, false, null);
-			for (LinkPart link : links) {
-				this.linkParts.add(link);
+			if (!this.matchedNumberParts.isEmpty()) {
+				List<LinkPart> links = createLinks(this.matchedNumberParts, false, null);
+				for (LinkPart link : links) {
+					this.linkParts.add(link);
+				}
 			}
 
 			if (this.predictedDraws != null && !this.predictedDraws.isEmpty()) {
@@ -249,9 +251,11 @@ public class DrawPart extends Composite {
 		}
 
 		if (showLinks()) {
-			List<LinkPart> links = createLinks(this.matchedNumberParts, false, null);
-			for (LinkPart link : links) {
-				this.linkParts.add(link);
+			if (!this.matchedNumberParts.isEmpty()) {
+				List<LinkPart> links = createLinks(this.matchedNumberParts, false, null);
+				for (LinkPart link : links) {
+					this.linkParts.add(link);
+				}
 			}
 
 			if (this.predictedDraws != null && !this.predictedDraws.isEmpty()) {

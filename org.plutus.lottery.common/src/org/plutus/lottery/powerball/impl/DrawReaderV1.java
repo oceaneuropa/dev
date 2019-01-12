@@ -63,7 +63,7 @@ public class DrawReaderV1 implements DrawReader {
 	 * @return
 	 */
 	protected Draw convertToDraw(String line) {
-		if (line == null || line.trim().isEmpty()) {
+		if (line == null || line.trim().isEmpty() || line.startsWith("#")) {
 			return null;
 		}
 		String[] segments = line.split("\\s+");
