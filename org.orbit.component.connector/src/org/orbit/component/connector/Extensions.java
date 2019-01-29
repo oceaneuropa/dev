@@ -1,13 +1,13 @@
 package org.orbit.component.connector;
 
-import org.orbit.component.cli.AppStoreCommand;
-import org.orbit.component.cli.AuthCommand;
-import org.orbit.component.cli.DomainManagementCommand;
-import org.orbit.component.cli.MissionControlCommand;
-import org.orbit.component.cli.NodeControlCommand;
-import org.orbit.component.cli.NodeControlCommandGeneric;
-import org.orbit.component.cli.ServicesCommand;
-import org.orbit.component.cli.UserRegistryCommand;
+import org.orbit.component.cli.AppStoreClientCommand;
+import org.orbit.component.cli.AuthClientCommand;
+import org.orbit.component.cli.DomainManagementClientCommand;
+import org.orbit.component.cli.MissionControlClientCommand;
+import org.orbit.component.cli.NodeControlClientCommand;
+import org.orbit.component.cli.NodeControlClientCommandGeneric;
+import org.orbit.component.cli.ServicesClientCommand;
+import org.orbit.component.cli.UserRegistryClientCommand;
 import org.orbit.component.connector.tier1.account.UserAccountConnector;
 import org.orbit.component.connector.tier1.auth.AuthConnector;
 import org.orbit.component.connector.tier1.configregistry.ConfigRegistryConnector;
@@ -116,54 +116,54 @@ public class Extensions extends ProgramExtensions {
 
 		// services
 		// Services command
-		Extension extension01 = new Extension(extensionTypeId, ServicesCommand.ID, "Services Command", "Services command description");
-		InterfaceDescription desc01 = new InterfaceDescription(CommandActivator.class, ServicesCommand.class);
+		Extension extension01 = new Extension(extensionTypeId, ServicesClientCommand.ID, "Services Command", "Services command description");
+		InterfaceDescription desc01 = new InterfaceDescription(CommandActivator.class, ServicesClientCommand.class);
 		extension01.addInterface(desc01);
 		addExtension(extension01);
 
 		// tier1
 		// User Registry command
-		Extension extension11 = new Extension(extensionTypeId, UserRegistryCommand.ID, "User Registry Command", "User Registry command description");
-		InterfaceDescription desc11 = new InterfaceDescription(CommandActivator.class, UserRegistryCommand.class);
+		Extension extension11 = new Extension(extensionTypeId, UserRegistryClientCommand.ID, "User Registry Command", "User Registry command description");
+		InterfaceDescription desc11 = new InterfaceDescription(CommandActivator.class, UserRegistryClientCommand.class);
 		extension11.addInterface(desc11);
 		addExtension(extension11);
 
 		// Auth command
-		Extension extension12 = new Extension(extensionTypeId, AuthCommand.ID, "Auth Command", "Auth command description");
-		InterfaceDescription desc12 = new InterfaceDescription(CommandActivator.class, AuthCommand.class);
+		Extension extension12 = new Extension(extensionTypeId, AuthClientCommand.ID, "Auth Command", "Auth command description");
+		InterfaceDescription desc12 = new InterfaceDescription(CommandActivator.class, AuthClientCommand.class);
 		extension12.addInterface(desc12);
 		addExtension(extension12);
 
 		// tier2
 		// App Store command
-		Extension extension21 = new Extension(extensionTypeId, AppStoreCommand.ID, "App Store Command", "App Store command description");
-		InterfaceDescription desc21 = new InterfaceDescription(CommandActivator.class, AppStoreCommand.class);
+		Extension extension21 = new Extension(extensionTypeId, AppStoreClientCommand.ID, "App Store Command", "App Store command description");
+		InterfaceDescription desc21 = new InterfaceDescription(CommandActivator.class, AppStoreClientCommand.class);
 		extension21.addInterface(desc21);
 		addExtension(extension21);
 
 		// tier3
 		// Domain Management command
-		Extension extension31 = new Extension(extensionTypeId, DomainManagementCommand.ID, "Domain Management Command", "Domain Management command description");
-		InterfaceDescription desc31 = new InterfaceDescription(CommandActivator.class, DomainManagementCommand.class);
+		Extension extension31 = new Extension(extensionTypeId, DomainManagementClientCommand.ID, "Domain Management Command", "Domain Management command description");
+		InterfaceDescription desc31 = new InterfaceDescription(CommandActivator.class, DomainManagementClientCommand.class);
 		extension31.addInterface(desc31);
 		addExtension(extension31);
 
 		// Node Control command
-		Extension extension32 = new Extension(extensionTypeId, NodeControlCommand.ID, "Node Control Command", "Node Control command description");
-		InterfaceDescription desc32 = new InterfaceDescription(CommandActivator.class, NodeControlCommand.class);
+		Extension extension32 = new Extension(extensionTypeId, NodeControlClientCommand.ID, "Node Control Command", "Node Control command description");
+		InterfaceDescription desc32 = new InterfaceDescription(CommandActivator.class, NodeControlClientCommand.class);
 		extension32.addInterface(desc32);
 		addExtension(extension32);
 
 		// Node Control (Generic) command
-		Extension extension33 = new Extension(extensionTypeId, NodeControlCommandGeneric.ID, "Node Control (Generic) Command", "Node Control (Generic) command description");
-		InterfaceDescription desc33 = new InterfaceDescription(CommandActivator.class, NodeControlCommandGeneric.class);
+		Extension extension33 = new Extension(extensionTypeId, NodeControlClientCommandGeneric.ID, "Node Control (Generic) Command", "Node Control (Generic) command description");
+		InterfaceDescription desc33 = new InterfaceDescription(CommandActivator.class, NodeControlClientCommandGeneric.class);
 		extension33.addInterface(desc33);
 		addExtension(extension33);
 
 		// tier4
 		// Mission Control command
-		Extension extension41 = new Extension(extensionTypeId, MissionControlCommand.ID, "Mission Control Command", "Mission Control command description");
-		InterfaceDescription desc41 = new InterfaceDescription(CommandActivator.class, MissionControlCommand.class);
+		Extension extension41 = new Extension(extensionTypeId, MissionControlClientCommand.ID, "Mission Control Command", "Mission Control command description");
+		InterfaceDescription desc41 = new InterfaceDescription(CommandActivator.class, MissionControlClientCommand.class);
 		extension41.addInterface(desc41);
 		addExtension(extension41);
 	}

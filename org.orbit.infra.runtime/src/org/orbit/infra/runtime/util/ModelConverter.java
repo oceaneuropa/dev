@@ -52,6 +52,8 @@ public class ModelConverter {
 			indexItemDTO.setType(indexItem.getType());
 			indexItemDTO.setName(indexItem.getName());
 			indexItemDTO.setProperties(indexItem.getProperties());
+			indexItemDTO.setCreateTime(indexItem.getCreateTime());
+			indexItemDTO.setUpdateTime(indexItem.getLastUpdateTime());
 
 			return indexItemDTO;
 		}

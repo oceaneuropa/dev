@@ -29,11 +29,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeControlCommand extends ServiceClientCommand implements CommandActivator {
+public class NodeControlClientCommand extends ServiceClientCommand implements CommandActivator {
 
-	public static final String ID = "org.orbit.component.cli.NodeControlCommand";
+	public static final String ID = "org.orbit.component.cli.NodeControlClientCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(NodeControlCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(NodeControlClientCommand.class);
 
 	protected static String[] NODESPACE_TITLES = new String[] { "Name" };
 	protected static String[] NODE_TITLES = new String[] { "Name" };
@@ -53,13 +53,12 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 	public void start(final BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function",
-				new String[] { //
-						"ping", "echo", //
-						"platform_ping", "list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
-				});
+		props.put("osgi.command.function", new String[] { //
+				"ping", "echo", //
+				"platform_ping", "list_nodes", "list_nodes2", "get_node", "node_exist", "create_node", "delete_node", "start_node", "stop_node", "node_status"//
+		});
 
-		OSGiServiceUtil.register(bundleContext, NodeControlCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, NodeControlClientCommand.class.getName(), this, props);
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
@@ -71,7 +70,7 @@ public class NodeControlCommand extends ServiceClientCommand implements CommandA
 	 * @param bundleContext
 	 */
 	public void stop(final BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(NodeControlCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(NodeControlClientCommand.class.getName(), this);
 	}
 
 	@Override

@@ -22,9 +22,9 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServicesCommand implements Annotated, CommandActivator {
+public class ServicesClientCommand implements Annotated, CommandActivator {
 
-	protected static Logger LOG = LoggerFactory.getLogger(ServicesCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(ServicesClientCommand.class);
 
 	// Service type constants
 	public static final String CHANNEL = "channel";
@@ -43,13 +43,12 @@ public class ServicesCommand implements Annotated, CommandActivator {
 	public void start(BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function",
-				new String[] { //
-						// show available services
-						"lservices", //
-				});
+		props.put("osgi.command.function", new String[] { //
+				// show available services
+				"lservices", //
+		});
 
-		OSGiServiceUtil.register(bundleContext, ServicesCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, ServicesClientCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
@@ -59,7 +58,7 @@ public class ServicesCommand implements Annotated, CommandActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(ServicesCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(ServicesClientCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 

@@ -40,7 +40,6 @@ import org.origin.common.util.CommandRequestHandler;
 import org.origin.common.util.CompareUtil;
 import org.origin.common.util.DateUtil;
 import org.origin.common.util.IntegerComparator;
-import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleContext;
 
 public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServiceUpdatable, ConnectionAware, CommandRequestHandler {
@@ -154,15 +153,18 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 	// Methods accessing config properties
 	// ------------------------------------------------------------------------------------------------------------
 	public String getName() {
-		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_NAME, null);
+		// return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_NAME, null);
+		return null;
 	}
 
 	public String getHostURL() {
-		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL, null);
+		// return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_HOST_URL, null);
+		return null;
 	}
 
 	public String getContextRoot() {
-		return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, null);
+		// return PropertyUtil.getString(this.indexServiceConfig.getProperties(), InfraConstants.COMPONENT_INDEX_SERVICE_CONTEXT_ROOT, null);
+		return null;
 	}
 
 	// ------------------------------------------------------------------------------------------------------------
@@ -201,7 +203,8 @@ public class IndexServiceDatabaseComplexImpl implements IndexService, IndexServi
 			this.indexServicePrinter.stop();
 			this.indexServicePrinter = null;
 		}
-		this.indexServicePrinter = new IndexServicePrinter(this, this.indexServiceConfig.getProperties());
+		// this.indexServicePrinter = new IndexServicePrinter(this, this.indexServiceConfig.getProperties());
+		this.indexServicePrinter = new IndexServicePrinter(this, null);
 		this.indexServicePrinter.start();
 
 		// Register IndexService to OSGi.Officially announce the service after everything is ready.

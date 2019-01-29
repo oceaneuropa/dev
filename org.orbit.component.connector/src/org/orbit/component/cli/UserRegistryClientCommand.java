@@ -22,11 +22,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UserRegistryCommand implements CommandActivator {
+public class UserRegistryClientCommand implements CommandActivator {
 
-	public static final String ID = "org.orbit.component.cli.UserRegistryCommand";
+	public static final String ID = "org.orbit.component.cli.UserRegistryClientCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(UserRegistryClientCommand.class);
 
 	protected static String[] USER_ACCOUNT_COLUMNS = new String[] { "Account Id", "Username", "Email", "Password", "First Name", "Last Name", "Phone", "Activated", "Creation Time", "Last Update Time" };
 
@@ -41,30 +41,29 @@ public class UserRegistryCommand implements CommandActivator {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function",
-				new String[] { //
-						"userregistry_ping", //
-						"userregistry_echo", //
-						"list_users", //
-						"get_user", //
-						"add_user", //
-						"change_password", //
-						"activate_user", //
-						"deactivate_user", //
-						"delete_user" //
-				});
+		props.put("osgi.command.function", new String[] { //
+				"userregistry_ping", //
+				"userregistry_echo", //
+				"list_users", //
+				"get_user", //
+				"add_user", //
+				"change_password", //
+				"activate_user", //
+				"deactivate_user", //
+				"delete_user" //
+		});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_USER_ACCOUNTS_URL);
 		this.properties = properties;
 
-		OSGiServiceUtil.register(bundleContext, UserRegistryCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, UserRegistryClientCommand.class.getName(), this, props);
 	}
 
 	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
-		OSGiServiceUtil.unregister(UserRegistryCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(UserRegistryClientCommand.class.getName(), this);
 	}
 
 	protected String getAccountId(String username) {

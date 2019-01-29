@@ -1,6 +1,7 @@
 package org.orbit.infra.connector.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -15,16 +16,20 @@ import org.orbit.infra.api.datacast.DataCastClient;
 import org.orbit.infra.api.datacast.DataTubeConfig;
 import org.orbit.infra.api.datatube.DataTubeClient;
 import org.orbit.infra.api.datatube.RuntimeChannel;
+import org.orbit.infra.api.indexes.IndexItem;
+import org.orbit.infra.api.indexes.IndexServiceClient;
 import org.orbit.infra.connector.configregistry.ConfigElementImpl;
 import org.orbit.infra.connector.configregistry.ConfigRegistryImpl;
 import org.orbit.infra.connector.datacast.ChannelMetadataImpl;
 import org.orbit.infra.connector.datacast.DataTubeConfigImpl;
 import org.orbit.infra.connector.datatube.RuntimeChannelImpl;
+import org.orbit.infra.connector.indexes.IndexItemImpl;
 import org.orbit.infra.model.configregistry.ConfigElementDTO;
 import org.orbit.infra.model.configregistry.ConfigRegistryDTO;
 import org.orbit.infra.model.datacast.ChannelMetadataDTO;
 import org.orbit.infra.model.datacast.DataTubeConfigDTO;
 import org.orbit.infra.model.datatube.RuntimeChannelDTO;
+import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.origin.common.json.JSONUtil;
 import org.origin.common.model.AccountConfig;
 import org.origin.common.resource.Path;
@@ -35,10 +40,37 @@ import org.origin.common.util.AccountConfigUtil;
 
 public class ModelConverter {
 
+	public static INDEX_SERVICE INDEX_SERVICE = new INDEX_SERVICE();
 	public static CONFIG_REGISTRY CONFIG_REGISTRY = new CONFIG_REGISTRY();
 	public static DATA_CAST DATA_CAST = new DATA_CAST();
 	public static DATA_TUBE DATA_TUBE = new DATA_TUBE();
 	public static COMMON COMMON = new COMMON();
+
+	public static class INDEX_SERVICE {
+		/**
+		 * 
+		 * @param client
+		 * @param indexItemDTO
+		 * @return
+		 */
+		public IndexItem toIndexItem(IndexServiceClient client, IndexItemDTO indexItemDTO) {
+			if (indexItemDTO == null) {
+				return null;
+			}
+			Integer indexItemId = indexItemDTO.getIndexItemId();
+			String indexProviderId = indexItemDTO.getIndexProviderId();
+			String type = indexItemDTO.getType();
+			String name = indexItemDTO.getName();
+			// Map<String, Object> currProperties = indexItemDTO.getProperties();
+			String propertiesString = indexItemDTO.getPropertiesString();
+			Map<String, Object> properties = JSONUtil.toProperties(propertiesString);
+			Date createTime = indexItemDTO.getCreateTime();
+			Date updateTime = indexItemDTO.getUpdateTime();
+
+			IndexItem indexItem = new IndexItemImpl(indexItemId, indexProviderId, type, name, properties, createTime, updateTime);
+			return indexItem;
+		}
+	}
 
 	public static class CONFIG_REGISTRY {
 		/**

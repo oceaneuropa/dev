@@ -19,15 +19,15 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DataTubeCommand implements Annotated, CommandActivator {
+public class DataTubeClientCommand implements Annotated, CommandActivator {
 
-	public static final String ID = "org.orbit.infra.connector.ChannelCommand";
+	public static final String ID = "org.orbit.infra.connector.DataTubeClientCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(DataTubeCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(DataTubeClientCommand.class);
 
 	protected Map<Object, Object> properties;
 
-	public DataTubeCommand() {
+	public DataTubeClientCommand() {
 		this.properties = new HashMap<Object, Object>();
 	}
 
@@ -48,12 +48,11 @@ public class DataTubeCommand implements Annotated, CommandActivator {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function",
-				new String[] { //
-						"channel_ping", //
-						"channel_send" //
-				});
-		OSGiServiceUtil.register(bundleContext, DataTubeCommand.class.getName(), this, props);
+		props.put("osgi.command.function", new String[] { //
+				"channel_ping", //
+				"channel_send" //
+		});
+		OSGiServiceUtil.register(bundleContext, DataTubeClientCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -63,7 +62,7 @@ public class DataTubeCommand implements Annotated, CommandActivator {
 	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(DataTubeCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(DataTubeClientCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 

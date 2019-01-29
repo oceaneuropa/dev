@@ -1,7 +1,7 @@
 package org.orbit.infra.runtime;
 
 import org.orbit.infra.api.indexes.ServiceIndexTimerFactory;
-import org.orbit.infra.runtime.cli.InfraCommand;
+import org.orbit.infra.runtime.cli.InfraRuntimeCommand;
 import org.orbit.infra.runtime.configregistry.ws.ConfigRegistryServiceIndexTimerFactory;
 import org.orbit.infra.runtime.configregistry.ws.command.ConfigElementExistsCommand;
 import org.orbit.infra.runtime.configregistry.ws.command.ConfigRegistryExistsCommand;
@@ -667,8 +667,8 @@ public class Extensions extends ProgramExtensions {
 		String extensionTypeId = CommandActivator.EXTENSION_TYPE_ID;
 
 		// Infra server side command
-		Extension extension1 = new Extension(extensionTypeId, InfraCommand.ID, "Infra server side command", "Infra server side command description");
-		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, InfraCommand.class);
+		Extension extension1 = new Extension(extensionTypeId, InfraRuntimeCommand.ID, "Infra server side command", "Infra server side command description");
+		InterfaceDescription desc1 = new InterfaceDescription(CommandActivator.class, InfraRuntimeCommand.class);
 		extension1.addInterface(desc1);
 		addExtension(extension1);
 	}

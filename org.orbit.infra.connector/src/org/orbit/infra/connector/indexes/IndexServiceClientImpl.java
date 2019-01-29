@@ -7,9 +7,9 @@ import java.util.Map;
 
 import org.orbit.infra.api.indexes.IndexItem;
 import org.orbit.infra.api.indexes.IndexServiceClient;
+import org.orbit.infra.connector.util.ModelConverter;
 import org.orbit.infra.model.indexes.IndexItemDTO;
 import org.origin.common.adapter.AdaptorSupport;
-import org.origin.common.json.JSONUtil;
 import org.origin.common.rest.client.ClientException;
 import org.origin.common.rest.client.ServiceClientImpl;
 import org.origin.common.rest.client.ServiceConnector;
@@ -92,18 +92,19 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 		try {
 			List<IndexItemDTO> indexItemDTOs = getWSClient().getIndexItems(indexProviderId, type);
 			for (IndexItemDTO indexItemDTO : indexItemDTOs) {
-				Integer currIndexItemId = indexItemDTO.getIndexItemId();
-				String currIndexProviderId = indexItemDTO.getIndexProviderId();
-				String currType = indexItemDTO.getType();
-				String currName = indexItemDTO.getName();
-
-				// Map<String, Object> currProperties = indexItemDTO.getProperties();
-				String propertiesString = indexItemDTO.getPropertiesString();
-				Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
-
-				checkIndexItem(null, indexProviderId, type, null, indexItemDTO);
-
-				IndexItemImpl indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+				// Integer currIndexItemId = indexItemDTO.getIndexItemId();
+				// String currIndexProviderId = indexItemDTO.getIndexProviderId();
+				// String currType = indexItemDTO.getType();
+				// String currName = indexItemDTO.getName();
+				//
+				// // Map<String, Object> currProperties = indexItemDTO.getProperties();
+				// String propertiesString = indexItemDTO.getPropertiesString();
+				// Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
+				//
+				// checkIndexItem(null, indexProviderId, type, null, indexItemDTO);
+				//
+				// IndexItemImpl indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+				IndexItem indexItem = ModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
 				indexItems.add(indexItem);
 			}
 		} catch (ClientException e) {
@@ -119,18 +120,19 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 		try {
 			IndexItemDTO indexItemDTO = getWSClient().getIndexItem(indexProviderId, type, name);
 			if (indexItemDTO != null) {
-				Integer currIndexItemId = indexItemDTO.getIndexItemId();
-				String currIndexProviderId = indexItemDTO.getIndexProviderId();
-				String currType = indexItemDTO.getType();
-				String currName = indexItemDTO.getName();
+				// Integer currIndexItemId = indexItemDTO.getIndexItemId();
+				// String currIndexProviderId = indexItemDTO.getIndexProviderId();
+				// String currType = indexItemDTO.getType();
+				// String currName = indexItemDTO.getName();
+				//
+				// // Map<String, Object> currProperties = indexItemDTO.getProperties();
+				// String propertiesString = indexItemDTO.getPropertiesString();
+				// Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
 
-				// Map<String, Object> currProperties = indexItemDTO.getProperties();
-				String propertiesString = indexItemDTO.getPropertiesString();
-				Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
+				// checkIndexItem(null, indexProviderId, type, name, indexItemDTO);
 
-				checkIndexItem(null, indexProviderId, type, name, indexItemDTO);
-
-				indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+				// indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+				indexItem = ModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
 			}
 		} catch (ClientException e) {
 			LOG.error("ClientException: getIndexItem(String indexProviderId, String type, String name) indexProviderId = " + indexProviderId + ", type = " + type + ", name = " + name);
@@ -147,18 +149,19 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 		try {
 			IndexItemDTO indexItemDTO = getWSClient().getIndexItem(indexProviderId, indexItemId);
 			if (indexItemDTO != null) {
-				Integer currIndexItemId = indexItemDTO.getIndexItemId();
-				String currIndexProviderId = indexItemDTO.getIndexProviderId();
-				String currType = indexItemDTO.getType();
-				String currName = indexItemDTO.getName();
-
-				// Map<String, Object> currProperties = indexItemDTO.getProperties();
-				String propertiesString = indexItemDTO.getPropertiesString();
-				Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
-
-				checkIndexItem(indexItemId, null, null, null, indexItemDTO);
-
-				indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+				// Integer currIndexItemId = indexItemDTO.getIndexItemId();
+				// String currIndexProviderId = indexItemDTO.getIndexProviderId();
+				// String currType = indexItemDTO.getType();
+				// String currName = indexItemDTO.getName();
+				//
+				// // Map<String, Object> currProperties = indexItemDTO.getProperties();
+				// String propertiesString = indexItemDTO.getPropertiesString();
+				// Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
+				//
+				// checkIndexItem(indexItemId, null, null, null, indexItemDTO);
+				//
+				// indexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+				indexItem = ModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
 			}
 		} catch (ClientException e) {
 			// e.printStackTrace();
@@ -173,16 +176,17 @@ public class IndexServiceClientImpl extends ServiceClientImpl<IndexServiceClient
 		try {
 			IndexItemDTO indexItemDTO = getWSClient().addIndexItem(indexProviderId, type, name, properties);
 			if (indexItemDTO != null) {
-				Integer currIndexItemId = indexItemDTO.getIndexItemId();
-				String currIndexProviderId = indexItemDTO.getIndexProviderId();
-				String currType = indexItemDTO.getType();
-				String currName = indexItemDTO.getName();
-
-				// Map<String, Object> currProperties = newIndexItemDTO.getProperties();
-				String propertiesString = indexItemDTO.getPropertiesString();
-				Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
-
-				newIndexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+				// Integer currIndexItemId = indexItemDTO.getIndexItemId();
+				// String currIndexProviderId = indexItemDTO.getIndexProviderId();
+				// String currType = indexItemDTO.getType();
+				// String currName = indexItemDTO.getName();
+				//
+				// // Map<String, Object> currProperties = newIndexItemDTO.getProperties();
+				// String propertiesString = indexItemDTO.getPropertiesString();
+				// Map<String, Object> currProperties = JSONUtil.toProperties(propertiesString);
+				//
+				// newIndexItem = new IndexItemImpl(currIndexItemId, currIndexProviderId, currType, currName, currProperties);
+				newIndexItem = ModelConverter.INDEX_SERVICE.toIndexItem(this, indexItemDTO);
 			}
 
 		} catch (ClientException e) {

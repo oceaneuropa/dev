@@ -23,11 +23,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DomainManagementCommand implements Annotated, CommandActivator {
+public class DomainManagementRuntimeCommand implements Annotated, CommandActivator {
 
-	public static final String ID = "org.orbit.component.runtime.cli.DomainManagementCommand";
+	public static final String ID = "org.orbit.component.runtime.cli.DomainManagementRuntimeCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(DomainManagementCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(DomainManagementRuntimeCommand.class);
 
 	// Column names constants
 	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "Index Item Id", "Namespace", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
@@ -57,23 +57,22 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function",
-				new String[] { //
-						// machine configurations
-						"lmachines", "lmachine", "add_machine", "update_machine", "remove_machine", //
+		props.put("osgi.command.function", new String[] { //
+				// machine configurations
+				"lmachines", "lmachine", "add_machine", "update_machine", "remove_machine", //
 
-						// platform configurations
-						"lplatforms", "lplatform", "add_platform", "update_platform", "remove_platform", //
+				// platform configurations
+				"lplatforms", "lplatform", "add_platform", "update_platform", "remove_platform", //
 
-						// node configurations
-						"lnodeconfigs", "lnodeconfig", "add_nodeconfig", "update_nodeconfig", "remove_nodeconfig", //
-				});
+				// node configurations
+				"lnodeconfigs", "lnodeconfig", "add_nodeconfig", "update_nodeconfig", "remove_nodeconfig", //
+		});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 
-		OSGiServiceUtil.register(this.bundleContext, DomainManagementCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, DomainManagementRuntimeCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -85,7 +84,7 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 		LOG.info("stop()");
 
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
-		OSGiServiceUtil.unregister(DomainManagementCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(DomainManagementRuntimeCommand.class.getName(), this);
 
 		this.bundleContext = null;
 	}

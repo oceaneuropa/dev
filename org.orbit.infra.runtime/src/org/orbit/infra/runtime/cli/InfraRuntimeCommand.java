@@ -22,13 +22,13 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InfraCommand implements CommandActivator {
+public class InfraRuntimeCommand implements CommandActivator {
 
-	public static final String ID = "org.orbit.infra.runtime.InfraCommand";
+	public static final String ID = "org.orbit.infra.runtime.InfraRuntimeCommand";
 
 	protected static String[] INDEX_ITEM_COLUMNS = new String[] { "Id", "Type", "Name", "Last Upate Time", "Properties" };
 
-	protected static Logger LOG = LoggerFactory.getLogger(InfraCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(InfraRuntimeCommand.class);
 
 	// service types
 	public static final String INDEX_SERVICE = "index_service";
@@ -78,7 +78,7 @@ public class InfraCommand implements CommandActivator {
 						"lserver_indexitems", //
 						"startservice", "stopservice" //
 				});
-		OSGiServiceUtil.register(bundleContext, InfraCommand.class.getName(), this, commandProps);
+		OSGiServiceUtil.register(bundleContext, InfraRuntimeCommand.class.getName(), this, commandProps);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class InfraCommand implements CommandActivator {
 	public void stop(BundleContext bundleContext) {
 		LOG.debug("stop()");
 
-		OSGiServiceUtil.unregister(InfraCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(InfraRuntimeCommand.class.getName(), this);
 
 		// stopservice(InfraCommand.INDEX_SERVICE);
 		// stopservice(InfraCommand.CHANNEL);

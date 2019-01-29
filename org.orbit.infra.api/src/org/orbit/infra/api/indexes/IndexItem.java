@@ -1,17 +1,22 @@
 package org.orbit.infra.api.indexes;
 
+import java.util.Date;
 import java.util.Map;
 
 public interface IndexItem {
 
-	public Integer getIndexItemId();
+	Integer getIndexItemId();
 
-	public String getIndexProviderId();
+	String getIndexProviderId();
 
-	public String getType();
+	String getType();
 
-	public String getName();
+	String getName();
 
-	public Map<String, Object> getProperties();
+	Map<String, Object> getProperties();
+
+	Date getCreateTime();
+
+	Date getUpdateTime();
 
 }

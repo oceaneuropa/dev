@@ -21,11 +21,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeControlCommandGeneric implements CommandActivator {
+public class NodeControlClientCommandGeneric implements CommandActivator {
 
-	public static final String ID = "org.orbit.component.cli.NodeControlCommandGeneric";
+	public static final String ID = "org.orbit.component.cli.NodeControlClientCommandGeneric";
 
-	protected static Logger LOG = LoggerFactory.getLogger(NodeControlCommandGeneric.class);
+	protected static Logger LOG = LoggerFactory.getLogger(NodeControlClientCommandGeneric.class);
 	protected static String[] NODE_TITLES = new String[] { "Name" };
 
 	protected String scheme = "generic.ta";
@@ -39,11 +39,11 @@ public class NodeControlCommandGeneric implements CommandActivator {
 		props.put("osgi.command.scope", getScheme());
 		props.put("osgi.command.function", new String[] { "ping", "echo", "level", "list_nodes" });
 
-		OSGiServiceUtil.register(bundleContext, NodeControlCommandGeneric.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, NodeControlClientCommandGeneric.class.getName(), this, props);
 	}
 
 	public void stop(final BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(NodeControlCommandGeneric.class.getName(), this);
+		OSGiServiceUtil.unregister(NodeControlClientCommandGeneric.class.getName(), this);
 	}
 
 	protected NodeControlClient getNodeControl(String url) {

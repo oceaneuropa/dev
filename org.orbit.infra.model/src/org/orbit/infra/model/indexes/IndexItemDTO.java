@@ -1,5 +1,6 @@
 package org.orbit.infra.model.indexes;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -22,6 +23,10 @@ public class IndexItemDTO {
 	// protected Map<String, Object> properties;
 	@XmlElement
 	protected String propertiesString;
+	@XmlElement
+	protected Date createTime;
+	@XmlElement
+	protected Date updateTime;
 
 	public IndexItemDTO() {
 	}
@@ -75,27 +80,45 @@ public class IndexItemDTO {
 		this.propertiesString = JSONUtil.toJsonString(properties);
 	}
 
-	// @XmlElement
-	// public Map<String, Object> getProperties() {
-	// return properties;
-	// }
-	//
-	// public void setProperties(Map<String, Object> properties) {
-	// this.properties = properties;
-	// }
+	@XmlElement
+	public Date getCreateTime() {
+		return this.createTime;
+	}
 
-	// @Override
-	// public String toString() {
-	// String propertiesString = JSONUtil.toJsonString(this.properties);
-	//
-	// StringBuilder sb = new StringBuilder();
-	// sb.append("IndexItemDTO (");
-	// sb.append("indexProviderId='").append(this.indexProviderId).append("'");
-	// sb.append(", type=").append(this.type);
-	// sb.append(", name=").append(this.name);
-	// sb.append(", properties=").append(propertiesString);
-	// sb.append(")");
-	// return sb.toString();
-	// }
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	@XmlElement
+	public Date getUpdateTime() {
+		return this.updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
 
 }
+
+// @XmlElement
+// public Map<String, Object> getProperties() {
+// return properties;
+// }
+//
+// public void setProperties(Map<String, Object> properties) {
+// this.properties = properties;
+// }
+
+// @Override
+// public String toString() {
+// String propertiesString = JSONUtil.toJsonString(this.properties);
+//
+// StringBuilder sb = new StringBuilder();
+// sb.append("IndexItemDTO (");
+// sb.append("indexProviderId='").append(this.indexProviderId).append("'");
+// sb.append(", type=").append(this.type);
+// sb.append(", name=").append(this.name);
+// sb.append(", properties=").append(propertiesString);
+// sb.append(")");
+// return sb.toString();
+// }

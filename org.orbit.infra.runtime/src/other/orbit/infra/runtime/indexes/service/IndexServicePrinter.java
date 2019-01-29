@@ -9,7 +9,6 @@ import java.util.concurrent.ScheduledFuture;
 
 import org.orbit.infra.runtime.InfraConstants;
 import org.orbit.infra.runtime.indexes.service.IndexService;
-import org.origin.common.util.PropertiesAware;
 import org.origin.common.util.PropertyUtil;
 
 public class IndexServicePrinter {
@@ -95,9 +94,9 @@ public class IndexServicePrinter {
 
 	protected Map<?, ?> getIndexServiceConfigProperties() {
 		Map<?, ?> properties = null;
-		if (this.indexService instanceof PropertiesAware) {
-			properties = ((PropertiesAware) this.indexService).getProperties();
-		}
+		// if (this.indexService instanceof PropertiesAware) {
+		// properties = ((PropertiesAware) this.indexService).getProperties();
+		// }
 		return properties;
 	}
 

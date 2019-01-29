@@ -18,11 +18,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AppStoreCommand implements Annotated, CommandActivator {
+public class AppStoreClientCommand implements Annotated, CommandActivator {
 
-	public static final String ID = "org.orbit.component.cli.AppStoreCommand";
+	public static final String ID = "org.orbit.component.cli.AppStoreClientCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(AppStoreCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(AppStoreClientCommand.class);
 
 	protected BundleContext bundleContext;
 	protected Map<Object, Object> properties;
@@ -39,13 +39,13 @@ public class AppStoreCommand implements Annotated, CommandActivator {
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_APP_STORE_URL);
 		this.properties = properties;
 
-		OSGiServiceUtil.register(this.bundleContext, AppStoreCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, AppStoreClientCommand.class.getName(), this, props);
 	}
 
 	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
-		OSGiServiceUtil.unregister(AppStoreCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(AppStoreClientCommand.class.getName(), this);
 
 		this.bundleContext = null;
 	}

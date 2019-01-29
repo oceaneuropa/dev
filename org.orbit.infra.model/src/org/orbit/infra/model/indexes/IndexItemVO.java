@@ -39,7 +39,7 @@ public class IndexItemVO {
 	}
 
 	public Integer getIndexItemId() {
-		return indexItemId;
+		return this.indexItemId;
 	}
 
 	public void setIndexItemId(Integer indexItemId) {
@@ -47,7 +47,7 @@ public class IndexItemVO {
 	}
 
 	public String getIndexProviderId() {
-		return indexProviderId;
+		return this.indexProviderId;
 	}
 
 	public void setIndexProviderId(String indexProviderId) {
@@ -55,7 +55,7 @@ public class IndexItemVO {
 	}
 
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
 	public void setType(String type) {
@@ -63,7 +63,7 @@ public class IndexItemVO {
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public void setName(String name) {
@@ -71,7 +71,7 @@ public class IndexItemVO {
 	}
 
 	public String getPropertiesString() {
-		return propertiesString;
+		return this.propertiesString;
 	}
 
 	public void setPropertiesString(String propertiesString) {
@@ -79,7 +79,7 @@ public class IndexItemVO {
 	}
 
 	public Date getCreateTime() {
-		return createTime;
+		return this.createTime;
 	}
 
 	public void setCreateTime(Date createTime) {
@@ -87,7 +87,7 @@ public class IndexItemVO {
 	}
 
 	public Date getLastUpdateTime() {
-		return lastUpdateTime;
+		return this.lastUpdateTime;
 	}
 
 	public void setLastUpdateTime(Date lastUpdateTime) {

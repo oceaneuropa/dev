@@ -29,11 +29,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DomainManagementCommand implements Annotated, CommandActivator {
+public class DomainManagementClientCommand implements Annotated, CommandActivator {
 
-	public static final String ID = "org.orbit.component.cli.DomainManagementCommand";
+	public static final String ID = "org.orbit.component.cli.DomainManagementClientCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(DomainManagementCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(DomainManagementClientCommand.class);
 
 	// Column names constants
 	protected static String[] DOMAIN_SERVICES_TITLES = new String[] { "Index Item Id", "Namespace", "Name", "Host URL", "Context Root", "Heartbeat Time", "" };
@@ -56,29 +56,28 @@ public class DomainManagementCommand implements Annotated, CommandActivator {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function",
-				new String[] { //
-						// machine configurations
-						"list_machines", "list_machine", "add_machine", "update_machine", "remove_machine", //
+		props.put("osgi.command.function", new String[] { //
+				// machine configurations
+				"list_machines", "list_machine", "add_machine", "update_machine", "remove_machine", //
 
-						// transfer agent configurations
-						"list_tas", "list_ta", "add_ta", "update_ta", "remove_ta", //
+				// transfer agent configurations
+				"list_tas", "list_ta", "add_ta", "update_ta", "remove_ta", //
 
-						// node configurations
-						"list_nodes", "list_node", "add_node", "update_node", "remove_node", //
-				});
+				// node configurations
+				"list_nodes", "list_node", "add_node", "update_node", "remove_node", //
+		});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 
-		OSGiServiceUtil.register(this.bundleContext, DomainManagementCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, DomainManagementClientCommand.class.getName(), this, props);
 	}
 
 	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
-		OSGiServiceUtil.unregister(DomainManagementCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(DomainManagementClientCommand.class.getName(), this);
 
 		this.bundleContext = null;
 	}

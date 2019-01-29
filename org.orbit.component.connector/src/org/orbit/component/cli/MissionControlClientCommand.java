@@ -26,11 +26,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MissionControlCommand extends ServiceClientCommand implements CommandActivator {
+public class MissionControlClientCommand extends ServiceClientCommand implements CommandActivator {
 
-	public static final String ID = "org.orbit.component.cli.MissionControlCommand";
+	public static final String ID = "org.orbit.component.cli.MissionControlClientCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(NodeControlCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(NodeControlClientCommand.class);
 
 	protected static String[] MISSION_COLUMN_NAMES = new String[] { "Name" };
 
@@ -45,22 +45,21 @@ public class MissionControlCommand extends ServiceClientCommand implements Comma
 	public void start(final BundleContext bundleContext) {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function",
-				new String[] { //
-						"ping", //
-						"echo", "level", //
-						"list_missions", "get_mission", "mission_exist", "create_mission", "delete_mission", "start_mission", "stop_mission", "mission_status"//
-				});
+		props.put("osgi.command.function", new String[] { //
+				"ping", //
+				"echo", "level", //
+				"list_missions", "get_mission", "mission_exist", "create_mission", "delete_mission", "start_mission", "stop_mission", "mission_status"//
+		});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_MISSION_CONTROL_URL);
 		this.properties = properties;
 
-		OSGiServiceUtil.register(bundleContext, MissionControlCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, MissionControlClientCommand.class.getName(), this, props);
 	}
 
 	public void stop(final BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(MissionControlCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(MissionControlClientCommand.class.getName(), this);
 	}
 
 	@Override

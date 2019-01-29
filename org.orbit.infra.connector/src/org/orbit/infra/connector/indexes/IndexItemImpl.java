@@ -1,5 +1,6 @@
 package org.orbit.infra.connector.indexes;
 
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -12,6 +13,8 @@ public class IndexItemImpl implements IndexItem {
 	protected String type;
 	protected String name;
 	protected Map<String, Object> properties;
+	protected Date createTime;
+	protected Date updateTime;
 
 	/**
 	 * 
@@ -20,13 +23,17 @@ public class IndexItemImpl implements IndexItem {
 	 * @param type
 	 * @param name
 	 * @param properties
+	 * @param createTime
+	 * @param updateTime
 	 */
-	public IndexItemImpl(Integer indexItemId, String indexProviderId, String type, String name, Map<String, Object> properties) {
+	public IndexItemImpl(Integer indexItemId, String indexProviderId, String type, String name, Map<String, Object> properties, Date createTime, Date updateTime) {
 		this.indexItemId = indexItemId;
 		this.indexProviderId = indexProviderId;
 		this.type = type;
 		this.name = name;
 		this.properties = properties;
+		this.createTime = createTime;
+		this.updateTime = updateTime;
 	}
 
 	@Override
@@ -41,12 +48,12 @@ public class IndexItemImpl implements IndexItem {
 
 	@Override
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	@Override
@@ -55,6 +62,16 @@ public class IndexItemImpl implements IndexItem {
 			this.properties = new Hashtable<String, Object>();
 		}
 		return this.properties;
+	}
+
+	@Override
+	public Date getCreateTime() {
+		return this.createTime;
+	}
+
+	@Override
+	public Date getUpdateTime() {
+		return this.updateTime;
 	}
 
 	@Override
@@ -89,30 +106,7 @@ public class IndexItemImpl implements IndexItem {
 
 	@Override
 	public String toString() {
-		return "IndexItemImpl [indexItemId=" + indexItemId + ", indexProviderId=" + indexProviderId + ", type=" + type + ", name=" + name + "]";
+		return "IndexItemImpl [indexItemId=" + this.indexItemId + ", indexProviderId=" + this.indexProviderId + ", type=" + this.type + ", name=" + this.name + ", createTime=" + this.createTime + ", updateTime=" + this.updateTime + "]";
 	}
 
 }
-
-/// **
-// *
-// * @param config
-// * @param indexItemId
-// * @param indexProviderId
-// * @param type
-// * @param name
-// * @param properties
-// */
-// public IndexItemImpl(IndexServiceConfiguration config, Integer indexItemId, String indexProviderId, String type, String name, Map<String, Object> properties)
-/// {
-// this.config = config;
-// this.indexItemId = indexItemId;
-// this.indexProviderId = indexProviderId;
-// this.type = type;
-// this.name = name;
-// this.properties = properties;
-// }
-//
-// protected IndexServiceWSClient getClient() {
-// return this.config.getClient();
-// }

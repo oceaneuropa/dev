@@ -3,12 +3,12 @@ package other.orbit.component.cli;
 import java.util.Hashtable;
 import java.util.Map;
 
-import org.orbit.component.cli.AppStoreCommand;
-import org.orbit.component.cli.AuthCommand;
-import org.orbit.component.cli.DomainManagementCommand;
-import org.orbit.component.cli.NodeControlCommand;
-import org.orbit.component.cli.ServicesCommand;
-import org.orbit.component.cli.UserRegistryCommand;
+import org.orbit.component.cli.AppStoreClientCommand;
+import org.orbit.component.cli.AuthClientCommand;
+import org.orbit.component.cli.DomainManagementClientCommand;
+import org.orbit.component.cli.NodeControlClientCommand;
+import org.orbit.component.cli.ServicesClientCommand;
+import org.orbit.component.cli.UserRegistryClientCommand;
 import org.origin.common.util.PropertyUtil;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -26,12 +26,12 @@ public class ActivatorV1 implements BundleActivator {
 
 	protected IndexServiceConnectorAdapterV1 indexServiceConnectorAdapter;
 
-	protected ServicesCommand servicesCommand;
-	protected AuthCommand authCommand;
-	protected UserRegistryCommand userRegistryCommand;
-	protected AppStoreCommand appStoreCommand;
-	protected DomainManagementCommand domainMgmtCommand;
-	protected NodeControlCommand nodeControlCommand;
+	protected ServicesClientCommand servicesCommand;
+	protected AuthClientCommand authCommand;
+	protected UserRegistryClientCommand userRegistryCommand;
+	protected AppStoreClientCommand appStoreCommand;
+	protected DomainManagementClientCommand domainMgmtCommand;
+	protected NodeControlClientCommand nodeControlCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -67,22 +67,22 @@ public class ActivatorV1 implements BundleActivator {
 		// Start commands
 		// this.servicesCommand = new ServicesCommand(bundleContext, indexServiceLoadBalancer.createLoadBalancableIndexService());
 		// this.servicesCommand.start();
-		this.servicesCommand = new ServicesCommand();
+		this.servicesCommand = new ServicesClientCommand();
 		this.servicesCommand.start(bundleContext);
 
-		this.authCommand = new AuthCommand();
+		this.authCommand = new AuthClientCommand();
 		this.authCommand.start(bundleContext);
 
-		this.userRegistryCommand = new UserRegistryCommand();
+		this.userRegistryCommand = new UserRegistryClientCommand();
 		this.userRegistryCommand.start(bundleContext);
 
-		this.appStoreCommand = new AppStoreCommand();
+		this.appStoreCommand = new AppStoreClientCommand();
 		this.appStoreCommand.start(bundleContext);
 
-		this.domainMgmtCommand = new DomainManagementCommand();
+		this.domainMgmtCommand = new DomainManagementClientCommand();
 		this.domainMgmtCommand.start(bundleContext);
 
-		this.nodeControlCommand = new NodeControlCommand();
+		this.nodeControlCommand = new NodeControlClientCommand();
 		this.nodeControlCommand.start(bundleContext);
 	}
 

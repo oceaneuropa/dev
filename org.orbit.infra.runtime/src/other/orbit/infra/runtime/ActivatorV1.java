@@ -4,7 +4,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.orbit.infra.runtime.InfraConstants;
-import org.orbit.infra.runtime.cli.InfraCommand;
+import org.orbit.infra.runtime.cli.InfraRuntimeCommand;
 import org.orbit.infra.runtime.datatube.service.DataTubeService;
 import org.orbit.infra.runtime.indexes.service.IndexService;
 import org.orbit.infra.runtime.indexes.ws.IndexServiceAdapter;
@@ -45,7 +45,7 @@ public class ActivatorV1 implements BundleActivator {
 	protected boolean autoStartChannelService;
 	protected ChannelServiceAdapterV1 channelServiceAdapter;
 
-	protected InfraCommand servicesCommand;
+	protected InfraRuntimeCommand servicesCommand;
 
 	@Override
 	public void start(BundleContext bundleContext) throws Exception {
@@ -80,14 +80,14 @@ public class ActivatorV1 implements BundleActivator {
 		}
 
 		// Start commands
-		this.servicesCommand = new InfraCommand();
+		this.servicesCommand = new InfraRuntimeCommand();
 		this.servicesCommand.start(bundleContext);
 
 		if (autoStartIndexService) {
-			this.servicesCommand.startservice(InfraCommand.INDEX_SERVICE);
+			this.servicesCommand.startservice(InfraRuntimeCommand.INDEX_SERVICE);
 		}
 		if (autoStartChannelService) {
-			this.servicesCommand.startservice(InfraCommand.CHANNEL);
+			this.servicesCommand.startservice(InfraRuntimeCommand.CHANNEL);
 		}
 
 		this.indexProviderConnectorAdapter = new IndexProviderConnectorAdapterV1() {
@@ -116,10 +116,10 @@ public class ActivatorV1 implements BundleActivator {
 
 		// Stop commands
 		if (getIndexService() != null) {
-			this.servicesCommand.stopservice(InfraCommand.INDEX_SERVICE);
+			this.servicesCommand.stopservice(InfraRuntimeCommand.INDEX_SERVICE);
 		}
 		if (getChannelService() != null) {
-			this.servicesCommand.stopservice(InfraCommand.CHANNEL);
+			this.servicesCommand.stopservice(InfraRuntimeCommand.CHANNEL);
 		}
 
 		// Stop service adapters

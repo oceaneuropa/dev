@@ -18,11 +18,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AuthCommand implements CommandActivator {
+public class AuthClientCommand implements CommandActivator {
 
-	public static final String ID = "org.orbit.component.cli.AuthCommand";
+	public static final String ID = "org.orbit.component.cli.AuthClientCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(AuthCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(AuthClientCommand.class);
 
 	protected String getScheme() {
 		return "orbit";
@@ -41,13 +41,13 @@ public class AuthCommand implements CommandActivator {
 						// "token", //
 						"login" //
 				});
-		OSGiServiceUtil.register(bundleContext, AuthCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, AuthClientCommand.class.getName(), this, props);
 	}
 
 	public void stop(final BundleContext bundleContext) {
 		System.out.println("AuthCommand.stop()");
 
-		OSGiServiceUtil.unregister(AuthCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(AuthClientCommand.class.getName(), this);
 	}
 
 	protected AuthClient getAuthClient(String url, String realm, String accessToken) {

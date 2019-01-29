@@ -19,15 +19,15 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class IndexServiceCommand implements Annotated, CommandActivator {
+public class IndexServiceClientCommand implements Annotated, CommandActivator {
 
-	public static final String ID = "org.orbit.infra.connector.IndexServiceCommand";
+	public static final String ID = "org.orbit.infra.connector.IndexServiceClientCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(IndexServiceClientCommand.class);
 
 	protected Map<Object, Object> properties;
 
-	public IndexServiceCommand() {
+	public IndexServiceClientCommand() {
 		this.properties = new HashMap<Object, Object>();
 	}
 
@@ -50,12 +50,11 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
-		props.put("osgi.command.function",
-				new String[] { //
-						"index_service_ping", //
-						"index_service_echo" //
-				});
-		OSGiServiceUtil.register(bundleContext, IndexServiceCommand.class.getName(), this, props);
+		props.put("osgi.command.function", new String[] { //
+				"index_service_ping", //
+				"index_service_echo" //
+		});
+		OSGiServiceUtil.register(bundleContext, IndexServiceClientCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -65,7 +64,7 @@ public class IndexServiceCommand implements Annotated, CommandActivator {
 	 */
 	@Override
 	public void stop(BundleContext bundleContext) {
-		OSGiServiceUtil.unregister(IndexServiceCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(IndexServiceClientCommand.class.getName(), this);
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
 	}
 

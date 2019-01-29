@@ -23,11 +23,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NodeControlCommand implements Annotated, CommandActivator {
+public class NodeControlRuntimeCommand implements Annotated, CommandActivator {
 
-	public static final String ID = "org.orbit.component.runtime.cli.NodeControlCommand";
+	public static final String ID = "org.orbit.component.runtime.cli.NodeControlRuntimeCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(NodeControlCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(NodeControlRuntimeCommand.class);
 
 	protected static String[] NODE_COLS = new String[] { "Id", "Path", "Attributes" };
 
@@ -52,17 +52,16 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", getScheme());
-		props.put("osgi.command.function",
-				new String[] { //
-						// node
-						"lnodes", "lnode", "create_node", "delete_node", "set_node_attr", "remove_node_attr", "start_node", "stop_node" //
-				});
+		props.put("osgi.command.function", new String[] { //
+				// node
+				"lnodes", "lnode", "create_node", "delete_node", "set_node_attr", "remove_node_attr", "start_node", "stop_node" //
+		});
 
 		Map<Object, Object> properties = new Hashtable<Object, Object>();
 		PropertyUtil.loadProperty(bundleContext, properties, ComponentConstants.ORBIT_DOMAIN_SERVICE_URL);
 		this.properties = properties;
 
-		OSGiServiceUtil.register(this.bundleContext, NodeControlCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(this.bundleContext, NodeControlRuntimeCommand.class.getName(), this, props);
 		OSGiServiceUtil.register(this.bundleContext, Annotated.class.getName(), this);
 	}
 
@@ -74,7 +73,7 @@ public class NodeControlCommand implements Annotated, CommandActivator {
 		LOG.info("stop()");
 
 		OSGiServiceUtil.unregister(Annotated.class.getName(), this);
-		OSGiServiceUtil.unregister(NodeControlCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(NodeControlRuntimeCommand.class.getName(), this);
 
 		this.bundleContext = null;
 	}

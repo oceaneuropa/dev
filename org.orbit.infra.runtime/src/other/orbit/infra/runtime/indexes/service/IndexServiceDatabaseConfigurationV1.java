@@ -7,9 +7,8 @@ import java.util.Properties;
 import org.orbit.infra.runtime.InfraConstants;
 import org.origin.common.jdbc.ConnectionAware;
 import org.origin.common.jdbc.DatabaseUtil;
-import org.origin.common.util.PropertiesAware;
 
-public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurationV1 implements PropertiesAware, ConnectionAware {
+public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurationV1 implements /* PropertiesAware */ ConnectionAware {
 
 	protected Properties props;
 
@@ -21,10 +20,10 @@ public class IndexServiceDatabaseConfigurationV1 extends IndexServiceConfigurati
 		this.props = properties;
 	}
 
-	@Override
-	public Properties getProperties() {
-		return this.props;
-	}
+	// @Override
+	// public Properties getProperties() {
+	// return this.props;
+	// }
 
 	@Override
 	public Connection getConnection() throws SQLException {

@@ -17,11 +17,11 @@ import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ServicesCommand implements CommandActivator {
+public class ServicesRuntimeCommand implements CommandActivator {
 
-	public static final String ID = "org.orbit.component.runtime.cli.ServicesCommand";
+	public static final String ID = "org.orbit.component.runtime.cli.ServicesRuntimeCommand";
 
-	protected static Logger LOG = LoggerFactory.getLogger(ServicesCommand.class);
+	protected static Logger LOG = LoggerFactory.getLogger(ServicesRuntimeCommand.class);
 
 	// service types
 	public static final String USER_REGISTRY = "user_registry";
@@ -70,7 +70,7 @@ public class ServicesCommand implements CommandActivator {
 		Hashtable<String, Object> props = new Hashtable<String, Object>();
 		props.put("osgi.command.scope", "orbit");
 		props.put("osgi.command.function", new String[] { "startservice", "stopservice" });
-		OSGiServiceUtil.register(bundleContext, ServicesCommand.class.getName(), this, props);
+		OSGiServiceUtil.register(bundleContext, ServicesRuntimeCommand.class.getName(), this, props);
 
 		// Get the available components
 		// Map<Object, Object> properties = new Hashtable<Object, Object>();
@@ -137,7 +137,7 @@ public class ServicesCommand implements CommandActivator {
 	public void stop(BundleContext bundleContext) {
 		LOG.info("stop()");
 
-		OSGiServiceUtil.unregister(ServicesCommand.class.getName(), this);
+		OSGiServiceUtil.unregister(ServicesRuntimeCommand.class.getName(), this);
 
 		// // tier4
 		// stopservice(ServicesCommand.MISSION_CONTROL);
