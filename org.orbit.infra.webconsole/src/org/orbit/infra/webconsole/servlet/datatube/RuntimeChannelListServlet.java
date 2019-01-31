@@ -24,7 +24,7 @@ import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.DefaultDataTubeClientResolver;
 import org.orbit.infra.io.util.InfraIndexItemHelper;
-import org.orbit.infra.io.util.InfraNodeConfigHelper;
+import org.orbit.infra.io.util.NodeConfigHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -69,10 +69,10 @@ public class RuntimeChannelListServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				IConfigRegistry cfgReg = InfraNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+				IConfigRegistry cfgReg = NodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 				if (cfgReg != null) {
-					dataCastConfigElement = InfraNodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
-					dataTubeConfigElement = InfraNodeConfigHelper.INSTANCE.getDataTubeConfigElement(cfgReg, dataCastId, dataTubeId);
+					dataCastConfigElement = NodeConfigHelper.INSTANCE.getDataCastConfigElement(cfgReg, dataCastId);
+					dataTubeConfigElement = NodeConfigHelper.INSTANCE.getDataTubeConfigElement(cfgReg, dataCastId, dataTubeId);
 
 					if (dataCastConfigElement == null) {
 						message = MessageHelper.INSTANCE.add(message, "Config element for data cast node (dataCastId: '" + dataCastId + "') cannot be found.");
@@ -81,7 +81,7 @@ public class RuntimeChannelListServlet extends HttpServlet {
 						message = MessageHelper.INSTANCE.add(message, "Config element for data tube node (dataCastId: '" + dataCastId + "'; dataTubeId: '" + dataTubeId + "') cannot be found.");
 					}
 				} else {
-					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + InfraNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
+					message = MessageHelper.INSTANCE.add(message, "Config registry for '" + NodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 				}
 
 				DataCastClientResolver dataCastClientResolver = new DefaultDataCastClientResolver(indexServiceUrl);

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpSession;
 import org.orbit.infra.api.InfraConstants;
 import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
-import org.orbit.infra.io.util.InfraNodeConfigHelper;
+import org.orbit.infra.io.util.NodeConfigHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -54,7 +54,7 @@ public class DataTubeNodeUpdateServlet extends HttpServlet {
 			try {
 				String accessToken = OrbitTokenUtil.INSTANCE.getAccessToken(request);
 
-				IConfigRegistry cfgReg = InfraNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+				IConfigRegistry cfgReg = NodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 				if (cfgReg != null) {
 					IConfigElement configElement = cfgReg.getConfigElement(elementId);
 					if (configElement != null) {
@@ -92,7 +92,7 @@ public class DataTubeNodeUpdateServlet extends HttpServlet {
 					}
 
 				} else {
-					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + InfraNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
+					message = MessageHelper.INSTANCE.add(message, "Config registry with name '" + NodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be retrieved or created.");
 				}
 
 			} catch (Exception e) {

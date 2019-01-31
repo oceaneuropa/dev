@@ -19,7 +19,7 @@ import org.orbit.infra.io.IConfigElement;
 import org.orbit.infra.io.IConfigRegistry;
 import org.orbit.infra.io.util.DefaultDataCastClientResolver;
 import org.orbit.infra.io.util.InfraIndexItemHelper;
-import org.orbit.infra.io.util.InfraNodeConfigHelper;
+import org.orbit.infra.io.util.NodeConfigHelper;
 import org.orbit.infra.webconsole.WebConstants;
 import org.orbit.platform.sdk.util.OrbitTokenUtil;
 import org.origin.common.servlet.MessageHelper;
@@ -56,9 +56,9 @@ public class DataCastNodeListServlet extends HttpServlet {
 
 			// 1. Get or create config registry "DataCastNodes"
 			// - get root IConfigElements from it
-			IConfigRegistry cfgReg = InfraNodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
+			IConfigRegistry cfgReg = NodeConfigHelper.INSTANCE.getDataCastNodesConfigRegistry(accessToken, true);
 			if (cfgReg == null) {
-				message = MessageHelper.INSTANCE.add(message, "Config registry for '" + InfraNodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
+				message = MessageHelper.INSTANCE.add(message, "Config registry for '" + NodeConfigHelper.INSTANCE.getConfigRegistryName__DataCastNodes() + "' cannot be found or created.");
 			} else {
 				configElements = cfgReg.listRootConfigElements();
 			}
